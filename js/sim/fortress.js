@@ -1,7 +1,8 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { iterations, player, target } }) {
+self.addEventListener('message', function ({ data: { iterations, player, target, index } }) {
     self.postMessage({
-        results: new FortressSimulator().simulate(player, target, iterations)
+        score: new FortressSimulator().simulate(player, target, iterations),
+        index
     });
 
     self.close();
@@ -10,41 +11,18 @@ self.addEventListener('message', function ({ data: { iterations, player, target 
 class FortressSimulator extends SimulatorBase {
     simulate (player, target, iterations) {
         if (target.length == 0) {
-            return {
-                score: iterations,
-                iterations,
-                player_units: player.length,
-                target_units: 0,
-                avg_player_units: player.length,
-                avg_target_units: 0
-            }
+            return 1;
         }
 
         this.ga = this.cache(player, 0);
         this.gb = this.cache(target, 1);
 
         let score = 0;
-        let avg_fights = 0;
-        let avg_player_units = 0;
-        let avg_target_units = 0;
-
         for (let i = 0; i < iterations; i++) {
-            let { win, fights, player_units, target_units } = this.battle();
-
-            score += win;
-            avg_fights += fights;
-            avg_player_units += player_units;
-            avg_target_units += target_units;
+            score += this.battle();
         }
 
-        return {
-            score,
-            iterations,
-            player_units: player.length,
-            target_units: target.length,
-            avg_player_units: avg_player_units / iterations,
-            avg_target_units: avg_target_units / iterations
-        }
+        return score / iterations;
     }
 
     cache (array, index) {

@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/editor.css"/>
+        <link rel="stylesheet" href="css/fortress.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -99,6 +100,12 @@
                 <div class="column">
                     <div class="ui grid">
                         <div class="row">
+                            <div class="four wide column">
+                                <div class="ui small icon fluid two buttons">
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.add" id="add"><i class="add icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.save" id="save"><i class="save icon"></i></button>
+                                </div>
+                            </div>
                             <div class="seven wide column">
                                 <div class="ui small form">
                                     <div class="two fields" style="margin-bottom: 0;">
@@ -112,20 +119,28 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="nine wide column">
+                            <div class="five wide column">
                                 <button class="ui fluid button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
+                        </div>
+                        <div class="plain row">
+                            <div class="three wide column" data-intl="fortress.warrior_count"></div>
+                            <div class="three wide column" data-intl="stats.player.fortress.building12"></div>
+                            <div class="three wide column" data-intl="fortress.archer_count"></div>
+                            <div class="three wide column" data-intl="fortress.mage_count"></div>
+                            <div class="three wide column" data-intl="simulator.win_chance"></div>
+                            <div class="one wide column"></div>
                         </div>
                         <div class="row padding-none">
                             <div class="sixteen wide column">
                                 <hr/>
                             </div>
                         </div>
-                        <div class="row" style="padding-left: 1em; padding-right: 1em">
-                            <div id="results" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 15em;">
-                                <!-- Results -->
+                        <div class="row">
+                            <div class="sixteen wide column">
+                                <div class="ui middle aligned grid" id="list"></div>
                             </div>
-                        </div>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -134,9 +149,30 @@
         <script type="text/javascript">
             Site.ready(function () {
                 // Handle simulate button validation
-                let $simulateButton = $('#simulate');
-                function updateSimulateButton () {
+                const $simulateButton = $('#simulate');
+                const $addButton = $('#add');
+                const $saveButton = $('#save');
+                const $list = $('#list');
+
+                // Handle list
+                let list = [];
+                let listLength = 0;
+                let listIndex = -1;
+
+                function updateButtons () {
                     if (fortressEditor.valid()) {
+                        $addButton.removeClass('disabled');
+                    } else {
+                        $addButton.addClass('disabled');
+                    }
+                    
+                    if (listIndex >= 0) {
+                        $saveButton.removeClass('disabled');
+                    } else {
+                        $saveButton.addClass('disabled');
+                    }
+
+                    if (list.length > 0) {
                         $simulateButton.removeClass('disabled');
                     } else {
                         $simulateButton.addClass('disabled');
@@ -144,7 +180,7 @@
                 }
 
                 // Editor configuration
-                let fortressEditor = new (class {
+                const fortressEditor = new (class {
                     constructor () {
                         this.fields = {
                             warrior_count: new Field('[data-path="WarriorCount"]', '1', Field.createRange(1, 45)),
@@ -208,8 +244,14 @@
                         return Object.values(this.fields).every(field => field.valid())
                     }
 
+                    clear () {
+                        for (let [key, field] of Object.entries(this.fields)) {
+                            field.clear();
+                        }
+                    }
+
                     onChangeLister () {
-                        updateSimulateButton();
+                        updateButtons();
                     }
                 })('#fortress-editor');
 
@@ -221,74 +263,148 @@
                 $('#sim-threads').captiveInputField('fortress_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('fortress_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
-                function showResults (results) {
-                    // TODO: Display results properly
-                    let score = 0;
-                    let iterations = 0;
-                    let playerUnits = 0;
-                    let targetUnits = 0;
-                    let averagePlayerUnits = 0;
-                    let averageTargetUnits = 0;
+                function formatUnit (data, type) {
+                    const count = data[`${type}Count`];
+                    const level = data[`${type}Level`];
 
-                    for (const result of results) {
-                        score += result.score;
-                        iterations += result.iterations;
-                        playerUnits += result.player_units;
-                        targetUnits += result.target_units;
-                        averagePlayerUnits += result.avg_player_units;
-                        averageTargetUnits += result.avg_target_units;
+                    if (count > 0) {
+                        return `${count} x ${FORTRESS_WARRIOR_MAP[level].level}`;
+                    } else {
+                        return '';
+                    }
+                }
+
+                // Callbacks
+                function listUpdate () {
+                    updateButtons();
+
+                    let content = '';
+
+                    for (const { data, index, score } of list) {
+                        content += `
+                            <div class="plain row selectable ${index == listIndex ? '' : 'n'}selected" data-index="${index}">
+                                <div class="three wide column">${formatUnit(data, 'Warrior')}</div>
+                                <div class="three wide column">${data.FortificationsLevel > 0 ? FORTRESS_WALL_MAP[data.FortificationsLevel].level : ''}</div>
+                                <div class="three wide column">${formatUnit(data, 'Archer')}</div>
+                                <div class="three wide column">${formatUnit(data, 'Mage')}</div>
+                                <div class="three wide column">${typeof score === 'number' ? `${(100 * score).toFixed(2)}%` : ''}</div>
+                                <div class="one wide column">
+                                    <i class="trash right aligned alternate glow outline icon" data-trash="${index}"></i>
+                                </div>
+                            </div>
+                        `;
                     }
 
-                    playerUnits /= results.length;
-                    targetUnits /= results.length;
-                    averagePlayerUnits /= results.length;
-                    averageTargetUnits /= results.length;
+                    $list.html(content);
 
-                    $('#results').html(`
-                        <div style="font-size: 140%;">
-                            <b>${(100 * score / iterations).toFixed(2)}%</b>
-                        </div>
-                        <div style="margin-top: 2.5em;">
-                            <b>${intl('fortress.units.remaining')}</b>
-                        </div>
-                        <div style="margin-top: 0.5em;">
-                            ${intl('fortress.units.player')}: &nbsp;&nbsp;&nbsp;<span>${Math.ceil(averagePlayerUnits)} / ${playerUnits}</span>
-                        </div>
-                        <div style="margin-top: 0.5em;">
-                            ${intl('fortress.units.target')}: &nbsp;&nbsp;&nbsp;<span>${Math.ceil(averageTargetUnits)} / ${targetUnits}</span>
-                        </div>
-                    `);
+                    $list.find('[data-index]').click(function () {
+                        listIndex = parseInt($(this).attr('data-index'));
+
+                        fortressEditor.fill(list.find(it => it.index === listIndex).data);
+
+                        listUpdate();
+                    });
+
+                    $list.find('[data-trash]').click(function () {
+                        const localIndex = parseInt($(this).attr('data-trash'));
+
+                        const arrayIndex = list.findIndex(it => it.index == localIndex);
+                        if (arrayIndex != -1) {
+                            list.splice(arrayIndex, 1);
+                        }
+
+                        if (localIndex == listIndex) {
+                            fortressEditor.clear();
+                            listIndex = -1;
+                        }
+
+                        listUpdate();
+                    });
                 }
+
+                function addListItem () {
+                    list.push({
+                        data: fortressEditor.read(),
+                        index: (listIndex = listLength++),
+                        score: null
+                    });
+
+                    listUpdate();
+                }
+
+                // Callbacks
+                $addButton.click(() => {
+                    if (fortressEditor.valid()) {
+                        addListItem();
+                    }
+                })
+
+                $saveButton.click(() => {
+                    if (fortressEditor.valid()) {
+                        if (listIndex >= 0) {
+                            let item = list.find(it => it.index == listIndex);
+                            if (item) {
+                                item.data = fortressEditor.read();
+                                item.score = null;
+                            }
+
+                            listUpdate();
+                        } else {
+                            addListItem();
+                        }
+                    }
+                });
 
                 // Run simulation
                 $('#simulate').click(async function () {
-                    if (fortressEditor.valid()) {
+                    if (list.length > 0) {
                         Loader.toggle(true);
 
-                        const { player, target } = FortressUnits.fromEditor(fortressEditor.read());
+                        const maximumInstances= Math.max(1, Number($('#sim-threads').val()) || 4);
+                        const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
-                        // Set up threads & iterations
-                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
-                        let results = [];
+                        const results = [];
+                        const pendingInstances = [];
 
-                        for (let i = 0; i < blocks; i++) {
+                        for (const { data, index } of list) {
+                            const { player, target } = FortressUnits.fromEditor(data);
+                            
                             const worker = await Workers.createSimulatorWorker('fortress');
 
                             worker.addEventListener('message', message => {
-                                results.push(message.data.results);
+                                results.push(message.data);
 
-                                if (results.length == blocks) {
+                                if (results.length == list.length) {
                                     Loader.toggle(false);
-                                    showResults(results);
-                                }
-                            }, false);
 
-                            worker.postMessage({
-                                iterations: iterations,
-                                player: player,
-                                target: target
+                                    for (const { score, index: _index } of results) {
+                                        const localIndex = list.findIndex(it => it.index == _index);
+                                        if (localIndex >= 0) {
+                                            list[localIndex].score = score;
+                                        }
+                                    }
+
+                                    listUpdate();
+                                } else if (pendingInstances.length > 0) {
+                                    const [ _worker, args ] = pendingInstances.pop();
+                                    _worker.postMessage(args);
+                                }
                             });
+
+                            pendingInstances.push([
+                                worker,
+                                {
+                                    player,
+                                    target,
+                                    index,
+                                    iterations
+                                }
+                            ]);
+                        }
+
+                        for (let i = 0; i < Math.min(maximumInstances, pendingInstances.length); i++) {
+                            const [ worker, args ] = pendingInstances.pop();
+                            worker.postMessage(args);
                         }
                     }
                 })

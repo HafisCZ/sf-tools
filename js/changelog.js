@@ -2,6 +2,9 @@ const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
             'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>'
+        ],
+        'Fortress Simulator': [
+            'Redesigned simulator to allow for multiple battles to be simulated at once'
         ]
     },
     'v5.2675': {
