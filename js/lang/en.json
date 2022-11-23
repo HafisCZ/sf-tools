@@ -168,6 +168,14 @@
         "fortress": {
             "title": "Fortress Simulator",
             "desc": "Simulate the probable outcome of fortress raid"
+        },
+        "changelog": {
+            "title": "Changelog",
+            "desc": "View all notable changes"
+        },
+        "hellevator": {
+            "title": "Hellevator Simulator",
+            "desc": "Simulate the probable outcome of Hellevator battles"
         }
     },
     "404": {
