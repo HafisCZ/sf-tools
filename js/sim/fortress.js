@@ -49,11 +49,7 @@ class FortressSimulator extends SimulatorBase {
             }
         }
 
-        return {
-            win: this.la.length > 0,
-            player_units: this.la.length,
-            target_units: this.lb.length
-        };
+        return this.la.length > 0 ? 1 : 0;
     }
 
     fight () {
