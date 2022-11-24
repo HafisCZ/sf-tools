@@ -343,7 +343,7 @@
                                     EditorController.fill(
                                         playersToData(
                                             _compact(group.Members.map(pid => DatabaseManager.getPlayer(pid, group.Timestamp))),
-                                            group.Hydra
+                                            group.Hydra + 1
                                         )
                                     );
                                 }
