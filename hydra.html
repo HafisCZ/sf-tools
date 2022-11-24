@@ -294,7 +294,7 @@
                     let data = {
                         Hydra: hydra || EditorController.fields['hydra'].get(),
                         PlayerCount: players.length,
-                        Level: Math.ceil(_sum(hydraPlayers.map(p => p.Level)) / 25)
+                        Level: Math.round(_sum(hydraPlayers.map(p => p.Level)) / 25)
                     }
 
                     for (const att of ['Constitution', 'Luck']) {
