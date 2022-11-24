@@ -349,6 +349,24 @@ const Exporter = new (class {
 })();
 
 class PlayaResponse {
+    static * iterateJSON (json) {
+        for (const entry of _dig(json, 'log', 'entries')) {
+            let { text, encoding } = _dig(entry, 'response', 'content');
+            
+            if (text) {
+                if (encoding === 'base64') {
+                    text = atob(text)
+                }
+
+                yield {
+                    text,
+                    url: _dig(entry, 'request', 'url'),
+                    date: new Date(entry.startedDateTime)
+                }
+            }
+        }
+    }
+
     static fromText (text) {
         return _array_to_hash(text.split('&').filter(_not_empty), item => {
             const [key, ...val] = item.split(':');
@@ -1376,20 +1394,20 @@ const DatabaseManager = new (class {
         let bonusPool = {};
         let currentVersion = undefined;
 
-        for (var [key, val, url, ts] of filterPlayaJSON(json)) {
-            if (ts) {
-                timestamp = ts.getTime();
-                offset = ts.getTimezoneOffset() * 60 * 1000;
+        for (const { url, text, date } of PlayaResponse.iterateJSON(json)) {
+            if (date) {
+                timestamp = date.getTime();
+                offset = date.getTimezoneOffset() * 60 * 1000;
             }
 
-            if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername') || val.includes('gtinternal'))) {
+            if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal')) {
                 if (url) {
-                    var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
-                    if (url.length > 2) {
-                        raws.push([val, url[1] + '_' + url[2]]);
+                    const urlParts = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                    if (urlParts.length > 2) {
+                        raws.push([text, urlParts[1] + '_' + urlParts[2]]);
                     }
                 } else {
-                    raws.push([val, 'invalid_server']);
+                    raws.push([text, 'invalid_server']);
                 }
             }
         }
