@@ -514,7 +514,18 @@ DUNGEON_DATA = {
         key: '26',
         pos: 28,
         shadow: false,
-        floors: {}
+        floors: {
+            '1': { pos: 1, id: 1170, class: 1, level: 480, str: 66000, dex: 35000, int: 35000, con: 174000, lck: 35000, health: 540000000, min: 1901, max: 2144, runes: { type: 42, res: 25, damage: 25 } },
+            '2': { pos: 2, id: 1171, class: 2, level: 483, str: 35750, dex: 35750, int: 67350, con: 176400, lck: 35750, health: 549000000, min: 1918, max: 2162, runes: { type: 41, res: 25, damage: 25 } },
+            '3': { pos: 3, id: 1172, class: 3, level: 486, str: 36500, dex: 68700, int: 36500, con: 178800, lck: 36500, health: 558000000, min: 1931, max: 2174, runes: { type: 42, res: 25, damage: 25 } },
+            '4': { pos: 4, id: 1173, class: 1, level: 489, str: 70050, dex: 37250, int: 37250, con: 181200, lck: 37250, health: 567000000, min: 1948, max: 2189, runes: { type: 40, res: 25, damage: 25 } },
+            '5': { pos: 5, id: 1174, class: 2, level: 492, str: 38000, dex: 38000, int: 71400, con: 183600, lck: 38000, health: 576000000, min: 1962, max: 2202, runes: { type: 41, res: 25, damage: 25 } },
+            '6': { pos: 6, id: 1175, class: 1, level: 495, str: 72750, dex: 38750, int: 38750, con: 186000, lck: 38750, health: 585000000, min: 1980, max: 2216, runes: { type: 40, res: 25, damage: 25 } },
+            '7': { pos: 7, id: 1176, class: 3, level: 498, str: 39500, dex: 74100, int: 39500, con: 188400, lck: 39500, health: 594000000, min: 1996, max: 2235, runes: { type: 42, res: 25, damage: 25 } },
+            '8': { pos: 8, id: 1177, class: 3, level: 501, str: 40250, dex: 80500, int: 40250, con: 190800, lck: 40250, health: 603000000, min: 2017, max: 2254, runes: { type: 40, res: 25, damage: 25 } },
+            '9': { pos: 9, id: 1178, class: 1, level: 504, str: 82000, dex: 41000, int: 41000, con: 193200, lck: 41000, health: 612000000, min: 2020, max: 2267, runes: { type: 41, res: 25, damage: 25 } },
+            '10': { pos: 10, id: 1179, class: 1, level: 510, str: 85000, dex: 42500, int: 42500, con: 198000, lck: 42500, health: 630000000, min: 2064, max: 2296, runes: { type: 40, res: 25, damage: 25 } }
+        }
     },
     '27': {
         key: '27',
