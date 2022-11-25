@@ -166,8 +166,16 @@
             "desc": "Simula le battaglie con l'idra per trovare la classe famiglio migliore"
         },
         "fortress": {
-            "title": "Simulatore fortezze",
-            "desc": "Simula il probabile esito di una attacco a una fortezza"
+            "title": "Simulatore fortezza",
+            "desc": "Simula il probabile esito di uno scontro fortezza"
+        },
+        "changelog": {
+            "title": "Changelog",
+            "desc": "Controlla gli ultimi aggiornamenti"
+        },
+        "hellevator": {
+            "title": "Simulatore Infernatore",
+            "desc": "Simula il probabile esito delle battaglie nell'Infernatore"
         }
     },
     "404": {
@@ -459,6 +467,7 @@
             "obfuscated": "Nascondi i nomi dei giocatori",
             "insecure": "Consenti tag html non sicuri",
             "insecure_error#": "Questa tabella non è stata mostrata perchè contiene tag html non consentiti.<br/>Per favore, rimuovi i tag dalle opzioni e riprova.",
+            "unsafe_delete": "Non chiedere conferma per cancellare i file",
             "terms": "Accetta i Termini di Servizio",
             "tab": "Tab iniziale",
             "preload": "Precarica righe",
@@ -499,10 +508,10 @@
             "4": "Acqua"
         },
         "bulk": {
+			"not_possible": "Impossibile",
             "toast": {
                 "title": "Simulando",
-                "matches": "Scontri:",
-                "not_possible": "Impossibile"
+                "matches": "Scontri:"
             }
         },
         "editor": {
@@ -873,6 +882,17 @@
         "input": {
             "cancel": "Cancella",
             "ok": "Ok"
+		},
+		"data_manage": {
+			"cancel": "Annulla",
+			"ok": "Elimina",
+			"title": "Sicuro di voler eliminare questi file, giocatori o gilde?",
+			"skip_next": "Non mostrare la prossima volta",
+			"label": {
+				"group": "Le seguenti gilde verranno rimosse:",
+				"player": "I seguenti giocatori verranno rimossi:",
+				"file": "I seguenti file verranno rimossi:"
+			}
         }
     },
     "attributes": {
