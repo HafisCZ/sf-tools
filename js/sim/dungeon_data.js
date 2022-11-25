@@ -1057,11 +1057,11 @@ DUNGEON_DATA = {
         pos: 128,
         shadow: true,
         floors: {
-            '1': { pos: 1, id: 1170, class: 1, level: 600, str: 280000, dex: 140000, int: 140000, con: 430000, lck: 115000, health: 15000000000, min: 3530, max: 3745, runes: { type: 42, res: 50, damage: 50 }, armor: 35000 },
-            '2': { pos: 2, id: 1171, class: 2, level: 605, str: 142500, dex: 142500, int: 285000, con: 434000, lck: 116250, health: 15350000000, min: 3631, max: 3874, runes: { type: 41, res: 50, damage: 50 }, armor: 35000 },
-            '3': { pos: 3, id: 1172, class: 3, level: 610, str: 145000, dex: 290000, int: 145000, con: 438000, lck: 117500, health: 15700000000, min: 3760, max: 3994, runes: { type: 42, res: 50, damage: 50 }, armor: 35000 },
-            '4': { pos: 4, id: 1173, class: 1, level: 615, str: 295000, dex: 147500, int: 147500, con: 442000, lck: 118750, health: 16050000000, min: 3884, max: 4123, runes: { type: 40, res: 50, damage: 50 }, armor: 35000 },
-            '5': { pos: 5, id: 1174, class: 2, level: 620, str: 150000, dex: 150000, int: 300000, con: 446000, lck: 120000, health: 16400000000, min: 4008, max: 4225, runes: { type: 41, res: 50, damage: 50 }, armor: 35000 },
+            '1': { pos: 1, id: 1170, class: 1, level: 600, str: 280000, dex: 140000, int: 140000, con: 430000, lck: 115000, health: 15000000000, min: 3500, max: 3749, runes: { type: 42, res: 50, damage: 50 }, armor: 35000 },
+            '2': { pos: 2, id: 1171, class: 2, level: 605, str: 142500, dex: 142500, int: 285000, con: 434000, lck: 116250, health: 15350000000, min: 3632, max: 3872, runes: { type: 41, res: 50, damage: 50 }, armor: 35000 },
+            '3': { pos: 3, id: 1172, class: 3, level: 610, str: 157500, dex: 315000, int: 157500, con: 458000, lck: 123750, health: 17450000000, min: 4389, max: 4618, runes: { type: 42, res: 50, damage: 50 }, armor: 35000 },
+            '4': { pos: 4, id: 1173, class: 1, level: 615, str: 320000, dex: 160000, int: 160000, con: 462000, lck: 125000, health: 17800000000, min: 4509, max: 4749, runes: { type: 40, res: 50, damage: 50 }, armor: 35000 },
+            '5': { pos: 5, id: 1174, class: 2, level: 620, str: 175000, dex: 175000, int: 350000, con: 486000, lck: 132500, health: 19900000000, min: 5255, max: 5496, runes: { type: 41, res: 50, damage: 50 }, armor: 35000 },
         }
     },
     '127': {
