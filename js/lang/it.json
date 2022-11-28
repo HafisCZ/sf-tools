@@ -508,7 +508,7 @@
             "4": "Acqua"
         },
         "bulk": {
-			"not_possible": "Impossibile",
+            "not_possible": "Impossibile",
             "toast": {
                 "title": "Simulando",
                 "matches": "Scontri:"
@@ -882,17 +882,17 @@
         "input": {
             "cancel": "Cancella",
             "ok": "Ok"
-		},
-		"data_manage": {
-			"cancel": "Annulla",
-			"ok": "Elimina",
-			"title": "Sicuro di voler eliminare questi file, giocatori o gilde?",
-			"skip_next": "Non mostrare la prossima volta",
-			"label": {
-				"group": "Le seguenti gilde verranno rimosse:",
-				"player": "I seguenti giocatori verranno rimossi:",
-				"file": "I seguenti file verranno rimossi:"
-			}
+        },
+        "data_manage": {
+            "cancel": "Annulla",
+            "ok": "Elimina",
+            "title": "Sicuro di voler eliminare questi file, giocatori o gilde?",
+            "skip_next": "Non mostrare la prossima volta",
+            "label": {
+                "group": "Le seguenti gilde verranno rimosse:",
+                "player": "I seguenti giocatori verranno rimossi:",
+                "file": "I seguenti file verranno rimossi:"
+            }
         }
     },
     "attributes": {
