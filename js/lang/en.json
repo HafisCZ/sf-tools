@@ -709,6 +709,7 @@
         "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
         "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
         "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
+        "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
         "mode": {
             "all": "All vs All",
             "attack": "One vs All",

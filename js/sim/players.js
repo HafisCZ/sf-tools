@@ -1,15 +1,15 @@
 // WebWorker hooks
-self.addEventListener('message', function (message) {
-    var ts = Date.now();
+self.addEventListener('message', function ({ data: { flags, player, players, mode, iterations, log } }) {
+    SIMULATOR_FLAGS.set(flags);
 
-    // Sent vars
-    var player = message.data.player;
-    var players = message.data.players;
-    var mode = message.data.mode;
-    var iterations = message.data.iterations || 100000;
-    if (message.data.dev) {
+    if (log) {
         FIGHT_LOG_ENABLED = true;
     }
+
+    var ts = Date.now();
+
+    // Set default
+    iterations ||= 100000;
 
     // Sim type decision
     if (mode == 'all') {

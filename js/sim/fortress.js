@@ -1,5 +1,7 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { iterations, player, target, index } }) {
+self.addEventListener('message', function ({ data: { flags, iterations, player, target, index } }) {
+    SIMULATOR_FLAGS.set(flags);
+
     self.postMessage({
         score: new FortressSimulator().simulate(player, target, iterations),
         index

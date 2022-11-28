@@ -1,4 +1,6 @@
-self.addEventListener('message', function ({ data: { guildA, guildB, iterations }}) {
+self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
+    SIMULATOR_FLAGS.set(flags);
+
     let timestamp = Date.now();
 
     let results = new GuildSimulator().simulate(guildA, guildB, iterations);

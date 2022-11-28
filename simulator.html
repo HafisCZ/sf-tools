@@ -72,10 +72,11 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <div class="ui small basic icon fluid four buttons">
+                                <div class="ui small basic icon fluid five buttons">
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" id="ihof-mode"><i class="trophy icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" id="fireball-mode"><i class="fire icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" id="fireball-mode"><i class="balance scale icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.no_attribute_reduction_mode" id="no-attribute-reduction-mode"><i class="fire icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.simulate_debug" id="simulate-debug" style="display: none;"><i class="wrench icon"></i></button>
                                 </div>
                             </div>
@@ -173,6 +174,20 @@
                 $('#fireball-mode').toggleButton(active => {
                     fireballMode = active;
                 })
+
+                let noAttributeReductionMode = false;
+                $('#no-attribute-reduction-mode').toggleButton(active => {
+                    noAttributeReductionMode = active;
+                })
+
+                function getSimulatorFlags () {
+                    return {
+                        Gladiator15: gladiatorMode,
+                        NoGladiatorReduction: ihofMode,
+                        NoAttributeReduction: noAttributeReductionMode,
+                        FireballFix: fireballMode
+                    };
+                }
 
                 let modeDump = urlParams.has('log');
                 let modeDebug = urlParams.has('debug');
@@ -317,6 +332,7 @@
                         worker.addEventListener('message', (message) => resolve(message.data.results), false);
 
                         worker.postMessage({
+                            flags: getSimulatorFlags(),
                             mode: 'all',
                             player: array,
                             players: array,
@@ -341,11 +357,6 @@
                         Loader.toggle(true);
 
                         let instances = players.map(({ player }) => mergeSoft(new SFPlayer(), preparePlayerData(player)).toSimulatorModel());
-                        for (let instance of instances) {
-                            instance.ForceGladiator = gladiatorMode ? 15 : undefined;
-                            instance.NoGladiatorReduction = ihofMode;
-                            instance.FireballFix = fireballMode;
-                        }
 
                         let worker = await Workers.createSimulatorWorker('debug');
                         worker.addEventListener('message', function ({ data: { json } }) {
@@ -420,6 +431,7 @@
                         }, true);
 
                         worker.postMessage({
+                            flags: getSimulatorFlags(),
                             players: instances
                         });
                     }
@@ -432,9 +444,6 @@
 
                         for (var i = 0; i < players.length; i++) {
                             players[i].score = null;
-                            players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
-                            players[i].player.NoGladiatorReduction = ihofMode;
-                            players[i].player.FireballFix = fireballMode;
                         }
 
                         showPlayers();
@@ -485,35 +494,39 @@
 
                             if (simulatorMode == 'all') {
                                 worker.postMessage({
+                                    flags: getSimulatorFlags(),
                                     mode: 'all',
                                     player: block,
                                     players: players,
                                     iterations: iterations,
-                                    dev: modeDump
+                                    log: modeDump
                                 });
                             } else if (simulatorMode == 'attack') {
                                 worker.postMessage({
+                                    flags: getSimulatorFlags(),
                                     mode: 'attack',
                                     player: players.find(p => p.index == yourself),
                                     players: block,
                                     iterations: iterations,
-                                    dev: modeDump
+                                    log: modeDump
                                 });
                             } else if (simulatorMode == 'defend') {
                                 worker.postMessage({
+                                    flags: getSimulatorFlags(),
                                     mode: 'defend',
                                     player: players.find(p => p.index == yourself),
                                     players: block,
                                     iterations: iterations,
-                                    dev: modeDump
+                                    log: modeDump
                                 });
                             } else if (simulatorMode == 'tournament') {
                                 worker.postMessage({
+                                    flags: getSimulatorFlags(),
                                     mode: 'tournament',
                                     player: block,
                                     players: ladder,
                                     iterations: iterations,
-                                    dev: modeDump
+                                    log: modeDump
                                 });
                             }
                         }

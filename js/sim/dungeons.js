@@ -1,17 +1,14 @@
 // WebWorker hooks
-self.addEventListener('message', function (message) {
-    let players = message.data.players;
-    let boss = message.data.boss;
-    let index = message.data.index;
-    let hpcap = message.data.hpcap || 5000;
-    let iterations = message.data.iterations || 100000;
-    if (message.data.log) {
+self.addEventListener('message', function ({ data: { flags, players, boss, index, hpcap, iterations, log } }) {
+    SIMULATOR_FLAGS.set(flags);
+
+    if (log) {
         FIGHT_LOG_ENABLED = true;
     }
 
     if (players && boss) {
         self.postMessage({
-            results: new DungeonSimulator().simulate(players, boss, iterations, hpcap),
+            results: new DungeonSimulator().simulate(players, boss, iterations || 100000, hpcap || 5000),
             log: FIGHT_LOG.dump(),
             index: index
         });

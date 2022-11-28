@@ -115,6 +115,23 @@ FIGHT_LOG = new (class {
     }
 })();
 
+// Flags
+SIMULATOR_FLAGS = {
+    // Values
+    Gladiator15: false,
+    // Reductions
+    NoGladiatorReduction: false,
+    NoAttributeReduction: false,
+    // Behaviors
+    FireballFix: false,
+    // Setter
+    set: function (flags) {
+        for (const [key, val] of Object.entries(flags || {})) {
+            this[key] = !!val
+        }
+    }
+};
+
 // Returns true if random chance occured
 function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);
@@ -318,15 +335,12 @@ class FighterModel {
         let ownGladiator = this.Player.Fortress.Gladiator || 0;
         let reducingGladiator = target.Player.Fortress.Gladiator || 0;
 
-        if (typeof this.Player.ForceGladiator === 'number') {
-            ownGladiator = this.Player.ForceGladiator;
+        if (SIMULATOR_FLAGS.Gladiator15) {
+            ownGladiator = 15;
+            reducingGladiator = 15;
         }
 
-        if (typeof target.Player.ForceGladiator === 'number') {
-            reducingGladiator = target.Player.ForceGladiator;
-        }
-
-        if (this.Player.NoGladiatorReduction) {
+        if (SIMULATOR_FLAGS.NoGladiatorReduction) {
             reducingGladiator = 0;
         }
 
@@ -396,6 +410,9 @@ class FighterModel {
 
         let aa = this.getAttribute(this);
         let ad = target.getAttribute(this) / 2;
+        if (SIMULATOR_FLAGS.NoAttributeReduction) {
+            ad = 0;
+        }
 
         let dm = m * (1 + Math.max(aa / 2, aa - ad) / 10);
 
@@ -715,7 +732,7 @@ class BattlemageModel extends FighterModel {
     getInitialDamage (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
-        } else if (this.Player.FireballFix) {
+        } else if (SIMULATOR_FLAGS.FireballFix) {
             let is2x = target.Player.Class == DRUID || target.Player.Class == BARD;
             let is4x = target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER || (target.Player.Class == DRUID && target.Player.Mask == MASK_CAT);
             let is5x = target.Player.Class == WARRIOR || target.Player.Class == DEMONHUNTER || (target.Player.Class == DRUID && target.Player.Mask == MASK_BEAR);

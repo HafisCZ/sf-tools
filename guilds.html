@@ -189,6 +189,12 @@
                     gladiatorMode = active;
                 })
 
+                function getSimulatorFlags () {
+                    return {
+                        Gladiator15: gladiatorMode
+                    };
+                }
+
                 // Paste handler
                 $(document.body).on('paste', function (event) {
                     try {
@@ -465,11 +471,6 @@
                     if (validateLists()) {
                         Loader.toggle(true);
 
-                        if (gladiatorMode) {
-                            for (let player of playerList[0]) player.ForceGladiator = 15;
-                            for (let player of playerList[1]) player.ForceGladiator = 15;
-                        }
-
                         // Set up threads & iterations
                         let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
@@ -494,6 +495,7 @@
                             }, false);
 
                             worker.postMessage({
+                                flags: getSimulatorFlags(),
                                 guildA: playerList[0],
                                 guildB: playerList[1],
                                 iterations: iterations

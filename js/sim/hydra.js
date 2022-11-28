@@ -47,8 +47,8 @@ FighterModel.prototype.initialize = function (target) {
 }
 
 // WebWorker hooks
-self.addEventListener('message', function (message) {
-    let { iterations, hydra, pet } = message.data;
+self.addEventListener('message', function ({ data: { flags, iterations, hydra, pet } }) {
+    SIMULATOR_FLAGS.set(flags);
 
     self.postMessage({
         results: new HydraSimulator().simulate(pet, hydra, iterations)
