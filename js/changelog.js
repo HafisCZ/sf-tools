@@ -5,6 +5,12 @@ const CHANGELOG = {
         ],
         'Fortress Simulator': [
             'Redesigned simulator to allow for multiple battles to be simulated at once'
+        ],
+        'Fight Simulator': [
+            'Added option to disable attribute reduction'
+        ],
+        'Arena Manager': [
+            'Reworked tool'
         ]
     },
     'v5.2675': {
