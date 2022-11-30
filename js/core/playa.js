@@ -1707,6 +1707,7 @@ class SFOwnPlayer extends SFPlayer {
         if (data.idle) {
             this.Idle = {
                 Sacrifices: data.idle[2],
+                Buildings: _slice_len(data.idle, 3, 10),
                 Money: data.idle[73],
                 ReadyRunes: data.idle[75],
                 Runes: data.idle[76],
