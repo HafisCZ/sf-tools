@@ -81,8 +81,8 @@ class SFItem {
         this.ImageUrl = Loca.pic(this.Type, this.Index, this.Color, this.Class);
     }
 
-    morph (from, to) {
-        if (this.Type <= 7 && this.SellPrice.Gold > 0) {
+    morph (from, to, force = false) {
+        if ((this.Type <= 7 || force) && this.SellPrice.Gold > 0) {
             var data = [ ... this.Data ];
             for (var i = 0; i < 3; i++) {
                 if (data[i + 4] == from) {

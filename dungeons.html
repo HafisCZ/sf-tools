@@ -1200,50 +1200,46 @@
                     ]
                 }).dropdown('set selected', '0');
 
+                function applyCheat (player, callback) {
+                    const models = [player];
+                    if (player.Companions) {
+                        models.push(...Object.values(player.Companions));
+                    }
+
+                    models.forEach(callback);
+                }
+
                 function applyCheats (player) {
                     let cheats = _array_to_hash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
 
                     if (cheats.pets) {
-                        player.Pets = {
-                            Water: 40,
-                            Light: 40,
-                            Earth: 40,
-                            Shadow: 40,
-                            Fire: 40
-                        }
+                        applyCheat(player, model => {
+                            model.Pets = {
+                                Water: 40,
+                                Light: 40,
+                                Earth: 40,
+                                Shadow: 40,
+                                Fire: 40
+                            };
+                        });
                     }
 
                     if (cheats.enchantments) {
-                        for (let item of Object.values(player.Items)) {
-                            item.HasEnchantment = true;
-                        }
-
-                        if (player.Companions) {
-                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
-                                let companion = player.Companions[kind];
-
-                                for (let item of Object.values(companion.Items)) {
-                                    item.HasEnchantment = true;
-                                }
-                            }
-                        }
+                        applyCheat(player, model => {
+                            for (let item of Object.values(model.Items)) {
+                                item.HasEnchantment = true;
+                            };
+                        });
                     }
 
-                    let potions = [];
-                    if (cheats.strength) potions.push(1);
-                    if (cheats.dexterity) potions.push(2);
-                    if (cheats.intelligence) potions.push(3);
-                    if (cheats.constitution) potions.push(4);
-                    if (cheats.luck) potions.push(5);
-                    if (cheats.life) potions.push(6);
-
                     // Set potions to player
+                    const potions = _compact(['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'].map((type, i) => cheats[type] ? (i + 1) : null))
                     if (potions.length) {
-                        player.Potions = potions.slice(0, 3).map(type => {
-                            return {
-                                Type: type,
-                                Size: 25
-                            }
+                        applyCheat(player, model => {
+                            const potionGroup = potions.slice(0, 3);
+
+                            model.Potions = potionGroup.map(type => ({ Type: type, Size: 25 }));
+                            model.Potions.Life = potionGroup.includes(6) ? 25 : 0;
                         });
                     }
 
@@ -1259,13 +1255,27 @@
                             return Math.ceil(value / (mapping[fromClass - 1]) * (mapping[toClass - 1]));
                         }
 
+                        // Morph all items to desired class
+                        const getAttributeID = (klass) => ({
+                            'Strength': 1,
+                            'Dexterity': 2,
+                            'Intelligence': 3
+                        })[MAIN_ATTRIBUTE_MAP['Main'][klass - 1]];
+
+                        for (const [type, item] of Object.entries(player.Items)) {
+                            player.Items[type] = item.morph(getAttributeID(player.Class), getAttributeID(cheats.class), true);
+                        }
+
+                        // Swap attributes
                         swapAttributes(player, 'Base', player.Class, cheats.class);
                         swapAttributes(player, 'Total', player.Class, cheats.class);
 
+                        // Scale damage & armor
                         player.Armor = scaleValue(player.Armor, [50, 10, 25, 25, 10, 25, 50, 25, 25], player.Class, cheats.class);
                         player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5], player.Class, cheats.class);
                         player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5], player.Class, cheats.class);
 
+                        // Set per-class data
                         if (cheats.class == 1 /* WARRIOR */) {
                             player.Items.Wpn2.DamageMin = 25;
                         } else if (cheats.class == 4 /* ASSASSIN */) {
@@ -1279,51 +1289,31 @@
                         player.Class = cheats.class;
                     }
 
-                    if (potions.length || cheats.pets) {
-                        for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
-                            player[type].Bonus = undefined;
-                        }
-
-                        if (player.Potions.some(p => p.Type == 6 && p.Size > 0)) {
-                            player.Potions.Life = 25;
-                        }
-
-                        player.evaluateCommon();
-
-                        if (player.Companions) {
-                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
-                                let companion = player.Companions[kind];
-
-                                for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
-                                    companion[type].Bonus = undefined;
-                                }
-
-                                companion.Potions = player.Potions;
-                                companion.evaluateCompanionCommon(player);
+                    if (potions.length > 0 || cheats.pets || cheats.class) {
+                        applyCheat(player, model => {
+                            // Remove pre-calculated bonus
+                            for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
+                                model[type].Bonus = undefined;
                             }
-                        }
+
+                            // Evaluate commons
+                            if (model instanceof SFCompanion) {
+                                model.evaluateCompanionCommon(player);
+                            } else {
+                                model.evaluateCommon();
+                            }
+                        });
                     }
 
                     if (cheats.runes) {
-                        player.Runes.Health = 15;
-                        player.Runes.ResistanceFire = 75;
-                        player.Runes.ResistanceCold = 75;
-                        player.Runes.ResistanceLightning = 75;
-                        player.Items.Wpn1.Attributes[2] = 60;
-                        player.Items.Wpn2.Attributes[2] = 60;
-
-                        if (player.Companions) {
-                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
-                                let companion = player.Companions[kind];
-
-                                companion.Runes.Health = 15;
-                                companion.Runes.ResistanceFire = 75;
-                                companion.Runes.ResistanceCold = 75;
-                                companion.Runes.ResistanceLightning = 75;
-                                companion.Items.Wpn1.Attributes[2] = 60;
-                                companion.Items.Wpn2.Attributes[2] = 60;
-                            }
-                        }
+                        applyCheat(player, model => {
+                            model.Runes.Health = 15;
+                            model.Runes.ResistanceFire = 75;
+                            model.Runes.ResistanceCold = 75;
+                            model.Runes.ResistanceLightning = 75;
+                            model.Items.Wpn1.Attributes[2] = 60;
+                            model.Items.Wpn2.Attributes[2] = 60;
+                        });
                     }
                 }
 
