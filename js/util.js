@@ -82,6 +82,16 @@ function copyGrid (headers, values, transformer) {
             return resArray;
         };
     }
+
+    if (typeof Array.prototype.findLastIndex !== 'function') {
+        Array.prototype.findLastIndex = function (predicate) {
+            for (let i = this.length - 1; i >= 0; i--) {
+                if (predicate(this[i], i, this)) return i;
+            }
+
+            return -1;
+        }
+    }
 })();
 
 class Constants {

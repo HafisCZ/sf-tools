@@ -9,7 +9,7 @@ self.addEventListener('message', function ({ data: { flags, player, players, mod
     var ts = Date.now();
 
     // Set default
-    iterations ||= 100000;
+    iterations = iterations || 100000;
 
     // Sim type decision
     if (mode == 'all') {
