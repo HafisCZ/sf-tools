@@ -37,6 +37,10 @@ class Field {
         }
     }
 
+    get value () {
+        return this.get();
+    }
+
     path () {
         return this.$object.attr('data-path');
     }
@@ -51,6 +55,10 @@ class Field {
         } else {
             this.$object.val(value);
         }
+    }
+
+    set value (value) {
+        this.set(value);
     }
 
     editable (val) {
