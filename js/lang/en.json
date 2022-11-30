@@ -1098,6 +1098,56 @@
             "guard": "Guard Duty / Dice (3)"
         }
     },
+    "idle": {
+        "title": "Arena Manager",
+        "topbar": {
+            "suggest": {
+                "0": "Next 1 + BP",
+                "1": "Only next 1",
+                "2": "Only breakpoint"
+            },
+            "number": {
+                "0": "Labeled",
+                "1": "Scientific"
+            }
+        },
+        "table": {
+            "building": "Building",
+            "upgrades": "Upgrades",
+            "level": "Level",
+            "level_next": "Next Level",
+            "cycle_duration": "Cycle",
+            "cycle_money": "Money per Cycle",
+            "money_share": "Share",
+            "upgrade_money": "Cost",
+            "upgrade_estimation": "Estimation",
+            "money_spent": "Spent money",
+            "money_1h": "1 Hour",
+            "money_8h": "8 Hours",
+            "money_1d": "1 Day",
+            "money_7d": "7 Days",
+            "runes": "Runes"
+        },
+        "building": {
+            "seat": "Seat",
+            "popcorn_stand": "Popcorn Stand",
+            "parking_lot": "Parking Lot",
+            "trap": "Trap",
+            "drinks": "Drinks",
+            "deadly_trap": "Deadly Trap",
+            "vip_seat": "VIP Seat",
+            "snacks": "Snacks",
+            "straying_monsters": "Straying Monsters",
+            "toilet": "Toilet"
+        },
+        "upgrades": {
+            "0": "None",
+            "1": "Speed",
+            "2": "Gold",
+            "3": "Both",
+            "4": "Platinum"
+        }
+    },
     "blacksmith": {
         "item": {
             "type": "Type",

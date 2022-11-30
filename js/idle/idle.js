@@ -46,14 +46,6 @@ const PriceTable = (function (max, costs, multipliers) {
     return table;
 })(25001, InitialCosts, Multipliers);
 
-function getRunesFromMoney (money) {
-    return Math.trunc((Math.PI * 11592991 / 10748438389408) * Math.pow(money, 0.83));
-}
-
-function getRunesFromMoney2 (money) {
-    return Math.trunc(0.0000022387211385683589 * Math.pow(money, 0.85));
-}
-
 class Building {
     constructor (id, initialDuration, initialIncrement, initialCost, initialLevel) {
         this.id = id;
@@ -189,23 +181,8 @@ Building.ParkingLot = new Building(2, 720, 40, 2500, 0);
 Building.Trap = new Building(3, 1080, 120, 50000, 0);
 Building.Drinks = new Building(4, 1440, 320, 1000000, 0);
 Building.DeadlyTrap = new Building(5, 2160, 960, 25000000, 0);
-Building.VIPSeat = new Building(6, 2880, 2560, 500000000, 0);
+Building.VipSeat = new Building(6, 2880, 2560, 500000000, 0);
 Building.Snacks = new Building(7, 4320, 7680, 10000000000, 0);
 Building.StrayingMonsters = new Building(8, 8640, 30720, 250000000000, 0);
 Building.Toilet = new Building(9, 21600, 153600, 5000000000000, 0);
 
-function getFormattedDuration (seconds) {
-    let s = (seconds % 60);
-    let m = ((seconds - seconds % 60) / 60) % 60;
-    let h = ((seconds - seconds % 3600) / 3600) % 24;
-    let d = (seconds - seconds % 86400) / 86400;
-    if (d) {
-        return `${d}D ${h}H ${m}M ${s}S`;
-    } else if (h) {
-        return `${h}H ${m}M ${s}S`;
-    } else if (m) {
-        return `${m}M ${s}S`;
-    } else {
-        return `${s}S`;
-    }
-}

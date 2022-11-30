@@ -8,6 +8,7 @@
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/editor.css"/>
         <link rel="stylesheet" href="css/style.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
@@ -15,10 +16,22 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
+        <script src="js/lang.js"></script>
+
+        <script src="js/plugins.js"></script>
         <script src="js/idle/idle.js"></script>
+
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
         <script src="js/core/core.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
+        <script src="js/editor.js"></script>
+
+        <script src="endpoint/endpoint.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
@@ -29,512 +42,485 @@
 
         <div class="ui main container">
             <div class="ui five columns middle aligned grid">
-                <div class="four wide column">
+                <div class="five wide column">
                     <div class="ui five mini buttons field">
-                        <a class="ui button" data-bulk="1">1</a>
-                        <a class="ui button" data-bulk="2">10</a>
-                        <a class="ui button" data-bulk="3">25</a>
-                        <a class="ui button" data-bulk="4">100</a>
-                        <a class="ui button" data-bulk="5">BP</a>
+                        <a class="ui button" data-upgrade-mode="1">1</a>
+                        <a class="ui button" data-upgrade-mode="2">10</a>
+                        <a class="ui button" data-upgrade-mode="3">25</a>
+                        <a class="ui button" data-upgrade-mode="4">100</a>
+                        <a class="ui button" data-upgrade-mode="5">BP</a>
                     </div>
                 </div>
-                <div class="two wide column">
-                    <a class="ui mini fluid button" id="display">Labeled</a>
+                <div class="six wide column">
+                    <h1 class="ui centered header" data-intl="idle.title"></h1>
                 </div>
-                <div class="four wide column">
-                    <h1 class="ui centered header">Arena Manager</h1>
-                </div>
-                <div class="two wide column">
+                <div class="three wide column">
                     <div class="ui mini form">
-                        <div class="ui selection fluid compact dropdown" id="suggest-mode">
-                            <input type="hidden" value="0">
+                        <div class="ui selection compact fluid dropdown" id="suggest-mode">
+                            <div class="text"></div>
                             <i class="dropdown icon"></i>
-                            <div class="default text"></div>
-                            <div class="menu">
-                                <div class="item" data-value="0" style="font-size: .78571429rem;">Next 1 + BP</div>
-                                <div class="item" data-value="1" style="font-size: .78571429rem;">Only next 1</div>
-                                <div class="item" data-value="2" style="font-size: .78571429rem;">Only breakpoint</div>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="four wide wide column">
+                <div class="two wide column">
                     <div class="ui mini form">
-                        <div class=" field">
-                            <input type="text" placeholder="Runes" id="runes">
+                        <div class="ui selection compact fluid dropdown" id="number-mode">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <form class="ui small form margin-medium-top">
-                <div class="ui middle aligned grid nopad" id="main">
-                    <div class="three wide column"></div>
-                    <div class="four wide column">
-                        <div class="two fields">
-                            <div class="field">
-                                <h4 class="ui centered header">Level</h4>
-                            </div>
-                            <div class="field">
-                                <h4 class="ui centered header">Upgrades</h4>
-                            </div>
-                            <div class="field">
-                                <h4 class="ui centered header"></h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="three wide column">
-                        <div class="two fields">
-                            <div class="eight wide field">
-                                <h4 class="ui centered header">Cycle</h4>
-                            </div>
-                            <div class="eight wide field">
-                                <h4 class="ui centered header">Share</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="two wide column">
-                        <div class="field margin-medium-bottom">
-                            <h4 class="ui centered header">Money per Cycle</h4>
-                        </div>
-                    </div>
-                    <div class="four wide column">
-                        <div class="two fields">
-                            <div class="eight wide field">
-                                <h4 class="ui centered header">Cost</h4>
-                            </div>
-                            <div class="eight wide field">
-                                <h4 class="ui centered header">Estimation</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            <div class="ui small form">
+                <table class="ui black single very compact line table fixed" style="margin-top: 1em;">
+                    <thead>
+                        <tr class="text-center">
+                            <th data-intl="idle.table.runes"></th>
+                            <th></th>
+                            <th data-intl="idle.table.money_spent"></th>
+                            <th data-intl="idle.table.money_1h"></th>
+                            <th data-intl="idle.table.money_8h"></th>
+                            <th data-intl="idle.table.money_1d"></th>
+                            <th data-intl="idle.table.money_7d"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="field">
+                                    <input type="text" id="runes" data-intl-placeholder="idle.table.runes">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled id="runes_formatted">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled id="money_spent">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled id="money_1h">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled id="money_8h">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled id="money_1d">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled id="money_7d">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="ui black single very compact line table fixed" style="margin-top: 1em;">
+                    <thead>
+                        <tr class="text-center">
+                            <th data-intl="idle.table.building"></th>
+                            <th data-intl="idle.table.upgrades"></th>
+                            <th style="width: 8%;" data-intl="idle.table.level"></th>
+                            <th style="width: 8%;" data-intl="idle.table.level_next"></th>
+                            <th data-intl="idle.table.cycle_duration"></th>
+                            <th data-intl="idle.table.cycle_money"></th>
+                            <th data-intl="idle.table.money_share"></th>
+                            <th data-intl="idle.table.upgrade_money"></th>
+                            <th data-intl="idle.table.upgrade_estimation"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="table"></tbody>
+                </table>
+            </div>
         </div>
 
-        <script type="text/javascript">
-            function add (id, name) {
-                $('#main').append(`
-                    <div class="three wide column">
-                        <h2 class="ui header" data-header="${id}">${ name }</h2>
-                    </div>
-                    <div class="four wide column">
-                        <div class="three fields">
-                            <div class="field npr">
-                                <input type="text" data-building="${ id }" data-setting="level" placeholder="${ id == 0 ? 1 : 0 }">
-                            </div>
-                            <div class="field npl npr">
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" data-building="${ id }" data-setting="boosts">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">None</div>
-                                        <div class="item" data-value="1">Speed</div>
-                                        <div class="item" data-value="2">Gold</div>
-                                        <div class="item" data-value="3">Both</div>
-                                        <div class="item" data-value="4">Platinum</div>
+        <script>
+            Site.ready(function () {
+                const BUILDINGS = Object.keys(Building).map(name => {
+                    return name.replace(/([A-Z])/g, '_$1').slice(1).toLowerCase();
+                });
+                
+                // Generate all buildings via JS
+                const $table = $('#table');
+                $table.html(BUILDINGS.map((name, index) => {
+                    return `
+                        <tr data-name="${name}">
+                            <td style="font-size: 105%;"><b>${intl(`idle.building.${name}`)}</b></td>
+                            <td class="dropdown-container">
+                                <div class="field">
+                                    <div class="ui selection compact fluid dropdown" data-field="upgrades">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="field clickable">
-                                <input type="text" disabled data-building="${ id }" data-setting="clevel">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="three wide column">
-                        <div class="two fields">
-                            <div class="nine wide field npr">
-                                <input type="text" disabled data-building="${ id }" data-setting="cycle">
-                            </div>
-                            <div class="seven wide field npl">
-                                <input type="text" disabled data-building="${ id }" data-setting="share">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="two wide column">
-                        <div class="field npr margin-medium-bottom">
-                            <input type="text" disabled data-building="${ id }" data-setting="rate">
-                        </div>
-                    </div>
-                    <div class="four wide column">
-                        <div class="two fields">
-                            <div class="eight wide field npr">
-                                <input type="text" disabled data-building="${ id }" data-setting="cost">
-                            </div>
-                            <div class="eight wide field npl">
-                                <input type="text" disabled data-building="${ id }" data-setting="estimated">
-                            </div>
-                        </div>
-                    </div>
-                `);
-            }
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" data-field="level">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field clickable" data-upgrade>
+                                    <input type="text" disabled data-field="level_next">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled data-field="cycle_duration">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled data-field="cycle_money">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled data-field="money_share" class="text-center">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled data-field="upgrade_money">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <input type="text" disabled data-field="upgrade_estimation">
+                                </div>  
+                            </td>
+                        </tr>
+                    `;
+                }).join(''));
+                
+                // Number formatting
+                let modeNumber = 0;
+                $('#number-mode').dropdown({
+                    values: [0, 1].map(value => ({ value, name: intl(`idle.topbar.number.${value}`) }))
+                }).dropdown('set selected', '0').dropdown('setting', 'onChange', value => {
+                    modeNumber = parseInt(value);
 
-            add(0, 'Seat');
-            add(1, 'Popcorn Stand');
-            add(2, 'Parking Lot');
-            add(3, 'Trap');
-            add(4, 'Drinks');
-            add(5, 'Deadly Trap');
-            add(6, 'VIP Seat');
-            add(7, 'Snacks');
-            add(8, 'Straying Monsters');
-            add(9, 'Toilet');
-
-            $('#main').append(`
-                <div class="three wide column"></div>
-                <div class="two wide column">
-                    <h3 class="ui header">Available money</h3>
-                </div>
-                <div class="four wide column">
-                    <div class="two fields">
-                        <div class="field npr">
-                            <input type="text" id="money">
-                        </div>
-                    </div>
-                </div>
-                <div class="one wide column"></div>
-                <div class="two wide column">
-                    <h3 class="ui header">1 Hour</h3>
-                </div>
-                <div class="four wide column">
-                    <div class="two fields">
-                        <div class="field npr">
-                            <input type="text" disabled id="productionhour">
-                        </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runeshour">
-                        </div>
-                    </div>
-                </div>
-                <div class="three wide column"></div>
-                <div class="two wide column">
-                    <h3 class="ui header">Total money</h3>
-                </div>
-                <div class="four wide column">
-                    <div class="two fields">
-                        <div class="field npr">
-                            <input type="text" disabled id="spent">
-                        </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="spentrunes">
-                        </div>
-                    </div>
-                </div>
-                <div class="one wide column"></div>
-                <div class="two wide column">
-                    <h3 class="ui header">8 Hours</h3>
-                </div>
-                <div class="four wide column">
-                    <div class="two fields">
-                        <div class="field npr">
-                            <input type="text" disabled id="productionnight">
-                        </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runesnight">
-                        </div>
-                    </div>
-                </div>
-                <div class="ten wide column"></div>
-                <div class="two wide column">
-                    <h3 class="ui header">24 Hours</h3>
-                </div>
-                <div class="four wide column">
-                    <div class="two fields">
-                        <div class="field npr">
-                            <input type="text" disabled id="productionday">
-                        </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runesday">
-                        </div>
-                    </div>
-                </div>
-                <div class="three wide column"></div>
-                <div class="one wide column">
-                    <div class="field margin-medium-bottom">
-                        <input type="text" id="reqhours">
-                    </div>
-                </div>
-                <div class="one wide column">
-                    <h3 class="ui header">Hours</h3>
-                </div>
-                <div class="four wide column">
-                <div class="two fields">
-                    <div class="field npr">
-                        <input type="text" disabled id="reqproduction">
-                    </div>
-                    <div class="field npl">
-                        <input type="text" disabled id="reqrunes">
-                    </div>
-                </div>
-                </div>
-                <div class="one wide column"></div>
-                <div class="two wide column">
-                    <h3 class="ui header">7 Days</h3>
-                </div>
-                <div class="four wide column">
-                    <div class="two fields">
-                        <div class="field npr">
-                            <input type="text" disabled id="productionweek">
-                        </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runesweek">
-                        </div>
-                    </div>
-                </div>
-            `);
-
-            var bulk = 0;
-            var display = 0;
-
-            $('#display').on('click', function () { display = display == 0 ? 1 : 0; if (display) { $(this).text('Scientific'); } else { $(this).text('Labeled'); } update(); });
-            $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours, #suggest-mode').on('input change', update);
-            $('[data-bulk]').on('click', function () { if ($(this).hasClass('green')) { $(this).removeClass('green'); bulk = 0; } else { $('[data-bulk]').removeClass('green'); $(this).addClass('green'); bulk = $(this).attr('data-bulk'); } update(); });
-            $('[data-setting="clevel"]').parent('.field').on('click', function () { var child = $(this).children('[data-setting]'); $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val()); update(); });
-            $('#suggest-mode').dropdown();
-
-            function formatNumber (value) {
-                if (display == 0 || value < 1E6) {
-                    return formatAsNamedNumber(Math.trunc(value));
-                } else {
-                    return value.toExponential(3).toString().replace('+', '');
-                }
-            }
-
-            // Shortcut getters
-            function getLevel (id, def = 0) {
-                var level = Number($(`[data-building="${ id }"][data-setting="level"]`).val()) || def;
-                return Math.max(0, Math.min(25000, level));
-            }
-
-            function getBoosts (id) {
-                var b = $(`[data-building="${ id }"][data-setting="boosts"]`).val();
-                return {
-                    rate: (b == 4 ? 8 : (b == 3 ? 4 : (b > 0 ? 2 : 1))),
-                    speed: (b == 1 || b > 2) ? 0.5 : 1,
-                    money: (b == 4 ? 4 : (b > 1 ? 2 : 1))
-                };
-            }
-
-            // Save & Load functions
-            function hasTableErrors() {
-                return $('[data-setting="level"], #runes, #money, #reqhours').toArray().reduce((errors, element) => {
-                    if (isNaN($(element).val())) {
-                        $(element).parent('.field').addClass('error');
-                        return errors + 1;
-                    } else {
-                        $(element).parent('.field').removeClass('error');
-                        return errors;
-                    }
-                }, 0) != 0;
-            }
-
-            function getTable () {
-                return {
-                    buildings: $('[data-setting="level"], [data-setting="boosts"]').toArray().map(element => {
-                        return {
-                            key: $(element).attr('data-setting'),
-                            id: $(element).attr('data-building'),
-                            value: $(element).val()
-                        }
-                    }),
-                    runes: $('#runes').val(),
-                    money: $('#money').val(),
-                    hours: $('#reqhours').val(),
-                    suggest: $('#suggest-mode').dropdown('get value')
-                };
-            }
-
-            function setTable (data) {
-                $('#runes').val(data.runes);
-                $('#money').val(data.money);
-                $('#reqhours').val(data.hours);
-                $('#suggest-mode').dropdown('set selected', data.suggest || 0);
-                data.buildings.forEach(b => {
-                    $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
-                })
-            }
-
-            // Setters & Getters
-            function getFieldId (i, setting) {
-                return `[data-building="${ i }"][data-setting="${ setting }"]`;
-            }
-
-            function getField (id) {
-                return Math.max(0, parseFloat($(id).val()) || 0);
-            }
-
-            function setField (id, value) {
-                $(id).val(value);
-            }
-
-            function setMoneyField (id, value) {
-                $(id).val(formatNumber(value));
-            }
-
-            function setTimeField (id, value) {
-                $(id).val(getFormattedDuration(Math.trunc(value)));
-            }
-
-            function findEqualOrAbove (array, value) {
-                for (var i = 0; i < array.length; i++) {
-                    if (value <= array[i]) {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-
-            // Update
-            function update () {
-                if (!hasTableErrors()) {
-                    // Save only when no errors are present
-                    localStorage.idle = JSON.stringify(getTable());
-                }
-
-                var suggestMode = parseInt($('#suggest-mode').dropdown('get value'));
-
-                // Money multiplier from runes
-                var runeMultiplier = Math.trunc(1 + 0.05 * getField('#runes'));
-
-                var moneySpent = 0;
-                var productionApproximate = 0;
-                var productionHourlyApproximate = 0;
-                var productionCurve = new Array(86401).fill(0);
-
-                var amortizationIndex = 0;
-                var amortizationValue = 0;
-
-                // First building loop
-                Object.values(Building).forEach((building, i) => {
-                    var level = getLevel(i, i == 0 ? 1 : 0);
-                    var boost = getBoosts(i);
-
-                    // Money spent on upgrades
-                    moneySpent += building.getUpgradePrice(i == 0 ? 1 : 0, level);
-
-                    // Precise and approximate production
-                    productionApproximate += runeMultiplier * boost.rate * building.getProductionRate(level);
-                    productionHourlyApproximate += runeMultiplier * boost.rate * building.getProductionRate(level) * 3600;
-                    for (let i = 0; i < 86401; i++) {
-                        productionCurve[i] += runeMultiplier * boost.money * building.getProductionReduced(level, i, boost.speed);
-                    }
-
-                    // Find best amortization value
-                    var amortization = building.getAmortisation(level, (bulk > 0 && bulk < 5) ? Multipliers[bulk - 1] : 1) / boost.rate;
-                    var amortizationBreakpoint = building.getBreakpointAmortisation(level) / boost.rate;
-
-                    if (suggestMode == 1) {
-                        if (i == 0 || (bulk < 5 && amortization < amortizationValue)) {
-                            amortizationIndex = i;
-                            amortizationValue = amortization;
-                        }
-                    } else if (suggestMode == 2) {
-                        if (i == 0 || amortizationBreakpoint < amortizationValue) {
-                            amortizationIndex = i;
-                            amortizationValue = amortizationBreakpoint;
-                        }
-                    } else {
-                        if (i == 0 || (bulk < 5 && amortization < amortizationValue) || amortizationBreakpoint < amortizationValue) {
-                            amortizationIndex = i;
-                            amortizationValue = bulk < 5 ? Math.min(amortization, amortizationBreakpoint) : amortizationBreakpoint;
-                        }
-                    }
+                    EditorController.generate();
                 });
 
-                // Money and runes collected this run
-                var moneyThisRun = moneySpent + getField('#money');
-                var runesThisRun = getRunesFromMoney(moneyThisRun);
+                // Upgrade suggestions
+                let modeSuggest = 0;
+                $('#suggest-mode').dropdown({
+                    values: [0, 1, 2].map(value => ({ value, name: intl(`idle.topbar.suggest.${value}`) }))
+                }).dropdown('set selected', '0').dropdown('setting', 'onChange', value => {
+                    modeSuggest = parseInt(value);
 
-                // Production fields
-                setMoneyField('#spent', moneyThisRun);
-                setMoneyField('#spentrunes', runesThisRun);
-                setMoneyField('#productionhour', productionCurve[3600]);
-                setMoneyField('#productionnight', productionCurve[28800]);
-                setMoneyField('#productionday', productionCurve[86400]);
-                setMoneyField('#productionweek', 168 * productionHourlyApproximate);
-                setField('#runeshour', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[3600]) - runesThisRun));
-                setField('#runesnight', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[28800]) - runesThisRun));
-                setField('#runesday', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[86400]) - runesThisRun));
-                setField('#runesweek', '+' + formatNumber(getRunesFromMoney(moneyThisRun + 168 * productionHourlyApproximate) - runesThisRun));
+                    EditorController.generate();
+                });
 
-                // Manual production fields
-                var requestedTimespan = getField('#reqhours');
-                if (requestedTimespan > 24) {
-                    setMoneyField('#reqproduction', requestedTimespan * productionHourlyApproximate);
-                    setField('#reqrunes', '+' + formatNumber(getRunesFromMoney(moneyThisRun + requestedTimespan * productionHourlyApproximate) - runesThisRun));
-                } else {
-                    setMoneyField('#reqproduction', productionCurve[requestedTimespan * 3600]);
-                    setField('#reqrunes', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[requestedTimespan * 3600]) - runesThisRun));
-                }
+                // Update mode
+                let modeUpgrade = 0;
+                $('[data-upgrade-mode]').click(function () {
+                    const $this = $(this);
 
-                // Second building loop
-                Object.values(Building).forEach((building, i) => {
-                    var level = getLevel(i, i == 0 ? 1 : 0);
-                    var boost = getBoosts(i);
-
-                    // Target level
-                    var target = 0;
-                    if (bulk == 5) {
-                        target = Math.min(25000, Building.getBreakpointLevel(Building.getNearestBreakpoint(level) + 1));
-                    } else if (bulk > 0) {
-                        target = Math.min(25000, level + Multipliers[bulk - 1]);
-                    }
-
-                    // Set fields
-                    setField(getFieldId(i, 'clevel'), target || level);
-                    setTimeField(getFieldId(i, 'cycle'), boost.speed * building.getCycleDuration(target || level));
-
-                    if (target) {
-                        setField(getFieldId(i, 'share'), `+${ (100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runeMultiplier / productionApproximate).toFixed(1) }%`);
-                        setField(getFieldId(i, 'rate'), `+${ formatNumber(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runeMultiplier )) }`);
+                    if ($this.hasClass('green')) {
+                        $this.removeClass('green');
+                        modeUpgrade = 0;
                     } else {
-                        setField(getFieldId(i, 'share'), `${ (100 * building.getProductionRate(level) * boost.rate * runeMultiplier / productionApproximate).toFixed(1) }%`);
-                        setMoneyField(getFieldId(i, 'rate'), building.getCycleProduction(level) * boost.money * runeMultiplier);
+                        $('[data-upgrade-mode]').removeClass('green');
+                        $this.addClass('green');
+                        modeUpgrade = parseInt($this.data('upgrade-mode'));
                     }
+                
+                    EditorController.generate();
+                });
 
-                    // Set cost fields
-                    if (level < 25000) {
-                        var upgradeCost = building.getUpgradePrice(level, target ? (target - level) : 1);
-                        setMoneyField(getFieldId(i, 'cost'), upgradeCost);
+                // Click-to-upgrade via Next level field
+                $('[data-upgrade]').click(function () {
+                    const $this = $(this);
+                    $this.closest('tr').find('[data-field="level"]').val($this.find('[data-field="level_next"]').val());
 
-                        var estimationPrecise = findEqualOrAbove(productionCurve, upgradeCost);
-                        var estimationApproximate = upgradeCost / productionApproximate;
+                    EditorController.generate();
+                });
 
-                        if (estimationPrecise != -1) {
-                            setTimeField(getFieldId(i, 'estimated'), estimationPrecise);
-                        } else if (estimationApproximate < 604800) {
-                            setTimeField(getFieldId(i, 'estimated'), estimationApproximate);
-                        } else {
-                            setField(getFieldId(i, 'estimated'), '> 7D');
+                // Editor
+                const EditorController = new (class {
+                    constructor () {
+                        this.buildings = BUILDINGS.map((name, index) => {
+                            const fieldPath = (fieldName) => `tr[data-name="${name}"] [data-field="${fieldName}"]`
+
+                            const row = {
+                                upgrades: new Field(fieldPath('upgrades'), 0),
+                                level: new Field(fieldPath('level'), index == 0 ? 1 : 0, Field.createRange(index == 0 ? 1 : 0, 25000)),
+                                level_next: new Field(fieldPath('level_next'), ''),
+                                cycle_duration: new Field(fieldPath('cycle_duration'), ''),
+                                cycle_money: new Field(fieldPath('cycle_money'), ''),
+                                money_share: new Field(fieldPath('money_share'), ''),
+                                upgrade_money: new Field(fieldPath('upgrade_money'), ''),
+                                upgrade_estimation: new Field(fieldPath('upgrade_estimation'), '')
+                            }
+
+                            row.upgrades.$object.dropdown({
+                                values: [0, 1, 2, 3, 4].map(value => ({ value, name: intl(`idle.upgrades.${value}`) }))
+                            }).dropdown('set selected', '0');
+
+                            return row;
+                        });
+
+                        this.data = {
+                            runes: new Field('#runes', 0, Field.isNumber),
+                            runes_formatted: new Field('#runes_formatted', ''),
+                            money_spent: new Field('#money_spent', ''),
+                            money_1h: new Field('#money_1h', ''),
+                            money_8h: new Field('#money_8h', ''),
+                            money_1d: new Field('#money_1d', ''),
+                            money_7d: new Field('#money_7d', '') 
+                        };
+
+                        this.data.runes.setListener(() => this.generate());
+                        
+                        for (const { level, upgrades } of this.buildings) {
+                            level.setListener(() => this.generate());
+                            upgrades.setListener(() => this.generate());
                         }
-                    } else {
-                        setField(getFieldId(i, 'cost'), '');
-                        setField(getFieldId(i, 'estimated'), '');
                     }
-                });
 
-                // Color building according to best amortization
-                $('[data-header]').toArray().forEach(element => {
-                    if ($(element).attr('data-header') == amortizationIndex) {
-                        $(element).addClass('green');
-                    } else {
-                        $(element).removeClass('green');
+                    valid () {
+                        if (!this.data.runes.valid()) {
+                            return false;
+                        }
+
+                        for (const { level } of this.buildings) {
+                            if (!level.valid()) {
+                                return false;
+                            }
+                        }
+
+                        return true;
                     }
-                });
 
-                // Set color to green if upgrade is selected
-                if (bulk == 0) {
-                    $('[data-setting]:not([data-setting="level"], [data-setting="boosts"])').removeClass('ffgreen');
-                } else {
-                    $('[data-setting]:not([data-setting="level"], [data-setting="boosts"])').addClass('ffgreen');
+                    clear () {
+                        this.ignoreGenerate = true;
+
+                        this.data.runes.clear();
+
+                        for (let i = 0; i < BUILDINGS.length; i++) {
+                            this.buildings[i].level.clear();
+                        }
+
+                        this.ignoreGenerate = false;
+                        this.generate();
+                    }
+
+                    load ({ Idle: { Runes: runes, Buildings: buildings, Upgrades: { Money: money, Speed: speed } } }) {
+                        this.ignoreGenerate = true;
+
+                        this.data.runes.value = runes;
+
+                        for (let i = 0; i < BUILDINGS.length; i++) {
+                            const upgrade = money[i] == 2 ? 4 : (money[i] == 1 && speed[i] == 1 ? 3 : (money[i] == 1 ? 2 : (speed[i] == 1 ? 1 : 0)));
+
+                            this.buildings[i].upgrades.value = upgrade;
+                            this.buildings[i].level.value = buildings ? buildings[i] : this.buildings[i].level.defaultValue;
+                        }
+
+                        this.ignoreGenerate = false;
+                        this.generate();
+                    }
+
+                    generate () {
+                        if (this.ignoreGenerate) {
+                            // Skip some calculations when loading values
+                            return;
+                        }
+
+                        if (this.valid()) {
+                            const runeMultiplier = Math.trunc(1 + this.data.runes.value * 0.05);
+                            this.data.runes_formatted.value = formatNumber(this.data.runes.value);
+
+                            let moneySpent = 0;
+                            let productionApproximate = 0;
+                            let productionHourlyApproximate = 0;
+                            let productionCurve = new Array(86401).fill(0);
+                            
+                            let amortizationIndex = 0;
+                            let amortizationValue = 0;
+                            
+                            Object.values(Building).forEach((building, index) => {
+                                const entry = this.buildings[index];
+                                const level = entry.level.value;
+                                const boost = upgradeToModifiers(entry.upgrades.value);
+
+                                moneySpent += building.getUpgradePrice(index == 0 ? 1 : 0, level);
+
+                                // Calculate production
+                                productionApproximate += runeMultiplier * boost.rate * building.getProductionRate(level);
+                                productionHourlyApproximate += runeMultiplier * boost.rate * building.getProductionRate(level) * 3600;
+                                
+                                for (let i = 0; i < 86401; i++) {
+                                    productionCurve[i] += runeMultiplier * boost.money * building.getProductionReduced(level, i, boost.duration);
+                                }
+
+                                // Calculate amortization
+                                let amortization = building.getAmortisation(level, (modeUpgrade > 0 && modeUpgrade < 5) ? Multipliers[modeUpgrade - 1] : 1) / boost.rate;
+                                let amortizationBreakpoint = building.getBreakpointAmortisation(level) / boost.rate;
+
+                                if (modeSuggest == 1) {
+                                    if (index == 0 || (modeUpgrade < 5 && amortization < amortizationValue)) {
+                                        amortizationIndex = index;
+                                        amortizationValue = amortization;
+                                    }
+                                } else if (modeSuggest == 2) {
+                                    if (index == 0 || amortizationBreakpoint < amortizationValue) {
+                                        amortizationIndex = index;
+                                        amortizationValue = amortizationBreakpoint;
+                                    }
+                                } else {
+                                    if (index == 0 || (modeUpgrade < 5 && amortization < amortizationValue) || amortizationBreakpoint < amortizationValue) {
+                                        amortizationIndex = index;
+                                        amortizationValue = modeUpgrade < 5 ? Math.min(amortization, amortizationBreakpoint) : amortizationBreakpoint;
+                                    }
+                                }
+                            });
+
+                            // Total spent
+                            this.data.money_spent.value = formatNumber(moneySpent);
+
+                            // Production per time period
+                            this.data.money_1h.value = formatNumber(productionCurve[3600]);
+                            this.data.money_8h.value = formatNumber(productionCurve[28800]);
+                            this.data.money_1d.value = formatNumber(productionCurve[86400]);
+                            this.data.money_7d.value = formatNumber(168 * productionHourlyApproximate);
+
+                            Object.values(Building).forEach((building, index) => {
+                                const entry = this.buildings[index];
+                                const level = entry.level.value;
+                                const boost = upgradeToModifiers(entry.upgrades.value);
+
+                                // Target level
+                                let target = 0;
+                                if (modeUpgrade == 5) {
+                                    target = Math.min(25000, Building.getBreakpointLevel(Building.getNearestBreakpoint(level) + 1));
+                                } else if (modeUpgrade > 0) {
+                                    target = Math.min(25000, level + Multipliers[modeUpgrade - 1]);
+                                }
+
+                                // Set fields
+                                entry.level_next.value = target || level;
+                                entry.cycle_duration.value = getFormattedDuration(boost.duration * building.getCycleDuration(target || level));
+
+                                if (target) {
+                                    entry.money_share.value = `+${(100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runeMultiplier / productionApproximate).toFixed(1)}%`;
+                                    entry.cycle_money.value = `+${formatNumber(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runeMultiplier ))}`;
+                                } else {
+                                    entry.money_share.value = `${(100 * building.getProductionRate(level) * boost.rate * runeMultiplier / productionApproximate).toFixed(1)}%`;
+                                    entry.cycle_money.value = formatNumber(building.getCycleProduction(level) * boost.money * runeMultiplier);
+                                }
+
+                                // Set cost fields
+                                if (level < 25000) {
+                                    const upgradeCost = building.getUpgradePrice(level, target ? (target - level) : 1);
+                                    entry.upgrade_money.value = formatNumber(upgradeCost);
+                
+                                    const estimationPrecise = productionCurve.findIndex((v) => v >= upgradeCost);
+                                    const estimationApproximate = upgradeCost / productionApproximate;
+
+                                    if (estimationPrecise != -1) {
+                                        entry.upgrade_estimation.value = getFormattedDuration(estimationPrecise);
+                                    } else if (estimationApproximate < 604800) {
+                                        entry.upgrade_estimation.value = getFormattedDuration(estimationApproximate);
+                                    } else {
+                                        entry.upgrade_estimation.value = '> 7D';
+                                    }
+                                } else {
+                                    entry.upgrade_money.value = '';
+                                    entry.upgrade_estimation.value = '';
+                                }
+
+                                // Set name color based on amortization index
+                                const $title = entry.level.$object.closest('tr').find('td').first();
+                                if (amortizationIndex === index) {
+                                    $title.addClass('text-green');
+                                } else {
+                                    $title.removeClass('text-green');
+                                }
+                            });
+
+                            // Add colors based on upgrade mode
+                            if (modeUpgrade == 0) {
+                                $('[data-field]:not([data-field="level"], [data-field="upgrades"])').removeClass('text-green');
+                            } else {
+                                $('[data-field]:not([data-field="level"], [data-field="upgrades"])').addClass('text-green');
+                            }
+                        }
+                    }
+                })();
+
+                function getFormattedDuration (seconds) {
+                    seconds = Math.trunc(seconds);
+
+                    const s = (seconds % 60);
+                    const m = ((seconds - seconds % 60) / 60) % 60;
+                    const h = ((seconds - seconds % 3600) / 3600) % 24;
+                    const d = (seconds - seconds % 86400) / 86400;
+
+                    if (d) {
+                        return `${d}D ${h}H ${m}M ${s}S`;
+                    } else if (h) {
+                        return `${h}H ${m}M ${s}S`;
+                    } else if (m) {
+                        return `${m}M ${s}S`;
+                    } else {
+                        return `${s}S`;
+                    }
                 }
-            }
 
-            // Load table from localStorage and update
-            setTable(localStorage.idle ? JSON.parse(localStorage.idle) : { buildings: [ ] });
-            $('.dropdown').dropdown();
+                function formatNumber (value) {
+                    if (modeNumber == 0 || value < 1E6) {
+                        return formatAsNamedNumber(Math.trunc(value));
+                    } else {
+                        return value.toExponential(3).toString().replace('+', '');
+                    }
+                }
 
-            update();
+                function upgradeToModifiers (upgradeIndex) {
+                    return {
+                        rate: Math.pow(2, upgradeIndex - (upgradeIndex > 1 ? 1 : 0)),
+                        duration: (upgradeIndex == 1 || upgradeIndex > 2) ? 0.5 : 1,
+                        money: upgradeIndex === 4 ? 4 : (upgradeIndex > 1 ? 2 : 1)
+                    }
+                }
+
+                EditorController.clear();
+
+                // Integration
+                StatisticsIntegration.configure(
+                    SELF_PROFILE,
+                    intl('simulator.poll.players'),
+                    'dungeons',
+                    function ($statsList) {
+                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(p => p.Own && p.Level >= 105 && p.Idle)) {
+                            $statsList.append($(`
+                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
+                                    <div class="visible content">
+                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
+                                    </div>
+                                    <div class="hidden content">
+                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
+                                    </div>
+                                </div>
+                                `).click(() => {
+                                    EditorController.load(player);
+                                })
+                            );
+                        }
+                    }
+                );
+            });
         </script>
     </body>
 </html>

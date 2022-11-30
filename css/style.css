@@ -245,12 +245,17 @@ body.dimmed .menu {
     padding: 0.25em !important;
 }
 
-.ffgreen {
+.text-green {
     color: green !important;
 }
 
 .sf-container {
     margin-bottom: 5em;
+}
+
+.dropdown-container {
+    overflow: visible !important;
+    position: relative !important;
 }
 
 .detail-top {
