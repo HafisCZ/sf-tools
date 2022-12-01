@@ -969,7 +969,7 @@ class BrowseView extends View {
                 ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'x', 'h', 'o', 'sr', 'q', 'qc', 't'],
                 k => [k, intl(`stats.filters.${k}`)]
             )
-        ).change((event) => {
+        ).change(async (event) => {
             var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t|#):/);
 
             var terms = [
@@ -1107,7 +1107,7 @@ class BrowseView extends View {
                 } else if (key == 'qc' && typeof(arg) == 'string' && arg.length) {
                     this.table.selectCategories(arg.split(',').map(x => x.trim()));
                 } else if (key == 't' && typeof(arg) == 'string' && arg.length) {
-                    let script = this.tryGetSettings(arg.trim());
+                    let script = await this.tryGetSettings(arg.trim());
                     if (script) {
                         this.tableQEnabled = true;
                         this.recalculate = true;
