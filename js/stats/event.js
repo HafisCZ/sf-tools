@@ -1159,17 +1159,13 @@ class BrowseView extends View {
         });
     }
 
-    tryGetSettings (code) {
+    async tryGetSettings (code) {
         if (typeof this.settingsRepo == 'undefined') {
             this.settingsRepo = {};
         }
 
         if (!(code in this.settingsRepo)) {
-            this.settingsRepo[code] = $.ajax({
-                url: `https://sftools-api.herokuapp.com/scripts?key=${code.trim()}`,
-                type: 'GET',
-                async: false
-            }).responseJSON.content;
+            this.settingsRepo[code] = (await SiteAPI.get('script_get', { key: code.trim() })).script.content;
         }
 
         return this.settingsRepo[code];
@@ -2866,25 +2862,14 @@ class OnlineShareFileView extends View {
     }
 
     send (singleUse = true) {
-        // Setup form data
-        let data = new FormData();
-        data.append('multiple', !singleUse);
-        data.append('file', JSON.stringify({
-            data: this.sharedObj.data
-        }));
-
-        // Create request
-        $.ajax({
-            url: 'https://sftools-api.herokuapp.com/share',
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: data
-        }).done(obj => {
-            this.showKey(obj.success, obj.key);
-        }).fail(() => {
+        SiteAPI.post('file_create', {
+            content: JSON.stringify({ data: this.sharedObj.data }),
+            multiple: !singleUse
+        }).then(({ file }) => {
+            this.showKey(true, file.key);
+        }).catch(() => {
             this.showKey(false, null);
-        });
+        })
     }
 }
 
@@ -2979,63 +2964,33 @@ class TemplatesView extends View {
         this.setLoading(true);
 
         if (this.tmp.online) {
-            // Update if already online
-            var formData = new FormData();
-            formData.append('description', name);
-            formData.append('content', content);
-            formData.append('key', this.tmp.online.key);
-            formData.append('secret', this.tmp.online.secret);
-
             // Create request
-            $.ajax({
-                url: 'https://sftools-api.herokuapp.com/scripts/update',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData
-            }).done(obj => {
-                if (obj.success) {
-                    // Mark as online
-                    Templates.markAsOnline(name, obj.key, obj.secret);
+            SiteAPI.post('script_update', {
+                description: name,
+                content: content,
+                key: this.tmp.online.key,
+                secret: this.tmp.online.secret
+            }).then(({ script }) => {
+                Templates.markAsOnline(name, script.key, script.secret);
 
-                    // Refresh
-                    this.showTemplate(name);
-                }
-
-                // Clear loading
+                this.showTemplate(name);
                 this.setLoading(false);
-            }).fail(() => {
-                this.setLoading(false);
+            }).catch(() => {
+                this.setLoading(false)
             });
         } else {
-            // Publish
-            var formData = new FormData();
-            formData.append('description', name);
-            formData.append('content', content);
-            formData.append('author', 'unknown');
-            formData.append('token', '0');
+            SiteAPI.post('script_create', {
+                description: name,
+                content: content,
+                author: 'unknown'
+            }).then(({ script }) => {
+                Templates.markAsOnline(name, script.key, script.secret);
 
-            // Create request
-            $.ajax({
-                url: 'https://sftools-api.herokuapp.com/scripts/share',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData
-            }).done(obj => {
-                if (obj.success) {
-                    // Mark as online
-                    Templates.markAsOnline(name, obj.key, obj.secret);
-
-                    // Refresh
-                    this.showTemplate(name);
-                }
-
-                // Clear loading
+                this.showTemplate(name);
                 this.setLoading(false);
-            }).fail(() => {
+            }).catch(() => {
                 this.setLoading(false);
-            });
+            })
         }
     }
 
@@ -3047,20 +3002,12 @@ class TemplatesView extends View {
             let key = this.tmp.online.key.trim();
             let secret = this.tmp.online.secret.trim();
 
-            // Remove online template
-            $.ajax({
-                url: `https://sftools-api.herokuapp.com/scripts/delete?key=${key}&secret=${ secret }`,
-                type: 'GET'
-            }).done(obj => {
-                if (obj.success) {
-                    // Set as offline
-                    Templates.markAsOffline(name);
-                }
+            SiteAPI.get('script_delete', { key, secret }).then(() => {
+                Templates.markAsOffline(name);
 
-                // Refresh
                 this.showTemplate(name);
                 this.setLoading(false);
-            }).fail(() => {
+            }).catch(() => {
                 this.setLoading(false);
             });
         }
@@ -3214,22 +3161,15 @@ class OnlineTemplatesView extends View {
         this.$parent.find('[data-op="private"]').click(() => {
             var cur = this.$input.val().trim();
             if (cur) {
-                $.ajax({
-                    url: `https://sftools-api.herokuapp.com/scripts?key=${cur}`,
-                    type: 'GET'
-                }).done((message) => {
-                    if (message.success) {
-                        if (UI.current == UI.Settings) {
-                            UI.Settings.editor.content = message.content;
-                        } else {
-                            UI.SettingsFloat.editor.content = message.content;
-                        }
-
-                        this.hide();
+                SiteAPI.get('script_get', { key: cur }).then(({ script }) => {
+                    if (UI.current == UI.Settings) {
+                        UI.Settings.editor.content = script.content;
                     } else {
-                        this.$input.parent('.input').addClass('error').transition('shake');
+                        UI.SettingsFloat.editor.content = script.content;
                     }
-                }).fail(() => {
+
+                    this.hide();
+                }).catch(() => {
                     this.$input.parent('.input').addClass('error').transition('shake');
                 });
             } else {
@@ -3249,20 +3189,16 @@ class OnlineTemplatesView extends View {
 
         let cached = SharedPreferences.get('templateCache', { content: [], expire: 0 });
         if (cached.expire < Date.now()) {
-            $.ajax({
-                url: `https://sftools-api.herokuapp.com/scripts`,
-                type: 'GET'
-            }).done((message) => {
-                message = message ? message : [];
+            SiteAPI.get('script_list').then(({ scripts }) => {
                 SharedPreferences.set('templateCache', {
-                    content: message,
+                    content: scripts,
                     expire: Date.now() + 3600000
                 });
 
-                this.showScripts(message);
-            }).fail(() => {
+                this.showScripts(scripts);
+            }).catch(() => {
                 this.showScripts([]);
-            });
+            })
         } else {
             this.showScripts(cached.content);
         }
@@ -3294,22 +3230,15 @@ class OnlineTemplatesView extends View {
             this.$content.find('[data-script]').click((event) => {
                 let $btn = $(event.currentTarget);
 
-                $.ajax({
-                    url: `https://sftools-api.herokuapp.com/scripts?key=${ $btn.attr('data-script') }`,
-                    type: 'GET'
-                }).done((message) => {
-                    if (message.success) {
-                        if (UI.current == UI.Settings) {
-                            UI.Settings.editor.content = message.content;
-                        } else {
-                            UI.SettingsFloat.editor.content = message.content;
-                        }
-
-                        this.hide();
+                SiteAPI.get('script_get', { key: $btn.attr('data-script') }).then(({ script }) => {
+                    if (UI.current == UI.Settings) {
+                        UI.Settings.editor.content = script.content;
                     } else {
-                        $btn.addClass('red');
+                        UI.SettingsFloat.editor.content = script.content;
                     }
-                }).fail(() => {
+
+                    this.hide();
+                }).catch(() => {
                     $btn.addClass('red');
                 });
             });
@@ -3342,10 +3271,10 @@ class OnlineFilesView extends View {
         this.$inputField.val('');
         this.$error.hide();
 
-        this.onReceive = (code, obj) => {
+        this.onReceive = (code, file) => {
             this.$ok.removeClass('loading');
-            if (code && obj) {
-                DatabaseManager.import(JSON.parse(obj).data, undefined, undefined, 'shared').then(() => {
+            if (code && file) {
+                DatabaseManager.import(JSON.parse(file).data, undefined, undefined, 'shared').then(() => {
                     this.$parent.modal('hide');
                     callback();
                 });
@@ -3357,13 +3286,15 @@ class OnlineFilesView extends View {
 
         this.$parent.modal({
             onApprove: () => {
-                let code = this.$inputField.val().trim();
-                if (code) {
+                let key = this.$inputField.val().trim();
+                if (key) {
                     this.$ok.addClass('loading');
-                    $.ajax({
-                        url: `https://sftools-api.herokuapp.com/?key=${ code }`,
-                        type: 'GET'
-                    }).done(obj => this.onReceive(code, obj)).fail(() => this.onReceive());
+
+                    SiteAPI.get('file_get', { key }).then(({ file }) => {
+                        this.onReceive(key, file.content);
+                    }).catch(() => {
+                        this.onReceive();
+                    })
                 } else {
                     this.$input.transition('shake');
                 }

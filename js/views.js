@@ -496,25 +496,19 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
     }
 
     _applyArguments (code) {
-        $.ajax({
-            url: `https://sftools-api.herokuapp.com/scripts?key=${code.trim()}`,
-            type: 'GET'
-        }).done((message) => {
-            if (message.success) {
-                let { description, author, date } = message;
+        SiteAPI.get('script_get', { key: code.trim() }).then(({ script }) => {
+            const { description, author, date } = script;
 
-                this.data = message;
-                this.$date.val(formatDate(new Date(date)));
-                this.$name.val(description);
-                this.$author.val(author);
+            this.data = script;
 
-                this.setReady();
-            } else {
-                this.setUnavailable();
-            }
-        }).fail(() => {
+            this.$date.val(formatDate(new Date(date)));
+            this.$name.val(description);
+            this.$author.val(author);
+
+            this.setReady();
+        }).catch(() => {
             this.setUnavailable();
-        });
+        })
     }
 })();
 

@@ -86,6 +86,10 @@ function _int_keys(hash) {
     return Object.keys(hash).map(v => parseInt(v));
 }
 
+function _hash_to_query (hash) {
+    return Object.entries(hash).map(([key, value]) => `${key}=${value}`).join('&');
+}
+
 function _safe_int(val) {
     if (isNaN(val)) {
         return undefined;

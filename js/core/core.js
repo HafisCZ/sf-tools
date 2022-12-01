@@ -19,7 +19,8 @@ const Logger = new (class {
             'ACTIONS': 'eb73c3',
             'IN_WARN': 'ebd883',
             'APPINFO': 'd29af8',
-            'MESSAGE': 'ffffff'
+            'MESSAGE': 'ffffff',
+            'APICALL': 'd99ab5'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
@@ -256,6 +257,57 @@ const Site = new (class {
                 preferences: prefs,
                 data: dumps
             };
+        })
+    }
+})();
+
+const SiteAPI = new (class {
+    constructor () {
+        this.baseUrl = 'https://sftools-api.netlify.app/api/'
+    }
+
+    log (method, url) {
+        Logger.log('APICALL', `${method} ${url}`)
+    }
+
+    async post (endpoint, data) {
+        const url = `${this.baseUrl}${endpoint}`;
+        this.log('POST', url);
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url,
+                type: 'POST',
+                data: JSON.stringify(data)
+            }).done((data) => {
+                if (data && !data.error) {
+                    resolve(data);
+                } else {
+                    reject();
+                }
+            }).fail(() => {
+                reject();
+            })
+        })
+    }
+
+    async get (endpoint, params = {}) {
+        const url = `${this.baseUrl}${endpoint}?${_hash_to_query(params)}`;
+        this.log('GET', url);
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url,
+                type: 'GET'
+            }).done((data) => {
+                if (data && !data.error) {
+                    resolve(data);
+                } else {
+                    reject();
+                }
+            }).fail(() => {
+                reject();
+            })
         })
     }
 })();
