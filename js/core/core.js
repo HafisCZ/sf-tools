@@ -275,18 +275,19 @@ const SiteAPI = new (class {
         this.log('POST', url);
 
         return new Promise((resolve, reject) => {
-            $.ajax({
-                url,
-                type: 'POST',
-                data: JSON.stringify(data)
-            }).done((data) => {
-                if (data && !data.error) {
-                    resolve(data);
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if (data.error) {
+                    reject(data);
                 } else {
-                    reject();
+                    resolve(data);
                 }
-            }).fail(() => {
-                reject();
+            }).catch((e) => {
+                reject({ error: e.message });
             })
         })
     }
@@ -296,18 +297,17 @@ const SiteAPI = new (class {
         this.log('GET', url);
 
         return new Promise((resolve, reject) => {
-            $.ajax({
-                url,
-                type: 'GET'
-            }).done((data) => {
-                if (data && !data.error) {
-                    resolve(data);
+            fetch(url).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if (data.error) {
+                    reject(data);
                 } else {
-                    reject();
+                    resolve(data);
                 }
-            }).fail(() => {
-                reject();
-            })
+            }).catch((e) => {
+                reject({ error: e.message });
+            });
         })
     }
 })();
