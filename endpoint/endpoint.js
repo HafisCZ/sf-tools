@@ -200,6 +200,7 @@ const Endpoint = new ( class {
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
         this.$import = this.$parent.find('[data-op="import"]');
+        this.$login = this.$parent.find('[data-op="login"]');
 
         this.endpoint = undefined;
         this.downloading = [];
@@ -219,7 +220,7 @@ const Endpoint = new ( class {
             });
         });
 
-        this.$login = this.$parent.find('[data-op="login"]').click(() => {
+        const executeLogin = () => {
             var username = this.$username.val();
             var password = this.$password.val();
             var server = '';
@@ -269,6 +270,13 @@ const Endpoint = new ( class {
                         }
                     });
                 }
+            }
+        }
+
+        this.$login.click(() => executeLogin());
+        this.$step1.on('keyup', (event) => {
+            if (event.keyCode === 13 && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+                executeLogin();
             }
         });
     }
