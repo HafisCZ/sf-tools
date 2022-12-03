@@ -1145,7 +1145,7 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             if (_not_empty(timestamps)) {
                 const shouldHide = !_all_true(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
-                
+
                 for (const timestamp of timestamps) {
                     for (const identifier of this.Timestamps.array(timestamp)) {
                         const model = _dig(this, this._isPlayer(identifier) ? 'Players' : 'Groups', identifier, timestamp, 'Data')
@@ -1301,8 +1301,14 @@ const DatabaseManager = new (class {
             }
         }
 
-        const migratedGroups = groups.map(group => MigrationUtils.migrateGroup(group, origin));
-        const migratedPlayers = players.map(player => MigrationUtils.migratePlayer(player, origin));
+        let migratedGroups = groups.map(group => MigrationUtils.migrateGroup(group, origin));
+        let migratedPlayers = players.map(player => MigrationUtils.migratePlayer(player, origin));
+
+        if (origin === 'merge') {
+            // Ensure new entries are not overwritten by old entries in case of a merge
+            migratedGroups = migratedGroups.filter(({ identifier, timestamp }) => !this.hasGroup(identifier, timestamp))
+            migratedPlayers = migratedPlayers.filter(({ identifier, timestamp }) => !this.hasPlayer(identifier, timestamp))
+        }
 
         for (let group of migratedGroups) {
             this._addGroup(group);
