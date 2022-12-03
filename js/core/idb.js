@@ -484,6 +484,9 @@ const DatabaseManager = new (class {
         this.GroupNames = {};
 
         this._metadataDelta = [];
+        this._hiddenModels = new Set();
+
+        this.HiddenVisible = SiteOptions.hidden;
     }
 
     // INTERNAL: Add player
@@ -668,6 +671,18 @@ const DatabaseManager = new (class {
         Logger.log('PERFLOG', 'Skipped load in temporary mode');
     }
 
+    _initModel (type, model, hiddenField) {
+        if (this._isHidden(model, hiddenField)) {
+            this._hiddenModels.add(model);
+
+            if (SiteOptions.hidden) {
+                this[`_add${type}`](model);
+            }
+        } else {
+            this[`_add${type}`](model);
+        }
+    }
+
     async _loadDatabase (profile) {
         this.Database = await DatabaseUtils.createSession(profile.slot);
         if (!this.Database) {
@@ -687,18 +702,14 @@ const DatabaseManager = new (class {
             if (profile.secondary_g) {
                 const filter = new Expression(profile.secondary_g);
                 for (const group of groups) {
-                    if (!this._isHidden(group, false) || SiteOptions.hidden) {
-                        ExpressionCache.reset();
-                        if (new ExpressionScope().addSelf(group).eval(filter)) {
-                            this._addGroup(group);
-                        }
+                    ExpressionCache.reset();
+                    if (new ExpressionCache().addSelf(group).eval(filter)) {
+                        this._initModel('Group', group, false);
                     }
                 }
             } else {
                 for (const group of groups) {
-                    if (!this._isHidden(group, false) || SiteOptions.hidden) {
-                        this._addGroup(group);
-                    }
+                    this._initModel('Group', group, false);
                 }
             }
         }
@@ -715,18 +726,14 @@ const DatabaseManager = new (class {
         if (profile.secondary) {
             const filter = new Expression(profile.secondary);
             for (const player of players) {
-                if (!this._isHidden(player) || SiteOptions.hidden) {
-                    ExpressionCache.reset();
-                    if (new ExpressionScope().addSelf(player).eval(filter)) {
-                        this._addPlayer(player);
-                    }
+                ExpressionCache.reset();
+                if (new ExpressionCache().addSelf(player).eval(filter)) {
+                    this._initModel('Player', player, true);
                 }
             }
         } else {
             for (const player of players) {
-                if (!this._isHidden(player) || SiteOptions.hidden) {
-                    this._addPlayer(player);
-                }
+                this._initModel('Player', player, true);
             }
         }
 
@@ -743,6 +750,35 @@ const DatabaseManager = new (class {
         this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
 
         Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
+    }
+
+    async reloadHidden () {
+        if (this.HiddenVisible != SiteOptions.hidden) {
+            this.HiddenVisible = SiteOptions.hidden;
+            
+            const beginTimestamp = Date.now();
+
+            if (this.HiddenVisible) {
+                // Load all hidden models
+                for (const model of this._hiddenModels) {
+                    if (this._isPlayer(model.identifier)) {
+                        this._addPlayer(model);
+                    } else {
+                        this._addGroup(model);
+                    }
+                }
+            } else {
+                // Unload all hidden models
+                for (const { identifier, timestamp } of this._hiddenModels) {
+                    this._unload(identifier, timestamp);
+                }
+            }
+
+            this._updateLists();
+            await this.refreshTrackers();
+
+            Logger.log('PERFLOG', `${this.HiddenVisible ? 'Load' : 'Unload'} done in ${Date.now() - beginTimestamp} ms`);
+        }
     }
 
     // Load database
@@ -964,6 +1000,10 @@ const DatabaseManager = new (class {
                         await this.Database.set('players', player);
                     }
 
+                    for (const groupIdentifier of Array.from(identifiers).filter(identifier => !this._isPlayer(identifier))) {
+                        this._hiddenModels.add(_dig(this.Groups, groupIdentifier, timestamp, 'Data'))
+                    }
+
                     await this._markHidden(timestamp, true);
                 }
             }
@@ -1081,7 +1121,15 @@ const DatabaseManager = new (class {
     hide (players) {
         return new Promise(async (resolve, reject) => {
             for (const player of players) {
-                if ((player.hidden = !player.hidden) && !SiteOptions.hidden) {
+                player.hidden = !player.hidden
+
+                if (player.hidden) {
+                    this._hiddenModels.add(player);
+                } else {
+                    this._hiddenModels.delete(player);
+                }
+
+                if (player.hidden && !SiteOptions.hidden) {
                     this._unload(player.identifier, player.timestamp);
                 }
 
@@ -1097,6 +1145,19 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             if (_not_empty(timestamps)) {
                 const shouldHide = !_all_true(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
+                
+                for (const timestamp of timestamps) {
+                    for (const identifier of this.Timestamps.array(timestamp)) {
+                        const model = _dig(this, this._isPlayer(identifier) ? 'Players' : 'Groups', identifier, timestamp, 'Data')
+
+                        if (shouldHide) {
+                            this._hiddenModels.add(model)
+                        } else {
+                            this._hiddenModels.delete(model)
+                        }
+                    }
+                }
+
                 for (const timestamp of timestamps) {
                     await this._markHidden(timestamp, shouldHide);
                 }

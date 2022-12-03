@@ -1897,8 +1897,9 @@ class FilesView extends View {
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
 
         this.prepareCheckbox('hidden', 'hidden');
-        SiteOptions.onChange('hidden', () => {
-            window.location.href = window.location.href;
+        SiteOptions.onChange('hidden', async () => {
+            await DatabaseManager.reloadHidden();
+            this.show(true);
         });
 
         this.prepareCheckbox('export_public_only', 'export-public-only');
