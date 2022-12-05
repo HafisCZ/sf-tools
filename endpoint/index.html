@@ -6,7 +6,7 @@
     </head>
     <body>
         <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
-        <script src="build/loader.js"></script>
+        <script src="build/endpoint.loader.js"></script>
         <script type="text/javascript">
             var callback = { };
             var error = { };
@@ -15,13 +15,13 @@
 
             function load (callback) {
                 createUnityInstance(document.querySelector("#upixel"), {
-                    dataUrl: "build/5ea7c3cbfb2cb8c45905464763393a96.data",
-                    frameworkUrl: "build/827b45615e7e9e10de2c55b95b19f6bd.js",
-                    codeUrl: "build/3799308548e0aaac9390b8d78ab7c529.wasm",
+                    dataUrl: "build/endpoint.data",
+                    frameworkUrl: "build/endpoint.framework.js",
+                    codeUrl: "build/endpoint.wasm",
                     streamingAssetsUrl: "StreamingAssets",
                     companyName: "mar21",
                     productName: "Endpoint",
-                    productVersion: "9.0",
+                    productVersion: "10.0",
               }).then(unityInstance => {
                   unity = unityInstance;
                   callback();
@@ -41,16 +41,20 @@
                 }));
             }
 
-            function querry_single (id) {
-                unity.SendMessage('Controller', 'QuerrySingle', id);
+            function query_single (id) {
+                unity.SendMessage('Controller', 'QuerySingle', id);
             }
 
-            function querry_many (ids) {
-                unity.SendMessage('Controller', 'QuerryMany', ids);
+            function query_many (ids) {
+                unity.SendMessage('Controller', 'QueryMany', ids);
             }
 
-            function querry_collect () {
-                unity.SendMessage('Controller', 'QuerrySingleCollect');
+            function query_hall_of_fame () {
+                unity.SendMessage('Controller', 'QueryHallOfFame');
+            }
+
+            function query_collect () {
+                unity.SendMessage('Controller', 'QuerySingleCollect');
             }
         </script>
     </body>

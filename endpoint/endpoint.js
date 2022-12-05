@@ -26,17 +26,17 @@ class EndpointController {
         this.window.login(server, username, password);
     }
 
-    login_querry_only (server, username, password, callback, error) {
+    login_query_only (server, username, password, callback, error) {
         // Bind error callbacks
         this.window.error['login'] = error;
-        this.window.error['querry'] = error;
+        this.window.error['query'] = error;
 
         // Bind success callbacks
-        this.window.callback['querry'] = callback;
+        this.window.callback['query'] = callback;
         this.window.callback['login'] = () => {
             // Fire collect on login success
             Logger.log('ECLIENT', `Collecting data`);
-            this.window.querry_collect();
+            this.window.query_collect();
         }
 
         // Login
@@ -44,18 +44,18 @@ class EndpointController {
         this.window.login(server, username, password);
     }
 
-    login_querry_many (server, username, password, filter, callback, error, progress) {
+    login_query_many (server, username, password, filter, callback, error, progress) {
         // Bind error callbacks
         this.window.error['login'] = error;
-        this.window.error['querry'] = error;
+        this.window.error['query'] = error;
 
         // Bind success callbacks
         this.window.callback['progress'] = progress;
-        this.window.callback['querry'] = callback;
+        this.window.callback['query'] = callback;
         this.window.callback['login'] = (text) => {
-            // Querry all
-            Logger.log('ECLIENT', `Querry many`);
-            this.window.querry_many(filter(text));
+            // Query all
+            Logger.log('ECLIENT', `Query many`);
+            this.window.query_many(filter(text));
         }
 
         // Login
@@ -63,19 +63,38 @@ class EndpointController {
         this.window.login(server, username, password);
     }
 
-    querry_single (id, callback, error) {
-        this.window.callback['querry_single'] = callback;
-        this.window.error['querry'] = callback;
+    login_query_hall_of_fame (server, username, password, callback, error, progress) {
+        // Bind error callbacks
+        this.window.error['login'] = error;
+        this.window.error['query'] = error;
 
-        Logger.log('ECLIENT', `Querrying character: ${ id }`);
-        this.window.querry_single(id);
+        // Bind success callbacks
+        this.window.callback['progress'] = progress;
+        this.window.callback['query'] = callback;
+        this.window.callback['login'] = () => {
+            // Query all
+            Logger.log('ECLIENT', `Query HOF`);
+            this.window.query_hall_of_fame();
+        }
+
+        // Login
+        Logger.log('ECLIENT', `Logging in as ${ username }@${ server }`);
+        this.window.login(server, username, password);
     }
 
-    querry_collect (callback) {
-        this.window.callback['querry'] = callback;
+    query_single (id, callback, error) {
+        this.window.callback['query_single'] = callback;
+        this.window.error['query'] = callback;
+
+        Logger.log('ECLIENT', `Querying character: ${ id }`);
+        this.window.query_single(id);
+    }
+
+    query_collect (callback) {
+        this.window.callback['query'] = callback;
 
         Logger.log('ECLIENT', `Collecting data`);
-        this.window.querry_collect();
+        this.window.query_collect();
     }
 }
 
@@ -130,6 +149,10 @@ const Endpoint = new ( class {
                 this.$modeAllFriends.checkbox('set checked');
                 break;
             }
+            case 'hall_of_fame': {
+                this.$modeHallOfFame.checkbox('set checked');
+                break;
+            }
             default: {
                 this.$modeDefault.checkbox('set checked');
             }
@@ -139,6 +162,7 @@ const Endpoint = new ( class {
         this.$modeOwn.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'own') });
         this.$modeAllMembers.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all_members') });
         this.$modeAllFriends.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all_friends') });
+        this.$modeHallOfFame.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'hall_of_fame') });
     }
 
     _showError (text, hard = false) {
@@ -195,6 +219,7 @@ const Endpoint = new ( class {
         this.$modeOwn = this.$parent.find('[data-op="modeOwn"]').checkbox();
         this.$modeAllMembers = this.$parent.find('[data-op="modeAllMembers"]').checkbox();
         this.$modeAllFriends = this.$parent.find('[data-op="modeAllFriends"]').checkbox();
+        this.$modeHallOfFame = this.$parent.find('[data-op="modeHallOfFame"]').checkbox();
         this._setModeSelection();
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
@@ -210,7 +235,7 @@ const Endpoint = new ( class {
         this.$import.click(() => {
             this.$step4.show();
             this.$step3.hide();
-            this.endpoint.querry_collect((text) => {
+            this.endpoint.query_collect((text) => {
                 DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
                     Toast.error(intl('database.import_error'), e.message);
                     Logger.error(e, 'Error occured while trying to import a file!');
@@ -225,9 +250,10 @@ const Endpoint = new ( class {
             var password = this.$password.val();
             var server = '';
 
-            var own = this.$modeOwn.checkbox('is checked');
-            var all_members = this.$modeAllMembers.checkbox('is checked');
-            var all_friends = this.$modeAllFriends.checkbox('is checked');
+            const mode_own = this.$modeOwn.checkbox('is checked');
+            const mode_all_members = this.$modeAllMembers.checkbox('is checked');
+            const mode_all_friends = this.$modeAllFriends.checkbox('is checked');
+            const mode_hall_of_fame = this.$modeHallOfFame.checkbox('is checked');
 
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
@@ -243,12 +269,14 @@ const Endpoint = new ( class {
                     this.$step1.hide();
                     this.$step4.show();
 
-                    if (own) {
+                    if (mode_own) {
                         this._funcLoginSingle(server, username, password);
-                    } else if (all_members) {
+                    } else if (mode_all_members) {
                         this._funcLoginAll(server, username, password, 'members');
-                    } else if (all_friends) {
+                    } else if (mode_all_friends) {
                         this._funcLoginAll(server, username, password, 'friends');
+                    } else if (mode_hall_of_fame) {
+                        this._funcLoginHOF(server, username, password);
                     } else {
                         this._funcLogin(server, username, password);
                     }
@@ -259,12 +287,14 @@ const Endpoint = new ( class {
                         this.$step2.hide();
                         this.$step4.show();
 
-                        if (own) {
+                        if (mode_own) {
                             this._funcLoginSingle(server, username, password);
-                        } else if (all_members) {
+                        } else if (mode_all_members) {
                             this._funcLoginAll(server, username, password, 'members');
-                        } else if (all_friends) {
+                        } else if (mode_all_friends) {
                             this._funcLoginAll(server, username, password, 'friends');
+                        } else if (mode_hall_of_fame) {
+                            this._funcLoginHOF(server, username, password);
                         } else {
                             this._funcLogin(server, username, password);
                         }
@@ -282,7 +312,7 @@ const Endpoint = new ( class {
     }
 
     _funcLoginSingle (server, username, password) {
-        this.endpoint.login_querry_only(server, username, password, (text) => {
+        this.endpoint.login_query_only(server, username, password, (text) => {
             DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
@@ -295,8 +325,29 @@ const Endpoint = new ( class {
         });
     };
 
+    _funcLoginHOF (server, username, password) {
+        this.endpoint.login_query_hall_of_fame(server, username, password, (text) => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+                Toast.error(intl('database.import_error'), e.message);
+                Logger.error(e, 'Error occured while trying to import a file!');
+            }).then(() => {
+                this._funcShutdown();
+            });
+        }, () => {
+            this.$step4.hide();
+            this.$step5.hide();
+            this._showError(this.intl('credentials_error'));
+        }, percentDone => {
+            this.$step4.hide();
+            this.$step5.show();
+            this.$progress.progress({
+                percent: percentDone
+            })
+        });
+    }
+
     _funcLoginAll (server, username, password, kind = 'members') {
-        this.endpoint.login_querry_many(server, username, password, (text) => {
+        this.endpoint.login_query_many(server, username, password, (text) => {
             const [members, friends] = text.split(';');
             return kind == 'members' ? members : friends;
         }, (text) => {
@@ -359,7 +410,7 @@ const Endpoint = new ( class {
 
                 $(checkbox).checkbox('setting', 'onChecked', () => {
                     this._setDownloading(name);
-                    this.endpoint.querry_single(name, (value) => {
+                    this.endpoint.query_single(name, (value) => {
                         this._removeDownloading(name);
                     }, () => {
                         this.$step3.hide();
@@ -421,6 +472,12 @@ const Endpoint = new ( class {
                                     <div class="ui radio checkbox" data-op="modeAllFriends">
                                         <input type="radio" name="endpointMode">
                                         <label style="color: white;">${this.intl('mode.friends')}</label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="ui radio checkbox" data-op="modeHallOfFame">
+                                        <input type="radio" name="endpointMode">
+                                        <label style="color: white;">${this.intl('mode.hall_of_fame')}</label>
                                     </div>
                                 </div>
                             </div>

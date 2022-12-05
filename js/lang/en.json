@@ -853,7 +853,8 @@
             "own": "Capture own character",
             "default": "Capture own + selected characters",
             "guild": "Capture own + guild characters",
-            "friends": "Capture own + friend characters"
+            "friends": "Capture own + friend characters",
+            "hall_of_fame": "Capture own + top 50 HoF characters"
         },
         "cancel": "Cancel",
         "continue": "Continue",

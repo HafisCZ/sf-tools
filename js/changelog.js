@@ -11,6 +11,9 @@ const CHANGELOG = {
         ],
         'Arena Manager': [
             'Reworked tool'
+        ],
+        'Endpoint': [
+            'Added option to save first 50 characters in Hall of Fame'
         ]
     },
     'v5.2675': {
