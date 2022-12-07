@@ -752,7 +752,8 @@
             "own": "Importa il proprio personaggio",
             "default": "Importa proprio + personaggi selezionati",
             "guild": "Importa proprio + membri gilda",
-            "friends": "Importa proprio + amici"
+            "friends": "Importa proprio + amici",
+            "hall_of_fame": "Importa il tuo personaggio + top 50 della HoF"
         },
         "cancel": "Cancella",
         "continue": "Continua",
@@ -995,6 +996,56 @@
             "curve": "Curva oro",
             "mount": "Grifone",
             "guard": "Lavoro guardia / Dadi (3)"
+        }
+    },
+    "idle": {
+        "title": "Gestore Arena",
+        "topbar": {
+            "suggest": {
+                "0": "Prossimo + breakpoint",
+                "1": "Solo il prossimo",
+                "2": "Solo breakpoint"
+            },
+            "number": {
+                "0": "Nominale",
+                "1": "Esponenziale"
+            }
+        },
+        "table": {
+            "building": "Edificio",
+            "upgrades": "Miglioramenti",
+            "level": "Livello",
+            "level_next": "Prossimo livello",
+            "cycle_duration": "Tempo ciclo",
+            "cycle_money": "Soldi per ciclo",
+            "money_share": "Share",
+            "upgrade_money": "Costo",
+            "upgrade_estimation": "Stima",
+            "money_spent": "Soldi spesi",
+            "money_1h": "1 ora",
+            "money_8h": "8 ore",
+            "money_1d": "1 giorno",
+            "money_7d": "7 giorni",
+            "runes": "Rune"
+        },
+        "building": {
+            "seat": "Posto",
+            "popcorn_stand": "Chiosco dei popcorn",
+            "parking_lot": "Parcheggio",
+            "trap": "Trappola",
+            "drinks": "Bevande",
+            "deadly_trap": "Trappola letale",
+            "vip_seat": "Posto VIP",
+            "snacks": "Snack",
+            "straying_monsters": "Mostri sbandati",
+            "toilet": "Gabinetto"
+        },
+        "upgrades": {
+            "0": "Nessuno",
+            "1": "Velocità",
+            "2": "Soldi",
+            "3": "Entrambi",
+            "4": "Platino"
         }
     },
     "blacksmith": {
