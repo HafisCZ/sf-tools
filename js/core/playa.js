@@ -1158,6 +1158,39 @@ class SFPlayer {
         }
     }
 
+    injectGroup (group) {
+        if (group) {
+            // Find index of player in the group
+            let gi = group.Members.findIndex(identifier => identifier == this.Identifier);
+
+            // Add guild information
+            this.Group.Group = group;
+            this.Group.Role = group.Roles[gi];
+            this.Group.Index = gi;
+            this.Group.Rank = group.Rank;
+            this.Group.ReadyDefense = group.States[gi] == 1 || group.States[gi] == 3;
+            this.Group.ReadyAttack = group.States[gi] > 1;
+
+            if (this.LastOnline < 6e11) {
+                this.LastOnline = group.LastActives[gi];
+            }
+
+            if (group.Own) {
+                this.Group.Own = true;
+                this.Group.Pet = group.Pets[gi];
+                this.Group.Treasure = group.Treasures[gi];
+                this.Group.Instructor = group.Instructors[gi];
+
+                if (!this.Fortress.Knights && group.Knights) {
+                    this.Fortress.Knights = group.Knights[gi];
+                }
+            } else {
+                this.Group.Pet = group.Pets[gi];
+            }
+        }
+
+    }
+
     static loadEquipment (dataType, inventoryType) {
         return {
             Head: new SFItem(dataType.sub(12), 6, [inventoryType, 1]),

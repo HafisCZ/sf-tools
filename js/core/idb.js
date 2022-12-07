@@ -615,39 +615,8 @@ const DatabaseManager = new (class {
             const { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
 
             // Get player
-            let player = own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
-
-            // Get player group
-            let group = this.getGroup(player.Group.Identifier, timestamp);
-            if (group) {
-                // Find index of player in the group
-                let gi = group.Members.findIndex(i => i == identifier);
-
-                // Add guild information
-                player.Group.Group = group;
-                player.Group.Role = group.Roles[gi];
-                player.Group.Index = gi;
-                player.Group.Rank = group.Rank;
-                player.Group.ReadyDefense = group.States[gi] == 1 || group.States[gi] == 3;
-                player.Group.ReadyAttack = group.States[gi] > 1;
-
-                if (player.LastOnline < 6e11) {
-                    player.LastOnline = group.LastActives[gi];
-                }
-
-                if (group.Own) {
-                    player.Group.Own = true;
-                    player.Group.Pet = group.Pets[gi];
-                    player.Group.Treasure = group.Treasures[gi];
-                    player.Group.Instructor = group.Instructors[gi];
-
-                    if (!player.Fortress.Knights && group.Knights) {
-                        player.Fortress.Knights = group.Knights[gi];
-                    }
-                } else {
-                    player.Group.Pet = group.Pets[gi];
-                }
-            }
+            const player = own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+            player.injectGroup(this.getGroup(player.Group.Identifier, timestamp));
 
             let playerObj = this.Players[identifier];
 
