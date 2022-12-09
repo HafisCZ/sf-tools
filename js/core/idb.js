@@ -231,15 +231,17 @@ class IndexedDBWrapper {
 }
 
 class MigrationUtils {
-    static migrateGroup (group, origin, timestampDefault) {
+    static migrateGroup (group, origin) {
         if (group.id) {
             group.identifier = group.id;
             delete group.id;
         }
 
+        group.prefix = group.prefix.toLowerCase();
+        group.identifier = group.identifier.toLowerCase();
         group.origin = origin;
         group.group = group.identifier;
-        group.timestamp = parseInt(group.timestamp || timestampDefault);
+        group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
         group.names = group.names || group.members;
         group.profile = ProfileManager.getActiveProfileName();
@@ -247,15 +249,16 @@ class MigrationUtils {
         return group;
     }
 
-    static migratePlayer (player, origin, timestampDefault, versionDefault) {
+    static migratePlayer (player, origin) {
         if (player.id) {
             player.identifier = player.id;
             delete player.id;
         }
 
+        player.prefix = player.prefix.toLowerCase();
+        player.identifier = player.identifier.toLowerCase();
         player.origin = origin;
-        player.timestamp = parseInt(player.timestamp || timestampDefault);
-        player.version = player.version || versionDefault;
+        player.timestamp = parseInt(player.timestamp);
         player.own = player.own ? 1 : 0;
         player.profile = ProfileManager.getActiveProfileName();
 
@@ -1438,7 +1441,7 @@ const DatabaseManager = new (class {
 
             if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal')) {
                 if (url) {
-                    const urlParts = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                    const urlParts = url.toLowerCase().split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
                     if (urlParts.length > 2) {
                         raws.push([text, urlParts[1] + '_' + urlParts[2]]);
                     }
