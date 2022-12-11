@@ -326,7 +326,6 @@
                 StatisticsIntegration.configure(
                     HYDRA_PROFILE,
                     intl('simulator.poll.guilds'),
-                    'dungeons',
                     function ($statsList) {
                         let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
                         for (let group of _compact(groups).sort((a, b) => b.Timestamp - a.Timestamp)) {

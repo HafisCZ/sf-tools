@@ -765,7 +765,6 @@
                 StatisticsIntegration.configure(
                     FIGHT_SIMULATOR_PROFILE,
                     intl('simulator.poll.players'),
-                    'dungeons',
                     function ($statsList) {
                         for (let [prefix, players] of Object.entries(_group_by(DatabaseManager.getLatestPlayers(), p => p.Prefix))) {
                             $statsList.append($(`
