@@ -123,8 +123,8 @@ class IndexedDBWrapper {
         this.database = null;
     }
 
-    store (store, index) {
-        let databaseStore = this.database.transaction(store, 'readwrite').objectStore(store);
+    store (store, index, transactionType = 'readwrite') {
+        let databaseStore = this.database.transaction(store, transactionType).objectStore(store);
         if (index) {
             return databaseStore.index(index);
         } else {
@@ -190,7 +190,7 @@ class IndexedDBWrapper {
 
     get (store, key) {
         return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store).get(key), resolve, reject
+            this.store(store, null, 'readonly').get(key), resolve, reject
         ));
     }
 
@@ -209,7 +209,7 @@ class IndexedDBWrapper {
     where (store, index, query) {
         return new Promise((resolve, reject) => {
             let items = [];
-            let cursorRequest = this.store(store, index).openCursor(query);
+            let cursorRequest = this.store(store, index, 'readonly').openCursor(query);
             cursorRequest.onerror = () => resolve([]);
             cursorRequest.onsuccess = event => {
                 let cursor = event.target.result;
@@ -225,7 +225,7 @@ class IndexedDBWrapper {
 
     all (store, index, query) {
         return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store, index).getAll(query), resolve, reject
+            this.store(store, index, 'readonly').getAll(query), resolve, reject
         ));
     }
 }
