@@ -449,6 +449,15 @@ const Actions = new (class {
         this.defaultScript = typeof PredefinedTemplates === 'object' ? PredefinedTemplates['Actions'] : '';
 
         this._loadScript();
+
+        const legacyTracker = SettingsManager.get('tracker', '');
+        if (legacyTracker) {
+            this.script = `${this.script || ''}\n${legacyTracker}`;
+
+            Preferences.set('actions_script', this.script);
+            SettingsManager.remove('tracker');
+        }
+
         this._executeScript();
     }
 
