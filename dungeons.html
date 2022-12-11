@@ -821,7 +821,7 @@
 
                 $('#sim-run-all').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
-                        Loader.toggle(true);
+                        Loader.toggle(true, { progress: true });
 
                         let results = [];
                         let resultsRemaining = availableBosses.length;
@@ -830,6 +830,10 @@
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
 
                         let pendingInstances = [];
+
+                        const updateProgress = () => {
+                            Loader.progress(results.filter(r => r).length / availableBosses.length);
+                        }
 
                         for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
                             let worker = await Workers.createSimulatorWorker('dungeons');
@@ -842,6 +846,8 @@
                                     healths,
                                     iterations
                                 };
+
+                                updateProgress();
 
                                 if (--resultsRemaining <= 0) {
                                     Loader.toggle(false);
@@ -884,7 +890,7 @@
 
                 $('#sim-run-next').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
-                        Loader.toggle(true);
+                        Loader.toggle(true, { progress: true });
 
                         let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
@@ -940,8 +946,13 @@
                         let pendingStacks = [];
 
                         let results = [];
+                        let resultsTotal = 0;
                         let resultsRemaining = 0;
                         let resultsRemainingStack = 0;
+
+                        const updateProgress = () => {
+                            Loader.progress((resultsTotal - resultsRemaining) / resultsTotal);
+                        }
 
                         for (let stack of floorStacks) {
                             let tempStack = [];
@@ -976,6 +987,8 @@
 
                                     resultsRemaining--;
                                     resultsRemainingStack--;
+
+                                    updateProgress();
 
                                     if (resultsRemaining <= 0) {
                                         Loader.toggle(false);
@@ -1015,6 +1028,8 @@
                             pendingStacks.push(tempStack);
                         }
 
+                        resultsTotal = resultsRemaining;
+
                         currentStack = pendingStacks.shift();
                         resultsRemainingStack = currentStack.length;
 
@@ -1027,7 +1042,7 @@
 
                 $('#sim-run-dungeon').click(async function () {
                     if (editor.valid()) {
-                        Loader.toggle(true);
+                        Loader.toggle(true, { progress: true });
 
                         let bossQueue = [];
                         for (let bossData of Object.values(dungeon.floors)) {
@@ -1046,6 +1061,11 @@
 
                         let results = [];
                         let pendingInstances = [];
+
+                        const updateProgress = () => {
+                            Loader.progress(results.filter(r => r).length / bossQueue.length);
+                        }
+
                         for (let [index, { boss, dungeon }] of Object.entries(bossQueue)) {
                             let worker = await Workers.createSimulatorWorker('dungeons');
 
@@ -1057,6 +1077,8 @@
                                     healths,
                                     iterations
                                 };
+
+                                updateProgress();
 
                                 if (--resultsRemaining <= 0) {
                                     Loader.toggle(false);
@@ -1086,7 +1108,7 @@
 
                 $('#sim-run').click(async function () {
                     if (boss && editor.valid()) {
-                        Loader.toggle(true);
+                        Loader.toggle(true, { progress: true });
 
                         let bossInstance = getBossData(boss, dungeon);
                         let playerInstances = preparePlayerInstances(dungeon);
@@ -1100,6 +1122,10 @@
                         if (log) {
                             threads = 1;
                             iterations = 2000;
+                        }
+
+                        const updateProgress = () => {
+                            Loader.progress(totalTries / (threads * iterations));
                         }
 
                         for (let i = 0; i < threads; i++) {
@@ -1120,6 +1146,8 @@
                                 results.push(healths)
                                 totalScore += score;
                                 totalTries += iterations;
+
+                                updateProgress();
 
                                 if (totalTries == threads * iterations) {
                                     let finalResults = new Array(results[0].length);
