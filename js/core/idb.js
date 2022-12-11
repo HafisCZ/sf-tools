@@ -155,6 +155,7 @@ class IndexedDBWrapper {
                     }
                 } else if (Array.isArray(this.updaters)) {
                     Logger.log('STORAGE', 'Updating database to new version');
+                    Toast.info(intl('database.update_info.title'), intl('database.update_info.message'));
                     for (const updater of this.updaters) {
                         if (updater.shouldApply(event.oldVersion)) {
                             updater.apply(event.currentTarget.transaction, database);
@@ -168,6 +169,7 @@ class IndexedDBWrapper {
             this.database = db;
 
             if (this.version != this.oldVersion && Array.isArray(this.dataUpdaters)) {
+                Logger.log('STORAGE', 'Updating database data due to compatibility with new version');
                 Toast.info(intl('database.update_info.title'), intl('database.update_info.message'));
                 for (const updater of this.dataUpdaters) {
                     if (updater.shouldApply(this.oldVersion)) {
