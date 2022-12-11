@@ -1997,7 +1997,6 @@ class FilesView extends View {
         let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
         let player_identifiers = this.$filter_player.dropdown('get value');
         let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
-        let origins = this.$filter_origin.dropdown('get value');
         let type = parseInt(this.$filter_type.dropdown('get value'));
         let hidden = this.$filter_hidden.dropdown('get value');
         let tags = this.$filter_tags.dropdown('get value');
@@ -2007,7 +2006,6 @@ class FilesView extends View {
             (group_identifiers.length == 0 || group_identifiers.includes(data.group)) &&
             (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
             (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
-            (origins.length == 0 || origins.includes(`${data.origin}`)) &&
             (tags.length == 0 || tags.includes(`${data.tag}`)) &&
             (!type || data.own != type - 1) &&
             (!SiteOptions.hidden || hidden.length == 0 || (SiteOptions.hidden && (data.hidden && hidden.includes('yes')) || (!data.hidden && hidden.includes('no'))))
@@ -2025,7 +2023,6 @@ class FilesView extends View {
                         <td class="text-center">${ this.prefixMap[player.prefix] }</td>
                         <td>${ player.name }</td>
                         <td>${ this.groupMap[player.group] || '' }</td>
-                        <td class="text-center">${ player.origin || '' }</td>
                         <td>${ player.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(player.tag)}; color: white;">${player.tag}</div>` : '' }</td>
                     </tr>
                 `
@@ -2097,7 +2094,6 @@ class FilesView extends View {
                 playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
                 groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
-                origin: DatabaseManager.findDataFieldFor(ts, 'origin'),
                 tags: (() => {
                     const tagMap = DatabaseManager.findUsedTags([ts]);
                     const tagEntries = _sort_des(Object.entries(tagMap), ([, a]) => a);
@@ -2130,16 +2126,13 @@ class FilesView extends View {
         });
 
         if (_present(this.expressionFilter) && this.expressionFilter.isValid()) {
-            currentFilesAll = currentFilesAll.filter(({ tags: { tagList }, timestamp, version, origin }) => {
-                let file = DatabaseManager._getFile(null, [ timestamp ]);
-
+            currentFilesAll = currentFilesAll.filter(({ tags: { tagList }, timestamp, version }) => {
                 return this.expressionFilter.eval(new ExpressionScope().addSelf(
                     Object.assign(
                         DatabaseManager._getFile(null, [ timestamp ]),
                         {
                             timestamp,
                             version,
-                            origin,
                             tags: tagList
                         }
                     )
@@ -2150,7 +2143,7 @@ class FilesView extends View {
         this.currentFiles = _array_to_hash(currentFilesAll, file => [file.timestamp, file]);
         this.$resultsSimple.empty();
 
-        const entries = _sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
+        const entries = _sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, tags: { tagContent } }]) => {
             const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
             return `
@@ -2161,7 +2154,7 @@ class FilesView extends View {
                     <td class="text-center">${ groupCount }</td>
                     <td>${ tagContent }</td>
                     <td class="text-center">${ version || 'Not known' }</td>
-                    <td class="text-center">${ origin || '' }</td>
+                    <td class="text-center"></td>
                     <td class="clickable text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
                 </tr>
             `;
@@ -2300,7 +2293,7 @@ class FilesView extends View {
                 Expression.format(
                     content,
                     undefined,
-                    ['timestamp', 'players', 'groups', 'version', 'origin', 'tags']
+                    ['timestamp', 'players', 'groups', 'version', 'tags']
                 )
             );
 
@@ -2387,20 +2380,6 @@ class FilesView extends View {
                     <option value="2">${intl('stats.files.filters.type_other')}</option>
                 </select>
             </div>
-            <div class="field">
-                <label>${intl('stats.files.filters.origin')}</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-origin">
-                    <option value="undefined">HAR</option>
-                    <option value="endpoint">Endpoint</option>
-                    <option value="endpoint/dungeons">Dungeons (Endpoint)</option>
-                    <option value="har/dungeons">Dungeons (HAR)</option>
-                    <option value="endpoint/pets">Pets (Endpoint)</option>
-                    <option value="har/pets">Pets (HAR)</option>
-                    <option value="merge">Merged</option>
-                    <option value="share">Shared</option>
-                    <option value="migration">Migrated</option>
-                </select>
-            </div>
             <div class="field" ${ SiteOptions.hidden ? '' : 'style="display: none;"' }>
                 <label>${intl('stats.files.filters.hidden')}</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-hidden">
@@ -2426,11 +2405,6 @@ class FilesView extends View {
         });
 
         this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
-            placeholder: intl('stats.files.filters.any')
-        });
-
-        this.$filter_origin = this.$parent.find('[data-op="files-search-origin"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
@@ -3412,10 +3386,10 @@ class OptionsView extends View {
     }
 }
 
-const PROFILES_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname', 'save'];
-const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'profile', 'origin', 'tag'];
-const PROFILES_GROUP_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'own', 'name', 'identifier', 'save'];
-const PROFILES_GROUP_INDEXES = ['own', 'identifier', 'timestamp', 'prefix', 'profile', 'origin'];
+const PROFILES_PROPS = ['timestamp', 'identifier', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname', 'save'];
+const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'tag'];
+const PROFILES_GROUP_PROPS = ['timestamp', 'identifier', 'prefix', 'own', 'name', 'identifier', 'save'];
+const PROFILES_GROUP_INDEXES = ['own', 'identifier', 'timestamp', 'prefix'];
 
 class ProfilesView extends View {
     constructor (parent) {

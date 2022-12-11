@@ -442,7 +442,7 @@ const ProfileManager = new (class {
     }
 })();
 
-const ACTION_PROPS = ['players', 'groups', 'origin'];
+const ACTION_PROPS = ['players', 'groups'];
 
 const Actions = new (class {
     init () {
@@ -482,25 +482,25 @@ const Actions = new (class {
         this._executeScript();
     }
 
-    async apply (playerData, groupData, origin) {
+    async apply (playerData, groupData) {
         if (_not_empty(this.actions)) {
             let players = playerData.map(({identifier, timestamp}) => DatabaseManager.getPlayer(identifier, timestamp));
             let groups = groupData.map(({identifier, timestamp}) => DatabaseManager.getGroup(identifier, timestamp));
 
             for (const action of this.actions) {
                 Logger.log('ACTIONS', `Applying action ${action.action}`)
-                await this._applyAction(action, players, groups, origin);
+                await this._applyAction(action, players, groups);
             }
         }
     }
 
-    async _applyAction ({ action, type, args }, players, groups, origin) {
+    async _applyAction ({ action, type, args }, players, groups) {
         if (action == 'tag') {
             const [tagExpr, conditionExpr] = args;
 
             if (type == 'player') {
                 for (const player of players) {
-                    let scope = new ExpressionScope().with(player, player).add({ origin });
+                    let scope = new ExpressionScope().with(player, player);
                     if (scope.eval(conditionExpr)) {
                         let tag = scope.eval(tagExpr);
                         if (player.Data.tag != tag) {
@@ -510,7 +510,7 @@ const Actions = new (class {
                 }
             } else if (type == 'file') {
                 let mappedPlayers = Object.assign(players.map(p => [p, p]), { segmented: true });
-                let scope = new ExpressionScope().add({ players: mappedPlayers, groups, origin });
+                let scope = new ExpressionScope().add({ players: mappedPlayers, groups });
                 if (scope.eval(conditionExpr)) {
                     const tag = scope.eval(tagExpr);
                     for (const { Identifier: id, Timestamp: ts, Data: data } of players) {
@@ -529,7 +529,7 @@ const Actions = new (class {
                 let playersToRemove = [];
 
                 for (const player of players) {
-                    let scope = new ExpressionScope().with(player, player).add({ origin });
+                    let scope = new ExpressionScope().with(player, player);
                     if (scope.eval(conditionExpr)) {
                         playersToRemove.push(player.Data);
                     }

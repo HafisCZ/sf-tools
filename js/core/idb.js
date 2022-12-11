@@ -1,6 +1,5 @@
-const DATABASE_NAME = 'sftools';
 const DATABASE_PARAMS = [
-    6,
+    7,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -10,8 +9,6 @@ const DATABASE_PARAMS = [
                 timestamp: 'timestamp',
                 group: 'group',
                 prefix: 'prefix',
-                profile: 'profile',
-                origin: 'origin',
                 tag: 'tag'
             }
         },
@@ -21,9 +18,7 @@ const DATABASE_PARAMS = [
                 own: 'own',
                 identifier: 'identifier',
                 timestamp: 'timestamp',
-                prefix: 'prefix',
-                profile: 'profile',
-                origin: 'origin'
+                prefix: 'prefix'
             }
         },
         trackers: {
@@ -58,6 +53,16 @@ const DATABASE_PARAMS = [
             shouldApply: version => version < 5,
             apply: (transaction, database) => {
                 database.createObjectStore('metadata', { keyPath: 'timestamp' });
+            }
+        },
+        {
+            shouldApply: version => version < 7,
+            apply: transaction => {
+                transaction.objectStore('players').deleteIndex('origin')
+                transaction.objectStore('groups').deleteIndex('origin')
+
+                transaction.objectStore('players').deleteIndex('profile')
+                transaction.objectStore('groups').deleteIndex('profile')
             }
         }
     ],
@@ -231,7 +236,7 @@ class IndexedDBWrapper {
 }
 
 class MigrationUtils {
-    static migrateGroup (group, origin) {
+    static migrateGroup (group) {
         if (group.id) {
             group.identifier = group.id;
             delete group.id;
@@ -239,17 +244,15 @@ class MigrationUtils {
 
         group.prefix = group.prefix.toLowerCase();
         group.identifier = group.identifier.toLowerCase();
-        group.origin = origin;
         group.group = group.identifier;
         group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
         group.names = group.names || group.members;
-        group.profile = ProfileManager.getActiveProfileName();
 
         return group;
     }
 
-    static migratePlayer (player, origin) {
+    static migratePlayer (player) {
         if (player.id) {
             player.identifier = player.id;
             delete player.id;
@@ -257,10 +260,8 @@ class MigrationUtils {
 
         player.prefix = player.prefix.toLowerCase();
         player.identifier = player.identifier.toLowerCase();
-        player.origin = origin;
         player.timestamp = parseInt(player.timestamp);
         player.own = player.own ? 1 : 0;
-        player.profile = ProfileManager.getActiveProfileName();
 
         let group = player.save[player.own ? 435 : 161];
         if (group) {
@@ -275,7 +276,7 @@ class DatabaseUtils {
     static async createSession(slot) {
         await DatabaseUtils.requestPersistentStorage();
 
-        return new IndexedDBWrapper(`${DATABASE_NAME}${slot ? `_${slot}` : ''}`, ... DATABASE_PARAMS).open();
+        return new IndexedDBWrapper(`sftools${slot ? `_${slot}` : ''}`, ... DATABASE_PARAMS).open();
     }
 
     static createTemporarySession () {
@@ -1015,7 +1016,7 @@ const DatabaseManager = new (class {
     }
 
     setTagFor (identifier, timestamp, tag) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             const player = _dig(this.Players, identifier, timestamp, 'Data');
             player.tag = tag;
             await this.Database.set('players', player);
@@ -1024,7 +1025,7 @@ const DatabaseManager = new (class {
     }
 
     setTag (timestamps, tag) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             const { players } = this._getFile(null, timestamps);
             for (const player of players) {
                 if (!tag || _empty(tag)) {
@@ -1042,10 +1043,9 @@ const DatabaseManager = new (class {
     }
 
     rebase (from, to) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             if (from && to) {
                 const file = this._getFile(null, [ from ]);
-                const origin = this.findDataFieldFor(from, 'origin')
 
                 for (const i of file.players) {
                     i.timestamp = to;
@@ -1055,7 +1055,7 @@ const DatabaseManager = new (class {
                     i.timestamp = to;
                 }
 
-                await this._addFile(null, file.players, file.groups, origin);
+                await this._addFile(null, file.players, file.groups);
                 await this.removeTimestamps(from);
             }
 
@@ -1080,7 +1080,7 @@ const DatabaseManager = new (class {
                         item.timestamp = newestTimestamp;
                     }
 
-                    await this._addFile(null, file.players, file.groups, 'merge');
+                    await this._addFile(null, file.players, file.groups, { skipExisting: true });
                 }
 
                 await this.removeTimestamps(... timestamps);
@@ -1153,10 +1153,10 @@ const DatabaseManager = new (class {
     // Endpoint - string
     // Share - object
     // Archive - string
-    import (text, timestamp, offset, origin) {
+    import (text, timestamp, timestampOffset) {
         return new Promise(async (resolve, reject) => {
             try {
-                await this._import(_jsonify(text), timestamp, offset, origin);
+                await this._import(_jsonify(text), timestamp, timestampOffset);
                 resolve();
             } catch (exception) {
                 reject(exception);
@@ -1260,36 +1260,39 @@ const DatabaseManager = new (class {
         return /_p\d/.test(identifier);
     }
 
-    async _addFile (items, players_ex, groups_ex, origin) {
-        let players = players_ex || [];
-        let groups = groups_ex || [];
-        if (items) {
-            for (let item of items) {
-                if (this._isPlayer(item.identifier)) {
-                    players.push(item);
+    async _addFile (entries, playerEntries, groupEntries, flags = {}) {
+        let players = playerEntries || [];
+        let groups = groupEntries || [];
+        if (entries) {
+            for (let entry of entries) {
+                if (this._isPlayer(entry.identifier)) {
+                    players.push(entry);
                 } else {
-                    groups.push(item);
+                    groups.push(entry);
                 }
             }
         }
 
-        let migratedGroups = groups.map(group => MigrationUtils.migrateGroup(group, origin));
-        let migratedPlayers = players.map(player => MigrationUtils.migratePlayer(player, origin));
-
-        if (origin === 'merge') {
-            // Ensure new entries are not overwritten by old entries in case of a merge
-            migratedGroups = migratedGroups.filter(({ identifier, timestamp }) => !this.hasGroup(identifier, timestamp))
-            migratedPlayers = migratedPlayers.filter(({ identifier, timestamp }) => !this.hasPlayer(identifier, timestamp))
+        for (const group of groups) {
+            MigrationUtils.migrateGroup(group);
         }
 
-        for (let group of migratedGroups) {
+        for (const player of players) {
+            MigrationUtils.migratePlayer(player);
+        }
+        if (flags.skipExisting) {
+            groups = groups.filter(({ identifier, timestamp }) => !this.hasGroup(identifier, timestamp))
+            players = players.filter(({ identifier, timestamp }) => !this.hasPlayer(identifier, timestamp))
+        }
+
+        for (let group of groups) {
             this._addGroup(group);
             this._addMetadata(group.identifier, group.timestamp);
 
             await this.Database.set('groups', group);
         }
 
-        for (let player of migratedPlayers) {
+        for (let player of players) {
             this._addPlayer(player);
             this._addMetadata(player.identifier, player.timestamp);
 
@@ -1299,11 +1302,11 @@ const DatabaseManager = new (class {
         await this._updateMetadata();
 
         this._updateLists();
-        for (const { identifier, timestamp } of migratedPlayers) {
+        for (const { identifier, timestamp } of players) {
             await this._track(identifier, timestamp);
         }
 
-        await Actions.apply(migratedPlayers, migratedGroups, origin);
+        await Actions.apply(players, groups);
     }
 
     getTracker (identifier, tracker) {
@@ -1579,22 +1582,22 @@ const DatabaseManager = new (class {
         return { players, groups };
     }
 
-    async _import (json, timestamp, offset = -3600000, origin = null) {
+    async _import (json, timestamp, timestampOffset = -3600000) {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
                 for (let file of json) {
-                    await this._addFile(null, file.players, file.groups, origin);
+                    await this._addFile(null, file.players, file.groups);
                 }
             } else {
-                await this._addFile(json, null, null, origin);
+                await this._addFile(json, null, null);
             }
         } else if (typeof json == 'object' && _dig(json, 'players')) {
-            await this._addFile(null, json.players, json.groups, origin);
+            await this._addFile(null, json.players, json.groups);
         } else {
             // HAR, Endpoint
-            let { players, groups } = this._import_har(json, timestamp, offset);
-            await this._addFile(null, players, groups, origin);
+            let { players, groups } = this._import_har(json, timestamp, timestampOffset);
+            await this._addFile(null, players, groups);
         }
     }
 })();

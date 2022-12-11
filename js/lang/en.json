@@ -206,7 +206,6 @@
             "name": "Name",
             "group": "Group",
             "groups": "Groups",
-            "origin": "Origin",
             "players": "Players",
             "version": "Version",
             "import": {
@@ -260,7 +259,6 @@
                 "type_all": "Show all characters",
                 "type_own": "Show only own characters",
                 "type_other": "Show only other characters",
-                "origin": "Origin",
                 "hidden": "Hidden"
             },
             "online": {

@@ -99,9 +99,7 @@ class EndpointController {
 }
 
 const Endpoint = new ( class {
-    start (origin = 'endpoint') {
-        this.origin = origin;
-
+    start () {
         return new Promise(resolve => {
             if (!this.$parent) {
                 this._createModal();
@@ -236,7 +234,7 @@ const Endpoint = new ( class {
             this.$step4.show();
             this.$step3.hide();
             this.endpoint.query_collect((text) => {
-                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
                     Toast.error(intl('database.import_error'), e.message);
                     Logger.error(e, 'Error occured while trying to import a file!');
                 }).then(() => {
@@ -313,7 +311,7 @@ const Endpoint = new ( class {
 
     _funcLoginSingle (server, username, password) {
         this.endpoint.login_query_only(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
@@ -327,7 +325,7 @@ const Endpoint = new ( class {
 
     _funcLoginHOF (server, username, password) {
         this.endpoint.login_query_hall_of_fame(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
@@ -351,7 +349,7 @@ const Endpoint = new ( class {
             const [members, friends] = text.split(';');
             return kind == 'members' ? members : friends;
         }, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
@@ -543,14 +541,10 @@ const Endpoint = new ( class {
 })();
 
 const StatisticsIntegration = new (class {
-    configure (profile, pollLabel, origin, callback) {
+    configure (profile, pollLabel, callback) {
         let $statsModule = $(`<div class="statistics-module" id="stats-module"></div>`).appendTo($(document.body));
         let $statsLoad = $(`<div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>${pollLabel}</div>`).appendTo($statsModule);
         let $statsList = $(`<div id="stats-list"></div>`).appendTo($statsModule);
-
-        const createOrigin = (method) => {
-            return `${method}${origin ? `/${origin}` : ''}`;
-        }
 
         $statsLoad.click(() => {
             Loader.toggle(true);
@@ -568,7 +562,7 @@ const StatisticsIntegration = new (class {
                                     </div>
                                 </div>
                             `).click(() => {
-                                Endpoint.start(createOrigin('endpoint')).then(() => {
+                                Endpoint.start().then(() => {
                                     $statsLoad.trigger('click');
                                 });
                             }),
@@ -583,7 +577,7 @@ const StatisticsIntegration = new (class {
                                 let pendingPromises = [];
                                 Array.from(fileEvent.target.files).forEach(file => {
                                     pendingPromises.push(file.text().then(fileContent => {
-                                        return DatabaseManager.import(fileContent, file.lastModified, undefined, createOrigin('har'));
+                                        return DatabaseManager.import(fileContent, file.lastModified);
                                     }).catch(function (e) {
                                         Toast.error(intl('database.import_error'), e.message);
                                         Logger.error(e, 'Error occured while trying to import a file!');

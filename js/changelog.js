@@ -4,7 +4,8 @@ const CHANGELOG = {
             'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>',
             'Added un/loading of hidden data without requiring page reload',
             'Fixed file merging with duplicate players / groups',
-            'Migrated file sharing to new service'
+            'Migrated file sharing to new service',
+            'Removed profile and origin fields from files'
         ],
         'Fortress Simulator': [
             'Redesigned simulator to allow for multiple battles to be simulated at once'
