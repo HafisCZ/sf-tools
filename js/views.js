@@ -250,30 +250,32 @@ const Loader = new (class extends Dialog {
         return `
             <div class="ui basic modal" style="display: flex; flex-direction: column; align-items: center; gap: 1em;">
                 <img src="res/favicon.png" class="sftools-loader" width="100">
-                <span style="color: black" data-op="content"></span>
+                <div class="ui active tiny progress" data-percent="0" style="width: 200px; margin-top: 1em;">
+                    <div class="bar" style="background: #888 !important;"></div>
+                </div>
             </div>
         `;
     }
 
     _createBindings () {
-        this.$content = this.$parent.find('[data-op="content"]');
+        this.$progress = this.$parent.find('.progress');
     }
 
-    _applyArguments (text) {
-        if (text) {
-            this.$content.show();
-            this.$content.text(text);
+    _applyArguments (options) {
+        if (options?.progress) {
+            this.$progress.show();
+            this.$progress.progress({ percent: 0 });
         } else {
-            this.$content.hide();
+            this.$progress.hide();
         }
     }
 
-    toggle (open, text) {
-        if (open && this.shouldOpen) {
-            this._applyArguments(text);
-        } else {
-            DialogController[open ? 'open' : 'close'](Loader, text);
-        }
+    progress (percent) {
+        this.$progress.progress({ percent: Math.trunc(100 * percent) });
+    }
+
+    toggle (open, options = null) {
+        DialogController[open ? 'open' : 'close'](Loader, options);
     }
 })();
 
