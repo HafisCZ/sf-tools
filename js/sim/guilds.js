@@ -1,6 +1,10 @@
 self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
     SIMULATOR_FLAGS.set(flags);
 
+    SIMULATOR_FLAGS.set({
+        NoGladiatorReduction: true
+    });
+
     let timestamp = Date.now();
 
     let results = new GuildSimulator().simulate(guildA, guildB, iterations);
@@ -49,8 +53,6 @@ class GuildSimulator extends SimulatorBase {
                 // Rest modifier
                 model.Player.ForceHealthMultiplier = 1.0;
             }
-
-            model.Player.NoGladiatorReduction = true;
 
             return model;
         }).sort((a, b) => a.Player.Level - b.Player.Level);
