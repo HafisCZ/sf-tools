@@ -169,7 +169,7 @@ const Endpoint = new ( class {
         this.$errorButton.one('click', () => {
             this.$error.hide();
             if (hard) {
-                this._funcShutdown();
+                this._funcShutdown(false);
             } else {
                 this.$step1.show();
             }
@@ -192,8 +192,8 @@ const Endpoint = new ( class {
         }
     }
 
-    _hide () {
-        this.resolveFunction();
+    _hide (actionSuccess) {
+        this.resolveFunction(actionSuccess);
         this.$parent.modal('hide');
     }
 
@@ -228,7 +228,7 @@ const Endpoint = new ( class {
         this.endpoint = undefined;
         this.downloading = [];
 
-        this.$parent.find('[data-op="back"]').click(() => this._funcShutdown());
+        this.$parent.find('[data-op="back"]').click(() => this._funcShutdown(false));
 
         this.$import.click(() => {
             this.$step4.show();
@@ -238,7 +238,7 @@ const Endpoint = new ( class {
                     Toast.error(intl('database.import_error'), e.message);
                     Logger.error(e, 'Error occured while trying to import a file!');
                 }).then(() => {
-                    this._funcShutdown();
+                    this._funcShutdown(true);
                 });
             });
         });
@@ -315,7 +315,7 @@ const Endpoint = new ( class {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
-                this._funcShutdown();
+                this._funcShutdown(true);
             });
         }, () => {
             this.$step4.hide();
@@ -329,7 +329,7 @@ const Endpoint = new ( class {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
-                this._funcShutdown();
+                this._funcShutdown(true);
             });
         }, () => {
             this.$step4.hide();
@@ -353,7 +353,7 @@ const Endpoint = new ( class {
                 Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
-                this._funcShutdown();
+                this._funcShutdown(true);
             });
         }, () => {
             this.$step4.hide();
@@ -422,13 +422,13 @@ const Endpoint = new ( class {
         });
     }
 
-    _funcShutdown () {
+    _funcShutdown (actionSuccess) {
         if (this.endpoint) {
             this.endpoint.destroy();
             this.endpoint = undefined;
         }
 
-        this._hide();
+        this._hide(actionSuccess);
     }
 
     _createModal () {
@@ -562,8 +562,10 @@ const StatisticsIntegration = new (class {
                                     </div>
                                 </div>
                             `).click(() => {
-                                Endpoint.start().then(() => {
-                                    $statsLoad.trigger('click');
+                                Endpoint.start().then((actionSuccess) => {
+                                    if (actionSuccess) {
+                                        $statsLoad.trigger('click');
+                                    }
                                 });
                             }),
                             $(`
