@@ -461,11 +461,26 @@ const Actions = new (class {
     }
 
     _executeScript () {
-        this.actions = new Settings(this.script || '', null, EditorType.ACTIONS).actions;
+        this.instance = new Settings(this.script || '', null, EditorType.ACTIONS)
+
+        this.actions = this.instance.actions;
+        this.trackers = this.instance.trackers;
     }
 
     getScript () {
         return this.script;
+    }
+
+    getInstance () {
+        return this.instance;
+    }
+
+    getActions () {
+        return this.actions;
+    }
+
+    getTrackers () {
+        return this.trackers;
     }
 
     resetScript () {

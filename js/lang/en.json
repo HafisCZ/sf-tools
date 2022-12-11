@@ -330,7 +330,6 @@
                 "me": "Me",
                 "players": "Players",
                 "guilds": "Guilds",
-                "tracker": "Tracker Configuration",
                 "default": "Default"
             },
             "online": {
@@ -471,8 +470,7 @@
             "preload": "Preload rows",
             "actions": {
                 "title": "Actions",
-                "reset": "Reset actions",
-                "ignore": "Ignore changes",
+                "discard": "Discard unsaved changes",
                 "save": "Save actions"
             },
             "recovery": {

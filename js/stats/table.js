@@ -101,7 +101,7 @@ class TableInstance {
         let trackers = this.settings.trackers;
         if (Object.keys(trackers).length > 0) {
             // Get current tracker settings
-            let trackerSettings = SettingsManager.tracker();
+            let trackerSettings = Actions.getInstance();
             let trackerCode = trackerSettings.code;
 
             // Go through all required trackers
@@ -121,7 +121,7 @@ class TableInstance {
 
             // Save settings
             if (isset) {
-                SettingsManager.save('tracker', trackerCode);
+                Actions.setScript(trackerCode);
                 DatabaseManager.refreshTrackers();
             }
         }

@@ -337,19 +337,19 @@ color above @3days darkorange
 color above @1day orange
 color above @12hours yellow
 color default @green
-`, 'Tracker': `# Example Tracker Configuration
-
-# Saves the date when the character reached level 100
-# track Level100 when Level >= 100
-
-# Saves the level at which the character was when reaching tower 100
-# track LevelAtTower100 as Level when Tower == 100`,
-'Actions': `# Example - Tag every player above level 600 with tag Legend:
+`,
+  'Actions': `# Example - Tag every player above level 600 with tag Legend:
 # tag player as 'Legend' if Level > 600
 
 # Example - Tag file as Legendary if it includes your own character:
 # tag file as 'Legendary' if some(players, Own)
 
 # Example - Remove players from import that are not from Int 30:
-# remove player if Prefix != 'W30 .NET'`
+# remove player if Prefix != 'W30 .NET'
+
+# Tracker Example - Saves the date when the character reached level 100
+# track Level100 when Level >= 100
+
+# Tracker Example - Saves the level at which the character was when reaching tower 100
+# track LevelAtTower100 as Level when Tower == 100`
 };

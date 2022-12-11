@@ -1314,7 +1314,7 @@ const DatabaseManager = new (class {
     }
 
     async refreshTrackers () {
-        this.TrackerConfig = SettingsManager.trackerConfig();
+        this.TrackerConfig = Actions.getTrackers();
         this.TrackerConfigEntries = Object.entries(this.TrackerConfig);
         this.TrackerData = Preferences.get('tracker_data', {});
 

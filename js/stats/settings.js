@@ -1,8 +1,7 @@
 const ScriptType = {
     History: 0,
     Players: 1,
-    Group: 2,
-    Tracker: 3
+    Group: 2
 }
 
 const EditorType = {
@@ -168,6 +167,11 @@ class Command {
 
     specialType (type) {
         this.type = type;
+        return this;
+    }
+
+    anyType () {
+        this.type = true;
         return this;
     }
 }
@@ -1230,7 +1234,7 @@ const SettingsCommands = [
             }
         },
         (root, str, name, arg, arg2) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(arg) + SFormat.Keyword(' when ') + Expression.format(arg2)
-    ),
+    ).anyType(),
     new Command(
         /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
         (root, str, name, arg) => {
@@ -1240,7 +1244,7 @@ const SettingsCommands = [
             }
         },
         (root, str, name, arg) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' when ') + Expression.format(arg)
-    )
+    ).anyType()
 ];
 
 SettingsCommands.MACRO_IFNOT = SettingsCommands[0];
@@ -1309,7 +1313,7 @@ class Settings {
         // Parse settings
         for (let line of Settings.handleMacros(string, type)) {
             let command = SettingsCommands.find(command => command.isValid(line));
-            if (command && command.canParse && command.type == scriptType) {
+            if (command && command.canParse && (command.type === true || command.type == scriptType)) {
                 command.parse(this, line);
             }
         }
@@ -2682,7 +2686,7 @@ class Settings {
             let trimmed = Settings.stripComments(line)[0].trim();
 
             for (let command of SettingsCommands) {
-                if (command.canParse && command.canParseAlways && command.type == type && command.isValid(trimmed)) {
+                if (command.canParse && command.canParseAlways && (command.type === true || command.type == type) && command.isValid(trimmed)) {
                     command.parse(settings, trimmed);
                     break;
                 }
@@ -2758,7 +2762,7 @@ class Settings {
 
                 if (trimmed) {
                     let command = SettingsCommands.find(command => command.isValid(trimmed));
-                    if (command && command.type == type) {
+                    if (command && (command.type === true || command.type == type)) {
                         currentContent += command.format(settings, trimmed);
                     } else {
                         currentContent += SFormat.Error(trimmed);
@@ -2855,14 +2859,6 @@ const SettingsManager = new (class {
                 Preferences.set('settingsBackup', backup);
             }
         }
-    }
-
-    tracker () {
-        return new Settings(this.get('tracker', '', ''), ScriptType.Tracker);
-    }
-
-    trackerConfig () {
-        return this.tracker().trackers;
     }
 
     commit () {

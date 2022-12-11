@@ -2531,8 +2531,6 @@ class SettingsView extends View {
             return 'players';
         } else if (v == 'me' || v.includes('_p')) {
             return 'me';
-        } else if (v == 'tracker') {
-            return '';
         } else {
             return 'guilds';
         }
@@ -2544,8 +2542,6 @@ class SettingsView extends View {
             return PredefinedTemplates['Players Default'];
         } else if (v == 'me' || v.includes('_p')) {
             return PredefinedTemplates['Me Default'];
-        } else if (v == 'tracker') {
-            return PredefinedTemplates['Tracker'];
         } else {
             return PredefinedTemplates['Guilds Default'];
         }
@@ -2599,7 +2595,7 @@ class SettingsView extends View {
                 selected: this.settings.name == 'guilds'
             },
             ... SettingsManager.getKeys().map(key => {
-                if ([ 'me', 'players', 'guilds', 'tracker' ].includes(key)) {
+                if ([ 'me', 'players', 'guilds' ].includes(key)) {
                     return null;
                 } else {
                     return {
@@ -2611,12 +2607,6 @@ class SettingsView extends View {
             }).filter(obj => obj != null)
         ];
 
-        settings.unshift({
-            name: `<i>${intl('stats.scripts.types.tracker')}</i>`,
-            value: 'tracker',
-            selected: this.settings.name == 'tracker'
-        });
-
         // Setup list
         this.$settingsList.settings_selectionlist({
             items: settings,
@@ -2624,10 +2614,6 @@ class SettingsView extends View {
             onSave: value => this.save(),
             onRemove: value => {
                 SettingsManager.remove(value);
-                if (value == 'tracker') {
-                    DatabaseManager.refreshTrackers();
-                }
-
                 this.show();
             }
         });
@@ -2652,9 +2638,6 @@ class SettingsView extends View {
         // Save current code
         this.settings.content = code;
         SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
-        if (this.settings.name == 'tracker') {
-            DatabaseManager.refreshTrackers();
-        }
     }
 
     updateTemplates () {
@@ -3318,16 +3301,13 @@ class OptionsView extends View {
         this.$save = this.$parent.find('[data-op="save"]').click(() => {
             Actions.setScript(this.editor.content);
 
+            DatabaseManager.refreshTrackers();
+
             this.$save.addClass('disabled');
             this.$reset.addClass('disabled');
         });
 
-        this.$reset = this.$parent.find('[data-op="reset"]').click(() => {
-            this.editor.content = Actions.getScript();
-        });
-
-        this.$parent.find('[data-op="remove"]').click(() => {
-            Actions.resetScript();
+        this.$reset = this.$parent.find('[data-op="discard"]').click(() => {
             this.editor.content = Actions.getScript();
         });
 
