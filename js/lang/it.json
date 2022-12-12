@@ -57,10 +57,10 @@
             "warriors": "Soldati",
             "archers": "Arcieri",
             "mages": "Maghi",
-            "backpack_size": "Capienza zaino",
-            "critical_bonus": "Bonus critico",
-            "thirst_free": "Sete bonus giornaliera",
-            "thirst_usable": "Sete conservabile giornaliera",
+            "backpack_size": "Slot zaino",
+            "critical_bonus": "Bonus c.critico",
+            "thirst_free": "Sete bonus",
+            "thirst_usable": "Sete conservabile",
             "fortress1": "Fortezza",
             "fortress2": "Quartiere degli operai",
             "fortress3": "Taglialegna",
@@ -114,7 +114,7 @@
             "desc": "Tabella dei bonus delle rune (by Zorago)"
         },
         "inventory": {
-            "title": "Gestore zaino",
+            "title": "Gestore Zaino",
             "desc": "Confronta oggetti, calcola miglioramenti e altro"
         },
         "idle": {
@@ -175,7 +175,7 @@
         },
         "hellevator": {
             "title": "Simulatore Infernatore",
-            "desc": "Simula il probabile esito delle battaglie nell'Infernatore"
+            "desc": "Simula il probabile esito degli scontri nell'Infernatore"
         }
     },
     "404": {
@@ -206,7 +206,6 @@
             "name": "Nome",
             "group": "Gruppo",
             "groups": "Gruppi",
-            "origin": "Origine",
             "players": "Giocatori",
             "version": "Versione",
             "import": {
@@ -260,7 +259,6 @@
                 "type_all": "Mostra tutti i personaggi",
                 "type_own": "Mostra solo i tuoi personaggi",
                 "type_other": "Mostro solo gli altri personaggi",
-                "origin": "Origine",
                 "hidden": "Nascosto"
             },
             "online": {
@@ -332,7 +330,6 @@
                 "me": "Me",
                 "players": "Giocatori",
                 "guilds": "Gilde",
-                "tracker": "Configurazione tracker",
                 "default": "Default"
             },
             "online": {
@@ -386,7 +383,7 @@
                 "version": "Versione del tool",
                 "compatibility": "Compatibilità",
                 "published_on": "Pubblicato il",
-                "code": "Code",
+                "code": "Codice template",
                 "publish": "Pubblica",
                 "publish_tooltip": "Pubblica template",
                 "unpublish_tooltip": "Annulla pubblicazione template",
@@ -401,7 +398,7 @@
             "compared_to": "confrontato con"
         },
         "player": {
-            "attributes": "Attributi",
+            "attributes": "Caratteristiche",
             "basis": "Base",
             "miscellaneous": "Altro",
             "armor": "Armatura",
@@ -470,11 +467,10 @@
             "unsafe_delete": "Non chiedere conferma per cancellare i file",
             "terms": "Accetta i Termini di Servizio",
             "tab": "Tab iniziale",
-            "preload": "Precarica righe",
+            "preload": "Pre-carica righe",
             "actions": {
                 "title": "Azioni",
-                "reset": "Reset azioni",
-                "ignore": "Ignora i cambiamenti",
+                "discard": "Scarta i cambiamenti non salvati",
                 "save": "Salve le azioni"
             },
             "recovery": {
@@ -492,11 +488,10 @@
             "tooltip": "Genera una tabella di successo per livello / gladiatore. Possibile solo per gli scontri contro i boss famigli.",
             "one": "Genera",
             "five": "Genera i prossimi 5",
-            "ten": "Generate i prossimi 10"
+            "ten": "Genera i prossimi 10"
         },
         "simulate": "Simula",
         "results": "Risultati",
-        "poll": "Importa personaggi salvati",
         "map": {
             "gladiator": "Glad"
         },
@@ -520,8 +515,8 @@
             "pet": "Famiglio",
             "habitat": "Habitat",
             "health": "Vita",
-            "attribute": "Attributo",
-            "defense": "Difesa",
+            "attribute": "Punti attacco",
+            "defense": "Punti difesa",
             "skip": "Schivata",
             "crit": "Possibilità colpo critico",
             "damage": "Danno",
@@ -556,7 +551,6 @@
         "mark": "Mark",
         "kunigunde": "Cunegonda",
         "open": "Dungeon aperti",
-        "poll": "Importa personaggi salvati",
         "graph": {
             "y": "HP boss residui",
             "x": "- Distribuzione per l'ammontare dei tentativi selezionati -",
@@ -609,6 +603,7 @@
         "gladiator_mode": "Gladiatore al 15 indipendentemente dalle impostazioni",
         "ihof_mode": "Modalità IHOF: Gladiatore non ridotto!",
         "fireball_mode": "Applica il fix della palla di fuoco per Berserker, Cacciatori di Demoni, Druidi e Bardi",
+        "no_attribute_reduction_mode": "La caratteristica primaria non sarà ridotta dalla difesa dell'avversario",
         "mode": {
             "all": "Tutti vs Tutti",
             "attack": "Uno vs Tutti",
@@ -962,7 +957,7 @@
         },
         "quests": {
             "title": "Missioni (sperimentale)",
-            "notice": "* I valori rappresentano il segmento minore missione (senza incantesimo xp strega).",
+            "notice": "* I valori rappresentano il segmento missione minore (senza incantesimo xp strega).",
             "album": "% album dei ritagli",
             "group_exp": "% bonus gilda xp",
             "group_gold": "% bonus gilda oro",
