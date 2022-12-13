@@ -322,7 +322,7 @@
                         this.data.runes.value = runes;
 
                         for (let i = 0; i < BUILDINGS.length; i++) {
-                            const upgrade = money[i] == 2 ? 4 : (money[i] == 1 && speed[i] == 1 ? 3 : (money[i] == 1 ? 2 : (speed[i] == 1 ? 1 : 0)));
+                            const upgrade = money[i] == 3 ? 4 : (money[i] == 1 && speed[i] == 1 ? 3 : (money[i] == 1 ? 2 : (speed[i] == 1 ? 1 : 0)));
 
                             this.buildings[i].upgrades.value = upgrade;
                             this.buildings[i].level.value = buildings ? buildings[i] : this.buildings[i].level.defaultValue;
