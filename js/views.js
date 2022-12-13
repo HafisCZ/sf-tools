@@ -262,7 +262,7 @@ const Loader = new (class extends Dialog {
     }
 
     _applyArguments (options) {
-        if (options?.progress) {
+        if (options && options.progress) {
             this.$progress.show();
             this.$progress.progress({ percent: 0 });
         } else {
