@@ -82,7 +82,7 @@
                     Progress
                 */
                 setLevel (level) {
-                    this.level = Math.min(700, level);
+                    this.level = Math.min(800, level);
                     this.level_xp_next = this.getNextLevel();
                 }
 
@@ -152,7 +152,7 @@
                     Experience from spin of wheel (small)
                 */
                 getWheelExperience () {
-                    return this.level >= 700 ? 0 : Math.trunc(this.getReducedBase());
+                    return this.level >= 800 ? 0 : Math.trunc(this.getReducedBase());
                 }
 
                 /*
@@ -293,7 +293,7 @@
                     let { x: maxx, g: maxg } = this.getMaxQuest();
 
                     return {
-                        x: this.level >= 700 ? 0 : Math.trunc((minx + maxx) / 2),
+                        x: this.level >= 800 ? 0 : Math.trunc((minx + maxx) / 2),
                         g: Math.trunc((ming + maxg) / 2)
                     };
                 }
@@ -315,13 +315,13 @@
 
                     return {
                         s: Math.min(duration, segLeft),
-                        x: this.level >= 700 ? 0 : xp_real,
+                        x: this.level >= 800 ? 0 : xp_real,
                         g: gold_real
                     }
                 }
 
                 getDailyExperienceIncome (day) {
-                    return this.level >= 700 ? 0 : (
+                    return this.level >= 800 ? 0 : (
                         this.getDailyQuest(),
                         + 6 * this.getWheelExperience()
                         + 10 * this.getArenaExperience(),
@@ -346,7 +346,7 @@
                         227: 1, 236: 2, 238: 3, 239: 0
                     }[day % 240];
 
-                    return type != undefined && this.level < 700 ? this.getCalendarExperience(type) : 0;
+                    return type != undefined && this.level < 800 ? this.getCalendarExperience(type) : 0;
                 }
 
                 getDailyGoldIncome (day) {

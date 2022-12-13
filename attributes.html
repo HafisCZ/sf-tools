@@ -972,7 +972,7 @@
                 }
 
                 bindCallback('#fortress-lq', 0, 15, (lq) => updateTimers(lq));
-                bindCallback('#fortress-level', 1, 700, (lvl) => updateLevels(lvl));
+                bindCallback('#fortress-level', 1, 800, (lvl) => updateLevels(lvl));
 
                 function generateTable (table, rows, generators, extra_rows, excludeBT = false, uwTime = false) {
                     let content = '';
@@ -1484,7 +1484,7 @@
 
                 $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
                     if (validate($('#misc-level'), $('#misc-gate'), $('#misc-torture'))) {
-                        const level = getValue('#misc-level', 1, 700);
+                        const level = getValue('#misc-level', 1, 800);
                         const gate = getValue('#misc-gate', 0, 15);
                         const torture = getValue('#misc-torture', 0, 15);
 
@@ -1516,7 +1516,7 @@
                     if (validate($('#xp-level'), $('#xp-hydra'), $('#xp-academy'))) {
                         var level = Number($('#xp-level').val());
                         if (level < 1) level = 1;
-                        else if (level > 699) level = 699;
+                        else if (level > 799) level = 799;
 
                         var hydra = Number($('#xp-hydra').val());
                         if (hydra > 20) hydra = 20;
@@ -1569,7 +1569,7 @@
                     if (validate($('#quest-level'), $('#quest-xp'), $('#quest-gold'), $('#quest-tower'), $('#quest-book'), $('#quest-rxp'), $('#quest-rgold'))) {
                         var level = Number($('#quest-level').val());
                         if (level < 1) level = 1;
-                        else if (level > 700) level = 700;
+                        else if (level > 800) level = 800;
 
                         var gxp = Number($('#quest-xp').val());
                         if (gxp > 200) gxp = 200;
@@ -1615,7 +1615,7 @@
                     if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'), $('#gold-pit'))) {
                         var level = Number($('#gold-level').val());
                         if (level < 1) level = 1;
-                        else if (level > 700) level = 700;
+                        else if (level > 800) level = 800;
 
                         var guild = Number($('#gold-guild').val());
                         if (guild > 200) guild = 200;
