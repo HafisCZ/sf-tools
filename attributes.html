@@ -918,7 +918,7 @@
                 function getGoldPitValues (level, pit) {
                     let num = getGoldCurve(level) * 12 / 1000;
                     let hourly = (num * pit / 75) * (1 + Math.max(0, pit - 15) / 100);
-                    let capacity = Math.min(20E6 + 200000 * Math.max(0, pit - 15), hourly * pit * 2);
+                    let capacity = Math.min(300E6, hourly * pit * 2);
                     let time = 3600000 * capacity / hourly;
 
                     return [capacity, hourly, time];
