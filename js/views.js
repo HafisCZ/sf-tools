@@ -1398,6 +1398,7 @@ const Localization = new (class {
             'fr': 'Français',
             'it': 'Italiano',
             'es': 'Español',
+            'hu': 'Magyar',
             'ch': 'Schwyzerdüütsch',
             'pg': 'Pig Latin'
         };
