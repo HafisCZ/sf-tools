@@ -11,17 +11,80 @@
         "class7": "Cazademonios",
         "class8": "Druida",
         "class9": "Bardo",
+        "mask0": "Eagle",
         "mask1": "Oso",
         "mask2": "Gato",
         "instrument0": "Arpa",
         "instrument1": "Laúd",
         "instrument2": "Flauta",
+        "life_potion": "Vida Eterna",
         "attribute1": "Fuerza",
         "attribute2": "Destreza",
         "attribute3": "Inteligencia",
         "attribute4": "Constitución",
         "attribute5": "Suerte",
-        "life_potion": "Vida Eterna"
+        "potion1": "Strength",
+        "potion2": "Dexterity",
+        "potion3": "Intelligence",
+        "potion4": "Constitution",
+        "potion5": "Luck",
+        "potion6": "Life",
+        "rank1": "Leader",
+        "rank2": "Officer",
+        "rank3": "Member",
+        "rank4": "Invited",
+        "level": "Level",
+        "gold": "Gold",
+        "wood": "Wood",
+        "stone": "Stone",
+        "souls": "Souls",
+        "time": "Time",
+        "gem": "Gem",
+        "fight": "Fight",
+        "wood_cap": "Wood Capacity",
+        "stone_cap": "Stone Capacity",
+        "buildings": {
+            "time": "Build Time",
+            "hourly": "Hourly prod.",
+            "capacity": "Capacity",
+            "full": "Full in",
+            "storage": "Total storage",
+            "lure_count": "Lures",
+            "lure_bonus": "Lure Bonus",
+            "knights": "Hall of Knights",
+            "goblins": "Goblins",
+            "trolls": "Trolls",
+            "warriors": "Warriors",
+            "archers": "Archers",
+            "mages": "Mages",
+            "backpack_size": "Backpack Size",
+            "critical_bonus": "Critical Bonus",
+            "thirst_free": "Daily free Thirst",
+            "thirst_usable": "Daily storable Thirst",
+            "fortress1": "Fortress",
+            "fortress2": "Laborers' Quarters",
+            "fortress3": "Woodcutter's Hut",
+            "fortress4": "Quarry",
+            "fortress5": "Gem Mine",
+            "fortress6": "Academy",
+            "fortress7": "Archery Guild",
+            "fortress8": "Barracks",
+            "fortress9": "Mages' Tower",
+            "fortress10": "Treasury",
+            "fortress11": "Smithy",
+            "fortress12": "Fortifications",
+            "underworld1": "Heart of Darkness",
+            "underworld2": "Underworld Gate",
+            "underworld3": "Soul Extractor",
+            "underworld4": "Goblin Pit",
+            "underworld5": "Torture Chamber",
+            "underworld6": "Gladiator Trainer",
+            "underworld7": "Troll Block",
+            "underworld8": "Time Machine",
+            "underworld9": "Keeper",
+            "underworld10": "Gold Pit"
+        },
+        "reduction": "Reduction"
     },
     "index": {
         "toggle": "Alternar créditos",
@@ -101,16 +164,488 @@
         "hydra": {
             "title": "Simulador de Hidra",
             "desc": "Simula que clase de mascota de gremio es mejor para la hidra actual."
+        },
+        "fortress": {
+            "title": "Fortress Simulator",
+            "desc": "Simulate the probable outcome of fortress raid"
+        },
+        "changelog": {
+            "title": "Changelog",
+            "desc": "View all notable changes"
+        },
+        "hellevator": {
+            "title": "Hellevator Simulator",
+            "desc": "Simulate the probable outcome of Hellevator battles"
         }
     },
     "404": {
         "title": "404",
         "text": "No estoy seguro de lo que buscas pero no existe"
     },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Temporary",
+            "players": "Players",
+            "guilds": "Guilds",
+            "browse": "Browse",
+            "scripts": "Scripts",
+            "files": "Files",
+            "settings": "Settings",
+            "temporary": "Temporary session",
+            "changelog": "Changelog",
+            "profile": "Profile"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filters",
+                "io": "Import / Export"
+            },
+            "timestamp": "Timestamp",
+            "timestamps": "Timestamps",
+            "prefix": "Prefix",
+            "name": "Name",
+            "group": "Group",
+            "groups": "Groups",
+            "players": "Players",
+            "version": "Version",
+            "import": {
+                "file": "Import from File",
+                "shared": "Import Shared",
+                "game": "Import from Game"
+            },
+            "export": {
+                "all": "Export all",
+                "selected": "Export selected"
+            },
+            "selected": {
+                "text": "item(s) selected",
+                "no": "No"
+            },
+            "hide": {
+                "label": "Hide",
+                "tooltip": "Works independently in simple & advanced mode!",
+                "migrate": "Mark files with all hidden players as hidden"
+            },
+            "merge": {
+                "selected": "Merge selected"
+            },
+            "delete": {
+                "all": "Delete all",
+                "selected": "Delete selected"
+            },
+            "options": {
+                "title": "File options",
+                "advanced": "Show advanced file list",
+                "hidden": "Show hidden players",
+                "export_public_only": "Export only public data"
+            },
+            "tags": {
+                "single": "Tag",
+                "multiple": "Tags",
+                "all": "All",
+                "none": "None"
+            },
+            "filters": {
+                "any": "Any",
+                "n_unique": "unique",
+                "expression": "Expression",
+                "expression_placeholder": "Your expression",
+                "timestamp": "Timestamp",
+                "player": "Player",
+                "group": "Guild",
+                "prefix": "Prefix",
+                "tags": "Tags",
+                "type": "Type",
+                "type_all": "Show all characters",
+                "type_own": "Show only own characters",
+                "type_other": "Show only other characters",
+                "hidden": "Hidden"
+            },
+            "online": {
+                "title": "File sharing",
+                "prompt": "Enter your code:",
+                "invalid": "Invalid or expired code!",
+                "cancel": "Cancel",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Save as image",
+            "basic": "Copy table",
+            "fight": "Copy table for fight simulator",
+            "player": "Copy",
+            "player_companions": "Copy with companions"
+        },
+        "context": {
+            "hide": "Show / Hide",
+            "remove": "Remove permanently"
+        },
+        "profiles": {
+            "players": "Players",
+            "groups": "Guilds",
+            "primary": "Primary filter",
+            "secondary": "Secondary filter",
+            "none": "None",
+            "create": "Create new profile",
+            "between": "between",
+            "and": "and"
+        },
+        "filters": {
+            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
+            "p": "Player name",
+            "g": "Guild name",
+            "s": "Server",
+            "e": "Custom expression",
+            "#": "Show only players with specified tags",
+            "l": "Show only latest",
+            "f": "Show only first or first n entries",
+            "r": "Force recalculation of global variables",
+            "x": "Enable simulator (argument is number of iterations)",
+            "h": "Show hidden",
+            "o": "Show own",
+            "a": "Show all",
+            "d": "Show other",
+            "q": "Custom settings (separate header names with comma)",
+            "t": "Show online template directly",
+            "sr": "Sort by custom expression",
+            "qc": "Show only selected categories"
+        },
+        "scripts": {
+            "settings": "Settings",
+            "templates": "Templates",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Scripts",
+                "templates": "Templates",
+                "save": "Save",
+                "copy": "Copy",
+                "undo": "Undo",
+                "redo": "Redo",
+                "close": "Close",
+                "apply": "Apply",
+                "remove": "Remove",
+                "save_apply": "Save & Apply"
+            },
+            "types": {
+                "me": "Me",
+                "players": "Players",
+                "guilds": "Guilds",
+                "default": "Default"
+            },
+            "online": {
+                "not_available": "No scripts available"
+            }
+        },
+        "players": {
+            "other": "Show other players",
+            "hidden": "Show hidden"
+        },
+        "guilds": {
+            "other": "Show other guilds",
+            "hidden": "Show hidden",
+            "missing": "Player data is missing for following members:"
+        },
+        "browse": {
+            "hidden": "Show hidden"
+        },
+        "fast_export": {
+            "label": "Share",
+            "title": "Export options",
+            "all": "All",
+            "latest": "Latest",
+            "latest5": "Latest 5",
+            "selected": "Selected",
+            "selected_both": "Selected & Reference"
+        },
+        "share": {
+            "title": "File sharing",
+            "options": "Options",
+            "code": "Your code",
+            "get": "Get code",
+            "ok": "Ok",
+            "expire": "The code will automatically expire after 2 days.",
+            "single_use": "Single use only",
+            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+        },
+        "online_templates": {
+            "title": "Public scripts",
+            "description": "Description",
+            "author": "Author",
+            "created_on": "Created on",
+            "loading": "Fetching scripts",
+            "code": "Enter your private code..."
+        },
+        "templates": {
+            "title": "Templates",
+            "loading": "Committing changes",
+            "form": {
+                "changed_on": "Changed on",
+                "version": "Tool Version",
+                "compatibility": "Compatibility",
+                "published_on": "Published on",
+                "code": "Code",
+                "publish": "Publish",
+                "publish_tooltip": "Publish template",
+                "unpublish_tooltip": "Unpublish template",
+                "update": "Update",
+                "update_tooltip": "Update template with current script",
+                "remove": "Remove",
+                "remove_tooltip": "Remove template"
+            },
+            "quick_swap": "Quick swap custom templates"
+        },
+        "group": {
+            "compared_to": "compared to"
+        },
+        "player": {
+            "attributes": "Attributes",
+            "basis": "Basis",
+            "miscellaneous": "Misc",
+            "armor": "Armor",
+            "damage": "Damage",
+            "health": "Health",
+            "potions": "Potions",
+            "guild": "Guild",
+            "name": "Name",
+            "role": "Role",
+            "joined_on": "Joined on",
+            "bonuses": "Bonuses",
+            "scrapbook": "Scrapbook",
+            "achievements": "Achievements",
+            "mount": "Mount",
+            "heath_bonus": "Health Bonus",
+            "damage_bonus": "Damage Bonus",
+            "treasure": "Treasure",
+            "instructor": "Instructor",
+            "pet": "Pet",
+            "knights": "Hall of Knights",
+            "extras": {
+                "title": "Extras",
+                "registered": "Registered"
+            },
+            "runes": {
+                "title": "Runes",
+                "gold": "Gold",
+                "experience": "Experience",
+                "epic": "Epic Chance",
+                "quality": "Item Quality",
+                "health": "Health",
+                "fire_damage": "Fire Damage",
+                "cold_damage": "Cold Damage",
+                "lightning_damage": "Lightning Damage",
+                "fire_resist": "Fire Resistance",
+                "cold_resist": "Cold Resistance",
+                "lightning_resist": "Lightning Resistance"
+            },
+            "fortress": {
+                "title": "Fortress",
+                "upgrades": "Upgrades",
+                "rank": "Rank",
+                "honor": "Honor",
+                "building1": "Fortress",
+                "building2": "Quarters",
+                "building3": "Woodcutter",
+                "building4": "Quarry",
+                "building5": "Gem Mine",
+                "building6": "Academy",
+                "building7": "Archery Guild",
+                "building8": "Barracks",
+                "building9": "Mage Tower",
+                "building10": "Treasury",
+                "building11": "Smithy",
+                "building12": "Fortifications",
+                "working": "Building"
+            }
+        },
+        "settings": {
+            "title": "Global configuration",
+            "always_prev": "Compare previous (guilds)",
+            "empty_groups": "Show empty groups",
+            "obfuscated": "Hide player names",
+            "insecure": "Allow insecure html tags",
+            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
+            "unsafe_delete": "Skip confirmation when deleting files",
+            "terms": "Accept Terms of Service",
+            "tab": "Default tab",
+            "preload": "Preload rows",
+            "actions": {
+                "title": "Actions",
+                "discard": "Discard unsaved changes",
+                "save": "Save actions"
+            },
+            "recovery": {
+                "title": "Recovery",
+                "import": "Import data",
+                "export": "Download data",
+                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
+                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
+                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
+            }
+        }
+    },
+    "pets": {
+        "generate": {
+            "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
+            "one": "Generate",
+            "five": "Generate next 5",
+            "ten": "Generate next 10"
+        },
+        "simulate": "Simulate",
+        "results": "Results",
+        "map": {
+            "gladiator": "Glad"
+        },
+        "types": {
+            "0": "Shadow",
+            "1": "Light",
+            "2": "Earth",
+            "3": "Fire",
+            "4": "Water"
+        },
+        "names": {
+            "0": "Slurp",
+            "1": "Digmol",
+            "2": "Toothey",
+            "3": "Okultacle",
+            "4": "Spidor",
+            "5": "Jackobu",
+            "6": "Shrimpfly",
+            "7": "Reaprim",
+            "8": "Petdacat",
+            "9": "Mykon",
+            "10": "Fishorr",
+            "11": "Cuckooly",
+            "12": "Battlutter",
+            "13": "Pinklynx",
+            "14": "Pharamumm",
+            "15": "Ninstarr",
+            "16": "Luchtablong",
+            "17": "Angrack",
+            "18": "Devilsatt",
+            "19": "Poisnake",
+            "20": "Shaggyll",
+            "21": "Jellclops",
+            "22": "Tinck",
+            "23": "Cloudning",
+            "24": "Nevorfull",
+            "25": "Plutoid",
+            "26": "Djinntonic",
+            "27": "Blaxta",
+            "28": "Lampcess",
+            "29": "Teslarr",
+            "30": "Sunnya",
+            "31": "Buckfoxion",
+            "32": "Birdychirp",
+            "33": "Eyeorwhat",
+            "34": "Mesmerit",
+            "35": "Antlar",
+            "36": "Liphant",
+            "37": "Knilight",
+            "38": "Heraldon",
+            "39": "Unikor",
+            "40": "Mamoton",
+            "41": "Monkorrage",
+            "42": "Smaponyck",
+            "43": "Bittnutz",
+            "44": "Roarear",
+            "45": "Muscudon",
+            "46": "Apstick",
+            "47": "Horrnington",
+            "48": "Boaringg",
+            "49": "Mameloth",
+            "50": "Rheynooh",
+            "51": "Rockastonn",
+            "52": "Redwoofox",
+            "53": "Lilbeatzup",
+            "54": "Forror",
+            "55": "Nipprabs",
+            "56": "Armoruck",
+            "57": "Canocle",
+            "58": "Tricerawood",
+            "59": "Mouthrexor",
+            "60": "Firimp",
+            "61": "Gullps",
+            "62": "Pyrophibus",
+            "63": "Flamechirr",
+            "64": "Tectospit",
+            "65": "Pyroplant",
+            "66": "Kokofire",
+            "67": "Peppryon",
+            "68": "Boomywoomy",
+            "69": "Tikiricky",
+            "70": "Matchlit",
+            "71": "Birblazey",
+            "72": "Infernox",
+            "73": "Humbuzzish",
+            "74": "Dragopyr",
+            "75": "Mantiflame",
+            "76": "Finnettle",
+            "77": "Etrock",
+            "78": "Blazingtongues",
+            "79": "Devastor",
+            "80": "Goldy",
+            "81": "Orcahle",
+            "82": "Ocodile",
+            "83": "Penguwater",
+            "84": "Walrophin",
+            "85": "Colsnail",
+            "86": "Aquaphant",
+            "87": "Naar",
+            "88": "Octoboss",
+            "89": "Ewilgryn",
+            "90": "Seapard",
+            "91": "Shellzy",
+            "92": "Mingho",
+            "93": "Angbite",
+            "94": "Mermoid",
+            "95": "Watnake",
+            "96": "Cannoturtle",
+            "97": "Unhere",
+            "98": "Tritosting",
+            "99": "Hydrospir"
+        },
+        "bulk": {
+            "not_possible": "Not possible",
+            "toast": {
+                "title": "Starting simulation",
+                "matches": "Matches:"
+            }
+        },
+        "editor": {
+            "none": "None",
+            "type": "Type",
+            "pet": "Pet",
+            "habitat": "Habitat",
+            "health": "Health",
+            "attribute": "Attribute",
+            "defense": "Defense",
+            "skip": "Skip Chance",
+            "crit": "Critical Chance",
+            "damage": "Damage",
+            "critical_bonus": "Critical",
+            "at100": {
+                "title": "At 100 - 149",
+                "placeholder": "Pets at 100 - 149"
+            },
+            "at150": {
+                "title": "At 150 - 199",
+                "placeholder": "Pets at 150 - 199"
+            },
+            "at200": {
+                "title": "At 200",
+                "placeholder": "Pets at 200"
+            },
+            "pack": {
+                "title": "Pack",
+                "placeholder": "Pets you caught"
+            }
+        }
+    },
     "dungeons": {
-        "simulate": "Simular",
+        "simulate_one": "Simulate",
         "simulate_remaining": "Restantes",
         "simulate_all": "Todas",
+        "simulate_next": "More",
         "player": "Jugador",
         "enemy": "Enemigo",
         "yourself": "Tú",
@@ -120,9 +655,11 @@
         "open": "Mazmorras abiertas actual",
         "graph": {
             "y": "Vida restande del Jefe",
-            "x": "- Distribución por cantidad de intentos seleccionados -"
+            "x": "- Distribución por cantidad de intentos seleccionados -",
+            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
         },
         "results": "Resultados",
+        "experience": "Total: #{experience} XP",
         "cheats": {
             "title": "Menu de trampas",
             "subtitle": "Selecciona qué trampas aplicar y selecciona a tu personaje",
@@ -134,13 +671,148 @@
             "potions": "Pociones (máx. 3)",
             "class": "Cambiar clase",
             "keep_original": "Mantener original"
+        },
+        "simulate_next_settings": {
+            "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
+            "title": "Simulation threshold",
+            "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
+        },
+        "simulate_next_info": {
+            "title": "No dungeons beatable within threshold (#{threshold} %)",
+            "message#": "Use <b>All</b> function to simulate all open dungeons"
+        }
+    },
+    "underworld": {
+        "goblin_pit": "Goblin Pit",
+        "goblin_upgrades": "Goblin Upgrades",
+        "troll_block": "Troll Block",
+        "troll_upgrades": "Troll Upgrades",
+        "keeper": "Keeper",
+        "keeper_upgrades": "Keeper Upgrades",
+        "shield_mode": "Allow underworld units to use shield",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "players": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
+        "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
+        "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
+        "mode": {
+            "all": "All vs All",
+            "attack": "One vs All",
+            "defend": "All vs One",
+            "tournament": "Tournament"
+        },
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            },
+            "tournament": {
+                "title": "Preparing ladder",
+                "message#": "<b>Players:</b> #{count}"
+            }
+        }
+    },
+    "guilds": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "guild1": "Guild A",
+        "guild2": "Guild B",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "fortress": {
+        "warrior_count": "Warriors",
+        "warrior_level": "Warrior Level",
+        "archer_count": "Archers",
+        "archer_level": "Archer Level",
+        "mage_count": "Mages",
+        "mage_level": "Mage Level",
+        "units": {
+            "remaining": "Average remaning units:",
+            "player": "Warriors",
+            "target": "Defenses"
+        }
+    },
+    "hydra": {
+        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "player_count": "Player Count",
+        "main": "Main",
+        "side1": "Side 1",
+        "side2": "Side 2",
+        "hydra": "Hydra",
+        "iterations": {
+            "label": "Iterations:",
+            "popup": "Amount of iterations per pet class."
+        },
+        "result": {
+            "health": "#{health}% HP left",
+            "fights_single": "#{count} fight",
+            "fights_multiple": "#{count} fights"
+        },
+        "names": {
+            "1": "One-headed Hydra",
+            "2": "Two-headed Hydra",
+            "3": "Three-headed Hydra",
+            "4": "Four-headed Hydra",
+            "5": "Five-headed Hydra",
+            "6": "Six-headed Hydra",
+            "7": "Seven-headed Hydra",
+            "8": "Eight-headed Hydra",
+            "9": "Nine-headed Hydra",
+            "10": "Ten-headed Hydra",
+            "11": "Eleven-headed Hydra",
+            "12": "Twelve-headed Hydra",
+            "13": "Thirteen-headed Hydra (low accuracy)",
+            "14": "Fourteen-headed Hydra",
+            "15": "Fifteen-headed Hydra",
+            "16": "Sixteen-headed Hydra (low accuracy)",
+            "17": "Seventeen-headed Hydra (low accuracy)",
+            "18": "Eighteen-headed Hydra",
+            "19": "Nineteen-headed Hydra",
+            "20": "Countless-headed Hydra"
         }
     },
     "simulator": {
         "paste_target#": "Clica aqui y pulsa <b>CTRL&nbsp;+&nbsp;V</b> para copiar en el simulador",
         "threads": "Hilos de la simulación. Mantenga este número POR DEBAJO del número de núcleos de su procesador!",
         "iterations": "Cantidad de iteraciones por hilo.",
-        "save_image": "Guardar como imagen"
+        "add": "Add",
+        "save": "Save",
+        "simulate": "Simulate",
+        "simulate_debug": "Simulate in debug mode",
+        "clipboard": {
+            "copy_all": "Copy everyone",
+            "paste_mode": "Toggle Add/Replace insertion mode"
+        },
+        "win_chance": "Win %",
+        "min_chance": "Min %",
+        "max_chance": "Max %",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
     },
     "editor": {
         "name": "Nombre",
@@ -149,8 +821,11 @@
         "mask": "Máscara",
         "instrument": "Instrumento",
         "armor": "Armadura",
+        "armor_placeholder": "Armor points",
         "min": "Mínimo",
+        "min_placeholder": "Item Min",
         "max": "Máximo",
+        "max_placeholder": "Item Max",
         "weapon_enchant": "Crítico",
         "rune": "Runa",
         "portal_damage": "Portal de Daño",
@@ -166,5 +841,854 @@
         "smart_change": "Cambio de clase inteligente",
         "copy": "Copiar",
         "none": "Ninguno"
+    },
+    "endpoint": {
+        "username": "Username",
+        "password": "Password",
+        "mode": {
+            "own": "Capture own character",
+            "default": "Capture own + selected characters",
+            "guild": "Capture own + guild characters",
+            "friends": "Capture own + friend characters",
+            "hall_of_fame": "Capture own + top 50 HoF characters"
+        },
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "step2": {
+            "title": "Loading Endpoint"
+        },
+        "step3": {
+            "title": "Select players to be imported"
+        },
+        "step4": {
+            "title": "Contacting the server for information",
+            "message": "Fetching data"
+        },
+        "user_error": {
+            "title": "Your user name or password is not valid",
+            "message": "Please ensure that it is in correct format (username@url)"
+        },
+        "credentials_error": "Wrong username or password",
+        "download_error": "Download failed"
+    },
+    "database": {
+        "open_error": {
+            "title": "Database could not be opened",
+            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+        },
+        "import_error": "An error has occured while importing file",
+        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "update_info": {
+            "title": "A database update is in progress",
+            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+        }
+    },
+    "dialog": {
+        "delete_all": {
+            "title": "Delete all",
+            "notice": "Are you sure you want to delete all stored player data?"
+        },
+        "delete_script": {
+            "title": "Remove script",
+            "notice": "Are you sure you want to permanently remove currently applied script?"
+        },
+        "warning": {
+            "title": "An issue has occured!",
+            "continue": "Continue"
+        },
+        "error": {
+            "title": "A fatal error has occured!",
+            "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
+            "refresh": "Click here or refresh the page",
+            "revert": "Revert back to default profile"
+        },
+        "changelog": {
+            "release": "Release",
+            "continue": "Continue"
+        },
+        "file_edit": {
+            "title": "Edit file",
+            "timestamp": "Timestamp",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "save_online_script": {
+            "title": "Import template",
+            "loader": "Preparing Files",
+            "author": "Author",
+            "created_updated": "Created/Updated",
+            "name": "Name",
+            "name_placeholder": "Template name",
+            "error": "The requested template is not available!",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "edit_file_tag": {
+            "title": "Edit tags",
+            "current": "Current tags",
+            "replacement": "Replacement tag",
+            "none": "None",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "profile_create": {
+            "title": "Create/Edit profile",
+            "id": "ID",
+            "name": "Name",
+            "slot": "Slot",
+            "index": "Index",
+            "operation": "Operation",
+            "equals": "Equals",
+            "above": "Above",
+            "below": "Below",
+            "between": "Between",
+            "value": "Value",
+            "secondary": "Secondary filter",
+            "cancel": "Cancel",
+            "save": "Save",
+            "default": "Default",
+            "profile": "Profile",
+            "none": "None",
+            "ast": {
+                "primary": "Primary AST expression",
+                "secondary": "Secondary AST expression",
+                "optional": "optional"
+            },
+            "player": {
+                "primary": "Primary filter configuration",
+                "secondary": "Secondary filter configuration"
+            },
+            "group": {
+                "primary": "Primary group filter configuration",
+                "secondary": "Secondary group filter configuration"
+            }
+        },
+        "template_save": {
+            "title": "Save template",
+            "select_existing": "Select existing template",
+            "select_new": "Create new template",
+            "or": "or",
+            "name": "Template name",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "confirm": {
+            "cancel": "Cancel",
+            "ok": "Ok",
+            "wait_n_seconds": "Wait %1 seconds ..."
+        },
+        "input": {
+            "cancel": "Cancel",
+            "ok": "Ok"
+        },
+        "data_manage": {
+            "cancel": "Cancel",
+            "ok": "Delete",
+            "title": "Are you sure you want to delete these files, players or guilds?",
+            "skip_next": "Do not show next time",
+            "label": {
+                "group": "Following guild(s) will be removed:",
+                "player": "Following player(s) will be removed:",
+                "file": "Following file(s) will be removed:"
+            }
+        }
+    },
+    "attributes": {
+        "tabs": {
+            "gold_exp": "Gold & Experience",
+            "fortress": "Fortress",
+            "underworld": "Underworld",
+            "gold_table": "Gold Table"
+        },
+        "float": {
+            "title": "Character values",
+            "quarters": "Labourer's Quarters"
+        },
+        "gold": {
+            "title": "Gold",
+            "group": "Guild bonus %",
+            "tower": "Tower bonus %",
+            "mine": "Gem Mine",
+            "pit": "Gold Pit",
+            "pit_cap": "Gold Pit capacity",
+            "pit_hr": "Hourly Gold Pit",
+            "pit_time": "Gold Pit time",
+            "rune": "Item Quality Rune",
+            "reward": "Environmental reward",
+            "guard_hr": "Hourly guard duty",
+            "dice_3": "Dice game (3 of a kind)",
+            "dice_4": "Dice game (4 of a kind)",
+            "dice_5": "Dice game (5 of a kind)",
+            "gem_s": "Small gem",
+            "gem_m": "Medium gem",
+            "gem_l": "Large gem",
+            "pot_10": "10% Potion",
+            "pot_15": "15% Potion",
+            "pot_25": "25% Potion",
+            "pot_w": "Witch Potion",
+            "pot_pm": "Mushroom PoEL",
+            "pot_pg": "Gold PoEL",
+            "scroll": "Witch Scroll",
+            "glass": "Quicksand Hourglass",
+            "glass_10": "10 Quicksand Hourglasses",
+            "calendar_1": "Calendar 1 bar",
+            "calendar_3": "Calendar 3 bars / Locked",
+            "arena": "Arena Max",
+            "reroll": "Fortress Reroll",
+            "tower_reward": "Tower (Level is enemy level)",
+            "twister_reward": "Twister (Level is enemy level)"
+        },
+        "experience": {
+            "title": "Experience",
+            "hydra": "Hydra heads",
+            "academy": "Academy",
+            "academy_hr": "Hourly Academy",
+            "academy_time": "Academy time",
+            "academy_cap": "Academy capacity",
+            "next": "Next level",
+            "arena": "Arena",
+            "daily": "Daily mission",
+            "dungeon": "Dungeon (Level is enemy level)",
+            "twister": "Twister (Level is enemy level)",
+            "wheel_1": "Wheel book",
+            "wheel_2": "Wheel books",
+            "calendar_1": "Calendar 1 book",
+            "calendar_2": "Calendar 2 books",
+            "calendar_3": "Calendar 3 books",
+            "habitat": "Habitat Boss"
+        },
+        "quests": {
+            "title": "Quests (Experimental)",
+            "notice": "* Final values represent smallest quest segment with no enchantments applied.",
+            "album": "Scrapbook %",
+            "group_exp": "Guild XP %",
+            "group_gold": "Guild Gold %",
+            "tower": "Tower",
+            "rune_exp": "Experience Rune",
+            "rune_gold": "Gold Rune",
+            "min_xp": "Minimum XP",
+            "max_xp": "Maximum XP",
+            "min_gold": "Minimum Gold",
+            "max_gold": "Maximum Gold"
+        },
+        "misc": {
+            "title": "Miscellaneous",
+            "gate": "Underworld Gate",
+            "torture": "Torture Chamber",
+            "souls": "Souls (Level is enemy level)"
+        },
+        "calc": {
+            "title_at": "Calculate attribute price at",
+            "title_between": "Calculate attribute price between",
+            "attribute": "Attribute",
+            "cost": "Cost",
+            "from": "From",
+            "to": "To"
+        },
+        "gold_table": {
+            "copy": "Copy table",
+            "copy_comma": "Copy table (use comma as decimal separator)",
+            "level": "Attribute / Level",
+            "price": "Attribute Price",
+            "curve": "Gold Curve",
+            "mount": "Griffin",
+            "guard": "Guard Duty / Dice (3)"
+        }
+    },
+    "idle": {
+        "title": "Arena Manager",
+        "topbar": {
+            "suggest": {
+                "0": "Next 1 + BP",
+                "1": "Only next 1",
+                "2": "Only breakpoint"
+            },
+            "number": {
+                "0": "Labeled",
+                "1": "Scientific"
+            }
+        },
+        "table": {
+            "building": "Building",
+            "upgrades": "Upgrades",
+            "level": "Level",
+            "level_next": "Next Level",
+            "cycle_duration": "Cycle",
+            "cycle_money": "Money per Cycle",
+            "money_share": "Share",
+            "upgrade_money": "Cost",
+            "upgrade_estimation": "Estimation",
+            "money_spent": "Spent money",
+            "money_1h": "1 Hour",
+            "money_8h": "8 Hours",
+            "money_1d": "1 Day",
+            "money_7d": "7 Days",
+            "runes": "Runes"
+        },
+        "building": {
+            "seat": "Seat",
+            "popcorn_stand": "Popcorn Stand",
+            "parking_lot": "Parking Lot",
+            "trap": "Trap",
+            "drinks": "Drinks",
+            "deadly_trap": "Deadly Trap",
+            "vip_seat": "VIP Seat",
+            "snacks": "Snacks",
+            "straying_monsters": "Straying Monsters",
+            "toilet": "Toilet"
+        },
+        "upgrades": {
+            "0": "None",
+            "1": "Speed",
+            "2": "Gold",
+            "3": "Both",
+            "4": "Platinum"
+        }
+    },
+    "blacksmith": {
+        "item": {
+            "type": "Type",
+            "value": "Attribute",
+            "double": "Mage or Scout weapon?",
+            "types": {
+                "normal_1": "Normal (1 attribute)",
+                "normal_2": "Normal (2 attributes)",
+                "epic_3": "Epic (3 attributes)",
+                "epic_5": "Epic (5 attributes)"
+            }
+        },
+        "table": {
+            "total": "Total",
+            "bonus": "Bonus",
+            "lost": "Lost",
+            "reclaimable": "Reclaimable",
+            "required": "Required"
+        }
+    },
+    "dungeon_enemies": {
+        "shadow": "Shadow",
+        "1": {
+            "name": "Desecrated Catacombs",
+            "1": "Ghost",
+            "2": "Skeleton",
+            "3": "Undead",
+            "4": "Devious Vampire",
+            "5": "Night Ghoul",
+            "6": "Banshee",
+            "7": "Skeleton Soldier",
+            "8": "Voodoo Master",
+            "9": "Flesh Golem",
+            "10": "Lord of Darkness"
+        },
+        "2": {
+            "name": "The Mines of Gloria",
+            "1": "Water Glompf",
+            "2": "Yeti",
+            "3": "Skeleton",
+            "4": "Ugly Gremlin",
+            "5": "Stone Giant",
+            "6": "Fire Elemental",
+            "7": "Stone Troll",
+            "8": "Redlight Succubus",
+            "9": "Abhorrent Demon",
+            "10": "Hell Beast"
+        },
+        "3": {
+            "name": "The Ruins of Gnark",
+            "1": "Sewer Rat",
+            "2": "Dusty Bat",
+            "3": "Terror Tarantula",
+            "4": "Rowdy Robber",
+            "5": "Dirty Rotten Scoundrel",
+            "6": "Grim Wolf",
+            "7": "Bad Bandit",
+            "8": "Beastie",
+            "9": "Grave Robber",
+            "10": "Robber Chief"
+        },
+        "4": {
+            "name": "The Cutthroat Grotto",
+            "1": "Wind Elemental",
+            "2": "Pirate Dark Beard",
+            "3": "Rowdy Robber",
+            "4": "Shadow Alligator",
+            "5": "Sturdy Swashbuckler",
+            "6": "Mean Monster Rabbit",
+            "7": "Cutthroat",
+            "8": "Pirate Blood Nose",
+            "9": "Octopus",
+            "10": "Pirate Leader"
+        },
+        "5": {
+            "name": "The Emerald Scale Altar",
+            "1": "Rattling Cobra",
+            "2": "Slashing Saurus",
+            "3": "Roaring Raptor",
+            "4": "Swamp Warrior",
+            "5": "Green Rex",
+            "6": "Saurus Rogue",
+            "7": "Swamp Dragon",
+            "8": "Swamp Gorgon",
+            "9": "Toxic Dragon",
+            "10": "King Saurus"
+        },
+        "6": {
+            "name": "The Toxic Tree",
+            "1": "Toxic Tree",
+            "2": "Ugly Gremlin",
+            "3": "Rabid Wolf",
+            "4": "Slime Blob",
+            "5": "Greenish Gremlin",
+            "6": "Infected Brown Bear",
+            "7": "Greedy Gremlin",
+            "8": "Swamp Muncher",
+            "9": "Cruel Gremlin",
+            "10": "Terrible Toxic Gremlin"
+        },
+        "7": {
+            "name": "The Magma Stream",
+            "1": "Fire Scorpion",
+            "2": "Fire Basilisk",
+            "3": "Lava Blob",
+            "4": "Lava Giant",
+            "5": "Dragon of Darkness",
+            "6": "Hell Cyclops",
+            "7": "Fire Elemental",
+            "8": "Lava Giant",
+            "9": "Giant Dragon",
+            "10": "Ghost of the Volcano"
+        },
+        "8": {
+            "name": "The Frost Blood Temple",
+            "1": "Yeti",
+            "2": "Black Phantom",
+            "3": "Dragon of Cold",
+            "4": "Unholy Monk",
+            "5": "Hell Alien",
+            "6": "The Extraterrestrial",
+            "7": "Dragon of Madness",
+            "8": "Twilight Alien",
+            "9": "Out of State Alien",
+            "10": "Killing Machine"
+        },
+        "9": {
+            "name": "The Pyramids of Madness",
+            "1": "Cave Cyclops",
+            "2": "Sandstorm",
+            "3": "Hell Alien",
+            "4": "Bigfoot",
+            "5": "Ghost",
+            "6": "Timmy Suprino",
+            "7": "Demoralizing Demon",
+            "8": "Pink Monster Rabbit",
+            "9": "Banshee"
+        },
+        "10": {
+            "name": "Black Skull Fortress",
+            "1": "Dark Rider",
+            "2": "Skeleton Warrior",
+            "3": "Black Skull Warrior",
+            "4": "Night Troll",
+            "5": "Panther",
+            "6": "Man-Eater",
+            "7": "Swamp Dragon",
+            "8": "Black Skull Warrior",
+            "9": "Dragon of Darkness",
+            "10": "Knight of the Black Skull"
+        },
+        "11": {
+            "name": "Circus of Terror",
+            "1": "Happy Slappy the Clown",
+            "2": "The Blind Knife Thrower",
+            "3": "Miniature Gnome",
+            "4": "The Bearded Lady",
+            "5": "The Psycho Juggler",
+            "6": "Siamese Twins",
+            "7": "Bronco the Joker",
+            "8": "The Snake-man",
+            "9": "Madame Mystique",
+            "10": "Bozo the Terror Clown"
+        },
+        "12": {
+            "name": "Hell",
+            "1": "Restless Soul",
+            "2": "Furious Soul",
+            "3": "Old Soul",
+            "4": "Pest",
+            "5": "Soul Clump",
+            "6": "Scourge",
+            "7": "Hellhound",
+            "8": "The Fuehrer's Heap",
+            "9": "The Devil's Advocate",
+            "10": "Beelzeboss"
+        },
+        "13": {
+            "name": "13th Floor",
+            "1": "Hellgore the Hellish",
+            "2": "Henry the Magic Fairy",
+            "3": "Jet the Panty Raider",
+            "4": "Clapper van Hellsing",
+            "5": "The KOma KOmmander",
+            "6": "Roughian the Ruthless",
+            "7": "Ben the Marketeer",
+            "8": "Hector the Contractor",
+            "9": "Motu with a Club",
+            "10": "Jack the Hammerer"
+        },
+        "14": {
+            "name": "Easteros",
+            "1": "Robert Drunkatheon",
+            "2": "Lefty Lennister",
+            "3": "Petyr the Pimp",
+            "4": "Holundor",
+            "5": "Drogo the Threatening",
+            "6": "The Ginger Slowworm",
+            "7": "Queen Mother",
+            "8": "The Miniature Poodle",
+            "9": "The Riding Mountainrange",
+            "10": "Joffrey the Kid Despot"
+        },
+        "16": {
+            "name": "Time-honored School of Magic",
+            "1": "Eloquent Hat",
+            "2": "Sour Argus",
+            "3": "Fluffy Friend",
+            "4": "A. van Blame",
+            "5": "Phony Locky",
+            "6": "Killer Stare",
+            "7": "Bad Kisser",
+            "8": "Guardian of the Golden Egg",
+            "9": "Gentle Giant",
+            "10": "Pedigree Bad Boy"
+        },
+        "17": {
+            "name": "Hemorridor",
+            "1": "Orc on Warg",
+            "2": "Troll Trio",
+            "3": "The King",
+            "4": "Smollum",
+            "5": "Spiders again",
+            "6": "Orc Boss",
+            "7": "Bezog",
+            "8": "Smoulder",
+            "9": "Nazguls...Nazgulses?",
+            "10": "Monster in the Lake"
+        },
+        "19": {
+            "name": "Nordic Gods",
+            "1": "Heimdall",
+            "2": "Valkyries",
+            "3": "Hel",
+            "4": "Thor",
+            "5": "Odin",
+            "6": "Loki",
+            "7": "Ymir",
+            "8": "Midgard Serpent",
+            "9": "Fenris Wolf",
+            "10": "Surtr"
+        },
+        "20": {
+            "name": "Mount Olympus",
+            "1": "Singing Sirens",
+            "2": "Polyphemus the Cyclops",
+            "3": "Cerberus",
+            "4": "Medusa",
+            "5": "Athena",
+            "6": "Hercules",
+            "7": "Ares",
+            "8": "Poseidon",
+            "9": "Hades",
+            "10": "Zeus"
+        },
+        "21": {
+            "name": "Tavern of the Dark Doppelgangers",
+            "1": "Dancing Mushroom",
+            "2": "Deserted City Guard",
+            "3": "Baneful Bartender",
+            "4": "Sepulchral Scammer",
+            "5": "Brutal Blacksmith",
+            "6": "Wily Witch",
+            "7": "Sinister Salesman",
+            "8": "Atrocious Abawuwu",
+            "9": "Skullsplitter Shakes",
+            "10": "Frightening Fidget"
+        },
+        "22": {
+            "name": "Dragon's Hoard",
+            "1": "Not So Snappy Dragon",
+            "2": "Golden Dragon with Fiery-Eyed Glance",
+            "3": "Seductive Mother of Drankeys",
+            "4": "Undead Saurian Fossil",
+            "5": "Shenlong",
+            "6": "Baby Dragon",
+            "7": "New Year's Dragon",
+            "8": "Pet Out of Control",
+            "9": "Dragon with Concussion",
+            "10": "Annoyed Mother of Dragons"
+        },
+        "23": {
+            "name": "House of Horrors",
+            "1": "Cutlery Head",
+            "2": "Conceptual Proof",
+            "3": "Dracula",
+            "4": "Master of Phone Pranks",
+            "5": "Lovable Twins",
+            "6": "Friendly Sewer Clown",
+            "7": "Therapist's Doll",
+            "8": "Your Worst Nightmare",
+            "9": "Butcher Next Door",
+            "10": "Tube Girl"
+        },
+        "24": {
+            "name": "The 3rd League of Superheroes",
+            "1": "1,000 Punch Man",
+            "2": "Mister X-Ray",
+            "3": "Toilet Tracker",
+            "4": "Iron Man",
+            "5": "Rain Man",
+            "6": "Invisible Woman",
+            "7": "Candy Man",
+            "8": "Captain Caffeine",
+            "9": "Forgetful Fist",
+            "10": "Captain Monday"
+        },
+        "25": {
+            "name": "Dojo of Childhood Heroes",
+            "1": "Magical Schoolgirl",
+            "2": "Master of Doppelgangers",
+            "3": "Friendly Helper from the Neighborhood",
+            "4": "Student Shinigami",
+            "5": "Wannabe Detective",
+            "6": "Rubber Pirate",
+            "7": "Pet Trainer",
+            "8": "Joseph Joker",
+            "9": "Supreme Alien",
+            "10": "Cheating Brat"
+        },
+        "26": {
+            "name": "Monster Grotto",
+            "1": "Doltopus",
+            "2": "Hairy Groom",
+            "3": "Monster Truck",
+            "4": "Nudist Giant",
+            "5": "Marshmallow Man",
+            "6": "Sandbox Worm",
+            "7": "Optimist Supreme",
+            "8": "Three-headed Dragon God",
+            "9": "Angry Giant Saurian",
+            "10": "Berlin Scene Monster"
+        },
+        "27": {
+            "name": "City of Intrigues",
+            "1": "Cool Villain",
+            "2": "Brygitte",
+            "3": "Snowman and Shadow Wolf",
+            "4": "The Woman in Red",
+            "5": "Boyish Brienne",
+            "6": "Ramsay the Degrader",
+            "7": "Faceless",
+            "8": "Vicious Gnome",
+            "9": "The Protector",
+            "10": "The Hard to Burn"
+        },
+        "28": {
+            "name": "School of Magic Express",
+            "1": "Unrepentant Penitent",
+            "2": "The Gifted One (and Ron)",
+            "3": "Stumbledoor",
+            "4": "Petey Rat",
+            "5": "Diabolical Dolores",
+            "6": "Inconveniently Infinite Inferi",
+            "7": "Bella the Beastly",
+            "8": "Lucius the Pure-Blood",
+            "9": "Cutsie Cuddler",
+            "10": "You Should Know Who ..."
+        },
+        "29": {
+            "name": "Ash Mountain",
+            "1": "Valaraukar",
+            "2": "Urcsi the Uruk",
+            "3": "Prompter Splittongue",
+            "4": "Samowar the Pale",
+            "5": "Oliphaunt Tamer",
+            "6": "Undead Army",
+            "7": "Shelantula",
+            "8": "Ruler of the Nine",
+            "9": "Mauron's Maw",
+            "10": "The Necromancer"
+        },
+        "30": {
+            "name": "Playa HQ",
+            "1": "Thesi the Terrible",
+            "2": "Peter the Impaler",
+            "3": "Gert the Ghastly",
+            "4": "Leander, Lord of Lies",
+            "5": "Hannah the Hellish",
+            "6": "Alex, Angel of Abyss",
+            "7": "Jan the Hacker",
+            "8": "Four-handed Peter",
+            "9": "The Artist Andreas",
+            "10": "Marv the Minor Evil"
+        },
+        "201": {
+            "name": "Tower",
+            "1": "Living Cake Man",
+            "2": "Green Fairy Drinkerbell",
+            "3": "Tinvalid",
+            "4": "Harmless Teddy Bear",
+            "5": "Flowerlina",
+            "6": "Tooth Fairy",
+            "7": "Ugly Chick",
+            "8": "Warbling Birdie",
+            "9": "Well-Meaning Fairy",
+            "10": "Trickeribook's Cheatinchild",
+            "11": "Singing Dumpling",
+            "12": "Puppeteer's Right",
+            "13": "Grinning Cat",
+            "14": "Ambitious Frog",
+            "15": "Pinociwhatsit",
+            "16": "3x3 Wishes",
+            "17": "Bootlegged Puss",
+            "18": "Dotty from Kansas",
+            "19": "The Last Airgazer",
+            "20": "A Rabbit and a Hedgehog",
+            "21": "Holger Nilsson",
+            "22": "High-Spirited Ghost",
+            "23": "Blood-Red Riding Hood",
+            "24": "Snowflake",
+            "25": "Star Money",
+            "26": "Miss Match",
+            "27": "Ice Queen",
+            "28": "Badly Raised Boys",
+            "29": "Lambikins and Fishy",
+            "30": "Donkey Shot",
+            "31": "Street Thief with Monkey",
+            "32": "Alice in Wonder",
+            "33": "Penterabbit",
+            "34": "Dynamic Peter",
+            "35": "Foolish Princess",
+            "36": "Pleasure Addict",
+            "37": "Amnastasia Rubliovka",
+            "38": "Useless Livestock",
+            "39": "Humpty Dumpty",
+            "40": "King Chinbeard",
+            "41": "Sandman",
+            "42": "John or Tom?",
+            "43": "Scarecrow",
+            "44": "Mirrored Fool",
+            "45": "Three Little Pigs",
+            "46": "Goose in Luck",
+            "47": "Simpleminded Chicken Thief",
+            "48": "Baba Yaga",
+            "49": "Merlin",
+            "50": "Julio and Romy",
+            "51": "Prince in Shepherd's Skin",
+            "52": "Robin the Redistributor",
+            "53": "Ali the Sesame Opener",
+            "54": "Freshly Dressed Emperor",
+            "55": "Dumbo",
+            "56": "Hansel and Gretel",
+            "57": "Bear Fear",
+            "58": "Pokerhontas",
+            "59": "Mass Fly Murderer",
+            "60": "Cinderella",
+            "61": "The Enchanting Genie",
+            "62": "Bronycorn",
+            "63": "Hulda the Cloud Fairy",
+            "64": "Leprechore",
+            "65": "Robber Hopsenplops",
+            "66": "Thorny Lion",
+            "67": "Aquirella the Dazzler",
+            "68": "Prince Charming",
+            "69": "B. O. Wolf",
+            "70": "Peter the Wolf",
+            "71": "Beautiful Princess",
+            "72": "Fearless Wanderer",
+            "73": "Red&White Forever",
+            "74": "Friendly Snowman",
+            "75": "Parsifal",
+            "76": "Brother Barfly",
+            "77": "King Arthur",
+            "78": "Sigi Musclehead",
+            "79": "Pied Piper",
+            "80": "The Guys from Oz",
+            "81": "'Little' John",
+            "82": "The Easter Bunny",
+            "83": "Honey Robbear",
+            "84": "Shirk the Ogre",
+            "85": "Cozy Bear",
+            "86": "Number Nip",
+            "87": "Three Hungry Bears",
+            "88": "Seven Hostages",
+            "89": "Seven Dwarfs",
+            "90": "Respectable Dragon Slayer",
+            "91": "Ducat Donkey",
+            "92": "Bean Counter",
+            "93": "Happy Dragon",
+            "94": "Shockheaded Jack",
+            "95": "Papa Frost",
+            "96": "Dream Couple",
+            "97": "Three Ghosts",
+            "98": "Sleepy Princess",
+            "99": "Nanobot Porridge",
+            "100": "Barbpunzel"
+        },
+        "202": {
+            "name": "Continuous Loop of Idols",
+            "1": "DoctorBenx",
+            "2": "Zakreble",
+            "3": "Golden Gianpy",
+            "4": "Willyrex",
+            "5": "Alvaro845",
+            "6": "Paul Terra",
+            "7": "Spieletrend",
+            "8": "Fatty Pillow",
+            "9": "Gimper",
+            "10": "Unge",
+            "11": "KeysJore",
+            "12": "Aypierre",
+            "13": "Mandzio",
+            "14": "Boruciak",
+            "15": "Fifqo",
+            "16": "Zsoze",
+            "17": "ZeboPL",
+            "18": "Dhalucard",
+            "19": "Earliboy",
+            "20": "Skate702",
+            "21": "Dorzer"
+        },
+        "203": {
+            "name": "Twister",
+            "486": "Grey Ghoul",
+            "658": "Blood Occultist",
+            "711": "Gragosh the Destroyer",
+            "777": "Puppeteer's Right",
+            "830": "Sewer Rat",
+            "867": "Dirty Bat",
+            "868": "Dirty Bat",
+            "869": "Dirty Bat",
+            "870": "Dirty Bat",
+            "871": "Dirty Bat",
+            "872": "Dirty Bat",
+            "873": "Dirty Bat",
+            "874": "Dirty Bat",
+            "875": "Bat Out of hell",
+            "876": "Undead",
+            "877": "Restless Soul",
+            "939": "Dragon of Hell",
+            "947": "Dynamic Peter",
+            "954": "Jungle Scorpion",
+            "962": "Miniature Gnome",
+            "981": "Butthead",
+            "990": "Three Ghosts",
+            "998": "Nevorfull",
+            "999": "Swamp Nymphomaniac",
+            "1000": "Shniva"
+        },
+        "204": {
+            "name": "Tavern",
+            "5": "Strider",
+            "10": "ice bug fix"
+        }
     }
 }

@@ -7,7 +7,7 @@
         "class3": "Zwiadowca",
         "class4": "Zabójca",
         "class5": "Paladyn",
-        "class6": "Berserker",
+        "class6": "Berserk",
         "class7": "Łowca Demonów",
         "class8": "Druid",
         "class9": "Bard",
@@ -17,18 +17,18 @@
         "instrument0": "Harfa",
         "instrument1": "Lutnia",
         "instrument2": "Flet",
+        "life_potion": "Eliksir żywotności",
         "attribute1": "Siła",
         "attribute2": "Zręczność",
         "attribute3": "Inteligencja",
         "attribute4": "Wytrzymałość",
         "attribute5": "Szczęście",
-        "life_potion": "Eliksir żywotności",
         "potion1": "Siła",
         "potion2": "Zręczność",
         "potion3": "Inteligencja",
         "potion4": "Wytrzymałość",
         "potion5": "Szczęście",
-        "potion6": "Life",
+        "potion6": "Eliksir żywotności",
         "rank1": "Lider",
         "rank2": "Oficer",
         "rank3": "Członek",
@@ -58,7 +58,7 @@
             "archers": "Łucznicy",
             "mages": "Magowie",
             "backpack_size": "Wielkość Plecaka",
-            "critical_bonus": "Critical Bonus",
+            "critical_bonus": "Szansa na cios krytyczny",
             "thirst_free": "Darmowa Awanturniczość",
             "thirst_usable": "Bonusowa Awanturniczość",
             "fortress1": "Twierdza",
@@ -168,6 +168,14 @@
         "fortress": {
             "title": "Symulator Twierdzy",
             "desc": "Przesymuluj prawdopodobny wyniki ataku w twierdzy."
+        },
+        "changelog": {
+            "title": "Dziennik zmian",
+            "desc": "Zobacz wszystkie zauważalne zmiany"
+        },
+        "hellevator": {
+            "title": "Symulator Windy Piekieł",
+            "desc": "Przesymuluj prawdopodobny wynik walki w Windzie Piekieł"
         }
     },
     "404": {
@@ -190,7 +198,7 @@
         "files": {
             "titles": {
                 "filters": "Filtry",
-                "io": "Import / Export"
+                "io": "Import / Eksport"
             },
             "timestamp": "Data",
             "timestamps": "Daty",
@@ -198,8 +206,7 @@
             "name": "Nazwa",
             "group": "Grupa",
             "groups": "Grupy",
-            "origin": "Pochodzenie",
-            "players": "Players",
+            "players": "Gracze",
             "version": "Wersja",
             "import": {
                 "file": "Wgraj z pliku",
@@ -252,7 +259,6 @@
                 "type_all": "Pokaż wszystkie postacie",
                 "type_own": "Pokaż tylko własne postacie",
                 "type_other": "Pokaż tylko postacie innych",
-                "origin": "Pochodzenie",
                 "hidden": "Ukryte"
             },
             "online": {
@@ -324,7 +330,6 @@
                 "me": "Ja",
                 "players": "Gracze",
                 "guilds": "Gidlie",
-                "tracker": "Konfiguracja trackera",
                 "default": "Domyślny"
             },
             "online": {
@@ -459,17 +464,17 @@
             "obfuscated": "Ukryj nazwy graczy",
             "insecure": "Zezwalaj na niezabezpieczone tagi html",
             "insecure_error#": "Ta tabela nie została wyświetlona, ponieważ zawiera znaczniki HTML, które są zabronione.<br/>Proszę usunąć je ze swoich ustawień i spróbować ponownie.",
+            "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
             "actions": {
                 "title": "Akcja",
-                "reset": "Reset akcji",
-                "ignore": "Ignoruj zmiany",
+                "discard": "Odrzuć niezapisane zmiany",
                 "save": "Zapisz akcje"
             },
             "recovery": {
-                "title": "Recovery",
+                "title": "Odzyskiwanie",
                 "import": "Importuj dane",
                 "export": "Pobierz (eksportuj) dane",
                 "description#": "Za pomocą opcji poniżej możesz eksportować i importować całe dane zgromadzone w przeglądarce.<br>Zalecane jest aby eksportować dane przynajmniej raz w miesiącu aby zapobiec stracie tych danych",
@@ -488,7 +493,7 @@
         "simulate": "Symuluj",
         "results": "Wyniki",
         "map": {
-            "gladiator": "Glad"
+            "gladiator": "Trener"
         },
         "types": {
             "0": "Mrok",
@@ -600,10 +605,10 @@
             "99": "Hydrowir"
         },
         "bulk": {
+            "not_possible": "Nie jest to możliwe",
             "toast": {
                 "title": "Startowanie symulacji",
-                "matches": "Matches:",
-                "not_possible": "Niemożliwe"
+                "matches": "Dopasowania:"
             }
         },
         "editor": {
@@ -650,15 +655,16 @@
         "open": "Obecnie dostępne lochy",
         "graph": {
             "y": "Pozostałe HP Bossa",
-            "x": "- Dystrybucja dla wybranej ilości prób -"
+            "x": "- Dystrybucja dla wybranej ilości prób -",
+            "winrate": "Zwycięstwa: #{rate}% (#{score} z #{tries})"
         },
         "results": "Wyniki",
         "experience": "Łącznie: #{experience} XP",
         "cheats": {
-            "title": "Cheat Menu",
+            "title": "Menu z kodami",
             "subtitle": "Wybierz cheaty i załaduj postać",
             "enable": "Włącz cheaty",
-            "general": "General",
+            "general": "Ogólne",
             "enchantments": "Wszystkie czary",
             "runes": "Maksymalne runy",
             "pets": "Maksymalne pupile",
@@ -698,7 +704,8 @@
     "players": {
         "gladiator_mode": "Gladiator zostanie ustawiony na 15 bez względu na ustawienia",
         "ihof_mode": "IHOF Mode: Gladiator nie jest redukowany!",
-        "druid_armor_mode": "Włącza tryb naprawionego pancerza u Druida",
+        "fireball_mode": "Zastosuj naprawioną kule ognia Paladyna dla Berserków, Łowców Demonów, Druidów i Bardów",
+        "no_attribute_reduction_mode": "Główny atrybut nie zostanie zmniejszony przez przeciwnika",
         "mode": {
             "all": "Wszyscy na Wszystkich",
             "attack": "Jeden vs Wszyscy",
@@ -730,8 +737,8 @@
                 "message#": "<b>Iteracji:</b> #{iterations}<br/><b>Wątki cnt:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Wątek Symulacji #{done} / #{total} ukończono",
+                "message#": "<b>Czas:</b> #{time} sekund"
             }
         }
     },
@@ -790,26 +797,27 @@
     "simulator": {
         "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
         "threads": "Wątki symulacji. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
+        "iterations": "Liczba iteracji na wątek.",
         "add": "Dodaj",
         "save": "Zapisz",
         "simulate": "Symuluj",
+        "simulate_debug": "Symuluj w trybie debugowania",
         "clipboard": {
             "copy_all": "Kopiuj wszystkich",
             "paste_mode": "Przełącz tryb wstawiania na Add/Replace"
         },
-        "iterations": "Liczba iteracji na wątek.",
         "win_chance": "Szansa na zwycięstwo %",
         "min_chance": "Minimalna szansa %",
         "max_chance": "Maksymalna szansa %",
         "poll": {
-            "players": "Załaduja zapisanych graczy",
+            "players": "Załaduj zapisanych graczy",
             "guilds": "Załaduj zapisane gildie"
         }
     },
     "editor": {
         "name": "Nazwa",
         "class": "Klasa",
-        "level": "Level",
+        "level": "Poziom",
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Pancerz",
@@ -818,7 +826,7 @@
         "min_placeholder": "Obraż. Min",
         "max": "Max",
         "max_placeholder": "Obraż. Max",
-        "weapon_enchant": "Crit",
+        "weapon_enchant": "Kryt",
         "rune": "Runa",
         "portal_damage": "Bonus Obrażeń (Portal)",
         "portal_health": "Bonus HP (Portal)",
@@ -841,7 +849,8 @@
             "own": "Zeskanuj własną postać",
             "default": "Zeskanuj własną + wybrane postacie",
             "guild": "Zeskanuj własną + gildia",
-            "friends": "Zeskanuj własną + lista znajomych"
+            "friends": "Zeskanuj własną + lista znajomych",
+            "hall_of_fame": "Zeskanuj własną + top 50 Sali Chwały"
         },
         "cancel": "Anuluj",
         "continue": "Kontynuuj",
@@ -926,8 +935,8 @@
             "title": "Stwórz/Edytuj profil",
             "id": "ID",
             "name": "Nazwa",
-            "slot": "Slot",
-            "index": "Index",
+            "slot": "Miejsce",
+            "index": "Indeks",
             "operation": "Operacja",
             "equals": "Równo",
             "above": "Ponad",
@@ -971,6 +980,17 @@
         "input": {
             "cancel": "Anuluj",
             "ok": "Ok"
+        },
+        "data_manage": {
+            "cancel": "Anuluj",
+            "ok": "Usuń",
+            "title": "Czy na pewno chcesz usunąć te pliki, graczy oraz gildie?",
+            "skip_next": "Nie pokazuj następnym razem",
+            "label": {
+                "group": "Następujące gildie zostaną usunięte:",
+                "player": "Następujący gracze zostaną usunięci:",
+                "file": "Następujące pliki zostaną usunięte:"
+            }
         }
     },
     "attributes": {
@@ -1073,6 +1093,56 @@
             "curve": "Wykres Złota",
             "mount": "Gryf",
             "guard": "Warta / kostki (3)"
+        }
+    },
+    "idle": {
+        "title": "Manager Areny",
+        "topbar": {
+            "suggest": {
+                "0": "Następny 1 + punkt przełomowy",
+                "1": "Tylko następny 1",
+                "2": "Tylko punkt przełomowy"
+            },
+            "number": {
+                "0": "Tekstowa",
+                "1": "Naukowa"
+            }
+        },
+        "table": {
+            "building": "Budynek",
+            "upgrades": "Ulepszenia",
+            "level": "Poziom",
+            "level_next": "Następny poziom",
+            "cycle_duration": "Cykl",
+            "cycle_money": "Pieniądze na cykl",
+            "money_share": "Udział",
+            "upgrade_money": "Koszt",
+            "upgrade_estimation": "Szacowanie",
+            "money_spent": "Wydano pieniędzy",
+            "money_1h": "1 Godzina",
+            "money_8h": "8 Godzin",
+            "money_1d": "1 dzień",
+            "money_7d": "7 dni",
+            "runes": "Runy"
+        },
+        "building": {
+            "seat": "Siedzisko",
+            "popcorn_stand": "Stoisko z popcornem",
+            "parking_lot": "Parking",
+            "trap": "Pułapka",
+            "drinks": "Koktajle",
+            "deadly_trap": "Zabójcza pułapka",
+            "vip_seat": "Siedzisko VIP",
+            "snacks": "Przekąski",
+            "straying_monsters": "Grasujące Potwory",
+            "toilet": "Toaleta"
+        },
+        "upgrades": {
+            "0": "Brak",
+            "1": "Prędkość",
+            "2": "Ozłocenie",
+            "3": "Oba",
+            "4": "Platynowe"
         }
     },
     "blacksmith": {
@@ -1371,42 +1441,42 @@
         },
         "24": {
             "name": "3. Liga Superbohaterów",
-            "1": "1,000 Punch Man",
-            "2": "Mister X-Ray",
-            "3": "Toilet Tracker",
-            "4": "Iron Man",
-            "5": "Rain Man",
-            "6": "Invisible Woman",
-            "7": "Candy Man",
-            "8": "Captain Caffeine",
-            "9": "Forgetful Fist",
-            "10": "Captain Monday"
+            "1": "Człowiek tysiąca ciosów",
+            "2": "Pan Prześwietlacz",
+            "3": "Tropiciel toalet",
+            "4": "Człowiek żelazko",
+            "5": "Pochmurniak",
+            "6": "Niewidzialna kobieta",
+            "7": "Cukierkoczłek",
+            "8": "Kapitan Kofeina",
+            "9": "Zapominalska Pięść",
+            "10": "Kapitan Poniedziałek"
         },
         "25": {
             "name": "Dojo Bohateró z Dzieciństwa",
-            "1": "Magical Schoolgirl",
-            "2": "Master of Doppelgangers",
-            "3": "Friendly Helper from the Neighborhood",
-            "4": "Student Shinigami",
-            "5": "Wannabe Detective",
-            "6": "Rubber Pirate",
-            "7": "Pet Trainer",
-            "8": "Joseph Joker",
-            "9": "Supreme Alien",
-            "10": "Cheating Brat"
+            "1": "Magiczna uczennica",
+            "2": "Mistrz sobowtórów",
+            "3": "Przyjacielski pomocnik z sąsiedztwa",
+            "4": "Uczące się shinigami",
+            "5": "Udawany detektyw",
+            "6": "Gumowy pirat",
+            "7": "Treser pupili",
+            "8": "Joker Jonasz",
+            "9": "Potężny obcy",
+            "10": "Smarkacz oszust"
         },
         "26": {
-            "name": "Monster Grotto",
-            "1": "Doltopus",
-            "2": "Hairy Groom",
-            "3": "Monster Truck",
-            "4": "Nudist Giant",
-            "5": "Marshmallow Man",
-            "6": "Sandbox Worm",
-            "7": "Optimist Supreme",
-            "8": "Three-headed Dragon God",
-            "9": "Angry Giant Saurian",
-            "10": "Berlin Scene Monster"
+            "name": "Grota Potworów",
+            "1": "Delfinośmiornica",
+            "2": "Włochaty pan młody",
+            "3": "Monster truck",
+            "4": "Olbrzym nudysta",
+            "5": "Człowiek pianka",
+            "6": "Piaskownicowy robak",
+            "7": "Największy optymista",
+            "8": "Trzygłowy smoczy bóg",
+            "9": "Gigantyczny, wściekły jaszczur",
+            "10": "Potwór z berlińskiej sceny"
         },
         "27": {
             "name": "Miasto Intryg",
@@ -1614,6 +1684,11 @@
             "998": "Niedosyt",
             "999": "Bagienna nimfomanka",
             "1000": "Szara Sziwa"
+        },
+        "204": {
+            "name": "Tavern",
+            "5": "Strider",
+            "10": "ice bug fix"
         }
     }
 }
