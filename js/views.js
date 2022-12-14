@@ -1341,9 +1341,6 @@ const Localization = new (class {
         $('.css-menu').append(picker);
 
         this.translation = await this._fetchTranslation(locale);
-        if (locale !== 'en') {
-            this.translation = Object.assign(await this._fetchTranslation('en'), this.translation);
-        }
 
         window.document.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
         window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.translateTooltip(element));
