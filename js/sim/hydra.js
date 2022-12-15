@@ -8,7 +8,7 @@ FighterModel.prototype.getHealth = function () {
 }
 
 FighterModel.prototype.getFixedDamage = function () {
-    return Math.trunc((this.Player.Level + 1) * this.getDamageMultiplier());
+    return Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
 }
 
 FighterModel.prototype.getDamageRange = function (weapon, target) {
@@ -17,8 +17,9 @@ FighterModel.prototype.getDamageRange = function (weapon, target) {
 
     let aa = this.getAttribute(this);
     let ad = target.getAttribute(this) / 2;
+    let dc = this.getDamageMultiplier(target);
 
-    let dm = target.DamageReduction * (1 + Math.max(aa / 2, aa - ad) / 10);
+    let dm = target.DamageReduction * dc * (1 + Math.max(aa / 2, aa - ad) / 10);
 
     if (!min || !max) {
         min = max = this.getFixedDamage();

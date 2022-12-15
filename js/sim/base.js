@@ -178,29 +178,28 @@ const INSTRUMENT_FLUTE = 2;
 
 // Fighter models
 class FighterModel {
+    static initializeFighters (fighterA, fighterB) {
+        fighterA.initialize(fighterB);
+        fighterB.initialize(fighterA);
+
+        fighterA.Initial = fighterA.getInitialDamage(fighterB);
+        fighterB.Initial = fighterB.getInitialDamage(fighterA);
+    }
+
     static create (index, player) {
-        switch (player.Class) {
-            case WARRIOR:
-                return new WarriorModel(index, player);
-            case BERSERKER:
-                return new BerserkerModel(index, player);
-            case BATTLEMAGE:
-                return new BattlemageModel(index, player);
-            case SCOUT:
-                return new ScoutModel(index, player);
-            case DEMONHUNTER:
-                return new DemonHunterModel(index, player);
-            case ASSASSIN:
-                return new AssassinModel(index, player);
-            case MAGE:
-                return new MageModel(index, player);
-            case DRUID:
-                return new DruidModel(index, player);
-            case BARD:
-                return new BardModel(index, player);
-            default:
-                return null;
-        }
+        const MODELS = {
+            [WARRIOR]: WarriorModel,
+            [MAGE]: MageModel,
+            [SCOUT]: ScoutModel,
+            [ASSASSIN]: AssassinModel,
+            [BATTLEMAGE]: BattlemageModel,
+            [BERSERKER]: BerserkerModel,
+            [DEMONHUNTER]: DemonHunterModel,
+            [DRUID]: DruidModel,
+            [BARD]: BardModel
+        };
+
+        return new MODELS[player.Class](index, player);
     }
 
     // Constructor
@@ -363,7 +362,7 @@ class FighterModel {
         }
     }
 
-    getDamageMultiplier () {
+    getWeaponDamageMultiplier () {
         switch (this.Player.Class) {
             case WARRIOR:
             case ASSASSIN:
@@ -383,21 +382,20 @@ class FighterModel {
     }
 
     getBaseDamage (secondary = false) {
-        let min = 1;
-        let max = 2;
-
         if (this.Player.Level > 10 && !this.Player.NoBaseDamage) {
-            let num = (this.Player.Level - 9) * this.getDamageMultiplier();
-            let mul = secondary ? 0.1 : 0.7;
+            const num = (this.Player.Level - 9) * this.getWeaponDamageMultiplier();
+            const mul = secondary ? 0.1 : 0.7;
 
-            min = Math.ceil(mul * num * 2 / 3);
-            max = Math.round(mul * num * 4 / 3);
+            return {
+                Min: Math.max(1, Math.ceil(mul * num * 2 / 3)),
+                Max: Math.max(2, Math.round(mul * num * 4 / 3))
+            };
+        } else {
+            return {
+                Min: 1,
+                Max: 2
+            }
         }
-
-        return {
-            Min: Math.max(1, min),
-            Max: Math.max(2, max)
-        };
     }
 
     // Get damage range
@@ -406,30 +404,18 @@ class FighterModel {
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
 
-        let m = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
+        let mm = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
 
         let aa = this.getAttribute(this);
-        let ad = target.getAttribute(this) / 2;
-        if (SIMULATOR_FLAGS.NoAttributeReduction) {
-            ad = 0;
-        }
-
-        let dm = m * (1 + Math.max(aa / 2, aa - ad) / 10);
-
+        let ad = SIMULATOR_FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
+        let dc = this.getDamageMultiplier(target);
+        let dm = dc * mm * (1 + Math.max(aa / 2, aa - ad) / 10);
         let bd = this.getBaseDamage(secondary);
 
         return {
             Max: Math.ceil(dm * Math.max(weapon.DamageMax, bd.Max)),
             Min: Math.ceil(dm * Math.max(weapon.DamageMin, bd.Min))
         };
-    }
-
-    static initializeFighters (fighterA, fighterB) {
-        fighterA.initialize(fighterB);
-        fighterB.initialize(fighterA);
-
-        fighterA.Initial = fighterA.getInitialDamage(fighterB);
-        fighterB.Initial = fighterB.getInitialDamage(fighterA);
     }
 
     // Initialize model
@@ -509,28 +495,41 @@ class FighterModel {
     fetchCriticalChance (target) {
         return this.CriticalChance;
     }
+
+    getDamageMultiplier (target) {
+        return 1;
+    }
 }
 
 class WarriorModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
-    }
+
 }
 
 class MageModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
+    getDamageMultiplier (target) {
+        if (target.Player.Class == BERSERKER) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+}
+
+class ScoutModel extends FighterModel {
+
+}
+
+class AssassinModel extends FighterModel {
+    getDamageMultiplier (target) {
+        return 5 / 8;
     }
 
-    getDamageRange (weapon, target) {
-        if (target.Player.Class == BERSERKER) {
-            var range = super.getDamageRange(weapon, target);
-            return {
-                Max: Math.ceil(range.Max * 2),
-                Min: Math.ceil(range.Min * 2)
-            }
-        } else {
-            return super.getDamageRange(weapon, target);
+    initialize (target) {
+        super.initialize(target);
+
+        var weapon = this.Player.Items.Wpn2;
+        if (weapon) {
+            this.Weapon2 = this.getDamageRange(weapon, target, true);
         }
     }
 }
@@ -549,10 +548,6 @@ const DRUID_BEAR_MED_MULTIPLIER = 0.5;
 const DRUID_BEAR_MIN_MULTIPLIER = 0.3;
 
 class DruidModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
-    }
-
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
@@ -573,8 +568,7 @@ class DruidModel extends FighterModel {
         }
     }
 
-    getDamageRange (weapon, target) {
-        let range = super.getDamageRange(weapon, target);
+    getDamageMultiplier (target) {
         let multiplier = 1;
 
         if (this.Player.Mask == MASK_EAGLE) {
@@ -587,10 +581,7 @@ class DruidModel extends FighterModel {
             multiplier /= 2;
         }
 
-        return {
-            Max: Math.ceil(range.Max * multiplier),
-            Min: Math.ceil(range.Min * multiplier)
-        }
+        return multiplier;
     }
 
     getHealthLossDamageMultiplier () {
@@ -695,40 +686,7 @@ class DruidModel extends FighterModel {
     }
 }
 
-class ScoutModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
-    }
-}
-
-class AssassinModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
-    }
-
-    getDamageRange (weapon, target, secondary = false) {
-        var range = super.getDamageRange(weapon, target);
-        return {
-            Max: Math.ceil(range.Max * 5 / 8),
-            Min: Math.ceil(range.Min * 5 / 8)
-        }
-    }
-
-    initialize (target) {
-        super.initialize(target);
-
-        var weapon = this.Player.Items.Wpn2;
-        if (weapon) {
-            this.Weapon2 = this.getDamageRange(weapon, target, true);
-        }
-    }
-}
-
 class BattlemageModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
-    }
-
     getInitialDamage (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
@@ -767,13 +725,9 @@ class BerserkerModel extends FighterModel {
         this.SkipNext = true;
     }
 
-    getDamageRange (weapon, target) {
-        var range = super.getDamageRange(weapon, target);
-        return {
-            // Thanks burningcherry for narrowing the hidden damage boost range
-            Max: Math.ceil(range.Max * 5 / 4),
-            Min: Math.ceil(range.Min * 5 / 4)
-        }
+    getDamageMultiplier () {
+        // Thanks burningcherry for narrowing the hidden damage boost range
+        return 5 / 4;
     }
 
     skipNextRound () {
