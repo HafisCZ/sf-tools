@@ -21,12 +21,12 @@
         "attribute1": "Força",
         "attribute2": "Reflexos",
         "attribute3": "Inteligência",
-        "attribute4": "Constituição",
+        "attribute4": "Resistência",
         "attribute5": "Sorte",
         "potion1": "Força",
         "potion2": "Reflexos",
         "potion3": "Inteligência",
-        "potion4": "Constituição",
+        "potion4": "Resistência",
         "potion5": "Sorte",
         "potion6": "Vida",
         "rank1": "Líder",
@@ -77,21 +77,21 @@
             "underworld2": "Portão do Submundo",
             "underworld3": "Extrator de Almas",
             "underworld4": "Mina de Duendes",
-            "underworld5": "Torture Chamber",
-            "underworld6": "Gladiator Trainer",
-            "underworld7": "Troll Block",
-            "underworld8": "Time Machine",
-            "underworld9": "Keeper",
-            "underworld10": "Gold Pit"
+            "underworld5": "Câmara de Tortura",
+            "underworld6": "Treinador de Gladiadores",
+            "underworld7": "Bloco de Trols",
+            "underworld8": "Máquina do Tempo",
+            "underworld9": "Guardião",
+            "underworld10": "Mina de Ouro"
         },
-        "reduction": "Reduction"
+        "reduction": "Redução"
     },
     "index": {
         "toggle": "Créditos",
         "roles": {
             "admin": "Alguém com muito tempo livre..!",
             "helper": "Ajudantes - Pesquisa, Testing, Feedback, etc.",
-            "tester": "Testers",
+            "tester": "Testadores",
             "wiki": "Chefe Wiki Manager",
             "translator": "Tradutores",
             "mention": "Outras menções "
@@ -118,7 +118,7 @@
             "desc": "Compara items, calcula upgrades & muito mais!"
         },
         "idle": {
-            "title": "Arena Manager",
+            "title": "Gestor da Arena",
             "desc": "Acompanha a produção da tua Arena Manager"
         },
         "calendar": {
@@ -166,16 +166,16 @@
             "desc": "Simula qual a classe de pets é melhor contra a hidra."
         },
         "fortress": {
-            "title": "Fortress Simulator",
-            "desc": "Simulate the probable outcome of fortress raid"
+            "title": "Simulador de Fortaleza",
+            "desc": "Simular os resultados prováveis de um ataque a fortaleza inimiga"
         },
         "changelog": {
-            "title": "Changelog",
-            "desc": "View all notable changes"
+            "title": "Alterações",
+            "desc": "Ver todas as alterações notáveis"
         },
         "hellevator": {
-            "title": "Hellevator Simulator",
-            "desc": "Simulate the probable outcome of Hellevator battles"
+            "title": "Simulador de Hellevador",
+            "desc": "Simular o resultado provável das batalhas Hellevator"
         }
     },
     "404": {
@@ -237,11 +237,11 @@
                 "title": "Opções de Ficheiros",
                 "advanced": "Mostrar lista de ficheiros advançada",
                 "hidden": "Mostrar jogadores omitidos",
-                "export_public_only": "Export only public data"
+                "export_public_only": "Exportar apenas dados públicos"
             },
             "tags": {
-                "single": "Tag",
-                "multiple": "Tags",
+                "single": "Etiqueta",
+                "multiple": "Etiquetas",
                 "all": "Todos",
                 "none": "Nenhum"
             },
@@ -254,7 +254,7 @@
                 "player": "Jogador",
                 "group": "Clã",
                 "prefix": "Servidor",
-                "tags": "Tags",
+                "tags": "Etiquetas",
                 "type": "Tipo",
                 "type_all": "Mostrar todas as personagens",
                 "type_own": "Mostrar apenas a tua personagem",
@@ -266,7 +266,7 @@
                 "prompt": "Introduz o teu código:",
                 "invalid": "Código inválido ou expirado!",
                 "cancel": "Cancelar",
-                "ok": "Ok"
+                "ok": "Confirmar"
             }
         },
         "copy": {
@@ -312,11 +312,11 @@
         },
         "scripts": {
             "settings": "Definições",
-            "templates": "Templates",
+            "templates": "Modelos",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Scripts",
-                "templates": "Templates",
+                "templates": "Modelos",
                 "save": "Salvar",
                 "copy": "Copiar",
                 "undo": "Desfazer",
@@ -333,43 +333,43 @@
                 "default": "Predefinição"
             },
             "online": {
-                "not_available": "No scripts available"
+                "not_available": "Nenhum script disponível"
             }
         },
         "players": {
             "other": "Mostrar outros jogadores",
-            "hidden": "Show hidden"
+            "hidden": "Mostrar oculto(s)"
         },
         "guilds": {
-            "other": "Show other guilds",
-            "hidden": "Show hidden",
-            "missing": "Player data is missing for following members:"
+            "other": "Mostrar outros clãs",
+            "hidden": "Mostrar oculto(s)",
+            "missing": "Dados do jogador estão em falta nos seguintes membros:"
         },
         "browse": {
-            "hidden": "Show hidden"
+            "hidden": "Mostrar oculto(s)"
         },
         "fast_export": {
-            "label": "Share",
-            "title": "Export options",
-            "all": "All",
-            "latest": "Latest",
-            "latest5": "Latest 5",
-            "selected": "Selected",
-            "selected_both": "Selected & Reference"
+            "label": "Partilhar",
+            "title": "Opções de Exportação",
+            "all": "Todos",
+            "latest": "Mais Recente(s)",
+            "latest5": "Últimos 5",
+            "selected": "Selecionado",
+            "selected_both": "Selecionado e Referência"
         },
         "share": {
-            "title": "File sharing",
-            "options": "Options",
-            "code": "Your code",
-            "get": "Get code",
-            "ok": "Ok",
-            "expire": "The code will automatically expire after 2 days.",
-            "single_use": "Single use only",
-            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+            "title": "Partilha de ficheiros",
+            "options": "Opções",
+            "code": "O seu código",
+            "get": "Obter código",
+            "ok": "Confirmar",
+            "expire": "O código irá expirar automaticamente após 2 dias.",
+            "single_use": "Utilização única",
+            "single_use_notice": "Por favor, considere manter esta opção ativada a menos que planeie compartilhar o arquivo com várias pessoas."
         },
         "online_templates": {
-            "title": "Public scripts",
-            "description": "Description",
+            "title": "Scripts públicos",
+            "description": "Descrição",
             "author": "Autor",
             "created_on": "Criado em",
             "loading": "Obtendo scripts",
@@ -377,65 +377,65 @@
         },
         "templates": {
             "title": "Modelos",
-            "loading": "Committing changes",
+            "loading": "A submeter alterações...",
             "form": {
-                "changed_on": "Changed on",
-                "version": "Tool Version",
-                "compatibility": "Compatibility",
-                "published_on": "Published on",
-                "code": "Code",
-                "publish": "Publish",
-                "publish_tooltip": "Publish template",
-                "unpublish_tooltip": "Unpublish template",
-                "update": "Update",
-                "update_tooltip": "Update template with current script",
-                "remove": "Remove",
-                "remove_tooltip": "Remove template"
+                "changed_on": "Alterado Em",
+                "version": "Versão da Ferramenta",
+                "compatibility": "Compatibilidade",
+                "published_on": "Publicado em",
+                "code": "Código",
+                "publish": "Publicar",
+                "publish_tooltip": "Publicar modelo",
+                "unpublish_tooltip": "Remover modelo",
+                "update": "Atualizar",
+                "update_tooltip": "Atualizar o modelo com o script atual",
+                "remove": "Remover",
+                "remove_tooltip": "Remover modelo/template"
             },
-            "quick_swap": "Quick swap custom templates"
+            "quick_swap": "Trocar rapidamente modelos personalizados"
         },
         "group": {
-            "compared_to": "compared to"
+            "compared_to": "comparado com"
         },
         "player": {
-            "attributes": "Attributes",
-            "basis": "Basis",
-            "miscellaneous": "Misc",
-            "armor": "Armor",
-            "damage": "Damage",
-            "health": "Health",
-            "potions": "Potions",
-            "guild": "Guild",
-            "name": "Name",
-            "role": "Role",
-            "joined_on": "Joined on",
-            "bonuses": "Bonuses",
-            "scrapbook": "Scrapbook",
-            "achievements": "Achievements",
-            "mount": "Mount",
-            "heath_bonus": "Health Bonus",
-            "damage_bonus": "Damage Bonus",
-            "treasure": "Treasure",
-            "instructor": "Instructor",
-            "pet": "Pet",
-            "knights": "Hall of Knights",
+            "attributes": "Atributos",
+            "basis": "Base",
+            "miscellaneous": "Outros",
+            "armor": "Armadura",
+            "damage": "Dano",
+            "health": "Vida",
+            "potions": "Poções",
+            "guild": "Clã",
+            "name": "Nome",
+            "role": "Função",
+            "joined_on": "Registou-se em",
+            "bonuses": "Bónus",
+            "scrapbook": "Álbum",
+            "achievements": "Feitos",
+            "mount": "Montada",
+            "heath_bonus": "Bónus de vida",
+            "damage_bonus": "Bónus de dano",
+            "treasure": "Tesouro",
+            "instructor": "Instrutor",
+            "pet": "Mascote",
+            "knights": "Hall de Cavaleiros",
             "extras": {
                 "title": "Extras",
-                "registered": "Registered"
+                "registered": "Registado"
             },
             "runes": {
-                "title": "Runes",
-                "gold": "Gold",
-                "experience": "Experience",
-                "epic": "Epic Chance",
-                "quality": "Item Quality",
-                "health": "Health",
-                "fire_damage": "Fire Damage",
-                "cold_damage": "Cold Damage",
-                "lightning_damage": "Lightning Damage",
-                "fire_resist": "Fire Resistance",
-                "cold_resist": "Cold Resistance",
-                "lightning_resist": "Lightning Resistance"
+                "title": "Runas",
+                "gold": "Ouro",
+                "experience": "Experiência",
+                "epic": "Probabilidade de épicos",
+                "quality": "Qualidade melhorada do item",
+                "health": "Vida",
+                "fire_damage": "Dano de Fogo",
+                "cold_damage": "Dano de Frio",
+                "lightning_damage": "Dano de Raios",
+                "fire_resist": "Resistência ao fogo",
+                "cold_resist": "Resistência ao Frio",
+                "lightning_resist": "Resistência aos Raios"
             },
             "fortress": {
                 "title": "Fortress",
@@ -498,78 +498,78 @@
         "types": {
             "0": "Shadow",
             "1": "Light",
-            "2": "Earth",
-            "3": "Fire",
-            "4": "Water"
+            "2": "Terra",
+            "3": "Fogo",
+            "4": "Água"
         },
         "names": {
-            "0": "Slurp",
-            "1": "Digmol",
-            "2": "Toothey",
-            "3": "Okultacle",
-            "4": "Spidor",
-            "5": "Jackobu",
-            "6": "Shrimpfly",
-            "7": "Reaprim",
-            "8": "Petdacat",
-            "9": "Mykon",
-            "10": "Fishorr",
-            "11": "Cuckooly",
+            "0": "Sorvedor",
+            "1": "Toupeira",
+            "2": "Dentuça",
+            "3": "Ocultáculo",
+            "4": "Aranhiço",
+            "5": "Cabeça de Abóbora",
+            "6": "Camarão-mosca",
+            "7": "Ceifeiro",
+            "8": "Bichano",
+            "9": "Aberração",
+            "10": "Peixinho",
+            "11": "Cuco Louco",
             "12": "Battlutter",
             "13": "Pinklynx",
             "14": "Pharamumm",
             "15": "Ninstarr",
             "16": "Luchtablong",
-            "17": "Angrack",
-            "18": "Devilsatt",
-            "19": "Poisnake",
-            "20": "Shaggyll",
-            "21": "Jellclops",
-            "22": "Tinck",
-            "23": "Cloudning",
-            "24": "Nevorfull",
-            "25": "Plutoid",
-            "26": "Djinntonic",
+            "17": "Touro-Robô",
+            "18": "Demónio Travesso",
+            "19": "Cobra Venenosa",
+            "20": "Pégaso Cabeludo",
+            "21": "Geliclope",
+            "22": "Fada Mágica",
+            "23": "Nuvenzinha",
+            "24": "Bichóide",
+            "25": "Plutóide",
+            "26": "Génio Tónico",
             "27": "Blaxta",
-            "28": "Lampcess",
-            "29": "Teslarr",
-            "30": "Sunnya",
-            "31": "Buckfoxion",
-            "32": "Birdychirp",
-            "33": "Eyeorwhat",
-            "34": "Mesmerit",
-            "35": "Antlar",
-            "36": "Liphant",
-            "37": "Knilight",
-            "38": "Heraldon",
-            "39": "Unikor",
-            "40": "Mamoton",
-            "41": "Monkorrage",
-            "42": "Smaponyck",
-            "43": "Bittnutz",
-            "44": "Roarear",
-            "45": "Muscudon",
-            "46": "Apstick",
-            "47": "Horrnington",
-            "48": "Boaringg",
-            "49": "Mameloth",
-            "50": "Rheynooh",
-            "51": "Rockastonn",
-            "52": "Redwoofox",
-            "53": "Lilbeatzup",
-            "54": "Forror",
-            "55": "Nipprabs",
-            "56": "Armoruck",
-            "57": "Canocle",
-            "58": "Tricerawood",
-            "59": "Mouthrexor",
-            "60": "Firimp",
-            "61": "Gullps",
-            "62": "Pyrophibus",
-            "63": "Flamechirr",
-            "64": "Tectospit",
-            "65": "Pyroplant",
-            "66": "Kokofire",
+            "28": "Lampadinha",
+            "29": "Teslóide",
+            "30": "Sol Radiante",
+            "31": "Gamo-Raposa",
+            "32": "Piu-Piu",
+            "33": "Mil-Olhos",
+            "34": "Hipnotizador",
+            "35": "Chifrudo",
+            "36": "Lefante",
+            "37": "Cavaleiro Luminoso",
+            "38": "Heraldicus",
+            "39": "Unicórnio",
+            "40": "Mamutão",
+            "41": "Macaco Furioso",
+            "42": "Pónei Fofinho",
+            "43": "Coelho Espadachim",
+            "44": "Urso Rugidor",
+            "45": "Gerbo-de-Dentes-de-Sabre",
+            "46": "Macaco Pauliteiro",
+            "47": "Marrão",
+            "48": "Jav-ali",
+            "49": "Nhac-Nhac",
+            "50": "Rino",
+            "51": "Megacalhau",
+            "52": "Raposa-Vermelha",
+            "53": "Coisa das Cavernas",
+            "54": "Árvore dos Abraços",
+            "55": "Caranguejo Tlac-Tlac",
+            "56": "Panzer",
+            "57": "Sorriso Diabólico",
+            "58": "Triceratronco",
+            "59": "Per-Rex",
+            "60": "Diabinho Escaldante",
+            "61": "Goelas",
+            "62": "Pirofíbio",
+            "63": "Canário Flamejante",
+            "64": "Cuspidor de Fogo",
+            "65": "Piroplanta",
+            "66": "Galinha assada",
             "67": "Peppryon",
             "68": "Boomywoomy",
             "69": "Tikiricky",
@@ -629,23 +629,23 @@
             },
             "at150": {
                 "title": "At 150 - 199",
-                "placeholder": "Pets at 150 - 199"
+                "placeholder": "Mascotes a 150 - 199"
             },
             "at200": {
-                "title": "At 200",
-                "placeholder": "Pets at 200"
+                "title": "A 200",
+                "placeholder": "Mascotes a 200"
             },
             "pack": {
-                "title": "Pack",
-                "placeholder": "Pets you caught"
+                "title": "Pacote",
+                "placeholder": "Mascotes encontrados"
             }
         }
     },
     "dungeons": {
-        "simulate_one": "Simulate",
+        "simulate_one": "Simular",
         "simulate_remaining": "Restantes",
         "simulate_all": "Todos",
-        "simulate_next": "More",
+        "simulate_next": "Mais",
         "player": "Jogador",
         "enemy": "Inimigo",
         "yourself": "Tu",
@@ -656,12 +656,12 @@
         "graph": {
             "y": "HP do Boss Restante",
             "x": "- Distribuição para o número de tentativas -",
-            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
+            "winrate": "Taxa de vitória: #{rate}% (#{score} de #{tries})"
         },
         "results": "Resultados",
-        "experience": "Total: #{experience} XP",
+        "experience": "Total: #{experience} EXP",
         "cheats": {
-            "title": "Cheat Menu",
+            "title": "Menu de cheats",
             "subtitle": "Seleciona quais os cheats para aplicar e importa a tua personagem",
             "enable": "Permitir cheats",
             "general": "Geral",
@@ -673,79 +673,79 @@
             "keep_original": "Manter original"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
-            "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
+            "tooltip": "Clique direito para ajustar a menor vitória aceitável % contra uma masmorra",
+            "title": "Limite de simulação",
+            "label": "Limite % - Qualquer inimigo da masmorra abaixo deste limite será ignorado"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold} %)",
-            "message#": "Use <b>All</b> function to simulate all open dungeons"
+            "title": "Nenhuma masmorra vencível dentro do limite (#{threshold}%)",
+            "message#": "Use a função <b>All</b> para simular todas as masmorras disponíveis"
         }
     },
     "underworld": {
-        "goblin_pit": "Goblin Pit",
-        "goblin_upgrades": "Goblin Upgrades",
-        "troll_block": "Troll Block",
-        "troll_upgrades": "Troll Upgrades",
-        "keeper": "Keeper",
-        "keeper_upgrades": "Keeper Upgrades",
-        "shield_mode": "Allow underworld units to use shield",
+        "goblin_pit": "Mina de Duendes",
+        "goblin_upgrades": "Expansões de Duendes",
+        "troll_block": "Bloco de Trols",
+        "troll_upgrades": "Expansões de Trols",
+        "keeper": "Guardião",
+        "keeper_upgrades": "Expansões do Guardião",
+        "shield_mode": "Permitir que as unidades do submundo usem o escudo",
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "A iniciar a Simulação",
+                "message#": "<b>Tamanho do bloco:</b> #{blockSize}<br/><b>Iterações:</b> #{iterations}<br/><b>Thread quant:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Simulação de thread #{done} / #{total} concluída",
+                "message#": "<b>Tempo:</b> #{time} segundos"
             }
         }
     },
     "players": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
-        "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
-        "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
+        "gladiator_mode": "O Gladiador será definido como 15 independente das suas configurações",
+        "ihof_mode": "Modo IHOF: Gladiador não está reduzido!",
+        "fireball_mode": "Aplica correção de bolas de fogo para Guerreiro Nórdico, Caçador de Demónios, Druida e Bardo",
+        "no_attribute_reduction_mode": "O atributo principal não será reduzido pela defesa do oponente",
         "mode": {
-            "all": "All vs All",
-            "attack": "One vs All",
-            "defend": "All vs One",
-            "tournament": "Tournament"
+            "all": "Todos vs Todos",
+            "attack": "Um vs. Todos",
+            "defend": "Todos vs Um",
+            "tournament": "Torneio"
         },
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "A iniciar a Simulação",
+                "message#": "<b>Tamanho do bloco:</b> #{blockSize}<br/><b>Iterações:</b> #{iterations}<br/><b>Thread quant:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Simulação de thread #{done} / #{total} concluída",
+                "message#": "<b>Tempo:</b> #{time} segundos"
             },
             "tournament": {
-                "title": "Preparing ladder",
-                "message#": "<b>Players:</b> #{count}"
+                "title": "A preparar simulação",
+                "message#": "<b>Jogadores:</b> #{count}"
             }
         }
     },
     "guilds": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "guild1": "Guild A",
-        "guild2": "Guild B",
+        "gladiator_mode": "O Gladiador será definido como 15 independente das suas configurações",
+        "guild1": "Clã A",
+        "guild2": "Clã B",
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "A iniciar a Simulação",
+                "message#": "<b>Iterações:</b> #{iterations}<br/><b>Thread quant:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Simulação de thread #{done} / #{total} concluída",
+                "message#": "<b>Tempo:</b> #{time} segundos"
             }
         }
     },
     "fortress": {
-        "warrior_count": "Warriors",
-        "warrior_level": "Warrior Level",
-        "archer_count": "Archers",
+        "warrior_count": "Guerreiros",
+        "warrior_level": "Nível do Guerreiro",
+        "archer_count": "Exploradores",
         "archer_level": "Archer Level",
         "mage_count": "Mages",
         "mage_level": "Mage Level",
@@ -825,7 +825,7 @@
         "min": "Mín",
         "min_placeholder": "Item Min",
         "max": "Máx",
-        "max_placeholder": "Item Max",
+        "max_placeholder": "Limite do item",
         "weapon_enchant": "Crítico",
         "rune": "Runa",
         "portal_damage": "Danos - Bónus do Portal",
@@ -843,17 +843,17 @@
         "none": "Nenhuma"
     },
     "endpoint": {
-        "username": "Username",
-        "password": "Password",
+        "username": "Nome de utilizador",
+        "password": "Palavra-chave",
         "mode": {
-            "own": "Capture own character",
-            "default": "Capture own + selected characters",
-            "guild": "Capture own + guild characters",
-            "friends": "Capture own + friend characters",
-            "hall_of_fame": "Capture own + top 50 HoF characters"
+            "own": "Capturar o seu próprio personagem",
+            "default": "Capturar os próprios personagens + selecionados",
+            "guild": "Capturar os próprios personagens + membros do clã",
+            "friends": "Capturar os próprios personagens + amigos",
+            "hall_of_fame": "Capturar os próprios personagens + top 50 HoF"
         },
-        "cancel": "Cancel",
-        "continue": "Continue",
+        "cancel": "Cancelar",
+        "continue": "Continuar",
         "step2": {
             "title": "Loading Endpoint"
         },

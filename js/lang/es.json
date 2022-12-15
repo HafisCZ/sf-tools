@@ -11,7 +11,7 @@
         "class7": "Cazademonios",
         "class8": "Druida",
         "class9": "Bardo",
-        "mask0": "Eagle",
+        "mask0": "Águila",
         "mask1": "Oso",
         "mask2": "Gato",
         "instrument0": "Arpa",
@@ -23,68 +23,68 @@
         "attribute3": "Inteligencia",
         "attribute4": "Constitución",
         "attribute5": "Suerte",
-        "potion1": "Strength",
-        "potion2": "Dexterity",
-        "potion3": "Intelligence",
-        "potion4": "Constitution",
-        "potion5": "Luck",
-        "potion6": "Life",
-        "rank1": "Leader",
-        "rank2": "Officer",
-        "rank3": "Member",
-        "rank4": "Invited",
-        "level": "Level",
-        "gold": "Gold",
-        "wood": "Wood",
-        "stone": "Stone",
-        "souls": "Souls",
-        "time": "Time",
-        "gem": "Gem",
-        "fight": "Fight",
-        "wood_cap": "Wood Capacity",
-        "stone_cap": "Stone Capacity",
+        "potion1": "Fuerza",
+        "potion2": "Destreza",
+        "potion3": "Inteligencia",
+        "potion4": "Constitución",
+        "potion5": "Suerte",
+        "potion6": "Vida",
+        "rank1": "Líder",
+        "rank2": "Oficial",
+        "rank3": "Miembro",
+        "rank4": "Invitado",
+        "level": "Nivel",
+        "gold": "Oro",
+        "wood": "Madera",
+        "stone": "Piedra",
+        "souls": "Almas",
+        "time": "Tiempo",
+        "gem": "Gema",
+        "fight": "Lucha",
+        "wood_cap": "Capacidad de madera",
+        "stone_cap": "Capacidad de piedra",
         "buildings": {
-            "time": "Build Time",
-            "hourly": "Hourly prod.",
-            "capacity": "Capacity",
-            "full": "Full in",
-            "storage": "Total storage",
-            "lure_count": "Lures",
-            "lure_bonus": "Lure Bonus",
-            "knights": "Hall of Knights",
+            "time": "Tiempo de construcción",
+            "hourly": "Prod. por hora.",
+            "capacity": "Capacidad",
+            "full": "Completado en",
+            "storage": "Almacenamiento total",
+            "lure_count": "Atracciones",
+            "lure_bonus": "Bonus de atracciones",
+            "knights": "Salón de Caballeros",
             "goblins": "Goblins",
             "trolls": "Trolls",
-            "warriors": "Warriors",
-            "archers": "Archers",
-            "mages": "Mages",
-            "backpack_size": "Backpack Size",
-            "critical_bonus": "Critical Bonus",
-            "thirst_free": "Daily free Thirst",
-            "thirst_usable": "Daily storable Thirst",
-            "fortress1": "Fortress",
-            "fortress2": "Laborers' Quarters",
-            "fortress3": "Woodcutter's Hut",
-            "fortress4": "Quarry",
-            "fortress5": "Gem Mine",
-            "fortress6": "Academy",
-            "fortress7": "Archery Guild",
-            "fortress8": "Barracks",
-            "fortress9": "Mages' Tower",
-            "fortress10": "Treasury",
-            "fortress11": "Smithy",
-            "fortress12": "Fortifications",
-            "underworld1": "Heart of Darkness",
-            "underworld2": "Underworld Gate",
-            "underworld3": "Soul Extractor",
-            "underworld4": "Goblin Pit",
-            "underworld5": "Torture Chamber",
-            "underworld6": "Gladiator Trainer",
-            "underworld7": "Troll Block",
-            "underworld8": "Time Machine",
-            "underworld9": "Keeper",
-            "underworld10": "Gold Pit"
+            "warriors": "Guerreros",
+            "archers": "Arqueros",
+            "mages": "Magos",
+            "backpack_size": "Tamaño del inventario",
+            "critical_bonus": "Bonus Crítico",
+            "thirst_free": "Sed gratis diaria",
+            "thirst_usable": "Sed almacenable diaria",
+            "fortress1": "Fortaleza",
+            "fortress2": "Barrio de obreros",
+            "fortress3": "Cabaña del leñador",
+            "fortress4": "Cantera",
+            "fortress5": "Mina de gemas",
+            "fortress6": "Academia",
+            "fortress7": "Gremio de arqueros",
+            "fortress8": "Cuarteles",
+            "fortress9": "Torre de los magos",
+            "fortress10": "Tesoro",
+            "fortress11": "Herrería",
+            "fortress12": "Fortificaciones",
+            "underworld1": "Corazón de las tinieblas",
+            "underworld2": "Puerta del Inframundo",
+            "underworld3": "Extractor de Almas",
+            "underworld4": "Pozo de los goblins",
+            "underworld5": "Cámara de tortura",
+            "underworld6": "Entrenador de gladiadores",
+            "underworld7": "Barricada trol",
+            "underworld8": "Aventuromática",
+            "underworld9": "Guardián",
+            "underworld10": "Pozo del oro"
         },
-        "reduction": "Reduction"
+        "reduction": "Reducción"
     },
     "index": {
         "toggle": "Alternar créditos",
@@ -166,16 +166,16 @@
             "desc": "Simula que clase de mascota de gremio es mejor para la hidra actual."
         },
         "fortress": {
-            "title": "Fortress Simulator",
-            "desc": "Simulate the probable outcome of fortress raid"
+            "title": "Simulador de Fortaleza",
+            "desc": "Simula el posible resultado de una batalla de fortaleza"
         },
         "changelog": {
-            "title": "Changelog",
-            "desc": "View all notable changes"
+            "title": "Historial de cambios",
+            "desc": "Ver todos los cambios destacados"
         },
         "hellevator": {
-            "title": "Hellevator Simulator",
-            "desc": "Simulate the probable outcome of Hellevator battles"
+            "title": "Simulador del Hellevator",
+            "desc": "Simula el posible resultado de batallas del Hellevator"
         }
     },
     "404": {
@@ -184,345 +184,345 @@
     },
     "stats": {
         "topbar": {
-            "temporary_flag": "Temporary",
-            "players": "Players",
-            "guilds": "Guilds",
-            "browse": "Browse",
+            "temporary_flag": "Temporal",
+            "players": "Jugadores",
+            "guilds": "Gremios",
+            "browse": "Buscar",
             "scripts": "Scripts",
-            "files": "Files",
-            "settings": "Settings",
-            "temporary": "Temporary session",
-            "changelog": "Changelog",
-            "profile": "Profile"
+            "files": "Archivos",
+            "settings": "Ajustes",
+            "temporary": "Sesión temporal",
+            "changelog": "Historial de cambios",
+            "profile": "Perfil"
         },
         "files": {
             "titles": {
-                "filters": "Filters",
-                "io": "Import / Export"
+                "filters": "Filtros",
+                "io": "Importar / Exportar"
             },
-            "timestamp": "Timestamp",
-            "timestamps": "Timestamps",
-            "prefix": "Prefix",
-            "name": "Name",
-            "group": "Group",
-            "groups": "Groups",
-            "players": "Players",
-            "version": "Version",
+            "timestamp": "Fecha y hora",
+            "timestamps": "Fecha y hora",
+            "prefix": "Prefijo",
+            "name": "Nombre",
+            "group": "Grupo",
+            "groups": "Grupos",
+            "players": "Jugadores",
+            "version": "Versión",
             "import": {
-                "file": "Import from File",
-                "shared": "Import Shared",
-                "game": "Import from Game"
+                "file": "Importar desde archivo",
+                "shared": "Importar Compartido",
+                "game": "Importar desde el Juego"
             },
             "export": {
-                "all": "Export all",
-                "selected": "Export selected"
+                "all": "Exportar todo",
+                "selected": "Exportar seleccionados"
             },
             "selected": {
-                "text": "item(s) selected",
+                "text": "ítem(s) seleccionado(s)",
                 "no": "No"
             },
             "hide": {
-                "label": "Hide",
-                "tooltip": "Works independently in simple & advanced mode!",
-                "migrate": "Mark files with all hidden players as hidden"
+                "label": "Ocultar",
+                "tooltip": "Funciona independientemente en modo simple y avanzado!",
+                "migrate": "Marcar los archivos con todos los jugadores ocultos como ocultos"
             },
             "merge": {
-                "selected": "Merge selected"
+                "selected": "Combinar seleccionados"
             },
             "delete": {
-                "all": "Delete all",
-                "selected": "Delete selected"
+                "all": "Eliminar todo",
+                "selected": "Eliminar seleccionado"
             },
             "options": {
-                "title": "File options",
-                "advanced": "Show advanced file list",
-                "hidden": "Show hidden players",
-                "export_public_only": "Export only public data"
+                "title": "Opciones de archivo",
+                "advanced": "Mostrar lista avanzada de archivos",
+                "hidden": "Mostrar jugadores ocultos",
+                "export_public_only": "Exportar solo datos públicos"
             },
             "tags": {
-                "single": "Tag",
-                "multiple": "Tags",
-                "all": "All",
-                "none": "None"
+                "single": "Etiqueta",
+                "multiple": "Etiquetas",
+                "all": "Todas",
+                "none": "Ninguna"
             },
             "filters": {
-                "any": "Any",
-                "n_unique": "unique",
-                "expression": "Expression",
-                "expression_placeholder": "Your expression",
-                "timestamp": "Timestamp",
-                "player": "Player",
-                "group": "Guild",
-                "prefix": "Prefix",
-                "tags": "Tags",
-                "type": "Type",
-                "type_all": "Show all characters",
-                "type_own": "Show only own characters",
-                "type_other": "Show only other characters",
-                "hidden": "Hidden"
+                "any": "Cualquiera",
+                "n_unique": "único",
+                "expression": "Expresión",
+                "expression_placeholder": "Tu expresión",
+                "timestamp": "Fecha y hora",
+                "player": "Jugador",
+                "group": "Gremio",
+                "prefix": "Prefijo",
+                "tags": "Etiquetas",
+                "type": "Tipo",
+                "type_all": "Mostrar todos los personajes",
+                "type_own": "Mostrar solo tus personajes",
+                "type_other": "Mostrar solo otros personajes",
+                "hidden": "Ocultos"
             },
             "online": {
-                "title": "File sharing",
-                "prompt": "Enter your code:",
-                "invalid": "Invalid or expired code!",
-                "cancel": "Cancel",
-                "ok": "Ok"
+                "title": "Compartir archivo",
+                "prompt": "Introduzca su código:",
+                "invalid": "¡El código ha expirado o no es válido!",
+                "cancel": "Cancelar",
+                "ok": "Aceptar"
             }
         },
         "copy": {
-            "image": "Save as image",
-            "basic": "Copy table",
-            "fight": "Copy table for fight simulator",
-            "player": "Copy",
-            "player_companions": "Copy with companions"
+            "image": "Guardar como imagen",
+            "basic": "Copiar tabla",
+            "fight": "Copiar tabla para el simulador de lucha",
+            "player": "Copiar",
+            "player_companions": "Copiar con compañeros"
         },
         "context": {
-            "hide": "Show / Hide",
-            "remove": "Remove permanently"
+            "hide": "Mostrar / Ocultar",
+            "remove": "Eliminar permanentemente"
         },
         "profiles": {
-            "players": "Players",
-            "groups": "Guilds",
-            "primary": "Primary filter",
-            "secondary": "Secondary filter",
-            "none": "None",
-            "create": "Create new profile",
-            "between": "between",
-            "and": "and"
+            "players": "Jugadores",
+            "groups": "Gremios",
+            "primary": "Filtro principal",
+            "secondary": "Filtro secundario",
+            "none": "Ninguno",
+            "create": "Crear nuevo perfil",
+            "between": "entre",
+            "and": "y"
         },
         "filters": {
-            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
-            "p": "Player name",
-            "g": "Guild name",
-            "s": "Server",
-            "e": "Custom expression",
-            "#": "Show only players with specified tags",
-            "l": "Show only latest",
-            "f": "Show only first or first n entries",
-            "r": "Force recalculation of global variables",
-            "x": "Enable simulator (argument is number of iterations)",
-            "h": "Show hidden",
-            "o": "Show own",
-            "a": "Show all",
-            "d": "Show other",
-            "q": "Custom settings (separate header names with comma)",
-            "t": "Show online template directly",
-            "sr": "Sort by custom expression",
-            "qc": "Show only selected categories"
+            "c": "Clase del jugador, use el nombre completo de la clase en minúsculas (por ejemplo: berserker, battle mage)",
+            "p": "Nombre del jugador",
+            "g": "Nombre del gremio",
+            "s": "Servidor",
+            "e": "Expresión personalizada",
+            "#": "Mostrar sólo jugadores con etiquetas especificadas",
+            "l": "Mostrar solo las últimas",
+            "f": "Mostrar sólo la primera o primeras n entradas",
+            "r": "Forzar el recálculo de variables globales",
+            "x": "Activar simulador (el argumento es el número de iteraciones)",
+            "h": "Mostrar ocultos",
+            "o": "Mostrar propio",
+            "a": "Mostrar todos",
+            "d": "Mostrar otros",
+            "q": "Configuración personalizada (separar nombres de cabeceras con coma)",
+            "t": "Mostrar plantilla online directamente",
+            "sr": "Ordenar por expresión personalizada",
+            "qc": "Mostrar solo las categorías seleccionadas"
         },
         "scripts": {
-            "settings": "Settings",
-            "templates": "Templates",
+            "settings": "Ajustes",
+            "templates": "Plantillas",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Scripts",
-                "templates": "Templates",
-                "save": "Save",
-                "copy": "Copy",
-                "undo": "Undo",
-                "redo": "Redo",
-                "close": "Close",
-                "apply": "Apply",
-                "remove": "Remove",
-                "save_apply": "Save & Apply"
+                "templates": "Plantillas",
+                "save": "Guardar",
+                "copy": "Copiar",
+                "undo": "Deshacer",
+                "redo": "Rehacer",
+                "close": "Cerrar",
+                "apply": "Aplicar",
+                "remove": "Eliminar",
+                "save_apply": "Guardar y aplicar"
             },
             "types": {
-                "me": "Me",
-                "players": "Players",
-                "guilds": "Guilds",
-                "default": "Default"
+                "me": "Yo",
+                "players": "Jugadores",
+                "guilds": "Gremios",
+                "default": "Predeterminado"
             },
             "online": {
-                "not_available": "No scripts available"
+                "not_available": "No hay scripts disponibles"
             }
         },
         "players": {
-            "other": "Show other players",
-            "hidden": "Show hidden"
+            "other": "Mostrar jugadores ocultos",
+            "hidden": "Mostrar ocultos"
         },
         "guilds": {
-            "other": "Show other guilds",
-            "hidden": "Show hidden",
-            "missing": "Player data is missing for following members:"
+            "other": "Mostrar otros gremios",
+            "hidden": "Mostrar ocultos",
+            "missing": "Faltan datos del jugador para los siguientes miembros:"
         },
         "browse": {
-            "hidden": "Show hidden"
+            "hidden": "Mostrar ocultos"
         },
         "fast_export": {
-            "label": "Share",
-            "title": "Export options",
-            "all": "All",
-            "latest": "Latest",
-            "latest5": "Latest 5",
-            "selected": "Selected",
-            "selected_both": "Selected & Reference"
+            "label": "Compartir",
+            "title": "Opciones de exportación",
+            "all": "Todos",
+            "latest": "Últimos",
+            "latest5": "Últimos 5",
+            "selected": "Seleccionado",
+            "selected_both": "Seleccionado y Referencia"
         },
         "share": {
-            "title": "File sharing",
-            "options": "Options",
-            "code": "Your code",
-            "get": "Get code",
-            "ok": "Ok",
-            "expire": "The code will automatically expire after 2 days.",
-            "single_use": "Single use only",
-            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+            "title": "Compartir archivo",
+            "options": "Opciones",
+            "code": "Tu código",
+            "get": "Obtener código",
+            "ok": "Aceptar",
+            "expire": "El código caducará automáticamente después de 2 días.",
+            "single_use": "Sólo uso único",
+            "single_use_notice": "Por favor, considere mantener esta opción habilitada a menos que planee compartir el archivo con varias personas."
         },
         "online_templates": {
-            "title": "Public scripts",
-            "description": "Description",
-            "author": "Author",
-            "created_on": "Created on",
-            "loading": "Fetching scripts",
-            "code": "Enter your private code..."
+            "title": "Scripts públicos",
+            "description": "Descripción",
+            "author": "Autor",
+            "created_on": "Creado el",
+            "loading": "Obteniendo scripts",
+            "code": "Ingresa tu código privado..."
         },
         "templates": {
-            "title": "Templates",
-            "loading": "Committing changes",
+            "title": "Plantillas",
+            "loading": "Confirmando los cambios",
             "form": {
-                "changed_on": "Changed on",
-                "version": "Tool Version",
-                "compatibility": "Compatibility",
-                "published_on": "Published on",
-                "code": "Code",
-                "publish": "Publish",
-                "publish_tooltip": "Publish template",
-                "unpublish_tooltip": "Unpublish template",
-                "update": "Update",
-                "update_tooltip": "Update template with current script",
-                "remove": "Remove",
-                "remove_tooltip": "Remove template"
+                "changed_on": "Modificado el",
+                "version": "Versión de la herramienta",
+                "compatibility": "Compatibilidad",
+                "published_on": "Publicado el",
+                "code": "Código",
+                "publish": "Publicar",
+                "publish_tooltip": "Publicar plantilla",
+                "unpublish_tooltip": "Despublicar plantilla",
+                "update": "Actualizar",
+                "update_tooltip": "Actualizar plantilla con el script actual",
+                "remove": "Eliminar",
+                "remove_tooltip": "Eliminar plantilla"
             },
-            "quick_swap": "Quick swap custom templates"
+            "quick_swap": "Cambio rápido de plantillas personalizadas"
         },
         "group": {
-            "compared_to": "compared to"
+            "compared_to": "comparado con"
         },
         "player": {
-            "attributes": "Attributes",
-            "basis": "Basis",
-            "miscellaneous": "Misc",
-            "armor": "Armor",
-            "damage": "Damage",
-            "health": "Health",
-            "potions": "Potions",
-            "guild": "Guild",
-            "name": "Name",
-            "role": "Role",
-            "joined_on": "Joined on",
-            "bonuses": "Bonuses",
-            "scrapbook": "Scrapbook",
-            "achievements": "Achievements",
-            "mount": "Mount",
-            "heath_bonus": "Health Bonus",
-            "damage_bonus": "Damage Bonus",
-            "treasure": "Treasure",
+            "attributes": "Atributos",
+            "basis": "Bases",
+            "miscellaneous": "Otros",
+            "armor": "Armadura",
+            "damage": "Daño",
+            "health": "Vida",
+            "potions": "Pociones",
+            "guild": "Gremio",
+            "name": "Nombre",
+            "role": "Rol",
+            "joined_on": "Se unió el",
+            "bonuses": "Bonificaciones",
+            "scrapbook": "Álbum de la meticulosidad",
+            "achievements": "Logros",
+            "mount": "Montura",
+            "heath_bonus": "Bonif. de Vida",
+            "damage_bonus": "Bonif. de daño",
+            "treasure": "Tesoro",
             "instructor": "Instructor",
-            "pet": "Pet",
-            "knights": "Hall of Knights",
+            "pet": "Mascota",
+            "knights": "Salón de Caballeros",
             "extras": {
                 "title": "Extras",
-                "registered": "Registered"
+                "registered": "Registrado"
             },
             "runes": {
-                "title": "Runes",
-                "gold": "Gold",
-                "experience": "Experience",
-                "epic": "Epic Chance",
-                "quality": "Item Quality",
-                "health": "Health",
-                "fire_damage": "Fire Damage",
-                "cold_damage": "Cold Damage",
-                "lightning_damage": "Lightning Damage",
-                "fire_resist": "Fire Resistance",
-                "cold_resist": "Cold Resistance",
-                "lightning_resist": "Lightning Resistance"
+                "title": "Runas",
+                "gold": "Oro",
+                "experience": "Experiencia",
+                "epic": "Probabilidad de objetos épicos",
+                "quality": "Mejora de calidad de objeto",
+                "health": "Vida",
+                "fire_damage": "Daño de Fuego",
+                "cold_damage": "Daño de frío",
+                "lightning_damage": "Daño de rayo",
+                "fire_resist": "Resistencia a fuego",
+                "cold_resist": "Resistente a frío",
+                "lightning_resist": "Resistencia a rayo"
             },
             "fortress": {
-                "title": "Fortress",
-                "upgrades": "Upgrades",
-                "rank": "Rank",
+                "title": "Fortaleza",
+                "upgrades": "Mejoras",
+                "rank": "Clasificación",
                 "honor": "Honor",
-                "building1": "Fortress",
-                "building2": "Quarters",
-                "building3": "Woodcutter",
-                "building4": "Quarry",
-                "building5": "Gem Mine",
-                "building6": "Academy",
-                "building7": "Archery Guild",
-                "building8": "Barracks",
-                "building9": "Mage Tower",
-                "building10": "Treasury",
-                "building11": "Smithy",
-                "building12": "Fortifications",
-                "working": "Building"
+                "building1": "Fortaleza",
+                "building2": "Barrio de obreros",
+                "building3": "Leñador",
+                "building4": "Cantera",
+                "building5": "Mina de gemas",
+                "building6": "Academia",
+                "building7": "Gremio de arqueros",
+                "building8": "Cuarteles",
+                "building9": "Torre de los magos",
+                "building10": "Tesoro",
+                "building11": "Herrería",
+                "building12": "Fortificaciones",
+                "working": "En construcción"
             }
         },
         "settings": {
-            "title": "Global configuration",
-            "always_prev": "Compare previous (guilds)",
-            "empty_groups": "Show empty groups",
-            "obfuscated": "Hide player names",
-            "insecure": "Allow insecure html tags",
-            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
-            "unsafe_delete": "Skip confirmation when deleting files",
-            "terms": "Accept Terms of Service",
-            "tab": "Default tab",
-            "preload": "Preload rows",
+            "title": "Configuración global",
+            "always_prev": "Comparar anterior (gremios)",
+            "empty_groups": "Mostrar grupos vacíos",
+            "obfuscated": "Oculta nombre de los jugadores",
+            "insecure": "Permitir etiquetas html no seguras",
+            "insecure_error#": "Esta tabla no se mostró porque contiene etiquetas HTML que están prohibidas.<br/>Por favor, elimínalas de tu configuración e inténtalo de nuevo.",
+            "unsafe_delete": "Omitir confirmación al eliminar archivos",
+            "terms": "Aceptar los términos del servicio",
+            "tab": "Pestaña por defecto",
+            "preload": "Precargar filas",
             "actions": {
-                "title": "Actions",
-                "discard": "Discard unsaved changes",
-                "save": "Save actions"
+                "title": "Acciones",
+                "discard": "Descartar cambios no guardados",
+                "save": "Guardar acciones"
             },
             "recovery": {
-                "title": "Recovery",
-                "import": "Import data",
-                "export": "Download data",
-                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
-                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
-                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
+                "title": "Recuperación",
+                "import": "Importar datos",
+                "export": "Descargar datos",
+                "description#": "Con las opciones de abajo puede exportar e importar todos los datos almacenados en el sitio web.<br>Se recomienda exportar sus datos al menos una vez al mes para evitar la pérdida accidental de datos.",
+                "toast": "El proceso de recuperación acaba de comenzar. Por favor, ten en cuenta que esto puede tomar mucho tiempo dependiendo del tamaño de tu archivo de recuperación.",
+                "notice": "¿Está seguro que desea recuperar SFTools de este archivo?<br><br>¡Esta operación borrará todos tus datos existentes para continuar!"
             }
         }
     },
     "pets": {
         "generate": {
-            "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
-            "one": "Generate",
-            "five": "Generate next 5",
-            "ten": "Generate next 10"
+            "tooltip": "Genera un mapa de éxito de nivel / gladiator. Sólo es posible con su propia mascota contra un jefe de mazmorra.",
+            "one": "Generar",
+            "five": "Generar próximos 5",
+            "ten": "Generar próximos 10"
         },
-        "simulate": "Simulate",
-        "results": "Results",
+        "simulate": "Simular",
+        "results": "Resultados",
         "map": {
-            "gladiator": "Glad"
+            "gladiator": "Gladiador"
         },
         "types": {
-            "0": "Shadow",
-            "1": "Light",
-            "2": "Earth",
-            "3": "Fire",
-            "4": "Water"
+            "0": "Sombra",
+            "1": "Luz",
+            "2": "Tierra",
+            "3": "Fuego",
+            "4": "Agua"
         },
         "names": {
-            "0": "Slurp",
-            "1": "Digmol",
-            "2": "Toothey",
-            "3": "Okultacle",
-            "4": "Spidor",
-            "5": "Jackobu",
-            "6": "Shrimpfly",
-            "7": "Reaprim",
-            "8": "Petdacat",
-            "9": "Mykon",
-            "10": "Fishorr",
-            "11": "Cuckooly",
-            "12": "Battlutter",
-            "13": "Pinklynx",
-            "14": "Pharamumm",
-            "15": "Ninstarr",
-            "16": "Luchtablong",
-            "17": "Angrack",
-            "18": "Devilsatt",
-            "19": "Poisnake",
+            "0": "Lenguaraz",
+            "1": "Topacio",
+            "2": "Dentellado",
+            "3": "Milojos",
+            "4": "Arañon",
+            "5": "Caralabaza",
+            "6": "Gambetero",
+            "7": "Guadeño",
+            "8": "Feliciano",
+            "9": "Setus",
+            "10": "Bocapez",
+            "11": "Cacuco",
+            "12": "Muerciéloco",
+            "13": "Deslince",
+            "14": "Momimonstruo",
+            "15": "Ninjastar",
+            "16": "Espectrol",
+            "17": "Furibundix",
+            "18": "Pandemonio",
+            "19": "Vivoraz",
             "20": "Shaggyll",
             "21": "Jellclops",
             "22": "Tinck",
@@ -605,47 +605,47 @@
             "99": "Hydrospir"
         },
         "bulk": {
-            "not_possible": "Not possible",
+            "not_possible": "Imposible",
             "toast": {
-                "title": "Starting simulation",
+                "title": "Iniciar la simulación",
                 "matches": "Matches:"
             }
         },
         "editor": {
-            "none": "None",
-            "type": "Type",
-            "pet": "Pet",
-            "habitat": "Habitat",
-            "health": "Health",
-            "attribute": "Attribute",
-            "defense": "Defense",
-            "skip": "Skip Chance",
-            "crit": "Critical Chance",
-            "damage": "Damage",
-            "critical_bonus": "Critical",
+            "none": "Ninguno",
+            "type": "Tipo",
+            "pet": "Mascota",
+            "habitat": "Hábitat",
+            "health": "Vida",
+            "attribute": "Atributo",
+            "defense": "Defensa",
+            "skip": "Omitir Oportunidad",
+            "crit": "Probabilidad de crítico",
+            "damage": "Daño",
+            "critical_bonus": "Crítico",
             "at100": {
-                "title": "At 100 - 149",
-                "placeholder": "Pets at 100 - 149"
+                "title": "A 100 - 149",
+                "placeholder": "Mascotas a 100 - 149"
             },
             "at150": {
-                "title": "At 150 - 199",
-                "placeholder": "Pets at 150 - 199"
+                "title": "A 150 - 199",
+                "placeholder": "Mascotas al 150 - 199"
             },
             "at200": {
-                "title": "At 200",
-                "placeholder": "Pets at 200"
+                "title": "A 200",
+                "placeholder": "Mascotas al 200"
             },
             "pack": {
                 "title": "Pack",
-                "placeholder": "Pets you caught"
+                "placeholder": "Mascotas que has capturado"
             }
         }
     },
     "dungeons": {
-        "simulate_one": "Simulate",
+        "simulate_one": "Simular",
         "simulate_remaining": "Restantes",
         "simulate_all": "Todas",
-        "simulate_next": "More",
+        "simulate_next": "Más",
         "player": "Jugador",
         "enemy": "Enemigo",
         "yourself": "Tú",
@@ -656,10 +656,10 @@
         "graph": {
             "y": "Vida restande del Jefe",
             "x": "- Distribución por cantidad de intentos seleccionados -",
-            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
+            "winrate": "Tasa de victorias: #{rate}% (#{score} de #{tries})"
         },
         "results": "Resultados",
-        "experience": "Total: #{experience} XP",
+        "experience": "Total: #{experience} EXP",
         "cheats": {
             "title": "Menu de trampas",
             "subtitle": "Selecciona qué trampas aplicar y selecciona a tu personaje",
@@ -673,145 +673,145 @@
             "keep_original": "Mantener original"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
-            "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
+            "tooltip": "Clic derecho para ajustar el % de ganancia más bajo aceptable contra una mazmorra",
+            "title": "Umbral de simulación",
+            "label": "Umbral % - Cualquier enemigo mazmorra por debajo de este umbral se saltará"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold} %)",
-            "message#": "Use <b>All</b> function to simulate all open dungeons"
+            "title": "No hay mazmorras posibles en el umbral (#{threshold}%)",
+            "message#": "Usa <b>Todos</b> para simular todas las mazmorras abiertas"
         }
     },
     "underworld": {
-        "goblin_pit": "Goblin Pit",
-        "goblin_upgrades": "Goblin Upgrades",
-        "troll_block": "Troll Block",
-        "troll_upgrades": "Troll Upgrades",
-        "keeper": "Keeper",
-        "keeper_upgrades": "Keeper Upgrades",
-        "shield_mode": "Allow underworld units to use shield",
+        "goblin_pit": "Pozo de los goblins",
+        "goblin_upgrades": "Mejoras de Goblin",
+        "troll_block": "Barricada trol",
+        "troll_upgrades": "Mejoras de Troll",
+        "keeper": "Guardián",
+        "keeper_upgrades": "Mejoras del Guardián",
+        "shield_mode": "Permitir a las unidades del submundo usar escudo",
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "Iniciar la simulación",
+                "message#": "<b>Tamaño del bloque:</b> #{blockSize}<br/><b>Iteraciones:</b> #{iterations}<br/><b>Cantidad Hilos:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Hilo de simulación #{done} / #{total} terminado",
+                "message#": "<b>Tiempo:</b> #{time} segundos"
             }
         }
     },
     "players": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
-        "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
-        "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
+        "gladiator_mode": "Gladiator se establecerá en 15 independientemente de tu configuración",
+        "ihof_mode": "Modo IHOF: Gladiador no se reduce!",
+        "fireball_mode": "Aplica la corrección de bola de fuego para Berserkers, Cazademonios, Druidas y Bardos",
+        "no_attribute_reduction_mode": "El atributo primario no se reducirá con la defensa del oponente",
         "mode": {
-            "all": "All vs All",
-            "attack": "One vs All",
-            "defend": "All vs One",
-            "tournament": "Tournament"
+            "all": "Todos vs Todos",
+            "attack": "Uno vs Todos",
+            "defend": "Todos vs Uno",
+            "tournament": "Torneo"
         },
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "Empezando simulación",
+                "message#": "<b>Tamaño del bloque:</b> #{blockSize}<br/><b>Iteraciones:</b> #{iterations}<br/><b>Cantidad Hilos:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Hilo de simulación #{done} / #{total} terminado",
+                "message#": "<b>Tiempo:</b> #{time} segundos"
             },
             "tournament": {
-                "title": "Preparing ladder",
-                "message#": "<b>Players:</b> #{count}"
+                "title": "Preparando escalera",
+                "message#": "<b>Jugadores:</b> #{count}"
             }
         }
     },
     "guilds": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "guild1": "Guild A",
-        "guild2": "Guild B",
+        "gladiator_mode": "Gladiador se establecerá en 15 independientemente de tu configuración",
+        "guild1": "Gremio A",
+        "guild2": "Gremio B",
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "Iniciar la simulación",
+                "message#": "<b>Iteraciones:</b> #{iterations}<br/><b>Cantidad Hilos:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Hilo de simulación #{done} / #{total} terminado",
+                "message#": "<b>Tiempo:</b> #{time} segundos"
             }
         }
     },
     "fortress": {
-        "warrior_count": "Warriors",
-        "warrior_level": "Warrior Level",
-        "archer_count": "Archers",
-        "archer_level": "Archer Level",
-        "mage_count": "Mages",
-        "mage_level": "Mage Level",
+        "warrior_count": "Guerreros",
+        "warrior_level": "Nivel de Guerrero",
+        "archer_count": "Arqueros",
+        "archer_level": "Nivel de Arquero",
+        "mage_count": "Magos",
+        "mage_level": "Nivel de Mago",
         "units": {
-            "remaining": "Average remaning units:",
-            "player": "Warriors",
-            "target": "Defenses"
+            "remaining": "Media restante de unidades:",
+            "player": "Guerreros",
+            "target": "Defensas"
         }
     },
     "hydra": {
-        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
-        "player_count": "Player Count",
-        "main": "Main",
-        "side1": "Side 1",
-        "side2": "Side 2",
-        "hydra": "Hydra",
+        "footer#": "Basado en el proyecto <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Mascota de gremio de Timhot3p</a>.",
+        "player_count": "Número de jugadores",
+        "main": "Principal",
+        "side1": "Lado 1",
+        "side2": "Lado 2",
+        "hydra": "Hidra",
         "iterations": {
-            "label": "Iterations:",
-            "popup": "Amount of iterations per pet class."
+            "label": "Iteraciones:",
+            "popup": "Cantidad de iteraciones por clase de mascota."
         },
         "result": {
-            "health": "#{health}% HP left",
-            "fights_single": "#{count} fight",
-            "fights_multiple": "#{count} fights"
+            "health": "#{health}% Vida restante",
+            "fights_single": "#{count} pelea",
+            "fights_multiple": "#{count} peleas"
         },
         "names": {
-            "1": "One-headed Hydra",
-            "2": "Two-headed Hydra",
-            "3": "Three-headed Hydra",
-            "4": "Four-headed Hydra",
-            "5": "Five-headed Hydra",
-            "6": "Six-headed Hydra",
-            "7": "Seven-headed Hydra",
-            "8": "Eight-headed Hydra",
-            "9": "Nine-headed Hydra",
-            "10": "Ten-headed Hydra",
-            "11": "Eleven-headed Hydra",
-            "12": "Twelve-headed Hydra",
-            "13": "Thirteen-headed Hydra (low accuracy)",
-            "14": "Fourteen-headed Hydra",
-            "15": "Fifteen-headed Hydra",
-            "16": "Sixteen-headed Hydra (low accuracy)",
-            "17": "Seventeen-headed Hydra (low accuracy)",
-            "18": "Eighteen-headed Hydra",
-            "19": "Nineteen-headed Hydra",
-            "20": "Countless-headed Hydra"
+            "1": "Hidra de una cabeza",
+            "2": "Hidra de dos cabezas",
+            "3": "Hidra de tres cabezas",
+            "4": "Hidra de cuatro cabezas",
+            "5": "Hidra de cinco cabezas",
+            "6": "Hidra de seis cabezas",
+            "7": "Hidra de siete cabezas",
+            "8": "Hidra de ocho cabezas",
+            "9": "Hidra de nueve cabezas",
+            "10": "Hidra de diez cabezas",
+            "11": "Hidra de once cabezas",
+            "12": "Hidra de doce cabezas",
+            "13": "Hidra de trece cabezas (precisión baja)",
+            "14": "Hidra de catorce cabezas",
+            "15": "Hidra de quince cabezas",
+            "16": "Hidra de dieciséis cabezas (precisión baja)",
+            "17": "Hidra de diecisiete cabezas (precisión baja)",
+            "18": "Hidra de dieciocho cabezas",
+            "19": "Hidra de diecinueve cabezas",
+            "20": "Hidra de cabezas incontables"
         }
     },
     "simulator": {
         "paste_target#": "Clica aqui y pulsa <b>CTRL&nbsp;+&nbsp;V</b> para copiar en el simulador",
         "threads": "Hilos de la simulación. Mantenga este número POR DEBAJO del número de núcleos de su procesador!",
         "iterations": "Cantidad de iteraciones por hilo.",
-        "add": "Add",
-        "save": "Save",
-        "simulate": "Simulate",
-        "simulate_debug": "Simulate in debug mode",
+        "add": "Añadir",
+        "save": "Guardar",
+        "simulate": "Simular",
+        "simulate_debug": "Simular en modo depuración",
         "clipboard": {
-            "copy_all": "Copy everyone",
-            "paste_mode": "Toggle Add/Replace insertion mode"
+            "copy_all": "Copiar todos",
+            "paste_mode": "Cambiar Añadir/Reemplazar modo de inserción"
         },
-        "win_chance": "Win %",
-        "min_chance": "Min %",
-        "max_chance": "Max %",
+        "win_chance": "Victoria %",
+        "min_chance": "Mínimo %",
+        "max_chance": "Máximo %",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "Grupo de jugadores guardados",
+            "guilds": "Grupo de gremios guardados"
         }
     },
     "editor": {
@@ -821,11 +821,11 @@
         "mask": "Máscara",
         "instrument": "Instrumento",
         "armor": "Armadura",
-        "armor_placeholder": "Armor points",
+        "armor_placeholder": "Puntos de armadura",
         "min": "Mínimo",
-        "min_placeholder": "Item Min",
+        "min_placeholder": "Ítem mínimo",
         "max": "Máximo",
-        "max_placeholder": "Item Max",
+        "max_placeholder": "Ítem máximo",
         "weapon_enchant": "Crítico",
         "rune": "Runa",
         "portal_damage": "Portal de Daño",
@@ -843,193 +843,193 @@
         "none": "Ninguno"
     },
     "endpoint": {
-        "username": "Username",
-        "password": "Password",
+        "username": "Nombre de usuario",
+        "password": "Contraseña",
         "mode": {
-            "own": "Capture own character",
-            "default": "Capture own + selected characters",
-            "guild": "Capture own + guild characters",
-            "friends": "Capture own + friend characters",
-            "hall_of_fame": "Capture own + top 50 HoF characters"
+            "own": "Capturar propio personaje",
+            "default": "Capturar propio + personajes seleccionados",
+            "guild": "Capturar propio + personajes de gremio",
+            "friends": "Capturar propio + amigos",
+            "hall_of_fame": "Capturar propio + jugadores top 50"
         },
-        "cancel": "Cancel",
-        "continue": "Continue",
+        "cancel": "Cancelar",
+        "continue": "Continuar",
         "step2": {
-            "title": "Loading Endpoint"
+            "title": "Cargando Endpoint"
         },
         "step3": {
-            "title": "Select players to be imported"
+            "title": "Selecciona jugadores a importar"
         },
         "step4": {
-            "title": "Contacting the server for information",
-            "message": "Fetching data"
+            "title": "Contactando con el servidor para obtener información",
+            "message": "Recuperando datos"
         },
         "user_error": {
-            "title": "Your user name or password is not valid",
-            "message": "Please ensure that it is in correct format (username@url)"
+            "title": "El nombre de usuario o la contraseña no son válidos",
+            "message": "Por favor, asegúrese de que está en el formato correcto (username@url)"
         },
-        "credentials_error": "Wrong username or password",
-        "download_error": "Download failed"
+        "credentials_error": "Usuario o contraseña incorrectos",
+        "download_error": "Descarga fallida"
     },
     "database": {
         "open_error": {
-            "title": "Database could not be opened",
-            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+            "title": "La base de datos no se ha podido abrir",
+            "message": "Por favor, compruebe que no está en modo incógnito y su navegador soporta Indexed DB"
         },
-        "import_error": "An error has occured while importing file",
-        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "import_error": "Se ha producido un error al importar el archivo",
+        "fatal_error#": "¡Su navegador no soporta todas las características requeridas por esta página!</br>Este problema también puede ser causado por el uso del modo privado.",
         "update_info": {
-            "title": "A database update is in progress",
-            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+            "title": "Actualización de base de datos en curso",
+            "message": "Por favor, no salga de la página hasta que se detenga la carga. Esto puede tomar un tiempo dependiendo del tamaño de su base de datos."
         }
     },
     "dialog": {
         "delete_all": {
-            "title": "Delete all",
-            "notice": "Are you sure you want to delete all stored player data?"
+            "title": "Eliminar todo",
+            "notice": "¿Está seguro que desea eliminar todos los datos de jugadores almacenados?"
         },
         "delete_script": {
-            "title": "Remove script",
-            "notice": "Are you sure you want to permanently remove currently applied script?"
+            "title": "Eliminar script",
+            "notice": "¿Está seguro que desea eliminar permanentemente el script aplicado actualmente?"
         },
         "warning": {
-            "title": "An issue has occured!",
-            "continue": "Continue"
+            "title": "¡Se ha producido un error!",
+            "continue": "Continuar"
         },
         "error": {
-            "title": "A fatal error has occured!",
-            "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
-            "refresh": "Click here or refresh the page",
-            "revert": "Revert back to default profile"
+            "title": "¡Se ha producido un error fatal!",
+            "notice#": "Este error también podría haber sido causado por su perfil actual.<br>Haga clic en el botón de revertir abajo para volver al perfil predeterminado.",
+            "refresh": "Haz clic aquí o actualiza la página",
+            "revert": "Volver al perfil por defecto"
         },
         "changelog": {
             "release": "Release",
-            "continue": "Continue"
+            "continue": "Continuar"
         },
         "file_edit": {
-            "title": "Edit file",
-            "timestamp": "Timestamp",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Editar archivo",
+            "timestamp": "Fecha y hora",
+            "cancel": "Cancelar",
+            "save": "Guardar"
         },
         "save_online_script": {
-            "title": "Import template",
-            "loader": "Preparing Files",
-            "author": "Author",
-            "created_updated": "Created/Updated",
-            "name": "Name",
-            "name_placeholder": "Template name",
-            "error": "The requested template is not available!",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Importar plantilla",
+            "loader": "Preparando archivos",
+            "author": "Autor",
+            "created_updated": "Creado/Actualizado",
+            "name": "Nombre",
+            "name_placeholder": "Nombre de la plantilla",
+            "error": "¡La plantilla solicitada no está disponible!",
+            "cancel": "Cancelar",
+            "save": "Guardar"
         },
         "edit_file_tag": {
-            "title": "Edit tags",
-            "current": "Current tags",
-            "replacement": "Replacement tag",
-            "none": "None",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Editar etiquetas",
+            "current": "Etiquetas actuales",
+            "replacement": "Reemplazo etiquetas",
+            "none": "Ninguno",
+            "cancel": "Cancelar",
+            "save": "Guardar"
         },
         "profile_create": {
-            "title": "Create/Edit profile",
+            "title": "Crear/Editar perfil",
             "id": "ID",
-            "name": "Name",
-            "slot": "Slot",
-            "index": "Index",
-            "operation": "Operation",
-            "equals": "Equals",
-            "above": "Above",
-            "below": "Below",
-            "between": "Between",
-            "value": "Value",
-            "secondary": "Secondary filter",
-            "cancel": "Cancel",
-            "save": "Save",
-            "default": "Default",
-            "profile": "Profile",
-            "none": "None",
+            "name": "Nombre",
+            "slot": "Ranura",
+            "index": "Índice",
+            "operation": "Operación",
+            "equals": "Igual",
+            "above": "Encima",
+            "below": "Debajo",
+            "between": "Entre",
+            "value": "Valor",
+            "secondary": "Filtro secundario",
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "default": "Predeterminado",
+            "profile": "Perfil",
+            "none": "Ninguno",
             "ast": {
-                "primary": "Primary AST expression",
-                "secondary": "Secondary AST expression",
-                "optional": "optional"
+                "primary": "Expresión principal AST",
+                "secondary": "Expresión secundaria AST",
+                "optional": "opcional"
             },
             "player": {
-                "primary": "Primary filter configuration",
-                "secondary": "Secondary filter configuration"
+                "primary": "Configuración de filtro principal",
+                "secondary": "Configuración de filtro secundario"
             },
             "group": {
-                "primary": "Primary group filter configuration",
-                "secondary": "Secondary group filter configuration"
+                "primary": "Configuración de filtro de grupo primario",
+                "secondary": "Configuración de filtro de grupo secundario"
             }
         },
         "template_save": {
-            "title": "Save template",
-            "select_existing": "Select existing template",
-            "select_new": "Create new template",
-            "or": "or",
-            "name": "Template name",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Guardar plantilla",
+            "select_existing": "Seleccionar plantilla existente",
+            "select_new": "Crear nueva plantilla",
+            "or": "o",
+            "name": "Nombre de la plantilla",
+            "cancel": "Cancelar",
+            "save": "Guardar"
         },
         "confirm": {
-            "cancel": "Cancel",
-            "ok": "Ok",
-            "wait_n_seconds": "Wait %1 seconds ..."
+            "cancel": "Cancelar",
+            "ok": "Aceptar",
+            "wait_n_seconds": "Espera %1 segundo(s) ..."
         },
         "input": {
-            "cancel": "Cancel",
-            "ok": "Ok"
+            "cancel": "Cancelar",
+            "ok": "Aceptar"
         },
         "data_manage": {
-            "cancel": "Cancel",
-            "ok": "Delete",
-            "title": "Are you sure you want to delete these files, players or guilds?",
-            "skip_next": "Do not show next time",
+            "cancel": "Cancelar",
+            "ok": "Borrar",
+            "title": "¿Estás seguro de que quieres eliminar estos archivos, jugadores o gremios?",
+            "skip_next": "No mostrar la próxima vez",
             "label": {
-                "group": "Following guild(s) will be removed:",
-                "player": "Following player(s) will be removed:",
-                "file": "Following file(s) will be removed:"
+                "group": "El/Los siguiente(s) gremio(s) serán eliminados:",
+                "player": "El/Los siguiente(s) jugador(es) serán eliminados:",
+                "file": "El/Los siguiente(s) archivo(s) serán eliminados:"
             }
         }
     },
     "attributes": {
         "tabs": {
-            "gold_exp": "Gold & Experience",
-            "fortress": "Fortress",
-            "underworld": "Underworld",
-            "gold_table": "Gold Table"
+            "gold_exp": "Oro y Experiencia",
+            "fortress": "Fortaleza",
+            "underworld": "Inframundo",
+            "gold_table": "Tabla de Oro"
         },
         "float": {
-            "title": "Character values",
-            "quarters": "Labourer's Quarters"
+            "title": "Valores del personaje",
+            "quarters": "Barrio de obreros"
         },
         "gold": {
-            "title": "Gold",
-            "group": "Guild bonus %",
-            "tower": "Tower bonus %",
-            "mine": "Gem Mine",
-            "pit": "Gold Pit",
-            "pit_cap": "Gold Pit capacity",
-            "pit_hr": "Hourly Gold Pit",
-            "pit_time": "Gold Pit time",
-            "rune": "Item Quality Rune",
-            "reward": "Environmental reward",
-            "guard_hr": "Hourly guard duty",
-            "dice_3": "Dice game (3 of a kind)",
-            "dice_4": "Dice game (4 of a kind)",
-            "dice_5": "Dice game (5 of a kind)",
-            "gem_s": "Small gem",
-            "gem_m": "Medium gem",
-            "gem_l": "Large gem",
-            "pot_10": "10% Potion",
-            "pot_15": "15% Potion",
-            "pot_25": "25% Potion",
-            "pot_w": "Witch Potion",
-            "pot_pm": "Mushroom PoEL",
-            "pot_pg": "Gold PoEL",
-            "scroll": "Witch Scroll",
-            "glass": "Quicksand Hourglass",
+            "title": "Oro",
+            "group": "Bonus de gremio %",
+            "tower": "Bonus de torre %",
+            "mine": "Mina de gemas",
+            "pit": "Pozo del oro",
+            "pit_cap": "Capacidad de la Mina de oro",
+            "pit_hr": "Mina de oro por hora",
+            "pit_time": "Tiempo de Mina de oro",
+            "rune": "Mejora de calidad de objeto",
+            "reward": "Recompensa medioambiental",
+            "guard_hr": "Guardián por hora",
+            "dice_3": "Juego de dados (3 de un tipo)",
+            "dice_4": "Juego de dados (4 de un tipo)",
+            "dice_5": "Juego de dados (5 de un tipo)",
+            "gem_s": "Gema pequeña",
+            "gem_m": "Gema mediana",
+            "gem_l": "Gema grande",
+            "pot_10": "Poción 10%",
+            "pot_15": "Poción 15%",
+            "pot_25": "Poción 25%",
+            "pot_w": "Caldero de la Bruja",
+            "pot_pm": "Poción de Vida Eterna por setas",
+            "pot_pg": "Poción de Vida Eterna por oro",
+            "scroll": "Pergamino de bruja",
+            "glass": "Reloj de arenas movedizas",
             "glass_10": "10 Quicksand Hourglasses",
             "calendar_1": "Calendar 1 bar",
             "calendar_3": "Calendar 3 bars / Locked",
@@ -1050,123 +1050,123 @@
             "daily": "Daily mission",
             "dungeon": "Dungeon (Level is enemy level)",
             "twister": "Twister (Level is enemy level)",
-            "wheel_1": "Wheel book",
-            "wheel_2": "Wheel books",
-            "calendar_1": "Calendar 1 book",
-            "calendar_2": "Calendar 2 books",
-            "calendar_3": "Calendar 3 books",
-            "habitat": "Habitat Boss"
+            "wheel_1": "Libro de la ruleta",
+            "wheel_2": "Libros de la ruleta",
+            "calendar_1": "1 Libro del Calendario",
+            "calendar_2": "2 Libros del Calendario",
+            "calendar_3": "3 Libros del Calendario",
+            "habitat": "Jefe del Hábitat"
         },
         "quests": {
-            "title": "Quests (Experimental)",
-            "notice": "* Final values represent smallest quest segment with no enchantments applied.",
-            "album": "Scrapbook %",
-            "group_exp": "Guild XP %",
-            "group_gold": "Guild Gold %",
-            "tower": "Tower",
-            "rune_exp": "Experience Rune",
-            "rune_gold": "Gold Rune",
-            "min_xp": "Minimum XP",
-            "max_xp": "Maximum XP",
-            "min_gold": "Minimum Gold",
-            "max_gold": "Maximum Gold"
+            "title": "Misiones (Experimental)",
+            "notice": "* Los valores finales representan el segmento de misiones más pequeño sin encantamientos aplicados.",
+            "album": "Álbum de la meticulosidad %",
+            "group_exp": "Gremio EXP %",
+            "group_gold": "Gremio Oro %",
+            "tower": "Torre",
+            "rune_exp": "Runa de experiencia",
+            "rune_gold": "Runa de Oro",
+            "min_xp": "EXP Mínima",
+            "max_xp": "XP Máximo",
+            "min_gold": "Oro Mínimo",
+            "max_gold": "Oro Máximo"
         },
         "misc": {
-            "title": "Miscellaneous",
-            "gate": "Underworld Gate",
-            "torture": "Torture Chamber",
-            "souls": "Souls (Level is enemy level)"
+            "title": "Misceláneo",
+            "gate": "Puerta del Inframundo",
+            "torture": "Cámara de tortura",
+            "souls": "Almas (Nivel es el nivel del enemigo)"
         },
         "calc": {
-            "title_at": "Calculate attribute price at",
-            "title_between": "Calculate attribute price between",
-            "attribute": "Attribute",
-            "cost": "Cost",
-            "from": "From",
-            "to": "To"
+            "title_at": "Calcular el precio del atributo a",
+            "title_between": "Calcular precio de atributo entre",
+            "attribute": "Atributo",
+            "cost": "Coste",
+            "from": "Desde",
+            "to": "Hasta"
         },
         "gold_table": {
-            "copy": "Copy table",
-            "copy_comma": "Copy table (use comma as decimal separator)",
-            "level": "Attribute / Level",
-            "price": "Attribute Price",
-            "curve": "Gold Curve",
-            "mount": "Griffin",
-            "guard": "Guard Duty / Dice (3)"
+            "copy": "Copiar tabla",
+            "copy_comma": "Copiar tabla (usar coma como separador decimal)",
+            "level": "Atributo / Nivel",
+            "price": "Precio de atributo",
+            "curve": "Curva de oro",
+            "mount": "Grifo",
+            "guard": "Guardián / Dados (3)"
         }
     },
     "idle": {
-        "title": "Arena Manager",
+        "title": "Director de Arena",
         "topbar": {
             "suggest": {
-                "0": "Next 1 + BP",
-                "1": "Only next 1",
-                "2": "Only breakpoint"
+                "0": "Siguiente 1 + BP",
+                "1": "Sólo siguiente 1",
+                "2": "Solo punto de interrupción"
             },
             "number": {
-                "0": "Labeled",
-                "1": "Scientific"
+                "0": "Etiquetada",
+                "1": "Científico"
             }
         },
         "table": {
-            "building": "Building",
-            "upgrades": "Upgrades",
-            "level": "Level",
-            "level_next": "Next Level",
-            "cycle_duration": "Cycle",
-            "cycle_money": "Money per Cycle",
-            "money_share": "Share",
-            "upgrade_money": "Cost",
-            "upgrade_estimation": "Estimation",
-            "money_spent": "Spent money",
-            "money_1h": "1 Hour",
-            "money_8h": "8 Hours",
-            "money_1d": "1 Day",
-            "money_7d": "7 Days",
-            "runes": "Runes"
+            "building": "En construcción",
+            "upgrades": "Mejoras",
+            "level": "Nivel",
+            "level_next": "Siguiente nivel",
+            "cycle_duration": "Ciclo",
+            "cycle_money": "Dinero por ciclo",
+            "money_share": "Compartir",
+            "upgrade_money": "Coste",
+            "upgrade_estimation": "Estimación",
+            "money_spent": "Gastar dinero",
+            "money_1h": "1 Hora",
+            "money_8h": "8 Horas",
+            "money_1d": "1 Día",
+            "money_7d": "7 Días",
+            "runes": "Runas"
         },
         "building": {
-            "seat": "Seat",
-            "popcorn_stand": "Popcorn Stand",
-            "parking_lot": "Parking Lot",
-            "trap": "Trap",
-            "drinks": "Drinks",
-            "deadly_trap": "Deadly Trap",
-            "vip_seat": "VIP Seat",
-            "snacks": "Snacks",
-            "straying_monsters": "Straying Monsters",
-            "toilet": "Toilet"
+            "seat": "Asiento",
+            "popcorn_stand": "Quiosco de palomitas",
+            "parking_lot": "Aparcamiento",
+            "trap": "Trampa",
+            "drinks": "Bebidas",
+            "deadly_trap": "Trampa mortal",
+            "vip_seat": "Asiento VIP",
+            "snacks": "Aperitivos",
+            "straying_monsters": "Monstruos errantes",
+            "toilet": "Lavabos"
         },
         "upgrades": {
-            "0": "None",
-            "1": "Speed",
-            "2": "Gold",
-            "3": "Both",
-            "4": "Platinum"
+            "0": "Ninguno",
+            "1": "Velocidad",
+            "2": "Oro",
+            "3": "Ambos",
+            "4": "Platino"
         }
     },
     "blacksmith": {
         "item": {
-            "type": "Type",
-            "value": "Attribute",
-            "double": "Mage or Scout weapon?",
+            "type": "Tipo",
+            "value": "Atributo",
+            "double": "¿Arma de Arquero o Mago?",
             "types": {
-                "normal_1": "Normal (1 attribute)",
-                "normal_2": "Normal (2 attributes)",
-                "epic_3": "Epic (3 attributes)",
-                "epic_5": "Epic (5 attributes)"
+                "normal_1": "Normal (1 atributo)",
+                "normal_2": "Normal (2 atributos)",
+                "epic_3": "Épico (3 atributos)",
+                "epic_5": "Épico (5 atributos)"
             }
         },
         "table": {
             "total": "Total",
             "bonus": "Bonus",
-            "lost": "Lost",
-            "reclaimable": "Reclaimable",
-            "required": "Required"
+            "lost": "Perdido",
+            "reclaimable": "Recuperable",
+            "required": "Requerido"
         }
     },
     "dungeon_enemies": {
-        "shadow": "Shadow",
+        "shadow": "Sombra",
         "1": {
             "name": "Desecrated Catacombs",
             "1": "Ghost",
@@ -1686,7 +1686,7 @@
             "1000": "Shniva"
         },
         "204": {
-            "name": "Tavern",
+            "name": "Taberna",
             "5": "Strider",
             "10": "ice bug fix"
         }

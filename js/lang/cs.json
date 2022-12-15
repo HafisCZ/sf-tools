@@ -11,7 +11,7 @@
         "class7": "Lovec démonů",
         "class8": "Druid",
         "class9": "Bard",
-        "mask0": "Eagle",
+        "mask0": "Orel",
         "mask1": "Medvěd",
         "mask2": "Kočka",
         "instrument0": "Harfa",
@@ -41,50 +41,50 @@
         "time": "Čas",
         "gem": "Drahokam",
         "fight": "Boj",
-        "wood_cap": "Wood Capacity",
-        "stone_cap": "Stone Capacity",
+        "wood_cap": "Kapacita dřeva",
+        "stone_cap": "Kapacita kamení",
         "buildings": {
-            "time": "Build Time",
-            "hourly": "Hourly prod.",
+            "time": "Trvání",
+            "hourly": "Produkce za hod.",
             "capacity": "Kapacita",
-            "full": "Full in",
-            "storage": "Total storage",
-            "lure_count": "Lures",
-            "lure_bonus": "Lure Bonus",
+            "full": "Plné za",
+            "storage": "Celková kapacita",
+            "lure_count": "Nalákání",
+            "lure_bonus": "Bonus k nalákání",
             "knights": "Síň Rytířů",
-            "goblins": "Goblins",
-            "trolls": "Trolls",
+            "goblins": "Skřeti",
+            "trolls": "Trolové",
             "warriors": "Válečníci",
             "archers": "Lukostřelci",
             "mages": "Kouzelníci",
             "backpack_size": "Velikost batohu",
             "critical_bonus": "Kritický Bonus",
-            "thirst_free": "Daily free Thirst",
+            "thirst_free": "Denní touha zdarma",
             "thirst_usable": "Daily storable Thirst",
             "fortress1": "Pevnost",
-            "fortress2": "Laborers' Quarters",
-            "fortress3": "Woodcutter's Hut",
+            "fortress2": "Dělnická ubikace",
+            "fortress3": "Dřevorubecká chýše",
             "fortress4": "Kamenolom",
             "fortress5": "Důl na drahokamy",
             "fortress6": "Akademie",
-            "fortress7": "Archery Guild",
+            "fortress7": "Lučištnický spolek",
             "fortress8": "Kasárny",
-            "fortress9": "Mages' Tower",
+            "fortress9": "Magická věž",
             "fortress10": "Pokladnice",
             "fortress11": "Kovárna",
             "fortress12": "Opevnění",
-            "underworld1": "Heart of Darkness",
-            "underworld2": "Underworld Gate",
-            "underworld3": "Soul Extractor",
-            "underworld4": "Goblin Pit",
-            "underworld5": "Torture Chamber",
-            "underworld6": "Gladiator Trainer",
-            "underworld7": "Troll Block",
-            "underworld8": "Time Machine",
-            "underworld9": "Keeper",
-            "underworld10": "Gold Pit"
+            "underworld1": "Srdce temnoty",
+            "underworld2": "Brána do podsvětí",
+            "underworld3": "Extraktor duší",
+            "underworld4": "Skřetí jáma",
+            "underworld5": "Mučírna",
+            "underworld6": "Gladiátor cvičitel",
+            "underworld7": "Trolí blokáda",
+            "underworld8": "Adventuromat",
+            "underworld9": "Správce",
+            "underworld10": "Zlatý důl"
         },
-        "reduction": "Reduction"
+        "reduction": "Redukce"
     },
     "index": {
         "toggle": "Zobrazit autory",
@@ -166,12 +166,12 @@
             "desc": "Zjisti jaká třída cechovního mazlíčka je nejlepší pro tvou hydru."
         },
         "fortress": {
-            "title": "Fortress Simulator",
+            "title": "Simulátor Pevnosti",
             "desc": "Simulate the probable outcome of fortress raid"
         },
         "changelog": {
-            "title": "Changelog",
-            "desc": "View all notable changes"
+            "title": "Seznam změn",
+            "desc": "Zobrazit všechny významné změny"
         },
         "hellevator": {
             "title": "Hellevator Simulator",
@@ -192,7 +192,7 @@
             "files": "Soubory",
             "settings": "Nastavení",
             "temporary": "Dočasná relace",
-            "changelog": "Changelog",
+            "changelog": "Seznam změn",
             "profile": "Profil"
         },
         "files": {
@@ -237,10 +237,10 @@
                 "title": "Nastavení",
                 "advanced": "Zobrazit pokročilý seznam",
                 "hidden": "Zobrazit skryté hráče",
-                "export_public_only": "Export only public data"
+                "export_public_only": "Exportovat pouze veřejná data"
             },
             "tags": {
-                "single": "Tag",
+                "single": "Štítek",
                 "multiple": "Tagy",
                 "all": "Vše",
                 "none": "Žádné"
@@ -440,7 +440,7 @@
             "fortress": {
                 "title": "Pevnost",
                 "upgrades": "Vylepšení",
-                "rank": "Rank",
+                "rank": "Hodnost",
                 "honor": "Věhlas",
                 "building1": "Pevnost",
                 "building2": "Dělnická ubikace",
@@ -464,22 +464,22 @@
             "obfuscated": "Anonymizovat názvy postav",
             "insecure": "Povolit nebezpečné html tagy",
             "insecure_error#": "Tabulka nebyla zobrazena protože obsahuje potenciálně nebezpečné html tagy.<br>Odstraňtě je a zkuste to znovu!",
-            "unsafe_delete": "Skip confirmation when deleting files",
+            "unsafe_delete": "Nevyžadovat potvrzení při mazání dat",
             "terms": "Příjmout podmínky použití",
             "tab": "Výchozí okno",
             "preload": "Načíst řádky",
             "actions": {
                 "title": "Automatické akce",
-                "discard": "Discard unsaved changes",
+                "discard": "Zahodit neuložené změny",
                 "save": "Uložit"
             },
             "recovery": {
-                "title": "Recovery",
-                "import": "Import data",
-                "export": "Download data",
+                "title": "Obnova",
+                "import": "Importovat data",
+                "export": "Stáhnout data",
                 "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
                 "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
-                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
+                "notice": "Opravdu chcete obnovit SFTools z tohoto souboru?<br><br>Tato operace vymaže všechna vaše stávající data a nahradí je daty ze souboru!"
             }
         }
     },
@@ -493,7 +493,7 @@
         "simulate": "Simulovat",
         "results": "Výsledky",
         "map": {
-            "gladiator": "Glad"
+            "gladiator": "Gladiátor"
         },
         "types": {
             "0": "Stín",
@@ -605,7 +605,7 @@
             "99": "Hydrospir"
         },
         "bulk": {
-            "not_possible": "Not possible",
+            "not_possible": "Nemožné",
             "toast": {
                 "title": "Start simulace",
                 "matches": "Bitvy:"
@@ -642,24 +642,24 @@
         }
     },
     "dungeons": {
-        "simulate_one": "Simulate",
+        "simulate_one": "Simulovat",
         "simulate_remaining": "Zbývající",
         "simulate_all": "Všechny",
-        "simulate_next": "More",
+        "simulate_next": "Více",
         "player": "Hráč",
         "enemy": "Nepřítel",
         "yourself": "Ty",
-        "bert": "Bert",
+        "bert": "Bertram",
         "mark": "Marek",
         "kunigunde": "Kunigunda",
         "open": "Dostupná podzemí",
         "graph": {
             "y": "Zbývající HP nepřítele",
             "x": "- Distribuce pro vybraný počet pokusů -",
-            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
+            "winrate": "Vítězství: #{rate}% (#{score} z #{tries})"
         },
         "results": "Výsledky",
-        "experience": "Total: #{experience} XP",
+        "experience": "Celkem: #{experience} XP",
         "cheats": {
             "title": "Cheat Menu",
             "subtitle": "Vyber které cheaty chceš aplikovat a načti svou postavu",
@@ -683,16 +683,16 @@
         }
     },
     "underworld": {
-        "goblin_pit": "Goblin Pit",
-        "goblin_upgrades": "Goblin Upgrades",
-        "troll_block": "Troll Block",
-        "troll_upgrades": "Troll Upgrades",
-        "keeper": "Keeper",
-        "keeper_upgrades": "Keeper Upgrades",
-        "shield_mode": "Allow underworld units to use shield",
+        "goblin_pit": "Skřetí jáma",
+        "goblin_upgrades": "Vylepšení skřetů",
+        "troll_block": "Trolí blokáda",
+        "troll_upgrades": "Vylepšení trolů",
+        "keeper": "Správce",
+        "keeper_upgrades": "Vylepšení správce",
+        "shield_mode": "Povolit jednotkám z podsvětí používat štít",
         "toast": {
             "start": {
-                "title": "Starting simulation",
+                "title": "Simulace se spouští",
                 "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
@@ -702,19 +702,19 @@
         }
     },
     "players": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
+        "gladiator_mode": "Gladiátor všech hráčů bude nastaven na 15",
+        "ihof_mode": "IHOF mód: Gladiátor nebude snížen o Gladiátora nepřítele!",
         "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
         "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
         "mode": {
-            "all": "All vs All",
-            "attack": "One vs All",
-            "defend": "All vs One",
-            "tournament": "Tournament"
+            "all": "Všichni proti všem",
+            "attack": "Jeden proti všem",
+            "defend": "Všichni proti jednomu",
+            "tournament": "Turnaj"
         },
         "toast": {
             "start": {
-                "title": "Starting simulation",
+                "title": "Simulace se spouští",
                 "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
@@ -729,11 +729,11 @@
     },
     "guilds": {
         "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "guild1": "Guild A",
-        "guild2": "Guild B",
+        "guild1": "Cech A",
+        "guild2": "Cech B",
         "toast": {
             "start": {
-                "title": "Starting simulation",
+                "title": "Simulace se spouští",
                 "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
@@ -743,33 +743,33 @@
         }
     },
     "fortress": {
-        "warrior_count": "Warriors",
-        "warrior_level": "Warrior Level",
-        "archer_count": "Archers",
-        "archer_level": "Archer Level",
-        "mage_count": "Mages",
-        "mage_level": "Mage Level",
+        "warrior_count": "Válečníci",
+        "warrior_level": "Úroveň válečníků",
+        "archer_count": "Lukostřelci",
+        "archer_level": "Úroveň lukostřelců",
+        "mage_count": "Kouzelníci",
+        "mage_level": "Úroveň Kouzelníků",
         "units": {
             "remaining": "Average remaning units:",
-            "player": "Warriors",
+            "player": "Válečníci",
             "target": "Defenses"
         }
     },
     "hydra": {
         "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
-        "player_count": "Player Count",
-        "main": "Main",
-        "side1": "Side 1",
-        "side2": "Side 2",
+        "player_count": "Počet hráčů",
+        "main": "Hlavní",
+        "side1": "Vedlejší 1",
+        "side2": "Vedlejší 2",
         "hydra": "Hydra",
         "iterations": {
             "label": "Iterations:",
             "popup": "Amount of iterations per pet class."
         },
         "result": {
-            "health": "#{health}% HP left",
-            "fights_single": "#{count} fight",
-            "fights_multiple": "#{count} fights"
+            "health": "Zbývá #{health}% životů",
+            "fights_single": "#{count} boj",
+            "fights_multiple": "#{count} bojů"
         },
         "names": {
             "1": "One-headed Hydra",
@@ -798,20 +798,20 @@
         "paste_target#": "Klikni zde a zmáčkni <b>CTRL&nbsp;+&nbsp;V</b> pro vložení dat do simulátoru",
         "threads": "Vlákna simulátoru. Ponechej toto číslo POD tvým počtem jader procesoru!",
         "iterations": "Počet iterací na vlákno.",
-        "add": "Add",
-        "save": "Save",
-        "simulate": "Simulate",
-        "simulate_debug": "Simulate in debug mode",
+        "add": "Přidat",
+        "save": "Uložit",
+        "simulate": "Simulovat",
+        "simulate_debug": "Simulovat v režimu ladění",
         "clipboard": {
-            "copy_all": "Copy everyone",
+            "copy_all": "Kopírovat vše",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
         "win_chance": "Win %",
         "min_chance": "Min %",
         "max_chance": "Max %",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "Načíst uložené postavy",
+            "guilds": "Načíst uložené cechy"
         }
     },
     "editor": {
@@ -850,7 +850,7 @@
             "default": "Vlastní postava + vybrané",
             "guild": "Vlastní postava + členové tvého cechu",
             "friends": "Vlastní postava + prátelé",
-            "hall_of_fame": "Capture own + top 50 HoF characters"
+            "hall_of_fame": "Vlastní postava + top 50 síně slávy"
         },
         "cancel": "Zrušit",
         "continue": "Pokračovat",
@@ -877,7 +877,7 @@
             "message": "Tento problém může být způsobem použitím Incognito režimu prohlížeče"
         },
         "import_error": "Při načítání souboru došlo k chybě",
-        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "fatal_error#": "Váš prohlížeč nepodporuje všechny funkce vyžadované touto stránkou!</br>Tento problém může být způsoben i používáním soukromého režimu.",
         "update_info": {
             "title": "Aktualizace databáze",
             "message": "Prosím nechejte toto okno otevřené dokud aktualizace neskončí. Tato akce může trvat delší dobu v závislosti na množství vašich dat."
@@ -978,25 +978,25 @@
             "wait_n_seconds": "Počkej %1 sekund ..."
         },
         "input": {
-            "cancel": "Cancel",
+            "cancel": "Zrušit",
             "ok": "Ok"
         },
         "data_manage": {
-            "cancel": "Cancel",
-            "ok": "Delete",
-            "title": "Are you sure you want to delete these files, players or guilds?",
-            "skip_next": "Do not show next time",
+            "cancel": "Zrušit",
+            "ok": "Odstranit",
+            "title": "Opravdu chcete odstranit tyto soubory, hráče nebo cechy?",
+            "skip_next": "Příště nezobrazovat",
             "label": {
-                "group": "Following guild(s) will be removed:",
-                "player": "Following player(s) will be removed:",
-                "file": "Following file(s) will be removed:"
+                "group": "Následující skupiny budou odstraněny:",
+                "player": "Následující postavy budou odstraněny:",
+                "file": "Následující soubory budou odstraněny:"
             }
         }
     },
     "attributes": {
         "tabs": {
-            "gold_exp": "Gold & Experience",
-            "fortress": "Fortress",
+            "gold_exp": "Zlato & Zkušenosti",
+            "fortress": "Pevnost",
             "underworld": "Underworld",
             "gold_table": "Gold Table"
         },
@@ -1005,11 +1005,11 @@
             "quarters": "Labourer's Quarters"
         },
         "gold": {
-            "title": "Gold",
+            "title": "Zlato",
             "group": "Guild bonus %",
             "tower": "Tower bonus %",
-            "mine": "Gem Mine",
-            "pit": "Gold Pit",
+            "mine": "Důl na drahokamy",
+            "pit": "Zlatý důl",
             "pit_cap": "Gold Pit capacity",
             "pit_hr": "Hourly Gold Pit",
             "pit_time": "Gold Pit time",
@@ -1019,9 +1019,9 @@
             "dice_3": "Dice game (3 of a kind)",
             "dice_4": "Dice game (4 of a kind)",
             "dice_5": "Dice game (5 of a kind)",
-            "gem_s": "Small gem",
-            "gem_m": "Medium gem",
-            "gem_l": "Large gem",
+            "gem_s": "Malý drahokam",
+            "gem_m": "Střední drahokam",
+            "gem_l": "Velký drahokam",
             "pot_10": "10% Potion",
             "pot_15": "15% Potion",
             "pot_25": "25% Potion",
@@ -1041,13 +1041,13 @@
         "experience": {
             "title": "Experience",
             "hydra": "Hydra heads",
-            "academy": "Academy",
+            "academy": "Akademie",
             "academy_hr": "Hourly Academy",
             "academy_time": "Academy time",
             "academy_cap": "Academy capacity",
             "next": "Next level",
-            "arena": "Arena",
-            "daily": "Daily mission",
+            "arena": "Aréna",
+            "daily": "Denní mise",
             "dungeon": "Dungeon (Level is enemy level)",
             "twister": "Twister (Level is enemy level)",
             "wheel_1": "Wheel book",
@@ -1063,7 +1063,7 @@
             "album": "Scrapbook %",
             "group_exp": "Guild XP %",
             "group_gold": "Guild Gold %",
-            "tower": "Tower",
+            "tower": "Věž",
             "rune_exp": "Experience Rune",
             "rune_gold": "Gold Rune",
             "min_xp": "Minimum XP",
@@ -1081,9 +1081,9 @@
             "title_at": "Calculate attribute price at",
             "title_between": "Calculate attribute price between",
             "attribute": "Attribute",
-            "cost": "Cost",
-            "from": "From",
-            "to": "To"
+            "cost": "Cena",
+            "from": "Od",
+            "to": "Do"
         },
         "gold_table": {
             "copy": "Copy table",
@@ -1115,15 +1115,15 @@
             "level_next": "Next Level",
             "cycle_duration": "Cycle",
             "cycle_money": "Money per Cycle",
-            "money_share": "Share",
-            "upgrade_money": "Cost",
-            "upgrade_estimation": "Estimation",
-            "money_spent": "Spent money",
-            "money_1h": "1 Hour",
-            "money_8h": "8 Hours",
-            "money_1d": "1 Day",
-            "money_7d": "7 Days",
-            "runes": "Runes"
+            "money_share": "Podíl",
+            "upgrade_money": "Cena",
+            "upgrade_estimation": "Odhad",
+            "money_spent": "Celkové náklady",
+            "money_1h": "1 hodina",
+            "money_8h": "8 hodin",
+            "money_1d": "1 den",
+            "money_7d": "7 dní",
+            "runes": "Runy"
         },
         "building": {
             "seat": "Seat",
