@@ -606,8 +606,13 @@ class AssassinModel extends FighterModel {
     }
 }
 
-const DRUID_EAGLE_CHANCE = 50;
-const DRUID_EAGLE_CHANCE_DECAY = 5;
+const DRUID_EAGLE_DAMAGE_MULTIPLIER = 1 / 3;
+const DRUID_BEAR_DAMAGE_MULTIPLIER = 4 / 9;
+const DRUID_CAT_DAMAGE_MULTIPLIER = 5 / 9;
+
+const DRUID_EAGLE_SWOOP_CHANCE = 50;
+const DRUID_EAGLE_SWOOP_CHANCE_DECAY = 5;
+const DRUID_EAGLE_SWOOP_MULTIPLIER = 16;
 
 const DRUID_BEAR_BRACKET = 25;
 
@@ -619,12 +624,16 @@ const DRUID_BEAR_MAX_MULTIPLIER = 1;
 const DRUID_BEAR_MED_MULTIPLIER = 0.5;
 const DRUID_BEAR_MIN_MULTIPLIER = 0.3;
 
+const DRUID_CAT_EVADE_CHANCE = 35;
+const DRUID_CAT_CRITICAL_CHANCE_BONUS = 25;
+const DRUID_CAT_CRITICAL_MULTIPLIER = 2.5;
+
 class DruidModel extends FighterModel {
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
         if (this.Player.Mask == MASK_EAGLE) {
-            this.SwoopChance = DRUID_EAGLE_CHANCE;
+            this.SwoopChance = DRUID_EAGLE_SWOOP_CHANCE;
         } else if (this.Player.Mask == MASK_CAT) {
             this.DamageTaken = true;
 
@@ -636,7 +645,7 @@ class DruidModel extends FighterModel {
         super.initialize(target);
 
         if (this.Player.Mask == MASK_CAT) {
-            this.RageCriticalChance = this.getCriticalChance(target, 75);
+            this.RageCriticalChance = this.getCriticalChance(target, 50 + DRUID_CAT_CRITICAL_CHANCE_BONUS);
         }
     }
 
@@ -644,9 +653,9 @@ class DruidModel extends FighterModel {
         let multiplier = 1;
 
         if (this.Player.Mask == MASK_EAGLE) {
-            multiplier = 1 / 3;
+            multiplier = DRUID_EAGLE_DAMAGE_MULTIPLIER;
         } else if (this.Player.Mask == MASK_CAT) {
-            multiplier = 5 / 9;
+            multiplier = DRUID_CAT_DAMAGE_MULTIPLIER;
         }
 
         if (target.Player.Class == MAGE || target.Player.Class == BARD) {
@@ -669,11 +678,11 @@ class DruidModel extends FighterModel {
     attack (damage, target, skipped, critical, type) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
-                this.SwoopChance -= DRUID_EAGLE_CHANCE_DECAY;
+                this.SwoopChance -= DRUID_EAGLE_SWOOP_CHANCE_DECAY;
 
                 // Swoop
                 return super.attack(
-                    damage * 16,
+                    damage * DRUID_EAGLE_SWOOP_MULTIPLIER,
                     target,
                     skipped,
                     false,
@@ -691,7 +700,7 @@ class DruidModel extends FighterModel {
             }
         } else if (this.Player.Mask == MASK_BEAR) {
             return super.attack(
-                damage * (4 / 9 + this.getHealthLossDamageMultiplier() / 100),
+                damage * (DRUID_BEAR_DAMAGE_MULTIPLIER + this.getHealthLossDamageMultiplier() / 100),
                 target,
                 skipped,
                 critical,
@@ -699,7 +708,7 @@ class DruidModel extends FighterModel {
             );
         } else if (this.Player.Mask == MASK_CAT) {
             if (!skipped && critical && this.RageState) {
-                damage *= 2.5;
+                damage *= DRUID_CAT_CRITICAL_MULTIPLIER;
 
                 this.RageState = false;
             }
@@ -734,7 +743,7 @@ class DruidModel extends FighterModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Mask == MASK_CAT && !this.RageState) {
-            return 35;
+            return DRUID_CAT_EVADE_CHANCE;
         } else {
             return this.SkipChance;
         }
