@@ -434,6 +434,10 @@ class FighterModel {
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
         this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
+
+        if (this.UseSecondaryWeapon) {
+            this.Weapon2 = this.getDamageRange(weapon2, target, true);
+        }
     }
 
     reset (resetHealth = true) {
@@ -520,17 +524,14 @@ class ScoutModel extends FighterModel {
 }
 
 class AssassinModel extends FighterModel {
-    getDamageMultiplier (target) {
-        return 5 / 8;
+    constructor (i, p) {
+        super(i, p);
+
+        this.UseSecondaryWeapon = true;
     }
 
-    initialize (target) {
-        super.initialize(target);
-
-        var weapon = this.Player.Items.Wpn2;
-        if (weapon) {
-            this.Weapon2 = this.getDamageRange(weapon, target, true);
-        }
+    getDamageMultiplier (target) {
+        return 5 / 8;
     }
 }
 
