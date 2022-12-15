@@ -137,6 +137,30 @@ function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);
 }
 
+function isObject(item) {
+    return item && typeof item === 'object' && !Array.isArray(item);
+}
+ 
+function mergeDeep(target, source) {
+    let output = Object.assign({}, target);
+
+    if (isObject(target) && isObject(source)) {
+        for (const key of Object.keys(source)) {
+            if (isObject(source[key])) {
+                if (!(key in target)) {
+                    Object.assign(output, { [key]: source[key] });
+                } else {
+                    output[key] = mergeDeep(target[key], source[key]);
+                }
+            } else {
+                Object.assign(output, { [key]: source[key] });
+            }
+        }
+    }
+
+    return output;
+}
+
 // Classes
 const WARRIOR = 1;
 const MAGE = 2;
@@ -202,10 +226,57 @@ class FighterModel {
         return new MODELS[player.Class](index, player);
     }
 
-    // Constructor
+    static normalize (player) {
+        return mergeDeep({
+            Dungeons: {
+                Player: 0,
+                Group: 0
+            },
+            Fortress: {
+                Gladiator: 0
+            },
+            Potions: {
+                Life: 0
+            },
+            Runes: {
+                Health: 0,
+                ResistanceCold: 0,
+                ResistanceFire: 0,
+                ResistanceLightning: 0
+            },
+            Items: {
+                Hand: {
+                    HasEnchantment: false
+                },
+                Wpn1: {
+                    AttributeTypes: {
+                        2: 0
+                    },
+                    Attributes: {
+                        2: 0
+                    },
+                    DamageMax: 2,
+                    DamageMin: 1,
+                    HasEnchantment: false
+                },
+                Wpn2: {
+                    AttributeTypes: {
+                        2: 0
+                    },
+                    Attributes: {
+                        2: 0
+                    },
+                    DamageMax: 2,
+                    DamageMin: 1,
+                    HasEnchantment: false
+                }
+            }
+        }, player);
+    }
+
     constructor (index, player) {
         this.Index = index;
-        this.Player = player;
+        this.Player = FighterModel.normalize(player);
     }
 
     getAttribute (source) {
@@ -433,11 +504,11 @@ class FighterModel {
         let weapon2 = this.Player.Items.Wpn2;
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
-        this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
-
         if (this.UseSecondaryWeapon) {
             this.Weapon2 = this.getDamageRange(weapon2, target, true);
         }
+
+        this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     reset (resetHealth = true) {
