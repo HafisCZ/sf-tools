@@ -1,54 +1,11 @@
 // Override some methods
-FighterModel.prototype.getHealth = function () {
-    if (this.Player.ForceHealth) {
-        return this.Player.ForceHealth;
-    } else {
-        return (this.getHealthMultiplier() * (this.Player.Level + 1) * this.Player.Constitution.Total) % Math.pow(2, 32);
-    }
-}
-
-FighterModel.prototype.getFixedDamage = function () {
-    return Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
-}
-
-FighterModel.prototype.getDamageRange = function (weapon, target) {
-    let min = weapon.DamageMin;
-    let max = weapon.DamageMax;
-
-    let aa = this.getAttribute(this);
-    let ad = target.getAttribute(this) / 2;
-    let dc = this.getDamageMultiplier(target);
-
-    let dm = target.DamageReduction * dc * (1 + Math.max(aa / 2, aa - ad) / 10);
-
-    if (!min || !max) {
-        min = max = this.getFixedDamage();
-    }
+FighterModel.prototype.getBaseDamage = function () {
+    const damage = Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
 
     return {
-        Max: Math.ceil(dm * min),
-        Min: Math.ceil(dm * max)
-    };
-}
-
-FighterModel.prototype.initialize = function (target) {
-    // Round modifiers
-    this.AttackFirst = false;
-    this.SkipChance = this.getBlockChance(target);
-    this.CriticalChance = this.getCriticalChance(target);
-    this.TotalHealth = this.getHealth();
-
-    this.MaxAttacks = this.Player.Attacks || 1;
-
-    target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
-
-    this.Weapon1 = this.getDamageRange(this.Player.Items.Wpn1, target);
-    if (this.UseSecondaryWeapon) {
-        this.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
+        Min: damage,
+        Max: damage
     }
-
-    this.Initial = this.getInitialDamage(target);
-    this.Critical = 2;
 }
 
 // WebWorker hooks
@@ -89,31 +46,38 @@ class HydraSimulator extends SimulatorBase {
     }
 
     cache (pet, hydra) {
-        this.ca = FighterModel.create(0, pet);
-        this.cb = FighterModel.create(1, hydra);
-
-        FighterModel.initializeFighters(this.ca, this.cb);
+        this.ca = Array(pet.Attacks).fill(null).map(() => FighterModel.create(0, pet));
+        this.cb = [ FighterModel.create(1, hydra) ];
     }
 
     battle () {
-        this.ca.Attacks = 1;
-        this.cb.reset();
+        this.la = [ ... this.ca ];
+        this.lb = [ ... this.cb ];
 
-        do {
-            this.ca.reset();
+        for (let player of this.la) player.reset();
+        for (let player of this.lb) player.reset();
 
-            this.a = this.ca;
-            this.b = this.cb;
+        while (this.la.length > 0 && this.lb.length > 0) {
+            this.a = this.la[0];
+            this.b = this.lb[0];
 
-            if (!this.fight()) {
-                this.ca.Attacks++;
+            FighterModel.initializeFighters(this.a, this.b);
+
+            if (this.fight() == 0) {
+                this.la.shift();
+            } else {
+                return {
+                    win: true,
+                    health: 0,
+                    fights: this.ca.length - this.la.length
+                }
             }
-        } while (this.ca.Attacks <= this.ca.MaxAttacks && this.cb.Health > 0);
+        }
 
         return {
-            win: this.cb.Health <= 0,
-            health: Math.max(0, this.cb.Health),
-            fights: Math.min(this.ca.Attacks, this.ca.MaxAttacks)
+            win: false,
+            health: this.lb[0].Health,
+            fights: this.ca.length
         }
     }
 }
