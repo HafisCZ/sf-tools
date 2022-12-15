@@ -137,11 +137,11 @@ function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);
 }
 
-function isObject(item) {
+function isObject (item) {
     return item && typeof item === 'object' && !Array.isArray(item);
 }
- 
-function mergeDeep(target, source) {
+
+function mergeDeep (target, source) {
     let output = Object.assign({}, target);
 
     if (isObject(target) && isObject(source)) {
@@ -698,36 +698,19 @@ class DruidModel extends FighterModel {
                 type
             );
         } else if (this.Player.Mask == MASK_CAT) {
-            if (skipped) {
-                damage = 0;
-            } else {
-                if (target.BeforeDamageFinalized) {
-                    damage = target.onBeforeDamageFinalized(damage, target);
-                }
+            if (!skipped && critical && this.RageState) {
+                damage *= 2.5;
 
-                if (critical) {
-                    damage *= this.Critical;
-
-                    if (this.RageState) {
-                        damage *= 2.5;
-
-                        this.RageState = false;
-                    }
-                }
-
-                damage = Math.ceil(damage);
+                this.RageState = false;
             }
 
-            if (FIGHT_LOG_ENABLED) {
-                FIGHT_LOG.logAttack(
-                    this,
-                    target,
-                    (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10,
-                    damage
-                )
-            }
-
-            return damage;
+            return super.attack(
+                damage,
+                target,
+                skipped,
+                critical,
+                type
+            );
         }
     }
 
