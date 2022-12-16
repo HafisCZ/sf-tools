@@ -1208,14 +1208,19 @@ const InputDialog = new (class extends Dialog {
 })
 
 const SimulatorDebugDialog = new(class extends Dialog {
+    _intl_key () {
+        return 'simulator_debug';
+    }
+
     _createModal () {
         return `
             <div class="ui basic small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Simulator Configuration</h2>
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em; overflow-y: auto; overflow-x: hidden; max-height: 70vh;" data-op="content"></div>
-                <div class="ui two fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">Apply</button>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" data-op="reset">${this.intl('reset')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
                 </div>
             </div>
         `;
@@ -1231,6 +1236,11 @@ const SimulatorDebugDialog = new(class extends Dialog {
         this.$okButton.click(() => {
             this.callback(this._readData());
             this.close();
+        })
+
+        this.$resetButton = this.$parent.find('[data-op="reset"]');
+        this.$resetButton.click(() => {
+            this._setData(this.defaultObject, this.defaultObject);
         })
 
         this.$content = this.$parent.find('[data-op="content"]');
@@ -1270,7 +1280,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
                 for (let i = 0; i < value.length; i++) {
                     content += `
                         <div class="field">
-                            <label>${key}[${i}]</label>
+                            <label>${key} [${i}]</label>
                             <input type="number" value="${value[i]}" data-key="${key}" data-index="${i}">
                         </div>
                     `;

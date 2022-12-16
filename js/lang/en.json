@@ -992,6 +992,12 @@
                 "player": "Following player(s) will be removed:",
                 "file": "Following file(s) will be removed:"
             }
+        },
+        "simulator_debug": {
+            "cancel": "Cancel",
+            "ok": "Apply",
+            "reset": "Reset",
+            "title": "Simulator Configuration"
         }
     },
     "attributes": {
