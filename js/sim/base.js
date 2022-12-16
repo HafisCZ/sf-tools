@@ -152,7 +152,7 @@ CONFIG = Object.defineProperty(
             CatDamageMultiplier: 5 / 9,
 
             EagleSwoopChance: 50,
-            EagleSwoopChanceMin: 5,
+            EagleSwoopChanceMin: 0,
             EagleSwoopChanceDecay: 5,
             EagleSwoopMultiplier: 16,
         
