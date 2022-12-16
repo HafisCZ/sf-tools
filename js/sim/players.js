@@ -1,6 +1,7 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, player, players, mode, iterations, log } }) {
-    SIMULATOR_FLAGS.set(flags);
+self.addEventListener('message', function ({ data: { flags, config, player, players, mode, iterations, log } }) {
+    FLAGS.set(flags);
+    CONFIG.set(config)
 
     if (log) {
         FIGHT_LOG_ENABLED = true;

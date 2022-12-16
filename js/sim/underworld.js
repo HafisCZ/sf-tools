@@ -1,6 +1,6 @@
 // WebWorker hooks
 self.addEventListener('message', function ({ data: { flags, units, players, iterations } }) {
-    SIMULATOR_FLAGS.set(flags);
+    FLAGS.set(flags);
 
     let timestamp = Date.now();
 

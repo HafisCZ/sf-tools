@@ -116,7 +116,7 @@ FIGHT_LOG = new (class {
 })();
 
 // Flags
-SIMULATOR_FLAGS = {
+FLAGS = {
     // Values
     Gladiator15: false,
     // Reductions
@@ -127,7 +127,52 @@ SIMULATOR_FLAGS = {
     // Setter
     set: function (flags) {
         for (const [key, val] of Object.entries(flags || {})) {
-            this[key] = !!val
+            this[key] = !!val;
+        }
+    }
+};
+
+// Configuration
+CONFIG = {
+    // Demon Hunter
+    DH_REVIVE_CHANCE: 400 / 9,
+    DH_REVIVE_CHANCE_DECAY: 2,
+    DH_REVIVE_HP: 0.9,
+    DH_REVIVE_HP_DECAY: 0.1,
+
+    // Druid
+    DRUID_EAGLE_DAMAGE_MULTIPLIER: 1 / 3,
+    DRUID_BEAR_DAMAGE_MULTIPLIER: 4 / 9,
+    DRUID_CAT_DAMAGE_MULTIPLIER: 5 / 9,
+
+    DRUID_EAGLE_SWOOP_CHANCE: 50,
+    DRUID_EAGLE_SWOOP_CHANCE_DECAY: 5,
+    DRUID_EAGLE_SWOOP_MULTIPLIER: 16,
+
+    DRUID_BEAR_BRACKET: 25,
+
+    DRUID_BEAR_MAX_TRIGGER: 75,
+    DRUID_BEAR_MED_TRIGGER: 50,
+    DRUID_BEAR_MIN_TRIGGER: 25,
+
+    DRUID_BEAR_MAX_MULTIPLIER: 1,
+    DRUID_BEAR_MED_MULTIPLIER: 0.5,
+    DRUID_BEAR_MIN_MULTIPLIER: 0.3,
+    
+    DRUID_CAT_EVADE_CHANCE: 35,
+    DRUID_CAT_CRITICAL_CHANCE_BONUS: 25,
+    DRUID_CAT_CRITICAL_MULTIPLIER: 2.5,
+
+    // Bard
+    BARD_EFFECT_ROUNDS: 4,
+    INSTRUMENT_HARP_VALUES: [ 40, 55, 75 ],
+    INSTRUMENT_LUTE_VALUES: [ 20, 40, 60 ],
+    INSTRUMENT_FLUTE_VALUES: [ 5, 7.5, 10 ],
+
+    // Setter
+    set: function (config) {
+        for (const [key, val] of Object.entries(config || {})) {
+            this[key] = val;
         }
     }
 };
@@ -405,12 +450,12 @@ class FighterModel {
         let ownGladiator = this.Player.Fortress.Gladiator || 0;
         let reducingGladiator = target.Player.Fortress.Gladiator || 0;
 
-        if (SIMULATOR_FLAGS.Gladiator15) {
+        if (FLAGS.Gladiator15) {
             ownGladiator = 15;
             reducingGladiator = 15;
         }
 
-        if (SIMULATOR_FLAGS.NoGladiatorReduction) {
+        if (FLAGS.NoGladiatorReduction) {
             reducingGladiator = 0;
         }
 
@@ -478,7 +523,7 @@ class FighterModel {
         let mm = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
 
         let aa = this.getAttribute(this);
-        let ad = SIMULATOR_FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
+        let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
         let dc = this.getDamageMultiplier(target);
         let dm = dc * mm * (1 + Math.max(aa / 2, aa - ad) / 10);
         let bd = this.getBaseDamage(secondary);
@@ -606,34 +651,12 @@ class AssassinModel extends FighterModel {
     }
 }
 
-const DRUID_EAGLE_DAMAGE_MULTIPLIER = 1 / 3;
-const DRUID_BEAR_DAMAGE_MULTIPLIER = 4 / 9;
-const DRUID_CAT_DAMAGE_MULTIPLIER = 5 / 9;
-
-const DRUID_EAGLE_SWOOP_CHANCE = 50;
-const DRUID_EAGLE_SWOOP_CHANCE_DECAY = 5;
-const DRUID_EAGLE_SWOOP_MULTIPLIER = 16;
-
-const DRUID_BEAR_BRACKET = 25;
-
-const DRUID_BEAR_MAX_TRIGGER = 75;
-const DRUID_BEAR_MED_TRIGGER = 50;
-const DRUID_BEAR_MIN_TRIGGER = 25;
-
-const DRUID_BEAR_MAX_MULTIPLIER = 1;
-const DRUID_BEAR_MED_MULTIPLIER = 0.5;
-const DRUID_BEAR_MIN_MULTIPLIER = 0.3;
-
-const DRUID_CAT_EVADE_CHANCE = 35;
-const DRUID_CAT_CRITICAL_CHANCE_BONUS = 25;
-const DRUID_CAT_CRITICAL_MULTIPLIER = 2.5;
-
 class DruidModel extends FighterModel {
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
         if (this.Player.Mask == MASK_EAGLE) {
-            this.SwoopChance = DRUID_EAGLE_SWOOP_CHANCE;
+            this.SwoopChance = CONFIG.DRUID_EAGLE_SWOOP_CHANCE;
         } else if (this.Player.Mask == MASK_CAT) {
             this.DamageTaken = true;
 
@@ -645,7 +668,7 @@ class DruidModel extends FighterModel {
         super.initialize(target);
 
         if (this.Player.Mask == MASK_CAT) {
-            this.RageCriticalChance = this.getCriticalChance(target, 50 + DRUID_CAT_CRITICAL_CHANCE_BONUS);
+            this.RageCriticalChance = this.getCriticalChance(target, 50 + CONFIG.DRUID_CAT_CRITICAL_CHANCE_BONUS);
         }
     }
 
@@ -653,9 +676,9 @@ class DruidModel extends FighterModel {
         let multiplier = 1;
 
         if (this.Player.Mask == MASK_EAGLE) {
-            multiplier = DRUID_EAGLE_DAMAGE_MULTIPLIER;
+            multiplier = CONFIG.DRUID_EAGLE_DAMAGE_MULTIPLIER;
         } else if (this.Player.Mask == MASK_CAT) {
-            multiplier = DRUID_CAT_DAMAGE_MULTIPLIER;
+            multiplier = CONFIG.DRUID_CAT_DAMAGE_MULTIPLIER;
         }
 
         if (target.Player.Class == MAGE || target.Player.Class == BARD) {
@@ -668,21 +691,21 @@ class DruidModel extends FighterModel {
     getHealthLossDamageMultiplier () {
         let healthMissing = 100 - Math.trunc(100 * this.Health / this.TotalHealth);
 
-        let missingLow = healthMissing > DRUID_BEAR_MIN_TRIGGER ? Math.min(DRUID_BEAR_BRACKET, healthMissing - DRUID_BEAR_MIN_TRIGGER) : 0;
-        let missingMed = healthMissing > DRUID_BEAR_MED_TRIGGER ? Math.min(DRUID_BEAR_BRACKET, healthMissing - DRUID_BEAR_MED_TRIGGER) : 0;
-        let missingMax = healthMissing > DRUID_BEAR_MAX_TRIGGER ? Math.min(DRUID_BEAR_BRACKET, healthMissing - DRUID_BEAR_MAX_TRIGGER) : 0;
+        let missingLow = healthMissing > CONFIG.DRUID_BEAR_MIN_TRIGGER ? Math.min(CONFIG.DRUID_BEAR_BRACKET, healthMissing - CONFIG.DRUID_BEAR_MIN_TRIGGER) : 0;
+        let missingMed = healthMissing > CONFIG.DRUID_BEAR_MED_TRIGGER ? Math.min(CONFIG.DRUID_BEAR_BRACKET, healthMissing - CONFIG.DRUID_BEAR_MED_TRIGGER) : 0;
+        let missingMax = healthMissing > CONFIG.DRUID_BEAR_MAX_TRIGGER ? Math.min(CONFIG.DRUID_BEAR_BRACKET, healthMissing - CONFIG.DRUID_BEAR_MAX_TRIGGER) : 0;
 
-        return missingLow * DRUID_BEAR_MIN_MULTIPLIER + missingMed * DRUID_BEAR_MED_MULTIPLIER + missingMax * DRUID_BEAR_MAX_MULTIPLIER;
+        return missingLow * CONFIG.DRUID_BEAR_MIN_MULTIPLIER + missingMed * CONFIG.DRUID_BEAR_MED_MULTIPLIER + missingMax * CONFIG.DRUID_BEAR_MAX_MULTIPLIER;
     }
 
     attack (damage, target, skipped, critical, type) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
-                this.SwoopChance -= DRUID_EAGLE_SWOOP_CHANCE_DECAY;
+                this.SwoopChance -= CONFIG.DRUID_EAGLE_SWOOP_CHANCE_DECAY;
 
                 // Swoop
                 return super.attack(
-                    damage * DRUID_EAGLE_SWOOP_MULTIPLIER,
+                    damage * CONFIG.DRUID_EAGLE_SWOOP_MULTIPLIER,
                     target,
                     skipped,
                     false,
@@ -700,7 +723,7 @@ class DruidModel extends FighterModel {
             }
         } else if (this.Player.Mask == MASK_BEAR) {
             return super.attack(
-                damage * (DRUID_BEAR_DAMAGE_MULTIPLIER + this.getHealthLossDamageMultiplier() / 100),
+                damage * (CONFIG.DRUID_BEAR_DAMAGE_MULTIPLIER + this.getHealthLossDamageMultiplier() / 100),
                 target,
                 skipped,
                 critical,
@@ -708,7 +731,7 @@ class DruidModel extends FighterModel {
             );
         } else if (this.Player.Mask == MASK_CAT) {
             if (!skipped && critical && this.RageState) {
-                damage *= DRUID_CAT_CRITICAL_MULTIPLIER;
+                damage *= CONFIG.DRUID_CAT_CRITICAL_MULTIPLIER;
 
                 this.RageState = false;
             }
@@ -743,7 +766,7 @@ class DruidModel extends FighterModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Mask == MASK_CAT && !this.RageState) {
-            return DRUID_CAT_EVADE_CHANCE;
+            return CONFIG.DRUID_CAT_EVADE_CHANCE;
         } else {
             return this.SkipChance;
         }
@@ -754,7 +777,7 @@ class BattlemageModel extends FighterModel {
     getInitialDamage (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
-        } else if (SIMULATOR_FLAGS.FireballFix) {
+        } else if (FLAGS.FireballFix) {
             let is2x = target.Player.Class == DRUID || target.Player.Class == BARD;
             let is4x = target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER || (target.Player.Class == DRUID && target.Player.Mask == MASK_CAT);
             let is5x = target.Player.Class == WARRIOR || target.Player.Class == DEMONHUNTER || (target.Player.Class == DRUID && target.Player.Mask == MASK_BEAR);
@@ -799,11 +822,6 @@ class BerserkerModel extends FighterModel {
     }
 }
 
-const DH_REVIVE_CHANCE = 400 / 9;
-const DH_REVIVE_CHANCE_DECAY = 2;
-const DH_REVIVE_HP = 0.9;
-const DH_REVIVE_HP_DECAY = 0.1;
-
 class DemonHunterModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
@@ -821,10 +839,10 @@ class DemonHunterModel extends FighterModel {
         let state = super.onDamageTaken(source, damage, type);
 
         if (state == STATE_DEAD) {
-            let reviveChance = DH_REVIVE_CHANCE - DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
+            let reviveChance = CONFIG.DH_REVIVE_CHANCE - CONFIG.DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
 
             if (source.Player.Class != MAGE && getRandom(reviveChance)) {
-                this.Health = this.TotalHealth * Math.max(DH_REVIVE_HP_DECAY, DH_REVIVE_HP - this.DeathTriggers * DH_REVIVE_HP_DECAY);
+                this.Health = this.TotalHealth * Math.max(CONFIG.DH_REVIVE_HP_DECAY, CONFIG.DH_REVIVE_HP - this.DeathTriggers * CONFIG.DH_REVIVE_HP_DECAY);
                 this.DeathTriggers += 1;
 
                 if (FIGHT_LOG_ENABLED) {
@@ -838,12 +856,6 @@ class DemonHunterModel extends FighterModel {
         return state;
     }
 }
-
-const BARD_EFFECT_ROUNDS = 4;
-
-const INSTRUMENT_HARP_VALUES = [ 40, 55, 75 ];
-const INSTRUMENT_LUTE_VALUES = [ 20, 40, 60 ];
-const INSTRUMENT_FLUTE_VALUES = [ 5, 7.5, 10 ];
 
 class BardModel extends FighterModel {
     constructor (i, p) {
@@ -863,9 +875,9 @@ class BardModel extends FighterModel {
         // How many notes were casted
         this.EffectReset = 0;
         // How many notes were consumed
-        this.EffectCounter = BARD_EFFECT_ROUNDS;
+        this.EffectCounter = CONFIG.BARD_EFFECT_ROUNDS;
         // How many rounds passed since cast
-        this.EffectRound = BARD_EFFECT_ROUNDS;
+        this.EffectRound = CONFIG.BARD_EFFECT_ROUNDS;
     }
 
     reset (resetHealth = true) {
@@ -911,15 +923,15 @@ class BardModel extends FighterModel {
         this.EffectRound = 0;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
-            let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, INSTRUMENT_HARP_VALUES[level]) / 100);
+            let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, CONFIG.INSTRUMENT_HARP_VALUES[level]) / 100);
 
             this.IncomingDamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
-            let multiplier = 1 + INSTRUMENT_LUTE_VALUES[level] / 100;
+            let multiplier = 1 + CONFIG.INSTRUMENT_LUTE_VALUES[level] / 100;
 
             this.DamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_FLUTE) {
-            let multiplier = INSTRUMENT_FLUTE_VALUES[level] / 100;
+            let multiplier = CONFIG.INSTRUMENT_FLUTE_VALUES[level] / 100;
 
             this.HealMultiplier = multiplier;
         }
@@ -961,7 +973,7 @@ class BardModel extends FighterModel {
 
             this.EffectRound += 1;
 
-            if (this.EffectRound >= BARD_EFFECT_ROUNDS) {
+            if (this.EffectRound >= CONFIG.BARD_EFFECT_ROUNDS) {
                 this.rollEffect(target);
             }
         }

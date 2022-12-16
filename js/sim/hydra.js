@@ -10,7 +10,7 @@ FighterModel.prototype.getBaseDamage = function () {
 
 // WebWorker hooks
 self.addEventListener('message', function ({ data: { flags, iterations, hydra, pet } }) {
-    SIMULATOR_FLAGS.set(flags);
+    FLAGS.set(flags);
 
     self.postMessage({
         results: new HydraSimulator().simulate(pet, hydra, iterations)

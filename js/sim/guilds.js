@@ -1,7 +1,7 @@
 self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
-    SIMULATOR_FLAGS.set(flags);
+    FLAGS.set(flags);
 
-    SIMULATOR_FLAGS.set({
+    FLAGS.set({
         NoGladiatorReduction: true
     });
 
