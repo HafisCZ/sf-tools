@@ -1207,6 +1207,96 @@ const InputDialog = new (class extends Dialog {
     }
 })
 
+const SimulatorDebugDialog = new(class extends Dialog {
+    _createModal () {
+        return `
+            <div class="ui basic small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Simulator Configuration</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em; overflow-y: auto; overflow-x: hidden; max-height: 70vh;" data-op="content"></div>
+                <div class="ui two fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">Apply</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$cancelButton = this.$parent.find('[data-op="cancel"]');        
+        this.$cancelButton.click(() => {
+            this.close();
+        });
+
+        this.$okButton = this.$parent.find('[data-op="ok"]');
+        this.$okButton.click(() => {
+            this.callback(this._readData());
+            this.close();
+        })
+
+        this.$content = this.$parent.find('[data-op="content"]');
+    }
+
+    _readData () {
+        const data = {};
+
+        for (const [key, value] of Object.entries(this.defaultObject)) {
+            if (typeof value === 'function') {
+                continue;
+            } else if (Array.isArray(value)) {
+                data[key] = [];
+
+                for (let i = 0; i < value.length; i++) {
+                    data[key][i] = parseFloat(this.$parent.find(`[data-key="${key}"][data-index="${i}"]`).val() || value[i]);
+                }
+            } else {
+                data[key] = parseFloat(this.$parent.find(`[data-key="${key}"]`).val() || value);
+            }
+        }
+
+        return data;
+    }
+
+    _setData (object, defaultObject) {
+        this.defaultObject = defaultObject;
+        this.object = object || defaultObject;
+
+        let content = '';
+        for (const [key, value] of Object.entries(this.object)) {
+            if (typeof value === 'function') {
+                continue;
+            } else if (Array.isArray(value)) {
+                content += '<div class="three fields">';
+
+                for (let i = 0; i < value.length; i++) {
+                    content += `
+                        <div class="field">
+                            <label>${key}[${i}]</label>
+                            <input type="number" value="${value[i]}" data-key="${key}" data-index="${i}">
+                        </div>
+                    `;
+                }
+
+                content += '</div>';
+            } else {
+                content += `
+                    <div class="field">
+                        <label>${key}</label>
+                        <input type="number" value="${value}" data-key="${key}">
+                    </div>
+                `;
+            }
+        }
+
+        this.$content.html(content);
+    }
+
+    _applyArguments (object, defaultObject, callback) {
+        this.callback = callback;
+
+        this._setData(object, defaultObject);
+    }
+})();
+
 const ConfirmDialog = new (class extends Dialog {
     _intl_key () {
         return 'confirm';

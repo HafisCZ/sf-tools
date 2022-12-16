@@ -34,6 +34,8 @@
 
         <script src="endpoint/endpoint.js"></script>
 
+        <script src="js/sim/base.js"></script>
+
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body class="margin-none-bottom">
@@ -72,12 +74,13 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <div class="ui small basic icon fluid five buttons">
+                                <div class="ui small basic icon fluid four buttons">
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" id="ihof-mode"><i class="trophy icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" id="fireball-mode"><i class="balance scale icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.no_attribute_reduction_mode" id="no-attribute-reduction-mode"><i class="fire icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.simulate_debug" id="simulate-debug" style="display: none;"><i class="wrench icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.simulate_debug" id="simulate-debug" style="display: none;"><i class="power off icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.configure" id="simulate-configure" style="display: none;"><i class="wrench icon"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -159,6 +162,8 @@
                 var players = [];
                 var iterator = 0;
 
+                let config = null;
+
                 let ihofMode = false;
                 $('#ihof-mode').captiveToggleButton('player_sim/ihof', active => {
                     ihofMode = active;
@@ -193,6 +198,7 @@
                 let modeDebug = urlParams.has('debug');
                 if (modeDebug) {
                     $('#simulate-debug').show();
+                    $('#simulate-configure').show();
                 }
 
                 let pasteMode = false;
@@ -352,6 +358,17 @@
                     return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
                 }
 
+                $('#simulate-configure').click(function () {
+                    DialogController.open(
+                        SimulatorDebugDialog,
+                        config,
+                        CONFIG,
+                        (data) => {
+                            config = data;
+                        }
+                    );
+                });
+
                 $('#simulate-debug').click(async function () {
                     if (players.length > 1) {
                         Loader.toggle(true);
@@ -432,7 +449,8 @@
 
                         worker.postMessage({
                             flags: getSimulatorFlags(),
-                            players: instances
+                            players: instances,
+                            config
                         });
                     }
                 })
@@ -499,7 +517,8 @@
                                     player: block,
                                     players: players,
                                     iterations: iterations,
-                                    log: modeDump
+                                    log: modeDump,
+                                    config
                                 });
                             } else if (simulatorMode == 'attack') {
                                 worker.postMessage({
@@ -508,7 +527,8 @@
                                     player: players.find(p => p.index == yourself),
                                     players: block,
                                     iterations: iterations,
-                                    log: modeDump
+                                    log: modeDump,
+                                    config
                                 });
                             } else if (simulatorMode == 'defend') {
                                 worker.postMessage({
@@ -517,7 +537,8 @@
                                     player: players.find(p => p.index == yourself),
                                     players: block,
                                     iterations: iterations,
-                                    log: modeDump
+                                    log: modeDump,
+                                    config
                                 });
                             } else if (simulatorMode == 'tournament') {
                                 worker.postMessage({
@@ -526,7 +547,8 @@
                                     player: block,
                                     players: ladder,
                                     iterations: iterations,
-                                    log: modeDump
+                                    log: modeDump,
+                                    config
                                 });
                             }
                         }
