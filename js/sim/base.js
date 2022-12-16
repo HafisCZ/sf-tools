@@ -151,6 +151,14 @@ CONFIG = Object.defineProperty(
             BearDamageMultiplier: 4 / 9,
             CatDamageMultiplier: 5 / 9,
 
+            EagleHealthMultiplier: 3,
+            BearHealthMultiplier: 5,
+            CatHealthMultiplier: 4,
+
+            EagleMaxArmorReduction: 10,
+            BearMaxArmorReduction: 50,
+            CatMaxArmorReduction: 25,
+
             EagleSwoopChance: 50,
             EagleSwoopChanceMin: 0,
             EagleSwoopChanceDecay: 5,
@@ -166,7 +174,7 @@ CONFIG = Object.defineProperty(
             BearMinMultiplier: 0.3,
             
             CatNormalEvadeChance: 35,
-            CatRageCriticalChanceBonus: 25,
+            CatRageCriticalChance: 75,
             CatRageCriticalDamageMultiplier: 2.5
         },
         Bard: {
@@ -390,9 +398,9 @@ class FighterModel {
                 return 10;
             case DRUID:
                 switch (this.Player.Mask) {
-                    case MASK_EAGLE: return 10;
-                    case MASK_BEAR: return 50;
-                    case MASK_CAT: return 25;
+                    case MASK_EAGLE: return this.Config.EagleMaxArmorReduction;
+                    case MASK_BEAR: return this.Config.BearMaxArmorReduction;
+                    case MASK_CAT: return this.Config.CatMaxArmorReduction;
                     default: 0;
                 }
             default:
@@ -439,9 +447,9 @@ class FighterModel {
                 return 2;
             case DRUID:
                 switch (this.Player.Mask) {
-                    case MASK_EAGLE: return 3;
-                    case MASK_BEAR: return 5;
-                    case MASK_CAT: return 4;
+                    case MASK_EAGLE: return this.Config.EagleHealthMultiplier;
+                    case MASK_BEAR: return this.Config.BearHealthMultiplier;
+                    case MASK_CAT: return this.Config.CatHealthMultiplier;
                     default: 0;
                 }
             default:
@@ -679,7 +687,7 @@ class DruidModel extends FighterModel {
         super.initialize(target);
 
         if (this.Player.Mask == MASK_CAT) {
-            this.RageCriticalChance = this.getCriticalChance(target, 50 + this.Config.CatRageCriticalChanceBonus);
+            this.RageCriticalChance = this.getCriticalChance(target, this.Config.CatRageCriticalChance);
         }
     }
 
