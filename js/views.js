@@ -1509,7 +1509,7 @@ window.intl = (key, variables = undefined) => {
     if (val) {
         if (typeof variables !== 'undefined') {
             for (const [key, vrl] of Object.entries(variables)) {
-                val = val.replaceAll(`#{${key}}`, vrl);
+                val = val.replace(`#{${key}}`, vrl);
             }
         }
 
