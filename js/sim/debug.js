@@ -2,8 +2,9 @@
 FIGHT_LOG_ENABLED = true;
 FIGHT_LOG_STORE_STATE = true;
 
-self.addEventListener('message', function ({ data: { flags, players } }) {
+self.addEventListener('message', function ({ data: { flags, config, players } }) {
     FLAGS.set(flags);
+    CONFIG.set(config);
 
     self.postMessage({
         json: new DebugSimulator().generate(players)
