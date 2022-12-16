@@ -116,66 +116,76 @@ FIGHT_LOG = new (class {
 })();
 
 // Flags
-FLAGS = {
-    // Values
-    Gladiator15: false,
-    // Reductions
-    NoGladiatorReduction: false,
-    NoAttributeReduction: false,
-    // Behaviors
-    FireballFix: false,
-    // Setter
-    set: function (flags) {
-        for (const [key, val] of Object.entries(flags || {})) {
-            this[key] = !!val;
+FLAGS = Object.defineProperty(
+    {
+        // Values
+        Gladiator15: false,
+        // Reductions
+        NoGladiatorReduction: false,
+        NoAttributeReduction: false,
+        // Behaviors
+        FireballFix: false,
+    },
+    'set',
+    {
+        value: function (flags) {
+            for (const [key, val] of Object.entries(flags || {})) {
+                this[key] = !!val;
+            }
         }
     }
-};
+);
 
 // Configuration
-CONFIG = {
-    // Demon Hunter
-    DH_REVIVE_CHANCE: 400 / 9,
-    DH_REVIVE_CHANCE_DECAY: 2,
-    DH_REVIVE_HP: 0.9,
-    DH_REVIVE_HP_DECAY: 0.1,
+CONFIG = Object.defineProperty(
+    {
+        DemonHunter: {
+            ReviveChance: 400 / 9,
+            ReviveChanceDecay: 2,
+            ReviveHealth: 0.9,
+            ReviveHealthMin: 0.1,
+            ReviveHealthDecay: 0.1
+        },
+        Druid: {
+            EagleDamageMultiplier: 1 / 3,
+            BearDamageMultiplier: 4 / 9,
+            CatDamageMultiplier: 5 / 9,
 
-    // Druid
-    DRUID_EAGLE_DAMAGE_MULTIPLIER: 1 / 3,
-    DRUID_BEAR_DAMAGE_MULTIPLIER: 4 / 9,
-    DRUID_CAT_DAMAGE_MULTIPLIER: 5 / 9,
+            EagleSwoopChance: 50,
+            EagleSwoopChanceMin: 5,
+            EagleSwoopChanceDecay: 5,
+            EagleSwoopMultiplier: 16,
+        
+            BearBracket: 25,
+            BearMaxTrigger: 75,
+            BearMedTrigger: 50,
+            BearMinTrigger: 25,
+        
+            BearMaxMultiplier: 1,
+            BearMedMultiplier: 0.5,
+            BearMinMultiplier: 0.3,
+            
+            CatNormalEvadeChance: 35,
+            CatRageCriticalChanceBonus: 25,
+            CatRageCriticalDamageMultiplier: 2.5
+        },
+        Bard: {
+            EffectRounds: 4,
 
-    DRUID_EAGLE_SWOOP_CHANCE: 50,
-    DRUID_EAGLE_SWOOP_CHANCE_DECAY: 5,
-    DRUID_EAGLE_SWOOP_MULTIPLIER: 16,
-
-    DRUID_BEAR_BRACKET: 25,
-
-    DRUID_BEAR_MAX_TRIGGER: 75,
-    DRUID_BEAR_MED_TRIGGER: 50,
-    DRUID_BEAR_MIN_TRIGGER: 25,
-
-    DRUID_BEAR_MAX_MULTIPLIER: 1,
-    DRUID_BEAR_MED_MULTIPLIER: 0.5,
-    DRUID_BEAR_MIN_MULTIPLIER: 0.3,
-    
-    DRUID_CAT_EVADE_CHANCE: 35,
-    DRUID_CAT_CRITICAL_CHANCE_BONUS: 25,
-    DRUID_CAT_CRITICAL_MULTIPLIER: 2.5,
-
-    // Bard
-    BARD_EFFECT_ROUNDS: 4,
-    INSTRUMENT_HARP_VALUES: [ 40, 55, 75 ],
-    INSTRUMENT_LUTE_VALUES: [ 20, 40, 60 ],
-    INSTRUMENT_FLUTE_VALUES: [ 5, 7.5, 10 ],
-
-    // Setter
-    set: function (config) {
-        for (const [key, val] of Object.entries(config || {})) {
-            this[key] = val;
+            HarpValues: [ 40, 55, 75 ],
+            LuteValues: [ 20, 40, 60 ],
+            FluteValues: [ 5, 7.5, 10 ]
+        },
+    },
+    'set',
+    {
+        value: function (config) {
+            for (const key of Object.keys(this)) {
+                this[key] = mergeDeep(this[key], (config || {})[key]);
+            }
         }
     }
-};
+);
 
 // Returns true if random chance occured
 function getRandom (success) {
@@ -656,7 +666,7 @@ class DruidModel extends FighterModel {
         super.reset(resetHealth);
 
         if (this.Player.Mask == MASK_EAGLE) {
-            this.SwoopChance = CONFIG.DRUID_EAGLE_SWOOP_CHANCE;
+            this.SwoopChance = CONFIG.Druid.EagleSwoopChance;
         } else if (this.Player.Mask == MASK_CAT) {
             this.DamageTaken = true;
 
@@ -668,7 +678,7 @@ class DruidModel extends FighterModel {
         super.initialize(target);
 
         if (this.Player.Mask == MASK_CAT) {
-            this.RageCriticalChance = this.getCriticalChance(target, 50 + CONFIG.DRUID_CAT_CRITICAL_CHANCE_BONUS);
+            this.RageCriticalChance = this.getCriticalChance(target, 50 + CONFIG.Druid.CatRageCriticalChanceBonus);
         }
     }
 
@@ -676,9 +686,9 @@ class DruidModel extends FighterModel {
         let multiplier = 1;
 
         if (this.Player.Mask == MASK_EAGLE) {
-            multiplier = CONFIG.DRUID_EAGLE_DAMAGE_MULTIPLIER;
+            multiplier = CONFIG.Druid.EagleDamageMultiplier;
         } else if (this.Player.Mask == MASK_CAT) {
-            multiplier = CONFIG.DRUID_CAT_DAMAGE_MULTIPLIER;
+            multiplier = CONFIG.Druid.CatDamageMultiplier;
         }
 
         if (target.Player.Class == MAGE || target.Player.Class == BARD) {
@@ -691,21 +701,21 @@ class DruidModel extends FighterModel {
     getHealthLossDamageMultiplier () {
         let healthMissing = 100 - Math.trunc(100 * this.Health / this.TotalHealth);
 
-        let missingLow = healthMissing > CONFIG.DRUID_BEAR_MIN_TRIGGER ? Math.min(CONFIG.DRUID_BEAR_BRACKET, healthMissing - CONFIG.DRUID_BEAR_MIN_TRIGGER) : 0;
-        let missingMed = healthMissing > CONFIG.DRUID_BEAR_MED_TRIGGER ? Math.min(CONFIG.DRUID_BEAR_BRACKET, healthMissing - CONFIG.DRUID_BEAR_MED_TRIGGER) : 0;
-        let missingMax = healthMissing > CONFIG.DRUID_BEAR_MAX_TRIGGER ? Math.min(CONFIG.DRUID_BEAR_BRACKET, healthMissing - CONFIG.DRUID_BEAR_MAX_TRIGGER) : 0;
+        let missingLow = healthMissing > CONFIG.Druid.BearMinTrigger ? Math.min(CONFIG.Druid.BearBracket, healthMissing - CONFIG.Druid.BearMinTrigger) : 0;
+        let missingMed = healthMissing > CONFIG.Druid.BearMedTrigger ? Math.min(CONFIG.Druid.BearBracket, healthMissing - CONFIG.Druid.BearMedTrigger) : 0;
+        let missingMax = healthMissing > CONFIG.Druid.BearMaxTrigger ? Math.min(CONFIG.Druid.BearBracket, healthMissing - CONFIG.Druid.BearMaxTrigger) : 0;
 
-        return missingLow * CONFIG.DRUID_BEAR_MIN_MULTIPLIER + missingMed * CONFIG.DRUID_BEAR_MED_MULTIPLIER + missingMax * CONFIG.DRUID_BEAR_MAX_MULTIPLIER;
+        return missingLow * CONFIG.Druid.BearMinMultiplier + missingMed * CONFIG.Druid.BearMedMultiplier + missingMax * CONFIG.Druid.BearMaxMultiplier;
     }
 
     attack (damage, target, skipped, critical, type) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
-                this.SwoopChance -= CONFIG.DRUID_EAGLE_SWOOP_CHANCE_DECAY;
+                this.SwoopChance = Math.max(CONFIG.Druid.EagleSwoopChanceMin, this.SwoopChance - CONFIG.Druid.EagleSwoopChanceDecay);
 
                 // Swoop
                 return super.attack(
-                    damage * CONFIG.DRUID_EAGLE_SWOOP_MULTIPLIER,
+                    damage * CONFIG.Druid.EagleSwoopMultiplier,
                     target,
                     skipped,
                     false,
@@ -723,7 +733,7 @@ class DruidModel extends FighterModel {
             }
         } else if (this.Player.Mask == MASK_BEAR) {
             return super.attack(
-                damage * (CONFIG.DRUID_BEAR_DAMAGE_MULTIPLIER + this.getHealthLossDamageMultiplier() / 100),
+                damage * (CONFIG.Druid.BearDamageMultiplier + this.getHealthLossDamageMultiplier() / 100),
                 target,
                 skipped,
                 critical,
@@ -731,7 +741,7 @@ class DruidModel extends FighterModel {
             );
         } else if (this.Player.Mask == MASK_CAT) {
             if (!skipped && critical && this.RageState) {
-                damage *= CONFIG.DRUID_CAT_CRITICAL_MULTIPLIER;
+                damage *= CONFIG.Druid.CatRageCriticalDamageMultiplier;
 
                 this.RageState = false;
             }
@@ -766,7 +776,7 @@ class DruidModel extends FighterModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Mask == MASK_CAT && !this.RageState) {
-            return CONFIG.DRUID_CAT_EVADE_CHANCE;
+            return CONFIG.Druid.CatNormalEvadeChance;
         } else {
             return this.SkipChance;
         }
@@ -839,10 +849,10 @@ class DemonHunterModel extends FighterModel {
         let state = super.onDamageTaken(source, damage, type);
 
         if (state == STATE_DEAD) {
-            let reviveChance = CONFIG.DH_REVIVE_CHANCE - CONFIG.DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
+            let reviveChance = CONFIG.DemonHunter.ReviveChance - CONFIG.DemonHunter.ReviveChanceDecay * this.DeathTriggers;
 
             if (source.Player.Class != MAGE && getRandom(reviveChance)) {
-                this.Health = this.TotalHealth * Math.max(CONFIG.DH_REVIVE_HP_DECAY, CONFIG.DH_REVIVE_HP - this.DeathTriggers * CONFIG.DH_REVIVE_HP_DECAY);
+                this.Health = this.TotalHealth * Math.max(CONFIG.DemonHunter.ReviveHealthMin, CONFIG.DemonHunter.ReviveHealth - this.DeathTriggers * CONFIG.DemonHunter.ReviveHealthDecay);
                 this.DeathTriggers += 1;
 
                 if (FIGHT_LOG_ENABLED) {
