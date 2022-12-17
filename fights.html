@@ -995,10 +995,10 @@
                 }
             }
 
-            function generateRow (i, { attacker, target, attackCrit, attackType }, displayType, displayDamage) {
+            function generateRow (i, { attacker, target, attackCrit, attackType, attackerSpecialState }, displayType, displayDamage) {
                 return `
                     <div class="sixteen wide column">
-                        <div class="ui basic segment${i % 2 ? ' undertone' : ''}">
+                        <div class="ui basic segment${i % 2 ? ' undertone' : ''}${attackerSpecialState ? ' attacker-special-state' : ''}">
                             <div class="ui grid">
                                 <div class="one wide column"></div>
                                 <div class="one wide column">${i + 1}</div>
@@ -1187,6 +1187,7 @@
                                 attackDamage: r.attackDamage,
                                 attackSecondary: r.attackSecondary,
                                 attacker: r.attacker == f.targetA.ID ? f.targetA : f.targetB,
+                                attackerSpecialState: r.attackerSpecialState,
                                 target: r.target == f.targetA.ID ? f.targetA : f.targetB
                             };
                         })
@@ -1259,6 +1260,7 @@
                                 attackSecondary: attackType <= 100 && (attackType >= 10 && attackType <= 14),
                                 attackCrit: attackType <= 100 && (attackType % 10 == 1),
                                 attackMissed: attackType <= 100 && ((attackType % 10 == 3) || (attackType % 10 == 4)),
+                                attackerSpecialState: false,
                                 attackDamage: 0
                             });
                         }

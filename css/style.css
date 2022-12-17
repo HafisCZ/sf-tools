@@ -404,6 +404,10 @@ input:disabled {
     background-color: #F0F0F0 !important;
 }
 
+.attacker-special-state {
+    border: 1px dashed purple !important;
+}
+
 .text-right {
     text-align: right !important;
 }
