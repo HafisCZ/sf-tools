@@ -10,57 +10,57 @@
         "class6": "Háborgó",
         "class7": "Démonvadász",
         "class8": "Druida",
-        "class9": "Bard",
-        "mask0": "Eagle",
-        "mask1": "Bear",
-        "mask2": "Tiger",
-        "instrument0": "Harp",
-        "instrument1": "Lute",
-        "instrument2": "Flute",
-        "life_potion": "Eternal Life",
-        "attribute1": "Strength",
-        "attribute2": "Dexterity",
-        "attribute3": "Intelligence",
-        "attribute4": "Constitution",
-        "attribute5": "Luck",
-        "potion1": "Strength",
-        "potion2": "Dexterity",
-        "potion3": "Intelligence",
-        "potion4": "Constitution",
-        "potion5": "Luck",
-        "potion6": "Life",
-        "rank1": "Leader",
-        "rank2": "Officer",
-        "rank3": "Member",
-        "rank4": "Invited",
-        "level": "Level",
-        "gold": "Gold",
-        "wood": "Wood",
-        "stone": "Stone",
-        "souls": "Souls",
-        "time": "Time",
-        "gem": "Gem",
-        "fight": "Fight",
-        "wood_cap": "Wood Capacity",
-        "stone_cap": "Stone Capacity",
+        "class9": "Bárd",
+        "mask0": "Sas",
+        "mask1": "Medve",
+        "mask2": "Tigris",
+        "instrument0": "Hárfa",
+        "instrument1": "Lant",
+        "instrument2": "Fuvola",
+        "life_potion": "Örök élet",
+        "attribute1": "Erő",
+        "attribute2": "Ügyesség",
+        "attribute3": "Értelem",
+        "attribute4": "Kitartás",
+        "attribute5": "Szerencse",
+        "potion1": "Erő",
+        "potion2": "Ügyesség",
+        "potion3": "Értelem",
+        "potion4": "Kitartás",
+        "potion5": "Szerencse",
+        "potion6": "Élet",
+        "rank1": "Vezető",
+        "rank2": "Tisztviselő",
+        "rank3": "Tag",
+        "rank4": "Meghívott",
+        "level": "Szint",
+        "gold": "Arany",
+        "wood": "Fa",
+        "stone": "Kő",
+        "souls": "Lélek",
+        "time": "Idő",
+        "gem": "Drágakő",
+        "fight": "Harc",
+        "wood_cap": "Fa tárhely",
+        "stone_cap": "Kő tárhely",
         "buildings": {
-            "time": "Build Time",
-            "hourly": "Hourly prod.",
-            "capacity": "Capacity",
-            "full": "Full in",
-            "storage": "Total storage",
-            "lure_count": "Lures",
-            "lure_bonus": "Lure Bonus",
-            "knights": "Hall of Knights",
-            "goblins": "Goblins",
-            "trolls": "Trolls",
-            "warriors": "Warriors",
-            "archers": "Archers",
-            "mages": "Mages",
-            "backpack_size": "Backpack Size",
-            "critical_bonus": "Critical Bonus",
-            "thirst_free": "Daily free Thirst",
-            "thirst_usable": "Daily storable Thirst",
+            "time": "Építési idő",
+            "hourly": "Óránkénti term.",
+            "capacity": "Kapacitás",
+            "full": "Teljes",
+            "storage": "Teljes tárhely",
+            "lure_count": "Csalogatások",
+            "lure_bonus": "Csalogatási bónusz",
+            "knights": "Lovagok csarnoka",
+            "goblins": "Goblinok",
+            "trolls": "Trollok",
+            "warriors": "Katonák",
+            "archers": "Íjászok",
+            "mages": "Mágusok",
+            "backpack_size": "Hátizsák mérete",
+            "critical_bonus": "Kritikus sebzésbónusz",
+            "thirst_free": "Napi ingyenes kalandvágy",
+            "thirst_usable": "Napi tárolható kalandvágy",
             "fortress1": "Fortress",
             "fortress2": "Laborers' Quarters",
             "fortress3": "Woodcutter's Hut",
@@ -135,91 +135,91 @@
         },
         "pets": {
             "title": "Pet Simulator",
-            "desc": "Simulate the probable outcome of a pet battle"
+            "desc": "Kedvencharc szimulálása"
         },
         "dungeons": {
-            "title": "Dungeon Simulator",
-            "desc": "Simulate the probable outcome of a dungeon battle"
+            "title": "Kazamata szimulátor",
+            "desc": "Kazamataharc szimulálása"
         },
         "underworld": {
-            "title": "Underworld",
-            "desc": "Simulate the probable outcome of an underworld battle"
+            "title": "Alvilág",
+            "desc": "Alvilági csalogatás szimulálása"
         },
         "fights": {
-            "title": "Fight viewer",
-            "desc": "Display all PVP fights stored within archive file"
+            "title": "Csata megtekintő",
+            "desc": "Archív fájlban tárolt PVP harcok mutatása"
         },
         "digest": {
-            "title": "Boss viewer",
-            "desc": "Display all PVE fights stored within archive file"
+            "title": "Boss megtekintő",
+            "desc": "Archív fájlban tárolt PVE harcok mutatása"
         },
         "atts": {
-            "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "title": "Arany & Tapasztalat",
+            "desc": "Görbék & kalkulátorok"
         },
         "smith": {
-            "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "title": "Kovács fejlesztések",
+            "desc": "Mennyibe kerül és mennyi veszik el"
         },
         "hydra": {
-            "title": "Hydra Simulator",
-            "desc": "Simulate which guild pet class is best against current hydra."
+            "title": "Hydra szimulátor",
+            "desc": "Különböző osztályú kedvencharcok szimulálása az aktuális hydrával."
         },
         "fortress": {
-            "title": "Fortress Simulator",
-            "desc": "Simulate the probable outcome of fortress raid"
+            "title": "Erőd szimulátor",
+            "desc": "Erődtámadások szimulálása"
         },
         "changelog": {
-            "title": "Changelog",
-            "desc": "View all notable changes"
+            "title": "Változtatások jegyzéke",
+            "desc": "Jelentős változtatások megtekintése"
         },
         "hellevator": {
-            "title": "Hellevator Simulator",
-            "desc": "Simulate the probable outcome of Hellevator battles"
+            "title": "Hellevator szimulátor",
+            "desc": "Hellevator harcok szimulálása"
         }
     },
     "404": {
         "title": "404",
-        "text": "Not sure what you're looking for but it does not exist"
+        "text": "Nem tudom mire vagy kiváncsi, de valószínűleg itt nem létezik"
     },
     "stats": {
         "topbar": {
-            "temporary_flag": "Temporary",
-            "players": "Players",
-            "guilds": "Guilds",
-            "browse": "Browse",
-            "scripts": "Scripts",
-            "files": "Files",
-            "settings": "Settings",
-            "temporary": "Temporary session",
-            "changelog": "Changelog",
-            "profile": "Profile"
+            "temporary_flag": "Átmeneti",
+            "players": "Játékosok",
+            "guilds": "Céhek",
+            "browse": "Böngészés",
+            "scripts": "Szkriptek",
+            "files": "Fájlok",
+            "settings": "Beállítások",
+            "temporary": "Átmeneti állapot",
+            "changelog": "Változtatások jegyzéke",
+            "profile": "Profil"
         },
         "files": {
             "titles": {
-                "filters": "Filters",
-                "io": "Import / Export"
+                "filters": "Szűrők",
+                "io": "Importálás / Exportálás"
             },
-            "timestamp": "Timestamp",
-            "timestamps": "Timestamps",
-            "prefix": "Prefix",
-            "name": "Name",
-            "group": "Group",
-            "groups": "Groups",
-            "players": "Players",
-            "version": "Version",
+            "timestamp": "Időpont",
+            "timestamps": "Időpontok",
+            "prefix": "Előtag",
+            "name": "Név",
+            "group": "Csoport",
+            "groups": "Csoportok",
+            "players": "Játékosok",
+            "version": "Verzió",
             "import": {
-                "file": "Import from File",
-                "shared": "Import Shared",
-                "game": "Import from Game"
+                "file": "Importálás fájlból",
+                "shared": "Megosztott tartalom importálása",
+                "game": "Importálás játékból"
             },
             "export": {
-                "all": "Export all",
-                "selected": "Export selected"
+                "all": "Összes exportálása",
+                "selected": "Választottak exportálása"
             },
             "selected": {
-                "text": "item(s) selected",
-                "no": "No"
+                "text": "Kiválasztott elem(ek)",
+                "no": "Nem"
             },
             "hide": {
                 "label": "Hide",
@@ -293,74 +293,74 @@
         "filters": {
             "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
             "p": "Player name",
-            "g": "Guild name",
-            "s": "Server",
-            "e": "Custom expression",
-            "#": "Show only players with specified tags",
-            "l": "Show only latest",
+            "g": "Céh neve",
+            "s": "Szerver",
+            "e": "Egyedi kifejezés",
+            "#": "Csak a meghatározott címkével rendelkező játékosok mutatása",
+            "l": "Csak a legújabb mutatása",
             "f": "Show only first or first n entries",
-            "r": "Force recalculation of global variables",
-            "x": "Enable simulator (argument is number of iterations)",
-            "h": "Show hidden",
-            "o": "Show own",
-            "a": "Show all",
-            "d": "Show other",
-            "q": "Custom settings (separate header names with comma)",
-            "t": "Show online template directly",
-            "sr": "Sort by custom expression",
-            "qc": "Show only selected categories"
+            "r": "Egész világra kiterjedő újraszámolás",
+            "x": "Szimulálás(a számadat a szimulálások számát jelzi)",
+            "h": "Elrejtett megjelenítése",
+            "o": "Saját megjelenítése",
+            "a": "Mind megjelenítése",
+            "d": "Más mutatása",
+            "q": "Egyedi beállítások( különböző fejlécek vesszővel)",
+            "t": "Online sablon közvetlen megjelenítése",
+            "sr": "Rendezés egyedi kifejezés alapján",
+            "qc": "Csak a kiválasztott kategóriák megjelenítése"
         },
         "scripts": {
-            "settings": "Settings",
-            "templates": "Templates",
+            "settings": "Beállítások",
+            "templates": "Sablonok",
             "sidebar": {
                 "wiki": "Wiki",
-                "scripts": "Scripts",
-                "templates": "Templates",
-                "save": "Save",
-                "copy": "Copy",
-                "undo": "Undo",
-                "redo": "Redo",
-                "close": "Close",
-                "apply": "Apply",
-                "remove": "Remove",
-                "save_apply": "Save & Apply"
+                "scripts": "Szkriptek",
+                "templates": "Sablonok",
+                "save": "Mentés",
+                "copy": "Másolás",
+                "undo": "Visszavonás",
+                "redo": "Újra végrehajtás",
+                "close": "Bezárás",
+                "apply": "Alkamaz",
+                "remove": "Eltávolítás",
+                "save_apply": "Mentés és alkalmazás"
             },
             "types": {
-                "me": "Me",
-                "players": "Players",
-                "guilds": "Guilds",
-                "default": "Default"
+                "me": "Saját",
+                "players": "Játékosok",
+                "guilds": "Céhek",
+                "default": "Alapértelmezett"
             },
             "online": {
-                "not_available": "No scripts available"
+                "not_available": "Nincsenek elérhető szkriptek"
             }
         },
         "players": {
-            "other": "Show other players",
-            "hidden": "Show hidden"
+            "other": "Többi játékos megjelenítése",
+            "hidden": "Elrejtett megjelenítése"
         },
         "guilds": {
-            "other": "Show other guilds",
-            "hidden": "Show hidden",
-            "missing": "Player data is missing for following members:"
+            "other": "Többi céh megjelenítése",
+            "hidden": "Elrejtett megjelenítése",
+            "missing": "Az alábbi játékosok adatai hiányoznak:"
         },
         "browse": {
-            "hidden": "Show hidden"
+            "hidden": "Elrejtett megjelenítése"
         },
         "fast_export": {
-            "label": "Share",
-            "title": "Export options",
-            "all": "All",
-            "latest": "Latest",
-            "latest5": "Latest 5",
-            "selected": "Selected",
-            "selected_both": "Selected & Reference"
+            "label": "Megosztás",
+            "title": "Beállítások exportálása",
+            "all": "Összes",
+            "latest": "Legújabb",
+            "latest5": "5 legújabb",
+            "selected": "Kiválasztott",
+            "selected_both": "Kiválasztott & Hivatkozás"
         },
         "share": {
-            "title": "File sharing",
-            "options": "Options",
-            "code": "Your code",
+            "title": "Fájlmegosztás",
+            "options": "Opciók",
+            "code": "Kódod",
             "get": "Get code",
             "ok": "Ok",
             "expire": "The code will automatically expire after 2 days.",
@@ -421,63 +421,63 @@
             "knights": "Hall of Knights",
             "extras": {
                 "title": "Extras",
-                "registered": "Registered"
+                "registered": "Regisztrált"
             },
             "runes": {
-                "title": "Runes",
-                "gold": "Gold",
-                "experience": "Experience",
-                "epic": "Epic Chance",
-                "quality": "Item Quality",
-                "health": "Health",
-                "fire_damage": "Fire Damage",
-                "cold_damage": "Cold Damage",
-                "lightning_damage": "Lightning Damage",
-                "fire_resist": "Fire Resistance",
-                "cold_resist": "Cold Resistance",
-                "lightning_resist": "Lightning Resistance"
+                "title": "Rúnák",
+                "gold": "Arany",
+                "experience": "Tapasztalat",
+                "epic": "Esély epikus tárgyakra",
+                "quality": "Feljavított tárgyminőség",
+                "health": "Életerő",
+                "fire_damage": "Tűzsebzés",
+                "cold_damage": "Jégsebzés",
+                "lightning_damage": "Villámsebzés",
+                "fire_resist": "Tűzállóság",
+                "cold_resist": "Jégállóság",
+                "lightning_resist": "Villámállóság"
             },
             "fortress": {
-                "title": "Fortress",
-                "upgrades": "Upgrades",
-                "rank": "Rank",
-                "honor": "Honor",
-                "building1": "Fortress",
-                "building2": "Quarters",
-                "building3": "Woodcutter",
-                "building4": "Quarry",
-                "building5": "Gem Mine",
-                "building6": "Academy",
-                "building7": "Archery Guild",
-                "building8": "Barracks",
-                "building9": "Mage Tower",
-                "building10": "Treasury",
-                "building11": "Smithy",
-                "building12": "Fortifications",
-                "working": "Building"
+                "title": "Erőd",
+                "upgrades": "Fejlesztések",
+                "rank": "Helyezés",
+                "honor": "Becsület",
+                "building1": "Erőd",
+                "building2": "Munkások negyede",
+                "building3": "Favágó",
+                "building4": "Kőfejtő",
+                "building5": "Drágakőbánya",
+                "building6": "Akadémia",
+                "building7": "Íjászok céhe",
+                "building8": "Laktanya",
+                "building9": "Mágusok tornya",
+                "building10": "Kincstár",
+                "building11": "Kovácsműhely",
+                "building12": "Védművek",
+                "working": "Épület"
             }
         },
         "settings": {
-            "title": "Global configuration",
-            "always_prev": "Compare previous (guilds)",
-            "empty_groups": "Show empty groups",
-            "obfuscated": "Hide player names",
-            "insecure": "Allow insecure html tags",
-            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
-            "unsafe_delete": "Skip confirmation when deleting files",
-            "terms": "Accept Terms of Service",
-            "tab": "Default tab",
-            "preload": "Preload rows",
+            "title": "Globális beállítások",
+            "always_prev": "Összehasonlítás az előzővel (céhek)",
+            "empty_groups": "Üres csoportok megjelenítése",
+            "obfuscated": "Játékosnevek eltakarása",
+            "insecure": "Nem biztonságos HTML címkék engedélyezése",
+            "insecure_error#": "Ez az oldal nem jelenik meg, mivel olyan HTML címkéket tartalmaz, amelyek tiltottak.<br/>Kérlek távolítsd el őket a beállításaidban és próbálkozz újra.",
+            "unsafe_delete": "Törölt fájlok esetén a megerősítés átugrása",
+            "terms": "ÁSZF elfogadása",
+            "tab": "Alapértelmezett fül",
+            "preload": "Sorelőtöltés",
             "actions": {
-                "title": "Actions",
-                "discard": "Discard unsaved changes",
-                "save": "Save actions"
+                "title": "Műveletek",
+                "discard": "Mentetlen változtatások elvetése",
+                "save": "Műveletek mentése"
             },
             "recovery": {
-                "title": "Recovery",
-                "import": "Import data",
-                "export": "Download data",
-                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
+                "title": "Helyreállítás",
+                "import": "Adat importálása",
+                "export": "Adat letöltése",
+                "description#": "A lent található opció segítségével a weboldalon tárolt adatokat exportálhatod, importálhatod.<br>Ajánlott havi egyszer exportálni az adataidat, ezzel elkerülheted az adatvesztést.",
                 "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
                 "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
             }

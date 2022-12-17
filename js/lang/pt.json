@@ -438,66 +438,66 @@
                 "lightning_resist": "Resistência aos Raios"
             },
             "fortress": {
-                "title": "Fortress",
-                "upgrades": "Upgrades",
-                "rank": "Rank",
-                "honor": "Honor",
-                "building1": "Fortress",
-                "building2": "Quarters",
-                "building3": "Woodcutter",
-                "building4": "Quarry",
-                "building5": "Gem Mine",
-                "building6": "Academy",
-                "building7": "Archery Guild",
-                "building8": "Barracks",
-                "building9": "Mage Tower",
-                "building10": "Treasury",
-                "building11": "Smithy",
-                "building12": "Fortifications",
-                "working": "Building"
+                "title": "Fortaleza",
+                "upgrades": "Expansões",
+                "rank": "Classificação",
+                "honor": "Honra",
+                "building1": "Fortaleza",
+                "building2": "Alojamentos",
+                "building3": "Cabana do Lenhador",
+                "building4": "Pedreira",
+                "building5": "Mina de Pedras preciosas",
+                "building6": "Academia",
+                "building7": "Clã do Tiro com Arco",
+                "building8": "Quartel",
+                "building9": "Torre dos Feiticeiros",
+                "building10": "Tesouro",
+                "building11": "Forja",
+                "building12": "Fortificações",
+                "working": "Construindo"
             }
         },
         "settings": {
-            "title": "Global configuration",
-            "always_prev": "Compare previous (guilds)",
-            "empty_groups": "Show empty groups",
-            "obfuscated": "Hide player names",
-            "insecure": "Allow insecure html tags",
-            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
-            "unsafe_delete": "Skip confirmation when deleting files",
-            "terms": "Accept Terms of Service",
-            "tab": "Default tab",
-            "preload": "Preload rows",
+            "title": "Configuração global",
+            "always_prev": "Comparar anteriores (clãs)",
+            "empty_groups": "Mostrar grupos vazios",
+            "obfuscated": "Ocultar nomes dos jogadores",
+            "insecure": "Permitir tags html inseguras",
+            "insecure_error#": "Esta tabela não foi exibida porque contém tags HTML que são proibidas.<br/>Por favor, remova-as das suas configurações e tente novamente.",
+            "unsafe_delete": "Saltar confirmação quando excluir ficheiros",
+            "terms": "Aceitar os termos de serviço",
+            "tab": "Separador padrão",
+            "preload": "Pré-Carregar linhas da tabela",
             "actions": {
-                "title": "Actions",
-                "discard": "Discard unsaved changes",
-                "save": "Save actions"
+                "title": "Ações",
+                "discard": "Descartar as alterações não guardadas",
+                "save": "Salvar ações"
             },
             "recovery": {
-                "title": "Recovery",
-                "import": "Import data",
-                "export": "Download data",
-                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
-                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
-                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
+                "title": "Recuperação",
+                "import": "Importar dados",
+                "export": "Descarregar dados",
+                "description#": "Com as opções abaixo, você pode exportar e importar todos os dados armazenados no site.<br>É recomendável exportar os seus dados pelo menos uma vez por mês para evitar a perda acidental de dados.",
+                "toast": "Processo de recuperação iniciado. Por favor, tenha em mente que pode levar um longo tempo, dependendo do tamanho do seu ficheiro de recuperação.",
+                "notice": "Tem a certeza de que deseja recuperar Ferramentas SFTools deste ficheiro?<br><br>Esta operação apagará todos os seus dados existentes para prosseguir!"
             }
         }
     },
     "pets": {
         "generate": {
-            "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
-            "one": "Generate",
-            "five": "Generate next 5",
-            "ten": "Generate next 10"
+            "tooltip": "Gera um mapa de sucesso de nível / gladiador. Só é possível com a própria mascote contra uma masmorra.",
+            "one": "Gerar",
+            "five": "Gerar os próximos 5",
+            "ten": "Gerar os próximos 10"
         },
-        "simulate": "Simulate",
-        "results": "Results",
+        "simulate": "Simular",
+        "results": "Resultados",
         "map": {
-            "gladiator": "Glad"
+            "gladiator": "Gladiador"
         },
         "types": {
-            "0": "Shadow",
-            "1": "Light",
+            "0": "Sombra",
+            "1": "Luz",
             "2": "Terra",
             "3": "Fogo",
             "4": "Água"
@@ -515,11 +515,11 @@
             "9": "Aberração",
             "10": "Peixinho",
             "11": "Cuco Louco",
-            "12": "Battlutter",
-            "13": "Pinklynx",
-            "14": "Pharamumm",
-            "15": "Ninstarr",
-            "16": "Luchtablong",
+            "12": "Morcego Pairador",
+            "13": "Lince Rosa",
+            "14": "Múmia do Faraó",
+            "15": "Ninja",
+            "16": "Dr. Cachola",
             "17": "Touro-Robô",
             "18": "Demónio Travesso",
             "19": "Cobra Venenosa",
@@ -570,65 +570,65 @@
             "64": "Cuspidor de Fogo",
             "65": "Piroplanta",
             "66": "Galinha assada",
-            "67": "Peppryon",
-            "68": "Boomywoomy",
-            "69": "Tikiricky",
-            "70": "Matchlit",
-            "71": "Birblazey",
+            "67": "Peprião",
+            "68": "Cabum",
+            "69": "Máscara ardente",
+            "70": "Caixa de fósforos",
+            "71": "Pássaro de fogo",
             "72": "Infernox",
-            "73": "Humbuzzish",
-            "74": "Dragopyr",
-            "75": "Mantiflame",
-            "76": "Finnettle",
-            "77": "Etrock",
-            "78": "Blazingtongues",
-            "79": "Devastor",
-            "80": "Goldy",
-            "81": "Orcahle",
-            "82": "Ocodile",
-            "83": "Penguwater",
-            "84": "Walrophin",
-            "85": "Colsnail",
-            "86": "Aquaphant",
-            "87": "Naar",
-            "88": "Octoboss",
-            "89": "Ewilgryn",
-            "90": "Seapard",
-            "91": "Shellzy",
-            "92": "Mingho",
-            "93": "Angbite",
-            "94": "Mermoid",
-            "95": "Watnake",
-            "96": "Cannoturtle",
-            "97": "Unhere",
-            "98": "Tritosting",
-            "99": "Hydrospir"
+            "73": "Zumbidor",
+            "74": "Dragão cuspidor de Fogo",
+            "75": "Louva-a-Chama",
+            "76": "Mil-Braços",
+            "77": "Foguete",
+            "78": "Lula de Fogo",
+            "79": "Devastador",
+            "80": "Peixinho Dourado",
+            "81": "Orcaleia",
+            "82": "Ocodilo",
+            "83": "Pengágua",
+            "84": "Morsa-Golfinho",
+            "85": "Caracol",
+            "86": "Aquafante",
+            "87": "Narval",
+            "88": "Octochefe",
+            "89": "Mordiscador",
+            "90": "Hipopardo",
+            "91": "Conchinha",
+            "92": "Pseudoflamingo",
+            "93": "Mordedor das Profundezas",
+            "94": "Seróide",
+            "95": "Serpente Alada",
+            "96": "Tartaruga Canhão",
+            "97": "Esbugalhóide",
+            "98": "Tritofogo",
+            "99": "Hidrospira"
         },
         "bulk": {
-            "not_possible": "Not possible",
+            "not_possible": "Não é possível",
             "toast": {
-                "title": "Starting simulation",
-                "matches": "Matches:"
+                "title": "A iniciar a Simulação",
+                "matches": "Combates:"
             }
         },
         "editor": {
-            "none": "None",
-            "type": "Type",
-            "pet": "Pet",
+            "none": "Nenhum",
+            "type": "Tipo",
+            "pet": "Mascote",
             "habitat": "Habitat",
-            "health": "Health",
-            "attribute": "Attribute",
-            "defense": "Defense",
-            "skip": "Skip Chance",
-            "crit": "Critical Chance",
-            "damage": "Damage",
-            "critical_bonus": "Critical",
+            "health": "Vida",
+            "attribute": "Atributo",
+            "defense": "Defesa",
+            "skip": "Ignorar Probabilidade",
+            "crit": "Probabilidade golpe crítico",
+            "damage": "Dano",
+            "critical_bonus": "Crítico",
             "at100": {
-                "title": "At 100 - 149",
-                "placeholder": "Pets at 100 - 149"
+                "title": "A 100-149",
+                "placeholder": "Mascotes a 100 - 149"
             },
             "at150": {
-                "title": "At 150 - 199",
+                "title": "A 150-199",
                 "placeholder": "Mascotes a 150 - 199"
             },
             "at200": {
@@ -746,69 +746,69 @@
         "warrior_count": "Guerreiros",
         "warrior_level": "Nível do Guerreiro",
         "archer_count": "Exploradores",
-        "archer_level": "Archer Level",
-        "mage_count": "Mages",
-        "mage_level": "Mage Level",
+        "archer_level": "Nível do Arqueiro",
+        "mage_count": "Feiticeiros",
+        "mage_level": "Nível do Feiticeiro",
         "units": {
-            "remaining": "Average remaning units:",
-            "player": "Warriors",
-            "target": "Defenses"
+            "remaining": "Média de soldados que sobram:",
+            "player": "Soldados",
+            "target": "Defesas"
         }
     },
     "hydra": {
-        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
-        "player_count": "Player Count",
-        "main": "Main",
-        "side1": "Side 1",
-        "side2": "Side 2",
-        "hydra": "Hydra",
+        "footer#": "Baseado no projeto</a> GuildPet do <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p.",
+        "player_count": "Contagem de Jogadores",
+        "main": "Principal atributo",
+        "side1": "Atributo 1",
+        "side2": "Atributo 2",
+        "hydra": "Hidra",
         "iterations": {
-            "label": "Iterations:",
-            "popup": "Amount of iterations per pet class."
+            "label": "Iterações:",
+            "popup": "Quantidade de tentativas por classe de mascotes."
         },
         "result": {
-            "health": "#{health}% HP left",
-            "fights_single": "#{count} fight",
-            "fights_multiple": "#{count} fights"
+            "health": "#{health}% de vida restante",
+            "fights_single": "#{count} luta",
+            "fights_multiple": "#{count} lutas"
         },
         "names": {
-            "1": "One-headed Hydra",
-            "2": "Two-headed Hydra",
-            "3": "Three-headed Hydra",
-            "4": "Four-headed Hydra",
-            "5": "Five-headed Hydra",
-            "6": "Six-headed Hydra",
-            "7": "Seven-headed Hydra",
-            "8": "Eight-headed Hydra",
-            "9": "Nine-headed Hydra",
-            "10": "Ten-headed Hydra",
-            "11": "Eleven-headed Hydra",
-            "12": "Twelve-headed Hydra",
-            "13": "Thirteen-headed Hydra (low accuracy)",
-            "14": "Fourteen-headed Hydra",
-            "15": "Fifteen-headed Hydra",
-            "16": "Sixteen-headed Hydra (low accuracy)",
-            "17": "Seventeen-headed Hydra (low accuracy)",
-            "18": "Eighteen-headed Hydra",
-            "19": "Nineteen-headed Hydra",
-            "20": "Countless-headed Hydra"
+            "1": "Hidra de uma cabeça",
+            "2": "Hidra de duas cabeças",
+            "3": "Hidra de três cabeças",
+            "4": "Hidra de quatro cabeças",
+            "5": "Hidra de cinco cabeças",
+            "6": "Hidra de seis cabeças",
+            "7": "Hidra de sete cabeças",
+            "8": "Hidra de oito cabeças",
+            "9": "Hidra de nove cabeças",
+            "10": "Hidra de dez cabeças",
+            "11": "Hidra de onze cabeças",
+            "12": "Hidra de doze cabeças",
+            "13": "Hidra de treze cabeças (baixa precisão)",
+            "14": "Hidra de catorze cabeças",
+            "15": "Hidra de quinze cabeças",
+            "16": "Hidra de dezasseis cabeças (baixa precisão)",
+            "17": "Hidra de dezassete cabeças (baixa precisão)",
+            "18": "Hidra de dezoito cabeças",
+            "19": "Hidra de dezanove cabeças",
+            "20": "Hidra com cabeças infinitas"
         }
     },
     "simulator": {
         "paste_target#": "Clica aqui e pressiona <b>CTRL&nbsp;+&nbsp;V</b> para copiar para o simulador",
         "threads": "Simulador threads. Mantém este número ABAIXO do teu processador core count!",
         "iterations": "Quantidade de tentativas por thread.",
-        "add": "Add",
-        "save": "Save",
-        "simulate": "Simulate",
-        "simulate_debug": "Simulate in debug mode",
+        "add": "Adicionar",
+        "save": "Salvar",
+        "simulate": "Simular",
+        "simulate_debug": "Simular no modo de debug",
         "clipboard": {
-            "copy_all": "Copy everyone",
+            "copy_all": "Copiar todos",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
-        "win_chance": "Win %",
-        "min_chance": "Min %",
-        "max_chance": "Max %",
+        "win_chance": "Vitória %",
+        "min_chance": "Mín %",
+        "max_chance": "Máx %",
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
@@ -823,7 +823,7 @@
         "armor": "Armadura",
         "armor_placeholder": "Armor points",
         "min": "Mín",
-        "min_placeholder": "Item Min",
+        "min_placeholder": "Limite do item",
         "max": "Máx",
         "max_placeholder": "Limite do item",
         "weapon_enchant": "Crítico",
@@ -855,162 +855,162 @@
         "cancel": "Cancelar",
         "continue": "Continuar",
         "step2": {
-            "title": "Loading Endpoint"
+            "title": "Carregamento de Endpoint"
         },
         "step3": {
-            "title": "Select players to be imported"
+            "title": "Selecione jogadores para serem importados"
         },
         "step4": {
-            "title": "Contacting the server for information",
-            "message": "Fetching data"
+            "title": "A contactar informações do servidor",
+            "message": "Obter dados"
         },
         "user_error": {
-            "title": "Your user name or password is not valid",
-            "message": "Please ensure that it is in correct format (username@url)"
+            "title": "Nome de utilizador ou palavra-chave inválidos!",
+            "message": "Por favor, certifique-se de que está no formato correto (username@url)"
         },
-        "credentials_error": "Wrong username or password",
-        "download_error": "Download failed"
+        "credentials_error": "Nome do utilizador ou palavra-passe inválidos",
+        "download_error": "Falha na transferência"
     },
     "database": {
         "open_error": {
-            "title": "Database could not be opened",
-            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+            "title": "A base de dados não pôde ser aberta",
+            "message": "Por favor, verifique se você não está no modo anónimo e se o seu navegador suporta Indexed DB"
         },
-        "import_error": "An error has occured while importing file",
-        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "import_error": "Ocorreu um erro ao importar o ficheiro",
+        "fatal_error#": "O seu navegador não suporta todos os recursos necessários para esta página!</br>Também pode ser causado por uso do modo privado.",
         "update_info": {
-            "title": "A database update is in progress",
-            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+            "title": "Uma atualização de base de dados está em progresso",
+            "message": "Por favor não saia da página até que o carregamento termine. Isto pode demorar um pouco, dependendo do tamanho da sua base de dados."
         }
     },
     "dialog": {
         "delete_all": {
-            "title": "Delete all",
-            "notice": "Are you sure you want to delete all stored player data?"
+            "title": "Apagar todos",
+            "notice": "Tem a certeza que deseja eliminar todos os dados armazenados?"
         },
         "delete_script": {
-            "title": "Remove script",
-            "notice": "Are you sure you want to permanently remove currently applied script?"
+            "title": "Remover script",
+            "notice": "Tem a certeza de que deseja remover permanentemente o atual script aplicado?"
         },
         "warning": {
-            "title": "An issue has occured!",
-            "continue": "Continue"
+            "title": "Ocorreu um erro!",
+            "continue": "Continuar"
         },
         "error": {
-            "title": "A fatal error has occured!",
-            "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
-            "refresh": "Click here or refresh the page",
-            "revert": "Revert back to default profile"
+            "title": "Um erro crítico ocorreu!",
+            "notice#": "Este erro também pode ter sido causado pelo seu perfil atual.<br>Clique abaixo no botão reverter para reverter para o perfil predefinido.",
+            "refresh": "Clique aqui ou atualize a página",
+            "revert": "Reverter para o perfil predefinido"
         },
         "changelog": {
-            "release": "Release",
-            "continue": "Continue"
+            "release": "Versão",
+            "continue": "Continuar"
         },
         "file_edit": {
-            "title": "Edit file",
-            "timestamp": "Timestamp",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Editar ficheiro",
+            "timestamp": "Data",
+            "cancel": "Cancelar",
+            "save": "Salvar"
         },
         "save_online_script": {
-            "title": "Import template",
-            "loader": "Preparing Files",
-            "author": "Author",
-            "created_updated": "Created/Updated",
-            "name": "Name",
-            "name_placeholder": "Template name",
-            "error": "The requested template is not available!",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Importar modelo",
+            "loader": "A preparar ficheiros…",
+            "author": "Autor",
+            "created_updated": "Criado/Atualizado",
+            "name": "Nome",
+            "name_placeholder": "Nome do modelo",
+            "error": "O modelo solicitado não está disponível!",
+            "cancel": "Cancelar",
+            "save": "Salvar"
         },
         "edit_file_tag": {
-            "title": "Edit tags",
-            "current": "Current tags",
-            "replacement": "Replacement tag",
-            "none": "None",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Editar etiquetas",
+            "current": "Etiquetas atuais",
+            "replacement": "Nova etiqueta",
+            "none": "Nenhum",
+            "cancel": "Cancelar",
+            "save": "Salvar"
         },
         "profile_create": {
-            "title": "Create/Edit profile",
+            "title": "Criar/Editar perfil",
             "id": "ID",
-            "name": "Name",
-            "slot": "Slot",
-            "index": "Index",
-            "operation": "Operation",
-            "equals": "Equals",
-            "above": "Above",
-            "below": "Below",
-            "between": "Between",
-            "value": "Value",
-            "secondary": "Secondary filter",
-            "cancel": "Cancel",
-            "save": "Save",
-            "default": "Default",
-            "profile": "Profile",
-            "none": "None",
+            "name": "Nome",
+            "slot": "Espaço",
+            "index": "Posição",
+            "operation": "Operação",
+            "equals": "Iguais",
+            "above": "Acima",
+            "below": "Abaixo",
+            "between": "Entre",
+            "value": "Valor",
+            "secondary": "Filtro secundário",
+            "cancel": "Cancelar",
+            "save": "Salvar",
+            "default": "Predefinição",
+            "profile": "Perfil",
+            "none": "Nenhum",
             "ast": {
                 "primary": "Primary AST expression",
                 "secondary": "Secondary AST expression",
-                "optional": "optional"
+                "optional": "Opcional"
             },
             "player": {
-                "primary": "Primary filter configuration",
-                "secondary": "Secondary filter configuration"
+                "primary": "Configuração do filtro primário",
+                "secondary": "Configuração do filtro secundário"
             },
             "group": {
-                "primary": "Primary group filter configuration",
-                "secondary": "Secondary group filter configuration"
+                "primary": "Configuração do filtro do grupo primário",
+                "secondary": "Configuração do filtro do grupo secundário"
             }
         },
         "template_save": {
-            "title": "Save template",
-            "select_existing": "Select existing template",
-            "select_new": "Create new template",
-            "or": "or",
-            "name": "Template name",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Guardar modelo",
+            "select_existing": "Selecionar modelo existente",
+            "select_new": "Criar novo modelo",
+            "or": "ou",
+            "name": "Nome do modelo",
+            "cancel": "Cancelar",
+            "save": "Salvar"
         },
         "confirm": {
-            "cancel": "Cancel",
-            "ok": "Ok",
-            "wait_n_seconds": "Wait %1 seconds ..."
+            "cancel": "Cancelar",
+            "ok": "Confirmar",
+            "wait_n_seconds": "Aguardar %1 segundos ..."
         },
         "input": {
-            "cancel": "Cancel",
-            "ok": "Ok"
+            "cancel": "Cancelar",
+            "ok": "Confirmar"
         },
         "data_manage": {
-            "cancel": "Cancel",
-            "ok": "Delete",
-            "title": "Are you sure you want to delete these files, players or guilds?",
-            "skip_next": "Do not show next time",
+            "cancel": "Cancelar",
+            "ok": "Eliminar",
+            "title": "De certeza de que quer eliminar estes ficheiros, jogadores ou clãs?",
+            "skip_next": "Não mostrar na próxima vez",
             "label": {
-                "group": "Following guild(s) will be removed:",
-                "player": "Following player(s) will be removed:",
-                "file": "Following file(s) will be removed:"
+                "group": "Serão removidos o(s) seguinte(s) clã(s):",
+                "player": "Serão removidos os seguintes jogadores:",
+                "file": "Serão removidos o(s) seguinte(s) ficheiro(s):"
             }
         }
     },
     "attributes": {
         "tabs": {
-            "gold_exp": "Gold & Experience",
-            "fortress": "Fortress",
-            "underworld": "Underworld",
-            "gold_table": "Gold Table"
+            "gold_exp": "Ouro & Experiência",
+            "fortress": "Fortaleza",
+            "underworld": "Submundo",
+            "gold_table": "Tabela de Ouro"
         },
         "float": {
             "title": "Character values",
-            "quarters": "Labourer's Quarters"
+            "quarters": "Alojamentos"
         },
         "gold": {
-            "title": "Gold",
+            "title": "Ouro",
             "group": "Guild bonus %",
             "tower": "Tower bonus %",
-            "mine": "Gem Mine",
-            "pit": "Gold Pit",
-            "pit_cap": "Gold Pit capacity",
+            "mine": "Mina de Pedras preciosas",
+            "pit": "Mina de Ouro",
+            "pit_cap": "Capacidade da Mina de Ouro",
             "pit_hr": "Hourly Gold Pit",
             "pit_time": "Gold Pit time",
             "rune": "Item Quality Rune",
@@ -1049,12 +1049,12 @@
             "arena": "Arena",
             "daily": "Daily mission",
             "dungeon": "Dungeon (Level is enemy level)",
-            "twister": "Twister (Level is enemy level)",
-            "wheel_1": "Wheel book",
-            "wheel_2": "Wheel books",
-            "calendar_1": "Calendar 1 book",
-            "calendar_2": "Calendar 2 books",
-            "calendar_3": "Calendar 3 books",
+            "twister": "Tornado (O nível é o nível do inimigo)",
+            "wheel_1": "Livro da Roda Dr Abawuwu",
+            "wheel_2": "Livros da Roda Dr Abawuwu",
+            "calendar_1": "Livro do Calendário 1",
+            "calendar_2": "Livros do Calendário 2",
+            "calendar_3": "Livros do Calendário 3",
             "habitat": "Habitat Boss"
         },
         "quests": {
