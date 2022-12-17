@@ -16,8 +16,8 @@ FIGHT_LOG = new (class {
         }, {});
     }
 
-    _newRound (attacker, target, type, damage) {
-        let lastRound = {
+    _logRound (attacker, target, type, damage) {
+        const lastRound = {
             attacker: attacker.Player.ID || attacker.Index,
             target: target.Player.ID || target.Index,
             targetHealth: Math.max(0, (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth),
@@ -79,7 +79,7 @@ FIGHT_LOG = new (class {
     }
 
     logAttack (source, target, type, damage) {
-        this._newRound(
+        this._logRound(
             source,
             target,
             type,
@@ -88,7 +88,7 @@ FIGHT_LOG = new (class {
     }
 
     logFireball (source, target, damage) {
-        this._newRound(
+        this._logRound(
             source,
             target,
             damage == 0 ? 16 : 15,
@@ -97,7 +97,7 @@ FIGHT_LOG = new (class {
     }
 
     logRevive (source) {
-        this._newRound(
+        this._logRound(
             source,
             source,
             100,
@@ -106,7 +106,7 @@ FIGHT_LOG = new (class {
     }
 
     logSpell (source, level, notes, damage = 0) {
-        this._newRound(
+        this._logRound(
             source,
             source == this.playerA ? this.playerB : this.playerA,
             200 + 10 * notes + level,
@@ -250,8 +250,8 @@ const STATE_ALIVE = 1;
 
 // Attacks
 const ATTACK_PRIMARY = 0;
-const ATTACK_SECONDARY = 1;
-const ATTACK_SPECIAL = 2;
+const ATTACK_SECONDARY = 10;
+const ATTACK_SPECIAL = 20;
 
 // Masks
 const MASK_EAGLE = 0;
@@ -600,7 +600,7 @@ class FighterModel {
         return damage;
     }
 
-    attack (damage, target, skipped, critical, type, directType = false) {
+    attack (damage, target, skipped, critical, type) {
         if (skipped) {
             damage = 0;
         } else {
@@ -619,7 +619,7 @@ class FighterModel {
             FIGHT_LOG.logAttack(
                 this,
                 target,
-                directType ? (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : type) : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10),
+                (type % 10 !== 0) ? (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : type) : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10),
                 damage
             )
         }
@@ -728,8 +728,7 @@ class DruidModel extends FighterModel {
                     target,
                     skipped,
                     false,
-                    5,
-                    true
+                    5
                 );
             } else {
                 return super.attack(
