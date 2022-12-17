@@ -21,10 +21,6 @@ class SFItem {
         var upgradeLevel = dataType.byte();
         var socketPower = dataType.short();
 
-        if (type > 100) {
-            type = type - Math.pow(2, 16);
-        }
-
         this.Data = data;
         this.Slot = slot;
         this.Position = pos;
@@ -507,11 +503,12 @@ class SFFighter {
         this.Gender = dataType.long();
         this.Class = dataType.long();
 
+        const maskType = dataType.peek();
+        this.Mask = maskType == -11 ? 1 : (maskType == -12 ? 2 : 0);
+        this.Instrument = maskType == -52 ? 2 : (maskType == -51 ? 1 : 0);
+
         this.Wpn1 = new SFItem(dataType.sub(12), 1, [1, 1]);
         this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
-
-        this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn1.Type == -12 ? 2 : 0);
-        this.Instrument = this.Wpn1.Type == -52 ? 2 : (this.Wpn1.Type == -51 ? 1 : 0);
     }
 
     getMonsterID () {

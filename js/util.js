@@ -797,6 +797,10 @@ class ComplexDataType {
         return this.values[this.ptr++] || 0;
     }
 
+    peek () {
+        return this.values[this.ptr] || 0;
+    }
+
     string () {
         return this.values[this.ptr++] || '';
     }
