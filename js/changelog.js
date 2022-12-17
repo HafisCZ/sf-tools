@@ -3,8 +3,10 @@ const CHANGELOG = {
         'Statistics': [
             'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>',
             'Added un/loading of hidden data without requiring page reload',
+            'Added missing notification when database is being updated',
             'Fixed file merging with duplicate players / groups',
             'Fixed file and script sharing no longer available',
+            'Fixed players duplicating when using uppercase server url',
             'Merged tracker configuration into actions script',
             'Removed profile and origin fields from files'
         ],
@@ -12,16 +14,31 @@ const CHANGELOG = {
             'Redesigned simulator to allow for multiple battles to be simulated at once'
         ],
         'Fight Simulator': [
-            'Added option to disable attribute reduction'
+            'Added option to disable attribute reduction',
+            'Added option to freely configure certain class behaviors'
+        ],
+        'Guild Simulator': [
+            'Fixed gladiator being reduced'
         ],
         'Dungeon Simulator': [
-            'Fixed cheats'
+            'Fixed cheats',
+            'Added progress bar to loader',
+            'Added option to freely configure certain class behaviors'
         ],
         'Arena Manager': [
             'Reworked tool'
         ],
         'Endpoint': [
             'Added option to save first 50 characters in Hall of Fame'
+        ],
+        'Gold & Experience': [
+            'Updated gold pit capacity formula'
+        ],
+        'All Tools': [
+            'Added support for Hungarian language',
+            'Raised maximum player level to 800',
+            'Fixed compatibility issues with older browsers',
+            'Removed loading of english language file when different language is selected'
         ]
     },
     'v5.2675': {
