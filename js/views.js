@@ -1215,9 +1215,9 @@ const SimulatorDebugDialog = new(class extends Dialog {
     _createModal () {
         return `
             <div class="ui basic small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
+                <h3 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h3>
                 <div style="overflow-y: scroll; overflow-x: hidden; max-height: 70vh; margin-bottom: 1.5em; margin-top: 1em; padding-right: 1em;">
-                    <div class="ui form" style="line-height: 1.3em;" data-op="content"></div>
+                    <div class="ui small form" style="line-height: 1.3em;" data-op="content"></div>
                 </div>
                 <div class="ui three fluid buttons">
                     <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
