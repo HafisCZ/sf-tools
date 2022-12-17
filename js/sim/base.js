@@ -16,9 +16,10 @@ FIGHT_LOG = new (class {
         }, {});
     }
 
-    _logRound (attacker, target, type, damage) {
-        const lastRound = {
+    _logRound (attacker, target, type, damage, special) {
+        const round = {
             attacker: attacker.Player.ID || attacker.Index,
+            attackerSpecialState: !!special,
             target: target.Player.ID || target.Index,
             targetHealth: Math.max(0, (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth),
             attackDamage: damage,
@@ -30,11 +31,11 @@ FIGHT_LOG = new (class {
         }
 
         if (FIGHT_LOG_STORE_STATE) {
-            lastRound.attackerState = this._storeState(attacker);
-            lastRound.targetState = this._storeState(target);
+            round.attackerState = this._storeState(attacker);
+            round.targetState = this._storeState(target);
         }
 
-        this.lastLog.rounds.push(lastRound);
+        this.lastLog.rounds.push(round);
     }
 
     dump () {
@@ -78,12 +79,13 @@ FIGHT_LOG = new (class {
         this.currentRage = currentRage;
     }
 
-    logAttack (source, target, type, damage) {
+    logAttack (source, target, type, damage, special) {
         this._logRound(
             source,
             target,
             type,
-            damage
+            damage,
+            special
         )
     }
 
@@ -600,7 +602,7 @@ class FighterModel {
         return damage;
     }
 
-    attack (damage, target, skipped, critical, type) {
+    attack (damage, target, skipped, critical, type, special) {
         if (skipped) {
             damage = 0;
         } else {
@@ -620,7 +622,8 @@ class FighterModel {
                 this,
                 target,
                 (type % 10 !== 0) ? (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : type) : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10),
-                damage
+                damage,
+                special
             )
         }
 
@@ -748,7 +751,9 @@ class DruidModel extends FighterModel {
                 type
             );
         } else if (this.Player.Mask == MASK_CAT) {
-            if (!skipped && critical && this.RageState) {
+            const isInRage = this.RageState;
+
+            if (!skipped && critical && isInRage) {
                 damage *= this.Config.CatRageCriticalDamageMultiplier;
 
                 this.RageState = false;
@@ -759,7 +764,8 @@ class DruidModel extends FighterModel {
                 target,
                 skipped,
                 critical,
-                type
+                type,
+                isInRage
             );
         }
     }
