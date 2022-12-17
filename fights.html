@@ -1368,7 +1368,7 @@
 
                             if (attacker.Class == BARD && attacker.Instrument == INSTRUMENT_LUTE) {
                                 let spellLevel = attackType % 10 - 1;
-                                let spellBonus = 1 + INSTRUMENT_LUTE_VALUES[spellLevel] / 100;
+                                let spellBonus = 1 + CONFIG.Bard.LuteValues[spellLevel] / 100;
 
                                 let lastIndex = damages[key].length - 1;
                                 damages[key][lastIndex].damage = Math.trunc(damages[key][lastIndex].damage / spellBonus);
