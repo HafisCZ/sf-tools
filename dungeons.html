@@ -38,6 +38,7 @@
 
         <script src="js/sim/dungeon_data.js"></script>
         <script src="js/editor.js"></script>
+        <script src="js/sim/base.js"></script>
 
         <script type="text/javascript">
             LOGICAL_PROCS = (navigator || {}).hardwareConcurrency || 4;
@@ -46,6 +47,9 @@
     <body>
         <div class="ui fixed borderless huge menu css-menu" style="z-index: 3;">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+            <div class="item" id="simulate-configure" style="display: none; padding: 0;">
+                <button class="ui basic inverted icon button" data-position="bottom center" data-intl-tooltip="simulator.configure" style="box-shadow: none !important;"><i class="wrench icon"></i></button>
+            </div>
             <a class="item" href="https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator" target="_blank"><i class="ui icon book"></i> Wiki - How to use</a>
             <div class="right menu" id="show-right-menu">
                 <a class="item" id="cheat-menu-toggle"><i class="ui angle double left icon"></i></a>
@@ -347,6 +351,24 @@
                 var dungeon = null;
                 var availableBosses = null;
                 var log = urlParams.has('log');
+
+                let config = null;
+                
+                let modeDebug = urlParams.has('debug');
+                if (modeDebug) {
+                    $('#simulate-configure').show();
+                }
+
+                $('#simulate-configure').click(function () {
+                    DialogController.open(
+                        SimulatorDebugDialog,
+                        config,
+                        CONFIG,
+                        (data) => {
+                            config = data;
+                        }
+                    );
+                });
 
                 function settingsChanged () {
                     $('#winchart').addClass('faded-out');
@@ -863,7 +885,8 @@
                                 boss: getBossData(boss, dungeon),
                                 iterations: iterations,
                                 index: index,
-                                hpcap: 500
+                                hpcap: 500,
+                                config
                             }])
                         }
 
@@ -1020,6 +1043,7 @@
                                         iterations: iterations,
                                         index: resultsRemaining++,
                                         hpcap: 500,
+                                        config,
                                         id
                                     }
                                 })
@@ -1094,7 +1118,8 @@
                                 boss: getBossData(boss, dungeon),
                                 iterations: iterations,
                                 index: index,
-                                hpcap: 500
+                                hpcap: 500,
+                                config
                             }])
                         }
 
@@ -1170,7 +1195,8 @@
                                 players: playerInstances,
                                 boss: bossInstance,
                                 iterations: iterations,
-                                log: log
+                                log: log,
+                                config
                             });
                         }
                     }

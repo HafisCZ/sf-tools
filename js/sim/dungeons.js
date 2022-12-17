@@ -1,6 +1,7 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, players, boss, index, hpcap, iterations, log } }) {
+self.addEventListener('message', function ({ data: { flags, config, players, boss, index, hpcap, iterations, log } }) {
     FLAGS.set(flags);
+    CONFIG.set(config);
 
     if (log) {
         FIGHT_LOG_ENABLED = true;
