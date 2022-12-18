@@ -1004,25 +1004,21 @@ class BardModel extends FighterModel {
     }
 
     attack (damage, target, skipped, critical, type) {
-        if (this.DamageMultiplier && critical && skipped) {
-            skipped = false;
-        }
-
-        if (skipped) {
-            damage = 0;
-        } else {
-            if (this.DamageMultiplier) {
-                damage *= this.DamageMultiplier;
+        if (this.DamageMultiplier) {
+            if (critical && skipped) {
+                skipped = false;
             }
 
-            damage = super.attack(
-                damage,
-                target,
-                skipped,
-                critical,
-                type
-            );
+            damage *= this.DamageMultiplier;
         }
+
+        damage = super.attack(
+            damage,
+            target,
+            skipped,
+            critical,
+            type
+        )
 
         if (this.DamageMultiplier) {
             this.consumeMultiplier();
