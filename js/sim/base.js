@@ -925,7 +925,7 @@ class BardModel extends FighterModel {
     }
 
     rollEffectRounds (level) {
-        let rounds = Math.min(1, level);
+        let rounds = Math.max(1, level);
 
         if (this.Player.Constitution.Total >= this.Player.Intelligence.Total / 2) {
             rounds++;
