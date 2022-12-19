@@ -122,9 +122,12 @@ const SimulatorDebugDialog = new(class extends Dialog {
 })();
 
 const SimulatorUtils = new (class {
-  configure (normalConfig, debugMode = false) {
+  configure (normalConfig, debugMode = false, debugCopyCallback = null) {
     this.customConfig = null;
     this.normalConfig = normalConfig;
+
+    this.debugMode = debugMode;
+    this.debugCopyCallback = debugCopyCallback;
 
     if (debugMode) {
       this._insertDebugElements()
@@ -132,8 +135,8 @@ const SimulatorUtils = new (class {
   }
 
   _insertDebugElements () {
-    this.$button = $(`
-      <div class="item" id="simulate-configure" style="padding: 0;">
+    const $dialogButton = $(`
+      <div class="item" style="padding: 0;">
         <button class="ui basic inverted icon button" data-position="bottom center" data-intl-tooltip="simulator.configure" style="box-shadow: none !important;"><i class="wrench icon"></i></button>
       </div>
     `).click(() => {
@@ -148,7 +151,20 @@ const SimulatorUtils = new (class {
       );
     });
 
-    this.$button.insertAfter($('.ui.menu.css-menu .css-a-blank').parent())
+    const $copyButton = $(`
+      <div class="item" style="padding: 0;">
+        <button class="ui basic inverted icon button" data-position="bottom center" data-intl-tooltip="simulator.configure_copy" style="box-shadow: none !important;"><i class="copy icon"></i></button>
+      </div>
+    `).click(() => this._executeCopy());
+    
+    $dialogButton.insertAfter($('.ui.menu.css-menu .css-a-blank').parent())
+    $copyButton.insertAfter($dialogButton);
+  }
+
+  _executeCopy () {
+    if (this.debugCopyCallback) {
+      this.debugCopyCallback(this.customConfig);
+    }
   }
 
   _renderConfig () {
@@ -177,12 +193,22 @@ const SimulatorUtils = new (class {
     this.$display.html(content);
   }
 
-  get config () {
-    return this.customConfig;
+  handlePaste (json) {
+    if (typeof json === 'object' && json.type === 'custom') {
+      const { data, config } = json;
+
+      if (this.debugMode) {
+        this.customConfig = config;
+        this._renderConfig();
+      }
+
+      return data;
+    } else {
+      return json;
+    }
   }
 
-  set config (value) {
-    this.customConfig = value;
-    this._renderConfig();
+  get config () {
+    return this.customConfig;
   }
 })();

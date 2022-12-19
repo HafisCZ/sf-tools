@@ -353,7 +353,23 @@
 
                 SimulatorUtils.configure(
                     CONFIG,
-                    urlParams.has('debug')
+                    urlParams.has('debug'),
+                    (config) => {
+                        const data = players.map((p) => {
+                            let m = toSimulatorModel(p);
+                            if (p.Class == 1 && typeof p.BlockChance != 'undefined') {
+                                m.BlockChance = p.BlockChance;
+                            }
+
+                            return m;
+                        });
+
+                        copyJSON({
+                            config,
+                            data,
+                            type: 'custom'
+                        });
+                    }
                 )
 
                 function settingsChanged () {
@@ -481,7 +497,7 @@
                 $(document.body).on('paste', function (event) {
                     if (event.target.type != 'text') {
                         try {
-                            showData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
+                            showData(SimulatorUtils.handlePaste(JSON.parse(event.originalEvent.clipboardData.getData('text'))));
                         } catch (e) {
                             // Do nothing
                         }

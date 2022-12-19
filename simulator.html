@@ -200,7 +200,23 @@
 
                 SimulatorUtils.configure(
                     CONFIG,
-                    modeDebug
+                    modeDebug,
+                    (config) => {
+                        const data = players.map(p => {
+                            let m = toSimulatorModel(p.player);
+                            if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
+                                m.BlockChance = p.player.BlockChance;
+                            }
+
+                            return m;
+                        });
+
+                        copyJSON({
+                            config,
+                            data,
+                            type: 'custom'
+                        });
+                    }
                 )
 
                 let pasteMode = false;
@@ -303,6 +319,8 @@
                 }
 
                 function handlePaste (data) {
+                    data = SimulatorUtils.handlePaste(data);
+
                     if (Array.isArray(data)) {
                         if (pasteMode == false) {
                             players = [];

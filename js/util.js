@@ -23,6 +23,10 @@ function formatTime (date) {
     return trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
+function copyJSON (json) {
+    copyText(JSON.stringify(json));
+}
+
 function copyText (text) {
     const element = document.createElement('textarea');
     element.value = text;
