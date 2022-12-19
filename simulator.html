@@ -35,15 +35,13 @@
         <script src="endpoint/endpoint.js"></script>
 
         <script src="js/sim/base.js"></script>
+        <script src="js/sim/debug_utils.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body class="margin-none-bottom">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
-            <div class="item" id="simulate-configure" style="display: none; padding: 0;">
-                <button class="ui basic inverted icon button" data-position="bottom center" data-intl-tooltip="simulator.configure" style="box-shadow: none !important;"><i class="wrench icon"></i></button>
-            </div>
         </div>
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
@@ -164,8 +162,6 @@
                 var players = [];
                 var iterator = 0;
 
-                let config = null;
-
                 let ihofMode = false;
                 $('#ihof-mode').captiveToggleButton('player_sim/ihof', active => {
                     ihofMode = active;
@@ -200,8 +196,12 @@
                 let modeDebug = urlParams.has('debug');
                 if (modeDebug) {
                     $('#simulate-debug').show();
-                    $('#simulate-configure').show();
                 }
+
+                SimulatorUtils.configure(
+                    CONFIG,
+                    modeDebug
+                )
 
                 let pasteMode = false;
                 $('#paste-mode').toggleButton(active => pasteMode = active);
@@ -345,7 +345,7 @@
                             player: array,
                             players: array,
                             iterations: 100,
-                            config
+                            config: SimulatorUtils.config
                         });
                     }).then((list) => {
                         _sort_asc(list, p => p.score.avg);
@@ -360,17 +360,6 @@
                 function canSimulate () {
                     return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
                 }
-
-                $('#simulate-configure').click(function () {
-                    DialogController.open(
-                        SimulatorDebugDialog,
-                        config,
-                        CONFIG,
-                        (data) => {
-                            config = data;
-                        }
-                    );
-                });
 
                 $('#simulate-debug').click(async function () {
                     if (players.length > 1) {
@@ -453,7 +442,7 @@
                         worker.postMessage({
                             flags: getSimulatorFlags(),
                             players: instances,
-                            config
+                            config: SimulatorUtils.config
                         });
                     }
                 })
@@ -521,7 +510,7 @@
                                     players: players,
                                     iterations: iterations,
                                     log: modeDump,
-                                    config
+                                    config: SimulatorUtils.config
                                 });
                             } else if (simulatorMode == 'attack') {
                                 worker.postMessage({
@@ -531,7 +520,7 @@
                                     players: block,
                                     iterations: iterations,
                                     log: modeDump,
-                                    config
+                                    config: SimulatorUtils.config
                                 });
                             } else if (simulatorMode == 'defend') {
                                 worker.postMessage({
@@ -541,7 +530,7 @@
                                     players: block,
                                     iterations: iterations,
                                     log: modeDump,
-                                    config
+                                    config: SimulatorUtils.config
                                 });
                             } else if (simulatorMode == 'tournament') {
                                 worker.postMessage({
@@ -551,7 +540,7 @@
                                     players: ladder,
                                     iterations: iterations,
                                     log: modeDump,
-                                    config
+                                    config: SimulatorUtils.config
                                 });
                             }
                         }
