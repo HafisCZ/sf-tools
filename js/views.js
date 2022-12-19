@@ -1249,7 +1249,21 @@ const SimulatorDebugDialog = new(class extends Dialog {
     }
 
     _getValue (path, def) {
-        return parseFloat(this.$parent.find(`[data-path="${path}"]`).val() || def);
+        const value = this.$parent.find(`[data-path="${path}"]`).val()
+
+        if (typeof def === 'boolean') {
+            return value !== '0'
+        } else {
+            return parseFloat(value || def);
+        }
+    }
+
+    _convertValue (val) {
+        if (typeof val === 'boolean') {
+            return val ? '1' : '0';
+        } else {
+            return val;
+        }
     }
 
     _readData () {
@@ -1289,7 +1303,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
                         content += `
                             <div class="field">
                                 <label>${key} - ${i + 1}</label>
-                                <input type="number" data-path="${group}.${key}.${i}" value="${value[i]}">
+                                <input type="number" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
                             </div>
                         `;
                     }
@@ -1299,7 +1313,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
                     content += `
                         <div class="field">
                             <label>${key}</label>
-                            <input type="number" data-path="${group}.${key}" value="${value}">
+                            <input type="number" data-path="${group}.${key}" value="${this._convertValue(value)}">
                         </div>
                     `;
                 }
