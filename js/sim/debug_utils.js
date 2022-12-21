@@ -137,7 +137,7 @@ const SimulatorUtils = new (class {
   _insertDebugElements () {
     const $dialogButton = $(`
       <div class="item" style="padding: 0;">
-        <button class="ui basic inverted icon button" data-position="bottom center" data-intl-tooltip="simulator.configure" style="box-shadow: none !important;"><i class="wrench icon"></i></button>
+        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure')}" style="box-shadow: none !important;"><i class="wrench icon"></i></button>
       </div>
     `).click(() => {
       DialogController.open(
@@ -153,7 +153,7 @@ const SimulatorUtils = new (class {
 
     const $copyButton = $(`
       <div class="item" style="padding: 0;">
-        <button class="ui basic inverted icon button" data-position="bottom center" data-intl-tooltip="simulator.configure_copy" style="box-shadow: none !important;"><i class="copy icon"></i></button>
+        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" style="box-shadow: none !important;"><i class="copy icon"></i></button>
       </div>
     `).click(() => this._executeCopy());
     
