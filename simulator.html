@@ -349,7 +349,7 @@
                 $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
-                function buildSimulatorLadder (array) {
+                function buildSimulatorLadder (array, iterations) {
                     return new Promise(async (resolve, reject) => {
                         Toast.info(intl('players.toast.tournament.title'), intl('players.toast.tournament.message#', { count: array.length }))
 
@@ -362,7 +362,7 @@
                             mode: 'all',
                             player: array,
                             players: array,
-                            iterations: 100,
+                            iterations,
                             config: SimulatorUtils.config
                         });
                     }).then((list) => {
@@ -486,7 +486,7 @@
                         var logs = [];
 
                         if (simulatorMode == 'tournament') {
-                            ladder = await buildSimulatorLadder([ ...players ]);
+                            ladder = await buildSimulatorLadder([ ...players ], iterations);
                         }
 
                         Toast.info(intl('players.toast.start.title'), intl('players.toast.start.message#', { blocks, blockSize, iterations }));
