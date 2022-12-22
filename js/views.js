@@ -83,12 +83,11 @@ const Toast = new (class {
 
     _show (icon, title, message, requireClick) {
         $.toast({
-            showIcon: icon,
-            title,
+            title: icon ? `<i class="ui ${icon} icon"></i> ${title}` : title,
             message,
             position: 'bottom left',
             displayTime: requireClick ? 0 : 6000,
-            class: 'black'
+            class: 'custom-toast'
         })
     }
 })();
