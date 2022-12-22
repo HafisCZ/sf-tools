@@ -865,3 +865,8 @@ input:disabled {
     font-family: monospace;
     padding: 0.75em;
 }
+
+/* Dark Mode */
+body.inverted {
+    background-color: #141414;
+}
