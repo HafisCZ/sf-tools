@@ -119,12 +119,10 @@
                     <div class="ui segment">
                         <div class="ui large header" data-intl="stats.files.titles.io"></div>
                         <!-- IMPORT -->
-                        <div>
-                            <label class="fluid ui secondary button" for="button-upload">
-                                <i class="small upload icon"></i> <span data-intl="stats.files.import.file"></span>
-                            </label>
-                            <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
-                        </div>
+                        <input type="file" multiple data-op="upload" accept=".har,.json" class="ui invisible file input" id="button-upload">
+                        <label for="button-upload" class="ui fluid icon secondary button">
+                          <i class="file icon"></i> <span data-intl="stats.files.import.file"></span>
+                        </label>
                         <label class="fluid ui secondary button sf-margin top-05" data-op="shared">
                             <i class="small share alternate icon"></i> <span data-intl="stats.files.import.shared"></span>
                         </label>
