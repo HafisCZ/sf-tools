@@ -45,6 +45,10 @@ function _push_unless_includes(arr, obj) {
     }
 }
 
+function _clamp (value, min, max) {
+    return value <= min ? min : (value >= max ? max : value);
+}
+
 function _present (obj) {
     return obj !== null && typeof obj !== 'undefined';
 }

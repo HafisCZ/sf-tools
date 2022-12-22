@@ -2,6 +2,8 @@
     "general": {
         "no": "No",
         "yes": "Yes",
+        "min": "Min",
+        "max": "Max",
         "class1": "Warrior",
         "class2": "Mage",
         "class3": "Scout",
@@ -673,12 +675,12 @@
             "keep_original": "Keep original"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
+            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
+            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold} %)",
+            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use <b>All</b> function to simulate all open dungeons"
         }
     },
@@ -886,6 +888,11 @@
         }
     },
     "dialog": {
+        "shared": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "ok": "Ok"
+        },
         "delete_all": {
             "title": "Delete all",
             "notice": "Are you sure you want to delete all stored player data?"

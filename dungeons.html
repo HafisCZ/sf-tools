@@ -237,6 +237,77 @@
         </div>
 
         <script type="text/javascript">
+            const SIMULATOR_THRESHOLD_DIALOG = new (class extends Dialog {
+                _createModal () {
+                    return `
+                        <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                            <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${intl(`dungeons.simulate_next_settings.title`)}</h2>
+                            <div class="ui form" style="line-height: 1.3em; margin-bottom: 1em;">
+                                <div class="field">
+                                    <label>${intl(`dungeons.simulate_next_settings.label`)}</label>
+                                    <div class="ui range slider" data-op="slider"></div>
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label>${intl(`general.min`)}</label>
+                                        <div class="ui input">
+                                            <input type="text" data-op="min" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label>${intl(`general.max`)}</label>
+                                        <div class="ui input">
+                                            <input type="text" data-op="max" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui two fluid buttons">
+                                <button class="ui black fluid button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
+                                <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${intl('dialog.shared.ok')}</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$slider = this.$parent.find('[data-op="slider"]');
+                    this.$slider.slider({
+                        min: 0,
+                        max: 100,
+                        step: 0.1
+                    });
+
+                    this.$slider.slider('setting', 'onMove', (_span, min, max) => {
+                       this.$min.val(Math.round(min * 10) / 10);
+                       this.$max.val(Math.round(max * 10) / 10);
+                    });
+                
+                    this.$min = this.$parent.find('[data-op="min"]');
+                    this.$max = this.$parent.find('[data-op="max"]');
+
+                    this.$okButton = this.$parent.find('[data-op="ok"');
+                    this.$okButton.click(() => {
+                        this.callback(
+                            Math.round(this.$slider.slider('get thumbValue', 'first') * 10) / 10,
+                            Math.round(this.$slider.slider('get thumbValue', 'second') * 10) / 10
+                        );
+
+                        this.close();
+                    });
+
+                    this.$cancelButton = this.$parent.find('[data-op="cancel"]');
+                    this.$cancelButton.click(() => {
+                        this.close();
+                    });
+                }
+
+                _applyArguments (currentMin, currentMax, callback) {
+                    this.callback = callback;
+                    this.$slider.slider('set rangeValue', currentMin, currentMax);
+                }
+            })
+
             Site.ready(function (urlParams) {
                 $('#cheat-menu-toggle').click(() => {
                     $('#cheat-menu').transition('fade left');
@@ -288,13 +359,13 @@
                     e.preventDefault();
 
                     DialogController.open(
-                        InputDialog,
-                        intl(`dungeons.simulate_next_settings.title`),
-                        intl(`dungeons.simulate_next_settings.label`),
+                        SIMULATOR_THRESHOLD_DIALOG,
                         SharedPreferences.getRaw('dungeon_sim/threshold', 5),
-                        (value) => SharedPreferences.setRaw('dungeon_sim/threshold', Number(value)),
-                        null,
-                        (value) => !isNaN(value) && value >= 0 && value <= 100
+                        SharedPreferences.getRaw('dungeon_sim/threshold_max', 100),
+                        (min, max) => {
+                            SharedPreferences.setRaw('dungeon_sim/threshold', min)
+                            SharedPreferences.setRaw('dungeon_sim/threshold_max', max)
+                        }
                     );
                 });
 
@@ -919,7 +990,9 @@
 
                         let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-                        let threshold = Math.max(0, Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)));
+
+                        let threshold_min = _clamp(Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)), 0, 100);
+                        let threshold_max = _clamp(Number(SharedPreferences.getRaw('dungeon_sim/threshold_max', 5)), threshold_min, 100);
 
                         let dungeonStacks = [];
                         for (let { boss: _boss, dungeon: _dungeon, id: _id } of availableBosses) {
@@ -988,7 +1061,7 @@
                                 worker.addEventListener('message', (message) => {
                                     let { score, iterations, healths } = message.data.results;
 
-                                    if (score < threshold * iterations / 100) {
+                                    if (score < threshold_min * iterations / 100 || score > threshold_max * iterations / 100) {
                                         for (let i = 0; i < pendingStacks.length; i++) {
                                             pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
                                                 if (_args.id === id || _args.id === NEXT_DUNGEONS[id]) {
@@ -1021,7 +1094,7 @@
                                         if (results.length > 0) {
                                             showMassDungeonResults(floorStacks.flat(), results, 'extended', true);
                                         } else {
-                                            Toast.info(intl('dungeons.simulate_next_info.title', { threshold }), intl('dungeons.simulate_next_info.message#'));
+                                            Toast.info(intl('dungeons.simulate_next_info.title', { threshold_min, threshold_max }), intl('dungeons.simulate_next_info.message#'));
                                         }
                                     } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
                                         currentStack = pendingStacks.shift();
