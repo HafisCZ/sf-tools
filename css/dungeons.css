@@ -73,6 +73,10 @@ div.text .boss-rune {
     width: 100%;
 }
 
+#boss-list .text img {
+    right: -1.9em !important;
+}
+
 #boss-list .menu, #available-list .menu {
     overflow-y: scroll;
 }
