@@ -848,7 +848,7 @@ input:disabled {
     align-items: center;
     padding-bottom: 0.25em;
     background-color: #141414;
-    padding: 0.5em 0.75em;
+    padding: 0.75em 0.75em;
     color: white !important;
     width: 100%;
     border-top-left-radius: .28571429rem;
@@ -867,6 +867,7 @@ input:disabled {
 }
 
 /* Dark Mode */
+
 body.inverted {
     background-color: #141414;
 }
