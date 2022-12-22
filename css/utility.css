@@ -7,14 +7,62 @@
   pointer-events: all;
 }
 
+/* Positioning */
+.fixed {
+  position: fixed;
+}
+
+.left-8 {
+  left: 2em;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+/* Sizing */
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+/* Display */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+/* Alignment */
+.items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
 /* Padding */
 .pt-4 {
   padding-top: 1em;
 }
 
 /* Text Size */
+.text-5 {
+  font-size: 1.25em;
+}
+
 .text-8 {
   font-size: 2em;
+}
+
+.text-20 {
+  font-size: 5em;
 }
 
 /* Text Align */
@@ -27,6 +75,15 @@
   color: orange;
 }
 
+.text-white {
+  color: white;
+}
+
 .\!text-orange {
   color: orange !important;
+}
+
+/* Background Color */
+.background-dark {
+  background-color: #141414;
 }
