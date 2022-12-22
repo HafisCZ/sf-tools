@@ -2222,11 +2222,19 @@ class FilesView extends View {
         this.resultsSimpleListObserverCallback();
     }
 
-    updateTagFilterButtons (parent, filter) {
+    updateTagFilterButtons () {
         let selector = `[data-tag="${ typeof this.tagFilter === 'undefined' ? '*' : this.tagFilter }"]`;
 
-        this.$tagFilter.find('[data-tag]').addClass('basic');
-        this.$tagFilter.find(selector).removeClass('basic');
+        this.$tagFilter.find('[data-tag]').addClass('basic').css('color', '').css('background-color', '');
+
+        const $tag = this.$tagFilter.find(selector);
+        if ($tag.length > 0) {
+            $tag.removeClass('basic');
+
+            if ($tag.data('color')) {
+                $tag.css('background-color', $tag.data('color')).css('color', 'white');
+            }
+        }
     }
 
     updateFileList () {
@@ -2241,7 +2249,7 @@ class FilesView extends View {
             for (const name of currentTags) {
                 if (name !== 'undefined') {
                     content += `
-                        <div data-tag="${name}" class="ui basic tiny button" style="background-color: ${_strToHSL(name)}; color: white; margin-bottom: 0.5rem">${name}</div>
+                        <div data-tag="${name}" class="ui basic tiny button" data-color="${_strToHSL(name)}" style="margin-bottom: 0.5rem">${name}</div>
                     `;
                 }
             }
