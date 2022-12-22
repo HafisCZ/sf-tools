@@ -23,7 +23,8 @@ const CHANGELOG = {
         'Dungeon Simulator': [
             'Fixed cheats',
             'Added progress bar to loader',
-            'Added option to freely configure certain class behaviors'
+            'Added option to freely configure certain class behaviors',
+            'Added maximum value to threshold simulation'
         ],
         'Arena Manager': [
             'Reworked tool'
