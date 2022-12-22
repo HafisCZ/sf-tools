@@ -570,21 +570,21 @@ class Editor extends EditorBase {
                 <div class="two fields">
                     <div class="field">
                         <label>${this.intl('class')}</label>
-                        <div class="ui search selection compact dropdown" data-path="Class">
+                        <div class="ui search selection dropdown" data-path="Class">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('mask')}</label>
-                        <div class="ui selection compact dropdown" data-path="Mask">
+                        <div class="ui selection dropdown" data-path="Mask">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('instrument')}</label>
-                        <div class="ui selection compact dropdown" data-path="Instrument">
+                        <div class="ui selection dropdown" data-path="Instrument">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -629,14 +629,14 @@ class Editor extends EditorBase {
                     </div>
                     <div class="field">
                         <label>${this.intl('weapon_enchant')}</label>
-                        <div class="ui selection compact dropdown" data-path="Items.Wpn1.HasEnchantment">
+                        <div class="ui selection dropdown" data-path="Items.Wpn1.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('rune')}</label>
-                        <div class="ui selection compact dropdown" data-path="Items.Wpn1.AttributeTypes.2">
+                        <div class="ui selection dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -659,14 +659,14 @@ class Editor extends EditorBase {
                     </div>
                     <div class="field">
                         <label>${this.intl('weapon_enchant')}</label>
-                        <div class="ui selection compact dropdown" data-path="Items.Wpn2.HasEnchantment">
+                        <div class="ui selection dropdown" data-path="Items.Wpn2.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('rune')}</label>
-                        <div class="ui selection compact dropdown" data-path="Items.Wpn2.AttributeTypes.2">
+                        <div class="ui selection dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -713,7 +713,7 @@ class Editor extends EditorBase {
                     </div>
                     <div class="field">
                         <label>${this.intl('life_potion')}</label>
-                        <div class="ui selection compact dropdown" data-path="Potions.Life">
+                        <div class="ui selection dropdown" data-path="Potions.Life">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -732,7 +732,7 @@ class Editor extends EditorBase {
                     </div>
                     <div class="field">
                         <label>${this.intl('hand_enchant')}</label>
-                        <div class="ui selection compact dropdown" data-path="Items.Hand.HasEnchantment">
+                        <div class="ui selection dropdown" data-path="Items.Hand.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
