@@ -569,10 +569,10 @@ const StatisticsIntegration = new (class {
                                 });
                             }),
                             $(`
-                                <label class="ui fluid button vertical" for="button-upload">
+                                <label class="ui fluid button vertical" for="endpoint-button-upload">
                                     <span style="color: gray;">HAR<span>
                                 </label>
-                                <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
+                                <input type="file" multiple data-op="upload" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
                             `).change((fileEvent) => {
                                 Loader.toggle(true);
 
