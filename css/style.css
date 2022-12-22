@@ -836,3 +836,32 @@ input:disabled {
         opacity: 100%
     }
 }
+
+/* Custom Toast */
+
+.custom-toast {
+    padding: 0 !important;
+}
+
+.custom-toast .header {
+    display: inline-flex;
+    align-items: center;
+    padding-bottom: 0.25em;
+    background-color: #141414;
+    padding: 0.5em 0.75em;
+    color: white !important;
+    width: 100%;
+    border-top-left-radius: .28571429rem;
+    border-top-right-radius: .28571429rem;
+    font-size: 1em !important;
+}
+
+.custom-toast .header i {
+    font-size: 1em !important;
+    margin-bottom: 2px;
+}
+
+.custom-toast .message {
+    font-family: monospace;
+    padding: 0.75em;
+}
