@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/editor.css"/>
         <link rel="stylesheet" href="css/blacksmith.css"/>
+        <link rel="stylesheet" href="css/utility.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -58,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <table class="ui inverted single very line table fixed" style="margin-top: 2em;">
+            <table class="ui inverted single very line table fixed mt-8">
                 <thead>
                     <tr>
                         <th style="width: 5%;" class="text-center">#</th>
@@ -152,7 +153,7 @@
                         $table.html(html);
                     } else {
                         $table.html(
-                            `<tr><td colspan="9" class="text-center" style="padding: 1em;">${intl('blacksmith.table.invalid')}</td></tr>`
+                            `<tr><td colspan="9" class="text-center p-4">${intl('blacksmith.table.invalid')}</td></tr>`
                         );
                     }
                 }

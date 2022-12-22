@@ -8,7 +8,7 @@
 }
 
 /* Positioning */
-.fixed {
+.position-fixed {
   position: fixed;
 }
 
@@ -50,6 +50,15 @@
 /* Padding */
 .pt-4 {
   padding-top: 1em;
+}
+
+.p-4 {
+  padding: 1em;
+}
+
+/* Margin */
+.mt-8 {
+  margin-top: 2em;
 }
 
 /* Text Size */
