@@ -120,10 +120,6 @@ table.sftools-table .headers td {
     border-top: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-.css-inverted .item .content {
-    color: white;
-}
-
 .ui.button.css-template-save {
     padding-left: 1.25em;
     padding-right: 1.25em;
