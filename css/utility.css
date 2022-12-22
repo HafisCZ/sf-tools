@@ -1,0 +1,15 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.orange {
+  color: orange;
+}
+
+.\!orange {
+  color: orange !important;
+}
+
+.pointer-events-all {
+  pointer-events: all;
+}
