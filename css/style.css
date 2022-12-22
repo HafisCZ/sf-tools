@@ -582,6 +582,7 @@ input:disabled {
     color: black;
     width: 1000%;
     font-size: 1em !important;
+    font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .ta-area {
@@ -591,6 +592,7 @@ input:disabled {
     height: 100% !important;
     resize: none !important;
     overflow: auto;
+    font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .ta-area::selection {
