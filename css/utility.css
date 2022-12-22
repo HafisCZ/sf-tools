@@ -1,27 +1,32 @@
+/* Cursor */
 .cursor-pointer {
   cursor: pointer;
-}
-
-.orange {
-  color: orange;
-}
-
-.\!orange {
-  color: orange !important;
 }
 
 .pointer-events-all {
   pointer-events: all;
 }
 
+/* Padding */
 .pt-4 {
   padding-top: 1em;
 }
 
+/* Text Size */
 .text-8 {
   font-size: 2em;
 }
 
+/* Text Align */
 .text-center {
   text-align: center;
+}
+
+/* Text Color */
+.text-orange {
+  color: orange;
+}
+
+.\!text-orange {
+  color: orange !important;
 }
