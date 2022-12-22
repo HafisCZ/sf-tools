@@ -26,15 +26,15 @@
             }
 
             .green {
-                color: darkgreen;
+                color: green;
             }
 
             .blue {
-                color: blue;
+                color: lightblue;
             }
 
             .purple {
-                color: purple;
+                color: crimson;
             }
 
             .opaque-rows-inverted tr:nth-child(odd) {
@@ -51,7 +51,7 @@
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
             <a class="item" id="show-attributes" data-intl="attributes.tabs.gold_exp"></a>
@@ -61,364 +61,360 @@
         </div>
 
         <div class="ui main container" id="tab-gold-experience">
-            <div class="ui grid">
-                <div class="sixteen wide column">
-                    <div class="ui segment">
-                        <h3 class="ui header" data-intl="attributes.gold.title"></h3>
-                        <div class="ui small form">
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="editor.level"></label>
-                                    <input type="text" id="gold-level">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.group"></span></label>
-                                    <input type="text" id="gold-guild">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.tower"></span></label>
-                                    <input type="text" id="gold-tower">
-                                </div>
-                                <div class="field">
-                                    <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.mine"></span></label>
-                                    <input type="text" id="gold-mine">
-                                </div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit"></span></label>
-                                    <input type="text" id="gold-pit">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.rune"></span></label>
-                                    <input type="text" id="gold-runes">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="attributes.gold.reward"></label>
-                                    <input type="text" disabled id="gold-reward">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.guard_hr"></span></label>
-                                    <input type="text" disabled id="gold-guard">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.dice_3"></label>
-                                    <input type="text" disabled id="gold-dice">
-                                </div>
-                                <div class="field">
-                                    <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_s"></span></label>
-                                    <input type="text" disabled id="gold-gem">
-                                </div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_cap"></span></label>
-                                    <input type="text" disabled id="gold-capacity">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_10"></span></label>
-                                    <input type="text" disabled id="gold-pot10">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="attributes.gold.scroll"></label>
-                                    <input type="text" disabled id="gold-scroll">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.glass"></span></label>
-                                    <input type="text" disabled id="gold-hourglass1">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.dice_4"></label>
-                                    <input type="text" disabled id="gold-dice2">
-                                </div>
-                                <div class="field">
-                                    <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_m"></span></label>
-                                    <input type="text" disabled id="gold-gem2">
-                                </div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_hr"></span></label>
-                                    <input type="text" disabled id="gold-hourly">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_15"></span></label>
-                                    <input type="text" disabled id="gold-pot15">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="attributes.gold.calendar_1"></label>
-                                    <input type="text" disabled id="gold-bar">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.glass_10"></span></label>
-                                    <input type="text" disabled id="gold-hourglass10">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.dice_5"></label>
-                                    <input type="text" disabled id="gold-dice3">
-                                </div>
-                                <div class="field">
-                                    <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_l"></span></label>
-                                    <input type="text" disabled id="gold-gem3">
-                                </div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_time"></span></label>
-                                    <input type="text" disabled id="gold-time">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_25"></span></label>
-                                    <input type="text" disabled id="gold-pot25">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="attributes.gold.calendar_3"></label>
-                                    <input type="text" disabled id="gold-bar3">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.pot_w"></label>
-                                    <input type="text" disabled id="gold-witchpot">
-                                </div>
-                                <div class="field">
+            <div class="ui inverted segment">
+                <h3 class="ui header" data-intl="attributes.gold.title"></h3>
+                <div class="ui small inverted form">
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="editor.level"></label>
+                            <input type="text" id="gold-level">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.group"></span></label>
+                            <input type="text" id="gold-guild">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.tower"></span></label>
+                            <input type="text" id="gold-tower">
+                        </div>
+                        <div class="field">
+                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.mine"></span></label>
+                            <input type="text" id="gold-mine">
+                        </div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit"></span></label>
+                            <input type="text" id="gold-pit">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.rune"></span></label>
+                            <input type="text" id="gold-runes">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="attributes.gold.reward"></label>
+                            <input type="text" disabled id="gold-reward">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.guard_hr"></span></label>
+                            <input type="text" disabled id="gold-guard">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.dice_3"></label>
+                            <input type="text" disabled id="gold-dice">
+                        </div>
+                        <div class="field">
+                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_s"></span></label>
+                            <input type="text" disabled id="gold-gem">
+                        </div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_cap"></span></label>
+                            <input type="text" disabled id="gold-capacity">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_10"></span></label>
+                            <input type="text" disabled id="gold-pot10">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="attributes.gold.scroll"></label>
+                            <input type="text" disabled id="gold-scroll">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.glass"></span></label>
+                            <input type="text" disabled id="gold-hourglass1">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.dice_4"></label>
+                            <input type="text" disabled id="gold-dice2">
+                        </div>
+                        <div class="field">
+                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_m"></span></label>
+                            <input type="text" disabled id="gold-gem2">
+                        </div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_hr"></span></label>
+                            <input type="text" disabled id="gold-hourly">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_15"></span></label>
+                            <input type="text" disabled id="gold-pot15">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="attributes.gold.calendar_1"></label>
+                            <input type="text" disabled id="gold-bar">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.glass_10"></span></label>
+                            <input type="text" disabled id="gold-hourglass10">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.dice_5"></label>
+                            <input type="text" disabled id="gold-dice3">
+                        </div>
+                        <div class="field">
+                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_l"></span></label>
+                            <input type="text" disabled id="gold-gem3">
+                        </div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_time"></span></label>
+                            <input type="text" disabled id="gold-time">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_25"></span></label>
+                            <input type="text" disabled id="gold-pot25">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="attributes.gold.calendar_3"></label>
+                            <input type="text" disabled id="gold-bar3">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.pot_w"></label>
+                            <input type="text" disabled id="gold-witchpot">
+                        </div>
+                        <div class="field">
 
-                                </div>
-                                <div class="field">
+                        </div>
+                        <div class="field">
 
-                                </div>
-                                <div class="field">
+                        </div>
+                        <div class="field">
 
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_pm"></span></label>
-                                    <input type="text" disabled id="gold-pothp">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="attributes.gold.arena"></label>
-                                    <input type="text" disabled id="gold-arena">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.reroll"></label>
-                                    <input type="text" disabled id="gold-reroll">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.tower_reward"></label>
-                                    <input type="text" disabled id="gold-towerboss">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.gold.twister_reward"></label>
-                                    <input type="text" disabled id="gold-twisterboss">
-                                </div>
-                                <div class="field">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_pm"></span></label>
+                            <input type="text" disabled id="gold-pothp">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="attributes.gold.arena"></label>
+                            <input type="text" disabled id="gold-arena">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.reroll"></label>
+                            <input type="text" disabled id="gold-reroll">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.tower_reward"></label>
+                            <input type="text" disabled id="gold-towerboss">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.gold.twister_reward"></label>
+                            <input type="text" disabled id="gold-twisterboss">
+                        </div>
+                        <div class="field">
 
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_pg"></span></label>
-                                    <input type="text" disabled id="gold-pothp-gold">
-                                </div>
-                            </div>
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_pg"></span></label>
+                            <input type="text" disabled id="gold-pothp-gold">
                         </div>
                     </div>
-                    <div class="ui segment">
-                        <h3 class="ui header" data-intl="attributes.experience.title"></h3>
-                        <div class="ui small form">
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="editor.level"></label>
-                                    <input type="text" id="xp-level">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.experience.hydra"></span></label>
-                                    <input type="text" id="xp-hydra">
-                                </div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy"></span></label>
-                                    <input type="text" id="xp-academy">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="attributes.experience.next"></label>
-                                    <input type="text" disabled id="xp-next">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.experience.daily"></span></label>
-                                    <input type="text" disabled id="xp-daily">
-                                </div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_hr"></span></label>
-                                    <input type="text" disabled id="xp-hourly">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.calendar_1"></label>
-                                    <input type="text" disabled id="xp-calendar1">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.arena"></label>
-                                    <input type="text" disabled id="xp-arena">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.dungeon"></label>
-                                    <input type="text" disabled id="xp-dungeon">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field"></div>
-                                <div class="field"></div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_time"></span></label>
-                                    <input type="text" disabled id="xp-time">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.calendar_2"></label>
-                                    <input type="text" disabled id="xp-calendar2">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.wheel_1"></label>
-                                    <input type="text" disabled id="xp-wheel1">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.twister"></label>
-                                    <input type="text" disabled id="xp-twister">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field"></div>
-                                <div class="field"></div>
-                                <div class="field">
-                                    <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_cap"></span></label>
-                                    <input type="text" disabled id="xp-capacity">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.calendar_3"></label>
-                                    <input type="text" disabled id="xp-calendar3">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.wheel_2"></label>
-                                    <input type="text" disabled id="xp-wheel2">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.experience.habitat"></label>
-                                    <input type="text" disabled id="xp-habitat">
-                                </div>
-                            </div>
+                </div>
+            </div>
+            <div class="ui inverted segment">
+                <h3 class="ui header" data-intl="attributes.experience.title"></h3>
+                <div class="ui small inverted form">
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="editor.level"></label>
+                            <input type="text" id="xp-level">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.experience.hydra"></span></label>
+                            <input type="text" id="xp-hydra">
+                        </div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy"></span></label>
+                            <input type="text" id="xp-academy">
                         </div>
                     </div>
-                    <div class="ui segment">
-                        <h3 class="ui header" data-intl="attributes.quests.title"></h3>
-                        <div class="ui small form">
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="editor.level"></label>
-                                    <input type="text" id="quest-level">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.quests.album"></span></label>
-                                    <input type="text" id="quest-book">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.quests.group_exp"></span></label>
-                                    <input type="text" id="quest-xp">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.quests.rune_exp"></span></label>
-                                    <input type="text" id="quest-rxp">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.quests.min_xp"></span></label>
-                                    <input type="text" disabled id="quest-xpmin">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> <span data-intl="attributes.quests.max_xp"></span></label>
-                                    <input type="text" disabled id="quest-xpmax">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field"></div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.tower"></span></label>
-                                    <input type="text" id="quest-tower">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.group_gold"></span></label>
-                                    <input type="text" id="quest-gold">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.rune_gold"></span></label>
-                                    <input type="text" id="quest-rgold">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.min_gold"></span></label>
-                                    <input type="text" disabled id="quest-goldmin">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.max_gold"></span></label>
-                                    <input type="text" disabled id="quest-goldmax">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label data-intl="attributes.quests.notice"></label>
-                            </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="attributes.experience.next"></label>
+                            <input type="text" disabled id="xp-next">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.experience.daily"></span></label>
+                            <input type="text" disabled id="xp-daily">
+                        </div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_hr"></span></label>
+                            <input type="text" disabled id="xp-hourly">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.calendar_1"></label>
+                            <input type="text" disabled id="xp-calendar1">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.arena"></label>
+                            <input type="text" disabled id="xp-arena">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.dungeon"></label>
+                            <input type="text" disabled id="xp-dungeon">
                         </div>
                     </div>
-                    <div class="ui segment">
-                        <h3 class="ui header" data-intl="attributes.misc.title"></h3>
-                        <div class="ui small form">
-                            <div class="six fields">
-                                <div class="field">
-                                    <label data-intl="editor.level"></label>
-                                    <input type="text" id="misc-level">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> <span data-intl="attributes.misc.gate"></span></label>
-                                    <input type="text" id="misc-gate">
-                                </div>
-                                <div class="field">
-                                    <label><span class="purple">&bull;</span> <span data-intl="attributes.misc.torture"></span></label>
-                                    <input type="text" id="misc-torture">
-                                </div>
-                            </div>
-                            <div class="six fields">
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span><span class="purple">&bull;</span> <span data-intl="attributes.misc.souls"></span></label>
-                                    <input type="text" disabled id="misc-souls">
-                                </div>
-                            </div>
+                    <div class="six fields">
+                        <div class="field"></div>
+                        <div class="field"></div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_time"></span></label>
+                            <input type="text" disabled id="xp-time">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.calendar_2"></label>
+                            <input type="text" disabled id="xp-calendar2">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.wheel_1"></label>
+                            <input type="text" disabled id="xp-wheel1">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.twister"></label>
+                            <input type="text" disabled id="xp-twister">
                         </div>
                     </div>
-                    <div class="ui segment">
-                        <h3 class="ui header" data-intl="attributes.calc.title_at"></h3>
-                        <div class="ui small form">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label data-intl="attributes.calc.attribute"></label>
-                                    <input type="text" id="priceat-attribute" val="0">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.calc.cost"></label>
-                                    <input type="text" disabled id="priceat-price">
-                                </div>
-                            </div>
+                    <div class="six fields">
+                        <div class="field"></div>
+                        <div class="field"></div>
+                        <div class="field">
+                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_cap"></span></label>
+                            <input type="text" disabled id="xp-capacity">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.calendar_3"></label>
+                            <input type="text" disabled id="xp-calendar3">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.wheel_2"></label>
+                            <input type="text" disabled id="xp-wheel2">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.experience.habitat"></label>
+                            <input type="text" disabled id="xp-habitat">
                         </div>
                     </div>
-                    <div class="ui segment">
-                        <h3 class="ui header" data-intl="attributes.calc.title_between"></h3>
-                        <div class="ui small form">
-                            <div class="three fields">
-                                <div class="field">
-                                    <label data-intl="attributes.calc.from"></label>
-                                    <input type="text" id="pricebetween-from">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.calc.to"></label>
-                                    <input type="text" id="pricebetween-to">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="attributes.calc.cost"></label>
-                                    <input type="text" disabled id="pricebetween-price">
-                                </div>
-                            </div>
+                </div>
+            </div>
+            <div class="ui inverted segment">
+                <h3 class="ui header" data-intl="attributes.quests.title"></h3>
+                <div class="ui small inverted form">
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="editor.level"></label>
+                            <input type="text" id="quest-level">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.album"></span></label>
+                            <input type="text" id="quest-book">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.group_exp"></span></label>
+                            <input type="text" id="quest-xp">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.rune_exp"></span></label>
+                            <input type="text" id="quest-rxp">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.min_xp"></span></label>
+                            <input type="text" disabled id="quest-xpmin">
+                        </div>
+                        <div class="field">
+                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.max_xp"></span></label>
+                            <input type="text" disabled id="quest-xpmax">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field"></div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.tower"></span></label>
+                            <input type="text" id="quest-tower">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.group_gold"></span></label>
+                            <input type="text" id="quest-gold">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.rune_gold"></span></label>
+                            <input type="text" id="quest-rgold">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.min_gold"></span></label>
+                            <input type="text" disabled id="quest-goldmin">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.max_gold"></span></label>
+                            <input type="text" disabled id="quest-goldmax">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label data-intl="attributes.quests.notice"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="ui inverted segment">
+                <h3 class="ui header" data-intl="attributes.misc.title"></h3>
+                <div class="ui small inverted form">
+                    <div class="six fields">
+                        <div class="field">
+                            <label data-intl="editor.level"></label>
+                            <input type="text" id="misc-level">
+                        </div>
+                        <div class="field">
+                            <label><span class="blue">&bull;</span> <span data-intl="attributes.misc.gate"></span></label>
+                            <input type="text" id="misc-gate">
+                        </div>
+                        <div class="field">
+                            <label><span class="purple">&bull;</span> <span data-intl="attributes.misc.torture"></span></label>
+                            <input type="text" id="misc-torture">
+                        </div>
+                    </div>
+                    <div class="six fields">
+                        <div class="field">
+                            <label><span class="blue">&bull;</span><span class="purple">&bull;</span> <span data-intl="attributes.misc.souls"></span></label>
+                            <input type="text" disabled id="misc-souls">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui inverted segment">
+                <h3 class="ui header" data-intl="attributes.calc.title_at"></h3>
+                <div class="ui small inverted form">
+                    <div class="two fields">
+                        <div class="field">
+                            <label data-intl="attributes.calc.attribute"></label>
+                            <input type="text" id="priceat-attribute" val="0">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.calc.cost"></label>
+                            <input type="text" disabled id="priceat-price">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui inverted segment">
+                <h3 class="ui header" data-intl="attributes.calc.title_between"></h3>
+                <div class="ui small inverted form">
+                    <div class="three fields">
+                        <div class="field">
+                            <label data-intl="attributes.calc.from"></label>
+                            <input type="text" id="pricebetween-from">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.calc.to"></label>
+                            <input type="text" id="pricebetween-to">
+                        </div>
+                        <div class="field">
+                            <label data-intl="attributes.calc.cost"></label>
+                            <input type="text" disabled id="pricebetween-price">
                         </div>
                     </div>
                 </div>
@@ -426,12 +422,12 @@
         </div>
 
         <div class="ui main container" id="tab-gold-table">
-            <div class="ui basic segment">
-                <div class="ui two basic small buttons">
+            <div class="ui basic inverted segment">
+                <div class="ui two basic small inverted buttons">
                     <div class="ui button" id="copy-table"><i class="outline copy link icon"></i> <span data-intl="attributes.gold_table.copy"></span></div>
                     <div class="ui button" id="copy-table-col"><i class="outline copy link icon"></i> <span data-intl="attributes.gold_table.copy_comma"></span></div>
                 </div>
-                <table class="ui red single very compact line table text-center" id="data-gold-table">
+                <table class="ui single very inverted compact line table text-center" id="data-gold-table">
                     <thead>
                         <tr>
                             <th style="width: 20%;" data-intl="attributes.gold_table.level"></th>
@@ -448,9 +444,9 @@
             </div>
         </div>
 
-        <div class="ui blue segment floating-menu" style="display: none;" id="floating-opts">
+        <div class="ui line inverted segment floating-menu" style="display: none;" id="floating-opts">
             <h3 class="ui header" data-intl="attributes.float.title"></h3>
-            <div class="ui small form">
+            <div class="ui small inverted form">
                 <div class="field">
                     <label data-intl="editor.level"></label>
                     <input type="text" id="fortress-level">
@@ -463,9 +459,9 @@
         </div>
 
         <div class="ui main container" id="tab-fortress">
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress1"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -480,9 +476,9 @@
                     <tbody id="fortress-fortress"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress2"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -498,9 +494,9 @@
                     <tbody id="fortress-quarters"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress3"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -518,9 +514,9 @@
                     <tbody id="fortress-woodcutter"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress4"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -538,9 +534,9 @@
                     <tbody id="fortress-quarry"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress5"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -558,9 +554,9 @@
                     <tbody id="fortress-gemmine"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress6"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -578,9 +574,9 @@
                     <tbody id="fortress-academy"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress7"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -596,9 +592,9 @@
                     <tbody id="fortress-archery"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress8"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -614,9 +610,9 @@
                     <tbody id="fortress-barracks"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress9"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -632,9 +628,9 @@
                     <tbody id="fortress-mages"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress10"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -650,9 +646,9 @@
                     <tbody id="fortress-treasury"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress11"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -667,9 +663,9 @@
                     <tbody id="fortress-smithy"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.fortress12"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -685,9 +681,9 @@
                     <tbody id="fortress-wall"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.knights"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th data-intl="general.level"></th>
@@ -702,9 +698,9 @@
         </div>
 
         <div class="ui main container" id="tab-underworld">
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld1"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -717,9 +713,9 @@
                     <tbody id="underworld-heart"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld2"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -734,9 +730,9 @@
                     <tbody id="underworld-gate"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld3"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -752,9 +748,9 @@
                     <tbody id="underworld-extractor"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld4"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -768,9 +764,9 @@
                     <tbody id="underworld-goblinpit"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld5"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -784,9 +780,9 @@
                     <tbody id="underworld-torture"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld6"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -800,9 +796,9 @@
                     <tbody id="underworld-gladiator"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld7"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -816,9 +812,9 @@
                     <tbody id="underworld-trolls"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld8"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -833,9 +829,9 @@
                     <tbody id="underworld-timemachine"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld9"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
@@ -848,9 +844,9 @@
                     <tbody id="underworld-keeper"></tbody>
                 </table>
             </div>
-            <div class="ui basic segment">
+            <div class="ui basic inverted segment">
                 <h3 class="ui header" data-intl="general.buildings.underworld10"></h3>
-                <table class="ui red single very compact line table text-center">
+                <table class="ui inverted single very compact line table text-center">
                     <thead>
                         <tr>
                             <th style="width: 10%;" data-intl="general.level"></th>
