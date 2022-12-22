@@ -919,7 +919,7 @@ const TemplateSaveDialog = new (class extends Dialog {
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="field">
                         <label>${this.intl('select_existing')}:</label>
-                        <div class="ui search selection compact dropdown" data-op="dropdown">
+                        <div class="ui search selection dropdown" data-op="dropdown">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
