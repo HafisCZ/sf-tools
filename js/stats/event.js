@@ -866,8 +866,6 @@ class BrowseView extends View {
             downloadScreenshot(this.$table, `players.${ this.timestamp }.png`);
         });
 
-        this.hidden = SiteOptions.browse_hidden;
-
         // Context menu
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -953,13 +951,14 @@ class BrowseView extends View {
         });
 
         // Hidden toggle
-        this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.browse_hidden ? 'check' : 'uncheck').change((event) => {
-            SiteOptions.browse_hidden = !SiteOptions.browse_hidden;
+        this.hidden = SiteOptions.browse_hidden;
 
-            this.hidden = SiteOptions.browse_hidden;
+        this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
+            SiteOptions.browse_hidden = (this.hidden = state);
+            
             this.recalculate = true;
             this.$filter.trigger('change');
-        });
+        }, SiteOptions.browse_hidden);
 
         // Filter
         this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
