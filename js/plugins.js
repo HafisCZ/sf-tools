@@ -165,18 +165,24 @@
         });
     };
 
-    $.fn.toggleButton = function (callback) {
+    $.fn.toggleButton = function (callback, state = false) {
         return this.each(function () {
-            this.isActive = false;
-            this.addEventListener('click', () => {
-                this.isActive = !this.isActive;
-                callback(this.isActive);
+            this.isActive = state;
+            this.callback = callback;
 
+            this.updateStyle = () => {
                 if (this.isActive) {
                     this.style.setProperty('background', '#21ba45', 'important');
                 } else {
                     this.style.setProperty('background', '');
                 }
+            }
+
+            this.updateStyle();
+            this.addEventListener('click', () => {
+                this.isActive = !this.isActive;
+                this.callback(this.isActive);
+                this.updateStyle();
             });
         });
     }
