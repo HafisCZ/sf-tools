@@ -1452,20 +1452,15 @@ class PlayersView extends View {
 
         this.$list = this.$parent.find('[data-op="list"]');
 
-        // Global filters
-        this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.players_hidden ? 'check' : 'uncheck').change((event) => {
-            SiteOptions.players_hidden = !SiteOptions.players_hidden;
-
-            this.hidden = SiteOptions.players_hidden;
+        this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
+            SiteOptions.players_hidden = state;
             this.show();
-        });
+        }, SiteOptions.players_hidden);
 
-        this.$parent.find('[data-op="others"]').checkbox(SiteOptions.players_other ? 'check' : 'uncheck').change((event) => {
-            SiteOptions.players_other = !SiteOptions.players_other;
-
-            this.others = SiteOptions.players_other;
+        this.$parent.find('[data-op="show-other"]').toggleButton(state => {
+            SiteOptions.players_other = state;
             this.show();
-        });
+        }, SiteOptions.players_other);
 
         this.hidden = SiteOptions.players_hidden;
         this.others = SiteOptions.players_other;

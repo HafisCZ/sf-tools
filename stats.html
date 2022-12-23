@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="css/style_rv2.css"/>
 
         <link rel="stylesheet" href="css/plugins.css"/>
+        <link rel="stylesheet" href="css/utility.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/html2canvas.min.js"></script>
@@ -281,22 +282,23 @@
 
         <!-- PlayersView -->
         <div id="view-players" class="ui main container css-hidden sf-container">
-            <div class="ui fluid icon input pl-searchbar css-searchbar-fix" style="margin-bottom: 1.5rem;">
-                <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
+            <div class="ui grid">
+                <div class="three wide column"></div>
+                <div class="ten wide column">
+                    <div class="ui fluid icon input pl-searchbar css-searchbar-fix">
+                        <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <div class="ui basic icon buttons">
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.players.hidden"><i class="ui eye outline icon"></i></div>
+                        <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.players.other"><i class="ui user circle outline icon"></i></div>
+                    </div>
+                </div>
             </div>
             <div>
                 <div class="ui five column grid" data-op="list"></div>
                 <div data-op="dynamic-loader"></div>
-            </div>
-            <div class="fast-table-toggles">
-                <div class="ui checkbox" data-op="others">
-                    <input type="checkbox">
-                    <label data-intl="stats.players.other"></label>
-                </div>
-                <div class="ui checkbox" data-op="hidden">
-                    <input type="checkbox">
-                    <label data-intl="stats.players.hidden"></label>
-                </div>
             </div>
         </div>
 
