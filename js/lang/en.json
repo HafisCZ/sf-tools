@@ -293,6 +293,10 @@
             "and": "and"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
             "p": "Player name",
             "g": "Guild name",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Show other guilds",
             "hidden": "Show hidden",
+            "empty": "Show empty groups",
             "missing": "Player data is missing for following members:"
         },
         "browse": {
