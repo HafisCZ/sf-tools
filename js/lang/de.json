@@ -2,6 +2,8 @@
     "general": {
         "no": "Nein",
         "yes": "Ja",
+        "min": "Min",
+        "max": "Max",
         "class1": "Krieger",
         "class2": "Magier",
         "class3": "Kundschafter",
@@ -673,12 +675,12 @@
             "keep_original": "Behalte das Original"
         },
         "simulate_next_settings": {
-            "tooltip": "Rechtsklick, um die niedrigste akzeptable win % gegen einen Dungeon einzustellen",
+            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Schwellenwert für die Simulation",
-            "label": "Schwellenwert % - Jeder Dungeon, der unter diesem Schwellenwert liegt, wird übersprungen"
+            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
         "simulate_next_info": {
-            "title": "Keine Dungeons innerhalb des Schwellenwerts besiegbar (#{threshold} %)",
+            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Benutze <b>All</b> um alle offenen Dungeons zu simulieren"
         }
     },
@@ -802,6 +804,8 @@
         "save": "Speichern",
         "simulate": "Simulieren",
         "simulate_debug": "Im Debug-Modus simulieren",
+        "configure": "Configure simulator",
+        "configure_copy": "Copy everyone including current configuration",
         "clipboard": {
             "copy_all": "Alle kopieren",
             "paste_mode": "Toggle Add/Replace insertion mode"
@@ -884,6 +888,11 @@
         }
     },
     "dialog": {
+        "shared": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "ok": "Ok"
+        },
         "delete_all": {
             "title": "Alles löschen",
             "notice": "Sind Sie sicher, dass Sie alle gespeicherten Spielerdaten löschen wollen?"
@@ -991,6 +1000,12 @@
                 "player": "Folgende Spieler(n) werden entfernt:",
                 "file": "Folgende Datei(en) werden entfernt:"
             }
+        },
+        "simulator_debug": {
+            "cancel": "Cancel",
+            "ok": "Apply",
+            "reset": "Reset",
+            "title": "Simulator Configuration"
         }
     },
     "attributes": {

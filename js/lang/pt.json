@@ -2,6 +2,8 @@
     "general": {
         "no": "Não",
         "yes": "Sim",
+        "min": "Min",
+        "max": "Max",
         "class1": "Guerreiro",
         "class2": "Feiticeiro",
         "class3": "Explorador",
@@ -673,12 +675,12 @@
             "keep_original": "Manter original"
         },
         "simulate_next_settings": {
-            "tooltip": "Clique direito para ajustar a menor vitória aceitável % contra uma masmorra",
+            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Limite de simulação",
-            "label": "Limite % - Qualquer inimigo da masmorra abaixo deste limite será ignorado"
+            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
         "simulate_next_info": {
-            "title": "Nenhuma masmorra vencível dentro do limite (#{threshold}%)",
+            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use a função <b>All</b> para simular todas as masmorras disponíveis"
         }
     },
@@ -802,16 +804,18 @@
         "save": "Salvar",
         "simulate": "Simular",
         "simulate_debug": "Simular no modo de debug",
+        "configure": "Configure o simulador",
+        "configure_copy": "Copy everyone including current configuration",
         "clipboard": {
             "copy_all": "Copiar todos",
-            "paste_mode": "Toggle Add/Replace insertion mode"
+            "paste_mode": "Alterne Adicionar/Substituir modo de inserção"
         },
         "win_chance": "Vitória %",
         "min_chance": "Mín %",
         "max_chance": "Máx %",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "Sondar jogadores guardados",
+            "guilds": "Sondar guildas guardadas"
         }
     },
     "editor": {
@@ -821,7 +825,7 @@
         "mask": "Máscara",
         "instrument": "Instrumento",
         "armor": "Armadura",
-        "armor_placeholder": "Armor points",
+        "armor_placeholder": "Pontos de armadura",
         "min": "Mín",
         "min_placeholder": "Limite do item",
         "max": "Máx",
@@ -884,6 +888,11 @@
         }
     },
     "dialog": {
+        "shared": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "ok": "Ok"
+        },
         "delete_all": {
             "title": "Apagar todos",
             "notice": "Tem a certeza que deseja eliminar todos os dados armazenados?"
@@ -950,8 +959,8 @@
             "profile": "Perfil",
             "none": "Nenhum",
             "ast": {
-                "primary": "Primary AST expression",
-                "secondary": "Secondary AST expression",
+                "primary": "Expressão AST primária",
+                "secondary": "Expressão AST secundária",
                 "optional": "Opcional"
             },
             "player": {
@@ -991,6 +1000,12 @@
                 "player": "Serão removidos os seguintes jogadores:",
                 "file": "Serão removidos o(s) seguinte(s) ficheiro(s):"
             }
+        },
+        "simulator_debug": {
+            "cancel": "Cancelar",
+            "ok": "Aplicar",
+            "reset": "Restabelecer",
+            "title": "Configuração de Simulador"
         }
     },
     "attributes": {
@@ -1006,68 +1021,68 @@
         },
         "gold": {
             "title": "Ouro",
-            "group": "Guild bonus %",
-            "tower": "Tower bonus %",
+            "group": "Bónus de guilda %",
+            "tower": "Bónus de torre %",
             "mine": "Mina de Pedras preciosas",
             "pit": "Mina de Ouro",
             "pit_cap": "Capacidade da Mina de Ouro",
-            "pit_hr": "Hourly Gold Pit",
-            "pit_time": "Gold Pit time",
-            "rune": "Item Quality Rune",
-            "reward": "Environmental reward",
-            "guard_hr": "Hourly guard duty",
-            "dice_3": "Dice game (3 of a kind)",
-            "dice_4": "Dice game (4 of a kind)",
-            "dice_5": "Dice game (5 of a kind)",
-            "gem_s": "Small gem",
-            "gem_m": "Medium gem",
-            "gem_l": "Large gem",
-            "pot_10": "10% Potion",
-            "pot_15": "15% Potion",
-            "pot_25": "25% Potion",
-            "pot_w": "Witch Potion",
-            "pot_pm": "Mushroom PoEL",
-            "pot_pg": "Gold PoEL",
-            "scroll": "Witch Scroll",
-            "glass": "Quicksand Hourglass",
-            "glass_10": "10 Quicksand Hourglasses",
-            "calendar_1": "Calendar 1 bar",
-            "calendar_3": "Calendar 3 bars / Locked",
+            "pit_hr": "Poço de Ouro Horal",
+            "pit_time": "Tempo de Poço de Ouro",
+            "rune": "Runa de Qualidade de Item",
+            "reward": "Recompensa ambiental",
+            "guard_hr": "Serviço de guarda horal",
+            "dice_3": "Jogo de dados (3 de um tipo)",
+            "dice_4": "Jogo de dados (4 de um tipo)",
+            "dice_5": "Jogo de dados (5 de um tipo)",
+            "gem_s": "Gema pequena",
+            "gem_m": "Gema média",
+            "gem_l": "Gema grande",
+            "pot_10": "Poção 10%",
+            "pot_15": "Poção 15%",
+            "pot_25": "Poção 25%",
+            "pot_w": "Poção de Bruxa",
+            "pot_pm": "Cogumelo PVE",
+            "pot_pg": "Ouro PVE",
+            "scroll": "Pergaminho de Bruxa",
+            "glass": "Ampulheta de Areia Movediça",
+            "glass_10": "10 Ampulhetas de Areia Movediça",
+            "calendar_1": "Calendário 1 barra",
+            "calendar_3": "Calendário 3 barras / Bloqueado",
             "arena": "Arena Max",
-            "reroll": "Fortress Reroll",
-            "tower_reward": "Tower (Level is enemy level)",
-            "twister_reward": "Twister (Level is enemy level)"
+            "reroll": "Rolo de Novo de Fortaleza",
+            "tower_reward": "Torre (Nível é nível de inimigo)",
+            "twister_reward": "Tornado (Nível é nível de inimigo)"
         },
         "experience": {
-            "title": "Experience",
-            "hydra": "Hydra heads",
-            "academy": "Academy",
-            "academy_hr": "Hourly Academy",
-            "academy_time": "Academy time",
-            "academy_cap": "Academy capacity",
-            "next": "Next level",
+            "title": "Experiência",
+            "hydra": "Cabeças de hidra",
+            "academy": "Academia",
+            "academy_hr": "Academia Horal",
+            "academy_time": "Tempo de academia",
+            "academy_cap": "Capacidade de academia",
+            "next": "Próximo nível",
             "arena": "Arena",
-            "daily": "Daily mission",
-            "dungeon": "Dungeon (Level is enemy level)",
+            "daily": "Missão diária",
+            "dungeon": "Masmorra (Nível é nível de inimigo)",
             "twister": "Tornado (O nível é o nível do inimigo)",
             "wheel_1": "Livro da Roda Dr Abawuwu",
             "wheel_2": "Livros da Roda Dr Abawuwu",
             "calendar_1": "Livro do Calendário 1",
             "calendar_2": "Livros do Calendário 2",
             "calendar_3": "Livros do Calendário 3",
-            "habitat": "Habitat Boss"
+            "habitat": "Chefe de Habitat"
         },
         "quests": {
-            "title": "Quests (Experimental)",
-            "notice": "* Final values represent smallest quest segment with no enchantments applied.",
-            "album": "Scrapbook %",
-            "group_exp": "Guild XP %",
-            "group_gold": "Guild Gold %",
-            "tower": "Tower",
-            "rune_exp": "Experience Rune",
-            "rune_gold": "Gold Rune",
-            "min_xp": "Minimum XP",
-            "max_xp": "Maximum XP",
+            "title": "Missões (Experimental)",
+            "notice": "* Valores finais representam menor segmento de missão sem encantamentos aplicados.",
+            "album": "Álbum de Recortes %",
+            "group_exp": "% XP Guilda",
+            "group_gold": "% Ouro Guilda",
+            "tower": "Torre",
+            "rune_exp": "Runa de Experiência",
+            "rune_gold": "Runa de Ouro",
+            "min_xp": "XP Mínima",
+            "max_xp": "XP Máxima",
             "min_gold": "Minimum Gold",
             "max_gold": "Maximum Gold"
         },
@@ -1134,59 +1149,59 @@
             "deadly_trap": "Deadly Trap",
             "vip_seat": "VIP Seat",
             "snacks": "Snacks",
-            "straying_monsters": "Straying Monsters",
-            "toilet": "Toilet"
+            "straying_monsters": "Monstros Extraviados",
+            "toilet": "Sanita"
         },
         "upgrades": {
-            "0": "None",
-            "1": "Speed",
-            "2": "Gold",
-            "3": "Both",
-            "4": "Platinum"
+            "0": "Nenhum",
+            "1": "Rapidez",
+            "2": "Ouro",
+            "3": "Ambos",
+            "4": "Platina"
         }
     },
     "blacksmith": {
         "item": {
-            "type": "Type",
-            "value": "Attribute",
-            "double": "Mage or Scout weapon?",
+            "type": "Tipo",
+            "value": "Atributo",
+            "double": "Arma de Mago ou Sentinela?",
             "types": {
-                "normal_1": "Normal (1 attribute)",
-                "normal_2": "Normal (2 attributes)",
-                "epic_3": "Epic (3 attributes)",
-                "epic_5": "Epic (5 attributes)"
+                "normal_1": "Normal (1 atributo)",
+                "normal_2": "Normal (2 atributos)",
+                "epic_3": "Épico (3 atributos)",
+                "epic_5": "Épico (5 atributos)"
             }
         },
         "table": {
             "total": "Total",
-            "bonus": "Bonus",
-            "lost": "Lost",
-            "reclaimable": "Reclaimable",
-            "required": "Required"
+            "bonus": "Bónus",
+            "lost": "Perdido",
+            "reclaimable": "Recuperável",
+            "required": "Requerido"
         }
     },
     "dungeon_enemies": {
-        "shadow": "Shadow",
+        "shadow": "Sombra",
         "1": {
-            "name": "Desecrated Catacombs",
-            "1": "Ghost",
-            "2": "Skeleton",
-            "3": "Undead",
-            "4": "Devious Vampire",
-            "5": "Night Ghoul",
+            "name": "Catacumbas Profanadas",
+            "1": "Fantasma",
+            "2": "Esqueleto",
+            "3": "Morto-vivo",
+            "4": "Vampiro Tortuoso",
+            "5": "Ghoul Noturno",
             "6": "Banshee",
-            "7": "Skeleton Soldier",
-            "8": "Voodoo Master",
-            "9": "Flesh Golem",
-            "10": "Lord of Darkness"
+            "7": "Soldado Esqueleto",
+            "8": "Mestre de Voodoo",
+            "9": "Golem de Carne",
+            "10": "Lorde da Escuridão"
         },
         "2": {
-            "name": "The Mines of Gloria",
-            "1": "Water Glompf",
+            "name": "As Minas de Gloria",
+            "1": "Glompf de Água",
             "2": "Yeti",
-            "3": "Skeleton",
-            "4": "Ugly Gremlin",
-            "5": "Stone Giant",
+            "3": "Esqueleto",
+            "4": "Gremlin Feio",
+            "5": "Gigante de Pedra",
             "6": "Fire Elemental",
             "7": "Stone Troll",
             "8": "Redlight Succubus",

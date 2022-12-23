@@ -2,6 +2,8 @@
     "general": {
         "no": "No",
         "yes": "Si",
+        "min": "Min",
+        "max": "Max",
         "class1": "Guerrero",
         "class2": "Mago",
         "class3": "Explorador",
@@ -673,12 +675,12 @@
             "keep_original": "Mantener original"
         },
         "simulate_next_settings": {
-            "tooltip": "Clic derecho para ajustar el % de ganancia más bajo aceptable contra una mazmorra",
+            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Umbral de simulación",
-            "label": "Umbral % - Cualquier enemigo mazmorra por debajo de este umbral se saltará"
+            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
         "simulate_next_info": {
-            "title": "No hay mazmorras posibles en el umbral (#{threshold}%)",
+            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Usa <b>Todos</b> para simular todas las mazmorras abiertas"
         }
     },
@@ -802,6 +804,8 @@
         "save": "Guardar",
         "simulate": "Simular",
         "simulate_debug": "Simular en modo depuración",
+        "configure": "Configurar simulador",
+        "configure_copy": "Copy everyone including current configuration",
         "clipboard": {
             "copy_all": "Copiar todos",
             "paste_mode": "Cambiar Añadir/Reemplazar modo de inserción"
@@ -884,6 +888,11 @@
         }
     },
     "dialog": {
+        "shared": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "ok": "Ok"
+        },
         "delete_all": {
             "title": "Eliminar todo",
             "notice": "¿Está seguro que desea eliminar todos los datos de jugadores almacenados?"
@@ -903,7 +912,7 @@
             "revert": "Volver al perfil por defecto"
         },
         "changelog": {
-            "release": "Release",
+            "release": "Lanzamiento",
             "continue": "Continuar"
         },
         "file_edit": {
@@ -991,6 +1000,12 @@
                 "player": "El/Los siguiente(s) jugador(es) serán eliminados:",
                 "file": "El/Los siguiente(s) archivo(s) serán eliminados:"
             }
+        },
+        "simulator_debug": {
+            "cancel": "Cancelar",
+            "ok": "Aplicar",
+            "reset": "Resetear",
+            "title": "Configuración del Simulador"
         }
     },
     "attributes": {
@@ -1031,8 +1046,8 @@
             "scroll": "Pergamino de bruja",
             "glass": "Reloj de arenas movedizas",
             "glass_10": "10 Relojes de arenas movedizas",
-            "calendar_1": "Calendar 1 bar",
-            "calendar_3": "Calendar 3 bars / Locked",
+            "calendar_1": "Calendario 1 lingote",
+            "calendar_3": "Calendario 3 lingotes / Bloqueado",
             "arena": "Máximo de Arena",
             "reroll": "Cambiar oponente de Fortaleza",
             "tower_reward": "Torre (El nivel es el nivel del enemigo)",
@@ -1383,20 +1398,20 @@
             "5": "Odín",
             "6": "Loki",
             "7": "Ymir",
-            "8": "Midgard Serpent",
-            "9": "Fenris Wolf",
-            "10": "Surtr"
+            "8": "Serpiente de Midgard",
+            "9": "Lobo Fenris",
+            "10": "Surt"
         },
         "20": {
             "name": "Monte Olimpo",
-            "1": "Singing Sirens",
-            "2": "Polyphemus the Cyclops",
-            "3": "Cerberus",
+            "1": "Sirenas cantarinas",
+            "2": "Polifemo, el cíclope",
+            "3": "Cerbero",
             "4": "Medusa",
-            "5": "Athena",
-            "6": "Hercules",
+            "5": "Atenea",
+            "6": "Hércules",
             "7": "Ares",
-            "8": "Poseidon",
+            "8": "Poseidón",
             "9": "Hades",
             "10": "Zeus"
         },
@@ -1414,21 +1429,21 @@
             "10": "Frightening Fidget"
         },
         "22": {
-            "name": "Dragon's Hoard",
-            "1": "Not So Snappy Dragon",
-            "2": "Golden Dragon with Fiery-Eyed Glance",
-            "3": "Seductive Mother of Drankeys",
-            "4": "Undead Saurian Fossil",
+            "name": "Tesoro del dragón",
+            "1": "Dragón no tan agresivo",
+            "2": "Dragón dorado de mirada ardiente",
+            "3": "Madre de dragoburros seductora",
+            "4": "Fósil de sauro no muerto",
             "5": "Shenlong",
-            "6": "Baby Dragon",
-            "7": "New Year's Dragon",
+            "6": "Cría de dragón",
+            "7": "Dragón de Año Nuevo",
             "8": "Pet Out of Control",
             "9": "Dragon with Concussion",
             "10": "Annoyed Mother of Dragons"
         },
         "23": {
-            "name": "House of Horrors",
-            "1": "Cutlery Head",
+            "name": "Casa del terror",
+            "1": "Cabeza de cubertería",
             "2": "Conceptual Proof",
             "3": "Dracula",
             "4": "Master of Phone Pranks",
@@ -1440,8 +1455,8 @@
             "10": "Tube Girl"
         },
         "24": {
-            "name": "The 3rd League of Superheroes",
-            "1": "1,000 Punch Man",
+            "name": "3ª liga de los héroes",
+            "1": "1000 Punch Man",
             "2": "Mister X-Ray",
             "3": "Toilet Tracker",
             "4": "Iron Man",
@@ -1453,8 +1468,8 @@
             "10": "Captain Monday"
         },
         "25": {
-            "name": "Dojo of Childhood Heroes",
-            "1": "Magical Schoolgirl",
+            "name": "Dojo de héroes de la niñez",
+            "1": "Colegiala mágica",
             "2": "Master of Doppelgangers",
             "3": "Friendly Helper from the Neighborhood",
             "4": "Student Shinigami",
@@ -1466,7 +1481,7 @@
             "10": "Cheating Brat"
         },
         "26": {
-            "name": "Monster Grotto",
+            "name": "Gruta de los monstruos",
             "1": "Doltopus",
             "2": "Hairy Groom",
             "3": "Monster Truck",
@@ -1659,11 +1674,11 @@
         },
         "203": {
             "name": "Tornado",
-            "486": "Grey Ghoul",
-            "658": "Blood Occultist",
-            "711": "Gragosh the Destroyer",
-            "777": "Puppeteer's Right",
-            "830": "Sewer Rat",
+            "486": "Ghoul gris",
+            "658": "Ocultista sangriento",
+            "711": "Gragoshm, el Destructor",
+            "777": "Titiritero timador",
+            "830": "Rata de cloaca",
             "867": "Murciélago polvoriento",
             "868": "Murciélago polvoriento",
             "869": "Murciélago polvoriento",
@@ -1673,16 +1688,16 @@
             "873": "Murciélago polvoriento",
             "874": "Murciélago polvoriento",
             "875": "Bat Out of hell",
-            "876": "Undead",
-            "877": "Restless Soul",
-            "939": "Dragon of Hell",
-            "947": "Dynamic Peter",
-            "954": "Jungle Scorpion",
-            "962": "Miniature Gnome",
+            "876": "Muerto viviente",
+            "877": "Alma inquieta",
+            "939": "Dragón del infierno",
+            "947": "Pedro el dinámico",
+            "954": "Escorpión de la jungla",
+            "962": "El gnomo enano",
             "981": "Butthead",
-            "990": "Three Ghosts",
+            "990": "Tres fantasmas",
             "998": "Nevorfull",
-            "999": "Swamp Nymphomaniac",
+            "999": "Ninfómana de la ciénaga",
             "1000": "Shniva"
         },
         "204": {

@@ -2,6 +2,8 @@
     "general": {
         "no": "Ne",
         "yes": "Ano",
+        "min": "Min",
+        "max": "Max",
         "class1": "Válečník",
         "class2": "Kouzelník",
         "class3": "Průzkumník",
@@ -673,12 +675,12 @@
             "keep_original": "Ponechat originální"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
+            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
+            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold} %)",
+            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use <b>All</b> function to simulate all open dungeons"
         }
     },
@@ -802,6 +804,8 @@
         "save": "Uložit",
         "simulate": "Simulovat",
         "simulate_debug": "Simulovat v režimu ladění",
+        "configure": "Configure simulator",
+        "configure_copy": "Copy everyone including current configuration",
         "clipboard": {
             "copy_all": "Kopírovat vše",
             "paste_mode": "Toggle Add/Replace insertion mode"
@@ -884,6 +888,11 @@
         }
     },
     "dialog": {
+        "shared": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "ok": "Ok"
+        },
         "delete_all": {
             "title": "Smazat vše",
             "notice": "Opravdu chcete smazat všechny vaše data?"
@@ -991,6 +1000,12 @@
                 "player": "Následující postavy budou odstraněny:",
                 "file": "Následující soubory budou odstraněny:"
             }
+        },
+        "simulator_debug": {
+            "cancel": "Cancel",
+            "ok": "Apply",
+            "reset": "Reset",
+            "title": "Simulator Configuration"
         }
     },
     "attributes": {
