@@ -4,6 +4,8 @@ const CHANGELOG = {
             'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>',
             'Added un/loading of hidden data without requiring page reload',
             'Added missing notification when database is being updated',
+            'Added search bar to guild list',
+            'Added new toggle buttons to replace old checkboxes in bottom right of the page',
             'Fixed file merging with duplicate players / groups',
             'Fixed file and script sharing no longer available',
             'Fixed players duplicating when using uppercase server url',
@@ -33,11 +35,15 @@ const CHANGELOG = {
             'Added option to save first 50 characters in Hall of Fame'
         ],
         'Gold & Experience': [
-            'Updated gold pit capacity formula'
+            'Updated gold pit capacity formula',
+            'Added dark theme'
+        ],
+        'Blacksmith': [
+            'Added dark theme'
         ],
         'All Tools': [
             'Added support for Hungarian language',
-            'Raised maximum player level to 800',
+            'Added support for player level 701 - 800',
             'Fixed compatibility issues with older browsers',
             'Removed loading of english language file when different language is selected'
         ]
