@@ -61,6 +61,10 @@
 }
 
 /* Margin */
+.\!mb-1 {
+  margin-bottom: 0.25em !important;
+}
+
 .mt-8 {
   margin-top: 2em;
 }
