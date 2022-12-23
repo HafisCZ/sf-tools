@@ -133,7 +133,7 @@ class GroupDetailView extends View {
             values: [
                 {
                     name: `<b>${intl('stats.templates.quick_swap')}</b>`,
-                    disabled: true
+                    type: 'header'
                 },
                 ... Templates.getKeys().map(t => {
                     return {
@@ -775,7 +775,7 @@ class PlayerHistoryView extends View {
             values: [
                 {
                     name: `<b>${intl('stats.templates.quick_swap')}</b>`,
-                    disabled: true
+                    type: 'header'
                 },
                 ... Templates.getKeys().map(t => {
                     return {
@@ -1281,7 +1281,7 @@ class BrowseView extends View {
             values: [
                 {
                     name: `<b>${intl(`stats.templates.quick_swap`)}</b>`,
-                    disabled: true
+                    type: 'header'
                 },
                 ... Templates.getKeys().map(t => {
                     return {
