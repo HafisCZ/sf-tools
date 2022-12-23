@@ -5,16 +5,6 @@
     border: none;
 }
 
-.fast-table-toggles {
-    --block-width: 200px;
-
-    position: fixed;
-    width: var(--block-width);
-
-    bottom: 32px;
-    left: calc(100vw - var(--block-width));
-}
-
 .locale-picker {
     position: absolute !important;
     right: 0;

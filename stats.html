@@ -326,45 +326,38 @@
         </div>
 
         <!-- BrowseView -->
-        <div id="view-browse" class="ui main container css-hidden sf-container">
-            <div class="ui basic segment margin-none-bottom padding-none-bottom">
-                <div class="ui grid">
-                    <div class="three wide left aligned column">
-                        <div class="ui scrolling dropdown" data-op="timestamp">
-                            <div class="default text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                        <br/>
-                        <div class="ui scrolling dropdown" data-op="reference">
-                            <div class="default text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
+        <div id="view-browse" class="ui main container css-hidden mb-20">
+            <div class="ui grid !mb-1">
+                <div class="three wide left aligned column">
+                    <div class="ui scrolling dropdown" data-op="timestamp">
+                        <div class="default text"></div>
+                        <i class="dropdown icon"></i>
                     </div>
-                    <div class="ten wide middle aligned column">
-                        <div class="ui fluid icon input">
-                            <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
-                        </div>
+                    <br/>
+                    <div class="ui scrolling dropdown" data-op="reference">
+                        <div class="default text"></div>
+                        <i class="dropdown icon"></i>
                     </div>
-                    <div class="three wide column">
-                        <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></button>
-                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></button>
-                            <div class="ui top left pointing dropdown button" data-op="configure">
-                                <i class="cog icon"></i>
-                                <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
-                            </div>
+                </div>
+                <div class="ten wide column">
+                    <div class="ui fluid icon input">
+                        <input class="prompt" type="text" data-intl-placeholder="stats.filters.types.players" data-op="filter">
+                    </div>
+                </div>
+                <div class="three wide right aligned column">
+                    <div class="ui basic icon buttons">
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></div>
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.browse.hidden"><i class="ui low vision icon"></i></div>
+                        <div class="ui top left pointing dropdown button" data-op="configure">
+                            <i class="cog icon"></i>
+                            <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
                         </div>
                     </div>
                 </div>
             </div>
             <table class="sftools-table" data-op="table"></table>
-            <div class="fast-table-toggles">
-                <div class="ui checkbox" data-op="hidden">
-                    <input type="checkbox">
-                    <label data-intl="stats.browse.hidden"></label>
-                </div>
-            </div>
         </div>
 
         <!-- PlayerDetailFloatView -->
