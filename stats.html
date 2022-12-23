@@ -281,17 +281,17 @@
         </div>
 
         <!-- PlayersView -->
-        <div id="view-players" class="ui main container css-hidden sf-container">
+        <div id="view-players" class="ui main container css-hidden mb-20">
             <div class="ui grid">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
                     <div class="ui fluid icon input pl-searchbar css-searchbar-fix">
-                        <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
+                        <input class="prompt" type="text" data-intl-placeholder="stats.filters.types.players" data-op="filter">
                     </div>
                 </div>
                 <div class="three wide column">
                     <div class="ui basic icon buttons">
-                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.players.hidden"><i class="ui eye outline icon"></i></div>
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.players.hidden"><i class="ui low vision icon"></i></div>
                         <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.players.other"><i class="ui user circle outline icon"></i></div>
                     </div>
                 </div>
@@ -303,18 +303,25 @@
         </div>
 
         <!-- GroupsView -->
-        <div id="view-groups" class="ui main container css-hidden sf-container">
-            <div class="ui five column grid" data-op="list"></div>
-            <div class="ui five column grid margin-large-top" data-op="list-secondary"></div>
-            <div class="fast-table-toggles">
-                <div class="ui checkbox" data-op="others">
-                    <input type="checkbox">
-                    <label data-intl="stats.guilds.other"></label>
+        <div id="view-groups" class="ui main container css-hidden mb-20">
+            <div class="ui grid">
+                <div class="three wide column"></div>
+                <div class="ten wide column">
+                    <div class="ui fluid icon input pl-searchbar css-searchbar-fix">
+                        <input class="prompt" type="text" data-intl-placeholder="stats.filters.types.guilds" data-op="filter">
+                    </div>
                 </div>
-                <div class="ui checkbox" data-op="hidden">
-                    <input type="checkbox">
-                    <label data-intl="stats.guilds.hidden"></label>
+                <div class="three wide column">
+                    <div class="ui basic icon buttons">
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.guilds.hidden"><i class="ui low vision icon"></i></div>
+                        <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.guilds.other"><i class="ui user circle outline icon"></i></div>
+                        <div class="ui button" data-op="show-empty" data-position="bottom center" data-intl-tooltip="stats.guilds.empty"><i class="ui eraser icon"></i></div>
+                    </div>
                 </div>
+            </div>
+            <div>
+                <div class="ui five column grid" data-op="list"></div>
+                <div data-op="dynamic-loader"></div>
             </div>
         </div>
 
@@ -622,11 +629,6 @@
                         <div class="ui checkbox sf-margin top-05" data-op="checkbox-alwaysprev">
                             <input type="checkbox">
                             <label data-intl="stats.settings.always_prev"></label>
-                        </div>
-                        <br/>
-                        <div class="ui checkbox sf-margin top-05" data-op="checkbox-empty-groups">
-                            <input type="checkbox">
-                            <label data-intl="stats.settings.empty_groups"></label>
                         </div>
                         <br/>
                         <div class="ui checkbox sf-margin top-05" data-op="checkbox-obfuscated">

@@ -1316,24 +1316,34 @@ class GroupsView extends View {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]');
-        this.$list2 = this.$parent.find('[data-op="list-secondary"]');
 
-        this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.groups_hidden ? 'check' : 'uncheck').change((event) => {
-            SiteOptions.groups_hidden = !SiteOptions.groups_hidden;
-
-            this.hidden = SiteOptions.groups_hidden;
+        // Toggles
+        this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
+            SiteOptions.groups_hidden = (this.hidden = state);
             this.show();
-        });
+        }, SiteOptions.groups_hidden);
 
-        this.$parent.find('[data-op="others"]').checkbox(SiteOptions.groups_other ? 'check' : 'uncheck').change((event) => {
-            SiteOptions.groups_other = !SiteOptions.groups_other;
-
-            this.others = SiteOptions.groups_other;
+        this.$parent.find('[data-op="show-other"]').toggleButton(state => {
+            SiteOptions.groups_other = (this.others = state);
             this.show();
-        });
+        }, SiteOptions.groups_other);
+
+        this.$parent.find('[data-op="show-empty"]').toggleButton(state => {
+            SiteOptions.groups_empty = (this.empty = state);
+            this.show();
+        }, SiteOptions.groups_empty);
 
         this.hidden = SiteOptions.groups_hidden;
         this.others = SiteOptions.groups_other;
+        this.empty = SiteOptions.groups_empty;
+
+        // Observer
+        this.observerCallback = null;
+        new IntersectionObserver(() => {
+            if (this.observerCallback) {
+                this.observerCallback();
+            }
+        }, { threshold: 1.0 }).observe(this.$parent.find('[data-op="dynamic-loader"]').get(0));
 
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -1376,72 +1386,168 @@ class GroupsView extends View {
                 }
             ]
         });
+
+        // Filter
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
+            'create',
+            5,
+            _array_to_hash(
+                ['g', 's', 'l', 'h', 'a', 'd'],
+                k => [k, intl(`stats.filters.${k}`)]
+            )
+        ).change((event) => {
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b)(g|s|l|a|h|d):/);
+
+            var terms = [
+                {
+                   test: function (arg, group) {
+                       var matches = arg.reduce((total, term) => {
+                           var subterms = term.split('|').map(rarg => rarg.trim());
+                           for (var subterm of subterms) {
+                               if (group.Name.toLowerCase().includes(subterm) || group.Data.prefix.includes(subterm)) {
+                                   return total + 1;
+                               }
+                           }
+
+                           return total;
+                       }, 0);
+                       return (matches == arg.length);
+                   },
+                   arg: filter[0].toLowerCase().split('&').map(rarg => rarg.trim())
+                }
+            ];
+
+            this.hidden_override = false;
+            this.others_override = false;
+
+            for (var i = 1; i < filter.length; i += 2) {
+                var key = filter[i];
+                var arg = (filter[i + 1] || '').trim();
+
+                if (key == 'g') {
+                    terms.push({
+                        test: (arg, group) => {
+                            for (var term of arg) {
+                                if (group.Name.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
+                    });
+                } else if (key == 's') {
+                    terms.push({
+                        test: (arg, group) => {
+                            for (var term of arg) {
+                                if (group.Data.prefix.includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
+                    });
+                } else if (key == 'l') {
+                    terms.push({
+                        test: (arg, group) => group.Timestamp == DatabaseManager.Latest,
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'a') {
+                    this.hidden_override = true;
+                    this.others_override = true;
+                } else if (key == 'h') {
+                    this.hidden_override = true;
+                } else if (key == 'd') {
+                    this.others_override = true;
+                }
+            }
+
+            this.entries = [];
+
+            for (const group of Object.values(DatabaseManager.Groups)) {
+                let matches = true;
+                for (const term of terms) {
+                    matches &= term.test(term.arg, group.Latest);
+                }
+
+                if (matches) {
+                    this.entries.push(group);
+                }
+            }
+
+            if (this.empty) {
+                this.entries.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+            } else {
+                this.entries.sort((a, b) => b.LatestDisplayTimestamp - a.LatestDisplayTimestamp);
+            }
+
+            this.refresh();
+        });
     }
 
     show () {
-        let viewableGroups = Object.entries(DatabaseManager.Groups)
+        const viewableGroups = Object.entries(DatabaseManager.Groups);
         if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter(([, g]) => g.MembersPresent).length > 0)) {
-            return UI.show(UI.GroupDetail, viewableGroups[0][0]);
+            UI.show(UI.GroupDetail, viewableGroups[0][0]);
+        } else {
+            this.load();
+        }
+    }
+
+    refresh () {
+        const rows = [];
+        const latestPlayerTimestamp = this.empty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
+
+        const filteredEntries = this.entries.filter(group => {
+            let visible = !DatabaseManager.Hidden.has(group.Latest.Identifier);
+            let own = group.Own;
+
+            return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override) && (this.empty || group.LatestDisplayTimestamp);
+        });
+
+        for (let i = 0; i < filteredEntries.length; i += 5) {
+            rows.push(`
+                <div class="row">
+                    ${
+                        filteredEntries.slice(i, i + 5).map((group) => `
+                            <div class="column">
+                                <div class="ui segment clickable ${ latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                                    <span class="css-timestamp">${ formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
+                                    <img class="ui medium centered image" src="res/group.png">
+                                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
+                                    <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
+                                </div>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            `);
         }
 
-        var content = '';
-        var content2 = '';
+        this.observerCallback = () => {
+            const $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
+            $fields.click(function () {
+                UI.show(UI.GroupDetail, $(this).data('id'));
+            })
 
-        var index = 0;
-        var index2 = 0;
+            this.$context.context('bind', $fields);
 
-        const showEmpty = SiteOptions.groups_empty;
-        const comparer = showEmpty ? (a, b) => (b.LatestTimestamp - a.LatestTimestamp) : (a, b) => (b.LatestDisplayTimestamp - a.LatestDisplayTimestamp);
-        const groups = Object.values(DatabaseManager.Groups).filter(g => showEmpty || g.LatestDisplayTimestamp).sort(comparer);
-        const latestPlayer = showEmpty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
-
-        for (var i = 0, group; group = groups[i]; i++) {
-            const hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);
-            const latest = showEmpty ? group.LatestTimestamp : group.LatestDisplayTimestamp;
-
-            if (this.hidden || !hidden) {
-                if (group.Own) {
-                    content += `
-                        ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
-                        <div class="column">
-                            <div class="ui segment clickable ${ latestPlayer != latest ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
-                                <span class="css-timestamp">${ formatDate(latest) }</span>
-                                <img class="ui medium centered image" src="res/group.png">
-                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
-                                <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
-                            </div>
-                        </div>
-                    `;
-                    index++;
-                } else if (this.others) {
-                    content2 += `
-                        ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
-                        <div class="column">
-                            <div class="ui segment clickable ${ latestPlayer != latest ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
-                                <span class="css-timestamp">${ formatDate(latest) }</span>
-                                <img class="ui medium centered image" src="res/group.png">
-                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
-                                <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
-                            </div>
-                        </div>
-                    `;
-                    index2++;
-                }
+            if (rows.length == 0) {
+                this.observerCallback = null;
             }
         }
 
-        // Add endings
-        content += '</div>';
-        content2 += '</div>';
+        this.$list.empty();
 
-        this.$list.html(content);
-        this.$list2.html(content2);
+        // Trigger callback once
+        this.observerCallback();
+    }
 
-        this.$parent.find('[data-id]').click((event) => {
-            UI.show(UI.GroupDetail, event.currentTarget.dataset.id);
-        });
-
-        this.$context.context('bind', this.$parent.find('[data-id]'));
+    load () {
+        this.$filter.trigger('change');
     }
 }
 
@@ -1452,19 +1558,21 @@ class PlayersView extends View {
 
         this.$list = this.$parent.find('[data-op="list"]');
 
+        // Toggles
         this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
-            SiteOptions.players_hidden = state;
+            SiteOptions.players_hidden = (this.hidden = state);
             this.show();
         }, SiteOptions.players_hidden);
 
         this.$parent.find('[data-op="show-other"]').toggleButton(state => {
-            SiteOptions.players_other = state;
+            SiteOptions.players_other = (this.others = state);
             this.show();
         }, SiteOptions.players_other);
 
         this.hidden = SiteOptions.players_hidden;
         this.others = SiteOptions.players_other;
 
+        // Observer
         this.observerCallback = null;
         new IntersectionObserver(() => {
             if (this.observerCallback) {
@@ -1510,6 +1618,7 @@ class PlayersView extends View {
             ]
         });
 
+        // Filter
         this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
             'create',
             5,
@@ -1616,7 +1725,7 @@ class PlayersView extends View {
                     this.others_override = true;
                 } else if (key == 'h') {
                     this.hidden_override = true;
-                } else if (key == 'o') {
+                } else if (key == 'd') {
                     this.others_override = true;
                 }
             }
@@ -1667,14 +1776,14 @@ class PlayersView extends View {
                 <div class="row">
                     ${
                         filteredEntries.slice(i, i + 5).map((player) => `
-                                <div class="column">
-                                    <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
-                                        <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
-                                        <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                                        <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
-                                    </div>
+                            <div class="column">
+                                <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
+                                    <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
+                                    <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                                    <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
                                 </div>
+                            </div>
                         `).join('')
                     }
                 </div>
@@ -3288,7 +3397,6 @@ class OptionsView extends View {
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
         this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
-        this.prepareCheckbox('groups_empty', 'empty-groups');
         this.prepareCheckbox('terms_accepted', 'terms');
 
         SiteOptions.onChange('terms_accepted', enabled => {
@@ -3298,8 +3406,6 @@ class OptionsView extends View {
                 DialogController.open(TermsAndConditionsDialog);
             }
         });
-
-        SiteOptions.onChange('groups_empty', () => DatabaseManager._updateLists());
 
         this.$save = this.$parent.find('[data-op="save"]').click(() => {
             Actions.setScript(this.editor.content);
