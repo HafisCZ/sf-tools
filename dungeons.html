@@ -245,19 +245,19 @@
                             <div class="ui form" style="line-height: 1.3em; margin-bottom: 1em;">
                                 <div class="field">
                                     <label>${intl(`dungeons.simulate_next_settings.label`)}</label>
-                                    <div class="ui range slider" data-op="slider"></div>
+                                    <div class="ui range small slider" data-op="slider"></div>
                                 </div>
                                 <div class="two fields">
                                     <div class="field">
                                         <label>${intl(`general.min`)}</label>
                                         <div class="ui input">
-                                            <input type="text" data-op="min" disabled>
+                                            <input type="text" data-op="min">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label>${intl(`general.max`)}</label>
                                         <div class="ui input">
-                                            <input type="text" data-op="max" disabled>
+                                            <input type="text" data-op="max">
                                         </div>
                                     </div>
                                 </div>
@@ -270,6 +270,23 @@
                     `;
                 }
 
+                _validatedValue ($input, minValue, maxValue) {
+                    const value = Number($input.val());
+                    if (isNaN(value) || value < minValue || value > maxValue) {
+                        $input.closest('.field').addClass('error');
+
+                        return null;
+                    } else {
+                        $input.closest('.field').removeClass('error');
+
+                        return Math.round(value * 10) / 10;
+                    }
+                }
+
+                _update (updateInputs) {
+                    this.$slider.slider('set rangeValue', this.currentMin, this.currentMax, updateInputs);
+                }
+
                 _createBindings () {
                     this.$slider = this.$parent.find('[data-op="slider"]');
                     this.$slider.slider({
@@ -279,18 +296,36 @@
                     });
 
                     this.$slider.slider('setting', 'onMove', (_span, min, max) => {
-                       this.$min.val(Math.round(min * 10) / 10);
-                       this.$max.val(Math.round(max * 10) / 10);
+                        this.currentMin = Math.round(min * 10) / 10;
+                        this.currentMax = Math.round(max * 10) / 10;
+
+                        this.$min.val(this.currentMin);
+                        this.$max.val(this.currentMax);
                     });
                 
                     this.$min = this.$parent.find('[data-op="min"]');
+                    this.$min.on('input', () => {
+                        const value = this._validatedValue(this.$min, 0, this.currentMax);
+                        if (value) {
+                            this.currentMin = value;
+                            this._update(false);
+                        }
+                    });
+                    
                     this.$max = this.$parent.find('[data-op="max"]');
+                    this.$max.on('input', () => {
+                        const value = this._validatedValue(this.$max, this.currentMin, 100);
+                        if (value) {
+                            this.currentMax = value;
+                            this._update(false);
+                        }
+                    });
 
                     this.$okButton = this.$parent.find('[data-op="ok"');
                     this.$okButton.click(() => {
                         this.callback(
-                            Math.round(this.$slider.slider('get thumbValue', 'first') * 10) / 10,
-                            Math.round(this.$slider.slider('get thumbValue', 'second') * 10) / 10
+                            this.currentMin,
+                            this.currentMax
                         );
 
                         this.close();
@@ -303,8 +338,11 @@
                 }
 
                 _applyArguments (currentMin, currentMax, callback) {
+                    this.currentMin = currentMin;
+                    this.currentMax = currentMax;
                     this.callback = callback;
-                    this.$slider.slider('set rangeValue', currentMin, currentMax);
+
+                    this._update(true);
                 }
             })
 
