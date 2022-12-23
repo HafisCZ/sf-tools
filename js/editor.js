@@ -479,6 +479,7 @@ class Editor extends EditorBase {
                 }
             }
         })('div.morph', '');
+        
         this.morph.$object.dropdown({
             preserveHTML: true,
             action: 'hide',
