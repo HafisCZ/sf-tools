@@ -211,14 +211,6 @@ body.dimmed .menu {
     overflow: hidden !important;
 }
 
-.css-searchbar-fix {
-    margin-top: 0.05em;
-}
-
-.css-searchbar-fix i.icon {
-    margin-top: 0.05em !important;
-}
-
 .text-white label, .text-white .header, .text-white a {
     color: white !important;
 }
