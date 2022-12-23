@@ -323,13 +323,12 @@ class Editor extends EditorBase {
         };
 
         this.fields['class'].$object.dropdown({
-            preserveHTML: true,
-            values: Object.keys(CLASS_MAP).map((e) => {
-                return {
-                    name: `<img class="ui centered image class-picture" src="res/class${e}.png">${intl(`general.class${e}`)}`,
-                    value: e
-                };
-            })
+            values: Object.keys(CLASS_MAP).map((value) => ({
+                image: `res/class${value}.png`,
+                imageClass: 'class-picture',
+                name: intl(`general.class${value}`),
+                value
+            }))
         }).dropdown('setting', 'onChange', (value, text) => {
             if (value == 4) {
                 $('[data-optional="Weapon2"]').show();
@@ -343,31 +342,21 @@ class Editor extends EditorBase {
         }).dropdown('set selected', '1');
 
         this.fields['mask'].$object.dropdown({
-            preserveHTML: true,
-            values: [
-                {
-                    name: `<img class="ui centered image class-picture" src="res/mask0.png">${intl('general.mask0')}</span>`,
-                    value: 0
-                },
-                {
-                    name: `<img class="ui centered image class-picture" src="res/mask1.png">${intl('general.mask1')}</span>`,
-                    value: 1
-                },
-                {
-                    name: `<img class="ui centered image class-picture" src="res/mask2.png">${intl('general.mask2')}</span>`,
-                    value: 2
-                }
-            ]
+            values: [0, 1, 2].map(value => ({
+                image: `res/mask${value}.png`,
+                imageClass: 'class-picture',
+                name: intl(`general.mask${value}`),
+                value
+            }))
         }).dropdown('set selected', '0');
 
         this.fields['instrument'].$object.dropdown({
-            preserveHTML: true,
-            values: INSTRUMENT_TYPES.map((name, index) => {
-                return {
-                    name: `<img class="ui centered image class-picture" src="res/instrument${index}.png">${intl(`general.instrument${index}`)}`,
-                    value: index
-                }
-            })
+            values: [0, 1, 2].map((value) => ({
+                image: `res/instrument${value}.png`,
+                imageClass: 'class-picture',
+                name: intl(`general.instrument${value}`),
+                value
+            }))
         }).dropdown('set selected', '0');
 
         this.fields['potion_life'].$object.dropdown({
@@ -479,21 +468,20 @@ class Editor extends EditorBase {
                 }
             }
         })('div.morph', '');
-        
+
         this.morph.$object.dropdown({
-            preserveHTML: true,
             action: 'hide',
             values: [
                 {
                     name: this.intl('smart_change'),
                     disabled: true
                 },
-                ...Object.keys(CLASS_MAP).map((e) => {
-                    return {
-                        name: `<img class="ui centered image class-picture" src="res/class${e}.png">${intl(`general.class${e}`)}`,
-                        value: e
-                    };
-                })
+                ...Object.keys(CLASS_MAP).map((value) => ({
+                    image: `res/class${value}.png`,
+                    imageClass: 'class-picture',
+                    name: intl(`general.class${value}`),
+                    value
+                }))
             ]
         }).dropdown('setting', 'onChange', (value) => {
             this._morph(parseInt(value));
