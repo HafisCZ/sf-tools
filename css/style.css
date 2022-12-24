@@ -402,14 +402,6 @@ input:disabled {
     font-weight: bold !important;
 }
 
-.margin-medium-right {
-    margin-right: 1.0em !important;
-}
-
-.margin-small-right {
-    margin-right: 0.5em !important;
-}
-
 .border-red {
     border-color: red !important;
 }
@@ -698,10 +690,6 @@ input:disabled {
     padding-bottom: 0.3em !important;
 }
 
-.css-entry-hidden {
-    opacity: 0.5;
-}
-
 .css-entry-opaque tr.css-entry:nth-child(even) {
     background-color: #7d7d7d3f;
 }
@@ -751,36 +739,12 @@ input:disabled {
     color: white;
 }
 
-.sf-margin.top-05 {
-    margin-top: 0.5em;
-}
-
 .sf-margin.bottom-05 {
     margin-bottom: 0.5em;
 }
 
-.sf-margin.top-10 {
-    margin-top: 1.0em;
-}
-
 .sf-margin.top-20 {
     margin-top: 2.0em;
-}
-
-.mleft-10 {
-    margin-left: 1em !important;
-}
-
-.mleft-15 {
-    margin-left: 1.5em !important;
-}
-
-.mleft-20 {
-    margin-left: 2em !important;
-}
-
-.sf-margin.left-20 {
-    margin-left: 2.0em;
 }
 
 .frozen {

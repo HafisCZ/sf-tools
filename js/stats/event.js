@@ -955,7 +955,7 @@ class BrowseView extends View {
 
         this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
             SiteOptions.browse_hidden = (this.hidden = state);
-            
+
             this.recalculate = true;
             this.$filter.trigger('change');
         }, SiteOptions.browse_hidden);
@@ -1513,11 +1513,11 @@ class GroupsView extends View {
                     ${
                         filteredEntries.slice(i, i + 5).map((group) => `
                             <div class="column">
-                                <div class="ui segment clickable ${ latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
-                                    <span class="css-timestamp">${ formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
-                                    <img class="ui medium centered image" src="res/group.png">
-                                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
-                                    <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
+                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
+                                    <span class="text-85% my-2">${ formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
+                                    <img class="ui image" src="res/group.png" width="173" height="173">
+                                    <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
+                                    <h3 class="ui header !mt-0 !mb-1">${ group.Latest.Name }</h3>
                                 </div>
                             </div>
                         `).join('')
@@ -1776,11 +1776,11 @@ class PlayersView extends View {
                     ${
                         filteredEntries.slice(i, i + 5).map((player) => `
                             <div class="column">
-                                <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
-                                    <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
-                                    <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                                    <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
+                                    <span class="text-85% my-2">${ formatDate(player.LatestTimestamp) }</span>
+                                    <img class="ui image" src="res/class${ player.Latest.Class }.png" width="173" height="173">
+                                    <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
+                                    <h3 class="ui header !mt-0 !mb-1">${ player.Latest.Name }</h3>
                                 </div>
                             </div>
                         `).join('')
