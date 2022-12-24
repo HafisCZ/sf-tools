@@ -2375,7 +2375,7 @@ class FilesView extends View {
 
                     this.updateTagFilterButtons();
                     this.updateFileSearchResults();
-                } else if (tagToFilter) {
+                } else if (typeof tagToFilter !== 'undefined') {
                     this.$parent.find('[data-tag="*"]').click();
                 }
             });
