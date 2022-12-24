@@ -293,6 +293,10 @@
             "and": "a"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Třída postavy v angličtině (eg.: berserker, battle mage)",
             "p": "Jméno hráče",
             "g": "Jméno cechu",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Zobrazit ostatní",
             "hidden": "Zobrazit skrýté",
+            "empty": "Show empty groups",
             "missing": "Data nebyla nalezena pro následující postavy:"
         },
         "browse": {
@@ -395,9 +400,6 @@
                 "remove_tooltip": "Smazat šablonu"
             },
             "quick_swap": "Přepnout šablonu"
-        },
-        "group": {
-            "compared_to": "k porovnání s"
         },
         "player": {
             "attributes": "Atributy",

@@ -293,6 +293,10 @@
             "and": "I"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Klasa gracza, użyj pełnej nazwy z malej litery (eg.: berserker, battle mage)",
             "p": "Nick gracza",
             "g": "Nazwa gildii",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Pokaż inne gildie",
             "hidden": "Pokaż ukryte",
+            "empty": "Show empty groups",
             "missing": "Brakuje danych dla następujących członków:"
         },
         "browse": {
@@ -395,9 +400,6 @@
                 "remove_tooltip": "Usuń szablon"
             },
             "quick_swap": "Szybka zmiana z własnym szablonem"
-        },
-        "group": {
-            "compared_to": "Porównaj do"
         },
         "player": {
             "attributes": "Statystyki",

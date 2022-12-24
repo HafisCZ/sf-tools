@@ -293,6 +293,10 @@
             "and": "and"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
             "p": "Player name",
             "g": "Céh neve",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Többi céh megjelenítése",
             "hidden": "Elrejtett megjelenítése",
+            "empty": "Show empty groups",
             "missing": "Az alábbi játékosok adatai hiányoznak:"
         },
         "browse": {
@@ -395,9 +400,6 @@
                 "remove_tooltip": "Remove template"
             },
             "quick_swap": "Quick swap custom templates"
-        },
-        "group": {
-            "compared_to": "compared to"
         },
         "player": {
             "attributes": "Attributes",

@@ -293,6 +293,10 @@
             "and": "Undo"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Spielerklasse in Kleinbuchstaben schreiben (z.B. berserker, battle mage)",
             "p": "Spielername",
             "g": "Gildenname",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Andere Gilden anzeigen",
             "hidden": "Versteckte anzeigen",
+            "empty": "Show empty groups",
             "missing": "Für folgende Spieler fehlen Daten:"
         },
         "browse": {
@@ -395,9 +400,6 @@
                 "remove_tooltip": "Vorlage entfernen"
             },
             "quick_swap": "Benutzerdefinierte Vorlagen schnell austauschen"
-        },
-        "group": {
-            "compared_to": "vergleichen mit"
         },
         "player": {
             "attributes": "Attribute",
