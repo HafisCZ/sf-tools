@@ -2414,8 +2414,10 @@ class FilesView extends View {
                 $parent.addClass('error');
             }
 
-            this.updateFileSearchResults();
-        }).val(this.expressionFilter ? this.expressionFilter.string : '').trigger('input');
+            if (event.type === 'change') {
+                this.updateFileSearchResults();
+            }
+        }).val(this.expressionFilter ? this.expressionFilter.string : '').trigger('change');
     }
 
     updateLists () {
