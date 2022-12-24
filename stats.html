@@ -329,14 +329,16 @@
         <div id="view-browse" class="ui main container css-hidden mb-20">
             <div class="ui grid !mb-1">
                 <div class="three wide left aligned column">
-                    <div class="ui scrolling dropdown" data-op="timestamp">
-                        <div class="default text"></div>
-                        <i class="dropdown icon"></i>
-                    </div>
-                    <br/>
-                    <div class="ui scrolling dropdown" data-op="reference">
-                        <div class="default text"></div>
-                        <i class="dropdown icon"></i>
+                    <div class="flex flex-col">
+                        <div class="ui scrolling dropdown" data-op="timestamp">
+                            <div class="default text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                        <br/>
+                        <div class="ui scrolling dropdown" data-op="reference">
+                            <div class="default text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="ten wide column">
@@ -364,31 +366,29 @@
         <div id="modal-playerdetail" class="ui basic large modal"></div>
 
         <!-- PlayerHistoryView -->
-        <div id="view-history" class="ui main container css-hidden sf-container">
-            <div class="ui basic segment margin-none-bottom padding-none-bottom">
-                <div class="ui grid">
-                    <div class="three wide column"></div>
-                    <div class="ten wide middle aligned column">
-                        <h1 class="ui centered header" data-op="name"></h1>
-                    </div>
-                    <div class="three wide column">
-                        <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></button>
-                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></button>
-                            <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
-                                <i class="file archive icon"></i>
-                                <div class="menu">
-                                    <div class="header" data-intl="stats.fast_export.title"></div>
-                                    <div class="item" data-op="export" data-intl="stats.fast_export.all"></div>
-                                    <div class="item" data-op="export-l" data-intl="stats.fast_export.latest"></div>
-                                    <div class="item" data-op="export-l5" data-intl="stats.fast_export.latest5"></div>
-                                </div>
+        <div id="view-history" class="ui main container css-hidden mb-20">
+            <div class="ui grid !mb-1">
+                <div class="three wide column"></div>
+                <div class="ten wide column">
+                    <h1 class="ui centered header" data-op="name"></h1>
+                </div>
+                <div class="three wide column">
+                    <div class="ui basic icon buttons">
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></div>
+                        <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
+                            <i class="file archive icon"></i>
+                            <div class="menu">
+                                <div class="header" data-intl="stats.fast_export.title"></div>
+                                <div class="item" data-op="export" data-intl="stats.fast_export.all"></div>
+                                <div class="item" data-op="export-l" data-intl="stats.fast_export.latest"></div>
+                                <div class="item" data-op="export-l5" data-intl="stats.fast_export.latest5"></div>
                             </div>
-                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></button>
-                            <div class="ui top left pointing dropdown button" data-op="configure">
-                                <i class="cog icon"></i>
-                                <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
-                            </div>
+                        </div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui top left pointing dropdown button" data-op="configure">
+                            <i class="cog icon"></i>
+                            <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
                         </div>
                     </div>
                 </div>
@@ -559,46 +559,43 @@
         </div>
 
         <!-- GroupDetailView -->
-        <div id="view-groupdetail" class="ui main container css-hidden sf-container">
-            <div class="ui segment center aligned basic">
-                <div class="ui extreme header" data-op="name"></div>
-            </div>
-            <div class="ui basic segment margin-none-bottom padding-none-bottom">
-                <div class="ui grid">
-                    <div class="three wide middle aligned column">
+        <div id="view-groupdetail" class="ui main container css-hidden mb-20">
+            <div class="ui grid !mb-1">
+                <div class="three wide column">
+                    <div class="flex flex-col">
                         <div class="ui scrolling dropdown" data-op="timestamp">
                             <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
-                    </div>
-                    <div class="two wide middle aligned column" data-intl="stats.group.compared_to"></div>
-                    <div class="three wide middle aligned column">
                         <div class="ui scrolling dropdown" data-op="reference">
                             <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
-                    <div class="eight wide column">
-                        <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></button>
-                            <button class="ui button" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></button>
-                            <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
-                                <i class="file archive icon"></i>
-                                <div class="menu">
-                                    <div class="header" data-intl="stats.fast_export.title"></div>
-                                    <div class="item" data-op="export" data-intl="stats.fast_export.all"></div>
-                                    <div class="item" data-op="export-l" data-intl="stats.fast_export.latest"></div>
-                                    <div class="item" data-op="export-l5" data-intl="stats.fast_export.latest5"></div>
-                                    <div class="item" data-op="export-s" data-intl="stats.fast_export.selected"></div>
-                                    <div class="item" data-op="export-sr" data-intl="stats.fast_export.selected_both"></div>
-                                </div>
+                </div>
+                <div class="ten wide column">
+                    <h1 class="ui centered header" data-op="name"></h1>
+                </div>
+                <div class="three wide column">
+                    <div class="ui basic icon buttons">
+                        <div class="ui button" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></div>
+                        <div class="ui button" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></div>
+                        <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
+                            <i class="file archive icon"></i>
+                            <div class="menu">
+                                <div class="header" data-intl="stats.fast_export.title"></div>
+                                <div class="item" data-op="export" data-intl="stats.fast_export.all"></div>
+                                <div class="item" data-op="export-l" data-intl="stats.fast_export.latest"></div>
+                                <div class="item" data-op="export-l5" data-intl="stats.fast_export.latest5"></div>
+                                <div class="item" data-op="export-s" data-intl="stats.fast_export.selected"></div>
+                                <div class="item" data-op="export-sr" data-intl="stats.fast_export.selected_both"></div>
                             </div>
-                            <button class="ui button" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></button>
-                            <div class="ui top left pointing dropdown button" data-op="configure">
-                                <i class="cog icon"></i>
-                                <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
-                            </div>
+                        </div>
+                        <div class="ui button" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui button" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></div>
+                        <div class="ui top left pointing dropdown button" data-op="configure">
+                            <i class="cog icon"></i>
+                            <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
                         </div>
                     </div>
                 </div>
