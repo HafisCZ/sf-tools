@@ -524,7 +524,7 @@ class TableInstance {
             // Loop over all items of the array
             for (let { player, compare, hidden, index, latest } of this.array) {
                 // Add table row start tag
-                let content = `<tr class="css-entry ${ hidden ? 'css-entry-hidden' :'' } ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
+                let content = `<tr class="css-entry ${ hidden ? 'opacity-50' :'' } ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
 
                 // Add row index if enabled
                 if (indexStyle) {

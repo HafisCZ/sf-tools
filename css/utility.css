@@ -61,12 +61,41 @@
 }
 
 /* Margin */
+.\!m-0 {
+  margin: 0 !important;
+}
+
+.\!mt-0 {
+  margin-top: 0 !important;
+}
+
+.my-2 {
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+.\!mt-1 {
+  margin-top: 0.25em !important;
+}
+
+.\!mt-2 {
+  margin-top: 0.5em !important;
+}
+
 .\!mb-1 {
   margin-bottom: 0.25em !important;
 }
 
 .mt-8 {
   margin-top: 2em;
+}
+
+.mt-2 {
+  margin-top: 0.5em;
+}
+
+.ml-8 {
+  margin-left: 2em;
 }
 
 .mb-20 {
@@ -86,6 +115,10 @@
   font-size: 5em;
 }
 
+.text-85\% {
+  font-size: 85%;
+}
+
 /* Text Align */
 .text-center {
   text-align: center;
@@ -94,6 +127,10 @@
 /* Text Color */
 .text-orange {
   color: orange;
+}
+
+.text-gray {
+  color: gray;
 }
 
 .text-white {
@@ -107,4 +144,9 @@
 /* Background Color */
 .background-dark {
   background-color: #141414;
+}
+
+/* Opacity */
+.opacity-50 {
+  opacity: 50%;
 }
