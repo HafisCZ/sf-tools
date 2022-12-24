@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/editor.css"/>
         <link rel="stylesheet" href="css/fortress.css"/>
+        <link rel="stylesheet" href="css/utility.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -45,52 +46,54 @@
             <div class="ui two columns stackable grid">
                 <div class="column">
                     <div class="ui form" id="fortress-editor">
-                        <div class="bordered bone">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label data-intl="fortress.warrior_count"></label>
-                                    <input class="text-center" data-path="WarriorCount" placeholder="1 - 45">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="fortress.warrior_level"></label>
-                                    <div class="ui selection dropdown" data-path="WarriorLevel">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
+                        <div class="ui segments">
+                            <div class="ui red segment !p-2">
+                                <div class="two fields !mb-0">
+                                    <div class="field">
+                                        <label data-intl="fortress.warrior_count"></label>
+                                        <input class="text-center" data-path="WarriorCount" placeholder="1 - 45">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="fortress.warrior_level"></label>
+                                        <div class="ui selection dropdown" data-path="WarriorLevel">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="bordered bthree">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label data-intl="stats.player.fortress.building12"></label>
-                                    <input class="text-center" data-path="FortificationsLevel" placeholder="0 - 20">
+                            <div class="ui blue segment !p-2">
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label data-intl="stats.player.fortress.building12"></label>
+                                        <input class="text-center" data-path="FortificationsLevel" placeholder="0 - 20">
+                                    </div>
+                                    <div class="field"></div>
                                 </div>
-                                <div class="field"></div>
-                            </div>
-                            <div class="two fields">
-                                <div class="field">
-                                    <label data-intl="fortress.archer_count"></label>
-                                    <input class="text-center" data-path="ArcherCount" placeholder="0 - 30">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="fortress.archer_level"></label>
-                                    <div class="ui selection dropdown" data-path="ArcherLevel">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label data-intl="fortress.archer_count"></label>
+                                        <input class="text-center" data-path="ArcherCount" placeholder="0 - 30">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="fortress.archer_level"></label>
+                                        <div class="ui selection dropdown" data-path="ArcherLevel">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="two fields">
-                                <div class="field">
-                                    <label data-intl="fortress.mage_count"></label>
-                                    <input class="text-center" data-path="MageCount" placeholder="0 - 15">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="fortress.mage_level"></label>
-                                    <div class="ui selection dropdown" data-path="MageLevel">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
+                                <div class="two fields !mb-0">
+                                    <div class="field">
+                                        <label data-intl="fortress.mage_count"></label>
+                                        <input class="text-center" data-path="MageCount" placeholder="0 - 15">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="fortress.mage_level"></label>
+                                        <div class="ui selection dropdown" data-path="MageLevel">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

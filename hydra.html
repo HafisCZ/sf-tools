@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/hydra.css"/>
         <link rel="stylesheet" href="css/editor.css"/>
+        <link rel="stylesheet" href="css/utility.css"/>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -53,46 +54,48 @@
                 <!-- Player edit field -->
                 <div class="column">
                     <div class="ui form" id="sim-editor">
-                        <div class="bordered bone">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label data-intl="hydra.player_count"></label>
-                                    <input class="text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
+                        <div class="ui segments">
+                            <div class="ui red segment !p-2">
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label data-intl="hydra.player_count"></label>
+                                        <input class="text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="editor.level"></label>
+                                        <input class="text-center" type="text" data-path="Level" placeholder="1 - 600">
+                                    </div>
                                 </div>
-                                <div class="field">
-                                    <label data-intl="editor.level"></label>
-                                    <input class="text-center" type="text" data-path="Level" placeholder="1 - 600">
+                                <div class="five fields !mb-0">
+                                    <div class="field">
+                                        <label data-intl="hydra.main"></label>
+                                        <input class="text-center" type="text" data-path="Main">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="hydra.side1"></label>
+                                        <input class="text-center" type="text" data-path="Side1">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="hydra.side2"></label>
+                                        <input class="text-center" type="text" data-path="Side2">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="general.attribute4"></label>
+                                        <input class="text-center" type="text" data-path="Constitution">
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="general.attribute5"></label>
+                                        <input class="text-center" type="text" data-path="Luck">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="five fields">
-                                <div class="field">
-                                    <label data-intl="hydra.main"></label>
-                                    <input class="text-center" type="text" data-path="Main">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="hydra.side1"></label>
-                                    <input class="text-center" type="text" data-path="Side1">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="hydra.side2"></label>
-                                    <input class="text-center" type="text" data-path="Side2">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="general.attribute4"></label>
-                                    <input class="text-center" type="text" data-path="Constitution">
-                                </div>
-                                <div class="field">
-                                    <label data-intl="general.attribute5"></label>
-                                    <input class="text-center" type="text" data-path="Luck">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered bfive">
-                            <div class="field">
-                                <label data-intl="hydra.hydra"></label>
-                                <div class="ui search selection dropdown" data-path="Hydra">
-                                    <div class="text"></div>
-                                    <i class="dropdown icon"></i>
+                            <div class="ui blue segment !p-2">
+                                <div class="field !mb-0">
+                                    <label data-intl="hydra.hydra"></label>
+                                    <div class="ui search selection dropdown" data-path="Hydra">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
