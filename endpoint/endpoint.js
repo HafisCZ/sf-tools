@@ -512,7 +512,7 @@ const Endpoint = new ( class {
                     <div class="five wide column"></div>
                 </div>
                 <div class="ui grid" data-op="step4" style="display: none;">
-                    <div class="ui large text loader">${this.intl('step4.title')}</div>
+                    <div class="ui large active text loader">${this.intl('step4.title')}</div>
                 </div>
                 <div class="ui grid" data-op="step5" style="display: none; margin-top: -14em;">
                     <div class="five wide column"></div>
