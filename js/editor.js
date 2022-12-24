@@ -325,7 +325,7 @@ class Editor extends EditorBase {
         this.fields['class'].$object.dropdown({
             values: Object.keys(CLASS_MAP).map((value) => ({
                 image: `res/class${value}.png`,
-                imageClass: 'class-picture',
+                imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.class${value}`),
                 value
             }))
@@ -344,7 +344,7 @@ class Editor extends EditorBase {
         this.fields['mask'].$object.dropdown({
             values: [0, 1, 2].map(value => ({
                 image: `res/mask${value}.png`,
-                imageClass: 'class-picture',
+                imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.mask${value}`),
                 value
             }))
@@ -353,7 +353,7 @@ class Editor extends EditorBase {
         this.fields['instrument'].$object.dropdown({
             values: [0, 1, 2].map((value) => ({
                 image: `res/instrument${value}.png`,
-                imageClass: 'class-picture',
+                imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.instrument${value}`),
                 value
             }))
@@ -478,7 +478,7 @@ class Editor extends EditorBase {
                 },
                 ...Object.keys(CLASS_MAP).map((value) => ({
                     image: `res/class${value}.png`,
-                    imageClass: 'class-picture',
+                    imageClass: '!-ml-3 !mr-2',
                     name: intl(`general.class${value}`),
                     value
                 }))
