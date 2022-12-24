@@ -401,9 +401,6 @@
             },
             "quick_swap": "Quick swap custom templates"
         },
-        "group": {
-            "compared_to": "compared to"
-        },
         "player": {
             "attributes": "Attributes",
             "basis": "Basis",
