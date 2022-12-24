@@ -56,6 +56,10 @@
   padding: 0 !important;
 }
 
+.\!pb-0 {
+  padding-bottom: 0 !important;
+}
+
 .pt-4 {
   padding-top: 1em;
 }
@@ -153,4 +157,9 @@
 /* Opacity */
 .opacity-50 {
   opacity: 50%;
+}
+
+/* Line Height */
+.\!line-height-4 {
+  line-height: 1em !important;
 }

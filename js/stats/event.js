@@ -105,6 +105,8 @@ class GroupDetailView extends View {
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
+        this.$identifier = this.$parent.find('[data-op="identifier"]');
+
         this.$timestamp = this.$parent.find('[data-op="timestamp"]');
         this.$reference = this.$parent.find('[data-op="reference"]');
     }
@@ -151,7 +153,8 @@ class GroupDetailView extends View {
         this.identifier = identitifier;
         this.group = DatabaseManager.getGroup(identitifier);
 
-        this.$name.html(`${this.group.Latest.Name} <span style="opacity: 50%; font-weight: initial; font-size: initial">${this.identifier}</span>`);
+        this.$name.html(this.group.Latest.Name);
+        this.$identifier.html(this.identifier);
 
         var listTimestamp = [];
         var listReference = [];
@@ -745,6 +748,7 @@ class PlayerHistoryView extends View {
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
+        this.$identifier = this.$parent.find('[data-op="identifier"]');
     }
 
     refreshTemplateDropdown () {
@@ -795,7 +799,8 @@ class PlayerHistoryView extends View {
         this.list = list;
         this.player = player;
 
-        this.$name.html(`${this.player.Name} <span style="opacity: 50%; font-weight: initial; font-size: initial">${this.player.Identifier}</span>`);
+        this.$name.html(this.player.Name);
+        this.$identifier.html(this.identifier);
 
         this.load();
     }
