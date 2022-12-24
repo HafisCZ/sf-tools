@@ -7,6 +7,10 @@
   pointer-events: all;
 }
 
+.pointer-events-none {
+  pointer-events: none;
+}
+
 /* Positioning */
 .position-fixed {
   position: fixed;
