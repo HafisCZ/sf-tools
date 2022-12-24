@@ -56,6 +56,10 @@
   padding: 0 !important;
 }
 
+.\!p-2 {
+  padding: 0.5em !important;
+}
+
 .\!pb-0 {
   padding-bottom: 0 !important;
 }
@@ -88,6 +92,10 @@
 
 .\!mt-2 {
   margin-top: 0.5em !important;
+}
+
+.\!mb-0 {
+  margin-bottom: 0 !important;
 }
 
 .\!mb-1 {

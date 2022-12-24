@@ -540,190 +540,192 @@ class Editor extends EditorBase {
 
     _html ($parent) {
         $parent.html(`
-            <div class="bordered bone">
-                <div class="field">
-                    <label>${this.intl('name')}</label>
-                    <div class="ui icon right action input">
-                        <input class="text-center" type="text" data-path="Name">
-                        <input type="hidden" data-path="Prefix">
-                        <div class="ui icon basic buttons">
-                            <div class="ui top right pointing dropdown button morph">
-                                <i class="exchange link icon"></i>
+            <div class="ui segments">
+                <div class="ui red segment !p-2">
+                    <div class="field">
+                        <label>${this.intl('name')}</label>
+                        <div class="ui icon right action input">
+                            <input class="text-center" type="text" data-path="Name">
+                            <input type="hidden" data-path="Prefix">
+                            <div class="ui icon basic buttons">
+                                <div class="ui top right pointing dropdown button morph">
+                                    <i class="exchange link icon"></i>
+                                </div>
+                                <div class="ui button copy-current" data-position="right center" data-tooltip="${this.intl('copy')}">
+                                    <i class="outline copy link icon"></i>
+                                </div>
                             </div>
-                            <div class="ui button copy-current" data-position="right center" data-tooltip="${this.intl('copy')}">
-                                <i class="outline copy link icon"></i>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>${this.intl('class')}</label>
+                            <div class="ui search selection dropdown" data-path="Class">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('mask')}</label>
+                            <div class="ui selection dropdown" data-path="Mask">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('instrument')}</label>
+                            <div class="ui selection dropdown" data-path="Instrument">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('level')}</label>
+                            <input class="text-center" type="text" data-path="Level" placeholder="1 - 800">
+                        </div>
+                    </div>
+                    <div class="five fields !mb-0">
+                        <div class="field">
+                            <label>${intl('general.attribute1')}</label>
+                            <input class="text-center" type="text" data-path="Strength.Total">
+                        </div>
+                        <div class="field">
+                            <label>${intl('general.attribute2')}</label>
+                            <input class="text-center" type="text" data-path="Dexterity.Total">
+                        </div>
+                        <div class="field">
+                            <label>${intl('general.attribute3')}</label>
+                            <input class="text-center" type="text" data-path="Intelligence.Total">
+                        </div>
+                        <div class="field">
+                            <label>${intl('general.attribute4')}</label>
+                            <input class="text-center" type="text" data-path="Constitution.Total">
+                        </div>
+                        <div class="field">
+                            <label>${intl('general.attribute5')}</label>
+                            <input class="text-center" type="text" data-path="Luck.Total">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui blue segment !p-2">
+                    <div class="five fields !mb-0">
+                        <div class="field">
+                            <label>${this.intl('min')}</label>
+                            <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('max')}</label>
+                            <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('weapon_enchant')}</label>
+                            <div class="ui selection dropdown" data-path="Items.Wpn1.HasEnchantment">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('rune')}</label>
+                            <div class="ui selection dropdown" data-path="Items.Wpn1.AttributeTypes.2">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label><br/></label>
+                            <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui orange segment !p-2" data-optional="Weapon2">
+                    <div class="five fields !mb-0">
+                        <div class="field">
+                            <label>${this.intl('min')}</label>
+                            <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('max')}</label>
+                            <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('weapon_enchant')}</label>
+                            <div class="ui selection dropdown" data-path="Items.Wpn2.HasEnchantment">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('rune')}</label>
+                            <div class="ui selection dropdown" data-path="Items.Wpn2.AttributeTypes.2">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label><br/></label>
+                            <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui green segment !p-2">
+                    <div class="four fields !mb-0">
+                        <div class="field">
+                            <label>${this.intl('armor')}</label>
+                            <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('block')}</label>
+                            <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('fire')}</label>
+                            <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('cold')}</label>
+                            <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('lightning')}</label>
+                            <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui purple segment !p-2">
+                    <div class="three fields !mb-0">
+                        <div class="field">
+                            <label>${this.intl('portal_health')}</label>
+                            <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('rune_health')}</label>
+                            <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('life_potion')}</label>
+                            <div class="ui selection dropdown" data-path="Potions.Life">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="two fields">
-                    <div class="field">
-                        <label>${this.intl('class')}</label>
-                        <div class="ui search selection dropdown" data-path="Class">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
+                <div class="ui pink segment !p-2">
+                    <div class="three fields !mb-0">
+                        <div class="field">
+                            <label>${this.intl('portal_damage')}</label>
+                            <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                         </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('mask')}</label>
-                        <div class="ui selection dropdown" data-path="Mask">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
+                        <div class="field">
+                            <label>${this.intl('gladiator')}</label>
+                            <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                         </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('instrument')}</label>
-                        <div class="ui selection dropdown" data-path="Instrument">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('level')}</label>
-                        <input class="text-center" type="text" data-path="Level" placeholder="1 - 800">
-                    </div>
-                </div>
-                <div class="five fields">
-                    <div class="field">
-                        <label>${intl('general.attribute1')}</label>
-                        <input class="text-center" type="text" data-path="Strength.Total">
-                    </div>
-                    <div class="field">
-                        <label>${intl('general.attribute2')}</label>
-                        <input class="text-center" type="text" data-path="Dexterity.Total">
-                    </div>
-                    <div class="field">
-                        <label>${intl('general.attribute3')}</label>
-                        <input class="text-center" type="text" data-path="Intelligence.Total">
-                    </div>
-                    <div class="field">
-                        <label>${intl('general.attribute4')}</label>
-                        <input class="text-center" type="text" data-path="Constitution.Total">
-                    </div>
-                    <div class="field">
-                        <label>${intl('general.attribute5')}</label>
-                        <input class="text-center" type="text" data-path="Luck.Total">
-                    </div>
-                </div>
-            </div>
-            <div class="bordered btwo">
-                <div class="five fields">
-                    <div class="field">
-                        <label>${this.intl('min')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('max')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('weapon_enchant')}</label>
-                        <div class="ui selection dropdown" data-path="Items.Wpn1.HasEnchantment">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('rune')}</label>
-                        <div class="ui selection dropdown" data-path="Items.Wpn1.AttributeTypes.2">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label><br/></label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
-                    </div>
-                </div>
-            </div>
-            <div class="bordered bthree" data-optional="Weapon2">
-                <div class="five fields">
-                    <div class="field">
-                        <label>${this.intl('min')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('max')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('weapon_enchant')}</label>
-                        <div class="ui selection dropdown" data-path="Items.Wpn2.HasEnchantment">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('rune')}</label>
-                        <div class="ui selection dropdown" data-path="Items.Wpn2.AttributeTypes.2">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label><br/></label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
-                    </div>
-                </div>
-            </div>
-            <div class="bordered bfour">
-                <div class="four fields">
-                    <div class="field">
-                        <label>${this.intl('armor')}</label>
-                        <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('block')}</label>
-                        <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('fire')}</label>
-                        <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('cold')}</label>
-                        <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('lightning')}</label>
-                        <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
-                    </div>
-                </div>
-            </div>
-            <div class="bordered bfive">
-                <div class="three fields">
-                    <div class="field">
-                        <label>${this.intl('portal_health')}</label>
-                        <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('rune_health')}</label>
-                        <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('life_potion')}</label>
-                        <div class="ui selection dropdown" data-path="Potions.Life">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bordered bsix">
-                <div class="three fields">
-                    <div class="field">
-                        <label>${this.intl('portal_damage')}</label>
-                        <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('gladiator')}</label>
-                        <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('hand_enchant')}</label>
-                        <div class="ui selection dropdown" data-path="Items.Hand.HasEnchantment">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
+                        <div class="field">
+                            <label>${this.intl('hand_enchant')}</label>
+                            <div class="ui selection dropdown" data-path="Items.Hand.HasEnchantment">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
