@@ -293,6 +293,10 @@
             "and": "e"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Classe del giocatore, usare il nome completo in minuscolo in INGLESE! (es. mage, scout, ecc.)",
             "p": "Nome del giocatore",
             "g": "Nome della gilda",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Mostra altre gilde",
             "hidden": "Mostra nascosti",
+            "empty": "Show empty groups",
             "missing": "Dati giocatore mancanti per i seguenti membri:"
         },
         "browse": {
@@ -395,9 +400,6 @@
                 "remove_tooltip": "Rimuovi template"
             },
             "quick_swap": "Scambio rapido tra i template personalizzati"
-        },
-        "group": {
-            "compared_to": "confrontato con"
         },
         "player": {
             "attributes": "Caratteristiche",

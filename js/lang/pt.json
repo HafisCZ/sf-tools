@@ -293,6 +293,10 @@
             "and": "e"
         },
         "filters": {
+            "types": {
+                "players": "Filter players by server, class, guild and/or username",
+                "guilds": "Filter groups by server or name"
+            },
             "c": "Classe do jogador, utiliza o nome inteiro da classe em inglês, em letras minúsculas (ex.: berserker, battle mage)",
             "p": "Nome do jogador",
             "g": "Nome do clã",
@@ -345,6 +349,7 @@
         "guilds": {
             "other": "Mostrar outros clãs",
             "hidden": "Mostrar oculto(s)",
+            "empty": "Show empty groups",
             "missing": "Dados do jogador estão em falta nos seguintes membros:"
         },
         "browse": {
@@ -395,9 +400,6 @@
                 "remove_tooltip": "Remover modelo/template"
             },
             "quick_swap": "Trocar rapidamente modelos personalizados"
-        },
-        "group": {
-            "compared_to": "comparado com"
         },
         "player": {
             "attributes": "Atributos",
