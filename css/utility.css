@@ -86,6 +86,14 @@
   margin-top: 0.5em;
 }
 
+.\!-ml-3 {
+  margin-left: -0.75em !important;
+}
+
+.\!mr-2 {
+  margin-right: 0.5em !important;
+}
+
 .\!mt-1 {
   margin-top: 0.25em !important;
 }

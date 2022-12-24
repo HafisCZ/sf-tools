@@ -152,7 +152,7 @@
                             preserveHTML: true,
                             values: Object.entries(HYDRA_MAP).map(([id, { class: klass }]) => {
                                 return {
-                                    name: `<img class="ui centered image class-picture" src="res/class${klass}.png"><span>${intl(`hydra.names.${id}`)}</span>`,
+                                    name: `<img class="ui centered image !-ml-3 !mr-2" src="res/class${klass}.png"><span>${intl(`hydra.names.${id}`)}</span>`,
                                     value: id
                                 };
                             })
