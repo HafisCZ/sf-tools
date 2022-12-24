@@ -977,7 +977,7 @@ class BrowseView extends View {
                        var matches = arg.reduce((total, term) => {
                            var subterms = term.split('|').map(rarg => rarg.trim());
                            for (var subterm of subterms) {
-                               if (player.Name.toLowerCase().includes(subterm) || player.Data.prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
+                               if (player.Name.toLowerCase().includes(subterm) || player.Prefix.toLowerCase().includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
                                    return total + 1;
                                }
                            }
@@ -1044,7 +1044,7 @@ class BrowseView extends View {
                     terms.push({
                         test: (arg, player) => {
                             for (var term of arg) {
-                                if (player.Data.prefix.includes(term)) {
+                                if (player.Prefix.toLowerCase().includes(term)) {
                                     return true;
                                 }
                             }
@@ -1403,7 +1403,7 @@ class GroupsView extends View {
                        var matches = arg.reduce((total, term) => {
                            var subterms = term.split('|').map(rarg => rarg.trim());
                            for (var subterm of subterms) {
-                               if (group.Name.toLowerCase().includes(subterm) || group.Data.prefix.includes(subterm)) {
+                               if (group.Name.toLowerCase().includes(subterm) || group.Prefix.toLowerCase().includes(subterm)) {
                                    return total + 1;
                                }
                            }
@@ -1440,7 +1440,7 @@ class GroupsView extends View {
                     terms.push({
                         test: (arg, group) => {
                             for (var term of arg) {
-                                if (group.Data.prefix.includes(term)) {
+                                if (group.Prefix.toLowerCase().includes(term)) {
                                     return true;
                                 }
                             }
@@ -1634,7 +1634,7 @@ class PlayersView extends View {
                        var matches = arg.reduce((total, term) => {
                            var subterms = term.split('|').map(rarg => rarg.trim());
                            for (var subterm of subterms) {
-                               if (player.Name.toLowerCase().includes(subterm) || player.Data.prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
+                               if (player.Name.toLowerCase().includes(subterm) || player.Prefix.toLowerCase().includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
                                    return total + 1;
                                }
                            }
@@ -1697,7 +1697,7 @@ class PlayersView extends View {
                     terms.push({
                         test: (arg, player) => {
                             for (var term of arg) {
-                                if (player.Data.prefix.includes(term)) {
+                                if (player.Prefix.toLowerCase().includes(term)) {
                                     return true;
                                 }
                             }
