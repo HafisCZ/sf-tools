@@ -111,7 +111,7 @@ const Endpoint = new ( class {
         })
     }
 
-    intl (key) {
+    _intl (key) {
         return intl(`endpoint.${key}`);
     }
 
@@ -121,8 +121,7 @@ const Endpoint = new ( class {
         this.$step3.hide();
         this.$step4.hide();
         this.$step5.hide();
-
-        this.$error.hide();
+        this.$step6.hide();
 
         this.$parent.modal({
             centered: true,
@@ -164,10 +163,12 @@ const Endpoint = new ( class {
     }
 
     _showError (text, hard = false) {
-        this.$error.show();
+        this.$step6.show();
+
         this.$errorText.text(text);
         this.$errorButton.one('click', () => {
-            this.$error.hide();
+            this.$step6.hide();
+
             if (hard) {
                 this._funcShutdown(false);
             } else {
@@ -198,20 +199,26 @@ const Endpoint = new ( class {
     }
 
     _addBindings () {
+        // Login Form
         this.$step1 = this.$parent.find('[data-op="step1"]');
+        // Unity Loader
         this.$step2 = this.$parent.find('[data-op="step2"]');
+        // Player Selector
         this.$step3 = this.$parent.find('[data-op="step3"]');
+        // Generic Loader
         this.$step4 = this.$parent.find('[data-op="step4"]');
+        // Progress Bar
         this.$step5 = this.$parent.find('[data-op="step5"]');
+        // Error
+        this.$step6 = this.$parent.find('[data-op="step6"]');
 
         this.$progress = this.$step5.find('.ui.progress');
 
-        this.$error = this.$parent.find('[data-op="error"]');
         this.$errorText = this.$parent.find('[data-op="error-text"]');
         this.$errorButton = this.$parent.find('[data-op="error-button"]');
 
-        this.$username = this.$parent.find('[data-op="textUsername"]');
-        this.$password = this.$parent.find('[data-op="textPassword"]');
+        this.$username = this.$parent.find('[data-op="username"]');
+        this.$password = this.$parent.find('[data-op="password"]');
 
         this.$modeDefault = this.$parent.find('[data-op="modeDefault"]').checkbox();
         this.$modeOwn = this.$parent.find('[data-op="modeOwn"]').checkbox();
@@ -256,7 +263,7 @@ const Endpoint = new ( class {
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
             } else {
-                Toast.warn(this.intl('user_error.title'), this.intl('user_error.message'));
+                Toast.warn(this._intl('user_error.title'), this._intl('user_error.message'));
                 return;
             }
 
@@ -319,7 +326,7 @@ const Endpoint = new ( class {
             });
         }, () => {
             this.$step4.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(this._intl('credentials_error'));
         });
     };
 
@@ -334,7 +341,7 @@ const Endpoint = new ( class {
         }, () => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(this._intl('credentials_error'));
         }, percentDone => {
             this.$step4.hide();
             this.$step5.show();
@@ -358,7 +365,7 @@ const Endpoint = new ( class {
         }, () => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(this._intl('credentials_error'));
         }, percentDone => {
             this.$step4.hide();
             this.$step5.show();
@@ -378,10 +385,15 @@ const Endpoint = new ( class {
 
             for (var name of members.split(',')) {
                 content += `
-                    <div class="item item-member">
-                        <div class="ui checkbox">
+                    <div class="item">
+                        <div class="ui checkbox w-full">
                             <input type="checkbox" name="${ name }">
-                            <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
+                            <label for="${ name }">
+                                <div class="flex justify-content-between">
+                                    ${ name }
+                                    <i class="ui user circle icon"></i>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 `;
@@ -389,10 +401,15 @@ const Endpoint = new ( class {
 
             for (var name of friends.split(',').slice(1)) {
                 content += `
-                    <div class="item item-friend">
-                        <div class="ui checkbox">
+                    <div class="item">
+                        <div class="ui checkbox w-full">
                             <input type="checkbox" name="${ name }">
-                            <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
+                            <label for="${ name }">
+                                <div class="flex justify-content-between">
+                                    ${ name }
+                                    <i class="ui thumbs up icon"></i>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 `;
@@ -412,13 +429,13 @@ const Endpoint = new ( class {
                         this._removeDownloading(name);
                     }, () => {
                         this.$step3.hide();
-                        this._showError(this.intl('download_error'));
+                        this._showError(this._intl('download_error'));
                     });
                 })
             }
         }, () => {
             this.$step4.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(this._intl('credentials_error'));
         });
     }
 
@@ -433,110 +450,122 @@ const Endpoint = new ( class {
 
     _createModal () {
         this.$parent = $(`
-            <div id="endpoint-modal" class="ui basic modal">
-                <iframe style="opacity: 0%;" data-op="iframe"></iframe>
-                <div class="ui grid" data-op="step1" style="margin-top: -14em;">
+            <div class="ui basic modal">
+                <iframe class="opacity-0 pointer-events-none position-fixed" data-op="iframe"></iframe>
+                <div class="ui grid">
                     <div class="five wide column"></div>
                     <div class="six wide column">
-                        <div class="ui form darker-placeholder">
-                            <div class="field">
-                                <label style="color: white;">${this.intl('username')}</label>
-                                <input type="text" autocomplete="username" data-op="textUsername" name="username" placeholder="username@s1.sfgame.de">
-                            </div>
-                            <div class="field">
-                                <label style="color: white;">${this.intl('password')}</label>
-                                <input type="password" autocomplete="current-password" name="password" data-op="textPassword">
-                            </div>
-                            <div class="grouped fields">
-                                <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeOwn">
-                                        <input type="radio" name="endpointMode">
-                                        <label style="color: white;">${this.intl('mode.own')}</label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeDefault">
-                                        <input type="radio" name="endpointMode" checked="checked">
-                                        <label style="color: white;">${this.intl('mode.default')}</label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeAllMembers">
-                                        <input type="radio" name="endpointMode">
-                                        <label style="color: white;">${this.intl('mode.guild')}</label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeAllFriends">
-                                        <input type="radio" name="endpointMode">
-                                        <label style="color: white;">${this.intl('mode.friends')}</label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeHallOfFame">
-                                        <input type="radio" name="endpointMode">
-                                        <label style="color: white;">${this.intl('mode.hall_of_fame')}</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="ui two buttons">
-                                <button class="ui secondary button fluid" data-op="back">${this.intl('cancel')}</button>
-                                <button class="ui primary button fluid" data-op="login">${this.intl('continue')}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="five wide column"></div>
-                </div>
-                <div class="ui grid" data-op="step2" style="display: none; margin-top: -14em;">
-                    <div class="sixteen wide column">
-                        <img src="/endpoint/logo.png" class="unity-loading">
-                    </div>
-                    <div class="sixteen wide column">
-                        <h3 class="ui header centered white">${this.intl('step2.title')}</h3>
-                    </div>
-                </div>
-                <div class="ui grid" data-op="step3" style="display: none; margin-top: -14em;">
-                    <div class="five wide column"></div>
-                    <div class="six wide column">
-                        <h2 class="ui header centered white">${this.intl('step3.title')}</h2>
-                        <hr/>
-                        <div class="ui celled relaxed list" data-op="list" style="height: 30em; overflow-y: auto;">
-
-                        </div>
-                        <div class="ui two buttons">
-                            <button class="ui secondary button fluid" data-op="back">${this.intl('cancel')}</button>
-                            <button class="ui primary button fluid" data-op="import">${this.intl('continue')}</button>
-                        </div>
-                    </div>
-                    <div class="five wide column"></div>
-                </div>
-                <div class="ui grid" data-op="step4" style="display: none;">
-                    <div class="ui large active text loader">${this.intl('step4.title')}</div>
-                </div>
-                <div class="ui grid" data-op="step5" style="display: none; margin-top: -14em;">
-                    <div class="five wide column"></div>
-                    <div class="six wide column">
-                        <h3 class="ui header centered white">${this.intl('step4.message')}</h3>
-                        <div class="ui green active progress" data-percent="0">
-                            <div class="bar">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="five wide column"></div>
-                </div>
-                <div class="ui grid" data-op="error" style="display: none; margin-top: -14em;">
-                    <div class="five wide column"></div>
-                    <div class="six wide column">
-                        <h2 class="ui header centered white" data-op="error-text"></h2>
-                        <br/>
-                        <br/>
-                        <button class="ui secondary button fluid" data-op="error-button">${this.intl('continue')}</button>
+                        <div data-op="step1" style="display: none;">${this._createStep1()}</div>
+                        <div data-op="step2" style="display: none;">${this._createStep2()}</div>
+                        <div data-op="step3" style="display: none;">${this._createStep3()}</div>
+                        <div data-op="step4" style="display: none;">${this._createStep4()}</div>
+                        <div data-op="step5" style="display: none;">${this._createStep5()}</div>
+                        <div data-op="step6" style="display: none;">${this._createStep6()}</div>
                     </div>
                     <div class="five wide column"></div>
                 </div>
             </div>
-        `).appendTo($('body').first());
+        `);
+        
+        $(window.body).append(this.$parent);
+    }
+
+    _createStep1 () {
+        return `
+            <div class="ui inverted form">
+                <div class="field">
+                    <label>${this._intl('username')}</label>
+                    <div class="ui inverted input">
+                        <input type="text" autocomplete="username" data-op="username" name="username" placeholder="username@s1.sfgame.de">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>${this._intl('password')}</label>
+                    <input type="password" autocomplete="current-password" name="password" data-op="password">
+                </div>
+                <div class="grouped fields">
+                    <div class="field">
+                        <div class="ui radio checkbox" data-op="modeOwn">
+                            <input type="radio" name="endpointMode">
+                            <label>${this._intl('mode.own')}</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox" data-op="modeDefault">
+                            <input type="radio" name="endpointMode" checked="checked">
+                            <label>${this._intl('mode.default')}</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox" data-op="modeAllMembers">
+                            <input type="radio" name="endpointMode">
+                            <label>${this._intl('mode.guild')}</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox" data-op="modeAllFriends">
+                            <input type="radio" name="endpointMode">
+                            <label>${this._intl('mode.friends')}</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox" data-op="modeHallOfFame">
+                            <input type="radio" name="endpointMode">
+                            <label>${this._intl('mode.hall_of_fame')}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui two buttons">
+                    <button class="ui secondary button" data-op="back">${this._intl('cancel')}</button>
+                    <button class="ui primary button" data-op="login">${this._intl('continue')}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createStep2 () {
+        return `
+            <img class="ui centered image unity-loading" src="/endpoint/logo.png">
+            <h3 class="ui white centered header">${this._intl('step2.title')}</h3>
+        `;
+    }
+
+    _createStep3 () {
+        return `
+            <h2 class="ui header centered white">${this._intl('step3.title')}</h2>
+            <hr/>
+            <div class="ui celled relaxed list text-white" data-op="list" style="height: 30em; overflow-y: auto; font-size: 110%;">
+
+            </div>
+            <div class="ui two buttons">
+                <button class="ui secondary button" data-op="back">${this._intl('cancel')}</button>
+                <button class="ui primary button" data-op="import">${this._intl('continue')}</button>
+            </div>
+        `;
+    }
+
+    _createStep4 () {
+        return `
+            <div class="ui large active text loader">${this._intl('step4.title')}</div>
+        `;
+    }
+
+    _createStep5 () {
+        return `
+            <h3 class="ui white centered header">${this._intl('step4.message')}</h3>
+            <div class="ui green active progress" data-percent="0">
+                <div class="bar"></div>
+            </div>
+        `;
+    }
+
+    _createStep6 () {
+        return `
+            <h2 class="ui white centered header" data-op="error-text"></h2>
+            <br/>
+            <br/>
+            <button class="ui secondary button fluid" data-op="error-button">${this._intl('continue')}</button>
+        `;
     }
 })();
 

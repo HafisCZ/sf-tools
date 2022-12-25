@@ -45,28 +45,6 @@ body {
     overflow-x: auto;
 }
 
-div.item.item-member {
-    position: relative;
-}
-
-div.item.item-friend {
-    position: relative;
-}
-
-div.item.item-member::before {
-    content: "\f2bd";
-    font-family: Icons;
-    position: absolute;
-    right: 0.75em;
-}
-
-div.item.item-friend::before {
-    content: "\f164";
-    font-family: Icons;
-    position: absolute;
-    right: 0.75em;
-}
-
 tr[data-tr-timestamp], tr[data-tr-mark] {
     user-select: none;
     -ms-user-select: none;
@@ -118,11 +96,6 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     pointer-events: none;
     display: flex;
     flex-direction: column;
-}
-
-.darker-placeholder ::placeholder {
-    color: black !important;
-    opacity: 50% !important;
 }
 
 .css-op-select-el {
@@ -693,9 +666,6 @@ input:disabled {
 
 .unity-loading {
     animation: opacity-pulse-full 2s infinite;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 @keyframes opacity-pulse-full {
