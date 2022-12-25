@@ -95,13 +95,6 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     }
 }
 
-.css-timestamp {
-    position: absolute;
-    top: 0.25em;
-    left: 4.5em;
-    font-size: 85%;
-}
-
 @media only screen and (max-width: 992px) {
     .paste-target {
         display: none;
@@ -308,14 +301,6 @@ input:disabled {
     color: #505050 !important;
 }
 
-.field.npl {
-    padding-left: 0 !important;
-}
-
-.field.npr {
-    padding-right: 0 !important;
-}
-
 .margin-none-top {
     margin-top: 0 !important;
 }
@@ -326,14 +311,6 @@ input:disabled {
 
 .margin-medium-bottom {
     margin-bottom: 1.0em !important;
-}
-
-.padding-none-bottom {
-    padding-bottom: 0 !important;
-}
-
-.margin-large-top {
-    margin-top: 5.0em !important;
 }
 
 .css-small-row {
@@ -381,20 +358,12 @@ input:disabled {
     text-align: right !important;
 }
 
-.text-muted {
-    color: gray !important;
-}
-
 .text-bold {
     font-weight: bold !important;
 }
 
 .border-red {
     border-color: red !important;
-}
-
-.extreme.header {
-    font-size: 3em !important;
 }
 
 .border-right-thin {
@@ -454,10 +423,6 @@ input:disabled {
 
 .foreground-green {
     color: #00c851 !important;
-}
-
-.foreground-orange {
-    color: #ffbb33 !important;
 }
 
 .foreground-red {
@@ -664,14 +629,6 @@ input:disabled {
     padding: 0;
 }
 
-.settings-menu .active {
-    font-weight: normal !important;
-}
-
-.modal .settings-menu .active {
-    border-color: white !important;
-}
-
 .css-compact-grid .column {
     padding-top: 0.3em !important;
     padding-bottom: 0.3em !important;
@@ -734,28 +691,11 @@ input:disabled {
     margin-top: 2.0em;
 }
 
-.frozen {
-    pointer-events: none;
-    animation: opacity-pulse 2s infinite;
-}
-
 .unity-loading {
     animation: opacity-pulse-full 2s infinite;
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
-
-@keyframes opacity-pulse {
-    0% {
-        opacity: 80%;
-    }
-    50% {
-        opacity: 20%;
-    }
-    100% {
-        opacity: 80%
-    }
 }
 
 @keyframes opacity-pulse-full {

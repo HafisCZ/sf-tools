@@ -120,16 +120,6 @@ table.sftools-table .headers td {
     border-top: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-.ui.button.css-template-save {
-    padding-left: 1.25em;
-    padding-right: 1.25em;
-    border-top-right-radius: 0 !important;
-}
-
-.css-template-name {
-    border-top-left-radius: 0 !important;
-}
-
 .css-templates-list {
     margin-top: 0 !important;
 }
