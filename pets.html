@@ -497,9 +497,9 @@
                                 let id = parseInt($e.attr('data-value'));
 
                                 if (Math.trunc(id / 20) == type) {
-                                    $e.removeClass('css-hidden');
+                                    $e.show();
                                 } else {
-                                    $e.addClass('css-hidden');
+                                    $e.hide();
                                 }
                             });
                         }

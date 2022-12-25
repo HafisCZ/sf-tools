@@ -48,7 +48,7 @@
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a> <span class="css-temporary css-hidden" data-intl="stats.topbar.temporary_flag"></span></div>
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a> <span class="css-temporary" style="display: none;" data-intl="stats.topbar.temporary_flag"></span></div>
             <a class="item" id="show-players"><i class="small user icon"></i><span data-intl="stats.topbar.players"></span></a>
             <a class="item" id="show-groups"><i class="small archive icon"></i><span data-intl="stats.topbar.guilds"></span></a>
             <a class="item" id="show-browse"><i class="small database icon"></i><span data-intl="stats.topbar.browse"></span></a>
@@ -63,7 +63,7 @@
         </div>
 
         <!-- FilesView -->
-        <div id="view-files" class="ui main container css-hidden sf-container" style="width: 85vw;">
+        <div id="view-files" class="ui main container mb-20" style="display: none; width: 85vw;">
             <div class="ui grid">
                 <div class="three wide column">
                     <div class="ui segment">
@@ -202,7 +202,7 @@
         </div>
 
         <!-- SettingsView -->
-        <div id="view-settings" class="ui main container css-hidden" style="width: 95vw;">
+        <div id="view-settings" class="ui main container" style="display: none; width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
                     <h3 class="ui centered header" style="margin-top: 0;" data-intl="stats.scripts.settings"></h3>
@@ -281,7 +281,7 @@
         </div>
 
         <!-- PlayersView -->
-        <div id="view-players" class="ui main container css-hidden mb-20">
+        <div id="view-players" class="ui main container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
@@ -303,7 +303,7 @@
         </div>
 
         <!-- GroupsView -->
-        <div id="view-groups" class="ui main container css-hidden mb-20">
+        <div id="view-groups" class="ui main container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
@@ -326,7 +326,7 @@
         </div>
 
         <!-- BrowseView -->
-        <div id="view-browse" class="ui main container css-hidden mb-20">
+        <div id="view-browse" class="ui main container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide left aligned column">
                     <div class="flex flex-col">
@@ -366,7 +366,7 @@
         <div id="modal-playerdetail" class="ui basic large modal"></div>
 
         <!-- PlayerHistoryView -->
-        <div id="view-history" class="ui main container css-hidden mb-20">
+        <div id="view-history" class="ui main container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide center aligned column !pb-0">
@@ -560,7 +560,7 @@
         </div>
 
         <!-- GroupDetailView -->
-        <div id="view-groupdetail" class="ui main container css-hidden mb-20">
+        <div id="view-groupdetail" class="ui main container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column">
                     <div class="flex flex-col">
@@ -606,14 +606,14 @@
         </div>
 
         <!-- ProfilesView -->
-        <div id="view-profiles" class="ui main container css-hidden sf-container">
+        <div id="view-profiles" class="ui main container" style="display: none;">
             <div class="ui grid" data-op="list">
 
             </div>
         </div>
 
         <!-- OptionsView -->
-        <div id="view-options" class="ui main container css-hidden sf-container">
+        <div id="view-options" class="ui main container" style="display: none;">
             <div class="ui grid">
                 <div class="six wide column">
                     <div class="ui segment">
@@ -679,7 +679,7 @@
                             <label class="fluid ui button" style="background-color: orange; border-top-right-radius: .28571429rem; border-bottom-right-radius: .28571429rem;" for="button-recovery-upload">
                                 <i class="small upload icon"></i> <span data-intl="stats.settings.recovery.import"></span>
                             </label>
-                            <input type="file" accept=".json" class="css-hidden" id="button-recovery-upload" data-op="import">
+                            <input type="file" accept=".json" class="ui invisible file input" id="button-recovery-upload" data-op="import">
                         </div>
                     </div>
                 </div>
@@ -716,7 +716,7 @@
                     Preferences.temporary();
 
                     $('#show-profile').addClass('pointer-events-none opacity-50');
-                    $('.css-temporary').removeClass('css-hidden');
+                    $('.css-temporary').show();
 
                     profile = {
                         temporary: true
