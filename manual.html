@@ -103,15 +103,6 @@
             <br/>
             <hr/>
             <p>
-                Special headers for the Fight Simulator.
-            </p>
-            <br/>
-            <div class="ui four columns grid css-compact-grid" id="manual-headers-3">
-
-            </div>
-            <br/>
-            <hr/>
-            <p>
                 Itemizable headers
             </p>
             <br/>
@@ -981,12 +972,6 @@
                     Force recalculation of <code>set with all</code> values. Using this keyword can cause unwanted effects when filtering by expression and using <code>set with all</code> values.
                 </div>
                 <div class="two wide text-center column">
-                    x:
-                </div>
-                <div class="fourteen wide column">
-                    Enable simulator within the Players tab.
-                </div>
-                <div class="two wide text-center column">
                     a:
                 </div>
                 <div class="fourteen wide column">
@@ -1198,10 +1183,7 @@
                 'Underworld Building': 'Currently upgraded underworld building',
                 'Underworld Building Finish': 'Finish date of upgraded underworld building',
                 'Gold Pit Hourly': 'Hourly gold pit rate',
-                'Gold Pit Max': 'Gold pit capacity',
-                'Simulator Avg': 'Average win rate',
-                'Simulator Max': 'Largest win rate',
-                'Simulator Min': 'Smallest win rate (viability)'
+                'Gold Pit Max': 'Gold pit capacity'
             };
 
             $('#manual-constants').html(Object.keys(new Constants().Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
@@ -1211,7 +1193,6 @@
             $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center three wide column ta-reserved">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center three wide column ta-reserved-protected">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center three wide column ta-reserved-private">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
-            $('#manual-headers-3').html(Object.keys(SP_KEYWORD_MAPPING_3).map(header => `<div class="text-center three wide column ta-reserved-special">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-4').html(Object.keys(SP_KEYWORD_MAPPING_4).map(header => `<div class="text-center three wide column ta-reserved-scoped">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-5').html(Object.keys(SP_KEYWORD_MAPPING_5).map(header => `<div class="text-center three wide column ta-reserved-itemizable">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
         </script>

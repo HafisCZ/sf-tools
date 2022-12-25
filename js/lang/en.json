@@ -306,7 +306,6 @@
             "l": "Show only latest",
             "f": "Show only first or first n entries",
             "r": "Force recalculation of global variables",
-            "x": "Enable simulator (argument is number of iterations)",
             "h": "Show hidden",
             "o": "Show own",
             "a": "Show all",

@@ -409,9 +409,7 @@ class TableInstance {
     }
 
     // Set players
-    setEntries (array, skipEvaluation = false, simulatorLimit = 0, manualSort = null) {
-        let shouldUpdate = false;
-
+    setEntries (array, skipEvaluation = false, manualSort = null) {
         if (this.type == ScriptType.History) {
             this.array = array.map(([ timestamp, e ]) => {
                 let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
@@ -445,7 +443,7 @@ class TableInstance {
             this.settings.evalHistory(this.array.map(p => p[1]), array.map(p => p[1]));
         } else if (!skipEvaluation) {
             if (this.type == ScriptType.Players) {
-                this.settings.evalPlayers(this.array, array, simulatorLimit, this.array.perf);
+                this.settings.evalPlayers(this.array, array);
             } else {
                 this.settings.evalGuilds(this.array, array);
             }
