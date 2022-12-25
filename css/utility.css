@@ -51,6 +51,11 @@
   justify-content: center;
 }
 
+/* Gap */
+.gap-2 {
+  gap: 0.5em;
+}
+
 /* Padding */
 .\!p-0 {
   padding: 0 !important;
