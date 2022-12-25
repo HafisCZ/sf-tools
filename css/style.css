@@ -200,10 +200,6 @@ body.dimmed .menu {
     color: white !important;
 }
 
-.css-hidden {
-    display: none !important;
-}
-
 .glow:hover {
     color: red !important;
     cursor: pointer !important;
@@ -224,10 +220,6 @@ body.dimmed .menu {
 
 .text-green {
     color: green !important;
-}
-
-.sf-container {
-    margin-bottom: 5em;
 }
 
 .dropdown-container {

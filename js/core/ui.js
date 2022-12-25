@@ -34,8 +34,8 @@ const UI = new (class {
 
         window.scrollTo(0, 0);
 
-        $('.ui.container').addClass('css-hidden');
-        screen.$parent.removeClass('css-hidden');
+        $('.ui.container').hide();
+        screen.$parent.show();
 
         screen.show(... args);
         const name = screen.sha;
