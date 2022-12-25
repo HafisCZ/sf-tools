@@ -254,8 +254,6 @@ class Expression {
                     value = SFormat.ReservedProtected(token);
                 } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(token)) {
                     value = SFormat.ReservedPrivate(token);
-                } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(token)) {
-                    value = SFormat.ReservedSpecial(token);
                 } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
                     value = SFormat.ReservedScoped(token);
                 } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
@@ -3066,46 +3064,6 @@ const SP_KEYWORD_MAPPING_2 = {
     }
 };
 
-// Special
-const SP_KEYWORD_MAPPING_3 = {
-    'Simulator Avg': {
-        expr: (p, c, e) => {
-            if (e.variables.Simulator && e.variables.Simulator.value[p.Identifier]) {
-                return e.variables.Simulator.value[p.Identifier].avg;
-            } else {
-                return undefined;
-            }
-        },
-        alias: 'Win Avg %',
-        width: 120,
-        format: (p, c, e, x) => `${ (x).toFixed(2) }%`
-    },
-    'Simulator Min': {
-        expr: (p, c, e) => {
-            if (e.variables.Simulator && e.variables.Simulator.value[p.Identifier]) {
-                return e.variables.Simulator.value[p.Identifier].min;
-            } else {
-                return undefined;
-            }
-        },
-        alias: 'Win Min %',
-        width: 120,
-        format: (p, c, e, x) => `${ (x).toFixed(2) }%`
-    },
-    'Simulator Max': {
-        expr: (p, c, e) => {
-            if (e.variables.Simulator && e.variables.Simulator.value[p.Identifier]) {
-                return e.variables.Simulator.value[p.Identifier].max;
-            } else {
-                return undefined;
-            }
-        },
-        alias: 'Win Max %',
-        width: 120,
-        format: (p, c, e, x) => `${ (x).toFixed(2) }%`
-    }
-}
-
 // Itemized
 const SP_KEYWORD_MAPPING_4 = {
     'Item Strength': {
@@ -3269,7 +3227,6 @@ const SP_KEYWORDS = {};
 mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_0);
 mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_1);
 mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_2);
-mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_3);
 mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_5);
 
 const SP_KEYWORDS_INDIRECT = {};

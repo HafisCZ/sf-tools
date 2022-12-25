@@ -688,8 +688,6 @@ const SettingsCommands = [
                     return prefix + ' ' + SFormat.ReservedProtected(name) + suffix;
                 } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
                     return prefix + ' ' + SFormat.ReservedPrivate(name) + suffix;
-                } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedSpecial(name) + suffix;
                 } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
                     return prefix + ' ' + SFormat.ReservedItemizable(name) + suffix;
                 } else {
@@ -720,8 +718,6 @@ const SettingsCommands = [
                     return prefix + ' ' + SFormat.ReservedProtected(name);
                 } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
                     return prefix + ' ' + SFormat.ReservedPrivate(name);
-                } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedSpecial(name);
                 } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
                     return prefix + ' ' + SFormat.ReservedItemizable(name);
                 } else {
@@ -982,17 +978,6 @@ const SettingsCommands = [
         (root, extensions) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('left category')
     ),
     /*
-        Simulator target
-    */
-    new Command(
-        /^simulator (target|source) (\S+)$/,
-        (root, mode, identifier) => {
-            root.addGlobal('simulator_target', identifier);
-            root.addGlobal('simulator_target_source', mode == 'source');
-        },
-        (root, mode, identifier) => SFormat.Keyword('simulator ') + SFormat.Keyword(mode) + ' ' + (identifier in DatabaseManager.Players ? SFormat.Constant(identifier) : SFormat.Error(identifier))
-    ),
-    /*
         Statistics
     */
     new Command(
@@ -1004,18 +989,6 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => SFormat.Keyword('statistics ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root)
-    ),
-    /*
-        Simulator cycles
-    */
-    new Command(
-        /^simulator (\d+)$/,
-        (root, value) => {
-            if (value > 0) {
-                root.addGlobal('simulator', Number(value));
-            }
-        },
-        (root, value) => SFormat.Keyword('simulator ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
     ),
     /*
         Extra expression
@@ -1738,7 +1711,7 @@ class Settings {
             let name = obj.name;
 
             // Get mapping if exists
-            let mapping = SP_KEYWORD_MAPPING_0[name] || SP_KEYWORD_MAPPING_1[name] || SP_KEYWORD_MAPPING_2[name] || SP_KEYWORD_MAPPING_3[name] || SP_KEYWORD_MAPPING_5_HO[name];
+            let mapping = SP_KEYWORD_MAPPING_0[name] || SP_KEYWORD_MAPPING_1[name] || SP_KEYWORD_MAPPING_2[name] || SP_KEYWORD_MAPPING_5_HO[name];
 
             // Merge definitions
             for (let definitionName of obj.extensions || []) {
@@ -2275,10 +2248,6 @@ class Settings {
         return this.globals.performance;
     }
 
-    getSimulatorLimit () {
-        return this.globals.simulator;
-    }
-
     getOpaqueStyle () {
         return this.globals.opaque ? 'css-entry-opaque' : '';
     }
@@ -2406,7 +2375,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalPlayers (array, unfilteredArray, simulatorLimit, entryLimit) {
+    evalPlayers (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
@@ -2435,9 +2404,6 @@ class Settings {
         this.array_unfiltered = unfilteredArray;
         this.timestamp = array.timestamp;
         this.reference = array.reference;
-
-        // Run simulator if needed
-        this.evalSimulator(array, simulatorLimit, entryLimit);
 
         // Get segmented lists
         let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
@@ -2493,8 +2459,6 @@ class Settings {
         this.evalRowIndexes(array, true);
 
         // Variables
-        let simulatorLimit = this.getSimulatorLimit();
-        let entryLimit = array.length;
         let compareEnvironment = this.getCompareEnvironment();
         let sameTimestamp = array.timestamp == array.reference;
 
@@ -2522,9 +2486,6 @@ class Settings {
         this.timestamp = array.timestamp;
         this.reference = array.reference;
 
-        // Run simulator if needed
-        this.evalSimulator(array, simulatorLimit, entryLimit);
-
         array = [ ... array ];
         unfilteredArray = [ ... unfilteredArray ];
 
@@ -2551,7 +2512,6 @@ class Settings {
                 // Calculate values of table variable
                 let currentValue = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent).eval(variable.ast);
                 let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare).eval(variable.ast);
-
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2581,99 +2541,6 @@ class Settings {
 
         this.evalRules();
     }
-
-    fetchSimulatorPlayer ({ Identifier: identifier, Timestamp: timestamp }) {
-        let player = DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel();
-        player.ForceGladiator = 15;
-
-        return {
-            player
-        };
-    }
-
-    evalSimulator (array, cycles = 0, limit = array.length) {
-        if (cycles) {
-            // Check whether timestamps match
-            let sameTimestamp = array.reference == array.timestamp;
-
-            // Slice the array depending on the entry limit
-            array = array.slice(0, limit);
-
-            // Arrays
-            let arrayCurrent = null;
-            let arrayCompare = null;
-
-            // Simulate
-            if (sameTimestamp) {
-                // Create arrays
-                arrayCurrent = array.map(({ player }) => this.fetchSimulatorPlayer(player));
-
-                // Set target
-                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
-
-                // Null the targets if any is not found
-                if (targetCurrent == null) {
-                    targetCurrent = null;
-                } else {
-                    targetCurrent = targetCurrent.player;
-                }
-
-                // Run fight simulator
-                new FightSimulator().simulate(arrayCurrent, cycles, targetCurrent, this.globals.simulator_target_source);
-            } else {
-                // Create arrays
-                arrayCurrent = array.map(({ player }) => this.fetchSimulatorPlayer(player));
-                arrayCompare = array.map(({ compare }) => this.fetchSimulatorPlayer(compare));
-
-                // Set targets
-                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
-                let targetCompare = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
-
-                // Null the targets if any is not found
-                if (targetCurrent == null || targetCompare == null) {
-                    targetCompare = targetCompare = null;
-                } else {
-                    targetCurrent = targetCurrent.player;
-                    targetCompare = targetCompare.player;
-                }
-
-                // Run fight simulator
-                new FightSimulator().simulate(arrayCurrent, cycles, targetCurrent, this.globals.simulator_target_source);
-                new FightSimulator().simulate(arrayCompare, cycles, targetCompare, this.globals.simulator_target_source);
-            }
-
-            // Set second array to first if missing
-            if (sameTimestamp) {
-                arrayCompare = arrayCurrent;
-            }
-
-            // Process results
-            let resultsCurrent = {};
-            let resultsCompare = {};
-
-            for (let { player, score } of arrayCurrent) {
-                resultsCurrent[player.Identifier] = score;
-            }
-
-            for (let { player, score } of arrayCompare) {
-                resultsCompare[player.Identifier] = score;
-            }
-
-            // Save variables
-            this.variables['Simulator'] = {
-                value: resultsCurrent
-            };
-
-            this.variablesReference['Simulator'] = {
-                value: resultsCompare
-            }
-        } else {
-            // Delete variables
-            delete this.variables['Simulator'];
-            delete this.variablesReference['Simulator'];
-        }
-    }
-
 
     /*
         Old shit

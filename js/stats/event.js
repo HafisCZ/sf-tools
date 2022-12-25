@@ -970,11 +970,11 @@ class BrowseView extends View {
             'create',
             5,
             _array_to_hash(
-                ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'x', 'h', 'o', 'sr', 'q', 'qc', 't'],
+                ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 'qc', 't'],
                 k => [k, intl(`stats.filters.${k}`)]
             )
         ).change(async (event) => {
-            var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t|#):/);
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|h|o|sr|q|qc|t|#):/);
 
             var terms = [
                 {
@@ -995,7 +995,6 @@ class BrowseView extends View {
                 }
             ];
 
-            var sim = undefined;
             var perf = undefined;
 
             this.shidden = false;
@@ -1088,9 +1087,6 @@ class BrowseView extends View {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 } else if (key == 'r') {
                     this.recalculate = true;
-                } else if (key == 'x' && !isNaN(arg)) {
-                    this.recalculate = true;
-                    sim = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 } else if (key == 'h') {
                     this.shidden = true;
                 } else if (key == 'o') {
@@ -1155,7 +1151,7 @@ class BrowseView extends View {
                 }
             }
 
-            this.table.setEntries(entries, !this.recalculate, sim, this.autosort);
+            this.table.setEntries(entries, !this.recalculate, this.autosort);
 
             this.refresh();
 
