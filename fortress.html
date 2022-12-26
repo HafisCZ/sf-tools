@@ -360,55 +360,32 @@
 
                 // Run simulation
                 $('#simulate').click(async function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
                     if (list.length > 0) {
-                        Loader.toggle(true);
-
-                        const maximumInstances= Math.max(1, Number($('#sim-threads').val()) || 4);
-                        const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
-
                         const results = [];
-                        const pendingInstances = [];
+
+                        const batch = new WorkerBatch('fortress');
 
                         for (const { data, index } of list) {
-                            const { player, target } = FortressUnits.fromEditor(data);
-                            
-                            const worker = await Workers.createSimulatorWorker('fortress');
-
-                            worker.addEventListener('message', message => {
-                                results.push(message.data);
-
-                                if (results.length == list.length) {
-                                    Loader.toggle(false);
-
-                                    for (const { score, index: _index } of results) {
-                                        const localIndex = list.findIndex(it => it.index == _index);
-                                        if (localIndex >= 0) {
-                                            list[localIndex].score = score;
-                                        }
-                                    }
-
-                                    listUpdate();
-                                } else if (pendingInstances.length > 0) {
-                                    const [ _worker, args ] = pendingInstances.pop();
-                                    _worker.postMessage(args);
-                                }
-                            });
-
-                            pendingInstances.push([
-                                worker,
-                                {
-                                    player,
-                                    target,
-                                    index,
-                                    iterations
-                                }
-                            ]);
+                            batch.add(
+                                (data) => void results.push(data),
+                                Object.assign({ index, iterations }, FortressUnits.fromEditor(data))
+                            );
                         }
 
-                        for (let i = 0; i < Math.min(maximumInstances, pendingInstances.length); i++) {
-                            const [ worker, args ] = pendingInstances.pop();
-                            worker.postMessage(args);
-                        }
+                        batch.run(instances).then(() => {
+                            for (const { score, index: _index } of results) {
+                                const localIndex = list.findIndex(it => it.index == _index);
+
+                                if (localIndex >= 0) {
+                                    list[localIndex].score = score;
+                                }
+                            }
+
+                            listUpdate();
+                        })
                     }
                 })
             });
