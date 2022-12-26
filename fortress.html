@@ -359,7 +359,7 @@
                 });
 
                 // Run simulation
-                $('#simulate').click(async function () {
+                $('#simulate').click(function () {
                     const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
                     const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
@@ -370,7 +370,9 @@
 
                         for (const { data, index } of list) {
                             batch.add(
-                                (data) => void results.push(data),
+                                (data) => {
+                                    results.push(data);
+                                },
                                 Object.assign({ index, iterations }, FortressUnits.fromEditor(data))
                             );
                         }
