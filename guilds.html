@@ -468,39 +468,35 @@
                 );
 
                 $('#simulate').click(async function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
                     if (validateLists()) {
-                        Loader.toggle(true);
+                        const results = [];
 
-                        // Set up threads & iterations
-                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+                        Toast.info(intl('guilds.toast.start.title'), intl('guilds.toast.start.message#', { iterations, blocks: instances }))
 
-                        Toast.info(intl('guilds.toast.start.title'), intl('guilds.toast.start.message#', { iterations, blocks }))
+                        const batch = new WorkerBatch('guilds');
 
-                        let blocksResults = [];
+                        for (let i = 0; i < instances; i++) {
+                            batch.add(
+                                ({ results: _results, time }) => {
+                                    results.push(_results);
 
-                        for (let i = 0; i < blocks; i++) {
-                            let worker = await Workers.createSimulatorWorker('guilds');
-
-                            worker.addEventListener('message', function ({ data: { results, time }}) {
-                                blocksResults.push(results);
-
-                                Toast.info(intl('guilds.toast.end.title', { done: blocksResults.length, total: blocks }), intl('guilds.toast.end.message#', { time: time / 1000 }))
-
-                                if (blocksResults.length == blocks) {
-                                    displayResults(blocksResults, blocks * iterations);
-
-                                    Loader.toggle(false);
+                                    Toast.info(intl('guilds.toast.end.title', { done: results.length, total: instances }), intl('guilds.toast.end.message#', { time: time / 1000 }))
+                                },
+                                {
+                                    flags: getSimulatorFlags(),
+                                    guildA: playerList[0],
+                                    guildB: playerList[1],
+                                    iterations
                                 }
-                            }, false);
-
-                            worker.postMessage({
-                                flags: getSimulatorFlags(),
-                                guildA: playerList[0],
-                                guildB: playerList[1],
-                                iterations: iterations
-                            })
+                            )
                         }
+
+                        batch.run(instances).then(() => {
+                            displayResults(results, instances * iterations);
+                        });
                     }
                 })
             });
