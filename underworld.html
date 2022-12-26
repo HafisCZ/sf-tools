@@ -495,11 +495,11 @@
                         for (let i = 0; i < playerList.length; i++) {
                             batch.add(
                                 ({ results: _results }) => {
-                                    results.push(... _results);
+                                    results.push(_results);
                                 },
                                 {
                                     units: UnderworldUnits.fromEditor(underworldEditor.read(), shieldMode),
-                                    players: [playerList[i]],
+                                    player: playerList[i],
                                     iterations
                                 }
                             );
