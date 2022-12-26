@@ -408,7 +408,13 @@
                 })
 
                 // Display methods
-                function updatePlayerList () {
+                function updatePlayerList (resetPlayerScore = false) {
+                    if  (resetPlayerScore) {
+                        for (let entry of playerList) {
+                            entry.score = null;
+                        }
+                    }
+
                     updateSimulateButton();
 
                     if (playerList.every(entry => typeof entry.score === 'number')) {
@@ -472,53 +478,38 @@
                     });
                 }
 
-                $('#simulate').click(async function () {
+                $('#simulate').click(function () {
                     // Ensure input is valid
-                    let underworldValid = underworldEditor.valid() && ['goblin', 'troll', 'keeper'].reduce((memo, name) => memo + underworldEditor.fields[name].get(), 0) > 0;
-                    let playersValid = playerList.length > 0;
+                    const underworldValid = underworldEditor.valid() && ['goblin', 'troll', 'keeper'].reduce((memo, name) => memo + underworldEditor.fields[name].get(), 0) > 0;
+                    const playersValid = playerList.length > 0;
+
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
                     if (underworldValid && playersValid) {
-                        // Reset score for every player
-                        for (let entry of playerList) {
-                            entry.score = null;
-                        }
+                        const results = [];
+                        const batch = new WorkerBatch('underworld');
 
-                        updatePlayerList();
-                        Loader.toggle(true);
+                        updatePlayerList(true);
 
-                        // Set up threads & iterations
-                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
-                        let blockSize = Math.ceil(playerList.length / blocks);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
-
-                        Toast.info(intl('underworld.toast.start.title'), intl('underworld.toast.start.message#', { blocks, blockSize, iterations }));
-
-                        let resultList = [];
-                        let blocksFinished = 0;
-
-                        for (let i = 0; i < playerList.length; i+= blockSize) {
-                            let block = playerList.slice(i, i + blockSize);
-
-                            let worker = await Workers.createSimulatorWorker('underworld');
-                            worker.addEventListener('message', function (message) {
-                                resultList.push(... message.data.results);
-
-                                Toast.info(intl('underworld.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('underworld.toast.end.message#', { time: message.data.time / 1000 }));
-
-                                if (playerList.length == resultList.length) {
-                                    playerList = resultList;
-                                    updatePlayerList();
-
-                                    Loader.toggle(false);
+                        for (let i = 0; i < playerList.length; i++) {
+                            batch.add(
+                                ({ results: _results }) => {
+                                    results.push(... _results);
+                                },
+                                {
+                                    units: UnderworldUnits.fromEditor(underworldEditor.read(), shieldMode),
+                                    players: [playerList[i]],
+                                    iterations
                                 }
-                            }, false);
-
-                            worker.postMessage({
-                                units: UnderworldUnits.fromEditor(underworldEditor.read(), shieldMode),
-                                players: block,
-                                iterations: iterations
-                            });
+                            );
                         }
+
+                        batch.run(instances).then(() => {
+                            playerList = results;
+                            
+                            updatePlayerList();
+                        });
                     }
                 })
             });
