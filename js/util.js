@@ -256,40 +256,61 @@ class WorkerBatch {
 
     async _nextWorker () {
         if (this.workers.length > 0) {
-            const [callback, params] = this.workers.pop();
+            const index = this.workers.findIndex(([, params]) => this.activeParams.every((_params) => this.instanceCondition(params, _params)));
 
-            const worker = await this._createWorker();
-            worker.addEventListener('message', ({ data }) => {
-                callback(data, Date.now() - this.timestamp, this);
+            if (index !== -1) {
+                const [callback, params] = this.workers.splice(index, 1)[0];
+                this.activeParams.push(params);
+    
+                const worker = await this._createWorker();
+                worker.addEventListener('message', ({ data }) => {
+                    callback(data, Date.now() - this.timestamp);
+    
+                    Loader.progress(++this.workersDone / this.workersTotal);
 
-                Loader.progress(++this.workersDone / this.workersTotal);
+                    this.activeParams.splice(
+                        this.activeParams.indexOf(params),
+                        1
+                    );
 
-                if (this.workersDone === this.workersTotal) {
-                    this._resolve();
-                } else {
-                    this._nextWorker();
-                }
-            })
-
-            worker.postMessage(params);
+                    if (this.workersDone === this.workersTotal) {
+                        this._resolve();
+                    } else {
+                        this._nextWorker();
+                    }
+                })
+    
+                worker.postMessage(params);
+            }
         }
     }
 
-    skipWorker (predicate) {
-
+    skip (predicate) {
+        for (let i = 0; i < this.workers.length; i++) {
+            // Remove worker if predicate is true
+            if (predicate(this.workers[i][1])) {
+                this.workers.splice(i--, 1);
+                this.workersDone++;
+            }
+        }
     }
 
     add (callback, params) {
         this.workers.push([ callback, params ]);
     }
 
-    run (instances) {
+    run (instances, instanceCondition = () => true) {
         // Initial timestamp
         this.timestamp = Date.now();
 
         // Set counters
         this.workersDone = 0;
         this.workersTotal = this.workers.length;
+
+        this.activeParams = [];
+
+        // Set instance condition
+        this.instanceCondition = instanceCondition;
 
         // Show loader
         Loader.toggle(true, { progress: true });
@@ -303,9 +324,13 @@ class WorkerBatch {
                 resolve();
             };
 
-            const instancesInitial = Math.min(instances, this.workersTotal);
-            for (let i = 0; i < instancesInitial; i++) {
-                this._nextWorker();
+            if (this.workersTotal === 0) {
+                this._resolve();
+            } else {
+                const instancesInitial = Math.min(instances, this.workersTotal);
+                for (let i = 0; i < instancesInitial; i++) {
+                    this._nextWorker();
+                }
             }
         })
     }
