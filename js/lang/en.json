@@ -488,6 +488,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
             "one": "Generate",
             "five": "Generate next 5",
