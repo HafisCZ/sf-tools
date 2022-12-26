@@ -231,12 +231,12 @@ const Workers = new (class {
         return this.objectCache[type];
     }
 
-    async createPetWorker () {
-        return new Worker(await this._fetchObject('pets', false));
+    async _prefetch (type) {
+        await this._fetchObject(type, type !== 'pets');
     }
 
-    async createSimulatorWorker (type) {
-        return new Worker(await this._fetchObject(type));
+    async createWorker (type) {
+        return new Worker(await this._fetchObject(type, type !== 'pets'));
     }
 })();
 
@@ -244,14 +244,6 @@ class WorkerBatch {
     constructor (type) {
         this.type = type;
         this.workers = [];
-    }
-
-    _createWorker () {
-        if (this.type === 'pets') {
-            return Workers.createPetWorker();
-        } else {
-            return Workers.createSimulatorWorker(this.type);
-        }
     }
 
     async _nextWorker () {
@@ -262,7 +254,7 @@ class WorkerBatch {
                 const [callback, params] = this.workers.splice(index, 1)[0];
                 this.activeParams.push(params);
     
-                const worker = await this._createWorker();
+                const worker = await Workers.createWorker(this.type);
                 worker.addEventListener('message', ({ data }) => {
                     callback(data, Date.now() - this.timestamp);
     
@@ -331,6 +323,8 @@ class WorkerBatch {
             if (this.workersTotal === 0) {
                 this._resolve();
             } else {
+                await Workers._prefetch(this.type);
+
                 const instancesInitial = Math.min(instances, this.workersTotal);
                 for (let i = 0; i < instancesInitial; i++) {
                     this._nextWorker();

@@ -371,7 +371,9 @@
                             )
                         }
 
-                        batch.run(instances).then(() => {
+                        batch.run(instances).then((duration) => {
+                            Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                            
                             showResults(results);
                         })
                     }
