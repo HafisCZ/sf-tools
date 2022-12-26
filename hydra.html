@@ -104,16 +104,21 @@
                 <div class="column">
                     <div class="ui grid">
                         <div class="row">
-                            <div class="three wide column text-center" style="align-self: center;" data-intl="hydra.iterations.label"></div>
-                            <div class="five wide column">
+                            <div class="eight wide column">
                                 <div class="ui small form">
-                                    <div class="field" data-position="bottom center" data-intl-tooltip="hydra.iterations.popup">
-                                        <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
+                                    <div class="two fields" style="margin-bottom: 0;">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
+                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        </div>
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="eight wide column">
-                                <button class="ui fluid button" type="submit" id="sim-run" data-intl="simulator.simulate"></button>
+                                <button class="ui fluid button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -133,6 +138,7 @@
 
         <script type="text/javascript">
             Site.ready(function () {
+                $('#sim-threads').captiveInputField('hydra_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
 
                 const EditorController = new (class {
@@ -340,37 +346,34 @@
                     }
                 );
 
-                $('#sim-run').click(async function () {
-                    if (EditorController.valid()) {
-                        Loader.toggle(true);
+                $('#simulate').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
-                        const iterations = Math.max(1, Number($('#sim-iterations').val()) || 10000);
+                    if (EditorController.valid()) {
+                        const results = [];
 
                         const hydra = getHydraData();
                         const pets = [1, 2, 3].map(klass => getPlayerData(klass));
 
-                        let results = [];
-                        let finishedSimulations = 0;
+                        const batch = new WorkerBatch('hydra');
 
                         for (let i = 0; i < pets.length; i++) {
-                            const worker = await Workers.createSimulatorWorker('hydra');
-
-                            worker.addEventListener('message', message => {
-                                results[i] = message.data.results;
-                                finishedSimulations++;
-
-                                if (finishedSimulations == pets.length) {
-                                    Loader.toggle(false);
-                                    showResults(results);
+                            batch.add(
+                                ({ results: _results }) => {
+                                    results[i] = _results
+                                },
+                                {
+                                    iterations,
+                                    hydra,
+                                    pet: pets[i]
                                 }
-                            }, false);
-
-                            worker.postMessage({
-                                iterations: iterations,
-                                hydra: hydra,
-                                pet: pets[i]
-                            });
+                            )
                         }
+
+                        batch.run(instances).then(() => {
+                            showResults(results);
+                        })
                     }
                 });
 
@@ -400,7 +403,7 @@
                 }
 
                 function clearResults () {
-                    const $simButton = $('#sim-run');
+                    const $simButton = $('#simulate');
                     if (EditorController.valid()) {
                         $simButton.removeClass('disabled');
                     } else {
