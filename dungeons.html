@@ -39,10 +39,6 @@
 
         <script src="js/sim/dungeon_data.js"></script>
         <script src="js/editor.js"></script>
-        
-        <script type="text/javascript">
-            LOGICAL_PROCS = (navigator || {}).hardwareConcurrency || 4;
-        </script>
 
         <script src="js/sim/base.js"></script>
         <script src="js/sim/debug_utils.js"></script>
@@ -459,7 +455,7 @@
                 var dungeon_current = null;
                 var dungeon = null;
                 var availableBosses = null;
-                var log = urlParams.has('log');
+                var modeLog = urlParams.has('log');
 
                 SimulatorUtils.configure(
                     CONFIG,
@@ -953,60 +949,33 @@
                     return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
                 }
 
-                $('#sim-run-all').click(async function () {
+                $('#sim-run-all').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                    
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
-                        Loader.toggle(true, { progress: true });
+                        const results = [];
 
-                        let results = [];
-                        let resultsRemaining = availableBosses.length;
+                        const batch = new WorkerBatch('dungeons');
 
-                        let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-
-                        let pendingInstances = [];
-
-                        const updateProgress = () => {
-                            Loader.progress(results.filter(r => r).length / availableBosses.length);
-                        }
-
-                        for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
-                            let worker = await Workers.createSimulatorWorker('dungeons');
-
-                            worker.addEventListener('message', (message) => {
-                                let { score, iterations, healths } = message.data.results;
-
-                                results[message.data.index] = {
-                                    score,
-                                    healths,
-                                    iterations
-                                };
-
-                                updateProgress();
-
-                                if (--resultsRemaining <= 0) {
-                                    Loader.toggle(false);
-                                    showMassDungeonResults(availableBosses, results, true, true);
-                                } else if (pendingInstances.length > 0) {
-                                    let [ secWorker, args ] = pendingInstances.pop();
-                                    secWorker.postMessage(args);
+                        for (let [index, { boss, dungeon }] of Object.entries(availableBosses)) {
+                            batch.add(
+                                ({ results: _results }) => {
+                                    results[index] = _results;
+                                },
+                                {
+                                    players: preparePlayerInstances(dungeon),
+                                    boss: getBossData(boss, dungeon),
+                                    iterations,
+                                    hpcap: 500,
+                                    config: SimulatorUtils.config
                                 }
-                            }, false);
-
-                            pendingInstances.push([worker, {
-                                players: preparePlayerInstances(dungeon),
-                                boss: getBossData(boss, dungeon),
-                                iterations: iterations,
-                                index: index,
-                                hpcap: 500,
-                                config: SimulatorUtils.config
-                            }])
+                            )
                         }
 
-                        let currentInstances = Math.min(maximumInstances, pendingInstances.length);
-                        for (let i = 0; i < currentInstances; i++) {
-                            let [ worker, args ] = pendingInstances.pop();
-                            worker.postMessage(args);
-                        }
+                        batch.run(instances).then(() => {
+                            showMassDungeonResults(availableBosses, results, true, true);
+                        })
                     }
                 });
 
@@ -1023,26 +992,26 @@
 
                 const NEXT_DUNGEONS_INVERTED = _invert(NEXT_DUNGEONS, true);
 
-                $('#sim-run-next').click(async function () {
+                $('#sim-run-next').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                   
+                    const threshold_min = _clamp(Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)), 0, 100);
+                    const threshold_max = _clamp(Number(SharedPreferences.getRaw('dungeon_sim/threshold_max', 5)), threshold_min, 100);
+                    
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
-                        Loader.toggle(true, { progress: true });
-
-                        let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-
-                        let threshold_min = _clamp(Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)), 0, 100);
-                        let threshold_max = _clamp(Number(SharedPreferences.getRaw('dungeon_sim/threshold_max', 5)), threshold_min, 100);
-
-                        let dungeonStacks = [];
-                        for (let { boss: _boss, dungeon: _dungeon, id: _id } of availableBosses) {
+                        const results = [];
+                        
+                        let pending = [];
+                        for (const { boss: _boss, dungeon: _dungeon, id: _id } of availableBosses) {
                             if (_id === 203) {
                                 // Ignore twister
                                 continue;
                             }
 
-                            let dungeonStack = [];
+                            const dungeonStack = [];
 
-                            for (let bossData of Object.values(_dungeon.floors)) {
+                            for (const bossData of Object.values(_dungeon.floors)) {
                                 if (dungeonStack.length > 0 || bossData.pos == _boss.pos) {
                                     dungeonStack.push({
                                         id: _id,
@@ -1053,10 +1022,10 @@
                             }
 
                             if (_id in NEXT_DUNGEONS) {
-                                let nextId = NEXT_DUNGEONS[_id];
-                                let nextDungeon = DUNGEON_DATA[nextId];
+                                const nextId = NEXT_DUNGEONS[_id];
+                                const nextDungeon = DUNGEON_DATA[nextId];
 
-                                for (let bossData of Object.values(nextDungeon.floors)) {
+                                for (const bossData of Object.values(nextDungeon.floors)) {
                                     dungeonStack.push({
                                         id: nextId,
                                         dungeon: nextDungeon,
@@ -1065,124 +1034,56 @@
                                 }
                             }
 
-                            dungeonStacks.push(dungeonStack);
+                            pending = pending.concat(dungeonStack);
                         }
 
-                        let floorStacks = [];
-                        for (let i = 0; i < Math.max(...dungeonStacks.map(s => s.length)); i++) {
-                            floorStacks[i] = [];
+                        const batch = new WorkerBatch('dungeons');
 
-                            for (let j = 0; j < dungeonStacks.length; j++) {
-                                if (dungeonStacks[j][i]) {
-                                    floorStacks[i].push(dungeonStacks[j][i]);
-                                }
-                            }
-                        }
-
-                        let currentStack = null;
-                        let pendingStacks = [];
-
-                        let results = [];
-                        let resultsTotal = 0;
-                        let resultsRemaining = 0;
-                        let resultsRemainingStack = 0;
-
-                        const updateProgress = () => {
-                            Loader.progress((resultsTotal - resultsRemaining) / resultsTotal);
-                        }
-
-                        for (let stack of floorStacks) {
-                            let tempStack = [];
-
-                            for (let { boss, dungeon, id } of stack) {
-                                let worker = await Workers.createSimulatorWorker('dungeons');
-
-                                worker.addEventListener('message', (message) => {
-                                    let { score, iterations, healths } = message.data.results;
+                        for (const [ index, { boss, dungeon, id } ] of Object.entries(pending)) {
+                            batch.add(
+                                ({ results: _results }) => {
+                                    const score = _results.score;
 
                                     if (score < threshold_min * iterations / 100 || score > threshold_max * iterations / 100) {
-                                        for (let i = 0; i < pendingStacks.length; i++) {
-                                            pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
-                                                if (_args.id === id || _args.id === NEXT_DUNGEONS[id]) {
-                                                    _worker.terminate();
-
-                                                    return --resultsRemaining && false;
-                                                } else {
-                                                    return true;
-                                                }
-                                            })
-                                        }
-
-                                        pendingStacks = pendingStacks.filter((_stack) => _stack.length > 0);
+                                        // If score is outside of the threshold, skip all remaining instances with same or next id
+                                        batch.skip(({ id: _id }) => _id === id || _id === NEXT_DUNGEONS[id]);
                                     } else {
-                                        results[message.data.index] = {
-                                            score,
-                                            healths,
-                                            iterations
-                                        };
+                                        results[index] = _results;
                                     }
+                                },
+                                {
+                                    players: preparePlayerInstances(dungeon),
+                                    boss: getBossData(boss, dungeon),
+                                    iterations,
+                                    hpcap: 500,
+                                    config: SimulatorUtils.config,
+                                    id
+                                }
+                            )
+                        }
 
-                                    resultsRemaining--;
-                                    resultsRemainingStack--;
-
-                                    updateProgress();
-
-                                    if (resultsRemaining <= 0) {
-                                        Loader.toggle(false);
-
-                                        if (results.length > 0) {
-                                            showMassDungeonResults(floorStacks.flat(), results, 'extended', true);
-                                        } else {
-                                            Toast.info(intl('dungeons.simulate_next_info.title', { threshold_min, threshold_max }), intl('dungeons.simulate_next_info.message#'));
-                                        }
-                                    } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
-                                        currentStack = pendingStacks.shift();
-                                        resultsRemainingStack = currentStack.length;
-
-                                        for (let i = 0; i < Math.min(currentStack.length, maximumInstances); i++) {
-                                            let { worker: _worker, args: _args } = currentStack.shift();
-                                            _worker.postMessage(_args);
-                                        }
-                                    } else if (currentStack.length > 0) {
-                                        let { worker: _worker, args: _args } = currentStack.shift();
-                                        _worker.postMessage(_args);
-                                    }
-                                }, false);
-
-                                tempStack.push({
-                                    worker,
-                                    args: {
-                                        players: preparePlayerInstances(dungeon),
-                                        boss: getBossData(boss, dungeon),
-                                        iterations: iterations,
-                                        index: resultsRemaining++,
-                                        hpcap: 500,
-                                        config: SimulatorUtils.config,
-                                        id
-                                    }
-                                })
+                        batch.run(
+                            instances,
+                            // Execute instance only if there is none running with the same dungeon id
+                            ({ id }, { id: _id }) => id !== _id && NEXT_DUNGEONS_INVERTED[id] !== _id
+                        ).then(() => {
+                            if (results.length > 0) {
+                                showMassDungeonResults(pending, results, 'extended', true);
+                            } else {
+                                Toast.info(intl('dungeons.simulate_next_info.title', { threshold_min, threshold_max }), intl('dungeons.simulate_next_info.message#'));
                             }
-
-                            pendingStacks.push(tempStack);
-                        }
-
-                        resultsTotal = resultsRemaining;
-
-                        currentStack = pendingStacks.shift();
-                        resultsRemainingStack = currentStack.length;
-
-                        for (let i = 0; i < Math.min(currentStack.length, maximumInstances); i++) {
-                            let { worker, args } = currentStack.shift();
-                            worker.postMessage(args);
-                        }
+                        })
                     }
                 });
 
-                $('#sim-run-dungeon').click(async function () {
-                    if (editor.valid()) {
-                        Loader.toggle(true, { progress: true });
+                $('#sim-run-dungeon').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
 
-                        let bossQueue = [];
+                    if (editor.valid()) {
+                        const results = [];
+                        const bossQueue = [];
+
                         for (let bossData of Object.values(dungeon.floors)) {
                             if (bossQueue.length > 0 || bossData.pos == boss.pos) {
                                 bossQueue.push({
@@ -1192,127 +1093,85 @@
                             }
                         }
 
-                        let resultsRemaining = bossQueue.length;
-
-                        let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-
-                        let results = [];
-                        let pendingInstances = [];
-
-                        const updateProgress = () => {
-                            Loader.progress(results.filter(r => r).length / bossQueue.length);
-                        }
+                        const batch = new WorkerBatch('dungeons');
 
                         for (let [index, { boss, dungeon }] of Object.entries(bossQueue)) {
-                            let worker = await Workers.createSimulatorWorker('dungeons');
-
-                            worker.addEventListener('message', (message) => {
-                                let { score, iterations, healths } = message.data.results;
-
-                                results[message.data.index] = {
-                                    score,
-                                    healths,
-                                    iterations
-                                };
-
-                                updateProgress();
-
-                                if (--resultsRemaining <= 0) {
-                                    Loader.toggle(false);
-                                    showMassDungeonResults(bossQueue, results, false, true);
-                                } else if (pendingInstances.length > 0) {
-                                    let [ secWorker, args ] = pendingInstances.pop();
-                                    secWorker.postMessage(args);
+                            batch.add(
+                                ({ results: _results }) => {
+                                    results[index] = _results
+                                },
+                                {
+                                    players: preparePlayerInstances(dungeon),
+                                    boss: getBossData(boss, dungeon),
+                                    iterations,
+                                    hpcap: 500,
+                                    config: SimulatorUtils.config
                                 }
-                            }, false);
-
-                            pendingInstances.push([worker, {
-                                players: preparePlayerInstances(dungeon),
-                                boss: getBossData(boss, dungeon),
-                                iterations: iterations,
-                                index: index,
-                                hpcap: 500,
-                                config: SimulatorUtils.config
-                            }])
+                            )
                         }
 
-                        let currentInstances = Math.min(maximumInstances, pendingInstances.length);
-                        for (let i = 0; i < currentInstances; i++) {
-                            let [ worker, args ] = pendingInstances.pop();
-                            worker.postMessage(args);
-                        }
+                        batch.run(instances).then(() => {
+                            showMassDungeonResults(bossQueue, results, false, true);
+                        })
                     }
                 })
 
-                $('#sim-run').click(async function () {
+                $('#sim-run').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
                     if (boss && editor.valid()) {
-                        Loader.toggle(true, { progress: true });
+                        const bossInstance = getBossData(boss, dungeon);
+                        const playerInstances = preparePlayerInstances(dungeon);
 
-                        let bossInstance = getBossData(boss, dungeon);
-                        let playerInstances = preparePlayerInstances(dungeon);
-                        let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                        const results = [];
+                        let logs = [];
 
-                        let results = [];
                         let totalScore = 0;
-                        let totalTries = 0;
 
-                        if (log) {
-                            threads = 1;
-                            iterations = 2000;
+                        const batch = new WorkerBatch('dungeons');
+
+                        for (let i = 0; i < instances; i++) {
+                            batch.add(
+                                ({ results: { score, healths }, log }) => {
+                                    results.push(healths);
+                                    logs = logs.concat(log);
+
+                                    totalScore += score;
+                                },
+                                {
+                                    players: playerInstances,
+                                    boss: bossInstance,
+                                    iterations,
+                                    log: modeLog,
+                                    config: SimulatorUtils.config
+                                }
+                            )
                         }
 
-                        const updateProgress = () => {
-                            Loader.progress(totalTries / (threads * iterations));
-                        }
-
-                        for (let i = 0; i < threads; i++) {
-                            let worker = await Workers.createSimulatorWorker('dungeons');
-
-                            worker.addEventListener('message', (message) => {
-                                let { score, iterations, healths } = message.data.results;
-                                if (message.data.log.length) {
-                                    download('logs.json', new Blob([ JSON.stringify({
-                                        fights: message.data.log,
-                                        players: players,
-                                        boss: bossInstance
-                                    }) ], {
-                                        type: 'application/json'
-                                    }));
+                        batch.run(instances).then(() => {
+                            const finalResults = new Array(results[0].length);
+                            for (let i = 0; i < results[0].length; i++) {
+                                let healthsSum = 0;
+                                for (let j = 0; j < instances; j++) {
+                                    healthsSum += results[j][i];
                                 }
 
-                                results.push(healths)
-                                totalScore += score;
-                                totalTries += iterations;
+                                finalResults[i] = healthsSum / instances;
+                            }
 
-                                updateProgress();
+                            showGraph(chart, dungeon, boss, totalScore, instances * iterations, _sort_asc(finalResults));
+                            $('#winchart').removeClass('faded-out');
 
-                                if (totalTries == threads * iterations) {
-                                    let finalResults = new Array(results[0].length);
-                                    for (let i = 0; i < results[0].length; i++) {
-                                        let healthsSum = 0;
-                                        for (let j = 0; j < threads; j++) {
-                                            healthsSum += results[j][i];
-                                        }
-
-                                        finalResults[i] = healthsSum / threads;
-                                    }
-
-                                    showGraph(chart, dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
-                                    $('#winchart').removeClass('faded-out');
-                                    Loader.toggle(false);
-                                }
-                            }, false);
-
-                            worker.postMessage({
-                                players: playerInstances,
-                                boss: bossInstance,
-                                iterations: iterations,
-                                log: log,
-                                config: SimulatorUtils.config
-                            });
-                        }
+                            // Download logs
+                            if (logs.length > 0) {
+                                Exporter.json({
+                                    fights: logs,
+                                    players,
+                                    boss: bossInstance
+                                }, 'logs');
+                            }
+                        })
                     }
                 });
 
