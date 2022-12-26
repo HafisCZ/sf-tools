@@ -240,6 +240,77 @@ const Workers = new (class {
     }
 })();
 
+class WorkerBatch {
+    constructor (type) {
+        this.type = type;
+        this.workers = [];
+    }
+
+    _createWorker () {
+        if (this.type === 'pets') {
+            return Workers.createPetWorker();
+        } else {
+            return Workers.createSimulatorWorker(this.type);
+        }
+    }
+
+    async _nextWorker () {
+        if (this.workers.length > 0) {
+            const [callback, params] = this.workers.pop();
+
+            const worker = await this._createWorker();
+            worker.addEventListener('message', ({ data }) => {
+                callback(data, this);
+
+                Loader.progress(++this.workersDone / this.workersTotal);
+
+                if (this.workersDone === this.workersTotal) {
+                    this._resolve();
+                } else {
+                    this._nextWorker();
+                }
+            })
+
+            worker.postMessage(params);
+        }
+    }
+
+    skipWorker (predicate) {
+
+    }
+
+    add (callback, params) {
+        this.workers.push([ callback, params ]);
+    }
+
+    run (instances) {
+        // Initial timestamp
+        const timestamp = Date.now();
+
+        // Set counters
+        this.workersDone = 0;
+        this.workersTotal = this.workers.length;
+
+        // Show loader
+        Loader.toggle(true, { progress: true });
+
+        // Create promise
+        return new Promise((resolve) => {
+            this._resolve = () => {
+                Loader.toggle(false);
+                Logger.log('MESSAGE', `Simulator took ${_format_duration(Date.now() - timestamp)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
+
+                resolve();
+            };
+
+            const instancesInitial = Math.min(instances, this.workersTotal);
+            for (let i = 0; i < instancesInitial; i++) {
+                this._nextWorker();
+            }
+        })
+    }
+}
+
 // Helper function
 function merge (a, b) {
     for (var [k, v] of Object.entries(b)) {
