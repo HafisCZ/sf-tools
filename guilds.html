@@ -473,9 +473,6 @@
 
                     if (validateLists()) {
                         const results = [];
-
-                        Toast.info(intl('guilds.toast.start.title'), intl('guilds.toast.start.message#', { iterations, blocks: instances }))
-
                         const batch = new WorkerBatch('guilds');
 
                         for (let i = 0; i < instances; i++) {
