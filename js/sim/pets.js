@@ -6,21 +6,12 @@ function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);
 }
 
-self.addEventListener('message', function (message) {
-    var ts = Date.now();
-
-    // Sent vars
-    var players = message.data.players;
-    var mode = message.data.mode;
-    var tracking = message.data.tracking || 0;
-
-    // Sim type decision
+self.addEventListener('message', function ({ data: { players, mode, iterations } }) {
     if (mode == 'pet') {
         self.postMessage({
-            results: new PetSimulator().simulate(players[0], players[1], 1E7),
-            time: Date.now() - ts
+            results: new PetSimulator().simulate(players[0], players[1], iterations)
         });
-    } else if (mode == 'pet_map') {
+    } else if (mode == 'map') {
         var r = [];
         var obj = players[0];
 
@@ -41,7 +32,7 @@ self.addEventListener('message', function (message) {
             }
 
             obj.Gladiator = 15;
-            r[level][15] = new PetSimulator().simulate(obj, players[1], 1E5);
+            r[level][15] = new PetSimulator().simulate(obj, players[1], iterations);
 
             if (r[level - 1] != undefined) {
                 if (r[level - 1][15] > r[level][15]) {
@@ -57,7 +48,7 @@ self.addEventListener('message', function (message) {
                 for (var glad = 14; glad >= origGladiator; glad--) {
                     obj.Gladiator = glad;
 
-                    r[level][glad] = new PetSimulator().simulate(obj, players[1], 1E5);
+                    r[level][glad] = new PetSimulator().simulate(obj, players[1], iterations);
                     if (r[level][glad] > r[level][glad + 1]) {
                         r[level][glad] = r[level][glad + 1];
                     }
@@ -76,9 +67,7 @@ self.addEventListener('message', function (message) {
         }
 
         self.postMessage({
-            results: r,
-            time: Date.now() - ts,
-            tracking: tracking
+            results: r
         });
     }
 
@@ -220,7 +209,7 @@ class PetModel {
 }
 
 class PetSimulator {
-    simulate (source, target, iterations = 1E7) {
+    simulate (source, target, iterations) {
         this.ca = PetModel.fromObject(source);
         this.cb = PetModel.fromObject(target);
 

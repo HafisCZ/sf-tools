@@ -299,6 +299,10 @@ class WorkerBatch {
         this.workers.push([ callback, params ]);
     }
 
+    size () {
+        return this.workers.length;
+    }
+
     run (instances, instanceCondition = () => true) {
         // Initial timestamp
         this.timestamp = Date.now();

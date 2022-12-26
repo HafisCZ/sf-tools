@@ -44,32 +44,41 @@
 
         <div class="ui main container">
             <!-- Header -->
-            <div class="ui five columns middle aligned grid">
-                <div class="five wide column">
-
-                </div>
-                <div class="one wide column">
-
-                </div>
+            <div class="ui middle aligned grid">
                 <div class="four wide column">
-                    <h1 class="ui centered header">Pet Simulator</h1>
-                </div>
-                <div class="two wide column" data-intl-tooltip="pets.generate.tooltip" data-position="left center">
-                    <div class="ui simple dropdown" id="sim-generate">
-                        <span data-intl="pets.generate.one"></span>
-                        <i class="dropdown icon"></i>
-                        <div class="menu">
-                            <div class="item" id="sim-generate1" data-intl="pets.generate.one"></div>
-                            <div class="item" id="sim-generate5" data-intl="pets.generate.five"></div>
-                            <div class="item" id="sim-generate10" data-intl="pets.generate.ten"></div>
+                    <div class="ui small form">
+                        <div class="three fields !mb-0">
+                            <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
+                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                            </div>
+                            <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
+                                <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                            </div>
+                            <div class="field" data-position="bottom center" data-intl-tooltip="pets.generate.iterations">
+                                <span style="position: absolute; top: 0.5em; left: -0.25em;">/</span>
+                                <input class="text-center fluid" type="text" id="sim-map-iterations" value="100000">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="two wide column">
-                    <button class="ui fluid small button" type="submit" id="sim-run" data-intl="pets.simulate"></button>
+                <div class="two wide column"></div>
+                <div class="four wide column">
+                    <h1 class="ui centered header">Pet Simulator</h1>
                 </div>
-                <div class="two wide wide column" id="sim-result">
-
+                <div class="three wide center aligned column" id="sim-result"></div>
+                <div class="three wide right aligned column">
+                    <div class="ui small buttons">
+                        <button class="ui button" type="submit" id="simulate" data-intl="pets.simulate"></button>
+                        <div id="sim-generate" class="ui floating black simple dropdown icon button">
+                            <i class="ui white th icon"></i>
+                            <div class="menu">
+                                <div class="item" id="sim-generate1" data-intl="pets.generate.one"></div>
+                                <div class="item" id="sim-generate5" data-intl="pets.generate.five"></div>
+                                <div class="item" id="sim-generate10" data-intl="pets.generate.ten"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="ui two columns grid">
@@ -309,9 +318,9 @@
 
         <script type="text/javascript">
             Site.ready(function () {
-                function clearMaps () {
-                    $('#sim-maps').html('');
-                }
+                $('#sim-threads').captiveInputField('pet_sim/threads', 4, v => !isNaN(v) && v >= 1);
+                $('#sim-iterations').captiveInputField('pet_sim/iterations', 2.5E6, v => !isNaN(v) && v >= 1);
+                $('#sim-map-iterations').captiveInputField('pet_sim/map_iterations', 1E5, v => !isNaN(v) && v >= 1);
 
                 function addMap (map, key) {
                     var ml = map.reduce((col, a) => col + (a ? 1 : 0), 0);
@@ -329,7 +338,7 @@
                                     </tr>
                                 </thead>
                                 <tbody style="height: ${ (Math.min(2.3 * ml, 46)).toFixed(1) }em;" data-proper="${ (2.3 * ml).toFixed(1) }em">
-                                    ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td class="${ getPetColor(w) }">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
+                                    ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td style="background-color: ${getPetColor(w)};">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
                                 </tbody>
                             </table>
                         </div>
@@ -567,95 +576,83 @@
                 petB.fill();
                 petB.valid();
 
-                $('#sim-run').click(function () {
+                $('#simulate').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2.5E6);
+
                     if (petA.valid() && petB.valid()) {
-                        Loader.toggle(true);
-                        simulateFight(petA.read(), petB.read()).then(([chance, a, b]) => {
+                        const results = [];
+
+                        const batch = new WorkerBatch('pets');
+
+                        for (let i = 0; i < instances; i++) {
+                            batch.add(
+                                ({ results: _results }) => {
+                                    results.push(_results);
+                                },
+                                {
+                                    mode: 'pet',
+                                    players: [petA.read(), petB.read()],
+                                    iterations
+                                }
+                            )
+                        }
+
+                        batch.run(instances).then(() => {
+                            const chance = _sum(results) / instances;
+
                             $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
-                            Loader.toggle(false);
-                        }).catch(() => {
-                            Loader.toggle(false);
-                        });
+                        })
                     }
                 });
 
-                function simulateFight (a, b) {
-                    return new Promise(async (resolve, reject) => {
-                        if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
-                            let worker = await Workers.createPetWorker();
-
-                            worker.addEventListener('message', (message) => resolve([message.data.results, a, b]), false);
-                            worker.postMessage({
-                                mode: 'pet',
-                                players: [a, b]
-                            });
-                        } else {
-                            reject();
-                        }
-                    });
-                }
-
                 function getPetColor (num) {
                     if (num < 0.01) {
-                        return 'pet-0';
+                        return '#ffad99';
                     } else if (num >= 25) {
-                        return 'pet-25'
+                        return '#99ffb4'
                     } else if (num >= 10) {
-                        return 'pet-10';
+                        return '#daff99';
                     } else if (num >= 5) {
-                        return 'pet-5';
+                        return '#fdff99';
                     } else {
-                        return 'pet-1';
+                        return '#ffdd99';
                     }
                 }
 
-                async function generatePetMap (mapCount) {
+                function generatePetMap (mapCount) {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-map-iterations').val()) || 1E5);
+
                     if (petA.valid() && petB.valid()) {
-                        $('#sim-result').html('');
-                        clearMaps();
+                        $('#sim-result, #sim-maps').html('');
 
-                        var a = petA.read();
-                        var b = [];
+                        const a = petA.read();
+                        const b = petB.read();
 
-                        var temp = petB.read();
+                        if (a && b && !a.Boss && b.Boss) {
+                            const maps = [];
 
-                        if (a && temp && !a.Boss && temp.Boss) {
-                            Loader.toggle(true);
-
-                            var count = 0;
-                            for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
-                                var bs = petB.read();
-                                bs.Pet = i;
-                                b.push(bs);
-
-                                count++;
-                            }
-
-                            var maps = [];
-                            var maps_finished = 0;
-
-                            for (var i = 0; i < count; i++) {
-                                var worker = await Workers.createPetWorker();
-
-                                worker.addEventListener('message', function (message) {
-                                    maps[message.data.tracking] = message.data.results;
-                                    maps_finished++;
-
-                                    if (maps_finished == count) {
-                                        Loader.toggle(false);
-
-                                        for (var j = 0; j < maps.length; j++) {
-                                            addMap(maps[j], `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b[j].Type}`)} ${ b[j].Pet + 1 } - ${intl(`pets.names.${b[j].Type * 20 + b[j].Pet}`)}`);
-                                        }
+                            const batch = new WorkerBatch('pets');
+                            
+                            for (let i = b.Pet; i < Math.min(20, b.Pet + mapCount); i++) {
+                                batch.add(
+                                    ({ results }) => {
+                                        maps[i - b.Pet] = results;
+                                    },
+                                    {
+                                        mode: 'map',
+                                        players: [a, Object.assign({}, b, { Pet: i })],
+                                        iterations
                                     }
-                                }, false);
-
-                                worker.postMessage({
-                                    mode: 'pet_map',
-                                    players: [a, b[i]],
-                                    tracking: i
-                                });
+                                )
                             }
+
+                            batch.run(instances).then(() => {
+                                for (var i = 0; i < maps.length; i++) {
+                                    addMap(maps[i], `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b.Type}`)} ${ b.Pet + i + 1 } - ${intl(`pets.names.${b.Type * 20 + b.Pet + i}`)}`);
+                                }
+                            })
                         }
                     }
                 }
@@ -696,42 +693,43 @@
 
                             $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
                                 event.stopPropagation();
-                                Loader.toggle(true);
-
-                                let petFights = [];
+                                
                                 let results = [];
+
+                                const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                                const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2.5E6);
+
+                                const batch = new WorkerBatch('pets');
 
                                 for (let type = 0; type < 5; type++) {
                                     for (let klass = 1; klass <= 3; klass++) {
-                                        let [pet1, pet2] = getPetsFor(player, type, klass);
+                                        const [pet1, pet2] = getPetsFor(player, type, klass);
                                         if (pet1 && pet2) {
-                                            petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
-                                                results.push({
-                                                    chance,
-                                                    player: a,
-                                                    boss: b
-                                                });
-                                            }));
+                                            batch.add(
+                                                ({ results: _results }) => {
+                                                    results.push({
+                                                        chance: _results,
+                                                        player: pet1,
+                                                        boss: pet2
+                                                    })
+                                                },
+                                                {
+                                                    mode: 'pet',
+                                                    players: [pet1, pet2],
+                                                    iterations
+                                                }
+                                            )
                                         }
                                     }
                                 }
 
-                                Toast.info(intl('pets.bulk.toast.title'), `<b>${intl('pets.bulk.toast.matches')}</b> ${petFights.length}`);
+                                Toast.info(intl('pets.bulk.toast.title'), `<b>${intl('pets.bulk.toast.matches')}</b> ${batch.size()}`);
 
-                                Promise.all(petFights).then(() => {
-                                    Loader.toggle(false);
+                                batch.run(instances).then(() => {
                                     _sort_des(results, i => i.chance);
 
-                                    let resultClasses = [0, 0, 0, 0, 0];
-                                    results = results.filter(({ player }) => {
-                                        resultClasses[player.Type]++;
-
-                                        if (resultClasses[player.Type] == 1) {
-                                            return true;
-                                        } else {
-                                            return false;
-                                        }
-                                    });
+                                    const resultClasses = [0, 0, 0, 0, 0];
+                                    results = results.filter(({ player }) => ++resultClasses[player.Type] == 1);
 
                                     $('#results-modal .content').html(`
                                         <div class="ui three column grid">
@@ -759,7 +757,7 @@
                                         </div>
                                     `);
                                     $('#results-modal').modal('show');
-                                });
+                                })
                             });
                         }
                     }
