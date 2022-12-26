@@ -312,12 +312,14 @@ class WorkerBatch {
         Loader.toggle(true, { progress: true });
 
         // Create promise
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             this._resolve = () => {
-                Loader.toggle(false);
-                Logger.log('MESSAGE', `Simulator took ${_format_duration(Date.now() - this.timestamp)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
+                const duration = Date.now() - this.timestamp;
 
-                resolve();
+                Loader.toggle(false);
+                Logger.log('MESSAGE', `Simulator took ${_format_duration(duration)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
+
+                resolve(duration);
             };
 
             if (this.workersTotal === 0) {
