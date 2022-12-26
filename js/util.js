@@ -260,7 +260,7 @@ class WorkerBatch {
 
             const worker = await this._createWorker();
             worker.addEventListener('message', ({ data }) => {
-                callback(data, this);
+                callback(data, Date.now() - this.timestamp, this);
 
                 Loader.progress(++this.workersDone / this.workersTotal);
 
@@ -285,7 +285,7 @@ class WorkerBatch {
 
     run (instances) {
         // Initial timestamp
-        const timestamp = Date.now();
+        this.timestamp = Date.now();
 
         // Set counters
         this.workersDone = 0;
@@ -298,7 +298,7 @@ class WorkerBatch {
         return new Promise((resolve) => {
             this._resolve = () => {
                 Loader.toggle(false);
-                Logger.log('MESSAGE', `Simulator took ${_format_duration(Date.now() - timestamp)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
+                Logger.log('MESSAGE', `Simulator took ${_format_duration(Date.now() - this.timestamp)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
 
                 resolve();
             };
