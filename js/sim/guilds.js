@@ -1,16 +1,11 @@
 self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
     FLAGS.set(flags);
-
     FLAGS.set({
         NoGladiatorReduction: true
     });
 
-    let timestamp = Date.now();
-
-    let results = new GuildSimulator().simulate(guildA, guildB, iterations);
     self.postMessage({
-        results: results,
-        time: Date.now() - timestamp
+        results: new GuildSimulator().simulate(guildA, guildB, iterations)
     });
 
     self.close();
