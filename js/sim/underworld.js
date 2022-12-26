@@ -2,16 +2,9 @@
 self.addEventListener('message', function ({ data: { flags, units, players, iterations } }) {
     FLAGS.set(flags);
 
-    let timestamp = Date.now();
-
-    if (units && players) {
-        new UnderworldSimulator().simulate(units, players, iterations);
-
-        self.postMessage({
-            results: players,
-            time: Date.now() - timestamp
-        })
-    }
+    self.postMessage({
+        results: new UnderworldSimulator().simulate(units, players, iterations)
+    })
 
     self.close();
 });
@@ -28,6 +21,8 @@ class UnderworldSimulator extends SimulatorBase {
 
             players[i].score = 100 * score / iterations;
         }
+
+        return players;
     }
 
     cache (units, player) {
