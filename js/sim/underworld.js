@@ -1,28 +1,26 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, units, players, iterations } }) {
+self.addEventListener('message', function ({ data: { flags, units, player, iterations } }) {
     FLAGS.set(flags);
 
     self.postMessage({
-        results: new UnderworldSimulator().simulate(units, players, iterations)
+        results: new UnderworldSimulator().simulate(units, player, iterations)
     })
 
     self.close();
 });
 
 class UnderworldSimulator extends SimulatorBase {
-    simulate (units, players, iterations) {
-        for (let i = 0; i < players.length; i++) {
-            this.cache(units, players[i].player);
+    simulate (units, player, iterations) {
+        this.cache(units, player.player);
 
-            let score = 0;
-            for (let j = 0; j < iterations; j++) {
-                score += this.battle();
-            }
-
-            players[i].score = 100 * score / iterations;
+        let score = 0;
+        for (let j = 0; j < iterations; j++) {
+            score += this.battle();
         }
 
-        return players;
+        player.score = 100 * score / iterations;
+
+        return player;
     }
 
     cache (units, player) {
