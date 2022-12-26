@@ -480,7 +480,7 @@
 
                         for (let i = 0; i < instances; i++) {
                             batch.add(
-                                ({ results: _results, time }) => {
+                                ({ results: _results }, time) => {
                                     results.push(_results);
 
                                     Toast.info(intl('guilds.toast.end.title', { done: results.length, total: instances }), intl('guilds.toast.end.message#', { time: time / 1000 }))
