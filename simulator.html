@@ -376,193 +376,140 @@
                     });
                 }
 
-                function canSimulate () {
-                    return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
-                }
+                $('#simulate-debug').click(function () {
+                    const canSimulate = players.length > 1;
 
-                $('#simulate-debug').click(async function () {
-                    if (players.length > 1) {
-                        Loader.toggle(true);
+                    if (canSimulate) {
+                        const batch = new WorkerBatch('debug');
 
-                        let instances = players.map(({ player }) => mergeSoft(new SFPlayer(), preparePlayerData(player)).toSimulatorModel());
+                        batch.add(
+                            ({ json }) => {
+                                let content = '';
 
-                        let worker = await Workers.createSimulatorWorker('debug');
-                        worker.addEventListener('message', function ({ data: { json } }) {
-                            Loader.toggle(false);
+                                const generatePreview = (p1, p2) => {
+                                    const o1 = Localization._generateTranslation({}, p1);
+                                    const o2 = Localization._generateTranslation({}, p2);
 
-                            let content = '';
+                                    const keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
+                                    for (const bannedKey of ['Player.Identifier', 'Player.Prefix']) {
+                                        keys.delete(bannedKey);
+                                    }
 
-                            let generatePreview = (p1, p2) => {
-                                let o1 = Localization._generateTranslation({}, p1);
-                                let o2 = Localization._generateTranslation({}, p2);
+                                    const formatPreviewValue = (v) => Number.isInteger(v) ? formatAsSpacedNumber(v, ' ') : v;
 
-                                let keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
-                                for (let bannedKey of ['Player.Identifier', 'Player.Prefix']) {
-                                    keys.delete(bannedKey);
+                                    return Array.from(keys).map(key => `<tr><td>${key}</td><td>${formatPreviewValue(o1[key])}</td><td>${formatPreviewValue(o2[key])}</td></tr>`).join('');
                                 }
 
-                                let formatPreviewValue = (v) => Number.isInteger(v) ? formatAsSpacedNumber(v, ' ') : v;
+                                const stringifyState = (state) => {
+                                    const keys = new Set(Object.keys(state));
+                                    for (const bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack', 'RageCriticalChance']) {
+                                        keys.delete(bannedKey);
+                                    }
 
-                                return Array.from(keys).map(key => `<tr><td>${key}</td><td>${formatPreviewValue(o1[key])}</td><td>${formatPreviewValue(o2[key])}</td></tr>`).join('');
-                            }
-
-                            let stringifyState = (state) => {
-                                let keys = new Set(Object.keys(state));
-                                for (let bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack', 'RageCriticalChance']) {
-                                    keys.delete(bannedKey);
+                                    return Array.from(keys).map(key => `${key}: ${state[key]}`).join(', ')
                                 }
 
-                                return Array.from(keys).map(key => `${key}: ${state[key]}`).join(', ')
-                            }
-
-                            for (let { fighters, sample } of json) {
-                                content += `
-                                    <table class="ui red single text-center very compact fixed table">
-                                        <tbody>
-                                            ${generatePreview(...fighters)}
-                                        </tbody>
-                                    </table>
-                                    <table class="ui blue single text-center very compact fixed table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Attacker</th>
-                                                <th>Target</th>
-                                                <th>Rage</th>
-                                                <th>Damage</th>
-                                                <th>Health Left</th>
-                                                <th>Type</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            ${sample.map(({ attacker, attackerState, target, targetState, attackDamage, attackRage, attackType, targetHealth }, index) => `
-                                                <tr style="background-color: ${attacker === 1 ? 'lightgray' : 'white'}">
-                                                    <td rowspan="2" style="border-right: 1px solid rgba(34,36,38,.15);">${index}</td>
-                                                    <td>${fighters[attacker].Player.Name}</td>
-                                                    <td>${fighters[target].Player.Name}</td>
-                                                    <td>${Math.trunc(100 * attackRage) / 100}</td>
-                                                    <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
-                                                    <td>${Math.trunc(1000 * targetHealth) / 10} %</td>
-                                                    <td>${ATTACK_TYPES[attackType] || attackType}</td>
+                                for (const { fighters, sample } of json) {
+                                    content += `
+                                        <table class="ui red single text-center very compact fixed table">
+                                            <tbody>
+                                                ${generatePreview(...fighters)}
+                                            </tbody>
+                                        </table>
+                                        <table class="ui blue single text-center very compact fixed table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Attacker</th>
+                                                    <th>Target</th>
+                                                    <th>Rage</th>
+                                                    <th>Damage</th>
+                                                    <th>Health Left</th>
+                                                    <th>Type</th>
                                                 </tr>
-                                                <tr style="background-color: ${attacker === 1 ? 'lightgray' : 'white'}; text-align: left; font-size: 80%;">
-                                                    <td colspan="3" style="border-right: 1px solid rgba(34,36,38,.15);">${stringifyState(attackerState)}</td>
-                                                    <td colspan="3">${stringifyState(targetState)}</td>
-                                                </tr>
-                                            `).join('')}
-                                        </tbody>
-                                    </table>
-                                `;
+                                            </thead>
+                                            <tbody>
+                                                ${sample.map(({ attacker, attackerState, target, targetState, attackDamage, attackRage, attackType, targetHealth }, index) => `
+                                                    <tr style="background-color: ${attacker === 1 ? 'lightgray' : 'white'}">
+                                                        <td rowspan="2" style="border-right: 1px solid rgba(34,36,38,.15);">${index}</td>
+                                                        <td>${fighters[attacker].Player.Name}</td>
+                                                        <td>${fighters[target].Player.Name}</td>
+                                                        <td>${Math.trunc(100 * attackRage) / 100}</td>
+                                                        <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
+                                                        <td>${Math.trunc(1000 * targetHealth) / 10} %</td>
+                                                        <td>${ATTACK_TYPES[attackType] || attackType}</td>
+                                                    </tr>
+                                                    <tr style="background-color: ${attacker === 1 ? 'lightgray' : 'white'}; text-align: left; font-size: 80%;">
+                                                        <td colspan="3" style="border-right: 1px solid rgba(34,36,38,.15);">${stringifyState(attackerState)}</td>
+                                                        <td colspan="3">${stringifyState(targetState)}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    `;
+                                }
+
+                                DialogController.open(HtmlDialog, 'Debug Match', content);
+                            },
+                            {
+                                flags: getSimulatorFlags(),
+                                config: SimulatorUtils.config,
+                                players: players.map(({ player }) => mergeSoft(new SFPlayer(), preparePlayerData(player)).toSimulatorModel())
                             }
+                        )
 
-                            DialogController.open(HtmlDialog, 'Debug Match', content);
-                        }, true);
-
-                        worker.postMessage({
-                            flags: getSimulatorFlags(),
-                            players: instances,
-                            config: SimulatorUtils.config
-                        });
+                        batch.run(1);
                     }
                 })
 
                 // Run simulation
                 $('#simulate').click(async function () {
-                    if (canSimulate()) {
-                        let realStart = Date.now();
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
-                        for (var i = 0; i < players.length; i++) {
-                            players[i].score = null;
-                        }
+                    const canSimulate = players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
 
-                        showPlayers();
-                        Loader.toggle(true);
+                    if (canSimulate) {
+                        const results = [];
+                        let logs = [];
+                        
+                        showPlayers(true);
 
-                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
-                        let blockSize = Math.ceil(players.length / blocks);
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+                        const ladder = simulatorMode === 'tournament' ? await buildSimulatorLadder([ ...players ], iterations) : [];
 
-                        var results = [];
-                        var ladder = [];
-                        var logs = [];
+                        const batch = new WorkerBatch('players');
 
-                        if (simulatorMode == 'tournament') {
-                            ladder = await buildSimulatorLadder([ ...players ], iterations);
-                        }
-
-                        Toast.info(intl('players.toast.start.title'), intl('players.toast.start.message#', { blocks, blockSize, iterations }));
-
-                        let blocksFinished = 0;
-                        for (var i = 0; i < players.length; i += blockSize) {
-                            var block = players.slice(i, i + blockSize);
-                            var worker = await Workers.createSimulatorWorker('players');
-
-                            worker.addEventListener('message', function (message) {
-                                results.push(... message.data.results);
-
-                                if (modeDump) {
-                                    logs.push(... message.data.logs);
-                                }
-
-                                Toast.info(intl('players.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('players.toast.end.message#', { time: message.data.time / 1000 }));
-
-                                if (results.length == players.length) {
-                                    Loader.toggle(false);
-                                    Logger.log('MESSAGE', `Simulation took ${_format_duration(Date.now() - realStart)}`);
-
-                                    players = results;
-                                    setSort('avg', 0);
+                        for (let i = 0; i < players.length; i++) {
+                            batch.add(
+                                ({ results: _results, logs: _logs }) => {
+                                    results.push(_results);
 
                                     if (modeDump) {
-                                        download('logs.json', new Blob([ JSON.stringify(logs) ], {
-                                            type: 'application/json'
-                                        }));
+                                        logs = logs.concat(_logs);
                                     }
+                                },
+                                {
+                                    player: simulatorMode === 'all' || simulatorMode === 'tournament' ? players[i] : players.find(p => p.index == yourself),
+                                    target: simulatorMode === 'all' ? players : (simulatorMode === 'tournament' ? ladder : players[i]),
+                                    flags: getSimulatorFlags(),
+                                    log: modeDump,
+                                    config: SimulatorUtils.config,
+                                    mode: simulatorMode,
+                                    iterations
                                 }
-                            }, false);
-
-                            if (simulatorMode == 'all') {
-                                worker.postMessage({
-                                    flags: getSimulatorFlags(),
-                                    mode: 'all',
-                                    player: block,
-                                    players: players,
-                                    iterations: iterations,
-                                    log: modeDump,
-                                    config: SimulatorUtils.config
-                                });
-                            } else if (simulatorMode == 'attack') {
-                                worker.postMessage({
-                                    flags: getSimulatorFlags(),
-                                    mode: 'attack',
-                                    player: players.find(p => p.index == yourself),
-                                    players: block,
-                                    iterations: iterations,
-                                    log: modeDump,
-                                    config: SimulatorUtils.config
-                                });
-                            } else if (simulatorMode == 'defend') {
-                                worker.postMessage({
-                                    flags: getSimulatorFlags(),
-                                    mode: 'defend',
-                                    player: players.find(p => p.index == yourself),
-                                    players: block,
-                                    iterations: iterations,
-                                    log: modeDump,
-                                    config: SimulatorUtils.config
-                                });
-                            } else if (simulatorMode == 'tournament') {
-                                worker.postMessage({
-                                    flags: getSimulatorFlags(),
-                                    mode: 'tournament',
-                                    player: block,
-                                    players: ladder,
-                                    iterations: iterations,
-                                    log: modeDump,
-                                    config: SimulatorUtils.config
-                                });
-                            }
+                            )
                         }
+
+                        batch.run(instances).then((duration) => {
+                            Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+
+                            players = results;
+                            setSort('avg', 0);
+
+                            if (logs.length > 0) {
+                                Exporter.json(logs, 'logs');
+                            }
+                        })
                     }
                 });
 
@@ -659,7 +606,13 @@
                     showPlayers();
                 }
 
-                function showPlayers () {
+                function showPlayers (resetPlayerScore = false) {
+                    if (resetPlayerScore) {
+                        for (let i = 0; i < players.length; i++) {
+                            players[i].score = null;
+                        }
+                    }
+
                     if (order == 0) {
                         if (sort == 'class') {
                             players.sort((a, b) => a.player.Class - b.player.Class);

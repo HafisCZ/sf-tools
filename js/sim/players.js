@@ -1,5 +1,5 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, config, player, players, mode, iterations, log } }) {
+self.addEventListener('message', function ({ data: { flags, config, player, target, mode, iterations, log } }) {
     FLAGS.set(flags);
     CONFIG.set(config);
 
@@ -7,39 +7,26 @@ self.addEventListener('message', function ({ data: { flags, config, player, play
         FIGHT_LOG_ENABLED = true;
     }
 
-    var ts = Date.now();
-
-    // Set default
-    iterations = iterations || 100000;
-
     // Sim type decision
     if (mode == 'all') {
-        new FightSimulator().simulateMultiple(player, players, iterations);
         self.postMessage({
-            results: player,
-            logs: FIGHT_LOG.dump(),
-            time: Date.now() - ts
+            results: new FightSimulator().simulateMultiple(player, target, iterations),
+            logs: FIGHT_LOG.dump()
         });
     } else if (mode == 'attack') {
-        new FightSimulator().simulateSingle(player, players, iterations, false);
         self.postMessage({
-            results: players,
-            logs: FIGHT_LOG.dump(),
-            time: Date.now() - ts
+            results: new FightSimulator().simulateSingle(player, target, iterations, false),
+            logs: FIGHT_LOG.dump()
         });
     } else if (mode == 'defend') {
-        new FightSimulator().simulateSingle(player, players, iterations, true);
         self.postMessage({
-            results: players,
-            logs: FIGHT_LOG.dump(),
-            time: Date.now() - ts
+            results: new FightSimulator().simulateSingle(player, target, iterations, true),
+            logs: FIGHT_LOG.dump()
         });
     } else if (mode == 'tournament') {
-        new FightSimulator().simulateTournament(player, players, iterations);
         self.postMessage({
-            results: player,
-            logs: FIGHT_LOG.dump(),
-            time: Date.now() - ts
+            results: new FightSimulator().simulateTournament(player, target, iterations),
+            logs: FIGHT_LOG.dump()
         });
     }
 
@@ -48,99 +35,90 @@ self.addEventListener('message', function ({ data: { flags, config, player, play
 
 class FightSimulator extends SimulatorBase {
     // Fight 1vAl only
-    simulateMultiple (player, players, iterations) {
-        var scores = [];
-        for (var i = 0; i < player.length; i++) {
-            var score = 0;
-            var min = iterations;
-            var max = 0;
+    simulateMultiple (player, targets, iterations) {
+        let score = 0;
+        let min = iterations;
+        let max = 0;
 
-            for (var j = 0; j < players.length; j++) {
-                if (player[i].index != players[j].index) {
-                    var s = 0;
-                    this.cache(player[i].player, players[j].player);
-                    for (var k = 0; k < iterations; k++) {
-                        s += this.fight();
-                    }
+        for (let i = 0; i < targets.length; i++) {
+            if (player.index != targets[i].index) {
+                let subscore = 0;
+                this.cache(player.player, targets[i].player);
 
-                    score += s;
+                for (let j = 0; j < iterations; j++) {
+                    subscore += this.fight();
+                }
 
-                    if (s > max) {
-                        max = s;
-                    }
+                score += subscore;
 
-                    if (s < min) {
-                        min = s;
-                    }
+                if (subscore > max) {
+                    max = subscore;
+                }
+
+                if (subscore < min) {
+                    min = subscore;
                 }
             }
-
-            player[i].score = {
-                avg: 100 * score / (players.length - 1) / iterations,
-                min: 100 * min / iterations,
-                max: 100 * max / iterations
-            };
         }
 
-        if (player.length == 2 && players.length == 2) {
-            player[0].score.min = player[0].score.avg;
-            player[0].score.max = player[0].score.avg;
+        player.score = {
+            avg: 100 * score / (targets.length - 1) / iterations,
+            min: 100 * min / iterations,
+            max: 100 * max / iterations
+        };
 
-            player[1].score.avg = 100 - player[0].score.avg,
-            player[1].score.min = player[1].score.avg;
-            player[1].score.max = player[1].score.avg;
-        }
+        return player;
     }
 
     // Tournament only
-    simulateTournament (player, players, iterations) {
-        for (var i = 0; i < player.length; i++) {
-            player[i].score = {
-                avg: 0,
-                max: players.findIndex(p => p.index == player[i].index)
-            };
+    simulateTournament (player, targets, iterations) {
+        player.score = {
+            avg: 0,
+            max: targets.findIndex(p => p.index == player.index)
+        };
 
-            for (var j = 0; j < players.length; j++) {
-                var s = 0;
-                this.cache(player[i].player, players[j].player);
-                for (var k = 0; k < iterations; k++) {
-                    s += this.fight();
-                }
+        for (let i = 0; i < targets.length; i++) {
+            let subscore = 0;
+            this.cache(player.player, targets[i].player);
 
-                if (s > iterations / 2) {
-                    player[i].score.avg++;
-                } else {
-                    break;
-                }
+            for (let j = 0; j < iterations; j++) {
+                subscore += this.fight();
+            }
+
+            if (subscore > iterations / 2) {
+                player.score.avg++;
+            } else {
+                break;
             }
         }
+
+        return player;
     }
 
     // Fight 1v1s only
-    simulateSingle (player, players, iterations, invert) {
-        var scores = [];
-        for (var i = 0; i < players.length; i++) {
-            if (player.player == players[i].player) {
-                players[i].score = {
-                    avg: 50
-                };
-            } else {
-                var score = 0;
-                this.cache(player.player, players[i].player);
+    simulateSingle (player, target, iterations, invert) {
+        if (player.player == target.player) {
+            target.score = {
+                avg: 50
+            };
+        } else {
+            let score = 0;
+            this.cache(player.player, target.player);
 
-                for (var j = 0; j < iterations; j++) {
-                    score += this.fight();
-                }
-
-                if (invert) {
-                    score = iterations - score;
-                }
-
-                players[i].score = {
-                    avg: 100 * score / iterations
-                };
+            for (let i = 0; i < iterations; i++) {
+                score += this.fight();
             }
+
+            if (invert) {
+                score = iterations - score;
+            }
+
+            target.score = {
+                avg: 100 * score / iterations
+            };
         }
+
+        return target;
     }
 
     // Cache Players initially
