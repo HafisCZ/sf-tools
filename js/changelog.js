@@ -6,18 +6,21 @@ const CHANGELOG = {
             'Added missing notification when database is being updated',
             'Added search bar to guild list',
             'Added new toggle buttons to replace old checkboxes in bottom right of the page',
+            'Fixed file tag button not removing tag filter when clicked when active',
             'Fixed file merging with duplicate players / groups',
             'Fixed file and script sharing no longer available',
             'Fixed players duplicating when using uppercase server url',
             'Merged tracker configuration into actions script',
-            'Removed profile and origin fields from files'
+            'Removed profile and origin fields from files',
+            'Removed embedded simulator and related headers'
         ],
         'Fortress Simulator': [
             'Redesigned simulator to allow for multiple battles to be simulated at once'
         ],
         'Fight Simulator': [
             'Added option to disable attribute reduction',
-            'Added option to freely configure certain class behaviors'
+            'Added option to freely configure certain class behaviors',
+            'Redesigned tournament mode'
         ],
         'Guild Simulator': [
             'Fixed gladiator being reduced'
@@ -27,6 +30,9 @@ const CHANGELOG = {
             'Added progress bar to loader',
             'Added option to freely configure certain class behaviors',
             'Added maximum value to threshold simulation'
+        ],
+        'Pet Simulator': [
+            'Added editable thread and iteration counts (including separate iteration count for pet maps)'
         ],
         'Arena Manager': [
             'Reworked tool'
@@ -41,7 +47,11 @@ const CHANGELOG = {
         'Blacksmith': [
             'Added dark theme'
         ],
+        'All Simulators': [
+            'Added progress bar to simulations'
+        ],
         'All Tools': [
+            'Updated to new version of FUI',
             'Added support for Hungarian language',
             'Added support for player level 701 - 800',
             'Fixed compatibility issues with older browsers',
