@@ -886,7 +886,7 @@
                     }
 
                     if (calculateTotalExperience) {
-                        let experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
+                        const experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
                             if (dungeon.id === 201) {
                                 return 0;
                             } else if (boss.level >= 393) {
@@ -895,9 +895,12 @@
                                 return ExperienceRequired[boss.level] / 5;
                             }
                         }, 0);
-                        let experience = formatAsSpacedNumber(experienceTotal, ' ');
 
-                        $('#results-modal .experience').html(`<div>${intl('dungeons.experience', { experience })}</div>`);
+                        if (experienceTotal > 0) {
+                            $('#results-modal .experience').html(`<div>${intl('dungeons.experience', { experience: formatAsSpacedNumber(experienceTotal, ' ') })}</div>`);
+                        } else {
+                            $('#results-modal .experience').empty();
+                        }
                     } else {
                         $('#results-modal .experience').empty();
                     }
