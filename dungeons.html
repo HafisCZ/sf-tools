@@ -1092,6 +1092,18 @@
                             }
                         }
 
+                        if (dungeon.id in NEXT_DUNGEONS) {
+                            const nextId = NEXT_DUNGEONS[dungeon.id];
+                            const nextDungeon = DUNGEON_DATA[nextId];
+
+                            for (const bossData of Object.values(nextDungeon.floors)) {
+                                bossQueue.push({
+                                    dungeon: nextDungeon,
+                                    boss: bossData
+                                })
+                            }
+                        }
+
                         const batch = new WorkerBatch('dungeons');
 
                         for (let [index, { boss, dungeon }] of Object.entries(bossQueue)) {
