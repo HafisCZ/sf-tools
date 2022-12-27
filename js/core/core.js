@@ -178,6 +178,12 @@ const SiteOptions = new (class {
     }
 })();
 
+const Exporter = new (class {
+    json (content, name = Date.now()) {
+        download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+    }
+})();
+
 const Site = new (class {
     constructor () {
         this.startup = Date.now();
