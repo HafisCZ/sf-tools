@@ -562,11 +562,11 @@
                 }
 
                 $('#dungeon-list').dropdown({
-                    values: _sort_asc(Object.entries(DUNGEON_DATA), ([id, dungeon]) => dungeon.pos).map(([ id, dungeon ]) => {
+                    values: _sort_asc(Object.values(DUNGEON_DATA), ({ pos }) => pos).map(({ name, shadow, floors, id: value }) => {
                         return {
-                            name: dungeon.shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${dungeon.name}<span>` : dungeon.name,
-                            value: id,
-                            disabled: Object.keys(dungeon.floors).length == 0
+                            name: shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${name}<span>` : name,
+                            value,
+                            disabled: Object.keys(floors).length == 0
                         };
                     })
                 }).dropdown('setting', 'onChange', (value, text) => {
@@ -721,7 +721,6 @@
                         let boss = Object.entries(dung.floors)[enemyIndex];
                         if (boss) {
                             return {
-                                id,
                                 dungeon: dung,
                                 boss: boss[1]
                             };
@@ -745,7 +744,6 @@
 
                         if (boss) {
                             return {
-                                id: dungeon,
                                 dungeon: DUNGEON_DATA[dungeon],
                                 boss: boss[1]
                             }
@@ -837,7 +835,7 @@
                                                 boss = sel.boss;
 
                                                 withoutUpdate(() => {
-                                                    $('#dungeon-list').dropdown('set selected', sel.id);
+                                                    $('#dungeon-list').dropdown('set selected', sel.dungeon.id);
                                                     $('#boss-list').dropdown('set selected', sel.boss.pos);
                                                 });
                                             }
@@ -865,13 +863,13 @@
                     if (sort === 'extended') {
                         let sortedBosses = [];
                         for (let entry of entries) {
-                            let { score, boss, dungeon, id } = entry;
+                            let { score, boss, dungeon } = entry;
 
                             let lowerChanceIndex = sortedBosses.findIndex(({ score: _score }) => _score < score);
                             let index = sortedBosses.length;
 
                             if (lowerChanceIndex != -1) {
-                                let sameDungeonIndex = sortedBosses.findLastIndex(({ dungeon: _dungeon, boss: _boss, id: _id }) => (id in NEXT_DUNGEONS_INVERTED) ? ((_id === id && _boss.pos < boss.pos) || (_id === NEXT_DUNGEONS_INVERTED[id])) : (_id === id && _boss.pos < boss.pos));
+                                let sameDungeonIndex = sortedBosses.findLastIndex(({ dungeon: _dungeon, boss: _boss }) => (dungeon.id in NEXT_DUNGEONS_INVERTED) ? ((_dungeon.id === dungeon.id && _boss.pos < boss.pos) || (_dungeon.id === NEXT_DUNGEONS_INVERTED[dungeon.id])) : (_dungeon.id === dungeon.id && _boss.pos < boss.pos));
                                 if (sameDungeonIndex != -1) {
                                     index = Math.max(lowerChanceIndex, sameDungeonIndex + 1);
                                 } else {
@@ -888,8 +886,8 @@
                     }
 
                     if (calculateTotalExperience) {
-                        let experienceTotal = _mapped_sum(entries, ({ id, boss, dungeon }) => {
-                            if (id == 201) {
+                        let experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
+                            if (dungeon.id === 201) {
                                 return 0;
                             } else if (boss.level >= 393) {
                                 return 3E8;
@@ -924,8 +922,8 @@
                     `);
                     $('#results-modal .content .row').mouseenter((event) => {
                         let index = event.currentTarget.dataset.id;
-                        let { boss, dungeon, score, healths, iterations, id } = entries[index];
-                        showGraph(chartList, dungeon, boss, score, iterations, healths, id != 201);
+                        let { boss, dungeon, score, healths, iterations } = entries[index];
+                        showGraph(chartList, dungeon, boss, score, iterations, healths);
                     });
                     $('#results-modal .content .row').first().trigger('mouseenter');
                     $('#results-modal').modal('show');
@@ -1003,8 +1001,8 @@
                         const results = [];
                         
                         let pending = [];
-                        for (const { boss: _boss, dungeon: _dungeon, id: _id } of availableBosses) {
-                            if (_id === 203) {
+                        for (const { boss: _boss, dungeon: _dungeon } of availableBosses) {
+                            if (_dungeon.id === 203) {
                                 // Ignore twister
                                 continue;
                             }
@@ -1014,20 +1012,18 @@
                             for (const bossData of Object.values(_dungeon.floors)) {
                                 if (dungeonStack.length > 0 || bossData.pos == _boss.pos) {
                                     dungeonStack.push({
-                                        id: _id,
                                         dungeon: _dungeon,
                                         boss: bossData
                                     })
                                 }
                             }
 
-                            if (_id in NEXT_DUNGEONS) {
-                                const nextId = NEXT_DUNGEONS[_id];
+                            if (_dungeon.id in NEXT_DUNGEONS) {
+                                const nextId = NEXT_DUNGEONS[_dungeon.id];
                                 const nextDungeon = DUNGEON_DATA[nextId];
 
                                 for (const bossData of Object.values(nextDungeon.floors)) {
                                     dungeonStack.push({
-                                        id: nextId,
                                         dungeon: nextDungeon,
                                         boss: bossData
                                     })
@@ -1039,14 +1035,14 @@
 
                         const batch = new WorkerBatch('dungeons');
 
-                        for (const [ index, { boss, dungeon, id } ] of Object.entries(pending)) {
+                        for (const [ index, { boss, dungeon } ] of Object.entries(pending)) {
                             batch.add(
                                 ({ results: _results }) => {
                                     const score = _results.score;
 
                                     if (score < threshold_min * iterations / 100 || score > threshold_max * iterations / 100) {
                                         // If score is outside of the threshold, skip all remaining instances with same or next id
-                                        batch.skip(({ id: _id }) => _id === id || _id === NEXT_DUNGEONS[id]);
+                                        batch.skip(({ id: _id }) => _id === dungeon.id || _id === NEXT_DUNGEONS[dungeon.id]);
                                     } else {
                                         results[index] = _results;
                                     }
@@ -1057,7 +1053,7 @@
                                     iterations,
                                     hpcap: 500,
                                     config: SimulatorUtils.config,
-                                    id
+                                    id: dungeon.id
                                 }
                             )
                         }
@@ -1177,11 +1173,11 @@
 
                 function showGraph (graph, dungeon, boss, score, tries, healths, showExperience = false) {
                     graph.options.title.text = [
-                        `${ dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
+                        `${ dungeon.id !== 201 && dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
                         intl('dungeons.graph.winrate', { rate: (100 * score / tries).toFixed(2), score: formatAsSpacedNumber(score, ' '), tries: formatAsSpacedNumber(tries, ' ') })
                     ];
 
-                    if (showExperience) {
+                    if (dungeon.id !== 201) {
                         let experience = boss.level >= 393 ? 3E8 : ExperienceRequired[boss.level] / 5;
                         graph.options.title.text.splice(1, 0, `${formatAsSpacedNumber(experience, ' ')} XP`);
                     }
