@@ -350,32 +350,6 @@
                 $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
-                function buildSimulatorLadder (array, iterations) {
-                    return new Promise(async (resolve, reject) => {
-                        Toast.info(intl('players.toast.tournament.title'), intl('players.toast.tournament.message#', { count: array.length }))
-
-                        let worker = await Workers.createSimulatorWorker('players');
-
-                        worker.addEventListener('message', (message) => resolve(message.data.results), false);
-
-                        worker.postMessage({
-                            flags: getSimulatorFlags(),
-                            mode: 'all',
-                            player: array,
-                            players: array,
-                            iterations,
-                            config: SimulatorUtils.config
-                        });
-                    }).then((list) => {
-                        _sort_asc(list, p => p.score.avg);
-                        for (let p of list) {
-                            p.score = null;
-                        }
-
-                        return list;
-                    });
-                }
-
                 $('#simulate-debug').click(function () {
                     const canSimulate = players.length > 1;
 
@@ -463,7 +437,7 @@
                 })
 
                 // Run simulation
-                $('#simulate').click(async function () {
+                $('#simulate').click(function () {
                     const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
                     const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
@@ -474,8 +448,6 @@
                         let logs = [];
                         
                         showPlayers(true);
-
-                        const ladder = simulatorMode === 'tournament' ? await buildSimulatorLadder([ ...players ], iterations) : [];
 
                         const batch = new WorkerBatch('players');
 
@@ -490,7 +462,7 @@
                                 },
                                 {
                                     player: simulatorMode === 'all' || simulatorMode === 'tournament' ? players[i] : players.find(p => p.index == yourself),
-                                    target: simulatorMode === 'all' ? players : (simulatorMode === 'tournament' ? ladder : players[i]),
+                                    target: simulatorMode === 'all' || simulatorMode === 'tournament' ? players : players[i],
                                     flags: getSimulatorFlags(),
                                     log: modeDump,
                                     config: SimulatorUtils.config,
@@ -613,34 +585,23 @@
                         }
                     }
 
-                    if (order == 0) {
-                        if (sort == 'class') {
-                            players.sort((a, b) => a.player.Class - b.player.Class);
-                        } else if (sort == 'level') {
-                            players.sort((a, b) => b.player.Level - a.player.Level);
-                        } else if (sort == 'name') {
-                            players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
-                        } else if (sort == 'avg') {
-                            players.sort((a, b) => b.score && a.score && (b.score.avg - a.score.avg));
-                        } else if (sort == 'min') {
-                            players.sort((a, b) => b.score && a.score && (b.score.min - a.score.min));
-                        } else if (sort == 'max') {
-                            players.sort((a, b) => b.score && a.score && (b.score.max - a.score.max));
-                        }
-                    } else {
-                        if (sort == 'class') {
-                            players.sort((b, a) => a.player.Class - b.player.Class);
-                        } else if (sort == 'level') {
-                            players.sort((b, a) => b.player.Level - a.player.Level);
-                        } else if (sort == 'name') {
-                            players.sort((b, a) => a.player.Name.localeCompare(b.player.Name));
-                        } else if (sort == 'avg') {
-                            players.sort((b, a) => b.score && a.score && (b.score.avg - a.score.avg));
-                        } else if (sort == 'min') {
-                            players.sort((b, a) => b.score && a.score && (b.score.min - a.score.min));
-                        } else if (sort == 'max') {
-                            players.sort((b, a) => b.score && a.score && (b.score.max - a.score.max));
-                        }
+                    const COMPARE_METHODS = {
+                        'class': (a, b) => a.player.Class - b.player.Class,
+                        'level': (a, b) => b.player.Level - a.player.Level,
+                        'name': (a, b) => a.player.Name.localeCompare(b.player.Name),
+                        'avg': (a, b) => b.score && a.score && (b.score.avg - a.score.avg),
+                        'min': (a, b) => b.score && a.score && (b.score.min - a.score.min),
+                        'max': (a, b) => b.score && a.score && (b.score.max - a.score.max)
+                    }
+
+                    if (COMPARE_METHODS[sort]) {
+                        players.sort((a, b) => {
+                            if (order == 0) {
+                                return COMPARE_METHODS[sort](a, b);
+                            } else {
+                                return COMPARE_METHODS[sort](b, a);
+                            }
+                        })
                     }
 
                     $('[data-sort]').each(function () {
@@ -657,20 +618,10 @@
 
                     if (simulatorMode != 'all') {
                         $('[data-sort="min"]').hide();
-                        if (simulatorMode == 'attack' || simulatorMode == 'defend') {
-                            $('[data-sort="max"]').hide();
-                        } else {
-                            $('[data-sort="max"]').show();
-                        }
+                        $('[data-sort="max"]').hide();
                     } else {
                         $('[data-sort="min"]').show();
                         $('[data-sort="max"]').show();
-                    }
-
-                    if (simulatorMode == 'tournament') {
-                        $('[data-sort="max"]').text('Ladder');
-                    } else {
-                        $('[data-sort="max"]').text('Max %');
                     }
 
                     for (var i = 0; i < players.length; i++) {
@@ -695,13 +646,13 @@
                                     <span>${ player.Prefix }</span>
                                 </div>
                                 <div class="two wide text-center column">
-                                    ${ score ? (simulatorMode == 'tournament' ? `${ score.avg } pt` : ((simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
+                                    ${ score ? ((simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself && simulatorMode !== 'tournament' ? '' : `${ score.avg.toFixed(2) }%`) : '' }
                                 </div>
                                 <div class="two wide text-center column">
                                     ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
                                 </div>
                                 <div class="two wide text-center column">
-                                    ${ score && score.max != undefined ? (simulatorMode == 'tournament' ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
+                                    ${ score && score.max != undefined ? `${ score.max.toFixed(2) }%` : '' }
                                 </div>
                                 <div class="one wide text-center column">
                                     ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
