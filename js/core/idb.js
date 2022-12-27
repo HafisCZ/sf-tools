@@ -348,12 +348,6 @@ class DatabaseUtils {
     }
 }
 
-const Exporter = new (class {
-    json (content, name = Date.now()) {
-        download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
-    }
-})();
-
 class PlayaResponse {
     static * iterateJSON (json) {
         for (const entry of _dig(json, 'log', 'entries')) {
