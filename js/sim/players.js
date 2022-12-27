@@ -70,27 +70,43 @@ class FightSimulator extends SimulatorBase {
         return player;
     }
 
-    // Tournament only
     simulateTournament (player, targets, iterations) {
-        player.score = {
-            avg: 0,
-            max: targets.findIndex(p => p.index == player.index)
-        };
-
+        // Simulate fights against targets
+        const subscores = [];
         for (let i = 0; i < targets.length; i++) {
-            let subscore = 0;
+            if (player.index === targets[i].index) {
+                subscores.push(iterations);
+                continue;
+            }
+
             this.cache(player.player, targets[i].player);
 
+            let subscore = 0;
             for (let j = 0; j < iterations; j++) {
                 subscore += this.fight();
             }
 
-            if (subscore > iterations / 2) {
-                player.score.avg++;
+            subscores.push(subscore);
+        }
+
+        // Sort sub scores by score desc
+        subscores.sort((a, b) => b - a);
+
+        // Calculate resulting win %
+        let score = 0;
+        for (let i = 0; i < subscores.length; i++) {
+            if (subscores[i] > iterations / 2) {
+                score += 1;
             } else {
+                score += subscores[i] / iterations;
                 break;
             }
         }
+
+        // Save score
+        player.score = {
+            avg: 100 * score / subscores.length
+        };
 
         return player;
     }
