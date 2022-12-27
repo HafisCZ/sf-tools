@@ -26,10 +26,13 @@ const CHANGELOG = {
             'Fixed gladiator being reduced'
         ],
         'Dungeon Simulator': [
-            'Fixed cheats',
             'Added progress bar to loader',
             'Added option to freely configure certain class behaviors',
-            'Added maximum value to threshold simulation'
+            'Added maximum value to threshold simulation',
+            'Added split dungeons when simulating remaining dungeon floors',
+            'Fixed cheats',
+            'Fixed experience displaying for Tower',
+            'Fixed total experience displaying with 0 possible experience'
         ],
         'Pet Simulator': [
             'Added editable thread and iteration counts (including separate iteration count for pet maps)'
