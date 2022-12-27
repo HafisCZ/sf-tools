@@ -1,7 +1,7 @@
 DUNGEON_DATA = {
     '1': {
         id: 1,
-        key: '1',
+        intl: '1',
         pos: 1,
         shadow: false,
         floors: {
@@ -19,7 +19,7 @@ DUNGEON_DATA = {
     },
     '2': {
         id: 2,
-        key: '2',
+        intl: '2',
         pos: 2,
         shadow: false,
         floors: {
@@ -37,7 +37,7 @@ DUNGEON_DATA = {
     },
     '3': {
         id: 3,
-        key: '3',
+        intl: '3',
         pos: 3,
         shadow: false,
         floors: {
@@ -55,7 +55,7 @@ DUNGEON_DATA = {
     },
     '4': {
         id: 4,
-        key: '4',
+        intl: '4',
         pos: 4,
         shadow: false,
         floors: {
@@ -73,7 +73,7 @@ DUNGEON_DATA = {
     },
     '5': {
         id: 5,
-        key: '5',
+        intl: '5',
         pos: 5,
         shadow: false,
         floors: {
@@ -91,7 +91,7 @@ DUNGEON_DATA = {
     },
     '6': {
         id: 6,
-        key: '6',
+        intl: '6',
         pos: 6,
         shadow: false,
         floors: {
@@ -109,7 +109,7 @@ DUNGEON_DATA = {
     },
     '7': {
         id: 7,
-        key: '7',
+        intl: '7',
         pos: 7,
         shadow: false,
         floors: {
@@ -127,7 +127,7 @@ DUNGEON_DATA = {
     },
     '8': {
         id: 8,
-        key: '8',
+        intl: '8',
         pos: 8,
         shadow: false,
         floors: {
@@ -145,7 +145,7 @@ DUNGEON_DATA = {
     },
     '9': {
         id: 9,
-        key: '9',
+        intl: '9',
         pos: 9,
         shadow: false,
         floors: {
@@ -162,7 +162,7 @@ DUNGEON_DATA = {
     },
     '10': {
         id: 10,
-        key: '10',
+        intl: '10',
         pos: 10,
         shadow: false,
         floors: {
@@ -180,7 +180,7 @@ DUNGEON_DATA = {
     },
     '11': {
         id: 11,
-        key: '11',
+        intl: '11',
         pos: 11,
         shadow: false,
         floors: {
@@ -198,7 +198,7 @@ DUNGEON_DATA = {
     },
     '12': {
         id: 12,
-        key: '12',
+        intl: '12',
         pos: 12,
         shadow: false,
         floors: {
@@ -216,7 +216,7 @@ DUNGEON_DATA = {
     },
     '13': {
         id: 13,
-        key: '13',
+        intl: '13',
         pos: 15,
         shadow: false,
         floors: {
@@ -234,7 +234,7 @@ DUNGEON_DATA = {
     },
     '14': {
         id: 14,
-        key: '14',
+        intl: '14',
         pos: 19,
         shadow: false,
         floors: {
@@ -252,7 +252,7 @@ DUNGEON_DATA = {
     },
     '201': {
         id: 201,
-        key: '201',
+        intl: '201',
         pos: 29,
         shadow: true,
         armor_multiplier: 1.5,
@@ -361,7 +361,7 @@ DUNGEON_DATA = {
     },
     '16': {
         id: 16,
-        key: '16',
+        intl: '16',
         pos: 17,
         shadow: false,
         floors: {
@@ -380,7 +380,7 @@ DUNGEON_DATA = {
     '17': {
         id: 17,
         // Hemorridor
-        key: '17',
+        intl: '17',
         pos: 18,
         shadow: false,
         armor_multiplier: 1.0,
@@ -400,7 +400,7 @@ DUNGEON_DATA = {
     '19': {
         id: 19,
         // Nordic
-        key: '19',
+        intl: '19',
         pos: 24,
         shadow: false,
         armor_multiplier: 1.0,
@@ -420,7 +420,7 @@ DUNGEON_DATA = {
     '20': {
         id: 20,
         // Olympus
-        key: '20',
+        intl: '20',
         pos: 27,
         shadow: false,
         armor_multiplier: 1.0,
@@ -440,7 +440,7 @@ DUNGEON_DATA = {
     '21': {
         id: 21,
         // Birthday
-        key: '21',
+        intl: '21',
         pos: 21,
         shadow: false,
         armor_multiplier: 0.5,
@@ -460,7 +460,7 @@ DUNGEON_DATA = {
     '22': {
         id: 22,
         // Dragons
-        key: '22',
+        intl: '22',
         pos: 13,
         shadow: false,
         floors: {
@@ -479,7 +479,7 @@ DUNGEON_DATA = {
     '23': {
         id: 23,
         // Horror
-        key: '23',
+        intl: '23',
         pos: 14,
         shadow: false,
         floors: {
@@ -498,7 +498,7 @@ DUNGEON_DATA = {
     '24': {
         id: 24,
         // Superheroes
-        key: '24',
+        intl: '24',
         pos: 16,
         shadow: false,
         floors: {
@@ -517,7 +517,7 @@ DUNGEON_DATA = {
     '25': {
         id: 25,
         // Anime
-        key: '25',
+        intl: '25',
         pos: 20,
         shadow: false,
         floors: {
@@ -536,7 +536,7 @@ DUNGEON_DATA = {
     '26': {
         id: 26,
         // Giant Monsters
-        key: '26',
+        intl: '26',
         pos: 28,
         shadow: false,
         floors: {
@@ -554,7 +554,7 @@ DUNGEON_DATA = {
     },
     '27': {
         id: 27,
-        key: '27',
+        intl: '27',
         pos: 22,
         shadow: false,
         floors: {
@@ -572,7 +572,7 @@ DUNGEON_DATA = {
     },
     '28': {
         id: 28,
-        key: '28',
+        intl: '28',
         pos: 23,
         shadow: false,
         floors: {
@@ -590,7 +590,7 @@ DUNGEON_DATA = {
     },
     '29': {
         id: 29,
-        key: '29',
+        intl: '29',
         pos: 25,
         shadow: false,
         floors: {
@@ -608,7 +608,7 @@ DUNGEON_DATA = {
     },
     '30': {
         id: 30,
-        key: '30',
+        intl: '30',
         pos: 26,
         shadow: false,
         floors: {
@@ -626,7 +626,7 @@ DUNGEON_DATA = {
     },
     '203': {
         id: 203,
-        key: '203',
+        intl: '203',
         pos: 99,
         floors: {
             '486': { pos: 486, id: 32, class: 1, level: 385, str: 56327, dex: 19741, int: 19625, con: 76759, lck: 12247, health: 148144864, min: 426, max: 808 },
@@ -658,7 +658,7 @@ DUNGEON_DATA = {
     },
     '101': {
         id: 101,
-        key: '1',
+        intl: '1',
         pos: 101,
         shadow: true,
         floors: {
@@ -676,7 +676,7 @@ DUNGEON_DATA = {
     },
     '102': {
         id: 102,
-        key: '2',
+        intl: '2',
         pos: 102,
         shadow: true,
         floors: {
@@ -694,7 +694,7 @@ DUNGEON_DATA = {
     },
     '103': {
         id: 103,
-        key: '3',
+        intl: '3',
         pos: 103,
         shadow: true,
         floors: {
@@ -712,7 +712,7 @@ DUNGEON_DATA = {
     },
     '104': {
         id: 104,
-        key: '4',
+        intl: '4',
         pos: 104,
         shadow: true,
         floors: {
@@ -730,7 +730,7 @@ DUNGEON_DATA = {
     },
     '105': {
         id: 105,
-        key: '5',
+        intl: '5',
         pos: 105,
         shadow: true,
         floors: {
@@ -748,7 +748,7 @@ DUNGEON_DATA = {
     },
     '106': {
         id: 106,
-        key: '6',
+        intl: '6',
         pos: 106,
         shadow: true,
         floors: {
@@ -766,7 +766,7 @@ DUNGEON_DATA = {
     },
     '107': {
         id: 107,
-        key: '7',
+        intl: '7',
         pos: 107,
         shadow: true,
         verified: true,
@@ -785,7 +785,7 @@ DUNGEON_DATA = {
     },
     '108': {
         id: 108,
-        key: '8',
+        intl: '8',
         pos: 108,
         shadow: true,
         verified: true,
@@ -804,7 +804,7 @@ DUNGEON_DATA = {
     },
     '109': {
         id: 109,
-        key: '9',
+        intl: '9',
         pos: 109,
         shadow: true,
         verified: true,
@@ -822,7 +822,7 @@ DUNGEON_DATA = {
     },
     '110': {
         id: 110,
-        key: '10',
+        intl: '10',
         pos: 110,
         shadow: true,
         floors: {
@@ -840,7 +840,7 @@ DUNGEON_DATA = {
     },
     '111': {
         id: 111,
-        key: '11',
+        intl: '11',
         pos: 111,
         shadow: true,
         floors: {
@@ -858,7 +858,7 @@ DUNGEON_DATA = {
     },
     '112': {
         id: 112,
-        key: '12',
+        intl: '12',
         pos: 112,
         shadow: true,
         floors: {
@@ -876,7 +876,7 @@ DUNGEON_DATA = {
     },
     '113': {
         id: 113,
-        key: '13',
+        intl: '13',
         pos: 115,
         shadow: true,
         floors: {
@@ -894,7 +894,7 @@ DUNGEON_DATA = {
     },
     '114': {
         id: 114,
-        key: '14',
+        intl: '14',
         pos: 119,
         shadow: true,
         floors: {
@@ -912,7 +912,7 @@ DUNGEON_DATA = {
     },
     '202': {
         id: 202,
-        key: '202',
+        intl: '202',
         pos: 130,
         shadow: true,
         floors: {
@@ -941,7 +941,7 @@ DUNGEON_DATA = {
     },
     '116': {
         id: 116,
-        key: '16',
+        intl: '16',
         pos: 117,
         shadow: true,
         floors: {
@@ -959,7 +959,7 @@ DUNGEON_DATA = {
     },
     '117': {
         id: 117,
-        key: '17',
+        intl: '17',
         pos: 118,
         shadow: true,
         floors: {
@@ -977,7 +977,7 @@ DUNGEON_DATA = {
     },
     '119': {
         id: 119,
-        key: '19',
+        intl: '19',
         pos: 124,
         shadow: true,
         floors: {
@@ -995,7 +995,7 @@ DUNGEON_DATA = {
     },
     '120': {
         id: 120,
-        key: '20',
+        intl: '20',
         pos: 127,
         shadow: true,
         floors: {
@@ -1013,7 +1013,7 @@ DUNGEON_DATA = {
     },
     '121': {
         id: 121,
-        key: '21',
+        intl: '21',
         pos: 121,
         shadow: true,
         floors: {
@@ -1032,7 +1032,7 @@ DUNGEON_DATA = {
     '122': {
         id: 122,
         // Dragons
-        key: '22',
+        intl: '22',
         pos: 113,
         shadow: true,
         floors: {
@@ -1051,7 +1051,7 @@ DUNGEON_DATA = {
     '123': {
         id: 123,
         // Horror
-        key: '23',
+        intl: '23',
         pos: 114,
         shadow: true,
         floors: {
@@ -1070,7 +1070,7 @@ DUNGEON_DATA = {
     '124': {
         id: 124,
         // Superheroes
-        key: '24',
+        intl: '24',
         pos: 116,
         shadow: true,
         floors: {
@@ -1089,7 +1089,7 @@ DUNGEON_DATA = {
     '125': {
         id: 125,
         // Anime
-        key: '25',
+        intl: '25',
         pos: 120,
         shadow: true,
         floors: {
@@ -1108,7 +1108,7 @@ DUNGEON_DATA = {
     '126': {
         id: 126,
         // Giant Monsters
-        key: '26',
+        intl: '26',
         pos: 128,
         shadow: true,
         floors: {
@@ -1126,7 +1126,7 @@ DUNGEON_DATA = {
     },
     '127': {
         id: 127,
-        key: '27',
+        intl: '27',
         pos: 122,
         shadow: true,
         floors: {
@@ -1144,7 +1144,7 @@ DUNGEON_DATA = {
     },
     '128': {
         id: 128,
-        key: '28',
+        intl: '28',
         pos: 123,
         shadow: true,
         floors: {
@@ -1162,7 +1162,7 @@ DUNGEON_DATA = {
     },
     '129': {
         id: 129,
-        key: '29',
+        intl: '29',
         pos: 125,
         shadow: true,
         floors: {
@@ -1180,7 +1180,7 @@ DUNGEON_DATA = {
     },
     '130': {
         id: 130,
-        key: '30',
+        intl: '30',
         pos: 126,
         shadow: true,
         floors: {
@@ -1198,7 +1198,7 @@ DUNGEON_DATA = {
     },
     '204': {
         id: 204,
-        key: '204',
+        intl: '204',
         pos: 201,
         shadow: false,
         floors: {
