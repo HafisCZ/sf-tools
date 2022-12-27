@@ -367,13 +367,13 @@
                 let shouldRandomizeNames = new Date().getMonth() == 3 && new Date().getDate() == 1;
 
                 for (let dungeon of Object.values(DUNGEON_DATA)) {
-                    dungeon.name = intl(`dungeon_enemies.${dungeon.key}.name`);
+                    dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
                     if (shouldRandomizeNames) {
                         dungeon.name = randomizeString(dungeon.name);
                     }
 
                     for (let enemy of Object.values(dungeon.floors)) {
-                        enemy.name = intl(`dungeon_enemies.${dungeon.key}.${enemy.pos}`);
+                        enemy.name = intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
                         if (shouldRandomizeNames) {
                             enemy.name = randomizeString(enemy.name);
                         }
