@@ -93,29 +93,12 @@ const DATABASE_PARAMS = [
     ]
 ];
 
-function _bindOnSuccessOnError (event, resolve, reject) {
-    if (resolve) event.onsuccess = () => resolve(event.result);
-    if (reject) event.onerror = () => reject(event.error);
-    return event;
-}
-
 class IndexedDBWrapper {
-    static delete (name) {
-        return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            indexedDB.deleteDatabase(name), resolve, reject
-        ));
-    }
-
-    static exists (name, version) {
+    static promisify (event) {
         return new Promise((resolve, reject) => {
-            let openRequest = indexedDB.open(name, version);
-            openRequest.onsuccess = () => resolve(true);
-            openRequest.onerror = () => resolve(false);
-            openRequest.onupgradeneeded = event => {
-                event.target.transaction.abort();
-                resolve(false);
-            };
-        });
+            event.onsuccess = () => resolve(event.result);
+            event.onerror = () => reject(event.error);
+        })
     }
 
     constructor (name, version, stores, updaters, dataUpdaters) {
@@ -138,9 +121,9 @@ class IndexedDBWrapper {
     }
 
     open () {
-        return new Promise((resolve, reject) => {
-            let openRequest = _bindOnSuccessOnError(indexedDB.open(this.name, this.version), resolve, reject);
-
+        return IndexedDBWrapper.promisify((() => {
+            const openRequest = indexedDB.open(this.name, this.version);
+            
             openRequest.onupgradeneeded = (event) => {
                 let database = openRequest.result;
                 if (event.oldVersion < 1) {
@@ -165,7 +148,9 @@ class IndexedDBWrapper {
 
                 this.oldVersion = event.oldVersion;
             }
-        }).then(async (db) => {
+
+            return openRequest;
+        })()).then(async (db) => {
             this.database = db;
 
             if (this.version != this.oldVersion && Array.isArray(this.dataUpdaters)) {
@@ -183,38 +168,43 @@ class IndexedDBWrapper {
     }
 
     close () {
-        return new Promise((resolve, reject) => {
-            this.database.close();
-            resolve();
-        });
+        return IndexedDBWrapper.promisify(
+            this.database.close()
+        );
     }
 
     set (store, value) {
-        return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store).put(value), resolve, reject
-        ));
+        return IndexedDBWrapper.promisify(
+            this.store(store).put(value)
+        );
     }
 
     get (store, key) {
-        return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store, null, 'readonly').get(key), resolve, reject
-        ));
+        return IndexedDBWrapper.promisify(
+            this.store(store, null, 'readonly').get(key)
+        );
     }
 
     remove (store, key) {
-        return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store).delete(key), resolve, reject
-        ));
+        return IndexedDBWrapper.promisify(
+            this.store(store).delete(key)
+        );
     }
 
     clear (store) {
-        return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store).clear(), resolve, reject
-        ));
+        return IndexedDBWrapper.promisify(
+            this.store(store).clear()
+        );
+    }
+
+    count (store, index, query) {
+        return IndexedDBWrapper.promisify(
+            this.store(store, index, query).count()
+        );
     }
 
     where (store, index, query) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let items = [];
             let cursorRequest = this.store(store, index, 'readonly').openCursor(query);
             cursorRequest.onerror = () => resolve([]);
@@ -231,9 +221,9 @@ class IndexedDBWrapper {
     }
 
     all (store, index, query) {
-        return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store, index, 'readonly').getAll(query), resolve, reject
-        ));
+        return IndexedDBWrapper.promisify(
+            this.store(store, index, 'readonly').getAll(query)
+        );
     }
 }
 
