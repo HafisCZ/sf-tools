@@ -1065,11 +1065,11 @@ const DataManageDialog = new (class extends Dialog {
 
         if (instances.length > 0) {
             players.push(
-                ...instances.filter(({ identifier }) => DatabaseManager._isPlayer(identifier)).map(({ prefix, name }) => ({ Prefix: _pretty_prefix(prefix), Name: name }))
+                ...instances.filter(({ identifier }) => DatabaseManager._isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ Prefix: _pretty_prefix(prefix), Name: name, Timestamp: formatDate(timestamp) }))
             )
 
             groups.push(
-                ...instances.filter(({ identifier }) => !DatabaseManager._isPlayer(identifier)).map(({ prefix, name }) => ({ Prefix: _pretty_prefix(prefix), Name: name }))
+                ...instances.filter(({ identifier }) => !DatabaseManager._isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ Prefix: _pretty_prefix(prefix), Name: name, Timestamp: formatDate(timestamp) }))
             )
         }
 
@@ -1077,8 +1077,8 @@ const DataManageDialog = new (class extends Dialog {
             content += `
                 <div>
                     <h3 class="ui header">${this.intl('label.player')}</h3>
-                    <ul>
-                        ${players.map(({ Name: name, Prefix: prefix }) => `<li style="margin-bottom: 5px;">${prefix} - ${name}</li>`).join('')}
+                    <ul class="px-12">
+                        ${players.map(({ Name: name, Prefix: prefix, Timestamp: timestamp }) => `<li style="margin-bottom: 5px;" class="flex justify-content-between"><div>${prefix} - ${name}</div><div>${timestamp}</div></li>`).join('')}
                     </ul>
                 </div>
             `;
@@ -1088,8 +1088,8 @@ const DataManageDialog = new (class extends Dialog {
             content += `
                 <div>
                     <h3 class="ui header">${this.intl('label.group')}</h3>
-                    <ul>
-                        ${groups.map(({ Name: name, Prefix: prefix }) => `<li style="margin-bottom: 5px;">${prefix} - ${name}</li>`).join('')}
+                    <ul class="px-12">
+                        ${groups.map(({ Name: name, Prefix: prefix, Timestamp: timestamp }) => `<li style="margin-bottom: 5px;" class="flex justify-content-between"><div>${prefix} - ${name}</div><div>${timestamp}</div></li>`).join('')}
                     </ul>
                 </div>
             `;
