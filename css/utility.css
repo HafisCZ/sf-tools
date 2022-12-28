@@ -73,6 +73,11 @@
   padding-bottom: 0 !important;
 }
 
+.px-12 {
+  padding-left: 3em;
+  padding-right: 3em;
+}
+
 .pt-4 {
   padding-top: 1em;
 }
