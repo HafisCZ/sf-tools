@@ -6,6 +6,8 @@ const CHANGELOG = {
             'Added missing notification when database is being updated',
             'Added search bar to guild list',
             'Added new toggle buttons to replace old checkboxes in bottom right of the page',
+            'Added guilds to advanced file list (you may now manage them separately from players)',
+            'Added timestamps to players & groups in deletion confirmation dialog',
             'Fixed file tag button not removing tag filter when clicked when active',
             'Fixed file merging with duplicate players / groups',
             'Fixed file and script sharing no longer available',
