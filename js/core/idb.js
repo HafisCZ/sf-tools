@@ -841,18 +841,15 @@ const DatabaseManager = new (class {
         return this[this._isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
     }
 
-    remove (players) {
-        return new Promise(async (resolve, reject) => {
-            for (let { identifier, timestamp } of players) {
-                await this.Database.remove('players', [identifier, parseInt(timestamp)]);
-                this._removeMetadata(identifier, timestamp);
-                this._unload(identifier, timestamp);
-            }
+    async remove (players) {
+        for (let { identifier, timestamp } of players) {
+            await this.Database.remove('players', [identifier, parseInt(timestamp)]);
+            this._removeMetadata(identifier, timestamp);
+            this._unload(identifier, timestamp);
+        }
 
-            await this._updateMetadata();
-            this._updateLists();
-            resolve();
-        });
+        await this._updateMetadata();
+        this._updateLists();
     }
 
     async _removeAuto (data) {
@@ -901,45 +898,39 @@ const DatabaseManager = new (class {
     }
 
     // Remove one or more timestamps
-    removeTimestamps (... timestamps) {
-        return new Promise(async (resolve, reject) => {
-            for (const timestamp of timestamps) {
-                for (const identifier of this.Timestamps.array(timestamp)) {
-                    let isPlayer = this._isPlayer(identifier);
-                    await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+    async removeTimestamps (... timestamps) {
+        for (const timestamp of timestamps) {
+            for (const identifier of this.Timestamps.array(timestamp)) {
+                let isPlayer = this._isPlayer(identifier);
+                await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
-                    this._removeMetadata(identifier, timestamp);
-                    this._unload(identifier, timestamp);
-                }
+                this._removeMetadata(identifier, timestamp);
+                this._unload(identifier, timestamp);
             }
+        }
 
-            await this._updateMetadata();
-            this._updateLists();
-            resolve();
-        });
+        await this._updateMetadata();
+        this._updateLists();
     }
 
-    purge () {
-        return new Promise(async (resolve, reject) => {
-            for (const [timestamp, identifiers] of this.Timestamps.entries()) {
-                for (const identifier of Array.from(identifiers)) {
-                    let isPlayer = this._isPlayer(identifier);
-                    await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+    async purge () {
+        for (const [timestamp, identifiers] of this.Timestamps.entries()) {
+            for (const identifier of Array.from(identifiers)) {
+                let isPlayer = this._isPlayer(identifier);
+                await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
-                    this._removeMetadata(identifier, timestamp);
-                }
+                this._removeMetadata(identifier, timestamp);
             }
+        }
 
-            await this._updateMetadata();
+        await this._updateMetadata();
 
-            this.Players = {};
-            this.Groups = {};
-            this.Timestamps = new ModelRegistry();
-            this.Identifiers = new ModelRegistry();
+        this.Players = {};
+        this.Groups = {};
+        this.Timestamps = new ModelRegistry();
+        this.Identifiers = new ModelRegistry();
 
-            this._updateLists();
-            resolve();
-        });
+        this._updateLists();
     }
 
     _removeFromPool (identifier, timestamp) {
@@ -947,50 +938,44 @@ const DatabaseManager = new (class {
         this.Identifiers.remove(identifier, timestamp);
     }
 
-    migrateHiddenFiles () {
-        return new Promise(async (resolve, reject) => {
-            for (const [timestamp, identifiers] of this.Timestamps.entries()) {
-                const players = Array.from(identifiers).filter(identifier => this._isPlayer(identifier));
-                if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
-                    for (const id of players) {
-                        const player = this.Players[id][timestamp].Data;
-                        delete player['hidden'];
+    async migrateHiddenFiles () {
+        for (const [timestamp, identifiers] of this.Timestamps.entries()) {
+            const players = Array.from(identifiers).filter(identifier => this._isPlayer(identifier));
+            if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
+                for (const id of players) {
+                    const player = this.Players[id][timestamp].Data;
+                    delete player['hidden'];
 
-                        await this.Database.set('players', player);
-                    }
-
-                    for (const groupIdentifier of Array.from(identifiers).filter(identifier => !this._isPlayer(identifier))) {
-                        this._hiddenModels.add(_dig(this.Groups, groupIdentifier, timestamp, 'Data'))
-                    }
-
-                    await this._markHidden(timestamp, true);
+                    await this.Database.set('players', player);
                 }
-            }
 
-            this._updateLists();
-            resolve();
-        });
+                for (const groupIdentifier of Array.from(identifiers).filter(identifier => !this._isPlayer(identifier))) {
+                    this._hiddenModels.add(_dig(this.Groups, groupIdentifier, timestamp, 'Data'))
+                }
+
+                await this._markHidden(timestamp, true);
+            }
+        }
+
+        this._updateLists();
     }
 
-    removeIdentifiers (... identifiers) {
-        return new Promise(async (resolve, reject) => {
-            for (const identifier of identifiers) {
-                delete this.Players[identifier];
-                delete this.Groups[identifier];
+    async removeIdentifiers (... identifiers) {
+        for (const identifier of identifiers) {
+            delete this.Players[identifier];
+            delete this.Groups[identifier];
 
-                for (const timestamp of this.Identifiers.array(identifier)) {
-                    let isPlayer = this._isPlayer(identifier);
-                    await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+            for (const timestamp of this.Identifiers.array(identifier)) {
+                let isPlayer = this._isPlayer(identifier);
+                await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
-                    this._removeMetadata(identifier, timestamp);
-                    this._unload(identifier, timestamp);
-                }
+                this._removeMetadata(identifier, timestamp);
+                this._unload(identifier, timestamp);
             }
+        }
 
-            await this._updateMetadata();
-            this._updateLists();
-            resolve();
-        });
+        await this._updateMetadata();
+        this._updateLists();
     }
 
     hideIdentifier (identifier) {
@@ -1001,138 +986,118 @@ const DatabaseManager = new (class {
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
-    setTagFor (identifier, timestamp, tag) {
-        return new Promise(async (resolve) => {
-            const player = _dig(this.Players, identifier, timestamp, 'Data');
-            player.tag = tag;
+    async setTagFor (identifier, timestamp, tag) {
+        const player = _dig(this.Players, identifier, timestamp, 'Data');
+        player.tag = tag;
+        
+        await this.Database.set('players', player);
+    }
+
+    async setTag (timestamps, tag) {
+        const { players } = this._getFile(null, timestamps);
+        for (const player of players) {
+            if (!tag || _empty(tag)) {
+                delete player.tag;
+            } else {
+                player.tag = tag;
+            }
+
             await this.Database.set('players', player);
-            resolve();
-        });
+        }
+
+        this.LastChange = Date.now();
     }
 
-    setTag (timestamps, tag) {
-        return new Promise(async (resolve) => {
-            const { players } = this._getFile(null, timestamps);
-            for (const player of players) {
-                if (!tag || _empty(tag)) {
-                    delete player.tag;
-                } else {
-                    player.tag = tag;
-                }
+    async rebase (from, to) {
+        if (from && to) {
+            const file = this._getFile(null, [ from ]);
 
-                await this.Database.set('players', player);
+            for (const i of file.players) {
+                i.timestamp = to;
             }
 
-            this.LastChange = Date.now();
-            resolve();
-        });
-    }
-
-    rebase (from, to) {
-        return new Promise(async (resolve) => {
-            if (from && to) {
-                const file = this._getFile(null, [ from ]);
-
-                for (const i of file.players) {
-                    i.timestamp = to;
-                }
-
-                for (const i of file.groups) {
-                    i.timestamp = to;
-                }
-
-                await this._addFile(null, file.players, file.groups);
-                await this.removeTimestamps(from);
+            for (const i of file.groups) {
+                i.timestamp = to;
             }
 
-            resolve();
-        });
+            await this._addFile(null, file.players, file.groups);
+            await this.removeTimestamps(from);
+        }
     }
 
-    merge (timestamps) {
-        return new Promise(async (resolve, reject) => {
-            if (timestamps.length > 1) {
-                timestamps.sort((b, a) => a - b);
+    async merge (timestamps) {
+        if (timestamps.length > 1) {
+            timestamps.sort((b, a) => a - b);
 
-                let newestTimestamp = timestamps.shift();
-                for (let timestamp of timestamps) {
-                    let file = this._getFile(null, [ timestamp ]);
+            let newestTimestamp = timestamps.shift();
+            for (let timestamp of timestamps) {
+                let file = this._getFile(null, [ timestamp ]);
 
-                    for (let item of file.players) {
-                        item.timestamp = newestTimestamp;
+                for (let item of file.players) {
+                    item.timestamp = newestTimestamp;
+                }
+
+                for (let item of file.groups) {
+                    item.timestamp = newestTimestamp;
+                }
+
+                await this._addFile(null, file.players, file.groups, { skipExisting: true });
+            }
+
+            await this.removeTimestamps(... timestamps);
+        }
+    }
+
+    async hide (players) {
+        for (const player of players) {
+            player.hidden = !player.hidden
+
+            if (player.hidden) {
+                this._hiddenModels.add(player);
+            } else {
+                this._hiddenModels.delete(player);
+            }
+
+            if (player.hidden && !SiteOptions.hidden) {
+                this._unload(player.identifier, player.timestamp);
+            }
+
+            await this.Database.set('players', player);
+        }
+
+        this._updateLists();
+    }
+
+    async hideTimestamps (... timestamps) {
+        if (_not_empty(timestamps)) {
+            const shouldHide = !_all_true(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
+
+            for (const timestamp of timestamps) {
+                for (const identifier of this.Timestamps.array(timestamp)) {
+                    const model = _dig(this, this._isPlayer(identifier) ? 'Players' : 'Groups', identifier, timestamp, 'Data')
+
+                    if (shouldHide) {
+                        this._hiddenModels.add(model)
+                    } else {
+                        this._hiddenModels.delete(model)
                     }
-
-                    for (let item of file.groups) {
-                        item.timestamp = newestTimestamp;
-                    }
-
-                    await this._addFile(null, file.players, file.groups, { skipExisting: true });
                 }
-
-                await this.removeTimestamps(... timestamps);
             }
 
-            resolve();
-        });
-    }
+            for (const timestamp of timestamps) {
+                await this._markHidden(timestamp, shouldHide);
+            }
 
-    hide (players) {
-        return new Promise(async (resolve, reject) => {
-            for (const player of players) {
-                player.hidden = !player.hidden
-
-                if (player.hidden) {
-                    this._hiddenModels.add(player);
-                } else {
-                    this._hiddenModels.delete(player);
+            if (!SiteOptions.hidden) {
+                for (const timestamp of timestamps) {
+                    for (const identifier of this.Timestamps.array(timestamp)) {
+                        this._unload(identifier, timestamp);
+                    }
                 }
-
-                if (player.hidden && !SiteOptions.hidden) {
-                    this._unload(player.identifier, player.timestamp);
-                }
-
-                await this.Database.set('players', player);
             }
 
             this._updateLists();
-            resolve();
-        });
-    }
-
-    hideTimestamps (... timestamps) {
-        return new Promise(async (resolve, reject) => {
-            if (_not_empty(timestamps)) {
-                const shouldHide = !_all_true(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
-
-                for (const timestamp of timestamps) {
-                    for (const identifier of this.Timestamps.array(timestamp)) {
-                        const model = _dig(this, this._isPlayer(identifier) ? 'Players' : 'Groups', identifier, timestamp, 'Data')
-
-                        if (shouldHide) {
-                            this._hiddenModels.add(model)
-                        } else {
-                            this._hiddenModels.delete(model)
-                        }
-                    }
-                }
-
-                for (const timestamp of timestamps) {
-                    await this._markHidden(timestamp, shouldHide);
-                }
-
-                if (!SiteOptions.hidden) {
-                    for (const timestamp of timestamps) {
-                        for (const identifier of this.Timestamps.array(timestamp)) {
-                            this._unload(identifier, timestamp);
-                        }
-                    }
-                }
-
-                this._updateLists();
-            }
-
-            resolve();
-        });
+        }
     }
 
     // HAR - string
@@ -1150,10 +1115,8 @@ const DatabaseManager = new (class {
         });
     }
 
-    export (identifiers, timestamps, constraint) {
-        return new Promise((resolve, reject) => {
-            resolve(this._getFile(identifiers, timestamps, constraint));
-        });
+    async export (identifiers, timestamps, constraint) {
+        return this._getFile(identifiers, timestamps, constraint);
     }
 
     getGroupsFor (players) {
