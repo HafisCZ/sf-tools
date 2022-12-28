@@ -536,9 +536,10 @@ const DatabaseManager = new (class {
         this.LastChange = Date.now();
         this.GroupNames = {};
 
+        const prefixes = new Set();
         const playerTimestamps = new Set();
 
-        for (const [identifier, player] of Object.entries(this.Players)) {
+        for (const player of Object.values(this.Players)) {
             player.LatestTimestamp = 0;
             player.List = Object.entries(player).reduce((array, [ ts, obj ]) => {
                 if (!isNaN(ts)) {
@@ -568,6 +569,8 @@ const DatabaseManager = new (class {
             }
 
             player.Own = player.List.find(x => x[1].Own) != undefined;
+
+            prefixes.add(player.Latest.Data.prefix);
         }
 
         for (const [identifier, group] of Object.entries(this.Groups)) {
@@ -593,10 +596,12 @@ const DatabaseManager = new (class {
             _sort_des(group.List, le => le[0]);
             group.Latest = group[group.LatestTimestamp];
             group.Own = group.List.find(x => x[1].Own) != undefined;
+
+            prefixes.add(group.Latest.Data.prefix);
         }
 
         this.PlayerTimestamps = Array.from(playerTimestamps);
-        this.Prefixes = _uniq(this.Identifiers.keys().filter(id => this._isPlayer(id)).map(identifier => this.Players[identifier].Latest.Data.prefix));
+        this.Prefixes = Array.from(prefixes);
     }
 
     // INTERNAL: Load player from proxy
