@@ -983,7 +983,7 @@ const DatabaseManager = new (class {
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                     this._removeMetadata(identifier, timestamp);
-                    this._removeFromPool(identifier, timestamp);
+                    this._unload(identifier, timestamp);
                 }
             }
 
