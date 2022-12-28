@@ -122,8 +122,8 @@ function _between (val, min, max) {
     return val > min && val < max;
 }
 
-function _uuid (player) {
-    return `${ player.identifier }-${ player.timestamp }`;
+function _uuid (data) {
+    return `${ data.identifier }-${ data.timestamp }`;
 }
 
 function _str_if_present (strings, ... args) {
