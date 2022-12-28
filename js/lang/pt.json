@@ -2,33 +2,33 @@
     "general": {
         "no": "Não",
         "yes": "Sim",
-        "min": "Min",
-        "max": "Max",
+        "min": "Mín.",
+        "max": "Máx.",
         "class1": "Guerreiro",
-        "class2": "Feiticeiro",
-        "class3": "Explorador",
+        "class2": "Mago",
+        "class3": "Sentinela",
         "class4": "Assassino",
         "class5": "Mago de Batalha",
-        "class6": "Guerreiro Nórdico",
+        "class6": "Berserker",
         "class7": "Caçador de Demónios",
         "class8": "Druida",
         "class9": "Bardo",
         "mask0": "Águia",
         "mask1": "Urso",
-        "mask2": "Gato",
+        "mask2": "Tigre",
         "instrument0": "Harpa",
-        "instrument1": "Alaúde",
+        "instrument1": "Lute",
         "instrument2": "Flauta",
         "life_potion": "Vida Eterna",
         "attribute1": "Força",
-        "attribute2": "Reflexos",
+        "attribute2": "Destreza",
         "attribute3": "Inteligência",
-        "attribute4": "Resistência",
+        "attribute4": "Constituição",
         "attribute5": "Sorte",
         "potion1": "Força",
-        "potion2": "Reflexos",
+        "potion2": "Destreza",
         "potion3": "Inteligência",
-        "potion4": "Resistência",
+        "potion4": "Constituição",
         "potion5": "Sorte",
         "potion6": "Vida",
         "rank1": "Líder",
@@ -41,160 +41,160 @@
         "stone": "Pedra",
         "souls": "Almas",
         "time": "Tempo",
-        "gem": "Pedra preciosa",
-        "fight": "Combate",
-        "wood_cap": "Armazenamento de Madeira",
-        "stone_cap": "Armazenamento de Pedra",
+        "gem": "Gema",
+        "fight": "Luta",
+        "wood_cap": "Capacidade de Madeira",
+        "stone_cap": "Capacidade de Pedra",
         "buildings": {
             "time": "Tempo de Construção",
-            "hourly": "Prod. horária.",
+            "hourly": "Produção por Hora",
             "capacity": "Capacidade",
-            "full": "Completo em",
+            "full": "Cheio em",
             "storage": "Armazenamento total",
-            "lure_count": "Atrações",
-            "lure_bonus": "Bónus de Atração",
-            "knights": "Hall de Cavaleiros",
-            "goblins": "Duendes",
-            "trolls": "Trols",
+            "lure_count": "Engodos",
+            "lure_bonus": "Bónus de Engodo",
+            "knights": "Salão de Cavaleiros",
+            "goblins": "Goblins",
+            "trolls": "Trolls",
             "warriors": "Guerreiros",
-            "archers": "Exploradores",
-            "mages": "Feiticeiros",
-            "backpack_size": "Capacidade da Mochila",
-            "critical_bonus": "Bónus de ataque crítico",
-            "thirst_free": "Sede gratuita diária",
-            "thirst_usable": "Armazenamento de Sede Diária",
+            "archers": "Arqueiros",
+            "mages": "Magos",
+            "backpack_size": "Tamanho da Mochila",
+            "critical_bonus": "Bónus Crítico",
+            "thirst_free": "Sede Diária Gratuita",
+            "thirst_usable": "Sede Diária Armazenável",
             "fortress1": "Fortaleza",
-            "fortress2": "Alojamentos dos Trabalhadores",
-            "fortress3": "Cabana do Lenhador",
+            "fortress2": "Alojamento de Trabalhadores",
+            "fortress3": "Cabana de Lenhador",
             "fortress4": "Pedreira",
-            "fortress5": "Mina de Pedras preciosas",
+            "fortress5": "Mina de Gemas",
             "fortress6": "Academia",
-            "fortress7": "Clã do Tiro com Arco",
+            "fortress7": "Guilda de Arqueiros",
             "fortress8": "Quartel",
-            "fortress9": "Torre dos Feiticeiros",
-            "fortress10": "Tesouro",
-            "fortress11": "Forja",
+            "fortress9": "Torre de Magos",
+            "fortress10": "Tesouraria",
+            "fortress11": "Ferreiro",
             "fortress12": "Fortificações",
             "underworld1": "Coração das Trevas",
             "underworld2": "Portão do Submundo",
             "underworld3": "Extrator de Almas",
-            "underworld4": "Mina de Duendes",
+            "underworld4": "Fosso de Goblins",
             "underworld5": "Câmara de Tortura",
             "underworld6": "Treinador de Gladiadores",
-            "underworld7": "Bloco de Trols",
+            "underworld7": "Quarteirão de Trolls",
             "underworld8": "Máquina do Tempo",
-            "underworld9": "Guardião",
-            "underworld10": "Mina de Ouro"
+            "underworld9": "Guardador",
+            "underworld10": "Fosso de Ouro"
         },
         "reduction": "Redução"
     },
     "index": {
-        "toggle": "Créditos",
+        "toggle": "Alternar Créditos",
         "roles": {
-            "admin": "Alguém com muito tempo livre..!",
-            "helper": "Ajudantes - Pesquisa, Testing, Feedback, etc.",
+            "admin": "Alguém com muito tempo livre",
+            "helper": "Ajudantes — Pesquisa, Teste, Opinião, etc.",
             "tester": "Testadores",
-            "wiki": "Chefe Wiki Manager",
+            "wiki": "Gerente-chefe de Wiki",
             "translator": "Tradutores",
-            "mention": "Outras menções "
+            "mention": "Outras Menções"
         },
         "stats": {
             "title": "Estatísticas",
-            "desc": "Acompanha o teu progresso e da tua clã"
+            "desc": "Acompanha o teu progresso e o da tua guilda"
         },
         "temp": {
             "title": "Estatísticas",
-            "desc": "Cria uma instância temporária de Estatística",
+            "desc": "Criar exemplo temporário de estatísticas",
             "temporary": "Temporário"
         },
         "wiki": {
             "title": "Wiki",
-            "desc": "Como fazer magia com tabelas e muito mais!"
+            "desc": "Como fazer magia com tabelas e muito mais"
         },
         "runes": {
-            "title": "Bónus de runas",
-            "desc": "Tabela de bónus de runas do Zorago"
+            "title": "Bónus de Runas",
+            "desc": "Tabela de Bónus de Runas do Zorago"
         },
         "inventory": {
-            "title": "Inventório",
-            "desc": "Compara items, calcula upgrades & muito mais!"
+            "title": "Gestor de Inventário",
+            "desc": "Compara itens, calcula melhoramentos, e mais"
         },
         "idle": {
-            "title": "Gestor da Arena",
-            "desc": "Acompanha a produção da tua Arena Manager"
+            "title": "Gestor de Arena",
+            "desc": "Verifica a produção do teu Gestor de Arena"
         },
         "calendar": {
             "title": "Calendário de Pets",
-            "desc": "Verifica quando e como podes encontrar pets"
+            "desc": "Vê quando podes apanhar pets"
         },
         "players": {
-            "title": "Simulador de Combate",
-            "desc": "Simula os resultados de um combate PvP"
+            "title": "Simulador de Luta",
+            "desc": "Simula o resultado provável de uma batalha PvP"
         },
         "guild": {
-            "title": "Simulador da Clã",
-            "desc": "Simula os resultados de um combate de clã"
+            "title": "Simulador de Guilda",
+            "desc": "Simula o resultado provável de um combate de guilda"
         },
         "pets": {
             "title": "Simulador de Pets",
-            "desc": "Simula os resultados de um combate de pets"
+            "desc": "Simula o resultado provável de um combate de pets"
         },
         "dungeons": {
-            "title": "Simulador de Masmorras",
-            "desc": "Simula os resultados de um combate nas masmorras"
+            "title": "Simulador de Masmorra",
+            "desc": "Simula o resultado provável de um combate de masmorra"
         },
         "underworld": {
             "title": "Submundo",
-            "desc": "Simula os resultados de um combate no submundo"
+            "desc": "Simula o resultado provável de um combate de submundo"
         },
         "fights": {
-            "title": "Ver Combates",
-            "desc": "Visualiza todos os combates que estão no arquivo"
+            "title": "Visualizador de Luta",
+            "desc": "Visualiza todas as lutas PvP armazenadas no ficheiro do arquivo"
         },
         "digest": {
-            "title": "Ver Masmorras",
-            "desc": "Visualiza todos os combates nas masmorras que estão no arquivo"
+            "title": "Visualizador de Boss",
+            "desc": "Visualiza todas as lutas PvE armazenadas no ficheiro do arquivo"
         },
         "atts": {
-            "title": "Ouro & Experiência",
-            "desc": "Curvas & calculação"
+            "title": "Ouro e Experiência",
+            "desc": "Curvas e Calculadores"
         },
         "smith": {
-            "title": "Forja",
-            "desc": "Como funciona e quanto custa o melhoramento de atributos na forja"
+            "title": "Melhorias de Ferreiro",
+            "desc": "O que custa e o que se perde"
         },
         "hydra": {
             "title": "Simulador de Hidra",
-            "desc": "Simula qual a classe de pets é melhor contra a hidra."
+            "desc": "Simula qual classe de pets de guilda é melhor contra a hidra atual"
         },
         "fortress": {
             "title": "Simulador de Fortaleza",
-            "desc": "Simular os resultados prováveis de um ataque a fortaleza inimiga"
+            "desc": "Simula o resultado provável de um assalto de fortaleza"
         },
         "changelog": {
-            "title": "Alterações",
-            "desc": "Ver todas as alterações notáveis"
+            "title": "Diário de Alterações",
+            "desc": "Visualizar todas as alterações notáveis"
         },
         "hellevator": {
             "title": "Simulador de Hellevador",
-            "desc": "Simular o resultado provável das batalhas Hellevator"
+            "desc": "Simula o resultado provável de batalhas de Hellevador"
         }
     },
     "404": {
         "title": "404",
-        "text": "Não tenho a certeza do que estás a procura mas não existe aqui :("
+        "text": "Não tenho a certeza do que estás à procura mas não existe"
     },
     "stats": {
         "topbar": {
             "temporary_flag": "Temporário",
             "players": "Jogadores",
-            "guilds": "Clãs",
-            "browse": "Pesquisar",
+            "guilds": "Guildas",
+            "browse": "Procurar",
             "scripts": "Scripts",
             "files": "Ficheiros",
             "settings": "Definições",
-            "temporary": "Sessão temporária",
-            "changelog": "Alterações",
+            "temporary": "Sessão Temporária",
+            "changelog": "Diário de Alterações",
             "profile": "Perfil"
         },
         "files": {
@@ -202,118 +202,120 @@
                 "filters": "Filtros",
                 "io": "Importar / Exportar"
             },
-            "timestamp": "Data",
-            "timestamps": "Datas",
-            "prefix": "Servidor",
+            "timestamp": "Data e Hora",
+            "timestamps": "Datas e Horas",
+            "prefix": "Prefixo",
             "name": "Nome",
+            "type": "Type",
             "group": "Grupo",
             "groups": "Grupos",
             "players": "Jogadores",
             "version": "Versão",
             "import": {
-                "file": "Importar pelo Ficheiro",
-                "shared": "Importar por Partilha",
-                "game": "Importar pelo Jogo"
+                "file": "Importar de Ficheiro",
+                "shared": "Importar de Partilha",
+                "game": "Importar de Jogo"
             },
             "export": {
-                "all": "Exportar todos",
-                "selected": "Exportar selecionado(s)"
+                "all": "Exportar Todos",
+                "selected": "Exportar Selecionados"
             },
             "selected": {
-                "text": "item(s) selecionado(s)",
+                "text": "Itens Selecionados",
                 "no": "Não"
             },
             "hide": {
-                "label": "Ocultar",
-                "tooltip": "Funciona independentemente em um modo simples & avançado!",
-                "migrate": "Marcar os ficheiros com todos os jogadores omitidos como oculto"
+                "label": "Esconder",
+                "tooltip": "Funciona independentemente em modo simples e avançado!",
+                "migrate": "Marcar ficheiros com todos os jogadores ocultados como escondido"
             },
             "merge": {
-                "selected": "Fundir Ficheiros"
+                "selected": "Fundir Selecionados"
             },
             "delete": {
-                "all": "Apagar todos",
-                "selected": "Apagar selecionado(s)"
+                "all": "Apagar Todos",
+                "selected": "Apagar Selecionados"
             },
             "options": {
-                "title": "Opções de Ficheiros",
-                "advanced": "Mostrar lista de ficheiros advançada",
-                "hidden": "Mostrar jogadores omitidos",
-                "export_public_only": "Exportar apenas dados públicos"
+                "title": "Opções de Ficheiro",
+                "advanced": "Mostrar lista de ficheiros avançada",
+                "hidden": "Show hidden entries",
+                "export_public_only": "Exportar apenas dados públicos",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Etiqueta",
                 "multiple": "Etiquetas",
-                "all": "Todos",
+                "all": "Tudo",
                 "none": "Nenhum"
             },
             "filters": {
-                "any": "todos",
-                "n_unique": "único/a(s)",
+                "any": "Qualquer",
+                "n_unique": "Único",
                 "expression": "Expressão",
                 "expression_placeholder": "A tua expressão",
-                "timestamp": "Data",
+                "timestamp": "Data e Hora",
                 "player": "Jogador",
-                "group": "Clã",
-                "prefix": "Servidor",
+                "group": "Guilda",
+                "prefix": "Prefixo",
                 "tags": "Etiquetas",
                 "type": "Tipo",
-                "type_all": "Mostrar todas as personagens",
-                "type_own": "Mostrar apenas a tua personagem",
-                "type_other": "Mostrar apenas outras personagens",
-                "hidden": "Ocultar"
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
+                "hidden": "Escondido"
             },
             "online": {
-                "title": "Partilha de ficheiros",
+                "title": "Partilha de Ficheiros",
                 "prompt": "Introduz o teu código:",
-                "invalid": "Código inválido ou expirado!",
+                "invalid": "Código inválido ou expirado",
                 "cancel": "Cancelar",
-                "ok": "Confirmar"
+                "ok": "Ok"
             }
         },
         "copy": {
             "image": "Guardar como imagem",
             "basic": "Copiar tabela",
-            "fight": "Copiar tabela para simulador de combates",
+            "fight": "Copiar tabela para simulador de luta",
             "player": "Copiar",
             "player_companions": "Copiar com companheiros"
         },
         "context": {
-            "hide": "Mostrar / Ocultar",
-            "remove": "Remover permanentemente"
+            "hide": "Mostrar / Esconder",
+            "remove": "Remover Permanentemente"
         },
         "profiles": {
             "players": "Jogadores",
-            "groups": "Clãs",
-            "primary": "Primeiro filtro",
-            "secondary": "Segundo filtro",
+            "groups": "Guildas",
+            "primary": "Filtro Primário",
+            "secondary": "Filtro Secundário",
             "none": "Nenhum",
-            "create": "Criar um novo perfil",
+            "create": "Criar perfil novo",
             "between": "entre",
             "and": "e"
         },
         "filters": {
             "types": {
-                "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "players": "Filtrar jogadores por servidor, classe, guilda e/ou nome de utilizador",
+                "guilds": "Filtrar grupos por servidor ou nome"
             },
-            "c": "Classe do jogador, utiliza o nome inteiro da classe em inglês, em letras minúsculas (ex.: berserker, battle mage)",
-            "p": "Nome do jogador",
-            "g": "Nome do clã",
+            "c": "Classe de jogador, usar nome inteiro de classe em letras minúsculas (e.g. berserker, mago de batalha)",
+            "p": "Nome de Jogador",
+            "g": "Nome de Guilda",
             "s": "Servidor",
-            "e": "Expressão personalizada",
-            "#": "Mostrar apenas jogadores com tags específicas",
-            "l": "Mostrar apenas os últimos",
-            "f": "Mostrar apenas a primeira ou primeiras n entradas",
-            "r": "Recalcular tabela",
-            "x": "Ativar simulador (o valor é o número de tentativas)",
-            "h": "Mostrar oculto(s)",
-            "o": "Mostrar o próprio",
-            "a": "Mostrar todos",
-            "d": "Mostrar outro(s)",
-            "q": "Definições de Personalização (separar nomes do cabeçalho com uma vírgula)",
+            "e": "Expressão Personalizada",
+            "#": "Mostrar apenas jogadores com etiquetas especificadas",
+            "l": "Mostrar apenas mais recente",
+            "f": "Mostrar apenas primeira ou primeiras N entradas",
+            "r": "Forçar recálculo de variáveis globais",
+            "h": "Mostrar Escondido",
+            "o": "Mostrar Próprio",
+            "a": "Mostrar Tudo",
+            "d": "Mostrar Outro",
+            "q": "Definições personalizadas (separar nomes de cabeçalho com vírgula)",
             "t": "Mostrar modelo online diretamente",
-            "sr": "Classificar por expressão personalizada",
+            "sr": "Ordenar por expressão personalizada",
             "qc": "Mostrar apenas categorias selecionadas"
         },
         "scripts": {
@@ -323,91 +325,91 @@
                 "wiki": "Wiki",
                 "scripts": "Scripts",
                 "templates": "Modelos",
-                "save": "Salvar",
+                "save": "Guardar",
                 "copy": "Copiar",
                 "undo": "Desfazer",
                 "redo": "Refazer",
                 "close": "Fechar",
                 "apply": "Aplicar",
                 "remove": "Remover",
-                "save_apply": "Salvar & Aplicar"
+                "save_apply": "Guardar e Aplicar"
             },
             "types": {
                 "me": "Eu",
                 "players": "Jogadores",
-                "guilds": "Clãs",
-                "default": "Predefinição"
+                "guilds": "Guildas",
+                "default": "Padrão"
             },
             "online": {
-                "not_available": "Nenhum script disponível"
+                "not_available": "Nenhuns scripts disponíveis"
             }
         },
         "players": {
-            "other": "Mostrar outros jogadores",
-            "hidden": "Mostrar oculto(s)"
+            "other": "Mostrar Outros Jogadores",
+            "hidden": "Mostrar Escondido"
         },
         "guilds": {
-            "other": "Mostrar outros clãs",
-            "hidden": "Mostrar oculto(s)",
-            "empty": "Show empty groups",
-            "missing": "Dados do jogador estão em falta nos seguintes membros:"
+            "other": "Mostrar Outras Guildas",
+            "hidden": "Mostrar Escondido",
+            "empty": "Mostrar Grupos Vazios",
+            "missing": "Dados de jogador em falta para os seguintes membros:"
         },
         "browse": {
-            "hidden": "Mostrar oculto(s)"
+            "hidden": "Mostrar Escondido"
         },
         "fast_export": {
             "label": "Partilhar",
             "title": "Opções de Exportação",
-            "all": "Todos",
-            "latest": "Mais Recente(s)",
+            "all": "Tudo",
+            "latest": "Recente",
             "latest5": "Últimos 5",
             "selected": "Selecionado",
             "selected_both": "Selecionado e Referência"
         },
         "share": {
-            "title": "Partilha de ficheiros",
+            "title": "Partilha de Ficheiros",
             "options": "Opções",
-            "code": "O seu código",
+            "code": "O teu código",
             "get": "Obter código",
-            "ok": "Confirmar",
-            "expire": "O código irá expirar automaticamente após 2 dias.",
-            "single_use": "Utilização única",
-            "single_use_notice": "Por favor, considere manter esta opção ativada a menos que planeie compartilhar o arquivo com várias pessoas."
+            "ok": "Ok",
+            "expire": "O código irá automaticamente expirar após 2 dias.",
+            "single_use": "Uso único apenas",
+            "single_use_notice": "Por favor considera manter esta opção ativada a não ser que tenciones partilhar o ficheiro com várias pessoas."
         },
         "online_templates": {
-            "title": "Scripts públicos",
+            "title": "Scripts Públicos",
             "description": "Descrição",
             "author": "Autor",
-            "created_on": "Criado em",
-            "loading": "Obtendo scripts",
-            "code": "Insira o seu código privado..."
+            "created_on": "Criado a",
+            "loading": "A obter scripts",
+            "code": "Introduz o teu código privado..."
         },
         "templates": {
             "title": "Modelos",
-            "loading": "A submeter alterações...",
+            "loading": "A cometer alterações",
             "form": {
-                "changed_on": "Alterado Em",
-                "version": "Versão da Ferramenta",
+                "changed_on": "Alterado a",
+                "version": "Versão de Ferramenta",
                 "compatibility": "Compatibilidade",
-                "published_on": "Publicado em",
+                "published_on": "Publicado a",
                 "code": "Código",
                 "publish": "Publicar",
-                "publish_tooltip": "Publicar modelo",
-                "unpublish_tooltip": "Remover modelo",
+                "publish_tooltip": "Publicar Modelo",
+                "unpublish_tooltip": "Retirar Modelo",
                 "update": "Atualizar",
-                "update_tooltip": "Atualizar o modelo com o script atual",
+                "update_tooltip": "Atualizar modelo com script atual",
                 "remove": "Remover",
-                "remove_tooltip": "Remover modelo/template"
+                "remove_tooltip": "Remover Modelo"
             },
             "quick_swap": "Trocar rapidamente modelos personalizados"
         },
         "player": {
             "attributes": "Atributos",
             "basis": "Base",
-            "miscellaneous": "Outros",
+            "miscellaneous": "Diversos",
             "armor": "Armadura",
             "damage": "Dano",
-            "health": "Vida",
+            "health": "Saúde",
             "potions": "Poções",
             "guild": "Clã",
             "name": "Nome",
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Gera um mapa de sucesso de nível / gladiador. Só é possível com a própria mascote contra uma masmorra.",
             "one": "Gerar",
             "five": "Gerar os próximos 5",
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Sondar jogadores guardados",
             "guilds": "Sondar guildas guardadas"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {

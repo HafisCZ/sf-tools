@@ -63,80 +63,80 @@
             "critical_bonus": "Kritikus sebzésbónusz",
             "thirst_free": "Napi ingyenes kalandvágy",
             "thirst_usable": "Napi tárolható kalandvágy",
-            "fortress1": "Fortress",
-            "fortress2": "Laborers' Quarters",
-            "fortress3": "Woodcutter's Hut",
-            "fortress4": "Quarry",
-            "fortress5": "Gem Mine",
-            "fortress6": "Academy",
-            "fortress7": "Archery Guild",
-            "fortress8": "Barracks",
-            "fortress9": "Mages' Tower",
-            "fortress10": "Treasury",
-            "fortress11": "Smithy",
-            "fortress12": "Fortifications",
-            "underworld1": "Heart of Darkness",
-            "underworld2": "Underworld Gate",
-            "underworld3": "Soul Extractor",
-            "underworld4": "Goblin Pit",
-            "underworld5": "Torture Chamber",
-            "underworld6": "Gladiator Trainer",
-            "underworld7": "Troll Block",
-            "underworld8": "Time Machine",
-            "underworld9": "Keeper",
-            "underworld10": "Gold Pit"
+            "fortress1": "Erőd",
+            "fortress2": "Munkások negyede",
+            "fortress3": "Favágókunyhó",
+            "fortress4": "Kőfejtő",
+            "fortress5": "Drágakőbánya",
+            "fortress6": "Akadémia",
+            "fortress7": "Íjászok céhe",
+            "fortress8": "Laktanya",
+            "fortress9": "Mágusok tornya",
+            "fortress10": "Kincstár",
+            "fortress11": "Kovácsműhely",
+            "fortress12": "Védművek",
+            "underworld1": "A sötétség szíve",
+            "underworld2": "Az alvilág kapuja",
+            "underworld3": "Lélekkitépő",
+            "underworld4": "Goblintárna",
+            "underworld5": "Kínzókamra",
+            "underworld6": "Gladiátorkiképző",
+            "underworld7": "Trollblock",
+            "underworld8": "Időgép",
+            "underworld9": "Őrző",
+            "underworld10": "Aranytárna"
         },
-        "reduction": "Reduction"
+        "reduction": "Csökkentés"
     },
     "index": {
-        "toggle": "Toggle credits",
+        "toggle": "Kreditek váltása",
         "roles": {
-            "admin": "Someone with a lot of free time",
-            "helper": "Helpers - Research, Testing, Feedback, etc.",
-            "tester": "Testers",
-            "wiki": "Chief Wiki Manager",
-            "translator": "Translators",
-            "mention": "Other mentions"
+            "admin": "Akinek sok szabadideje van",
+            "helper": "Segítők - Kutatók, Tesztelők, Visszajelzők stb.",
+            "tester": "Tesztelők",
+            "wiki": "Vezető Wiki menedzser",
+            "translator": "Fordítók",
+            "mention": "Egyéb említések"
         },
         "stats": {
-            "title": "Statistics",
-            "desc": "Track progress of yourself and your guild"
+            "title": "Statisztikák",
+            "desc": "Saját és céhes fejlődés nyomonkövetése"
         },
         "temp": {
-            "title": "Statistics",
-            "desc": "Create temporary instance of Statistics",
-            "temporary": "Temporary"
+            "title": "Statisztikák",
+            "desc": "Készíts ideiglenes Statisztikát",
+            "temporary": "Ideiglenes"
         },
         "wiki": {
             "title": "Wiki",
-            "desc": "How to do magic with tables and much more"
+            "desc": "Hogyan varázsoljunk asztalokkal és még sok mással"
         },
         "runes": {
-            "title": "Rune Bonuses",
-            "desc": "Zorago's rune bonus table"
+            "title": "Rúna bónuszok",
+            "desc": "Zorago rúna bónusz asztala"
         },
         "inventory": {
-            "title": "Inventory Manager",
-            "desc": "Compare items, calculate upgrades & more"
+            "title": "Hátizsák kezelő",
+            "desc": "Tárgyak összehasonlítása, fejlesztések kiszámítása, és egyebek"
         },
         "idle": {
-            "title": "Arena Manager",
-            "desc": "Check the production of your Arena Manager"
+            "title": "Aréna menedzser",
+            "desc": "Aréna menedszer termelésének ellenőrzése"
         },
         "calendar": {
-            "title": "Pet Calendar",
-            "desc": "Look at when you can catch pets"
+            "title": "Kisállat naptár",
+            "desc": "Mikor tudod megszerezni a kedvenceket"
         },
         "players": {
-            "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "title": "Harc Szimulátor",
+            "desc": "Harc szimulálása"
         },
         "guild": {
-            "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "title": "Céh szimulátor",
+            "desc": "Harc szimulálása"
         },
         "pets": {
-            "title": "Pet Simulator",
+            "title": "Kedvencharc szimulátor",
             "desc": "Kedvencharc szimulálása"
         },
         "dungeons": {
@@ -206,6 +206,7 @@
             "timestamps": "Időpontok",
             "prefix": "Előtag",
             "name": "Név",
+            "type": "Type",
             "group": "Csoport",
             "groups": "Csoportok",
             "players": "Játékosok",
@@ -224,89 +225,90 @@
                 "no": "Nem"
             },
             "hide": {
-                "label": "Hide",
-                "tooltip": "Works independently in simple & advanced mode!",
-                "migrate": "Mark files with all hidden players as hidden"
+                "label": "Elrejt",
+                "tooltip": "Önállóan működik egyszerű és haladó módban!",
+                "migrate": "Jelölje meg az összes rejtett játékost tartalmazó fájlokat rejtettként"
             },
             "merge": {
-                "selected": "Merge selected"
+                "selected": "Kiválasztottak összevonása"
             },
             "delete": {
-                "all": "Delete all",
-                "selected": "Delete selected"
+                "all": "Összes törlése",
+                "selected": "Kiválasztott törlése"
             },
             "options": {
-                "title": "File options",
-                "advanced": "Show advanced file list",
-                "hidden": "Show hidden players",
-                "export_public_only": "Export only public data"
+                "title": "Fájl tulajdonságok",
+                "advanced": "Speciális fájllista mutatása",
+                "hidden": "Show hidden entries",
+                "export_public_only": "Csak nyilvános adatokat exportálása",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
-                "single": "Tag",
-                "multiple": "Tags",
-                "all": "All",
-                "none": "None"
+                "single": "Címke",
+                "multiple": "Címkék",
+                "all": "Összes",
+                "none": "Semmi"
             },
             "filters": {
-                "any": "Any",
-                "n_unique": "unique",
-                "expression": "Expression",
-                "expression_placeholder": "Your expression",
-                "timestamp": "Timestamp",
-                "player": "Player",
-                "group": "Guild",
-                "prefix": "Prefix",
-                "tags": "Tags",
-                "type": "Type",
-                "type_all": "Show all characters",
-                "type_own": "Show only own characters",
-                "type_other": "Show only other characters",
-                "hidden": "Hidden"
+                "any": "Bármely",
+                "n_unique": "egyedi",
+                "expression": "Kifejezés",
+                "expression_placeholder": "Kifejezésed",
+                "timestamp": "Időpont",
+                "player": "Játékos",
+                "group": "Céh",
+                "prefix": "Előtag",
+                "tags": "Címkék",
+                "type": "Típus",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
+                "hidden": "Rejtett"
             },
             "online": {
-                "title": "File sharing",
-                "prompt": "Enter your code:",
-                "invalid": "Invalid or expired code!",
-                "cancel": "Cancel",
+                "title": "Fájlmegosztás",
+                "prompt": "Írd be a kódodat:",
+                "invalid": "Érvénytelen vagy lejárt kód!",
+                "cancel": "Mégse",
                 "ok": "Ok"
             }
         },
         "copy": {
-            "image": "Save as image",
-            "basic": "Copy table",
-            "fight": "Copy table for fight simulator",
-            "player": "Copy",
-            "player_companions": "Copy with companions"
+            "image": "Mentés képként",
+            "basic": "Tábla másolása",
+            "fight": "Tábla másolása harc szimulátorba",
+            "player": "Másolás",
+            "player_companions": "Másolás társaival"
         },
         "context": {
-            "hide": "Show / Hide",
-            "remove": "Remove permanently"
+            "hide": "Megjelenítés / Elrejtés",
+            "remove": "Végleges eltávolítás"
         },
         "profiles": {
-            "players": "Players",
-            "groups": "Guilds",
-            "primary": "Primary filter",
-            "secondary": "Secondary filter",
-            "none": "None",
-            "create": "Create new profile",
-            "between": "between",
-            "and": "and"
+            "players": "Játékosok",
+            "groups": "Céhek",
+            "primary": "Elsődleges szűrő",
+            "secondary": "Másodlagos szűrő",
+            "none": "Semmi",
+            "create": "Új profil létrehozása",
+            "between": "közötte",
+            "and": "és"
         },
         "filters": {
             "types": {
-                "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "players": "A játékosok szűrése szerver, osztály, céh és/vagy felhasználónév alapján",
+                "guilds": "Csoportok szűrése szerver vagy név alapján"
             },
-            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
-            "p": "Player name",
+            "c": "Játékos osztály, használja a teljes osztálynevet kisbetűvel (pl.: háborgó, harcimágus)",
+            "p": "Játékosnév",
             "g": "Céh neve",
             "s": "Szerver",
             "e": "Egyedi kifejezés",
             "#": "Csak a meghatározott címkével rendelkező játékosok mutatása",
             "l": "Csak a legújabb mutatása",
-            "f": "Show only first or first n entries",
+            "f": "Csak az első vagy az első n bejegyzés megjelenítése",
             "r": "Egész világra kiterjedő újraszámolás",
-            "x": "Szimulálás(a számadat a szimulálások számát jelzi)",
             "h": "Elrejtett megjelenítése",
             "o": "Saját megjelenítése",
             "a": "Mind megjelenítése",
@@ -349,7 +351,7 @@
         "guilds": {
             "other": "Többi céh megjelenítése",
             "hidden": "Elrejtett megjelenítése",
-            "empty": "Show empty groups",
+            "empty": "Üres csoportok megjelenítése",
             "missing": "Az alábbi játékosok adatai hiányoznak:"
         },
         "browse": {
@@ -368,58 +370,58 @@
             "title": "Fájlmegosztás",
             "options": "Opciók",
             "code": "Kódod",
-            "get": "Get code",
+            "get": "Kód megszerzése",
             "ok": "Ok",
-            "expire": "The code will automatically expire after 2 days.",
-            "single_use": "Single use only",
-            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+            "expire": "A kód 2 nap múlva automatikusan lejár.",
+            "single_use": "Csak egyszer használatos",
+            "single_use_notice": "Fontold meg ennek az opciónak az engedélyezését, hacsak nem szeretnéd több személlyel megosztani a fájlt."
         },
         "online_templates": {
-            "title": "Public scripts",
-            "description": "Description",
-            "author": "Author",
-            "created_on": "Created on",
-            "loading": "Fetching scripts",
-            "code": "Enter your private code..."
+            "title": "Nyílvános szkriptek",
+            "description": "Leírás",
+            "author": "Szerző",
+            "created_on": "Létrehozva",
+            "loading": "Szkriptek lekérése",
+            "code": "Add meg a privát kódod..."
         },
         "templates": {
-            "title": "Templates",
-            "loading": "Committing changes",
+            "title": "Sablonok",
+            "loading": "Változások végrehajtása",
             "form": {
-                "changed_on": "Changed on",
-                "version": "Tool Version",
-                "compatibility": "Compatibility",
-                "published_on": "Published on",
-                "code": "Code",
-                "publish": "Publish",
-                "publish_tooltip": "Publish template",
-                "unpublish_tooltip": "Unpublish template",
-                "update": "Update",
-                "update_tooltip": "Update template with current script",
-                "remove": "Remove",
-                "remove_tooltip": "Remove template"
+                "changed_on": "Megváltozott",
+                "version": "Eszköz verzió",
+                "compatibility": "Kompatibilitás",
+                "published_on": "Közzétéve",
+                "code": "Kód",
+                "publish": "Közzététel",
+                "publish_tooltip": "Sablon közzététele",
+                "unpublish_tooltip": "Nem közzétett sablonok",
+                "update": "Frissítés",
+                "update_tooltip": "Sablon frissítése az aktuális szkripttel",
+                "remove": "Eltávolítás",
+                "remove_tooltip": "Sablon eltávolítása"
             },
-            "quick_swap": "Quick swap custom templates"
+            "quick_swap": "Egyéni sablonok gyors cseréje"
         },
         "player": {
-            "attributes": "Attributes",
-            "basis": "Basis",
-            "miscellaneous": "Misc",
-            "armor": "Armor",
-            "damage": "Damage",
-            "health": "Health",
-            "potions": "Potions",
-            "guild": "Guild",
-            "name": "Name",
-            "role": "Role",
-            "joined_on": "Joined on",
-            "bonuses": "Bonuses",
-            "scrapbook": "Scrapbook",
-            "achievements": "Achievements",
-            "mount": "Mount",
-            "heath_bonus": "Health Bonus",
-            "damage_bonus": "Damage Bonus",
-            "treasure": "Treasure",
+            "attributes": "Tulajdonságok",
+            "basis": "Alap",
+            "miscellaneous": "Egyéb",
+            "armor": "Páncél",
+            "damage": "Sebzés",
+            "health": "Életerő",
+            "potions": "Bájitalok",
+            "guild": "Céh",
+            "name": "Név",
+            "role": "Szerep",
+            "joined_on": "Csatlakozott",
+            "bonuses": "Bónuszok",
+            "scrapbook": "Fejlesztőnapló",
+            "achievements": "Mérföldkövek",
+            "mount": "Hátas",
+            "heath_bonus": "Bónusz Életerő",
+            "damage_bonus": "Bónusz Sebzés",
+            "treasure": "Kincs",
             "instructor": "Instructor",
             "pet": "Pet",
             "knights": "Hall of Knights",
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
             "one": "Generate",
             "five": "Generate next 5",
@@ -539,56 +542,56 @@
             "29": "Teslarr",
             "30": "Sunnya",
             "31": "Buckfoxion",
-            "32": "Birdychirp",
-            "33": "Eyeorwhat",
-            "34": "Mesmerit",
-            "35": "Antlar",
-            "36": "Liphant",
-            "37": "Knilight",
+            "32": "Csirpili",
+            "33": "Szemenszede",
+            "34": "Bűvkekkor",
+            "35": "Aggoncs",
+            "36": "Dömpfánt",
+            "37": "Fénylovi",
             "38": "Heraldon",
             "39": "Unikor",
             "40": "Mamoton",
-            "41": "Monkorrage",
-            "42": "Smaponyck",
-            "43": "Bittnutz",
-            "44": "Roarear",
-            "45": "Muscudon",
-            "46": "Apstick",
-            "47": "Horrnington",
-            "48": "Boaringg",
+            "41": "Ökli",
+            "42": "Sompóni",
+            "43": "Mókasza",
+            "44": "Groáró",
+            "45": "Izmodon",
+            "46": "Majmkós",
+            "47": "Szarvington",
+            "48": "Vadkóca",
             "49": "Mameloth",
-            "50": "Rheynooh",
-            "51": "Rockastonn",
-            "52": "Redwoofox",
-            "53": "Lilbeatzup",
-            "54": "Forror",
-            "55": "Nipprabs",
-            "56": "Armoruck",
-            "57": "Canocle",
-            "58": "Tricerawood",
-            "59": "Mouthrexor",
-            "60": "Firimp",
-            "61": "Gullps",
+            "50": "Orrszarvek",
+            "51": "Köviszikl",
+            "52": "Ravaszdekli",
+            "53": "Áskamanter",
+            "54": "Enteperte",
+            "55": "Rémiráki",
+            "56": "Tankakecskec",
+            "57": "Frászitazz",
+            "58": "Göcsör",
+            "59": "Pofoszaur",
+            "60": "Szikrafióka",
+            "61": "Nyelke",
             "62": "Pyrophibus",
-            "63": "Flamechirr",
-            "64": "Tectospit",
+            "63": "Főnicsiperc",
+            "64": "Tűzteroid",
             "65": "Pyroplant",
-            "66": "Kokofire",
-            "67": "Peppryon",
-            "68": "Boomywoomy",
-            "69": "Tikiricky",
-            "70": "Matchlit",
-            "71": "Birblazey",
+            "66": "Lánkurikú",
+            "67": "Papripattani",
+            "68": "Kirobbani",
+            "69": "Pirotiki",
+            "70": "Gyupofa",
+            "71": "Tűztaréji",
             "72": "Infernox",
-            "73": "Humbuzzish",
+            "73": "Égezümm",
             "74": "Dragopyr",
-            "75": "Mantiflame",
-            "76": "Finnettle",
-            "77": "Etrock",
-            "78": "Blazingtongues",
+            "75": "Sáskalánga",
+            "76": "Égusznyi",
+            "77": "Rakító",
+            "78": "Lángnyelvelőte",
             "79": "Devastor",
-            "80": "Goldy",
-            "81": "Orcahle",
+            "80": "Aranyoskám",
+            "81": "Orkapa",
             "82": "Ocodile",
             "83": "Penguwater",
             "84": "Walrophin",
@@ -656,88 +659,88 @@
         "bert": "Bert",
         "mark": "Mark",
         "kunigunde": "Kunigunde",
-        "open": "Currently open dungeons",
+        "open": "Nyitott kazamaták",
         "graph": {
-            "y": "Boss HP Left",
-            "x": "- Distribution for selected amount of tries -",
-            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
+            "y": "Megmaradt Főellenség életerő",
+            "x": "- Elosztás a kiválasztott számú próbálkozásra -",
+            "winrate": "Nyerési esély: #{rate}% (#{score} a #{tries}-ból)"
         },
-        "results": "Results",
-        "experience": "Total: #{experience} XP",
+        "results": "Eredmények",
+        "experience": "Teljes: #{experience} XP",
         "cheats": {
-            "title": "Cheat Menu",
-            "subtitle": "Select which cheats to apply and poll your character",
-            "enable": "Enable cheats",
-            "general": "General",
-            "enchantments": "All enchantments",
-            "runes": "Maximum runes",
-            "pets": "Maximum pets",
-            "potions": "Potions (max 3)",
-            "class": "Change class",
-            "keep_original": "Keep original"
+            "title": "Csalás menü",
+            "subtitle": "Válaszd ki melyik csalást engedélyezed, és szavazz a karakteredről",
+            "enable": "Elérhető csalások",
+            "general": "Általános",
+            "enchantments": "Összes varázslat",
+            "runes": "Maximum rúnák",
+            "pets": "Maximum kisállatok",
+            "potions": "Bájitalok (max 3)",
+            "class": "Osztály változtatás",
+            "keep_original": "Eredeti megtartása"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
-            "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            "tooltip": "Kattintson a jobb gombbal az elfogadható győzelem százalékos tartományának beállításához egy kazamata ellen",
+            "title": "Szimulációs küszöb",
+            "label": "Küszöb % – A küszöbön kívül eső kazamatában lévő ellenségek kimaradnak"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
-            "message#": "Use <b>All</b> function to simulate all open dungeons"
+            "title": "A küszöbön belül nincs legyőzhető kazamata (#{threshold_min} - #{threshold_max} %)",
+            "message#": "Használja az <b>Összes</b> funkciót az összes nyitott kazamata szimulálásához"
         }
     },
     "underworld": {
-        "goblin_pit": "Goblin Pit",
-        "goblin_upgrades": "Goblin Upgrades",
-        "troll_block": "Troll Block",
-        "troll_upgrades": "Troll Upgrades",
-        "keeper": "Keeper",
-        "keeper_upgrades": "Keeper Upgrades",
-        "shield_mode": "Allow underworld units to use shield",
+        "goblin_pit": "Goblintárna",
+        "goblin_upgrades": "Goblinok fjelesztése",
+        "troll_block": "Trollblock",
+        "troll_upgrades": "Trollok fejlesztése",
+        "keeper": "Őrző",
+        "keeper_upgrades": "Őrző fejlesztése",
+        "shield_mode": "Engedélyezze az alvilági egységeknek a pajzs használatát",
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "Szimuláció indítása",
+                "message#": "<b>Blokkméret:</b> #{blockSize}<br/><b>Iterációk:</b> #{iterations}<br/><b>Szálak száma:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "A szimulációból #{done} / #{total} kész",
+                "message#": "<b>Idő:</b> #{time} másodperc"
             }
         }
     },
     "players": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
-        "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
-        "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
+        "gladiator_mode": "A Gladiátor beállításaitól függetlenül 15-ös lesz",
+        "ihof_mode": "IHOF mód: a Gladiátor nem csökken!",
+        "fireball_mode": "Tűzgolyójavítást alkalmaz Háborgó, Démonvadász, Druida és Bárdok számára",
+        "no_attribute_reduction_mode": "Az elsődleges tulajdonságot nem csökkenti az ellenfél védelme",
         "mode": {
-            "all": "All vs All",
-            "attack": "One vs All",
-            "defend": "All vs One",
-            "tournament": "Tournament"
+            "all": "Mindenki mindneki ellen",
+            "attack": "Egy mindenki ellen",
+            "defend": "Mindenki egy ellen",
+            "tournament": "Bajnokság"
         },
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "Szimuláció indítása",
+                "message#": "<b>Blokkméret:</b> #{blockSize}<br/><b>Iterációk:</b> #{iterations}<br/><b>Szálak száma:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "A szimulációból #{done} / #{total} kész",
+                "message#": "<b>Idő:</b> #{time} másodperc"
             },
             "tournament": {
-                "title": "Preparing ladder",
-                "message#": "<b>Players:</b> #{count}"
+                "title": "Létra előkészítése",
+                "message#": "<b>Játékosok:</b> #{count}"
             }
         }
     },
     "guilds": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "guild1": "Guild A",
-        "guild2": "Guild B",
+        "gladiator_mode": "A Gladiátor beállításaitól függetlenül 15-ös lesz",
+        "guild1": "Céh A",
+        "guild2": "Céh B",
         "toast": {
             "start": {
-                "title": "Starting simulation",
+                "title": "Szimuláció indítása",
                 "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
@@ -806,43 +809,47 @@
         "save": "Save",
         "simulate": "Simulate",
         "simulate_debug": "Simulate in debug mode",
-        "configure": "Configure simulator",
-        "configure_copy": "Copy everyone including current configuration",
+        "configure": "Szimulátor konfigurálása",
+        "configure_copy": "Mindenki másolása, beleértve az aktuális konfigurációt is",
         "clipboard": {
-            "copy_all": "Copy everyone",
-            "paste_mode": "Toggle Add/Replace insertion mode"
+            "copy_all": "Mindenki másolása",
+            "paste_mode": "Kapcsolja be a Hozzáadás/Csere beszúrási módot"
         },
-        "win_chance": "Win %",
+        "win_chance": "Nyerés %",
         "min_chance": "Min %",
         "max_chance": "Max %",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "A szavazás játékosokat mentett",
+            "guilds": "A szavazás céheket mentett"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {
-        "name": "Name",
-        "class": "Class",
-        "level": "Level",
-        "mask": "Mask",
-        "instrument": "Instrument",
-        "armor": "Armor",
-        "armor_placeholder": "Armor points",
+        "name": "Név",
+        "class": "Osztály",
+        "level": "Szint",
+        "mask": "Maszk",
+        "instrument": "Hangszer",
+        "armor": "Páncélzat",
+        "armor_placeholder": "Páncélzat pontjai",
         "min": "Min",
-        "min_placeholder": "Item Min",
+        "min_placeholder": "Tárgy minimum",
         "max": "Max",
-        "max_placeholder": "Item Max",
-        "weapon_enchant": "Crit",
-        "rune": "Rune",
-        "portal_damage": "Portal Damage",
-        "portal_health": "Portal Health",
-        "rune_health": "Rune Health",
-        "block": "Block %",
-        "fire": "Fire",
-        "cold": "Cold",
-        "lightning": "Lightning",
-        "gladiator": "Gladiator (0 - 15)",
-        "life_potion": "Life Potion",
+        "max_placeholder": "Tárgy maximum",
+        "weapon_enchant": "Kritikus",
+        "rune": "Rúna",
+        "portal_damage": "Portál Sebzés",
+        "portal_health": "Portál Életerő",
+        "rune_health": "Életerő Rúna",
+        "block": "Kivédés %",
+        "fire": "Tűz",
+        "cold": "Hideg",
+        "lightning": "Villám",
+        "gladiator": "Gladiátor (0 - 15)",
+        "life_potion": "Életerő bájital",
         "hand_enchant": "Shadow of the Cowboy",
         "smart_change": "Smart class change",
         "copy": "Copy",

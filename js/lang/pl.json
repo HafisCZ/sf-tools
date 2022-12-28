@@ -206,6 +206,7 @@
             "timestamps": "Daty",
             "prefix": "Serwer",
             "name": "Nazwa",
+            "type": "Type",
             "group": "Grupa",
             "groups": "Grupy",
             "players": "Gracze",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "Opcje pliku",
                 "advanced": "Pokaż zaawansowaną liste plików",
-                "hidden": "Pokaż ukrytych graczy",
-                "export_public_only": "Eksportuj tylko publiczne dane"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Eksportuj tylko publiczne dane",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Tag",
@@ -258,9 +260,10 @@
                 "prefix": "Serwer",
                 "tags": "Tagi",
                 "type": "Typ",
-                "type_all": "Pokaż wszystkie postacie",
-                "type_own": "Pokaż tylko własne postacie",
-                "type_other": "Pokaż tylko postacie innych",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Ukryte"
             },
             "online": {
@@ -294,8 +297,8 @@
         },
         "filters": {
             "types": {
-                "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "players": "Filtruj graczy według serwera, klasy, gildii i/lub nazwy użytkownika",
+                "guilds": "Filtruj grupy według serwera lub nazwy"
             },
             "c": "Klasa gracza, użyj pełnej nazwy z malej litery (eg.: berserker, battle mage)",
             "p": "Nick gracza",
@@ -306,7 +309,6 @@
             "l": "Pokaż tylko najnowsze",
             "f": "Pokaż tylko pierwsze lub pierwsze n pozycje",
             "r": "Wymuś ponowne obliczenie zmiennych globalnych",
-            "x": "Włącz symulator (argumentem jest liczba iteracji)",
             "h": "Pokaż ukryte",
             "o": "Pokaż własne",
             "a": "Pokaż wszystkie",
@@ -349,7 +351,7 @@
         "guilds": {
             "other": "Pokaż inne gildie",
             "hidden": "Pokaż ukryte",
-            "empty": "Show empty groups",
+            "empty": "Pokaż puste grupy",
             "missing": "Brakuje danych dla następujących członków:"
         },
         "browse": {
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Wygeneruj mapę sukcesu poziomu / gladiatora. Możliwe tylko z własnym pupilem przeciwko bossowi lochu.",
             "one": "Generuj",
             "five": "Generuj następne 5",
@@ -677,12 +680,12 @@
             "keep_original": "Zachowaj pierwotną"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
+            "tooltip": "Kliknij prawym aby dostosować % na wygraną",
             "title": "Próg symulacji",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            "label": "Próg % - Przeciwnik poniżej progu zostanie pominięty"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
+            "title": "Żaden loch nie jest do pokonania przy progu (#{threshold_min} - #{threshold_max} %)",
             "message#": "Użyj przycisku <b>Wszystkie</b> aby zasymulować wszystkie otwarte lochy"
         }
     },
@@ -806,8 +809,8 @@
         "save": "Zapisz",
         "simulate": "Symuluj",
         "simulate_debug": "Symuluj w trybie debugowania",
-        "configure": "Configure simulator",
-        "configure_copy": "Copy everyone including current configuration",
+        "configure": "Skonfiguruj symulator",
+        "configure_copy": "Skopiuj wszystkich z bieżącą konfiguracją",
         "clipboard": {
             "copy_all": "Kopiuj wszystkich",
             "paste_mode": "Przełącz tryb wstawiania na Add/Replace"
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Załaduj zapisanych graczy",
             "guilds": "Załaduj zapisane gildie"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {
@@ -891,8 +898,8 @@
     },
     "dialog": {
         "shared": {
-            "cancel": "Cancel",
-            "save": "Save",
+            "cancel": "Anuluj",
+            "save": "Zapisz",
             "ok": "Ok"
         },
         "delete_all": {
@@ -1004,10 +1011,10 @@
             }
         },
         "simulator_debug": {
-            "cancel": "Cancel",
-            "ok": "Apply",
+            "cancel": "Anuluj",
+            "ok": "Zastosuj",
             "reset": "Reset",
-            "title": "Simulator Configuration"
+            "title": "Konfiguracja symulatora"
         }
     },
     "attributes": {

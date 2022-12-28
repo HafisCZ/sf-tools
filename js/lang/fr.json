@@ -206,6 +206,7 @@
             "timestamps": "Horodatages",
             "prefix": "Préfixe",
             "name": "Nom",
+            "type": "Type",
             "group": "Groupe",
             "groups": "Groupes",
             "players": "Joueurs",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "Options de Fichiers",
                 "advanced": "Afficher la liste des fichiers avancée",
-                "hidden": "Afficher les joueurs masqués",
-                "export_public_only": "Export only public data"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Export only public data",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Marqueur",
@@ -258,9 +260,10 @@
                 "prefix": "Préfixe",
                 "tags": "Marqueurs",
                 "type": "Type",
-                "type_all": "Afficher tous les personnages",
-                "type_own": "Afficher seulement votre personnage",
-                "type_other": "Afficher seulement les autres personnages",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Caché"
             },
             "online": {
@@ -306,7 +309,6 @@
             "l": "Afficher uniquement les plus récents",
             "f": "Afficher uniquement les premières ou les n premières entrées",
             "r": "Forcer le re calcul des variables globales",
-            "x": "Activer le simulateur (l'argument est le nombre d'itérations)",
             "h": "Afficher les joueurs masqués",
             "o": "Afficher votre personnage",
             "a": "Afficher tout les personnages",
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
             "one": "Generate",
             "five": "Generate next 5",
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {
