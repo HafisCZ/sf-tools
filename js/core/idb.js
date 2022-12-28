@@ -635,8 +635,8 @@ const DatabaseManager = new (class {
         Logger.log('PERFLOG', 'Skipped load in temporary mode');
     }
 
-    _initModel (type, model, hiddenField) {
-        if (this._isHidden(model, hiddenField)) {
+    _initModel (type, model) {
+        if (this._isHidden(model)) {
             this._hiddenModels.add(model);
 
             if (SiteOptions.hidden) {
@@ -668,12 +668,12 @@ const DatabaseManager = new (class {
                 for (const group of groups) {
                     ExpressionCache.reset();
                     if (new ExpressionCache().addSelf(group).eval(filter)) {
-                        this._initModel('Group', group, false);
+                        this._initModel('Group', group);
                     }
                 }
             } else {
                 for (const group of groups) {
-                    this._initModel('Group', group, false);
+                    this._initModel('Group', group);
                 }
             }
         }
@@ -692,12 +692,12 @@ const DatabaseManager = new (class {
             for (const player of players) {
                 ExpressionCache.reset();
                 if (new ExpressionCache().addSelf(player).eval(filter)) {
-                    this._initModel('Player', player, true);
+                    this._initModel('Player', player);
                 }
             }
         } else {
             for (const player of players) {
-                this._initModel('Player', player, true);
+                this._initModel('Player', player);
             }
         }
 
@@ -760,8 +760,8 @@ const DatabaseManager = new (class {
         }
     }
 
-    _isHidden (obj, allowDirect = true) {
-        return (allowDirect && _dig(obj, 'hidden')) || _dig(this.Metadata, obj.timestamp, 'hidden');
+    _isHidden (entry) {
+        return _dig(entry, 'hidden') || _dig(this.Metadata, entry.timestamp, 'hidden');
     }
 
     async _markHidden (timestamp, hidden) {
@@ -1053,21 +1053,21 @@ const DatabaseManager = new (class {
         }
     }
 
-    async hide (players) {
-        for (const player of players) {
-            player.hidden = !player.hidden
+    async hide (entries) {
+        for (const entry of entries) {
+            entry.hidden = !entry.hidden;
 
-            if (player.hidden) {
-                this._hiddenModels.add(player);
+            if (entry.hidden) {
+                this._hiddenModels.add(entry);
             } else {
-                this._hiddenModels.delete(player);
+                this._hiddenModels.delete(entry);
             }
 
-            if (player.hidden && !SiteOptions.hidden) {
-                this._unload(player.identifier, player.timestamp);
+            if (entry.hidden && !SiteOptions.hidden) {
+                this._unload(entry.identifier, entry.timestamp);
             }
 
-            await this.Database.set('players', player);
+            await this.Database.set(this._isPlayer(entry.identifier) ? 'players' : 'groups', entry);
         }
 
         this._updateLists();
@@ -1124,17 +1124,22 @@ const DatabaseManager = new (class {
         return this._getFile(identifiers, timestamps, constraint);
     }
 
-    getGroupsFor (players) {
-        let groups = {};
-
-        for (let player of players) {
-            let group = _dig(this.Groups, player.group, player.timestamp, 'Data');
-            if (_present(group) && !groups[_uuid(group)]) {
-                groups[_uuid(group)] = group;
+    getGroupsFor (players, groups, bundleGroups = true) {
+        const entries = {};
+        for (const group of groups) {
+            entries[_uuid(group)] = group;
+        }
+        
+        if (bundleGroups) {
+            for (const player of players) {
+                const group = _dig(this.Groups, player.group, player.timestamp, 'Data');
+                if (_present(group) && !entries[_uuid(group)]) {
+                    entries[_uuid(group)] = group;
+                }
             }
         }
 
-        return Object.values(groups);
+        return Object.values(entries);
     }
 
     _fileize (players, groups) {

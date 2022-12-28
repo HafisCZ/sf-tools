@@ -141,6 +141,7 @@ const SiteOptions = new (class {
             locale: 'en',
             debug: false,
             export_public_only: false,
+            export_bundle_groups: true,
             unsafe_delete: false
         };
 
