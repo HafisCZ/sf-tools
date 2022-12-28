@@ -206,6 +206,7 @@
             "timestamps": "Timestamps",
             "prefix": "Prefix",
             "name": "Name",
+            "type": "Type",
             "group": "Group",
             "groups": "Groups",
             "players": "Players",
@@ -258,9 +259,9 @@
                 "prefix": "Prefix",
                 "tags": "Tags",
                 "type": "Type",
-                "type_all": "Show all characters",
-                "type_own": "Show only own characters",
-                "type_other": "Show only other characters",
+                "type_all": "Show all",
+                "type_own": "Show only own",
+                "type_other": "Show only other",
                 "hidden": "Hidden"
             },
             "online": {
