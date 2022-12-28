@@ -1274,7 +1274,7 @@ const Localization = new (class {
             let file = await fetch(this._translationUrl(locale));
             let data = await file.json();
 
-            Logger.log('APPINFO', `Translation ${locale} ready in ${Date.now() - start} ms`);
+            Logger.log('APPINFO', `Translation ready in ${Date.now() - start} ms`);
 
             return this._generateTranslation({}, data);
         } else {
