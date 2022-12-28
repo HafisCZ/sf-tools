@@ -1841,10 +1841,19 @@ class FilesView extends View {
                 Exporter.json(file);
             });
         } else {
-            let players = Object.values(this.selectedPlayers);
+            const players = [];
+            const groups = [];
+            for (const entry of Object.values(this.selectedEntries)) {
+                if (DatabaseManager._isPlayer(entry.identifier)) {
+                    players.push(entry);
+                } else {
+                    groups.push(entry);
+                }
+            }
+
             Exporter.json({
-                players: players,
-                groups: DatabaseManager.getGroupsFor(players)
+                players,
+                groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
             });
         }
     }
@@ -1856,10 +1865,19 @@ class FilesView extends View {
                 UI.OnlineShareFile.show(file);
             });
         } else {
-            let players = Object.values(this.selectedPlayers);
+            const players = [];
+            const groups = [];
+            for (const entry of Object.values(this.selectedEntries)) {
+                if (DatabaseManager._isPlayer(entry.identifier)) {
+                    players.push(entry);
+                } else {
+                    groups.push(entry);
+                }
+            }
+
             UI.OnlineShareFile.show({
-                players: players,
-                groups: DatabaseManager.getGroupsFor(players)
+                players,
+                groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
             });
         }
     }
@@ -1884,8 +1902,8 @@ class FilesView extends View {
             if (this.selectedFiles.length > 0) {
                 DatabaseManager.safeRemove({ timestamps: this.selectedFiles }, () => this.show());
             }
-        } else if (Object.keys(this.selectedPlayers).length > 0) {
-            DatabaseManager.safeRemove({ instances: Object.values(this.selectedPlayers) }, () => this.show());
+        } else if (Object.keys(this.selectedEntries).length > 0) {
+            DatabaseManager.safeRemove({ instances: Object.values(this.selectedEntries) }, () => this.show());
         }
     }
 
@@ -1897,7 +1915,7 @@ class FilesView extends View {
                 DatabaseManager.merge(this.selectedFiles).then(() => this.show());
             }
         } else {
-            const timestamps = _uniq(Object.values(this.selectedPlayers).map(player => player.timestamp));
+            const timestamps = _uniq(Object.values(this.selectedEntries).map(entry => entry.timestamp));
             if (timestamps.length > 1) {
                 Loader.toggle(true);
                 DatabaseManager.merge(timestamps).then(() => this.show());
@@ -1911,7 +1929,7 @@ class FilesView extends View {
         if (this.simple) {
             DatabaseManager.hideTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
-            DatabaseManager.hide(Object.values(this.selectedPlayers)).then(() => this.show());
+            DatabaseManager.hide(Object.values(this.selectedEntries)).then(() => this.show());
         }
     }
 
@@ -2007,6 +2025,7 @@ class FilesView extends View {
         });
 
         this.prepareCheckbox('export_public_only', 'export-public-only');
+        this.prepareCheckbox('export_bundle_groups', 'export-bundle-groups');
 
         this.$tagFilter = this.$parent.find('[data-op="simple-tags"]');
         this.tagFilter = undefined;
@@ -2052,30 +2071,30 @@ class FilesView extends View {
                 }
             }
         } else {
-            let playersToMark = [];
-            let playersToIgnore = [];
+            let entriesToMark = [];
+            let entriesToIgnore = [];
 
-            for (let [uuid, player] of Object.entries(this.currentPlayers)) {
-                if (uuid in this.selectedPlayers) {
-                    playersToIgnore.push(uuid);
+            for (let uuid of Object.keys(this.currentEntries)) {
+                if (uuid in this.selectedEntries) {
+                    entriesToIgnore.push(uuid);
                 } else {
-                    playersToMark.push(uuid);
+                    entriesToMark.push(uuid);
                 }
             }
 
             let visibleEntries = _array_to_hash(this.$results.find('td[data-mark]').toArray(), (el) => [el.dataset.mark, el.children[0]]);
 
-            let noneToMark = _empty(playersToMark);
-            if (noneToMark && !_empty(playersToIgnore)) {
-                for (let uuid of playersToIgnore) {
-                    delete this.selectedPlayers[uuid];
+            let noneToMark = _empty(entriesToMark);
+            if (noneToMark && !_empty(entriesToIgnore)) {
+                for (let uuid of entriesToIgnore) {
+                    delete this.selectedEntries[uuid];
                     if (visibleEntries[uuid]) {
                         visibleEntries[uuid].classList.add('outline');
                     }
                 }
             } else if (!noneToMark) {
-                for (let uuid of playersToMark) {
-                    this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                for (let uuid of entriesToMark) {
+                    this.selectedEntries[uuid] = this.currentEntries[uuid];
                     if (visibleEntries[uuid]) {
                         visibleEntries[uuid].classList.remove('outline');
                     }
@@ -2090,44 +2109,67 @@ class FilesView extends View {
         if (this.simple) {
             this.$fileCounter.html(_empty(this.selectedFiles) ? intl('stats.files.selected.no') : Object.keys(this.selectedFiles).length);
         } else {
-            this.$fileCounter.html(_empty(this.selectedPlayers) ? intl('stats.files.selected.no') : Object.keys(this.selectedPlayers).length);
+            this.$fileCounter.html(_empty(this.selectedEntries) ? intl('stats.files.selected.no') : Object.keys(this.selectedEntries).length);
         }
     }
 
-    updateSearchResults () {
+    updateEntrySearchResults () {
         this.updateSelectedCounter();
 
-        let prefixes = this.$filter_prefix.dropdown('get value');
-        let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
-        let player_identifiers = this.$filter_player.dropdown('get value');
-        let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
-        let type = parseInt(this.$filter_type.dropdown('get value'));
-        let hidden = this.$filter_hidden.dropdown('get value');
-        let tags = this.$filter_tags.dropdown('get value');
+        const prefixes = this.$filter_prefix.dropdown('get value');
+        const group_identifiers = this.$filter_group.dropdown('get value').map(value => value !== '0' ? value : undefined);
+        const player_identifiers = this.$filter_player.dropdown('get value');
+        const timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
+        const ownership = parseInt(this.$filter_ownership.dropdown('get value'));
+        const hidden = this.$filter_hidden.dropdown('get value');
+        const hidden_allowed = SiteOptions.hidden;
+        const tags = this.$filter_tags.dropdown('get value');
+        const type = parseInt(this.$filter_type.dropdown('get value'));
 
-        DatabaseManager.export(null, null, data => (
-            (!prefixes || prefixes.length == 0 || prefixes.includes(data.prefix)) &&
-            (group_identifiers.length == 0 || group_identifiers.includes(data.group)) &&
-            (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
-            (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
-            (tags.length == 0 || tags.includes(`${data.tag}`)) &&
-            (!type || data.own != type - 1) &&
-            (!SiteOptions.hidden || hidden.length == 0 || (SiteOptions.hidden && (data.hidden && hidden.includes('yes')) || (!data.hidden && hidden.includes('no'))))
-        )).then(({ players }) => {
-            this.currentPlayers = players.reduce((memo, player) => {
-                memo[_uuid(player)] = player;
+        DatabaseManager.export(null, null, (data) => {
+            const isPlayer = DatabaseManager._isPlayer(data.identifier);
+
+            const conditions = [
+                // Prefix
+                prefixes.length === 0 || prefixes.includes(data.prefix),
+                // Player identifier
+                player_identifiers.length === 0 || (isPlayer && player_identifiers.includes(data.identifier)),
+                // Group identifiers
+                group_identifiers.length === 0 || group_identifiers.includes(isPlayer ? data.group : data.identifier),
+                // Timestamps
+                timestamps.length === 0 || timestamps.includes(data.timestamp),
+                // Tags
+                tags.length === 0 || tags.includes(`${data.tag}`),
+                // Ownership
+                !ownership || data.own != ownership - 1,
+                // Type
+                !type || isPlayer != type - 1,
+                // Hidden
+                !hidden_allowed || hidden.length === 0 || (data.hidden && hidden.includes('yes')) || (!data.hidden && hidden.includes('no'))
+            ];
+
+            return conditions.reduce((acc, condition) => acc && condition, true);
+        }).then(({ players, groups }) => {
+            const entries = players.concat(groups);
+
+            // Save into current list
+            this.currentEntries = entries.reduce((memo, entry) => {
+                memo[_uuid(entry)] = entry;
                 return memo;
             }, {});
 
-            const entries = players.sort((a, b) => b.timestamp - a.timestamp).map(player => {
+            const displayEntries = entries.sort((a, b) => b.timestamp - a.timestamp).map((entry) => {
+                const isPlayer = DatabaseManager._isPlayer(entry.identifier);
+
                 return `
-                    <tr data-tr-mark="${_uuid(player)}" ${player.hidden ? 'style="color: gray;"' : ''}>
-                        <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle outline icon"></i></td>
-                        <td class="text-center">${ this.timeMap[player.timestamp] }</td>
-                        <td class="text-center">${ this.prefixMap[player.prefix] }</td>
-                        <td>${ player.name }</td>
-                        <td>${ this.groupMap[player.group] || '' }</td>
-                        <td>${ player.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(player.tag)}; color: white;">${player.tag}</div>` : '' }</td>
+                    <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
+                        <td class="selectable clickable text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
+                        <td class="text-center">${ this.timeMap[entry.timestamp] }</td>
+                        <td class="text-center">${ this.prefixMap[entry.prefix] }</td>
+                        <td class="text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
+                        <td>${ entry.name }</td>
+                        <td>${ isPlayer ? (this.groupMap[entry.group] || '') : '' }</td>
+                        <td>${ entry.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(entry.tag)}; color: white;">${entry.tag}</div>` : '' }</td>
                     </tr>
                 `
             });
@@ -2135,12 +2177,12 @@ class FilesView extends View {
             this.$results.empty();
 
             this.resultsListObserverCallback = () => {
-                $(entries.splice(0, 25).join('')).appendTo(this.$results).find('[data-mark]').click((event) => {
+                $(displayEntries.splice(0, 25).join('')).appendTo(this.$results).find('[data-mark]').click((event) => {
                     let uuid = event.currentTarget.dataset.mark;
 
-                    if (event.shiftKey && this.lastSelectedPlayer && this.lastSelectedPlayer != uuid) {
+                    if (event.shiftKey && this.lastSelectedEntry && this.lastSelectedEntry != uuid) {
                         // Elements
-                        const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedPlayer}"]`);
+                        const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedEntry}"]`);
                         const $endSelector = $(`tr[data-tr-mark="${uuid}"]`);
                         // Element indexes
                         const startSelectorIndex = $startSelector.index();
@@ -2148,40 +2190,40 @@ class FilesView extends View {
                         const selectDown = startSelectorIndex < endSelectorIndex;
                         const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
                         // Get list of timestamps to be changed
-                        const toChange = [ uuid, this.lastSelectedPlayer ];
+                        const toChange = [ uuid, this.lastSelectedEntry ];
                         for (const obj of elementArray.toArray()) {
                             toChange.push(obj.dataset.trMark);
                         }
 
                         // Change all timestamps
-                        if (uuid in this.selectedPlayers) {
+                        if (uuid in this.selectedEntries) {
                             for (const mark of toChange) {
                                 $(`[data-mark="${mark}"] > i`).addClass('outline');
-                                delete this.selectedPlayers[mark];
+                                delete this.selectedEntries[mark];
                             }
                         } else {
                             for (const mark of toChange) {
                                 $(`[data-mark="${mark}"] > i`).removeClass('outline');
-                                this.selectedPlayers[mark] = this.currentPlayers[mark];
+                                this.selectedEntries[mark] = this.currentEntries[mark];
                             }
                         }
                     } else {
                         if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
-                            delete this.selectedPlayers[uuid];
+                            delete this.selectedEntries[uuid];
                         } else {
-                            this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                            this.selectedEntries[uuid] = this.currentEntries[uuid];
                         }
                     }
 
-                    this.lastSelectedPlayer = uuid;
+                    this.lastSelectedEntry = uuid;
                     this.updateSelectedCounter();
                 }).each((index, element) => {
-                    if (this.selectedPlayers[element.dataset.mark]) {
+                    if (this.selectedEntries[element.dataset.mark]) {
                         element.children[0].classList.remove('outline');
                     }
                 });
 
-                if (entries.length == 0) {
+                if (displayEntries.length == 0) {
                     this.resultsListObserverCallback = null;
                 }
             }
@@ -2423,17 +2465,16 @@ class FilesView extends View {
         }).val(this.expressionFilter ? this.expressionFilter.string : '').trigger('change');
     }
 
-    updateLists () {
-        this.timeMap = _array_to_hash(DatabaseManager.PlayerTimestamps, (ts) => [ts, formatDate(ts)]);
+    updateEntryLists () {
+        this.prefixMap = _array_to_hash(DatabaseManager.Prefixes, (prefix) => [prefix, _pretty_prefix(prefix)]);
+        this.timeMap = _array_to_hash(DatabaseManager.Timestamps.keys(), (ts) => [ts, formatDate(ts)]);
         this.playerMap = _array_to_hash(Object.entries(DatabaseManager.Players), ([id, player]) => [id, player.Latest.Name]);
-        this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups).filter(([id,]) => DatabaseManager.Groups[id].List.some(([, g]) => g.MembersPresent)), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
+        this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
         for (const [ id, name ] of Object.entries(DatabaseManager.GroupNames)) {
             if (!this.groupMap[id]) {
                 this.groupMap[id] = name;
             }
         }
-
-        this.prefixMap = _array_to_hash(DatabaseManager.Prefixes, (prefix) => [prefix, _pretty_prefix(prefix)]);
 
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
         this.tagsArray = Object.keys(DatabaseManager.findUsedTags()).filter(tag => tag !== 'undefined');
@@ -2457,6 +2498,14 @@ class FilesView extends View {
         }
 
         this.$filters.html(`
+            <div class="field">
+                <label>${intl('stats.files.filters.type')}</label>
+                <select class="ui fluid search selection dropdown" data-op="files-search-type">
+                    <option value="0">${intl('stats.files.filters.any')}</option>
+                    <option value="1">${intl('stats.files.filters.player')}</option>
+                    <option value="2">${intl('stats.files.filters.group')}</option>
+                </select>
+            </div>
             <div class="field">
                 <label>${intl('stats.files.filters.timestamp')} (<span data-op="unique-timestamp"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
@@ -2489,11 +2538,11 @@ class FilesView extends View {
                 </select>
             </div>
             <div class="field">
-                <label>${intl('stats.files.filters.type')}</label>
-                <select class="ui fluid search selection dropdown" data-op="files-search-type">
-                    <option value="0">${intl('stats.files.filters.type_all')}</option>
-                    <option value="1">${intl('stats.files.filters.type_own')}</option>
-                    <option value="2">${intl('stats.files.filters.type_other')}</option>
+                <label>${intl('stats.files.filters.ownership')}</label>
+                <select class="ui fluid search selection dropdown" data-op="files-search-ownership">
+                    <option value="0">${intl('stats.files.filters.ownership_all')}</option>
+                    <option value="1">${intl('stats.files.filters.ownership_own')}</option>
+                    <option value="2">${intl('stats.files.filters.ownership_other')}</option>
                 </select>
             </div>
             <div class="field" ${ SiteOptions.hidden ? '' : 'style="display: none;"' }>
@@ -2506,37 +2555,41 @@ class FilesView extends View {
         `);
 
         this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
+            onChange: this.updateEntrySearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
+            onChange: this.updateEntrySearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_group = this.$parent.find('[data-op="files-search-group"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
+            onChange: this.updateEntrySearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
+            onChange: this.updateEntrySearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_hidden = this.$parent.find('[data-op="files-search-hidden"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
+            onChange: this.updateEntrySearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_tags = this.$parent.find('[data-op="files-search-tags"]').dropdown({
-            onChange: this.updateSearchResults.bind(this),
+            onChange: this.updateEntrySearchResults.bind(this),
             placeholder: intl('stats.files.filters.any')
         });
 
+        this.$filter_ownership = this.$parent.find('[data-op="files-search-ownership"]').dropdown({
+            onChange: this.updateEntrySearchResults.bind(this)
+        });
+
         this.$filter_type = this.$parent.find('[data-op="files-search-type"]').dropdown({
-            onChange: this.updateSearchResults.bind(this)
+            onChange: this.updateEntrySearchResults.bind(this)
         });
 
         this.$parent.find('[data-op="unique-timestamp"]').html(Object.keys(this.timeMap).length);
@@ -2545,14 +2598,15 @@ class FilesView extends View {
         this.$parent.find('[data-op="unique-prefix"]').html(Object.keys(this.prefixMap).length);
         this.$parent.find('[data-op="unique-tags"]').html(this.tagsArray.length);
 
-        this.updateSearchResults();
+        this.updateEntrySearchResults();
     }
 
     show (forceUpdate = false) {
-        this.selectedPlayers = {};
+        this.selectedEntries = {};
         this.selectedFiles = [];
+
         this.lastSelectedTimestamp = null;
-        this.lastSelectedPlayer = null;
+        this.lastSelectedEntry = null;
 
         Loader.toggle(false);
 
@@ -2565,7 +2619,7 @@ class FilesView extends View {
             if (this.simple) {
                 this.updateFileList();
             } else {
-                this.updateLists();
+                this.updateEntryLists();
             }
             this.updateSelectedCounter();
         } else {

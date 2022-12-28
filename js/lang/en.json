@@ -239,8 +239,9 @@
             "options": {
                 "title": "File options",
                 "advanced": "Show advanced file list",
-                "hidden": "Show hidden players",
-                "export_public_only": "Export only public data"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Export only public data",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Tag",
@@ -259,9 +260,10 @@
                 "prefix": "Prefix",
                 "tags": "Tags",
                 "type": "Type",
-                "type_all": "Show all",
-                "type_own": "Show only own",
-                "type_other": "Show only other",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Hidden"
             },
             "online": {
