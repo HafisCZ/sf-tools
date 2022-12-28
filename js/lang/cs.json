@@ -206,6 +206,7 @@
             "timestamps": "Datumy",
             "prefix": "Prefix",
             "name": "Jméno",
+            "type": "Type",
             "group": "Cech",
             "groups": "Cechy",
             "players": "Hráči",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "Nastavení",
                 "advanced": "Zobrazit pokročilý seznam",
-                "hidden": "Zobrazit skryté hráče",
-                "export_public_only": "Exportovat pouze veřejná data"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Exportovat pouze veřejná data",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Štítek",
@@ -258,9 +260,10 @@
                 "prefix": "Prefix",
                 "tags": "Tagy",
                 "type": "Typ",
-                "type_all": "Zobrazit všechny postavy",
-                "type_own": "Zobrazit pouze vlastní postavy",
-                "type_other": "Zobrazit pouze ostatní postavy",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Skryté"
             },
             "online": {
@@ -306,7 +309,6 @@
             "l": "Zobrazit poslední soubor",
             "f": "Zobrazit první nebo n řádků",
             "r": "Přepočítat tabulku",
-            "x": "Povolit integrovaný simulátor (parametr je počet iterací)",
             "h": "Zobrazit skrýté",
             "o": "Zobrazit vlastní",
             "a": "Zobrazit vše",
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Generovat tabulku pro zbývající levely mazlíčka a úrověň gladiátora. Funguje pouze proti podzemí.",
             "one": "Generovat",
             "five": "Generovat dalších 5",
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Načíst uložené postavy",
             "guilds": "Načíst uložené cechy"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {

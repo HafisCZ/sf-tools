@@ -2,8 +2,8 @@
     "general": {
         "no": "No",
         "yes": "Si",
-        "min": "Min",
-        "max": "Max",
+        "min": "Mínimo",
+        "max": "Máximo",
         "class1": "Guerrero",
         "class2": "Mago",
         "class3": "Explorador",
@@ -206,6 +206,7 @@
             "timestamps": "Fecha y hora",
             "prefix": "Prefijo",
             "name": "Nombre",
+            "type": "Type",
             "group": "Grupo",
             "groups": "Grupos",
             "players": "Jugadores",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "Opciones de archivo",
                 "advanced": "Mostrar lista avanzada de archivos",
-                "hidden": "Mostrar jugadores ocultos",
-                "export_public_only": "Exportar solo datos públicos"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Exportar solo datos públicos",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Etiqueta",
@@ -258,9 +260,10 @@
                 "prefix": "Prefijo",
                 "tags": "Etiquetas",
                 "type": "Tipo",
-                "type_all": "Mostrar todos los personajes",
-                "type_own": "Mostrar solo tus personajes",
-                "type_other": "Mostrar solo otros personajes",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Ocultos"
             },
             "online": {
@@ -294,8 +297,8 @@
         },
         "filters": {
             "types": {
-                "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "players": "Filtrar jugadores por servidor, clase, gremio y/o nombre de usuario",
+                "guilds": "Filtrar grupos por servidor o nombre"
             },
             "c": "Clase del jugador, use el nombre completo de la clase en minúsculas (por ejemplo: berserker, battle mage)",
             "p": "Nombre del jugador",
@@ -306,7 +309,6 @@
             "l": "Mostrar solo las últimas",
             "f": "Mostrar sólo la primera o primeras n entradas",
             "r": "Forzar el recálculo de variables globales",
-            "x": "Activar simulador (el argumento es el número de iteraciones)",
             "h": "Mostrar ocultos",
             "o": "Mostrar propio",
             "a": "Mostrar todos",
@@ -349,7 +351,7 @@
         "guilds": {
             "other": "Mostrar otros gremios",
             "hidden": "Mostrar ocultos",
-            "empty": "Show empty groups",
+            "empty": "Mostrar grupos vacíos",
             "missing": "Faltan datos del jugador para los siguientes miembros:"
         },
         "browse": {
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Genera un mapa de éxito de nivel / gladiator. Sólo es posible con su propia mascota contra un jefe de mazmorra.",
             "one": "Generar",
             "five": "Generar próximos 5",
@@ -677,12 +680,12 @@
             "keep_original": "Mantener original"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
+            "tooltip": "Clic derecho para ajustar el % de ganancia más bajo aceptable contra una mazmorra",
             "title": "Umbral de simulación",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            "label": "Umbral % - Cualquier enemigo de mazmorra por debajo de este umbral se omitirá"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
+            "title": "No hay mazmorras posibles en el umbral (#{threshold_min} - #{threshold_max}%)",
             "message#": "Usa <b>Todos</b> para simular todas las mazmorras abiertas"
         }
     },
@@ -807,7 +810,7 @@
         "simulate": "Simular",
         "simulate_debug": "Simular en modo depuración",
         "configure": "Configurar simulador",
-        "configure_copy": "Copy everyone including current configuration",
+        "configure_copy": "Copiar a todos incluyendo la configuración actual",
         "clipboard": {
             "copy_all": "Copiar todos",
             "paste_mode": "Cambiar Añadir/Reemplazar modo de inserción"
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Grupo de jugadores guardados",
             "guilds": "Grupo de gremios guardados"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {
@@ -891,9 +898,9 @@
     },
     "dialog": {
         "shared": {
-            "cancel": "Cancel",
-            "save": "Save",
-            "ok": "Ok"
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "ok": "Aceptar"
         },
         "delete_all": {
             "title": "Eliminar todo",

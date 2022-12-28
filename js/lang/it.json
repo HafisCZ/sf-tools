@@ -206,6 +206,7 @@
             "timestamps": "Timestamp",
             "prefix": "Prefisso",
             "name": "Nome",
+            "type": "Type",
             "group": "Gruppo",
             "groups": "Gruppi",
             "players": "Giocatori",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "Opzioni file",
                 "advanced": "Mostra lista file avanzata",
-                "hidden": "Mostra giocatori nascosti",
-                "export_public_only": "Esporta solo dati pubblici"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Esporta solo dati pubblici",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Tag",
@@ -258,9 +260,10 @@
                 "prefix": "Prefisso",
                 "tags": "Tag",
                 "type": "Tipo",
-                "type_all": "Mostra tutti i personaggi",
-                "type_own": "Mostra solo i tuoi personaggi",
-                "type_other": "Mostro solo gli altri personaggi",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Nascosto"
             },
             "online": {
@@ -294,8 +297,8 @@
         },
         "filters": {
             "types": {
-                "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "players": "Filtra i giocatori per server, classe, gilda e/o nome utente",
+                "guilds": "Filtra i gruppi per server o nome"
             },
             "c": "Classe del giocatore, usare il nome completo in minuscolo in INGLESE! (es. mage, scout, ecc.)",
             "p": "Nome del giocatore",
@@ -306,7 +309,6 @@
             "l": "Mostra solo gli ultimi",
             "f": "Mostra solo i primi o i primi n valori",
             "r": "Forza il ricalcolo delle variabili globali",
-            "x": "Attiva il simulatore (l'argomento è il numero delle iterazioni)",
             "h": "Mostra nascosti",
             "o": "Mostra i propri giocatori",
             "a": "Mostra tutti",
@@ -349,7 +351,7 @@
         "guilds": {
             "other": "Mostra altre gilde",
             "hidden": "Mostra nascosti",
-            "empty": "Show empty groups",
+            "empty": "Mostra gruppi vuoti",
             "missing": "Dati giocatore mancanti per i seguenti membri:"
         },
         "browse": {
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Genera una tabella di successo per livello / gladiatore. Possibile solo per gli scontri contro i boss famigli.",
             "one": "Genera",
             "five": "Genera i prossimi 5",
@@ -677,12 +680,12 @@
             "keep_original": "Mantieni l'originale"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
+            "tooltip": "Clic con il tasto destro per regolare l'intervallo di vincita accettabile per il dungeon",
             "title": "Soglia di simulaizone",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            "label": "% Soglia - Ogni boss al di fuori della soglia verrà saltato"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
+            "title": "Nessun boss all'interno della soglia selezionata (#{threshold_min} - #{threshold_max} %)",
             "message#": "Usa <b>Tutti</b> per simulate tutti i dungeons aperti"
         }
     },
@@ -807,7 +810,7 @@
         "simulate": "Simula",
         "simulate_debug": "Simula in modalità debug",
         "configure": "Configura simulatore",
-        "configure_copy": "Copy everyone including current configuration",
+        "configure_copy": "Copia tutto, inclusa la configurazione attuale",
         "clipboard": {
             "copy_all": "Copia tutti",
             "paste_mode": "Passa dalla modalità 'Aggiungi' a 'Rimpiazza'"
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Importa personaggi salvati",
             "guilds": "Importa gilde salvate"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {
@@ -891,8 +898,8 @@
     },
     "dialog": {
         "shared": {
-            "cancel": "Cancel",
-            "save": "Save",
+            "cancel": "Annulla",
+            "save": "Salva",
             "ok": "Ok"
         },
         "delete_all": {

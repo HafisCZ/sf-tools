@@ -206,6 +206,7 @@
             "timestamps": "Timestamps",
             "prefix": "Prefix",
             "name": "Name",
+            "type": "Type",
             "group": "Group",
             "groups": "Groups",
             "players": "Players",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "File options",
                 "advanced": "Show advanced file list",
-                "hidden": "Show hidden players",
-                "export_public_only": "Export only public data"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Export only public data",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Tag",
@@ -258,9 +260,10 @@
                 "prefix": "Prefix",
                 "tags": "Tags",
                 "type": "Type",
-                "type_all": "Show all characters",
-                "type_own": "Show only own characters",
-                "type_other": "Show only other characters",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Hidden"
             },
             "online": {
@@ -306,7 +309,6 @@
             "l": "Show only latest",
             "f": "Show only first or first n entries",
             "r": "Force recalculation of global variables",
-            "x": "Enable simulator (argument is number of iterations)",
             "h": "Show hidden",
             "o": "Show own",
             "a": "Show all",
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
             "one": "Generate",
             "five": "Generate next 5",
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {

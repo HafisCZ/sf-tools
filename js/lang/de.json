@@ -206,6 +206,7 @@
             "timestamps": "Zeitstempel",
             "prefix": "Präfix",
             "name": "Name",
+            "type": "Type",
             "group": "Gruppe",
             "groups": "Gruppen",
             "players": "Spieler",
@@ -238,8 +239,9 @@
             "options": {
                 "title": "Datei Optionen",
                 "advanced": "Erweiterte Dateiliste anzeigen",
-                "hidden": "Versteckte Spieler anzeigen",
-                "export_public_only": "Nur publike Daten exportieren"
+                "hidden": "Show hidden entries",
+                "export_public_only": "Nur publike Daten exportieren",
+                "export_bundle_groups": "Bundle groups with players"
             },
             "tags": {
                 "single": "Tag",
@@ -258,9 +260,10 @@
                 "prefix": "Präfix",
                 "tags": "Tags",
                 "type": "Typ",
-                "type_all": "Zeige alle Charactere",
-                "type_own": "Zeige nur den eigenen Charakter",
-                "type_other": "Zeige nur andere Charaktere",
+                "ownership": "Ownership",
+                "ownership_all": "Show all",
+                "ownership_own": "Show only own",
+                "ownership_other": "Show only other",
                 "hidden": "Verstecken"
             },
             "online": {
@@ -306,7 +309,6 @@
             "l": "Nur den letzten anzeigen",
             "f": "Nur den ersten oder die ersten 'n' Einträge anzeigen",
             "r": "Neukalkulation der globalen Variablen erzwingen",
-            "x": "Simulator aktivieren (Argument ist die Anzahl der Iterationen)",
             "h": "Versteckte anzeigen",
             "o": "Eigene anzeigen",
             "a": "Alle anzeigen",
@@ -489,6 +491,7 @@
     },
     "pets": {
         "generate": {
+            "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Erstelle eine Level / Gladiator Erfolgskarte. Nur möglich mit eigenem Haustier gegen einen Dungeonboss.",
             "one": "Generieren",
             "five": "Die nächsten Fünf generieren",
@@ -818,6 +821,10 @@
         "poll": {
             "players": "Gespeicherte Spieler abrufen",
             "guilds": "Gespeicherte Gilden abrufen"
+        },
+        "toast": {
+            "title": "Simulation finished",
+            "message": "Simulation took #{duration}"
         }
     },
     "editor": {
