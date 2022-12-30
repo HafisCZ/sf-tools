@@ -318,33 +318,19 @@
 
                 $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
-                StatisticsIntegration.configure(
-                    HYDRA_PROFILE,
-                    intl('simulator.poll.guilds'),
-                    function ($statsList) {
-                        let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
-                        for (let group of _compact(groups).sort((a, b) => b.Timestamp - a.Timestamp)) {
-                            $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${group.Name} @ ${group.Prefix}<span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">${formatDate(group.Timestamp)}<span>
-                                    </div>
-                                </div>
-                                `).click(() => {
-                                    EditorController.fill(
-                                        playersToData(
-                                            _compact(group.Members.map(pid => DatabaseManager.getPlayer(pid, group.Timestamp))),
-                                            (group.Hydra || 0) + 1
-                                        )
-                                    );
-                                }
-                            ));
-                        }
+                StatisticsIntegration.configure({
+                    profile: HYDRA_PROFILE,
+                    type: 'guilds',
+                    scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])).sort((a, b) => b.Timestamp - a.Timestamp),
+                    callback: (group) => {
+                        EditorController.fill(
+                            playersToData(
+                                _compact(group.Members.map(pid => DatabaseManager.getPlayer(pid, group.Timestamp))),
+                                (group.Hydra || 0) + 1
+                            )
+                        );
                     }
-                );
+                });
 
                 $('#simulate').click(function () {
                     const instances = Math.max(1, Number($('#sim-threads').val()) || 4);

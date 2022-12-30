@@ -494,28 +494,14 @@
 
                 EditorController.clear();
 
-                // Integration
-                StatisticsIntegration.configure(
-                    SELF_PROFILE,
-                    intl('simulator.poll.players'),
-                    function ($statsList) {
-                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(p => p.Own && p.Level >= 105 && p.Idle)) {
-                            $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
-                                    </div>
-                                </div>
-                                `).click(() => {
-                                    EditorController.load(player);
-                                })
-                            );
-                        }
+                StatisticsIntegration.configure({
+                    profile: SELF_PROFILE,
+                    type: 'players',
+                    scope: (dm) => _sort_des(dm.getLatestPlayers(), p => p.Timestamp).filter(p => p.Own && p.Level >= 105 && p.Idle),
+                    callback: (player) => {
+                        EditorController.load(player);
                     }
-                );
+                });
             });
         </script>
     </body>

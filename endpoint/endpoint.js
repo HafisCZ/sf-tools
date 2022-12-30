@@ -570,68 +570,119 @@ const Endpoint = new ( class {
 })();
 
 const StatisticsIntegration = new (class {
-    configure (profile, pollLabel, callback) {
-        let $statsModule = $(`<div class="statistics-module" id="stats-module"></div>`).appendTo($(document.body));
-        let $statsLoad = $(`<div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>${pollLabel}</div>`).appendTo($statsModule);
-        let $statsList = $(`<div id="stats-list"></div>`).appendTo($statsModule);
+    configure ({ profile, type, callback, scope, generator }) {
+        this.type = type;
+        this.profile = profile;
+        this.callback = callback;
+        this.scope = scope;
+        this.generator = generator;
 
-        $statsLoad.click(() => {
-            Loader.toggle(true);
-            DatabaseManager.load(profile).then(function () {
-                $statsList.empty();
-                callback($statsList);
+        // Parent
+        this.$parent = $(this._html()).appendTo($(document.body));
 
-                $statsList.append(
-                    $('<div style="margin-top: 0.5em;"></div>').append(
-                        $('<div class="ui two basic tiny gray buttons"></div>').append(
-                            $(`
-                                <div class="ui fluid button vertical">
-                                    <div class="visible content">
-                                        <span style="color: gray;">Endpoint<span>
-                                    </div>
-                                </div>
-                            `).click(() => {
-                                Endpoint.start().then((actionSuccess) => {
-                                    if (actionSuccess) {
-                                        $statsLoad.trigger('click');
-                                    }
-                                });
-                            }),
-                            $(`
-                                <label class="ui fluid button vertical" for="endpoint-button-upload">
-                                    <span style="color: gray;">HAR<span>
-                                </label>
-                                <input type="file" multiple data-op="upload" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
-                            `).change((fileEvent) => {
-                                Loader.toggle(true);
+        // Containers
+        this.$container = this.$parent.find('[data-op="container"]');
+        this.$list = this.$parent.find('[data-op="list"]');
 
-                                let pendingPromises = [];
-                                Array.from(fileEvent.target.files).forEach(file => {
-                                    pendingPromises.push(file.text().then(fileContent => {
-                                        return DatabaseManager.import(fileContent, file.lastModified);
-                                    }).catch(function (e) {
-                                        Toast.error(intl('database.import_error'), e.message);
-                                        Logger.error(e, 'Error occured while trying to import a file!');
-                                    }));
-                                });
+        // Buttons
+        this.$poll = this.$parent.find('[data-op="poll"]');
+        this.$poll.click(() => this._poll());
+        
+        this.$importEndpoint = this.$parent.find('[data-op="import-endpoint"]');
+        this.$importEndpoint.click(() => this._importEndpoint());
+        
+        this.$importFile = this.$parent.find('[data-op="import-file"]');
+        this.$importFile.change((event) => this._importFile(event));
+    }
 
-                                Promise.all(pendingPromises).then(() => {
-                                    $statsLoad.trigger('click');
-                                });
-                            })
-                        )
-                    )
+    _html () {
+        return `
+            <div class="position-absolute left-8 top-20 z-2" style="width: 18em;">
+                <div class="ui fluid basic button" data-op="poll"><i class="sync alternate icon"></i>${intl(`simulator.poll.${this.type}`)}</div>
+                <div data-op="container" style="display: none;">
+                    <div data-op="list"></div>
+                    <div class="mt-2">
+                        <div class="ui two basic tiny fluid buttons">
+                            <div class="ui button" data-op="import-endpoint">Endpoint</div>
+                            <label class="ui button" for="endpoint-button-upload">HAR</label>
+                            <input type="file" multiple data-op="import-file" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    _importEndpoint () {
+        Endpoint.start().then((actionSuccess) => {
+            if (actionSuccess) {
+                this._poll();
+            }
+        });
+    }
+
+    _importFile (event) {
+        Loader.toggle(true);
+
+        const promises = [];
+        for (const file of Array.from(event.target.files)) {
+            promises.push(file.text().then((fileContent) => DatabaseManager.import(fileContent, file.lastModified)).catch((e) => {
+                Toast.error(intl('database.import_error'), e.message);
+                Logger.error(e, 'Error occured while trying to import a file!');
+            }));
+        }
+
+        Promise.all(promises).then(() => this._poll());
+    }
+
+    _generateItem (item) {
+        if (this.type === 'players') {
+            return {
+                visible: `${item.Name} @ ${item.Prefix}`,
+                hidden: `${intl('editor.level')} ${item.Level} ${intl(`general.class${item.Class}`)}`
+            };
+        } else /* if (this.type === 'guilds') */ {
+            return {
+                visible: `${item.Name} @ ${item.Prefix}`,
+                hidden: formatDate(item.Timestamp)
+            };
+        }
+    }
+
+    _generate () {
+        this.$list.empty();
+
+        if (typeof this.generator === 'undefined') {
+            for (const item of this.scope(DatabaseManager)) {
+                const { visible, hidden } = this._generateItem(item);
+    
+                this.$list.append(
+                    $(`
+                        <div class="ui small fluid basic vertical animated button !mt-2">
+                            <div class="visible content text-black">${visible}</div>
+                            <div class="hidden content text-black">${hidden}</div>
+                        </div>
+                    `).click(() => this.callback(item))
                 );
+            }
+        } else {
+            this.generator(DatabaseManager, this.$list);
+        }
+    }
 
-                Loader.toggle(false);
-            }).catch(function (e) {
-                Loader.toggle(false);
+    _poll () {
+        Loader.toggle(true);
+        DatabaseManager.load(this.profile).then(() => {
+            this._generate();
 
-                Toast.error(intl('database.open_error.title'), intl('database.open_error.message'));
-                Logger.error(e, `Database could not be opened! Reason: ${e.message}`);
-
-                $statsList.empty();
-            });
+            this.$container.show();
+        }).catch((e) => {
+            Toast.error(intl('database.open_error.title'), intl('database.open_error.message'));
+            Logger.error(e, `Database could not be opened! Reason: ${e.message}`);
+            
+            this.$container.hide();
+        }).finally(function () {
+            Loader.toggle(false);
         });
     }
 })();

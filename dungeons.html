@@ -763,92 +763,79 @@
                     }
                 });
 
-                StatisticsIntegration.configure(
-                    SELF_PROFILE,
-                    intl('simulator.poll.players'),
-                    function ($statsList) {
-                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp)) {
-                            $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
-                                    </div>
-                                </div>
-                                `).click(() => {
-                                    dungeon = DUNGEON_DATA[dungeon_current];
-                                    boss = boss_current;
+                StatisticsIntegration.configure({
+                    profile: SELF_PROFILE,
+                    type: 'players',
+                    scope: (dm) => _sort_des(dm.getLatestPlayers(), p => p.Timestamp),
+                    callback: (player) => {
+                        dungeon = DUNGEON_DATA[dungeon_current];
+                        boss = boss_current;
 
-                                    if (cheatsWasEnabled) {
-                                        DatabaseManager._addPlayer(player.Data);
-                                        player = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
+                        if (cheatsWasEnabled) {
+                            DatabaseManager._addPlayer(player.Data);
+                            player = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
 
-                                        cheatsWasEnabled = false;
-                                    }
+                            cheatsWasEnabled = false;
+                        }
 
-                                    if (cheatsEnabled) {
-                                        applyCheats(player);
+                        if (cheatsEnabled) {
+                            applyCheats(player);
 
-                                        cheatsWasEnabled = true;
-                                    }
+                            cheatsWasEnabled = true;
+                        }
 
-                                    showData(player.toSimulatorShadowModel());
+                        showData(player.toSimulatorShadowModel());
 
-                                    let normalDungeons = player.Dungeons.Normal;
-                                    let shadowDungeons = player.Dungeons.Shadow;
-                                    let tower = player.Dungeons.Tower;
-                                    let youtube = player.Dungeons.Youtube;
-                                    let twister = player.Dungeons.Twister + 1;
+                        let normalDungeons = player.Dungeons.Normal;
+                        let shadowDungeons = player.Dungeons.Shadow;
+                        let tower = player.Dungeons.Tower;
+                        let youtube = player.Dungeons.Youtube;
+                        let twister = player.Dungeons.Twister + 1;
 
-                                    availableBosses = [
-                                        ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon)),
-                                        getSpecialDungeonEnemyAt(201, player.Dungeons.Normal.Total < 90 ? -1 : tower),
-                                        getSpecialDungeonEnemyAt(203, twister, true),
-                                        ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon)),
-                                        getSpecialDungeonEnemyAt(202, youtube),
-                                    ].filter(boss => boss);
+                        availableBosses = [
+                            ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon)),
+                            getSpecialDungeonEnemyAt(201, player.Dungeons.Normal.Total < 90 ? -1 : tower),
+                            getSpecialDungeonEnemyAt(203, twister, true),
+                            ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon)),
+                            getSpecialDungeonEnemyAt(202, youtube),
+                        ].filter(boss => boss);
 
-                                    if (availableBosses.length) {
-                                        $('#available-list').parent('.field').removeClass('disabled');
-                                        $('#sim-run-all, #sim-run-next').removeClass('disabled');
-                                        $('#available-list').dropdown({
-                                            values: _sort_asc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
-                                                return {
-                                                    name: `<span${ _dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
-                                                               <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
-                                                                   <span class="boss-dungeon-name">${ _dungeon.name }</span>
-                                                                   <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>
-                                                                   ${ getDisplayRunes(_boss.runes) }
-                                                           <span>`,
-                                                    value: index
-                                                };
-                                            })
-                                        }).dropdown('setting', 'onChange', (value, text) => {
-                                            if (!isNaN(value) && value && value.length > 0) {
-                                                settingsChanged();
+                        if (availableBosses.length) {
+                            $('#available-list').parent('.field').removeClass('disabled');
+                            $('#sim-run-all, #sim-run-next').removeClass('disabled');
+                            $('#available-list').dropdown({
+                                values: _sort_asc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
+                                    return {
+                                        name: `<span${ _dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                                    <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
+                                                        <span class="boss-dungeon-name">${ _dungeon.name }</span>
+                                                        <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>
+                                                        ${ getDisplayRunes(_boss.runes) }
+                                                <span>`,
+                                        value: index
+                                    };
+                                })
+                            }).dropdown('setting', 'onChange', (value, text) => {
+                                if (!isNaN(value) && value && value.length > 0) {
+                                    settingsChanged();
 
-                                                let sel = availableBosses[value];
+                                    let sel = availableBosses[value];
 
-                                                dungeon = sel.dungeon;
-                                                boss = sel.boss;
+                                    dungeon = sel.dungeon;
+                                    boss = sel.boss;
 
-                                                withoutUpdate(() => {
-                                                    $('#dungeon-list').dropdown('set selected', sel.dungeon.id);
-                                                    $('#boss-list').dropdown('set selected', sel.boss.pos);
-                                                });
-                                            }
-                                        });
-                                    } else {
-                                        $('#available-list').parent('.field').addClass('disabled');
-                                        $('#sim-run-all, #sim-run-next').addClass('disabled');
-                                    }
+                                    withoutUpdate(() => {
+                                        $('#dungeon-list').dropdown('set selected', sel.dungeon.id);
+                                        $('#boss-list').dropdown('set selected', sel.boss.pos);
+                                    });
                                 }
-                            ));
+                            });
+                        } else {
+                            $('#available-list').parent('.field').addClass('disabled');
+                            $('#sim-run-all, #sim-run-next').addClass('disabled');
                         }
                     }
-                )
+                })
 
                 function showMassDungeonResults (bosses, results, sort, calculateTotalExperience) {
                     let entries = bosses.map((dungeon, index) => {
