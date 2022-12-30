@@ -168,9 +168,10 @@ class IndexedDBWrapper {
     }
 
     close () {
-        return IndexedDBWrapper.promisify(
-            this.database.close()
-        );
+        return new Promise((resolve) => {
+            this.database.close();
+            resolve();
+        });
     }
 
     set (store, value) {
