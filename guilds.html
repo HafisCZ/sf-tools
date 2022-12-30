@@ -435,7 +435,7 @@
                 StatisticsIntegration.configure({
                     profile: HYDRA_PROFILE,
                     type: 'guilds',
-                    scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])).sort((a, b) => b.Timestamp - a.Timestamp),
+                    scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])),
                     callback: (group) => {
                         playerEditor.clear();
                         playerCurrentIndex = -1;
