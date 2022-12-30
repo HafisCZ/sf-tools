@@ -30,14 +30,6 @@
     margin-bottom: 0.5rem;
 }
 
-.statistics-module {
-    position: absolute;
-    left: 2em;
-    top: 5em;
-    width: 18em;
-    z-index: 2;
-}
-
 body {
     margin-top: 5em;
     height: auto;
@@ -77,10 +69,6 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     .paste-target {
         display: none;
     }
-}
-
-#stats-list > div {
-    font-size: 90%;
 }
 
 .paste-target {

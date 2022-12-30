@@ -661,31 +661,27 @@
                 $('#sim-generate5').click(() => generatePetMap(5));
                 $('#sim-generate10').click(() => generatePetMap(10));
 
-                StatisticsIntegration.configure(
-                    SELF_PROFILE,
-                    intl('simulator.poll.players'),
-                    function ($statsList) {
+                StatisticsIntegration.configure({
+                    profile: SELF_PROFILE,
+                    type: 'players',
+                    generator: function (dm, $list) {
                         function hasPets (player) {
                             return typeof player.Pets !== 'undefined' && player.Pets.TotalLevel;
                         }
 
-                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(hasPets)) {
+                        for (let player of _sort_des(dm.getLatestPlayers(), p => p.Timestamp).filter(hasPets)) {
                             let hasDungeonsLeft = player.Pets.Dungeons.some(pet => pet < 20);
 
-                            $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }</span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">${intl('editor.level')} ${ player.Level } ${intl(`general.class${player.Class}`)}</span>
-                                    </div>
+                            $list.append($(`
+                                <div class="ui fluid small basic vertical animated button !mt-2">
+                                    <div class="visible content text-black">${player.Name} @ ${player.Prefix}</div>
+                                    <div class="hidden content text-black">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</div>
                                     <div style="position: absolute; right: 0.25em; top: 32.5%; ${hasDungeonsLeft ? '' : 'display: none;'}" data-player-id="${ player.Identifier }">
                                         <i class="expand icon"></i>
                                     </div>
                                 </div>
                                 `).click(() => {
-                                    let [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
+                                    const [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
                                     petA.fill(playerPet);
                                     petB.fill(bossPet);
                                 }
@@ -761,7 +757,7 @@
                             });
                         }
                     }
-                );
+                });
 
                 function getPetsFor (player, type, petClass) {
                     let currentType = type;

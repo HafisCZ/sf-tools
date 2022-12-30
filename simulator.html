@@ -699,14 +699,14 @@
                     });
                 }
 
-                StatisticsIntegration.configure(
-                    FIGHT_SIMULATOR_PROFILE,
-                    intl('simulator.poll.players'),
-                    function ($statsList) {
-                        for (let [prefix, players] of Object.entries(_group_by(DatabaseManager.getLatestPlayers(), p => p.Prefix))) {
-                            $statsList.append($(`
-                                <div class="ui fluid basic gray left pointing scrolling dropdown button text-center" style="margin-top: 0.5em;">
-                                    <span style="color: black;">${prefix}</span>
+                StatisticsIntegration.configure({
+                    profile: FIGHT_SIMULATOR_PROFILE,
+                    type: 'players',
+                    generator: function (dm, $list) {
+                        for (let [prefix, players] of Object.entries(_group_by(dm.getLatestPlayers(), p => p.Prefix))) {
+                            $list.append($(`
+                                <div class="ui fluid basic left pointing scrolling dropdown small button text-center !mt-2">
+                                    <span class="text-black">${prefix}</span>
                                     <div class="menu" style="overflow-y: scroll; width: 20rem !important;">
                                         <div class="ui left search icon input">
                                             <i class="search icon"></i>
@@ -727,12 +727,12 @@
                                 match: 'text',
                                 fullTextSearch: true,
                                 action: function (_, identifier) {
-                                    insertPlayer(DatabaseManager.getPlayer(identifier).Latest);
+                                    insertPlayer(dm.getPlayer(identifier).Latest);
                                 }
                             }));
                         }
                     }
-                );
+                });
             });
         </script>
     </body>

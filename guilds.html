@@ -432,40 +432,26 @@
                     `).show();
                 }
 
-                StatisticsIntegration.configure(
-                    HYDRA_PROFILE,
-                    intl('simulator.poll.guilds'),
-                    function ($statsList) {
-                        let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
-                        for (let group of _compact(groups).sort((a, b) => b.Timestamp - a.Timestamp)) {
-                            $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${ group.Name } @ ${ group.Prefix }<span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">${ formatDate(group.Timestamp) }<span>
-                                    </div>
-                                </div>
-                                `).click(() => {
-                                    playerEditor.clear();
-                                    playerCurrentIndex = -1;
-                                    updateSaveButton();
+                StatisticsIntegration.configure({
+                    profile: HYDRA_PROFILE,
+                    type: 'guilds',
+                    scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])).sort((a, b) => b.Timestamp - a.Timestamp),
+                    callback: (group) => {
+                        playerEditor.clear();
+                        playerCurrentIndex = -1;
+                        updateSaveButton();
 
-                                    playerList[currentList] = group.Members.map(memberId => {
-                                        return {
-                                            player: DatabaseManager.getPlayer(memberId, group.Timestamp).toSimulatorModel(),
-                                            inactive: 0,
-                                            index: playerIndex++
-                                        };
-                                    })
+                        playerList[currentList] = group.Members.map(memberId => {
+                            return {
+                                player: DatabaseManager.getPlayer(memberId, group.Timestamp).toSimulatorModel(),
+                                inactive: 0,
+                                index: playerIndex++
+                            };
+                        })
 
-                                    updatePlayerList();
-                                }
-                            ));
-                        }
+                        updatePlayerList();
                     }
-                );
+                });
 
                 $('#simulate').click(function () {
                     const instances = Math.max(1, Number($('#sim-threads').val()) || 4);

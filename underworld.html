@@ -229,36 +229,19 @@
                 underworldEditor.onChangeLister();
 
                 // Integration
-                StatisticsIntegration.configure(
-                    SELF_PROFILE,
-                    intl('simulator.poll.players'),
-                    function ($statsList) {
-                        function hasUnderworld ({ Underworld: uw }) {
-                            return typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0);
-                        }
+                StatisticsIntegration.configure({
+                    profile: SELF_PROFILE,
+                    type: 'players',
+                    scope: (dm) => _sort_des(dm.getLatestPlayers(), p => p.Timestamp).filter(({ Underworld: uw }) => typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0)),
+                    callback: (player) => {
+                        underworldEditor.fill(player.Underworld);
 
-                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(hasUnderworld)) {
-                            $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
-                                    </div>
-                                </div>
-                                `).click(() => {
-                                    underworldEditor.fill(player.Underworld);
+                        playerCurrentIndex = -1;
+                        updateSaveButton();
 
-                                    playerCurrentIndex = -1;
-                                    updateSaveButton();
-
-                                    updatePlayerList();
-                                })
-                            );
-                        }
+                        updatePlayerList();
                     }
-                );
+                });
 
                 // Captive inputs
                 $('#sim-threads').captiveInputField('underworld_sim/threads', 4, v => !isNaN(v) && v >= 1);

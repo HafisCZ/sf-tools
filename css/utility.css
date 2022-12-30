@@ -16,12 +16,20 @@
   position: fixed;
 }
 
+.position-absolute {
+  position: absolute;
+}
+
 .left-8 {
   left: 2em;
 }
 
 .bottom-0 {
   bottom: 0;
+}
+
+.top-20 {
+  top: 5em;
 }
 
 /* Sizing */
@@ -167,6 +175,10 @@
   color: orange;
 }
 
+.text-black {
+  color: black;
+}
+
 .text-gray {
   color: gray;
 }
@@ -196,4 +208,9 @@
 /* Line Height */
 .\!line-height-4 {
   line-height: 1em !important;
+}
+
+/* zIndex */
+.z-2 {
+  z-index: 2;
 }
