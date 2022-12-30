@@ -78,6 +78,7 @@
                                 <div class="item" id="sim-generate10" data-intl="pets.generate.ten"></div>
                             </div>
                         </div>
+                        <div id="simulate-dungeons" class="ui icon simple black button" data-position="bottom center" data-intl-tooltip="pets.simulate_dungeons"><i class="ui dungeon icon"></i></div>
                     </div>
                 </div>
             </div>
@@ -566,15 +567,97 @@
                 }
 
                 var models = [ undefined, undefined ];
-
+                
                 var petA = new PetController('#sim-a', 0);
                 var petB = new PetController('#sim-b', 1);
-
+                
                 petA.fill();
                 petA.valid();
 
                 petB.fill();
                 petB.valid();
+                
+                let player = null;
+                function updateDungeonButton (withPlayer = null) {
+                    player = withPlayer;
+
+                    if (player && player.Pets.Dungeons.some(pet => pet < 20)) {
+                        $('#simulate-dungeons').removeClass('disabled');
+                    } else {
+                        $('#simulate-dungeons').addClass('disabled');
+                    }
+                }
+
+                updateDungeonButton(null);
+
+                $('#simulate-dungeons').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2.5E6);
+    
+                    if (player && player.Pets.Dungeons.some(pet => pet < 20)) {
+                        let results = [];
+
+                        const batch = new WorkerBatch('pets');
+
+                        for (let type = 0; type < 5; type++) {
+                            for (let klass = 1; klass <= 3; klass++) {
+                                const [pet1, pet2] = getPetsFor(player, type, klass);
+                                if (pet1 && pet2) {
+                                    batch.add(
+                                        ({ results: _results }) => {
+                                            results.push({
+                                                chance: _results,
+                                                player: pet1,
+                                                boss: pet2
+                                            })
+                                        },
+                                        {
+                                            mode: 'pet',
+                                            players: [pet1, pet2],
+                                            iterations
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                        Toast.info(intl('pets.bulk.toast.title'), `<b>${intl('pets.bulk.toast.matches')}</b> ${batch.size()}`);
+
+                        batch.run(instances).then(() => {
+                            _sort_des(results, i => i.chance);
+
+                            const resultClasses = [0, 0, 0, 0, 0];
+                            results = results.filter(({ player }) => ++resultClasses[player.Type] == 1);
+
+                            $('#results-modal .content').html(`
+                                <div class="ui three column grid">
+                                    ${ results.map(({ chance, player, boss }) => {
+                                        let playerIndex = 20 * player.Type + player.Pet;
+                                        let bossIndex = 20 * boss.Type + boss.Pet;
+                                        return `
+                                            <div class="two wide column">
+                                                <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
+                                            </div>
+                                            <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                                ${intl(`pets.names.${playerIndex}`)}
+                                            </div>
+                                            <div class="two wide column">
+                                                <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
+                                            </div>
+                                            <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                                ${intl(`pets.names.${bossIndex}`)}
+                                            </div>
+                                            <div class="four wide column text-center" style="line-height: 3em;">
+                                                ${ chance == 0 ? intl('pets.bulk.not_possible') : `${ chance.toFixed(chance < 0.01 ? 5 : 2) }%` }
+                                            </div>
+                                        `;
+                                    }).join('') }
+                                </div>
+                            `);
+                            $('#results-modal').modal('show');
+                        })
+                    }
+                })
 
                 $('#simulate').click(function () {
                     const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
@@ -664,98 +747,13 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
-                    generator: function (dm, $list) {
-                        function hasPets (player) {
-                            return typeof player.Pets !== 'undefined' && player.Pets.TotalLevel;
-                        }
+                    scope: (dm) => _sort_des(dm.getLatestPlayers(), p => p.Timestamp).filter((player) => typeof player.Pets !== 'undefined' && player.Pets.TotalLevel),
+                    callback: (player) => {
+                        updateDungeonButton(player);
 
-                        for (let player of _sort_des(dm.getLatestPlayers(), p => p.Timestamp).filter(hasPets)) {
-                            let hasDungeonsLeft = player.Pets.Dungeons.some(pet => pet < 20);
-
-                            $list.append($(`
-                                <div class="ui fluid small basic vertical animated button !mt-2">
-                                    <div class="visible content text-black">${player.Name} @ ${player.Prefix}</div>
-                                    <div class="hidden content text-black">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</div>
-                                    <div style="position: absolute; right: 0.25em; top: 32.5%; ${hasDungeonsLeft ? '' : 'display: none;'}" data-player-id="${ player.Identifier }">
-                                        <i class="expand icon"></i>
-                                    </div>
-                                </div>
-                                `).click(() => {
-                                    const [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
-                                    petA.fill(playerPet);
-                                    petB.fill(bossPet);
-                                }
-                            ));
-
-                            $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
-                                event.stopPropagation();
-                                
-                                let results = [];
-
-                                const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
-                                const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2.5E6);
-
-                                const batch = new WorkerBatch('pets');
-
-                                for (let type = 0; type < 5; type++) {
-                                    for (let klass = 1; klass <= 3; klass++) {
-                                        const [pet1, pet2] = getPetsFor(player, type, klass);
-                                        if (pet1 && pet2) {
-                                            batch.add(
-                                                ({ results: _results }) => {
-                                                    results.push({
-                                                        chance: _results,
-                                                        player: pet1,
-                                                        boss: pet2
-                                                    })
-                                                },
-                                                {
-                                                    mode: 'pet',
-                                                    players: [pet1, pet2],
-                                                    iterations
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-
-                                Toast.info(intl('pets.bulk.toast.title'), `<b>${intl('pets.bulk.toast.matches')}</b> ${batch.size()}`);
-
-                                batch.run(instances).then(() => {
-                                    _sort_des(results, i => i.chance);
-
-                                    const resultClasses = [0, 0, 0, 0, 0];
-                                    results = results.filter(({ player }) => ++resultClasses[player.Type] == 1);
-
-                                    $('#results-modal .content').html(`
-                                        <div class="ui three column grid">
-                                            ${ results.map(({ chance, player, boss }) => {
-                                                let playerIndex = 20 * player.Type + player.Pet;
-                                                let bossIndex = 20 * boss.Type + boss.Pet;
-                                                return `
-                                                    <div class="two wide column">
-                                                        <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
-                                                    </div>
-                                                    <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                                                        ${intl(`pets.names.${playerIndex}`)}
-                                                    </div>
-                                                    <div class="two wide column">
-                                                        <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
-                                                    </div>
-                                                    <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                                                        ${intl(`pets.names.${bossIndex}`)}
-                                                    </div>
-                                                    <div class="four wide column text-center" style="line-height: 3em;">
-                                                        ${ chance == 0 ? intl('pets.bulk.not_possible') : `${ chance.toFixed(chance < 0.01 ? 5 : 2) }%` }
-                                                    </div>
-                                                `;
-                                            }).join('') }
-                                        </div>
-                                    `);
-                                    $('#results-modal').modal('show');
-                                })
-                            });
-                        }
+                        const [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
+                        petA.fill(playerPet);
+                        petB.fill(bossPet);
                     }
                 });
 
