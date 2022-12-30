@@ -766,7 +766,7 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
-                    scope: (dm) => _sort_des(dm.getLatestPlayers(), p => p.Timestamp),
+                    scope: (dm) => dm.getLatestPlayers(),
                     callback: (player) => {
                         dungeon = DUNGEON_DATA[dungeon_current];
                         boss = boss_current;

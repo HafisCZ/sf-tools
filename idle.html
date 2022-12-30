@@ -497,7 +497,7 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
-                    scope: (dm) => _sort_des(dm.getLatestPlayers(), p => p.Timestamp).filter(p => p.Own && p.Level >= 105 && p.Idle),
+                    scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && player.Level >= 105 && player.Idle),
                     callback: (player) => {
                         EditorController.load(player);
                     }

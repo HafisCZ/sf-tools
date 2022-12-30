@@ -653,7 +653,7 @@ const StatisticsIntegration = new (class {
         this.$list.empty();
 
         if (typeof this.generator === 'undefined') {
-            for (const item of this.scope(DatabaseManager)) {
+            for (const item of _sort_des(this.scope(DatabaseManager), scopeItem => scopeItem.Timestamp)) {
                 const { visible, hidden } = this._generateItem(item);
     
                 this.$list.append(
