@@ -599,7 +599,7 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
                     </div>
                     <div class="field">
                         <label>${this.intl('ignored_identifiers.title')}:</label>
-                        <input type="text" placeholder="${this.intl('ignored_identifiers.placeholder')}" data-op="ignored_identifiers">
+                        <div class="flex flex-col gap-2 pr-2" style="height: 15em; overflow-y: scroll;" data-op="ignored_identifiers"></div>
                     </div>
                 </div>
                 <div class="ui three fluid buttons">
@@ -623,7 +623,7 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
                 slot: parseInt(this.$slot.dropdown('get value')),
                 limit: parseInt(this.$limit.val()),
                 ignored_duration: parseInt(this.$ignored_duration.dropdown('get value')),
-                ignored_identifiers: this.$ignored_identifiers.val().split(',').map(s => s.trim()).filter(s =>s)
+                ignored_identifiers: this.$ignored_identifiers.children().toArray().map(x => x.dataset.identifier)
             });
         });
 
@@ -655,7 +655,25 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
         this.$slot.dropdown('set selected', String(options.slot));
         this.$limit.val(options.limit);
         this.$ignored_duration.dropdown('set selected', String(options.ignored_duration));
-        this.$ignored_identifiers.val(options.ignored_identifiers.join(', '));
+
+        this.$ignored_identifiers.empty();
+        for (const identifier of options.ignored_identifiers) {
+            const $item = $(`
+                <div class="ui disabled icon input !opacity-100" data-identifier="${identifier}">
+                    <input class="text-black" type="text" disabled="">
+                    <i class="ui times link text-black icon"></i>
+                </div>
+            `);
+
+            const data = _dig(DatabaseManager.getAny(identifier), 'Latest', 'Data');
+
+            $item.find('input').val(data ? `${data.name} @ ${_pretty_prefix(data.prefix)}` : identifier);
+            $item.find('i').click(() => {
+                $item.remove();
+            });
+
+            this.$ignored_identifiers.append($item);
+        }
     }
 })();
 

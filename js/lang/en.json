@@ -919,8 +919,7 @@
                 "7776000000": "> 3 months"
             },
             "ignored_identifiers": {
-                "title": "Ignore identifiers",
-                "placeholder": "Identifiers separated by comma"
+                "title": "Ignored players and groups"
             }
         },
         "delete_all": {
