@@ -13,7 +13,7 @@
         "class7": "Dämonejägr",
         "class8": "Druid",
         "class9": "Bard",
-        "mask0": "Eagle",
+        "mask0": "Adlr",
         "mask1": "Bär",
         "mask2": "Chatz",
         "instrument0": "Harfe",
@@ -25,52 +25,52 @@
         "attribute3": "Intelligänz",
         "attribute4": "Usdur",
         "attribute5": "Glück",
-        "potion1": "Strength",
-        "potion2": "Dexterity",
-        "potion3": "Intelligence",
-        "potion4": "Constitution",
-        "potion5": "Luck",
-        "potion6": "Life",
-        "rank1": "Leader",
-        "rank2": "Officer",
-        "rank3": "Member",
-        "rank4": "Invited",
-        "level": "Level",
-        "gold": "Gold",
-        "wood": "Wood",
-        "stone": "Stone",
-        "souls": "Souls",
-        "time": "Time",
-        "gem": "Gem",
-        "fight": "Fight",
-        "wood_cap": "Wood Capacity",
-        "stone_cap": "Stone Capacity",
+        "potion1": "Sterchi",
+        "potion2": "Gschick",
+        "potion3": "Intelligänz",
+        "potion4": "Uusdur",
+        "potion5": "Glück",
+        "potion6": "Läbensenergii",
+        "rank1": "Ahfüehrer",
+        "rank2": "Offizier",
+        "rank3": "Mitgliid",
+        "rank4": "Iiglade",
+        "level": "Levl",
+        "gold": "Goud",
+        "wood": "Houz",
+        "stone": "Stei",
+        "souls": "Seelä",
+        "time": "Zyt",
+        "gem": "Edustei",
+        "fight": "Kampf",
+        "wood_cap": "Houz Kapazität",
+        "stone_cap": "Stei Kapazität",
         "buildings": {
-            "time": "Build Time",
-            "hourly": "Hourly prod.",
-            "capacity": "Capacity",
-            "full": "Full in",
-            "storage": "Total storage",
-            "lure_count": "Lures",
-            "lure_bonus": "Lure Bonus",
-            "knights": "Hall of Knights",
-            "goblins": "Goblins",
-            "trolls": "Trolls",
-            "warriors": "Warriors",
-            "archers": "Archers",
-            "mages": "Mages",
-            "backpack_size": "Backpack Size",
-            "critical_bonus": "Critical Bonus",
-            "thirst_free": "Daily free Thirst",
-            "thirst_usable": "Daily storable Thirst",
-            "fortress1": "Fortress",
-            "fortress2": "Laborers' Quarters",
-            "fortress3": "Woodcutter's Hut",
-            "fortress4": "Quarry",
-            "fortress5": "Gem Mine",
-            "fortress6": "Academy",
-            "fortress7": "Archery Guild",
-            "fortress8": "Barracks",
+            "time": "Bouzyt",
+            "hourly": "Stündlechi prod.",
+            "capacity": "Kapazität",
+            "full": "Vou I",
+            "storage": "Totaus Lager",
+            "lure_count": "Ahlockbar",
+            "lure_bonus": "Ahlock Bonus",
+            "knights": "Ritterhaue",
+            "goblins": "Goblingruebä",
+            "trolls": "Troutrakt",
+            "warriors": "Chrieger",
+            "archers": "Bogeschützä",
+            "mages": "Magier",
+            "backpack_size": "Inventar Grössi",
+            "critical_bonus": "Kritischä Bonus",
+            "thirst_free": "Täglechi Gratis Alu",
+            "thirst_usable": "Täglechi Spiicherbari Alu",
+            "fortress1": "Festig",
+            "fortress2": "Arbeiterquartier",
+            "fortress3": "Houzfäuerhütte",
+            "fortress4": "Steibruch",
+            "fortress5": "Edusteiminä",
+            "fortress6": "Akademi",
+            "fortress7": "Schützegiud",
+            "fortress8": "Kasärne",
             "fortress9": "Mages' Tower",
             "fortress10": "Treasury",
             "fortress11": "Smithy",
@@ -217,79 +217,79 @@
                 "game": "Import from Game"
             },
             "export": {
-                "all": "Export all",
-                "selected": "Export selected"
+                "all": "Aues Exportiere",
+                "selected": "Usgwäuhti exportiere"
             },
             "selected": {
-                "text": "item(s) selected",
-                "no": "No"
+                "text": "usgwäuht",
+                "no": "Nei"
             },
             "hide": {
-                "label": "Hide",
-                "tooltip": "Works independently in simple & advanced mode!",
-                "migrate": "Mark files with all hidden players as hidden"
+                "label": "Vrsteckä",
+                "tooltip": "Funktioniert unabhängig im eifache und im erwitertä modus!",
+                "migrate": "Dateie mit aune vrsteckte Splier aus vrsteckt markiere"
             },
             "merge": {
-                "selected": "Merge selected"
+                "selected": "Usgwäuhti zämefüehre"
             },
             "delete": {
-                "all": "Delete all",
-                "selected": "Delete selected"
+                "all": "Aues löschä",
+                "selected": "Usgwäuhti löschä"
             },
             "options": {
-                "title": "File options",
-                "advanced": "Show advanced file list",
-                "hidden": "Show hidden entries",
-                "export_public_only": "Export only public data",
-                "export_bundle_groups": "Bundle groups with players"
+                "title": "Datei Optionä",
+                "advanced": "Erwiterti Dateilischte ahzeige",
+                "hidden": "Vrsteckti Iiträg ahzeige",
+                "export_public_only": "Nur publiki Datä exportierä",
+                "export_bundle_groups": "Gruppä vo Spiler bündle"
             },
             "tags": {
                 "single": "Tag",
                 "multiple": "Tags",
-                "all": "All",
-                "none": "None"
+                "all": "Aui",
+                "none": "Keni"
             },
             "filters": {
-                "any": "Any",
-                "n_unique": "unique",
-                "expression": "Expression",
-                "expression_placeholder": "Your expression",
-                "timestamp": "Timestamp",
-                "player": "Player",
-                "group": "Guild",
-                "prefix": "Prefix",
+                "any": "Aui",
+                "n_unique": "einzigartig",
+                "expression": "Uusdruck",
+                "expression_placeholder": "Di Uusdruck",
+                "timestamp": "Zytstämpu",
+                "player": "Spiler",
+                "group": "Giude",
+                "prefix": "Präfix",
                 "tags": "Tags",
-                "type": "Type",
-                "ownership": "Ownership",
-                "ownership_all": "Show all",
-                "ownership_own": "Show only own",
-                "ownership_other": "Show only other",
-                "hidden": "Hidden"
+                "type": "Typ",
+                "ownership": "Besitzr",
+                "ownership_all": "Aui ahzeige",
+                "ownership_own": "Nur eigeni ahzeige",
+                "ownership_other": "Nur angeri ahzeige",
+                "hidden": "Vrsteckt"
             },
             "online": {
-                "title": "File sharing",
-                "prompt": "Enter your code:",
-                "invalid": "Invalid or expired code!",
-                "cancel": "Cancel",
+                "title": "Dateiuustusch",
+                "prompt": "Schrib hie di Code ihne:",
+                "invalid": "Ungüutige odr abgloufene Code!",
+                "cancel": "Abbräche",
                 "ok": "Ok"
             }
         },
         "copy": {
-            "image": "Save as image",
-            "basic": "Copy table",
-            "fight": "Copy table for fight simulator",
-            "player": "Copy",
-            "player_companions": "Copy with companions"
+            "image": "Aus Biud spicherä",
+            "basic": "Tabäue kopiere",
+            "fight": "Tabäue für Kampfsimulatione kopiere",
+            "player": "Kopiere",
+            "player_companions": "Mit Begleitr kopiere"
         },
         "context": {
-            "hide": "Show / Hide",
-            "remove": "Remove permanently"
+            "hide": "Ahzeige / Vrstecke",
+            "remove": "Duurhaft entferne"
         },
         "profiles": {
-            "players": "Players",
-            "groups": "Guilds",
-            "primary": "Primary filter",
-            "secondary": "Secondary filter",
+            "players": "Spiler",
+            "groups": "Giude",
+            "primary": "Primäre Fiutr",
+            "secondary": "Sekundäre Fiutr",
             "none": "None",
             "create": "Create new profile",
             "between": "between",
@@ -360,48 +360,48 @@
         "fast_export": {
             "label": "Share",
             "title": "Export options",
-            "all": "All",
-            "latest": "Latest",
-            "latest5": "Latest 5",
-            "selected": "Selected",
-            "selected_both": "Selected & Reference"
+            "all": "Aui",
+            "latest": "Zletschte",
+            "latest5": "Di letschte 5",
+            "selected": "Uusgwäuht",
+            "selected_both": "Uusgwäuht % Referänz"
         },
         "share": {
-            "title": "File sharing",
-            "options": "Options",
-            "code": "Your code",
-            "get": "Get code",
+            "title": "Dateiuustusch",
+            "options": "Optionä",
+            "code": "Di Code",
+            "get": "Code becho",
             "ok": "Ok",
-            "expire": "The code will automatically expire after 2 days.",
-            "single_use": "Single use only",
-            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+            "expire": "Dr Code wird nach 2 Täg outomatisch ungüutig.",
+            "single_use": "Nur zum eihmaligä Vrwände",
+            "single_use_notice": "Bitte diä Option aktiviert lah, ussert, wenn die Datei mit mehrernä Personä söu teilt wärde."
         },
         "online_templates": {
-            "title": "Public scripts",
-            "description": "Description",
-            "author": "Author",
-            "created_on": "Created on",
-            "loading": "Fetching scripts",
-            "code": "Enter your private code..."
+            "title": "Öffentlechi Skript",
+            "description": "Beschribig",
+            "author": "Autor",
+            "created_on": "Ersteut am",
+            "loading": "Abruefe vo de Skript",
+            "code": "Private Code iihgäh..."
         },
         "templates": {
-            "title": "Templates",
-            "loading": "Committing changes",
+            "title": "Vorlagä",
+            "loading": "Änderigä übrtragä",
             "form": {
-                "changed_on": "Changed on",
-                "version": "Tool Version",
-                "compatibility": "Compatibility",
-                "published_on": "Published on",
+                "changed_on": "Gändrt am",
+                "version": "Toolversion",
+                "compatibility": "Kompatibilität",
+                "published_on": "Vröffentlecht am",
                 "code": "Code",
-                "publish": "Publish",
-                "publish_tooltip": "Publish template",
-                "unpublish_tooltip": "Unpublish template",
-                "update": "Update",
-                "update_tooltip": "Update template with current script",
-                "remove": "Remove",
-                "remove_tooltip": "Remove template"
+                "publish": "Vröffentlecht",
+                "publish_tooltip": "Vorlag vröffentleche",
+                "unpublish_tooltip": "Vröffentlechig vo dä Vorlagä uufhäbe",
+                "update": "Aktualisierä",
+                "update_tooltip": "Vorlag mit'm aktuellä Skript aktualisierä",
+                "remove": "Entfernä",
+                "remove_tooltip": "Vorlag entfernä"
             },
-            "quick_swap": "Quick swap custom templates"
+            "quick_swap": "Benutzerdefinierti Vorlagä schnäu uustuschä"
         },
         "player": {
             "attributes": "Attributes",
@@ -498,6 +498,7 @@
             "ten": "Generate next 10"
         },
         "simulate": "Simulate",
+        "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Results",
         "map": {
             "gladiator": "Glad"
@@ -901,6 +902,26 @@
             "cancel": "Cancel",
             "save": "Save",
             "ok": "Ok"
+        },
+        "statistics_integration_options": {
+            "title": "Statistics Integration Options",
+            "slot": "Database slot",
+            "limit": {
+                "title": "Maximum amount of entries to be displayed",
+                "placeholder": "Use 0 to disable"
+            },
+            "ignored_duration": {
+                "title": "Ignore entries older than",
+                "0": "None",
+                "86400000": "> 1 day",
+                "604800000": "> 1 week",
+                "2592000000": "> 1 month",
+                "7776000000": "> 3 months"
+            },
+            "ignored_identifiers": {
+                "title": "Ignore identifiers",
+                "placeholder": "Identifiers separated by comma"
+            }
         },
         "delete_all": {
             "title": "Delete all",

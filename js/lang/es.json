@@ -206,7 +206,7 @@
             "timestamps": "Fecha y hora",
             "prefix": "Prefijo",
             "name": "Nombre",
-            "type": "Type",
+            "type": "Tipo",
             "group": "Grupo",
             "groups": "Grupos",
             "players": "Jugadores",
@@ -239,9 +239,9 @@
             "options": {
                 "title": "Opciones de archivo",
                 "advanced": "Mostrar lista avanzada de archivos",
-                "hidden": "Show hidden entries",
+                "hidden": "Mostrar las entradas ocultas",
                 "export_public_only": "Exportar solo datos públicos",
-                "export_bundle_groups": "Bundle groups with players"
+                "export_bundle_groups": "Conjunto de grupos con jugadores"
             },
             "tags": {
                 "single": "Etiqueta",
@@ -260,10 +260,10 @@
                 "prefix": "Prefijo",
                 "tags": "Etiquetas",
                 "type": "Tipo",
-                "ownership": "Ownership",
-                "ownership_all": "Show all",
-                "ownership_own": "Show only own",
-                "ownership_other": "Show only other",
+                "ownership": "Propietario",
+                "ownership_all": "Mostrar todos",
+                "ownership_own": "Mostrar solo propio",
+                "ownership_other": "Mostrar sólo otros",
                 "hidden": "Ocultos"
             },
             "online": {
@@ -491,13 +491,14 @@
     },
     "pets": {
         "generate": {
-            "iterations": "Amount of iterations per thread when generating a pet map.",
+            "iterations": "Cantidad de iteraciones por hilo al generar un mapa de mascotas.",
             "tooltip": "Genera un mapa de éxito de nivel / gladiator. Sólo es posible con su propia mascota contra un jefe de mazmorra.",
             "one": "Generar",
             "five": "Generar próximos 5",
             "ten": "Generar próximos 10"
         },
         "simulate": "Simular",
+        "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Resultados",
         "map": {
             "gladiator": "Gladiador"
@@ -823,8 +824,8 @@
             "guilds": "Grupo de gremios guardados"
         },
         "toast": {
-            "title": "Simulation finished",
-            "message": "Simulation took #{duration}"
+            "title": "Simulación finalizada",
+            "message": "La simulación duró #{duration}"
         }
     },
     "editor": {
@@ -901,6 +902,26 @@
             "cancel": "Cancelar",
             "save": "Guardar",
             "ok": "Aceptar"
+        },
+        "statistics_integration_options": {
+            "title": "Statistics Integration Options",
+            "slot": "Database slot",
+            "limit": {
+                "title": "Maximum amount of entries to be displayed",
+                "placeholder": "Use 0 to disable"
+            },
+            "ignored_duration": {
+                "title": "Ignore entries older than",
+                "0": "None",
+                "86400000": "> 1 day",
+                "604800000": "> 1 week",
+                "2592000000": "> 1 month",
+                "7776000000": "> 3 months"
+            },
+            "ignored_identifiers": {
+                "title": "Ignore identifiers",
+                "placeholder": "Identifiers separated by comma"
+            }
         },
         "delete_all": {
             "title": "Eliminar todo",

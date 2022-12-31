@@ -498,6 +498,7 @@
             "ten": "Generuj następne 10"
         },
         "simulate": "Symuluj",
+        "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Wyniki",
         "map": {
             "gladiator": "Trener"
@@ -901,6 +902,26 @@
             "cancel": "Anuluj",
             "save": "Zapisz",
             "ok": "Ok"
+        },
+        "statistics_integration_options": {
+            "title": "Statistics Integration Options",
+            "slot": "Database slot",
+            "limit": {
+                "title": "Maximum amount of entries to be displayed",
+                "placeholder": "Use 0 to disable"
+            },
+            "ignored_duration": {
+                "title": "Ignore entries older than",
+                "0": "None",
+                "86400000": "> 1 day",
+                "604800000": "> 1 week",
+                "2592000000": "> 1 month",
+                "7776000000": "> 3 months"
+            },
+            "ignored_identifiers": {
+                "title": "Ignore identifiers",
+                "placeholder": "Identifiers separated by comma"
+            }
         },
         "delete_all": {
             "title": "Usuń wszystko",
