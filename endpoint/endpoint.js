@@ -569,6 +569,97 @@ const Endpoint = new ( class {
     }
 })();
 
+const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'statistics_integration_options';
+    }
+
+    _createModal () {
+        return `
+            <div class="ui tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="field">
+                        <label>${this.intl('slot')}:</label>
+                        <div class="ui fluid selection dropdown" data-op="slot">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('limit.title')}:</label>
+                        <input type="number" min="0" placeholder="${this.intl('limit.placeholder')}" data-op="limit">
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('ignored_duration.title')}:</label>
+                        <div class="ui fluid search selection dropdown" data-op="ignored_duration">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('ignored_identifiers.title')}:</label>
+                        <input type="text" placeholder="${this.intl('ignored_identifiers.placeholder')}" data-op="ignored_identifiers">
+                    </div>
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${intl('dialog.shared.save')}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$cancel = this.$parent.operator('cancel');
+        this.$cancel.click(() => {
+            this.close();
+        });
+
+        this.$save = this.$parent.operator('save');
+        this.$save.click(() => {
+            this.close();
+
+            this.options.slot = parseInt(this.$slot.dropdown('get value'));
+            this.options.limit = parseInt(this.$limit.val());
+            this.options.ignored_duration = parseInt(this.$ignored_duration.dropdown('get value'));
+            this.options.ignored_identifiers = this.$ignored_identifiers.val().split(',').map(s => s.trim()).filter(s =>s)
+
+            this.callback();
+        });
+
+        this.$slot = this.$parent.operator('slot');
+        this.$slot.dropdown({
+            values: [0, 1, 2, 3, 4, 5].map((i) => ({
+                name: i === 0 ? intl('dialog.profile_create.default') : i,
+                value: i
+            }))
+        });
+
+        this.$limit = this.$parent.operator('limit');
+
+        this.$ignored_duration = this.$parent.operator('ignored_duration');
+        this.$ignored_duration.dropdown({
+            values: [0, 86400000, 604800000, 2592000000, 7776000000].map((i) => ({
+                name: this.intl(`ignored_duration.${i}`),
+                value: i
+            }))
+        });
+
+        this.$ignored_identifiers = this.$parent.operator('ignored_identifiers');
+    }
+
+    _applyArguments (options, callback) {
+        this.options = options;
+        this.callback = callback;
+
+        this.$slot.dropdown('set selected', String(options.slot));
+        this.$limit.val(options.limit);
+        this.$ignored_duration.dropdown('set selected', String(options.ignored_duration));
+        this.$ignored_identifiers.val(options.ignored_identifiers.join(', '));
+    }
+})();
+
 const StatisticsIntegration = new (class {
     configure ({ profile, type, callback, scope, generator }) {
         this.type = type;
@@ -581,18 +672,22 @@ const StatisticsIntegration = new (class {
         this.$parent = $(this._html()).appendTo($(document.body));
 
         // Containers
-        this.$container = this.$parent.find('[data-op="container"]');
-        this.$list = this.$parent.find('[data-op="list"]');
+        this.$container = this.$parent.operator('container');
+        this.$list = this.$parent.operator('list');
 
         // Buttons
-        this.$poll = this.$parent.find('[data-op="poll"]');
+        this.$poll = this.$parent.operator('poll');
         this.$poll.click(() => this._poll());
         
-        this.$importEndpoint = this.$parent.find('[data-op="import-endpoint"]');
+        this.$importEndpoint = this.$parent.operator('import-endpoint');
         this.$importEndpoint.click(() => this._importEndpoint());
         
-        this.$importFile = this.$parent.find('[data-op="import-file"]');
+        this.$importFile = this.$parent.operator('import-file');
         this.$importFile.change((event) => this._importFile(event));
+
+        this.$showOptions = this.$parent.operator('show-options');
+        this.$showOptions.toggle(typeof this.generator === 'undefined');
+        this.$showOptions.click(() => this._showOptions());
 
         // Integration options
         this.options = new OptionsHandler(
@@ -612,16 +707,25 @@ const StatisticsIntegration = new (class {
                 <div class="ui fluid basic button" data-op="poll"><i class="sync alternate icon"></i>${intl(`simulator.poll.${this.type}`)}</div>
                 <div data-op="container" style="display: none;">
                     <div data-op="list"></div>
-                    <div class="mt-2">
-                        <div class="ui two basic tiny fluid buttons">
+                    <div class="mt-2 flex">
+                        <div class="ui three basic tiny fluid buttons">
                             <div class="ui button" data-op="import-endpoint">Endpoint</div>
                             <label class="ui button" for="endpoint-button-upload">HAR</label>
                             <input type="file" multiple data-op="import-file" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
+                            <div class="ui icon button !m-0" style="display: none; max-width: 3em;" data-op="show-options"><i class="ui cog icon"></i></div>
                         </div>
                     </div>
                 </div>
             </div>
         `;
+    }
+
+    _showOptions () {
+        DialogController.open(
+            StatisticsIntegrationOptionsDialog,
+            this.options,
+            () => this._poll()
+        )
     }
 
     _importEndpoint () {
@@ -668,7 +772,7 @@ const StatisticsIntegration = new (class {
         }
 
         if (this.options.ignored_identifiers) {
-            scope = scope.filter(item => !this.options.ignored_identifiers.includes(item));
+            scope = scope.filter(item => !this.options.ignored_identifiers.includes(item.Identifier));
         }
 
         if (this.options.limit) {
@@ -691,7 +795,19 @@ const StatisticsIntegration = new (class {
                             <div class="visible content text-black">${visible}</div>
                             <div class="hidden content text-black">${hidden}</div>
                         </div>
-                    `).click(() => this.callback(item))
+                    `)
+                    .click(() => this.callback(item))
+                    .contextmenu((e) => {
+                        if (e.altKey) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            this.options.ignored_identifiers.push(item.Identifier);
+                            this.options.ignored_identifiers = this.options.ignored_identifiers;
+
+                            this._generate();
+                        }
+                    })
                 );
             }
         } else {
