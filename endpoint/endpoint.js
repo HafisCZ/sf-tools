@@ -600,7 +600,8 @@ const StatisticsIntegration = new (class {
             {
                 limit: 0,
                 slot: 0,
-                ignore: []
+                ignored_identifiers: [],
+                ignored_duration: 0
             }
         )
     }
@@ -662,8 +663,12 @@ const StatisticsIntegration = new (class {
     _prepare (scope) {
         _sort_des(scope, item => item.Timestamp);
 
-        if (this.options.ignore) {
-            scope = scope.filter(item => !this.options.ignore.includes(item));
+        if (this.options.ignored_duration) {
+            scope = scope.filter(item => item.Timestamp > (Date.now() - this.options.ignored_duration));
+        }
+
+        if (this.options.ignored_identifiers) {
+            scope = scope.filter(item => !this.options.ignored_identifiers.includes(item));
         }
 
         if (this.options.limit) {
