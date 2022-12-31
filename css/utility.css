@@ -90,6 +90,10 @@
   padding-top: 1em;
 }
 
+.pr-2 {
+  padding-right: 0.5em;
+}
+
 .p-4 {
   padding: 1em;
 }
@@ -203,6 +207,10 @@
 
 .opacity-50 {
   opacity: 50%;
+}
+
+.\!opacity-100 {
+  opacity: 100% !important;
 }
 
 /* Line Height */
