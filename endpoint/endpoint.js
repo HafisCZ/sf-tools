@@ -619,13 +619,12 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
         this.$save = this.$parent.operator('save');
         this.$save.click(() => {
             this.close();
-
-            this.options.slot = parseInt(this.$slot.dropdown('get value'));
-            this.options.limit = parseInt(this.$limit.val());
-            this.options.ignored_duration = parseInt(this.$ignored_duration.dropdown('get value'));
-            this.options.ignored_identifiers = this.$ignored_identifiers.val().split(',').map(s => s.trim()).filter(s =>s)
-
-            this.callback();
+            this.callback({
+                slot: parseInt(this.$slot.dropdown('get value')),
+                limit: parseInt(this.$limit.val()),
+                ignored_duration: parseInt(this.$ignored_duration.dropdown('get value')),
+                ignored_identifiers: this.$ignored_identifiers.val().split(',').map(s => s.trim()).filter(s =>s)
+            });
         });
 
         this.$slot = this.$parent.operator('slot');
@@ -724,7 +723,20 @@ const StatisticsIntegration = new (class {
         DialogController.open(
             StatisticsIntegrationOptionsDialog,
             this.options,
-            () => this._poll()
+            (options) => {
+                const simpleChange = this.options.slot === options.slot;
+                for (const key of this.options.keys()) {
+                    if (Array.isArray(this.options[key]) ? (this.options[key].length !== options[key].length || options[key].some((v, i) => v !== this.options[key][i])) : (this.options[key] !== options[key])) {
+                        this.options[key] = options[key];
+                    }
+                }
+
+                if (simpleChange) {
+                    this._generate();
+                } else {
+                    this._poll();
+                }
+            }
         )
     }
 
@@ -799,7 +811,7 @@ const StatisticsIntegration = new (class {
                             </div>
                         </div>
                     </div>
-                `).click(() => this.callback(item));;
+                `).click(() => this.callback(item));
                 
                 const $hide = $button.operator('hide');
                 $hide.click((event) => {
