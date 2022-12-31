@@ -1,4 +1,7 @@
 (function ($) {
+    $.fn.operator = function (op) {
+        return this.find(`[data-op="${op}"]`);
+    }
 
     $.fn.searchfield = function (command, arg, arg2) {
         return this.each(function () {
