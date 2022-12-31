@@ -788,27 +788,41 @@ const StatisticsIntegration = new (class {
         if (typeof this.generator === 'undefined') {
             for (const item of this._prepare(this.scope(DatabaseManager))) {
                 const { visible, hidden } = this._generateItem(item);
-    
-                this.$list.append(
-                    $(`
-                        <div class="ui small fluid basic vertical animated button !mt-2">
-                            <div class="visible content text-black">${visible}</div>
-                            <div class="hidden content text-black">${hidden}</div>
+
+                const $button = $(`
+                    <div class="ui small fluid basic vertical animated button !mt-2">
+                        <div class="visible content text-black">${visible}</div>
+                        <div class="hidden content text-black">
+                            <div>
+                                <span>${hidden}</span>
+                                <div data-op="hide" class="ui basic mini icon button" style="position: absolute; right: 0; top: calc(-1em * 2 / 3);"><i class="ui eye slash icon"></i></div>
+                            </div>
                         </div>
-                    `)
-                    .click(() => this.callback(item))
-                    .contextmenu((e) => {
-                        if (e.altKey) {
-                            e.preventDefault();
-                            e.stopPropagation();
+                    </div>
+                `).click(() => this.callback(item));;
+                
+                const $hide = $button.operator('hide');
+                $hide.click((event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
 
-                            this.options.ignored_identifiers.push(item.Identifier);
-                            this.options.ignored_identifiers = this.options.ignored_identifiers;
+                    const index = this.options.ignored_identifiers.indexOf(item.Identifier);
+                    if (index === -1) {
+                        $button.addClass('opacity-50');
+                        $hide.find('i').removeClass('slash');
 
-                            this._generate();
-                        }
-                    })
-                );
+                        this.options.ignored_identifiers.push(item.Identifier);
+                    } else {
+                        $button.removeClass('opacity-50');
+                        $hide.find('i').addClass('slash');
+
+                        this.options.ignored_identifiers.slice(index, 1);
+                    }
+
+                    this.options.ignored_identifiers = this.options.ignored_identifiers;
+                })
+    
+                this.$list.append($button);
             }
         } else {
             this.generator(DatabaseManager, this.$list);
