@@ -206,7 +206,7 @@
             "timestamps": "Datas e Horas",
             "prefix": "Prefixo",
             "name": "Nome",
-            "type": "Type",
+            "type": "Tipo",
             "group": "Grupo",
             "groups": "Grupos",
             "players": "Jogadores",
@@ -239,9 +239,9 @@
             "options": {
                 "title": "Opções de Ficheiro",
                 "advanced": "Mostrar lista de ficheiros avançada",
-                "hidden": "Show hidden entries",
+                "hidden": "Mostrar entradas ocultas",
                 "export_public_only": "Exportar apenas dados públicos",
-                "export_bundle_groups": "Bundle groups with players"
+                "export_bundle_groups": "Grupo de pacotes com jogadores"
             },
             "tags": {
                 "single": "Etiqueta",
@@ -260,10 +260,10 @@
                 "prefix": "Prefixo",
                 "tags": "Etiquetas",
                 "type": "Tipo",
-                "ownership": "Ownership",
-                "ownership_all": "Show all",
-                "ownership_own": "Show only own",
-                "ownership_other": "Show only other",
+                "ownership": "Propriedade",
+                "ownership_all": "Mostrar tudo",
+                "ownership_own": "Mostrar apenas o próprio",
+                "ownership_other": "Mostrar apenas outros",
                 "hidden": "Escondido"
             },
             "online": {
@@ -491,13 +491,14 @@
     },
     "pets": {
         "generate": {
-            "iterations": "Amount of iterations per thread when generating a pet map.",
+            "iterations": "Quantidade de iterações por thread ao gerar um mapa de animais de estimação.",
             "tooltip": "Gera um mapa de sucesso de nível / gladiador. Só é possível com a própria mascote contra uma masmorra.",
             "one": "Gerar",
             "five": "Gerar os próximos 5",
             "ten": "Gerar os próximos 10"
         },
         "simulate": "Simular",
+        "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Resultados",
         "map": {
             "gladiator": "Gladiador"
@@ -680,12 +681,12 @@
             "keep_original": "Manter original"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
+            "tooltip": "Clique com o botão direito para ajustar a porcentagem de vitória aceitável contra uma masmorra",
             "title": "Limite de simulação",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            "label": "Limite % - Qualquer inimigo da masmorra fora deste limite será ignorado"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
+            "title": "Nenhuma masmorra superável dentro do limite (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use a função <b>All</b> para simular todas as masmorras disponíveis"
         }
     },
@@ -810,7 +811,7 @@
         "simulate": "Simular",
         "simulate_debug": "Simular no modo de debug",
         "configure": "Configure o simulador",
-        "configure_copy": "Copy everyone including current configuration",
+        "configure_copy": "Copie todos, incluindo a configuração atual",
         "clipboard": {
             "copy_all": "Copiar todos",
             "paste_mode": "Alterne Adicionar/Substituir modo de inserção"
@@ -823,8 +824,8 @@
             "guilds": "Sondar guildas guardadas"
         },
         "toast": {
-            "title": "Simulation finished",
-            "message": "Simulation took #{duration}"
+            "title": "Simulação finalizada",
+            "message": "A simulação levou #{duration}"
         }
     },
     "editor": {
@@ -898,9 +899,29 @@
     },
     "dialog": {
         "shared": {
-            "cancel": "Cancel",
-            "save": "Save",
+            "cancel": "Cancelar",
+            "save": "Salvar",
             "ok": "Ok"
+        },
+        "statistics_integration_options": {
+            "title": "Statistics Integration Options",
+            "slot": "Database slot",
+            "limit": {
+                "title": "Maximum amount of entries to be displayed",
+                "placeholder": "Use 0 to disable"
+            },
+            "ignored_duration": {
+                "title": "Ignore entries older than",
+                "0": "None",
+                "86400000": "> 1 day",
+                "604800000": "> 1 week",
+                "2592000000": "> 1 month",
+                "7776000000": "> 3 months"
+            },
+            "ignored_identifiers": {
+                "title": "Ignore identifiers",
+                "placeholder": "Identifiers separated by comma"
+            }
         },
         "delete_all": {
             "title": "Apagar todos",
@@ -1025,7 +1046,7 @@
             "gold_table": "Tabela de Ouro"
         },
         "float": {
-            "title": "Character values",
+            "title": "Valores de personagem",
             "quarters": "Alojamentos"
         },
         "gold": {
@@ -1092,72 +1113,72 @@
             "rune_gold": "Runa de Ouro",
             "min_xp": "XP Mínima",
             "max_xp": "XP Máxima",
-            "min_gold": "Minimum Gold",
-            "max_gold": "Maximum Gold"
+            "min_gold": "Ouro Mínimo",
+            "max_gold": "Ouro Máximo"
         },
         "misc": {
-            "title": "Miscellaneous",
-            "gate": "Underworld Gate",
-            "torture": "Torture Chamber",
-            "souls": "Souls (Level is enemy level)"
+            "title": "Diversos",
+            "gate": "Portão do Submundo",
+            "torture": "Câmara de Tortura",
+            "souls": "Almas (o nível é o nível do inimigo)"
         },
         "calc": {
-            "title_at": "Calculate attribute price at",
-            "title_between": "Calculate attribute price between",
-            "attribute": "Attribute",
-            "cost": "Cost",
-            "from": "From",
-            "to": "To"
+            "title_at": "Calcular o preço do atributo em",
+            "title_between": "Calcular o preço do atributo entre",
+            "attribute": "Atributo",
+            "cost": "Custo",
+            "from": "De",
+            "to": "Para"
         },
         "gold_table": {
-            "copy": "Copy table",
-            "copy_comma": "Copy table (use comma as decimal separator)",
-            "level": "Attribute / Level",
-            "price": "Attribute Price",
-            "curve": "Gold Curve",
-            "mount": "Griffin",
-            "guard": "Guard Duty / Dice (3)"
+            "copy": "Copiar tabela",
+            "copy_comma": "Copiar tabela (usar vírgula como separador decimal)",
+            "level": "Atributo / Nível",
+            "price": "Preço do Atributo",
+            "curve": "Curva de Ouro",
+            "mount": "Grifo",
+            "guard": "Trabalho de Guarda / Dados (3)"
         }
     },
     "idle": {
-        "title": "Arena Manager",
+        "title": "Gerente de Arena",
         "topbar": {
             "suggest": {
-                "0": "Next 1 + BP",
-                "1": "Only next 1",
-                "2": "Only breakpoint"
+                "0": "Próximo 1 + BP",
+                "1": "Apenas o próximo 1",
+                "2": "Apenas ponto de interrupção"
             },
             "number": {
-                "0": "Labeled",
-                "1": "Scientific"
+                "0": "Rotulado",
+                "1": "Científico"
             }
         },
         "table": {
-            "building": "Building",
-            "upgrades": "Upgrades",
-            "level": "Level",
-            "level_next": "Next Level",
-            "cycle_duration": "Cycle",
-            "cycle_money": "Money per Cycle",
-            "money_share": "Share",
-            "upgrade_money": "Cost",
-            "upgrade_estimation": "Estimation",
-            "money_spent": "Spent money",
-            "money_1h": "1 Hour",
-            "money_8h": "8 Hours",
-            "money_1d": "1 Day",
-            "money_7d": "7 Days",
-            "runes": "Runes"
+            "building": "Construção",
+            "upgrades": "Melhorias",
+            "level": "Nível",
+            "level_next": "Próximo Nível",
+            "cycle_duration": "Ciclo",
+            "cycle_money": "Dinheiro por Ciclo",
+            "money_share": "Compartilhar",
+            "upgrade_money": "Custo",
+            "upgrade_estimation": "Estimado",
+            "money_spent": "Gastou dinheiro",
+            "money_1h": "1 Hora",
+            "money_8h": "8 Horas",
+            "money_1d": "1 Dia",
+            "money_7d": "7 Dias",
+            "runes": "Runas"
         },
         "building": {
-            "seat": "Seat",
-            "popcorn_stand": "Popcorn Stand",
-            "parking_lot": "Parking Lot",
-            "trap": "Trap",
-            "drinks": "Drinks",
-            "deadly_trap": "Deadly Trap",
-            "vip_seat": "VIP Seat",
-            "snacks": "Snacks",
+            "seat": "Lugar",
+            "popcorn_stand": "Venda de pipocas",
+            "parking_lot": "Parque de estacionamento",
+            "trap": "Armadilha",
+            "drinks": "Bebidas",
+            "deadly_trap": "Armadilha Mortal",
+            "vip_seat": "Lugar VIP",
+            "snacks": "Petiscos",
             "straying_monsters": "Monstros Extraviados",
             "toilet": "Sanita"
         },

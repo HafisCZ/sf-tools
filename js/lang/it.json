@@ -206,7 +206,7 @@
             "timestamps": "Timestamp",
             "prefix": "Prefisso",
             "name": "Nome",
-            "type": "Type",
+            "type": "Tipo",
             "group": "Gruppo",
             "groups": "Gruppi",
             "players": "Giocatori",
@@ -239,7 +239,7 @@
             "options": {
                 "title": "Opzioni file",
                 "advanced": "Mostra lista file avanzata",
-                "hidden": "Show hidden entries",
+                "hidden": "Visualizza voci nascoste",
                 "export_public_only": "Esporta solo dati pubblici",
                 "export_bundle_groups": "Bundle groups with players"
             },
@@ -261,9 +261,9 @@
                 "tags": "Tag",
                 "type": "Tipo",
                 "ownership": "Ownership",
-                "ownership_all": "Show all",
-                "ownership_own": "Show only own",
-                "ownership_other": "Show only other",
+                "ownership_all": "Visualizza tutti",
+                "ownership_own": "Visualizza solo il proprio",
+                "ownership_other": "Visualizza solo gli altri",
                 "hidden": "Nascosto"
             },
             "online": {
@@ -491,13 +491,14 @@
     },
     "pets": {
         "generate": {
-            "iterations": "Amount of iterations per thread when generating a pet map.",
+            "iterations": "Quantità d'iterazioni per thread quando si genera una tabella famigli",
             "tooltip": "Genera una tabella di successo per livello / gladiatore. Possibile solo per gli scontri contro i boss famigli.",
             "one": "Genera",
             "five": "Genera i prossimi 5",
             "ten": "Genera i prossimi 10"
         },
         "simulate": "Simula",
+        "simulate_dungeons": "Simula tutti i dungeon rimanenti",
         "results": "Risultati",
         "map": {
             "gladiator": "Gladiatore"
@@ -823,8 +824,8 @@
             "guilds": "Importa gilde salvate"
         },
         "toast": {
-            "title": "Simulation finished",
-            "message": "Simulation took #{duration}"
+            "title": "Simulazione completata",
+            "message": "La simulazione ha richiesto #{duration}"
         }
     },
     "editor": {
@@ -901,6 +902,26 @@
             "cancel": "Annulla",
             "save": "Salva",
             "ok": "Ok"
+        },
+        "statistics_integration_options": {
+            "title": "Statistics Integration Options",
+            "slot": "Database slot",
+            "limit": {
+                "title": "Maximum amount of entries to be displayed",
+                "placeholder": "Use 0 to disable"
+            },
+            "ignored_duration": {
+                "title": "Ignore entries older than",
+                "0": "None",
+                "86400000": "> 1 day",
+                "604800000": "> 1 week",
+                "2592000000": "> 1 month",
+                "7776000000": "> 3 months"
+            },
+            "ignored_identifiers": {
+                "title": "Ignore identifiers",
+                "placeholder": "Identifiers separated by comma"
+            }
         },
         "delete_all": {
             "title": "Elimina tutti",
@@ -1418,10 +1439,10 @@
             "3": "Cerbero",
             "4": "Medusa",
             "5": "Atena",
-            "6": "Hercules",
+            "6": "Ercole",
             "7": "Ares",
-            "8": "Poseidon",
-            "9": "Hades",
+            "8": "Poseidone",
+            "9": "Ade",
             "10": "Zeus"
         },
         "21": {
@@ -1536,8 +1557,8 @@
             "4": "Samowar il Pallido",
             "5": "Domatore d'Olifanti",
             "6": "Esercito Non-Morto",
-            "7": "Shelantula",
-            "8": "Ruler of the Nine",
+            "7": "Shelantola",
+            "8": "Sovrano dei Nove",
             "9": "Mauron's Maw",
             "10": "The Necromancer"
         },
@@ -1712,7 +1733,7 @@
         "204": {
             "name": "Taverna",
             "5": "Strider",
-            "10": "ice bug fix"
+            "10": "Correzione bug del ghiaccio"
         }
     }
 }
