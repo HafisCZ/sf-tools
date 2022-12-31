@@ -115,51 +115,26 @@ class PreferencesHandler {
 const Preferences = new PreferencesHandler();
 const SharedPreferences = new PreferencesHandler();
 
-const SiteOptions = new (class {
-    constructor () {
-        // Get values + defaults
-        this.options = {
-            insecure: false,
-            obfuscated: false,
-            advanced: false,
-            hidden: false,
-            terms_accepted: false,
-            version_accepted: false,
-            groups_hidden: false,
-            players_hidden: false,
-            browse_hidden: false,
-            groups_other: false,
-            players_other: false,
-            always_prev: false,
-            migration_allowed: true,
-            migration_accepted: false,
-            profile: 'default',
-            groups_empty: false,
-            tab: 'groups',
-            load_rows: 50,
-            persisted: false,
-            locale: 'en',
-            debug: false,
-            export_public_only: false,
-            export_bundle_groups: true,
-            unsafe_delete: false
-        };
+// Options
+const OptionsHandler = class {
+    constructor (key, defaults) {
+        this.key = key;
+        this.options = defaults;
 
         this.listeners = [];
 
-        Object.assign(this.options, SharedPreferences.get('options', {}));
+        Object.assign(this.options, SharedPreferences.get(this.key, {}));
 
-        // Add setters & getters
-        for (let propName of Object.keys(this.options)) {
-            Object.defineProperty(this, propName, {
+        for (const name of Object.keys(this.options)) {
+            Object.defineProperty(this, name, {
                 get: function () {
-                    return this.options[propName];
+                    return this.options[name];
                 },
                 set: function (value) {
-                    this.options[propName] = value;
-                    Logger.log('R_FLAGS', `${propName} set to ${value}`)
-                    SharedPreferences.set('options', this.options);
-                    this.changed(propName);
+                    this.options[name] = value;
+                    Logger.log('R_FLAGS', `${this.key}.${name} set to ${value}`)
+                    SharedPreferences.set(this.key, this.options);
+                    this.changed(name);
                 }
             });
         }
@@ -177,7 +152,37 @@ const SiteOptions = new (class {
             callback: listener
         })
     }
-})();
+}
+
+const SiteOptions = new OptionsHandler(
+    'options',
+    {
+        insecure: false,
+        obfuscated: false,
+        advanced: false,
+        hidden: false,
+        terms_accepted: false,
+        version_accepted: false,
+        groups_hidden: false,
+        players_hidden: false,
+        browse_hidden: false,
+        groups_other: false,
+        players_other: false,
+        always_prev: false,
+        migration_allowed: true,
+        migration_accepted: false,
+        profile: 'default',
+        groups_empty: false,
+        tab: 'groups',
+        load_rows: 50,
+        persisted: false,
+        locale: 'en',
+        debug: false,
+        export_public_only: false,
+        export_bundle_groups: true,
+        unsafe_delete: false
+    }
+)
 
 const Exporter = new (class {
     json (content, name = Date.now()) {
