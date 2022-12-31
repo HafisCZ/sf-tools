@@ -132,9 +132,9 @@ const OptionsHandler = class {
                     return this.options[name];
                 },
                 set: function (value) {
-                    if (this.options[name] !== value) {
+                    if (this.options[name] !== value || Array.isArray(value)) {
                         this.options[name] = value;
-                        Logger.log('R_FLAGS', `${this.key}.${name} set to ${value}`)
+                        Logger.log('R_FLAGS', `${this.key}.${name} set to ${Array.isArray(value) ? `[${value.slice(0, 5)} ... ${value.length}]` : value}`)
                         SharedPreferences.set(this.key, this.options);
                         this.changed(name);
                     }
