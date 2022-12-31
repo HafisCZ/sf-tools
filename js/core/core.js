@@ -132,10 +132,12 @@ const OptionsHandler = class {
                     return this.options[name];
                 },
                 set: function (value) {
-                    this.options[name] = value;
-                    Logger.log('R_FLAGS', `${this.key}.${name} set to ${value}`)
-                    SharedPreferences.set(this.key, this.options);
-                    this.changed(name);
+                    if (this.options[name] !== value) {
+                        this.options[name] = value;
+                        Logger.log('R_FLAGS', `${this.key}.${name} set to ${value}`)
+                        SharedPreferences.set(this.key, this.options);
+                        this.changed(name);
+                    }
                 }
             });
         }
