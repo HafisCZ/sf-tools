@@ -593,6 +593,16 @@ const StatisticsIntegration = new (class {
         
         this.$importFile = this.$parent.find('[data-op="import-file"]');
         this.$importFile.change((event) => this._importFile(event));
+
+        // Integration options
+        this.options = new OptionsHandler(
+            'integration',
+            {
+                limit: 0,
+                slot: 0,
+                ignore: []
+            }
+        )
     }
 
     _html () {
@@ -649,11 +659,25 @@ const StatisticsIntegration = new (class {
         }
     }
 
+    _prepare (scope) {
+        _sort_des(scope, item => item.Timestamp);
+
+        if (this.options.ignore) {
+            scope = scope.filter(item => !this.options.ignore.includes(item));
+        }
+
+        if (this.options.limit) {
+            scope = scope.slice(0, this.options.limit);
+        }
+
+        return scope;
+    }
+
     _generate () {
         this.$list.empty();
 
         if (typeof this.generator === 'undefined') {
-            for (const item of _sort_des(this.scope(DatabaseManager), scopeItem => scopeItem.Timestamp)) {
+            for (const item of this._prepare(this.scope(DatabaseManager))) {
                 const { visible, hidden } = this._generateItem(item);
     
                 this.$list.append(
@@ -672,7 +696,7 @@ const StatisticsIntegration = new (class {
 
     _poll () {
         Loader.toggle(true);
-        DatabaseManager.load(this.profile).then(() => {
+        DatabaseManager.load(Object.assign({ slot: this.options.slot }, this.profile)).then(() => {
             this._generate();
 
             this.$container.show();
