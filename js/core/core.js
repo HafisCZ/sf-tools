@@ -119,7 +119,8 @@ const SharedPreferences = new PreferencesHandler();
 const OptionsHandler = class {
     constructor (key, defaults) {
         this.key = key;
-        this.options = defaults;
+        this.defaults = defaults;
+        this.options = Object.assign({}, defaults);
 
         this.listeners = [];
 
@@ -138,6 +139,10 @@ const OptionsHandler = class {
                 }
             });
         }
+    }
+
+    keys () {
+        return Object.keys(this.defaults);
     }
 
     changed (option) {
