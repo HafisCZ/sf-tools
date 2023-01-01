@@ -32,6 +32,14 @@
   top: 5em;
 }
 
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
 /* Sizing */
 .w-full {
   width: 100%;
@@ -123,6 +131,10 @@
 
 .\!-ml-3 {
   margin-left: -0.75em !important;
+}
+
+.ml-8 {
+  margin-left: 1em;
 }
 
 .-ml-4 {
