@@ -12,20 +12,20 @@ class Dialog {
     }
 
     open (...args) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve) => {
             if (this.shouldOpen) {
                 this.resolve = resolve;
 
                 if (!this._hasParent()) {
-                    const modal = $(this._createModal()).addClass('active');
-                    const container = $(`
-                        <div style="display: none; z-index: 99999; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, ${this.opacity})">
-                        </div>
-                    `);
+                    await Dialog._injectStyles();
 
-                    modal.appendTo(container);
-                    container.appendTo($('body').first());
-                    this.$parent = container;
+                    const $modal = $(this._createModal()).addClass('active');
+                    const $container = $(`<div class="dialog container" style="display: none; background: rgba(0, 0, 0, ${this.opacity})"></div>`);
+
+                    $container.append($modal);
+                    $(document.body).append($container);
+
+                    this.$parent = $container;
 
                     this._createBindings();
                 }
@@ -65,6 +65,24 @@ class Dialog {
 
     _createBindings () {
 
+    }
+
+    static async _injectStyles () {
+        return new Promise((resolve) => {
+            if (document.head.querySelector('link[href*="dialog"]')) {
+                resolve();
+            } else {
+                const el = document.createElement('link');
+                el.type = 'text/css';
+                el.rel = 'stylesheet';
+
+                el.onload = () => resolve();
+                el.onerror = () => resolve();
+                el.href = '/css/dialogs.css';
+
+                document.head.insertAdjacentElement('beforeend', el);
+            }
+        });
     }
 }
 
@@ -110,38 +128,40 @@ const DialogController = new (class {
 const TermsAndConditionsDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0; text-decoration: underline;">Terms and Conditions</h2>
-                <div style="height: 65vh; overflow-y: auto;">
-                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§1 General use</h4>
-                    <ul style="margin-top: 0; line-height: 1.3em;">
+            <div class="tiny dark dialog">
+                <h2 class="header"><u>Terms and Conditions</u></h2>
+                <div class="scrolling content" style="max-height: 65vh;">
+                    <h4 class="text-center text-orange">§1 General use</h4>
+                    <ul>
                         <li>It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.</li>
-                        <li style="margin-top: 0.5em;">The site is distributed <b>AS IS</b> wthout any warranties. You are fully responsible for use of this site.</li>
-                        <li style="margin-top: 0.5em;">You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.</li>
-                        <li style="margin-top: 0.5em;">You agree to limit data collection from the game to reasonable amounts.</li>
-                        <li style="margin-top: 0.5em;">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html">Terms and Conditions</a></li>
-                        <li style="margin-top: 0.5em;">You are not allowed to automate any part of this tool.</li>
+                        <li class="mt-2">The site is distributed <b>AS IS</b> wthout any warranties. You are fully responsible for use of this site.</li>
+                        <li class="mt-2">You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.</li>
+                        <li class="mt-2">You agree to limit data collection from the game to reasonable amounts.</li>
+                        <li class="mt-2">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html">Terms and Conditions</a></li>
+                        <li class="mt-2">You are not allowed to automate any part of this tool.</li>
                     </ul>
-                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§2 Endpoint</h4>
-                    <ul style="margin-top: 0; line-height: 1.3em;">
+                    <h4 class="text-center text-orange">§2 Endpoint</h4>
+                    <ul>
                         <li>Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.</li>
-                        <li style="margin-top: 0.5em;">It is not possible to capture any other players than those listed above.</li>
-                        <li style="margin-top: 0.5em;">Everything happens locally in a identical way to playing the game through browser.</li>
+                        <li class="mt-2">It is not possible to capture any other players than those listed above.</li>
+                        <li class="mt-2">Everything happens locally in a identical way to playing the game through browser.</li>
                     </ul>
-                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§3 Integrated share service</h4>
-                    <ul style="margin-top: 0; line-height: 1.3em;">
+                    <h4 class="text-center text-orange">§3 Integrated share service</h4>
+                    <ul>
                         <li>All data shared via the integrated share function is not protected in any other way other than the share key.</li>
-                        <li style="margin-top: 0.5em;">The shared data might be deleted at any point of time, up to full 2 days.</li>
+                        <li class="mt-2">The shared data might be deleted at any point of time, up to full 2 days.</li>
                     </ul>
-                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§4 Sentry</h4>
-                    <ul style="margin-top: 0; line-height: 1.3em;">
+                    <h4 class="text-center text-orange">§4 Sentry</h4>
+                    <ul>
                         <li>All errors raised during use of this tool will be reported via Sentry.io tool.</li>
-                        <li style="margin-top: 0.5em;">These reports are anonymous so that it's not possible to track their origin.</li>
-                        <li style="margin-top: 0.5em;">Please note that certain ad-blockers might prevent Sentry from working.</li>
-                        <li style="margin-top: 0.5em;">If you want to contribute to this project I recommend disabling ad-blockers for this site.</li>
+                        <li class="mt-2">These reports are anonymous so that it's not possible to track their origin.</li>
+                        <li class="mt-2">Please note that certain ad-blockers might prevent Sentry from working.</li>
+                        <li class="mt-2">If you want to contribute to this project I recommend disabling ad-blockers for this site.</li>
                     </ul>
                 </div>
-                <button class="ui green fluid button" style="margin-top: 1em;" data-op="accept">I understand & accept these terms</button>
+                <div class="actions">
+                    <button class="ui green fluid button" data-op="accept">I understand & accept these terms</button>
+                </div>
             </div>
         `;
     }
@@ -165,31 +185,32 @@ const ChangeLogDialog = new (class extends Dialog {
 
         let content = '';
         if (Array.isArray(entries)) {
+            content += '<ul>';
             for (const entry of entries) {
-                content += `
-                    <li style="margin-top: 0.5em;">${entry}</li>
-                `
+                content += `<li class="mt-2">${entry}</li>`
             }
+
+            content += '</ul>';
         } else if (entries) {
             for (const [ category, changes ] of Object.entries(entries)) {
-                content += `<h4 class="ui header" style="color: orange; margin-left: -1em; margin-bottom: 0;">${category}</h4>`
+                content += `<h4 class="text-orange text-center">${category}</h4><ul>`
                 for (const entry of changes) {
-                    content += `
-                        <li style="margin-top: 0.5em;">${entry}</li>
-                    `
+                    content += `<li class="mt-2">${entry}</li>`
                 }
+
+                content += '</ul>';
             }
         }
 
         return `
-            <div class="ui tiny basic modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-top: 0; padding-bottom: 0.5em;">${this.intl('release')} <span style="color: orange;">${release}</span></h2>
-                <div style="text-align: left; line-height: 1.3em; margin-left: -18px; max-height: 50vh; overflow-y: scroll;">
-                    <ul>
-                        ${content}
-                    </ul>
+            <div class="tiny dark dialog">
+                <h2 class="header">${this.intl('release')} <span class="text-orange">${release}</span></h2>
+                <div class="scrolling content" style="max-height: 50vh;">
+                    ${content}
                 </div>
-                <button class="ui black fluid button" style="margin-top: 2em;" data-op="accept">${this.intl('continue')}</button>
+                <div class="actions">
+                    <button class="ui black fluid button" data-op="accept">${this.intl('continue')}</button>
+                </div>
             </div>
         `;
     }
@@ -209,9 +230,9 @@ const Loader = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="ui basic modal" style="display: flex; flex-direction: column; align-items: center; gap: 1em;">
-                <img src="res/favicon.png" class="sftools-loader" width="100">
-                <div class="ui active tiny progress" data-percent="0" style="width: 200px; margin-top: 1em;">
+            <div class="simple column dialog">
+                <img src="res/favicon.png" class="loader" width="100">
+                <div class="ui active tiny progress" data-percent="0" style="width: 200px;">
                     <div class="bar" style="background: #888 !important;"></div>
                 </div>
             </div>
@@ -243,10 +264,13 @@ const Loader = new (class extends Dialog {
 const HtmlDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="ui basic modal" style="color: black; background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0;" data-op="title"></h2>
-                <i class="close icon" style="color: black; padding-top: 0.33em;" data-op="close"></i>
-                <div data-op="content" style="overflow-y: auto; max-height: 80vh; padding-top: 1em;"></div>
+            <div class="dialog">
+                <h2 class="header flex justify-content-between">
+                    <div></div>
+                    <span data-op="title"></span>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </h2>
+                <div class="scrolling content" data-op="content" style="max-height: 80vh;"></div>
             </div>
         `;
     }
@@ -279,12 +303,12 @@ const WarningDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="exclamation triangle icon" style="color: orange; font-size: 1em; line-height: 0.75em;"></i> ${this.intl('title')}</h2>
-                <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
-                    ...
+            <div class="tiny dark dialog">
+                <h2 class="header"><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('title')}</h2>
+                <div class="content text-center py-4" data-op="text">...</div>
+                <div class="actions">
+                    <button class="ui black fluid button" data-op="continue">${this.intl('continue')}</button>
                 </div>
-                <button class="ui black fluid button" data-op="continue">${this.intl('continue')}</button>
             </div>
         `;
     }
@@ -307,19 +331,17 @@ const ErrorDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="times circle icon" style="color: red; font-size: 1em; line-height: 0.75em;"></i> ${this.intl('title')}</h2>
-                <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
-                    ...
+            <div class="tiny dark dialog">
+                <h2 class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</h2>
+                <div class="content text-center py-4" data-op="text"></div>
+                <div class="content text-center py-4">
+                    <h4>${this.intl('notice#')}</h4>
                 </div>
-                <div style="margin-top: 2em;">
-                    <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
-                        <h4 class="ui white header">${this.intl('notice#')}</h4>
-                    </div>
-                </div>
-                <div class="ui two buttons">
-                    <button class="ui red fluid button" data-op="continue">${this.intl('refresh')}</button>
-                    <button class="ui red fluid button" data-op="continue-default">${this.intl('revert')}</button>
+                <div class="actions">
+                    <div class="ui two red fluid buttons">
+                        <button class="ui button" data-op="continue">${this.intl('refresh')}</button>
+                        <button class="ui button" data-op="continue-default">${this.intl('revert')}</button>
+                    </div>  
                 </div>
             </div>
         `;
@@ -353,17 +375,21 @@ const FileEditDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
-                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
-                    <div class="field">
-                        <label>${this.intl('timestamp')}</label>
-                        <input data-op="timestamp" type="text">
+            <div class="tiny bordered dialog">
+                <h2 class="left header">${this.intl('title')}</h2>
+                <div class="content">
+                    <div class="ui form">
+                        <div class="field">
+                            <label>${this.intl('timestamp')}</label>
+                            <input data-op="timestamp" type="text">
+                        </div>
                     </div>
                 </div>
-                <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${this.intl('save')}</button>
+                <div class="actions">
+                    <div class="ui two fluid buttons">
+                        <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
+                        <button class="ui button !text-black !background-orange" data-op="save">${this.intl('save')}</button>
+                    </div>
                 </div>
             </div>
         `;
