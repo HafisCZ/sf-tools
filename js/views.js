@@ -17,8 +17,6 @@ class Dialog {
                 this.resolve = resolve;
 
                 if (!this._hasParent()) {
-                    Dialog._injectStyles();
-
                     const $modal = $(this._createModal()).addClass('active');
                     const $container = $(`<div class="dialog container" style="display: none; background: rgba(0, 0, 0, ${this.opacity})"></div>`);
 
@@ -65,24 +63,6 @@ class Dialog {
 
     _createBindings () {
 
-    }
-
-    static _injectStyles () {
-        return new Promise((resolve) => {
-            if (document.head.querySelector('link[href*="dialog"]')) {
-                resolve();
-            } else {
-                const el = document.createElement('link');
-                el.type = 'text/css';
-                el.rel = 'stylesheet';
-
-                el.onload = () => resolve();
-                el.onerror = () => resolve();
-                el.href = `/css/dialogs.css?r=${Math.random()}`;
-
-                document.head.insertAdjacentElement('beforeend', el);
-            }
-        });
     }
 }
 
