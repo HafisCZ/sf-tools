@@ -1,4 +1,12 @@
 const CHANGELOG = {
+    'v5.XXXX': {
+        'Statistics': [
+            'Fixed guild deletion via advanced file list'
+        ],
+        'All Tools': [
+            'Updated styling of all dialogs'
+        ]
+    },
     'v5.2897': {
         'Statistics': [
             'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>',
