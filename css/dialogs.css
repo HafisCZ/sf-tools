@@ -22,23 +22,29 @@ div.dialog.container {
 
 /* Dialogs */
 div.dialog.container > .dialog {
-  width: 950px;
+  width: 760px;
 
   padding: 1em;
   border-radius: 0.5em;
 
   background-color: white;
-}
 
-div.dialog.container > .column.dialog {
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  gap: 2em;
+  gap: 1.75em;
 }
 
-div.dialog.container > .tiny.dialog {
+div.dialog.container > .dialog:not(.basic) > * {
+  width: 100%;
+}
+
+div.dialog.container > .big.dialog {
+  width: 950px;
+}
+
+div.dialog.container > .small.dialog {
   width: 570px;
 }
 
@@ -47,7 +53,7 @@ div.dialog.container > .dark.dialog {
   color: white;
 }
 
-div.dialog.container > .simple.dialog {
+div.dialog.container > .basic.dialog {
   background-color: transparent;
 }
 
@@ -59,20 +65,17 @@ div.dialog.container > .bordered.dialog {
 div.dialog.container > .dialog > .header {
   text-align: center;
 
-  padding-bottom: 0;
-  margin-bottom: 12px;
+  padding: 0;
+  margin: 0;
 }
 
 div.dialog.container > .dialog > .left.header {
   text-align: left;
 }
 
-div.dialog.container > .dialog > .scrolling.content {
-  overflow-y: scroll;
-}
-
-div.dialog.container > .dialog > .actions {
-  margin-top: 1em;
+div.dialog.container > .dialog > .separated.header {
+  border-bottom: 1px solid rgba(34, 36, 38, .15);
+  margin-bottom: -0.5em;
 }
 
 /* Loader */
