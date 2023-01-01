@@ -847,9 +847,10 @@ const DatabaseManager = new (class {
         return this[this._isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
     }
 
-    async remove (players) {
-        for (let { identifier, timestamp } of players) {
-            await this.Database.remove('players', [identifier, parseInt(timestamp)]);
+    async remove (instances) {
+        for (const { identifier, timestamp } of instances) {
+            await this.Database.remove(this._isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+
             this._removeMetadata(identifier, timestamp);
             this._unload(identifier, timestamp);
         }
