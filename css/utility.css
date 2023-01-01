@@ -32,6 +32,11 @@
   top: 5em;
 }
 
+/* Overflows */
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
 .overflow-y-auto {
   overflow-y: auto;
 }
@@ -100,6 +105,10 @@
 
 .pr-2 {
   padding-right: 0.5em;
+}
+
+.pr-4 {
+  padding-right: 1em;
 }
 
 .p-4 {

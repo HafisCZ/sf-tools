@@ -5,15 +5,15 @@ const SimulatorDebugDialog = new(class extends Dialog {
 
   _createModal () {
       return `
-          <div class="ui basic small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-              <h3 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h3>
-              <div style="overflow-y: scroll; overflow-x: hidden; max-height: 70vh; margin-bottom: 1.5em; margin-top: 1em; padding-right: 1em;">
-                  <div class="ui small form" style="line-height: 1.3em;" data-op="content"></div>
+          <div class="bordered dialog">
+              <h2 class="header">${this.intl('title')}</h2>
+              <div class="overflow-y-scroll overflow-x-hidden pr-4" style="max-height: 70vh;">
+                  <div class="ui small form" data-op="content"></div>
               </div>
               <div class="ui three fluid buttons">
-                  <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
-                  <button class="ui fluid button" data-op="reset">${this.intl('reset')}</button>
-                  <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
+                  <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
+                  <button class="ui button" data-op="reset">${this.intl('reset')}</button>
+                  <button class="ui button !text-black !background-orange" data-op="ok">${this.intl('ok')}</button>
               </div>
           </div>
       `;
