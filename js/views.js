@@ -1420,7 +1420,5 @@ window.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    DialogController.open(ConfirmDialog, 'DDA', 'DAD', 'DD');
-
     Site.run();
 });
