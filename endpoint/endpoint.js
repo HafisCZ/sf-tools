@@ -576,9 +576,9 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="ui tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
-                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+            <div class="small bordered dialog">
+                <h2 class="header">${this.intl('title')}</h2>
+                <div class="ui form">
                     <div class="field">
                         <label>${this.intl('slot')}:</label>
                         <div class="ui fluid selection dropdown" data-op="slot">
@@ -599,12 +599,12 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
                     </div>
                     <div class="field">
                         <label>${this.intl('ignored_identifiers.title')}:</label>
-                        <div class="flex flex-col gap-2 pr-2" style="height: 15em; overflow-y: scroll;" data-op="ignored_identifiers"></div>
+                        <div class="flex flex-col gap-2 pr-2 overflow-y-scroll" style="height: 15em;" data-op="ignored_identifiers"></div>
                     </div>
                 </div>
-                <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${intl('dialog.shared.save')}</button>
+                <div class="ui two fluid buttons">
+                    <button class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
+                    <button class="ui button !text-black !background-orange" data-op="save">${intl('dialog.shared.save')}</button>
                 </div>
             </div>
         `;

@@ -236,9 +236,9 @@
             const SIMULATOR_THRESHOLD_DIALOG = new (class extends Dialog {
                 _createModal () {
                     return `
-                        <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                            <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${intl(`dungeons.simulate_next_settings.title`)}</h2>
-                            <div class="ui form" style="line-height: 1.3em; margin-bottom: 1em;">
+                        <div class="small bordered dialog">
+                            <h2 class="header">${intl(`dungeons.simulate_next_settings.title`)}</h2>
+                            <div class="ui form">
                                 <div class="field">
                                     <label>${intl(`dungeons.simulate_next_settings.label`)}</label>
                                     <div class="ui range small slider" data-op="slider"></div>
@@ -259,8 +259,8 @@
                                 </div>
                             </div>
                             <div class="ui two fluid buttons">
-                                <button class="ui black fluid button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
-                                <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${intl('dialog.shared.ok')}</button>
+                                <button class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
+                                <button class="ui button !text-black !background-orange" data-op="ok">${intl('dialog.shared.ok')}</button>
                             </div>
                         </div>
                     `;
