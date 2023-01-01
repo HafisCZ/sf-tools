@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v5.XXXX': {
+    'v5.2897': {
         'Statistics': [
             'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>',
             'Added un/loading of hidden data without requiring page reload',
@@ -12,6 +12,7 @@ const CHANGELOG = {
             'Fixed file merging with duplicate players / groups',
             'Fixed file and script sharing no longer available',
             'Fixed players duplicating when using uppercase server url',
+            'Fixed scrapbook size',
             'Merged tracker configuration into actions script',
             'Removed profile and origin fields from files',
             'Removed embedded simulator and related headers'
@@ -53,13 +54,13 @@ const CHANGELOG = {
             'Added dark theme'
         ],
         'All Simulators': [
-            'Added progress bar to simulations'
+            'Added progress bar to simulations',
+            'Added hiding of players & guilds and other options in statistics integration'
         ],
         'All Tools': [
             'Updated to new version of FUI',
             'Added support for Hungarian language',
             'Added support for player level 701 - 800',
-            'Fixed compatibility issues with older browsers',
             'Removed loading of english language file when different language is selected'
         ]
     },
