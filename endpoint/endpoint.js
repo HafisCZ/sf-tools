@@ -846,7 +846,7 @@ const StatisticsIntegration = new (class {
                         $button.removeClass('opacity-50');
                         $hide.find('i').addClass('slash');
 
-                        this.options.ignored_identifiers.slice(index, 1);
+                        this.options.ignored_identifiers.splice(index, 1);
                     }
 
                     this.options.ignored_identifiers = this.options.ignored_identifiers;
