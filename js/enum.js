@@ -1160,34 +1160,6 @@ const ACHIEVEMENTS = [
     'Tamer of Giants'
 ];
 
-const UNDERWORLD_BUILDINGS = [
-    'Heart of Darkness',
-    'Underworld Gate',
-    'Gold Pit',
-    'Extractor',
-    'Goblin Pit',
-    'Torture Chamber',
-    'Gladiator Trainer',
-    'Troll Block',
-    'Time Machine',
-    'Keeper'
-];
-
-const FORTRESS_BUILDINGS = [
-    'Fortress',
-    'Laborers\' Quarters',
-    'Woodcutter Guild',
-    'Quarry',
-    'Gem Mine',
-    'Academy',
-    'Archery Guild',
-    'Barracks',
-    'Mages\' Tower',
-    'Treasury',
-    'Smithy',
-    'Fortifications'
-];
-
 const GUILD_ROLE_NONE = 0;
 const GUILD_ROLE_LEADER = 1;
 const GUILD_ROLE_OFFICER = 2;
