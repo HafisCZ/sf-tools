@@ -2246,6 +2246,12 @@ const SP_KEYWORD_MAPPING_0 = {
         flip: true,
         statistics: false
     },
+    'Race': {
+        expr: p => p.Race,
+        format: (p, c, e, x) => intl(`general.race${x}`),
+        difference: false,
+        statistics: false
+    },
     'Rank': {
         expr: p => p.Rank,
         flip: true
