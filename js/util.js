@@ -1238,22 +1238,3 @@ function SHA1 (text) {
 function RandomSHA () {
     return SHA1(Math.random().toString()).slice(0, 8);
 }
-
-const SP_ENUMS = {
-    'GoldCurve': GoldCurve,
-    'MountSizes': PLAYER_MOUNT,
-    'AchievementNames': ACHIEVEMENTS,
-    'ItemTypes': ITEM_TYPES,
-    'GroupRoles': GROUP_ROLES,
-    'Classes': [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => intl(`general.class${i}`)),
-    'FortressBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => intl(`general.buildings.fortress${i}`)),
-    'PlayerActions': PLAYER_ACTIONS,
-    'PotionTypes': POTIONS,
-    'GemTypes': GEMTYPES,
-    'AttributeTypes': GEMATTRIBUTES,
-    'RuneTypes': RUNETYPES,
-    'UnderworldBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => intl(`general.buildings.underworld${i}`)),
-    'ExperienceCurve': ExperienceRequired,
-    'ExperienceTotal': ExperienceTotal,
-    'SoulsCurve': SoulsCurve
-};
