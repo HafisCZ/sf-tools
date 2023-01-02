@@ -237,7 +237,7 @@ class MigrationUtils {
 
         group.prefix = group.prefix.toLowerCase();
         group.identifier = group.identifier.toLowerCase();
-        group.group = group.identifier;
+        group.group = group.identifier.toLowerCase();
         group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
         group.names = group.names || group.members;
@@ -258,7 +258,7 @@ class MigrationUtils {
 
         let group = player.save[player.own ? 435 : 161];
         if (group) {
-            player.group = `${player.prefix}_g${group}`
+            player.group = `${player.prefix}_g${group}`;
         }
 
         return player;
