@@ -86,7 +86,15 @@
             "underworld9": "Keeper",
             "underworld10": "Gold Pit"
         },
-        "reduction": "Reduction"
+        "reduction": "Reduction",
+        "race1": "Human",
+        "race2": "Elf",
+        "race3": "Dwarf",
+        "race4": "Gnome",
+        "race5": "Orc",
+        "race6": "Dark Elf",
+        "race7": "Goblin",
+        "race8": "Demon"
     },
     "index": {
         "toggle": "Toggle credits",
