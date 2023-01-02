@@ -73,18 +73,6 @@ const SCROLL_MAP = {
     101: 8
 };
 
-function getEasterEgg (id) {
-    if (id == 'w27_net_p268175' || id == 'w39_net_p321948') {
-        // #1 THE QUEEN
-        return '<i class="chess queen icon"></i>';
-    } else if (id == 'w27_net_p287170' || id == 'w39_net_p329544' || id == 'w42_net_p2' || id == 'w40_net_p1230') {
-        return '';
-        // return '<img src="res/icon_sft.png" style="margin-bottom: 1px; width: 24px;"/> ';
-    } else {
-        return '';
-    }
-}
-
 const PLAYER_MOUNT = [
     '',
     '10',

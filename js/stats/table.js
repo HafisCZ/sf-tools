@@ -553,7 +553,6 @@ class TableInstance {
                     content += `
                         <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             <span class="css-op-select-el"></span>
-                            ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
                     `;
@@ -632,7 +631,6 @@ class TableInstance {
                     // Add name
                     content += `
                         <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
-                            ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
                     `;
