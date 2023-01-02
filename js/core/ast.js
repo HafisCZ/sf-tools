@@ -2241,7 +2241,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Class': {
         expr: p => p.Class,
-        format: (p, c, e, x) => PLAYER_CLASS[x],
+        format: (p, c, e, x) => intl(`general.class${x}`),
         difference: false,
         flip: true,
         statistics: false
@@ -2282,7 +2282,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
-        format: (p, c, e, x) => FORTRESS_BUILDINGS[x] || '',
+        format: (p, c, e, x) => x >= 0 ? intl(`general.buildings.fortress${x + 1}`) : '',
         difference: false,
         statistics: false
     },
@@ -2916,9 +2916,9 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     'Underworld Building': {
-        expr: p => p.Underworld ? p.Underworld.Upgrade.Building : 0,
+        expr: p => p.Underworld ? p.Underworld.Upgrade.Building : undefined,
         width: 180,
-        format: (p, c, e, x) => UNDERWORLD_BUILDINGS[x] || '',
+        format: (p, c, e, x) => x >= 0 ? intl(`general.buildings.underworld${x + 1}`) : '',
         difference: false,
         statistics: false
     },
