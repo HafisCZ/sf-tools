@@ -51,6 +51,66 @@ const ExpressionCache = new (class {
     }
 })();
 
+const ExpressionEnum = new (class {
+    constructor () {
+        this.keys = [
+            'GoldCurve',
+            'MountSizes',
+            'AchievementNames',
+            'ItemTypes',
+            'GroupRoles',
+            'Classes',
+            'FortressBuildings',
+            'PlayerActions',
+            'PotionTypes',
+            'GemTypes',
+            'AttributeTypes',
+            'RuneTypes',
+            'UnderworldBuildings',
+            'ExperienceCurve',
+            'ExperienceTotal',
+            'SoulsCurve'
+        ]
+    }
+
+    _load () {
+        if (typeof this.values === 'undefined') {
+            this.values = {
+                'GoldCurve': GoldCurve,
+                'MountSizes': PLAYER_MOUNT,
+                'AchievementNames': ACHIEVEMENTS,
+                'ItemTypes': ITEM_TYPES,
+                'GroupRoles': GROUP_ROLES,
+                'Classes': [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => intl(`general.class${i}`)),
+                'FortressBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => intl(`general.buildings.fortress${i}`)),
+                'PlayerActions': PLAYER_ACTIONS,
+                'PotionTypes': POTIONS,
+                'GemTypes': GEMTYPES,
+                'AttributeTypes': GEMATTRIBUTES,
+                'RuneTypes': RUNETYPES,
+                'UnderworldBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => intl(`general.buildings.underworld${i}`)),
+                'ExperienceCurve': ExperienceRequired,
+                'ExperienceTotal': ExperienceTotal,
+                'SoulsCurve': SoulsCurve
+            };
+        }
+
+        return this.values;
+    }
+
+    all () {
+        return this._load();
+    }
+
+    get (key) {
+        return this.all()[key];
+    }
+
+    has (key) {
+        return this.keys.includes(key);
+    }
+})();
+
 class ExpressionScope {
     copy () {
         let _copy = new ExpressionScope(this.env);
@@ -262,7 +322,7 @@ class Expression {
                     value = SFormat.Constant(token);
                 } else if (/\~\d+/.test(token)) {
                     value = SFormat.Enum(token);
-                } else if (SP_ENUMS.hasOwnProperty(token)) {
+                } else if (ExpressionEnum.has(token)) {
                     value = SFormat.Enum(token);
                 } else if (token == '$' || token == '$!' || token == '$$') {
                     value = SFormat.Keyword(token);
@@ -1117,7 +1177,7 @@ class Expression {
                 return scope.env.constants.get(node);
             } else {
                 // Return enum or undefined if everything fails
-                return SP_ENUMS[node];
+                return ExpressionEnum.get(node);
             }
         } else {
             return node;
