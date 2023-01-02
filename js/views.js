@@ -1278,7 +1278,7 @@ const Localization = new (class {
 
     _translationUrl (locale) {
         const useRemote = window.document.location.protocol === 'file:';
-        return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`;
+        return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`;
     }
 
     async translatePage () {
