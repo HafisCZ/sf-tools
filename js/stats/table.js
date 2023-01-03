@@ -1420,7 +1420,7 @@ class TableController {
         this.injectorBlockSize = 25;
         this.injectorCounter = 0;
 
-        this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.9 });
+        this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.75 });
         this.injectorObserver.observe(this.injectorElement.get(0));
     }
 
