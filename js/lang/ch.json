@@ -77,16 +77,24 @@
             "fortress12": "Fortifications",
             "underworld1": "Heart of Darkness",
             "underworld2": "Underworld Gate",
-            "underworld3": "Soul Extractor",
-            "underworld4": "Goblin Pit",
-            "underworld5": "Torture Chamber",
-            "underworld6": "Gladiator Trainer",
-            "underworld7": "Troll Block",
-            "underworld8": "Time Machine",
-            "underworld9": "Keeper",
-            "underworld10": "Gold Pit"
+            "underworld3": "Gold Pit",
+            "underworld4": "Soul Extractor",
+            "underworld5": "Goblin Pit",
+            "underworld6": "Torture Chamber",
+            "underworld7": "Gladiator Trainer",
+            "underworld8": "Troll Block",
+            "underworld9": "Adventuromatic",
+            "underworld10": "Keeper"
         },
-        "reduction": "Reduction"
+        "reduction": "Reduction",
+        "race1": "Human",
+        "race2": "Elf",
+        "race3": "Dwarf",
+        "race4": "Gnome",
+        "race5": "Orc",
+        "race6": "Dark Elf",
+        "race7": "Goblin",
+        "race8": "Demon"
     },
     "index": {
         "toggle": "Credits umschaute",
@@ -919,8 +927,7 @@
                 "7776000000": "> 3 months"
             },
             "ignored_identifiers": {
-                "title": "Ignore identifiers",
-                "placeholder": "Identifiers separated by comma"
+                "title": "Ignored players and groups"
             }
         },
         "delete_all": {
