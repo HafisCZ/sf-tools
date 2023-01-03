@@ -165,10 +165,10 @@ class GroupDetailView extends View {
         this.reference = (SiteOptions.always_prev ? _dig(this.list, 1, 0) : undefined) || this.timestamp;
 
         const formatEntry = (group) => {
-            if (group.MembersPresent >= group.MemberCount) {
+            if (group.MembersPresent >= group.MembersTotal) {
                 return formatDate(group.Timestamp);
             } else {
-                return `<div class="flex justify-content-between"><span>${formatDate(group.Timestamp)}</span><span class="text-gray">${group.MembersPresent} / ${group.MemberCount}</span></div>`
+                return `<div class="flex justify-content-between"><span>${formatDate(group.Timestamp)}</span><span class="text-gray">${group.MembersPresent} / ${group.MembersTotal}</span></div>`
             }
         }
 
