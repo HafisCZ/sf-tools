@@ -77,16 +77,24 @@
             "fortress12": "Befestigung",
             "underworld1": "Herz der Finsterniss",
             "underworld2": "Tor zur Unterwelt",
-            "underworld3": "Seelenextraktor",
-            "underworld4": "Goldgrube",
-            "underworld5": "Folterkammer",
-            "underworld6": "Gladiator",
-            "underworld7": "Trolltrakt",
-            "underworld8": "Zeitmaschine",
-            "underworld9": "Wächter",
-            "underworld10": "Goldgrube"
+            "underworld3": "Goldgrube",
+            "underworld4": "Seelenextraktor",
+            "underworld5": "Goblingrube",
+            "underworld6": "Folterkammer",
+            "underworld7": "Gladiatortrainer",
+            "underworld8": "Trolltrakt",
+            "underworld9": "Adventuromatic",
+            "underworld10": "Wächter"
         },
-        "reduction": "Reduktion"
+        "reduction": "Reduktion",
+        "race1": "Menschen",
+        "race2": "Elfen",
+        "race3": "Zwerge",
+        "race4": "Gnome",
+        "race5": "Orks",
+        "race6": "Dunkelelfen",
+        "race7": "Goblins",
+        "race8": "Dämonen"
     },
     "index": {
         "toggle": "Credits umschalten",
@@ -498,7 +506,7 @@
             "ten": "Die nächsten Zehn generieren"
         },
         "simulate": "Simulieren",
-        "simulate_dungeons": "Simulate all remaining dungeons",
+        "simulate_dungeons": "Alle verbleibenden Dungeons simulieren",
         "results": "Resultate",
         "map": {
             "gladiator": "Gladi"
@@ -904,23 +912,22 @@
             "ok": "Ok"
         },
         "statistics_integration_options": {
-            "title": "Statistics Integration Options",
-            "slot": "Database slot",
+            "title": "Optionen zur Statistikintegration",
+            "slot": "Datenbankslot",
             "limit": {
-                "title": "Maximum amount of entries to be displayed",
-                "placeholder": "Use 0 to disable"
+                "title": "Maximale Anzahl angezeigter Einträge",
+                "placeholder": "0 zum Deaktivieren verwenden"
             },
             "ignored_duration": {
-                "title": "Ignore entries older than",
-                "0": "None",
-                "86400000": "> 1 day",
-                "604800000": "> 1 week",
-                "2592000000": "> 1 month",
-                "7776000000": "> 3 months"
+                "title": "Ignoriere Einträge älter als",
+                "0": "Keine",
+                "86400000": "> 1 Tag",
+                "604800000": "> 1 Woche",
+                "2592000000": "> 1 Monat",
+                "7776000000": "> 3 Monate"
             },
             "ignored_identifiers": {
-                "title": "Ignore identifiers",
-                "placeholder": "Identifiers separated by comma"
+                "title": "Ignorierte Spieler und Gruppen"
             }
         },
         "delete_all": {
