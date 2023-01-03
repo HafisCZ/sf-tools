@@ -164,16 +164,24 @@ class GroupDetailView extends View {
         this.timestamp = _dig(this.list, 0, 0);
         this.reference = (SiteOptions.always_prev ? _dig(this.list, 1, 0) : undefined) || this.timestamp;
 
-        for (var [ timestamp, g ] of this.list) {
+        const formatEntry = (group) => {
+            if (group.MembersPresent >= group.MemberCount) {
+                return formatDate(group.Timestamp);
+            } else {
+                return `<div class="flex justify-content-between"><span>${formatDate(group.Timestamp)}</span><span class="text-gray">${group.MembersPresent} / ${group.MemberCount}</span></div>`
+            }
+        }
+
+        for (var [ timestamp, group ] of this.list) {
             listTimestamp.push({
-                name: formatDate(timestamp),
+                name: formatEntry(group),
                 value: timestamp,
                 selected: timestamp == this.timestamp
             });
 
             if (timestamp <= this.timestamp) {
                 listReference.push({
-                    name: formatDate(timestamp),
+                    name: formatEntry(group),
                     value: timestamp,
                     selected: timestamp == this.reference
                 });
