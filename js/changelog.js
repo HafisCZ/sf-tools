@@ -1,7 +1,11 @@
 const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
-            'Fixed guild deletion via advanced file list'
+            'Added <code>Race</code> header',
+            'Added translated values to headers and enums',
+            'Added member counters next to group timestamps if any members are missing from capture',
+            'Fixed guild deletion via advanced file list',
+            'Fixed counting of present guild members'
         ],
         'All Tools': [
             'Updated styling of all dialogs'
