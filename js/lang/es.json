@@ -77,16 +77,24 @@
             "fortress12": "Fortificaciones",
             "underworld1": "Corazón de las tinieblas",
             "underworld2": "Puerta del Inframundo",
-            "underworld3": "Extractor de Almas",
-            "underworld4": "Pozo de los goblins",
-            "underworld5": "Cámara de tortura",
-            "underworld6": "Entrenador de gladiadores",
-            "underworld7": "Barricada trol",
-            "underworld8": "Aventuromática",
-            "underworld9": "Guardián",
-            "underworld10": "Pozo del oro"
+            "underworld3": "Pozo de oro",
+            "underworld4": "Extractor de Almas",
+            "underworld5": "Pozo de los goblins",
+            "underworld6": "Cámara de tortura",
+            "underworld7": "Entrenador de gladiadores",
+            "underworld8": "Barricada trol",
+            "underworld9": "Aventuromática",
+            "underworld10": "Guardián"
         },
-        "reduction": "Reducción"
+        "reduction": "Reducción",
+        "race1": "Humano",
+        "race2": "Elfo",
+        "race3": "Enano",
+        "race4": "Gnomo",
+        "race5": "Orco",
+        "race6": "Elfo Oscuro",
+        "race7": "Goblin",
+        "race8": "Demonio"
     },
     "index": {
         "toggle": "Alternar créditos",
@@ -498,7 +506,7 @@
             "ten": "Generar próximos 10"
         },
         "simulate": "Simular",
-        "simulate_dungeons": "Simulate all remaining dungeons",
+        "simulate_dungeons": "Simular todas las mazmorras restantes",
         "results": "Resultados",
         "map": {
             "gladiator": "Gladiador"
@@ -904,23 +912,22 @@
             "ok": "Aceptar"
         },
         "statistics_integration_options": {
-            "title": "Statistics Integration Options",
-            "slot": "Database slot",
+            "title": "Opciones de Integración de Estadísticas",
+            "slot": "Slot de la base de datos",
             "limit": {
-                "title": "Maximum amount of entries to be displayed",
-                "placeholder": "Use 0 to disable"
+                "title": "Máxima cantidad de entradas que se mostrarán",
+                "placeholder": "Usa 0 para deshabilitar"
             },
             "ignored_duration": {
-                "title": "Ignore entries older than",
-                "0": "None",
-                "86400000": "> 1 day",
-                "604800000": "> 1 week",
-                "2592000000": "> 1 month",
-                "7776000000": "> 3 months"
+                "title": "Ignorar entradas anteriores a",
+                "0": "Ninguna",
+                "86400000": "> 1 día",
+                "604800000": "> 1 semana",
+                "2592000000": "> 1 mes",
+                "7776000000": "> 3 meses"
             },
             "ignored_identifiers": {
-                "title": "Ignore identifiers",
-                "placeholder": "Identifiers separated by comma"
+                "title": "Jugadores y grupos ignorados"
             }
         },
         "delete_all": {
@@ -1454,9 +1461,9 @@
             "5": "Herrero ejecutor",
             "6": "Bruja bribona",
             "7": "Vendedor vil",
-            "8": "Atrocious Abawuwu",
-            "9": "Skullsplitter Shakes",
-            "10": "Frightening Fidget"
+            "8": "Abawuwu atroz",
+            "9": "Shakes sacudecráneos",
+            "10": "Fidget fatídico"
         },
         "22": {
             "name": "Tesoro del dragón",
@@ -1467,61 +1474,61 @@
             "5": "Shenlong",
             "6": "Cría de dragón",
             "7": "Dragón de Año Nuevo",
-            "8": "Pet Out of Control",
-            "9": "Dragon with Concussion",
-            "10": "Annoyed Mother of Dragons"
+            "8": "Mascota fuera de control",
+            "9": "Dragón con conmoción",
+            "10": "Madre de dragones cabreada"
         },
         "23": {
             "name": "Casa del terror",
             "1": "Cabeza de cubertería",
-            "2": "Conceptual Proof",
-            "3": "Dracula",
-            "4": "Master of Phone Pranks",
-            "5": "Lovable Twins",
-            "6": "Friendly Sewer Clown",
-            "7": "Therapist's Doll",
-            "8": "Your Worst Nightmare",
-            "9": "Butcher Next Door",
-            "10": "Tube Girl"
+            "2": "Prueba de concepto",
+            "3": "Drácula",
+            "4": "Maestro de las travesuras telefónicas",
+            "5": "Gemelas adorables",
+            "6": "Payaso de cloaca amistoso",
+            "7": "Muñeco de terapeuta",
+            "8": "Tu peor pesadilla",
+            "9": "Carnicero de enfrente",
+            "10": "Chica de la tele"
         },
         "24": {
             "name": "3ª liga de los héroes",
             "1": "1000 Punch Man",
-            "2": "Mister X-Ray",
-            "3": "Toilet Tracker",
-            "4": "Iron Man",
+            "2": "Mister rayos X",
+            "3": "Rastreador de retretes",
+            "4": "Plancha Man",
             "5": "Rain Man",
-            "6": "Invisible Woman",
-            "7": "Candy Man",
-            "8": "Captain Caffeine",
-            "9": "Forgetful Fist",
-            "10": "Captain Monday"
+            "6": "La mujer invisible",
+            "7": "Golosina Man",
+            "8": "Capitán Cafeína",
+            "9": "Puño olvidadizo",
+            "10": "Capitán Lunes"
         },
         "25": {
             "name": "Dojo de héroes de la niñez",
             "1": "Colegiala mágica",
-            "2": "Master of Doppelgangers",
-            "3": "Friendly Helper from the Neighborhood",
-            "4": "Student Shinigami",
-            "5": "Wannabe Detective",
-            "6": "Rubber Pirate",
-            "7": "Pet Trainer",
-            "8": "Joseph Joker",
-            "9": "Supreme Alien",
-            "10": "Cheating Brat"
+            "2": "Maestro de los dobles oscuros",
+            "3": "Ayudante amistoso del barrio",
+            "4": "Aprendiz de Shinigami",
+            "5": "Aspirante a detective",
+            "6": "Pirata de goma",
+            "7": "Adiestrador de mascotas",
+            "8": "Joseph Jocoso",
+            "9": "Alienígena supremo",
+            "10": "Mocoso tramposo"
         },
         "26": {
             "name": "Gruta de los monstruos",
-            "1": "Doltopus",
-            "2": "Hairy Groom",
-            "3": "Monster Truck",
-            "4": "Nudist Giant",
-            "5": "Marshmallow Man",
-            "6": "Sandbox Worm",
-            "7": "Optimist Supreme",
-            "8": "Three-headed Dragon God",
-            "9": "Angry Giant Saurian",
-            "10": "Berlin Scene Monster"
+            "1": "Delfipulpo",
+            "2": "Novio peludo",
+            "3": "Camión monstruo",
+            "4": "Gigante nudista",
+            "5": "Hombre de malvavisco",
+            "6": "Gusano de caja de arena",
+            "7": "Optimista supremo",
+            "8": "Dios dragón de tres cabezas",
+            "9": "Saurio gigante con malas pulgas",
+            "10": "Monstruo de escena en Berlín"
         },
         "27": {
             "name": "Ciudad de las intrigas",
@@ -1569,11 +1576,11 @@
             "3": "Gert, el Gangrenoso",
             "4": "Leandro, el Lord Liante",
             "5": "Hannah, la Gehénica",
-            "6": "Alex, Angel of Abyss",
-            "7": "Jan the Hacker",
-            "8": "Four-handed Peter",
-            "9": "The Artist Andreas",
-            "10": "Marv the Minor Evil"
+            "6": "Alex, el Ángel del Abismo",
+            "7": "Jan, el Hacker",
+            "8": "Peter, el Cuatro Manos",
+            "9": "El Artista Andreas",
+            "10": "Marv, el Mal Menor"
         },
         "201": {
             "name": "Torre",
@@ -1717,16 +1724,16 @@
             "872": "Murciélago polvoriento",
             "873": "Murciélago polvoriento",
             "874": "Murciélago polvoriento",
-            "875": "Bat Out of hell",
+            "875": "Murciélago del infierno",
             "876": "Muerto viviente",
             "877": "Alma inquieta",
             "939": "Dragón del infierno",
             "947": "Pedro el dinámico",
             "954": "Escorpión de la jungla",
             "962": "El gnomo enano",
-            "981": "Butthead",
+            "981": "Caraculo",
             "990": "Tres fantasmas",
-            "998": "Nevorfull",
+            "998": "Gusi",
             "999": "Ninfómana de la ciénaga",
             "1000": "Shniva"
         },
