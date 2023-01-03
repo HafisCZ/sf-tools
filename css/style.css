@@ -102,6 +102,10 @@ body.dimmed {
     margin-right: 17px !important;
 }
 
+#view-groupdetail .dropdown.text-full-width > .text {
+    width: calc(100% - 2.5em);
+}
+
 #view-settings > .ui.basic.segment {
     padding: 0;
 }
