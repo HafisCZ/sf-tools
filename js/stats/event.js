@@ -1320,30 +1320,24 @@ class BrowseView extends View {
 
 // Groups View
 class GroupsView extends View {
+    _prepareOption (operator, key, storeKey) {
+        this.$parent.operator(operator).toggleButton((state) => {
+            SiteOptions[storeKey] = (this[key] = state);
+            this.show();
+        }, SiteOptions[storeKey]);
+
+        return SiteOptions[storeKey];
+    }
+
     constructor (parent) {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]');
 
         // Toggles
-        this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
-            SiteOptions.groups_hidden = (this.hidden = state);
-            this.show();
-        }, SiteOptions.groups_hidden);
-
-        this.$parent.find('[data-op="show-other"]').toggleButton(state => {
-            SiteOptions.groups_other = (this.others = state);
-            this.show();
-        }, SiteOptions.groups_other);
-
-        this.$parent.find('[data-op="show-empty"]').toggleButton(state => {
-            SiteOptions.groups_empty = (this.empty = state);
-            this.show();
-        }, SiteOptions.groups_empty);
-
-        this.hidden = SiteOptions.groups_hidden;
-        this.others = SiteOptions.groups_other;
-        this.empty = SiteOptions.groups_empty;
+        this.hidden = this._prepareOption('show-hidden', 'hidden', 'groups_hidden');
+        this.others = this._prepareOption('show-other', 'others', 'groups_other');
+        this.empty = this._prepareOption('show-empty', 'empty', 'groups_empty');
 
         // Observer
         this.observerCallback = null;
@@ -1561,25 +1555,24 @@ class GroupsView extends View {
 
 // Players View
 class PlayersView extends View {
+    _prepareOption (operator, key, storeKey) {
+        this.$parent.operator(operator).toggleButton((state) => {
+            SiteOptions[storeKey] = (this[key] = state);
+            this.show();
+        }, SiteOptions[storeKey]);
+
+        return SiteOptions[storeKey];
+    }
+
     constructor (parent) {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]');
 
         // Toggles
-        this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
-            SiteOptions.players_hidden = (this.hidden = state);
-            this.show();
-        }, SiteOptions.players_hidden);
-
-        this.$parent.find('[data-op="show-other"]').toggleButton(state => {
-            SiteOptions.players_other = (this.others = state);
-            this.show();
-        }, SiteOptions.players_other);
-
-        this.hidden = SiteOptions.players_hidden;
-        this.others = SiteOptions.players_other;
-
+        this.hidden = this._prepareOption('show-hidden', 'hidden', 'players_hidden');
+        this.others = this._prepareOption('show-other', 'others', 'players_other');
+        
         // Observer
         this.observerCallback = null;
         new IntersectionObserver(() => {
