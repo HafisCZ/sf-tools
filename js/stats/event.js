@@ -1,3 +1,30 @@
+// Helper class
+class DynamicLoader {
+    constructor (container) {
+        this.callback = null;
+        this.observer = new IntersectionObserver(
+            () => this._callback(),
+            { threshold: 1.0 }
+        );
+
+        this.observer.observe(container.insertAdjacentElement('afterend', document.createElement('div')));
+    }
+
+    _callback () {
+        if (this.callback) {
+            this.callback();
+        }
+    }
+
+    start (callback) {
+        this.callback = callback;
+    }
+
+    stop () {
+        this.callback = null;
+    }
+}
+
 // Group Detail View
 class GroupDetailView extends View {
     constructor (parent) {
@@ -1340,12 +1367,7 @@ class GroupsView extends View {
         this.empty = this._prepareOption('show-empty', 'empty', 'groups_empty');
 
         // Observer
-        this.observerCallback = null;
-        new IntersectionObserver(() => {
-            if (this.observerCallback) {
-                this.observerCallback();
-            }
-        }, { threshold: 1.0 }).observe(this.$parent.find('[data-op="dynamic-loader"]').get(0));
+        this.loader = new DynamicLoader(this.$list.get(0));
 
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -1500,6 +1522,8 @@ class GroupsView extends View {
     }
 
     refresh () {
+        this.$list.empty();
+
         const rows = [];
         const latestPlayerTimestamp = this.empty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
 
@@ -1529,7 +1553,7 @@ class GroupsView extends View {
             `);
         }
 
-        this.observerCallback = () => {
+        this.loader.start(() => {
             const $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
             $fields.click(function () {
                 UI.show(UI.GroupDetail, $(this).data('id'));
@@ -1538,14 +1562,9 @@ class GroupsView extends View {
             this.$context.context('bind', $fields);
 
             if (rows.length == 0) {
-                this.observerCallback = null;
+                this.loader.stop();
             }
-        }
-
-        this.$list.empty();
-
-        // Trigger callback once
-        this.observerCallback();
+        });
     }
 
     load () {
@@ -1574,12 +1593,7 @@ class PlayersView extends View {
         this.others = this._prepareOption('show-other', 'others', 'players_other');
         
         // Observer
-        this.observerCallback = null;
-        new IntersectionObserver(() => {
-            if (this.observerCallback) {
-                this.observerCallback();
-            }
-        }, { threshold: 1.0 }).observe(this.$parent.find('[data-op="dynamic-loader"]').get(0));
+        this.loader = new DynamicLoader(this.$list.get(0));
 
         // Context menu
         this.$context = $('<div class="ui custom popup right center"></div>').prependTo(this.$parent);
@@ -1763,6 +1777,8 @@ class PlayersView extends View {
     }
 
     refresh () {
+        this.$list.empty();
+
         let rows = [];
 
         let filteredEntries = this.entries.filter(player => {
@@ -1791,7 +1807,7 @@ class PlayersView extends View {
             `);
         }
 
-        this.observerCallback = () => {
+        this.loader.start(() => {
             let $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
             $fields.click(function () {
                 UI.show(UI.PlayerHistory, $(this).data('id'));
@@ -1800,14 +1816,9 @@ class PlayersView extends View {
             this.$context.context('bind', $fields);
 
             if (rows.length == 0) {
-                this.observerCallback = null;
+                this.loader.stop();
             }
-        }
-
-        this.$list.empty();
-
-        // Trigger callback once
-        this.observerCallback();
+        });
     }
 
     load () {
@@ -1994,7 +2005,8 @@ class FilesView extends View {
         this.$migrateHidden = this.$parent.find('[data-op="hide-migrate"]').click(() => this.hideMigrate());
         this.$tags = this.$parent.find('[data-op="tags"]').click(() => this.tagSelected());
         this.$filters = this.$parent.find('[data-op="filters"]');
-        this.$results = this.$parent.find('[data-op="files-search-results"]');
+
+        this.$resultsAdvanced = this.$parent.find('[data-op="files-search-results"]');
         this.$resultsSimple = this.$parent.find('[data-op="files-search-results-simple"]');
 
         this.$parent.find('[data-op="mark-all"]').click(() => this.markAll());
@@ -2002,19 +2014,8 @@ class FilesView extends View {
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
         this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
-        this.resultsListObserverCallback = null;
-        new IntersectionObserver(() => {
-            if (this.resultsListObserverCallback) {
-                this.resultsListObserverCallback();
-            }
-        }, { threshold: 1.0 }).observe(this.$advancedCenter.find('[data-op="dynamic-loader"]').get(0));
-
-        this.resultsSimpleListObserverCallback = null;
-        new IntersectionObserver(() => {
-            if (this.resultsSimpleListObserverCallback) {
-                this.resultsSimpleListObserverCallback();
-            }
-        }, { threshold: 1.0 }).observe(this.$simpleCenter.find('[data-op="dynamic-loader"]').get(0));
+        this.simpleLoader = new DynamicLoader(this.$simpleCenter.find('table').get(0));
+        this.advancedLoader = new DynamicLoader(this.$advancedCenter.find('table').get(0));
 
         this.prepareCheckbox('advanced', 'advanced');
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
@@ -2034,6 +2035,8 @@ class FilesView extends View {
     }
 
     setLayout (advanced, supressUpdate = false) {
+        window.scrollTo({ top: 0 });
+
         this.$advancedCenter.toggle(advanced);
         this.$simpleCenter.toggle(!advanced);
         this.simple = !advanced;
@@ -2083,7 +2086,7 @@ class FilesView extends View {
                 }
             }
 
-            let visibleEntries = _array_to_hash(this.$results.find('td[data-mark]').toArray(), (el) => [el.dataset.mark, el.children[0]]);
+            let visibleEntries = _array_to_hash(this.$resultsAdvanced.find('td[data-mark]').toArray(), (el) => [el.dataset.mark, el.children[0]]);
 
             let noneToMark = _empty(entriesToMark);
             if (noneToMark && !_empty(entriesToIgnore)) {
@@ -2175,10 +2178,10 @@ class FilesView extends View {
                 `
             });
 
-            this.$results.empty();
+            this.$resultsAdvanced.empty();
 
-            this.resultsListObserverCallback = () => {
-                $(displayEntries.splice(0, 25).join('')).appendTo(this.$results).find('[data-mark]').click((event) => {
+            this.advancedLoader.start(() => {
+                $(displayEntries.splice(0, 25).join('')).appendTo(this.$resultsAdvanced).find('[data-mark]').click((event) => {
                     let uuid = event.currentTarget.dataset.mark;
 
                     if (event.shiftKey && this.lastSelectedEntry && this.lastSelectedEntry != uuid) {
@@ -2225,11 +2228,9 @@ class FilesView extends View {
                 });
 
                 if (displayEntries.length == 0) {
-                    this.resultsListObserverCallback = null;
+                    this.advancedLoader.stop();
                 }
-            }
-
-            this.resultsListObserverCallback();
+            });
         });
     }
 
@@ -2307,7 +2308,7 @@ class FilesView extends View {
             `;
         });
 
-        this.resultsSimpleListObserverCallback = () => {
+        this.simpleLoader.start(() => {
             let $entries = $(entries.splice(0, 25).join('')).appendTo(this.$resultsSimple);
 
             $entries.find('[data-timestamp]').click((event) => {
@@ -2362,11 +2363,9 @@ class FilesView extends View {
             });
 
             if (entries.length == 0) {
-                this.resultsSimpleListObserverCallback = null;
+                this.simpleLoader.stop();
             }
-        }
-
-        this.resultsSimpleListObserverCallback();
+        })
     }
 
     updateTagFilterButtons () {
@@ -2624,7 +2623,7 @@ class FilesView extends View {
             }
             this.updateSelectedCounter();
         } else {
-            this.$results.find('[data-mark] > i').addClass('outline');
+            this.$resultsAdvanced.find('[data-mark] > i').addClass('outline');
             this.$resultsSimple.find('[data-timestamp] > i').addClass('outline');
         }
     }
