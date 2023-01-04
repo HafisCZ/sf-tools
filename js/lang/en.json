@@ -259,6 +259,7 @@
             },
             "filters": {
                 "any": "Any",
+                "none": "None",
                 "n_unique": "unique",
                 "expression": "Expression",
                 "expression_placeholder": "Your expression",
