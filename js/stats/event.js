@@ -7,7 +7,8 @@ class DynamicLoader {
             { threshold: 1.0 }
         );
 
-        this.observer.observe(container.insertAdjacentElement('afterend', document.createElement('div')));
+        this.observed = container.insertAdjacentElement('afterend', document.createElement('div'));
+        this.observer.observe(this.observed);
     }
 
     _callback () {
@@ -16,8 +17,12 @@ class DynamicLoader {
         }
     }
 
-    start (callback) {
+    start (callback, triggerImmediately = false) {
         this.callback = callback;
+
+        if (triggerImmediately) {
+            this.callback();
+        }
     }
 
     stop () {
@@ -2230,7 +2235,7 @@ class FilesView extends View {
                 if (displayEntries.length == 0) {
                     this.advancedLoader.stop();
                 }
-            });
+            }, true);
         });
     }
 
@@ -2365,7 +2370,7 @@ class FilesView extends View {
             if (entries.length == 0) {
                 this.simpleLoader.stop();
             }
-        })
+        }, true);
     }
 
     updateTagFilterButtons () {
