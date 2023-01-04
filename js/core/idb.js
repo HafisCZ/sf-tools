@@ -473,6 +473,7 @@ const DatabaseManager = new (class {
         this.PlayerTimestamps = [];
         this.Prefixes = [];
         this.GroupNames = {};
+        this.PlayerNames = {};
 
         this._metadataDelta = [];
         this._hiddenModels = new Set();
@@ -536,6 +537,7 @@ const DatabaseManager = new (class {
         this.LatestPlayer = 0;
         this.LastChange = Date.now();
         this.GroupNames = {};
+        this.PlayerNames = {};
 
         const prefixes = new Set();
         const playerTimestamps = new Set();
@@ -571,6 +573,8 @@ const DatabaseManager = new (class {
 
             player.Own = player.List.find(x => x[1].Own) != undefined;
 
+            this.PlayerNames[player.Latest.Data.identifier] = player.Latest.Data.name;
+
             prefixes.add(player.Latest.Data.prefix);
         }
 
@@ -597,6 +601,8 @@ const DatabaseManager = new (class {
             _sort_des(group.List, le => le[0]);
             group.Latest = group[group.LatestTimestamp];
             group.Own = group.List.find(x => x[1].Own) != undefined;
+
+            this.GroupNames[group.Latest.Data.identifier] = group.Latest.Data.name;
 
             prefixes.add(group.Latest.Data.prefix);
         }
