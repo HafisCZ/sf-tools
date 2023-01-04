@@ -2468,13 +2468,8 @@ class FilesView extends View {
     updateEntryLists () {
         this.prefixMap = _array_to_hash(DatabaseManager.Prefixes, (prefix) => [prefix, _pretty_prefix(prefix)]);
         this.timeMap = _array_to_hash(DatabaseManager.Timestamps.keys(), (ts) => [ts, formatDate(ts)]);
-        this.playerMap = _array_to_hash(Object.entries(DatabaseManager.Players), ([id, player]) => [id, player.Latest.Name]);
-        this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
-        for (const [ id, name ] of Object.entries(DatabaseManager.GroupNames)) {
-            if (!this.groupMap[id]) {
-                this.groupMap[id] = name;
-            }
-        }
+        this.playerMap = DatabaseManager.PlayerNames;
+        this.groupMap = Object.assign({ 0: intl('stats.files.filters.none') }, DatabaseManager.GroupNames);
 
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
         this.tagsArray = Object.keys(DatabaseManager.findUsedTags()).filter(tag => tag !== 'undefined');
