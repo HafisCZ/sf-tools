@@ -276,3 +276,8 @@
 .z-2 {
   z-index: 2;
 }
+
+/* Font Family */
+.font-arial {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
