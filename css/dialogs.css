@@ -36,7 +36,7 @@ div.dialog.container > .dialog {
   gap: 1.75em;
 }
 
-div.dialog.container > .dialog:not(.basic) > * {
+div.dialog.container > .dialog > *:not(img) {
   width: 100%;
 }
 
@@ -84,6 +84,8 @@ div.dialog.container > .dialog > .separated.header {
 
 /* Loader */
 div.dialog.container img.loader {
+  width: 100px;
+
   opacity: 65%;
   animation: spin 1.2s linear infinite;
 
