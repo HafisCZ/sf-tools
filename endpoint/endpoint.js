@@ -376,12 +376,12 @@ const Endpoint = new (class extends Dialog {
         return `
             <div class="very small basic dialog">
                 <iframe class="opacity-0 pointer-events-none position-fixed" data-op="iframe"></iframe>
-                <div data-op="step1" class="w-full" style="display: none;">${this._createStep1()}</div>
-                <div data-op="step2" class="w-full" style="display: none;">${this._createStep2()}</div>
-                <div data-op="step3" class="w-full" style="display: none;">${this._createStep3()}</div>
-                <div data-op="step4" class="w-full" style="display: none;">${this._createStep4()}</div>
-                <div data-op="step5" class="w-full" style="display: none;">${this._createStep5()}</div>
-                <div data-op="step6" class="w-full" style="display: none;">${this._createStep6()}</div>
+                <div data-op="step1">${this._createStep1()}</div>
+                <div data-op="step2">${this._createStep2()}</div>
+                <div data-op="step3">${this._createStep3()}</div>
+                <div data-op="step4">${this._createStep4()}</div>
+                <div data-op="step5">${this._createStep5()}</div>
+                <div data-op="step6">${this._createStep6()}</div>
             </div>
         `;
     }
