@@ -216,10 +216,8 @@
         return this.each(function () {
             if (enabled) {
                 this.style.setProperty('background', '#21ba45', 'important');
-                this.style.setProperty('color', 'white', 'important');
             } else {
                 this.style.setProperty('background', '');
-                this.style.setProperty('color', '');
             }
         });
     }
