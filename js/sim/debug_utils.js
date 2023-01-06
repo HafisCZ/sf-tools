@@ -6,7 +6,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
   _createModal () {
       return `
           <div class="bordered dialog">
-              <h2 class="header">${this.intl('title')}</h2>
+              <div class="header">${this.intl('title')}</div>
               <div class="overflow-y-scroll overflow-x-hidden pr-4" style="max-height: 70vh;">
                   <div class="ui small form" data-op="content"></div>
               </div>

@@ -125,7 +125,7 @@ const TermsAndConditionsDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small dark dialog">
-                <h2 class="header"><u>Terms and Conditions</u></h2>
+                <div class="header"><u>Terms and Conditions</u></div>
                 <div class="overflow-y-scroll" style="max-height: 65vh;">
                     <h4 class="text-center text-orange">§1 General use</h4>
                     <ul>
@@ -198,7 +198,7 @@ const ChangeLogDialog = new (class extends Dialog {
 
         return `
             <div class="small dark dialog">
-                <h2 class="header">${this.intl('release')} <span class="text-orange">${release}</span></h2>
+                <div class="header">${this.intl('release')} <span class="text-orange">${release}</span></div>
                 <div class="overflow-y-scroll" style="max-height: 50vh;">
                     ${content}
                 </div>
@@ -259,11 +259,11 @@ const HtmlDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="big dialog">
-                <h2 class="header flex justify-content-between">
+                <div class="header flex justify-content-between items-center">
                     <div></div>
                     <span data-op="title"></span>
                     <i class="ui small link close icon" data-op="close"></i>
-                </h2>
+                </div>
                 <div class="overflow-y-scroll" data-op="content" style="max-height: 80vh;"></div>
             </div>
         `;
@@ -298,7 +298,7 @@ const WarningDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small dark dialog">
-                <h2 class="header"><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('title')}</h2>
+                <div class="header"><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('title')}</div>
                 <div class="text-center" data-op="text">...</div>
                 <button class="ui black fluid button" data-op="continue">${this.intl('continue')}</button>
             </div>
@@ -324,7 +324,7 @@ const ErrorDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small dark dialog">
-                <h2 class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</h2>
+                <div class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</div>
                 <div class="text-center" data-op="text"></div>
                 <h4 class="text-center">${this.intl('notice#')}</h4>
                 <div class="ui two red fluid buttons">
@@ -364,7 +364,7 @@ const FileEditDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="left header">${this.intl('title')}</h2>
+                <div class="left header">${this.intl('title')}</div>
                 <div class="ui form">
                     <div class="field">
                         <label>${this.intl('timestamp')}</label>
@@ -414,7 +414,7 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small dialog">
-                <h2 class="header">${this.intl('title')}</h2>
+                <div class="header">${this.intl('title')}</div>
                 <div>
                     <div class="ui form">
                         <div class="ui inverted active dimmer">
@@ -516,7 +516,7 @@ const EditFileTagDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="header">${this.intl('title')}</h2>
+                <div class="header">${this.intl('title')}</div>
                 <div class="ui form">
                     <div class="field">
                         <label>${this.intl('current')}:</label>
@@ -583,7 +583,7 @@ const ProfileCreateDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="bordered dialog">
-                <h2 class="left separated header">${this.intl('title')}</h2>
+                <div class="left separated header">${this.intl('title')}</div>
                 <div class="ui form">
                     <div class="two fields">
                         <div class="four wide field">
@@ -926,7 +926,7 @@ const TemplateSaveDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="header">${this.intl('title')}</h2>
+                <div class="header">${this.intl('title')}</div>
                 <div class="ui form">
                     <div class="field">
                         <label>${this.intl('select_existing')}:</label>
@@ -1005,7 +1005,7 @@ const DataManageDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="header">${this.intl('title')}</h2>
+                <div class="header">${this.intl('title')}</div>
                 <div class="overflow-y-auto" style="max-height: 60vh;">
                     <div class="ui form" data-op="content"></div>
                 </div>
@@ -1123,7 +1123,7 @@ const InputDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="left header" data-op="title"></h2>
+                <div class="left header" data-op="title"></div>
                 <div class="ui form">
                     <div class="field" data-op="field">
                         <label data-op="label"></label>
@@ -1190,7 +1190,7 @@ const ConfirmDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="left header" data-op="title"></h2>
+                <div class="left header" data-op="title"></div>
                 <div class="text-center" data-op="text">...</div>
                 <div class="ui two fluid buttons">
                     <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
