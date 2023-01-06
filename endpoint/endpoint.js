@@ -480,8 +480,10 @@ const Endpoint = new (class extends Dialog {
 })();
 
 const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'statistics_integration_options';
+    constructor () {
+        super({
+            key: 'statistics_integration_options'
+        });
     }
 
     _createModal () {
