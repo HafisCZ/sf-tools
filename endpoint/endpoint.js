@@ -121,6 +121,9 @@ const Endpoint = new (class extends Dialog {
         this.$step4.hide();
         this.$step5.hide();
         this.$step6.hide();
+
+        // Clear variables
+        this.downloading = new Set();
     }
 
     _showError (text, hard = false) {
@@ -139,16 +142,16 @@ const Endpoint = new (class extends Dialog {
     }
 
     _setDownloading (name) {
-        this.downloading.push(name);
-        if (this.downloading.length > 0) {
+        this.downloading.add(name);
+        if (this.downloading.size > 0) {
             this.$import.attr('disabled', 'true');
             this.$import.addClass('loading');
         }
     }
 
     _removeDownloading (name) {
-        this.downloading.splice(this.downloading.indexOf(name), 1);
-        if (this.downloading.length == 0) {
+        this.downloading.delete(name);
+        if (this.downloading.size == 0) {
             this.$import.removeAttr('disabled');
             this.$import.removeClass('loading');
         }
@@ -196,7 +199,6 @@ const Endpoint = new (class extends Dialog {
         this.$login = this.$parent.find('[data-op="login"]');
 
         this.endpoint = undefined;
-        this.downloading = [];
 
         this.$parent.find('[data-op="back"]').click(() => this.close(false));
 
@@ -290,12 +292,10 @@ const Endpoint = new (class extends Dialog {
             this.$step4.hide();
             this.$step5.hide();
             this._showError(this.intl('credentials_error'));
-        }, percentDone => {
+        }, (percent) => {
             this.$step4.hide();
             this.$step5.show();
-            this.$progress.progress({
-                percent: percentDone
-            })
+            this.$progress.progress({ percent })
         });
     };
 
@@ -305,9 +305,9 @@ const Endpoint = new (class extends Dialog {
             this.$step3.show();
 
             let content = '';
-            let [members, friends] = text.split(';');
+            const [members, friends] = text.split(';');
 
-            for (var name of members.split(',')) {
+            for (const name of members.split(',')) {
                 content += `
                     <div class="item">
                         <div class="ui checkbox w-full">
@@ -323,7 +323,7 @@ const Endpoint = new (class extends Dialog {
                 `;
             }
 
-            for (var name of friends.split(',').slice(1)) {
+            for (const name of friends.split(',').slice(1)) {
                 content += `
                     <div class="item">
                         <div class="ui checkbox w-full">
