@@ -39,19 +39,6 @@
     box-shadow: none !important;
 }
 
-.css-search-dropdown {
-    margin-right: 2em !important;
-    cursor: pointer !important;
-}
-
-.css-search-info {
-    cursor: pointer !important;
-}
-
-.css-search-clear {
-    margin-right: 4em !important;
-}
-
 .icon.css-star, .icon.css-unstar {
     float: right;
     margin-right: .9em;
