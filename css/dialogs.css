@@ -48,6 +48,10 @@ div.dialog.container > .small.dialog {
   width: 570px;
 }
 
+div.dialog.container > .very.small.dialog {
+  width: 380px;
+}
+
 div.dialog.container > .dark.dialog {
   background-color: #0b0c0c;
   color: white;
