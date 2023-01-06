@@ -240,14 +240,7 @@ const Endpoint = new ( class {
         this.$import.click(() => {
             this.$step4.show();
             this.$step3.hide();
-            this.endpoint.query_collect((text) => {
-                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
-                    Toast.error(intl('database.import_error'), e.message);
-                    Logger.error(e, 'Error occured while trying to import a file!');
-                }).then(() => {
-                    this._funcShutdown(true);
-                });
-            });
+            this.endpoint.query_collect((text) => this._import(text));
         });
 
         const executeLogin = () => {
@@ -316,53 +309,36 @@ const Endpoint = new ( class {
         });
     }
 
+    _import (text) {
+        DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
+            Toast.error(intl('database.import_error'), e.message);
+            Logger.error(e, 'Error occured while trying to import a file!');
+        }).then(() => {
+            this._funcShutdown(true);
+        });
+    }
+
     _funcLoginSingle (server, username, password) {
-        this.endpoint.login_query_only(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
-                Toast.error(intl('database.import_error'), e.message);
-                Logger.error(e, 'Error occured while trying to import a file!');
-            }).then(() => {
-                this._funcShutdown(true);
-            });
-        }, () => {
+        this.endpoint.login_query_only(server, username, password, (text) => this._import(text), () => {
             this.$step4.hide();
             this._showError(this._intl('credentials_error'));
         });
     };
 
     _funcLoginHOF (server, username, password) {
-        this.endpoint.login_query_hall_of_fame(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
-                Toast.error(intl('database.import_error'), e.message);
-                Logger.error(e, 'Error occured while trying to import a file!');
-            }).then(() => {
-                this._funcShutdown(true);
-            });
-        }, () => {
+        this.endpoint.login_query_hall_of_fame(server, username, password, (text) => this._import(text), () => {
             this.$step4.hide();
             this.$step5.hide();
             this._showError(this._intl('credentials_error'));
-        }, percentDone => {
+        }, (percent) => {
             this.$step4.hide();
             this.$step5.show();
-            this.$progress.progress({
-                percent: percentDone
-            })
+            this.$progress.progress({ percent })
         });
     }
 
     _funcLoginAll (server, username, password, kind = 'members') {
-        this.endpoint.login_query_many(server, username, password, (text) => {
-            const [members, friends] = text.split(';');
-            return kind == 'members' ? members : friends;
-        }, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
-                Toast.error(intl('database.import_error'), e.message);
-                Logger.error(e, 'Error occured while trying to import a file!');
-            }).then(() => {
-                this._funcShutdown(true);
-            });
-        }, () => {
+        this.endpoint.login_query_many(server, username, password, (text) => text.split(';')[kind === 'members' ? 0 : 1], (text) => this._import(text), () => {
             this.$step4.hide();
             this.$step5.hide();
             this._showError(this._intl('credentials_error'));
