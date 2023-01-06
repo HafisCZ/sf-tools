@@ -1296,7 +1296,7 @@ const ImportSharedFileDialog = new (class extends Dialog {
     }
 
     _update (file) {
-        this.$ok.removeClass('loading');
+        this._setLoading(false);
 
         if (file) {
             this.close();
@@ -1307,6 +1307,21 @@ const ImportSharedFileDialog = new (class extends Dialog {
         } else {
             this.$field.addClass('error').transition('shake');
             this.$error.show();
+        }
+    }
+
+    _setLoading (loading) {
+        if (loading) {
+            this.$error.hide();
+            this.$field.removeClass('error');
+
+            this.$ok.addClass('loading disabled');
+            this.$cancel.addClass('disabled');
+            this.$input.attr('readonly', '');
+        } else {
+            this.$ok.removeClass('loading disabled');
+            this.$cancel.removeClass('disabled');
+            this.$input.removeAttr('readonly');
         }
     }
 
@@ -1325,10 +1340,7 @@ const ImportSharedFileDialog = new (class extends Dialog {
         this.$ok.click(() => {
             const key = this.$input.val().trim();
             if (key) {
-                this.$ok.addClass('loading');
-
-                this.$error.hide();
-                this.$field.removeClass('error');
+                this._setLoading(true);
 
                 SiteAPI.get('file_get', { key }).then(({ file }) => {
                     this._update(file);
