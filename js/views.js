@@ -1275,6 +1275,83 @@ const ConfirmDialog = new (class extends Dialog {
     }
 })();
 
+const ImportSharedFileDialog = new (class extends Dialog {
+    _createModal () {
+        return `
+            <div class="smaller dialog">
+                <div class="left header">${intl('stats.files.online.title')}</div>
+                <div class="text-center">
+                    <p>${intl('stats.files.online.prompt')}</p>
+                    <div class="ui fluid input">
+                        <input type="text" placeholder="" class="text-center" data-op="input">
+                    </div>
+                    <p data-op="error" class="text-red mt-4">${intl('stats.files.online.invalid')}</p>
+                </div>
+                <div class="ui fluid two buttons">
+                    <div class="ui basic black button" data-op="cancel">${intl('stats.files.online.cancel')}</div>
+                    <div class="ui black button" data-op="ok">${intl('stats.files.online.ok')}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    _update (file) {
+        this.$ok.removeClass('loading');
+
+        if (file) {
+            this.close();
+            Loader.toggle(true);
+            DatabaseManager.import(JSON.parse(file).data).then(() => {
+                this.callback();
+            });
+        } else {
+            this.$field.addClass('error').transition('shake');
+            this.$error.show();
+        }
+    }
+
+    _createBindings () {
+        this.$input = this.$parent.operator('input');
+        this.$field = this.$input.parent();
+
+        this.$error = this.$parent.operator('error');
+
+        this.$cancel = this.$parent.operator('cancel');
+        this.$cancel.click(() => {
+            this.close();
+        })
+
+        this.$ok = this.$parent.operator('ok');
+        this.$ok.click(() => {
+            const key = this.$input.val().trim();
+            if (key) {
+                this.$ok.addClass('loading');
+
+                this.$error.hide();
+                this.$field.removeClass('error');
+
+                SiteAPI.get('file_get', { key }).then(({ file }) => {
+                    this._update(file);
+                }).catch(() => {
+                    this._update();
+                });
+            } else {
+                this.$field.addClass('error').transition('shake');
+            }
+        });
+    }
+
+    _applyArguments (callback) {
+        this.callback = callback;
+
+        this.$ok.removeClass('loading');
+
+        this.$input.val('');
+        this.$field.removeClass('error');
+        this.$error.hide();
+    }
+})();
+
 const Localization = new (class {
     _generateTranslation (base, object, ... path) {
         for (let [key, value] of Object.entries(object)) {
