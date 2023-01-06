@@ -24,7 +24,7 @@ div.dialog.container {
 div.dialog.container > .dialog {
   width: 760px;
 
-  padding: 1em;
+  padding: 0.75em;
   border-radius: 0.5em;
 
   background-color: white;
