@@ -659,6 +659,10 @@ input:disabled {
 
 /* Custom Toast */
 
+.toast-container {
+    z-index: 999999 !important;
+}
+
 .custom-toast {
     padding: 0 !important;
 }
