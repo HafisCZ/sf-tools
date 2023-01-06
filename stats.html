@@ -393,35 +393,6 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <div id="modal-share" class="ui mini modal">
-            <div class="header" data-intl="stats.share.title"></div>
-            <div class="content text-left" style="height: 17em;">
-                <h4 class="ui header" data-intl="stats.share.options"></h4>
-                <div style="margin-top: 0.5em;">
-                    <div class="ui checkbox" data-op="once">
-                        <input type="checkbox" name="checkbox1">
-                        <label for="checkbox1"><span data-intl="stats.share.single_use"></span>
-                            <br>
-                            <span style="color: gray;" data-intl="stats.share.single_use_notice"></span>
-                        </label>
-                    </div>
-                </div>
-                <div style="color: gray; margin-top: 1em;" data-intl="stats.share.expire"></div>
-                <div style="margin-top: 1.5em">
-                    <h4 class="ui header" data-intl="stats.share.code">:</h4>
-                    <div data-op="content-button">
-                        <button class="ui fluid button" data-op="send" data-intl="stats.share.get"></button>
-                    </div>
-                    <div data-op="content-code" class="text-center" style="padding-top: 0.25em;">
-                        <code style="white-space: pre; font-size: 1.3em;" data-op="code">ABCDEFGHIJKLMNOPQRSTUVWX</code>
-                    </div>
-                </div>
-            </div>
-            <div class="actions">
-                <div class="ui approve button" data-intl="stats.share.ok"></div>
-            </div>
-        </div>
-
         <div id="modal-onlinetemplates" class="ui small modal">
             <i class="cctemplate close icon"></i>
             <div class="header" data-intl="stats.online_templates.title"></div>
@@ -739,7 +710,6 @@
                         GroupDetail: new GroupDetailView('view-groupdetail'),
                         Templates: new TemplatesView('modal-templates'),
                         OnlineTemplates: new OnlineTemplatesView('modal-onlinetemplates'),
-                        OnlineShareFile: new OnlineShareFileView('modal-share'),
                         Profiles: new ProfilesView('view-profiles'),
                         Options: new OptionsView('view-options')
                     });

@@ -1311,10 +1311,10 @@ const ImportSharedFileDialog = new (class extends Dialog {
     }
 
     _setLoading (loading) {
-        if (loading) {
-            this.$error.hide();
-            this.$field.removeClass('error');
+        this.$error.hide();
+        this.$field.removeClass('error');
 
+        if (loading) {
             this.$ok.addClass('loading disabled');
             this.$cancel.addClass('disabled');
             this.$input.attr('readonly', '');
@@ -1356,11 +1356,97 @@ const ImportSharedFileDialog = new (class extends Dialog {
     _applyArguments (callback) {
         this.callback = callback;
 
-        this.$ok.removeClass('loading');
-
+        this._setLoading(false);
         this.$input.val('');
-        this.$field.removeClass('error');
-        this.$error.hide();
+    }
+})();
+
+const ExportSharedFileDialog = new (class extends Dialog {
+    _createModal () {
+        return `
+            <div class="smaller dialog">
+                <div class="header">${intl('stats.share.title')}</div>
+                <div class="height: 17em;">
+                    <h4 class="ui header">${intl('stats.share.options')}</h4>
+                    <div class="mt-2">
+                        <div class="ui checkbox" data-op="once">
+                            <input type="checkbox" name="checkbox_once">
+                            <label for="checkbox_once"><span>${intl('stats.share.single_use')}</span>
+                                <br>
+                                <span class="text-gray">${intl('stats.share.single_use_notice')}</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="text-gray mt-4">${intl('stats.share.expire')}</div>
+                    <div class="mt-6">
+                        <h4 class="ui header">${intl('stats.share.code')}:</h4>
+                        <button class="ui fluid button" data-op="button">${intl('stats.share.get')}</button>
+                        <div class="text-center mt-1">
+                            <code style="white-space: pre;" data-op="code">ABCDEFGHIJKLMNOPQRSTUVWX</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui fluid black button" data-op="ok">${intl('stats.share.ok')}</div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$once = this.$parent.operator('once');
+
+        this.$code = this.$parent.operator('code');
+        this.$codeWrap = this.$code.parent();
+        
+        this.$button = this.$parent.operator('button');
+        this.$button.click(() => {
+            const once = this.$once.checkbox('is checked');
+
+            this._setLoading(true);
+            this._send(once);
+        });
+
+        this.$ok = this.$parent.operator('ok');
+        this.$ok.click(() => {
+            this.close();
+        })
+    }
+
+    _applyArguments (data) {
+        this.data = data;
+
+        this.$once.checkbox('set checked');
+        this.$button.show();
+        this.$codeWrap.hide();
+    }
+
+    _setLoading (loading) {
+        if (loading) {
+            this.$button.addClass('loading disabled');
+            this.$ok.addClass('disabled');
+        } else {
+            this.$button.removeClass('loading disabled');
+            this.$ok.removeClass('disabled');
+        }
+    }
+
+    _send (once) {
+        SiteAPI.post('file_create', {
+            content: JSON.stringify({ data: this.data }),
+            multiple: !once
+        }).then(({ file }) => {
+            this._setLoading(false);
+
+            if (file.key) {
+                this.$button.hide();
+                this.$codeWrap.show();
+                this.$code.text(file.key);
+            } else {
+               this.$button.transition('shake');
+            }
+        }).catch(() => {
+            this._setLoading(false);
+            this.$button.transition('shake');
+        })
     }
 })();
 
