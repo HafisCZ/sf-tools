@@ -223,9 +223,11 @@ const Loader = new (class extends Dialog {
     _createModal () {
         return `
             <div class="basic dialog">
-                <img src="res/favicon.png" class="loader" width="100">
-                <div class="ui active tiny progress" data-percent="0" style="width: 200px;">
-                    <div class="bar" style="background: #888 !important;"></div>
+                <div class="flex flex-col gap-8 items-center">
+                    <img src="res/favicon.png" class="loader" width="100">
+                    <div class="ui active tiny progress" data-percent="0" style="width: 200px;">
+                        <div class="bar" style="background: #888 !important;"></div>
+                    </div>
                 </div>
             </div>
         `;

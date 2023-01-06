@@ -139,18 +139,6 @@
             </div>
         </div>
 
-        <div id="results-modal" class="ui mini modal" style="width: 400px;">
-            <div class="header" data-intl="dungeons.results"></div>
-            <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center" data-intl-tooltip="stats.copy.image"><i class="download icon"></i></button>
-            <div class="experience"></div>
-            <div style="padding-left: 1em; padding-right: 1em; border-bottom: 1px solid rgba(34,36,38,.15)">
-                <canvas id="list-winchart" style="width: 100%;"></canvas>
-            </div>
-            <div class="content" style="max-height: 65vh; overflow-y: auto;">
-
-            </div>
-        </div>
-
         <div id="cheat-menu" style="position: fixed; right: 0; top: 0; height: 100vh; width: 300px; background: #313131; z-index: 2; display: none; padding-top: 4.5em;">
             <h3 class="ui header white centered" data-intl="dungeons.cheats.title"></h3>
             <p style="font-size: 85%; color: white; text-align: center;" data-intl="dungeons.cheats.subtitle"></p>
@@ -341,7 +329,89 @@
 
                     this._update(true);
                 }
-            })
+            })()
+
+            const SIMULATOR_RESULTS_DIALOG = new (class extends Dialog {
+                _canDismiss () {
+                    return true;
+                }
+
+                _createModal () {
+                    return `
+                        <div class="tight smaller dismissable dialog">
+                            <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid rgba(34, 36, 38, 0.15);">
+                                <div>${intl(`dungeons.results`)}</div>
+                                <div data-op="screenshot" class="ui tiny basic icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
+                                    <i class="download icon"></i>
+                                </div>
+                            </div>
+                            <div data-op="experience"></div>
+                            <div class="px-4" style="border-bottom: 1px solid rgba(34,36,38,.15)">
+                                <canvas data-op="chart" class="w-full"></canvas>
+                            </div>
+                            <div class="overflow-y-auto" style="max-height: 65vh;">
+                                <div class="ui grid !m-0" data-op="content"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$experience = this.$parent.operator('experience');
+                    this.$content = this.$parent.operator('content');
+
+                    this.chart = new Chart(this.$parent.operator('chart'), {
+                        type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
+                    });
+
+                    this.$screenshot = this.$parent.operator('screenshot');
+                    this.$screenshot.click(() => {
+                        const $contentParent = this.$content.parent();
+                        $contentParent.css('max-height', '');
+
+                        html2canvas(this.$content.get(0), {
+                            logging: false,
+                            onclone: () => {
+                                $contentParent.css('max-height', '65vh');
+                            }
+                        }).then((canvas) => {
+                            canvas.toBlob((blob) => {
+                                window.download(`dungeons_${Date.now()}.png`, blob);
+                            });
+                        });
+                    });
+                }
+
+                _applyArguments (entries, experience, renderChart) {
+                    // Display total experience
+                    this.$experience.html(
+                        experience ? `<div>${intl('dungeons.experience', { experience: formatAsSpacedNumber(experience, ' ') })}</div>` : ''
+                    )
+
+                    // Display all entries
+                    this.$content.html(entries.map(({ boss, dungeon, score, healths, iterations }, index) => {
+                        return `
+                            <div class="row" data-id="${index}" style="padding: 0; padding-left: 8px;">
+                                <div class="eleven wide column" style="position: relative; padding-top: 1rem; padding-bottom: 1rem;">
+                                    <span${dungeon.shadow ? ' style="text-shadow: 0px 0px 8px #390074;"' : ''}>
+                                        <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
+                                        <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${dungeon.name}</span>
+                                        <span style="position: absolute; left: 3em; top: 1.4em;">#${boss.pos} - ${boss.name}</span>
+                                    </span>
+                                </div>
+                                <div class="five wide column text-center" style="padding-top: 1rem; padding-bottom: 1rem;">${score == 0 ? 'Not possible' : `${ (100 * score / iterations).toFixed(2) }%`}</div>
+                            </div>
+                        `;
+                    }).join(''));
+
+                    // Attach hover listeners
+                    this.$content.find('.row').mouseenter((event) => {
+                        const { boss, dungeon, score, healths, iterations } = entries[event.currentTarget.dataset.id];
+
+                        renderChart(this.chart, dungeon, boss, score, iterations, healths);
+                    }).first().trigger('mouseenter');
+                }
+            })()
 
             Site.ready(function (urlParams) {
                 $('#cheat-menu-toggle').click(() => {
@@ -685,10 +755,6 @@
                     type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
                 });
 
-                const chartList = new Chart($('#list-winchart'), {
-                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
-                });
-
                 function showData (data) {
                     let oldSelected = selected;
                     if (Array.isArray(data)) {
@@ -872,8 +938,9 @@
                         entries.sort((b, a) => a.score - b.score);
                     }
 
+                    let experienceTotal = 0;
                     if (calculateTotalExperience) {
-                        const experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
+                        experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
                             if (dungeon.id === 201) {
                                 return 0;
                             } else if (boss.level >= 393) {
@@ -882,41 +949,14 @@
                                 return ExperienceRequired[boss.level] / 5;
                             }
                         }, 0);
-
-                        if (experienceTotal > 0) {
-                            $('#results-modal .experience').html(`<div>${intl('dungeons.experience', { experience: formatAsSpacedNumber(experienceTotal, ' ') })}</div>`);
-                        } else {
-                            $('#results-modal .experience').empty();
-                        }
-                    } else {
-                        $('#results-modal .experience').empty();
                     }
 
-                    $('#results-modal .content').html(`
-                        <div class="ui grid">
-                            ${ entries.map(({ boss, dungeon, score, healths, iterations }, index) => {
-                                return `
-                                    <div class="row" data-id="${index}" style="padding: 0;">
-                                        <div class="eleven wide column" style="position: relative; padding-top: 1rem; padding-bottom: 1rem;">
-                                            <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
-                                                <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
-                                                <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${ dungeon.name }</span>
-                                                <span style="position: absolute; left: 3em; top: 1.4em;">#${boss.pos} - ${ boss.name }</span>
-                                            </span>
-                                        </div>
-                                        <div class="five wide column text-center" style="padding-top: 1rem; padding-bottom: 1rem;">${ score == 0 ? 'Not possible' : `${ (100 * score / iterations).toFixed(2) }%` }</div>
-                                    </div>
-                                `;
-                            }).join('') }
-                        </div>
-                    `);
-                    $('#results-modal .content .row').mouseenter((event) => {
-                        let index = event.currentTarget.dataset.id;
-                        let { boss, dungeon, score, healths, iterations } = entries[index];
-                        showGraph(chartList, dungeon, boss, score, iterations, healths);
-                    });
-                    $('#results-modal .content .row').first().trigger('mouseenter');
-                    $('#results-modal').modal('show');
+                    DialogController.open(
+                        SIMULATOR_RESULTS_DIALOG,
+                        entries,
+                        experienceTotal,
+                        showGraph
+                    );
                 }
 
                 function preparePlayerInstances (dungeon) {
@@ -1188,25 +1228,6 @@
                     graph.data.labels = healths.map((a, b) => b);
                     graph.update(0);
                 }
-
-                $('#save-screenshot').click(function () {
-                    let target = document.querySelector('#results-modal .content');
-
-                    target.style['overflow-y'] = '';
-                    target.style['max-height'] = '';
-
-                    html2canvas(target, {
-                        logging: false,
-                        onclone: doc => {
-                            target.style['overflow-y'] = 'auto';
-                            target.style['max-height'] = '70vh';
-                        }
-                    }).then(canvas => {
-                        canvas.toBlob(blob => {
-                            window.download(`dungeons_${Date.now()}.png`, blob);
-                        });
-                    });
-                });
 
                 $('[data-cheat="class"]').dropdown({
                     preserveHTML: true,
