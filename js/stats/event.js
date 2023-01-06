@@ -1975,7 +1975,7 @@ class FilesView extends View {
 
     // Import file via cloud
     importCloud () {
-        UI.OnlineFiles.show(() => this.show());
+        DialogController.open(ImportSharedFileDialog, () => this.show());
     }
 
     // Prepare checkbox
@@ -3375,57 +3375,6 @@ class OnlineTemplatesView extends View {
 
     hide () {
         this.$parent.modal('hide');
-    }
-}
-
-class OnlineFilesView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$inputField = this.$parent.find('[data-op="input"]');
-        this.$input = this.$inputField.parent('.input');
-
-        this.$error = this.$parent.find('[data-op="extra"]');
-        this.$ok = this.$parent.find('.ui.approve.button');
-    }
-
-    show (callback) {
-        this.$input.removeClass('error');
-        this.$ok.removeClass('loading');
-        this.$inputField.val('');
-        this.$error.hide();
-
-        this.onReceive = (code, file) => {
-            this.$ok.removeClass('loading');
-            if (code && file) {
-                DatabaseManager.import(JSON.parse(file).data, undefined, undefined, 'shared').then(() => {
-                    this.$parent.modal('hide');
-                    callback();
-                });
-            } else {
-                this.$input.addClass('error').transition('shake');
-                this.$error.show();
-            }
-        };
-
-        this.$parent.modal({
-            onApprove: () => {
-                let key = this.$inputField.val().trim();
-                if (key) {
-                    this.$ok.addClass('loading');
-
-                    SiteAPI.get('file_get', { key }).then(({ file }) => {
-                        this.onReceive(key, file.content);
-                    }).catch(() => {
-                        this.onReceive();
-                    })
-                } else {
-                    this.$input.transition('shake');
-                }
-
-                return false;
-            }
-        }).modal('show');
     }
 }
 
