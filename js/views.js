@@ -15,6 +15,10 @@ class Dialog {
         return this.shouldOpen;
     }
 
+    _canDismiss () {
+        return false;
+    }
+
     open (...args) {
         return new Promise((resolve) => {
             if (this._canOpen()) {
@@ -30,6 +34,14 @@ class Dialog {
                     this.$parent = $container;
 
                     this._createBindings();
+                }
+
+                if (this._canDismiss()) {
+                    this.$parent.click((event) => {
+                        if (event.target.classList.contains('container')) {
+                            this.close(false);
+                        }
+                    });
                 }
 
                 this._applyArguments(...args);

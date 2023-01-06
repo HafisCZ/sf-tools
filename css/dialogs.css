@@ -36,6 +36,11 @@ div.dialog.container > .dialog {
   gap: 1.75em;
 }
 
+div.dialog.container > .tight.dialog {
+  gap: 0;
+  padding: 0;
+}
+
 div.dialog.container > .dialog > *:not(img) {
   width: 100%;
 }
@@ -46,6 +51,10 @@ div.dialog.container > .big.dialog {
 
 div.dialog.container > .small.dialog {
   width: 570px;
+}
+
+div.dialog.container > .smaller.dialog {
+  width: 400px;
 }
 
 div.dialog.container > .very.small.dialog {
