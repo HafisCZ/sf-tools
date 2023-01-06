@@ -17,10 +17,10 @@ class Dialog {
                 this.resolve = resolve;
 
                 if (!this._hasParent()) {
-                    const $modal = $(this._createModal()).addClass('active');
+                    const $dialog = $(this._createModal());
                     const $container = $(`<div class="dialog container" style="display: none; background: rgba(0, 0, 0, ${this.opacity})"></div>`);
 
-                    $container.append($modal);
+                    $container.append($dialog);
                     $(document.body).append($container);
 
                     this.$parent = $container;
