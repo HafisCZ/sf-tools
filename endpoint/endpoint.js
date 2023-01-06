@@ -114,16 +114,20 @@ const Endpoint = new (class extends Dialog {
         return true;
     }
 
-    _applyArguments () {
+    _applyArguments (allowTemporary = false) {
         this.$step1.show();
         this.$step2.hide();
         this.$step3.hide();
         this.$step4.hide();
         this.$step5.hide();
         this.$step6.hide();
-
+        
         // Clear variables
         this.downloading = new Set();
+
+        // Toggle temporary capture checkbox
+        this.$temporary.checkbox('set unchecked');
+        this.$temporary.parent().toggle(allowTemporary);
     }
 
     _showError (text, hard = false) {
@@ -665,7 +669,7 @@ const StatisticsIntegration = new (class {
     }
 
     _importEndpoint () {
-        Endpoint.open().then((actionSuccess) => {
+        Endpoint.open(true).then((actionSuccess) => {
             if (actionSuccess) {
                 this._poll();
             }
