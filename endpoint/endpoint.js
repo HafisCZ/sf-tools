@@ -193,6 +193,9 @@ const Endpoint = new (class extends Dialog {
             }
         });
 
+        // Capture mode
+        this.$temporary = this.$parent.operator('temporary').checkbox();
+
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
         this.$import = this.$parent.find('[data-op="import"]');
@@ -260,7 +263,7 @@ const Endpoint = new (class extends Dialog {
     }
 
     _import (text) {
-        DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).catch((e) => {
+        DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, { temporary: this.$temporary.checkbox('is checked') }).catch((e) => {
             Toast.error(intl('database.import_error'), e.message);
             Logger.error(e, 'Error occured while trying to import a file!');
         }).then(() => {
@@ -405,6 +408,12 @@ const Endpoint = new (class extends Dialog {
                     <div class="ui fluid selection dropdown" data-op="mode">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui checkbox" data-op="temporary">
+                        <input type="checkbox" class="hidden">
+                        <label>${this.intl('temporary')}</label>
                     </div>
                 </div>
                 <div class="ui two buttons">
