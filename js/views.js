@@ -1,22 +1,18 @@
 class Dialog {
-    constructor (opacity = 0.85) {
-        this.opacity = opacity;
-    }
-
-    _intl_key () {
-        return '';
+    constructor (options) {
+        this.options = Object.assign({
+            opacity: 0.85,
+            dismissable: false,
+            key: ''
+        }, options || {});
     }
 
     intl (key) {
-        return intl(`dialog.${this._intl_key()}.${key}`);
+        return intl(`dialog.${this.options.key}.${key}`);
     }
 
     _canOpen () {
         return this.shouldOpen;
-    }
-
-    _canDismiss () {
-        return false;
     }
 
     open (...args) {
@@ -26,7 +22,7 @@ class Dialog {
 
                 if (!this._hasParent()) {
                     const $dialog = $(this._createModal());
-                    const $container = $(`<div class="dialog container" style="display: none; background: rgba(0, 0, 0, ${this.opacity})"></div>`);
+                    const $container = $(`<div class="dialog container" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity})"></div>`);
 
                     $container.append($dialog);
                     $(document.body).append($container);
@@ -36,7 +32,7 @@ class Dialog {
                     this._createBindings();
                 }
 
-                if (this._canDismiss()) {
+                if (this.options.dismissable) {
                     this.$parent.click((event) => {
                         if (event.target.classList.contains('container')) {
                             this.close(false);
@@ -169,8 +165,10 @@ const TermsAndConditionsDialog = new (class extends Dialog {
 })();
 
 const ChangeLogDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'changelog';
+    constructor () {
+        super({
+            key: 'changelog'
+        });
     }
 
     _createModal () {
@@ -217,7 +215,9 @@ const ChangeLogDialog = new (class extends Dialog {
 
 const Loader = new (class extends Dialog {
     constructor () {
-        super(0);
+        super({
+            opacity: 0
+        });
     }
 
     _createModal () {
@@ -288,11 +288,10 @@ const HtmlDialog = new (class extends Dialog {
 // Non-blocking popup about an exception that occured
 const WarningDialog = new (class extends Dialog {
     constructor () {
-        super(0);
-    }
-
-    _intl_key () {
-        return 'warning';
+        super({
+            key: 'warning',
+            opacity: 0
+        });
     }
 
     _createModal () {
@@ -317,8 +316,10 @@ const WarningDialog = new (class extends Dialog {
 
 // Blocking popup about an exception that occured and is blocking execution
 const ErrorDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'error';
+    constructor () {
+        super({
+            key: 'error'
+        });
     }
 
     _createModal () {
@@ -354,11 +355,10 @@ const ErrorDialog = new (class extends Dialog {
 
 const FileEditDialog = new (class extends Dialog {
     constructor () {
-        super(0);
-    }
-
-    _intl_key () {
-        return 'file_edit';
+        super({
+            key: 'file_edit',
+            opacity: 0
+        });
     }
 
     _createModal () {
@@ -407,8 +407,10 @@ const FileEditDialog = new (class extends Dialog {
 })();
 
 const SaveOnlineScriptDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'save_online_script';
+    constructor () {
+        super({
+            key: 'save_online_script'
+        });
     }
 
     _createModal () {
@@ -506,11 +508,10 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
 
 const EditFileTagDialog = new (class extends Dialog {
     constructor () {
-        super(0);
-    }
-
-    _intl_key () {
-        return 'edit_file_tag';
+        super({
+            key: 'edit_file_tag',
+            opacity: 0
+        });
     }
 
     _createModal () {
@@ -573,11 +574,10 @@ const EditFileTagDialog = new (class extends Dialog {
 
 const ProfileCreateDialog = new (class extends Dialog {
     constructor () {
-        super(0);
-    }
-
-    _intl_key () {
-        return 'profile_create';
+        super({
+            key: 'profile_create',
+            opacity: 0
+        });
     }
 
     _createModal () {
@@ -919,8 +919,10 @@ const ProfileCreateDialog = new (class extends Dialog {
 })();
 
 const TemplateSaveDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'template_save';
+    constructor () {
+        super({
+            key: 'template_save'
+        });
     }
 
     _createModal () {
@@ -998,8 +1000,11 @@ const TemplateSaveDialog = new (class extends Dialog {
 })();
 
 const DataManageDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'data_manage';
+    constructor () {
+        super({
+            key: 'data_manage',
+            opacity: 0
+        });
     }
 
     _createModal () {
@@ -1116,8 +1121,10 @@ const DataManageDialog = new (class extends Dialog {
 })();
 
 const InputDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'input';
+    constructor () {
+        super({
+            key: 'input'
+        });
     }
 
     _createModal () {
@@ -1183,8 +1190,10 @@ const InputDialog = new (class extends Dialog {
 })
 
 const ConfirmDialog = new (class extends Dialog {
-    _intl_key () {
-        return 'confirm';
+    constructor () {
+        super({
+            key: 'confirm'
+        });
     }
 
     _createModal () {
