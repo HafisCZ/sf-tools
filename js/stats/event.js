@@ -1974,7 +1974,11 @@ class FilesView extends View {
 
     // Import file via endpoint
     importEndpoint () {
-        Endpoint.open().then(() => this.show());
+        Endpoint.open().then((actionSuccess) => {
+            if (actionSuccess) {
+                this.show();
+            }
+        });
     }
 
     // Import file via cloud
