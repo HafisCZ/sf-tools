@@ -1,6 +1,8 @@
 const SimulatorDebugDialog = new(class extends Dialog {
-  _intl_key () {
-      return 'simulator_debug';
+  constructor () {
+    super({
+      key: 'simulator_debug'
+    })
   }
 
   _createModal () {

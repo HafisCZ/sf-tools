@@ -311,8 +311,10 @@
 
         <script type="text/javascript">
             const SIMULATOR_RESULTS_DIALOG = new (class extends Dialog {
-                _canDismiss () {
-                    return true;
+                constructor () {
+                    super({
+                        dismissable: true
+                    })
                 }
 
                 _createModal () {
