@@ -116,7 +116,7 @@ div.text .boss-rune {
     opacity: 0.5 !important;
 }
 
-#results-modal .experience div {
+[data-op="experience"] div {
     text-align: center;
     margin-top: 0.5em;
     padding-bottom: 0.5em;

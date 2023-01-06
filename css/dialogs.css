@@ -41,7 +41,7 @@ div.dialog.container > .tight.dialog {
   padding: 0;
 }
 
-div.dialog.container > .dialog > *:not(img) {
+div.dialog.container > .dialog > div {
   width: 100%;
 }
 
@@ -77,18 +77,14 @@ div.dialog.container > .bordered.dialog {
 /* Sections */
 div.dialog.container > .dialog > .header {
   text-align: center;
-
-  padding: 0;
-  margin: 0;
-}
-
-div.dialog.container > .dialog > .left.header {
-  text-align: left;
+  font-family: Lato;
+  font-size: 1.71428571rem;
+  line-height: 1.28571429em;
+  font-weight: 700;
 }
 
 div.dialog.container > .dialog > .separated.header {
   border-bottom: 1px solid rgba(34, 36, 38, .15);
-  margin-bottom: -0.5em;
 }
 
 /* Loader */
