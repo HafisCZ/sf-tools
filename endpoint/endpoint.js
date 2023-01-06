@@ -1,14 +1,19 @@
 class EndpointController {
-    constructor ($iframe, callback) {
+    constructor ($iframe) {
         this.$iframe = $iframe;
-        this.$iframe.attr('src', '/endpoint/index.html');
-        this.$iframe.one('load', () => {
-            this.window = this.$iframe.get(0).contentWindow;
-            this.window.load(() => {
-                Logger.log('ECLIENT', 'Client started');
-                callback(this);
+    }
+
+    load () {
+        return new Promise((resolve) => {
+            this.$iframe.attr('src', '/endpoint/index.html');
+            this.$iframe.one('load', () => {
+                this.window = this.$iframe.get(0).contentWindow;
+                this.window.load(() => {
+                    Logger.log('ECLIENT', 'Client started');
+                    resolve(this);
+                });
             });
-        });
+        }) 
     }
 
     destroy () {
@@ -84,7 +89,7 @@ class EndpointController {
 
     query_single (id, callback, error) {
         this.window.callback['query_single'] = callback;
-        this.window.error['query'] = callback;
+        this.window.error['query'] = error;
 
         Logger.log('ECLIENT', `Querying character: ${ id }`);
         this.window.query_single(id);
@@ -243,7 +248,7 @@ const Endpoint = new ( class {
             this.endpoint.query_collect((text) => this._import(text));
         });
 
-        const executeLogin = () => {
+        const executeLogin = async () => {
             var username = this.$username.val();
             var password = this.$password.val();
             var server = '';
@@ -263,40 +268,29 @@ const Endpoint = new ( class {
             if (username.length < 3 || password.length < 3 || !/\.sfgame\./.test(server)) {
                 return;
             } else {
-                if (this.endpoint) {
-                    this.$step1.hide();
-                    this.$step4.show();
+                this.$step1.hide();
 
-                    if (mode_own) {
-                        this._funcLoginSingle(server, username, password);
-                    } else if (mode_all_members) {
-                        this._funcLoginAll(server, username, password, 'members');
-                    } else if (mode_all_friends) {
-                        this._funcLoginAll(server, username, password, 'friends');
-                    } else if (mode_hall_of_fame) {
-                        this._funcLoginHOF(server, username, password);
-                    } else {
-                        this._funcLogin(server, username, password);
-                    }
-                } else {
-                    this.$step1.hide();
+                if (typeof this.endpoint === 'undefined') {
+                    this.endpoint = new EndpointController(this.$iframe);
+
                     this.$step2.show();
-                    this.endpoint = new EndpointController(this.$iframe, () => {
-                        this.$step2.hide();
-                        this.$step4.show();
+                    await this.endpoint.load();
 
-                        if (mode_own) {
-                            this._funcLoginSingle(server, username, password);
-                        } else if (mode_all_members) {
-                            this._funcLoginAll(server, username, password, 'members');
-                        } else if (mode_all_friends) {
-                            this._funcLoginAll(server, username, password, 'friends');
-                        } else if (mode_hall_of_fame) {
-                            this._funcLoginHOF(server, username, password);
-                        } else {
-                            this._funcLogin(server, username, password);
-                        }
-                    });
+                    this.$step2.hide();
+                }
+
+                this.$step4.show();
+
+                if (mode_own) {
+                    this._funcLoginSingle(server, username, password);
+                } else if (mode_all_members) {
+                    this._funcLoginAll(server, username, password, 'members');
+                } else if (mode_all_friends) {
+                    this._funcLoginAll(server, username, password, 'friends');
+                } else if (mode_hall_of_fame) {
+                    this._funcLoginHOF(server, username, password);
+                } else {
+                    this._funcLogin(server, username, password);
                 }
             }
         }
