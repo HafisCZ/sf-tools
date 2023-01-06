@@ -3,7 +3,7 @@
         return this.find(`[data-op="${op}"]`);
     }
 
-    $.fn.searchfield = function (command, arg, arg2) {
+    $.fn.searchfield = function (command, arg) {
         return this.each(function () {
             var $this = $(this);
 
@@ -16,12 +16,10 @@
                 this.array = [];
                 this.starred = Preferences.get('starred', []);
 
-                this.limit = arg;
-
                 this.shown = false;
                 this.showninfo = false;
 
-                for (var [ key, value ] of Object.entries(arg2 || { })) {
+                for (var [ key, value ] of Object.entries(arg || { })) {
                     this.$info.append(`<div class="css-search-entryinfo"><code>${ key.length == 2 ? '' : '&nbsp;' }${ key }: &nbsp;&nbsp;</code>${ value }</div>`);
                 }
 
@@ -108,7 +106,7 @@
                         }
 
                         this.array.splice(0, 0, arg);
-                        if (this.array.length > this.limit) {
+                        if (this.array.length > 5) {
                             this.array.pop();
                         }
 
