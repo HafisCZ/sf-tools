@@ -869,6 +869,7 @@
         "username": "Username",
         "password": "Password",
         "mode": {
+            "title": "Capture mode",
             "own": "Capture own character",
             "default": "Capture own + selected characters",
             "guild": "Capture own + guild characters",

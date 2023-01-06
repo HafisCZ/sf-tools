@@ -103,6 +103,8 @@ class EndpointController {
     }
 }
 
+const ENDPOINT_MODES = ['own', 'default', 'guild', 'friends', 'hall_of_fame'];
+
 const Endpoint = new ( class {
     start () {
         return new Promise(resolve => {
@@ -133,32 +135,6 @@ const Endpoint = new ( class {
             closable: false,
             transition: 'fade'
         }).modal('show');
-    }
-
-    _setModeSelection () {
-        let selectionMode = SharedPreferences.getRaw('endpoint_mode', 'default');
-        switch (selectionMode) {
-            case 'own': {
-                this.$modeOwn.checkbox('set checked');
-                break;
-            }
-            case 'all':
-            case 'all_members': {
-                this.$modeAllMembers.checkbox('set checked');
-                break;
-            }
-            case 'all_friends': {
-                this.$modeAllFriends.checkbox('set checked');
-                break;
-            }
-            case 'hall_of_fame': {
-                this.$modeHallOfFame.checkbox('set checked');
-                break;
-            }
-            default: {
-                this.$modeDefault.checkbox('set checked');
-            }
-        }
     }
 
     _showError (text, hard = false) {
@@ -197,12 +173,6 @@ const Endpoint = new ( class {
         this.$parent.modal('hide');
     }
 
-    _addModeBinding (name, type) {
-        return this.$parent.operator(`mode${name}`).checkbox({
-            onChecked: () => SharedPreferences.setRaw('endpoint_mode', type)
-        });
-    }
-
     _addBindings () {
         // Login Form
         this.$step1 = this.$parent.find('[data-op="step1"]');
@@ -222,15 +192,22 @@ const Endpoint = new ( class {
         this.$errorText = this.$parent.find('[data-op="error-text"]');
         this.$errorButton = this.$parent.find('[data-op="error-button"]');
 
+        // Endpoint credentials
         this.$username = this.$parent.find('[data-op="username"]');
         this.$password = this.$parent.find('[data-op="password"]');
 
-        this.$modeOwn = this._addModeBinding('Own', 'own');
-        this.$modeDefault = this._addModeBinding('Default', 'default');
-        this.$modeAllMembers = this._addModeBinding('AllMembers', 'all_members');
-        this.$modeAllFriends = this._addModeBinding('AllFriends', 'all_friends');
-        this.$modeHallOfFame = this._addModeBinding('HallOfFame', 'hall_of_fame');
-        this._setModeSelection();
+        // Endpoint mode
+        this.$mode = this.$parent.operator('mode');
+        this.$mode.dropdown({
+            values: ENDPOINT_MODES.map((value) => ({
+                value,
+                name: this._intl(`mode.${value}`),
+                selected: value === SharedPreferences.getRaw('endpoint_mode', 'default')
+            })),
+            onChange: (value) => {
+                SharedPreferences.setRaw('endpoint_mode', value)
+            }
+        });
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
@@ -252,11 +229,6 @@ const Endpoint = new ( class {
             var username = this.$username.val();
             var password = this.$password.val();
             var server = '';
-
-            const mode_own = this.$modeOwn.checkbox('is checked');
-            const mode_all_members = this.$modeAllMembers.checkbox('is checked');
-            const mode_all_friends = this.$modeAllFriends.checkbox('is checked');
-            const mode_hall_of_fame = this.$modeHallOfFame.checkbox('is checked');
 
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
@@ -281,15 +253,16 @@ const Endpoint = new ( class {
 
                 this.$step4.show();
 
-                if (mode_own) {
+                const mode = this.$mode.dropdown('get value');
+                if (mode === 'own') {
                     this._funcLoginSingle(server, username, password);
-                } else if (mode_all_members) {
+                } else if (mode === 'members') {
                     this._funcLoginAll(server, username, password, 'members');
-                } else if (mode_all_friends) {
+                } else if (mode === 'friends') {
                     this._funcLoginAll(server, username, password, 'friends');
-                } else if (mode_hall_of_fame) {
+                } else if (mode === 'hall_of_fame') {
                     this._funcLoginHOF(server, username, password);
-                } else {
+                } else /* default */ {
                     this._funcLogin(server, username, password);
                 }
             }
@@ -453,36 +426,11 @@ const Endpoint = new ( class {
                     <label>${this._intl('password')}</label>
                     <input type="password" autocomplete="current-password" name="password" data-op="password">
                 </div>
-                <div class="grouped fields">
-                    <div class="field">
-                        <div class="ui radio checkbox" data-op="modeOwn">
-                            <input type="radio" name="endpointMode">
-                            <label>${this._intl('mode.own')}</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox" data-op="modeDefault">
-                            <input type="radio" name="endpointMode">
-                            <label>${this._intl('mode.default')}</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox" data-op="modeAllMembers">
-                            <input type="radio" name="endpointMode">
-                            <label>${this._intl('mode.guild')}</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox" data-op="modeAllFriends">
-                            <input type="radio" name="endpointMode">
-                            <label>${this._intl('mode.friends')}</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox" data-op="modeHallOfFame">
-                            <input type="radio" name="endpointMode">
-                            <label>${this._intl('mode.hall_of_fame')}</label>
-                        </div>
+                <div class="field">
+                    <label>${this._intl('mode.title')}</label>
+                    <div class="ui fluid selection dropdown" data-op="mode">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
                     </div>
                 </div>
                 <div class="ui two buttons">
