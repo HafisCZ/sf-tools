@@ -396,7 +396,7 @@ const Endpoint = new (class extends Dialog {
                 <div class="field">
                     <label>${this.intl('username')}</label>
                     <div class="ui input">
-                        <input type="text" autocomplete="username" data-op="username" name="username" placeholder="username@s1.sfgame.de">
+                        <input type="text" autocomplete="username" data-op="username" name="username" placeholder="username@s1.sfgame.de" pattern="^(.{3,})@(.+\.sfgame\..+)$">
                     </div>
                 </div>
                 <div class="field">
