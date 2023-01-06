@@ -1266,7 +1266,7 @@ const DatabaseManager = new (class {
             players = players.filter(({ identifier, timestamp }) => !this.hasPlayer(identifier, timestamp))
         }
 
-        if (flags.sessionOnly) {
+        if (flags.temporary) {
             for (const group of groups) {
                 this._addGroup(group);
                 this._addToSession(group);

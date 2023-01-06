@@ -876,6 +876,7 @@
             "friends": "Capture own + friend characters",
             "hall_of_fame": "Capture own + top 50 HoF characters"
         },
+        "temporary": "Discard capture when page is closed",
         "cancel": "Cancel",
         "continue": "Continue",
         "step2": {
