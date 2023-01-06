@@ -444,7 +444,13 @@ class ModelRegistry {
 
 const DatabaseManager = new (class {
     constructor () {
+        this.SessionObjects = {};
+
         this._reset();
+    }
+
+    _addToSession (object) {
+        this.SessionObjects[_uuid(object)] = object;
     }
 
     // INTERNAL: Reset all content
@@ -719,6 +725,20 @@ const DatabaseManager = new (class {
         await this.refreshTrackers();
 
         this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
+
+        // Restore session-only objects
+        const sessionObjects = Object.values(this.SessionObjects);
+        if (sessionObjects.length > 0) {
+            for (const object of Object.values(sessionObjects)) {
+                if (this._isPlayer(object.identifier)) {
+                    this._initModel('Player', object);
+                } else {
+                    this._initModel('Group', object);
+                }
+            }    
+
+            this._updateLists();
+        }
 
         Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
     }
@@ -1117,8 +1137,8 @@ const DatabaseManager = new (class {
     // Endpoint - string
     // Share - object
     // Archive - string
-    async import (text, timestamp, timestampOffset) {
-        await this._import(_jsonify(text), timestamp, timestampOffset);
+    async import (text, timestamp, timestampOffset, flags) {
+        await this._import(_jsonify(text), timestamp, timestampOffset, flags);
     }
 
     async export (identifiers, timestamps, constraint) {
@@ -1240,33 +1260,48 @@ const DatabaseManager = new (class {
         for (const player of players) {
             MigrationUtils.migratePlayer(player);
         }
+
         if (flags.skipExisting) {
             groups = groups.filter(({ identifier, timestamp }) => !this.hasGroup(identifier, timestamp))
             players = players.filter(({ identifier, timestamp }) => !this.hasPlayer(identifier, timestamp))
         }
 
-        for (let group of groups) {
-            this._addGroup(group);
-            this._addMetadata(group.identifier, group.timestamp);
+        if (flags.sessionOnly) {
+            for (const group of groups) {
+                this._addGroup(group);
+                this._addToSession(group);
+            }
 
-            await this.Database.set('groups', group);
+            for (const player of players) {
+                this._addPlayer(player);
+                this._addToSession(player);
+            }
+
+            this._updateLists();
+        } else {
+            for (let group of groups) {
+                this._addGroup(group);
+                this._addMetadata(group.identifier, group.timestamp);
+    
+                await this.Database.set('groups', group);
+            }
+    
+            for (let player of players) {
+                this._addPlayer(player);
+                this._addMetadata(player.identifier, player.timestamp);
+    
+                await this.Database.set('players', player);
+            }
+    
+            await this._updateMetadata();
+    
+            this._updateLists();
+            for (const { identifier, timestamp } of players) {
+                await this._track(identifier, timestamp);
+            }
+    
+            await Actions.apply(players, groups);
         }
-
-        for (let player of players) {
-            this._addPlayer(player);
-            this._addMetadata(player.identifier, player.timestamp);
-
-            await this.Database.set('players', player);
-        }
-
-        await this._updateMetadata();
-
-        this._updateLists();
-        for (const { identifier, timestamp } of players) {
-            await this._track(identifier, timestamp);
-        }
-
-        await Actions.apply(players, groups);
     }
 
     getTracker (identifier, tracker) {
@@ -1542,22 +1577,22 @@ const DatabaseManager = new (class {
         return { players, groups };
     }
 
-    async _import (json, timestamp, timestampOffset = -3600000) {
+    async _import (json, timestamp, timestampOffset = -3600000, flags = {}) {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
                 for (let file of json) {
-                    await this._addFile(null, file.players, file.groups);
+                    await this._addFile(null, file.players, file.groups, flags);
                 }
             } else {
-                await this._addFile(json, null, null);
+                await this._addFile(json, null, null, flags);
             }
         } else if (typeof json == 'object' && _dig(json, 'players')) {
-            await this._addFile(null, json.players, json.groups);
+            await this._addFile(null, json.players, json.groups, flags);
         } else {
             // HAR, Endpoint
             let { players, groups } = this._import_har(json, timestamp, timestampOffset);
-            await this._addFile(null, players, groups);
+            await this._addFile(null, players, groups, flags);
         }
     }
 })();
