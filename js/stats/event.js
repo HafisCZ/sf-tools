@@ -17,12 +17,9 @@ class DynamicLoader {
         }
     }
 
-    start (callback, triggerImmediately = false) {
+    start (callback) {
         this.callback = callback;
-
-        if (triggerImmediately) {
-            this.callback();
-        }
+        this.callback();
     }
 
     stop () {
@@ -1529,16 +1526,15 @@ class GroupsView extends View {
     refresh () {
         this.$list.empty();
 
-        const rows = [];
         const latestPlayerTimestamp = this.empty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
-
         const filteredEntries = this.entries.filter(group => {
-            let visible = !DatabaseManager.Hidden.has(group.Latest.Identifier);
-            let own = group.Own;
+            const visible = !DatabaseManager.Hidden.has(group.Latest.Identifier);
+            const own = group.Own;
 
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override) && (this.empty || group.LatestDisplayTimestamp);
         });
 
+        const rows = [];
         for (let i = 0; i < filteredEntries.length; i += 5) {
             rows.push(`
                 <div class="row">
@@ -1784,15 +1780,14 @@ class PlayersView extends View {
     refresh () {
         this.$list.empty();
 
-        let rows = [];
-
-        let filteredEntries = this.entries.filter(player => {
-            let visible = !DatabaseManager.Hidden.has(player.Latest.Identifier);
-            let own = player.Own;
-
+        const filteredEntries = this.entries.filter(player => {
+            const visible = !DatabaseManager.Hidden.has(player.Latest.Identifier);
+            const own = player.Own;
+            
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override);
         })
-
+        
+        const rows = [];
         for (let i = 0; i < filteredEntries.length; i += 5) {
             rows.push(`
                 <div class="row">
@@ -2239,7 +2234,7 @@ class FilesView extends View {
                 if (displayEntries.length == 0) {
                     this.advancedLoader.stop();
                 }
-            }, true);
+            });
         });
     }
 
@@ -2374,7 +2369,7 @@ class FilesView extends View {
             if (entries.length == 0) {
                 this.simpleLoader.stop();
             }
-        }, true);
+        });
     }
 
     updateTagFilterButtons () {
