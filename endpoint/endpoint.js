@@ -154,12 +154,6 @@ const Endpoint = new ( class {
                 this.$modeDefault.checkbox('set checked');
             }
         }
-
-        this.$modeDefault.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'default') });
-        this.$modeOwn.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'own') });
-        this.$modeAllMembers.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all_members') });
-        this.$modeAllFriends.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all_friends') });
-        this.$modeHallOfFame.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'hall_of_fame') });
     }
 
     _showError (text, hard = false) {
@@ -198,6 +192,12 @@ const Endpoint = new ( class {
         this.$parent.modal('hide');
     }
 
+    _addModeBinding (name, type) {
+        return this.$parent.operator(`mode${name}`).checkbox({
+            onChecked: () => SharedPreferences.setRaw('endpoint_mode', type)
+        });
+    }
+
     _addBindings () {
         // Login Form
         this.$step1 = this.$parent.find('[data-op="step1"]');
@@ -220,11 +220,11 @@ const Endpoint = new ( class {
         this.$username = this.$parent.find('[data-op="username"]');
         this.$password = this.$parent.find('[data-op="password"]');
 
-        this.$modeDefault = this.$parent.find('[data-op="modeDefault"]').checkbox();
-        this.$modeOwn = this.$parent.find('[data-op="modeOwn"]').checkbox();
-        this.$modeAllMembers = this.$parent.find('[data-op="modeAllMembers"]').checkbox();
-        this.$modeAllFriends = this.$parent.find('[data-op="modeAllFriends"]').checkbox();
-        this.$modeHallOfFame = this.$parent.find('[data-op="modeHallOfFame"]').checkbox();
+        this.$modeOwn = this._addModeBinding('Own', 'own');
+        this.$modeDefault = this._addModeBinding('Default', 'default');
+        this.$modeAllMembers = this._addModeBinding('AllMembers', 'all_members');
+        this.$modeAllFriends = this._addModeBinding('AllFriends', 'all_friends');
+        this.$modeHallOfFame = this._addModeBinding('HallOfFame', 'hall_of_fame');
         this._setModeSelection();
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
@@ -492,7 +492,7 @@ const Endpoint = new ( class {
                     </div>
                     <div class="field">
                         <div class="ui radio checkbox" data-op="modeDefault">
-                            <input type="radio" name="endpointMode" checked="checked">
+                            <input type="radio" name="endpointMode">
                             <label>${this._intl('mode.default')}</label>
                         </div>
                     </div>
