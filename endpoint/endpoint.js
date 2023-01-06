@@ -393,20 +393,14 @@ const Endpoint = new ( class {
 
     _createModal () {
         this.$parent = $(`
-            <div class="ui basic modal">
+            <div class="ui mini basic modal">
                 <iframe class="opacity-0 pointer-events-none position-fixed" data-op="iframe"></iframe>
-                <div class="ui grid">
-                    <div class="five wide column"></div>
-                    <div class="six wide column">
-                        <div data-op="step1" style="display: none;">${this._createStep1()}</div>
-                        <div data-op="step2" style="display: none;">${this._createStep2()}</div>
-                        <div data-op="step3" style="display: none;">${this._createStep3()}</div>
-                        <div data-op="step4" style="display: none;">${this._createStep4()}</div>
-                        <div data-op="step5" style="display: none;">${this._createStep5()}</div>
-                        <div data-op="step6" style="display: none;">${this._createStep6()}</div>
-                    </div>
-                    <div class="five wide column"></div>
-                </div>
+                <div data-op="step1" style="display: none;">${this._createStep1()}</div>
+                <div data-op="step2" style="display: none;">${this._createStep2()}</div>
+                <div data-op="step3" style="display: none;">${this._createStep3()}</div>
+                <div data-op="step4" style="display: none;">${this._createStep4()}</div>
+                <div data-op="step5" style="display: none;">${this._createStep5()}</div>
+                <div data-op="step6" style="display: none;">${this._createStep6()}</div>
             </div>
         `);
         
