@@ -1003,9 +1003,8 @@ class BrowseView extends View {
         }, SiteOptions.browse_hidden);
 
         // Filter
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
+        this.$filter = this.$parent.operator('filter').searchfield(
             'create',
-            5,
             _array_to_hash(
                 ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 'qc', 't'],
                 k => [k, intl(`stats.filters.${k}`)]
@@ -1414,9 +1413,8 @@ class GroupsView extends View {
         });
 
         // Filter
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
+        this.$filter = this.$parent.operator('filter').searchfield(
             'create',
-            5,
             _array_to_hash(
                 ['g', 's', 'l', 'h', 'a', 'd'],
                 k => [k, intl(`stats.filters.${k}`)]
@@ -1635,9 +1633,8 @@ class PlayersView extends View {
         });
 
         // Filter
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
+        this.$filter = this.$parent.operator('filter').searchfield(
             'create',
-            5,
             _array_to_hash(
                 ['c', 'p', 'g', 's', 'e', 'l', 'a', 'h', 'd'],
                 k => [k, intl(`stats.filters.${k}`)]
