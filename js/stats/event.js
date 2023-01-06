@@ -99,7 +99,7 @@ class GroupDetailView extends View {
             DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(data => UI.OnlineShareFile.show(data));
+            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(data => DialogController.open(ExportSharedFileDialog, data));
         });
 
         // Context menu
@@ -781,7 +781,7 @@ class PlayerHistoryView extends View {
             DatabaseManager.export([ this.identifier ], this.list.slice(0, 5).map(entry => entry[0])).then(Exporter.json);
         });
         this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export([ this.identifier ]).then(data => UI.OnlineShareFile.show(data));
+            DatabaseManager.export([ this.identifier ]).then(data => DialogController.open(ExportSharedFileDialog, data));
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -956,7 +956,7 @@ class BrowseView extends View {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => $(el).attr('data-id'));
                         ids.push(source.attr('data-id'));
 
-                        DatabaseManager.export(_uniq(ids)).then(data => UI.OnlineShareFile.show(data));
+                        DatabaseManager.export(_uniq(ids)).then(data => DialogController.open(ExportSharedFileDialog, data));
                     }
                 },
                 {
@@ -1400,7 +1400,7 @@ class GroupsView extends View {
                     action: (source) => {
                         const group = source.attr('data-id');
                         const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
-                        DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => UI.OnlineShareFile.show(data));
+                        DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => DialogController.open(ExportSharedFileDialog, data));
                     }
                 },
                 {
@@ -1620,7 +1620,7 @@ class PlayersView extends View {
                 {
                     label: intl('stats.fast_export.label'),
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(data => UI.OnlineShareFile.show(data));
+                        DatabaseManager.export([ source.attr('data-id') ]).then(data => DialogController.open(ExportSharedFileDialog, data));
                     }
                 },
                 {
@@ -1840,7 +1840,7 @@ class FilesView extends View {
 
     // Export all to cloud
     exportAllCloud () {
-        DatabaseManager.export(undefined, undefined, this.exportConstraint()).then(data => UI.OnlineShareFile.show(data));
+        DatabaseManager.export(undefined, undefined, this.exportConstraint()).then(data => DialogController.open(ExportSharedFileDialog, data));
     }
 
     // Export selected to json file
@@ -1871,7 +1871,7 @@ class FilesView extends View {
     exportSelectedCloud () {
         if (this.simple) {
             DatabaseManager.export(undefined, this.selectedFiles, this.exportConstraint()).then((file) => {
-                UI.OnlineShareFile.show(file);
+                DialogController.open(ExportSharedFileDialog, file);
             });
         } else {
             const players = [];
@@ -1884,10 +1884,13 @@ class FilesView extends View {
                 }
             }
 
-            UI.OnlineShareFile.show({
-                players,
-                groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
-            });
+            DialogController.open(
+                ExportSharedFileDialog,
+                {
+                    players,
+                    groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
+                }
+            );
         }
     }
 
@@ -2910,90 +2913,6 @@ class SettingsFloatView extends SettingsView {
         SettingsManager.remove(this.settings.name);
         this.hide();
         UI.current.load();
-    }
-}
-
-// Exception View
-class ExceptionView extends View {
-    constructor (parent) {
-        super(parent);
-    }
-
-    alert (text) {
-        this.$parent.find('[data-op="content"]').html(text);
-        this.$parent.modal('show');
-    }
-}
-
-class OnlineShareFileView extends View {
-    constructor (parent) {
-        super(parent);
-
-        // Setup checkboxes
-        this.$once = this.$parent.find('[data-op="once"]');
-
-        // Other elements
-        this.$code = this.$parent.find('[data-op="code"]');
-        this.$button = this.$parent.find('[data-op="send"]');
-
-        // Containers
-        this.$codeContainer = this.$parent.find('[data-op="content-code"]');
-        this.$buttonContainer = this.$parent.find('[data-op="content-button"]');
-
-        // Handlers
-        this.$button.click(() => {
-            let once = this.$once.checkbox('is checked');
-
-            // Set button to loading state
-            this.$button.addClass('loading disabled');
-
-            // Send request
-            this.send(once);
-        });
-    }
-
-    show (data) {
-        // Shared object
-        this.sharedObj = {
-            data: data
-        };
-
-        // Setup checkboxes
-        this.$once.checkbox('set checked');
-
-        // Toggle buttons
-        this.$buttonContainer.show();
-        this.$codeContainer.hide();
-
-        this.$button.removeClass('loading disabled');
-
-        // Open modal
-        this.$parent.modal({
-            closable: false
-        }).modal('show');
-    }
-
-    showKey (success, key) {
-        if (success) {
-            this.$buttonContainer.hide();
-            this.$codeContainer.show();
-
-            // Show key
-            this.$code.text(key);
-        } else {
-            this.$button.removeClass('loading disabled').transition('shake');
-        }
-    }
-
-    send (singleUse = true) {
-        SiteAPI.post('file_create', {
-            content: JSON.stringify({ data: this.sharedObj.data }),
-            multiple: !singleUse
-        }).then(({ file }) => {
-            this.showKey(true, file.key);
-        }).catch(() => {
-            this.showKey(false, null);
-        })
     }
 }
 

@@ -191,6 +191,10 @@
   margin-top: 0.25em !important;
 }
 
+.mt-1 {
+  margin-top: 0.25em;
+}
+
 .\!mt-2 {
   margin-top: 0.5em !important;
 }
@@ -225,6 +229,10 @@
 
 .mt-2 {
   margin-top: 0.5em;
+}
+
+.mt-6 {
+  margin-top: 1.5em;
 }
 
 .ml-8 {
