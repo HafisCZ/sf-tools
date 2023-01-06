@@ -178,6 +178,14 @@
   margin-top: 2em;
 }
 
+.\!mr-8 {
+  margin-right: 2em !important;
+}
+
+.\!mr-16 {
+  margin-right: 4em !important;
+}
+
 .\!mt-8 {
   margin-top: 2em !important;
 }

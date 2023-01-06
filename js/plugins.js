@@ -52,7 +52,7 @@
                 });
 
                 $parent.prepend(this.$info);
-                $parent.append($('<i class="info circle link icon css-search-info"></i>').mouseenter(event => {
+                $parent.append($('<i class="info circle link icon"></i>').mouseenter(event => {
                     if (!this.showninfo) {
                         if (this.shown) {
                             $this.searchfield('hide');
@@ -63,7 +63,7 @@
                 }));
 
                 $parent.prepend(this.$popup);
-                $parent.append($('<i class="angle double down link icon css-search-dropdown"></i>').mouseenter(event => {
+                $parent.append($('<i class="angle double down link icon !mr-8"></i>').mouseenter(event => {
                     if (!this.shown) {
                         if (this.showninfo) {
                             $this.searchfield('hideinfo');
@@ -73,7 +73,7 @@
                     }
                 }));
 
-                $parent.append($('<i class="close icon link icon css-search-clear"></i>').click(event => {
+                $parent.append($('<i class="close link icon !mr-16"></i>').click(event => {
                     $this.searchfield('clear');
                 }));
 
