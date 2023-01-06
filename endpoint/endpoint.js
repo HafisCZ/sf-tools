@@ -105,36 +105,22 @@ class EndpointController {
 
 const ENDPOINT_MODES = ['own', 'default', 'guild', 'friends', 'hall_of_fame'];
 
-const Endpoint = new ( class {
-    start () {
-        return new Promise(resolve => {
-            if (!this.$parent) {
-                this._createModal();
-                this._addBindings();
-            }
-
-            this.resolveFunction = resolve;
-            this._show();
-        })
-    }
-
-    _intl (key) {
+const Endpoint = new (class extends Dialog {
+    intl (key) {
         return intl(`endpoint.${key}`);
     }
 
-    _show () {
+    _canOpen () {
+        return true;
+    }
+
+    _applyArguments () {
         this.$step1.show();
         this.$step2.hide();
         this.$step3.hide();
         this.$step4.hide();
         this.$step5.hide();
         this.$step6.hide();
-
-        this.$parent.modal({
-            centered: true,
-            closable: false,
-            transition: 'fade'
-        }).modal('show');
     }
 
     _showError (text, hard = false) {
@@ -145,7 +131,7 @@ const Endpoint = new ( class {
             this.$step6.hide();
 
             if (hard) {
-                this._funcShutdown(false);
+                this.close(false);
             } else {
                 this.$step1.show();
             }
@@ -168,12 +154,7 @@ const Endpoint = new ( class {
         }
     }
 
-    _hide (actionSuccess) {
-        this.resolveFunction(actionSuccess);
-        this.$parent.modal('hide');
-    }
-
-    _addBindings () {
+    _createBindings () {
         // Login Form
         this.$step1 = this.$parent.find('[data-op="step1"]');
         // Unity Loader
@@ -201,7 +182,7 @@ const Endpoint = new ( class {
         this.$mode.dropdown({
             values: ENDPOINT_MODES.map((value) => ({
                 value,
-                name: this._intl(`mode.${value}`),
+                name: this.intl(`mode.${value}`),
                 selected: value === SharedPreferences.getRaw('endpoint_mode', 'default')
             })),
             onChange: (value) => {
@@ -217,7 +198,7 @@ const Endpoint = new ( class {
         this.endpoint = undefined;
         this.downloading = [];
 
-        this.$parent.find('[data-op="back"]').click(() => this._funcShutdown(false));
+        this.$parent.find('[data-op="back"]').click(() => this.close(false));
 
         this.$import.click(() => {
             this.$step4.show();
@@ -233,7 +214,7 @@ const Endpoint = new ( class {
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
             } else {
-                Toast.warn(this._intl('user_error.title'), this._intl('user_error.message'));
+                Toast.warn(this.intl('user_error.title'), this.intl('user_error.message'));
                 return;
             }
 
@@ -281,14 +262,14 @@ const Endpoint = new ( class {
             Toast.error(intl('database.import_error'), e.message);
             Logger.error(e, 'Error occured while trying to import a file!');
         }).then(() => {
-            this._funcShutdown(true);
+            this.close(true);
         });
     }
 
     _funcLoginSingle (server, username, password) {
         this.endpoint.login_query_only(server, username, password, (text) => this._import(text), () => {
             this.$step4.hide();
-            this._showError(this._intl('credentials_error'));
+            this._showError(this.intl('credentials_error'));
         });
     };
 
@@ -296,7 +277,7 @@ const Endpoint = new ( class {
         this.endpoint.login_query_hall_of_fame(server, username, password, (text) => this._import(text), () => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError(this._intl('credentials_error'));
+            this._showError(this.intl('credentials_error'));
         }, (percent) => {
             this.$step4.hide();
             this.$step5.show();
@@ -308,7 +289,7 @@ const Endpoint = new ( class {
         this.endpoint.login_query_many(server, username, password, (text) => text.split(';')[kind === 'members' ? 0 : 1], (text) => this._import(text), () => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError(this._intl('credentials_error'));
+            this._showError(this.intl('credentials_error'));
         }, percentDone => {
             this.$step4.hide();
             this.$step5.show();
@@ -372,111 +353,115 @@ const Endpoint = new ( class {
                         this._removeDownloading(name);
                     }, () => {
                         this.$step3.hide();
-                        this._showError(this._intl('download_error'));
+                        this._showError(this.intl('download_error'));
                     });
                 })
             }
         }, () => {
             this.$step4.hide();
-            this._showError(this._intl('credentials_error'));
+            this._showError(this.intl('credentials_error'));
         });
     }
 
-    _funcShutdown (actionSuccess) {
+    close (actionSuccess) {
         if (this.endpoint) {
             this.endpoint.destroy();
             this.endpoint = undefined;
         }
 
-        this._hide(actionSuccess);
+        super.close(actionSuccess);
     }
 
     _createModal () {
-        this.$parent = $(`
-            <div class="ui mini basic modal">
+        return `
+            <div class="very small basic dialog">
                 <iframe class="opacity-0 pointer-events-none position-fixed" data-op="iframe"></iframe>
-                <div data-op="step1" style="display: none;">${this._createStep1()}</div>
-                <div data-op="step2" style="display: none;">${this._createStep2()}</div>
-                <div data-op="step3" style="display: none;">${this._createStep3()}</div>
-                <div data-op="step4" style="display: none;">${this._createStep4()}</div>
-                <div data-op="step5" style="display: none;">${this._createStep5()}</div>
-                <div data-op="step6" style="display: none;">${this._createStep6()}</div>
+                <div data-op="step1" class="w-full" style="display: none;">${this._createStep1()}</div>
+                <div data-op="step2" class="w-full" style="display: none;">${this._createStep2()}</div>
+                <div data-op="step3" class="w-full" style="display: none;">${this._createStep3()}</div>
+                <div data-op="step4" class="w-full" style="display: none;">${this._createStep4()}</div>
+                <div data-op="step5" class="w-full" style="display: none;">${this._createStep5()}</div>
+                <div data-op="step6" class="w-full" style="display: none;">${this._createStep6()}</div>
             </div>
-        `);
-        
-        $(window.body).append(this.$parent);
+        `;
     }
 
+    // Login screen
     _createStep1 () {
         return `
             <div class="ui inverted form">
                 <div class="field">
-                    <label>${this._intl('username')}</label>
-                    <div class="ui inverted input">
+                    <label>${this.intl('username')}</label>
+                    <div class="ui input">
                         <input type="text" autocomplete="username" data-op="username" name="username" placeholder="username@s1.sfgame.de">
                     </div>
                 </div>
                 <div class="field">
-                    <label>${this._intl('password')}</label>
+                    <label>${this.intl('password')}</label>
                     <input type="password" autocomplete="current-password" name="password" data-op="password">
                 </div>
                 <div class="field">
-                    <label>${this._intl('mode.title')}</label>
+                    <label>${this.intl('mode.title')}</label>
                     <div class="ui fluid selection dropdown" data-op="mode">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
                     </div>
                 </div>
                 <div class="ui two buttons">
-                    <button class="ui secondary button" data-op="back">${this._intl('cancel')}</button>
-                    <button class="ui primary button" data-op="login">${this._intl('continue')}</button>
+                    <button class="ui secondary button" data-op="back">${this.intl('cancel')}</button>
+                    <button class="ui primary button" data-op="login">${this.intl('continue')}</button>
                 </div>
             </div>
         `;
     }
 
+    // Unity loader
     _createStep2 () {
         return `
             <img class="ui centered image unity-loading" src="/endpoint/logo.png">
-            <h3 class="ui white centered header">${this._intl('step2.title')}</h3>
+            <h3 class="ui white centered header">${this.intl('step2.title')}</h3>
         `;
     }
 
+    // Selection screen
     _createStep3 () {
         return `
-            <h2 class="ui header centered white">${this._intl('step3.title')}</h2>
+            <h2 class="ui header centered white">${this.intl('step3.title')}</h2>
             <hr/>
             <div class="ui celled relaxed list text-white" data-op="list" style="height: 30em; overflow-y: auto; font-size: 110%;">
 
             </div>
             <div class="ui two buttons">
-                <button class="ui secondary button" data-op="back">${this._intl('cancel')}</button>
-                <button class="ui primary button" data-op="import">${this._intl('continue')}</button>
+                <button class="ui secondary button" data-op="back">${this.intl('cancel')}</button>
+                <button class="ui primary button" data-op="import">${this.intl('continue')}</button>
             </div>
         `;
     }
 
+    // Loader
     _createStep4 () {
         return `
-            <div class="ui large active text loader">${this._intl('step4.title')}</div>
+            <div class="ui large text-white active text loader">${this.intl('step4.title')}</div>
         `;
     }
 
+    // Progress bar
     _createStep5 () {
         return `
-            <h3 class="ui white centered header">${this._intl('step4.message')}</h3>
+            <h3 class="ui white centered header">${this.intl('step4.message')}</h3>
             <div class="ui green active progress" data-percent="0">
                 <div class="bar"></div>
             </div>
         `;
     }
 
+    // Error message
     _createStep6 () {
         return `
             <h2 class="ui white centered header" data-op="error-text"></h2>
             <br/>
             <br/>
-            <button class="ui secondary button fluid" data-op="error-button">${this._intl('continue')}</button>
+            <button class="ui secondary button fluid" data-op="error-button">${this.intl('continue')}</button>
         `;
     }
 })();
@@ -671,7 +656,7 @@ const StatisticsIntegration = new (class {
     }
 
     _importEndpoint () {
-        Endpoint.start().then((actionSuccess) => {
+        Endpoint.open().then((actionSuccess) => {
             if (actionSuccess) {
                 this._poll();
             }
