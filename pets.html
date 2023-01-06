@@ -309,14 +309,51 @@
             </div>
         </div>
 
-        <div id="results-modal" class="ui tiny modal">
-            <div class="header" data-intl="pets.results"></div>
-            <div class="content">
-
-            </div>
-        </div>
-
         <script type="text/javascript">
+            const SIMULATOR_RESULTS_DIALOG = new (class extends Dialog {
+                _canDismiss () {
+                    return true;
+                }
+
+                _createModal () {
+                    return `
+                        <div class="small dialog">
+                            <div class="left separated header">${intl('pets.results')}</div>
+                            <div class="ui three column grid" data-op="content"></div>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$content = this.$parent.operator('content');
+                }
+
+                _applyArguments (results) {
+                    this.$content.html(results.map(({ chance, player, boss }) => {
+                        const playerIndex = 20 * player.Type + player.Pet;
+                        const bossIndex = 20 * boss.Type + boss.Pet;
+
+                        return `
+                            <div class="two wide column">
+                                <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
+                            </div>
+                            <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                ${intl(`pets.names.${playerIndex}`)}
+                            </div>
+                            <div class="two wide column">
+                                <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
+                            </div>
+                            <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                ${intl(`pets.names.${bossIndex}`)}
+                            </div>
+                            <div class="four wide column text-center" style="line-height: 3em;">
+                                ${chance == 0 ? intl('pets.bulk.not_possible') : `${chance.toFixed(chance < 0.01 ? 5 : 2)}%`}
+                            </div>
+                        `;
+                    }).join(''))
+                }
+            })();
+
             Site.ready(function () {
                 $('#sim-threads').captiveInputField('pet_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('pet_sim/iterations', 2.5E6, v => !isNaN(v) && v >= 1);
@@ -626,34 +663,11 @@
                             _sort_des(results, i => i.chance);
 
                             const resultClasses = [0, 0, 0, 0, 0];
-                            results = results.filter(({ player }) => ++resultClasses[player.Type] == 1);
 
-                            $('#results-modal .content').html(`
-                                <div class="ui three column grid">
-                                    ${ results.map(({ chance, player, boss }) => {
-                                        let playerIndex = 20 * player.Type + player.Pet;
-                                        let bossIndex = 20 * boss.Type + boss.Pet;
-                                        return `
-                                            <div class="two wide column">
-                                                <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
-                                            </div>
-                                            <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                                                ${intl(`pets.names.${playerIndex}`)}
-                                            </div>
-                                            <div class="two wide column">
-                                                <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
-                                            </div>
-                                            <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                                                ${intl(`pets.names.${bossIndex}`)}
-                                            </div>
-                                            <div class="four wide column text-center" style="line-height: 3em;">
-                                                ${ chance == 0 ? intl('pets.bulk.not_possible') : `${ chance.toFixed(chance < 0.01 ? 5 : 2) }%` }
-                                            </div>
-                                        `;
-                                    }).join('') }
-                                </div>
-                            `);
-                            $('#results-modal').modal('show');
+                            DialogController.open(
+                                SIMULATOR_RESULTS_DIALOG,
+                                results.filter(({ player }) => ++resultClasses[player.Type] == 1)
+                            )
                         })
                     }
                 })
