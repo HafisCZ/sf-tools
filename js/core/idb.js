@@ -1114,15 +1114,8 @@ const DatabaseManager = new (class {
     // Endpoint - string
     // Share - object
     // Archive - string
-    import (text, timestamp, timestampOffset) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                await this._import(_jsonify(text), timestamp, timestampOffset);
-                resolve();
-            } catch (exception) {
-                reject(exception);
-            }
-        });
+    async import (text, timestamp, timestampOffset) {
+        await this._import(_jsonify(text), timestamp, timestampOffset);
     }
 
     async export (identifiers, timestamps, constraint) {
