@@ -20,8 +20,20 @@
   position: absolute;
 }
 
+.position-relative {
+  position: relative;
+}
+
 .left-8 {
   left: 2em;
+}
+
+.right-3 {
+  right: 0.75em;
+}
+
+.top-4 {
+  top: 1em;
 }
 
 .bottom-0 {
@@ -81,6 +93,10 @@
   gap: 0.5em;
 }
 
+.gap-8 {
+  gap: 2em;
+}
+
 /* Padding */
 .\!p-0 {
   padding: 0 !important;
@@ -99,8 +115,17 @@
   padding-right: 3em;
 }
 
+.px-4 {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
 .pt-4 {
   padding-top: 1em;
+}
+
+.pl-4 {
+  padding-left: 1em;
 }
 
 .pr-2 {
@@ -131,6 +156,10 @@
 
 .mt-0 {
   margin-top: 0;
+}
+
+.m-2 {
+  margin: 0.5em;
 }
 
 .my-2 {
