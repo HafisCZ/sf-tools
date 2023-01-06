@@ -33,7 +33,7 @@ div.dialog.container > .dialog {
   flex-direction: column;
   align-items: center;
 
-  gap: 1.75em;
+  gap: 1.5em;
 }
 
 div.dialog.container > .tight.dialog {
@@ -81,6 +81,10 @@ div.dialog.container > .dialog > .header {
   font-size: 1.71428571rem;
   line-height: 1.28571429em;
   font-weight: 700;
+}
+
+div.dialog.container > .dialog > .left.header {
+  text-align: left;
 }
 
 div.dialog.container > .dialog > .separated.header {

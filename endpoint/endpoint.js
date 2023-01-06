@@ -487,7 +487,7 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="small bordered dialog">
-                <h2 class="header">${this.intl('title')}</h2>
+                <div class="header">${this.intl('title')}</div>
                 <div class="ui form">
                     <div class="field">
                         <label>${this.intl('slot')}:</label>
