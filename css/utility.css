@@ -303,6 +303,10 @@
   background-color: orange !important;
 }
 
+.\!background-green {
+  background-color: green !important;
+}
+
 /* Opacity */
 .opacity-0 {
   opacity: 0;
