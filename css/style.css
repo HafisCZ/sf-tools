@@ -691,13 +691,17 @@ input:disabled {
 }
 
 /* Inverted input */
-.ui.inverted.form  .field .ui.inverted.input input {
+.ui.inverted.inverted.inverted.input input {
     border: 1px solid rgba(255, 255, 255, .15);
     background: #1b1c1d;
     color: rgba(255, 255, 255, .8);
 }
 
-.ui.inverted.form .field.error .ui.inverted.input input {
+.ui.inverted.inverted.inverted.icon.input i {
+    color: rgba(255, 255, 255, .8);
+}
+
+.field.field.error .ui.inverted.input input {
     border-color: #e0b4b4;
     color: #ecd1d1;
 }
