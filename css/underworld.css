@@ -39,13 +39,13 @@
 }
 
 div[data-guild].ui.button.active-guild {
-    background: #212121 !important;
+    background: #666666 !important;
     color: white !important;
     font-weight: bold !important;
 }
 
 div[data-guild].ui.button.active-guild:hover {
-    background: #212121 !important;
+    background: #666666 !important;
     color: white !important;
     font-weight: bold !important;
 }
