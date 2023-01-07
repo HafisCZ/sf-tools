@@ -702,6 +702,15 @@ input:disabled {
     color: #ecd1d1;
 }
 
+/* Inverted button */
+.ui.basic.inverted.button, .ui.basic.inverted.buttons .button {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .5) inset;
+}
+
+.ui.basic.inverted.button:hover, .ui.basic.inverted.buttons .button:hover {
+    box-shadow: 0 0 0 1px white inset;
+}
+
 /* Dark Mode */
 
 body.inverted {
