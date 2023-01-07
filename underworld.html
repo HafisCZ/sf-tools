@@ -36,7 +36,7 @@
 
         <script src="endpoint/endpoint.js"></script>
     </head>
-    <body class="margin-none-bottom">
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
@@ -47,37 +47,49 @@
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
-                    <div class="ui form" id="player-editor"></div>
-                    <div class="ui form" id="underworld-editor">
-                        <div class="ui violet segment !p-2 !mt-2">
+                    <div class="ui inverted form" id="player-editor"></div>
+                    <div class="ui inverted form" id="underworld-editor">
+                        <div class="ui violet inverted segment !p-2 !mt-2">
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="underworld.goblin_pit"></label>
-                                    <input class="text-center" data-path="GoblinPit" placeholder="0 - 15">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="GoblinPit" placeholder="0 - 15">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="underworld.goblin_upgrades"></label>
-                                    <input class="text-center" data-path="GoblinUpgrades">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="GoblinUpgrades">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="underworld.troll_block"></label>
-                                    <input class="text-center" data-path="TrollBlock" placeholder="0 - 15">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="TrollBlock" placeholder="0 - 15">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="underworld.troll_upgrades"></label>
-                                    <input class="text-center" data-path="TrollUpgrades">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="TrollUpgrades">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields !mb-0">
                                 <div class="field">
                                     <label data-intl="underworld.keeper"></label>
-                                    <input class="text-center" data-path="Keeper" placeholder="0 - 15">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="Keeper" placeholder="0 - 15">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="underworld.keeper_upgrades"></label>
-                                    <input class="text-center" data-path="KeeperUpgrades">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="KeeperUpgrades">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -88,40 +100,44 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="add-player" data-intl="simulator.add"></button>
+                                <button class="ui fluid small basic inverted button" type="submit" id="add-player" data-intl="simulator.add"></button>
                             </div>
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="save-player" data-intl="simulator.save"></button>
+                                <button class="ui fluid small basic inverted button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
                             <div class="eight wide column">
-                                <button class="ui small basic icon right floated button" data-position="bottom center" data-intl-tooltip="underworld.shield_mode" id="shield-mode"><i class="shield alternate icon"></i></button>
+                                <button class="ui small basic inverted icon right floated button" data-position="bottom center" data-intl-tooltip="underworld.shield_mode" data-inverted="" id="shield-mode"><i class="shield alternate icon"></i></button>
                             </div>
                         </div>
                         <div class="css-small-row row">
                             <div class="four wide column">
-                                <div class="ui small basic icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" id="paste-mode"><i class="paste icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" id="copy-all"><i class="copy icon"></i></button>
+                                <div class="ui small basic inverted icon fluid two buttons">
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" data-inverted="" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" data-inverted="" id="copy-all"><i class="copy icon"></i></button>
                                 </div>
                             </div>
                             <div class="seven wide column">
-                                <div class="ui small form">
+                                <div class="ui small inverted form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
-                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
+                                            <div class="ui inverted input">
+                                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                            </div>
                                         </div>
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
-                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
+                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted input">
+                                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
+                                <button class="ui fluid small basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
-                        <div class="row selectable-header">
+                        <div class="row selectable-header text-white">
                             <div class="three wide text-center column" data-intl="editor.class"></div>
                             <div class="two wide column" data-intl="editor.level"></div>
                             <div class="six wide column" data-intl="editor.name"></div>
@@ -231,6 +247,7 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
+                    dark: true,
                     scope: (dm) => dm.getLatestPlayers().filter(({ Underworld: uw }) => typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0)),
                     callback: (player) => {
                         underworldEditor.fill(player.Underworld);
@@ -408,7 +425,7 @@
                         let {player, index, score} = playerList[i];
 
                         content += `
-                            <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' }" data-index="${ index }">
+                            <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' } text-white" data-index="${ index }">
                                 <div class="player-index">${ i + 1 }</div>
                                 <div class="three wide text-center column">
                                     <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
