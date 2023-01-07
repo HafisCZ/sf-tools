@@ -71,13 +71,13 @@
             }
         </style>
     </head>
-    <body>
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
             <div class="item" id="p-date"></div>
         </div>
 
-        <div class="pp-main">
+        <div class="pp-main text-white">
             <div class="ui grid">
                 <div class="four wide column">
                     <i class="circle icon" style="color: #32c700"></i> Can be caught anytime<br/>
@@ -93,10 +93,10 @@
                     <i class="warning icon"></i> Hover over the pet name to display requirements to catch it
                 </div>
                 <div class="eight wide column">
-                    <div class="ui tiny form">
+                    <div class="ui tiny inverted form">
                         <div class="four wide field">
                             <label>Sort by</label>
-                            <div class="ui selection dropdown" id="sort">
+                            <div class="ui selection inverted dropdown" id="sort">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
@@ -154,7 +154,7 @@
 
                 for (var i = 0; i < TOTAL_DAYS; i++) {
                     content += `
-                        <td class="${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="width: 1.5em; height: 4em !important; position: relative;">
+                        <td class="text-white ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="width: 1.5em; height: 4em !important; position: relative;">
                             ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? `
                                     <div class="rotated" style="position: absolute; left: -0.3em; top: 1em; width: 3em; height: 2em; font-weight: bold;">
                                         TODAY
@@ -172,7 +172,7 @@
                     <tr style="height: 4em;" class="border-bottom-thick">
                         <td class="border-right-thin">
                             <div style="width: 12em; padding: 0.5em;">
-                                <div class="ui three basic buttons">
+                                <div class="ui three basic inverted buttons">
                                     <div class="ui button" id="p-remove">- 7</div>
                                     <div class="ui button" id="p-zero">0</div>
                                     <div class="ui button" id="p-add">+ 7</div>
@@ -206,13 +206,13 @@
                     var description = PetDescriptions[i];
 
                     var entry = `
-                        <tr ${ ghosted[i] ? 'class="ghosted"' : ''} >
+                        <tr class="text-white ${ ghosted[i] ? 'ghosted' : ''}">
                             <td style="background: ${ PET_COLORS[Math.trunc(i / 20)] }">
                                 <div class="css-img-container clickable" style="width: 4em;" data-id="${ i }">
                                     <img class="ui centered image" src="${ image }">
                                 </div>
                             </td>
-                            <td class="border-right-thin" data-tooltip="${ description }" data-position="right center">
+                            <td class="border-right-thin" data-tooltip="${ description }" data-position="right center" data-inverted="">
                                 <div style="width: 8em;">
                                     <b>${ name }</b>
                                 </div>
