@@ -706,6 +706,10 @@ input:disabled {
     color: #ecd1d1;
 }
 
+.field.field.error .ui.inverted.input input:focus {
+    background: #1b1c1d;
+}
+
 /* Inverted button */
 .ui.basic.inverted.button, .ui.basic.inverted.buttons .button {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, .5) inset;
