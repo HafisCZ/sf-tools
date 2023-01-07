@@ -7,20 +7,24 @@ const Loca = {
     fill: function (co, ze, text = co.toString()) {
         return '0'.repeat(Math.max(0, ze - text.length)) + text;
     },
-    name : function (type, pic, cl) {
-        if (cl == undefined || type >= 8) {
-            return Loca[`item type ${ Loca.fill(type, 2) } pic ${ Loca.fill(pic, 3) }`];
+    name : function (itemType, itemIndex, itemClass) {
+        if (itemClass == undefined || itemType >= 8) {
+            return Loca[`item type ${Loca.fill(itemType, 2)} pic ${Loca.fill(itemIndex, 3)}`];
         } else {
-            return Loca[`item type ${ Loca.fill(type, 2) } class ${ cl } pic ${ Loca.fill(pic, 3) }`];
+            if (itemType > 1 && itemIndex >= 100) {
+                itemClass = 1;
+            }
+
+            return Loca[`item type ${Loca.fill(itemType, 2)} class ${itemClass} pic ${Loca.fill(itemIndex, 3)}`];
         }
     },
-    pic: function (type, pic, vr, cl) {
-        if (type >= 10) {
-            vr = '1'
-            cl = '1'
+    pic: function (itemType, itemIndex, itemVariant, itemClass) {
+        if (itemType >= 10) {
+            itemVariant = 1
+            itemClass = 1
         }
 
-        return `res/items/${type}_${pic}_${vr || '1'}_${cl || '1'}.png`;
+        return `res/items/${itemType}_${itemIndex}_${itemVariant || 1}_${itemClass || 1}.png`;
     },
     'item type 01 class 1 pic 001': 'Old Club',
     'item type 01 class 1 pic 002': 'Toy Sword',
