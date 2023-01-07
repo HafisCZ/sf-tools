@@ -36,7 +36,7 @@
 
         <script src="endpoint/endpoint.js"></script>
     </head>
-    <body class="margin-none-bottom">
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
@@ -44,39 +44,45 @@
         <div class="ui main container">
             <div class="ui two columns stackable grid">
                 <div class="column">
-                    <div class="ui form" id="fortress-editor">
+                    <div class="ui inverted form" id="fortress-editor">
                         <div class="flex flex-col gap-2">
-                            <div class="ui orange segment !p-2 !m-0">
+                            <div class="ui orange inverted segment !p-2 !m-0">
                                 <div class="two fields !mb-0">
                                     <div class="field">
                                         <label data-intl="fortress.warrior_count"></label>
-                                        <input class="text-center" data-path="WarriorCount" placeholder="1 - 45">
+                                        <div class="ui inverted input">
+                                            <input class="text-center" data-path="WarriorCount" placeholder="1 - 45">
+                                        </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="fortress.warrior_level"></label>
-                                        <div class="ui selection dropdown" data-path="WarriorLevel">
+                                        <div class="ui selection inverted dropdown" data-path="WarriorLevel">
                                             <div class="text"></div>
                                             <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="ui blue segment !p-2 !m-0">
+                            <div class="ui blue inverted segment !p-2 !m-0">
                                 <div class="two fields">
                                     <div class="field">
                                         <label data-intl="stats.player.fortress.building12"></label>
-                                        <input class="text-center" data-path="FortificationsLevel" placeholder="0 - 20">
+                                        <div class="ui inverted input">
+                                            <input class="text-center" data-path="FortificationsLevel" placeholder="0 - 20">
+                                        </div>
                                     </div>
                                     <div class="field"></div>
                                 </div>
                                 <div class="two fields">
                                     <div class="field">
                                         <label data-intl="fortress.archer_count"></label>
-                                        <input class="text-center" data-path="ArcherCount" placeholder="0 - 30">
+                                        <div class="ui inverted input">
+                                            <input class="text-center" data-path="ArcherCount" placeholder="0 - 30">
+                                        </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="fortress.archer_level"></label>
-                                        <div class="ui selection dropdown" data-path="ArcherLevel">
+                                        <div class="ui selection inverted dropdown" data-path="ArcherLevel">
                                             <div class="text"></div>
                                             <i class="dropdown icon"></i>
                                         </div>
@@ -85,11 +91,13 @@
                                 <div class="two fields !mb-0">
                                     <div class="field">
                                         <label data-intl="fortress.mage_count"></label>
-                                        <input class="text-center" data-path="MageCount" placeholder="0 - 15">
+                                        <div class="ui inverted input">
+                                            <input class="text-center" data-path="MageCount" placeholder="0 - 15">
+                                        </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="fortress.mage_level"></label>
-                                        <div class="ui selection dropdown" data-path="MageLevel">
+                                        <div class="ui selection inverted dropdown" data-path="MageLevel">
                                             <div class="text"></div>
                                             <i class="dropdown icon"></i>
                                         </div>
@@ -103,29 +111,33 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="four wide column">
-                                <div class="ui small icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.add" id="add"><i class="add icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.save" id="save"><i class="save icon"></i></button>
+                                <div class="ui small icon fluid two basic inverted buttons">
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.add" data-inverted="" id="add"><i class="add icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.save" data-inverted="" id="save"><i class="save icon"></i></button>
                                 </div>
                             </div>
                             <div class="seven wide column">
-                                <div class="ui small form">
+                                <div class="ui small inverted form">
                                     <div class="two fields" style="margin-bottom: 0;">
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
-                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
+                                            <div class="ui inverted input">
+                                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                            </div>
                                         </div>
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
-                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
+                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted input">
+                                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <button class="ui fluid button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
+                                <button class="ui fluid basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
-                        <div class="plain row">
+                        <div class="plain row text-white">
                             <div class="three wide column" data-intl="fortress.warrior_count"></div>
                             <div class="three wide column" data-intl="stats.player.fortress.building12"></div>
                             <div class="three wide column" data-intl="fortress.archer_count"></div>
@@ -284,7 +296,7 @@
 
                     for (const { data, index, score } of list) {
                         content += `
-                            <div class="plain row selectable ${index == listIndex ? '' : 'n'}selected" data-index="${index}">
+                            <div class="plain row selectable ${index == listIndex ? '' : 'n'}selected text-white" data-index="${index}">
                                 <div class="three wide column">${formatUnit(data, 'Warrior')}</div>
                                 <div class="three wide column">${data.FortificationsLevel > 0 ? FORTRESS_WALL_MAP[data.FortificationsLevel].level : ''}</div>
                                 <div class="three wide column">${formatUnit(data, 'Archer')}</div>
