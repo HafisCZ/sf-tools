@@ -35,7 +35,7 @@
 
         <script src="endpoint/endpoint.js"></script>
     </head>
-    <body class="margin-none-bottom">
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
@@ -43,7 +43,7 @@
         <div class="ui main container">
             <div class="ui five columns middle aligned grid">
                 <div class="five wide column">
-                    <div class="ui five tiny buttons field">
+                    <div class="ui five tiny basic inverted buttons">
                         <a class="ui button" data-upgrade-mode="1">1</a>
                         <a class="ui button" data-upgrade-mode="2">10</a>
                         <a class="ui button" data-upgrade-mode="3">25</a>
@@ -52,23 +52,23 @@
                     </div>
                 </div>
                 <div class="six wide column">
-                    <h1 class="ui centered header" data-intl="idle.title"></h1>
+                    <h1 class="ui centered inverted header" data-intl="idle.title"></h1>
                 </div>
                 <div class="three wide column">
-                    <div class="ui selection tiny fluid dropdown" id="suggest-mode">
+                    <div class="ui selection tiny fluid inverted dropdown" id="suggest-mode">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
                     </div>
                 </div>
                 <div class="two wide column">
-                    <div class="ui selection tiny fluid dropdown" id="number-mode">
+                    <div class="ui selection tiny fluid inverted dropdown" id="number-mode">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
                     </div>
                 </div>
             </div>
-            <div class="ui form">
-                <table class="ui black single very compact line table fixed" style="margin-top: 1em;">
+            <div class="ui inverted form">
+                <table class="ui single very compact line table inverted fixed" style="margin-top: 1em;">
                     <thead>
                         <tr class="text-center">
                             <th data-intl="idle.table.runes"></th>
@@ -84,43 +84,57 @@
                         <tr>
                             <td>
                                 <div class="field">
-                                    <input type="text" id="runes" data-intl-placeholder="idle.table.runes">
+                                    <div class="ui inverted input">
+                                        <input type="text" id="runes" data-intl-placeholder="idle.table.runes">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled id="runes_formatted">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled id="runes_formatted">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled id="money_spent">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled id="money_spent">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled id="money_1h">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled id="money_1h">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled id="money_8h">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled id="money_8h">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled id="money_1d">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled id="money_1d">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled id="money_7d">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled id="money_7d">
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <table class="ui black single very compact line table fixed" style="margin-top: 1em;">
+                <table class="ui single very compact line inverted table fixed mt-4">
                     <thead>
                         <tr class="text-center">
                             <th data-intl="idle.table.building"></th>
@@ -153,7 +167,7 @@
                             <td style="font-size: 105%;"><b>${intl(`idle.building.${name}`)}</b></td>
                             <td class="dropdown-container">
                                 <div class="field">
-                                    <div class="ui selection compact fluid dropdown" data-field="upgrades">
+                                    <div class="ui selection compact fluid inverted dropdown" data-field="upgrades">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
@@ -161,37 +175,51 @@
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" data-field="level">
+                                    <div class="ui inverted input">
+                                        <input type="text" data-field="level">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field clickable" data-upgrade>
-                                    <input type="text" disabled data-field="level_next">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled data-field="level_next">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled data-field="cycle_duration">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled data-field="cycle_duration">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled data-field="cycle_money">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled data-field="cycle_money">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled data-field="money_share" class="text-center">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled data-field="money_share" class="text-center">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled data-field="upgrade_money">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled data-field="upgrade_money">
+                                    </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="field">
-                                    <input type="text" disabled data-field="upgrade_estimation">
+                                    <div class="ui inverted input">
+                                        <input type="text" disabled data-field="upgrade_estimation">
+                                    </div>
                                 </div>  
                             </td>
                         </tr>
@@ -223,12 +251,12 @@
                 $('[data-upgrade-mode]').click(function () {
                     const $this = $(this);
 
-                    if ($this.hasClass('green')) {
-                        $this.removeClass('green');
+                    if ($this.hasClass('!background-green')) {
+                        $this.removeClass('!background-green');
                         modeUpgrade = 0;
                     } else {
-                        $('[data-upgrade-mode]').removeClass('green');
-                        $this.addClass('green');
+                        $('[data-upgrade-mode]').removeClass('!background-green');
+                        $this.addClass('!background-green');
                         modeUpgrade = parseInt($this.data('upgrade-mode'));
                     }
                 
@@ -496,6 +524,7 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
+                    dark: true,
                     scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && player.Level >= 105 && player.Idle),
                     callback: (player) => {
                         EditorController.load(player);
