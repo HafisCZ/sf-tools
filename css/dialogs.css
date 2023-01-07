@@ -95,8 +95,8 @@ div.dialog.container > .dialog > .separated.header {
   border-bottom: 1px solid rgba(34, 36, 38, .15);
 }
 
-div.dialog.container > .dark.dialog > .separated.header {
-  border-bottom-color: #262626;
+div.dialog.container > .dark.bordered.dialog > .header {
+  border-bottom: 1px solid #262626;
   padding-bottom: 0.25em;
 }
 
