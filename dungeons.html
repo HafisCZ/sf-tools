@@ -41,7 +41,7 @@
         <script src="js/sim/base.js"></script>
         <script src="js/sim/debug_utils.js"></script>
     </head>
-    <body>
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu" style="z-index: 3;">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
             <a class="item" href="https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator" target="_blank"><i class="ui icon book"></i> Wiki - How to use</a>
@@ -56,7 +56,7 @@
             <div class="ui two columns stackable grid">
                 <!-- Player edit field -->
                 <div class="column">
-                    <div class="ui form" id="sim-editor">
+                    <div class="ui inverted form" id="sim-editor">
 
                     </div>
                 </div>
@@ -65,28 +65,32 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="six wide column">
-                                <div class="ui small form">
+                                <div class="ui small inverted form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
-                                            <input class="text-center fluid" type="text" id="sim-threads" value="2">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
+                                            <div class="ui inverted input">
+                                                <input class="text-center fluid" type="text" id="sim-threads" value="2">
+                                            </div>
                                         </div>
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
-                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <input class="text-center fluid" type="text" id="sim-iterations" value="5000">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
+                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted input">
+                                                <input class="text-center fluid" type="text" id="sim-iterations" value="5000">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="ten wide column">
                                 <div class="compact-buttons" style="display: flex; flex-direction: row;">
-                                    <button class="ui fluid button" type="submit" id="sim-run" data-intl="dungeons.simulate_one"></button>
-                                    <button class="ui fluid button" type="submit" id="sim-run-dungeon" data-intl="dungeons.simulate_remaining"></button>
-                                    <button class="ui fluid button disabled" type="submit" id="sim-run-all" data-intl="dungeons.simulate_all"></button>
-                                    <button class="ui fluid button disabled" type="submit" id="sim-run-next" data-intl="dungeons.simulate_next" data-intl-tooltip="dungeons.simulate_next_settings.tooltip" data-position="bottom center"></button>
+                                    <button class="ui fluid basic inverted button" type="submit" id="sim-run" data-intl="dungeons.simulate_one"></button>
+                                    <button class="ui fluid basic inverted button" type="submit" id="sim-run-dungeon" data-intl="dungeons.simulate_remaining"></button>
+                                    <button class="ui fluid basic inverted button disabled" type="submit" id="sim-run-all" data-intl="dungeons.simulate_all"></button>
+                                    <button class="ui fluid basic inverted button disabled" type="submit" id="sim-run-next" data-intl="dungeons.simulate_next" data-intl-tooltip="dungeons.simulate_next_settings.tooltip" data-inverted="" data-position="bottom center"></button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row padding-none">
+                        <div class="row padding-none text-white">
                             <div class="eight wide text-center column" data-intl="dungeons.player"></div>
                             <div class="eight wide text-center column" data-intl="dungeons.enemy"></div>
                         </div>
@@ -102,22 +106,22 @@
                                 </div>
                             </div>
                             <div class="eight wide column">
-                                <div class="ui form" style="margin-top: -0.4em;">
+                                <div class="ui inverted form" style="margin-top: -0.4em;">
                                     <div class="field">
-                                        <div class="ui fluid search selection dropdown" id="dungeon-list">
+                                        <div class="ui fluid search selection inverted dropdown" id="dungeon-list">
                                           <div class="text"></div>
                                           <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field" style="margin-top: 1.25em;">
-                                        <div class="ui fluid search selection dropdown" id="boss-list">
+                                        <div class="ui fluid search selection inverted dropdown" id="boss-list">
                                           <div class="text"></div>
                                           <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field disabled" style="margin-top: 3.7em;">
                                         <label data-intl="dungeons.open"></label>
-                                        <div class="ui fluid search selection dropdown" id="available-list">
+                                        <div class="ui fluid search selection inverted dropdown" id="available-list">
                                           <div class="text"></div>
                                           <i class="dropdown icon"></i>
                                         </div>
@@ -126,7 +130,7 @@
                             </div>
                         </div>
                         <div class="row" style="padding-top: 0;">
-                            <div class="sixteen wide column" style="position: relative;">
+                            <div class="sixteen wide column text-white" style="position: relative;">
                                 <div style="position: absolute; left: 0.5em; bottom: -1.5em; font-size: 80%; opacity: 50%;" data-intl="dungeons.graph.y"></div>
                                 <div style="position: absolute; left: 37%; bottom: -1.5em; font-size: 80%; opacity: 50%;" data-intl="dungeons.graph.x"></div>
                                 <canvas id="winchart" style="width: 100%; height: 17.75em;"></canvas>
@@ -169,13 +173,13 @@
                 <div class="field"><h3 class="ui white header" data-intl="dungeons.cheats.potions"></h3></div>
                 <div class="two fields">
                     <div class="field">
-                        <div class="ui checkbox">
+                        <div class="ui checkbox !mt-0">
                             <input type="checkbox" class="hidden" data-cheat="strength">
                             <label data-intl="general.attribute1"></label>
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui checkbox">
+                        <div class="ui checkbox !mt-0">
                             <input type="checkbox" class="hidden" data-cheat="dexterity">
                             <label data-intl="general.attribute2"></label>
                         </div>
@@ -183,13 +187,13 @@
                 </div>
                 <div class="two fields">
                     <div class="field">
-                        <div class="ui checkbox">
+                        <div class="ui checkbox !mt-0">
                             <input type="checkbox" class="hidden" data-cheat="intelligence">
                             <label data-intl="general.attribute3"></label>
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui checkbox">
+                        <div class="ui checkbox !mt-0">
                             <input type="checkbox" class="hidden" data-cheat="constitution">
                             <label data-intl="general.attribute4"></label>
                         </div>
@@ -197,13 +201,13 @@
                 </div>
                 <div class="two fields">
                     <div class="field">
-                        <div class="ui checkbox">
+                        <div class="ui checkbox !mt-0">
                             <input type="checkbox" class="hidden" data-cheat="luck">
                             <label data-intl="general.attribute5"></label>
                         </div>
                     </div>
                     <div class="field">
-                        <div class="ui checkbox">
+                        <div class="ui checkbox !mt-0">
                             <input type="checkbox" class="hidden" data-cheat="life">
                             <label data-intl="general.life_potion"></label>
                         </div>
@@ -211,7 +215,7 @@
                 </div>
                 <div class="field"><h3 class="ui white header" data-intl="dungeons.cheats.class"></h3></div>
                 <div class="field" style="margin-right: 1em;">
-                    <div class="ui selection compact dropdown" data-cheat="class">
+                    <div class="ui selection inverted dropdown" data-cheat="class">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
                     </div>
@@ -223,23 +227,23 @@
             const SIMULATOR_THRESHOLD_DIALOG = new (class extends Dialog {
                 _createModal () {
                     return `
-                        <div class="small bordered dialog">
+                        <div class="small dark bordered dialog">
                             <div class="header">${intl(`dungeons.simulate_next_settings.title`)}</div>
-                            <div class="ui form">
+                            <div class="ui inverted form">
                                 <div class="field">
                                     <label>${intl(`dungeons.simulate_next_settings.label`)}</label>
-                                    <div class="ui range small slider" data-op="slider"></div>
+                                    <div class="ui range small inverted slider" data-op="slider"></div>
                                 </div>
                                 <div class="two fields">
                                     <div class="field">
                                         <label>${intl(`general.min`)}</label>
-                                        <div class="ui input">
+                                        <div class="ui inverted input">
                                             <input type="text" data-op="min">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label>${intl(`general.max`)}</label>
-                                        <div class="ui input">
+                                        <div class="ui inverted input">
                                             <input type="text" data-op="max">
                                         </div>
                                     </div>
@@ -338,15 +342,15 @@
 
                 _createModal () {
                     return `
-                        <div class="tight smaller dialog">
-                            <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid rgba(34, 36, 38, 0.15);">
+                        <div class="tight dark smaller dialog">
+                            <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid darkgray;">
                                 <div>${intl(`dungeons.results`)}</div>
-                                <div data-op="screenshot" class="ui tiny basic icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
+                                <div data-op="screenshot" class="ui tiny basic inverted icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
                                     <i class="download icon"></i>
                                 </div>
                             </div>
                             <div data-op="experience"></div>
-                            <div class="px-4" style="border-bottom: 1px solid rgba(34,36,38,.15)">
+                            <div class="px-4" style="border-bottom: 1px solid darkgray;">
                                 <canvas data-op="chart" class="w-full"></canvas>
                             </div>
                             <div class="overflow-y-auto" style="max-height: 65vh;">
@@ -361,7 +365,7 @@
                     this.$content = this.$parent.operator('content');
 
                     this.chart = new Chart(this.$parent.operator('chart'), {
-                        type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
+                        type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'lightgray',tension:0},point:{radius:0}}}
                     });
 
                     this.$screenshot = this.$parent.operator('screenshot');
@@ -393,7 +397,7 @@
                         return `
                             <div class="row" data-id="${index}" style="padding: 0; padding-left: 8px;">
                                 <div class="eleven wide column" style="position: relative; padding-top: 1rem; padding-bottom: 1rem;">
-                                    <span${dungeon.shadow ? ' style="text-shadow: 0px 0px 8px #390074;"' : ''}>
+                                    <span class="${dungeon.shadow ? 'dungeon-shadow' : ''}"">
                                         <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
                                         <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${dungeon.name}</span>
                                         <span style="position: absolute; left: 3em; top: 1.4em;">#${boss.pos} - ${boss.name}</span>
@@ -634,7 +638,7 @@
                 $('#dungeon-list').dropdown({
                     values: _sort_asc(Object.values(DUNGEON_DATA), ({ pos }) => pos).map(({ name, shadow, floors, id: value }) => {
                         return {
-                            name: shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${name}<span>` : name,
+                            name: shadow ? `<span class="dungeon-shadow">${name}<span>` : name,
                             value,
                             disabled: Object.keys(floors).length == 0
                         };
@@ -646,7 +650,7 @@
                     $('#boss-list').dropdown({
                         values: Object.entries(dungeon.floors).map(([ id, _boss ]) => {
                             return {
-                                name: `<span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                name: `<span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }"">
                                            <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">
                                            ${ _boss.pos }. ${ _boss.name }
                                            ${ getDisplayRunes(_boss.runes) }
@@ -722,9 +726,9 @@
 
                     for (var i = 0; i < 4; i++) {
                         content1 += `
-                            <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
+                            <div class="text-white row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
                                 <div class="four wide text-center column">
-                                    <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || dungeon.shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
+                                    <img class="ui medium centered image" style="width: 50px; opacity: 75%;" src="res/portrait${ i ? i : '' }.png">
                                 </div>
                                 <div class="eight wide column text-center">
                                     <b>${intl(`dungeons.${['yourself', 'bert', 'mark', 'kunigunde'][i]}`)}</b>
@@ -752,7 +756,7 @@
                 select(0);
 
                 const chart = new Chart($('#winchart'), {
-                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
+                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'lightgray',tension:0},point:{radius:0}}}
                 });
 
                 function showData (data) {
@@ -832,6 +836,7 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
+                    dark: true,
                     scope: (dm) => dm.getLatestPlayers(),
                     callback: (player) => {
                         dungeon = DUNGEON_DATA[dungeon_current];
@@ -872,7 +877,7 @@
                             $('#available-list').dropdown({
                                 values: _sort_asc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
                                     return {
-                                        name: `<span${ _dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                        name: `<span class="${_dungeon.shadow ? 'dungeon-shadow' : ''}">
                                                     <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
                                                         <span class="boss-dungeon-name">${ _dungeon.name }</span>
                                                         <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>

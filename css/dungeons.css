@@ -28,7 +28,7 @@
 }
 
 .selected {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(133, 133, 133, 0.1);
     cursor: pointer;
 }
 
@@ -121,6 +121,10 @@ div.text .boss-rune {
     margin-top: 0.5em;
     padding-bottom: 0.5em;
     font-weight: bold;
-    color: #3E3E3E;
-    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+    color: lightgray;
+    border-bottom: 1px solid darkgray;
+}
+
+.dungeon-shadow {
+    color: #dec0ff;
 }
