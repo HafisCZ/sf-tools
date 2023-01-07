@@ -281,7 +281,7 @@ class ResourcesView extends View {
                         ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
                     </div>
                     <div class="item">
-                        ${ Loca.get(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
+                        ${ Loca.name(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
                         ${ item.HasRune ? ` <span class="css-inventory-sub runed nobr">${ getNiceRuneText(item.RuneType) }</span>` : '' }
                     </div>
                 </div>
@@ -353,7 +353,7 @@ function getLocalizedTransmog (item) {
     var bestPrice = item.getDismantlePrice();
 
     clone.setPic(50);
-    while (Loca.get(clone.Type, clone.Index, clone.Class)) {
+    while (Loca.name(clone.Type, clone.Index, clone.Class)) {
         var price = clone.getDismantlePrice();
         if (price.Crystal > bestPrice.Crystal) {
             best = clone.Index;
@@ -373,7 +373,7 @@ function getLocalizedTransmog (item) {
     if (diff.Crystal) {
         return `
             <div class="item">
-                <div>T: <b style="color: magenta;">${ Loca.get(clone.Type, clone.Index, clone.Class) }</b></div>
+                <div>T: <b style="color: magenta;">${ Loca.name(clone.Type, clone.Index, clone.Class) }</b></div>
                 <div class="css-inventory-item-sub3">
                     <div class="item">
                         ${ diff.Metal != 0 ? `<img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img> ${ diff.Metal > 0 ? '+' : '' }${ formatAsSpacedNumber(diff.Metal) }` : '' }
@@ -1247,7 +1247,7 @@ class InventoryView extends View {
                             ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
                         </div>
                         <div class="item">
-                            ${ Loca.get(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
+                            ${ Loca.name(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
                             ${ item.HasRune ? ` <span class="css-inventory-sub runed nobr">${ getNiceRuneText(item.RuneType) }</span>` : '' }
                         </div>
                     </div>
