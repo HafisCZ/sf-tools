@@ -7,7 +7,7 @@ const Loca = {
     fill: function (co, ze, text = co.toString()) {
         return '0'.repeat(Math.max(0, ze - text.length)) + text;
     },
-    get : function (type, pic, cl) {
+    name : function (type, pic, cl) {
         if (cl == undefined || type >= 8) {
             return Loca[`item type ${ Loca.fill(type, 2) } pic ${ Loca.fill(pic, 3) }`];
         } else {

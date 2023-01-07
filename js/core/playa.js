@@ -73,7 +73,7 @@ class SFItem {
         this.RuneType = this.getRuneType();
         this.RuneValue = this.getRuneValue();
 
-        this.Name = Loca.get(this.Type, this.Index, this.Class);
+        this.Name = Loca.name(this.Type, this.Index, this.Class);
         this.ImageUrl = Loca.pic(this.Type, this.Index, this.Color, this.Class);
     }
 
