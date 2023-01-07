@@ -488,23 +488,25 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small dark bordered dialog">
                 <div class="header">${this.intl('title')}</div>
-                <div class="ui form">
+                <div class="ui inverted form">
                     <div class="field">
                         <label>${this.intl('slot')}:</label>
-                        <div class="ui fluid selection dropdown" data-op="slot">
+                        <div class="ui fluid selection inverted dropdown" data-op="slot">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('limit.title')}:</label>
-                        <input type="number" min="0" placeholder="${this.intl('limit.placeholder')}" data-op="limit">
+                        <div class="ui inverted input">
+                            <input type="number" min="0" placeholder="${this.intl('limit.placeholder')}" data-op="limit">
+                        </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('ignored_duration.title')}:</label>
-                        <div class="ui fluid search selection dropdown" data-op="ignored_duration">
+                        <div class="ui fluid search selection inverted dropdown" data-op="ignored_duration">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -571,7 +573,7 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
         this.$ignored_identifiers.empty();
         for (const identifier of options.ignored_identifiers) {
             const $item = $(`
-                <div class="ui disabled icon input !opacity-100" data-identifier="${identifier}">
+                <div class="ui disabled icon inverted input !opacity-100" data-identifier="${identifier}">
                     <input class="text-black" type="text" disabled="">
                     <i class="ui times link text-black icon"></i>
                 </div>
