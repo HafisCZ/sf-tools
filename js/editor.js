@@ -14,10 +14,10 @@ class Field {
     valid () {
         var isValid = this.validator ? this.validator(this.get()) : true;
         if (isValid) {
-            this.$object.parent('.field').removeClass('error');
+            this.$object.closest('.field').removeClass('error');
             return true;
         } else {
-            this.$object.parent('.field').addClass('error');
+            this.$object.closest('.field').addClass('error');
             return false;
         }
     }
@@ -71,17 +71,17 @@ class Field {
 
     toggle (val) {
         if (val) {
-            this.$object.parent('.field').removeClass('disabled');
+            this.$object.closest('.field').removeClass('disabled');
         } else {
-            this.$object.parent('.field').addClass('disabled');
+            this.$object.closest('.field').addClass('disabled');
         }
     }
 
     show (val) {
         if (val) {
-            this.$object.parent('.field').show();
+            this.$object.closest('.field').show();
         } else {
-            this.$object.parent('.field').hide();
+            this.$object.closest('.field').hide();
         }
     }
 
