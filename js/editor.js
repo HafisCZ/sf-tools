@@ -541,17 +541,17 @@ class Editor extends EditorBase {
     _html ($parent) {
         $parent.html(`
             <div class="flex flex-col gap-2">
-                <div class="ui orange segment !p-2 !m-0">
+                <div class="ui orange inverted segment !p-2 !m-0">
                     <div class="field">
                         <label>${this.intl('name')}</label>
-                        <div class="ui icon right action input">
+                        <div class="ui icon right action inverted input">
                             <input class="text-center" type="text" data-path="Name">
                             <input type="hidden" data-path="Prefix">
-                            <div class="ui icon basic buttons">
-                                <div class="ui top right pointing dropdown button morph">
+                            <div class="ui icon basic inverted buttons">
+                                <div class="ui top right pointing inverted dropdown button morph">
                                     <i class="exchange link icon"></i>
                                 </div>
-                                <div class="ui button copy-current" data-position="right center" data-tooltip="${this.intl('copy')}">
+                                <div class="ui button copy-current" data-position="right center" data-inverted="" data-tooltip="${this.intl('copy')}">
                                     <i class="outline copy link icon"></i>
                                 </div>
                             </div>
@@ -560,169 +560,211 @@ class Editor extends EditorBase {
                     <div class="two fields">
                         <div class="field">
                             <label>${this.intl('class')}</label>
-                            <div class="ui search selection dropdown" data-path="Class">
+                            <div class="ui search selection inverted dropdown" data-path="Class">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('mask')}</label>
-                            <div class="ui selection dropdown" data-path="Mask">
+                            <div class="ui selection inverted dropdown" data-path="Mask">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('instrument')}</label>
-                            <div class="ui selection dropdown" data-path="Instrument">
+                            <div class="ui selection inverted dropdown" data-path="Instrument">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('level')}</label>
-                            <input class="text-center" type="text" data-path="Level" placeholder="1 - 800">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Level" placeholder="1 - 800">
+                            </div>
                         </div>
                     </div>
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${intl('general.attribute1')}</label>
-                            <input class="text-center" type="text" data-path="Strength.Total">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Strength.Total">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute2')}</label>
-                            <input class="text-center" type="text" data-path="Dexterity.Total">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Dexterity.Total">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute3')}</label>
-                            <input class="text-center" type="text" data-path="Intelligence.Total">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Intelligence.Total">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute4')}</label>
-                            <input class="text-center" type="text" data-path="Constitution.Total">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Constitution.Total">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute5')}</label>
-                            <input class="text-center" type="text" data-path="Luck.Total">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Luck.Total">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="ui purple segment !p-2 !m-0">
+                <div class="ui purple inverted segment !p-2 !m-0">
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${this.intl('min')}</label>
-                            <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('max')}</label>
-                            <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('weapon_enchant')}</label>
-                            <div class="ui selection dropdown" data-path="Items.Wpn1.HasEnchantment">
+                            <div class="ui selection inverted dropdown" data-path="Items.Wpn1.HasEnchantment">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('rune')}</label>
-                            <div class="ui selection dropdown" data-path="Items.Wpn1.AttributeTypes.2">
+                            <div class="ui selection inverted dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label><br/></label>
-                            <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="ui blue segment !p-2 !m-0" data-optional="Weapon2">
+                <div class="ui blue inverted segment !p-2 !m-0" data-optional="Weapon2">
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${this.intl('min')}</label>
-                            <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('max')}</label>
-                            <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('weapon_enchant')}</label>
-                            <div class="ui selection dropdown" data-path="Items.Wpn2.HasEnchantment">
+                            <div class="ui selection inverted dropdown" data-path="Items.Wpn2.HasEnchantment">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('rune')}</label>
-                            <div class="ui selection dropdown" data-path="Items.Wpn2.AttributeTypes.2">
+                            <div class="ui selection inverted dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label><br/></label>
-                            <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="ui red segment !p-2 !m-0">
+                <div class="ui red inverted segment !p-2 !m-0">
                     <div class="four fields !mb-0">
                         <div class="field">
                             <label>${this.intl('armor')}</label>
-                            <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('block')}</label>
-                            <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('fire')}</label>
-                            <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('cold')}</label>
-                            <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('lightning')}</label>
-                            <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="ui green segment !p-2 !m-0">
+                <div class="ui green inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${this.intl('portal_health')}</label>
-                            <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('rune_health')}</label>
-                            <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('life_potion')}</label>
-                            <div class="ui selection dropdown" data-path="Potions.Life">
+                            <div class="ui selection inverted dropdown" data-path="Potions.Life">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ui pink segment !p-2 !m-0">
+                <div class="ui pink inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${this.intl('portal_damage')}</label>
-                            <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('gladiator')}</label>
-                            <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
+                            <div class="ui inverted input">
+                                <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
+                            </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('hand_enchant')}</label>
-                            <div class="ui selection dropdown" data-path="Items.Hand.HasEnchantment">
+                            <div class="ui selection inverted dropdown" data-path="Items.Hand.HasEnchantment">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
