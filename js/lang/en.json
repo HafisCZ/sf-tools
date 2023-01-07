@@ -94,7 +94,9 @@
         "race5": "Orc",
         "race6": "Dark Elf",
         "race7": "Goblin",
-        "race8": "Demon"
+        "race8": "Demon",
+        "gender1": "Male",
+        "gender2": "Female"
     },
     "index": {
         "toggle": "Toggle credits",
