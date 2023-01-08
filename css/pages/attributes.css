@@ -1,0 +1,12 @@
+@import url('../global.css');
+
+.opaque-rows-inverted tr:nth-child(odd) {
+  background-color: #7d7d7d3f;
+}
+
+.floating-menu {
+  position: fixed !important;
+  right: 2em;
+  top: 5em;
+  z-index: 99;
+}

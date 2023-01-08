@@ -551,7 +551,7 @@ class TableInstance {
                     // Add name
                     let showOutdated = this.settings.getOutdatedStyle();
                     content += `
-                        <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
+                        <td class="border-right-thin cursor-pointer ${ !latest && showOutdated ? '!text-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             <span class="css-op-select-el"></span>
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
@@ -630,7 +630,7 @@ class TableInstance {
                 } else {
                     // Add name
                     content += `
-                        <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
+                        <td class="border-right-thin cursor-pointer" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
                     `;
@@ -1051,9 +1051,9 @@ class TableInstance {
             if (indexStyle) {
                 if (this.settings.getTitleAlign()) {
                     categoryTitle = `<td></td>` + categoryTitle;
-                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
+                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
                 } else {
-                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
+                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
                 }
             }
         } else {
@@ -1063,15 +1063,15 @@ class TableInstance {
                 `;
 
                 headerTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" class="border-bottom-thick clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" class="border-bottom-thick cursor-pointer" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
                 `;
             } else {
                 categoryTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" rowspan="2" class="border-bottom-thick clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
                 `;
 
                 headerTitle = '';
@@ -1204,9 +1204,9 @@ class TableInstance {
             if (indexStyle) {
                 if (this.settings.getTitleAlign()) {
                     categoryTitle = `<td></td>` + categoryTitle;
-                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
+                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
                 } else {
-                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
+                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
                 }
             }
         } else {
@@ -1216,13 +1216,13 @@ class TableInstance {
                 `;
 
                 headerTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
                 `;
             } else {
                 categoryTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
                 `;
 
                 headerTitle = '';
@@ -1238,7 +1238,7 @@ class TableInstance {
                 ${ this.getHeaderBlock(true) }
             </tr>
             ${ injector }
-            ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
+            ${ this.entries.missing.length ? `<tr class="font-weight: bold;">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
@@ -1329,7 +1329,7 @@ class TableInstance {
                 return join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'cursor-pointer' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
                 });
             } else {
                 return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
@@ -1348,7 +1348,7 @@ class TableInstance {
                 return join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'cursor-pointer' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
                 });
             }
         });
@@ -1622,7 +1622,7 @@ const CellGenerator = {
         let color = getCSSColorFromBackground(f);
         let border = getCSSBorderClass(bo);
 
-        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'clickable' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
+        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {

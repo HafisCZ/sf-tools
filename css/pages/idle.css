@@ -1,0 +1,6 @@
+@import url('../global.css');
+
+.dropdown-container {
+  overflow: visible !important;
+  position: relative !important;
+}

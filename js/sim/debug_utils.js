@@ -163,7 +163,7 @@ const SimulatorUtils = new (class {
       </div>
     `).click(() => this._executeCopy());
     
-    $dialogButton.insertAfter($('.ui.menu.css-menu .css-a-blank').parent())
+    $dialogButton.insertAfter($('.ui.huge.menu .header.item'))
     $copyButton.insertAfter($dialogButton);
   }
 

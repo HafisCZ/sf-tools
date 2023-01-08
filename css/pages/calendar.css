@@ -1,0 +1,47 @@
+@import url('../global.css');
+@import url('../tables.css');
+
+.css-img-container {
+  width: 30px;
+  height: 30px;
+  margin: auto;
+}
+
+.css-img-container img {
+  width: 30px;
+  height: 30px;
+}
+
+.pp-main {
+  margin: 1.5em;
+}
+
+.rotated {
+  transform: rotate(-90deg);
+}
+
+.ghosted .text-center {
+  opacity: 40%;
+}
+
+.table-group td:not(.border-bottom-thick) {
+  padding: 0 !important;
+}
+
+.fixed-header thead tr {
+  display: block;
+  margin-right: 17px;
+}
+
+.fixed-header tbody {
+  overflow: auto;
+  display: block;
+  height: 69vh;
+  width: 100%;
+}
+
+.today::after {
+  background: linear-gradient(#000, #000) no-repeat center/2px 100%;
+  color: transparent;
+  content: "|";
+}

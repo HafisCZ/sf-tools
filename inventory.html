@@ -7,12 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/plugins.css"/>
-        <link rel="stylesheet" href="css/inventory.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/inventory.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -33,8 +28,8 @@
         <script src="js/views.js"></script>
     </head>
     <body class="css-dark">
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
             <a class="item" id="show-compare"><i class="small compress icon"></i>Inventory</a>
             <a class="item" id="show-crystal"><i class="small exchange icon"></i>Resources</a>
         </div>
@@ -112,7 +107,7 @@
         <div id="view-inventory" class="ui main fluid container mb-20" style="display: none;">
             <div class="ui grid">
                 <div class="three wide column">
-                    <div class="css-companions clickable">
+                    <div class="css-companions cursor-pointer">
                         <img class="css-companion" data-op="swap" data-arg="0" src="res/portrait.png"></img>
                         <img class="css-companion" data-op="swap" data-arg="1" src="res/portrait1.png"></img>
                         <img class="css-companion" data-op="swap" data-arg="2" src="res/portrait2.png"></img>

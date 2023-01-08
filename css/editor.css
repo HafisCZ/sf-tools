@@ -1,11 +1,26 @@
-.bnone {
-    border: 1px solid transparent;
+/* Paste target */
+@media only screen and (max-width: 992px) {
+    .paste-target {
+        display: none;
+    }
 }
 
-.btwo {
-    border: 1px solid purple;
+.paste-target {
+    position: absolute;
+    right: 2em;
+    top: 5em;
+    border: 3px #a9d1ce dashed;
+    width: 8.5em;
+    color: #5f827f;
+    height: 8.5em;
+    text-align: center;
+    padding: 0.5em;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Morph */
 div.morph .menu {
     width: 14rem;
 }
@@ -19,4 +34,41 @@ div.morph div.disabled.item {
     font-weight: bold !important;
     text-align: center !important;
     border-bottom: 1px solid rgba(34, 36, 38, 0.15) !important;
+}
+
+/* Selectable list */
+.selectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-bottom: 0.25em !important;
+    padding-top: 0.25em !important;
+}
+
+.selectable div {
+    padding: 0 !important;
+}
+
+.selectable-header div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.selected {
+    background-color: rgba(133, 133, 133, 0.1);
+    cursor: pointer;
+}
+
+.nselected {
+    cursor: pointer;
+}
+
+.selectable.transparent-border {
+    border: 1px solid transparent;
+}
+
+.selectable.purple-border {
+    border: 1px solid purple;
 }

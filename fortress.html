@@ -7,12 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/editor.css"/>
-        <link rel="stylesheet" href="css/fortress.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/fortress.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -37,8 +32,8 @@
         <script src="endpoint/endpoint.js"></script>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
         </div>
 
         <div class="ui main container">
@@ -51,7 +46,7 @@
                                     <div class="field">
                                         <label data-intl="fortress.warrior_count"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" data-path="WarriorCount" placeholder="1 - 45">
+                                            <input class="!text-center" data-path="WarriorCount" placeholder="1 - 45">
                                         </div>
                                     </div>
                                     <div class="field">
@@ -68,7 +63,7 @@
                                     <div class="field">
                                         <label data-intl="stats.player.fortress.building12"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" data-path="FortificationsLevel" placeholder="0 - 20">
+                                            <input class="!text-center" data-path="FortificationsLevel" placeholder="0 - 20">
                                         </div>
                                     </div>
                                     <div class="field"></div>
@@ -77,7 +72,7 @@
                                     <div class="field">
                                         <label data-intl="fortress.archer_count"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" data-path="ArcherCount" placeholder="0 - 30">
+                                            <input class="!text-center" data-path="ArcherCount" placeholder="0 - 30">
                                         </div>
                                     </div>
                                     <div class="field">
@@ -92,7 +87,7 @@
                                     <div class="field">
                                         <label data-intl="fortress.mage_count"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" data-path="MageCount" placeholder="0 - 15">
+                                            <input class="!text-center" data-path="MageCount" placeholder="0 - 15">
                                         </div>
                                     </div>
                                     <div class="field">
@@ -121,13 +116,13 @@
                                     <div class="two fields" style="margin-bottom: 0;">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
                                             <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -145,7 +140,7 @@
                             <div class="three wide column" data-intl="simulator.win_chance"></div>
                             <div class="one wide column"></div>
                         </div>
-                        <div class="row padding-none">
+                        <div class="row !p-0">
                             <div class="sixteen wide column">
                                 <hr/>
                             </div>
@@ -303,7 +298,7 @@
                                 <div class="three wide column">${formatUnit(data, 'Mage')}</div>
                                 <div class="three wide column">${typeof score === 'number' ? `${(100 * score).toFixed(2)}%` : ''}</div>
                                 <div class="one wide column">
-                                    <i class="trash right aligned alternate glow outline icon" data-trash="${index}"></i>
+                                    <i class="trash right aligned alternate cursor-pointer !text-red:hover outline icon" data-trash="${index}"></i>
                                 </div>
                             </div>
                         `;

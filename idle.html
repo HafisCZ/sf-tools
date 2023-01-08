@@ -7,11 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/editor.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/idle.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -36,8 +32,8 @@
         <script src="endpoint/endpoint.js"></script>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
         </div>
 
         <div class="ui main container">
@@ -181,7 +177,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="field clickable" data-upgrade>
+                                <div class="field cursor-pointer" data-upgrade>
                                     <div class="ui inverted input">
                                         <input type="text" disabled data-field="level_next">
                                     </div>
@@ -476,9 +472,9 @@
 
                             // Add colors based on upgrade mode
                             if (modeUpgrade == 0) {
-                                $('[data-field]:not([data-field="level"], [data-field="upgrades"])').removeClass('text-green');
+                                $('[data-field]:not([data-field="level"], [data-field="upgrades"])').removeClass('!text-green');
                             } else {
-                                $('[data-field]:not([data-field="level"], [data-field="upgrades"])').addClass('text-green');
+                                $('[data-field]:not([data-field="level"], [data-field="upgrades"])').addClass('!text-green');
                             }
                         }
                     }

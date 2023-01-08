@@ -433,7 +433,7 @@ const Endpoint = new (class extends Dialog {
     // Unity loader
     _createStep2 () {
         return `
-            <img class="ui centered image unity-loading" src="/endpoint/logo.png">
+            <img class="ui centered image pulse-loader" src="/endpoint/logo.png">
             <h3 class="ui white centered header">${this.intl('step2.title')}</h3>
         `;
     }
@@ -637,7 +637,7 @@ const StatisticsIntegration = new (class {
 
     _html () {
         return `
-            <div class="position-absolute left-8 top-20 z-2" style="width: 18em;">
+            <div class="position-absolute left-8 top-8 z-2" style="width: 18em;">
                 <div class="ui fluid basic ${this.dark ? 'inverted' : ''} button" data-op="poll"><i class="sync alternate icon"></i>${intl(`simulator.poll.${this.type}`)}</div>
                 <div data-op="container" style="display: none;">
                     <div data-op="list"></div>

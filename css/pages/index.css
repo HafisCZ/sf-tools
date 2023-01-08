@@ -1,3 +1,5 @@
+@import url('../global.css');
+
 .mentions-container {
     margin-left: 2.5em;
 }
@@ -126,10 +128,6 @@
 .footer-item {
     width: 33.3%;
     margin: 1em;
-}
-
-.footer-item:nth-child(1) {
-
 }
 
 .footer-item:nth-child(2) {

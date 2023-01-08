@@ -1,3 +1,6 @@
+@import url('../global.css');
+@import url('../editor.css');
+
 .selectable {
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

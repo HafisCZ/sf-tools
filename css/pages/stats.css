@@ -1,0 +1,371 @@
+@import url('../global.css');
+@import url('../tables.css');
+@import url('../script.css');
+
+tr[data-tr-timestamp], tr[data-tr-mark] {
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+[data-tr-timestamp] .ui.label {
+  padding-left: 6px;
+  padding-right: 6px;
+  min-width: 1em;
+}
+
+.css-op-select-el {
+  position: relative;
+}
+
+.css-op-select > .css-op-select-el::before {
+  content: "\f00c";
+  font-family: Icons;
+  position: absolute;
+  left: -1.5em;
+  top: 0px;
+}
+
+.detail-content span {
+  font-size: 70%;
+}
+
+#view-groupdetail .dropdown.text-full-width > .text {
+  width: calc(100% - 2.5em);
+}
+
+#view-settings > .ui.basic.segment {
+  padding: 0;
+}
+
+#modal-settings > .ui.basic.segment {
+  padding: 0;
+}
+
+.detail-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 5em;
+}
+
+.detail-top h1.header {
+  color: white;
+  margin-top: 0;
+  padding-left: 0.25em;
+}
+
+.detail-timestamp {
+  color: white;
+  position: absolute;
+  top: 1.25em;
+  right: 2em;
+}
+
+.detail-identifier {
+  color: white;
+  position: absolute;
+  top: 2.75em;
+  right: 2em;
+  opacity: 40%;
+}
+
+.detail-top img {
+  height: 5em;
+  padding-left: 1em;
+}
+
+.detail-content {
+  margin-top: 4em;
+  font-size: 1.25em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.detail-entry {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 0.35em;
+}
+
+.detail-item {
+  flex: 0 49%;
+}
+
+.detail-panel {
+  flex: 0 33%;
+  padding: 1em;
+}
+
+[data-sortable] {
+  position: relative;
+}
+
+[data-sortable] * {
+  pointer-events: none;
+}
+
+[data-sortable]::before {
+  transform: scale(0.7);
+}
+
+[data-sortable]::after {
+  transform: scale(0.7);
+}
+
+[data-sortable="1"]::before {
+  content: "\f0de";
+  font-family: Icons;
+  position: absolute;
+  left: 1px;
+  top: 3px;
+}
+
+[data-sortable="2"]::before {
+  content: "\f0dd";
+  font-family: Icons;
+  position: absolute;
+  left: 1px;
+  bottom: 3px;
+}
+
+[data-sortable="1"]::after {
+  content: attr(data-sortable-index);
+  position: absolute;
+  left: 1px;
+  top: 33%;
+}
+
+[data-sortable="2"]::after {
+  content: attr(data-sortable-index);
+  position: absolute;
+  left: 1px;
+  top: 33%;
+}
+
+.css-temporary {
+  color: orange;
+  position: absolute;
+  font-size: 50%;
+  top: 4em;
+  width: 20em;
+}
+
+.modal i.cctemplate.close.icon {
+  color: black;
+  right: 0.5em;
+  top: 0.5em;
+  padding-top: 10px;
+}
+
+.ui.selection.list.css-selection-list {
+  height: calc((100vh - 7em) / 2 - 4.5em);
+  max-height: calc((100vh - 7em) / 2 - 4.5em);
+
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.ui.selection.list.css-template-fullheight {
+  height: calc(100vh - 7em - 5.5em);
+  max-height: calc(100vh - 7em - 5.5em);
+}
+
+table.sftools-table {
+  position: absolute;
+  margin-top: 1em;
+  border-spacing: 0;
+  border-collapse: collapse;
+
+  font-family: 'Roboto' !important;
+  font-weight: 300 !important;
+  font-size: 1.35em !important;
+
+  color: #212529;
+  text-align: center;
+}
+
+table.sftools-table b {
+  font-weight: bold;
+}
+
+table.sftools-table td {
+  height: 1.9em;
+}
+
+table.sftools-table td.left {
+  padding-left: 0.35em;
+  text-align: left;
+}
+
+table.sftools-table td.right {
+  padding-right: 0.35em;
+  text-align: right;
+}
+
+table.sftools-table span {
+  font-size: 70%;
+}
+
+table.sftools-table .headers td {
+  text-overflow: clip;
+  overflow: hidden;
+}
+
+.ui.selection.list.css-selection-list::-webkit-scrollbar {
+display: none;
+}
+
+.css-template-list {
+  overflow-y: scroll;
+  direction: rtl;
+  height: 100%;
+  padding-top: 0.5em !important;
+}
+
+.css-template-list .item {
+  height: 2em;
+  direction: ltr;
+  padding-left: 1em !important;
+  color: black !important;
+  border-radius: 0 !important;
+}
+
+.css-template-list .item.selected {
+  font-weight: bold;
+}
+
+.css-nomp-grid.ui.grid {
+  padding: 0;
+  margin: 0;
+}
+
+.css-nomp-grid.ui.grid div.row {
+  padding: 0;
+  margin: 0;
+}
+
+.css-nomp-grid.ui.grid div.column {
+  padding: 0;
+  margin: 0;
+}
+
+.css-template-heading {
+  position: relative;
+}
+
+.css-template-add .icons {
+  font-size: 1.25em;
+}
+
+.css-template-add {
+  position: absolute;
+  right: 0.4em;
+  top: -0.45em;
+  cursor: pointer;
+  padding: 0.75em;
+  opacity: 0.5;
+}
+
+.css-template-heading .css-template-add:hover {
+  opacity: 1;
+}
+
+.css-top-line {
+  border-top: 2px solid #212121;
+}
+
+.css-inverted .css-top-line {
+  border-top: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.css-templates-list {
+  margin-top: 0 !important;
+}
+
+.css-settings-buttons > .button {
+  margin-bottom: 0.5em;
+}
+
+.css-settings-buttons > .button > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 3em;
+  font-size: 110%;
+}
+
+.css-settings-buttons i.icon {
+  margin-right: 0em;
+}
+
+.ui.selection.list.css-selection-list > .item.active {
+  border-radius: 0;
+  background-color: rgba(149, 227, 127, .50);
+}
+
+.ui.selection.list.css-selection-list > .item:hover {
+  border-radius: 0;
+  background-color: rgba(149, 227, 127, .25);
+}
+
+.css-entry-label {
+  color: black;
+  font-size: 90%;
+}
+
+.ui.header.css-template-header {
+  margin-top: 0em;
+}
+
+.ui.selection.list.css-selection-list > .item.unsaved {
+  border-radius: 0;
+  background-color: rgba(227, 155, 127, .50);
+}
+
+.ui.selection.list.css-selection-list > .item.unsaved:hover {
+  border-radius: 0;
+  background-color: rgba(227, 155, 127, .25);
+}
+
+.ui.selection.list.css-selection-list > .item {
+  height: 2.25em;
+  font-size: 110%;
+  padding-top: 0.66em;
+}
+
+.ui.selection.list.css-selection-list > .item .right.floated.content {
+  margin-top: -0.1em;
+}
+
+.ui.selection.list.css-selection-list > .item .icon {
+  opacity: .33;
+  margin-left: 0.5em !important;
+  padding: .75em;
+  margin-top: -0.75em !important;
+  padding-bottom: 1.75em;
+}
+
+.ui.selection.list.css-selection-list > .item .icon:hover {
+  opacity: 1;
+}
+
+.css-template-buttons {
+  height: 100% !important;
+}
+
+.css-template-list {
+  margin-top: 1em !important;
+}
