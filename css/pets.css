@@ -1,37 +1,3 @@
-.fixed-header thead tr {
-    display: block;
-    margin-right: 17px;
-}
-
-.fixed-header tbody {
-    overflow: auto;
-    display: block;
-    height: 69vh;
-    width: 100%;
-}
-
-table.map-map {
-    font-size: 90% !important;
-}
-
-.map-parent {
-    position: relative;
-}
-
-.map-save {
-    position: absolute;
-    right: -4em;
-    top: 4.4em;
-}
-
-.map-map td:not(.spanned) {
-    width: 5.2em;
-}
-
-.map-map td.spanned {
-    width: 88.4em;
-}
-
 .pet-picture {
      width: 2em !important;
      height: 2em !important;
@@ -42,19 +8,4 @@ table.map-map {
 .menu .pet-name {
     display: inline-block;
     width: 5em;
-}
-
-.dropdown [data-pet-id] {
-    font-size: 100%;
-}
-
-[data-pet-id] {
-    font-size: 95%;
-}
-
-.menu [data-pet-id]::after {
-    content: attr(data-pet-id);
-    position: absolute;
-    right: 0px;
-    transform: scale(0.8);
 }
