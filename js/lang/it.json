@@ -77,24 +77,26 @@
             "fortress12": "Fortificazioni",
             "underworld1": "Cuore di tenebra",
             "underworld2": "Porta mondo sotterraneo",
-            "underworld3": "Gold Pit",
-            "underworld4": "Soul Extractor",
-            "underworld5": "Goblin Pit",
-            "underworld6": "Torture Chamber",
-            "underworld7": "Gladiator Trainer",
-            "underworld8": "Troll Block",
+            "underworld3": "Fossa d'oro",
+            "underworld4": "Estrattore di anime",
+            "underworld5": "Fossa dei goblin",
+            "underworld6": "Stanza delle torture",
+            "underworld7": "Allenatore gladiatore",
+            "underworld8": "Blocco dei troll",
             "underworld9": "Adventuromatic",
-            "underworld10": "Keeper"
+            "underworld10": "Custode"
         },
         "reduction": "Riduzione",
-        "race1": "Human",
-        "race2": "Elf",
-        "race3": "Dwarf",
-        "race4": "Gnome",
-        "race5": "Orc",
-        "race6": "Dark Elf",
+        "race1": "Umano",
+        "race2": "Elfo",
+        "race3": "Nano",
+        "race4": "Gnomo",
+        "race5": "Orco",
+        "race6": "Elfo Oscuro",
         "race7": "Goblin",
-        "race8": "Demon"
+        "race8": "Demone",
+        "gender1": "Uomo",
+        "gender2": "Donna"
     },
     "index": {
         "toggle": "Crediti",
@@ -249,7 +251,7 @@
                 "advanced": "Mostra lista file avanzata",
                 "hidden": "Visualizza voci nascoste",
                 "export_public_only": "Esporta solo dati pubblici",
-                "export_bundle_groups": "Bundle groups with players"
+                "export_bundle_groups": "Pacchetto gruppi con giocatori"
             },
             "tags": {
                 "single": "Tag",
@@ -259,6 +261,7 @@
             },
             "filters": {
                 "any": "Qualsiasi",
+                "none": "Nessuno",
                 "n_unique": "unici",
                 "expression": "Espressione",
                 "expression_placeholder": "Inserisci espressione",
@@ -268,7 +271,7 @@
                 "prefix": "Prefisso",
                 "tags": "Tag",
                 "type": "Tipo",
-                "ownership": "Ownership",
+                "ownership": "Proprietà",
                 "ownership_all": "Visualizza tutti",
                 "ownership_own": "Visualizza solo il proprio",
                 "ownership_other": "Visualizza solo gli altri",
@@ -868,12 +871,14 @@
         "username": "Nome account",
         "password": "Password",
         "mode": {
+            "title": "Modalità di cattura",
             "own": "Importa il proprio personaggio",
             "default": "Importa proprio + personaggi selezionati",
             "guild": "Importa proprio + membri gilda",
             "friends": "Importa proprio + amici",
             "hall_of_fame": "Importa il tuo personaggio + top 50 della HoF"
         },
+        "temporary": "Scarta la cattura quando la pagina è chiusa",
         "cancel": "Cancella",
         "continue": "Continua",
         "step2": {
@@ -912,22 +917,22 @@
             "ok": "Ok"
         },
         "statistics_integration_options": {
-            "title": "Statistics Integration Options",
-            "slot": "Database slot",
+            "title": "Opzioni Di Integrazione Delle Statistiche",
+            "slot": "Slot di database",
             "limit": {
-                "title": "Maximum amount of entries to be displayed",
-                "placeholder": "Use 0 to disable"
+                "title": "Quantità massima di voci da visualizzare",
+                "placeholder": "Usa 0 per disabilitare"
             },
             "ignored_duration": {
-                "title": "Ignore entries older than",
-                "0": "None",
-                "86400000": "> 1 day",
-                "604800000": "> 1 week",
-                "2592000000": "> 1 month",
-                "7776000000": "> 3 months"
+                "title": "Ignora le voci più vecchie di",
+                "0": "Nessuna",
+                "86400000": "> 1 giorno",
+                "604800000": "> 1 settimana",
+                "2592000000": "> 1 mese",
+                "7776000000": "> 3 mesi"
             },
             "ignored_identifiers": {
-                "title": "Ignored players and groups"
+                "title": "Giocatori e gruppi ignorati"
             }
         },
         "delete_all": {
@@ -1214,7 +1219,8 @@
             "bonus": "Bonus",
             "lost": "Persi",
             "reclaimable": "Ottenibili",
-            "required": "Richiesti"
+            "required": "Richiesti",
+            "invalid": "Inserisci un valore di attributo valido"
         }
     },
     "dungeon_enemies": {
@@ -1435,8 +1441,8 @@
             "5": "Odino",
             "6": "Loki",
             "7": "Ymir",
-            "8": "Midgard Serpent",
-            "9": "Fenris Wolf",
+            "8": "Serpente di Midgard",
+            "9": "Fenris il lupo",
             "10": "Surtr"
         },
         "20": {
@@ -1519,16 +1525,16 @@
         },
         "26": {
             "name": "Grotta dei mostri",
-            "1": "Doltopus",
-            "2": "Hairy Groom",
+            "1": "Delfipolpo",
+            "2": "Sposo peloso",
             "3": "Monster Truck",
-            "4": "Nudist Giant",
-            "5": "Marshmallow Man",
-            "6": "Sandbox Worm",
-            "7": "Optimist Supreme",
-            "8": "Three-headed Dragon God",
-            "9": "Angry Giant Saurian",
-            "10": "Berlin Scene Monster"
+            "4": "Gigante nudista",
+            "5": "Uomo di marshmallow",
+            "6": "Verme della buca della sabbia",
+            "7": "Ottimista supremo",
+            "8": "Dio drago a tre teste",
+            "9": "Sauro gigante arrabbiato",
+            "10": "Mostro di scena di Berlino"
         },
         "27": {
             "name": "Città degli intrighi",
@@ -1541,7 +1547,7 @@
             "7": "Senza volto",
             "8": "Gnomo vizioso",
             "9": "Il protettore",
-            "10": "The Hard to Burn"
+            "10": "Colei che non si brucia"
         },
         "28": {
             "name": "Scuola di magia rapida",
@@ -1554,7 +1560,7 @@
             "7": "Bella la Bestia",
             "8": "Lucius il Purosangue",
             "9": "Tenero cucciolino",
-            "10": "You Should Know Who ..."
+            "10": "Tu dovresti sapere chi..."
         },
         "29": {
             "name": "Montagna di cenere",
@@ -1566,8 +1572,8 @@
             "6": "Esercito Non-Morto",
             "7": "Shelantola",
             "8": "Sovrano dei Nove",
-            "9": "Mauron's Maw",
-            "10": "The Necromancer"
+            "9": "Bocca di Bauron",
+            "10": "Il Negromante"
         },
         "30": {
             "name": "QG di Playa",
@@ -1577,10 +1583,10 @@
             "4": "Leander il Lercio",
             "5": "Hannah l'Angosciante",
             "6": "Alex, l'Angelo degli abissi",
-            "7": "Jan the Hacker",
-            "8": "Four-handed Peter",
-            "9": "The Artist Andreas",
-            "10": "Marv the Minor Evil"
+            "7": "Jan l'Hacker",
+            "8": "Peter quattro mani ",
+            "9": "L'artista Andreas",
+            "10": "Marv il Male minore"
         },
         "201": {
             "name": "Torre",
@@ -1712,7 +1718,7 @@
         "203": {
             "name": "Tornado",
             "486": "Ghoul Grigio",
-            "658": "Blood Occultist",
+            "658": "Occultista del sangue",
             "711": "Gragosh il distruttore",
             "777": "La destra del burattinaio",
             "830": "Ratto di fogna",
@@ -1724,17 +1730,17 @@
             "872": "Pipistrello Zozzo",
             "873": "Pipistrello Zozzo",
             "874": "Pipistrello Zozzo",
-            "875": "Bat Out of hell",
+            "875": "Pipistrello Infernale",
             "876": "Nonmorto",
             "877": "Anima in pena",
             "939": "Drago Infernale",
             "947": "Il dinamico Peter",
             "954": "Scorpione della Giungla",
             "962": "Lo gnomo alto quanto un nano",
-            "981": "Butthead",
+            "981": "Faccia da culo",
             "990": "Tre fantasmi",
             "998": "Millefulmini",
-            "999": "Swamp Nymphomaniac",
+            "999": "Ninfomane della Palude",
             "1000": "Shniva"
         },
         "204": {

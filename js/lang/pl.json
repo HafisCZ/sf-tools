@@ -77,24 +77,26 @@
             "fortress12": "Fortyfikacje",
             "underworld1": "Serce Ciemności",
             "underworld2": "Wrota Podziemi",
-            "underworld3": "Gold Pit",
-            "underworld4": "Soul Extractor",
-            "underworld5": "Goblin Pit",
-            "underworld6": "Torture Chamber",
-            "underworld7": "Gladiator Trainer",
-            "underworld8": "Troll Block",
-            "underworld9": "Adventuromatic",
-            "underworld10": "Keeper"
+            "underworld3": "Kopalnia Złota",
+            "underworld4": "Ekstaktor Dusz",
+            "underworld5": "Siedlisko Goblinów",
+            "underworld6": "Komnata Tortur",
+            "underworld7": "Trener Gladiatorów",
+            "underworld8": "Siedlisko Trolli",
+            "underworld9": "Przygotomat",
+            "underworld10": "Władca"
         },
         "reduction": "Redukcja",
-        "race1": "Human",
+        "race1": "Człowiek",
         "race2": "Elf",
-        "race3": "Dwarf",
-        "race4": "Gnome",
-        "race5": "Orc",
-        "race6": "Dark Elf",
+        "race3": "Krasnolud",
+        "race4": "Gnom",
+        "race5": "Ork",
+        "race6": "Mroczny Elf",
         "race7": "Goblin",
-        "race8": "Demon"
+        "race8": "Demon",
+        "gender1": "Male",
+        "gender2": "Female"
     },
     "index": {
         "toggle": "Pokaż/ukryj kontrybutorów",
@@ -214,7 +216,7 @@
             "timestamps": "Daty",
             "prefix": "Serwer",
             "name": "Nazwa",
-            "type": "Type",
+            "type": "Typ",
             "group": "Grupa",
             "groups": "Grupy",
             "players": "Gracze",
@@ -247,9 +249,9 @@
             "options": {
                 "title": "Opcje pliku",
                 "advanced": "Pokaż zaawansowaną liste plików",
-                "hidden": "Show hidden entries",
+                "hidden": "Pokaż ukryte pozycje",
                 "export_public_only": "Eksportuj tylko publiczne dane",
-                "export_bundle_groups": "Bundle groups with players"
+                "export_bundle_groups": "Połącz grupy z graczami"
             },
             "tags": {
                 "single": "Tag",
@@ -259,6 +261,7 @@
             },
             "filters": {
                 "any": "Wszystko",
+                "none": "None",
                 "n_unique": "Unikalny",
                 "expression": "Wyrażenie",
                 "expression_placeholder": "Twoje wyrażenie",
@@ -268,10 +271,10 @@
                 "prefix": "Serwer",
                 "tags": "Tagi",
                 "type": "Typ",
-                "ownership": "Ownership",
-                "ownership_all": "Show all",
-                "ownership_own": "Show only own",
-                "ownership_other": "Show only other",
+                "ownership": "Właściciel",
+                "ownership_all": "Pokaż wszystkie",
+                "ownership_own": "Pokaż tylko własne",
+                "ownership_other": "Pokaż tylko inne",
                 "hidden": "Ukryte"
             },
             "online": {
@@ -499,14 +502,14 @@
     },
     "pets": {
         "generate": {
-            "iterations": "Amount of iterations per thread when generating a pet map.",
+            "iterations": "Ilość iteracji na wątek podczas generowania mapy pupili.",
             "tooltip": "Wygeneruj mapę sukcesu poziomu / gladiatora. Możliwe tylko z własnym pupilem przeciwko bossowi lochu.",
             "one": "Generuj",
             "five": "Generuj następne 5",
             "ten": "Generuj następne 10"
         },
         "simulate": "Symuluj",
-        "simulate_dungeons": "Simulate all remaining dungeons",
+        "simulate_dungeons": "Symuluj wszystkie pozostałe lochy",
         "results": "Wyniki",
         "map": {
             "gladiator": "Trener"
@@ -832,8 +835,8 @@
             "guilds": "Załaduj zapisane gildie"
         },
         "toast": {
-            "title": "Simulation finished",
-            "message": "Simulation took #{duration}"
+            "title": "Symulacja zakończona",
+            "message": "Symulacja zajęła #{duration}"
         }
     },
     "editor": {
@@ -868,12 +871,14 @@
         "username": "Nazwa",
         "password": "Hasło",
         "mode": {
+            "title": "Capture mode",
             "own": "Zeskanuj własną postać",
             "default": "Zeskanuj własną + wybrane postacie",
             "guild": "Zeskanuj własną + gildia",
             "friends": "Zeskanuj własną + lista znajomych",
             "hall_of_fame": "Zeskanuj własną + top 50 Sali Chwały"
         },
+        "temporary": "Discard capture when page is closed",
         "cancel": "Anuluj",
         "continue": "Kontynuuj",
         "step2": {
@@ -912,22 +917,22 @@
             "ok": "Ok"
         },
         "statistics_integration_options": {
-            "title": "Statistics Integration Options",
-            "slot": "Database slot",
+            "title": "Opcje integracji statystyk",
+            "slot": "Slot bazy danych",
             "limit": {
-                "title": "Maximum amount of entries to be displayed",
-                "placeholder": "Use 0 to disable"
+                "title": "Maksymalna ilość wpisów do wyświetlenia",
+                "placeholder": "Użyj 0, aby wyłączyć"
             },
             "ignored_duration": {
-                "title": "Ignore entries older than",
-                "0": "None",
-                "86400000": "> 1 day",
-                "604800000": "> 1 week",
-                "2592000000": "> 1 month",
-                "7776000000": "> 3 months"
+                "title": "Ignoruj wpisy starsze niż",
+                "0": "Brak",
+                "86400000": "> 1 dzień",
+                "604800000": "> 1 tydzień",
+                "2592000000": "> 1 miesiąc",
+                "7776000000": "> 3 miesiące"
             },
             "ignored_identifiers": {
-                "title": "Ignored players and groups"
+                "title": "Ignorowani gracze i grupy"
             }
         },
         "delete_all": {
@@ -1214,7 +1219,8 @@
             "bonus": "Bonus",
             "lost": "Stracone",
             "reclaimable": "Do odzyskania",
-            "required": "Wymagane"
+            "required": "Wymagane",
+            "invalid": "Please insert valid attribute value"
         }
     },
     "dungeon_enemies": {

@@ -94,7 +94,9 @@
         "race5": "Orc",
         "race6": "Elfo Negro",
         "race7": "Duende",
-        "race8": "Demónio"
+        "race8": "Demónio",
+        "gender1": "Homem",
+        "gender2": "Mulher"
     },
     "index": {
         "toggle": "Alternar Créditos",
@@ -259,6 +261,7 @@
             },
             "filters": {
                 "any": "Qualquer",
+                "none": "Nenhum",
                 "n_unique": "Único",
                 "expression": "Expressão",
                 "expression_placeholder": "A tua expressão",
@@ -868,12 +871,14 @@
         "username": "Nome de utilizador",
         "password": "Palavra-chave",
         "mode": {
+            "title": "Modo de captura",
             "own": "Capturar o seu próprio personagem",
             "default": "Capturar os próprios personagens + selecionados",
             "guild": "Capturar os próprios personagens + membros do clã",
             "friends": "Capturar os próprios personagens + amigos",
             "hall_of_fame": "Capturar os próprios personagens + top 50 HoF"
         },
+        "temporary": "Descartar captura quando a página é fechada",
         "cancel": "Cancelar",
         "continue": "Continuar",
         "step2": {
@@ -1214,7 +1219,8 @@
             "bonus": "Bónus",
             "lost": "Perdido",
             "reclaimable": "Recuperável",
-            "required": "Requerido"
+            "required": "Requerido",
+            "invalid": "Por favor, insira um valor de atributo válido"
         }
     },
     "dungeon_enemies": {

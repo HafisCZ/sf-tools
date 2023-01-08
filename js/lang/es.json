@@ -94,7 +94,9 @@
         "race5": "Orco",
         "race6": "Elfo Oscuro",
         "race7": "Goblin",
-        "race8": "Demonio"
+        "race8": "Demonio",
+        "gender1": "Hombre",
+        "gender2": "Mujer"
     },
     "index": {
         "toggle": "Alternar créditos",
@@ -259,6 +261,7 @@
             },
             "filters": {
                 "any": "Cualquiera",
+                "none": "Ninguno",
                 "n_unique": "único",
                 "expression": "Expresión",
                 "expression_placeholder": "Tu expresión",
@@ -868,12 +871,14 @@
         "username": "Nombre de usuario",
         "password": "Contraseña",
         "mode": {
+            "title": "Modo de captura",
             "own": "Capturar propio personaje",
             "default": "Capturar propio + personajes seleccionados",
             "guild": "Capturar propio + personajes de gremio",
             "friends": "Capturar propio + amigos",
             "hall_of_fame": "Capturar propio + jugadores top 50"
         },
+        "temporary": "Descartar captura cuando la página esté cerrada",
         "cancel": "Cancelar",
         "continue": "Continuar",
         "step2": {
@@ -1214,7 +1219,8 @@
             "bonus": "Bonus",
             "lost": "Perdido",
             "reclaimable": "Recuperable",
-            "required": "Requerido"
+            "required": "Requerido",
+            "invalid": "Por favor, introduzca un valor de atributo válido"
         }
     },
     "dungeon_enemies": {
