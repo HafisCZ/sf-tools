@@ -45,6 +45,10 @@ div.dialog.container > .dialog > div {
   width: 100%;
 }
 
+div.dialog.container > .very.big.dialog {
+  width: 1250px;
+}
+
 div.dialog.container > .big.dialog {
   width: 950px;
 }

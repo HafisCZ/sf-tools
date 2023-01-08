@@ -36,7 +36,7 @@
         <script src="js/sim/pets.js"></script>
         <script src="js/editor.js"></script>
     </head>
-    <body class="margin-none-bottom">
+    <body class="inverted">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
@@ -45,31 +45,37 @@
             <!-- Header -->
             <div class="ui middle aligned grid">
                 <div class="four wide column">
-                    <div class="ui small form">
+                    <div class="ui small inverted form">
                         <div class="three fields !mb-0">
-                            <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
-                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                            <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
+                                <div class="ui inverted input">
+                                    <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                </div>
                             </div>
-                            <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
-                                <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                            <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
+                                <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                <div class="ui inverted input">
+                                    <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                </div>
                             </div>
-                            <div class="field" data-position="bottom center" data-intl-tooltip="pets.generate.iterations">
-                                <span style="position: absolute; top: 0.5em; left: -0.25em;">/</span>
-                                <input class="text-center fluid" type="text" id="sim-map-iterations" value="100000">
+                            <div class="field" data-position="bottom center" data-intl-tooltip="pets.generate.iterations" data-inverted="">
+                                <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">/</span>
+                                <div class="ui inverted input">
+                                    <input class="text-center fluid" type="text" id="sim-map-iterations" value="100000">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="two wide column"></div>
                 <div class="four wide column">
-                    <h1 class="ui centered header">Pet Simulator</h1>
+                    <h1 class="ui centered inverted header">Pet Simulator</h1>
                 </div>
-                <div class="three wide center aligned column" id="sim-result"></div>
+                <div class="three wide center aligned column text-white" id="sim-result"></div>
                 <div class="three wide right aligned column">
-                    <div class="ui small buttons">
+                    <div class="ui small basic inverted buttons">
                         <button class="ui button" type="submit" id="simulate" data-intl="pets.simulate"></button>
-                        <div id="sim-generate" class="ui floating black simple dropdown icon button">
+                        <div id="sim-generate" class="ui floating black simple inverted dropdown icon button">
                             <i class="ui white th icon"></i>
                             <div class="menu">
                                 <div class="item" id="sim-generate1" data-intl="pets.generate.one"></div>
@@ -77,25 +83,25 @@
                                 <div class="item" id="sim-generate10" data-intl="pets.generate.ten"></div>
                             </div>
                         </div>
-                        <div id="simulate-dungeons" class="ui icon simple black button" data-position="bottom center" data-intl-tooltip="pets.simulate_dungeons"><i class="ui dungeon icon"></i></div>
+                        <div id="simulate-dungeons" class="ui icon simple black button" data-position="bottom center" data-intl-tooltip="pets.simulate_dungeons" data-inverted=""><i class="ui dungeon icon"></i></div>
                     </div>
                 </div>
             </div>
             <div class="ui two columns grid">
                 <div class="column">
-                    <div class="ui form" id="sim-a">
-                        <div class="ui orange segment !p-2 !m-0">
+                    <div class="ui inverted form" id="sim-a">
+                        <div class="ui orange inverted segment !p-2 !m-0">
                             <div class="three fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.type"></label>
-                                    <div class="ui selection dropdown" data-path="Type">
+                                    <div class="ui selection inverted dropdown" data-path="Type">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.pet"></label>
-                                    <div class="ui search selection dropdown" data-path="Pet">
+                                    <div class="ui search selection inverted dropdown" data-path="Pet">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
@@ -104,14 +110,16 @@
                                     <div class="two fields">
                                         <div class="field">
                                             <label data-intl="pets.editor.habitat"></label>
-                                            <div class="ui selection dropdown" data-path="Boss">
+                                            <div class="ui selection inverted dropdown" data-path="Boss">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
                                         </div>
                                         <div class="field">
                                             <label data-intl="editor.level"></label>
-                                            <input class="text-center" data-path="Level">
+                                            <div class="ui inverted input">
+                                                <input class="text-center" data-path="Level" placeholder="1 - 200">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -119,74 +127,100 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.at100.title"></label>
-                                    <input class="text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at150.title"></label>
-                                    <input class="text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at200.title"></label>
-                                    <input class="text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
+                                    </div>
                                 </div>
                             </div>
                             <div class="three fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.pack.title"></label>
-                                    <input class="text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="editor.gladiator"></label>
-                                    <div class="ui search selection dropdown" data-path="Gladiator">
+                                    <div class="ui search selection inverted dropdown" data-path="Gladiator">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="ui orange segment !p-2 !mt-2" data-debug="">
+                        <div class="ui orange inverted segment !p-2 !mt-2" data-debug="">
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="editor.class"></label>
-                                    <input class="text-center" disabled data-path="Class">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Class">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.health"></label>
-                                    <input class="text-center" disabled data-path="Health">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Health">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.attribute"></label>
-                                    <input class="text-center" disabled data-path="Attribute">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Attribute">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.defense"></label>
-                                    <input class="text-center" disabled data-path="Defense">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Defense">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="general.attribute5"></label>
-                                    <input class="text-center" disabled data-path="Luck">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Luck">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.skip"></label>
-                                    <input class="text-center" disabled data-path="Skip">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Skip">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.crit"></label>
-                                    <input class="text-center" disabled data-path="Chance">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Chance">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.damage"></label>
-                                    <input class="text-center" disabled data-path="Damage">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Damage">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.critical_bonus"></label>
-                                    <input class="text-center" disabled data-path="Critical">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Critical">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -194,19 +228,19 @@
                 </div>
                 <!-- Player list -->
                 <div class="column">
-                    <div class="ui form" id="sim-b">
-                        <div class="ui purple segment !p-2 !m-0">
+                    <div class="ui inverted form" id="sim-b">
+                        <div class="ui purple inverted segment !p-2 !m-0">
                             <div class="three fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.type"></label>
-                                    <div class="ui selection dropdown" data-path="Type">
+                                    <div class="ui selection inverted dropdown" data-path="Type">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.pet"></label>
-                                    <div class="ui search selection dropdown" data-path="Pet">
+                                    <div class="ui search selection inverted dropdown" data-path="Pet">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
@@ -215,14 +249,16 @@
                                     <div class="two fields">
                                         <div class="field">
                                             <label data-intl="pets.editor.habitat"></label>
-                                            <div class="ui selection dropdown" data-path="Boss">
+                                            <div class="ui selection inverted dropdown" data-path="Boss">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
                                         </div>
                                         <div class="field">
                                             <label data-intl="editor.level"></label>
-                                            <input class="text-center" data-path="Level">
+                                            <div class="ui inverted input">
+                                                <input class="text-center" data-path="Level" placeholder="1 - 200">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -230,82 +266,105 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.at100.title"></label>
-                                    <input class="text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at150.title"></label>
-                                    <input class="text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at200.title"></label>
-                                    <input class="text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
+                                    </div>
                                 </div>
                             </div>
                             <div class="three fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.pack.title"></label>
-                                    <input class="text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="editor.gladiator"></label>
-                                    <div class="ui search selection dropdown" data-path="Gladiator">
+                                    <div class="ui search selection inverted dropdown" data-path="Gladiator">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="ui purple segment !p-2 !mt-2" data-debug="">
+                        <div class="ui purple inverted segment !p-2 !mt-2" data-debug="">
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="editor.class"></label>
-                                    <input class="text-center" disabled data-path="Class">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Class">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.health"></label>
-                                    <input class="text-center" disabled data-path="Health">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Health">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.attribute"></label>
-                                    <input class="text-center" disabled data-path="Attribute">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Attribute">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.defense"></label>
-                                    <input class="text-center" disabled data-path="Defense">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Defense">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="general.attribute5"></label>
-                                    <input class="text-center" disabled data-path="Luck">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Luck">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.skip"></label>
-                                    <input class="text-center" disabled data-path="Skip">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Skip">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.crit"></label>
-                                    <input class="text-center" disabled data-path="Chance">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Chance">
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.damage"></label>
-                                    <input class="text-center" disabled data-path="Damage">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Damage">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.critical_bonus"></label>
-                                    <input class="text-center" disabled data-path="Critical">
+                                    <div class="ui inverted input">
+                                        <input class="text-center" disabled data-path="Critical">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="sim-maps">
-
             </div>
         </div>
 
@@ -319,8 +378,8 @@
 
                 _createModal () {
                     return `
-                        <div class="small dialog">
-                            <div class="left separated header">${intl('pets.results')}</div>
+                        <div class="small dark bordered dialog">
+                            <div class="header">${intl('pets.results')}</div>
                             <div class="ui three column grid" data-op="content"></div>
                         </div>
                     `;
@@ -356,49 +415,114 @@
                 }
             })();
 
+            SIMULATOR_MAP_DIALOG = new (class extends Dialog {
+                constructor () {
+                    super({
+                        dismissable: true
+                    })
+                }
+
+                _createModal () {
+                    return `
+                        <div class="very big dark bordered dialog">
+                            <div class="header">${intl('pets.results')}</div>
+                            <div class="flex justify-content-between gap-2">
+                                <div class="ui selection fluid inverted dropdown" data-op="selector">
+                                    <div class="text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                                <div class="ui basic inverted icon button" data-position="bottom center" data-inverted="" data-tooltip="${intl('stats.copy.image')}" data-op="save">
+                                    <i class="download icon"></i>
+                                </div>
+                            </div>
+                            <div data-op="content" class="overflow-y-scroll" style="height: 50vh;"></div>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$selector = this.$parent.operator('selector');
+                    
+                    this.$save = this.$parent.operator('save');
+                    this.$save.click(() => {
+                        const name = this.$selector.dropdown('get value');
+                        this._save(name);
+                    });
+
+                    this.$content = this.$parent.operator('content');
+                }
+
+                _save (name) {
+                    const $element = this.$parent.find(`[data-map="${name}"]`);
+                    
+                    this.$content.css('height', '');
+                    $element.find('.\\!text-white, .text-white').attr('style', 'color: black !important;');
+
+                    html2canvas($element.get(0), {
+                        logging: false,
+                        onclone: () => {
+                            this.$content.css('height', '50vh');
+                            $element.find('.\\!text-white, .text-white').removeAttr('style');
+                        }
+                    }).then((canvas) => {
+                        canvas.toBlob((blob) => {
+                            window.download(`${name}.png`, blob);
+                        });
+                    });
+                }
+
+                _color (chance) {
+                    if (chance < 0.01) {
+                        return '#ffad99';
+                    } else if (chance >= 25) {
+                        return '#99ffb4'
+                    } else if (chance >= 10) {
+                        return '#daff99';
+                    } else if (chance >= 5) {
+                        return '#fdff99';
+                    } else {
+                        return '#ffdd99';
+                    }
+                }
+
+                _applyArguments (maps) {
+                    this.$selector.dropdown({
+                        values: maps.map(({ name }) => ({ value: SHA1(name), name })),
+                        onChange: (value) => {
+                            this.$content.find('[data-map]').hide();
+                            this.$content.find(`[data-map="${value}"]`).show();
+                        }
+                    });
+
+                    let content = '';
+                    for (const { data, name } of maps) {
+                        const size = data.find(entry => entry && entry.length).filter(value => typeof value !== 'undefined').length;
+
+                        content += `
+                            <table data-map="${SHA1(name)}" class="ui celled structured fixed basic table table-group w-full text-center !m-0" style="display: none; font-size: 90% !important;">
+                                <thead>
+                                    <tr>
+                                        ${data.find(entry => entry && entry.length).reduce((memo, chance, i) => memo + `<th class="!text-white">${intl('pets.map.gladiator')} ${i}</th>`, `<th class="!text-white">${intl('editor.level')}</th>`)}
+                                        ${'<th></th>'.repeat(16 - size)}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.reduce((memo, entry, i) => memo + `<tr><td class="text-white">${i + 1}</td>${ entry.reduce((memo2, chance) => memo2 + `<td style="background-color: ${this._color(chance)};">${chance.toFixed(2)}%</td>`, '')}${'<td></td>'.repeat(16 - size)}</tr>`, '')}
+                                </tbody>
+                            </table>
+                        `;
+                    }
+
+                    this.$content.html(content);
+
+                    this.$selector.dropdown('set selected', SHA1(maps[0].name));
+                }
+            })();
+
             Site.ready(function () {
                 $('#sim-threads').captiveInputField('pet_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('pet_sim/iterations', 2.5E6, v => !isNaN(v) && v >= 1);
                 $('#sim-map-iterations').captiveInputField('pet_sim/map_iterations', 1E5, v => !isNaN(v) && v >= 1);
-
-                function addMap (map, key) {
-                    var ml = map.reduce((col, a) => col + (a ? 1 : 0), 0);
-
-                    $('#sim-maps').append(`
-                        <div class="map-parent">
-                            <button data-key="${ key }" class="map-save ui small basic icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}"><i class="download icon"></i></button>
-                            <table data-key="${ key }" class="map-map ui celled structured table table-group table-map-pet fixed-header">
-                                <thead>
-                                    <tr>
-                                        <td colspan="17" class="text-center spanned">${ key }</td>
-                                    </tr>
-                                    <tr>
-                                        ${ map.find(x => x && x.length).reduce((col, a, i) => col + `<td>${intl('pets.map.gladiator')} ${ i }</td>`, `<td>${intl('editor.level')}</td>`) }
-                                    </tr>
-                                </thead>
-                                <tbody style="height: ${ (Math.min(2.3 * ml, 46)).toFixed(1) }em;" data-proper="${ (2.3 * ml).toFixed(1) }em">
-                                    ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td style="background-color: ${getPetColor(w)};">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
-                                </tbody>
-                            </table>
-                        </div>
-                    `);
-
-                    $('#sim-maps').find(`button[data-key="${ key }"]`).click(() => {
-                        html2canvas($(`table[data-key="${ key }"]`).get(0), {
-                            logging: false,
-                            onclone: (doc) => {
-                                var $table = $(doc).find(`table[data-key="${ key }"]`);
-                                var $body = $table.find('tbody');
-
-                                $body.css('height', $body.attr('data-proper'));
-                            }
-                        }).then((canvas) => {
-                            canvas.toBlob((blob) => {
-                                window.download(`${ key }.png`, blob);
-                            });
-                        });
-                    });
-                }
 
                 const IGNORED_FIELDS = ['class', 'health', 'attribute', 'defense', 'luck', 'skip', 'damage', 'chance', 'critical'];
                 const NON_BOSS_FIELDS = ['level', 'at100', 'at150', 'at200', 'pack', 'gladiator'];
@@ -704,27 +828,11 @@
                     }
                 });
 
-                function getPetColor (num) {
-                    if (num < 0.01) {
-                        return '#ffad99';
-                    } else if (num >= 25) {
-                        return '#99ffb4'
-                    } else if (num >= 10) {
-                        return '#daff99';
-                    } else if (num >= 5) {
-                        return '#fdff99';
-                    } else {
-                        return '#ffdd99';
-                    }
-                }
-
                 function generatePetMap (mapCount) {
                     const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
                     const iterations = Math.max(1, Number($('#sim-map-iterations').val()) || 1E5);
 
                     if (petA.valid() && petB.valid()) {
-                        $('#sim-result, #sim-maps').html('');
-
                         const a = petA.read();
                         const b = petB.read();
 
@@ -747,9 +855,13 @@
                             }
 
                             batch.run(instances).then(() => {
-                                for (var i = 0; i < maps.length; i++) {
-                                    addMap(maps[i], `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b.Type}`)} ${ b.Pet + i + 1 } - ${intl(`pets.names.${b.Type * 20 + b.Pet + i}`)}`);
-                                }
+                                DialogController.open(
+                                    SIMULATOR_MAP_DIALOG,
+                                    maps.map((data, i) => ({
+                                        data,
+                                        name: `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b.Type}`)} ${ b.Pet + i + 1 } - ${intl(`pets.names.${b.Type * 20 + b.Pet + i}`)}`
+                                    }))
+                                )
                             })
                         }
                     }
@@ -762,6 +874,7 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
+                    dark: true,
                     scope: (dm) => dm.getLatestPlayers().filter((player) => typeof player.Pets !== 'undefined' && player.Pets.TotalLevel),
                     callback: (player) => {
                         updateDungeonButton(player);
