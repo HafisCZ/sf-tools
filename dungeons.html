@@ -342,15 +342,15 @@
 
                 _createModal () {
                     return `
-                        <div class="tight inverted smaller dialog">
-                            <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid darkgray;">
+                        <div class="tight inverted bordered smaller dialog">
+                            <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid #262626;">
                                 <div>${intl(`dungeons.results`)}</div>
                                 <div data-op="screenshot" class="ui tiny basic inverted icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
                                     <i class="download icon"></i>
                                 </div>
                             </div>
                             <div data-op="experience"></div>
-                            <div class="px-4" style="border-bottom: 1px solid darkgray;">
+                            <div class="px-4" style="border-bottom: 1px solid #262626;">
                                 <canvas data-op="chart" class="w-full"></canvas>
                             </div>
                             <div class="overflow-y-auto" style="max-height: 65vh;">
@@ -365,7 +365,7 @@
                     this.$content = this.$parent.operator('content');
 
                     this.chart = new Chart(this.$parent.operator('chart'), {
-                        type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'lightgray',tension:0},point:{radius:0}}}
+                        type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{gridLines:{color:'#2e2e2e',zeroLineColor:'#2e2e2e'},display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'white',tension:0},point:{radius:0}}}
                     });
 
                     this.$screenshot = this.$parent.operator('screenshot');
@@ -760,7 +760,7 @@
                 select(0);
 
                 const chart = new Chart($('#winchart'), {
-                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'lightgray',tension:0},point:{radius:0}}}
+                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{gridLines:{color:'#2e2e2e',zeroLineColor:'#2e2e2e'},display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'white',tension:0},point:{radius:0}}}
                 });
 
                 function showData (data) {

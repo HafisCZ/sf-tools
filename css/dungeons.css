@@ -122,7 +122,7 @@ div.text .boss-rune {
     padding-bottom: 0.5em;
     font-weight: bold;
     color: lightgray;
-    border-bottom: 1px solid darkgray;
+    border-bottom: 1px solid #262626;
 }
 
 .dungeon-shadow {
