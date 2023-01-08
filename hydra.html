@@ -65,7 +65,7 @@
                                     <div class="field">
                                         <label data-intl="editor.level"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Level" placeholder="1 - 800">
+                                            <input class="text-center" type="text" data-path="Level" placeholder="1 - 600">
                                         </div>
                                     </div>
                                 </div>
@@ -306,7 +306,7 @@
                     let data = {
                         Hydra: hydra || EditorController.fields['hydra'].get(),
                         PlayerCount: players.length,
-                        Level: Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25)
+                        Level: Math.min(Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25), 600)
                     }
 
                     for (const att of ['Constitution', 'Luck']) {
