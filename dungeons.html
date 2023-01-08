@@ -372,11 +372,15 @@
                     this.$screenshot.click(() => {
                         const $contentParent = this.$content.parent();
                         $contentParent.css('max-height', '');
+                        $contentParent.css('color', 'black');
+                        $contentParent.find('.dungeon-shadow').css('color', 'purple');
 
                         html2canvas(this.$content.get(0), {
                             logging: false,
                             onclone: () => {
                                 $contentParent.css('max-height', '65vh');
+                                $contentParent.css('color', '');
+                                $contentParent.find('.dungeon-shadow').css('color', '');
                             }
                         }).then((canvas) => {
                             canvas.toBlob((blob) => {
