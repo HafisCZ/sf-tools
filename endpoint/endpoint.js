@@ -399,17 +399,19 @@ const Endpoint = new (class extends Dialog {
             <div class="ui inverted form">
                 <div class="field">
                     <label>${this.intl('username')}</label>
-                    <div class="ui input">
+                    <div class="ui inverted input">
                         <input type="text" autocomplete="username" data-op="username" name="username" placeholder="username@s1.sfgame.de" pattern="^(.{3,})@(.+\.sfgame\..+)$">
                     </div>
                 </div>
                 <div class="field">
                     <label>${this.intl('password')}</label>
-                    <input type="password" autocomplete="current-password" name="password" data-op="password">
+                    <div class="ui inverted input">
+                        <input type="password" autocomplete="current-password" name="password" data-op="password">
+                    </div>
                 </div>
                 <div class="field">
                     <label>${this.intl('mode.title')}</label>
-                    <div class="ui fluid selection dropdown" data-op="mode">
+                    <div class="ui fluid selection inverted dropdown" data-op="mode">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
                     </div>

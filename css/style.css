@@ -701,6 +701,11 @@ input:disabled {
     color: rgba(255, 255, 255, .8);
 }
 
+.ui.inverted.form .field .inverted.input input:autofill {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
 .field.field.error .ui.inverted.input input {
     border-color: #e0b4b4;
     color: #ecd1d1;
