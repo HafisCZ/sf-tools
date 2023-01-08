@@ -290,6 +290,10 @@
   color: white;
 }
 
+.\!text-white {
+  color: white !important;
+}
+
 .\!text-orange {
   color: orange !important;
 }
