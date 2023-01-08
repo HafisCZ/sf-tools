@@ -139,7 +139,7 @@ const SimulatorUtils = new (class {
   _insertDebugElements () {
     const $dialogButton = $(`
       <div class="item !p-0">
-        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure')}" data-inverted="" style="box-shadow: none !important;">
+        <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure')}" data-inverted="">
           <i class="wrench icon"></i>
         </button>
       </div>
@@ -157,7 +157,7 @@ const SimulatorUtils = new (class {
 
     const $copyButton = $(`
       <div class="item !p-0">
-        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" data-inverted="" style="box-shadow: none !important;">
+        <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" data-inverted="">
           <i class="copy icon"></i>
         </button>
       </div>
