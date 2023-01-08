@@ -541,7 +541,7 @@ class Editor extends EditorBase {
     _html ($parent) {
         $parent.html(`
             <div class="flex flex-col gap-2">
-                <div class="ui orange inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="field">
                         <label>${this.intl('name')}</label>
                         <div class="ui icon right action inverted input">
@@ -619,7 +619,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui purple inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${this.intl('min')}</label>
@@ -655,7 +655,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui blue inverted segment !p-2 !m-0" data-optional="Weapon2">
+                <div class="ui grey inverted segment !p-2 !m-0" data-optional="Weapon2">
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${this.intl('min')}</label>
@@ -691,7 +691,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui red inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="four fields !mb-0">
                         <div class="field">
                             <label>${this.intl('armor')}</label>
@@ -725,7 +725,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui green inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${this.intl('portal_health')}</label>
@@ -748,7 +748,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui pink inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${this.intl('portal_damage')}</label>

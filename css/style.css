@@ -710,6 +710,11 @@ input:disabled {
     background: #1b1c1d;
 }
 
+/* Inverted segment */
+.ui.inverted.grey.segment.segment.segment.segment {
+    border-color: rgba(255, 255, 255, .15);
+}
+
 /* Inverted button */
 .ui.basic.inverted.button, .ui.basic.inverted.buttons .button {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, .5) inset;
