@@ -246,7 +246,7 @@ const Endpoint = new (class extends Dialog {
                 const mode = this.$mode.dropdown('get value');
                 if (mode === 'own') {
                     this._funcLoginSingle(server, username, password);
-                } else if (mode === 'members') {
+                } else if (mode === 'guild') {
                     this._funcLoginAll(server, username, password, 'members');
                 } else if (mode === 'friends') {
                     this._funcLoginAll(server, username, password, 'friends');
