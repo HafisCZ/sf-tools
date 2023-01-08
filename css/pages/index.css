@@ -152,8 +152,5 @@
 }
 
 img.drvcs {
-    position: fixed;
-    left: 2em;
-    bottom: 0em;
     z-index: -1;
 }

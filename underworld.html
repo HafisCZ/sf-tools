@@ -38,7 +38,7 @@
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
-        <div class="ui main container">
+        <div class="ui main inverted container">
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -48,42 +48,42 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="underworld.goblin_pit"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="GoblinPit" placeholder="0 - 15">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="GoblinPit" placeholder="0 - 15">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="underworld.goblin_upgrades"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="GoblinUpgrades">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="GoblinUpgrades">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="underworld.troll_block"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="TrollBlock" placeholder="0 - 15">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="TrollBlock" placeholder="0 - 15">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="underworld.troll_upgrades"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="TrollUpgrades">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="TrollUpgrades">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields !mb-0">
                                 <div class="field">
                                     <label data-intl="underworld.keeper"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="Keeper" placeholder="0 - 15">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="Keeper" placeholder="0 - 15">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="underworld.keeper_upgrades"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="KeeperUpgrades">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="KeeperUpgrades">
                                     </div>
                                 </div>
                             </div>
@@ -115,14 +115,14 @@
                                 <div class="ui small inverted form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -132,7 +132,7 @@
                                 <button class="ui fluid small basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
-                        <div class="row selectable-header text-white">
+                        <div class="row selectable-header">
                             <div class="three wide text-center column" data-intl="editor.class"></div>
                             <div class="two wide column" data-intl="editor.level"></div>
                             <div class="six wide column" data-intl="editor.name"></div>

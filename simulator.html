@@ -41,7 +41,7 @@
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
-        <div class="ui main container">
+        <div class="ui main inverted container">
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -90,14 +90,14 @@
                                 <div class="ui small inverted form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -107,7 +107,7 @@
                                 <button class="ui fluid small basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
-                        <div class="row cursor-pointer selectable-header text-white">
+                        <div class="row cursor-pointer selectable-header">
                             <div class="two wide text-center column">
                                 <span data-sort="class" data-intl="editor.class"></span>
                             </div>
@@ -628,7 +628,7 @@
                         var index = players[i].index;
 
                         content += `
-                            <div class="text-white row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'purple-border' : 'transparent-border' }" data-index="${ index }">
+                            <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'purple-border' : 'transparent-border' }" data-index="${ index }">
                                 <div class="player-index">${ i + 1 }</div>
                                 <div class="two wide text-center column">
                                     <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">

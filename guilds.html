@@ -37,7 +37,7 @@
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
-        <div class="ui main container">
+        <div class="ui main inverted container">
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -67,17 +67,17 @@
                                 </div>
                             </div>
                             <div class="seven wide column">
-                                <div class="ui small form">
+                                <div class="ui small inverted form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -98,7 +98,7 @@
                         <div class="css-small-row row results" style="display: none;">
 
                         </div>
-                        <div class="row selectable-header text-white">
+                        <div class="row selectable-header">
                             <div class="three wide text-center column" data-intl="editor.class"></div>
                             <div class="two wide column" data-intl="editor.level"></div>
                             <div class="ten wide column" data-intl="editor.name"></div>

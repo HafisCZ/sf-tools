@@ -47,7 +47,7 @@
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
-        <div class="ui main container">
+        <div class="ui main inverted container">
             <div class="ui two columns stackable grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -63,14 +63,14 @@
                                 <div class="ui small inverted form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-threads" value="2">
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-threads" value="2">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="5000">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-iterations" value="5000">
                                             </div>
                                         </div>
                                     </div>
@@ -85,7 +85,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row !p-0 text-white">
+                        <div class="row !p-0">
                             <div class="eight wide text-center column" data-intl="dungeons.player"></div>
                             <div class="eight wide text-center column" data-intl="dungeons.enemy"></div>
                         </div>
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         <div class="row" style="padding-top: 0;">
-                            <div class="sixteen wide column text-white" style="position: relative;">
+                            <div class="sixteen wide column" style="position: relative;">
                                 <div style="position: absolute; left: 0.5em; bottom: -1.5em; font-size: 80%; opacity: 50%;" data-intl="dungeons.graph.y"></div>
                                 <div style="position: absolute; left: 37%; bottom: -1.5em; font-size: 80%; opacity: 50%;" data-intl="dungeons.graph.x"></div>
                                 <canvas id="winchart" style="width: 100%; height: 17.75em;"></canvas>
@@ -725,15 +725,14 @@
 
                     for (var i = 0; i < 4; i++) {
                         content1 += `
-                            <div class="text-white row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
+                            <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
                                 <div class="four wide text-center column">
                                     <img class="ui medium centered image" style="width: 50px; opacity: 75%;" src="res/portrait${ i ? i : '' }.png">
                                 </div>
                                 <div class="eight wide column text-center">
                                     <b>${intl(`dungeons.${['yourself', 'bert', 'mark', 'kunigunde'][i]}`)}</b>
                                 </div>
-                                <div class="four wide column">
-                                </div>
+                                <div class="four wide column"></div>
                             </div>
                         `;
                     }
