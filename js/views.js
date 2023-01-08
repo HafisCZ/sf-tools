@@ -120,7 +120,7 @@ const DialogController = new (class {
 const TermsAndConditionsDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="small dark dialog">
+            <div class="small inverted dialog">
                 <div class="header"><u>Terms and Conditions</u></div>
                 <div class="overflow-y-scroll" style="max-height: 65vh;">
                     <h4 class="text-center text-orange">§1 General use</h4>
@@ -195,7 +195,7 @@ const ChangeLogDialog = new (class extends Dialog {
         }
 
         return `
-            <div class="small dark dialog">
+            <div class="small inverted dialog">
                 <div class="header">${this.intl('release')} <span class="text-orange">${release}</span></div>
                 <div class="overflow-y-scroll" style="max-height: 50vh;">
                     ${content}
@@ -296,7 +296,7 @@ const WarningDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small dark dialog">
+            <div class="small inverted dialog">
                 <div class="header"><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('title')}</div>
                 <div class="text-center" data-op="text">...</div>
                 <button class="ui black fluid button" data-op="continue">${this.intl('continue')}</button>
@@ -324,7 +324,7 @@ const ErrorDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small dark dialog">
+            <div class="small inverted dialog">
                 <div class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</div>
                 <div class="text-center" data-op="text"></div>
                 <h4 class="text-center">${this.intl('notice#')}</h4>
