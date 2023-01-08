@@ -7,10 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/fights.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -26,59 +23,10 @@
         <script src="js/views.js"></script>
 
         <script src="js/sim/base.js"></script>
-
-        <style>
-            #fi-select {
-                margin-right: 10em;
-                width: 18em;
-            }
-
-            #fi-select .item {
-                padding: 0 !important;
-            }
-
-            #fi-select {
-                padding: 0 !important;
-            }
-
-            .fi-wrap {
-                position: relative;
-                height: 2em;
-                margin-top: 0.4em;
-            }
-
-            .menu.transition .fi-wrap {
-                height: 2.5em;
-            }
-
-            .item.active.selected {
-                font-weight: 300;
-            }
-
-            .fi-wrap br {
-                height: 0.25em;
-            }
-
-            .fi-right {
-                position: absolute;
-                left: 3em;
-                width: 20em;
-            }
-
-            .fi-left {
-                position: absolute;
-                left: 0.75em;
-            }
-
-            [data-op="Name"] {
-                font-size: 1.25em !important;
-                font-weight: bold;
-            }
-        </style>
     </head>
     <body>
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
             <label for="fi-open">
                 <a class="item"><i class="small upload icon"></i>Open</a>
             </label>
@@ -103,7 +51,7 @@
                             <div class="column" id="fi-fighterA">
                                 <div class="field">
                                     <div class="ui icon input">
-                                        <input type="text" disabled class="text-center" data-op="Name">
+                                        <input type="text" disabled class="!text-center" data-op="Name">
                                         <i class="copy outline link icon" data-op="copy"></i>
                                     </div>
                                 </div>
@@ -219,7 +167,7 @@
                             <div class="column" id="fi-fighterB">
                                 <div class="field">
                                     <div class="ui icon input">
-                                        <input type="text" disabled class="text-center" data-op="Name">
+                                        <input type="text" disabled class="!text-center" data-op="Name">
                                         <i class="copy outline link icon" data-op="copy"></i>
                                     </div>
                                 </div>
@@ -346,14 +294,14 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label class="text-center">Enchantment</label>
-                                    <div class="ui selection compact dropdown" id="dmg-enchant1">
+                                    <div class="ui selection dropdown" id="dmg-enchant1">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label class="text-center">Gladiator</label>
-                                    <div class="ui selection compact dropdown" id="dmg-gladiator1">
+                                    <div class="ui selection dropdown" id="dmg-gladiator1">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
@@ -403,14 +351,14 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label class="text-center">Enchantment</label>
-                                    <div class="ui selection compact dropdown" id="dmg-enchant2">
+                                    <div class="ui selection dropdown" id="dmg-enchant2">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label class="text-center">Gladiator</label>
-                                    <div class="ui selection compact dropdown" id="dmg-gladiator2">
+                                    <div class="ui selection dropdown" id="dmg-gladiator2">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
@@ -705,9 +653,9 @@
                                 <div class="fi-wrap">
                                     <div class="fi-left">${ index + 1 }.</div>
                                     <div class="fi-right">
-                                        <span class="${ fight.winner.ID != fight.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ fight.fighterA.Name }</span>
+                                        <span class="${ fight.winner.ID != fight.fighterA.ID ? '!text-red' : '!text-green' }">${ fight.fighterA.Name }</span>
                                         </br>
-                                        <span class="${ fight.winner.ID != fight.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ fight.fighterB.Name }</span>
+                                        <span class="${ fight.winner.ID != fight.fighterB.ID ? '!text-red' : '!text-green' }">${ fight.fighterB.Name }</span>
                                     </div>
                                 </div>
                             `,
@@ -775,9 +723,9 @@
             function fillFighter ($parent, f, winner, o, tarmor = 0) {
                 var $name = $parent.find('[data-op="Name"]').val(f.Name);
                 if (winner) {
-                    $name.addClass('foreground-green').removeClass('foreground-red');
+                    $name.addClass('!text-green').removeClass('!text-red');
                 } else {
-                    $name.addClass('foreground-red').removeClass('foreground-green');
+                    $name.addClass('!text-red').removeClass('!text-green');
                 }
 
                 var id = getFighterId(f, o);
@@ -1006,8 +954,8 @@
                                 <div class="one wide column text-center">&gt;</div>
                                 <div class="three wide column"><b>${target.Name}</b></div>
                                 <div class="one wide column"></div>
-                                <div class="two wide column text-center${attackCrit ? ' foreground-red' : '' }${ attackType >= 100 ? ' text-purple' : '' }">${displayType}</div>
-                                <div class="three wide column text-right${attackCrit ? ' foreground-red text-bold' : '' }${ attackType >= 100 ? ' text-purple' : '' }">${displayDamage}</div>
+                                <div class="two wide column text-center${attackCrit ? ' !text-red' : '' }${ attackType >= 100 ? ' text-magenta font-bold' : '' }">${displayType}</div>
+                                <div class="three wide column text-right${attackCrit ? ' !text-red font-bold' : '' }${ attackType >= 100 ? ' text-magenta font-bold' : '' }">${displayDamage}</div>
                                 <div class="one wide column"></div>
                             </div>
                         </div>

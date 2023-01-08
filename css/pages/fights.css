@@ -1,0 +1,56 @@
+@import url('../global.css');
+
+#fi-select {
+  margin-right: 10em;
+  width: 18em;
+}
+
+#fi-select .item {
+  padding: 0 !important;
+}
+
+#fi-select {
+  padding: 0 !important;
+}
+
+.fi-wrap {
+  position: relative;
+  height: 2em;
+  margin-top: 0.4em;
+}
+
+.menu.transition .fi-wrap {
+  height: 2.5em;
+}
+
+.item.active.selected {
+  font-weight: 300;
+}
+
+.fi-wrap br {
+  height: 0.25em;
+}
+
+.fi-right {
+  position: absolute;
+  left: 3em;
+  width: 20em;
+}
+
+.fi-left {
+  position: absolute;
+  left: 0.75em;
+}
+
+[data-op="Name"] {
+  font-size: 1.25em !important;
+  font-weight: bold;
+}
+
+.undertone {
+  background-color: #F0F0F0 !important;
+}
+
+.attacker-special-state {
+  border: 1px dashed purple !important;
+}

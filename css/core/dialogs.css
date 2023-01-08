@@ -1,3 +1,5 @@
+@import url('utility.css');
+
 /* Container */
 div.dialog.container {
   z-index: 99999;
@@ -117,6 +119,10 @@ div.dialog.container img.loader {
   user-select: none;
 }
 
+div.dialog.container img.pulse-loader {
+  animation: opacity-pulse 2s infinite;
+}
+
 /* Elements */
 div.dialog.container > .dialog > ul {
   margin-top: 0;
@@ -126,5 +132,17 @@ div.dialog.container > .dialog > ul {
 @keyframes spin {
   100% {
       transform: rotate(360deg);
+  }
+}
+
+@keyframes opacity-pulse {
+  0% {
+      opacity: 100%;
+  }
+  50% {
+      opacity: 0%;
+  }
+  100% {
+      opacity: 100%
   }
 }

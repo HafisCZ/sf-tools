@@ -1,3 +1,6 @@
+@import url('../global.css');
+@import url('../editor.css');
+
 div.resource img {
     display: inline-block;
     width: 2em;

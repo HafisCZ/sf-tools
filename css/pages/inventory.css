@@ -1,3 +1,5 @@
+@import url('../global.css');
+
 .css-companions {
     display: flex;
     justify-content: space-between;

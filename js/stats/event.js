@@ -1539,7 +1539,7 @@ class GroupsView extends View {
                     ${
                         filteredEntries.slice(i, i + 5).map((group) => `
                             <div class="column">
-                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
+                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? '!border-red' : ''} ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
                                     <span class="text-85% my-2">${ formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
                                     <img class="ui image" src="res/group.png" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
@@ -1791,7 +1791,7 @@ class PlayersView extends View {
                     ${
                         filteredEntries.slice(i, i + 5).map((player) => `
                             <div class="column">
-                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
+                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ DatabaseManager.Latest != player.LatestTimestamp ? '!border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
                                     <span class="text-85% my-2">${ formatDate(player.LatestTimestamp) }</span>
                                     <img class="ui image" src="res/class${ player.Latest.Class }.png" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
@@ -2171,10 +2171,10 @@ class FilesView extends View {
 
                 return `
                     <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
-                        <td class="selectable clickable text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
-                        <td class="text-center">${ this.timeMap[entry.timestamp] }</td>
-                        <td class="text-center">${ this.prefixMap[entry.prefix] }</td>
-                        <td class="text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
+                        <td class="selectable cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
+                        <td class="!text-center">${ this.timeMap[entry.timestamp] }</td>
+                        <td class="!text-center">${ this.prefixMap[entry.prefix] }</td>
+                        <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
                         <td>${ entry.name }</td>
                         <td>${ isPlayer ? (this.groupMap[entry.group] || '') : '' }</td>
                         <td>${ entry.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(entry.tag)}; color: white;">${entry.tag}</div>` : '' }</td>
@@ -2300,14 +2300,14 @@ class FilesView extends View {
 
             return `
                 <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>
-                    <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle outline icon"></i></td>
-                    <td class="text-center">${ prettyDate }</td>
-                    <td class="text-center">${ playerCount }</td>
-                    <td class="text-center">${ groupCount }</td>
+                    <td class="selectable cursor-pointer !text-center" data-timestamp="${timestamp}"><i class="circle outline icon"></i></td>
+                    <td class="!text-center">${ prettyDate }</td>
+                    <td class="!text-center">${ playerCount }</td>
+                    <td class="!text-center">${ groupCount }</td>
                     <td>${ tagContent }</td>
-                    <td class="text-center">${ version || 'Not known' }</td>
-                    <td class="text-center"></td>
-                    <td class="clickable text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
+                    <td class="!text-center">${ version || 'Not known' }</td>
+                    <td class="!text-center"></td>
+                    <td class="cursor-pointer !text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
                 </tr>
             `;
         });
@@ -3418,15 +3418,15 @@ class ProfilesView extends View {
                 <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
                     <div class="four wide column">
                         <h3 class="ui ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header">
-                            <span data-key="${key}" class="clickable">${name}</span><br/>
+                            <span data-key="${key}" class="cursor-pointer">${name}</span><br/>
                             ${ profile.slot ? `<span style="font-size: 90%;">Slot ${profile.slot}</span><br>` : '' }
                             <span style="font-size: 90%;">(${key})</span>
                         </h3>
                         ${
                             ProfileManager.isEditable(key) ? `
                                 <div style="position: absolute; left: 1em; bottom: 0;">
-                                    <i class="clickable trash alternate outline icon" data-delete="${key}"></i>
-                                    <i class="clickable wrench icon" style="margin-left: 1em;" data-edit="${key}"></i>
+                                    <i class="cursor-pointer trash alternate outline icon" data-delete="${key}"></i>
+                                    <i class="cursor-pointer wrench icon" style="margin-left: 1em;" data-edit="${key}"></i>
                                 </div>
                             ` : ''
                         }

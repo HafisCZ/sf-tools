@@ -44,7 +44,7 @@
   bottom: 0;
 }
 
-.top-20 {
+.top-8 {
   top: 5em;
 }
 
@@ -158,6 +158,10 @@
   margin-top: 0 !important;
 }
 
+.\!mt-4 {
+  margin-top: 1em !important;
+}
+
 .mt-0 {
   margin-top: 0;
 }
@@ -269,6 +273,18 @@
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.\!text-center {
+  text-align: center !important;
+}
+
 /* Text Color */
 .text-orange {
   color: orange;
@@ -276,6 +292,10 @@
 
 .text-red {
   color: red;
+}
+
+.\!text-red {
+  color: red !important;
 }
 
 .text-black {
@@ -286,12 +306,32 @@
   color: black !important;
 }
 
+.text-orange {
+  color: orange;
+}
+
+.text-lightblue {
+  color: lightblue;
+}
+
+.text-crimson {
+  color: crimson;
+}
+
 .text-gray {
   color: gray;
 }
 
+.text-mangenta {
+  color: magenta;
+}
+
 .text-green {
   color: green;
+}
+
+.\!text-green {
+  color: green !important;
 }
 
 .text-white {
@@ -304,6 +344,15 @@
 
 .\!text-orange {
   color: orange !important;
+}
+
+/* Text Color Hover */
+.\!text-red\:hover:hover {
+  color: red !important;
+}
+
+.\!text-darkgreen\:hover:hover {
+  color: darkgreen !important;
 }
 
 /* Background Color */
@@ -350,4 +399,14 @@
 /* Box Shadow */
 .\!box-shadow-none {
   box-shadow: none !important;
+}
+
+/* Borders */
+.\!border-red {
+  border-color: red !important;
+}
+
+/* Font Weight */
+.font-bold {
+  font-weight: bold;
 }

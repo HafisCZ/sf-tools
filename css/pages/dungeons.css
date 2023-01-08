@@ -1,43 +1,17 @@
+@import url('../global.css');
+@import url('../editor.css');
+
 .form.white label {
     color: white !important;
 }
 
 .selectable {
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    padding-bottom: 0.25em !important;
-    padding-top: 0.25em !important;
     height: 4em;
-}
-
-.selectable div {
-    padding: 0 !important;
 }
 
 .compact-buttons button {
     padding-left: 1em !important;
     padding-right: 1em !important;
-}
-
-.selectable-header div {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-.selected {
-    background-color: rgba(133, 133, 133, 0.1);
-    cursor: pointer;
-}
-
-.nselected {
-    cursor: pointer;
-}
-
-.inactive {
-    opacity: 50%;
 }
 
 #sim-players1 {

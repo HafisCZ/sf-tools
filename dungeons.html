@@ -7,12 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/dungeons.css"/>
-        <link rel="stylesheet" href="css/editor.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/dungeons.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -42,8 +37,8 @@
         <script src="js/sim/debug_utils.js"></script>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu" style="z-index: 3;">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu" style="z-index: 3;">
+            <div class="header item"><a href="index.html">SFTools</a></div>
             <a class="item" href="https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator" target="_blank"><i class="ui icon book"></i> Wiki - How to use</a>
             <div class="right menu" id="show-right-menu">
                 <a class="item" id="cheat-menu-toggle"><i class="ui angle double left icon"></i></a>
@@ -69,13 +64,13 @@
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-threads" value="2">
+                                                <input class="!text-center fluid" type="text" id="sim-threads" value="2">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
                                             <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-iterations" value="5000">
+                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="5000">
                                             </div>
                                         </div>
                                     </div>
@@ -90,11 +85,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row padding-none text-white">
+                        <div class="row !p-0 text-white">
                             <div class="eight wide text-center column" data-intl="dungeons.player"></div>
                             <div class="eight wide text-center column" data-intl="dungeons.enemy"></div>
                         </div>
-                        <div class="row padding-none">
+                        <div class="row !p-0">
                             <div class="sixteen wide column">
                                 <hr/>
                             </div>

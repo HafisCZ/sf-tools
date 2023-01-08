@@ -7,10 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link ref="stylesheet" href="css/pages/attributes.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -21,39 +18,10 @@
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
         <script src="js/core/ui.js"></script>
-
-        <style>
-            .orange {
-                color: orange;
-            }
-
-            .green {
-                color: green;
-            }
-
-            .blue {
-                color: lightblue;
-            }
-
-            .purple {
-                color: crimson;
-            }
-
-            .opaque-rows-inverted tr:nth-child(odd) {
-                background-color: #7d7d7d3f;
-            }
-
-            .floating-menu {
-                position: fixed !important;
-                right: 2em;
-                top: 5em;
-                z-index: 99;
-            }
-        </style>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
             <a class="item" id="show-attributes" data-intl="attributes.tabs.gold_exp"></a>
             <a class="item" id="show-fortress" data-intl="attributes.tabs.fortress"></a>
             <a class="item" id="show-underworld" data-intl="attributes.tabs.underworld"></a>
@@ -72,31 +40,31 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.group"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.gold.group"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="gold-guild">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.tower"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.gold.tower"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="gold-tower">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.mine"></span></label>
+                            <label><span class="text-crimson">&bull;</span> <span data-intl="attributes.gold.mine"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="gold-mine">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.gold.pit"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="gold-pit">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.rune"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.rune"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="gold-runes">
                             </div>
@@ -110,7 +78,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.gold.guard_hr"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.gold.guard_hr"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-guard">
                             </div>
@@ -122,19 +90,19 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_s"></span></label>
+                            <label><span class="text-crimson">&bull;</span> <span data-intl="attributes.gold.gem_s"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-gem">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_cap"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.gold.pit_cap"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-capacity">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_10"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.pot_10"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-pot10">
                             </div>
@@ -148,7 +116,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.glass"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.glass"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-hourglass1">
                             </div>
@@ -160,19 +128,19 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_m"></span></label>
+                            <label><span class="text-crimson">&bull;</span> <span data-intl="attributes.gold.gem_m"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-gem2">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_hr"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.gold.pit_hr"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-hourly">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_15"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.pot_15"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-pot15">
                             </div>
@@ -186,7 +154,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.glass_10"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.glass_10"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-hourglass10">
                             </div>
@@ -198,19 +166,19 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="purple">&bull;</span> <span data-intl="attributes.gold.gem_l"></span></label>
+                            <label><span class="text-crimson">&bull;</span> <span data-intl="attributes.gold.gem_l"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-gem3">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.gold.pit_time"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.gold.pit_time"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-time">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_25"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.pot_25"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-pot25">
                             </div>
@@ -239,7 +207,7 @@
 
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_pm"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.pot_pm"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-pothp">
                             </div>
@@ -274,7 +242,7 @@
 
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.gold.pot_pg"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.gold.pot_pg"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="gold-pothp-gold">
                             </div>
@@ -293,13 +261,13 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.experience.hydra"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.experience.hydra"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="xp-hydra">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.experience.academy"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="xp-academy">
                             </div>
@@ -313,13 +281,13 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.experience.daily"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.experience.daily"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="xp-daily">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_hr"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.experience.academy_hr"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="xp-hourly">
                             </div>
@@ -347,7 +315,7 @@
                         <div class="field"></div>
                         <div class="field"></div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_time"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.experience.academy_time"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="xp-time">
                             </div>
@@ -375,7 +343,7 @@
                         <div class="field"></div>
                         <div class="field"></div>
                         <div class="field">
-                            <label><span class="orange">&bull;</span> <span data-intl="attributes.experience.academy_cap"></span></label>
+                            <label><span class="text-orange">&bull;</span> <span data-intl="attributes.experience.academy_cap"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="xp-capacity">
                             </div>
@@ -412,31 +380,31 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.album"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.quests.album"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="quest-book">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.group_exp"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.quests.group_exp"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="quest-xp">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.rune_exp"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.quests.rune_exp"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="quest-rxp">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.min_xp"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.quests.min_xp"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="quest-xpmin">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="green">&bull;</span> <span data-intl="attributes.quests.max_xp"></span></label>
+                            <label><span class="text-green">&bull;</span> <span data-intl="attributes.quests.max_xp"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="quest-xpmax">
                             </div>
@@ -445,31 +413,31 @@
                     <div class="six fields">
                         <div class="field"></div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.tower"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.quests.tower"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="quest-tower">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.group_gold"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.quests.group_gold"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="quest-gold">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.rune_gold"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.quests.rune_gold"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="quest-rgold">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.min_gold"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.quests.min_gold"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="quest-goldmin">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.quests.max_gold"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.quests.max_gold"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="quest-goldmax">
                             </div>
@@ -491,13 +459,13 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="blue">&bull;</span> <span data-intl="attributes.misc.gate"></span></label>
+                            <label><span class="text-lightblue">&bull;</span> <span data-intl="attributes.misc.gate"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="misc-gate">
                             </div>
                         </div>
                         <div class="field">
-                            <label><span class="purple">&bull;</span> <span data-intl="attributes.misc.torture"></span></label>
+                            <label><span class="text-crimson">&bull;</span> <span data-intl="attributes.misc.torture"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" id="misc-torture">
                             </div>
@@ -505,7 +473,7 @@
                     </div>
                     <div class="six fields">
                         <div class="field">
-                            <label><span class="blue">&bull;</span><span class="purple">&bull;</span> <span data-intl="attributes.misc.souls"></span></label>
+                            <label><span class="text-lightblue">&bull;</span><span class="text-crimson">&bull;</span> <span data-intl="attributes.misc.souls"></span></label>
                             <div class="ui inverted input">
                                 <input type="text" disabled id="misc-souls">
                             </div>
