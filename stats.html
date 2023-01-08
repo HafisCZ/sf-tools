@@ -7,13 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/style_rv2.css"/>
-        <link rel="stylesheet" href="css/plugins.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/stats.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/html2canvas.min.js"></script>
@@ -46,8 +40,8 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body>
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a> <span class="css-temporary" style="display: none;" data-intl="stats.topbar.temporary_flag"></span></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a> <span class="css-temporary" style="display: none;" data-intl="stats.topbar.temporary_flag"></span></div>
             <a class="item" id="show-players"><i class="small user icon"></i><span data-intl="stats.topbar.players"></span></a>
             <a class="item" id="show-groups"><i class="small archive icon"></i><span data-intl="stats.topbar.guilds"></span></a>
             <a class="item" id="show-browse"><i class="small database icon"></i><span data-intl="stats.topbar.browse"></span></a>
@@ -77,10 +71,10 @@
                         <table class="ui compact fixed table" style="margin-top: 0;">
                             <thead>
                                 <tr>
-                                    <th class="clickable text-center" data-op="mark-all"><i class="adjust icon"></i></th>
-                                    <th style="width: 16%;" class="text-center" data-intl="stats.files.timestamp"></th>
-                                    <th style="width: 12%;" class="text-center" data-intl="stats.files.prefix"></th>
-                                    <th style="width: 8%;" class="text-center" data-intl="stats.files.type"></th>
+                                    <th class="cursor-pointer !text-center" data-op="mark-all"><i class="adjust icon"></i></th>
+                                    <th style="width: 16%;" class="!text-center" data-intl="stats.files.timestamp"></th>
+                                    <th style="width: 12%;" class="!text-center" data-intl="stats.files.prefix"></th>
+                                    <th style="width: 8%;" class="!text-center" data-intl="stats.files.type"></th>
                                     <th style="width: 17%;" data-intl="stats.files.name"></th>
                                     <th style="width: 20%;" data-intl="stats.files.group"></th>
                                     <th style="width: 17%;" data-intl="stats.files.tags.single"></th>
@@ -98,12 +92,12 @@
                         <table class="ui compact fixed table" style="margin-top: 0;">
                             <thead>
                                 <tr>
-                                    <th class="clickable text-center" data-op="mark-all"><i class="adjust icon"></i></th>
-                                    <th style="width: 20%;" class="text-center" data-intl="stats.files.timestamp"></th>
-                                    <th style="width: 10%;" class="text-center" data-intl="stats.files.players"></th>
-                                    <th style="width: 10%;" class="text-center" data-intl="stats.files.groups"></th>
+                                    <th class="cursor-pointer !text-center" data-op="mark-all"><i class="adjust icon"></i></th>
+                                    <th style="width: 20%;" class="!text-center" data-intl="stats.files.timestamp"></th>
+                                    <th style="width: 10%;" class="!text-center" data-intl="stats.files.players"></th>
+                                    <th style="width: 10%;" class="!text-center" data-intl="stats.files.groups"></th>
                                     <th style="width: 15%;" data-intl="stats.files.tags.single"></th>
-                                    <th style="width: 15%;" class="text-center" data-intl="stats.files.version"></th>
+                                    <th style="width: 15%;" class="!text-center" data-intl="stats.files.version"></th>
                                     <th style="width: 15%;"></th>
                                     <th style="width: 5%;"></th>
                                 </tr>
@@ -449,7 +443,7 @@
                             <div class="ui form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
                                 <div class="field">
                                     <div class="ui icon fluid input">
-                                        <input class="text-center" type="text" disabled data-op="name">
+                                        <input class="!text-center" type="text" disabled data-op="name">
                                         <i class="link external alternate icon" data-op="open"></i>
                                     </div>
                                 </div>

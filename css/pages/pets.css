@@ -1,3 +1,6 @@
+@import url('../global.css');
+@import url('../tables.css');
+
 .pet-picture {
      width: 2em !important;
      height: 2em !important;

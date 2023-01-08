@@ -31,10 +31,10 @@ class PlayerSelectView extends View {
                 content += `
                     ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                     <div class="column">
-                        <div class="ui segment css-inventory-player css-transparent clickable" data-id="${ player.Identifier }">
+                        <div class="ui segment css-inventory-player css-transparent cursor-pointer" data-id="${ player.Identifier }">
                             <img class="ui medium centered image" src="res/class${ player.Class }.png">
-                            <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Prefix }</h3>
-                            <h3 class="ui margin-none-top centered header">${ player.Name }</h3>
+                            <h3 class="ui !mt-4 !mb-0 centered muted header">${ player.Prefix }</h3>
+                            <h3 class="ui !mt-0 centered header">${ player.Name }</h3>
                         </div>
                     </div>
                 `;
@@ -149,7 +149,7 @@ class ResourcesView extends View {
 
         // Summary
         this.$summary.html(`
-            <div class="item sf-margin bottom-05">
+            <div class="item mb-2">
                 <b>Current resources</b>
             </div>
             <div class="item">
@@ -160,7 +160,7 @@ class ResourcesView extends View {
                 <div class="dsub">${ formatAsSpacedNumber(this.Current.Crystal) }</div>
                 <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
             </div>
-            <div class="item sf-margin bottom-05 top-20">
+            <div class="item mb-2 mt-8">
                 <b>Sold resources</b>
             </div>
             <div class="item">
@@ -171,7 +171,7 @@ class ResourcesView extends View {
                 <div class="dsub">${ formatAsSpacedNumber(sell.Crystal) }</div>
                 <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
             </div>
-            <div class="item sf-margin bottom-05 top-20">
+            <div class="item mb-2 mt-8">
                 <b>Dismantled resources</b>
             </div>
             <div class="item">
@@ -182,10 +182,10 @@ class ResourcesView extends View {
                 <div class="dsub">${ formatAsSpacedNumber(dismantle.Crystal) }</div>
                 <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
             </div>
-            <div class="item sf-margin bottom-05 top-20">
+            <div class="item mb-2 mt-8">
 
             </div>
-            <div class="item sf-margin bottom-05 top-20">
+            <div class="item mb-2 mt-8">
                 <b>Spendable resources</b>
             </div>
             <div class="item ${ this.Ready.Metal < 0 ? 'red' : '' }">
@@ -196,7 +196,7 @@ class ResourcesView extends View {
                 <div class="dsub">${ formatAsSpacedNumber(this.Ready.Crystal) }</div>
                 <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
             </div>
-            <div class="item sf-margin bottom-05 top-20">
+            <div class="item mb-2 mt-8">
                 <b>Used resources</b>
             </div>
             <div class="item">
@@ -217,7 +217,7 @@ class ResourcesView extends View {
         this.refreshBlock(this.$kunigunde, this.kunigunde);
         this.refreshBlock(this.$dummy, this.dummy);
 
-        this.$parent.find('[data-id] .clickable').click(event => {
+        this.$parent.find('[data-id] .cursor-pointer').click(event => {
             var id = $(event.currentTarget).parent('[data-id]').attr('data-id');
             var pos = this.Dismantles.findIndex(i => i.InventoryID == id);
             if (pos == -1) {
@@ -276,7 +276,7 @@ class ResourcesView extends View {
 
         return `
             <div class="css-resource-item ${ this.Dismantles.find(it => it.InventoryID == item.InventoryID) ? 'selected' : '' }" data-id="${ item.InventoryID }">
-                <div class="css-inventory-item-header clickable">
+                <div class="css-inventory-item-header cursor-pointer">
                     <div class="item">
                         ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
                     </div>
@@ -1203,7 +1203,7 @@ class InventoryView extends View {
                 var item = this.Items[id];
 
                 if (item.Type == base.Type && item.Class == base.Class) {
-                    $this.addClass('clickable');
+                    $this.addClass('cursor-pointer');
                 }
 
                 if (this.CompareItems.find(it => it.InventoryID == item.InventoryID)) {
@@ -1228,7 +1228,7 @@ class InventoryView extends View {
     getItemElement (item, ignoreCost, isEquip) {
         if (item.Type == 0) {
             return `
-                <div class="css-inventory-item ${ isEquip ? 'clickable' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
+                <div class="css-inventory-item ${ isEquip ? 'cursor-pointer' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
                     <div class="css-inventory-item-header">
                         Empty slot for ${ ITEM_TYPES[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot] } (${ PLAYER_CLASS[this.Player.Class] })
                     </div>
@@ -1241,7 +1241,7 @@ class InventoryView extends View {
             var toileted = item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0 && !ignoreCost;
 
             return `
-                <div class="css-inventory-item ${ isEquip ? 'clickable micro' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
+                <div class="css-inventory-item ${ isEquip ? 'cursor-pointer micro' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
                     <div class="css-inventory-item-header">
                         <div class="item">
                             ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }

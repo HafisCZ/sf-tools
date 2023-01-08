@@ -7,12 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/simulator.css"/>
-        <link rel="stylesheet" href="css/editor.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/simulator.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -40,8 +35,8 @@
         <script src="js/sim/debug_utils.js"></script>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
         </div>
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
@@ -96,13 +91,13 @@
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
                                             <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +107,7 @@
                                 <button class="ui fluid small basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
-                        <div class="row clickable selectable-header text-white">
+                        <div class="row cursor-pointer selectable-header text-white">
                             <div class="two wide text-center column">
                                 <span data-sort="class" data-intl="editor.class"></span>
                             </div>
@@ -138,7 +133,7 @@
                                 <button id="save-screenshot" class="ui small basic inverted icon button" style="position: absolute; right: .75em; top: -0.50em;" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-inverted=""><i class="download icon"></i></button>
                             </div>
                         </div>
-                        <div class="row padding-none">
+                        <div class="row !p-0">
                             <div class="sixteen wide column">
                                 <hr/>
                             </div>
@@ -633,7 +628,7 @@
                         var index = players[i].index;
 
                         content += `
-                            <div class="text-white row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
+                            <div class="text-white row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'purple-border' : 'transparent-border' }" data-index="${ index }">
                                 <div class="player-index">${ i + 1 }</div>
                                 <div class="two wide text-center column">
                                     <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
@@ -658,10 +653,10 @@
                                     ${ score && score.max != undefined ? `${ score.max.toFixed(2) }%` : '' }
                                 </div>
                                 <div class="one wide text-center column">
-                                    ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
+                                    ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index != yourself ? `<i class="user circle icon cursor-pointer !text-darkgreen:hover" data-index-crown="${ i }"></i>` : ''}
                                 </div>
                                 <div class="one wide text-center column">
-                                    <i class="trash right aligned alternate glow outline icon" data-index-trash="${ i }"></i>
+                                    <i class="trash right aligned alternate cursor-pointer !text-red:hover outline icon" data-index-trash="${ i }"></i>
                                 </div>
                             </div>
                         `;
@@ -709,7 +704,7 @@
                     generator: function (dm, $list) {
                         for (let [prefix, players] of Object.entries(_group_by(dm.getLatestPlayers(), p => p.Prefix))) {
                             $list.append($(`
-                                <div class="ui fluid basic left pointing scrolling dropdown small button inverted text-center !mt-2">
+                                <div class="ui fluid basic left pointing scrolling dropdown small button inverted !text-center !mt-2">
                                     <span class="">${prefix}</span>
                                     <div class="menu" style="overflow-y: scroll; width: 20rem !important;">
                                         <div class="ui left search icon inverted input">

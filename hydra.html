@@ -7,12 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/hydra.css"/>
-        <link rel="stylesheet" href="css/editor.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/hydra.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -38,8 +33,8 @@
         <script src="js/editor.js"></script>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu" style="z-index: 3;">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu" style="z-index: 3;">
+            <div class="header item"><a href="index.html">SFTools</a></div>
         </div>
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
@@ -59,13 +54,13 @@
                                     <div class="field">
                                         <label data-intl="hydra.player_count"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
+                                            <input class="!text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.level"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Level" placeholder="1 - 600">
+                                            <input class="!text-center" type="text" data-path="Level" placeholder="1 - 600">
                                         </div>
                                     </div>
                                 </div>
@@ -73,31 +68,31 @@
                                     <div class="field">
                                         <label data-intl="hydra.main"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Main">
+                                            <input class="!text-center" type="text" data-path="Main">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="hydra.side1"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Side1">
+                                            <input class="!text-center" type="text" data-path="Side1">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="hydra.side2"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Side2">
+                                            <input class="!text-center" type="text" data-path="Side2">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute4"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Constitution">
+                                            <input class="!text-center" type="text" data-path="Constitution">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute5"></label>
                                         <div class="ui inverted input">
-                                            <input class="text-center" type="text" data-path="Luck">
+                                            <input class="!text-center" type="text" data-path="Luck">
                                         </div>
                                     </div>
                                 </div>
@@ -122,13 +117,13 @@
                                     <div class="two fields" style="margin-bottom: 0;">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
                                             <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <div class="ui inverted input">
-                                                <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -138,7 +133,7 @@
                                 <button class="ui fluid basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
-                        <div class="row padding-none">
+                        <div class="row !p-0">
                             <div class="sixteen wide column">
                                 <hr/>
                             </div>

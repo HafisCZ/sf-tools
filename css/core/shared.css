@@ -1,0 +1,103 @@
+/* Topbar */
+.locale-picker {
+  position: absolute !important;
+  right: 0;
+  margin: 9px;
+  height: 30px;
+}
+
+.locale-picker img {
+  height: 30px!important;
+}
+
+.locale-picker .ui.dropdown .menu {
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  margin-top: 0.5em !important;
+}
+
+/* Menu */
+.ui.huge.menu .locale-picker .ui.dropdown .menu > .item {
+  padding: 0 !important;
+  height: 2em;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.ui.huge.menu.fixed {
+  background-color: #212121;
+  height: 50px;
+  box-shadow: none;
+  border: none;
+}
+
+.ui.huge.menu {
+  padding-right: 4rem;
+}
+
+.ui.huge.menu .item {
+  color: white;
+}
+
+.ui.huge.menu a:hover {
+  color: white;
+}
+
+.ui.huge.menu a {
+  color: white;
+  text-decoration: none;
+  line-height: 1 !important;
+}
+
+.ui.huge.menu.menu a:hover {
+  background: #212121;
+}
+
+/* Body */
+body {
+  margin-top: 5em;
+  height: auto;
+  overflow-y: scroll !important;
+  overflow-x: auto;
+}
+
+body.dimmed {
+  overflow: hidden !important;
+  margin-right: 17px !important;
+}
+
+body.dimmed .menu {
+  margin-right: 17px !important;
+}
+
+
+/* Modals */
+.modals {
+  overflow-y: scroll !important;
+}
+
+.modals.fade.out {
+  overflow: hidden !important;
+}
+
+/* Inputs */
+input:disabled {
+  opacity: 1 !important;
+}
+
+/* Grid */
+.css-small-row {
+  padding-top: 0 !important;
+  padding-bottom: 0.5em !important;
+}
+
+.css-nomargin-grid > .row {
+  padding: 0 !important;
+  padding-bottom: 0.5em !important;
+}
+
+.css-compact-grid .column {
+  padding-top: 0.3em !important;
+  padding-bottom: 0.3em !important;
+}

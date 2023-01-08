@@ -7,10 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/global.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -41,8 +38,8 @@
         </style>
     </head>
     <body>
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
         </div>
 
         <div class="ui main container">
@@ -615,8 +612,8 @@
                 function getFormattedElement (value, content) {
                     return `
                         <div class="field">
-                            <h3 class="ui header centered margin-none-top margin-none-bottom">${ LABELS[content] }</h3>
-                            <h2 class="ui header centered margin-none-top ${ value < 0 ? 'red' : 'green' }" style="margin-bottom: 0.9em !important;">${ value > 0 ? '+' : '' }${ value }</h2>
+                            <h3 class="ui header centered !mt-0 !mb-0">${ LABELS[content] }</h3>
+                            <h2 class="ui header centered !mt-0 ${ value < 0 ? 'red' : 'green' }" style="margin-bottom: 0.9em !important;">${ value > 0 ? '+' : '' }${ value }</h2>
                         </div>
                     `;
                 }

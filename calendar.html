@@ -7,11 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="css/style.css"/>
-        <link rel="stylesheet" href="css/plugins.css"/>
-        <link rel="stylesheet" href="css/utility.css"/>
-        <link rel="stylesheet" href="css/dialogs.css"/>
+        <link rel="stylesheet" href="css/pages/calendar.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -23,57 +19,10 @@
         <script src="js/plugins.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
-
-        <style>
-            .css-img-container {
-                width: 30px;
-                height: 30px;
-                margin: auto;
-            }
-
-            .css-img-container img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .pp-main {
-                margin: 1.5em;
-            }
-
-            .rotated {
-                transform: rotate(-90deg);
-            }
-
-            .ghosted .text-center {
-                opacity: 40%;
-            }
-
-            .table-group td:not(.border-bottom-thick) {
-                padding: 0 !important;
-            }
-
-            .fixed-header thead tr {
-                display: block;
-                margin-right: 17px;
-            }
-
-            .fixed-header tbody {
-                overflow: auto;
-                display: block;
-                height: 69vh;
-                width: 100%;
-            }
-
-            .today::after {
-                background: linear-gradient(#000, #000) no-repeat center/2px 100%;
-                color: transparent;
-                content: "|";
-            }
-        </style>
     </head>
     <body class="inverted">
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        <div class="ui fixed inverted borderless huge menu">
+            <div class="header item"><a href="index.html">SFTools</a></div>
             <div class="item" id="p-date"></div>
         </div>
 
@@ -208,7 +157,7 @@
                     var entry = `
                         <tr class="text-white ${ ghosted[i] ? 'ghosted' : ''}">
                             <td style="background: ${ PET_COLORS[Math.trunc(i / 20)] }">
-                                <div class="css-img-container clickable" style="width: 4em;" data-id="${ i }">
+                                <div class="css-img-container cursor-pointer" style="width: 4em;" data-id="${ i }">
                                     <img class="ui centered image" src="${ image }">
                                 </div>
                             </td>

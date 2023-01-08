@@ -1,0 +1,17 @@
+/* Semantic UI */
+@import url('../vendor/css/semantic.min.css');
+
+/* Semantic UI - Overrides */
+@import url('./semantic/overrides.css');
+
+/* Semantic UI - Plugins */
+@import url('./semantic/plugins.css');
+
+/* Utility classes */
+@import url('./core/utility.css');
+
+/* Dialogs */
+@import url('./core/dialogs.css');
+
+/* Shared */
+@import url('./core/shared.css');

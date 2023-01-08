@@ -1,0 +1,22 @@
+@import url('../global.css');
+@import url('../editor.css');
+
+.player-index {
+  position: absolute;
+  font-size: 90%;
+  opacity: 50%;
+  left: -0em;
+  top: 1.5em;
+}
+
+div[data-guild].ui.button.active-guild {
+  background: #666666 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+div[data-guild].ui.button.active-guild:hover {
+  background: #666666 !important;
+  color: white !important;
+  font-weight: bold !important;
+}

@@ -588,7 +588,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                     <div class="two fields">
                         <div class="four wide field">
                             <label>${this.intl('id')}:</label>
-                            <input class="text-center" data-op="id" type="text" disabled>
+                            <input class="!text-center" data-op="id" type="text" disabled>
                         </div>
                         <div class="eight wide field">
                             <label>${this.intl('name')}:</label>
@@ -1495,7 +1495,7 @@ const Localization = new (class {
 
         $picker.append($dropdown);
 
-        $('.css-menu').append($picker);
+        $('.ui.huge.menu').append($picker);
 
         this.translation = await this._fetchTranslation(locale);
 

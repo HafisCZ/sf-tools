@@ -41,9 +41,9 @@ const UI = new (class {
         const name = screen.sha;
         if (this.buttons[name]) {
             for (const [, el] of Object.entries(this.buttons)) {
-                el.classList.remove('title-active');
+                el.classList.remove('!text-orange');
             }
-            this.buttons[name].classList.add('title-active');
+            this.buttons[name].classList.add('!text-orange');
         }
     }
 
