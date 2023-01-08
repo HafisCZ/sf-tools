@@ -969,9 +969,6 @@ const DatabaseManager = new (class {
 
     async removeIdentifiers (... identifiers) {
         for (const identifier of identifiers) {
-            delete this.Players[identifier];
-            delete this.Groups[identifier];
-
             for (const timestamp of this.Identifiers.array(identifier)) {
                 let isPlayer = this._isPlayer(identifier);
                 await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
