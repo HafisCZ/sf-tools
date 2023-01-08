@@ -65,7 +65,7 @@ div.dialog.container > .very.small.dialog {
   width: 380px;
 }
 
-div.dialog.container > .dark.dialog {
+div.dialog.container > .inverted.dialog {
   background-color: #0b0c0c;
   color: white;
 }
@@ -78,7 +78,7 @@ div.dialog.container > .bordered.dialog {
   border: 1px solid #0b0c0c;
 }
 
-div.dialog.container > .dark.bordered.dialog {
+div.dialog.container > .inverted.bordered.dialog {
   border: 1px solid #262626;
 }
 
@@ -99,7 +99,7 @@ div.dialog.container > .dialog > .separated.header {
   border-bottom: 1px solid rgba(34, 36, 38, .15);
 }
 
-div.dialog.container > .dark.bordered.dialog > .header {
+div.dialog.container > .inverted.bordered.dialog > .header {
   border-bottom: 1px solid #262626;
   padding-bottom: 0.25em;
 }

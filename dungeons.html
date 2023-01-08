@@ -227,7 +227,7 @@
             const SIMULATOR_THRESHOLD_DIALOG = new (class extends Dialog {
                 _createModal () {
                     return `
-                        <div class="small dark bordered dialog">
+                        <div class="small inverted bordered dialog">
                             <div class="header">${intl(`dungeons.simulate_next_settings.title`)}</div>
                             <div class="ui inverted form">
                                 <div class="field">
@@ -342,7 +342,7 @@
 
                 _createModal () {
                     return `
-                        <div class="tight dark smaller dialog">
+                        <div class="tight inverted smaller dialog">
                             <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid darkgray;">
                                 <div>${intl(`dungeons.results`)}</div>
                                 <div data-op="screenshot" class="ui tiny basic inverted icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
