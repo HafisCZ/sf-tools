@@ -94,7 +94,9 @@
         "race5": "Orks",
         "race6": "Dunkelelfen",
         "race7": "Goblins",
-        "race8": "Dämonen"
+        "race8": "Dämonen",
+        "gender1": "Male",
+        "gender2": "Female"
     },
     "index": {
         "toggle": "Credits umschalten",
@@ -259,6 +261,7 @@
             },
             "filters": {
                 "any": "Einige",
+                "none": "None",
                 "n_unique": "Einzig",
                 "expression": "Ausdruck",
                 "expression_placeholder": "Dein Ausdruck",
@@ -868,12 +871,14 @@
         "username": "Benutzername",
         "password": "Passwort",
         "mode": {
+            "title": "Capture mode",
             "own": "Eigenen Charakter erfassen",
             "default": "Eigenen + ausgewählte Charaktere erfassen",
             "guild": "Eigenen + Gildencharaktere erfassen",
             "friends": "Eigenen + befreundete Charaktere erfassen",
             "hall_of_fame": "Eigenen Charakter + Ehrenhalle Top 50 erfassen"
         },
+        "temporary": "Discard capture when page is closed",
         "cancel": "Abbrechen",
         "continue": "Weiter",
         "step2": {
@@ -1214,7 +1219,8 @@
             "bonus": "Bonus",
             "lost": "Verloren",
             "reclaimable": "Zurückforderbar",
-            "required": "Benötigt"
+            "required": "Benötigt",
+            "invalid": "Please insert valid attribute value"
         }
     },
     "dungeon_enemies": {
