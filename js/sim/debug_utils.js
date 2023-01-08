@@ -138,8 +138,10 @@ const SimulatorUtils = new (class {
 
   _insertDebugElements () {
     const $dialogButton = $(`
-      <div class="item" style="padding: 0;">
-        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure')}" style="box-shadow: none !important;"><i class="wrench icon"></i></button>
+      <div class="item !p-0">
+        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure')}" data-inverted="" style="box-shadow: none !important;">
+          <i class="wrench icon"></i>
+        </button>
       </div>
     `).click(() => {
       DialogController.open(
@@ -154,8 +156,10 @@ const SimulatorUtils = new (class {
     });
 
     const $copyButton = $(`
-      <div class="item" style="padding: 0;">
-        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" style="box-shadow: none !important;"><i class="copy icon"></i></button>
+      <div class="item !p-0">
+        <button class="ui basic inverted icon button" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" data-inverted="" style="box-shadow: none !important;">
+          <i class="copy icon"></i>
+        </button>
       </div>
     `).click(() => this._executeCopy());
     
@@ -171,7 +175,7 @@ const SimulatorUtils = new (class {
 
   _renderConfig () {
     if (typeof this.$display === 'undefined') {
-      this.$display = $('<div style="position: absolute; left: 2em; bottom: 2em; font-size: 90%;"></div>').appendTo($(document.body));
+      this.$display = $('<div class="text-white position-absolute left-8 bottom-8" style="font-size: 90%;"></div>').appendTo($(document.body));
     }
 
     let content = '';
@@ -182,12 +186,12 @@ const SimulatorUtils = new (class {
                 const customValue = _dig(this.customConfig, type, subtype);
 
                 if (Array.isArray(subvalue) ? customValue.some((v, i) => v != subvalue[i]) : customValue != subvalue) {
-                    differences.push(`<div>${subtype}: <span style="color: red;">${subvalue}</span> -&gt; <span style="color: green;">${customValue}</span></div>`)
+                    differences.push(`<div>${subtype}: <span class="text-red">${subvalue}</span> -&gt; <span class="text-green">${customValue}</span></div>`)
                 }
             }
 
             if (differences.length > 0) {
-                content += `<div><h4 style="margin-top: 0.5em; margin-bottom: 0;">${type}</h4>${differences.join('')}</div>`;
+                content += `<div><h4 class="!mt-2 !mb-0">${type}</h4>${differences.join('')}</div>`;
             }
         }
     }
