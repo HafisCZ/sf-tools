@@ -45,6 +45,11 @@ div.morph div.disabled.item {
     user-select: none;
     padding-bottom: 0.25em !important;
     padding-top: 0.25em !important;
+    cursor: pointer;
+}
+
+.selectable:not(.selected):hover {
+    background-color: rgba(133, 133, 133, 0.05)
 }
 
 .selectable div {
@@ -58,11 +63,6 @@ div.morph div.disabled.item {
 
 .selected {
     background-color: rgba(133, 133, 133, 0.1);
-    cursor: pointer;
-}
-
-.nselected {
-    cursor: pointer;
 }
 
 .selectable.transparent-border {
@@ -71,4 +71,13 @@ div.morph div.disabled.item {
 
 .selectable.purple-border {
     border: 1px solid purple;
+}
+
+/* Index */
+.player-index {
+    position: absolute;
+    font-size: 90%;
+    opacity: 50%;
+    left: -0em;
+    top: 1.5em;
 }

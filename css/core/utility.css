@@ -119,6 +119,11 @@
   padding-right: 3em;
 }
 
+.px-1 {
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
 .px-4 {
   padding-left: 1em;
   padding-right: 1em;

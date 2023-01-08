@@ -2171,7 +2171,7 @@ class FilesView extends View {
 
                 return `
                     <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
-                        <td class="selectable cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
+                        <td class="cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
                         <td class="!text-center">${ this.timeMap[entry.timestamp] }</td>
                         <td class="!text-center">${ this.prefixMap[entry.prefix] }</td>
                         <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
@@ -2300,7 +2300,7 @@ class FilesView extends View {
 
             return `
                 <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>
-                    <td class="selectable cursor-pointer !text-center" data-timestamp="${timestamp}"><i class="circle outline icon"></i></td>
+                    <td class="cursor-pointer !text-center" data-timestamp="${timestamp}"><i class="circle outline icon"></i></td>
                     <td class="!text-center">${ prettyDate }</td>
                     <td class="!text-center">${ playerCount }</td>
                     <td class="!text-center">${ groupCount }</td>
