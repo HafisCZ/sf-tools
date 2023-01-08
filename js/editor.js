@@ -545,7 +545,7 @@ class Editor extends EditorBase {
                     <div class="field">
                         <label>${this.intl('name')}</label>
                         <div class="ui icon right action inverted input">
-                            <input class="!text-center" type="text" data-path="Name">
+                            <input type="text" data-path="Name">
                             <input type="hidden" data-path="Prefix">
                             <div class="ui icon basic inverted buttons">
                                 <div class="ui top right pointing inverted dropdown button morph">
@@ -581,40 +581,40 @@ class Editor extends EditorBase {
                         </div>
                         <div class="field">
                             <label>${this.intl('level')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Level" placeholder="1 - 800">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Level" placeholder="1 - 800">
                             </div>
                         </div>
                     </div>
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${intl('general.attribute1')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Strength.Total">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Strength.Total">
                             </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute2')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Dexterity.Total">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Dexterity.Total">
                             </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute3')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Intelligence.Total">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Intelligence.Total">
                             </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute4')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Constitution.Total">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Constitution.Total">
                             </div>
                         </div>
                         <div class="field">
                             <label>${intl('general.attribute5')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Luck.Total">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Luck.Total">
                             </div>
                         </div>
                     </div>
@@ -623,14 +623,14 @@ class Editor extends EditorBase {
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${this.intl('min')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('max')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
@@ -649,8 +649,8 @@ class Editor extends EditorBase {
                         </div>
                         <div class="field">
                             <label><br/></label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
                             </div>
                         </div>
                     </div>
@@ -659,14 +659,14 @@ class Editor extends EditorBase {
                     <div class="five fields !mb-0">
                         <div class="field">
                             <label>${this.intl('min')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('max')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
@@ -685,8 +685,8 @@ class Editor extends EditorBase {
                         </div>
                         <div class="field">
                             <label><br/></label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
                             </div>
                         </div>
                     </div>
@@ -695,32 +695,32 @@ class Editor extends EditorBase {
                     <div class="four fields !mb-0">
                         <div class="field">
                             <label>${this.intl('armor')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('block')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="BlockChance" placeholder="0 - 25">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('fire')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('cold')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('lightning')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
                             </div>
                         </div>
                     </div>
@@ -729,14 +729,14 @@ class Editor extends EditorBase {
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${this.intl('portal_health')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Dungeons.Player" placeholder="0 - 50">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('rune_health')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Runes.Health" placeholder="0 - 15">
                             </div>
                         </div>
                         <div class="field">
@@ -752,14 +752,14 @@ class Editor extends EditorBase {
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${this.intl('portal_damage')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('gladiator')}</label>
-                            <div class="ui inverted input">
-                                <input class="!text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                             </div>
                         </div>
                         <div class="field">

@@ -56,6 +56,11 @@
   background: #1b1c1d;
 }
 
+/* Centered input */
+.ui.centered.input input {
+  text-align: center;
+}
+
 /* Inverted segment */
 .ui.inverted.grey.segment.segment.segment.segment {
   border-color: rgba(255, 255, 255, .15);
@@ -74,4 +79,9 @@
 
 body.inverted {
   background-color: #141414;
+}
+
+/* Segments */
+.ui.inverted.container {
+  color: rgba(255, 255, 255, .9);
 }

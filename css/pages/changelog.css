@@ -1,26 +1,11 @@
 @import url('../global.css');
 
-:root {
-    --background-color: #141414;
-    --text-color: white;
-    --heading-color: orange;
-}
-
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
-
-.version-list {
-
-}
-
 .version-list li {
     margin-top: 0.5em;
 }
 
 .version-list h3.ui.header {
-    color: var(--heading-color);
+    color: orange;
     margin-top: 0;
 }
 

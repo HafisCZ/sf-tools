@@ -36,27 +36,27 @@
             <div class="header item"><a href="index.html">SFTools</a></div>
         </div>
 
-        <div class="ui main container">
+        <div class="ui main inverted container">
             <!-- Header -->
             <div class="ui middle aligned grid">
                 <div class="four wide column">
                     <div class="ui small inverted form">
                         <div class="three fields !mb-0">
                             <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                <div class="ui inverted input">
-                                    <input class="!text-center fluid" type="text" id="sim-threads" value="4">
+                                <div class="ui inverted centered input">
+                                    <input type="text" id="sim-threads" value="4">
                                 </div>
                             </div>
                             <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                <div class="ui inverted input">
-                                    <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
+                                <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                <div class="ui inverted centered input">
+                                    <input type="text" id="sim-iterations" value="2500">
                                 </div>
                             </div>
                             <div class="field" data-position="bottom center" data-intl-tooltip="pets.generate.iterations" data-inverted="">
-                                <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">/</span>
-                                <div class="ui inverted input">
-                                    <input class="!text-center fluid" type="text" id="sim-map-iterations" value="100000">
+                                <span style="position: absolute; top: 0.5em; left: -0.25em;">/</span>
+                                <div class="ui inverted centered input">
+                                    <input type="text" id="sim-map-iterations" value="100000">
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                 <div class="four wide column">
                     <h1 class="ui centered inverted header">Pet Simulator</h1>
                 </div>
-                <div class="three wide center aligned column text-white" id="sim-result"></div>
+                <div class="three wide center aligned column" id="sim-result"></div>
                 <div class="three wide right aligned column">
                     <div class="ui small basic inverted buttons">
                         <button class="ui button" type="submit" id="simulate" data-intl="pets.simulate"></button>
@@ -112,8 +112,8 @@
                                         </div>
                                         <div class="field">
                                             <label data-intl="editor.level"></label>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center" data-path="Level" placeholder="1 - 200">
+                                            <div class="ui inverted centered input">
+                                                <input data-path="Level" placeholder="1 - 200">
                                             </div>
                                         </div>
                                     </div>
@@ -122,28 +122,28 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.at100.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at150.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at200.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
                                     </div>
                                 </div>
                             </div>
                             <div class="three fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.pack.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
                                     </div>
                                 </div>
                                 <div class="field">
@@ -159,62 +159,62 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="editor.class"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Class">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Class">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.health"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Health">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Health">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.attribute"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Attribute">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Attribute">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.defense"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Defense">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Defense">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="general.attribute5"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Luck">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Luck">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.skip"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Skip">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Skip">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.crit"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Chance">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Chance">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.damage"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Damage">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Damage">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.critical_bonus"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Critical">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Critical">
                                     </div>
                                 </div>
                             </div>
@@ -251,8 +251,8 @@
                                         </div>
                                         <div class="field">
                                             <label data-intl="editor.level"></label>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center" data-path="Level" placeholder="1 - 200">
+                                            <div class="ui inverted centered input">
+                                                <input data-path="Level" placeholder="1 - 200">
                                             </div>
                                         </div>
                                     </div>
@@ -261,28 +261,28 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.at100.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at150.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.at200.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
                                     </div>
                                 </div>
                             </div>
                             <div class="three fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.pack.title"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
+                                    <div class="ui inverted centered input">
+                                        <input data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
                                     </div>
                                 </div>
                                 <div class="field">
@@ -298,62 +298,62 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="editor.class"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Class">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Class">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.health"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Health">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Health">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.attribute"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Attribute">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Attribute">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.defense"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Defense">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Defense">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="general.attribute5"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Luck">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Luck">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label data-intl="pets.editor.skip"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Skip">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Skip">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.crit"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Chance">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Chance">
                                     </div>
                                 </div>
                             </div>
                             <div class="two fields !mb-0">
                                 <div class="field">
                                     <label data-intl="pets.editor.damage"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Damage">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Damage">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="pets.editor.critical_bonus"></label>
-                                    <div class="ui inverted input">
-                                        <input class="!text-center" disabled data-path="Critical">
+                                    <div class="ui inverted centered input">
+                                        <input disabled data-path="Critical">
                                     </div>
                                 </div>
                             </div>

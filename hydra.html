@@ -43,7 +43,7 @@
             <span style="font-size: 90%;" data-intl="hydra.footer#"></span>
         </div>
 
-        <div class="ui main container">
+        <div class="ui main inverted container">
             <div class="ui two columns stackable grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -53,46 +53,46 @@
                                 <div class="two fields">
                                     <div class="field">
                                         <label data-intl="hydra.player_count"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="PlayerCount" placeholder="10 - 50">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.level"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="Level" placeholder="1 - 600">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="Level" placeholder="1 - 600">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="five fields !mb-0">
                                     <div class="field">
                                         <label data-intl="hydra.main"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="Main">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="Main">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="hydra.side1"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="Side1">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="Side1">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="hydra.side2"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="Side2">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="Side2">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute4"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="Constitution">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="Constitution">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute5"></label>
-                                        <div class="ui inverted input">
-                                            <input class="!text-center" type="text" data-path="Luck">
+                                        <div class="ui inverted centered input">
+                                            <input type="text" data-path="Luck">
                                         </div>
                                     </div>
                                 </div>
@@ -114,16 +114,16 @@
                         <div class="row">
                             <div class="eight wide column">
                                 <div class="ui small inverted form">
-                                    <div class="two fields" style="margin-bottom: 0;">
+                                    <div class="two fields !mb-0">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-threads" value="4">
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-threads" value="4">
                                             </div>
                                         </div>
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                            <span class="text-white" style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <div class="ui inverted input">
-                                                <input class="!text-center fluid" type="text" id="sim-iterations" value="2500">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <div class="ui inverted centered input">
+                                                <input type="text" id="sim-iterations" value="2500">
                                             </div>
                                         </div>
                                     </div>
@@ -388,14 +388,14 @@
                         let averageFights = Math.ceil(avg_fights);
 
                         content += `
-                            <div class="text-white" style="flex: 1 1 32%; margin: 0.5em; ${score == 0 ? 'opacity: 60%' : ''}">
-                                <h3 class="ui centered header" style="margin-top: 0em;">
+                            <div style="flex: 1 1 32%; margin: 0.5em; ${score == 0 ? 'opacity: 60%' : ''}">
+                                <h3 class="ui centered inverted header !mt-0">
                                     <img class="ui centered image" style="width: 4em; margin-top: -1em; margin-bottom: -0.66em; margin-left: -0.66em;" src="res/class${pet.Class}.png">
                                     <span>${(100 * score / iterations).toFixed(2)}%</span>
                                 </h3>
                                 <hr/>
-                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${intl('hydra.result.health', { health: averageHealth })}</div>
-                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${intl(`hydra.result.fights_${averageFights > 1 ? 'multiple': 'single'}`, { count: averageFights })}</div>
+                                <div class="px-1"><span style="font-size: 80%;">&Delta;</span> ${intl('hydra.result.health', { health: averageHealth })}</div>
+                                <div class="px-1"><span style="font-size: 80%;">&Delta;</span> ${intl(`hydra.result.fights_${averageFights > 1 ? 'multiple': 'single'}`, { count: averageFights })}</div>
                             </div>
                         `;
                     }
