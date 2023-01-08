@@ -28,6 +28,10 @@
   left: 2em;
 }
 
+.bottom-8 {
+  bottom: 2em;
+}
+
 .right-3 {
   right: 0.75em;
 }
@@ -284,6 +288,10 @@
 
 .text-gray {
   color: gray;
+}
+
+.text-green {
+  color: green;
 }
 
 .text-white {
