@@ -724,7 +724,7 @@ const DatabaseManager = new (class {
         this._updateLists();
         await this.refreshTrackers();
 
-        this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
+        this.Hidden = new Set(Store.get('hidden_identifiers', []));
 
         // Restore session-only objects
         const sessionObjects = Object.values(this.SessionObjects);
@@ -1013,7 +1013,7 @@ const DatabaseManager = new (class {
             this.Hidden.add(identifier);
         }
 
-        Preferences.set('hidden_identifiers', Array.from(this.Hidden));
+        Store.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
     async setTagFor (identifier, timestamp, tag) {
@@ -1308,13 +1308,13 @@ const DatabaseManager = new (class {
     async refreshTrackers () {
         this.TrackerConfig = Actions.getTrackers();
         this.TrackerConfigEntries = Object.entries(this.TrackerConfig);
-        this.TrackerData = Preferences.get('tracker_data', {});
+        this.TrackerData = Store.get('tracker_data', {});
 
         const addTrackers = _compact(this.TrackerConfigEntries.map(([ name, { ast, out, hash } ]) => this.TrackerData[name] != hash ? name : undefined));
         const remTrackers = Object.keys(this.TrackerData).filter(name => !this.TrackerConfig[name]);
 
         this.TrackerData = _array_to_hash(this.TrackerConfigEntries, ([name, { hash }]) => [name, hash]);;
-        Preferences.set('tracker_data', this.TrackerData);
+        Store.set('tracker_data', this.TrackerData);
 
         if (_not_empty(remTrackers)) {
             for (const name of remTrackers) {

@@ -14,7 +14,7 @@
                 this.$info = $('<div class="ui fluid basic popup css-search-popup"></div>');
 
                 this.array = [];
-                this.starred = Preferences.get('starred', []);
+                this.starred = Store.get('starred', []);
 
                 this.shown = false;
                 this.showninfo = false;
@@ -118,12 +118,12 @@
                 this.starred.push(item);
                 this.$popup.trigger('redraw');
 
-                Preferences.set('starred', this.starred);
+                Store.set('starred', this.starred);
             } else if (command == 'unfavorite') {
                 this.starred.splice(arg, 1);
                 this.$popup.trigger('redraw');
 
-                Preferences.set('starred', this.starred);
+                Store.set('starred', this.starred);
 
                 if (this.starred.length == 0 && this.array.length == 0) {
                     $this.searchfield('hide');
@@ -195,7 +195,7 @@
             this.addEventListener('click', () => {
                 this.isActive = !this.isActive;
 
-                SharedPreferences.setRaw(storageKey, this.isActive);
+                Store.shared.set(storageKey, this.isActive, true);
 
                 callback(this.isActive);
 
@@ -206,7 +206,7 @@
                 }
             });
 
-            if (SharedPreferences.getRaw(storageKey, 'false') == 'true') {
+            if (Store.shared.get(storageKey, 'false', true) == 'true') {
                 this.click();
             }
         });
@@ -375,10 +375,10 @@
     $.fn.captiveInputField = function (storageKey, defaultValue, validator = () => true) {
         return this.each(function () {
             let $this = $(this);
-            $this.val(SharedPreferences.getRaw(storageKey, defaultValue));
+            $this.val(Store.shared.get(storageKey, defaultValue, true));
             $this.on('input change', () => {
                 if (validator($this.val())) {
-                    SharedPreferences.setRaw(storageKey, $this.val());
+                    Store.shared.set(storageKey, $this.val(), true);
                 }
             });
         });

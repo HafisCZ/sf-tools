@@ -2685,13 +2685,13 @@ const SettingsManager = new (class {
     initialize () {
         if (!this.settings) {
             // Initialize if needed
-            this.settings = Preferences.get('settings', { });
+            this.settings = Store.get('settings', { });
 
             if (typeof this.settings === 'string') {
-                Preferences.set('settingsStringRaw', this.settings);
+                Store.set('settingsStringRaw', this.settings);
 
                 this.settings = {};
-                Preferences.set('settings', {});
+                Store.set('settings', {});
             }
 
             this.keys = Object.keys(this.settings);
@@ -2699,12 +2699,12 @@ const SettingsManager = new (class {
             /*
                 Convert existing settings in old form into new style
             */
-            let keys = Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
+            let keys = Store.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
             let backup = {};
 
             if (keys.length) {
                 for (let key of keys) {
-                    let content = Preferences.get(`settings/${ key }`, '');
+                    let content = Store.get(`settings/${ key }`, '');
                     backup[key] = content;
 
                     // Convert existing settings to text
@@ -2719,18 +2719,18 @@ const SettingsManager = new (class {
                         this.saveInternal(key, content);
                     }
 
-                    Preferences.remove(`settings/${ key }`);
+                    Store.remove(`settings/${ key }`);
                 }
 
                 this.commit();
-                Preferences.set('settingsBackup', backup);
+                Store.set('settingsBackup', backup);
             }
         }
     }
 
     commit () {
         // Save current settings
-        Preferences.set('settings', this.settings);
+        Store.set('settings', this.settings);
         this.keys = Object.keys(this.settings);
     }
 
@@ -2808,13 +2808,13 @@ const SettingsManager = new (class {
 
     // Get history
     getHistory () {
-        return Preferences.get('settings_history', []);
+        return Store.get('settings_history', []);
     }
 
     // Add history
     addHistory (settings, identifier = 'settings') {
         // Get current history
-        var history = Preferences.get('settings_history', []);
+        var history = Store.get('settings_history', []);
 
         // Add new history entry to the beginning
         history.unshift({
@@ -2828,7 +2828,7 @@ const SettingsManager = new (class {
         }
 
         // Save current history
-        Preferences.set('settings_history', history);
+        Store.set('settings_history', history);
     }
 })()
 
@@ -2837,7 +2837,7 @@ const Templates = new (class {
     initialize () {
         if (!this.templates) {
             // Initialize when needed
-            this.templates = SharedPreferences.get('templates', { });
+            this.templates = Store.shared.get('templates', { });
 
             this.keys = Object.keys(this.templates);
             this.keys.sort((a, b) => a.localeCompare(b));
@@ -2845,12 +2845,12 @@ const Templates = new (class {
             /*
                 Convert existing templates in old form into new style
             */
-            let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+            let keys = Store.shared.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
             let backup = {};
 
             if (keys.length) {
                 for (let key of keys) {
-                    let content = SharedPreferences.get(`templates/${ key }`, '');
+                    let content = Store.shared.get(`templates/${ key }`, '');
                     backup[key] = content;
 
                     // Convert existing template to text
@@ -2867,18 +2867,18 @@ const Templates = new (class {
                         this.saveInternal(key, content);
                     }
 
-                    SharedPreferences.remove(`templates/${ key }`);
+                    Store.shared.remove(`templates/${ key }`);
                 }
 
                 this.commit();
-                SharedPreferences.set('templatesBackup', backup);
+                Store.shared.set('templatesBackup', backup);
             }
         }
     }
 
     commit () {
         // Save current templates
-        SharedPreferences.set('templates', this.templates);
+        Store.shared.set('templates', this.templates);
 
         this.keys = Object.keys(this.templates);
         this.keys.sort((a, b) => a.localeCompare(b));

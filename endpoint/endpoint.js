@@ -186,10 +186,10 @@ const Endpoint = new (class extends Dialog {
             values: ENDPOINT_MODES.map((value) => ({
                 value,
                 name: this.intl(`mode.${value}`),
-                selected: value === SharedPreferences.getRaw('endpoint_mode', 'default')
+                selected: value === Store.shared.get('endpoint_mode', 'default', true)
             })),
             onChange: (value) => {
-                SharedPreferences.setRaw('endpoint_mode', value)
+                Store.shared.set('endpoint_mode', value, true)
             }
         });
 
