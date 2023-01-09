@@ -4,29 +4,31 @@
   z-index: 999999 !important;
 }
 
-.custom-toast {
-  padding: 0 !important;
+.ui.toast.custom-toast {
+  padding: 0;
+  color: white;
+  background-color: #1b1c1d;
+  border-top-left-radius: .28571429rem;
+  border-top-right-radius: .28571429rem;
 }
 
-.custom-toast .header {
+.ui.toast.custom-toast .header {
   display: inline-flex;
   align-items: center;
-  padding-bottom: 0.25em;
-  background-color: #141414;
+  background-color: #333;
   padding: 0.75em 0.75em;
-  color: white !important;
   width: 100%;
   border-top-left-radius: .28571429rem;
   border-top-right-radius: .28571429rem;
-  font-size: 1em !important;
+  font-size: 1em;
 }
 
-.custom-toast .header i {
-  font-size: 1em !important;
+.ui.toast.custom-toast .header i {
+  font-size: 1em;
   margin-bottom: 2px;
 }
 
-.custom-toast .message {
+.ui.toast.custom-toast .message {
   font-family: monospace;
   padding: 0.75em;
 }
