@@ -1603,7 +1603,7 @@ window.intl = (key, variables = undefined) => {
 window.addEventListener('DOMContentLoaded', async function () {
     await Localization.translatePage();
 
-    if (PreferencesHandler._isAccessible()) {
+    if (StoreWrapper.isAvailable()) {
         if (!SiteOptions.terms_accepted) {
             DialogController.open(TermsAndConditionsDialog);
         }

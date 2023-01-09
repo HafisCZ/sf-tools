@@ -3230,10 +3230,10 @@ class OnlineTemplatesView extends View {
             allowMultiple: true
         }).modal('show');
 
-        let cached = SharedPreferences.get('templateCache', { content: [], expire: 0 });
+        let cached = Store.shared.get('templateCache', { content: [], expire: 0 });
         if (cached.expire < Date.now()) {
             SiteAPI.get('script_list').then(({ scripts }) => {
-                SharedPreferences.set('templateCache', {
+                Store.shared.set('templateCache', {
                     content: scripts,
                     expire: Date.now() + 3600000
                 });
