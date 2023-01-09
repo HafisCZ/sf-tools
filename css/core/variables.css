@@ -1,0 +1,7 @@
+body {
+  --button-color-active: rgb(46, 206, 83);
+}
+
+body.inverted {
+  --button-color-active: rgb(23, 128, 48);
+}
