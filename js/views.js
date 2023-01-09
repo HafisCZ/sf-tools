@@ -13,7 +13,7 @@ class Dialog {
 
     open (...args) {
         return new Promise((resolve) => {
-            if (this.shouldOpen) {
+            if (this.openRequested) {
                 this.resolve = resolve;
 
                 if (!this._hasParent()) {
@@ -45,7 +45,8 @@ class Dialog {
     }
 
     close (value) {
-        this.shouldOpen = false;
+        this.openRequested = false;
+
         if (this._hasParent() && this.resolve) {
             this.$parent.hide();
             this.resolve(value);
@@ -53,8 +54,8 @@ class Dialog {
         }
     }
 
-    openable () {
-        this.shouldOpen = true;
+    requestOpen () {
+        this.openRequested = true;
     }
 
     _hasParent () {
@@ -104,7 +105,7 @@ const DialogController = new (class {
     }
 
     open (popup, ...args) {
-        popup.openable();
+        popup.requestOpen();
         return (this.promise = this.promise.then(() => popup.open(...args)));
     }
 
