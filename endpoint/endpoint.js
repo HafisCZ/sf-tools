@@ -317,7 +317,7 @@ const Endpoint = new (class extends Dialog {
             for (const name of members.split(',')) {
                 content += `
                     <div class="item">
-                        <div class="ui checkbox w-full">
+                        <div class="ui inverted checkbox w-full">
                             <input type="checkbox" name="${ name }">
                             <label for="${ name }">
                                 <div class="flex justify-content-between">
@@ -333,7 +333,7 @@ const Endpoint = new (class extends Dialog {
             for (const name of friends.split(',').slice(1)) {
                 content += `
                     <div class="item">
-                        <div class="ui checkbox w-full">
+                        <div class="ui inverted checkbox w-full">
                             <input type="checkbox" name="${ name }">
                             <label for="${ name }">
                                 <div class="flex justify-content-between">
@@ -434,16 +434,16 @@ const Endpoint = new (class extends Dialog {
     _createStep2 () {
         return `
             <img class="ui centered image pulse-loader" src="/endpoint/logo.png">
-            <h3 class="ui white centered header">${this.intl('step2.title')}</h3>
+            <h3 class="ui inverted centered header">${this.intl('step2.title')}</h3>
         `;
     }
 
     // Selection screen
     _createStep3 () {
         return `
-            <h2 class="ui header centered white">${this.intl('step3.title')}</h2>
+            <h2 class="ui header centered inverted">${this.intl('step3.title')}</h2>
             <hr/>
-            <div class="ui celled relaxed list text-white" data-op="list" style="height: 30em; overflow-y: auto; font-size: 110%;">
+            <div class="ui celled relaxed inverted list" data-op="list" style="height: 30em; overflow-y: auto; font-size: 110%;">
 
             </div>
             <div class="ui two buttons">
@@ -463,8 +463,8 @@ const Endpoint = new (class extends Dialog {
     // Progress bar
     _createStep5 () {
         return `
-            <h3 class="ui white centered header">${this.intl('step4.message')}</h3>
-            <div class="ui green active progress" data-percent="0">
+            <h3 class="ui inverted centered header">${this.intl('step4.message')}</h3>
+            <div class="ui green active inverted progress" data-percent="0">
                 <div class="bar"></div>
             </div>
         `;
@@ -473,7 +473,7 @@ const Endpoint = new (class extends Dialog {
     // Error message
     _createStep6 () {
         return `
-            <h2 class="ui white centered header" data-op="error-text"></h2>
+            <h2 class="ui inverted centered header" data-op="error-text"></h2>
             <br/>
             <br/>
             <button class="ui secondary button fluid" data-op="error-button">${this.intl('continue')}</button>
