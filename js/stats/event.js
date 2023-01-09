@@ -1969,7 +1969,7 @@ class FilesView extends View {
 
     // Import file via endpoint
     importEndpoint () {
-        Endpoint.open().then((actionSuccess) => {
+        DialogController.open(Endpoint, false).then((actionSuccess) => {
             if (actionSuccess) {
                 this.show();
             }

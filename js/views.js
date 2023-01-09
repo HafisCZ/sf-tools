@@ -11,13 +11,9 @@ class Dialog {
         return intl(`dialog.${this.options.key}.${key}`);
     }
 
-    _canOpen () {
-        return this.shouldOpen;
-    }
-
     open (...args) {
         return new Promise((resolve) => {
-            if (this._canOpen()) {
+            if (this.shouldOpen) {
                 this.resolve = resolve;
 
                 if (!this._hasParent()) {
