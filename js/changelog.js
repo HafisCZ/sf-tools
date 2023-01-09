@@ -7,16 +7,11 @@ const CHANGELOG = {
             'Fixed guild deletion via advanced file list',
             'Fixed counting of present guild members'
         ],
-        'Arena Manager': [
-            'Added dark theme'
-        ],
-        'Pet Calendar': [
-            'Added dark theme'
-        ],
-        'All Simulators': [
-            'Added dark theme'
+        'Hydra Simulator': [
+            'Fixed maximum hydra level after import'
         ],
         'All Tools': [
+            'Added dark theme',
             'Updated styling of all dialogs'
         ]
     },
