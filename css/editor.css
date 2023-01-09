@@ -21,19 +21,12 @@
 }
 
 /* Morph */
+div.morph {
+    border-radius: 0 !important;
+}
+
 div.morph .menu {
     width: 14rem;
-}
-
-div.right.action div.buttons {
-    border-radius: 0 .28571429rem .28571429rem 0;
-}
-
-div.morph div.disabled.item {
-    opacity: 1 !important;
-    font-weight: bold !important;
-    text-align: center !important;
-    border-bottom: 1px solid rgba(34, 36, 38, 0.15) !important;
 }
 
 /* Selectable list */

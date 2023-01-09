@@ -474,7 +474,8 @@ class Editor extends EditorBase {
             values: [
                 {
                     name: this.intl('smart_change'),
-                    disabled: true
+                    type: 'header',
+                    class: 'header text-center'
                 },
                 ...Object.keys(CLASS_MAP).map((value) => ({
                     image: `res/class${value}.png`,
