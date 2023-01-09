@@ -544,7 +544,7 @@ class Editor extends EditorBase {
                 <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="field">
                         <label>${this.intl('name')}</label>
-                        <div class="ui icon right action inverted input">
+                        <div class="ui icon right action inverted centered input">
                             <input type="text" data-path="Name">
                             <input type="hidden" data-path="Prefix">
                             <div class="ui icon basic inverted buttons">
