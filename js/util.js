@@ -336,15 +336,6 @@ class WorkerBatch {
     }
 }
 
-// Helper function
-function merge (a, b) {
-    for (var [k, v] of Object.entries(b)) {
-        if (!a.hasOwnProperty(k) && typeof(v) != 'object') a[k] = b[k];
-    }
-
-    return a;
-}
-
 function reverseHealthMultipliers (level, healthMultiplier, constitution, totalHealth) {
 	let baseHealth = (level + 1) * healthMultiplier * constitution;
 	for (let potion = 0; potion <= 1; potion++) {
@@ -430,20 +421,6 @@ function formatDuration (duration) {
     var hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
-}
-
-function showNotification (text, options) {
-    if (!('Notification' in window)) {
-        console.error('Notifications are not supported!');
-    } else if (Notification.permission === 'granted') {
-        var notification = new Notification(text);
-    } else if (Notification.permission !== 'denied') {
-        Notification.requestPermission().then(function (perm) {
-            if (perm === 'granted') {
-                showNotification(text, options);
-            }
-        });
-    }
 }
 
 const NumberLabels = [
@@ -980,15 +957,6 @@ function getPotionType (type) {
     return type == 16 ? 6 : (type == 0 ? 0 : 1 + (type - 1) % 5);
 }
 
-function getAtSafe(obj, ... path) {
-    var x = obj;
-    for (var i = 0, l = path.length; i < l; i++) {
-        x = x[path[i]];
-        if (!x) return { };
-    }
-    return x;
-}
-
 function getAt(obj, ... path) {
     var x = obj;
     for (var i = 0, l = path.length; i < l; i++) {
@@ -1071,30 +1039,6 @@ function join (a, c, b, m) {
     var r = '';
     for (var i = (b != undefined ? b : 0), l = m == undefined ? a.length : Math.min(a.length, m); i < l; ++i) r += c(a[i], i, a);
     return r;
-}
-
-function joinN (n, c) {
-    var r = '';
-    for (var i = 0; i < n; i++) r += c();
-    return r;
-}
-
-const Weekends = {
-    Type: [
-        'EPIC',
-         'GOLD',
-         'RESOURCE',
-         'EXPERIENCE'
-    ],
-    GetWeekendType: function (date = Date.now()) {
-        date = new Date(date);
-        date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6));
-        date.setHours(0, 0, 0);
-        let week = Math.trunc(date.getTime() / (7 * 24 * 3600 * 1000)) % 4;
-        let beg = date.getTime() + 5 * 24 * 60 * 60 * 1000 + 1;
-        let end = date.getTime() + 7 * 24 * 60 * 60 * 1000 - 1000;
-        return [this.Type[week], formatDate(beg), formatDate(end)];
-    }
 }
 
 function SHA1 (text) {
