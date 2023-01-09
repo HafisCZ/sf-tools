@@ -1377,16 +1377,20 @@ const ExportSharedFileDialog = new (class extends Dialog {
                             </label>
                         </div>
                     </div>
-                    <div class="text-gray mt-4">${intl('stats.share.expire')}</div>
-                    <div class="mt-6">
-                        <h4 class="ui header">${intl('stats.share.code')}:</h4>
-                        <button class="ui fluid button" data-op="button">${intl('stats.share.get')}</button>
-                        <div class="text-center mt-1">
-                            <code style="white-space: pre;" data-op="code">ABCDEFGHIJKLMNOPQRSTUVWX</code>
+                    <div data-op="block">
+                        <div class="mt-6">
+                            <h4 class="ui header">${intl('stats.share.code')}:</h4>
+                            <div class="text-center">
+                                <code style="white-space: pre;" data-op="code"></code>
+                            </div>
                         </div>
+                        <div class="text-gray mt-6">${intl('stats.share.expire')}</div>
                     </div>
                 </div>
-                <div class="ui fluid black button" data-op="ok">${intl('stats.share.ok')}</div>
+                <div class="ui fluid two buttons">
+                    <div class="ui basic black button" data-op="cancel">${intl('dialog.shared.cancel')}</div>
+                    <div class="ui black button" data-op="ok">${intl('stats.share.get')}</div>
+                </div>
             </div>
         `;
     }
@@ -1395,37 +1399,44 @@ const ExportSharedFileDialog = new (class extends Dialog {
         this.$once = this.$parent.operator('once');
 
         this.$code = this.$parent.operator('code');
-        this.$codeWrap = this.$code.parent();
+        this.$block = this.$parent.operator('block');
         
-        this.$button = this.$parent.operator('button');
-        this.$button.click(() => {
-            const once = this.$once.checkbox('is checked');
-
-            this._setLoading(true);
-            this._send(once);
-        });
-
         this.$ok = this.$parent.operator('ok');
         this.$ok.click(() => {
+            if (this.code) {
+                this.close();
+            } else {
+                const once = this.$once.checkbox('is checked');
+    
+                this._setLoading(true);
+                this._send(once);
+            }
+        });
+
+        this.$cancel = this.$parent.operator('cancel');
+        this.$cancel.click(() => {
             this.close();
         })
     }
 
     _applyArguments (data) {
         this.data = data;
+        this.code = null;
 
         this.$once.checkbox('set checked');
-        this.$button.show();
-        this.$codeWrap.hide();
+
+        this.$block.hide();
+
+        this.$ok.text(intl('stats.share.get'));
     }
 
     _setLoading (loading) {
         if (loading) {
-            this.$button.addClass('loading disabled');
-            this.$ok.addClass('disabled');
+            this.$ok.addClass('loading disabled');
+            this.$cancel.addClass('disabled');
         } else {
-            this.$button.removeClass('loading disabled');
-            this.$ok.removeClass('disabled');
+            this.$ok.removeClass('loading disabled');
+            this.$cancel.removeClass('disabled');
         }
     }
 
@@ -1437,15 +1448,18 @@ const ExportSharedFileDialog = new (class extends Dialog {
             this._setLoading(false);
 
             if (file.key) {
-                this.$button.hide();
-                this.$codeWrap.show();
+                this.code = file.key;
+    
+                this.$block.show();
                 this.$code.text(file.key);
+
+                this.$ok.text(intl('dialog.shared.ok'));
             } else {
-               this.$button.transition('shake');
+               this.$ok.transition('shake');
             }
         }).catch(() => {
             this._setLoading(false);
-            this.$button.transition('shake');
+            this.$ok.transition('shake');
         })
     }
 })();
