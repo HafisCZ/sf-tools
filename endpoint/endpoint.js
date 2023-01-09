@@ -110,10 +110,6 @@ const Endpoint = new (class extends Dialog {
         return intl(`endpoint.${key}`);
     }
 
-    _canOpen () {
-        return true;
-    }
-
     _applyArguments (allowTemporary = false) {
         this.$step1.show();
         this.$step2.hide();
@@ -676,7 +672,7 @@ const StatisticsIntegration = new (class {
     }
 
     _importEndpoint () {
-        Endpoint.open(true).then((actionSuccess) => {
+        DialogController.open(Endpoint, true).then((actionSuccess) => {
             if (actionSuccess) {
                 this._poll();
             }
