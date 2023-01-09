@@ -15,3 +15,6 @@
 
 /* Shared */
 @import url('./core/shared.css');
+
+/* Variables */
+@import url('./core/variables.css');

@@ -173,7 +173,7 @@
 
             this.updateStyle = () => {
                 if (this.isActive) {
-                    this.style.setProperty('background', '#21ba45', 'important');
+                    this.style.setProperty('background', 'var(--button-color-active)', 'important');
                 } else {
                     this.style.setProperty('background', '');
                 }
@@ -200,7 +200,7 @@
                 callback(this.isActive);
 
                 if (this.isActive) {
-                    this.style.setProperty('background', '#21ba45', 'important');
+                    this.style.setProperty('background', 'var(--button-color-active)', 'important');
                 } else {
                     this.style.setProperty('background', '');
                 }
@@ -215,7 +215,7 @@
     $.fn.settingsButton = function (enabled) {
         return this.each(function () {
             if (enabled) {
-                this.style.setProperty('background', '#21ba45', 'important');
+                this.style.setProperty('background', 'var(--button-color-active)', 'important');
             } else {
                 this.style.setProperty('background', '');
             }
