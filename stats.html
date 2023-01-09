@@ -660,7 +660,7 @@
             Site.ready(function (urlParams) {
                 let profile = ProfileManager.getProfile(urlParams.get('profile'));
                 if (urlParams.has('temp')) {
-                    Preferences.temporary();
+                    Store.temporary();
 
                     $('#show-profile').addClass('pointer-events-none opacity-50');
                     $('.css-temporary').show();

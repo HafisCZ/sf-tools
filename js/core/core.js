@@ -39,10 +39,9 @@ const Logger = new (class {
     }
 })();
 
-class PreferencesHandler {
-    static _isAccessible () {
-        let currentValue = PreferencesHandler.available;
-
+class StoreWrapper {
+    static isAvailable () {
+        let currentValue = StoreWrapper.available;
         if (typeof currentValue === 'undefined') {
             try {
                 window.localStorage['test'];
@@ -53,66 +52,60 @@ class PreferencesHandler {
 
             if (!currentValue) {
                 Logger.log('WARNING', 'Storage is not accessible');
-                PreferencesHandler.available = currentValue;
+                StoreWrapper.available = currentValue;
             }
         }
 
         return currentValue;
     }
 
-    _getStorage (kind) {
-        if (PreferencesHandler._isAccessible()) {
-            return window[kind];
+    static getStore (type) {
+        if (StoreWrapper.isAvailable()) {
+            return window[type];
         } else {
             return undefined;
         }
     }
 
-    constructor () {
-        this.storage = this._getStorage('localStorage') || this._getStorage('sessionStorage') || { };
+    constructor (store) {
+        this.store = store;
     }
 
-    set (key, object) {
-        this.storage[key] = JSON.stringify(object);
+    set (key, data, rawData = false) {
+        this.store[key] = rawData ? data : JSON.stringify(data);
     }
 
-    setRaw (key, object) {
-        this.storage[key] = object;
-    }
-
-    get (key, def) {
-        return this.storage[key] ? JSON.parse(this.storage[key]) : def;
-    }
-
-    getRaw (key, def) {
-        return this.storage[key] || def;
-    }
-
-    exists (key) {
-        return this.storage[key] != null;
+    get (key, defaultData, rawData = false) {
+        const data = this.store[key];
+        return data ? (rawData ? data : JSON.parse(data)) : defaultData;
     }
 
     remove (key) {
-        delete this.storage[key];
+        delete this.store[key];
     }
 
     keys () {
-        return Object.keys(this.storage);
+        return Object.keys(this.store);
     }
 
-    getAll () {
-        return this.storage;
+    all () {
+        return this.store;
     }
 
     temporary () {
-        this.storage = { };
-        this.anonymous = true;
+        this.store = {};
     }
 }
 
-// Preferences
-const Preferences = new PreferencesHandler();
-const SharedPreferences = new PreferencesHandler();
+const Store = (function () {
+    const store = StoreWrapper.getStore('localStorage') || StoreWrapper.getStore('sessionStorage') || {}
+    return Object.assign(
+        new StoreWrapper(store),
+        {
+            shared: new StoreWrapper(store)
+        }
+    );
+})();
 
 // Options
 const OptionsHandler = class {
@@ -123,7 +116,7 @@ const OptionsHandler = class {
 
         this.listeners = [];
 
-        Object.assign(this.options, SharedPreferences.get(this.key, {}));
+        Object.assign(this.options, Store.shared.get(this.key, {}));
 
         for (const name of Object.keys(this.options)) {
             Object.defineProperty(this, name, {
@@ -133,7 +126,7 @@ const OptionsHandler = class {
                 set: function (value) {
                     this.options[name] = value;
                     Logger.log('R_FLAGS', `${this.key}.${name} set to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
-                    SharedPreferences.set(this.key, this.options);
+                    Store.shared.set(this.key, this.options);
                     this.changed(name);
                 }
             });
@@ -220,7 +213,7 @@ const Site = new (class {
         await DatabaseManager._reset();
 
         for (let [key, value] of Object.entries(preferences)) {
-            SharedPreferences.setRaw(key, value);
+            Store.shared.set(key, value, true);
         }
 
         for (let [slot, { players, groups, trackers, metadata }] of Object.entries(data)) {
@@ -250,7 +243,7 @@ const Site = new (class {
     }
 
     async dump () {
-        let prefs = SharedPreferences.getAll();
+        let prefs = Store.shared.all();
         let slots = _uniq(Object.values(ProfileManager.profiles).map(profile => profile.slot || 0));
         let dumps = {};
 
@@ -391,7 +384,7 @@ const DEFAULT_PROFILE_B = {
 
 const ProfileManager = new (class {
     constructor () {
-        this.profiles = Object.assign(Preferences.get('db_profiles', {}), {
+        this.profiles = Object.assign(Store.get('db_profiles', {}), {
             'default': DEFAULT_PROFILE,
             'own': DEFAULT_PROFILE_A,
             'month_old': DEFAULT_PROFILE_B
@@ -436,12 +429,12 @@ const ProfileManager = new (class {
 
     removeProfile (name) {
         delete this.profiles[name];
-        Preferences.set('db_profiles', this.profiles);
+        Store.set('db_profiles', this.profiles);
     }
 
     setProfile (name, profile) {
         this.profiles[name] = Object.assign(profile, { updated: Date.now() });
-        Preferences.set('db_profiles', this.profiles);
+        Store.set('db_profiles', this.profiles);
     }
 
     isDefault(name) {
@@ -470,7 +463,7 @@ const Actions = new (class {
         if (legacyTracker) {
             this.script = `${this.script || ''}\n${legacyTracker}`;
 
-            Preferences.set('actions_script', this.script);
+            Store.set('actions_script', this.script);
             SettingsManager.remove('tracker');
         }
 
@@ -478,11 +471,11 @@ const Actions = new (class {
     }
 
     _loadScript () {
-        this.script = Preferences.get('actions_script', this.defaultScript);
+        this.script = Store.get('actions_script', this.defaultScript);
     }
 
     _saveScript () {
-        Preferences.set('actions_script', this.script);
+        Store.set('actions_script', this.script);
     }
 
     _executeScript () {
@@ -509,7 +502,7 @@ const Actions = new (class {
     }
 
     resetScript () {
-        Preferences.remove('actions_script');
+        Store.remove('actions_script');
 
         this._loadScript();
         this._executeScript();
