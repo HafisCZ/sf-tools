@@ -1,39 +1,66 @@
-.table-group {
-  text-align: center !important;
-  font-family: 'Roboto', sans-serif !important;
-  border-spacing: 0 !important;
-  border-collapse: collapse !important;
+table.sftools-table {
+  --table-foreground: #212529;
+  --table-background: #ffffff;
+
+  position: absolute;
+  margin-top: 1em;
+  border-spacing: 0;
+  border-collapse: collapse;
+
+  font-family: 'Roboto' !important;
   font-weight: 300 !important;
   font-size: 1.35em !important;
-  color: #212529 !important;
-  border: none !important;
+
+  text-align: center;
 }
 
-.table-group td:not(.border-bottom-thick) {
-  padding: 0.35em !important;
-  border-top: none !important;
-  border-left: none !important;
-  height: 1.9em !important;
+table.sftools-table tbody {
+  color: var(--table-foreground);
+  background: var(--table-background);
 }
 
-.table-group td:not(.border-bottom-thick):not(.border-right-thin) {
-  border: none !important;
+table.sftools-table tbody.theme-dark {
+  --table-foreground: white;
+  --table-background: #141414;
 }
 
-.table-group span {
-  font-size: 70% !important;
+table.sftools-table b {
+  font-weight: bold;
+}
+
+table.sftools-table td {
+  height: 1.9em;
+}
+
+table.sftools-table td.left {
+  padding-left: 0.35em;
+  text-align: left;
+}
+
+table.sftools-table td.right {
+  padding-right: 0.35em;
+  text-align: right;
+}
+
+table.sftools-table span {
+  font-size: 70%;
+}
+
+table.sftools-table .headers td {
+  text-overflow: clip;
+  overflow: hidden;
 }
 
 .border-right-thin {
-  border-right: 1px solid black !important;
+  border-right: 1px solid var(--table-foreground) !important;
 }
 
 .border-top-thin {
-  border-top: 1px solid black !important;
+  border-top: 1px solid var(--table-foreground) !important;
 }
 
 .border-bottom-thin {
-  border-bottom: 1px solid black !important;
+  border-bottom: 1px solid var(--table-foreground) !important;
 }
 
 .border-right-false {
@@ -41,12 +68,8 @@
 }
 
 .border-bottom-thick {
-  border-bottom: 2px solid black !important;
+  border-bottom: 2px solid var(--table-foreground) !important;
   padding: 0 !important;
-}
-
-.border-bottom-thin {
-  border-bottom: 1px solid black !important;
 }
 
 .css-entry-opaque tr.css-entry:nth-child(even) {
