@@ -193,6 +193,7 @@ table.sftools-table {
   font-size: 1.35em !important;
 
   color: #212529;
+  background: white;
   text-align: center;
 }
 
@@ -283,10 +284,6 @@ display: none;
 }
 
 .css-top-line {
-  border-top: 2px solid #212121;
-}
-
-.css-inverted .css-top-line {
   border-top: 2px solid rgba(255, 255, 255, 0.5);
 }
 

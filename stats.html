@@ -39,7 +39,7 @@
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body class="inverted">
         <div class="ui fixed inverted borderless huge menu">
             <div class="header item"><a href="index.html">SFTools</a> <span class="css-temporary" style="display: none;" data-intl="stats.topbar.temporary_flag"></span></div>
             <a class="item" id="show-players"><i class="small user icon"></i><span data-intl="stats.topbar.players"></span></a>
@@ -56,19 +56,19 @@
         </div>
 
         <!-- FilesView -->
-        <div id="view-files" class="ui main container mb-20" style="display: none; width: 85vw;">
+        <div id="view-files" class="ui main inverted container mb-20" style="display: none; width: 85vw;">
             <div class="ui grid">
                 <div class="three wide column">
-                    <div class="ui segment">
-                        <div class="ui large header" data-intl="stats.files.titles.filters"></div>
-                        <div class="ui tiny form" data-op="filters">
+                    <div class="ui inverted segment">
+                        <div class="ui large inverted header" data-intl="stats.files.titles.filters"></div>
+                        <div class="ui tiny inverted form" data-op="filters">
 
                         </div>
                     </div>
                 </div>
                 <div class="ten wide column">
                     <div data-op="advanced-center">
-                        <table class="ui compact fixed table" style="margin-top: 0;">
+                        <table class="ui compact fixed inverted black table" style="margin-top: 0;">
                             <thead>
                                 <tr>
                                     <th class="cursor-pointer !text-center" data-op="mark-all"><i class="adjust icon"></i></th>
@@ -89,7 +89,7 @@
                         <div data-op="simple-tags">
 
                         </div>
-                        <table class="ui compact fixed table" style="margin-top: 0;">
+                        <table class="ui compact fixed inverted black table" style="margin-top: 0;">
                             <thead>
                                 <tr>
                                     <th class="cursor-pointer !text-center" data-op="mark-all"><i class="adjust icon"></i></th>
@@ -109,27 +109,27 @@
                     </div>
                 </div>
                 <div class="three wide column">
-                    <div class="ui segment">
-                        <div class="ui large header" data-intl="stats.files.titles.io"></div>
+                    <div class="ui inverted segment">
+                        <div class="ui large inverted header" data-intl="stats.files.titles.io"></div>
                         <!-- IMPORT -->
                         <input type="file" multiple data-op="upload" accept=".har,.json" class="ui invisible file input" id="button-upload">
-                        <label for="button-upload" class="ui fluid icon secondary button">
+                        <label for="button-upload" class="ui fluid icon basic inverted button">
                           <i class="file icon"></i> <span data-intl="stats.files.import.file"></span>
                         </label>
-                        <div class="fluid ui secondary button !mt-2" data-op="shared">
+                        <div class="fluid ui basic inverted button !mt-2" data-op="shared">
                             <i class="small share alternate icon"></i> <span data-intl="stats.files.import.shared"></span>
                         </div>
-                        <div class="fluid ui secondary button !mt-2" data-op="endpoint">
+                        <div class="fluid ui basic inverted button !mt-2" data-op="endpoint">
                             <i class="small desktop icon"></i> <span data-intl="stats.files.import.game"></span>
                         </div>
                         <hr class="mt-8"/>
                         <!-- EXPORT -->
                         <div>
-                            <div class="ui fluid buttons">
-                                <div class="ui secondary basic button" data-op="export">
+                            <div class="ui fluid basic inverted buttons">
+                                <div class="ui button" data-op="export">
                                     <i class="small download icon icon"></i> <span data-intl="stats.files.export.all"></span>
                                 </div>
-                                <div class="ui compact secondary icon button" style="flex: 0 0 3.5em;" data-op="cloud-export">
+                                <div class="ui compact icon button" style="flex: 0 0 3.5em;" data-op="cloud-export">
                                     <i class="share alternate icon"></i>
                                 </div>
                             </div>
@@ -139,56 +139,56 @@
                             <span data-op="selected-counter" data-intl="stats.files.selected.no"></span> <span data-intl="stats.files.selected.text"></span>
                         </div>
                         <div class="mt-2">
-                            <div class="ui fluid buttons">
-                                <div class="ui button secondary basic" data-op="export-partial">
+                            <div class="ui fluid basic inverted buttons">
+                                <div class="ui button" data-op="export-partial">
                                     <i class="small download icon icon"></i> <span data-intl="stats.files.export.selected"></span>
                                 </div>
-                                <div class="ui compact secondary icon button" style="flex: 0 0 3.5em;" data-op="cloud-export-partial">
+                                <div class="ui compact icon button" style="flex: 0 0 3.5em;" data-op="cloud-export-partial">
                                     <i class="share alternate icon"></i>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-2">
-                            <div class="ui fluid two buttons">
-                                <div class="fluid ui secondary basic button mt-2" data-op="hide" data-intl-tooltip="stats.files.hide.tooltip">
+                            <div class="ui fluid two basic inverted buttons">
+                                <div class="fluid ui button mt-2" data-op="hide" data-intl-tooltip="stats.files.hide.tooltip" data-inverted="">
                                     <i class="small eye slash outline outline icon"></i> <span data-intl="stats.files.hide.label"></span>
                                 </div>
-                                <div class="ui compact secondary icon button" style="flex: 0 0 3.5em; border-radius: 0 .28571429rem .28571429rem 0;" data-op="hide-migrate" data-intl-tooltip="stats.files.hide.migrate">
+                                <div class="ui compact button" style="flex: 0 0 3.5em; border-radius: 0 .28571429rem .28571429rem 0;" data-op="hide-migrate" data-intl-tooltip="stats.files.hide.migrate" data-inverted="">
                                     <i class="expand icon"></i>
                                 </div>
-                                <div class="fluid ui secondary basic button mt-2" data-op="tags">
+                                <div class="fluid ui button mt-2" data-op="tags">
                                     <i class="small tags icon"></i> <span data-intl="stats.files.tags.multiple"></span>
                                 </div>
                             </div>
                         </div>
                         <!-- MERGE -->
-                        <div class="fluid ui secondary basic button !mt-2" data-op="merge">
+                        <div class="fluid ui basic inverted button !mt-2" data-op="merge">
                             <i class="small clone outline icon"></i> <span data-intl="stats.files.merge.selected"></span>
                         </div>
                         <!-- DELETE -->
-                        <div class="fluid ui red basic button !mt-2" data-op="delete">
+                        <div class="fluid ui red inverted button !mt-2" data-op="delete">
                             <i class="small clone outline icon"></i> <span data-intl="stats.files.delete.selected"></span>
                         </div>
                         <hr class="mt-8"/>
                         <!-- WIPE -->
-                        <div class="fluid ui red basic button" data-op="delete-all">
+                        <div class="fluid ui red inverted button" data-op="delete-all">
                             <i class="small trash alternate outline icon"></i> <span data-intl="stats.files.delete.all"></span>
                         </div>
                         <br/>
-                        <h3 class="ui centered header" data-intl="stats.files.options.title"></h3>
-                        <div class="ui checkbox ml-8 mt-2" data-op="checkbox-advanced">
+                        <h3 class="ui centered inverted header" data-intl="stats.files.options.title"></h3>
+                        <div class="ui inverted checkbox ml-8 mt-2" data-op="checkbox-advanced">
                             <input type="checkbox">
                             <label data-intl="stats.files.options.advanced"></label>
                         </div>
-                        <div class="ui checkbox ml-8 mt-2" data-op="checkbox-hidden">
+                        <div class="ui inverted checkbox ml-8 mt-2" data-op="checkbox-hidden">
                             <input type="checkbox">
                             <label data-intl="stats.files.options.hidden"></label>
                         </div>
-                        <div class="ui checkbox ml-8 mt-2" data-op="checkbox-export-public-only">
+                        <div class="ui inverted checkbox ml-8 mt-2" data-op="checkbox-export-public-only">
                             <input type="checkbox">
                             <label data-intl="stats.files.options.export_public_only"></label>
                         </div>
-                        <div class="ui checkbox ml-8 mt-2" data-op="checkbox-export-bundle-groups">
+                        <div class="ui inverted checkbox ml-8 mt-2" data-op="checkbox-export-bundle-groups">
                             <input type="checkbox">
                             <label data-intl="stats.files.options.export_bundle_groups"></label>
                         </div>
@@ -198,22 +198,22 @@
         </div>
 
         <!-- SettingsView -->
-        <div id="view-settings" class="ui main container" style="display: none; width: 95vw;">
+        <div id="view-settings" class="ui main inverted container" style="display: none; width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
-                    <h3 class="ui centered header" style="margin-top: 0;" data-intl="stats.scripts.settings"></h3>
-                    <div class="ui middle aligned selection list css-selection-list css-top-line" data-op="settings-list">
+                    <h3 class="ui centered inverted header" style="margin-top: 0;" data-intl="stats.scripts.settings"></h3>
+                    <div class="ui middle aligned selection inverted list css-selection-list css-top-line" data-op="settings-list">
 
                     </div>
                     <div class="css-template-heading">
-                        <h3 class="ui centered header css-template-header" data-intl="stats.scripts.templates"></h3>
+                        <h3 class="ui centered inverted header css-template-header" data-intl="stats.scripts.templates"></h3>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-top-line" data-op="template-list">
+                    <div class="ui middle aligned selection inverted list css-selection-list css-top-line" data-op="template-list">
 
                     </div>
                 </div>
                 <div class="twelve wide column">
-                    <div class="ui form ta-form">
+                    <div class="ui inverted form ta-form">
                         <div class="field">
                             <div class="ta-wrapper">
                                 <div class="ta-content"></div>
@@ -223,31 +223,31 @@
                     </div>
                 </div>
                 <div class="one wide column css-settings-buttons">
-                    <button class="ui fluid secondary basic button" data-op="wiki-home"><div><i class="book icon"></i><span data-intl="stats.scripts.sidebar.wiki"></span></div></button>
-                    <button class="ui fluid secondary basic button" data-op="browse"><div><i class="globe icon"></i><span data-intl="stats.scripts.sidebar.scripts"></span></div></button>
-                    <button class="ui fluid secondary basic button" data-op="templates"><div><i class="edit outline icon"></i><span data-intl="stats.scripts.sidebar.templates"></span></div></button>
-                    <button class="ui fluid secondary basic button" data-op="save-template"><div><i class="save icon"></i><span data-intl="stats.scripts.sidebar.save"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="wiki-home"><div><i class="book icon"></i><span data-intl="stats.scripts.sidebar.wiki"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="browse"><div><i class="globe icon"></i><span data-intl="stats.scripts.sidebar.scripts"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="templates"><div><i class="edit outline icon"></i><span data-intl="stats.scripts.sidebar.templates"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="save-template"><div><i class="save icon"></i><span data-intl="stats.scripts.sidebar.save"></span></div></button>
                     <br/>
-                    <button class="ui fluid secondary basic button" data-op="copy"><div><i class="copy outline icon"></i><span data-intl="stats.scripts.sidebar.copy"></span></div></button>
-                    <button class="ui fluid secondary basic button" data-op="prev"><div><i class="undo icon"></i><span data-intl="stats.scripts.sidebar.undo"></span></div></button>
-                    <button class="ui fluid secondary basic button" data-op="next"><div><i class="redo icon"></i><span data-intl="stats.scripts.sidebar.redo"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="copy"><div><i class="copy outline icon"></i><span data-intl="stats.scripts.sidebar.copy"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="prev"><div><i class="undo icon"></i><span data-intl="stats.scripts.sidebar.undo"></span></div></button>
+                    <button class="ui fluid basic inverted button" data-op="next"><div><i class="redo icon"></i><span data-intl="stats.scripts.sidebar.redo"></span></div></button>
                 </div>
             </div>
         </div>
 
         <!-- SettingsFloatView -->
-        <div id="modal-settings" class="ui basic fullscreen modal text-white css-inverted" style="width: 95vw;">
+        <div id="modal-settings" class="ui basic fullscreen modal" style="width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
                     <div class="css-template-heading">
-                        <h3 class="ui centered header css-template-header" data-intl="stats.scripts.templates"></h3>
+                        <h3 class="ui centered inverted header css-template-header" data-intl="stats.scripts.templates"></h3>
                     </div>
-                    <div class="ui middle aligned selection list inverted css-selection-list css-template-fullheight css-top-line" data-op="template-list">
+                    <div class="ui middle aligned selection inverted list css-selection-list css-template-fullheight css-top-line" data-op="template-list">
 
                     </div>
                 </div>
                 <div class="twelve wide column">
-                    <div class="ui form ta-form">
+                    <div class="ui inverted form ta-form">
                         <div class="field">
                             <div class="ta-wrapper">
                                 <div class="ta-content"></div>
@@ -277,18 +277,18 @@
         </div>
 
         <!-- PlayersView -->
-        <div id="view-players" class="ui main container mb-20" style="display: none;">
+        <div id="view-players" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
-                    <div class="ui fluid icon input">
+                    <div class="ui fluid icon inverted input">
                         <input class="prompt font-arial" type="text" data-intl-placeholder="stats.filters.types.players" data-op="filter">
                     </div>
                 </div>
                 <div class="three wide column">
-                    <div class="ui basic icon buttons">
-                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.players.hidden"><i class="ui low vision icon"></i></div>
-                        <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.players.other"><i class="ui user circle outline icon"></i></div>
+                    <div class="ui basic inverted icon buttons">
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.players.hidden" data-inverted=""><i class="ui low vision icon"></i></div>
+                        <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.players.other" data-inverted=""><i class="ui user circle outline icon"></i></div>
                     </div>
                 </div>
             </div>
@@ -296,19 +296,19 @@
         </div>
 
         <!-- GroupsView -->
-        <div id="view-groups" class="ui main container mb-20" style="display: none;">
+        <div id="view-groups" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
-                    <div class="ui fluid icon input">
+                    <div class="ui fluid icon inverted input">
                         <input class="prompt font-arial" type="text" data-intl-placeholder="stats.filters.types.guilds" data-op="filter">
                     </div>
                 </div>
                 <div class="three wide column">
-                    <div class="ui basic icon buttons">
-                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.guilds.hidden"><i class="ui low vision icon"></i></div>
-                        <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.guilds.other"><i class="ui user circle outline icon"></i></div>
-                        <div class="ui button" data-op="show-empty" data-position="bottom center" data-intl-tooltip="stats.guilds.empty"><i class="ui eraser icon"></i></div>
+                    <div class="ui basic inverted icon buttons">
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.guilds.hidden" data-inverted=""><i class="ui low vision icon"></i></div>
+                        <div class="ui button" data-op="show-other" data-position="bottom center" data-intl-tooltip="stats.guilds.other" data-inverted=""><i class="ui user circle outline icon"></i></div>
+                        <div class="ui button" data-op="show-empty" data-position="bottom center" data-intl-tooltip="stats.guilds.empty" data-inverted=""><i class="ui eraser icon"></i></div>
                     </div>
                 </div>
             </div>
@@ -316,33 +316,33 @@
         </div>
 
         <!-- BrowseView -->
-        <div id="view-browse" class="ui main container mb-20" style="display: none;">
+        <div id="view-browse" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide left aligned column">
                     <div class="flex flex-col">
-                        <div class="ui scrolling dropdown" data-op="timestamp">
+                        <div class="ui scrolling inverted dropdown" data-op="timestamp">
                             <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                         <br/>
-                        <div class="ui scrolling dropdown" data-op="reference">
+                        <div class="ui scrolling inverted dropdown" data-op="reference">
                             <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                 </div>
                 <div class="ten wide column">
-                    <div class="ui fluid icon input">
+                    <div class="ui fluid icon inverted input">
                         <input class="prompt font-arial" type="text" data-intl-placeholder="stats.filters.types.players" data-op="filter">
                     </div>
                 </div>
                 <div class="three wide right aligned column">
-                    <div class="ui basic icon buttons">
-                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></div>
-                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></div>
-                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></div>
-                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.browse.hidden"><i class="ui low vision icon"></i></div>
-                        <div class="ui top left pointing dropdown button" data-op="configure">
+                    <div class="ui basic inverted icon buttons">
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-inverted="" data-op="save"><i class="download icon"></i></div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-inverted="" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.fight" data-inverted="" data-op="copy-sim"><i class="copy outline icon"></i></div>
+                        <div class="ui button" data-op="show-hidden" data-position="bottom center" data-intl-tooltip="stats.browse.hidden" data-inverted=""><i class="ui low vision icon"></i></div>
+                        <div class="ui top left pointing inverted dropdown button" data-op="configure">
                             <i class="cog icon"></i>
                             <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
                         </div>
@@ -356,18 +356,18 @@
         <div id="modal-playerdetail" class="ui basic large modal"></div>
 
         <!-- PlayerHistoryView -->
-        <div id="view-history" class="ui main container mb-20" style="display: none;">
+        <div id="view-history" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide center aligned column !pb-0">
-                    <h1 class="ui header !line-height-4 !m-0" data-op="name"></h1>
+                    <h1 class="ui inverted header !line-height-4 !m-0" data-op="name"></h1>
                     <span class="opacity-50" data-op="identifier"></span>
                 </div>
                 <div class="three wide column">
-                    <div class="ui basic icon buttons">
-                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></div>
-                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></div>
-                        <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
+                    <div class="ui basic inverted icon buttons">
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-inverted="" data-op="save"><i class="download icon"></i></div>
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.fast_export.label" data-inverted="" data-op="share"><i class="cloud upload icon"></i></div>
+                        <div class="ui icon top left pointing inverted dropdown button" data-op="export-dropdown">
                             <i class="file archive icon"></i>
                             <div class="menu">
                                 <div class="header" data-intl="stats.fast_export.title"></div>
@@ -376,8 +376,8 @@
                                 <div class="item" data-op="export-l5" data-intl="stats.fast_export.latest5"></div>
                             </div>
                         </div>
-                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></div>
-                        <div class="ui top left pointing dropdown button" data-op="configure">
+                        <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-inverted="" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui top left pointing inverted dropdown button" data-op="configure">
                             <i class="cog icon"></i>
                             <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
                         </div>
@@ -387,8 +387,7 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <div id="modal-onlinetemplates" class="ui small modal">
-            <i class="cctemplate close icon"></i>
+        <div id="modal-onlinetemplates" class="ui small inverted modal">
             <div class="header" data-intl="stats.online_templates.title"></div>
             <div class="content text-center">
                 <div class="dimmable">
@@ -412,12 +411,12 @@
             <div class="content" style="border-top: 1px solid rgba(34,36,38,.15); margin-top: -1.5em;">
                 <div class="ui middle aligned grid css-nomargin-grid">
                     <div class="fifteen wide column">
-                        <div class="ui fluid small input">
+                        <div class="ui fluid small inverted input">
                             <input type="text" data-intl-placeholder="stats.online_templates.code" data-op="private-value">
                         </div>
                     </div>
                     <div class="one wide column css-template-buttons">
-                        <div class="ui icon right floated small buttons">
+                        <div class="ui icon right floated basic inverted small buttons">
                             <button class="ui button" data-op="private"><i class="play icon"></i></button>
                         </div>
                     </div>
@@ -425,8 +424,7 @@
             </div>
         </div>
 
-        <div id="modal-templates" class="ui small modal">
-            <i class="cctemplate close icon"></i>
+        <div id="modal-templates" class="ui small inverted modal">
             <div class="header" data-intl="stats.templates.title"></div>
             <div class="content" style="padding: 0;">
                 <div class="dimmable">
@@ -435,14 +433,14 @@
                             <div class="ui indeterminate text loader"data-intl="stats.templates.loading"></div>
                         </div>
                         <div class="column" style="height: 100%;">
-                            <div class="ui middle aligned selection list css-template-list css-templates-list" data-op="templates">
+                            <div class="ui middle aligned selection inverted list css-template-list css-templates-list" data-op="templates">
 
                             </div>
                         </div>
                         <div class="column" style="border-left: 1px solid rgba(34,36,38,.15);">
-                            <div class="ui form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
+                            <div class="ui inverted form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
                                 <div class="field">
-                                    <div class="ui icon fluid centered input">
+                                    <div class="ui icon fluid centered inverted input">
                                         <input type="text" disabled data-op="name">
                                         <i class="link external alternate icon" data-op="open"></i>
                                     </div>
@@ -450,52 +448,52 @@
                                 <div class="two fields">
                                     <div class="field">
                                         <label data-intl="stats.templates.form.changed_on"></label>
-                                        <div class="ui small fluid input">
+                                        <div class="ui small fluid inverted input">
                                             <input disabled type="text" data-op="timestamp" style="border: none;">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="stats.templates.form.version"></label>
-                                        <div class="ui small fluid input">
+                                        <div class="ui small fluid inverted input">
                                             <input disabled type="text" data-op="version" style="border: none;">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="stats.templates.form.compatibility"></label>
-                                    <div class="ui small fluid input">
+                                    <div class="ui small fluid inverted input">
                                         <input disabled type="text" data-op="compat" style="border: none;">
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label data-intl="stats.templates.form.published_on"></label>
-                                    <div class="ui small fluid input">
+                                    <div class="ui small fluid inverted input">
                                         <input disabled type="text" data-op="timestamp2" style="border: none;">
                                     </div>
                                 </div>
                                 <div class="two fields">
                                     <div class="nine wide field">
                                         <label data-intl="stats.templates.form.code"></label>
-                                        <div class="ui small fluid input">
+                                        <div class="ui small fluid inverted input">
                                             <input readonly type="text" data-op="key" style="border: none; font-family: monospace,monospace;">
                                         </div>
                                     </div>
                                     <div class="seven wide field">
                                         <label><br/></label>
-                                        <div class="ui buttons">
-                                            <button class="ui basic secondary button" data-intl-tooltip="stats.templates.form.publish_tooltip" data-op="publish"><i class="globe icon"></i><span data-intl="stats.templates.form.publish"></span></button>
-                                            <button class="ui icon red basic button" data-intl-tooltip="stats.templates.form.unpublish_tooltip" data-op="unpublish"><i class="trash icon"></i></button>
+                                        <div class="ui inverted buttons">
+                                            <button class="ui basic button" data-intl-tooltip="stats.templates.form.publish_tooltip" data-inverted="" data-op="publish"><i class="globe icon"></i><span data-intl="stats.templates.form.publish"></span></button>
+                                            <button class="ui icon red inverted button" data-intl-tooltip="stats.templates.form.unpublish_tooltip" data-inverted="" data-op="unpublish"><i class="trash icon"></i></button>
                                         </div>
                                     </div>
                                 </div>
                                 <br/>
                                 <div class="fields" style="margin-top: 5em;">
                                     <div class="seven wide field">
-                                        <button class="ui fluid basic secondary button" data-intl-tooltip="stats.templates.form.update_tooltip" data-op="update"><i class="recycle icon"></i><span data-intl="stats.templates.form.update"></span></button>
+                                        <button class="ui fluid basic inverted button" data-intl-tooltip="stats.templates.form.update_tooltip" data-inverted="" data-op="update"><i class="recycle icon"></i><span data-intl="stats.templates.form.update"></span></button>
                                     </div>
                                     <div class="two wide field"></div>
                                     <div class="seven wide field">
-                                        <button class="ui fluid red basic button" data-intl-tooltip="stats.templates.form.remove_tooltip" data-op="delete"><i class="trash icon"></i><span data-intl="stats.templates.form.remove"></span></button>
+                                        <button class="ui fluid red inverted button" data-intl-tooltip="stats.templates.form.remove_tooltip" data-inverted="" data-op="delete"><i class="trash icon"></i><span data-intl="stats.templates.form.remove"></span></button>
                                     </div>
                                 </div>
                             </div>
@@ -506,30 +504,30 @@
         </div>
 
         <!-- GroupDetailView -->
-        <div id="view-groupdetail" class="ui main container mb-20" style="display: none;">
+        <div id="view-groupdetail" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="four wide column">
                     <div class="flex flex-col">
-                        <div class="ui scrolling text-full-width dropdown" data-op="timestamp">
+                        <div class="ui scrolling text-full-width inverted dropdown" data-op="timestamp">
                             <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
-                        <div class="ui scrolling text-full-width dropdown" data-op="reference">
+                        <div class="ui scrolling text-full-width inverted dropdown" data-op="reference">
                             <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                 </div>
                 <div class="eight wide center aligned column !pb-0">
-                    <h1 class="ui header !line-height-4 !m-0" data-op="name"></h1>
+                    <h1 class="ui header inverted !line-height-4 !m-0" data-op="name"></h1>
                     <span class="opacity-50" data-op="identifier"></span>
                 </div>
                 <div class="one wide column"></div>
                 <div class="three wide column">
-                    <div class="ui basic icon buttons">
-                        <div class="ui button" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></div>
-                        <div class="ui button" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></div>
-                        <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
+                    <div class="ui basic inverted icon buttons">
+                        <div class="ui button" data-intl-tooltip="stats.copy.image" data-inverted="" data-op="save"><i class="download icon"></i></div>
+                        <div class="ui button" data-intl-tooltip="stats.fast_export.label" data-inverted="" data-op="share"><i class="cloud upload icon"></i></div>
+                        <div class="ui icon top left pointing inverted dropdown button" data-op="export-dropdown">
                             <i class="file archive icon"></i>
                             <div class="menu">
                                 <div class="header" data-intl="stats.fast_export.title"></div>
@@ -540,9 +538,9 @@
                                 <div class="item" data-op="export-sr" data-intl="stats.fast_export.selected_both"></div>
                             </div>
                         </div>
-                        <div class="ui button" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></div>
-                        <div class="ui button" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></div>
-                        <div class="ui top left pointing dropdown button" data-op="configure">
+                        <div class="ui button" data-intl-tooltip="stats.copy.basic" data-inverted="" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui button" data-intl-tooltip="stats.copy.fight" data-inverted="" data-op="copy-sim"><i class="copy outline icon"></i></div>
+                        <div class="ui top left pointing inverted dropdown button" data-op="configure">
                             <i class="cog icon"></i>
                             <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
                         </div>
@@ -553,48 +551,48 @@
         </div>
 
         <!-- ProfilesView -->
-        <div id="view-profiles" class="ui main container" style="display: none;">
+        <div id="view-profiles" class="ui main inverted container" style="display: none;">
             <div class="ui grid" data-op="list">
 
             </div>
         </div>
 
         <!-- OptionsView -->
-        <div id="view-options" class="ui main container" style="display: none;">
+        <div id="view-options" class="ui main inverted container" style="display: none;">
             <div class="ui grid">
                 <div class="six wide column">
-                    <div class="ui segment">
-                        <h3 class="ui centered header" data-intl="stats.settings.title"></h3>
-                        <div class="ui checkbox mt-2" data-op="checkbox-alwaysprev">
+                    <div class="ui inverted segment">
+                        <h3 class="ui centered inverted header" data-intl="stats.settings.title"></h3>
+                        <div class="ui inverted checkbox mt-2" data-op="checkbox-alwaysprev">
                             <input type="checkbox">
                             <label data-intl="stats.settings.always_prev"></label>
                         </div>
                         <br/>
-                        <div class="ui checkbox mt-2" data-op="checkbox-obfuscated">
+                        <div class="ui inverted checkbox mt-2" data-op="checkbox-obfuscated">
                             <input type="checkbox">
                             <label data-intl="stats.settings.obfuscated"></label>
                         </div>
                         <br/>
-                        <div class="ui checkbox mt-2" data-op="checkbox-insecure">
+                        <div class="ui inverted checkbox mt-2" data-op="checkbox-insecure">
                             <input type="checkbox">
                             <label data-intl="stats.settings.insecure"></label>
                         </div>
                         <br/>
-                        <div class="ui checkbox mt-2" data-op="checkbox-unsafe-delete">
+                        <div class="ui inverted checkbox mt-2" data-op="checkbox-unsafe-delete">
                             <input type="checkbox">
                             <label data-intl="stats.settings.unsafe_delete"></label>
                         </div>
                         <br/>
-                        <div class="ui checkbox mt-2" data-op="checkbox-terms">
+                        <div class="ui inverted checkbox mt-2" data-op="checkbox-terms">
                             <input type="checkbox">
                             <label data-intl="stats.settings.terms"></label>
                         </div>
                         <br/>
                         <br/>
-                        <div class="ui form mt-2">
+                        <div class="ui inverted form mt-2">
                             <div class="field">
                                 <label data-intl="stats.settings.tab"></label>
-                                <select class="ui fluid selection dropdown" data-op="dropdown-tab">
+                                <select class="ui fluid selection inverted dropdown" data-op="dropdown-tab">
                                     <option value="browse" data-intl="stats.topbar.browse"></option>
                                     <option value="groups" data-intl="stats.topbar.guilds"></option>
                                     <option value="players" data-intl="stats.topbar.players"></option>
@@ -603,10 +601,10 @@
                             </div>
                         </div>
                         <br>
-                        <div class="ui form mt-2">
+                        <div class="ui inverted form mt-2">
                             <div class="field">
                                 <label data-intl="stats.settings.preload"></label>
-                                <select class="ui fluid selection dropdown" data-op="dropdown-load-rows">
+                                <select class="ui fluid selection inverted dropdown" data-op="dropdown-load-rows">
                                     <option value="50">50</option>
                                     <option value="100">100</option>
                                     <option value="250">250</option>
@@ -617,10 +615,10 @@
                         </div>
                         <br>
                         <hr>
-                        <h3 class="ui centered header" data-intl="stats.settings.recovery.title"></h3>
+                        <h3 class="ui centered inverted header" data-intl="stats.settings.recovery.title"></h3>
                         <p data-intl="stats.settings.recovery.description#"></p>
                         <div class="sf-margin top-5 ui two buttons">
-                            <div class="fluid ui secondary button" data-op="export">
+                            <div class="fluid ui basic inverted button" data-op="export">
                                 <i class="small download icon"></i> <span data-intl="stats.settings.recovery.export"></span>
                             </div>
                             <label class="fluid ui button" style="background-color: orange; border-top-right-radius: .28571429rem; border-bottom-right-radius: .28571429rem;" for="button-recovery-upload">
@@ -631,18 +629,18 @@
                     </div>
                 </div>
                 <div class="ten wide column">
-                    <div class="ui segment">
+                    <div class="ui inverted segment">
                         <div class="ui grid">
                             <div class="five wide column"></div>
-                            <div class="six wide column"><h3 class="ui centered header" data-intl="stats.settings.actions.title"></h3></div>
+                            <div class="six wide column"><h3 class="ui centered inverted header" data-intl="stats.settings.actions.title"></h3></div>
                             <div class="five wide column">
-                                <div class="ui small basic icon right floated buttons" style="margin-top: -0.5rem; margin-bottom: 0.5rem;">
-                                    <button class="ui button" data-op="discard" data-intl-tooltip="stats.settings.actions.discard" data-position="bottom center"><i class="black undo icon"></i></button>
-                                    <button class="ui button" data-op="save" data-intl-tooltip="stats.settings.actions.save" data-position="bottom center"><i class="black save icon"></i></button>
+                                <div class="ui small basic inverted icon right floated buttons" style="margin-top: -0.5rem; margin-bottom: 0.5rem;">
+                                    <button class="ui button" data-op="discard" data-intl-tooltip="stats.settings.actions.discard" data-position="bottom center" data-inverted=""><i class="undo icon"></i></button>
+                                    <button class="ui button" data-op="save" data-intl-tooltip="stats.settings.actions.save" data-position="bottom center" data-inverted=""><i class="save icon"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <div class="ui form ta-form" style="height: 30em;">
+                        <div class="ui inverted form ta-form" style="height: 30em;">
                             <div class="field">
                                 <div class="ta-wrapper">
                                     <div class="ta-content"></div>
