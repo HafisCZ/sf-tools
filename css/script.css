@@ -16,7 +16,7 @@
   position: absolute;
   border: 1px solid transparent;
   pointer-events: none;
-  color: black;
+  color: white;
   width: 1000%;
   font-size: 1em !important;
   font-family: Arial, Helvetica, sans-serif !important;
@@ -24,7 +24,9 @@
 
 .ta-area {
   color: transparent !important;
-  caret-color: black;
+  background-color: #1b1c1d !important;
+  border-color: rgba(255, 255, 255, .15) !important;
+  caret-color: grey;
   max-height: 100% !important;
   height: 100% !important;
   resize: none !important;
@@ -37,17 +39,17 @@
 }
 
 .ta-keyword {
-  text-shadow: -0.03ex 0 black, 0.03ex 0 black;
+  text-shadow: -0.03ex 0 white, 0.03ex 0 white;
 }
 
 .ta-reserved {
-  text-shadow: -0.03ex 0 #b300b3, 0.03ex 0 #b300b3;
-  color: #b300b3;
+  text-shadow: -0.03ex 0 #f550f5, 0.03ex 0 #f550f5;
+  color: #f550f5;
 }
 
 .ta-reserved-protected {
-  text-shadow: -0.03ex 0 #7132a8, 0.03ex 0 #7132a8;
-  color: #7132a8;
+  text-shadow: -0.03ex 0 #ba6bff, 0.03ex 0 #ba6bff;
+  color: #ba6bff;
 }
 
 .ta-reserved-private {
@@ -80,7 +82,7 @@
 }
 
 .ta-constant {
-  color: #175e5a;
+  color: #46bbb5;
 }
 
 .ta-global {
@@ -92,8 +94,8 @@
 }
 
 .ta-function {
-  text-shadow: -0.03ex 0 #175e5a, 0.03ex 0 #175e5a;
-  color: #175e5a;
+  text-shadow: -0.03ex 0 #46bbb5, 0.03ex 0 #46bbb5;
+  color: #46bbb5;
 }
 
 .ta-error {
@@ -103,17 +105,17 @@
 }
 
 .ta-boolean-on {
-  text-shadow: -0.03ex 0 green, 0.03ex 0 green;
-  color: green;
+  text-shadow: -0.03ex 0 greenyellow, 0.03ex 0 greenyellow;
+  color: greenyellow;
 }
 
 .ta-boolean-off {
-  text-shadow: -0.03ex 0 red, 0.03ex 0 red;
-  color: red;
+  text-shadow: -0.03ex 0 orangered, 0.03ex 0 orangered;
+  color: orangered;
 }
 
 .ta-comment {
-  color: #696969;
+  color: #7a7a7a;
 }
 
 .ta-extras {
@@ -129,9 +131,5 @@
 
 .ta-macro {
   background-color: #a8323240;
-  text-shadow: -0.03ex 0 black, 0.03ex 0 black;
-}
-
-.ta-lambda {
-  background-color: #f5a44230;
+  text-shadow: -0.03ex 0 white, 0.03ex 0 white;
 }

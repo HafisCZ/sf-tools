@@ -411,6 +411,10 @@
   border-color: red !important;
 }
 
+.\!border-radius-1 {
+  border-radius: 0.25em !important;
+}
+
 /* Font Weight */
 .font-bold {
   font-weight: bold;

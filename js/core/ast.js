@@ -283,15 +283,16 @@ class Expression {
                 if (token == undefined) {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
-                    value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
+                    value = SFormat.Comment(token);
                 } else if (token.length > 1 && token[0] == '`' && token[token.length - 1] == '`') {
-                    value = `\`${ token.slice(1, token.length - 1).split(/(\{\d+\})/g).map(st => {
+                    const bracket = SFormat.Comment('\`');
+                    value = `${bracket}${ token.slice(1, token.length - 1).split(/(\{\d+\})/g).map(st => {
                         if (/(\{\d+\})/.test(st)) {
                             return SFormat.Function(st);
                         } else {
                             return SFormat.Comment(st);
                         }
-                    }).join('') }\``;
+                    }).join('') }${bracket}`;
                 } else if (extraIdentifiers && extraIdentifiers.includes(token)) {
                     value = SFormat.Reserved(token);
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
