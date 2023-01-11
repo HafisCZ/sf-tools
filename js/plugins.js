@@ -230,7 +230,7 @@
                 menu.addClass('css-context-menu');
 
                 for (let item of param.items) {
-                    menu.append($(`<div class="ui fluid basic button css-context-menu-item ${ item.enabled === false ? 'disabled' : '' }">${ item.label }</div>`).click(() => {
+                    menu.append($(`<div class="ui fluid basic inverted button css-context-menu-item ${ item.enabled === false ? 'disabled' : '' }">${ item.label }</div>`).click(() => {
                         menu.context('hide');
                         item.action(this.source);
                     }));
