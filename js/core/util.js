@@ -308,13 +308,13 @@ function _rbgaToHex (rgba) {
 
 function _parseColor (text) {
     const style = new Option().style;
-    style.background = text;
+    style.color = text;
 
-    const color = style['background-color'];
-    if (color.startsWith('rgb')) {
-        return _rbgaToHex(color.slice(4, -1).split(','));
-    } else if (color.startsWith('rgba')) {
+    const color = style.color;
+    if (color.startsWith('rgba')) {
         return _rbgaToHex(color.slice(5, -1).split(','));
+    } else if (color.startsWith('rgb')) {
+        return _rbgaToHex(color.slice(4, -1).split(','));
     } else if (COLOR_MAP.hasOwnProperty(color)) {
         return COLOR_MAP[color];
     } else {
