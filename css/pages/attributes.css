@@ -1,6 +1,6 @@
 @import url('../global.css');
 
-.opaque-rows-inverted tr:nth-child(odd) {
+.opaque-rows tr:nth-child(odd) {
   background-color: #7d7d7d3f;
 }
 

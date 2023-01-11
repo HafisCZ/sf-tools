@@ -494,7 +494,7 @@
                         const size = data.find(entry => entry && entry.length).filter(value => typeof value !== 'undefined').length;
 
                         content += `
-                            <table data-map="${SHA1(name)}" class="ui celled structured fixed basic table table-group w-full text-center !m-0" style="display: none; font-size: 90% !important;">
+                            <table data-map="${SHA1(name)}" class="ui celled structured fixed basic table w-full text-center !m-0" style="display: none; font-size: 90% !important;">
                                 <thead>
                                     <tr>
                                         ${data.find(entry => entry && entry.length).reduce((memo, chance, i) => memo + `<th class="!text-white">${intl('pets.map.gladiator')} ${i}</th>`, `<th class="!text-white">${intl('editor.level')}</th>`)}
