@@ -12,3 +12,20 @@
     display: inline-block;
     width: 5em;
 }
+
+[data-map] {
+    text-align: center !important;
+    font-family: 'Roboto', sans-serif !important;
+    border-spacing: 0 !important;
+    border-collapse: collapse !important;
+    font-weight: 300 !important;
+    font-size: 1.35em !important;
+    color: #212529 !important;
+    border: none !important;
+}
+
+[data-map] td, [data-map] th {
+    border: none !important;
+    height: 1.9em !important;
+    padding: 0 !important;
+}

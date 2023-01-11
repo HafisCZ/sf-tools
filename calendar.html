@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <table class="table-group fixed-header" style="margin: auto;">
+            <table class="fixed-header" style="margin: auto;">
                 <thead id="pp-head">
 
                 </thead>
@@ -103,7 +103,7 @@
 
                 for (var i = 0; i < TOTAL_DAYS; i++) {
                     content += `
-                        <td class="text-white ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="width: 1.5em; height: 4em !important; position: relative;">
+                        <td class="text-white" style="width: 1.5em; height: 4em !important; position: relative; ${date.getDay() == 0 ? 'border-right: 1px solid white !important;' : ''}">
                             ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? `
                                     <div class="rotated" style="position: absolute; left: -0.3em; top: 1em; width: 3em; height: 2em; font-weight: bold;">
                                         TODAY
@@ -118,8 +118,8 @@
                 }
 
                 $('#pp-head').html(`
-                    <tr style="height: 4em;" class="border-bottom-thick">
-                        <td class="border-right-thin">
+                    <tr style="height: 4em; border-bottom: 2px solid white;">
+                        <td style="border-right: 1px solid white !important;">
                             <div style="width: 12em; padding: 0.5em;">
                                 <div class="ui three basic inverted buttons">
                                     <div class="ui button" id="p-remove">- 7</div>
@@ -161,7 +161,7 @@
                                     <img class="ui centered image" src="${ image }">
                                 </div>
                             </td>
-                            <td class="border-right-thin" data-tooltip="${ description }" data-position="right center" data-inverted="">
+                            <td style="border-right: 1px solid white !important;" data-tooltip="${ description }" data-position="right center" data-inverted="">
                                 <div style="width: 8em;">
                                     <b>${ name }</b>
                                 </div>
@@ -188,7 +188,7 @@
                             }
                         }
 
-                        entry += `<td class="text-center ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? 'today' : '' } ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="background: ${ color }; width: 1.5em;"></td>`;
+                        entry += `<td class="text-center ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? 'today' : '' }" style="background: ${ color }; width: 1.5em; ${date.getDay() == 0 ? 'border-right: 1px solid white !important;' : ''}"></td>`;
                         date.setDate(date.getDate() + 1);
                     }
 
