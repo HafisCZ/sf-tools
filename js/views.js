@@ -255,7 +255,7 @@ const Loader = new (class extends Dialog {
 const HtmlDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="big dialog">
+            <div class="big inverted dialog">
                 <div class="header flex justify-content-between items-center">
                     <div></div>
                     <span data-op="title"></span>
@@ -360,12 +360,14 @@ const FileEditDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small bordered inverted dialog">
                 <div class="left header">${this.intl('title')}</div>
-                <div class="ui form">
+                <div class="ui inverted form">
                     <div class="field">
                         <label>${this.intl('timestamp')}</label>
-                        <input data-op="timestamp" type="text">
+                        <div class="ui inverted input">
+                            <input data-op="timestamp" type="text">
+                        </div>
                     </div>
                 </div>
                 <div class="ui two fluid buttons">
@@ -412,26 +414,32 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small dialog">
+            <div class="small inverted dialog">
                 <div class="header">${this.intl('title')}</div>
                 <div>
-                    <div class="ui form">
-                        <div class="ui inverted active dimmer">
+                    <div class="ui inverted form">
+                        <div class="ui active dimmer">
                             <div class="ui indeterminate text loader">${this.intl('loader')}</div>
                         </div>
                         <div class="two fields">
                             <div class="field">
                                 <label>${this.intl('author')}:</label>
-                                <input data-op="author" type="text" disabled>
+                                <div class="ui inverted input">
+                                    <input data-op="author" type="text" disabled>
+                                </div>
                             </div>
                             <div class="field">
                                 <label>${this.intl('created_updated')}:</label>
-                                <input data-op="date" type="text" disabled>
+                                <div class="ui inverted input">
+                                    <input data-op="date" type="text" disabled>
+                                </div>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('name')}:</label>
-                            <input data-op="name" type="text" placeholder="${this.intl('name_placeholder')}">
+                            <div class="ui inverted input">
+                                <input data-op="name" type="text" placeholder="${this.intl('name_placeholder')}">
+                            </div>
                         </div>
                     </div>
                     <div data-op="error" style="display: none;">
@@ -513,16 +521,20 @@ const EditFileTagDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small bordered inverted dialog">
                 <div class="header">${this.intl('title')}</div>
-                <div class="ui form">
+                <div class="ui inverted form">
                     <div class="field">
                         <label>${this.intl('current')}:</label>
-                        <input data-op="old-tags" type="text" placeholder="${this.intl('none')}" disabled>
+                        <div class="ui inverted input">
+                            <input data-op="old-tags" type="text" placeholder="${this.intl('none')}" disabled>
+                        </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('replacement')}:</label>
-                        <input data-op="new-tags" type="text" placeholder="${this.intl('none')}">
+                        <div class="ui inverted input">
+                            <input data-op="new-tags" type="text" placeholder="${this.intl('none')}">
+                        </div>
                     </div>
                 </div>
                 <div class="ui two fluid buttons">
@@ -579,21 +591,25 @@ const ProfileCreateDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="bordered dialog">
+            <div class="bordered inverted dialog">
                 <div class="left separated header">${this.intl('title')}</div>
-                <div class="ui form">
+                <div class="ui inverted form">
                     <div class="two fields">
                         <div class="four wide field">
                             <label>${this.intl('id')}:</label>
-                            <input class="!text-center" data-op="id" type="text" disabled>
+                            <div class="ui inverted input">
+                                <input class="!text-center" data-op="id" type="text" disabled>
+                            </div>
                         </div>
                         <div class="eight wide field">
                             <label>${this.intl('name')}:</label>
-                            <input data-op="name" type="text">
+                            <div class="ui inverted input">
+                                <input data-op="name" type="text">
+                            </div>
                         </div>
                         <div class="four wide field">
                             <label>${this.intl('slot')}:</label>
-                            <div class="ui fluid selection dropdown" data-op="slot">
+                            <div class="ui fluid selection inverted dropdown" data-op="slot">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
@@ -603,14 +619,14 @@ const ProfileCreateDialog = new (class extends Dialog {
                     <div class="two fields">
                         <div class="field">
                             <label>${this.intl('index')}:</label>
-                            <div class="ui fluid search selection dropdown" data-op="primary-index">
+                            <div class="ui fluid search selection inverted dropdown" data-op="primary-index">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('operation')}:</label>
-                            <select class="ui fluid search selection dropdown" data-op="primary-operator">
+                            <select class="ui fluid search selection inverted dropdown" data-op="primary-operator">
                                 <option value="equals">${this.intl('equals')}</option>
                                 <option value="above">${this.intl('above')}</option>
                                 <option value="below">${this.intl('below')}</option>
@@ -646,14 +662,14 @@ const ProfileCreateDialog = new (class extends Dialog {
                     <div class="two fields">
                         <div class="field">
                             <label>${this.intl('index')}:</label>
-                            <div class="ui fluid search selection dropdown" data-op="primary-index-g">
+                            <div class="ui fluid search selection inverted dropdown" data-op="primary-index-g">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('operation')}:</label>
-                            <select class="ui fluid search selection dropdown" data-op="primary-operator-g">
+                            <select class="ui fluid search selection inverted dropdown" data-op="primary-operator-g">
                                 <option value="equals">${this.intl('equals')}</option>
                                 <option value="above">${this.intl('above')}</option>
                                 <option value="below">${this.intl('below')}</option>
@@ -924,12 +940,12 @@ const TemplateSaveDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small bordered inverted dialog">
                 <div class="header">${this.intl('title')}</div>
-                <div class="ui form">
+                <div class="ui inverted form">
                     <div class="field">
                         <label>${this.intl('select_existing')}:</label>
-                        <div class="ui search selection dropdown" data-op="dropdown">
+                        <div class="ui search selection inverted dropdown" data-op="dropdown">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -937,7 +953,9 @@ const TemplateSaveDialog = new (class extends Dialog {
                     <div class="field text-center"><label>${this.intl('or')}</label></div>
                     <div class="field">
                         <label>${this.intl('select_new')}:</label>
-                        <input type="text" placeholder="${this.intl('name')}" data-op="input">
+                        <div class="ui inverted input">
+                            <input type="text" placeholder="${this.intl('name')}" data-op="input">
+                        </div>
                     </div>
                 </div>
                 <div class="ui two fluid buttons">
@@ -1006,12 +1024,12 @@ const DataManageDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small bordered inverted dialog">
                 <div class="header">${this.intl('title')}</div>
                 <div class="overflow-y-auto" style="max-height: 60vh;">
                     <div class="ui form" data-op="content"></div>
                 </div>
-                <div class="ui checkbox ml-8" data-op="checkbox">
+                <div class="ui inverted checkbox ml-8" data-op="checkbox">
                     <input type="checkbox"><label>${this.intl('skip_next')}</label>
                 </div>
                 <div class="ui two fluid buttons">
@@ -1126,12 +1144,14 @@ const InputDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small bordered inverted dialog">
                 <div class="left header" data-op="title"></div>
-                <div class="ui form">
+                <div class="ui inverted form">
                     <div class="field" data-op="field">
                         <label data-op="label"></label>
-                        <input type="text" data-op="input">
+                        <div class="ui inverted input">
+                            <input type="text" data-op="input">
+                        </div>
                     </div>
                 </div>
                 <div class="ui two fluid buttons">
@@ -1195,7 +1215,7 @@ const ConfirmDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small bordered dialog">
+            <div class="small bordered inverted dialog">
                 <div class="left header" data-op="title"></div>
                 <div class="text-center" data-op="text">...</div>
                 <div class="ui two fluid buttons">
@@ -1275,18 +1295,18 @@ const ConfirmDialog = new (class extends Dialog {
 const ImportSharedFileDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="smaller dialog">
+            <div class="smaller inverted dialog">
                 <div class="left header">${intl('stats.files.online.title')}</div>
                 <div class="text-center">
                     <p>${intl('stats.files.online.prompt')}</p>
-                    <div class="ui fluid input">
+                    <div class="ui fluid inverted input">
                         <input type="text" placeholder="" class="text-center" data-op="input">
                     </div>
                     <p data-op="error" class="text-red mt-4">${intl('stats.files.online.invalid')}</p>
                 </div>
                 <div class="ui fluid two buttons">
-                    <div class="ui basic black button" data-op="cancel">${intl('stats.files.online.cancel')}</div>
-                    <div class="ui black button" data-op="ok">${intl('stats.files.online.ok')}</div>
+                    <div class="ui black button" data-op="cancel">${intl('stats.files.online.cancel')}</div>
+                    <div class="ui button !text-black !background-orange" data-op="ok">${intl('stats.files.online.ok')}</div>
                 </div>
             </div>
         `;
@@ -1361,12 +1381,12 @@ const ImportSharedFileDialog = new (class extends Dialog {
 const ExportSharedFileDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="smaller dialog">
+            <div class="smaller inverted dialog">
                 <div class="header">${intl('stats.share.title')}</div>
                 <div class="height: 17em;">
-                    <h4 class="ui header">${intl('stats.share.options')}</h4>
+                    <h4 class="ui inverted header">${intl('stats.share.options')}</h4>
                     <div class="mt-2">
-                        <div class="ui checkbox" data-op="once">
+                        <div class="ui inverted checkbox" data-op="once">
                             <input type="checkbox" name="checkbox_once">
                             <label for="checkbox_once"><span>${intl('stats.share.single_use')}</span>
                                 <br>
@@ -1376,7 +1396,7 @@ const ExportSharedFileDialog = new (class extends Dialog {
                     </div>
                     <div data-op="block">
                         <div class="mt-6">
-                            <h4 class="ui header">${intl('stats.share.code')}:</h4>
+                            <h4 class="ui inverted header">${intl('stats.share.code')}:</h4>
                             <div class="text-center">
                                 <code style="white-space: pre;" data-op="code"></code>
                             </div>
@@ -1385,8 +1405,8 @@ const ExportSharedFileDialog = new (class extends Dialog {
                     </div>
                 </div>
                 <div class="ui fluid two buttons">
-                    <div class="ui basic black button" data-op="cancel">${intl('dialog.shared.cancel')}</div>
-                    <div class="ui black button" data-op="ok">${intl('stats.share.get')}</div>
+                    <div class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</div>
+                    <div class="ui button !text-black !background-orange" data-op="ok">${intl('stats.share.get')}</div>
                 </div>
             </div>
         `;
