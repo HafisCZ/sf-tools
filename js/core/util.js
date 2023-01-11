@@ -301,3 +301,61 @@ function _format_duration(ms) {
         mil > 0 ? `${mil} ms` : ''
     ].filter(value => value));
 }
+
+function _rbgaToHex (rgba) {
+    return `#${rgba.map((channel) => _padLeft(Number(channel).toString(16), 2, '0')).join('')}`
+}
+
+function _parseColor (text) {
+    const style = new Option().style;
+    style.background = text;
+
+    const color = style['background-color'];
+    if (color.startsWith('rgb')) {
+        return _rbgaToHex(color.slice(4, -1).split(','));
+    } else if (color.startsWith('rgba')) {
+        return _rbgaToHex(color.slice(5, -1).split(','));
+    } else if (COLOR_MAP.hasOwnProperty(color)) {
+        return COLOR_MAP[color];
+    } else {
+        return '';
+    }
+}
+
+function _padLeft (text, length, char) {
+    return char.repeat(Math.max(0, length - text.length)) + text;
+}
+
+function _invertColor (color, mono = false) {
+    if (color.indexOf('#') === 0) {
+        color = color.slice(1);
+    }
+
+    if (color.length === 3 || color.length === 4) {
+        color = `${color[0]}${color[0]}${color[1]}${color[1]}${color[2]}${color[2]}${color[3] || ''}${color[3] || ''}`;
+    }
+
+    let alpha = '';
+    if (color.length === 8) {
+        alpha = color.slice(6, 8);
+        color = color.slice(0, 6);
+    }
+
+    if (color.length === 6) {
+        let r = parseInt(color.slice(0, 2), 16);
+        let g = parseInt(color.slice(2, 4), 16);
+        let b = parseInt(color.slice(4, 6), 16);
+
+        if (mono) {
+            return `${(r * 0.299 + g * 0.587 + b * 0.114) > 186 ? '#000000' : '#FFFFFF'}${alpha}`;
+        } else {
+            r = (255 - r).toString(16);
+            g = (255 - g).toString(16);
+            b = (255 - b).toString(16);
+
+            return "#" + _padLeft(r, 2, '0') + _padLeft(g, 2, '0') + _padLeft(b, 2, '0') + alpha;
+        }
+    } else {
+        return '';
+    }
+}

@@ -240,7 +240,7 @@ class TableInstance {
                             return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
-                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare), showBorder, header.font);
+                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare), showBorder, header.font).bg;
                     }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
                 } else if (header.grouped) {
                     // Create grouped header
@@ -328,7 +328,7 @@ class TableInstance {
                             return CellGenerator.Cell(
                                 this.getStatisticsDisplayValue(header, val, cmp),
                                 '',
-                                header.statistics_color ? this.getCellColor(header, val, undefined, undefined, undefined, true) : ''
+                                header.statistics_color ? this.getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
                             );
                         } else {
                             return this.getEmptyCell(header);
@@ -771,8 +771,8 @@ class TableInstance {
     getCell ({ visible, align, padding, style, action }, value, color, border, cellWidth) {
         return CellGenerator.Cell(
             value,
-            color,
-            visible ? '' : color,
+            color.bg,
+            visible ? color.fg : false,
             border,
             align,
             padding,
@@ -1604,32 +1604,23 @@ function getCSSBorderClass (border) {
     } else {
         return '';
     }
-
-    if (typeof bo === 'object') {
-        if (bo.top) {
-            return 'border-top-thin';
-        } else if (bo.bottom) {
-            return 'border-bottom-thin';
-        } else {
-            return '';
-        }
-    } else {
-        return bo ? 'border-right-thin' : '';
-    }
 }
 
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, f, bo, al, pad, style, cellWidth, hasAction) {
-        let color = getCSSColorFromBackground(f);
+    Cell: function (c, b, color, bo, al, pad, style, cellWidth, hasAction) {
         let border = getCSSBorderClass(bo);
+        if (color === false) {
+            color = getCSSColorFromBackground(b);
+        }
 
         return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
-        return `<td class="${ al ? al : '' }" colspan="${ w }" style="${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+        let { fg, bg } = typeof b === 'object' ? b : {};
+        return `<td class="${ al ? al : '' }" colspan="${ w }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ bg };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style, cellWidth) {
