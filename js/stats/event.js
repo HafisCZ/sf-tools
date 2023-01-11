@@ -103,7 +103,7 @@ class GroupDetailView extends View {
         });
 
         // Context menu
-        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$context = $('<div class="ui custom inverted popup right center"></div>');
         this.$parent.prepend(this.$context);
 
         this.$context.context('create', {
@@ -148,7 +148,6 @@ class GroupDetailView extends View {
             action: (value, text, element) => {
                 this.$configure.find('.item').removeClass('active');
 
-                let settings = '';
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
                 } else {
@@ -335,7 +334,7 @@ class GroupDetailView extends View {
 
     refresh () {
         this.table.refresh(() => {
-            this.$table.find('tbody').append($('<tr data-cloneext style="height: 2em;"></tr>'));
+            this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
         }, (block) => {
             let blockClickable = block.find('[data-id]').click((event) => {
                 UI.PlayerDetail.show(event.currentTarget.dataset.id, this.timestamp, this.reference);
@@ -909,7 +908,7 @@ class BrowseView extends View {
         });
 
         // Context menu
-        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$context = $('<div class="ui custom inverted popup right center"></div>');
         this.$parent.prepend(this.$context);
 
         this.$context.context('create', {
@@ -1370,7 +1369,7 @@ class GroupsView extends View {
         // Observer
         this.loader = new DynamicLoader(this.$list.get(0));
 
-        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$context = $('<div class="ui custom inverted popup right center"></div>');
         this.$parent.prepend(this.$context);
 
         this.$context.context('create', {
@@ -1539,11 +1538,11 @@ class GroupsView extends View {
                     ${
                         filteredEntries.slice(i, i + 5).map((group) => `
                             <div class="column">
-                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? '!border-red' : ''} ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
+                                <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
                                     <span class="text-85% my-2">${ formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
                                     <img class="ui image" src="res/group.png" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
-                                    <h3 class="ui header !mt-0 !mb-1">${ group.Latest.Name }</h3>
+                                    <h3 class="ui inverted header !mt-0 !mb-1">${ group.Latest.Name }</h3>
                                 </div>
                             </div>
                         `).join('')
@@ -1595,7 +1594,7 @@ class PlayersView extends View {
         this.loader = new DynamicLoader(this.$list.get(0));
 
         // Context menu
-        this.$context = $('<div class="ui custom popup right center"></div>').prependTo(this.$parent);
+        this.$context = $('<div class="ui custom inverted popup right center"></div>').prependTo(this.$parent);
         this.$context.context('create', {
             items: [
                 {
@@ -1791,11 +1790,11 @@ class PlayersView extends View {
                     ${
                         filteredEntries.slice(i, i + 5).map((player) => `
                             <div class="column">
-                                <div class="ui segment cursor-pointer !p-0 flex flex-col items-center ${ DatabaseManager.Latest != player.LatestTimestamp ? '!border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
+                                <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
                                     <span class="text-85% my-2">${ formatDate(player.LatestTimestamp) }</span>
                                     <img class="ui image" src="res/class${ player.Latest.Class }.png" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
-                                    <h3 class="ui header !mt-0 !mb-1">${ player.Latest.Name }</h3>
+                                    <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
                                 </div>
                             </div>
                         `).join('')
@@ -2257,7 +2256,7 @@ class FilesView extends View {
                         if (name === 'undefined') {
                             if (tagEntries.length > 1) {
                                 tagContent += `
-                                    <div class="ui gray horizontal label">${intl('stats.files.tags.none')}${countText}</div>
+                                    <div class="ui grey horizontal label">${intl('stats.files.tags.none')}${countText}</div>
                                 `;
                             }
                         } else {
@@ -2436,7 +2435,9 @@ class FilesView extends View {
             <div class="field">
                 <label>${intl('stats.files.filters.expression')}</label>
                 <div class="ta-wrapper">
-                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
+                    <div class="ui inverted input">
+                        <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
+                    </div>
                     <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
                 </div>
             </div>
@@ -2499,7 +2500,7 @@ class FilesView extends View {
         this.$filters.html(`
             <div class="field">
                 <label>${intl('stats.files.filters.type')}</label>
-                <select class="ui fluid search selection dropdown" data-op="files-search-type">
+                <select class="ui fluid search selection inverted dropdown" data-op="files-search-type">
                     <option value="0">${intl('stats.files.filters.any')}</option>
                     <option value="1">${intl('stats.files.filters.player')}</option>
                     <option value="2">${intl('stats.files.filters.group')}</option>
@@ -2507,38 +2508,38 @@ class FilesView extends View {
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.timestamp')} (<span data-op="unique-timestamp"></span> ${intl('stats.files.filters.n_unique')})</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
+                <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-timestamp">
                     ${ this.timeArray.map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.player')} (<span data-op="unique-player"></span> ${intl('stats.files.filters.n_unique')})</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
+                <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-player">
                     ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }${ playerNameFrequency[value] > 1 ? ` - ${_pretty_prefix(player)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.group')} (<span data-op="unique-group"></span> ${intl('stats.files.filters.n_unique')})</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
+                <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-group">
                     ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }${ groupNameFrequency[value] > 1 ? ` - ${_pretty_prefix(group)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.prefix')} (<span data-op="unique-prefix"></span> ${intl('stats.files.filters.n_unique')})</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
+                <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-prefix">
                     ${ Object.entries(this.prefixMap).map(([prefix, value]) => `<option value="${ prefix }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.tags')} (<span data-op="unique-tags"></span> ${intl('stats.files.filters.n_unique')})</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-tags">
+                <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-tags">
                     <option value="undefined">${intl('stats.files.tags.none')}</option>
                     ${ this.tagsArray.map((tag) => `<option value="${ tag }">${ tag }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.ownership')}</label>
-                <select class="ui fluid search selection dropdown" data-op="files-search-ownership">
+                <select class="ui fluid search selection inverted dropdown" data-op="files-search-ownership">
                     <option value="0">${intl('stats.files.filters.ownership_all')}</option>
                     <option value="1">${intl('stats.files.filters.ownership_own')}</option>
                     <option value="2">${intl('stats.files.filters.ownership_other')}</option>
@@ -2546,7 +2547,7 @@ class FilesView extends View {
             </div>
             <div class="field" ${ SiteOptions.hidden ? '' : 'style="display: none;"' }>
                 <label>${intl('stats.files.filters.hidden')}</label>
-                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-hidden">
+                <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-hidden">
                     <option value="yes">${intl('general.yes')}</option>
                     <option value="no">${intl('general.no')}</option>
                 </select>
@@ -3262,7 +3263,7 @@ class OnlineTemplatesView extends View {
                         <div class="four wide column text-left">${ script.author }</div>
                         <div class="three wide column text-left">${ formatDateOnly(script.timestamp) }</div>
                         <div class="two wide column css-template-buttons">
-                            <div class="ui icon right floated small buttons">
+                            <div class="ui icon right floated small basic inverted buttons">
                                 <button class="ui button" data-script="${ script.key }"><i class="play icon"></i></button>
                             </div>
                         </div>
@@ -3415,9 +3416,9 @@ class ProfilesView extends View {
             const { name, primary, secondary, primary_g, secondary_g } = profile;
 
             content += `
-                <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
+                <div class="row" style="margin-top: 1em; border: 1px solid grey; border-radius: .25em;">
                     <div class="four wide column">
-                        <h3 class="ui ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header">
+                        <h3 class="ui inverted ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header">
                             <span data-key="${key}" class="cursor-pointer">${name}</span><br/>
                             ${ profile.slot ? `<span style="font-size: 90%;">Slot ${profile.slot}</span><br>` : '' }
                             <span style="font-size: 90%;">(${key})</span>
@@ -3425,14 +3426,14 @@ class ProfilesView extends View {
                         ${
                             ProfileManager.isEditable(key) ? `
                                 <div style="position: absolute; left: 1em; bottom: 0;">
-                                    <i class="cursor-pointer trash alternate outline icon" data-delete="${key}"></i>
+                                    <i class="cursor-pointer trash alternate outline icon !text-red:hover" data-delete="${key}"></i>
                                     <i class="cursor-pointer wrench icon" style="margin-left: 1em;" data-edit="${key}"></i>
                                 </div>
                             ` : ''
                         }
                     </div>
                     <div class="twelve wide column">
-                        <table class="ui table" style="table-layout: fixed;">
+                        <table class="ui basic black inverted table" style="table-layout: fixed;">
                             <tr>
                                 <td style="width: 20%;"></td>
                                 <td style="width: 40%;">${intl('stats.profiles.players')}</td>
@@ -3457,7 +3458,7 @@ class ProfilesView extends View {
         content += `
             <div class="row" style="margin-top: 1em;">
                 <div class="sixteen wide column" style="padding: 0;">
-                    <div class="ui fluid basic lightgray button" data-op="create" style="margin: -1em; padding: 1em; margin-left: 0; line-height: 2em;">${intl('stats.profiles.create')}</div>
+                    <div class="ui fluid basic inverted button" data-op="create" style="margin: -1em; padding: 1em; margin-left: 0; line-height: 2em;">${intl('stats.profiles.create')}</div>
                 </div>
             </div>
         `

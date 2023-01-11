@@ -73,6 +73,10 @@
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .5) inset;
 }
 
+.ui.red.inverted.button, .ui.red.inverted.buttons .button {
+  box-shadow: 0 0 0 1px #ff695e inset;
+}
+
 .ui.basic.inverted.button:hover, .ui.basic.inverted.buttons .button:hover {
   box-shadow: 0 0 0 1px white inset;
 }
