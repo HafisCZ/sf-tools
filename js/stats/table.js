@@ -1001,6 +1001,7 @@ class TableInstance {
         // Create table Content
         return {
             width: tableWidth,
+            theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
             class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
             entries: this.entries.map(e => e.content),
@@ -1120,6 +1121,7 @@ class TableInstance {
 
         return {
             width: tableWidth,
+            theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
             class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
             entries: (forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries).map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
@@ -1245,6 +1247,7 @@ class TableInstance {
 
         return {
             width: tableWidth,
+            theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
             class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
             entries: this.entries.map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
@@ -1513,11 +1516,11 @@ class TableController {
         this.echanged = this.schanged = false;
 
         // Get table content
-        let { content, entries, style, class: klass, width } = this.table.createTable();
+        let { content, entries, style, class: klass, theme, width } = this.table.createTable();
 
         let $body = $(`
             <thead></thead>
-            <tbody style="${style.join(' ')}" class="${klass.join(' ')}">
+            <tbody style="${style.join(' ')}" class="theme-${theme} ${klass.join(' ')}">
                 ${content}
             </tbody>
         `);

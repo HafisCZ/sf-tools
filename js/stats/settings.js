@@ -860,6 +860,14 @@ const SettingsCommands = [
         (root, value) => SFormat.Keyword('lined ') + SFormat.Bool(value, value == 'thick' || value == 'thin' ? 'on' : value)
     ),
     /*
+        Theme
+    */
+    new Command(
+        /^theme (light|dark)$/,
+        (root, value) => root.addGlobal('theme', value),
+        (root, value) => SFormat.Keyword('theme ') + SFormat.Bool(value, 'on')
+    ),
+    /*
         Performance (entry cutoff)
     */
     new Command(
@@ -2211,6 +2219,10 @@ class Settings {
 
     getBackgroundStyle () {
         return this.shared.background;
+    }
+
+    getTheme () {
+        return this.globals.theme;
     }
 
     getOutdatedStyle () {
