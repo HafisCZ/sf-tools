@@ -10,8 +10,8 @@
             if (command == 'create') {
                 var $parent = $this.parent('div');
 
-                this.$popup = $('<div class="ui fluid basic popup css-search-popup"></div>');
-                this.$info = $('<div class="ui fluid basic popup css-search-popup"></div>');
+                this.$popup = $('<div class="ui fluid basic popup inverted css-search-popup"></div>');
+                this.$info = $('<div class="ui fluid basic popup inverted css-search-popup"></div>');
 
                 this.array = [];
                 this.starred = Store.get('starred', []);
