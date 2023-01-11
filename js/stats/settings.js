@@ -1145,6 +1145,20 @@ const SettingsCommands = [
         },
         (root, expression) => SFormat.Keyword('expc ') + Expression.format(expression, root)
     ).copyable(),
+    new Command(
+        /^text (auto|(?:.+))$/,
+        (root, value) => {
+            if (value === 'auto') {
+                root.addTextColorExpression(true);
+            } else {
+                const ast = new Expression(value, root);
+                if (ast.isValid()) {
+                    root.addTextColorExpression(ast);
+                }
+            }
+        },
+        (root, value) => SFormat.Keyword('text ') + (value === 'auto' ? SFormat.Bool(value, 'on') : Expression.format(value, root))
+    ).copyable(),
     /*
         Cell padding (left only)
     */
@@ -1640,6 +1654,12 @@ class Settings {
         this.mergeVariables(obj, mapping.vars);
     }
 
+    mergeTextColor (obj, value) {
+        if (obj.color && typeof obj.color.text === 'undefined') {
+            obj.color.text = value;
+        }
+    }
+
     merge (obj, mapping) {
         // Merge all non-objects
         for (var [ key, value ] of Object.entries(mapping)) {
@@ -1648,6 +1668,7 @@ class Settings {
 
         this.mergeStyles(obj, mapping.style);
         this.mergeVariables(obj, mapping.vars);
+        this.mergeTextColor(obj, mapping.text);
     }
 
     mergeStyles (obj, sourceStyle) {
@@ -1708,6 +1729,8 @@ class Settings {
                 obj.color.rules.addRule('db', 0, obj.background);
             }
 
+            this.mergeTextColor(obj, obj.text);
+
             // Push
             this.customRows.push(obj);
             this.row = null;
@@ -1744,6 +1767,8 @@ class Settings {
                     this.mergeMapping(obj, mapping);
                 }
             }
+
+            this.mergeTextColor(obj, obj.text);
 
             // Push header if possible
             if (obj.expr) {
@@ -1790,16 +1815,30 @@ class Settings {
     getColorBlock () {
         return {
             expr: undefined,
+            text: undefined,
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
                 // Get color from expression
-                let expressionColor = this.expr ? new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.expr) : undefined;
-
+                const expressionColor = this.expr ? new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.expr) : undefined;
                 // Get color from color block
-                let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
+                const blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
+
+                // Final background color
+                const backgroundColor = (typeof blockColor === 'undefined' ? getCSSBackground(expressionColor) : blockColor) || '';
+
+                // Get color for text
+                let textColor = undefined;
+                if (this.text === true) {
+                    textColor = _invertColor(_parseColor(backgroundColor), true);
+                } else if (this.text) {
+                    textColor = getCSSColor(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.text));
+                }
 
                 // Return color or empty string
-                return (typeof blockColor === 'undefined' ? getCSSBackground(expressionColor) : blockColor) || '';
+                return {
+                    bg: backgroundColor,
+                    fg: textColor
+                };
             }
         }
     }
@@ -1974,6 +2013,13 @@ class Settings {
         let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.color.expr = expression;
+        }
+    }
+
+    addTextColorExpression (expression) {
+        let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
+        if (object) {
+            object.text = expression;
         }
     }
 
