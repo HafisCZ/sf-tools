@@ -1654,9 +1654,10 @@ class Settings {
         this.mergeVariables(obj, mapping.vars);
     }
 
-    mergeTextColor (obj, value) {
+    mergeTextColor (obj, mapping) {
         if (obj.color && typeof obj.color.text === 'undefined') {
-            obj.color.text = value;
+            obj.color.text = mapping.text;
+            obj.color.background = mapping.ndefc;
         }
     }
 
@@ -1668,7 +1669,7 @@ class Settings {
 
         this.mergeStyles(obj, mapping.style);
         this.mergeVariables(obj, mapping.vars);
-        this.mergeTextColor(obj, mapping.text);
+        this.mergeTextColor(obj, mapping);
     }
 
     mergeStyles (obj, sourceStyle) {
@@ -1729,7 +1730,7 @@ class Settings {
                 obj.color.rules.addRule('db', 0, obj.background);
             }
 
-            this.mergeTextColor(obj, obj.text);
+            this.mergeTextColor(obj, obj);
 
             // Push
             this.customRows.push(obj);
@@ -1768,7 +1769,7 @@ class Settings {
                 }
             }
 
-            this.mergeTextColor(obj, obj.text);
+            this.mergeTextColor(obj, obj);
 
             // Push header if possible
             if (obj.expr) {
@@ -1816,6 +1817,7 @@ class Settings {
         return {
             expr: undefined,
             text: undefined,
+            background: undefined,
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
                 // Get color from expression
@@ -1829,7 +1831,7 @@ class Settings {
                 // Get color for text
                 let textColor = undefined;
                 if (this.text === true) {
-                    textColor = _invertColor(_parseColor(backgroundColor), true);
+                    textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.background), true);
                 } else if (this.text) {
                     textColor = getCSSColor(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.text));
                 }

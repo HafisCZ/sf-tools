@@ -461,6 +461,21 @@ class TableInstance {
         this.generateEntries();
     }
 
+    getForegroundColor (backgroundColor, player, compare) {
+        let textColor = '';
+        if (this.settings.shared.text === true) {
+            textColor = _invertColor(_parseColor(backgroundColor), true)
+        } else if (this.settings.shared.text) {
+            textColor = getCSSColor(new ExpressionScope(this.settings).with(player, compare).eval(this.settings.shared.text))
+        }
+
+        if (textColor) {
+            return `color: ${textColor};`;
+        } else {
+            return '';
+        }
+    }
+
     // Generate entries
     generateEntries () {
         // Clear current entries
@@ -481,11 +496,12 @@ class TableInstance {
 
                 // Add table row start tag
                 let content = `<tr class="css-entry ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
+                let color = this.getForegroundColor(backgroundColor, player, compare);
 
                 // Add row index if enabled
                 if (indexStyle) {
                     content += `
-                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                        <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
                             ${ i + 1 }
                         </td>
                     `;
@@ -498,7 +514,7 @@ class TableInstance {
                 } else {
                     // Add date
                     content += `
-                        <td class="border-right-thin" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                        <td class="border-right-thin" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
                             ${ formatDate(timestamp) }
                         </td>
                     `;
@@ -523,11 +539,12 @@ class TableInstance {
             for (let { player, compare, hidden, index, latest } of this.array) {
                 // Add table row start tag
                 let content = `<tr class="css-entry ${ hidden ? 'opacity-50' :'' } ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
+                let color = this.getForegroundColor(backgroundColor, player, compare);
 
                 // Add row index if enabled
                 if (indexStyle) {
                     content += `
-                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                        <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
                             ${ indexStyle == 1 ? (index + 1) : '{__INDEX__}' }
                         </td>
                     `;
@@ -542,7 +559,7 @@ class TableInstance {
                     let serverStyle = this.settings.getServerStyle();
                     if (serverStyle === undefined || serverStyle > 0) {
                         content += `
-                            <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                            <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
                                 ${ SiteOptions.obfuscated ? 'server' : player.Prefix }
                             </td>
                         `;
@@ -551,7 +568,7 @@ class TableInstance {
                     // Add name
                     let showOutdated = this.settings.getOutdatedStyle();
                     content += `
-                        <td class="border-right-thin cursor-pointer ${ !latest && showOutdated ? '!text-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
+                        <td class="border-right-thin cursor-pointer ${ !latest && showOutdated ? '!text-red' : '' }" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}" data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             <span class="css-op-select-el"></span>
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
@@ -613,11 +630,12 @@ class TableInstance {
             for (let { player, compare, index } of this.array) {
                 // Add table row start tag
                 let content = `<tr class="css-entry ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
+                let color = this.getForegroundColor(backgroundColor, player, compare);
 
                 // Add row index if enabled
                 if (indexStyle) {
                     content += `
-                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                        <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
                             ${ indexStyle == 1 ? (index + 1) : '{__INDEX__}' }
                         </td>
                     `;
@@ -630,7 +648,7 @@ class TableInstance {
                 } else {
                     // Add name
                     content += `
-                        <td class="border-right-thin cursor-pointer" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
+                        <td class="border-right-thin cursor-pointer" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}" data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
                     `;
