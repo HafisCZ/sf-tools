@@ -182,48 +182,6 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   max-height: calc(100vh - 7em - 5.5em);
 }
 
-table.sftools-table {
-  position: absolute;
-  margin-top: 1em;
-  border-spacing: 0;
-  border-collapse: collapse;
-
-  font-family: 'Roboto' !important;
-  font-weight: 300 !important;
-  font-size: 1.35em !important;
-
-  color: #212529;
-  background: white;
-  text-align: center;
-}
-
-table.sftools-table b {
-  font-weight: bold;
-}
-
-table.sftools-table td {
-  height: 1.9em;
-}
-
-table.sftools-table td.left {
-  padding-left: 0.35em;
-  text-align: left;
-}
-
-table.sftools-table td.right {
-  padding-right: 0.35em;
-  text-align: right;
-}
-
-table.sftools-table span {
-  font-size: 70%;
-}
-
-table.sftools-table .headers td {
-  text-overflow: clip;
-  overflow: hidden;
-}
-
 .ui.selection.list.css-selection-list::-webkit-scrollbar {
 display: none;
 }
