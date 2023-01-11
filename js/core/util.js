@@ -238,7 +238,7 @@ function _hashCode (str) {
 }
 
 function _strToHSL (str) {
-    return `hsl(${ _hashCode(str) % 360 }, 100%, 30%)`;
+    return `hsl(${ (_hashCode(str) * 113) % 360 }, 100%, 30%)`;
 }
 
 function _string_to_binary(str) {
