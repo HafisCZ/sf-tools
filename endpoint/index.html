@@ -8,32 +8,32 @@
         <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
         <script src="build/endpoint.loader.js"></script>
         <script type="text/javascript">
-            var callback = { };
-            var error = { };
+            window.callback = {};
+            window.error = {};
 
-            var unity = undefined;
+            window.unity = null;
 
-            function load (callback) {
-                createUnityInstance(document.querySelector("#upixel"), {
-                    dataUrl: "build/endpoint.data",
-                    frameworkUrl: "build/endpoint.framework.js",
-                    codeUrl: "build/endpoint.wasm",
-                    streamingAssetsUrl: "StreamingAssets",
-                    companyName: "mar21",
-                    productName: "Endpoint",
-                    productVersion: "10.0",
-              }).then(unityInstance => {
-                  unity = unityInstance;
-                  callback();
-              });
+            window.load = async function () {
+                window.unity = await createUnityInstance(
+                    document.querySelector("#upixel"),
+                    {
+                        dataUrl: "build/endpoint.data",
+                        frameworkUrl: "build/endpoint.framework.js",
+                        codeUrl: "build/endpoint.wasm",
+                        streamingAssetsUrl: "StreamingAssets",
+                        companyName: "mar21",
+                        productName: "Endpoint",
+                        productVersion: "10.0",
+                    }
+                );
             }
 
-            function destroy (callback) {
-                unity.Quit(callback);
+            window.destroy = async function (callback) {
+                await window.unity.Quit();
             }
 
-            function login (server, username, password) {
-                unity.SendMessage('Controller', 'Login', JSON.stringify({
+            window.login = function (server, username, password) {
+                window.unity.SendMessage('Controller', 'Login', JSON.stringify({
                     server: server,
                     username: username,
                     password: password,
@@ -41,20 +41,20 @@
                 }));
             }
 
-            function query_single (id) {
-                unity.SendMessage('Controller', 'QuerySingle', id);
+            window.query_single = function (id) {
+                window.unity.SendMessage('Controller', 'QuerySingle', id);
             }
 
-            function query_many (ids) {
-                unity.SendMessage('Controller', 'QueryMany', ids);
+            window.query_many = function (ids) {
+                window.unity.SendMessage('Controller', 'QueryMany', ids);
             }
 
-            function query_hall_of_fame () {
-                unity.SendMessage('Controller', 'QueryHallOfFame');
+            window.query_hall_of_fame = function () {
+                window.unity.SendMessage('Controller', 'QueryHallOfFame');
             }
 
-            function query_collect () {
-                unity.SendMessage('Controller', 'QuerySingleCollect');
+            window.query_collect = function () {
+                window.unity.SendMessage('Controller', 'QuerySingleCollect');
             }
         </script>
     </body>

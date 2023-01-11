@@ -6,21 +6,21 @@ class EndpointController {
     load () {
         return new Promise((resolve) => {
             this.$iframe.attr('src', '/endpoint/index.html');
-            this.$iframe.one('load', () => {
+            this.$iframe.one('load', async () => {
                 this.window = this.$iframe.get(0).contentWindow;
-                this.window.load(() => {
-                    Logger.log('ECLIENT', 'Client started');
-                    resolve(this);
-                });
+                await this.window.load();
+
+                Logger.log('ECLIENT', 'Client started');
+                resolve(this);
             });
         }) 
     }
 
-    destroy () {
-        this.window.destroy(() => {
-            Logger.log('ECLIENT', 'Client stopped');
-            this.$iframe.attr('src', '');
-        });
+    async destroy () {
+        await this.window.destroy();
+
+        Logger.log('ECLIENT', 'Client stopped');
+        this.$iframe.attr('src', '');
     }
 
     login (server, username, password, callback, error) {
