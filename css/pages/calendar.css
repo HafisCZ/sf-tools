@@ -1,10 +1,13 @@
 @import url('../global.css');
-@import url('../tables.css');
 
 .css-img-container {
   width: 30px;
   height: 30px;
   margin: auto;
+}
+
+.opaque-rows tr:nth-child(even) {
+  background-color: #7d7d7d3f;
 }
 
 .css-img-container img {
@@ -24,8 +27,15 @@
   opacity: 40%;
 }
 
-.table-group td:not(.border-bottom-thick) {
-  padding: 0 !important;
+.fixed-header {
+  text-align: center !important;
+  font-family: 'Roboto', sans-serif !important;
+  border-spacing: 0 !important;
+  border-collapse: collapse !important;
+  font-weight: 300 !important;
+  font-size: 1.35em !important;
+  color: #212529 !important;
+  border: none !important;
 }
 
 .fixed-header thead tr {
@@ -40,8 +50,15 @@
   width: 100%;
 }
 
+.fixed-header td {
+  padding: 0 !important;
+  border-top: none !important;
+  border-left: none !important;
+  height: 1.9em !important;
+}
+
 .today::after {
-  background: linear-gradient(#000, #000) no-repeat center/2px 100%;
+  background: linear-gradient(#fff, #fff) no-repeat center / 3px 100%;
   color: transparent;
   content: "|";
 }
