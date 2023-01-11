@@ -2372,13 +2372,13 @@ class FilesView extends View {
     }
 
     updateTagFilterButtons () {
-        let selector = `[data-tag="${ typeof this.tagFilter === 'undefined' ? '*' : this.tagFilter }"]`;
+        const selector = `[data-tag="${ typeof this.tagFilter === 'undefined' ? '*' : this.tagFilter }"]`;
 
-        this.$tagFilter.find('[data-tag]').addClass('basic').css('color', '').css('background-color', '');
+        this.$tagFilter.find('[data-tag]').addClass('basic inverted').css('color', '').css('background-color', '');
 
         const $tag = this.$tagFilter.find(selector);
         if ($tag.length > 0) {
-            $tag.removeClass('basic');
+            $tag.removeClass('basic inverted');
 
             if ($tag.data('color')) {
                 $tag.css('background-color', $tag.data('color')).css('color', 'white');
@@ -2391,14 +2391,14 @@ class FilesView extends View {
         let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
         if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
             let content = `
-                <div data-tag="*" class="ui basic tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.all')}</div>
-                <div data-tag="" class="ui basic black tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.none')}</div>
+                <div data-tag="*" class="ui basic inverted tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.all')}</div>
+                <div data-tag="" class="ui basic inverted tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.none')}</div>
             `;
 
             for (const name of currentTags) {
                 if (name !== 'undefined') {
                     content += `
-                        <div data-tag="${name}" class="ui basic tiny button" data-color="${_strToHSL(name)}" style="margin-bottom: 0.5rem">${name}</div>
+                        <div data-tag="${name}" class="ui basic inverted tiny button" data-color="${_strToHSL(name)}" style="margin-bottom: 0.5rem">${name}</div>
                     `;
                 }
             }
