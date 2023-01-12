@@ -1537,7 +1537,7 @@ class TableController {
         // Check table content for unwanted tags
         if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {
             // Show error
-            this.$table.html(`<div>${intl('stats.settings.insecure_error')}</div>`).css('width', `50vw`).css('left', `25vw`);
+            this.$table.html(`<div>${intl('stats.settings.insecure_error#')}</div>`).css('width', `50vw`).css('left', `25vw`);
         } else {
             this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
 
