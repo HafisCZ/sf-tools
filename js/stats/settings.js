@@ -867,6 +867,16 @@ const SettingsCommands = [
         (root, value) => root.addGlobal('theme', value),
         (root, value) => SFormat.Keyword('theme ') + SFormat.Bool(value, 'on')
     ),
+    new Command(
+        /^theme text:(\S+) background:(\S+)$/,
+        (root, textColor, backgroundColor) => {
+            root.addGlobal('theme', {
+                text: getCSSColor(textColor),
+                background: getCSSBackground(backgroundColor)
+            });
+        },
+        (root, textColor, backgroundColor) => SFormat.Keyword('theme') + SFormat.Constant(' text:') + SFormat.Color(textColor, getCSSColor(textColor)) + SFormat.Constant(' background:') + SFormat.Color(backgroundColor, getCSSColor(backgroundColor))
+    ),
     /*
         Performance (entry cutoff)
     */
