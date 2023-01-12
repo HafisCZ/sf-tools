@@ -1,7 +1,4 @@
 table.sftools-table {
-  --table-foreground: #212529;
-  --table-background: #ffffff;
-
   position: absolute;
   margin-top: 1em;
   border-spacing: 0;
@@ -20,8 +17,13 @@ table.sftools-table tbody {
 }
 
 table.sftools-table tbody.theme-dark {
-  --table-foreground: white;
+  --table-foreground: #ffffff;
   --table-background: #141414;
+}
+
+table.sftools-table tbody.theme-light {
+  --table-foreground: #212529;
+  --table-background: #ffffff;
 }
 
 table.sftools-table b {
