@@ -132,11 +132,7 @@ class TableInstance {
         this.sorting = [];
 
         // Table generator
-        this.createTable = [
-            () => this.createHistoryTable(),
-            () => this.createPlayersTable(),
-            () => this.createGroupTable()
-        ][ this.type ];
+        this.createTable = () => Object.assign(this.sharedProperties(), this[['createHistoryTable', 'createPlayersTable', 'createGroupTable'][this.type]]())
 
         // Loop over all categories
         for (let { object: category, index: categoryIndex, array: categories } of iterate(this.settings.categories)) {
@@ -926,6 +922,14 @@ class TableInstance {
         `;
     }
 
+    sharedProperties () {
+        return {
+            theme: this.settings.getTheme(),
+            style: [ this.settings.getFontStyle() ],
+            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ]
+        }
+    }
+
     createHistoryTable () {
         // Width of the whole table
         let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
@@ -1019,17 +1023,8 @@ class TableInstance {
         // Create table Content
         return {
             width: tableWidth,
-            theme: this.settings.getTheme(),
-            style: [ this.settings.getFontStyle() ],
-            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
             entries: this.entries.map(e => e.content),
-            content: join(layout, (block, i, array) => {
-                // Counters
-                let first = i == 0;
-                let last = i == array.length - 1;
-                let prev = array[i - 1];
-                let next = array[i + 1];
-
+            content: join(layout, (block) => {
                 if (block == '|') {
                     return divider;
                 } else if (block == '_') {
@@ -1139,17 +1134,8 @@ class TableInstance {
 
         return {
             width: tableWidth,
-            theme: this.settings.getTheme(),
-            style: [ this.settings.getFontStyle() ],
-            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
             entries: (forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries).map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
-            content: join(layout, (block, i, array) => {
-                // Counters
-                let first = i == 0;
-                let last = i == array.length - 1;
-                let prev = array[i - 1];
-                let next = array[i + 1];
-
+            content: join(layout, (block) => {
                 if (block == '|') {
                     return divider;
                 } else if (block == '_') {
@@ -1265,17 +1251,8 @@ class TableInstance {
 
         return {
             width: tableWidth,
-            theme: this.settings.getTheme(),
-            style: [ this.settings.getFontStyle() ],
-            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
             entries: this.entries.map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
-            content: join(layout, (block, i, array) => {
-                // Counters
-                let first = i == 0;
-                let last = i == array.length - 1;
-                let prev = array[i - 1];
-                let next = array[i + 1];
-
+            content: join(layout, (block) => {
                 if (block == '|') {
                     return divider;
                 } else if (block == '_') {
@@ -1536,9 +1513,18 @@ class TableController {
         // Get table content
         let { content, entries, style, class: klass, theme, width } = this.table.createTable();
 
+        let themeClass = 'theme-light';
+        let themeStyle = '';
+        if (typeof theme === 'string') {
+            themeClass = `theme-${theme}`;
+        } else if (typeof theme === 'object') {
+            const { text, background } = theme;
+            themeStyle = `--table-foreground: ${text}; --table-background: ${background}`;
+        }
+
         let $body = $(`
             <thead></thead>
-            <tbody style="${style.join(' ')}" class="theme-${theme} ${klass.join(' ')}">
+            <tbody style="${themeStyle} ${style.join(' ')}" class="${themeClass} ${klass.join(' ')}">
                 ${content}
             </tbody>
         `);
