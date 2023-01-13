@@ -387,43 +387,6 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <div id="modal-onlinetemplates" class="ui small inverted modal">
-            <div class="header" data-intl="stats.online_templates.title"></div>
-            <div class="content text-center">
-                <div class="dimmable">
-                    <div class="ui middle aligned grid css-nomargin-grid" style="margin-top: -0.5em; margin-right: -3px;">
-                        <div class="row">
-                            <div class="text-left seven wide column"><b data-intl="stats.online_templates.description"></b></div>
-                            <div class="text-left four wide column"><b data-intl="stats.online_templates.author"></b></div>
-                            <div class="text-left three wide column"><b data-intl="stats.online_templates.created_on"></b></div>
-                        </div>
-                    </div>
-                    <div style="overflow-y: scroll; height: 45vh; padding-top: 2.5em; margin-right: -1.5em; padding-bottom: 0;">
-                        <div class="ui active inverted dimmer" data-op="dimmer">
-                            <div class="ui indeterminate text loader" data-intl="stats.online_templates.loading"></div>
-                        </div>
-                        <div class="ui middle aligned grid css-nomargin-grid" style="margin-right: 0em;" data-op="content">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="content" style="border-top: 1px solid rgba(34,36,38,.15); margin-top: -1.5em;">
-                <div class="ui middle aligned grid css-nomargin-grid">
-                    <div class="fifteen wide column">
-                        <div class="ui fluid small inverted input">
-                            <input type="text" data-intl-placeholder="stats.online_templates.code" data-op="private-value">
-                        </div>
-                    </div>
-                    <div class="one wide column css-template-buttons">
-                        <div class="ui icon right floated basic inverted small buttons">
-                            <button class="ui button" data-op="private"><i class="play icon"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div id="modal-templates" class="ui small inverted modal">
             <div class="header" data-intl="stats.templates.title"></div>
             <div class="content" style="padding: 0;">
@@ -596,6 +559,7 @@
                                     <option value="browse" data-intl="stats.topbar.browse"></option>
                                     <option value="groups" data-intl="stats.topbar.guilds"></option>
                                     <option value="players" data-intl="stats.topbar.players"></option>
+                                    <option value="scripts" data-intl="stats.topbar.scripts"></option>
                                     <option value="files" data-intl="stats.topbar.files"></option>
                                 </select>
                             </div>
@@ -686,7 +650,6 @@
                         PlayerDetail: new PlayerDetailFloatView('modal-playerdetail'),
                         GroupDetail: new GroupDetailView('view-groupdetail'),
                         Templates: new TemplatesView('modal-templates'),
-                        OnlineTemplates: new OnlineTemplatesView('modal-onlinetemplates'),
                         Profiles: new ProfilesView('view-profiles'),
                         Options: new OptionsView('view-options')
                     });
@@ -705,6 +668,7 @@
                         'players': UI.Players,
                         'groups': UI.Groups,
                         'browse': UI.Browse,
+                        'scripts': UI.Settings,
                         'files': UI.Files
                     }[SiteOptions.tab] || UI.Groups);
 

@@ -365,6 +365,10 @@
   background-color: #141414;
 }
 
+.background-dark\:hover:hover {
+  background-color: #141414;
+}
+
 .\!background-orange {
   background-color: orange !important;
 }
@@ -409,6 +413,10 @@
 /* Borders */
 .\!border-red {
   border-color: red !important;
+}
+
+.border-gray {
+  border: 1px solid rgb(58, 58, 58);
 }
 
 .\!border-radius-1 {
