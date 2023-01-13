@@ -916,6 +916,17 @@
             "save": "Save",
             "ok": "Ok"
         },
+        "script_repository": {
+            "title": "Script Repository",
+            "private_code": {
+                "label": "Private code",
+                "placeholder": "Enter your private code..."
+            },
+            "list": {
+                "about": "Added by #{author}",
+                "about_with_date": "Added by #{author} on #{date}"
+            }
+        },
         "statistics_integration_options": {
             "title": "Statistics Integration Options",
             "slot": "Database slot",
