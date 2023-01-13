@@ -2955,7 +2955,7 @@ const Templates = new (class {
         this.keys.sort((a, b) => a.localeCompare(b));
     }
 
-    saveInternal (name, content, compat = { cm: false, cg: false, cp: false }) {
+    saveInternal (name, content) {
         // Check if a template already exists
         let exists = name in this.templates;
         let template = exists ? this.templates[name] : null;
@@ -2963,7 +2963,6 @@ const Templates = new (class {
         if (exists) {
             // Overwrite needed parts
             template.content = content;
-            template.compat = compat;
             template.version = MODULE_VERSION;
             template.timestamp = Date.now();
         } else {
@@ -2971,7 +2970,6 @@ const Templates = new (class {
             template = {
                 name: name,
                 content: content,
-                compat: compat,
                 version: MODULE_VERSION,
                 timestamp: Date.now(),
                 online: false
@@ -3010,11 +3008,11 @@ const Templates = new (class {
         }
     }
 
-    save (name, content, compat) {
+    save (name, content) {
         this.initialize();
 
         // Save template
-        this.saveInternal(name, content, compat);
+        this.saveInternal(name, content);
 
         // Commit changes
         this.commit();
