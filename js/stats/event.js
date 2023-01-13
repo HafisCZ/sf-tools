@@ -129,7 +129,7 @@ class GroupDetailView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.SettingsFloat.show(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']);
+                UI.SettingsFloat.show(this.identifier, 'guilds', DefaultScripts.groups.content);
             }
         });
 
@@ -267,7 +267,7 @@ class GroupDetailView extends View {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : SettingsManager.get(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']));
+        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : SettingsManager.get(this.identifier, 'guilds', DefaultScripts.groups.content));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -757,7 +757,7 @@ class PlayerHistoryView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
+                UI.SettingsFloat.show(this.identifier, 'me', DefaultScripts.players.content);
             }
         });
 
@@ -799,7 +799,7 @@ class PlayerHistoryView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = SettingsManager.get(this.identifier, 'me', PredefinedTemplates['Me Default']);
+                    settings = SettingsManager.get(this.identifier, 'me', DefaultScripts.players.content);
                 } else {
                     this.templateOverride = value;
 
@@ -846,7 +846,7 @@ class PlayerHistoryView extends View {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setSettings(SettingsManager.get(this.identifier, 'me', PredefinedTemplates['Me Default']));
+        this.table.setSettings(SettingsManager.get(this.identifier, 'me', DefaultScripts.players.content));
 
         this.list.forEach(([ a, b ]) => DatabaseManager._loadPlayer(b));
 
@@ -987,7 +987,7 @@ class BrowseView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
+                UI.SettingsFloat.show('players', 'players', DefaultScripts.browse.content);
             }
         });
 
@@ -1280,7 +1280,7 @@ class BrowseView extends View {
         this.$configure.find('.item').removeClass('active');
         this.$configure.settingsButton(SettingsManager.exists('players'));
 
-        this.table.setSettings(SettingsManager.get('players', 'players', PredefinedTemplates['Players Default']));
+        this.table.setSettings(SettingsManager.get('players', 'players', DefaultScripts.browse.content));
 
         this.templateOverride = '';
         this.recalculate = true;
@@ -1299,7 +1299,7 @@ class BrowseView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = SettingsManager.get('players', 'players', PredefinedTemplates['Players Default']);
+                    settings = SettingsManager.get('players', 'players', DefaultScripts.browse.content);
                 } else {
                     this.templateOverride = value;
 
@@ -2640,7 +2640,7 @@ class SettingsView extends View {
 
         // Button handling
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
-        this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
+        this.$parent.find('[data-op="browse"]').click(() => DialogController.open(ScriptRepositoryDialog));
         this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show(this.settings.parent));
 
         this.$parent.find('[data-op="copy"]').click(() => copyText(this.editor.content));
@@ -2709,11 +2709,11 @@ class SettingsView extends View {
     getDefaultTemplate (v) {
         // Get default template
         if (v == 'players') {
-            return PredefinedTemplates['Players Default'];
+            return DefaultScripts.browse.content;
         } else if (v == 'me' || v.includes('_p')) {
-            return PredefinedTemplates['Me Default'];
+            return DefaultScripts.players.content;
         } else {
-            return PredefinedTemplates['Guilds Default'];
+            return DefaultScripts.groups.content;
         }
     }
 
@@ -2812,39 +2812,20 @@ class SettingsView extends View {
 
     updateTemplates () {
         // Templates
-        let templates = [
-            {
-                name: `${intl('stats.scripts.types.players')} (${intl('stats.scripts.types.default')})`,
-                value: 'Players Default'
-            },
-            {
-                name: `${intl('stats.scripts.types.me')} (${intl('stats.scripts.types.default')})`,
-                value: 'Me Default'
-            },
-            {
-                name: `${intl('stats.scripts.types.guilds')} (${intl('stats.scripts.types.default')})`,
-                value: 'Guilds Default'
-            },
-            ... Templates.getKeys().map(key => {
-                return {
-                    name: key,
-                    value: key,
-                    selected: key == this.settings.parent
-                }
-            })
-        ];
+        let templates = Templates.getKeys().map(key => {
+            return {
+                name: key,
+                value: key,
+                selected: key == this.settings.parent
+            }
+        });
 
         // Setup list
         this.$templateList.templates_selectionlist({
             items: templates,
             onClick: value => {
-                if (PredefinedTemplates[value]) {
-                    this.editor.content = PredefinedTemplates[value];
-                    this.settings.parent = '';
-                } else {
-                    this.editor.content = Templates.get(value);
-                    this.settings.parent = value;
-                }
+                this.editor.content = Templates.get(value);
+                this.settings.parent = value;
             }
         });
     }
@@ -3187,110 +3168,6 @@ class TemplatesView extends View {
         }
 
         this.$open.addClass('link');
-    }
-
-    hide () {
-        this.$parent.modal('hide');
-    }
-}
-
-class OnlineTemplatesView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$dimmer = this.$parent.find('[data-op="dimmer"]');
-        this.$content = this.$parent.find('[data-op="content"]');
-        this.$input = this.$parent.find('[data-op="private-value"]');
-
-        this.$parent.find('[data-op="private"]').click(() => {
-            var cur = this.$input.val().trim();
-            if (cur) {
-                SiteAPI.get('script_get', { key: cur }).then(({ script }) => {
-                    if (UI.current == UI.Settings) {
-                        UI.Settings.editor.content = script.content;
-                    } else {
-                        UI.SettingsFloat.editor.content = script.content;
-                    }
-
-                    this.hide();
-                }).catch(() => {
-                    this.$input.parent('.input').addClass('error').transition('shake');
-                });
-            } else {
-                this.$input.parent('.input').addClass('error').transition('shake');
-            }
-        });
-    }
-
-    show () {
-        this.$content.html('');
-        this.$dimmer.addClass('active');
-        this.$input.val('').parent('.input').removeClass('error');
-
-        this.$parent.modal({
-            allowMultiple: true
-        }).modal('show');
-
-        let cached = Store.shared.get('templateCache', { content: [], expire: 0 });
-        if (cached.expire < Date.now()) {
-            SiteAPI.get('script_list').then(({ scripts }) => {
-                Store.shared.set('templateCache', {
-                    content: scripts,
-                    expire: Date.now() + 3600000
-                });
-
-                this.showScripts(scripts);
-            }).catch(() => {
-                this.showScripts([]);
-            })
-        } else {
-            this.showScripts(cached.content);
-        }
-    }
-
-    showScripts (scripts) {
-        if (scripts.length) {
-            for (let s of scripts) {
-                s.timestamp = Date.parse(s.date);
-            }
-
-            scripts.sort((a, b) => b.timestamp - a.timestamp);
-
-            this.$content.html(scripts.reduce((s, script) => {
-                return s + `
-                    <div class="row" style="font-size: 105%;">
-                        <div class="seven wide column text-left">${ script.description }</div>
-                        <div class="four wide column text-left">${ script.author }</div>
-                        <div class="three wide column text-left">${ formatDateOnly(script.timestamp) }</div>
-                        <div class="two wide column css-template-buttons">
-                            <div class="ui icon right floated small basic inverted buttons">
-                                <button class="ui button" data-script="${ script.key }"><i class="play icon"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }, ''));
-
-            this.$content.find('[data-script]').click((event) => {
-                let $btn = $(event.currentTarget);
-
-                SiteAPI.get('script_get', { key: $btn.attr('data-script') }).then(({ script }) => {
-                    if (UI.current == UI.Settings) {
-                        UI.Settings.editor.content = script.content;
-                    } else {
-                        UI.SettingsFloat.editor.content = script.content;
-                    }
-
-                    this.hide();
-                }).catch(() => {
-                    $btn.addClass('red');
-                });
-            });
-        } else {
-            this.$content.html(`<b>${intl('stats.scripts.online.not_available')}</b>`);
-        }
-
-        this.$dimmer.removeClass('active');
     }
 
     hide () {

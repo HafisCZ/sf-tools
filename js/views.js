@@ -1481,6 +1481,151 @@ const ExportSharedFileDialog = new (class extends Dialog {
     }
 })();
 
+const ScriptRepositoryDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            key: 'script_repository',
+            dismissable: true
+        })
+    }
+
+    _createModal () {
+        return `
+            <div class="inverted small bordered dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="flex flex-col gap-2 overflow-y-scroll" style="height: 50vh;" data-op="list"></div>
+                <div class="ui inverted form">
+                    <div class="field">
+                        <label>${this.intl('private_code.label')}</label>    
+                        <div class="ui inverted icon input">
+                            <input type="text" placeholder="${this.intl('private_code.placeholder')}" data-op="code">
+                            <i class="ui sign in alternate link icon" data-op="code-submit"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$list = this.$parent.operator('list');
+
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        });
+
+        this.$code = this.$parent.operator('code');
+        this.$codeSubmit = this.$parent.operator('code-submit');
+
+        const codeSubmit = () => {
+            const key = this.$code.val().trim();
+            if (key) {
+                this._fetchScript(key).catch(() => {
+                    this.$code.closest('.field').addClass('error').transition('shake');
+                });
+            } else {
+                this.$code.closest('.field').addClass('error').transition('shake');
+            }
+        }
+
+        this.$codeSubmit.click(() => codeSubmit());
+        this.$code.keypress((event) => {
+            if (event.which === 13) {
+                codeSubmit();
+            }
+        });
+    }
+
+    _fetchScript (key) {
+        return SiteAPI.get('script_get', { key }).then(({ script }) => {
+            this._applyScript(script.content);
+        });
+    }
+
+    _applyScript (script) {
+        if (UI.current == UI.Settings) {
+            UI.Settings.editor.content = script;
+        } else {
+            UI.SettingsFloat.editor.content = script;
+        }
+
+        this.close();
+    }
+
+    _createSegment (key, description, author, updatedAt) {
+        return `
+            <div data-script-key="${key}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                <i class="ui big ${DefaultScripts[key] ? 'archive' : 'globe'} disabled icon"></i>
+                <div>    
+                    <div>${description}</div>
+                    <div class="text-gray">${intl(`dialog.script_repository.list.about${updatedAt ? '_with_date' : ''}`, { author, date: updatedAt ? formatDateOnly(Date.parse(updatedAt)) : null })}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    _showOnline (scripts) {
+        let content = '';
+        for (const { author, description, key, date } of _sort_des(scripts, (script) => Date.parse(script.date))) {
+            content += this._createSegment(key, description, author, date);
+        }
+
+        this.$list.append(content);
+        this._updateListeners();
+    }
+
+    _applyArguments () {
+        let content = '';
+        for (const [type, { author, description }] of Object.entries(DefaultScripts)) {
+            if (author) {
+                content += this._createSegment(type, description, author, null);
+            }
+        }
+
+        this.$list.html(content);
+        this._updateListeners();
+
+        const cache = Store.shared.get('templateCache', { content: [], expire: 0 });
+        if (cache.expire < Date.now()) {
+            SiteAPI.get('script_list').then(({ scripts }) => {
+                Store.shared.set('templateCache', {
+                    content: scripts,
+                    expire: Date.now() + 3600000
+                });
+
+                this._showOnline(scripts);
+            }).catch(() => {
+                this.$list.append(`
+                    <div>
+                        <b>${intl('stats.scripts.online.not_available')}</b>
+                    </div>
+                `)
+            })
+        } else {
+            this._showOnline(cache.content);
+        }
+    }
+
+    _updateListeners () {
+        const $items = this.$list.find('[data-script-key]');
+        $items.off('click').on('click', (event) => {
+            const key = event.currentTarget.dataset.scriptKey;
+            if (DefaultScripts[key]) {
+                this._applyScript(DefaultScripts[key].content);
+            } else {
+                const $icon = $(event.currentTarget).find('i').removeClass('archive globe').addClass('loading sync');
+                this._fetchScript(key).catch(() => {
+                    $icon.removeClass('loading sync').addClass('text-red warning');
+                });
+            }
+        });
+    }
+})();
+
 const Localization = new (class {
     _generateTranslation (base, object, ... path) {
         for (let [key, value] of Object.entries(object)) {
