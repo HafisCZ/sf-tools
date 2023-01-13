@@ -934,27 +934,21 @@ const ProfileCreateDialog = new (class extends Dialog {
 const TemplateSaveDialog = new (class extends Dialog {
     constructor () {
         super({
-            key: 'template_save'
+            key: 'template_save',
+            dismissable: true
         });
     }
 
     _createModal () {
         return `
-            <div class="small bordered inverted dialog">
+            <div class="very small bordered inverted dialog">
                 <div class="header">${this.intl('title')}</div>
                 <div class="ui inverted form">
                     <div class="field">
-                        <label>${this.intl('select_existing')}:</label>
+                        <label>${this.intl('select')}:</label>
                         <div class="ui search selection inverted dropdown" data-op="dropdown">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field text-center"><label>${this.intl('or')}</label></div>
-                    <div class="field">
-                        <label>${this.intl('select_new')}:</label>
-                        <div class="ui inverted input">
-                            <input type="text" placeholder="${this.intl('name')}" data-op="input">
                         </div>
                     </div>
                 </div>
@@ -977,39 +971,27 @@ const TemplateSaveDialog = new (class extends Dialog {
         });
 
         this.$dropdown = this.$parent.find('[data-op="dropdown"]');
-        this.$input = this.$parent.find('[data-op="input"]');
     }
 
     _getName () {
-        let inputText = this.$input.val();
-        let dropdownText = this.$dropdown.dropdown('get value');
+        const dropdownText = this.$dropdown.dropdown('get value');
 
-        return inputText.trim() || dropdownText.trim() || `New template (${formatDate(Date.now())})`;
+        return dropdownText.trim() || `New template (${formatDate(Date.now())})`;
     }
 
     _applyArguments (parentName, callback) {
         this.callback = callback;
-        this.supressNext = false;
-
-        this.$input.off('input').val('').on('input', (event) => {
-            this.supressNext = true;
-            this.$dropdown.dropdown('clear');
-        });
 
         this.$dropdown.dropdown({
-            placeholder: this.intl('select_existing'),
+            allowAdditions: true,
+            hideAdditions: false,
+            placeholder: this.intl('select'),
             values: Templates.getKeys().map(key => {
                 return {
                     name: key,
                     value: key
                 }
             })
-        }).dropdown('setting', 'onChange', () => {
-            if (!this.supressNext) {
-                this.$input.val('');
-            }
-
-            this.supressNext = false;
         }).dropdown('set selected', parentName || '');
     }
 })();
@@ -1295,7 +1277,7 @@ const ConfirmDialog = new (class extends Dialog {
 const ImportSharedFileDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="smaller inverted dialog">
+            <div class="very small inverted dialog">
                 <div class="left header">${intl('stats.files.online.title')}</div>
                 <div class="text-center">
                     <p>${intl('stats.files.online.prompt')}</p>
@@ -1381,7 +1363,7 @@ const ImportSharedFileDialog = new (class extends Dialog {
 const ExportSharedFileDialog = new (class extends Dialog {
     _createModal () {
         return `
-            <div class="smaller inverted dialog">
+            <div class="very small inverted dialog">
                 <div class="header">${intl('stats.share.title')}</div>
                 <div class="height: 17em;">
                     <h4 class="ui inverted header">${intl('stats.share.options')}</h4>

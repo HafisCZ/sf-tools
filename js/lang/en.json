@@ -1027,8 +1027,7 @@
         },
         "template_save": {
             "title": "Save template",
-            "select_existing": "Select existing template",
-            "select_new": "Create new template",
+            "select": "Add new or select existing template",
             "or": "or",
             "name": "Template name",
             "cancel": "Cancel",
