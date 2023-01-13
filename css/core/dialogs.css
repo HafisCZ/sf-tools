@@ -59,12 +59,8 @@ div.dialog.container > .small.dialog {
   width: 570px;
 }
 
-div.dialog.container > .smaller.dialog {
-  width: 400px;
-}
-
 div.dialog.container > .very.small.dialog {
-  width: 380px;
+  width: 400px;
 }
 
 div.dialog.container > .inverted.dialog {
