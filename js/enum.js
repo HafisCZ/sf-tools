@@ -123,16 +123,6 @@ function getMirrorPieces (value) {
     return p;
 }
 
-const POTIONS = [
-    '',
-    'Strength',
-    'Dexterity',
-    'Intelligence',
-    'Constitution',
-    'Luck',
-    'Life'
-];
-
 const GEMTYPES = [
     '',
     'Strength',
@@ -169,14 +159,6 @@ const RUNETYPES = [
     'Fire Damage',
     'Cold Damage',
     'Lightning Damage'
-];
-
-const GROUP_ROLES = [
-    '',
-    'Leader',
-    'Officer',
-    'Member',
-    'Invited'
 ];
 
 const FIGHT_TYPES = {
