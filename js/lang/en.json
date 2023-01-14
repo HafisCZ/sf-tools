@@ -332,6 +332,8 @@
         "scripts": {
             "settings": "Settings",
             "templates": "Templates",
+            "name": "Currently edited script",
+            "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Scripts",
