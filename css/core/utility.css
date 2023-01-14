@@ -97,6 +97,10 @@
   gap: 0.5em;
 }
 
+.gap-4 {
+  gap: 1em;
+}
+
 .gap-8 {
   gap: 2em;
 }
@@ -343,6 +347,10 @@
   color: white;
 }
 
+.text-white\:hover:hover {
+  color: white !important;
+}
+
 .\!text-white {
   color: white !important;
 }
@@ -417,6 +425,10 @@
 
 .border-gray {
   border: 1px solid rgb(58, 58, 58);
+}
+
+.border-left-gray {
+  border-left: 1px solid rgb(58, 58, 58);
 }
 
 .\!border-radius-1 {

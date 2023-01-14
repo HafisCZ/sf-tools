@@ -916,6 +916,26 @@
             "save": "Save",
             "ok": "Ok"
         },
+        "template_manage": {
+            "title": "Templates",
+            "general": "General",
+            "online": "Publish",
+            "script": {
+                "name": "Name",
+                "version": "Local version",
+                "updated": "Updated at",
+                "published": "Published at",
+                "published_version": "Published version",
+                "published_key": "Code"
+            },
+            "action": {
+                "publish": "Publish template",
+                "republish": "Publish new version",
+                "unpublish": "Unpublish template",
+                "remove": "Remove permanently"
+            },
+            "error": "Action was not successful"
+        },
         "script_repository": {
             "title": "Script Repository",
             "private_code": {

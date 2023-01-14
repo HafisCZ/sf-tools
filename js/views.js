@@ -979,20 +979,20 @@ const TemplateSaveDialog = new (class extends Dialog {
         return dropdownText.trim() || `New template (${formatDate(Date.now())})`;
     }
 
-    _applyArguments (parentName, callback) {
+    _applyArguments (name, callback) {
         this.callback = callback;
 
         this.$dropdown.dropdown({
             allowAdditions: true,
             hideAdditions: false,
             placeholder: this.intl('select'),
-            values: Templates.getKeys().map(key => {
+            values: Templates.sortedList().map(({ name }) => {
                 return {
-                    name: key,
-                    value: key
+                    value: name,
+                    name
                 }
             })
-        }).dropdown('set selected', parentName || '');
+        }).dropdown('set selected', name || '');
     }
 })();
 
@@ -1605,6 +1605,281 @@ const ScriptRepositoryDialog = new (class extends Dialog {
                 });
             }
         });
+    }
+})();
+
+const TemplateManageDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            key: 'template_manage',
+            dismissable: true
+        })
+    }
+
+    _createModal () {
+        return `
+            <div class="ui big bordered inverted dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex flex-col overflow-y-scroll gap-2 pr-4" style="height: 65vh; width: 45em;" data-op="list"></div>
+                    <div class="ui inverted form w-full pl-4 border-left-gray flex flex-col">
+                        <div class="field">
+                            <h3 class="ui inverted header">${this.intl('general')}</h3>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('script.name')}</label>
+                            <div class="ui inverted centered input">
+                                <input type="text" readonly data-op="template_name">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>${this.intl('script.updated')}</label>
+                                <div class="ui inverted centered input">
+                                    <input type="text" readonly data-op="template_updated">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>${this.intl('script.version')}</label>
+                                <div class="ui inverted centered input">
+                                    <input type="text" readonly data-op="template_version">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field !mt-8">
+                            <h3 class="ui inverted header">${this.intl('online')}</h3>
+                        </div>
+                        <div class="field">
+                            <label>${this.intl('script.published_key')}</label>
+                            <div class="ui inverted centered input">
+                                <input type="text" readonly data-op="template_key">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>${this.intl('script.published')}</label>
+                                <div class="ui inverted centered input">
+                                    <input type="text" readonly data-op="template_published">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>${this.intl('script.published_version')}</label>
+                                <div class="ui inverted centered input">
+                                    <input type="text" readonly data-op="template_publishedVersion">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <div class="ui basic inverted fluid button" data-op="action_publish">
+                                    <i class="ui cloud upload alternate icon"></i> ${this.intl('action.publish')}
+                                </div>
+                                <div class="ui basic inverted fluid button" data-op="action_republish">
+                                    <i class="ui sync alternate icon"></i> ${this.intl('action.republish')}
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui basic inverted fluid button" data-op="action_unpublish">
+                                    <i class="ui cloud download alternate icon"></i> ${this.intl('action.unpublish')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields !mb-0" style="margin-top: auto;">
+                            <div class="field"></div>
+                            <div class="field">
+                                <div class="ui red basic inverted fluid button" data-op="action_remove">
+                                    <i class="ui trash alternate icon"></i> ${this.intl('action.remove')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    _createSegment ({ name, version, timestamp, online, favorite }) {
+        return `
+            <div data-template-name="${name}" data-template-favorite="${favorite}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                <i class="ui big ${online ? 'globe' : 'archive'} disabled icon"></i>
+                <div>
+                    <div>${name}</div>
+                    <div class="text-gray">v${isNaN(version) ? 1 : version} - ${formatDate(timestamp)}</div>
+                </div>
+                <i class="ui thumbtack icon text-gray text-white:hover" style="margin-left: auto;"></i>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        });
+        
+        this.$list = this.$parent.operator('list');
+        this.$form = this.$parent.operator('form');
+
+        this.$formFields = [];
+        for (const operator of ['name', 'version', 'updated', 'published', 'publishedVersion', 'key']) {
+            this.$formFields.push(this[`$template${operator.charAt(0).toUpperCase()}${operator.slice(1)}`] = this.$parent.operator(`template_${operator}`));
+        }
+
+        this.$formActions = [];
+        for (const operator of ['publish', 'republish', 'unpublish', 'remove']) {
+            this.$formActions.push(this[`$action${operator.charAt(0).toUpperCase()}${operator.slice(1)}`] = this.$parent.operator(`action_${operator}`));
+        }
+
+        // Bindings
+        this.$actionPublish.click(() => {
+            const { name, content, version } = this.template;
+
+            this._setLoading();
+            SiteAPI.post('script_create', { description: name, author: 'unknown', content }).then(({ script: { key, secret } }) => {
+                Templates.markAsOnline(name, key, secret, version);
+            }).catch(({ error }) => {
+                this._error(error);
+            }).finally(() => {
+                this._resetList();
+                this._selectTemplate(name);
+            });
+        });
+
+        this.$actionRepublish.click(() => {
+            const { name, content, version, online: { key, secret } } = this.template;
+
+            this._setLoading();
+            SiteAPI.post('script_update', { description: name, content, key, secret }).then(({ script: { key, secret } }) => {
+                Templates.markAsOnline(name, key, secret, version);
+            }).catch(({ error }) => {
+                this._error(error);
+            }).finally(() => {
+                this._resetList();
+                this._selectTemplate(name);
+            });
+        });
+
+        this.$actionUnpublish.click(() => {
+            const { name, online: { key, secret } } = this.template;
+
+            this._setLoading();
+            SiteAPI.get('script_delete', { key, secret }).then(() => {
+                Templates.markAsOffline(name);
+            }).catch(({ error }) => {
+                this._error(error);
+            }).finally(() => {
+                this._resetList();
+                this._selectTemplate(name);
+            });
+        });
+
+        this.$actionRemove.click(() => {
+            Templates.remove(this.template.name);
+
+            this._clearForm();
+            this._resetList();
+            this._resetReferences();
+        });
+    }
+
+    _error (reason) {
+        Toast.error(this.intl('error'), reason);
+    }
+
+    _setLoading () {
+        this.$element.find('i').removeClass('globe archive').addClass('loading sync');
+    }
+
+    _selectTemplate (name) {
+        this.$list.find('[data-template-name]').removeClass('background-dark');
+        this.$element = this.$list.find(`[data-template-name="${name}"]`).addClass('background-dark');
+
+        // Render template
+        for (const $element of this.$formFields) {
+            $element.val('');
+        }
+        
+        const { version, timestamp, online } = (this.template = Templates.all()[name]);
+        this.$templateName.val(name);
+        this.$templateVersion.val(`v${isNaN(version) ? 1 : version}`);
+        this.$templateUpdated.val(formatDate(timestamp));
+
+        // Unlock buttons
+        for (const $element of this.$formActions) {
+            $element.removeClass('disabled');
+        }
+
+        if (online) {
+            this.$actionPublish.hide();
+            this.$actionRepublish.show();
+
+            const { key, version, timestamp: _timestamp } = online;
+            this.$templatePublished.val(formatDate(_timestamp));
+            this.$templatePublishedVersion.val(`v${isNaN(version) ? 1 : version}`)
+            this.$templateKey.val(key);
+        } else {
+            this.$actionPublish.show();
+            this.$actionRepublish.hide();
+            this.$actionUnpublish.addClass('disabled');
+        }
+    }
+
+    _resetList () {
+        let content = '';
+        for (const data of Templates.sortedList()) {
+            content += this._createSegment(data);
+        }
+
+        this.$list.html(content);
+        this.$list.find('[data-template-name]').click((event) => {
+            const name = event.currentTarget.dataset.templateName;
+            if (event.target.classList.contains('thumbtack')) {
+                Templates.toggleFavorite(name);
+
+                this._resetList();
+            } else {                
+                this._selectTemplate(name);
+            }
+        });
+    }
+
+    _resetReferences () {
+        (UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat).updateTemplates();
+
+        if (UI.current.clearOverride) {
+            UI.current.clearOverride();
+        }
+
+        if (UI.current.refreshTemplateDropdown) {
+            UI.current.refreshTemplateDropdown();
+        }
+    }
+
+    _clearForm () {
+        this.$element = null;
+
+        for (const $element of this.$formFields) {
+            $element.val('');
+        }
+
+        for (const $element of this.$formActions) {
+            $element.addClass('disabled');
+        }
+
+        this.$actionPublish.show();
+        this.$actionRepublish.hide();
+    }
+
+    _applyArguments (name) {
+        this._clearForm();
+        this._resetList();
+
+        if (name) {
+            this._selectTemplate(name);
+        }
     }
 })();
 
