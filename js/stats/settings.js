@@ -2751,6 +2751,49 @@ const SettingsHighlightCache = new (class {
     }
 })();
 
+// Script archive
+const ScriptArchive = new (class {
+    constructor () {
+        this.dataExpiry = 86400000;
+        this.data = Store.shared.get('archive', []).filter(({ timestamp }) => timestamp > Date.now() - this.dataExpiry);
+        this._persist();
+    }
+
+    _persist () {
+        Store.shared.set('archive', this.data);
+    }
+
+    clear () {
+        this.data = [];
+        this._persist();
+    }
+
+    empty () {
+        return this.data.length === 0;
+    }
+
+    all () {
+        return _sort_des(this.data, ({ timestamp }) => timestamp);
+    }
+
+    get (timestamp) {
+        return this.data.find(({ timestamp: _timestamp }) => _timestamp == timestamp).content;
+    }
+
+    add (type, name, version, content) {
+        this.data.push({
+            type,
+            name,
+            version,
+            content,
+            timestamp: Date.now(),
+            temporary: Store.isTemporary()
+        });
+
+        this._persist();
+    }
+})();
+
 // Settings manager
 const SettingsManager = new (class {
     initialize () {
@@ -2811,16 +2854,22 @@ const SettingsManager = new (class {
         let settings = exists ? this.settings[name] : null;
 
         if (exists) {
+            ScriptArchive.add('overwrite_script', name, this.settings[name].version, this.settings[name].content);
+            
             settings.content = content;
-            settings.version = MODULE_VERSION;
+            settings.version = (isNaN(settings.version) ? 1 : settings.version) + 1;
             settings.timestamp = Date.now();
             settings.parent = parent;
+
+            ScriptArchive.add('save_script', name, settings.version, settings.content);
         } else {
+            ScriptArchive.add('create_script', name, 1, content);
+
             settings = {
                 name: name,
                 content: content,
                 parent: parent,
-                version: MODULE_VERSION,
+                version: 1,
                 timestamp: Date.now()
             }
         }
@@ -2837,6 +2886,8 @@ const SettingsManager = new (class {
     remove (name) {
         this.initialize();
         if (name in this.settings) {
+            ScriptArchive.add('remove_script', name, this.settings[name].version, this.settings[name].content);
+
             delete this.settings[name];
             this.commit();
         }
@@ -2871,35 +2922,6 @@ const SettingsManager = new (class {
     getObj (name, fallback) {
         this.initialize();
         return this.settings[name] || this.settings[fallback];
-    }
-
-    /*
-        History stuff
-    */
-
-    // Get history
-    getHistory () {
-        return Store.get('settings_history', []);
-    }
-
-    // Add history
-    addHistory (settings, identifier = 'settings') {
-        // Get current history
-        var history = Store.get('settings_history', []);
-
-        // Add new history entry to the beginning
-        history.unshift({
-            name: identifier,
-            content: settings
-        });
-
-        // Pop last entry if over 10 entries exist
-        if (history.length > 10) {
-            history.pop();
-        }
-
-        // Save current history
-        Store.set('settings_history', history);
     }
 })()
 
@@ -2961,11 +2983,17 @@ const Templates = new (class {
         let template = exists ? this.templates[name] : null;
 
         if (exists) {
+            ScriptArchive.add('overwrite_template', name, template.version, template.content);
+
             // Overwrite needed parts
             template.content = content;
             template.version = (isNaN(template.version) ? 1 : template.version) + 1;
             template.timestamp = Date.now();
+
+            ScriptArchive.add('save_template', name, template.version, template.content);
         } else {
+            ScriptArchive.add('create_template', name, 1, content);
+
             // Create new object
             template = {
                 name: name,
@@ -3032,6 +3060,8 @@ const Templates = new (class {
 
         // Remove template
         if (name in this.templates) {
+            ScriptArchive.add('remove_template', name, this.templates[name].version, this.templates[name].content);
+
             delete this.templates[name];
             this.commit();
         }

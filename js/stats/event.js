@@ -2653,18 +2653,38 @@ class SettingsView extends View {
         this.$selectorInput = this.$parent.operator('selector-input');
 
         // Right sidebar
-        this.$parent.operator('library-wiki').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
-        this.$parent.operator('library-scripts').click(() => {
-            DialogController.open(ScriptRepositoryDialog, (content) => this.editor.content = content)
+        this.$libraryWiki = this.$parent.operator('library-wiki');
+        this.$libraryWiki.click(() => {
+            window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank');
         });
-        this.$parent.operator('library-templates').click(() => {
-            DialogController.open(TemplateManageDialog, this.script.parent, () => this._updateSidebars())
+
+        this.$libraryScripts = this.$parent.operator('library-scripts');
+        this.$libraryScripts.click(() => {
+            DialogController.open(ScriptRepositoryDialog, (content) => this.editor.content = content);
+        });
+
+        this.$libraryTemplates = this.$parent.operator('library-templates');
+        this.$libraryTemplates.click(() => {
+            DialogController.open(TemplateManageDialog, this.script.parent, () => this._updateSidebars());
         });
  
-        // History
-        this.$parent.operator('copy').click(() => copyText(this.editor.content));
-        this.$parent.operator('undo').click(() => this.history(1));
-        this.$parent.operator('redo').click(() => this.history(-1));
+        // Actions
+        this.$copy = this.$parent.operator('copy');
+        this.$copy.click(() => {
+            copyText(this.editor.content);
+        });
+
+        // Archive
+        this.$archive = this.$parent.operator('archive');
+        this.$archive.click(() => {
+            DialogController.open(ScriptArchiveDialog, (content) => {
+                if (content === true) {
+                    this._updateSidebars();
+                } else {
+                    this.editor.content = content;
+                }
+            });
+        });
 
         // Button handling
         this.$close = this.$parent.operator('close');
@@ -2745,8 +2765,6 @@ class SettingsView extends View {
 
         this.returnTo = returnTo;
         this._updateSidebars();
-
-        this.history();
     }
 
     _setScript (key) {
@@ -2763,16 +2781,10 @@ class SettingsView extends View {
     }
 
     save () {
-        let code = this.editor.content;
-        if (code !== this.script.content) {
-            // Add into history
-            SettingsManager.addHistory(this.script.content, this.script.name);
-        }
-
-        // Save current code
-        this.script.content = code;
+        this.script.content = this.editor.content;
         SettingsManager.save(this.script.name, this.script.content, this.script.parent);
 
+        this._updateSidebars();
         this._contentChanged(false);
     }
 
@@ -2874,6 +2886,12 @@ class SettingsView extends View {
         } else {
             this.$remove.addClass('disabled');
         }
+
+        if (ScriptArchive.empty()) {
+            this.$archive.addClass('disabled');
+        } else {
+            this.$archive.removeClass('disabled');
+        }
     }
 
     _getScriptName (value) {
@@ -2891,24 +2909,6 @@ class SettingsView extends View {
             return 'user';
         } else {
             return 'archive';
-        }
-    }
-
-    history (i = 0) {
-        let history = SettingsManager.getHistory();
-        let historyCount = history.length;
-
-        if (i == 0) {
-            this.index = 0;
-        } else {
-            this.index += i;
-            this.index = this.index > historyCount ? historyCount : (this.index < 0 ? 0 : this.index);
-        }
-
-        if (this.index > 0) {
-            this.editor.content = history[this.index - 1].content;
-        } else {
-            this.editor.content = this.script.content;
         }
     }
 }

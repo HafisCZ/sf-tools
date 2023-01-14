@@ -95,6 +95,10 @@ class StoreWrapper {
     temporary () {
         this.store = {};
     }
+
+    isTemporary () {
+        return !(this.store instanceof Storage);
+    }
 }
 
 const Store = (function () {
