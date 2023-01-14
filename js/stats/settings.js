@@ -2963,14 +2963,14 @@ const Templates = new (class {
         if (exists) {
             // Overwrite needed parts
             template.content = content;
-            template.version = MODULE_VERSION;
+            template.version = (isNaN(template.version) ? 1 : template.version) + 1;
             template.timestamp = Date.now();
         } else {
             // Create new object
             template = {
                 name: name,
                 content: content,
-                version: MODULE_VERSION,
+                version: 1,
                 timestamp: Date.now(),
                 online: false
             };
@@ -2980,7 +2980,15 @@ const Templates = new (class {
         this.templates[name] = template;
     }
 
-    markAsOnline (name, key, secret) {
+    toggleFavorite (name) {
+        this.initialize();
+        
+        this.templates[name].favorite = !this.templates[name].favorite;
+
+        this.commit();
+    }
+
+    markAsOnline (name, key, secret, version) {
         this.initialize();
 
         // Mark template as online if exists
@@ -2988,8 +2996,9 @@ const Templates = new (class {
             // Set timestamp & keys
             this.templates[name].online = {
                 timestamp: this.templates[name].timestamp,
-                key: key,
-                secret: secret
+                key,
+                secret,
+                version: isNaN(version) ? 1 : version
             };
 
             this.commit();
@@ -3047,6 +3056,12 @@ const Templates = new (class {
 
         // Return list of templates
         return Object.values(this.templates);
+    }
+
+    sortedList () {
+        this.initialize();
+
+        return _sort_des(_sort_des(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
     }
 
     getKeys () {

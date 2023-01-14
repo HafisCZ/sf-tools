@@ -387,85 +387,6 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <div id="modal-templates" class="ui small inverted modal">
-            <div class="header" data-intl="stats.templates.title"></div>
-            <div class="content" style="padding: 0;">
-                <div class="dimmable">
-                    <div class="ui two column grid css-nomp-grid" style="height:35em;">
-                        <div class="ui inverted dimmer" data-op="dimmer">
-                            <div class="ui indeterminate text loader"data-intl="stats.templates.loading"></div>
-                        </div>
-                        <div class="column" style="height: 100%;">
-                            <div class="ui middle aligned selection inverted list css-template-list css-templates-list" data-op="templates">
-
-                            </div>
-                        </div>
-                        <div class="column" style="border-left: 1px solid rgba(34,36,38,.15);">
-                            <div class="ui inverted form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
-                                <div class="field">
-                                    <div class="ui icon fluid centered inverted input">
-                                        <input type="text" disabled data-op="name">
-                                        <i class="link external alternate icon" data-op="open"></i>
-                                    </div>
-                                </div>
-                                <div class="two fields">
-                                    <div class="field">
-                                        <label data-intl="stats.templates.form.changed_on"></label>
-                                        <div class="ui small fluid inverted input">
-                                            <input disabled type="text" data-op="timestamp" style="border: none;">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="stats.templates.form.version"></label>
-                                        <div class="ui small fluid inverted input">
-                                            <input disabled type="text" data-op="version" style="border: none;">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label data-intl="stats.templates.form.compatibility"></label>
-                                    <div class="ui small fluid inverted input">
-                                        <input disabled type="text" data-op="compat" style="border: none;">
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label data-intl="stats.templates.form.published_on"></label>
-                                    <div class="ui small fluid inverted input">
-                                        <input disabled type="text" data-op="timestamp2" style="border: none;">
-                                    </div>
-                                </div>
-                                <div class="two fields">
-                                    <div class="nine wide field">
-                                        <label data-intl="stats.templates.form.code"></label>
-                                        <div class="ui small fluid inverted input">
-                                            <input readonly type="text" data-op="key" style="border: none; font-family: monospace,monospace;">
-                                        </div>
-                                    </div>
-                                    <div class="seven wide field">
-                                        <label><br/></label>
-                                        <div class="ui inverted buttons">
-                                            <button class="ui basic button" data-intl-tooltip="stats.templates.form.publish_tooltip" data-inverted="" data-op="publish"><i class="globe icon"></i><span data-intl="stats.templates.form.publish"></span></button>
-                                            <button class="ui icon red inverted button" data-intl-tooltip="stats.templates.form.unpublish_tooltip" data-inverted="" data-op="unpublish"><i class="trash icon"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br/>
-                                <div class="fields" style="margin-top: 5em;">
-                                    <div class="seven wide field">
-                                        <button class="ui fluid basic inverted button" data-intl-tooltip="stats.templates.form.update_tooltip" data-inverted="" data-op="update"><i class="recycle icon"></i><span data-intl="stats.templates.form.update"></span></button>
-                                    </div>
-                                    <div class="two wide field"></div>
-                                    <div class="seven wide field">
-                                        <button class="ui fluid red inverted button" data-intl-tooltip="stats.templates.form.remove_tooltip" data-inverted="" data-op="delete"><i class="trash icon"></i><span data-intl="stats.templates.form.remove"></span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- GroupDetailView -->
         <div id="view-groupdetail" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
@@ -634,9 +555,6 @@
                     profile['slot'] = urlParams.get('slot');
                 }
 
-                // Save current profile in UI
-                UI.profile = profile
-
                 Loader.toggle(true);
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
@@ -649,7 +567,6 @@
                         PlayerHistory: new PlayerHistoryView('view-history'),
                         PlayerDetail: new PlayerDetailFloatView('modal-playerdetail'),
                         GroupDetail: new GroupDetailView('view-groupdetail'),
-                        Templates: new TemplatesView('modal-templates'),
                         Profiles: new ProfilesView('view-profiles'),
                         Options: new OptionsView('view-options')
                     });

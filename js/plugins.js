@@ -383,40 +383,4 @@
             });
         });
     }
-
-    $.fn.templateList = function (args) {
-        return this.each(function () {
-            let $this = $(this);
-
-            // Arguments
-            args = args || { };
-
-            // Variables
-            this.onClick = args.onClick || (() => { /* Do nothing */ });
-            this.items = args.items || [];
-
-            // Setup
-            $this.html(this.items.reduce((c, item) => c + `
-                <div class="item" data-value="${ item }">
-                    <div class="content">
-                        ${ item }
-                    </div>
-                </div>
-            `, ''));
-
-            // Handler
-            this.$items = $this.find('[data-value]').click(event => {
-                this.$items.removeClass('selected');
-
-                let $target = $(event.delegateTarget).addClass('selected');
-
-                this.onClick($target.attr('data-value'));
-            });
-
-            if (this.items.length) {
-                this.$items.first().addClass('selected');
-                this.onClick(this.items[0]);
-            }
-        });
-    };
 }(jQuery));

@@ -165,10 +165,10 @@ class GroupDetailView extends View {
                     name: `<b>${intl('stats.templates.quick_swap')}</b>`,
                     type: 'header'
                 },
-                ... Templates.getKeys().map(t => {
+                ... Templates.sortedList().map(({ name }) => {
                     return {
-                        name: t,
-                        value: t
+                        value: name,
+                        name
                     };
                 })
             ]
@@ -817,10 +817,10 @@ class PlayerHistoryView extends View {
                     name: `<b>${intl('stats.templates.quick_swap')}</b>`,
                     type: 'header'
                 },
-                ... Templates.getKeys().map(t => {
+                ... Templates.sortedList().map(({ name }) => {
                     return {
-                        name: t,
-                        value: t
+                        value: name,
+                        name
                     };
                 })
             ]
@@ -1318,10 +1318,10 @@ class BrowseView extends View {
                     name: `<b>${intl(`stats.templates.quick_swap`)}</b>`,
                     type: 'header'
                 },
-                ... Templates.getKeys().map(t => {
+                ... Templates.sortedList().map(({ name }) => {
                     return {
-                        name: t,
-                        value: t
+                        value: name,
+                        name
                     };
                 })
             ]
@@ -2641,7 +2641,7 @@ class SettingsView extends View {
         // Button handling
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
         this.$parent.find('[data-op="browse"]').click(() => DialogController.open(ScriptRepositoryDialog));
-        this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show(this.settings.parent));
+        this.$parent.find('[data-op="templates"]').click(() => DialogController.open(TemplateManageDialog, this.settings.parent));
 
         this.$parent.find('[data-op="copy"]').click(() => copyText(this.editor.content));
         this.$parent.find('[data-op="prev"]').click(() => this.history(1));
@@ -2812,11 +2812,11 @@ class SettingsView extends View {
 
     updateTemplates () {
         // Templates
-        let templates = Templates.getKeys().map(key => {
+        let templates = Templates.sortedList().map(({ name }) => {
             return {
-                name: key,
-                value: key,
-                selected: key == this.settings.parent
+                value: name,
+                name,
+                selected: name == this.settings.parent
             }
         });
 
@@ -2895,283 +2895,6 @@ class SettingsFloatView extends SettingsView {
         SettingsManager.remove(this.settings.name);
         this.hide();
         UI.current.load();
-    }
-}
-
-class TemplatesView extends View {
-    constructor (parent) {
-        super(parent);
-
-        // Template list
-        this.$templates = this.$parent.find('[data-op="templates"]');
-        this.$dimmer = this.$parent.find('[data-op="dimmer"]');
-
-        // Template details
-        this.$name = this.$parent.find('[data-op="name"]');
-        this.$timestamp = this.$parent.find('[data-op="timestamp"]');
-        this.$timestamp2 = this.$parent.find('[data-op="timestamp2"]');
-        this.$key = this.$parent.find('[data-op="key"]');
-        this.$compat = this.$parent.find('[data-op="compat"]');
-        this.$version = this.$parent.find('[data-op="version"]');
-
-        // Online buttons
-        this.$publish = this.$parent.find('[data-op="publish"]').click(() => this.publishTemplate());
-        this.$update = this.$parent.find('[data-op="update"]').click(() => this.updateTemplate());
-        this.$delete = this.$parent.find('[data-op="delete"]').click(() => this.deleteTemplate());
-        this.$open = this.$parent.find('[data-op="open"]').click(() => this.openTemplate());
-        this.$unpublish = this.$parent.find('[data-op="unpublish"]').click(() => this.unpublishTemplate());
-    }
-
-    getCurrentView () {
-        // Return current settings window
-        return UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
-    }
-
-    clearOverride () {
-        // Try clear overrides
-        if (UI.current.clearOverride) {
-            UI.current.clearOverride();
-        }
-
-        if (UI.current.refreshTemplateDropdown) {
-            UI.current.refreshTemplateDropdown();
-        }
-    }
-
-    openTemplate () {
-        this.getCurrentView().editor.content = this.tmp.content;
-        this.hide();
-    }
-
-    setLoading (loading) {
-        // Prevent modal from closing when in loading state
-        this.loading = loading;
-        if (loading) {
-            this.$dimmer.addClass('active');
-        } else {
-            this.$dimmer.removeClass('active');
-        }
-    }
-
-    updateTemplate () {
-        if (this.$update.hasClass('basic')) {
-            // Remove basic class from the button
-            this.$update.removeClass('basic');
-
-            // Readd the class after 2 seconds without action
-            this.updateTimeout = setTimeout(() => {
-                this.$update.addClass('basic');
-            }, 2000);
-        } else {
-            // Clear timeout
-            clearTimeout(this.updateTimeout);
-
-            // Get values
-            let name = this.tmp.name;
-            let content = this.currentContent;
-            let compat = this.tmp.compat;
-
-            // Save template
-            Templates.save(name, content, compat);
-
-            // Refresh everything
-            this.clearOverride();
-            this.showTemplate(name);
-        }
-    }
-
-    publishTemplate () {
-        // Get values
-        let name = this.tmp.name;
-        let content = this.tmp.content;
-
-        // Set loading
-        this.setLoading(true);
-
-        if (this.tmp.online) {
-            // Create request
-            SiteAPI.post('script_update', {
-                description: name,
-                content: content,
-                key: this.tmp.online.key,
-                secret: this.tmp.online.secret
-            }).then(({ script }) => {
-                Templates.markAsOnline(name, script.key, script.secret);
-
-                this.showTemplate(name);
-                this.setLoading(false);
-            }).catch(() => {
-                this.setLoading(false)
-            });
-        } else {
-            SiteAPI.post('script_create', {
-                description: name,
-                content: content,
-                author: 'unknown'
-            }).then(({ script }) => {
-                Templates.markAsOnline(name, script.key, script.secret);
-
-                this.showTemplate(name);
-                this.setLoading(false);
-            }).catch(() => {
-                this.setLoading(false);
-            })
-        }
-    }
-
-    unpublishTemplate () {
-        let name = this.tmp.name;
-
-        if (this.tmp.online) {
-            // Unpublish first if online
-            let key = this.tmp.online.key.trim();
-            let secret = this.tmp.online.secret.trim();
-
-            SiteAPI.get('script_delete', { key, secret }).then(() => {
-                Templates.markAsOffline(name);
-
-                this.showTemplate(name);
-                this.setLoading(false);
-            }).catch(() => {
-                this.setLoading(false);
-            });
-        }
-    }
-
-    deleteTemplate () {
-        if (this.$delete.hasClass('basic')) {
-            // Remove basic class from the button
-            this.$delete.removeClass('basic');
-
-            // Readd the class after 2 seconds without action
-            this.deleteTimeout = setTimeout(() => {
-                this.$delete.addClass('basic');
-            }, 2000);
-        } else {
-            // Clear timeout
-            clearTimeout(this.deleteTimeout);
-
-            // Get values
-            let name = this.tmp.name;
-
-            // Delete template
-            Templates.remove(name);
-
-            // Refresh everything
-            this.getCurrentView().updateTemplates();
-            this.clearOverride();
-            this.refreshList();
-        }
-    }
-
-    show (template = null) {
-        // Refresh stuff
-        this.currentContent = this.getCurrentView().editor.content;
-        this.refreshList();
-
-        // Open modal
-        this.$parent.modal({
-            centered: true,
-            allowMultiple: true,
-            onHide: () => {
-                return !this.loading;
-            }
-        }).modal('show');
-
-        if (template) {
-            this.showTemplate(template);
-
-            this.$templates.find('[data-value]').removeClass('selected');
-            this.$templates.find(`[data-value="${ template }"]`).addClass('selected');
-        }
-    }
-
-    refreshList () {
-        // Reset cached template
-        this.tmp = null;
-
-        // Reset panel
-        this.$name.val('');
-        this.$timestamp.val('');
-        this.$version.val('');
-        this.$compat.val('');
-        this.$timestamp2.val('');
-        this.$key.val('');
-
-        // Reset online buttons
-        this.$publish.addClass('disabled');
-        this.$unpublish.addClass('disabled');
-
-        // Reset buttons
-        this.$delete.addClass('basic disabled');
-        clearTimeout(this.deleteTimeout);
-
-        this.$update.addClass('disabled basic');
-        clearTimeout(this.updateTimeout);
-
-        this.$open.removeClass('link');
-
-        // Refresh list
-        this.$templates.templateList({
-            items: Templates.getKeys(),
-            onClick: name => this.showTemplate(name)
-        });
-    }
-
-    showTemplate (name) {
-        // Clear some things again
-        clearTimeout(this.deleteTimeout);
-        clearTimeout(this.updateTimeout);
-
-        this.$delete.addClass('basic');
-        this.$update.addClass('basic');
-
-        this.$delete.removeClass('disabled');
-
-        let tmp = this.tmp = Templates.all()[name];
-
-        // Set fields
-        this.$name.val(tmp.name);
-        this.$timestamp.val(formatDate(tmp.timestamp));
-        this.$version.val(tmp.version || `< ${ MODULE_VERSION }`);
-
-        // Compat
-        let compatString = (tmp.compat ? [ tmp.compat.cm ? 'Me' : '', tmp.compat.cg ? 'Guilds' : '', tmp.compat.cp ? 'Players' : '' ].filter(x => x).join(', ') : '') || 'Not set';
-        this.$compat.val(compatString);
-
-        // Online
-        if (tmp.online) {
-            this.$timestamp2.val(formatDate(tmp.online.timestamp));
-            this.$key.val(tmp.online.key);
-
-            // Don't allow delete when published
-            this.$unpublish.removeClass('disabled');
-
-            // Allow publish when not equal
-            if (tmp.timestamp != tmp.online.timestamp) {
-                this.$publish.removeClass('disabled');
-            } else {
-                this.$publish.addClass('disabled');
-            }
-        } else {
-            this.$timestamp2.val('');
-            this.$key.val('');
-            this.$publish.removeClass('disabled');
-            this.$unpublish.addClass('disabled');
-        }
-
-        // Update button
-        if (tmp.content != this.currentContent) {
-            this.$update.removeClass('disabled');
-        } else {
-            this.$update.addClass('disabled');
-        }
-
-        this.$open.addClass('link');
-    }
-
-    hide () {
-        this.$parent.modal('hide');
     }
 }
 
