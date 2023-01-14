@@ -8,6 +8,7 @@ const CHANGELOG = {
             'Added <code>theme dark|light</code> setting for table themes',
             'Added <code>theme text:color background:color</code> setting for custom table themes',
             'Added new dialogs for browsing scripts and managing templates',
+            'Added new script &amp; template archive system to replace script history',
             'Fixed guild deletion via advanced file list',
             'Fixed counting of present guild members',
             'Fixed scrapbook size'
