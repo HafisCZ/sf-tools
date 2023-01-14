@@ -324,3 +324,11 @@ display: none;
 .css-template-list {
   margin-top: 1em !important;
 }
+
+[data-template-favorite] > i.thumbtack {
+  display: none;
+}
+
+[data-template-favorite]:hover > i.thumbtack, [data-template-favorite="true"] > i.thumbtack {
+  display: block;
+}
