@@ -343,12 +343,8 @@ class PlayaResponse {
     static * iterateJSON (json) {
         for (const entry of _dig(json, 'log', 'entries')) {
             let { text, encoding } = _dig(entry, 'response', 'content');
-            
-            if (text) {
-                if (encoding === 'base64') {
-                    text = atob(text)
-                }
 
+            if (text && encoding !== 'base64') {
                 yield {
                     text,
                     url: _dig(entry, 'request', 'url'),
