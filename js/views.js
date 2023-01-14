@@ -321,7 +321,7 @@ const ErrorDialog = new (class extends Dialog {
 
     _createModal () {
         return `
-            <div class="small inverted dialog">
+            <div class="small inverted bordered dialog">
                 <div class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</div>
                 <div class="text-center" data-op="text"></div>
                 <h4 class="text-center">${this.intl('notice#')}</h4>
