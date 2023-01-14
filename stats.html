@@ -201,18 +201,25 @@
         <div id="view-settings" class="ui main inverted container" style="display: none; width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
-                    <h3 class="ui centered inverted header" style="margin-top: 0;" data-intl="stats.scripts.settings"></h3>
-                    <div class="ui middle aligned selection inverted list css-selection-list css-top-line" data-op="settings-list">
-
-                    </div>
-                    <div class="css-template-heading">
-                        <h3 class="ui centered inverted header css-template-header" data-intl="stats.scripts.templates"></h3>
-                    </div>
-                    <div class="ui middle aligned selection inverted list css-selection-list css-top-line" data-op="template-list">
-
+                    <div class="ui inverted form">
+                        <div class="field">
+                            <label data-intl="stats.scripts.name"></label>
+                            <div class="ui search selection inverted icon dropdown" data-op="selector-dropdown">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                            <div class="ui inverted left icon input" data-op="selector-input">
+                                <i class="ui icon"></i>
+                                <input type="text" disabled>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label data-intl="stats.scripts.list"></label>
+                            <div data-op="list" class="mt-4 pr-2 overflow-y-scroll flex flex-col gap-4" style="height: 75vh;"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="twelve wide column">
+                <div class="eleven wide column">
                     <div class="ui inverted form ta-form">
                         <div class="field">
                             <div class="ta-wrapper">
@@ -222,56 +229,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="one wide column css-settings-buttons">
-                    <button class="ui fluid basic inverted button" data-op="wiki-home"><div><i class="book icon"></i><span data-intl="stats.scripts.sidebar.wiki"></span></div></button>
-                    <button class="ui fluid basic inverted button" data-op="browse"><div><i class="globe icon"></i><span data-intl="stats.scripts.sidebar.scripts"></span></div></button>
-                    <button class="ui fluid basic inverted button" data-op="templates"><div><i class="edit outline icon"></i><span data-intl="stats.scripts.sidebar.templates"></span></div></button>
-                    <button class="ui fluid basic inverted button" data-op="save-template"><div><i class="save icon"></i><span data-intl="stats.scripts.sidebar.save"></span></div></button>
-                    <br/>
-                    <button class="ui fluid basic inverted button" data-op="copy"><div><i class="copy outline icon"></i><span data-intl="stats.scripts.sidebar.copy"></span></div></button>
-                    <button class="ui fluid basic inverted button" data-op="prev"><div><i class="undo icon"></i><span data-intl="stats.scripts.sidebar.undo"></span></div></button>
-                    <button class="ui fluid basic inverted button" data-op="next"><div><i class="redo icon"></i><span data-intl="stats.scripts.sidebar.redo"></span></div></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- SettingsFloatView -->
-        <div id="modal-settings" class="ui basic fullscreen modal" style="width: 95vw;">
-            <div class="ui grid">
-                <div class="three wide column">
-                    <div class="css-template-heading">
-                        <h3 class="ui centered inverted header css-template-header" data-intl="stats.scripts.templates"></h3>
+                <div class="two wide column">
+                    <div class="ui spaced fluid vertical buttons">
+                        <button class="ui basic inverted button" data-op="close"><i class="ui reply icon"></i> <span data-intl="stats.scripts.sidebar.close"></span></button>
+                        <button class="ui basic inverted button" data-op="reset"><i class="ui recycle format icon"></i> <span data-intl="stats.scripts.sidebar.reset"></span></button>
+                        <h3 class="ui inverted header" data-intl="stats.scripts.sidebar.header.modify"></h3>
+                        <button class="ui basic inverted button" data-op="save"><i class="ui save icon"></i> <span data-intl="stats.scripts.sidebar.save"></span></button>
+                        <button class="ui basic inverted button" data-op="save-template"><i class="ui save icon"></i> <span data-intl="stats.scripts.sidebar.save_template"></span></button>
+                        <button class="ui basic inverted button" data-op="remove"><i class="ui trash icon"></i> <span data-intl="stats.scripts.sidebar.remove"></span></button>
+                        <h3 class="ui inverted header" data-intl="stats.scripts.sidebar.header.library"></h3>
+                        <button class="ui basic inverted button" data-op="library-wiki"><i class="ui book icon"></i> <span data-intl="stats.scripts.sidebar.wiki"></span></button>
+                        <button class="ui basic inverted button" data-op="library-scripts"><i class="ui stream icon"></i> <span data-intl="stats.scripts.sidebar.scripts"></span></button>
+                        <button class="ui basic inverted button" data-op="library-templates"><i class="ui stream icon"></i> <span data-intl="stats.scripts.sidebar.templates"></span></button>
+                        <h3 class="ui inverted header" data-intl="stats.scripts.sidebar.header.history"></h3>
+                        <button class="ui basic inverted button" data-op="copy"><i class="ui copy outline icon"></i> <span data-intl="stats.scripts.sidebar.copy"></span></button>
+                        <button class="ui basic inverted button" data-op="undo"><i class="ui undo icon"></i> <span data-intl="stats.scripts.sidebar.undo"></span></button>
+                        <button class="ui basic inverted button" data-op="redo"><i class="ui redo icon"></i> <span data-intl="stats.scripts.sidebar.redo"></span></button>
                     </div>
-                    <div class="ui middle aligned selection inverted list css-selection-list css-template-fullheight css-top-line" data-op="template-list">
-
-                    </div>
-                </div>
-                <div class="twelve wide column">
-                    <div class="ui inverted form ta-form">
-                        <div class="field">
-                            <div class="ta-wrapper">
-                                <div class="ta-content"></div>
-                                <textarea wrap="off" class="ta-area" spellcheck="false"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="one wide column css-settings-buttons">
-                    <button class="ui fluid inverted basic button" data-op="close"><div><i class="close icon"></i><span data-intl="stats.scripts.sidebar.close"></span></div></button>
-                    <br/>
-                    <button class="ui fluid inverted basic button" data-op="save"><div><i class="save icon"></i><span data-intl="stats.scripts.sidebar.apply"></span></div></button>
-                    <br/>
-                    <button class="ui fluid inverted basic button" data-op="delete"><div><i class="trash icon"></i><span data-intl="stats.scripts.sidebar.remove"></span></div></button>
-                    <br/>
-                    <button class="ui fluid inverted basic button" data-op="wiki-home"><div><i class="book icon"></i><span data-intl="stats.scripts.sidebar.wiki"></span></div></button>
-                    <button class="ui fluid inverted basic button" data-op="browse"><div><i class="globe icon"></i><span data-intl="stats.scripts.sidebar.scripts"></span></div></button>
-                    <button class="ui fluid inverted basic button" data-op="templates"><div><i class="edit outline icon"></i><span data-intl="stats.scripts.sidebar.templates"></span></div></button>
-                    <button class="ui fluid inverted basic button" data-op="save-template"><div><i class="save icon"></i><span data-intl="stats.scripts.sidebar.save"></span></div></button>
-                    <button class="ui fluid inverted basic button" data-op="save-apply-template"><div><i class="save icon"></i><span data-intl="stats.scripts.sidebar.save_apply"></span></div></button>
-                    <br/>
-                    <button class="ui fluid inverted basic button" data-op="copy"><div><i class="copy outline icon"></i><span data-intl="stats.scripts.sidebar.copy"></span></div></button>
-                    <button class="ui fluid inverted basic button" data-op="prev"><div><i class="undo icon"></i><span data-intl="stats.scripts.sidebar.undo"></span></div></button>
-                    <button class="ui fluid inverted basic button" data-op="next"><div><i class="redo icon"></i><span data-intl="stats.scripts.sidebar.redo"></span></div></button>
                 </div>
             </div>
         </div>
@@ -559,7 +533,6 @@
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
                         Settings: new SettingsView('view-settings'),
-                        SettingsFloat: new SettingsFloatView('modal-settings'),
                         Files: new FilesView('view-files'),
                         Players: new PlayersView('view-players'),
                         Groups: new GroupsView('view-groups'),

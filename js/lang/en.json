@@ -340,10 +340,15 @@
                 "copy": "Copy",
                 "undo": "Undo",
                 "redo": "Redo",
-                "close": "Close",
-                "apply": "Apply",
+                "close": "Return back",
                 "remove": "Remove",
-                "save_apply": "Save & Apply"
+                "reset": "Discard changes",
+                "save_template": "Save as template",
+                "header": {
+                    "modify": "Script",
+                    "library": "Libraries",
+                    "history": "History"
+                }
             },
             "types": {
                 "me": "Me",
@@ -972,7 +977,7 @@
         },
         "delete_script": {
             "title": "Remove script",
-            "notice": "Are you sure you want to permanently remove currently applied script?"
+            "notice": "Are you sure you want to permanently remove selected script?"
         },
         "warning": {
             "title": "An issue has occured!",
