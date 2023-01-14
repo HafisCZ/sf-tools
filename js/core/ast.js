@@ -80,11 +80,11 @@ const ExpressionEnum = new (class {
                 'MountSizes': PLAYER_MOUNT,
                 'AchievementNames': ACHIEVEMENTS,
                 'ItemTypes': ITEM_TYPES,
-                'GroupRoles': GROUP_ROLES,
-                'Classes': [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => intl(`general.class${i}`)),
+                'GroupRoles': [0, 1, 2, 3, 4].map(i => i > 0 ? intl(`general.rank${i}`) : ''),
+                'Classes': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => i > 0 ? intl(`general.class${i}`) : ''),
                 'FortressBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => intl(`general.buildings.fortress${i}`)),
                 'PlayerActions': PLAYER_ACTIONS,
-                'PotionTypes': POTIONS,
+                'PotionTypes': [0, 1, 2, 3, 4, 5, 6].map(i => i > 0 ? intl(`general.potion${i}`) : ''),
                 'GemTypes': GEMTYPES,
                 'AttributeTypes': GEMATTRIBUTES,
                 'RuneTypes': RUNETYPES,
@@ -2481,31 +2481,31 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Potion 1 Type': {
         expr: p => p.Potions[0].Type,
-        format: (p, c, e, x) => POTIONS[x],
+        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
     },
     'Potion 2 Type': {
         expr: p => p.Potions[1].Type,
-        format: (p, c, e, x) => POTIONS[x],
+        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
     },
     'Potion 3 Type': {
         expr: p => p.Potions[2].Type,
-        format: (p, c, e, x) => POTIONS[x],
+        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
     },
     'Mask': {
         expr: p => p.Mask,
-        format: (p, c, e, x) => MASK_TYPES[x],
+        format: (p, c, e, x) => p.Class == 8 ? intl(`general.mask${x}`) : '',
         difference: false,
         statistics: false
     },
     'Instrument': {
         expr: p => p.Instrument,
-        format: (p, c, e, x) => p.Class == 9 ? INSTRUMENT_TYPES[x] : 'None',
+        format: (p, c, e, x) => p.Class == 9 ? intl(`general.instrument${x}`) : '',
         difference: false,
         statistics: false
     },
@@ -3240,7 +3240,7 @@ const SP_KEYWORD_MAPPING_4 = {
     },
     'Potion Type': {
         expr: (p, c, e, i) => i.Type,
-        format: (p, c, e, x) => POTIONS[x],
+        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
         difference: false
     },
     'Potion Size': {
