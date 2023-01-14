@@ -1541,7 +1541,7 @@ class TableController {
         } else {
             this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
 
-            if (entries.length > 0) {
+            if (entries.length > 0 && this.injectorElement.get(0)) {
                 this.prepareInjector(entries, onInject);
             } else {
                 this.injectorElement.remove();
