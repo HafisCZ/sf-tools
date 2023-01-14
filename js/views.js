@@ -7,8 +7,8 @@ class Dialog {
         }, options || {});
     }
 
-    intl (key) {
-        return intl(`dialog.${this.options.key}.${key}`);
+    intl (key, args = {}) {
+        return intl(`dialog.${this.options.key}.${key}`, args);
     }
 
     open (...args) {
@@ -1602,6 +1602,86 @@ const ScriptRepositoryDialog = new (class extends Dialog {
                     $icon.removeClass('loading sync').addClass('text-red warning');
                 });
             }
+        });
+    }
+})();
+
+const ScriptArchiveDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            key: 'script_archive',
+            dismissable: true
+        })
+    }
+
+    _createModal () {
+        return `
+            <div class="inverted small bordered dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="flex flex-col gap-2 overflow-y-scroll" style="height: 50vh;" data-op="list"></div>
+                <div class="ui black fluid button" data-op="clear">${this.intl('clear')}</div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$list = this.$parent.operator('list');
+
+        this.$clear = this.$parent.operator('clear');
+        this.$clear.click(() => {
+            ScriptArchive.clear();
+            this.callback(true);
+            this.close();
+        })
+
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        });
+    }
+
+    _getIcon (type) {
+        if (type === 'create') {
+            return 'plus';
+        } else if (type === 'overwrite') {
+            return 'pencil alternate';
+        } else if (type === 'save') {
+            return 'save';
+        } else if (type === 'remove') {
+            return 'trash alternate outline';
+        } else {
+            return 'question';
+        }
+    }
+
+    _createSegment (type, name, version, timestamp, temporary) {
+        return `
+            <div data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                <i class="ui big ${this._getIcon(type.split('_')[0])} disabled icon"></i>
+                <div>
+                    <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${name}</div>
+                    <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: formatDate(timestamp), expire: formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    _applyArguments (callback) {
+        this.callback = callback;
+
+        let content = '';
+        for (const { type, name, version, timestamp, temporary } of ScriptArchive.all()) {
+            content += this._createSegment(type, name, version, timestamp, temporary);
+        }
+
+        this.$list.html(content);
+        this.$list.find('[data-archive-key]').on('click', (event) => {
+            this.callback(ScriptArchive.get(event.currentTarget.dataset.archiveKey));
+
+            this.close();
         });
     }
 })();

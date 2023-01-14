@@ -340,16 +340,16 @@
                 "templates": "Templates",
                 "save": "Save",
                 "copy": "Copy",
-                "undo": "Undo",
-                "redo": "Redo",
+                "archive": "Script archive",
                 "close": "Return back",
                 "remove": "Remove",
                 "reset": "Discard changes",
                 "save_template": "Save as template",
                 "header": {
+                    "actions": "Actions",
                     "modify": "Script",
                     "library": "Libraries",
-                    "history": "History"
+                    "archive": "Archive"
                 }
             },
             "types": {
@@ -942,6 +942,24 @@
                 "remove": "Remove permanently"
             },
             "error": "Action was not successful"
+        },
+        "script_archive": {
+            "title": "Script archive",
+            "clear": "Delete all items from archive",
+            "types": {
+                "create_script": "Script created",
+                "overwrite_script": "Script overwritten by new version",
+                "save_script": "Script saved",
+                "remove_script": "Script removed",
+                "create_template": "Template created",
+                "overwrite_template": "Template overwritten by new version",
+                "save_template": "Template saved",
+                "remove_template": "Template removed"
+            },
+            "item": {
+                "description": "Archived: #{change}. Expires: #{expire}",
+                "temporary": "in temporary mode"
+            }
         },
         "script_repository": {
             "title": "Script Repository",
