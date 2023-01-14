@@ -471,6 +471,7 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
             if (name.length) {
                 Templates.save(name, this.data.content);
 
+                // This dialog appears on page open, so it is necessary to refresh dropdowns
                 if (UI.current.refreshTemplateDropdown) {
                     UI.current.refreshTemplateDropdown();
                 }
@@ -1529,12 +1530,7 @@ const ScriptRepositoryDialog = new (class extends Dialog {
     }
 
     _applyScript (script) {
-        if (UI.current == UI.Settings) {
-            UI.Settings.editor.content = script;
-        } else {
-            UI.SettingsFloat.editor.content = script;
-        }
-
+        this.callback(script);
         this.close();
     }
 
@@ -1560,7 +1556,9 @@ const ScriptRepositoryDialog = new (class extends Dialog {
         this._updateListeners();
     }
 
-    _applyArguments () {
+    _applyArguments (callback) {
+        this.callback = callback;
+
         let content = '';
         for (const [type, { author, description }] of Object.entries(DefaultScripts)) {
             if (author) {
@@ -1781,7 +1779,8 @@ const TemplateManageDialog = new (class extends Dialog {
 
             this._clearForm();
             this._resetList();
-            this._resetReferences();
+
+            this.callback();
         });
     }
 
@@ -1839,23 +1838,12 @@ const TemplateManageDialog = new (class extends Dialog {
             if (event.target.classList.contains('thumbtack')) {
                 Templates.toggleFavorite(name);
 
+                this.callback();
                 this._resetList();
             } else {                
                 this._selectTemplate(name);
             }
         });
-    }
-
-    _resetReferences () {
-        (UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat).updateTemplates();
-
-        if (UI.current.clearOverride) {
-            UI.current.clearOverride();
-        }
-
-        if (UI.current.refreshTemplateDropdown) {
-            UI.current.refreshTemplateDropdown();
-        }
     }
 
     _clearForm () {
@@ -1873,7 +1861,9 @@ const TemplateManageDialog = new (class extends Dialog {
         this.$actionRepublish.hide();
     }
 
-    _applyArguments (name) {
+    _applyArguments (name, callback) {
+        this.callback = callback;
+
         this._clearForm();
         this._resetList();
 

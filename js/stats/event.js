@@ -129,7 +129,7 @@ class GroupDetailView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.SettingsFloat.show(this.identifier, 'guilds', DefaultScripts.groups.content);
+                UI.show(UI.Settings, this.identifier, () => UI.returnTo(UI.GroupDetail))
             }
         });
 
@@ -250,14 +250,7 @@ class GroupDetailView extends View {
         });
 
         this.table.clearSorting();
-
-        this.clearOverride();
         this.load();
-    }
-
-    clearOverride () {
-        this.templateOverride = '';
-        this.$configure.find('.item').removeClass('active');
     }
 
     load () {
@@ -342,6 +335,12 @@ class GroupDetailView extends View {
 
             this.$context.context('bind', blockClickable);
         });
+    }
+
+    reload () {
+        this.templateOverride = '';
+        this.refreshTemplateDropdown();
+        this.load();
     }
 }
 
@@ -757,7 +756,7 @@ class PlayerHistoryView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.SettingsFloat.show(this.identifier, 'me', DefaultScripts.players.content);
+                UI.show(UI.Settings, this.identifier, () => UI.returnTo(UI.PlayerHistory))
             }
         });
 
@@ -860,6 +859,11 @@ class PlayerHistoryView extends View {
         // Table stuff
         this.table.setEntries(this.list);
         this.table.refresh();
+    }
+
+    reload () {
+        this.refreshTemplateDropdown();
+        this.load();
     }
 }
 
@@ -987,7 +991,7 @@ class BrowseView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.SettingsFloat.show('players', 'players', DefaultScripts.browse.content);
+                UI.show(UI.Settings, 'players', () => UI.returnTo(UI.Browse))
             }
         });
 
@@ -1342,6 +1346,11 @@ class BrowseView extends View {
 
             this.$context.context('bind', blockClickable);
         });
+    }
+
+    reload () {
+        this.refreshTemplateDropdown();
+        this.load();
     }
 }
 
@@ -2634,22 +2643,47 @@ class SettingsView extends View {
     constructor (parent) {
         super(parent);
 
-        // Lists
-        this.$settingsList = this.$parent.find('[data-op="settings-list"]');
-        this.$templateList = this.$parent.find('[data-op="template-list"]');
+        // Reserved script names
+        this.reservedScripts = ['players', 'me', 'guilds'];
+
+        // Left sidebar
+        this.$list = this.$parent.operator('list');
+
+        this.$selectorDropdown = this.$parent.operator('selector-dropdown');
+        this.$selectorInput = this.$parent.operator('selector-input');
+
+        // Right sidebar
+        this.$parent.operator('library-wiki').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
+        this.$parent.operator('library-scripts').click(() => {
+            DialogController.open(ScriptRepositoryDialog, (content) => this.editor.content = content)
+        });
+        this.$parent.operator('library-templates').click(() => {
+            DialogController.open(TemplateManageDialog, this.script.parent, () => this._updateSidebars())
+        });
+ 
+        // History
+        this.$parent.operator('copy').click(() => copyText(this.editor.content));
+        this.$parent.operator('undo').click(() => this.history(1));
+        this.$parent.operator('redo').click(() => this.history(-1));
 
         // Button handling
-        this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
-        this.$parent.find('[data-op="browse"]').click(() => DialogController.open(ScriptRepositoryDialog));
-        this.$parent.find('[data-op="templates"]').click(() => DialogController.open(TemplateManageDialog, this.settings.parent));
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.returnTo();
+        });
 
-        this.$parent.find('[data-op="copy"]').click(() => copyText(this.editor.content));
-        this.$parent.find('[data-op="prev"]').click(() => this.history(1));
-        this.$parent.find('[data-op="next"]').click(() => this.history(-1));
+        this.$reset = this.$parent.operator('reset');
+        this.$reset.click(() => {
+            this.show(this.script.key, this.returnTo);
+        });
 
-        this.$parent.find('[data-op="close"]').click(() => this.hide());
-        this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
-        this.$delete = this.$parent.find('[data-op="delete"]').click(() => {
+        this.$save = this.$parent.operator('save');
+        this.$save.click(() => {
+            this.save();
+        });
+
+        this.$remove = this.$parent.operator('remove');
+        this.$remove.click(() => {
             DialogController.open(
                 ConfirmDialog,
                 intl('dialog.delete_script.title'),
@@ -2659,175 +2693,205 @@ class SettingsView extends View {
             );
         });
 
-        this.$parent.find('[data-op="save-apply-template"]').click(() => this.saveApplyTemplate());
-        this.$parent.find('[data-op="save-template"]').click(() => {
+        this.$parent.operator('save-template').click(() => {
             DialogController.open(
                 TemplateSaveDialog,
-                _dig(this, 'settings', 'parent'),
+                this.script.parent,
                 (name) => {
                     Templates.save(name, this.editor.content);
 
-                    if (this.settings) {
-                        this.settings.parent = name;
-                    }
+                    this.script.parent = name;
 
-                    this.$settingsList.settings_selectionlist('set unsaved', true);
-
-                    if (UI.current.refreshTemplateDropdown) {
-                        UI.current.refreshTemplateDropdown();
-                    }
-
-                    this.updateTemplates();
+                    this._contentChanged(true, 'parent');
+                    this._updateSidebars();
                 }
             )
         })
 
-        this.editor = new ScriptEditor(this.$parent, EditorType.DEFAULT, val => {
-            this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
-            if (!this.settings || val == this.settings.code) {
-                this.$save.addClass('disabled');
-            } else {
-                this.$save.removeClass('disabled');
-            }
-        });
-
-        // History position
-        this.index = 0;
+        this.editor = new ScriptEditor(
+            this.$parent,
+            EditorType.DEFAULT,
+            (value) => this._contentChanged(this.script && value !== this.script.content, 'content')
+        )
     }
 
-    getDefault (v) {
-        // Get default key
-        if (v == 'players') {
-            return 'players';
-        } else if (v == 'me' || v.includes('_p')) {
+    // Returns default key for specified key
+    _defaultKey (value) {
+        if (value === 'players' || value === 'me') {
+            return value;
+        } else if (value.includes('_p')) {
             return 'me';
         } else {
             return 'guilds';
         }
     }
 
-    getDefaultTemplate (v) {
-        // Get default template
-        if (v == 'players') {
-            return DefaultScripts.browse.content;
-        } else if (v == 'me' || v.includes('_p')) {
-            return DefaultScripts.players.content;
-        } else {
-            return DefaultScripts.groups.content;
-        }
-    }
-
-    hide () {
-        // Do nothing
+    // Returns default template for specified key
+    _defaultContent (value) {
+        return DefaultScripts[{ players: 'browse', me: 'players', guilds: 'groups' }[this._defaultKey(value)]].content;
     }
 
     remove () {
-        // Do nothing
+        SettingsManager.remove(this.script.name);
+        if (this.returnTo) {
+            this.returnTo();
+        } else {
+            this.show();
+        }
     }
 
-    show (key = 'players') {
-        this.settings = Object.assign({
-            name: key,
-            content: this.getDefaultTemplate(key)
-        }, SettingsManager.getObj(key, this.getDefault(key)) || {});
+    show (key = 'players', returnTo = null) {
+        this._setScript(key);
 
-        // Update settings
-        if (this.$settingsList.length) {
-            this.updateSettings();
-        }
+        this.returnTo = returnTo;
+        this._updateSidebars();
 
-        // Update templates
-        this.updateTemplates();
-
-        // Reset history
         this.history();
+    }
 
-        // Reset scrolling
+    _setScript (key) {
+        this.script = Object.assign({
+            name: key,
+            content: this._defaultContent(key),
+            parent: null
+        }, SettingsManager.getObj(key, this._defaultKey(key)) || {});
+
+        this.editor.content = this.script.content;
         this.editor.scrollTop();
-    }
 
-    updateSettings () {
-        // Settings
-        let settings = [
-            {
-                name: intl('stats.scripts.types.players'),
-                value: 'players',
-                selected: this.settings.name == 'players'
-            },
-            {
-                name: intl('stats.scripts.types.me'),
-                value: 'me',
-                selected: this.settings.name == 'me'
-            },
-            {
-                name: intl('stats.scripts.types.guilds'),
-                value: 'guilds',
-                selected: this.settings.name == 'guilds'
-            },
-            ... SettingsManager.getKeys().map(key => {
-                if ([ 'me', 'players', 'guilds' ].includes(key)) {
-                    return null;
-                } else {
-                    return {
-                        name: DatabaseManager.getPlayer(key) ? `P: ${ DatabaseManager.getPlayer(key).Latest.Name }` : (DatabaseManager.getGroup(key) ? `G: ${ DatabaseManager.getGroup(key).Latest.Name }` : key),
-                        value: key,
-                        selected: this.settings.name == key
-                    };
-                }
-            }).filter(obj => obj != null)
-        ];
-
-        // Setup list
-        this.$settingsList.settings_selectionlist({
-            items: settings,
-            onClick: value => this.show(value),
-            onSave: value => this.save(),
-            onRemove: value => {
-                SettingsManager.remove(value);
-                this.show();
-            }
-        });
-    }
-
-    saveApplyTemplate () {
-        if (this.settings.parent) {
-            Templates.save(this.settings.parent, this.editor.content);
-        }
-
-        this.save();
-        this.hide();
+        this._contentChanged(false);
     }
 
     save () {
         let code = this.editor.content;
-        if (code !== this.settings.content) {
+        if (code !== this.script.content) {
             // Add into history
-            SettingsManager.addHistory(this.settings.content, this.settings.name);
+            SettingsManager.addHistory(this.script.content, this.script.name);
         }
 
         // Save current code
-        this.settings.content = code;
-        SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
+        this.script.content = code;
+        SettingsManager.save(this.script.name, this.script.content, this.script.parent);
+
+        this._contentChanged(false);
     }
 
-    updateTemplates () {
-        // Templates
-        let templates = Templates.sortedList().map(({ name }) => {
-            return {
-                value: name,
-                name,
-                selected: name == this.settings.parent
+    _contentChanged (valueChanged, ...changes) {
+        if (typeof this.changes === 'undefined') {
+            this.changes = {};
+        }
+
+        if (!valueChanged && changes.length === 0) {
+            this.changes = {};
+        } else {
+            for (const change of changes) {
+                if (valueChanged) {
+                    this.changes[change] = true;
+                } else {
+                    delete this.changes[change];
+                }
+            }
+        }
+
+        const wasChanged = Object.keys(this.changes).length > 0;
+        const wasSaved = this.script ? (this.reservedScripts.includes(this.script.name) || SettingsManager.exists(this.script.name)) : false;
+
+        if (wasChanged) {
+            this.$reset.removeClass('disabled');
+        } else {
+            this.$reset.addClass('disabled');
+        }
+        
+        if (wasSaved && !wasChanged) {
+            this.$save.removeClass('olive').addClass('disabled inverted');
+        } else {
+            this.$save.addClass('olive').removeClass('disabled inverted');
+        }
+    }
+
+    _updateSidebars () {
+        // Template list
+        let content = '';
+        for (const { name, version, timestamp } of Templates.sortedList()) {
+            content += `
+                <div data-template-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center">
+                    <div>
+                        <div>${name}</div>
+                        <div class="text-gray">v${isNaN(version) ? 1 : version} - ${formatDate(timestamp)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        this.$list.html(content);
+        this.$list.find('[data-template-name]').click((event) => {
+            const name = event.currentTarget.dataset.templateName;
+
+            this.editor.content = Templates.get(name);
+
+            if (this.script.parent !== name) {
+                this.script.parent = name;
+                this._contentChanged(true, 'parent');
             }
         });
 
-        // Setup list
-        this.$templateList.templates_selectionlist({
-            items: templates,
-            onClick: value => {
-                this.editor.content = Templates.get(value);
-                this.settings.parent = value;
-            }
-        });
+        // Script list
+        if (this.returnTo) {
+            this.$close.show();
+            this.$selectorInput.show();
+            this.$selectorDropdown.hide();
+
+            this.$selectorInput.find('input').val(this._getScriptName(this.script.name));
+            this.$selectorInput.find('i').removeClass('database user archive').addClass(this._getScriptIcon(this.script.name));
+        } else {
+            this.$close.hide();
+            this.$selectorInput.hide();
+            this.$selectorDropdown.show();
+
+            this.$selectorDropdown.dropdown({
+                values: [
+                    ...this.reservedScripts.map((value) => ({
+                        name: intl(`stats.scripts.types.${value}`),
+                        icon: this._getScriptIcon(value),
+                        value
+                    })),
+                    ...SettingsManager.getKeys().filter((value) => !this.reservedScripts.includes(value)).map((value) => ({
+                        name: this._getScriptName(value),
+                        icon: this._getScriptIcon(value),
+                        value
+                    }))
+                ]
+            });
+    
+            this.$selectorDropdown.dropdown('set selected', this.script.name);
+            this.$selectorDropdown.dropdown('setting', 'onChange', (value) => {
+                this._setScript(value);
+            })
+        }
+
+        if (SettingsManager.exists(this.script.name)) {
+            this.$remove.removeClass('disabled');
+        } else {
+            this.$remove.addClass('disabled');
+        }
+    }
+
+    _getScriptName (value) {
+        if (this.reservedScripts.includes(value)) {
+            return intl(`stats.scripts.types.${value}`);
+        } else {
+            return DatabaseManager.PlayerNames[value] || DatabaseManager.GroupNames[value] || value;
+        }
+    }
+
+    _getScriptIcon (value) {
+        if (this.reservedScripts.includes(value)) {
+            return { players: 'database', me: 'user', guilds: 'archive' }[value];
+        } else if (DatabaseManager._isPlayer(value)) {
+            return 'user';
+        } else {
+            return 'archive';
+        }
     }
 
     history (i = 0) {
@@ -2844,57 +2908,8 @@ class SettingsView extends View {
         if (this.index > 0) {
             this.editor.content = history[this.index - 1].content;
         } else {
-            this.editor.content = this.settings.content;
+            this.editor.content = this.script.content;
         }
-    }
-}
-
-// Settings View within a modal
-class SettingsFloatView extends SettingsView {
-    constructor (parent) {
-        super(parent);
-    }
-
-    show (identifier) {
-        this.$parent.modal({
-            centered: true,
-            transition: 'fade',
-            autofocus: false
-        }).modal('show');
-
-        super.show(identifier);
-    }
-
-    save () {
-        if (UI.current.clearOverride) {
-            UI.current.clearOverride();
-        }
-
-        if (UI.current.refreshTemplateDropdown) {
-            UI.current.refreshTemplateDropdown();
-        }
-
-        super.save();
-        this.hide();
-        UI.current.load();
-    }
-
-    hide () {
-        this.$parent.modal('hide');
-    }
-
-    remove () {
-        if (UI.current.clearOverride) {
-            UI.current.clearOverride();
-        }
-
-        if (UI.current.refreshTemplateDropdown) {
-            UI.current.refreshTemplateDropdown();
-        }
-
-        SettingsManager.remove(this.settings.name);
-        this.hide();
-        UI.current.load();
     }
 }
 

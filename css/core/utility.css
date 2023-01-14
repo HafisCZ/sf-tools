@@ -377,6 +377,10 @@
   background-color: #141414;
 }
 
+.background-light\:hover:hover {
+  background-color: #1b1c1d;
+}
+
 .\!background-orange {
   background-color: orange !important;
 }

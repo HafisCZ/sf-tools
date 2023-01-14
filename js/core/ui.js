@@ -15,6 +15,10 @@ class View {
     refresh () {
 
     }
+
+    reload () {
+
+    }
 }
 
 const UI = new (class {
@@ -30,21 +34,13 @@ const UI = new (class {
     }
 
     show (screen, ... args) {
-        this.current = screen;
-
-        window.scrollTo(0, 0);
-
-        $('.ui.container').hide();
-        screen.$parent.show();
-
+        this._showScreen(screen);
         screen.show(... args);
-        const name = screen.sha;
-        if (this.buttons[name]) {
-            for (const [, el] of Object.entries(this.buttons)) {
-                el.classList.remove('!text-orange');
-            }
-            this.buttons[name].classList.add('!text-orange');
-        }
+    }
+
+    returnTo (screen) {
+        this._showScreen(screen);
+        screen.reload();
     }
 
     register (view, id) {
@@ -54,6 +50,23 @@ const UI = new (class {
             element.addEventListener('click', () => {
                 this.show(view);
             });
+        }
+    }
+
+    _showScreen (screen) {
+        this.current = screen;
+
+        window.scrollTo(0, 0);
+
+        $('.ui.container').hide();
+        screen.$parent.show();
+
+        const name = screen.sha;
+        if (this.buttons[name]) {
+            for (const [, el] of Object.entries(this.buttons)) {
+                el.classList.remove('!text-orange');
+            }
+            this.buttons[name].classList.add('!text-orange');
         }
     }
 })();
