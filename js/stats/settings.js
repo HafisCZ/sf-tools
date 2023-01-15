@@ -2872,13 +2872,13 @@ const ScriptManager = new (class {
         return Object.keys(this.settings);
     }
 
-    get (name, fallback, template) {
+    getContent (name, fallback, template) {
         this.initialize();
         let settings = this.settings[name] || this.settings[fallback];
         return settings ? settings.content : template;
     }
 
-    getObj (name, fallback) {
+    get (name, fallback) {
         this.initialize();
         return this.settings[name] || this.settings[fallback];
     }
@@ -3019,13 +3019,6 @@ const Templates = new (class {
         this.initialize();
 
         return _sort_des(_sort_des(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
-    }
-
-    getKeys () {
-        this.initialize();
-
-        // Return keys
-        return this.keys;
     }
 
     get (name) {
