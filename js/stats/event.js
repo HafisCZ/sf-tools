@@ -2815,9 +2815,14 @@ class SettingsView extends View {
         }
         
         if (wasSaved && !wasChanged) {
-            this.$save.removeClass('olive').addClass('disabled inverted');
+            this.$save.removeClass('yellow').addClass('disabled inverted');
         } else {
-            this.$save.addClass('olive').removeClass('disabled inverted');
+            this.$save.addClass('yellow').removeClass('disabled inverted');
+        }
+
+        if (this.script) {
+            this.$parent.find('[data-template-name]').removeClass('background-light');
+            this.$parent.find(`[data-template-name="${this.script.parent}"]`).addClass('background-light');
         }
     }
 
@@ -2826,7 +2831,7 @@ class SettingsView extends View {
         let content = '';
         for (const { name, version, timestamp } of Templates.sortedList()) {
             content += `
-                <div data-template-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center">
+                <div data-template-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script && this.script.parent === name ? 'background-light' : ''}">
                     <div>
                         <div>${name}</div>
                         <div class="text-gray">v${isNaN(version) ? 1 : version} - ${formatDate(timestamp)}</div>

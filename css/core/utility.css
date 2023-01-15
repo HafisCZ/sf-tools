@@ -373,6 +373,10 @@
   background-color: #141414;
 }
 
+.background-light {
+  background-color: #1b1c1d;
+}
+
 .background-dark\:hover:hover {
   background-color: #141414;
 }
