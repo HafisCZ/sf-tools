@@ -260,7 +260,7 @@ class GroupDetailView extends View {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : ScriptManager.get(this.identifier, 'guilds', DefaultScripts.groups.content));
+        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.groups.content));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -798,7 +798,7 @@ class PlayerHistoryView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = ScriptManager.get(this.identifier, 'me', DefaultScripts.players.content);
+                    settings = ScriptManager.getContent(this.identifier, 'me', DefaultScripts.players.content);
                 } else {
                     this.templateOverride = value;
 
@@ -845,7 +845,7 @@ class PlayerHistoryView extends View {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setSettings(ScriptManager.get(this.identifier, 'me', DefaultScripts.players.content));
+        this.table.setSettings(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.players.content));
 
         this.list.forEach(([ a, b ]) => DatabaseManager._loadPlayer(b));
 
@@ -1284,7 +1284,7 @@ class BrowseView extends View {
         this.$configure.find('.item').removeClass('active');
         this.$configure.settingsButton(ScriptManager.exists('players'));
 
-        this.table.setSettings(ScriptManager.get('players', 'players', DefaultScripts.browse.content));
+        this.table.setSettings(ScriptManager.getContent('players', 'players', DefaultScripts.browse.content));
 
         this.templateOverride = '';
         this.recalculate = true;
@@ -1303,7 +1303,7 @@ class BrowseView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = ScriptManager.get('players', 'players', DefaultScripts.browse.content);
+                    settings = ScriptManager.getContent('players', 'players', DefaultScripts.browse.content);
                 } else {
                     this.templateOverride = value;
 
@@ -2772,7 +2772,7 @@ class SettingsView extends View {
             name: key,
             content: this._defaultContent(key),
             parent: null
-        }, ScriptManager.getObj(key, this._defaultKey(key)) || {});
+        }, ScriptManager.get(key, this._defaultKey(key)) || {});
 
         this.editor.content = this.script.content;
         this.editor.scrollTop();
