@@ -2239,16 +2239,6 @@ class Settings {
         this.globals.order_by = order;
     }
 
-    // Get code
-    getCode () {
-        return this.code;
-    }
-
-    // Get environment
-    getEnvironment () {
-        return this;
-    }
-
     // Get compare environment
     getCompareEnvironment () {
         return {
@@ -2796,35 +2786,33 @@ const ScriptArchive = new (class {
 
 // Settings manager
 const ScriptManager = new (class {
-    initialize () {
-        if (typeof this.settings === 'undefined') {
-            this.settings = Store.get('settings', { });
+    get scripts () {
+        if (typeof this._internal === 'undefined') {
+            this._internal = Store.get('settings', {});
         }
+
+        return this._internal;
     }
 
-    commit () {
-        // Save current settings
-        Store.set('settings', this.settings);
+    _persist () {
+        Store.set('settings', this.scripts);
     }
 
-    saveInternal (name, content, parent = '') {
-        // Check if settings exist
-        let exists = name in this.settings;
-        let settings = exists ? this.settings[name] : null;
-
-        if (exists) {
-            ScriptArchive.add('overwrite_script', name, this.settings[name].version, this.settings[name].content);
+    save (name, content, parent) {
+        let script = this.scripts[name];
+        if (script) {
+            ScriptArchive.add('overwrite_script', name, this.scripts[name].version, this.scripts[name].content);
             
-            settings.content = content;
-            settings.version = (isNaN(settings.version) ? 1 : settings.version) + 1;
-            settings.timestamp = Date.now();
-            settings.parent = parent;
+            script.content = content;
+            script.version = (isNaN(script.version) ? 1 : script.version) + 1;
+            script.timestamp = Date.now();
+            script.parent = parent;
 
-            ScriptArchive.add('save_script', name, settings.version, settings.content);
+            ScriptArchive.add('save_script', name, script.version, script.content);
         } else {
             ScriptArchive.add('create_script', name, 1, content);
 
-            settings = {
+            script = {
                 name: name,
                 content: content,
                 parent: parent,
@@ -2833,83 +2821,89 @@ const ScriptManager = new (class {
             }
         }
 
-        this.settings[name] = settings;
-    }
+        this.scripts[name] = script;
 
-    save (name, content, parent) {
-        this.initialize();
-        this.saveInternal(name, content, parent);
-        this.commit();
+        this._persist();
     }
 
     remove (name) {
-        this.initialize();
-        if (name in this.settings) {
-            ScriptArchive.add('remove_script', name, this.settings[name].version, this.settings[name].content);
+        if (this.scripts[name]) {
+            ScriptArchive.add('remove_script', name, this.scripts[name].version, this.scripts[name].content);
 
-            delete this.settings[name];
-            this.commit();
+            delete this.scripts[name];
+            this._persist();
         }
     }
 
     exists (name) {
-        this.initialize();
-        return name in this.settings;
+        return name in this.scripts;
     }
 
     all () {
-        this.initialize();
-        return this.settings;
+        return this.scripts;
     }
 
     list () {
-        this.initialize();
-        return Object.values(this.settings);
+        return Object.values(this.scripts);
     }
 
     keys () {
-        this.initialize();
-        return Object.keys(this.settings);
+        return Object.keys(this.scripts);
     }
 
     getContent (name, fallback, template) {
-        this.initialize();
-        let settings = this.settings[name] || this.settings[fallback];
-        return settings ? settings.content : template;
+        const script = this.scripts[name] || this.scripts[fallback];
+        return script ? script.content : template;
     }
 
     get (name, fallback) {
-        this.initialize();
-        return this.settings[name] || this.settings[fallback];
+        return this.scripts[name] || this.scripts[fallback];
     }
 })()
 
 // Templates
-const Templates = new (class {
-    initialize () {
-        if (!this.templates) {
-            // Initialize when needed
-            this.templates = Store.shared.get('templates', { });
+const TemplateManager = new (class {
+    get templates () {
+        if (typeof this._internal === 'undefined') {
+            this._internal = Store.shared.get('templates', {});
+        }
 
-            this.keys = Object.keys(this.templates);
-            this.keys.sort((a, b) => a.localeCompare(b));
+        return this._internal;
+    }
+
+    _persist () {
+        Store.shared.set('templates', this.templates);
+    }
+
+    toggleFavorite (name) {
+        this.templates[name].favorite = !this.templates[name].favorite;
+        this._persist();
+    }
+
+    setOnline (name, key, secret, version) {
+        if (this.templates[name]) {
+            this.templates[name].online = {
+                timestamp: this.templates[name].timestamp,
+                key,
+                secret,
+                version: isNaN(version) ? 1 : version
+            };
+
+            this._persist();
         }
     }
 
-    commit () {
-        // Save current templates
-        Store.shared.set('templates', this.templates);
+    setOffline (name) {
+        if (this.templates[name]) {
+            this.templates[name].online = false;
 
-        this.keys = Object.keys(this.templates);
-        this.keys.sort((a, b) => a.localeCompare(b));
+            this._persist();
+        }
     }
 
-    saveInternal (name, content) {
-        // Check if a template already exists
-        let exists = name in this.templates;
-        let template = exists ? this.templates[name] : null;
-
-        if (exists) {
+    save (name, content) {
+        let template = this.templates[name];
+        if (template) {
             ScriptArchive.add('overwrite_template', name, template.version, template.content);
 
             // Overwrite needed parts
@@ -2931,101 +2925,42 @@ const Templates = new (class {
             };
         }
 
-        // Save template
         this.templates[name] = template;
-    }
 
-    toggleFavorite (name) {
-        this.initialize();
-        
-        this.templates[name].favorite = !this.templates[name].favorite;
-
-        this.commit();
-    }
-
-    markAsOnline (name, key, secret, version) {
-        this.initialize();
-
-        // Mark template as online if exists
-        if (name in this.templates) {
-            // Set timestamp & keys
-            this.templates[name].online = {
-                timestamp: this.templates[name].timestamp,
-                key,
-                secret,
-                version: isNaN(version) ? 1 : version
-            };
-
-            this.commit();
-        }
-    }
-
-    markAsOffline (name) {
-        this.initialize();
-
-        // Mark template as offline if exists
-        if (name in this.templates) {
-            // Set online to false
-            this.templates[name].online = false;
-
-            this.commit();
-        }
-    }
-
-    save (name, content) {
-        this.initialize();
-
-        // Save template
-        this.saveInternal(name, content);
-
-        // Commit changes
-        this.commit();
+        this._persist();
     }
 
     remove (name) {
-        this.initialize();
-
-        // Remove template
-        if (name in this.templates) {
+        if (this.templates[name]) {
             ScriptArchive.add('remove_template', name, this.templates[name].version, this.templates[name].content);
 
             delete this.templates[name];
-            this.commit();
+            this._persist();
         }
     }
 
     exists (name) {
-        this.initialize();
-
-        // Return true if template exists
         return name in this.templates;
     }
 
     all () {
-        this.initialize();
-
-        // Return templates
         return this.templates;
     }
 
     list () {
-        this.initialize();
-
-        // Return list of templates
         return Object.values(this.templates);
     }
 
     sortedList () {
-        this.initialize();
-
         return _sort_des(_sort_des(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
     }
 
     get (name) {
-        this.initialize();
+        return this.templates[name];
+    }
 
-        // Return loaded settings
-        return name in this.templates ? this.templates[name].content : '';
+    getContent (name) {
+        return this.templates[name] ? this.templates[name].content : '';
     }
 })();
 
