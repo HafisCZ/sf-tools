@@ -2809,36 +2809,6 @@ const SettingsManager = new (class {
             }
 
             this.keys = Object.keys(this.settings);
-
-            /*
-                Convert existing settings in old form into new style
-            */
-            let keys = Store.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
-            let backup = {};
-
-            if (keys.length) {
-                for (let key of keys) {
-                    let content = Store.get(`settings/${ key }`, '');
-                    backup[key] = content;
-
-                    // Convert existing settings to text
-                    if (typeof content == 'string') {
-                        // Do nothing
-                    } else {
-                        content = '';
-                    }
-
-                    // Save if valid
-                    if (content.length) {
-                        this.saveInternal(key, content);
-                    }
-
-                    Store.remove(`settings/${ key }`);
-                }
-
-                this.commit();
-                Store.set('settingsBackup', backup);
-            }
         }
     }
 
@@ -2934,38 +2904,6 @@ const Templates = new (class {
 
             this.keys = Object.keys(this.templates);
             this.keys.sort((a, b) => a.localeCompare(b));
-
-            /*
-                Convert existing templates in old form into new style
-            */
-            let keys = Store.shared.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
-            let backup = {};
-
-            if (keys.length) {
-                for (let key of keys) {
-                    let content = Store.shared.get(`templates/${ key }`, '');
-                    backup[key] = content;
-
-                    // Convert existing template to text
-                    if (typeof(content) == 'string') {
-                        // Do nothing
-                    } else if (typeof(content) == 'object') {
-                        content = content.content;
-                    } else {
-                        content = '';
-                    }
-
-                    // Save if valid
-                    if (content.length) {
-                        this.saveInternal(key, content);
-                    }
-
-                    Store.shared.remove(`templates/${ key }`);
-                }
-
-                this.commit();
-                Store.shared.set('templatesBackup', backup);
-            }
         }
     }
 
