@@ -20,6 +20,7 @@
   width: 1000%;
   font-size: 1em !important;
   font-family: Arial, Helvetica, sans-serif !important;
+  white-space: nowrap;
 }
 
 .ta-area {
