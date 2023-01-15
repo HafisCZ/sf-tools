@@ -62,8 +62,9 @@
                                 <div class="two fields">
                                     <div class="field">
                                         <label data-intl="stats.player.fortress.building12"></label>
-                                        <div class="ui inverted centered input">
-                                            <input data-path="FortificationsLevel" placeholder="0 - 20">
+                                        <div class="ui selection inverted dropdown" data-path="FortificationsLevel">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field"></div>
@@ -218,6 +219,13 @@
                         this.fields['mage_level'].$object.dropdown({
                             values: Object.entries(FORTRESS_MAGE_MAP).map(([id, { level }]) => ({
                                 name: level,
+                                value: id
+                            }))
+                        }).dropdown('set selected', '0');
+                        
+                        this.fields['fortifications_level'].$object.dropdown({
+                            values: Object.entries(FORTRESS_WALL_MAP).map(([id, { level }]) => ({
+                                name: `${id == 0 ? intl('editor.none') : id} - ${intl('editor.level')} ${level}`,
                                 value: id
                             }))
                         }).dropdown('set selected', '0');
