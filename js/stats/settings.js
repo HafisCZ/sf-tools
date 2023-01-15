@@ -2965,34 +2965,36 @@ const TemplateManager = new (class {
 
 class ScriptEditor {
     constructor (parent, editorType, changeCallback) {
+        this.parent = parent.get(0);
+        
         this.changeCallback = changeCallback;
         this.editorType = editorType;
 
-        this.$parent = parent;
-        this.$area = this.$parent.find('textarea');
-        this.$wrapper = this.$parent.find('.ta-wrapper');
-        this.$mask = this.$parent.find('.ta-content');
+        this.area = this.parent.querySelector('textarea');
+        this.wrapper = this.parent.querySelector('.ta-wrapper');
+        this.mask = this.parent.querySelector('.ta-content');
 
-        this.$mask.css('top', this.$area.css('padding-top'));
-        this.$mask.css('left', this.$area.css('padding-left'));
-        this.$mask.css('font', this.$area.css('font'));
-        this.$mask.css('font-family', this.$area.css('font-family'));
-        this.$mask.css('line-height', this.$area.css('line-height'));
+        const baseStyle = getComputedStyle(this.area);
+        this.mask.style.top = baseStyle.paddingTop;
+        this.mask.style.left = baseStyle.paddingLeft;
+        this.mask.style.font = baseStyle.font;
+        this.mask.style.fontFamily = baseStyle.fontFamily;
+        this.mask.style.lineHeight = baseStyle.lineHeight;
 
-        let $maskClone = this.$mask.clone();
+        const maskClone = this.mask.cloneNode(true);
 
-        this.$area.on('input', (event) => {
-            var val = $(event.currentTarget).val();
+        this.area.addEventListener('input', (event) => {
+            let value = event.currentTarget.value;
             if (this.pasted) {
-                val = val.replace(/\t/g, ' ');
+                value = value.replace(/\t/g, ' ');
 
-                var ob = this.$area.get(0);
+                const ob = this.area;
 
-                var ob1 = ob.selectionStart;
-                var ob2 = ob.selectionEnd;
-                var ob3 = ob.selectionDirection;
+                const ob1 = ob.selectionStart;
+                const ob2 = ob.selectionEnd;
+                const ob3 = ob.selectionDirection;
 
-                ob.value = val;
+                ob.value = value;
 
                 ob.selectionStart = ob1;
                 ob.selectionEnd = ob2;
@@ -3001,32 +3003,39 @@ class ScriptEditor {
                 this.pasted = false;
             }
 
-            let scrollTransform = this.$mask.css('transform');
-            this.$mask.remove();
-            this.$mask = $maskClone.clone().html(Settings.format(val, this.editorType)).css('transform', scrollTransform).appendTo(this.$wrapper);
+            const scrollTransform = getComputedStyle(this.mask).transform;
+
+            this.mask.remove();
+            this.mask = maskClone.cloneNode(true);
+            this.mask.innerHTML = Settings.format(value, this.editorType);
+            this.mask.style.transform = scrollTransform;
+
+            this.wrapper.insertAdjacentElement('beforeend', this.mask);
 
             if (typeof this.changeCallback === 'function') {
-                this.changeCallback(val);
+                this.changeCallback(value);
             }
-        }).trigger('input');
-
-        this.$area.on('scroll', (event) => {
-            var sy = $(event.currentTarget).scrollTop();
-            var sx = $(event.currentTarget).scrollLeft();
-            this.$mask.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
         });
 
-        this.$area.keydown((e) => {
-            if (e.key == 'Tab') {
-                e.preventDefault();
+        this.area.dispatchEvent(new Event('input'));
 
-                let a = this.$area.get(0);
-                let v = this.$area.val();
+        this.area.addEventListener('scroll', (event) => {
+            const sy = event.currentTarget.scrollTop;
+            const sx = event.currentTarget.scrollLeft;
+            this.mask.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
+        });
+
+        this.area.addEventListener('keydown', (event) => {
+            if (event.key == 'Tab') {
+                event.preventDefault();
+
+                let a = this.area;
+                let v = this.area.value;
                 let s = a.selectionStart;
                 let d = a.selectionEnd;
 
                 if (s == d) {
-                    this.$area.val(v.substring(0, s) + '  ' + v.substring(s));
+                    this.area.value = v.substring(0, s) + '  ' + v.substring(s);
                     a.selectionStart = s + 2;
                     a.selectionEnd = d + 2;
                 } else {
@@ -3048,46 +3057,57 @@ class ScriptEditor {
                         }
                     }
 
-                    this.$area.val(v);
+                    this.area.value = v;
                     a.selectionStart = s + o * 2;
                     a.selectionEnd = d + (oo + o) * 2;
                 }
 
-                this.$area.trigger('input');
+                this.area.dispatchEvent(new Event('input'));
+                this.area.dispatchEvent(new Event('scroll'));
             }
         });
 
-        this.$area.on('paste', () => {
+        this.area.addEventListener('paste', () => {
             this.pasted = true;
         });
 
-        this.$area.on('dragover dragenter', e => {
-            e.preventDefault();
-            e.stopPropagation();
-        }).on('drop', e => {
-            if (_dig(e, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
-                e.preventDefault();
-                e.stopPropagation();
+        this.area.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        });
 
-                let r = new FileReader();
-                r.readAsText(e.originalEvent.dataTransfer.files[0], 'UTF-8');
-                r.onload = f => {
-                    this.$area.val(f.target.result).trigger('input');
+        this.area.addEventListener('dragenter', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
+        this.area.addEventListener('drop', (event) => {
+            if (_dig(event, 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const reader = new FileReader();
+                reader.readAsText(event.dataTransfer.files[0], 'UTF-8');
+                reader.onload = (file) => {
+                    this.content = file.target.result;
                 }
             }
         });
     }
 
     get content () {
-        return this.$area.val();
+        return this.area.value;
     }
 
-    set content (val) {
-        this.$area.val(val);
-        this.$area.trigger('input');
+    set content (value) {
+        this.area.value = value;
+        this.area.dispatchEvent(new Event('input'));
+
+        this.scrollTop();
     }
 
     scrollTop () {
-        this.$area.scrollTop(0).trigger('scroll');
+        this.area.scrollTo(0, 0);
+        this.area.dispatchEvent(new Event('scroll'));
     }
 }
