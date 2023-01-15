@@ -254,13 +254,13 @@ class GroupDetailView extends View {
     }
 
     load () {
-        this.$configure.settingsButton(SettingsManager.exists(this.identifier));
+        this.$configure.settingsButton(ScriptManager.exists(this.identifier));
 
         if (this.templateOverride) {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : SettingsManager.get(this.identifier, 'guilds', DefaultScripts.groups.content));
+        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : ScriptManager.get(this.identifier, 'guilds', DefaultScripts.groups.content));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -798,7 +798,7 @@ class PlayerHistoryView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = SettingsManager.get(this.identifier, 'me', DefaultScripts.players.content);
+                    settings = ScriptManager.get(this.identifier, 'me', DefaultScripts.players.content);
                 } else {
                     this.templateOverride = value;
 
@@ -845,7 +845,7 @@ class PlayerHistoryView extends View {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setSettings(SettingsManager.get(this.identifier, 'me', DefaultScripts.players.content));
+        this.table.setSettings(ScriptManager.get(this.identifier, 'me', DefaultScripts.players.content));
 
         this.list.forEach(([ a, b ]) => DatabaseManager._loadPlayer(b));
 
@@ -854,7 +854,7 @@ class PlayerHistoryView extends View {
 
     refresh () {
         // Configuration indicator
-        this.$configure.settingsButton(SettingsManager.exists(this.identifier));
+        this.$configure.settingsButton(ScriptManager.exists(this.identifier));
 
         // Table stuff
         this.table.setEntries(this.list);
@@ -1282,9 +1282,9 @@ class BrowseView extends View {
     load () {
         // Configuration indicator
         this.$configure.find('.item').removeClass('active');
-        this.$configure.settingsButton(SettingsManager.exists('players'));
+        this.$configure.settingsButton(ScriptManager.exists('players'));
 
-        this.table.setSettings(SettingsManager.get('players', 'players', DefaultScripts.browse.content));
+        this.table.setSettings(ScriptManager.get('players', 'players', DefaultScripts.browse.content));
 
         this.templateOverride = '';
         this.recalculate = true;
@@ -1303,7 +1303,7 @@ class BrowseView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = SettingsManager.get('players', 'players', DefaultScripts.browse.content);
+                    settings = ScriptManager.get('players', 'players', DefaultScripts.browse.content);
                 } else {
                     this.templateOverride = value;
 
@@ -2752,7 +2752,7 @@ class SettingsView extends View {
     }
 
     remove () {
-        SettingsManager.remove(this.script.name);
+        ScriptManager.remove(this.script.name);
         if (this.returnTo) {
             this.returnTo();
         } else {
@@ -2772,7 +2772,7 @@ class SettingsView extends View {
             name: key,
             content: this._defaultContent(key),
             parent: null
-        }, SettingsManager.getObj(key, this._defaultKey(key)) || {});
+        }, ScriptManager.getObj(key, this._defaultKey(key)) || {});
 
         this.editor.content = this.script.content;
         this.editor.scrollTop();
@@ -2782,7 +2782,7 @@ class SettingsView extends View {
 
     save () {
         this.script.content = this.editor.content;
-        SettingsManager.save(this.script.name, this.script.content, this.script.parent);
+        ScriptManager.save(this.script.name, this.script.content, this.script.parent);
 
         this._updateSidebars();
         this._contentChanged(false);
@@ -2806,7 +2806,7 @@ class SettingsView extends View {
         }
 
         const wasChanged = Object.keys(this.changes).length > 0;
-        const wasSaved = this.script ? (this.reservedScripts.includes(this.script.name) || SettingsManager.exists(this.script.name)) : false;
+        const wasSaved = this.script ? (this.reservedScripts.includes(this.script.name) || ScriptManager.exists(this.script.name)) : false;
 
         if (wasChanged) {
             this.$reset.removeClass('disabled');
@@ -2872,7 +2872,7 @@ class SettingsView extends View {
                         icon: this._getScriptIcon(value),
                         value
                     })),
-                    ...SettingsManager.getKeys().filter((value) => !this.reservedScripts.includes(value)).map((value) => ({
+                    ...ScriptManager.keys().filter((value) => !this.reservedScripts.includes(value)).map((value) => ({
                         name: this._getScriptName(value),
                         icon: this._getScriptIcon(value),
                         value
@@ -2886,7 +2886,7 @@ class SettingsView extends View {
             })
         }
 
-        if (SettingsManager.exists(this.script.name)) {
+        if (ScriptManager.exists(this.script.name)) {
             this.$remove.removeClass('disabled');
         } else {
             this.$remove.addClass('disabled');
