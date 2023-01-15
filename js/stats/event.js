@@ -165,7 +165,7 @@ class GroupDetailView extends View {
                     name: `<b>${intl('stats.templates.quick_swap')}</b>`,
                     type: 'header'
                 },
-                ... Templates.sortedList().map(({ name }) => {
+                ... TemplateManager.sortedList().map(({ name }) => {
                     return {
                         value: name,
                         name
@@ -260,7 +260,7 @@ class GroupDetailView extends View {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.groups.content));
+        this.table.setSettings(this.templateOverride ? TemplateManager.getContent(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.groups.content));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -803,7 +803,7 @@ class PlayerHistoryView extends View {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Templates.get(value);
+                    settings = TemplateManager.getContent(value);
                 }
 
                 this.table.setSettings(settings);
@@ -816,7 +816,7 @@ class PlayerHistoryView extends View {
                     name: `<b>${intl('stats.templates.quick_swap')}</b>`,
                     type: 'header'
                 },
-                ... Templates.sortedList().map(({ name }) => {
+                ... TemplateManager.sortedList().map(({ name }) => {
                     return {
                         value: name,
                         name
@@ -1308,7 +1308,7 @@ class BrowseView extends View {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Templates.get(value);
+                    settings = TemplateManager.getContent(value);
                 }
 
                 this.table.setSettings(settings);
@@ -1322,7 +1322,7 @@ class BrowseView extends View {
                     name: `<b>${intl(`stats.templates.quick_swap`)}</b>`,
                     type: 'header'
                 },
-                ... Templates.sortedList().map(({ name }) => {
+                ... TemplateManager.sortedList().map(({ name }) => {
                     return {
                         value: name,
                         name
@@ -2718,7 +2718,7 @@ class SettingsView extends View {
                 TemplateSaveDialog,
                 this.script.parent,
                 (name) => {
-                    Templates.save(name, this.editor.content);
+                    TemplateManager.save(name, this.editor.content);
 
                     this.script.parent = name;
 
@@ -2829,7 +2829,7 @@ class SettingsView extends View {
     _updateSidebars () {
         // Template list
         let content = '';
-        for (const { name, version, timestamp } of Templates.sortedList()) {
+        for (const { name, version, timestamp } of TemplateManager.sortedList()) {
             content += `
                 <div data-template-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script && this.script.parent === name ? 'background-light' : ''}">
                     <div>
@@ -2844,7 +2844,7 @@ class SettingsView extends View {
         this.$list.find('[data-template-name]').click((event) => {
             const name = event.currentTarget.dataset.templateName;
 
-            this.editor.content = Templates.get(name);
+            this.editor.content = TemplateManager.getContent(name);
 
             if (this.script.parent !== name) {
                 this.script.parent = name;

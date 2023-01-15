@@ -469,7 +469,7 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
         this.$save = this.$parent.find('[data-op="save"]').click(() => {
             let name = this.$name.val().trim();
             if (name.length) {
-                Templates.save(name, this.data.content);
+                TemplateManager.save(name, this.data.content);
 
                 // This dialog appears on page open, so it is necessary to refresh dropdowns
                 if (UI.current.refreshTemplateDropdown) {
@@ -987,7 +987,7 @@ const TemplateSaveDialog = new (class extends Dialog {
             allowAdditions: true,
             hideAdditions: false,
             placeholder: this.intl('select'),
-            values: Templates.sortedList().map(({ name }) => {
+            values: TemplateManager.sortedList().map(({ name }) => {
                 return {
                     value: name,
                     name
@@ -1817,7 +1817,7 @@ const TemplateManageDialog = new (class extends Dialog {
 
             this._setLoading();
             SiteAPI.post('script_create', { description: name, author: 'unknown', content }).then(({ script: { key, secret } }) => {
-                Templates.markAsOnline(name, key, secret, version);
+                TemplateManager.setOnline(name, key, secret, version);
             }).catch(({ error }) => {
                 this._error(error);
             }).finally(() => {
@@ -1831,7 +1831,7 @@ const TemplateManageDialog = new (class extends Dialog {
 
             this._setLoading();
             SiteAPI.post('script_update', { description: name, content, key, secret }).then(({ script: { key, secret } }) => {
-                Templates.markAsOnline(name, key, secret, version);
+                TemplateManager.setOnline(name, key, secret, version);
             }).catch(({ error }) => {
                 this._error(error);
             }).finally(() => {
@@ -1845,7 +1845,7 @@ const TemplateManageDialog = new (class extends Dialog {
 
             this._setLoading();
             SiteAPI.get('script_delete', { key, secret }).then(() => {
-                Templates.markAsOffline(name);
+                TemplateManager.setOffline(name);
             }).catch(({ error }) => {
                 this._error(error);
             }).finally(() => {
@@ -1855,7 +1855,7 @@ const TemplateManageDialog = new (class extends Dialog {
         });
 
         this.$actionRemove.click(() => {
-            Templates.remove(this.template.name);
+            TemplateManager.remove(this.template.name);
 
             this._clearForm();
             this._resetList();
@@ -1881,7 +1881,7 @@ const TemplateManageDialog = new (class extends Dialog {
             $element.val('');
         }
         
-        const { version, timestamp, online } = (this.template = Templates.all()[name]);
+        const { version, timestamp, online } = (this.template = TemplateManager.get(name));
         this.$templateName.val(name);
         this.$templateVersion.val(`v${isNaN(version) ? 1 : version}`);
         this.$templateUpdated.val(formatDate(timestamp));
@@ -1908,7 +1908,7 @@ const TemplateManageDialog = new (class extends Dialog {
 
     _resetList () {
         let content = '';
-        for (const data of Templates.sortedList()) {
+        for (const data of TemplateManager.sortedList()) {
             content += this._createSegment(data);
         }
 
@@ -1916,7 +1916,7 @@ const TemplateManageDialog = new (class extends Dialog {
         this.$list.find('[data-template-name]').click((event) => {
             const name = event.currentTarget.dataset.templateName;
             if (event.target.classList.contains('thumbtack')) {
-                Templates.toggleFavorite(name);
+                TemplateManager.toggleFavorite(name);
 
                 this.callback();
                 this._resetList();
