@@ -463,12 +463,12 @@ const Actions = new (class {
 
         this._loadScript();
 
-        const legacyTracker = SettingsManager.get('tracker', '');
+        const legacyTracker = ScriptManager.get('tracker', '');
         if (legacyTracker) {
             this.script = `${this.script || ''}\n${legacyTracker}`;
 
             Store.set('actions_script', this.script);
-            SettingsManager.remove('tracker');
+            ScriptManager.remove('tracker');
         }
 
         this._executeScript();
