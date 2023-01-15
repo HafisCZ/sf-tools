@@ -2794,27 +2794,16 @@ const ScriptArchive = new (class {
 })();
 
 // Settings manager
-const SettingsManager = new (class {
+const ScriptManager = new (class {
     initialize () {
-        if (!this.settings) {
-            // Initialize if needed
+        if (typeof this.settings === 'undefined') {
             this.settings = Store.get('settings', { });
-
-            if (typeof this.settings === 'string') {
-                Store.set('settingsStringRaw', this.settings);
-
-                this.settings = {};
-                Store.set('settings', {});
-            }
-
-            this.keys = Object.keys(this.settings);
         }
     }
 
     commit () {
         // Save current settings
         Store.set('settings', this.settings);
-        this.keys = Object.keys(this.settings);
     }
 
     saveInternal (name, content, parent = '') {
@@ -2877,9 +2866,9 @@ const SettingsManager = new (class {
         return Object.values(this.settings);
     }
 
-    getKeys () {
+    keys () {
         this.initialize();
-        return this.keys;
+        return Object.keys(this.settings);
     }
 
     get (name, fallback, template) {
