@@ -463,7 +463,7 @@ const Actions = new (class {
 
         this._loadScript();
 
-        const legacyTracker = ScriptManager.get('tracker', '');
+        const legacyTracker = ScriptManager.getContent('tracker', '');
         if (legacyTracker) {
             this.script = `${this.script || ''}\n${legacyTracker}`;
 
