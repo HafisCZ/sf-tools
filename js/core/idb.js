@@ -340,7 +340,7 @@ class DatabaseUtils {
 }
 
 class PlayaResponse {
-    static * iterateJSON (json) {
+    static * search (json) {
         for (const entry of _dig(json, 'log', 'entries')) {
             let { text, encoding } = _dig(entry, 'response', 'content');
 
@@ -1424,7 +1424,7 @@ const DatabaseManager = new (class {
         let bonusPool = {};
         let currentVersion = undefined;
 
-        for (const { url, text, date } of PlayaResponse.iterateJSON(json)) {
+        for (const { url, text, date } of PlayaResponse.search(json)) {
             if (date) {
                 timestamp = date.getTime();
                 offset = date.getTimezoneOffset() * 60 * 1000;
