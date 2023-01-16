@@ -151,6 +151,108 @@
         </div>
 
         <script type="text/javascript">
+            const SimulatorDebugRunDialog = new (class extends Dialog {
+                constructor () {
+                    super({
+                        dismissable: true
+                    })
+                }
+
+                _createModal () {
+                    return `
+                        <div class="big bordered inverted dialog">
+                            <div class="header flex justify-content-between items-center">
+                                <div></div>
+                                <div>Debug Match</div>
+                                <i class="ui small link close icon" data-op="close"></i>
+                            </div>
+                            <div class="overflow-y-scroll" data-op="content" style="max-height: 80vh;"></div>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$content = this.$parent.find('[data-op="content"]');
+
+                    this.$close = this.$parent.find('[data-op="close"]');
+                    this.$close.click(() => {
+                        this.close();
+                    });
+                }
+
+                _formatPreviewValue (v) {
+                    return Number.isInteger(v) ? formatAsSpacedNumber(v, ' ') : v;
+                }
+
+                _generatePreview (p1, p2) {
+                    const o1 = Localization._generateTranslation({}, p1);
+                    const o2 = Localization._generateTranslation({}, p2);
+
+                    const keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
+                    for (const bannedKey of ['Player.Identifier', 'Player.Prefix']) {
+                        keys.delete(bannedKey);
+                    }
+
+                    return Array.from(keys).map((key) => `<tr><td>${key}</td><td>${this._formatPreviewValue(o1[key])}</td><td>${this._formatPreviewValue(o2[key])}</td></tr>`).join('');
+                }
+
+                _stringifyState (state) {
+                    const keys = new Set(Object.keys(state));
+
+                    for (const bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack', 'RageCriticalChance']) {
+                        keys.delete(bannedKey);
+                    }
+
+                    return Array.from(keys).map(key => `${key}: ${state[key]}`).join(', ')
+                }
+
+                _applyArguments (data) {
+                    let content = '';
+
+                    for (const { fighters, sample } of data) {
+                        content += `
+                            <table class="ui single inverted !text-center very compact fixed table">
+                                <tbody>
+                                    ${this._generatePreview(...fighters)}
+                                </tbody>
+                            </table>
+                            <table class="ui single inverted !text-center very compact fixed table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Attacker</th>
+                                        <th>Target</th>
+                                        <th>Rage</th>
+                                        <th>Damage</th>
+                                        <th>Health Left</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sample.map(({ attacker, attackerState, target, targetState, attackDamage, attackRage, attackType, targetHealth }, index) => `
+                                        <tr style="background-color: ${attacker === 1 ? '#572626' : '#252d46'}">
+                                            <td rowspan="2" style="border-right: 1px solid rgba(255,255,255,.1);">${index}</td>
+                                            <td>${fighters[attacker].Player.Name}</td>
+                                            <td>${fighters[target].Player.Name}</td>
+                                            <td>${Math.trunc(100 * attackRage) / 100}</td>
+                                            <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
+                                            <td>${Math.trunc(1000 * targetHealth) / 10} %</td>
+                                            <td>${ATTACK_TYPES[attackType] || attackType}</td>
+                                        </tr>
+                                        <tr style="background-color: ${attacker === 1 ? '#572626' : '#252d46'}; text-align: left; font-size: 80%;">
+                                            <td colspan="3" style="border-right: 1px solid rgba(255,255,255,.1);">${this._stringifyState(attackerState)}</td>
+                                            <td colspan="3">${this._stringifyState(targetState)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    }
+
+                    this.$content.html(content);
+                }
+            })()
+
             Site.ready(function (urlParams) {
                 let simulatorMode = 'players_all';
 
@@ -355,74 +457,7 @@
                         const batch = new WorkerBatch('debug');
 
                         batch.add(
-                            ({ json }) => {
-                                let content = '';
-
-                                const generatePreview = (p1, p2) => {
-                                    const o1 = Localization._generateTranslation({}, p1);
-                                    const o2 = Localization._generateTranslation({}, p2);
-
-                                    const keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
-                                    for (const bannedKey of ['Player.Identifier', 'Player.Prefix']) {
-                                        keys.delete(bannedKey);
-                                    }
-
-                                    const formatPreviewValue = (v) => Number.isInteger(v) ? formatAsSpacedNumber(v, ' ') : v;
-
-                                    return Array.from(keys).map(key => `<tr><td>${key}</td><td>${formatPreviewValue(o1[key])}</td><td>${formatPreviewValue(o2[key])}</td></tr>`).join('');
-                                }
-
-                                const stringifyState = (state) => {
-                                    const keys = new Set(Object.keys(state));
-                                    for (const bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack', 'RageCriticalChance']) {
-                                        keys.delete(bannedKey);
-                                    }
-
-                                    return Array.from(keys).map(key => `${key}: ${state[key]}`).join(', ')
-                                }
-
-                                for (const { fighters, sample } of json) {
-                                    content += `
-                                        <table class="ui single inverted !text-center very compact fixed table">
-                                            <tbody>
-                                                ${generatePreview(...fighters)}
-                                            </tbody>
-                                        </table>
-                                        <table class="ui single inverted !text-center very compact fixed table">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Attacker</th>
-                                                    <th>Target</th>
-                                                    <th>Rage</th>
-                                                    <th>Damage</th>
-                                                    <th>Health Left</th>
-                                                    <th>Type</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                ${sample.map(({ attacker, attackerState, target, targetState, attackDamage, attackRage, attackType, targetHealth }, index) => `
-                                                    <tr style="background-color: ${attacker === 1 ? '#572626' : '#252d46'}">
-                                                        <td rowspan="2" style="border-right: 1px solid rgba(34,36,38,.15);">${index}</td>
-                                                        <td>${fighters[attacker].Player.Name}</td>
-                                                        <td>${fighters[target].Player.Name}</td>
-                                                        <td>${Math.trunc(100 * attackRage) / 100}</td>
-                                                        <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
-                                                        <td>${Math.trunc(1000 * targetHealth) / 10} %</td>
-                                                        <td>${ATTACK_TYPES[attackType] || attackType}</td>
-                                                    </tr>
-                                                    <tr style="background-color: ${attacker === 1 ? '#572626' : '#252d46'}; text-align: left; font-size: 80%;">
-                                                        <td colspan="3" style="border-right: 1px solid rgba(34,36,38,.15);">${stringifyState(attackerState)}</td>
-                                                        <td colspan="3">${stringifyState(targetState)}</td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    `;
-                                }
-
-                                DialogController.open(HtmlDialog, 'Debug Match', content);
-                            },
+                            ({ json }) => DialogController.open(SimulatorDebugRunDialog, json),
                             {
                                 flags: getSimulatorFlags(),
                                 config: SimulatorUtils.config,
