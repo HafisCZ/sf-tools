@@ -252,42 +252,6 @@ const Loader = new (class extends Dialog {
     }
 })();
 
-const HtmlDialog = new (class extends Dialog {
-    constructor () {
-        super({
-            dismissable: true
-        })
-    }
-
-    _createModal () {
-        return `
-            <div class="big bordered inverted dialog">
-                <div class="header flex justify-content-between items-center">
-                    <div></div>
-                    <span data-op="title"></span>
-                    <i class="ui small link close icon" data-op="close"></i>
-                </div>
-                <div class="overflow-y-scroll" data-op="content" style="max-height: 80vh;"></div>
-            </div>
-        `;
-    }
-
-    _createBindings () {
-        this.$title = this.$parent.find('[data-op="title"]');
-        this.$content = this.$parent.find('[data-op="content"]');
-
-        this.$close = this.$parent.find('[data-op="close"]');
-        this.$close.click(() => {
-            this.close();
-        });
-    }
-
-    _applyArguments (title, html) {
-        this.$title.text(title);
-        this.$content.html(html);
-    }
-})
-
 // Non-blocking popup about an exception that occured
 const WarningDialog = new (class extends Dialog {
     constructor () {
