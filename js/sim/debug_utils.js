@@ -1,16 +1,17 @@
 const SimulatorDebugDialog = new(class extends Dialog {
   constructor () {
     super({
-      key: 'simulator_debug'
+      key: 'simulator_debug',
+      dismissable: true
     })
   }
 
   _createModal () {
       return `
-          <div class="bordered dialog">
+          <div class="bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
               <div class="overflow-y-scroll overflow-x-hidden pr-4" style="max-height: 70vh;">
-                  <div class="ui small form" data-op="content"></div>
+                  <div class="ui small inverted form" data-op="content"></div>
               </div>
               <div class="ui three fluid buttons">
                   <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
@@ -87,7 +88,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
 
       let content = '';
       for (const [group, groupItems] of Object.entries(this.object)) {
-          content += `<h2 class="ui dividing header">${group}</h2>`;
+          content += `<h2 class="ui dividing inverted header">${group}</h2>`;
 
           for (const [key, value] of Object.entries(groupItems)) {
               if (Array.isArray(value)) {
@@ -96,7 +97,9 @@ const SimulatorDebugDialog = new(class extends Dialog {
                       content += `
                           <div class="field">
                               <label>${key} - ${i + 1}</label>
-                              <input type="number" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
+                              <div class="ui inverted input">
+                                <input type="number" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
+                              </div>
                           </div>
                       `;
                   }
@@ -106,7 +109,9 @@ const SimulatorDebugDialog = new(class extends Dialog {
                   content += `
                       <div class="field">
                           <label>${key}</label>
-                          <input type="number" data-path="${group}.${key}" value="${this._convertValue(value)}">
+                          <div class="ui inverted input">
+                            <input type="number" data-path="${group}.${key}" value="${this._convertValue(value)}">
+                          </div>
                       </div>
                   `;
               }
