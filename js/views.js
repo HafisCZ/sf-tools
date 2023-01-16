@@ -253,9 +253,15 @@ const Loader = new (class extends Dialog {
 })();
 
 const HtmlDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            dismissable: true
+        })
+    }
+
     _createModal () {
         return `
-            <div class="big inverted dialog">
+            <div class="big bordered inverted dialog">
                 <div class="header flex justify-content-between items-center">
                     <div></div>
                     <span data-op="title"></span>
