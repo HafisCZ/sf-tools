@@ -667,6 +667,20 @@
             }
         }
     },
+    "hellevator": {
+        "range": {
+            "start": "Start at floor",
+            "end": "End at floor"
+        },
+        "element": "Element",
+        "win": {
+            "all": "All #{count} floors were defeated with 100% chance",
+            "none": "All #{count} floors are impossible to defeat",
+            "first": "First #{count} floors were defeated with 100% chance",
+            "last": "Last #{count} floors are impossible to defeat"
+        },
+        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+    },
     "dungeons": {
         "simulate_one": "Simulate",
         "simulate_remaining": "Remaining",
