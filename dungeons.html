@@ -402,7 +402,7 @@
                                         <span style="position: absolute; left: 3em; top: 1.4em;">#${boss.pos} - ${boss.name}</span>
                                     </span>
                                 </div>
-                                <div class="five wide column text-center" style="padding-top: 1rem; padding-bottom: 1rem;">${score == 0 ? 'Not possible' : `${ (100 * score / iterations).toFixed(2) }%`}</div>
+                                <div class="five wide column text-center" style="padding-top: 1rem; padding-bottom: 1rem;">${score == 0 ? intl('pets.bulk.not_possible') : `${ (100 * score / iterations).toFixed(2) }%`}</div>
                             </div>
                         `;
                     }).join(''));
