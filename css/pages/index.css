@@ -79,6 +79,10 @@
     opacity: 1;
 }
 
+.dvselection:hover .dvheader.static {
+    opacity: 0.6;
+}
+
 .dvheader {
     text-transform: uppercase;
     font-weight: bold;
@@ -104,10 +108,27 @@
 .wip::before {
     content: 'Work In Progress';
     position: absolute;
-    left: calc(50% - 4em);
+    left: 0;
+    right: 0;
+    text-align: center;
     top: 1em;
     color: orange;
     font-weight: bold;
+}
+
+[data-author]::before {
+    content: attr(data-author) "'s";
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    top: 1em;
+    color: orange;
+    font-weight: bold;
+}
+
+[data-author].author-small::before {
+    top: 2em;
 }
 
 .footer {
@@ -147,8 +168,8 @@
     font-size: 50%;
 }
 
-#sf-menu {
-    padding-bottom: 3em;
+[data-tab="menu"] {
+    padding-bottom: 2em !important;
 }
 
 img.drvcs {

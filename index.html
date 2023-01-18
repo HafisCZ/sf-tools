@@ -23,7 +23,7 @@
             <div class="header item">SFTools</div>
         </div>
         <div class="ui main container">
-            <div id="sf-about" class="mentions-container" style="display: none;">
+            <div data.tab="about" class="mentions-container" style="display: none;">
                 <div class="pt-4 text-8 text-center">
                     <a href="https://discord.gg/XWfSwe3" target="_blank" class="!text-orange"><i class="discord icon"></i> Shakes &amp; Fidget Tavern</a>
                 </div>
@@ -90,7 +90,7 @@
                     <span data-title="the duck boy">Klausi</span>
                 </div>
             </div>
-            <div class="ui four column stackable grid" id="sf-menu">
+            <div class="ui four column stackable grid" data-tab="menu">
                 <div class="column">
                     <a href="stats.html">
                         <div class="dvselection">
@@ -118,10 +118,10 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a href="https://bit.ly/Rune-bonuses">
+                    <a href="changelog.html">
                         <div class="dvselection">
-                            <div class="dvdescription" data-intl="index.runes.desc"></div>
-                            <div class="dvheader twoline" data-intl="index.runes.title"></div>
+                            <div class="dvdescription" data-intl="index.changelog.desc"></div>
+                            <div class="dvheader singleline" data-intl="index.changelog.title"></div>
                         </div>
                     </a>
                 </div>
@@ -245,11 +245,43 @@
                         </div>
                     </a>
                 </div>
+            </div>
+            <div class="ui four column stackable grid" data-tab="menu">
+                <div class="sixteen wide column">
+                    <h1 class="ui inverted orange text-center header" data-intl="index.others"></h1>
+                </div>
                 <div class="column">
-                    <a href="changelog.html">
-                        <div class="dvselection">
-                            <div class="dvdescription" data-intl="index.changelog.desc"></div>
-                            <div class="dvheader singleline" data-intl="index.changelog.title"></div>
+                    <a href="https://hellevatorrewards.12hp.de/" target="_blank">
+                        <div class="dvselection author-small" data-author="ÐonMuErte">
+                            <div class="static dvheader twoline">Hellevator</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="https://snfsmithsim.12hp.de/" target="_blank">
+                        <div class="dvselection" data-author="ÐonMuErte">
+                            <div class="static dvheader twoline">Smith Simulator</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="https://en.sfporadnik.pl/" target="_blank">
+                        <div class="dvselection author-small" data-author="ThreeG">
+                            <div class="static dvheader twoline">SF&nbsp;Poradnik</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="https://bit.ly/Rune-bonuses" target="_blank">
+                        <div class="dvselection" data-author="Zorago">
+                            <div class="static dvheader twoline">Rune Bonuses</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="https://goldpit.12hp.de/" target="_blank">
+                        <div class="dvselection author-small" data-author="ÐonMuErte &amp; KaYa43v3r">
+                            <div class="static dvheader twoline">Gold Pit</div>
                         </div>
                     </a>
                 </div>
@@ -317,8 +349,8 @@
                 }
 
                 document.getElementById('credits-toggle').addEventListener('click', function () {
-                    $('#sf-menu').toggle();
-                    $('#sf-about').toggle();
+                    $('[data-tab="menu"]').toggle();
+                    $('[data-tab="about"]').toggle();
                 })
             })
         </script>

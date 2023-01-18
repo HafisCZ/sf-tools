@@ -100,6 +100,7 @@
     },
     "index": {
         "toggle": "Toggle credits",
+        "others": "Other community tools",
         "roles": {
             "admin": "Someone with a lot of free time",
             "helper": "Helpers - Research, Testing, Feedback, etc.",
