@@ -163,6 +163,7 @@ const SiteOptions = new OptionsHandler(
         advanced: false,
         hidden: false,
         terms_accepted: false,
+        endpoint_terms_accepted: false,
         version_accepted: false,
         groups_hidden: false,
         players_hidden: false,
