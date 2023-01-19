@@ -195,6 +195,55 @@
         "title": "404",
         "text": "Not sure what you're looking for but it does not exist"
     },
+    "terms": {
+        "title": "Terms and Conditions",
+        "button": {
+            "accept_full": "I understand & accept these terms",
+            "accept": "Accept",
+            "reject": "Reject"
+        },
+        "general": {
+            "heading0": {
+                "title": "General use",
+                "clause0": "It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.",
+                "clause1": "The site is distributed <b>AS IS</b> without any warranties. You are fully responsible for use of this site.",
+                "clause2": "You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.",
+                "clause3": "You agree to limit data collection from the game to reasonable amounts.",
+                "clause4": "You agree to follow the Shakes & Fidget <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Terms and Conditions</a>",
+                "clause5": "You are not allowed to automate any part of this tool."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.",
+                "clause1": "It is not possible to capture any other players than those listed above.",
+                "clause2": "Everything happens locally in a identical way to playing the game through browser."
+            },
+            "heading2": {
+                "title": "Integrated share service",
+                "clause0": "All data shared via the integrated share function is not protected in any other way other than the share key.",
+                "clause1": "The shared data might be deleted at any point of time, up to full 2 days."
+            },
+            "heading3": {
+                "title": "Sentry",
+                "clause0": "All errors raised during use of this tool will be reported via Sentry.io tool.",
+                "clause1": "These reports are anonymous so that it's not possible to track their origin.",
+                "clause2": "Please note that certain ad-blockers might prevent Sentry from working.",
+                "clause3": "If you want to contribute to this project I recommend disabling ad-blockers for this site."
+            }
+        },
+        "endpoint": {
+            "clause0": "Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.",
+            "clause1": "All data entered is sent directly to the game server without involvement of any 3rd party.",
+            "clause2": "It is not possible to capture any other players than those explicitly stated within the application.",
+            "clause3": "All data collection is done using normal means, without any use of forbidden actions."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Terms not accepted",
+                "message": "You must accept the terms in order to continue"
+            }
+        }
+    },
     "stats": {
         "topbar": {
             "temporary_flag": "Temporary",
@@ -903,8 +952,6 @@
         "temporary": "Discard capture when page is closed",
         "cancel": "Cancel",
         "continue": "Continue",
-        "accept_terms": "Accept",
-        "reject_terms": "Reject",
         "step2": {
             "title": "Loading Endpoint"
         },

@@ -115,40 +115,48 @@ const DialogController = new (class {
 })();
 
 const TermsAndConditionsDialog = new (class extends Dialog {
+    intl (heading, clause = null) {
+        if (clause === null) {
+            return intl(`terms.general.heading${heading}.title`);
+        } else {
+            return intl(`terms.general.heading${heading}.clause${clause}`);
+        }
+    }
+
     _createModal () {
         return `
             <div class="small inverted dialog">
-                <div class="header"><u>Terms and Conditions</u></div>
+                <div class="header"><u>${intl('terms.title')}</u></div>
                 <div class="overflow-y-scroll" style="max-height: 65vh;">
-                    <h4 class="text-center text-orange">§1 General use</h4>
+                    <h4 class="text-center text-orange">§1 ${this.intl(0)}</h4>
                     <ul>
-                        <li>It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.</li>
-                        <li class="mt-2">The site is distributed <b>AS IS</b> wthout any warranties. You are fully responsible for use of this site.</li>
-                        <li class="mt-2">You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.</li>
-                        <li class="mt-2">You agree to limit data collection from the game to reasonable amounts.</li>
-                        <li class="mt-2">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html">Terms and Conditions</a></li>
-                        <li class="mt-2">You are not allowed to automate any part of this tool.</li>
+                        <li>${this.intl(0, 0)}</li>
+                        <li class="mt-2">${this.intl(0, 1)}</li>
+                        <li class="mt-2">${this.intl(0, 2)}</li>
+                        <li class="mt-2">${this.intl(0, 3)}</li>
+                        <li class="mt-2">${this.intl(0, 4)}</li>
+                        <li class="mt-2">${this.intl(0, 5)}</li>
                     </ul>
-                    <h4 class="text-center text-orange">§2 Endpoint</h4>
+                    <h4 class="text-center text-orange">§2 ${this.intl(1)}</h4>
                     <ul>
-                        <li>Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.</li>
-                        <li class="mt-2">It is not possible to capture any other players than those listed above.</li>
-                        <li class="mt-2">Everything happens locally in a identical way to playing the game through browser.</li>
+                        <li>${this.intl(1, 0)}</li>
+                        <li class="mt-2">${this.intl(1, 1)}</li>
+                        <li class="mt-2">${this.intl(1, 2)}</li>
                     </ul>
-                    <h4 class="text-center text-orange">§3 Integrated share service</h4>
+                    <h4 class="text-center text-orange">§3 ${this.intl(2)}</h4>
                     <ul>
-                        <li>All data shared via the integrated share function is not protected in any other way other than the share key.</li>
-                        <li class="mt-2">The shared data might be deleted at any point of time, up to full 2 days.</li>
+                        <li>${this.intl(2, 0)}</li>
+                        <li class="mt-2">${this.intl(2, 1)}</li>
                     </ul>
-                    <h4 class="text-center text-orange">§4 Sentry</h4>
+                    <h4 class="text-center text-orange">§4 ${this.intl(3)}</h4>
                     <ul>
-                        <li>All errors raised during use of this tool will be reported via Sentry.io tool.</li>
-                        <li class="mt-2">These reports are anonymous so that it's not possible to track their origin.</li>
-                        <li class="mt-2">Please note that certain ad-blockers might prevent Sentry from working.</li>
-                        <li class="mt-2">If you want to contribute to this project I recommend disabling ad-blockers for this site.</li>
+                        <li>${this.intl(3, 0)}</li>
+                        <li class="mt-2">${this.intl(3, 1)}</li>
+                        <li class="mt-2">${this.intl(3, 2)}</li>
+                        <li class="mt-2">${this.intl(3, 3)}</li>
                     </ul>
                 </div>
-                <button class="ui green fluid button" data-op="accept">I understand & accept these terms</button>
+                <button class="ui green fluid button" data-op="accept">${intl('terms.button.accept_full')}</button>
             </div>
         `;
     }
