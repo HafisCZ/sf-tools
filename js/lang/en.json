@@ -903,6 +903,8 @@
         "temporary": "Discard capture when page is closed",
         "cancel": "Cancel",
         "continue": "Continue",
+        "accept_terms": "Accept",
+        "reject_terms": "Reject",
         "step2": {
             "title": "Loading Endpoint"
         },

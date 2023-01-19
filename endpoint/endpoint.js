@@ -103,15 +103,20 @@ class EndpointController {
     }
 }
 
-const ENDPOINT_MODES = ['own', 'default', 'guild', 'friends', 'hall_of_fame'];
-
-const Endpoint = new (class extends Dialog {
+const EndpointDialog = new (class extends Dialog {
     intl (key) {
         return intl(`endpoint.${key}`);
     }
 
     _applyArguments (allowTemporary = false) {
-        this.$step1.show();
+        if (this._termsAccepted()) {
+            this.$step0.hide();
+            this.$step1.show();
+        } else {
+            this.$step0.show();
+            this.$step1.hide();
+        }
+
         this.$step2.hide();
         this.$step3.hide();
         this.$step4.hide();
@@ -157,7 +162,23 @@ const Endpoint = new (class extends Dialog {
         }
     }
 
+    _termsAccepted () {
+        return SiteOptions.endpoint_terms_accepted;
+    }
+
+    _termsAccept () {
+        SiteOptions.endpoint_terms_accepted = true;
+
+        this.$step0.hide();
+        this.$step1.show();
+    }
+
     _createBindings () {
+        // Terms and Conditions
+        this.$step0 = this.$parent.find('[data-op="step0"]');
+        this.$step0.operator('accept-terms').click(() => this._termsAccept());
+        this.$step0.operator('reject-terms').click(() => this.close(false));
+
         // Login Form
         this.$step1 = this.$parent.find('[data-op="step1"]');
         // Unity Loader
@@ -183,7 +204,7 @@ const Endpoint = new (class extends Dialog {
         // Endpoint mode
         this.$mode = this.$parent.operator('mode');
         this.$mode.dropdown({
-            values: ENDPOINT_MODES.map((value) => ({
+            values: ['own', 'default', 'guild', 'friends', 'hall_of_fame'].map((value) => ({
                 value,
                 name: this.intl(`mode.${value}`),
                 selected: value === Store.shared.get('endpoint_mode', 'default', true)
@@ -379,12 +400,34 @@ const Endpoint = new (class extends Dialog {
         return `
             <div class="very small basic dialog">
                 <iframe class="opacity-0 pointer-events-none position-fixed" data-op="iframe"></iframe>
+                <div data-op="step0">${this._createStep0()}</div>
                 <div data-op="step1">${this._createStep1()}</div>
                 <div data-op="step2">${this._createStep2()}</div>
                 <div data-op="step3">${this._createStep3()}</div>
                 <div data-op="step4">${this._createStep4()}</div>
                 <div data-op="step5">${this._createStep5()}</div>
                 <div data-op="step6">${this._createStep6()}</div>
+            </div>
+        `;
+    }
+
+    // Terms and Conditions screen
+    _createStep0 () {
+        return `
+            <div class="flex flex-col gap-2 p-4" style="border: 1px solid #262626; background: #0b0c0c; border-radius: 0.5em; margin: -2em;">
+                <h1 class="ui inverted header text-center !mb-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">Endpoint</h1>
+                <div class="overflow-y-scroll text-white" style="max-height: 45vh;">
+                    <ul>
+                        <li>Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
+                        <li class="mt-2">All data entered is sent directly to the game server without involvement of any 3rd party.</li>
+                        <li class="mt-2">It is not possible to capture any other players than those explicitly stated within the application.</li>
+                        <li class="mt-2">All data collection is done using normal means, without any use of forbidden actions.</li>
+                    </ul>
+                </div>
+                <div class="ui two buttons">
+                    <button class="ui secondary button" data-op="reject-terms">${this.intl('reject_terms')}</button>
+                    <button class="ui !text-black !background-orange button" data-op="accept-terms">${this.intl('accept_terms')}</button>
+                </div>
             </div>
         `;
     }
@@ -420,7 +463,7 @@ const Endpoint = new (class extends Dialog {
                 </div>
                 <div class="ui two buttons">
                     <button class="ui secondary button" data-op="back">${this.intl('cancel')}</button>
-                    <button class="ui primary button" data-op="login">${this.intl('continue')}</button>
+                    <button class="ui !text-black !background-orange button" data-op="login">${this.intl('continue')}</button>
                 </div>
             </div>
         `;
@@ -444,7 +487,7 @@ const Endpoint = new (class extends Dialog {
             </div>
             <div class="ui two buttons">
                 <button class="ui secondary button" data-op="back">${this.intl('cancel')}</button>
-                <button class="ui primary button" data-op="import">${this.intl('continue')}</button>
+                <button class="ui !text-black !background-orange button" data-op="import">${this.intl('continue')}</button>
             </div>
         `;
     }
@@ -672,7 +715,7 @@ const StatisticsIntegration = new (class {
     }
 
     _importEndpoint () {
-        DialogController.open(Endpoint, true).then((actionSuccess) => {
+        DialogController.open(EndpointDialog, true).then((actionSuccess) => {
             if (actionSuccess) {
                 this._poll();
             }
