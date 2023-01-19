@@ -16,8 +16,16 @@ const CHANGELOG = {
         'Hydra Simulator': [
             'Fixed maximum hydra level after import'
         ],
+        'Fortress Simulator': [
+            'Replaced fortifications input with a dropdown'
+        ],
+        'Hellevator Simulator': [
+            'Added prototype simulator'
+        ],
         'All Tools': [
             'Added dark theme',
+            'Added new terms &amp; conditions that must be accepted before using Endpoint',
+            'Added links to community-made tools on the main page',
             'Updated styling of all dialogs'
         ]
     },
