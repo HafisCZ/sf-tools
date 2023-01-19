@@ -177,7 +177,11 @@ const EndpointDialog = new (class extends Dialog {
         // Terms and Conditions
         this.$step0 = this.$parent.find('[data-op="step0"]');
         this.$step0.operator('accept-terms').click(() => this._termsAccept());
-        this.$step0.operator('reject-terms').click(() => this.close(false));
+        this.$step0.operator('reject-terms').click(() => {
+            Toast.info(intl('terms.toast.rejected.title'), intl('terms.toast.rejected.message'));
+
+            this.close(false);
+        });
 
         // Login Form
         this.$step1 = this.$parent.find('[data-op="step1"]');
@@ -415,18 +419,18 @@ const EndpointDialog = new (class extends Dialog {
     _createStep0 () {
         return `
             <div class="flex flex-col gap-2 p-4" style="border: 1px solid #262626; background: #0b0c0c; border-radius: 0.5em; margin: -2em;">
-                <h1 class="ui inverted header text-center !mb-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">Endpoint</h1>
+                <h1 class="ui inverted header text-center !mb-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">${intl('terms.title')}</h1>
                 <div class="overflow-y-scroll text-white" style="max-height: 45vh;">
                     <ul>
-                        <li>Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
-                        <li class="mt-2">All data entered is sent directly to the game server without involvement of any 3rd party.</li>
-                        <li class="mt-2">It is not possible to capture any other players than those explicitly stated within the application.</li>
-                        <li class="mt-2">All data collection is done using normal means, without any use of forbidden actions.</li>
+                        <li>${intl('terms.endpoint.clause0')}</li>
+                        <li class="mt-2">${intl('terms.endpoint.clause1')}</li>
+                        <li class="mt-2">${intl('terms.endpoint.clause2')}</li>
+                        <li class="mt-2">${intl('terms.endpoint.clause3')}</li>
                     </ul>
                 </div>
                 <div class="ui two buttons">
-                    <button class="ui secondary button" data-op="reject-terms">${this.intl('reject_terms')}</button>
-                    <button class="ui !text-black !background-orange button" data-op="accept-terms">${this.intl('accept_terms')}</button>
+                    <button class="ui secondary button" data-op="reject-terms">${intl('terms.button.reject')}</button>
+                    <button class="ui !text-black !background-orange button" data-op="accept-terms">${intl('terms.button.accept')}</button>
                 </div>
             </div>
         `;
