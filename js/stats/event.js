@@ -2698,8 +2698,11 @@ class SettingsView extends View {
         });
 
         this.$save = this.$parent.operator('save');
-        this.$save.click(() => {
+        this.$save.click((event) => {
             this.save();
+            if (event.ctrlKey && this.returnTo) {
+                this.returnTo();
+            }
         });
 
         this.$remove = this.$parent.operator('remove');
@@ -2713,19 +2716,27 @@ class SettingsView extends View {
             );
         });
 
-        this.$parent.operator('save-template').click(() => {
-            DialogController.open(
-                TemplateSaveDialog,
-                this.script.parent,
-                (name) => {
-                    TemplateManager.save(name, this.editor.content);
+        this.$parent.operator('save-template').click((event) => {
+            if (event.ctrlKey && this.returnTo && this.script.parent) {
+                this.save();
 
-                    this.script.parent = name;
+                TemplateManager.save(this.script.parent, this.editor.content);
 
-                    this._contentChanged(true, 'parent');
-                    this._updateSidebars();
-                }
-            )
+                this.returnTo();
+            } else {
+                DialogController.open(
+                    TemplateSaveDialog,
+                    this.script.parent,
+                    (name) => {
+                        TemplateManager.save(name, this.editor.content);
+    
+                        this.script.parent = name;
+    
+                        this._contentChanged(true, 'parent');
+                        this._updateSidebars();
+                    }
+                )
+            }
         })
 
         this.editor = new ScriptEditor(
