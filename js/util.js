@@ -782,6 +782,8 @@ function getCSSColor (color) {
         return toCSSColor(color.substring(color.lastIndexOf('#')));
     } else if (/^([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
         return toCSSColor('#' + color);
+    } else if (/^rgba?\(\d{1,3}(, \d{1,3}){2,3}\)$/.test(color)) {
+        return getColorFromRGBA(...color.slice(color.indexOf('(') + 1, color.lastIndexOf(')')).split(',').map(n => n.trim()));
     } else {
         return '';
     }
