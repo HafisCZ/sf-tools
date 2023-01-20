@@ -2716,7 +2716,8 @@ class SettingsView extends View {
             );
         });
 
-        this.$parent.operator('save-template').click((event) => {
+        this.$saveTemplate = this.$parent.operator('save-template');
+        this.$saveTemplate.click((event) => {
             if (event.ctrlKey && this.returnTo && this.script.parent) {
                 this.save();
 
@@ -2744,6 +2745,41 @@ class SettingsView extends View {
             EditorType.DEFAULT,
             (value) => this._contentChanged(this.script && value !== this.script.content, 'content')
         )
+
+        // React to CTRL presses
+        this.ctrlDown = false;
+        this._updateButtons();
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Control' && !this.ctrlDown) {
+                this.ctrlDown = true;
+                this._updateButtons();
+            }
+        });
+
+        window.addEventListener('keyup', (event) => {
+            if (event.key === 'Control' && this.ctrlDown) {
+                this.ctrlDown = false;
+                this._updateButtons();
+            }
+        });
+    }
+
+    _updateButtons () {
+        if (UI.current !== this) {
+            return;
+        }
+
+        if (this.ctrlDown && this.returnTo) {
+            this.$save.find('i').removeClass('save').addClass('reply')
+            
+            if (this.script.parent) {
+                this.$saveTemplate.find('i').removeClass('save').addClass('reply')
+            }
+        } else {
+            this.$save.find('i').removeClass('reply').addClass('save')
+            this.$saveTemplate.find('i').removeClass('reply').addClass('save')
+        }
     }
 
     // Returns default key for specified key
@@ -2908,6 +2944,8 @@ class SettingsView extends View {
         } else {
             this.$archive.removeClass('disabled');
         }
+
+        this._updateButtons();
     }
 
     _getScriptName (value) {
