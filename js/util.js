@@ -132,7 +132,7 @@ class Constants {
             'normal': 100,
             'large': 160,
             'huge': 200,
-            'scrapbook': 2200,
+            'scrapbook': SCRAPBOOK_COUNT,
             'max': -1,
             'weapon': 1,
             'shield': 2,
