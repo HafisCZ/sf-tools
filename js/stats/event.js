@@ -2447,7 +2447,7 @@ class FilesView extends View {
                     <div class="ui inverted input">
                         <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
                     </div>
-                    <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
+                    <div class="ta-content" style="width: 100%; margin-top: calc(-1em - 16px); margin-left: 1em;"></div>
                 </div>
             </div>
         `);
