@@ -183,7 +183,7 @@ const SettingsCommands = [
     new Command(
         /^if not (.+)$/,
         null,
-        (root, arg) => SFormat.Macro(`if not ${ arg }`)
+        (root, arg) => Highlighter.keyword('if not ').value(arg).asMacro()
     ).parseNever(),
     /*
         If
@@ -191,7 +191,7 @@ const SettingsCommands = [
     new Command(
         /^if (.+)$/,
         null,
-        (root, arg) => SFormat.Macro(`if ${ arg }`)
+        (root, arg) => Highlighter.keyword('if ').value(arg).asMacro()
     ).parseNever(),
     /*
         Else if
@@ -199,7 +199,7 @@ const SettingsCommands = [
     new Command(
         /^else if (.+)$/,
         null,
-        (root, arg) => SFormat.Macro(`else if ${ arg }`)
+        (root, arg) => Highlighter.keyword('else if ').value(arg).asMacro()
     ).parseNever(),
     /*
         Else
@@ -207,7 +207,7 @@ const SettingsCommands = [
     new Command(
         /^else$/,
         null,
-        (root) => SFormat.Macro('else')
+        (root) => Highlighter.keyword('else').asMacro()
     ).parseNever(),
     /*
         Loop
@@ -215,7 +215,7 @@ const SettingsCommands = [
     new Command(
         /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
         null,
-        (root, name, array) => SFormat.Macro(SFormat.Keyword('loop ') + SFormat.Constant(name) + SFormat.Keyword(' for ') + Expression.format(array, root), true)
+        (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro()
     ).parseNever(),
     /*
         End loop or condition
@@ -223,20 +223,20 @@ const SettingsCommands = [
     new Command(
         /^end$/,
         null,
-        (root) => SFormat.Macro('end')
+        (root) => Highlighter.keyword('end').asMacro()
     ).parseNever(),
     /*
         Macro-compatible function
     */
     new Command(
         /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
-        (root, name, arguments, expression) => {
+        (root, name, args, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addFunction(name, ast, arguments.split(',').map(v => v.trim()));
+                root.addFunction(name, ast, args.split(',').map(v => v.trim()));
             }
         },
-        (root, name, arguments, expression) => SFormat.Macro('mset') + SFormat.Keyword(' ') + SFormat.Constant(name) + SFormat.Keyword(' with ') + arguments.split(',').map(v => SFormat.Constant(v)).join(',') + SFormat.Keyword(' as ') + Expression.format(expression, root),
+        (root, name, args, expression) => Highlighter.keyword('mset ').constant(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
     ).parseAlways(),
     /*
         Macro-compatible variable
@@ -249,7 +249,7 @@ const SettingsCommands = [
                 root.addVariable(name, ast, false);
             }
         },
-        (root, name, expression) => SFormat.Macro('mset') + SFormat.Keyword(' ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root),
+        (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
     ).parseAlways(),
     /*
         Constant
@@ -257,7 +257,7 @@ const SettingsCommands = [
     new Command(
         /^const (\w+) (.+)$/,
         (root, name, value) => root.addConstant(name, value),
-        (root, name, value) => SFormat.Keyword('const ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value),
+        (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
     ).parseAlways(),
     /*
         Constant Expression
@@ -270,7 +270,7 @@ const SettingsCommands = [
                 root.addConstant(name, new ExpressionScope(root).eval(ast));
             }
         },
-        (root, name, expression) => SFormat.Keyword('constexpr ') + SFormat.Constant(name) + ' ' + Expression.format(expression, root),
+        (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
     ).parseAlways(),
     /*
         Server column
@@ -290,17 +290,17 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('server ');
-            let val = root.constants.getValue(a, b);
+            const acc = Highlighter.keyword('server ');
 
+            let val = root.constants.getValue(a, b);
             if (ARG_MAP_SERVER.hasOwnProperty(value)) {
-                return prefix + SFormat.Bool(value);
+                return acc.boolean(value, true);
             } else if (root.constants.isValid(a, b) && !isNaN(val)) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@' || isNaN(val)) {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Normal(value);
+                return acc.value(value);
             }
         }
     ),
@@ -316,15 +316,15 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('name ');
-            let val = root.constants.getValue(a, b);
+            const acc = Highlighter.keyword('name ');
 
+            let val = root.constants.getValue(a, b);
             if (root.constants.isValid(a, b) && !isNaN(val)) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@' || isNaN(val)) {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Normal(value);
+                return acc.value(value);
             }
         }
     ),
@@ -340,15 +340,15 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('width ');
-            let val = root.constants.getValue(a, b);
+            const acc = Highlighter.keyword('width ');
 
+            let val = root.constants.getValue(a, b);
             if (root.constants.isValid(a, b) && !isNaN(val)) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@' || isNaN(val)) {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Normal(value);
+                return acc.value(value);
             }
         }
     ).copyable(),
@@ -364,20 +364,19 @@ const SettingsCommands = [
             }
         },
         (root, parts) => {
-            let prefix = SFormat.Keyword('columns ');
-            let content = [];
-            for (let part of parts.split(',')) {
-                const value = root.constants.get(part.trim());
-                if (isNaN(value)) {
-                    content.push(SFormat.Error(part));
-                } else if (part.trim()[0] == '@') {
-                    content.push(SFormat.Constant(part));
-                } else {
-                    content.push(SFormat.Normal(part));
+            return Highlighter.keyword('columns ').join(
+                parts.split(','),
+                (part) => {
+                    const value = root.constants.get(part.trim());
+                    if (isNaN(value)) {
+                        return 'error';
+                    } else if (part.trim()[0] == '@') {
+                        return 'constant';
+                    } else {
+                        return 'value';
+                    }
                 }
-            }
-
-            return prefix + content.join(',');
+            )
         }
     ).copyable(),
     /*
@@ -392,15 +391,14 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('not defined value ');
-            let val = root.constants.getValue(a, b);
-
+            const acc = Highlighter.keyword('not defined value ');
+            
             if (root.constants.isValid(a, b)) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@') {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Normal(value);
+                return acc.value(value);
             }
         }
     ).copyable(),
@@ -416,15 +414,15 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('not defined color ');
+            const acc = Highlighter.keyword('not defined color ');
+            
             let val = getCSSColor(root.constants.getValue(a, b));
-
             if (root.constants.isValid(a, b) && val) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@' || !val) {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Color(value, val);
+                return acc.color(value, val);
             }
         }
     ).copyable(),
@@ -440,13 +438,14 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('value ') + SFormat.Constant('default ');
+            const acc = Highlighter.keyword('value ').constant('default ');
+
             if (root.constants.isValid(a, b)) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@') {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Normal(value);
+                return acc.value(value);
             }
         }
     ).copyable(),
@@ -464,25 +463,27 @@ const SettingsCommands = [
             }
         },
         (root, rule, value, a, b, value2, a2, b2) => {
-            let prefix = SFormat.Keyword('value ') + SFormat.Constant(rule) + ' ';
+            const acc = Highlighter.keyword('value ').constant(rule).space();
 
             if (root.constants.isValid(a, b)) {
-                value = SFormat.Constant(value);
+                acc.constant(value);
             } else if (a == '@') {
-                value = SFormat.Error(value);
+                acc.error(value);
             } else {
-                value = SFormat.Normal(value);
+                acc.value(value);
             }
+
+            acc.space();
 
             if (root.constants.isValid(a2, b2)) {
-                value2 = SFormat.Constant(value2);
+                acc.constant(value2);
             } else if (a2 == '@') {
-                value2 = SFormat.Error(value2);
+                acc.error(value2);
             } else {
-                value2 = SFormat.Normal(value2);
+                acc.value(value2);
             }
 
-            return prefix + value + ' ' + value2;
+            return acc;
         }
     ).copyable(),
     /*
@@ -497,15 +498,15 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('color ') + SFormat.Constant('default ');
+            const acc = Highlighter.keyword('color ').constant('default ');
+            
             let val = getCSSColor(root.constants.getValue(a, b));
-
             if (root.constants.isValid(a, b) && val) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@' || !val) {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Color(value, val);
+                return acc.color(value, val);
             }
         }
     ).copyable(),
@@ -523,26 +524,28 @@ const SettingsCommands = [
             }
         },
         (root, rule, value, a, b, value2, a2, b2) => {
-            let prefix = SFormat.Keyword('color ') + SFormat.Constant(rule) + ' ';
+            const acc = Highlighter.keyword('color ').constant(rule).space();
+            
             let val = getCSSColor(root.constants.getValue(a2, b2));
-
             if (root.constants.isValid(a, b)) {
-                value = SFormat.Constant(value);
+                value = acc.constant(value);
             } else if (a == '@') {
-                value = SFormat.Error(value);
+                value = acc.error(value);
             } else {
-                value = SFormat.Normal(value);
+                value = acc.value(value);
             }
+
+            acc.space();
 
             if (root.constants.isValid(a2, b2) && val) {
-                value2 = SFormat.Constant(value2);
+                value2 = acc.constant(value2);
             } else if (a2 == '@' || !val) {
-                value2 = SFormat.Error(value2);
+                value2 = acc.error(value2);
             } else {
-                value2 = SFormat.Color(value2, val);
+                value2 = acc.color(value2, val);
             }
 
-            return prefix + value + ' ' + value2;
+            return acc;
         }
     ).copyable(),
     /*
@@ -557,15 +560,14 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('alias ');
-            let val = root.constants.getValue(a, b);
-
+            const acc = Highlighter.keyword('alias ');
+            
             if (root.constants.isValid(a, b)) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@') {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Normal(value);
+                return acc.value(value);
             }
         }
     ).copyable(),
@@ -588,7 +590,16 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, expression) => SFormat.Keyword('format statistics ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root)))
+        (root, expression) => {
+            const acc = Highlighter.keyword('format statistics ');
+            if (expression === 'on' || expression == 'off') {
+                return acc.boolean(expression, expression === 'on');
+            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+                return acc.constant(expression);
+            } else {
+                return acc.expression(expression, root);
+            }
+        }
     ).copyable(),
     /*
         Difference format expression
@@ -609,7 +620,16 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, expression) => SFormat.Keyword('format difference ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root)))
+        (root, expression) => {
+            const acc = Highlighter.keyword('format difference ');
+            if (expression === 'on' || expression == 'off') {
+                return acc.boolean(expression, expression === 'on');
+            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+                return acc.constant(expression);
+            } else {
+                return acc.expression(expression, root);
+            }
+        }
     ).copyable(),
     /*
         Cell background
@@ -623,15 +643,15 @@ const SettingsCommands = [
             }
         },
         (root, value, a, b) => {
-            let prefix = SFormat.Keyword('background ');
+            const acc = Highlighter.keyword('background ');
+            
             let val = getCSSColor(root.constants.getValue(a, b));
-
             if (root.constants.isValid(a, b) && val) {
-                return prefix + SFormat.Constant(value);
+                return acc.constant(value);
             } else if (a == '@' || !val) {
-                return prefix + SFormat.Error(value);
+                return acc.error(value);
             } else {
-                return prefix + SFormat.Color(value, val);
+                return acc.color(value, val);
             }
         }
     ).copyable(),
@@ -650,7 +670,14 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, token, expression) => SFormat.Keyword(`${ token } `) + (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root))
+        (root, token, expression) => {
+            const acc = Highlighter.keyword(token).space();
+            if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+                return acc.constant(expression);
+            } else {
+                return acc.expression(expression, root);
+            }
+        }
     ).copyable(),
     /*
         Category
@@ -663,7 +690,14 @@ const SettingsCommands = [
                 root.addExtension(... extensions.slice(0, -1).split(','));
             }
         },
-        (root, extensions, name) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('category') + (name ? (' ' + SFormat.Normal(name)) : '')
+        (root, extensions, name) => {
+            const acc = Highlighter.constant(extensions || '').keyword('category');
+            if (name) {
+                return acc.space().identifier(name);
+            } else {
+                return acc;
+            }
+        }
     ).copyable(),
     /*
         Grouped header
@@ -679,23 +713,24 @@ const SettingsCommands = [
             }
         },
         (root, extensions, name, length) => {
-            let prefix = (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('header');
-            let suffix = SFormat.Keyword(' as group of ') + SFormat.Constant(length);
+            const acc = Highlighter.constant(extensions || '').keyword('header');
             if (name != undefined) {
+                acc.space();
+
                 if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.Reserved(name) + suffix;
+                    acc.header(name);
                 } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedProtected(name) + suffix;
+                    acc.header(name, '-protected');
                 } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedPrivate(name) + suffix;
+                    acc.header(name, '-private');
                 } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedItemizable(name) + suffix;
+                    acc.header(name, '-itemizable');
                 } else {
-                    return prefix + ' ' + SFormat.Normal(name) + suffix;
+                    acc.identifier(name);
                 }
-            } else {
-                return prefix + suffix;
             }
+            
+            return acc.keyword(' as group of ').value(length);
         }
     ).copyable(),
     /*
@@ -710,22 +745,24 @@ const SettingsCommands = [
             }
         },
         (root, extensions, name) => {
-            let prefix = (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('header');
+            const acc = Highlighter.constant(extensions || '').keyword('header');
             if (name != undefined) {
+                acc.space();
+
                 if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.Reserved(name);
+                    acc.header(name);
                 } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedProtected(name);
+                    acc.header(name, '-protected');
                 } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedPrivate(name);
+                    acc.header(name, '-private');
                 } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
-                    return prefix + ' ' + SFormat.ReservedItemizable(name);
+                    acc.header(name, '-itemizable');
                 } else {
-                    return prefix + ' ' + SFormat.Normal(name);
+                    acc.identifier(name);
                 }
-            } else {
-                return prefix;
             }
+            
+            return acc;
         }
     ).copyable(),
     /*
@@ -742,7 +779,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, extensions, name, expression) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('show ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+        (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').constant(name).keyword(' as ').expression(expression, root)
     ),
     /*
         Var
@@ -750,7 +787,7 @@ const SettingsCommands = [
     new Command(
         /^var (\w+) (.+)$/,
         (root, name, value) => root.addHeaderVariable(name, value),
-        (root, name, value) => SFormat.Keyword('var ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value)
+        (root, name, value) => Highlighter.keyword('var ').constant(name).space().value(value)
     ).copyable(),
     /*
         Embedded table end
@@ -758,7 +795,7 @@ const SettingsCommands = [
     new Command(
         /^embed end$/,
         (root) => root.pushEmbed(),
-        (root) => SFormat.Keyword('embed end')
+        (root) => Highlighter.keyword('embed end')
     ).copyable(),
     /*
         Embedded table
@@ -771,7 +808,14 @@ const SettingsCommands = [
                 root.addExtension(... extensions.slice(0, -1).split(','));
             }
         },
-        (root, extensions, name) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('embed') + (name ? (' ' + SFormat.Normal(name)) : '')
+        (root, extensions, name) => {
+            const acc = Highlighter.constant(extensions || '').keyword('embed');
+            if (name) {
+                return acc.space().identifier(name);
+            } else {
+                return acc;
+            }
+        }
     ).copyable(),
     /*
         Layout
@@ -779,7 +823,7 @@ const SettingsCommands = [
     new Command(
         /^layout ((\||\_|table|statistics|rows|members)(\s+(\||\_|table|statistics|rows|members))*)$/,
         (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
-        (root, layout) => SFormat.Keyword('layout ') + SFormat.Constant(layout)
+        (root, layout) => Highlighter.keyword('layout ').constant(layout)
     ),
     /*
         Table variable
@@ -792,7 +836,7 @@ const SettingsCommands = [
                 root.addVariable(name, ast, true);
             }
         },
-        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(name) + SFormat.Keyword(' with all as ') + Expression.format(expression, root),
+        (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
     ).parseAlways(),
     /*
         New syntax for table variable
@@ -805,7 +849,7 @@ const SettingsCommands = [
                 root.addVariable(name, ast, true);
             }
         },
-        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(`$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+        (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root)
     ).parseAlways(),
     /*
         New syntax for unfiltered table variable
@@ -818,20 +862,20 @@ const SettingsCommands = [
                 root.addVariable(name, ast, 'unfiltered');
             }
         },
-        (root, name, expression) => SFormat.Keyword('set ') + SFormat.UnfilteredGlobal(`$$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+        (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
     ).parseAlways(),
     /*
         Function
     */
     new Command(
         /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
-        (root, name, arguments, expression) => {
+        (root, name, args, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addFunction(name, ast, arguments.split(',').map(v => v.trim()));
+                root.addFunction(name, ast, args.split(',').map(v => v.trim()));
             }
         },
-        (root, name, arguments, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with ') + arguments.split(',').map(v => SFormat.Constant(v)).join(',') + SFormat.Keyword(' as ') + Expression.format(expression, root),
+        (root, name, args, expression) => Highlighter.keyword('set ').constant(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
     ).parseAlways(),
     /*
         Variable
@@ -844,7 +888,7 @@ const SettingsCommands = [
                 root.addVariable(name, ast, false);
             }
         },
-        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root),
+        (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root)
     ).parseAlways(),
     /*
         Lined
@@ -852,12 +896,12 @@ const SettingsCommands = [
     new Command(
         /^lined$/,
         (root, value) => root.addGlobal('lined', 1),
-        (root, value) => SFormat.Keyword('lined')
+        (root, value) => Highlighter.keyword('lined')
     ),
     new Command(
         /^lined (on|off|thin|thick)$/,
         (root, value) => root.addGlobal('lined', ARG_MAP[value]),
-        (root, value) => SFormat.Keyword('lined ') + SFormat.Bool(value, value == 'thick' || value == 'thin' ? 'on' : value)
+        (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
     ),
     /*
         Theme
@@ -865,7 +909,7 @@ const SettingsCommands = [
     new Command(
         /^theme (light|dark)$/,
         (root, value) => root.addGlobal('theme', value),
-        (root, value) => SFormat.Keyword('theme ') + SFormat.Bool(value, 'on')
+        (root, value) => Highlighter.keyword('theme ').boolean(value, true)
     ),
     new Command(
         /^theme text:(\S+) background:(\S+)$/,
@@ -875,7 +919,7 @@ const SettingsCommands = [
                 background: getCSSBackground(backgroundColor)
             });
         },
-        (root, textColor, backgroundColor) => SFormat.Keyword('theme') + SFormat.Constant(' text:') + SFormat.Color(textColor, getCSSColor(textColor)) + SFormat.Constant(' background:') + SFormat.Color(backgroundColor, getCSSColor(backgroundColor))
+        (root, textColor, backgroundColor) => Highlighter.keyword('theme ').constant('text:').color(textColor, getCSSColor(textColor)).constant(' background:').color(backgroundColor, getCSSColor(backgroundColor))
     ),
     /*
         Performance (entry cutoff)
@@ -887,7 +931,7 @@ const SettingsCommands = [
                 root.addGlobal('performance', Number(value));
             }
         },
-        (root, value) => SFormat.Keyword('performance ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+        (root, value) => Highlighter.keyword('performance ')[value > 0 ? 'value' : 'error'](value)
     ),
     /*
         Scale
@@ -899,7 +943,7 @@ const SettingsCommands = [
                 root.addGlobal('scale', Number(value));
             }
         },
-        (root, value) => SFormat.Keyword('scale ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+        (root, value) => Highlighter.keyword('scale ')[value > 0 ? 'value' : 'error'](value)
     ),
     /*
         Row height
@@ -911,7 +955,7 @@ const SettingsCommands = [
                 root.addGlobalEmbedable('row_height', Number(value));
             }
         },
-        (root, value) => SFormat.Keyword('row height ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+        (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
     ),
     /*
         Font
@@ -924,7 +968,7 @@ const SettingsCommands = [
                 root.addGlobalEmbedable('font', value);
             }
         },
-        (root, font) => SFormat.Keyword('font ') + (getCSSFont(font) ? SFormat.Normal(font) : SFormat.Error(font))
+        (root, font) => Highlighter.keyword('font ')[getCSSFont(font) ? 'value' : 'error'](font)
     ),
     /*
         Shared options
@@ -932,7 +976,7 @@ const SettingsCommands = [
     new Command(
         /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
         (root, key, value) => root.addShared(key, ARG_MAP[value]),
-        (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
+        (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
     ).copyable(),
     /*
         Clean
@@ -940,12 +984,12 @@ const SettingsCommands = [
     new Command(
         /^clean$/,
         (root) => root.addLocal('clean', 1),
-        (root) => SFormat.Keyword('clean')
+        (root) => Highlighter.keyword('clean')
     ).copyable(),
     new Command(
         /^clean hard$/,
         (root) => root.addLocal('clean', 2),
-        (root) => SFormat.Keyword('clean ') + SFormat.Constant('hard')
+        (root) => Highlighter.keyword('clean ').constant('hard')
     ).copyable(),
     /*
         Action
@@ -953,7 +997,7 @@ const SettingsCommands = [
     new Command(
         /^action (none|show)$/,
         (root, value) => root.addAction(value),
-        (root, value) => SFormat.Keyword('action ') + SFormat.Constant(value)
+        (root, value) => Highlighter.keyword('action ').constant(value)
     ).copyable(),
     /*
         Indexing
@@ -961,12 +1005,12 @@ const SettingsCommands = [
     new Command(
         /^indexed$/,
         (root, value) => root.addGlobal('indexed', 1),
-        (root, value) => SFormat.Keyword('indexed')
+        (root, value) => Highlighter.keyword('indexed')
     ),
     new Command(
         /^indexed (on|off|static)$/,
         (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
-        (root, value) => SFormat.Keyword('indexed ') + SFormat.Bool(value, value == 'static' ? 'on' : value)
+        (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
     ),
     /*
         Global options
@@ -974,12 +1018,12 @@ const SettingsCommands = [
     new Command(
         /^(members|outdated|opaque|large rows|align title)$/,
         (root, key) => root.addGlobal(key, true),
-        (root, key) => SFormat.Keyword(key)
+        (root, key) => Highlighter.keyword(key)
     ),
     new Command(
         /^(members|outdated|opaque|large rows|align title) (on|off)$/,
         (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
-        (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
+        (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
     ),
     /*
         Custom left category
@@ -993,7 +1037,7 @@ const SettingsCommands = [
                 root.addExtension(... extensions.slice(0, -1).split(','));
             }
         },
-        (root, extensions) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('left category')
+        (root, extensions) => Highlighter.constant(extensions || '').keyword('left category')
     ),
     /*
         Statistics
@@ -1006,7 +1050,7 @@ const SettingsCommands = [
                 root.addStatistics(name, ast);
             }
         },
-        (root, name, expression) => SFormat.Keyword('statistics ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+        (root, name, expression) => Highlighter.keyword('statistics ').constant(name).keyword(' as ').expression(expression, root)
     ),
     /*
         Extra expression
@@ -1014,7 +1058,7 @@ const SettingsCommands = [
     new Command(
         /^extra (.+)$/,
         (root, value) => root.addFormatExtraExpression(a => value),
-        (root, value) => SFormat.Keyword('extra ') + SFormat.Normal(value)
+        (root, value) => Highlighter.keyword('extra ').value(value)
     ).copyable(),
     /*
         Cell style
@@ -1022,23 +1066,17 @@ const SettingsCommands = [
     new Command(
         /^style ([a-zA-Z\-]+) (.*)$/,
         (root, style, value) => root.addStyle(style, value),
-        (root, style, value) => SFormat.Keyword('style ') + SFormat.Constant(style) + ' ' + SFormat.Normal(value)
+        (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
     ).copyable(),
     /*
         Cell content visibility
-    */
-    new Command(
-        /^visible (on|off)$/,
-        (root, value) => root.addShared('visible', ARG_MAP[value]),
-        (root, value) => SFormat.Keyword('visible ') + SFormat.Bool(value)
-    ).copyable(),
-    /*
         Cell content breaking
+        Toggle statistics color
     */
     new Command(
-        /^breakline (on|off)$/,
-        (root, value) => root.addBreaklineRule(ARG_MAP[value]),
-        (root, value) => SFormat.Keyword('breakline ') + SFormat.Bool(value)
+        /^(visible|breakline|statistics color) (on|off)$/,
+        (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
+        (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
     ).copyable(),
     /*
         Cell border
@@ -1046,15 +1084,7 @@ const SettingsCommands = [
     new Command(
         /^border (none|left|right|both|top|bottom)$/,
         (root, value) => root.addShared('border', ARG_MAP[value]),
-        (root, value) => SFormat.Keyword('border ') + SFormat.Constant(value)
-    ).copyable(),
-    /*
-        Toggle statistics color
-    */
-    new Command(
-        /^statistics color (on|off)$/,
-        (root, value) => root.addShared('statistics_color', ARG_MAP[value]),
-        (root, value) => SFormat.Keyword('statistics color ') + SFormat.Bool(value)
+        (root, value) => Highlighter.keyword('border ').constant(value)
     ).copyable(),
     /*
         Order expression
@@ -1067,12 +1097,17 @@ const SettingsCommands = [
                 root.addLocal('order', ast);
             }
         },
-        (root, expression) => SFormat.Keyword('order by ') + Expression.format(expression, root)
+        (root, expression) => Highlighter.keyword('order by ').expression(expression, root)
     ).copyable(),
     new Command(
-        /^glob order (asc|des)(?: (\d+))?$/,
+        /^glob order (asc|des)$/,
+        (root, value) => root.addGlobOrder(undefined, value == 'asc'),
+        (root, value) => Highlighter.keyword('glob order ').constant(value)
+    ).copyable(),
+    new Command(
+        /^glob order (asc|des) (\d+)$/,
         (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
-        (root, value, index) => SFormat.Keyword('glob order ') + SFormat.Constant(`${ value } ${ index || '' }`)
+        (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
     ).copyable(),
     /*
         Value expression
@@ -1085,7 +1120,7 @@ const SettingsCommands = [
                 root.addLocal('expr', ast);
             }
         },
-        (root, expression) => SFormat.Keyword('expr ') + Expression.format(expression, root)
+        (root, expression) => Highlighter.keyword('expr ').expression(expression, root)
     ).copyable(),
     /*
         Alias expression
@@ -1098,7 +1133,7 @@ const SettingsCommands = [
                 root.addAliasExpression((a, b) => new ExpressionScope(a).eval(ast, b));
             }
         },
-        (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
+        (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
     ).copyable(),
     /*
         Cell alignment
@@ -1106,7 +1141,7 @@ const SettingsCommands = [
     new Command(
         /^align (left|right|center)$/,
         (root, value) => root.addShared('align', value),
-        (root, value) => SFormat.Keyword('align ') + SFormat.Constant(value)
+        (root, value) => Highlighter.keyword('align ').constant(value)
     ).copyable(),
     new Command(
         /^align (left|right|center) (left|right|center)$/,
@@ -1114,7 +1149,7 @@ const SettingsCommands = [
             root.addShared('align', value);
             root.addShared('align_title', value2);
         },
-        (root, value, value2) => SFormat.Keyword('align ') + SFormat.Constant(value) + ' ' + SFormat.Constant(value2)
+        (root, value, value2) => Highlighter.keyword('align ').constant(value).space().constant(value2)
     ).copyable(),
     /*
         Discard expression
@@ -1127,7 +1162,7 @@ const SettingsCommands = [
                 root.addDiscardRule(ast);
             }
         },
-        (root, expression) => SFormat.Keyword('discard ') + Expression.format(expression, root)
+        (root, expression) => Highlighter.keyword('discard ').expression(expression, root)
     ),
     /*
         Order all expression
@@ -1140,7 +1175,7 @@ const SettingsCommands = [
                 root.addDefaultOrder(ast);
             }
         },
-        (root, expression) => SFormat.Keyword('order all by ') + Expression.format(expression, root)
+        (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
     ),
     /*
         Color expression
@@ -1153,7 +1188,7 @@ const SettingsCommands = [
                 root.addColorExpression(ast);
             }
         },
-        (root, expression) => SFormat.Keyword('expc ') + Expression.format(expression, root)
+        (root, expression) => Highlighter.keyword('expc ').expression(expression, root)
     ).copyable(),
     new Command(
         /^text (auto|(?:.+))$/,
@@ -1167,7 +1202,14 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, value) => SFormat.Keyword('text ') + (value === 'auto' ? SFormat.Bool(value, 'on') : Expression.format(value, root))
+        (root, value) => {
+            const acc = Highlighter.keyword('text ');
+            if (value === 'auto') {
+                return acc.boolean(value, true);
+            } else {
+                return acc.expression(value, root);
+            }
+        }
     ).copyable(),
     /*
         Cell padding (left only)
@@ -1175,7 +1217,7 @@ const SettingsCommands = [
     new Command(
         /^padding (.+)$/,
         (root, value) => root.addLocal('padding', value),
-        (root, value) => SFormat.Keyword('padding ') + SFormat.Normal(value)
+        (root, value) => Highlighter.keyword('padding ').value(value)
     ).copyable(),
     /*
         Define extension
@@ -1183,7 +1225,7 @@ const SettingsCommands = [
     new Command(
         /^define (\w+)$/,
         (root, name) => root.addDefinition(name),
-        (root, name) => SFormat.Keyword('define ') + SFormat.Normal(name),
+        (root, name) => Highlighter.keyword('define ').identifier(name),
         true
     ),
     /*
@@ -1192,7 +1234,7 @@ const SettingsCommands = [
     new Command(
         /^extend (\w+)$/,
         (root, name) => root.addExtension(name),
-        (root, name) => SFormat.Keyword('extend ') + SFormat.Constant(name)
+        (root, name) => Highlighter.keyword('extend ').constant(name)
     ),
     /*
         Force push current header / row / statistic
@@ -1200,7 +1242,7 @@ const SettingsCommands = [
     new Command(
         /^push$/,
         (root) => root.push(),
-        (root) => SFormat.Keyword('push')
+        (root) => Highlighter.keyword('push')
     ).parseAlways(),
     /*
         Tag action
@@ -1214,7 +1256,7 @@ const SettingsCommands = [
                 root.addActionEntry('tag', type, ast1, ast2);
             }
         },
-        (root, type, tag, expr) => SFormat.Keyword('tag ') + SFormat.Constant(type) + SFormat.Keyword(' as ') + Expression.format(tag, undefined, ACTION_PROPS) + SFormat.Keyword(' if ') + Expression.format(expr, undefined, ACTION_PROPS)
+        (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, ACTION_PROPS).keyword(' if ').expression(expr, undefined, ACTION_PROPS)
     ).specialType(EditorType.ACTIONS),
     new Command(
         /^remove player if (.+)$/,
@@ -1224,7 +1266,7 @@ const SettingsCommands = [
                 root.addActionEntry('remove', 'player', ast1);
             }
         },
-        (root, expr) => SFormat.Keyword('remove ') + SFormat.Constant('player') + SFormat.Keyword(' if ') + Expression.format(expr, undefined, ACTION_PROPS)
+        (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, ACTION_PROPS)
     ).specialType(EditorType.ACTIONS),
     /*
         Tracker
@@ -1238,7 +1280,7 @@ const SettingsCommands = [
                 root.addTracker(name, str, ast2, ast);
             }
         },
-        (root, str, name, arg, arg2) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(arg) + SFormat.Keyword(' when ') + Expression.format(arg2)
+        (root, str, name, arg, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg).keyword(' when ').expression(arg2)
     ).anyType(),
     new Command(
         /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
@@ -1248,7 +1290,7 @@ const SettingsCommands = [
                 root.addTracker(name, str, ast);
             }
         },
-        (root, str, name, arg) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' when ') + Expression.format(arg)
+        (root, str, name, arg) => Highlighter.keyword('track ').constant(name).keyword(' when ').expression(arg)
     ).anyType()
 ];
 
@@ -2691,15 +2733,16 @@ class Settings {
                 if (trimmed) {
                     let command = SettingsCommands.find(command => command.isValid(trimmed));
                     if (command && (command.type === true || command.type == type)) {
-                        currentContent += command.format(settings, trimmed);
+                        const lineHtml = command.format(settings, trimmed);
+                        currentContent += (typeof lineHtml === 'object' ? lineHtml.text : lineHtml);
                     } else {
-                        currentContent += SFormat.Error(trimmed);
+                        currentContent += Highlighter.error(trimmed).text;
                     }
                 }
 
                 currentContent += suffix.replace(/ /g, '&nbsp;');
                 if (commentIndex != -1) {
-                    currentContent += SFormat.Comment(comment);
+                    currentContent += Highlighter.comment(comment).text;
                 }
 
                 SettingsHighlightCache.store(line, currentContent);

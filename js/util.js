@@ -367,12 +367,12 @@ function escapeHTML(string) {
 const SFormat = {
     Normal: string => escapeHTML(string),
     Keyword: string => `<span class="ta-keyword">${ escapeHTML(string) }</span>`,
+    Value: string => `<span class="ta-value">${ escapeHTML(string) }</span>`,
     Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
     Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
-    Extras: string => `<span class="ta-extras"><span>${ escapeHTML(string) }</span></span>`,
     Macro: (string, noescape) => noescape ? `<span class="ta-macro">${ string }</span>` : `<span class="ta-macro">${ escapeHTML(string) }</span>`,
-    Global: string => `<span class="ta-global">${string}</span>`,
-    UnfilteredGlobal: string => `<span class="ta-global-unfiltered">${string}</span>`,
+    Global: string => `<span class="ta-global">${ escapeHTML(string) }</span>`,
+    UnfilteredGlobal: string => `<span class="ta-global-unfiltered">${ escapeHTML(string) }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
     Function: string => `<span class="ta-function">${ escapeHTML(string) }</span>`,
     Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
@@ -383,8 +383,85 @@ const SFormat = {
     ReservedScoped: string => `<span class="ta-reserved-scoped">${ escapeHTML(string) }</span>`,
     ReservedItemizable: string => `<span class="ta-reserved-itemizable">${ escapeHTML(string) }</span>`,
     Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
-    Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
+    Bool: (string, bool) => `<span class="ta-${ bool ? 'true' : 'false' }">${ escapeHTML(string) }</span>`
 };
+
+const Highlighter = new (class {
+    constructor () {
+        for (const type of ['keyword', 'constant', 'value', 'identifier', 'error', 'comment', 'string']) {
+            this[type] = function (text) {
+                if (text) {
+                    this._text += `<span class="ta-${type}">${escapeHTML(text)}</span>`;
+                }
+                return this;
+            }
+        }
+
+        this._text = '';
+    }
+
+    global (text, subtype = '') {
+        this._text += `<span class="ta-global${subtype}">${escapeHTML(text)}</span>`;
+        return this;
+    }
+
+    header (text, subtype = '') {
+        this._text += `<span class="ta-reserved${subtype}">${escapeHTML(text)}</span>`;
+        return this;
+    }
+
+    asMacro () {
+        this._text = `<span class="ta-macro">${this._text}</span>`;
+        return this;
+    }
+
+    expression (text, root, extras) {
+        this._text += Expression.format(text, root, extras);
+        return this;
+    }
+
+    join (array, method, delimiter = ',') {
+        for (let i = 0; i < array.length; i++) {
+            if (typeof method === 'function') {
+                this[method(array[i])](array[i]);
+            } else {
+                this[method](array[i]);
+            }
+
+            if (i < array.length - 1) {
+                this._text += delimiter;
+            }
+        }
+
+        return this;
+    }
+
+    color (text, color) {
+        this._text += `<span class="ta-color" style="color: ${color};">${escapeHTML(text)}</span>`;
+        return this;
+    }
+
+    boolean (text, isTrue) {
+        this._text += `<span class="ta-${isTrue ? 'true' : 'false'}">${escapeHTML(text)}</span>`;
+        return this;
+    }
+
+    normal (text) {
+        this._text += escapeHTML(text);
+        return this;
+    }
+
+    space (size = 1) {
+        this._text += ' '.repeat(size);
+        return this;
+    }
+
+    get text () {
+        const text = this._text;
+        this._text = '';
+        return text;
+    }
+})();
 
 function parseOwnDate (text) {
     if (typeof(text) == 'string') {

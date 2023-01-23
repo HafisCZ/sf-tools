@@ -18,9 +18,10 @@
   pointer-events: none;
   color: white;
   width: 1000%;
-  font-size: 1em !important;
-  font-family: Arial, Helvetica, sans-serif !important;
   white-space: nowrap;
+
+  font-size: 14px !important;
+  font-family: Consolas, "Courier New", monospace !important;
 }
 
 .ta-area {
@@ -32,7 +33,9 @@
   height: 100% !important;
   resize: none !important;
   overflow: auto;
-  font-family: Arial, Helvetica, sans-serif !important;
+
+  font-size: 14px !important;
+  font-family: Consolas, "Courier New", monospace !important;
 }
 
 .ta-area::selection {
@@ -40,42 +43,43 @@
 }
 
 .ta-keyword {
-  text-shadow: -0.03ex 0 white, 0.03ex 0 white;
+  color: #ffffff;
+  font-weight: bold;
 }
 
 .ta-reserved {
-  text-shadow: -0.03ex 0 #f550f5, 0.03ex 0 #f550f5;
   color: #f550f5;
+  font-weight: bold;
 }
 
 .ta-reserved-protected {
-  text-shadow: -0.03ex 0 #ba6bff, 0.03ex 0 #ba6bff;
   color: #ba6bff;
+  font-weight: bold;
 }
 
 .ta-reserved-private {
-  text-shadow: -0.03ex 0 #3269a8, 0.03ex 0 #3269a8;
   color: #3269a8;
+  font-weight: bold;
 }
 
 .ta-enum {
-  text-shadow: -0.03ex 0 #a80032, 0.03ex 0 #a80032;
   color: #a80032;
+  font-weight: bold;
 }
 
 .ta-reserved-special {
-  text-shadow: -0.03ex 0 #a37500, 0.03ex 0 #a37500;
   color: #a37500;
+  font-weight: bold;
 }
 
 .ta-reserved-scoped {
-  text-shadow: -0.03ex 0 #3CB371, 0.03ex 0 #3CB371;
   color: #3CB371;
+  font-weight: bold;
 }
 
 .ta-reserved-itemizable {
-  text-shadow: -0.03ex 0 #eb4034, 0.03ex 0 #eb4034;
   color: #eb4034;
+  font-weight: bold;
 }
 
 .ta-color {
@@ -90,47 +94,48 @@
   color: #1f58cc;
 }
 
+.ta-value {
+  color: #8ba1c4;
+}
+
+.ta-identifier {
+  color: #8ba1c4;
+  font-weight: bold;
+}
+
 .ta-global-unfiltered {
   color: #6d1fcc;
 }
 
 .ta-function {
-  text-shadow: -0.03ex 0 #46bbb5, 0.03ex 0 #46bbb5;
   color: #46bbb5;
+  font-weight: bold;
 }
 
 .ta-error {
   text-decoration: underline;
   text-decoration-color: red;
-  text-decoration-style: dashed;
+  text-decoration-style: wavy;
 }
 
-.ta-boolean-on {
-  text-shadow: -0.03ex 0 greenyellow, 0.03ex 0 greenyellow;
-  color: greenyellow;
+.ta-true {
+  color: #51e859;
+  font-weight: bold;
 }
 
-.ta-boolean-off {
-  text-shadow: -0.03ex 0 orangered, 0.03ex 0 orangered;
-  color: orangered;
+.ta-false {
+  color: #ff5d12;
+  font-weight: bold;
 }
 
 .ta-comment {
   color: #7a7a7a;
 }
 
-.ta-extras {
-  position: relative;
-}
-
-.ta-extras span {
-  color: #696969;
-  font-size: 70%;
-  position: absolute;
-  left: 5px;
+.ta-string {
+  color: #7a7a7a;
 }
 
 .ta-macro {
   background-color: #a8323240;
-  text-shadow: -0.03ex 0 white, 0.03ex 0 white;
 }
