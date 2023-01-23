@@ -391,7 +391,7 @@ class TableInstance {
 
             for (let { sortkey, glob_order } of this.flat) {
                 if (typeof glob_order != 'undefined') {
-                    sorting.splice(glob_order.index || sorting.length, 0, {
+                    sorting.splice(typeof glob_order.index === 'undefined' ? sorting.length : glob_order.index, 0, {
                         key: sortkey,
                         flip: undefined,
                         order: glob_order.ord ? 2 : 1
