@@ -699,14 +699,14 @@ const ProfileCreateDialog = new (class extends Dialog {
         this.$secondaryContent = this.$parent.find('[data-op="secondary-content"]');
 
         this.$secondary.on('change input', (e) => {
-            this.$secondaryContent.html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_PROPS));
+            this.$secondaryContent.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, PROFILES_PROPS).text);
         });
 
         this.$secondaryG = this.$parent.find('[data-op="secondary-g"]');
         this.$secondaryContentG = this.$parent.find('[data-op="secondary-content-g"]');
 
         this.$secondaryG.on('change input', (e) => {
-            this.$secondaryContentG.html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_GROUP_PROPS));
+            this.$secondaryContentG.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, PROFILES_GROUP_PROPS).text);
         });
 
         // Primary filter
@@ -718,11 +718,11 @@ const ProfileCreateDialog = new (class extends Dialog {
         this.$primaryContent2 = this.$parent.find('[data-op="primary-content-2"]');
 
         this.$primary.on('change input', (e) => {
-            this.$primaryContent.html(Expression.format($(e.currentTarget).val() || ''));
+            this.$primaryContent.html(Highlighter.expression($(e.currentTarget).val() || '').text);
         });
 
         this.$primary2.on('change input', (e) => {
-            this.$primaryContent2.html(Expression.format($(e.currentTarget).val() || ''));
+            this.$primaryContent2.html(Highlighter.expression($(e.currentTarget).val() || '').text);
         });
 
         this.$primaryIndex.dropdown({
@@ -776,11 +776,11 @@ const ProfileCreateDialog = new (class extends Dialog {
         this.$primaryContent2G = this.$parent.find('[data-op="primary-content-2-g"]');
 
         this.$primaryG.on('change input', (e) => {
-            this.$primaryContentG.html(Expression.format($(e.currentTarget).val() || ''));
+            this.$primaryContentG.html(Highlighter.expression($(e.currentTarget).val() || '').text);
         });
 
         this.$primary2G.on('change input', (e) => {
-            this.$primaryContent2G.html(Expression.format($(e.currentTarget).val() || ''));
+            this.$primaryContent2G.html(Highlighter.expression($(e.currentTarget).val() || '').text);
         });
 
         this.$primaryIndexG.dropdown({
