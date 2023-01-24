@@ -317,7 +317,7 @@ const SettingsCommands = [
                 root.addFunction(name, ast, args.split(',').map(v => v.trim()));
             }
         },
-        (root, name, args, expression) => Highlighter.keyword('mset ').constant(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
+        (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
     ).parseAlways(),
     /*
         Macro-compatible variable
@@ -956,7 +956,7 @@ const SettingsCommands = [
                 root.addFunction(name, ast, args.split(',').map(v => v.trim()));
             }
         },
-        (root, name, args, expression) => Highlighter.keyword('set ').constant(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
+        (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
     ).parseAlways(),
     /*
         Variable
