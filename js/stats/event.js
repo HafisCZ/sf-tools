@@ -2460,11 +2460,7 @@ class FilesView extends View {
 
             this.expressionFilter = new Expression(content);
             this.$filters.find('.ta-content').html(
-                Expression.format(
-                    content,
-                    undefined,
-                    ['timestamp', 'players', 'groups', 'version', 'tags']
-                )
+                Highlighter.expression(content, undefined, ['timestamp', 'players', 'groups', 'version', 'tags']).text
             );
 
             if (this.expressionFilter.empty || this.expressionFilter.isValid()) {
@@ -3115,8 +3111,8 @@ class ProfilesView extends View {
                             </tr>
                             <tr>
                                 <td>${intl('stats.profiles.secondary')}</td>
-                                <td>${ secondary ? Expression.format(secondary, undefined, PROFILES_PROPS) : `<b>${intl('stats.profiles.none')}</b>` }</td>
-                                <td>${ secondary_g ? Expression.format(secondary_g, undefined, PROFILES_GROUP_PROPS) : `<b>${intl('stats.profiles.none')}</b>` }</td>
+                                <td>${ secondary ? Highlighter.expression(secondary, undefined, PROFILES_PROPS).text : `<b>${intl('stats.profiles.none')}</b>` }</td>
+                                <td>${ secondary_g ? Highlighter.expression(secondary_g, undefined, PROFILES_GROUP_PROPS).text : `<b>${intl('stats.profiles.none')}</b>` }</td>
                             </tr>
                         </table>
                     </div>
@@ -3164,9 +3160,9 @@ class ProfilesView extends View {
         if (rule) {
             const { name, mode, value } = rule;
             if (mode == 'between') {
-                return `<b>${name}</b> ${intl('stats.profiles.between')} ${Expression.format(value[0])} ${intl('stats.profiles.and')} ${Expression.format(value[1])}`;
+                return `<b>${name}</b> ${intl('stats.profiles.between')} ${Highlighter.expression(value[0]).text} ${intl('stats.profiles.and')} ${Highlighter.expression(value[1]).text}`;
             } else {
-                return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Expression.format(v)).join('<br/>') : ''}`;
+                return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Highlighter.expression(v).text).join('<br/>') : ''}`;
             }
         } else {
             return `<b>${intl('stats.profiles.none')}</b>`;

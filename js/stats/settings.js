@@ -122,6 +122,87 @@ const FilterTypes = {
     'Players': ScriptType.Players
 };
 
+const Highlighter = new (class {
+    constructor () {
+        for (const type of ['keyword', 'constant', 'function', 'value', 'identifier', 'error', 'comment', 'string', 'enum']) {
+            this[type] = function (text) {
+                if (text) {
+                    this._text += `<span class="ta-${type}">${this._escape(text)}</span>`;
+                }
+                return this;
+            }
+        }
+
+        this._text = '';
+    }
+
+    _escape (string) {
+        return String(string).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
+    }
+
+    global (text, subtype = '') {
+        this._text += `<span class="ta-global${subtype}">${this._escape(text)}</span>`;
+        return this;
+    }
+
+    header (text, subtype = '') {
+        this._text += `<span class="ta-reserved${subtype}">${this._escape(text)}</span>`;
+        return this;
+    }
+
+    asMacro () {
+        this._text = `<span class="ta-macro">${this._text}</span>`;
+        return this;
+    }
+
+    expression (text, root, extras) {
+        Expression.format(this, text, root, extras);
+        return this;
+    }
+
+    join (array, method, delimiter = ',') {
+        for (let i = 0; i < array.length; i++) {
+            if (typeof method === 'function') {
+                this[method(array[i])](array[i]);
+            } else {
+                this[method](array[i]);
+            }
+
+            if (i < array.length - 1) {
+                this._text += delimiter;
+            }
+        }
+
+        return this;
+    }
+
+    color (text, color) {
+        this._text += `<span class="ta-color" style="color: ${color};">${this._escape(text)}</span>`;
+        return this;
+    }
+
+    boolean (text, isTrue) {
+        this._text += `<span class="ta-${isTrue ? 'true' : 'false'}">${this._escape(text)}</span>`;
+        return this;
+    }
+
+    normal (text) {
+        this._text += this._escape(text);
+        return this;
+    }
+
+    space (size = 1) {
+        this._text += ' '.repeat(size);
+        return this;
+    }
+
+    get text () {
+        const text = this._text;
+        this._text = '';
+        return text;
+    }
+})();
+
 class Command {
     constructor (regexp, parse, format) {
         this.regexp = regexp;
@@ -779,7 +860,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').constant(name).keyword(' as ').expression(expression, root)
+        (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
     ),
     /*
         Var

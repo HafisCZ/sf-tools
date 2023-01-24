@@ -21,9 +21,9 @@
         <script src="js/core/playa.js"></script>
         <script src="js/core/ast.js"></script>
 
+        <script src="js/core/core.js"></script>
         <script src="js/stats/settings.js"></script>
         <script src="js/stats/table.js"></script>
-        <script src="js/core/core.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
@@ -67,7 +67,7 @@
                 let ex = new Expression(expr);
                 $('#estr').val(ex.toString());
                 $('#eres').val(ex.eval());
-                $('#efor').html(Expression.format(expr));
+                $('#efor').html(Highlighter.expression(expr).text);
                 $('textarea').val(JSON.stringify(ex, null, 2));
             });
         </script>

@@ -266,8 +266,7 @@ class Expression {
     }
 
     // Format
-    static format (string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extraIdentifiers) {
-        var content = '';
+    static format (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extraIdentifiers) {
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp);
         let nextName = false;
 
@@ -282,70 +281,69 @@ class Expression {
                 // Format token
                 if (token == undefined) {
                     continue;
-                } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
-                    value = SFormat.Comment(token);
+                }
+
+                highlighter.normal(prefix);
+
+                if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
+                    highlighter.comment(token);
                 } else if (token.length > 1 && token[0] == '`' && token[token.length - 1] == '`') {
-                    const bracket = SFormat.Comment('\`');
-                    value = `${bracket}${ token.slice(1, token.length - 1).split(/(\{\d+\})/g).map(st => {
-                        if (/(\{\d+\})/.test(st)) {
-                            return SFormat.Function(st);
-                        } else {
-                            return SFormat.Comment(st);
-                        }
-                    }).join('') }${bracket}`;
+                    highlighter.string('`');
+                    highlighter.join(token.slice(1, token.length - 1).split(/(\{\d+\})/g), (item) => /(\{\d+\})/.test(item) ? 'function' : 'string', '');
+                    highlighter.string('`');
                 } else if (extraIdentifiers && extraIdentifiers.includes(token)) {
-                    value = SFormat.Reserved(token);
+                    highlighter.header(token);
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
-                    value = SFormat.Function(token);
-                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
-                    value = SFormat.Constant(token);
+                    highlighter.function(token);
+                } else if (token === 'true' || token === 'false') {
+                    highlighter.boolean(token, token === 'true');
+                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
+                    highlighter.constant(token);
                 } else if (root.variables.hasOwnProperty(token)) {
                     if (root.variables[token].tableVariable == 'unfiltered') {
-                        value = SFormat.UnfilteredGlobal(token);
+                        highlighter.global(token, '-unfiltered');
                     } else if (root.variables[token].tableVariable) {
-                        value = SFormat.Global(token);
+                        highlighter.global(token);
                     } else {
-                        value = SFormat.Constant(token);
+                        highlighter.constant(token);
                     }
                 } else if (/^(\.*)this$/.test(token)) {
-                    value = SFormat.Constant(token);
+                    highlighter.constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
-                    value = SFormat.Reserved(token);
+                    highlighter.header(token);
                 } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(token)) {
-                    value = SFormat.ReservedProtected(token);
+                    highlighter.header(token, '-protected');
                 } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(token)) {
-                    value = SFormat.ReservedPrivate(token);
+                    highlighter.header(token, '-private');
                 } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
-                    value = SFormat.ReservedScoped(token);
+                    highlighter.header(token, '-scoped');
                 } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
-                    value = SFormat.ReservedItemizable(token);
+                    highlighter.header(token, '-itemizable');
                 } else if (root.constants.exists(token)) {
-                    value = SFormat.Constant(token);
+                    highlighter.constant(token);
                 } else if (/\~\d+/.test(token)) {
-                    value = SFormat.Enum(token);
+                    highlighter.enum(token);
                 } else if (ExpressionEnum.has(token)) {
-                    value = SFormat.Enum(token);
+                    highlighter.enum(token);
                 } else if (token == '$' || token == '$!' || token == '$$') {
-                    value = SFormat.Keyword(token);
+                    highlighter.keyword(token);
                     nextName = true;
                 } else if (nextName) {
                     nextName = false;
                     if (/[a-zA-Z0-9\-\_]+/.test(token)) {
-                        value = SFormat.Constant(token);
+                        highlighter.constant(token);
                     } else {
-                        value = SFormat.Normal(token);
+                        highlighter.normal(token);
                     }
                 } else {
-                    value = SFormat.Normal(token);
+                    highlighter.normal(token);
                 }
 
-                content += SFormat.Normal(prefix) + value + SFormat.Normal(suffix);
+                highlighter.normal(suffix);
             } else {
-                content += SFormat.Normal(token);
+                highlighter.normal(token);
             }
         }
-
-        return content;
     }
 
     // Eval embedded variables
