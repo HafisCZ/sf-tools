@@ -375,7 +375,7 @@ const SettingsCommands = [
 
             let val = root.constants.getValue(a, b);
             if (ARG_MAP_SERVER.hasOwnProperty(value)) {
-                return acc.boolean(value, true);
+                return acc.boolean(value, value === 'on');
             } else if (root.constants.isValid(a, b) && !isNaN(val)) {
                 return acc.constant(value);
             } else if (a == '@' || isNaN(val)) {
