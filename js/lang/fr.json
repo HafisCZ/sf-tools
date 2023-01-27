@@ -77,16 +77,16 @@
             "fortress12": "Fortifications",
             "underworld1": "Cœur des Ténèbres",
             "underworld2": "Porte des Enfers",
-            "underworld3": "Gold Pit",
-            "underworld4": "Soul Extractor",
-            "underworld5": "Goblin Pit",
-            "underworld6": "Torture Chamber",
-            "underworld7": "Gladiator Trainer",
-            "underworld8": "Troll Block",
-            "underworld9": "Adventuromatic",
-            "underworld10": "Keeper"
+            "underworld3": "Mine d'or",
+            "underworld4": "Extracteur d'âmes",
+            "underworld5": "Fosse aux gobelins",
+            "underworld6": "Salle de torture",
+            "underworld7": "Maître gladiateur",
+            "underworld8": "Bloc de trolls",
+            "underworld9": "Aventuromatique",
+            "underworld10": "Gardien"
         },
-        "reduction": "Reduction",
+        "reduction": "Réduction",
         "race1": "Humains",
         "race2": "Elfes",
         "race3": "Nains",
@@ -100,6 +100,7 @@
     },
     "index": {
         "toggle": "Afficher les crédits",
+        "others": "Other community tools",
         "roles": {
             "admin": "Quelqu'un avec beaucoup de temps libre",
             "helper": "Contributeurs - Recherche, Tests, Retours, etc...",
@@ -178,7 +179,7 @@
             "desc": "Simulez quelle classe de familiers est la meilleure contre l'hydre actuelle"
         },
         "fortress": {
-            "title": "Fortress Simulator",
+            "title": "Simulateur de Forteresse",
             "desc": "Simulate the probable outcome of fortress raid"
         },
         "changelog": {
@@ -193,6 +194,55 @@
     "404": {
         "title": "404",
         "text": "Il semblerai que cette page n'existe pas, veuillez verifier votre recherche"
+    },
+    "terms": {
+        "title": "Terms and Conditions",
+        "button": {
+            "accept_full": "I understand & accept these terms",
+            "accept": "Accept",
+            "reject": "Reject"
+        },
+        "general": {
+            "heading0": {
+                "title": "General use",
+                "clause0": "It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.",
+                "clause1": "The site is distributed <b>AS IS</b> without any warranties. You are fully responsible for use of this site.",
+                "clause2": "You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.",
+                "clause3": "You agree to limit data collection from the game to reasonable amounts.",
+                "clause4": "You agree to follow the Shakes & Fidget <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Terms and Conditions</a>",
+                "clause5": "You are not allowed to automate any part of this tool."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.",
+                "clause1": "It is not possible to capture any other players than those listed above.",
+                "clause2": "Everything happens locally in a identical way to playing the game through browser."
+            },
+            "heading2": {
+                "title": "Integrated share service",
+                "clause0": "All data shared via the integrated share function is not protected in any other way other than the share key.",
+                "clause1": "The shared data might be deleted at any point of time, up to full 2 days."
+            },
+            "heading3": {
+                "title": "Sentry",
+                "clause0": "All errors raised during use of this tool will be reported via Sentry.io tool.",
+                "clause1": "These reports are anonymous so that it's not possible to track their origin.",
+                "clause2": "Please note that certain ad-blockers might prevent Sentry from working.",
+                "clause3": "If you want to contribute to this project I recommend disabling ad-blockers for this site."
+            }
+        },
+        "endpoint": {
+            "clause0": "Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.",
+            "clause1": "All data entered is sent directly to the game server without involvement of any 3rd party.",
+            "clause2": "It is not possible to capture any other players than those explicitly stated within the application.",
+            "clause3": "All data collection is done using normal means, without any use of forbidden actions."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Terms not accepted",
+                "message": "You must accept the terms in order to continue"
+            }
+        }
     },
     "stats": {
         "topbar": {
@@ -332,24 +382,31 @@
         "scripts": {
             "settings": "Paramètres",
             "templates": "Modèles",
+            "name": "Currently edited script",
+            "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Scripts",
                 "templates": "Modèles",
                 "save": "Sauvegarder",
                 "copy": "Copie",
-                "undo": "Annuler",
-                "redo": "Refaire",
-                "close": "Fermer",
-                "apply": "Appliquer",
+                "archive": "Script archive",
+                "close": "Return back",
                 "remove": "Supprimer",
-                "save_apply": "Sauvegarder & Appliquer"
+                "reset": "Discard changes",
+                "save_template": "Save as template",
+                "header": {
+                    "actions": "Actions",
+                    "modify": "Script",
+                    "library": "Libraries",
+                    "archive": "Archive"
+                }
             },
             "types": {
                 "me": "Me",
-                "players": "Players",
-                "guilds": "Guilds",
-                "default": "Default"
+                "players": "Joueurs",
+                "guilds": "Guildes",
+                "default": "Défaut"
             },
             "online": {
                 "not_available": "Pas de script disponible"
@@ -418,12 +475,12 @@
             "attributes": "Attributes",
             "basis": "Basis",
             "miscellaneous": "Misc",
-            "armor": "Armor",
+            "armor": "Armure",
             "damage": "Damage",
             "health": "Health",
             "potions": "Potions",
-            "guild": "Guild",
-            "name": "Name",
+            "guild": "Guilde",
+            "name": "Nom",
             "role": "Role",
             "joined_on": "Joined on",
             "bonuses": "Bonuses",
@@ -504,22 +561,22 @@
         "generate": {
             "iterations": "Amount of iterations per thread when generating a pet map.",
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
-            "one": "Generate",
-            "five": "Generate next 5",
-            "ten": "Generate next 10"
+            "one": "Générer",
+            "five": "Générer les 5 suivants",
+            "ten": "Générer les 10 suivants"
         },
-        "simulate": "Simulate",
-        "simulate_dungeons": "Simulate all remaining dungeons",
-        "results": "Results",
+        "simulate": "Simuler",
+        "simulate_dungeons": "Simuler tous les donjons restants",
+        "results": "Résultats",
         "map": {
             "gladiator": "Glad"
         },
         "types": {
-            "0": "Shadow",
-            "1": "Light",
-            "2": "Earth",
-            "3": "Fire",
-            "4": "Water"
+            "0": "Ombres",
+            "1": "Lumière",
+            "2": "Terre",
+            "3": "Feu",
+            "4": "Eau"
         },
         "names": {
             "0": "Slurp",
@@ -641,17 +698,17 @@
             "skip": "Skip Chance",
             "crit": "Critical Chance",
             "damage": "Damage",
-            "critical_bonus": "Critical",
+            "critical_bonus": "Critique",
             "at100": {
-                "title": "At 100 - 149",
+                "title": "À 100 - 149",
                 "placeholder": "Pets at 100 - 149"
             },
             "at150": {
-                "title": "At 150 - 199",
+                "title": "À 150 - 199",
                 "placeholder": "Pets at 150 - 199"
             },
             "at200": {
-                "title": "At 200",
+                "title": "À 200",
                 "placeholder": "Pets at 200"
             },
             "pack": {
@@ -660,11 +717,25 @@
             }
         }
     },
+    "hellevator": {
+        "range": {
+            "start": "Start at floor",
+            "end": "End at floor"
+        },
+        "element": "Element",
+        "win": {
+            "all": "All #{count} floors were defeated with 100% chance",
+            "none": "All #{count} floors are impossible to defeat",
+            "first": "First #{count} floors were defeated with 100% chance",
+            "last": "Last #{count} floors are impossible to defeat"
+        },
+        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+    },
     "dungeons": {
-        "simulate_one": "Simulate",
+        "simulate_one": "Simuler",
         "simulate_remaining": "Simuler les Étages restants",
         "simulate_all": "Tous",
-        "simulate_next": "More",
+        "simulate_next": "Plus",
         "player": "Joueur",
         "enemy": "Ennemis",
         "yourself": "Vous",
@@ -726,10 +797,10 @@
         "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
         "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
         "mode": {
-            "all": "All vs All",
-            "attack": "One vs All",
-            "defend": "All vs One",
-            "tournament": "Tournament"
+            "all": "Tout vs Tout",
+            "attack": "Un vs Tous",
+            "defend": "Tout vs Un",
+            "tournament": "Tournoi"
         },
         "toast": {
             "start": {
@@ -747,42 +818,42 @@
         }
     },
     "guilds": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
-        "guild1": "Guild A",
-        "guild2": "Guild B",
+        "gladiator_mode": "Le Gladiateur sera défini à 15 indépendamment de vos paramètres",
+        "guild1": "Guilde A",
+        "guild2": "Guilde B",
         "toast": {
             "start": {
-                "title": "Starting simulation",
-                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "title": "Démarrage la simulation",
+                "message#": "<b>Itérations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Simulation thread #{done} / #{total} terminé",
+                "message#": "<b>Temps:</b> #{time} secondes"
             }
         }
     },
     "fortress": {
-        "warrior_count": "Warriors",
-        "warrior_level": "Warrior Level",
+        "warrior_count": "Soldats",
+        "warrior_level": "Niveau des Soldats",
         "archer_count": "Archers",
-        "archer_level": "Archer Level",
+        "archer_level": "Niveau des Archers",
         "mage_count": "Mages",
-        "mage_level": "Mage Level",
+        "mage_level": "Niveau des Mages",
         "units": {
             "remaining": "Average remaning units:",
-            "player": "Warriors",
-            "target": "Defenses"
+            "player": "Soldats",
+            "target": "Défenses"
         }
     },
     "hydra": {
         "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
-        "player_count": "Player Count",
+        "player_count": "Nombre de Joueurs",
         "main": "Main",
-        "side1": "Side 1",
-        "side2": "Side 2",
-        "hydra": "Hydra",
+        "side1": "Côté 1",
+        "side2": "Côté 2",
+        "hydra": "Hydre",
         "iterations": {
-            "label": "Iterations:",
+            "label": "Itérations:",
             "popup": "Amount of iterations per pet class."
         },
         "result": {
@@ -827,7 +898,7 @@
             "copy_all": "Copy everyone",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
-        "win_chance": "Win %",
+        "win_chance": "% de Victoire",
         "min_chance": "Min %",
         "max_chance": "Max %",
         "poll": {
@@ -868,8 +939,8 @@
         "none": "Aucun"
     },
     "endpoint": {
-        "username": "Username",
-        "password": "Password",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
         "mode": {
             "title": "Capture mode",
             "own": "Capture own character",
@@ -916,6 +987,55 @@
             "save": "Save",
             "ok": "Ok"
         },
+        "template_manage": {
+            "title": "Templates",
+            "general": "General",
+            "online": "Publish",
+            "script": {
+                "name": "Name",
+                "version": "Local version",
+                "updated": "Updated at",
+                "published": "Published at",
+                "published_version": "Published version",
+                "published_key": "Code"
+            },
+            "action": {
+                "publish": "Publish template",
+                "republish": "Publish new version",
+                "unpublish": "Unpublish template",
+                "remove": "Remove permanently"
+            },
+            "error": "Action was not successful"
+        },
+        "script_archive": {
+            "title": "Script archive",
+            "clear": "Delete all items from archive",
+            "types": {
+                "create_script": "Script created",
+                "overwrite_script": "Script overwritten by new version",
+                "save_script": "Script saved",
+                "remove_script": "Script removed",
+                "create_template": "Template created",
+                "overwrite_template": "Template overwritten by new version",
+                "save_template": "Template saved",
+                "remove_template": "Template removed"
+            },
+            "item": {
+                "description": "Archived: #{change}. Expires: #{expire}",
+                "temporary": "in temporary mode"
+            }
+        },
+        "script_repository": {
+            "title": "Script Repository",
+            "private_code": {
+                "label": "Private code",
+                "placeholder": "Enter your private code..."
+            },
+            "list": {
+                "about": "Added by #{author}",
+                "about_with_date": "Added by #{author} on #{date}"
+            }
+        },
         "statistics_integration_options": {
             "title": "Statistics Integration Options",
             "slot": "Database slot",
@@ -926,13 +1046,13 @@
             "ignored_duration": {
                 "title": "Ignore entries older than",
                 "0": "None",
-                "86400000": "> 1 day",
-                "604800000": "> 1 week",
-                "2592000000": "> 1 month",
-                "7776000000": "> 3 months"
+                "86400000": "> 1 jour",
+                "604800000": "> 1 semaine",
+                "2592000000": "> 1 mois",
+                "7776000000": "> 3 mois"
             },
             "ignored_identifiers": {
-                "title": "Ignored players and groups"
+                "title": "Joueurs et groupes ignorés"
             }
         },
         "delete_all": {
@@ -941,7 +1061,7 @@
         },
         "delete_script": {
             "title": "Remove script",
-            "notice": "Are you sure you want to permanently remove currently applied script?"
+            "notice": "Are you sure you want to permanently remove selected script?"
         },
         "warning": {
             "title": "Une erreur est survenue !",
@@ -955,7 +1075,7 @@
         },
         "changelog": {
             "release": "Release",
-            "continue": "Continue"
+            "continue": "Continuer"
         },
         "file_edit": {
             "title": "Éditer le fichier",
@@ -979,8 +1099,8 @@
             "current": "Marqueurs actuelles",
             "replacement": "Marqueur de Remplacement",
             "none": "Aucun",
-            "cancel": "Cancel",
-            "save": "Save"
+            "cancel": "Annuler",
+            "save": "Sauvegarder"
         },
         "profile_create": {
             "title": "Créer/Éditer un Profile",
@@ -997,8 +1117,8 @@
             "secondary": "Second Filtre",
             "cancel": "Annuler",
             "save": "Sauvegarder",
-            "default": "Default",
-            "profile": "Profile",
+            "default": "Défaut",
+            "profile": "Profil",
             "none": "Aucun",
             "ast": {
                 "primary": "Expression AST principale",
@@ -1016,8 +1136,7 @@
         },
         "template_save": {
             "title": "Sauvegarder le Modèle",
-            "select_existing": "Sélectionner un Modèle existant",
-            "select_new": "Créer un nouveau modèle",
+            "select": "Add new or select existing template",
             "or": "ou",
             "name": "Nom du modèle",
             "cancel": "Annuler",
@@ -1029,12 +1148,12 @@
             "wait_n_seconds": "Attendez %1 secondes ..."
         },
         "input": {
-            "cancel": "Cancel",
+            "cancel": "Annuler",
             "ok": "Ok"
         },
         "data_manage": {
-            "cancel": "Cancel",
-            "ok": "Delete",
+            "cancel": "Annuler",
+            "ok": "Supprimer",
             "title": "Are you sure you want to delete these files, players or guilds?",
             "skip_next": "Do not show next time",
             "label": {
@@ -1044,16 +1163,16 @@
             }
         },
         "simulator_debug": {
-            "cancel": "Cancel",
-            "ok": "Apply",
-            "reset": "Reset",
-            "title": "Simulator Configuration"
+            "cancel": "Annuler",
+            "ok": "Appliquer",
+            "reset": "Réinitialiser",
+            "title": "Configuration du Simulateur"
         }
     },
     "attributes": {
         "tabs": {
-            "gold_exp": "Gold & Experience",
-            "fortress": "Fortress",
+            "gold_exp": "Or & Expérience",
+            "fortress": "Forteresse",
             "underworld": "Underworld",
             "gold_table": "Gold Table"
         },
@@ -1066,19 +1185,19 @@
             "group": "Guild bonus %",
             "tower": "Tour bonus %",
             "mine": "Gem Mine",
-            "pit": "Gold Pit",
-            "pit_cap": "Gold Pit capacity",
-            "pit_hr": "Hourly Gold Pit",
-            "pit_time": "Gold Pit time",
-            "rune": "Item Quality Rune",
-            "reward": "Environmental reward",
+            "pit": "Mine d'or",
+            "pit_cap": "Capacité de la Mine d’or",
+            "pit_hr": "Mine d'or /heure",
+            "pit_time": "Temps de Mine d'or",
+            "rune": "Rune de Qualité d'Objet",
+            "reward": "Bonus écologique",
             "guard_hr": "Hourly guard duty",
-            "dice_3": "Dice game (3 of a kind)",
-            "dice_4": "Dice game (4 of a kind)",
-            "dice_5": "Dice game (5 of a kind)",
-            "gem_s": "Small gem",
-            "gem_m": "Medium gem",
-            "gem_l": "Large gem",
+            "dice_3": "Jeu de dés (3 d'un type)",
+            "dice_4": "Jeu de dés (4 d'un type)",
+            "dice_5": "Jeu de dés (5 d'un type)",
+            "gem_s": "Gemme petite",
+            "gem_m": "Gemme moyenne",
+            "gem_l": "Gemme grande",
             "pot_10": "10% Potion",
             "pot_15": "15% Potion",
             "pot_25": "25% Potion",
@@ -1086,8 +1205,8 @@
             "pot_pm": "Mushroom PoEL",
             "pot_pg": "Gold PoEL",
             "scroll": "Witch Scroll",
-            "glass": "Quicksand Hourglass",
-            "glass_10": "10 Quicksand Hourglasses",
+            "glass": "Sablier de l'impatence",
+            "glass_10": "10 Sablier de l'impatence",
             "calendar_1": "Calendar 1 bar",
             "calendar_3": "Calendar 3 bars / Locked",
             "arena": "Arena Max",
@@ -1096,14 +1215,14 @@
             "twister_reward": "Tornade (Niveau est le niveau de l'ennemi)"
         },
         "experience": {
-            "title": "Experience",
-            "hydra": "Hydra heads",
-            "academy": "Academy",
-            "academy_hr": "Hourly Academy",
-            "academy_time": "Academy time",
-            "academy_cap": "Academy capacity",
+            "title": "Expérience",
+            "hydra": "Têtes d'Hydre",
+            "academy": "Académie",
+            "academy_hr": "Académie horaire",
+            "academy_time": "Temps de l'Académie",
+            "academy_cap": "Capacité de l'Académie",
             "next": "Next level",
-            "arena": "Arena",
+            "arena": "Arène",
             "daily": "Daily mission",
             "dungeon": "Donjon (Niveau est le niveau de l'ennemi)",
             "twister": "Tornade (Niveau est le niveau de l'ennemi)",
@@ -1117,21 +1236,21 @@
         "quests": {
             "title": "Quests (Experimental)",
             "notice": "* Final values represent smallest quest segment with no enchantments applied.",
-            "album": "Scrapbook %",
-            "group_exp": "Guild XP %",
-            "group_gold": "Guild Gold %",
+            "album": "Album de maniaque %",
+            "group_exp": "Guilde XP %",
+            "group_gold": "Guilde Or %",
             "tower": "Tour",
-            "rune_exp": "Experience Rune",
-            "rune_gold": "Gold Rune",
+            "rune_exp": "Rune d’Expérience",
+            "rune_gold": "Rune d'Or",
             "min_xp": "Minimum XP",
             "max_xp": "Maximum XP",
-            "min_gold": "Minimum Gold",
-            "max_gold": "Maximum Gold"
+            "min_gold": "Minimum Or",
+            "max_gold": "Maximum Or"
         },
         "misc": {
             "title": "Miscellaneous",
-            "gate": "Underworld Gate",
-            "torture": "Torture Chamber",
+            "gate": "Porte des Enfers",
+            "torture": "Salle de torture",
             "souls": "Âmes (Niveau est le niveau de l'ennemi)"
         },
         "calc": {
@@ -1176,10 +1295,10 @@
             "upgrade_money": "Cost",
             "upgrade_estimation": "Estimation",
             "money_spent": "Spent money",
-            "money_1h": "1 Hour",
-            "money_8h": "8 Hours",
-            "money_1d": "1 Day",
-            "money_7d": "7 Days",
+            "money_1h": "1 Heure",
+            "money_8h": "8 Heures",
+            "money_1d": "1 Jour",
+            "money_7d": "7 Jours",
             "runes": "Runes"
         },
         "building": {
@@ -1197,7 +1316,7 @@
         "upgrades": {
             "0": "None",
             "1": "Speed",
-            "2": "Gold",
+            "2": "Or",
             "3": "Both",
             "4": "Platinum"
         }
@@ -1210,8 +1329,8 @@
             "types": {
                 "normal_1": "Normal (1 attribute)",
                 "normal_2": "Normal (2 attributes)",
-                "epic_3": "Epic (3 attributes)",
-                "epic_5": "Epic (5 attributes)"
+                "epic_3": "Épique (3 attributs)",
+                "epic_5": "Épique (5 attributs)"
             }
         },
         "table": {

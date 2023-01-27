@@ -100,6 +100,7 @@
     },
     "index": {
         "toggle": "Alternar créditos",
+        "others": "Otras herramientas de la comunidad",
         "roles": {
             "admin": "Aguien con mucho tiempo libre...",
             "helper": "Ayudantes - Investigación, Testing, Feedback, etc.",
@@ -193,6 +194,55 @@
     "404": {
         "title": "404",
         "text": "No estoy seguro de lo que buscas pero no existe"
+    },
+    "terms": {
+        "title": "Términos y Condiciones",
+        "button": {
+            "accept_full": "Entiendo y acepto los términos",
+            "accept": "Aceptar",
+            "reject": "Rechazar"
+        },
+        "general": {
+            "heading0": {
+                "title": "Uso general",
+                "clause0": "Se recomienda nunca compartir archivos HAR ya que <b>podrían</b> contener datos privados como dirección IP y cookies.",
+                "clause1": "El sitio se distribuye <b>TAL COMO ES</b> sin ninguna garantía. Usted es completamente responsable del uso de este sitio.",
+                "clause2": "Usted es libre de compartir, copiar y modificar el sitio, pero no está autorizado a distribuirlo ni ninguna de sus partes sin la aprobación explícita.",
+                "clause3": "Aceptas limitar la recogida de datos del juego a cantidades razonables.",
+                "clause4": "Aceptas seguir los <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Términos y Condiciones</a> de Shakes & Fidget",
+                "clause5": "No se le permite automatizar ninguna parte de esta herramienta."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint es una aplicación de Unity que incluye la herramienta que te permite iniciar sesión en el juego y recopilar datos limitados sobre ti y tus miembros del gremio sin el largo proceso de creación de un archivo HAR.",
+                "clause1": "No es posible capturar otros jugadores que los mencionados anteriormente.",
+                "clause2": "Todo sucede localmente de una manera idéntica a jugar el juego a través del navegador."
+            },
+            "heading2": {
+                "title": "Servicio de compartir integrado",
+                "clause0": "Todos los datos compartidos a través de la función compartida integrada no están protegidos de ninguna otra forma que no sea la clave de compartir.",
+                "clause1": "Los datos compartidos pueden ser borrados en cualquier momento, hasta 2 días."
+            },
+            "heading3": {
+                "title": "Sentry",
+                "clause0": "Todos los errores surgidos durante el uso de esta herramienta se informarán a través de la herramienta Sentry.io.",
+                "clause1": "Estos informes son anónimos para que no sea posible rastrear su origen.",
+                "clause2": "Tenga en cuenta que ciertos bloqueadores de anuncios podrían impedir que Sentry funcione.",
+                "clause3": "Si quieres contribuir a este proyecto, es recomendable desactivar los bloqueadores de anuncios para este sitio."
+            }
+        },
+        "endpoint": {
+            "clause0": "Endpoint es una pequeña aplicación Unity que incluye la herramienta que te permite iniciar sesión en el juego y recopilar datos limitados del juego sin el largo proceso de crear un archivo HAR.",
+            "clause1": "Todos los datos introducidos se envían directamente al servidor del juego sin la participación de ningún tercero.",
+            "clause2": "No es posible capturar ningún otro jugador que los explícitamente indicados en la aplicación.",
+            "clause3": "Toda recogida de datos se realiza con medios normales, sin ningún uso de acciones prohibidas."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Términos no aceptados",
+                "message": "Debe aceptar los términos para continuar"
+            }
+        }
     },
     "stats": {
         "topbar": {
@@ -332,18 +382,25 @@
         "scripts": {
             "settings": "Ajustes",
             "templates": "Plantillas",
+            "name": "Script editado actualmente",
+            "list": "Plantillas disponibles",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Scripts",
                 "templates": "Plantillas",
                 "save": "Guardar",
                 "copy": "Copiar",
-                "undo": "Deshacer",
-                "redo": "Rehacer",
-                "close": "Cerrar",
-                "apply": "Aplicar",
+                "archive": "Archivo de scripts",
+                "close": "Volver",
                 "remove": "Eliminar",
-                "save_apply": "Guardar y aplicar"
+                "reset": "Descartar cambios",
+                "save_template": "Guardar como plantilla",
+                "header": {
+                    "actions": "Acciones",
+                    "modify": "Script",
+                    "library": "Librerías",
+                    "archive": "Archivo"
+                }
             },
             "types": {
                 "me": "Yo",
@@ -660,6 +717,20 @@
             }
         }
     },
+    "hellevator": {
+        "range": {
+            "start": "Comenzar en el piso",
+            "end": "Finalizar en el piso"
+        },
+        "element": "Elemento",
+        "win": {
+            "all": "Todos los #{count} pisos fueron derrotados con 100% de probabilidad",
+            "none": "Todos los pisos #{count} son imposibles de derrotar",
+            "first": "Los primeros #{count} pisos fueron derrotados con 100% de probabilidad",
+            "last": "Los últimos #{count} pisos son imposibles de derrotar"
+        },
+        "footer#": "Basado en <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Recompensas de Hellevator &amp; Estadísticas de los Monstruos</a> de ÐonMuErte."
+    },
     "dungeons": {
         "simulate_one": "Simular",
         "simulate_remaining": "Restantes",
@@ -916,6 +987,55 @@
             "save": "Guardar",
             "ok": "Aceptar"
         },
+        "template_manage": {
+            "title": "Plantillas",
+            "general": "General",
+            "online": "Publicar",
+            "script": {
+                "name": "Nombre",
+                "version": "Versión local",
+                "updated": "Actualizado el",
+                "published": "Publicado el",
+                "published_version": "Versión publicada",
+                "published_key": "Código"
+            },
+            "action": {
+                "publish": "Publicar plantilla",
+                "republish": "Publicar nueva versión",
+                "unpublish": "Quitar plantilla publicada",
+                "remove": "Eliminar permanentemente"
+            },
+            "error": "La acción no fue exitosa"
+        },
+        "script_archive": {
+            "title": "Archivo de scripts",
+            "clear": "Eliminar todos los elementos del archivo",
+            "types": {
+                "create_script": "Script creado",
+                "overwrite_script": "Script sobrescrito por una nueva versión",
+                "save_script": "Script guardado",
+                "remove_script": "Script eliminado",
+                "create_template": "Plantilla creada",
+                "overwrite_template": "Plantilla sobrescrita por una nueva versión",
+                "save_template": "Plantilla guardada",
+                "remove_template": "Plantilla eliminada"
+            },
+            "item": {
+                "description": "Archivado: #{change}. Expira: #{expire}",
+                "temporary": "en modo temporal"
+            }
+        },
+        "script_repository": {
+            "title": "Repositorio de scripts",
+            "private_code": {
+                "label": "Código privado",
+                "placeholder": "Ingresa tu código privado..."
+            },
+            "list": {
+                "about": "Añadido por #{author}",
+                "about_with_date": "Añadido por #{author} el #{date}"
+            }
+        },
         "statistics_integration_options": {
             "title": "Opciones de Integración de Estadísticas",
             "slot": "Slot de la base de datos",
@@ -941,7 +1061,7 @@
         },
         "delete_script": {
             "title": "Eliminar script",
-            "notice": "¿Está seguro que desea eliminar permanentemente el script aplicado actualmente?"
+            "notice": "¿Está seguro que desea eliminar permanentemente el script seleccionado?"
         },
         "warning": {
             "title": "¡Se ha producido un error!",
@@ -1016,8 +1136,7 @@
         },
         "template_save": {
             "title": "Guardar plantilla",
-            "select_existing": "Seleccionar plantilla existente",
-            "select_new": "Crear nueva plantilla",
+            "select": "Añadir una nueva o seleccionar una plantilla existente",
             "or": "o",
             "name": "Nombre de la plantilla",
             "cancel": "Cancelar",

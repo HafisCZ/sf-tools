@@ -62,7 +62,7 @@
             "backpack_size": "Velikost batohu",
             "critical_bonus": "Kritický Bonus",
             "thirst_free": "Denní touha zdarma",
-            "thirst_usable": "Daily storable Thirst",
+            "thirst_usable": "Denní touha zdarma",
             "fortress1": "Pevnost",
             "fortress2": "Dělnická ubikace",
             "fortress3": "Dřevorubecká chýše",
@@ -95,11 +95,12 @@
         "race6": "Temný Elf",
         "race7": "Goblin",
         "race8": "Démon",
-        "gender1": "Male",
-        "gender2": "Female"
+        "gender1": "Muž",
+        "gender2": "Žena"
     },
     "index": {
         "toggle": "Zobrazit autory",
+        "others": "Ostatní nástroje komunity",
         "roles": {
             "admin": "Někdo se spoustou volného času",
             "helper": "Pomocníci - Výzkum, Testování, Feedback, atp.",
@@ -179,20 +180,69 @@
         },
         "fortress": {
             "title": "Simulátor Pevnosti",
-            "desc": "Simulate the probable outcome of fortress raid"
+            "desc": "Simulovat pravděpodobný výsledek zásahu pevnosti"
         },
         "changelog": {
             "title": "Seznam změn",
             "desc": "Zobrazit všechny významné změny"
         },
         "hellevator": {
-            "title": "Hellevator Simulator",
-            "desc": "Simulate the probable outcome of Hellevator battles"
+            "title": "Simulátor Hellevatoru",
+            "desc": "Simulovat pravděpodobný výsledek bitev v Hellevatoru"
         }
     },
     "404": {
         "title": "404",
         "text": "Co hledáte neexistuje"
+    },
+    "terms": {
+        "title": "Obchodních podmínkách",
+        "button": {
+            "accept_full": "Rozumím a přijímám tyto podmínky",
+            "accept": "Přijmout",
+            "reject": "Odmítnout"
+        },
+        "general": {
+            "heading0": {
+                "title": "Obecné použití",
+                "clause0": "It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.",
+                "clause1": "The site is distributed <b>AS IS</b> without any warranties. You are fully responsible for use of this site.",
+                "clause2": "You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.",
+                "clause3": "You agree to limit data collection from the game to reasonable amounts.",
+                "clause4": "You agree to follow the Shakes & Fidget <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Terms and Conditions</a>",
+                "clause5": "You are not allowed to automate any part of this tool."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.",
+                "clause1": "It is not possible to capture any other players than those listed above.",
+                "clause2": "Everything happens locally in a identical way to playing the game through browser."
+            },
+            "heading2": {
+                "title": "Integrovaná služba sdílení",
+                "clause0": "Všechna data sdílená prostřednictvím integrované funkce sdílení nejsou chráněna jiným způsobem než sdíleným klíčem.",
+                "clause1": "Sdílené údaje mohou být kdykoli vymazány až do plného počtu 2 dnů."
+            },
+            "heading3": {
+                "title": "Hlídka",
+                "clause0": "Všechny chyby vzniklé během používání tohoto nástroje budou nahlášeny přes nástroj Sentry.io.",
+                "clause1": "Tyto zprávy jsou anonymní, takže není možné sledovat jejich původ.",
+                "clause2": "Vezměte prosím na vědomí, že určité blokování reklam může zabránit Sentry v práci.",
+                "clause3": "Pokud chcete přispět k tomuto projektu, doporučuji zakázat blokování reklam pro tento web."
+            }
+        },
+        "endpoint": {
+            "clause0": "Koncový bod je malá Jednotková aplikace propojená s nástrojem, který vám umožňuje přihlásit se do hry a sbírat omezená herní data bez zdlouhavého procesu vytváření HAR souboru.",
+            "clause1": "Všechna zadaná data jsou odesílána přímo na herní server bez zapojení jakékoli třetí strany.",
+            "clause2": "Není možné zachytit žádné jiné hráče, než které jsou výslovně uvedeny v žádosti.",
+            "clause3": "Veškerý sběr údajů se provádí za použití běžných prostředků bez použití zakázaných opatření."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Podmínky nebyly přijaty",
+                "message": "Abyste mohli pokračovat, musíte přijmout podmínky"
+            }
+        }
     },
     "stats": {
         "topbar": {
@@ -216,7 +266,7 @@
             "timestamps": "Datumy",
             "prefix": "Prefix",
             "name": "Jméno",
-            "type": "Type",
+            "type": "Typ",
             "group": "Cech",
             "groups": "Cechy",
             "players": "Hráči",
@@ -249,9 +299,9 @@
             "options": {
                 "title": "Nastavení",
                 "advanced": "Zobrazit pokročilý seznam",
-                "hidden": "Show hidden entries",
+                "hidden": "Zobrazit skryté položky",
                 "export_public_only": "Exportovat pouze veřejná data",
-                "export_bundle_groups": "Bundle groups with players"
+                "export_bundle_groups": "Balíček skupin s hráči"
             },
             "tags": {
                 "single": "Štítek",
@@ -261,7 +311,7 @@
             },
             "filters": {
                 "any": "Vše",
-                "none": "None",
+                "none": "Žádný",
                 "n_unique": "unikátních",
                 "expression": "AST výraz",
                 "expression_placeholder": "Tvůj AST výraz",
@@ -271,10 +321,10 @@
                 "prefix": "Prefix",
                 "tags": "Tagy",
                 "type": "Typ",
-                "ownership": "Ownership",
-                "ownership_all": "Show all",
-                "ownership_own": "Show only own",
-                "ownership_other": "Show only other",
+                "ownership": "Vlastnictví",
+                "ownership_all": "Zobrazit vše",
+                "ownership_own": "Zobrazit pouze vlastní",
+                "ownership_other": "Zobrazit jen ostatní",
                 "hidden": "Skryté"
             },
             "online": {
@@ -308,8 +358,8 @@
         },
         "filters": {
             "types": {
-                "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "players": "Filtrovat hráče podle serveru, třídy, klanu a/nebo uživatelského jména",
+                "guilds": "Filtrovat skupiny podle serveru nebo jména"
             },
             "c": "Třída postavy v angličtině (eg.: berserker, battle mage)",
             "p": "Jméno hráče",
@@ -332,18 +382,25 @@
         "scripts": {
             "settings": "Skripty",
             "templates": "Šablony",
+            "name": "Currently edited script",
+            "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Skripty",
                 "templates": "Šablony",
                 "save": "Uložit",
                 "copy": "Kopírovat",
-                "undo": "Zpět",
-                "redo": "Opakovat",
-                "close": "Zavřít",
-                "apply": "Použít",
+                "archive": "Script archive",
+                "close": "Return back",
                 "remove": "Smazat",
-                "save_apply": "Uložit a použít"
+                "reset": "Discard changes",
+                "save_template": "Save as template",
+                "header": {
+                    "actions": "Actions",
+                    "modify": "Script",
+                    "library": "Libraries",
+                    "archive": "Archive"
+                }
             },
             "types": {
                 "me": "Já",
@@ -660,6 +717,20 @@
             }
         }
     },
+    "hellevator": {
+        "range": {
+            "start": "Start at floor",
+            "end": "End at floor"
+        },
+        "element": "Element",
+        "win": {
+            "all": "All #{count} floors were defeated with 100% chance",
+            "none": "All #{count} floors are impossible to defeat",
+            "first": "First #{count} floors were defeated with 100% chance",
+            "last": "Last #{count} floors are impossible to defeat"
+        },
+        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+    },
     "dungeons": {
         "simulate_one": "Simulovat",
         "simulate_remaining": "Zbývající",
@@ -769,20 +840,20 @@
         "mage_count": "Kouzelníci",
         "mage_level": "Úroveň Kouzelníků",
         "units": {
-            "remaining": "Average remaning units:",
+            "remaining": "Průměrný převod jednotek:",
             "player": "Válečníci",
-            "target": "Defenses"
+            "target": "Obrana"
         }
     },
     "hydra": {
-        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "footer#": "Založeno na projektu <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p GuildPet</a>.",
         "player_count": "Počet hráčů",
         "main": "Hlavní",
         "side1": "Vedlejší 1",
         "side2": "Vedlejší 2",
         "hydra": "Hydra",
         "iterations": {
-            "label": "Iterations:",
+            "label": "Iterace:",
             "popup": "Amount of iterations per pet class."
         },
         "result": {
@@ -821,22 +892,22 @@
         "save": "Uložit",
         "simulate": "Simulovat",
         "simulate_debug": "Simulovat v režimu ladění",
-        "configure": "Configure simulator",
-        "configure_copy": "Copy everyone including current configuration",
+        "configure": "Konfigurace simulátoru",
+        "configure_copy": "Kopírovat všechno včetně aktuální konfigurace",
         "clipboard": {
             "copy_all": "Kopírovat vše",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
-        "win_chance": "Win %",
-        "min_chance": "Min %",
-        "max_chance": "Max %",
+        "win_chance": "Výhra %",
+        "min_chance": "Min. %",
+        "max_chance": "Max. %",
         "poll": {
             "players": "Načíst uložené postavy",
             "guilds": "Načíst uložené cechy"
         },
         "toast": {
-            "title": "Simulation finished",
-            "message": "Simulation took #{duration}"
+            "title": "Simulace dokončena",
+            "message": "Simulace trvala #{duration}"
         }
     },
     "editor": {
@@ -846,11 +917,11 @@
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Brnění",
-        "armor_placeholder": "Armor points",
+        "armor_placeholder": "Body brnění",
         "min": "Min",
-        "min_placeholder": "Item Min",
-        "max": "Max",
-        "max_placeholder": "Item Max",
+        "min_placeholder": "Min. položka",
+        "max": "Max.",
+        "max_placeholder": "Max. položek",
         "weapon_enchant": "Krit",
         "rune": "Runa",
         "portal_damage": "Poškození z portálu",
@@ -871,14 +942,14 @@
         "username": "Jméno",
         "password": "Heslo",
         "mode": {
-            "title": "Capture mode",
+            "title": "Režim snímání",
             "own": "Vlastní postava",
             "default": "Vlastní postava + vybrané",
             "guild": "Vlastní postava + členové tvého cechu",
             "friends": "Vlastní postava + prátelé",
             "hall_of_fame": "Vlastní postava + top 50 síně slávy"
         },
-        "temporary": "Discard capture when page is closed",
+        "temporary": "Zrušit zachytávání při zavření stránky",
         "cancel": "Zrušit",
         "continue": "Pokračovat",
         "step2": {
@@ -912,9 +983,58 @@
     },
     "dialog": {
         "shared": {
-            "cancel": "Cancel",
-            "save": "Save",
+            "cancel": "Zrušit",
+            "save": "Uložit",
             "ok": "Ok"
+        },
+        "template_manage": {
+            "title": "Šablony",
+            "general": "Obecné",
+            "online": "Veřejné",
+            "script": {
+                "name": "Jméno",
+                "version": "Lokální verze",
+                "updated": "Aktualizováno",
+                "published": "Publikováno",
+                "published_version": "Publikovaná verze",
+                "published_key": "Kód"
+            },
+            "action": {
+                "publish": "Publikovat šablonu",
+                "republish": "Publikovat novou verzi",
+                "unpublish": "Zrušit publikování šablony",
+                "remove": "Trvale odstranit"
+            },
+            "error": "Akce se nezdařila"
+        },
+        "script_archive": {
+            "title": "Archiv skriptu",
+            "clear": "Odstranit všechny položky z archívu",
+            "types": {
+                "create_script": "Script vytvořen",
+                "overwrite_script": "Skript přepsán novou verzí",
+                "save_script": "Script uložen",
+                "remove_script": "Script odstraněn",
+                "create_template": "Šablona vytvořena",
+                "overwrite_template": "Šablona přepsána novou verzí",
+                "save_template": "Šablona uložena",
+                "remove_template": "Šablona byla odstraněna"
+            },
+            "item": {
+                "description": "Archived: #{change}. Expires: #{expire}",
+                "temporary": "in temporary mode"
+            }
+        },
+        "script_repository": {
+            "title": "Script Repository",
+            "private_code": {
+                "label": "Private code",
+                "placeholder": "Enter your private code..."
+            },
+            "list": {
+                "about": "Added by #{author}",
+                "about_with_date": "Added by #{author} on #{date}"
+            }
         },
         "statistics_integration_options": {
             "title": "Statistics Integration Options",
@@ -941,7 +1061,7 @@
         },
         "delete_script": {
             "title": "Smazat skript",
-            "notice": "Opravdu chcete smazat právě používaný skript?"
+            "notice": "Are you sure you want to permanently remove selected script?"
         },
         "warning": {
             "title": "Vyskytl se problém!",
@@ -1016,8 +1136,7 @@
         },
         "template_save": {
             "title": "Uložit šablonu",
-            "select_existing": "Vybrat existující šablonu",
-            "select_new": "Vytvořit novou šablonu",
+            "select": "Add new or select existing template",
             "or": "nebo",
             "name": "Název šablony",
             "cancel": "Zrušit",
