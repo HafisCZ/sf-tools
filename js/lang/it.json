@@ -83,7 +83,7 @@
             "underworld6": "Stanza delle torture",
             "underworld7": "Allenatore gladiatore",
             "underworld8": "Blocco dei troll",
-            "underworld9": "Adventuromatic",
+            "underworld9": "Avventuromatic",
             "underworld10": "Custode"
         },
         "reduction": "Riduzione",
@@ -100,6 +100,7 @@
     },
     "index": {
         "toggle": "Crediti",
+        "others": "Altri strumenti della comunità",
         "roles": {
             "admin": "Qualcuno con molto tempo libero",
             "helper": "Collaboratori - Ricerca, Test, Feedback, ecc.",
@@ -194,6 +195,55 @@
         "title": "404",
         "text": "Non so cosa stai cercando ma non esiste"
     },
+    "terms": {
+        "title": "Termini e Condizioni",
+        "button": {
+            "accept_full": "Comprendo e accetto questi termini",
+            "accept": "Accetta",
+            "reject": "Rifiuta"
+        },
+        "general": {
+            "heading0": {
+                "title": "Utilizzo generale",
+                "clause0": "Si consiglia di non condividere mai i file HAR in quanto <b>potrebbero</b> contenere dati privati come l'indirizzo IP e i cookie.",
+                "clause1": "Il sito è distribuito <b>COSÌ COM'È</b> senza alcuna garanzia. Sei pienamente responsabile per l'utilizzo di questo sito.",
+                "clause2": "Sei libero di condividere, copiare e modificare il sito, ma non sei autorizzato a distribuire qualsiasi delle sue parti senza esplicita approvazione.",
+                "clause3": "L'utente accetta di limitare la raccolta di dati dal gioco a quantità ragionevoli.",
+                "clause4": "Accetti di seguire i <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Termini e le Condizioni</a> di Shakes & Fidget",
+                "clause5": "Non è consentito automatizzare nessuna parte di questo strumento."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint è un'applicazione Unity collegata con lo strumento che consente di accedere al gioco e raccogliere dati limitati su di te e i membri della tua gilda senza il lungo processo di creazione di un file HAR.",
+                "clause1": "Non è possibile catturare altri giocatori oltre a quelli sopra elencati.",
+                "clause2": "Tutto avviene localmente in modo identico a giocare il gioco attraverso il browser."
+            },
+            "heading2": {
+                "title": "Servizio di condivisione integrato",
+                "clause0": "Tutti i dati condivisi tramite la funzione di condivisione integrata non sono protetti in alcun modo se non con il codice di condivisione.",
+                "clause1": "I dati condivisi potrebbero essere cancellati in qualsiasi momento, fino a 2 giorni completi."
+            },
+            "heading3": {
+                "title": "Sentry",
+                "clause0": "Tutti gli errori rilevati durante l'utilizzo di questo strumento saranno riportati tramite lo strumento Sentry.io.",
+                "clause1": "Questi rapporti sono anonimi in modo che non sia possibile rintracciarne l'origine.",
+                "clause2": "Si prega di notare che alcuni ad-blocker potrebbero impedire che Sentry funzioni.",
+                "clause3": "Se vuoi contribuire a questo progetto, è raccomandato disabilitare gli ad-blocker per questo sito."
+            }
+        },
+        "endpoint": {
+            "clause0": "Endpoint è un'applicazione Unity collegata con lo strumento che consente di accedere al gioco e raccogliere dati limitati su di te e i membri della tua gilda senza il lungo processo di creazione di un file HAR.",
+            "clause1": "Tutti i dati inseriti vengono inviati direttamente al server di gioco senza alcun coinvolgimento di terze parti.",
+            "clause2": "Non è possibile catturare altri giocatori se non quelli esplicitamente indicati nell'applicazione.",
+            "clause3": "Tutta la raccolta di dati viene effettuata con mezzi normali, senza alcun uso di azioni proibite."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Condizioni non accettate.",
+                "message": "È necessario accettare i termini e le condizioni per continuare"
+            }
+        }
+    },
     "stats": {
         "topbar": {
             "temporary_flag": "Temporaneo",
@@ -251,7 +301,7 @@
                 "advanced": "Mostra lista file avanzata",
                 "hidden": "Visualizza voci nascoste",
                 "export_public_only": "Esporta solo dati pubblici",
-                "export_bundle_groups": "Pacchetto gruppi con giocatori"
+                "export_bundle_groups": "Raggruppa gruppi con giocatori"
             },
             "tags": {
                 "single": "Tag",
@@ -332,18 +382,25 @@
         "scripts": {
             "settings": "Opzioni",
             "templates": "Template",
+            "name": "Script attualmente in modifica",
+            "list": "Modelli disponibili",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Script",
                 "templates": "Template",
                 "save": "Salva",
                 "copy": "Copia",
-                "undo": "Annulla",
-                "redo": "Ripeti",
-                "close": "Chiudi",
-                "apply": "Applica",
+                "archive": "Archivio script",
+                "close": "Torna indietro",
                 "remove": "Rimuovi",
-                "save_apply": "Salva & applica"
+                "reset": "Scarta le modifiche",
+                "save_template": "Salva come modello",
+                "header": {
+                    "actions": "Azioni",
+                    "modify": "Script",
+                    "library": "Librerie",
+                    "archive": "Archivio"
+                }
             },
             "types": {
                 "me": "Me",
@@ -502,7 +559,7 @@
     },
     "pets": {
         "generate": {
-            "iterations": "Quantità d'iterazioni per thread quando si genera una tabella famigli",
+            "iterations": "Quantità d'iterazioni per thread quando si genera una tabella famigli.",
             "tooltip": "Genera una tabella di successo per livello / gladiatore. Possibile solo per gli scontri contro i boss famigli.",
             "one": "Genera",
             "five": "Genera i prossimi 5",
@@ -659,6 +716,20 @@
                 "placeholder": "Famigli catturati"
             }
         }
+    },
+    "hellevator": {
+        "range": {
+            "start": "Inizia dal piano",
+            "end": "Termina al piano"
+        },
+        "element": "Elemento",
+        "win": {
+            "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
+            "none": "Tutti i #{count} piani sono impossibili da sconfiggere",
+            "first": "I primi #{count} piani sono stati sconfitti con il 100% di possibilità",
+            "last": "Gli ultimi #{count} piani sono impossibili da sconfiggere"
+        },
+        "footer#": "Basato su <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> di ÐonMuErte."
     },
     "dungeons": {
         "simulate_one": "Simula",
@@ -916,9 +987,58 @@
             "save": "Salva",
             "ok": "Ok"
         },
+        "template_manage": {
+            "title": "Modelli",
+            "general": "Generale",
+            "online": "Pubblica",
+            "script": {
+                "name": "Nome",
+                "version": "Versione locale",
+                "updated": "Aggiornato il",
+                "published": "Pubblicato il",
+                "published_version": "Versione pubblicata",
+                "published_key": "Codice"
+            },
+            "action": {
+                "publish": "Pubblica modello",
+                "republish": "Pubblica nuova versione",
+                "unpublish": "Annulla pubblicazione",
+                "remove": "Rimuovere permanentemente"
+            },
+            "error": "Azione non riuscita"
+        },
+        "script_archive": {
+            "title": "Archivio script",
+            "clear": "Elimina tutti gli elementi dall'archivio",
+            "types": {
+                "create_script": "Script creato",
+                "overwrite_script": "Script sovrascritto da una nuova versione",
+                "save_script": "Script salvato",
+                "remove_script": "Script rimosso",
+                "create_template": "Modello creato",
+                "overwrite_template": "Modello sovrascritto da nuova versione",
+                "save_template": "Modello salvato",
+                "remove_template": "Modello rimosso"
+            },
+            "item": {
+                "description": "Archiviato: #{change}. Scade il: #{expire}",
+                "temporary": "in modalità temporanea"
+            }
+        },
+        "script_repository": {
+            "title": "Archivio script",
+            "private_code": {
+                "label": "Codice privato",
+                "placeholder": "Inserisci il tuo codice privato..."
+            },
+            "list": {
+                "about": "Aggiunto da #{author}",
+                "about_with_date": "Aggiunto da #{author} il #{date}"
+            }
+        },
         "statistics_integration_options": {
             "title": "Opzioni Di Integrazione Delle Statistiche",
-            "slot": "Slot di database",
+            "slot": "Slot del database",
             "limit": {
                 "title": "Quantità massima di voci da visualizzare",
                 "placeholder": "Usa 0 per disabilitare"
@@ -941,7 +1061,7 @@
         },
         "delete_script": {
             "title": "Rimuovi script",
-            "notice": "Sicuro di voler eliminare definitivamente lo script attualmente applicato?"
+            "notice": "Sicuro di voler eliminare definitivamente lo script selezionato?"
         },
         "warning": {
             "title": "C'è stato un errore!",
@@ -1016,8 +1136,7 @@
         },
         "template_save": {
             "title": "Salva template",
-            "select_existing": "Salva template esistente",
-            "select_new": "Crea nuovo template",
+            "select": "Aggiungi un nuovo modello o selezionane uno esistente",
             "or": "o",
             "name": "Nome template",
             "cancel": "Cancella",

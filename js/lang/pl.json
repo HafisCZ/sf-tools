@@ -78,12 +78,12 @@
             "underworld1": "Serce Ciemności",
             "underworld2": "Wrota Podziemi",
             "underworld3": "Kopalnia Złota",
-            "underworld4": "Ekstaktor Dusz",
+            "underworld4": "Ekstraktor Dusz",
             "underworld5": "Siedlisko Goblinów",
             "underworld6": "Komnata Tortur",
             "underworld7": "Trener Gladiatorów",
             "underworld8": "Siedlisko Trolli",
-            "underworld9": "Przygotomat",
+            "underworld9": "Przygodomat",
             "underworld10": "Władca"
         },
         "reduction": "Redukcja",
@@ -95,11 +95,12 @@
         "race6": "Mroczny Elf",
         "race7": "Goblin",
         "race8": "Demon",
-        "gender1": "Male",
-        "gender2": "Female"
+        "gender1": "Mężczyzna",
+        "gender2": "Kobieta"
     },
     "index": {
         "toggle": "Pokaż/ukryj kontrybutorów",
+        "others": "Inne narzędzia społeczności",
         "roles": {
             "admin": "Osoba z dużą ilością czasu",
             "helper": "Pomocnicy - Research, Testowanie, Opinie, itd.",
@@ -194,6 +195,55 @@
         "title": "404",
         "text": "Nie wiem czego szukasz, ale tutaj tego nie ma"
     },
+    "terms": {
+        "title": "Zasady i warunki użytkowania",
+        "button": {
+            "accept_full": "Rozumiem i akceptuję te warunki",
+            "accept": "Akceptuj",
+            "reject": "Odrzuć"
+        },
+        "general": {
+            "heading0": {
+                "title": "Ogólne",
+                "clause0": "Nie zaleca się udostępniania plików HAR, ponieważ <b>mogą</b> zawierać prywatne dane, takie jak adres IP i pliki cookie.",
+                "clause1": "Witryna jest rozpowszechniana <b>W TAKIEJ FORMIE</b> bez żadnych gwarancji. Jesteś w pełni odpowiedzialny za korzystanie z tej witryny.",
+                "clause2": "Możesz udostępniać, kopiować i modyfikować witrynę, ale nie masz pozwolenia do jej rozpowszechniania, ani żadnej z jej części, bez wyraźnej zgody.",
+                "clause3": "Zgadzasz się na ograniczenie gromadzenia danych z gry do rozsądnych ilości.",
+                "clause4": "Zgadzasz się na przestrzeganie warunków i regulaminu Shakes & Fidget <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\"></a>",
+                "clause5": "Nie możesz zautomatyzować żadnej części tego narzędzia."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint to aplikacja Unity połączona z narzędziem, które pozwala ci zalogować się do gry i zbierać ograniczone dane o sobie i członkach gildii bez długiego procesu tworzenia pliku HAR.",
+                "clause1": "Nie jest możliwe zdobycie innych graczy niż wymienione powyżej.",
+                "clause2": "Wszystko dzieje się lokalnie w taki sam sposób jak grać w grę przez przeglądarkę."
+            },
+            "heading2": {
+                "title": "Zintegrowana usługa udostępniania",
+                "clause0": "Wszystkie dane udostępniane za pośrednictwem funkcji zintegrowanego udostępniania nie są chronione w żaden inny sposób niż klucz udostępniania.",
+                "clause1": "Udostępnione dane mogą zostać usunięte w dowolnym momencie, do pełnych 2 dni."
+            },
+            "heading3": {
+                "title": "Sentry",
+                "clause0": "Wszystkie błędy podczas używania tego narzędzia będą zgłaszane za pomocą narzędzia Sentry.io.",
+                "clause1": "Te raporty są anonimowe, więc nie można śledzić ich pochodzenia.",
+                "clause2": "Należy pamiętać, że niektóre blokery reklam mogą uniemożliwić działanie Sentry.",
+                "clause3": "Jeśli chcesz przyczynić się do tego projektu, zalecam wyłączenie blokowania reklam dla tej witryny."
+            }
+        },
+        "endpoint": {
+            "clause0": "Endpoint to mała aplikacja Unity połączona z narzędziem, które pozwala ci zalogować się do gry i zbierać ograniczone dane gry bez długiego procesu tworzenia pliku HAR.",
+            "clause1": "Wszystkie wprowadzone dane są wysyłane bezpośrednio do serwera gry bez udziału osób trzecich.",
+            "clause2": "Nie jest możliwe uchwycenie innych graczy niż wyraźnie określone w aplikacji.",
+            "clause3": "Wszystkie dane zbierane są przy użyciu zwykłych środków, bez jakiegokolwiek stosowania zakazanych działań."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Warunki nie zaakceptowane",
+                "message": "Musisz zaakceptować warunki, aby kontynuować"
+            }
+        }
+    },
     "stats": {
         "topbar": {
             "temporary_flag": "Tymczasowe",
@@ -261,7 +311,7 @@
             },
             "filters": {
                 "any": "Wszystko",
-                "none": "None",
+                "none": "Brak",
                 "n_unique": "Unikalny",
                 "expression": "Wyrażenie",
                 "expression_placeholder": "Twoje wyrażenie",
@@ -332,18 +382,25 @@
         "scripts": {
             "settings": "Ustawienia",
             "templates": "Szablony",
+            "name": "Aktualnie edytowany skrypt",
+            "list": "Dostępne szablony",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Skrypty",
                 "templates": "Szablony",
                 "save": "Zapisz",
                 "copy": "Kopiuj",
-                "undo": "Cofnj",
-                "redo": "Ponów",
-                "close": "Zamknij",
-                "apply": "Zastosuj",
+                "archive": "Archiwum skryptów",
+                "close": "Powrót",
                 "remove": "Usuń",
-                "save_apply": "Zapisz i Zastosuj"
+                "reset": "Odrzuć zmiany",
+                "save_template": "Zapisz jako szablon",
+                "header": {
+                    "actions": "Działania",
+                    "modify": "Skrypt",
+                    "library": "Biblioteki",
+                    "archive": "Archiwum"
+                }
             },
             "types": {
                 "me": "Ja",
@@ -660,6 +717,20 @@
             }
         }
     },
+    "hellevator": {
+        "range": {
+            "start": "Rozpocznij na piętrze",
+            "end": "Zakończ na piętrze"
+        },
+        "element": "Żywioł",
+        "win": {
+            "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
+            "none": "Nie można pokonać wszystkich #{count} pięter",
+            "first": "Pierwsze #{count} piętra zostały pokonane z 100% szans",
+            "last": "Ostatnie #{count} pięter jest niemożliwe do pokonania"
+        },
+        "footer#": "Bazuje na <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Nagrodach Windy Piekieł &amp; Statystyki potworów</a> od ÐonMuErte."
+    },
     "dungeons": {
         "simulate_one": "Symuluj",
         "simulate_remaining": "Pozostałe",
@@ -871,14 +942,14 @@
         "username": "Nazwa",
         "password": "Hasło",
         "mode": {
-            "title": "Capture mode",
+            "title": "Tryb przechwytywania",
             "own": "Zeskanuj własną postać",
             "default": "Zeskanuj własną + wybrane postacie",
             "guild": "Zeskanuj własną + gildia",
             "friends": "Zeskanuj własną + lista znajomych",
             "hall_of_fame": "Zeskanuj własną + top 50 Sali Chwały"
         },
-        "temporary": "Discard capture when page is closed",
+        "temporary": "Odrzuć przechwytywanie po zamknięciu strony",
         "cancel": "Anuluj",
         "continue": "Kontynuuj",
         "step2": {
@@ -916,6 +987,55 @@
             "save": "Zapisz",
             "ok": "Ok"
         },
+        "template_manage": {
+            "title": "Szablony",
+            "general": "Ogólne",
+            "online": "Opublikuj",
+            "script": {
+                "name": "Nazwa",
+                "version": "Wersja lokalna",
+                "updated": "Zaktualizowano",
+                "published": "Opublikowano",
+                "published_version": "Wersja opublikowana",
+                "published_key": "Kod"
+            },
+            "action": {
+                "publish": "Opublikuj szablon",
+                "republish": "Opublikuj nową wersję",
+                "unpublish": "Anuluj publikację szablonu",
+                "remove": "Usuń na stałe"
+            },
+            "error": "Czynność nie powiodła się"
+        },
+        "script_archive": {
+            "title": "Archiwum skryptu",
+            "clear": "Usuń wszystkie elementy z archiwum",
+            "types": {
+                "create_script": "Skrypt stworzony",
+                "overwrite_script": "Skrypt zastąpiony przez nową wersję",
+                "save_script": "Zapisano skrypt",
+                "remove_script": "Usunięto skrypt",
+                "create_template": "Utworzono szablon",
+                "overwrite_template": "Szablon nadpisany przez nową wersję",
+                "save_template": "Zapisano szablon",
+                "remove_template": "Usunięto szablon"
+            },
+            "item": {
+                "description": "Zarchiwizowano: #{change}. Wygasa: #{expire}",
+                "temporary": "w trybie tymczasowym"
+            }
+        },
+        "script_repository": {
+            "title": "Repozytorium skryptu",
+            "private_code": {
+                "label": "Kod prywatny",
+                "placeholder": "Wprowadź swój kod prywatny..."
+            },
+            "list": {
+                "about": "Dodano przez #{author}",
+                "about_with_date": "Dodano przez #{author} dnia #{date}"
+            }
+        },
         "statistics_integration_options": {
             "title": "Opcje integracji statystyk",
             "slot": "Slot bazy danych",
@@ -941,7 +1061,7 @@
         },
         "delete_script": {
             "title": "Usuń skrypt",
-            "notice": "Czy na pewno chcesz permanentnie usunąć skrypt?"
+            "notice": "Czy na pewno chcesz trwale usunąć wybrany skrypt?"
         },
         "warning": {
             "title": "Wystąpił błąd!",
@@ -1016,8 +1136,7 @@
         },
         "template_save": {
             "title": "Zapisz szablon",
-            "select_existing": "Wybierz istniejący szablon",
-            "select_new": "Stwórz nowy szablon",
+            "select": "Dodaj nowy lub wybierz istniejący szablon",
             "or": "albo",
             "name": "Nazwa szablonu",
             "cancel": "Anuluj",
@@ -1220,7 +1339,7 @@
             "lost": "Stracone",
             "reclaimable": "Do odzyskania",
             "required": "Wymagane",
-            "invalid": "Please insert valid attribute value"
+            "invalid": "Wprowadź prawidłową wartość atrybutu"
         }
     },
     "dungeon_enemies": {

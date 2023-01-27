@@ -100,6 +100,7 @@
     },
     "index": {
         "toggle": "Kreditek váltása",
+        "others": "Other community tools",
         "roles": {
             "admin": "Akinek sok szabadideje van",
             "helper": "Segítők - Kutatók, Tesztelők, Visszajelzők stb.",
@@ -193,6 +194,55 @@
     "404": {
         "title": "404",
         "text": "Nem tudom mire vagy kiváncsi, de valószínűleg itt nem létezik"
+    },
+    "terms": {
+        "title": "Terms and Conditions",
+        "button": {
+            "accept_full": "I understand & accept these terms",
+            "accept": "Accept",
+            "reject": "Reject"
+        },
+        "general": {
+            "heading0": {
+                "title": "General use",
+                "clause0": "It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.",
+                "clause1": "The site is distributed <b>AS IS</b> without any warranties. You are fully responsible for use of this site.",
+                "clause2": "You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.",
+                "clause3": "You agree to limit data collection from the game to reasonable amounts.",
+                "clause4": "You agree to follow the Shakes & Fidget <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Terms and Conditions</a>",
+                "clause5": "You are not allowed to automate any part of this tool."
+            },
+            "heading1": {
+                "title": "Endpoint",
+                "clause0": "Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.",
+                "clause1": "It is not possible to capture any other players than those listed above.",
+                "clause2": "Everything happens locally in a identical way to playing the game through browser."
+            },
+            "heading2": {
+                "title": "Integrated share service",
+                "clause0": "All data shared via the integrated share function is not protected in any other way other than the share key.",
+                "clause1": "The shared data might be deleted at any point of time, up to full 2 days."
+            },
+            "heading3": {
+                "title": "Sentry",
+                "clause0": "All errors raised during use of this tool will be reported via Sentry.io tool.",
+                "clause1": "These reports are anonymous so that it's not possible to track their origin.",
+                "clause2": "Please note that certain ad-blockers might prevent Sentry from working.",
+                "clause3": "If you want to contribute to this project I recommend disabling ad-blockers for this site."
+            }
+        },
+        "endpoint": {
+            "clause0": "Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.",
+            "clause1": "All data entered is sent directly to the game server without involvement of any 3rd party.",
+            "clause2": "It is not possible to capture any other players than those explicitly stated within the application.",
+            "clause3": "All data collection is done using normal means, without any use of forbidden actions."
+        },
+        "toast": {
+            "rejected": {
+                "title": "Terms not accepted",
+                "message": "You must accept the terms in order to continue"
+            }
+        }
     },
     "stats": {
         "topbar": {
@@ -332,18 +382,25 @@
         "scripts": {
             "settings": "Beállítások",
             "templates": "Sablonok",
+            "name": "Currently edited script",
+            "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Szkriptek",
                 "templates": "Sablonok",
                 "save": "Mentés",
                 "copy": "Másolás",
-                "undo": "Visszavonás",
-                "redo": "Újra végrehajtás",
-                "close": "Bezárás",
-                "apply": "Alkamaz",
+                "archive": "Script archive",
+                "close": "Return back",
                 "remove": "Eltávolítás",
-                "save_apply": "Mentés és alkalmazás"
+                "reset": "Discard changes",
+                "save_template": "Save as template",
+                "header": {
+                    "actions": "Actions",
+                    "modify": "Script",
+                    "library": "Libraries",
+                    "archive": "Archive"
+                }
             },
             "types": {
                 "me": "Saját",
@@ -660,6 +717,20 @@
             }
         }
     },
+    "hellevator": {
+        "range": {
+            "start": "Start at floor",
+            "end": "End at floor"
+        },
+        "element": "Element",
+        "win": {
+            "all": "All #{count} floors were defeated with 100% chance",
+            "none": "All #{count} floors are impossible to defeat",
+            "first": "First #{count} floors were defeated with 100% chance",
+            "last": "Last #{count} floors are impossible to defeat"
+        },
+        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+    },
     "dungeons": {
         "simulate_one": "Simulate",
         "simulate_remaining": "Remaining",
@@ -757,14 +828,14 @@
             },
             "end": {
                 "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "message#": "<b>Idő:</b> #{time} másodperc"
             }
         }
     },
     "fortress": {
         "warrior_count": "Warriors",
-        "warrior_level": "Warrior Level",
-        "archer_count": "Archers",
+        "warrior_level": "Harcos szint",
+        "archer_count": "Íjászok",
         "archer_level": "Archer Level",
         "mage_count": "Mages",
         "mage_level": "Mage Level",
@@ -916,6 +987,55 @@
             "save": "Save",
             "ok": "Ok"
         },
+        "template_manage": {
+            "title": "Templates",
+            "general": "General",
+            "online": "Publish",
+            "script": {
+                "name": "Name",
+                "version": "Local version",
+                "updated": "Updated at",
+                "published": "Published at",
+                "published_version": "Published version",
+                "published_key": "Code"
+            },
+            "action": {
+                "publish": "Publish template",
+                "republish": "Publish new version",
+                "unpublish": "Unpublish template",
+                "remove": "Remove permanently"
+            },
+            "error": "Action was not successful"
+        },
+        "script_archive": {
+            "title": "Script archive",
+            "clear": "Delete all items from archive",
+            "types": {
+                "create_script": "Script created",
+                "overwrite_script": "Script overwritten by new version",
+                "save_script": "Script saved",
+                "remove_script": "Script removed",
+                "create_template": "Template created",
+                "overwrite_template": "Template overwritten by new version",
+                "save_template": "Template saved",
+                "remove_template": "Template removed"
+            },
+            "item": {
+                "description": "Archived: #{change}. Expires: #{expire}",
+                "temporary": "in temporary mode"
+            }
+        },
+        "script_repository": {
+            "title": "Script Repository",
+            "private_code": {
+                "label": "Private code",
+                "placeholder": "Enter your private code..."
+            },
+            "list": {
+                "about": "Added by #{author}",
+                "about_with_date": "Added by #{author} on #{date}"
+            }
+        },
         "statistics_integration_options": {
             "title": "Statistics Integration Options",
             "slot": "Database slot",
@@ -941,7 +1061,7 @@
         },
         "delete_script": {
             "title": "Remove script",
-            "notice": "Are you sure you want to permanently remove currently applied script?"
+            "notice": "Are you sure you want to permanently remove selected script?"
         },
         "warning": {
             "title": "An issue has occured!",
@@ -1016,8 +1136,7 @@
         },
         "template_save": {
             "title": "Save template",
-            "select_existing": "Select existing template",
-            "select_new": "Create new template",
+            "select": "Add new or select existing template",
             "or": "or",
             "name": "Template name",
             "cancel": "Cancel",
