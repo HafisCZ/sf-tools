@@ -44,7 +44,7 @@ const CompactWeekend = {
         date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6));
         date.setHours(0, 0, 0);
 
-        let week = Math.trunc(date.getTime() / (7 * 24 * 3600 * 1000)) % 4;
+        let week = (Math.trunc(date.getTime() / (7 * 24 * 3600 * 1000)) - 1) % 4;
         while (week != type) {
             date.setDate(date.getDate() + 7);
             week = (week + 1) % 4;
