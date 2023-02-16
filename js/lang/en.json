@@ -495,7 +495,8 @@
             "knights": "Hall of Knights",
             "extras": {
                 "title": "Extras",
-                "registered": "Registered"
+                "registered": "Registered",
+                "webshopid": "Webshop ID"
             },
             "runes": {
                 "title": "Runes",

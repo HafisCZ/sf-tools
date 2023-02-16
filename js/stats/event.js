@@ -708,6 +708,10 @@ class PlayerDetailFloatView extends View {
                                 <div class="detail-item">${this.intl('extras.registered')}</div>
                                 <div class="detail-item text-center">${ formatDate(player.Registered) }</div>
                             </div>
+                            <div class="detail-entry">
+                                <div class="detail-item">${this.intl('extras.webshopid')}</div>
+                                <div class="detail-item text-center">${ player.WebshopID }</div>
+                            </div>
                         ` : '' }
                     </div>
                 </div>
