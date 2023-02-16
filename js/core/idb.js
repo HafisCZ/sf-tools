@@ -339,6 +339,20 @@ class DatabaseUtils {
     }
 }
 
+const PLAYA_RESPONSE_CHARACTER_ENCODING = Object.entries({
+    'd': '$',
+    'P': '%',
+    'c': ':',
+    'C': ',',
+    'S': ';',
+    'p': '|',
+    's': '/',
+    '+': '&',
+    'q': '"',
+    'r': '#',
+    'b': `\n`
+});
+
 class PlayaResponse {
     static * search (json) {
         for (const entry of _dig(json, 'log', 'entries')) {
@@ -369,6 +383,16 @@ class PlayaResponse {
 
     static _normalizeKey (key) {
         return key.replace(/\(\d+?\)| /g, '').split('.')[0].toLowerCase();
+    }
+
+    static unescape (string) {
+        if (typeof string === 'string') {
+            for (const [encodedCharacter, character] of PLAYA_RESPONSE_CHARACTER_ENCODING) {
+                string = string.replace(`$${encodedCharacter}`, character)
+            }
+        }
+
+        return string;
     }
 
     constructor (value) {
