@@ -1966,7 +1966,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Scrapbook = decodeScrapbook(data.scrapbook);
         this.ScrapbookLegendary = decodeScrapbook(data.scrapbook_legendary);
 
-        this.WebshopID = data.webshopid;
+        this.WebshopID = PlayaResponse.unescape(data.webshopid);
     }
 }
 
