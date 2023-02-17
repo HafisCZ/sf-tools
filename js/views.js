@@ -1321,7 +1321,7 @@ const ImportSharedFileDialog = new (class extends Dialog {
                 this._setLoading(true);
 
                 SiteAPI.get('file_get', { key }).then(({ file }) => {
-                    this._update(file);
+                    this._update(file.content);
                 }).catch(() => {
                     this._update();
                 });
