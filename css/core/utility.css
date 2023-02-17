@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+.\!cursor-pointer {
+  cursor: pointer !important;
+}
+
 .pointer-events-all {
   pointer-events: all;
 }
