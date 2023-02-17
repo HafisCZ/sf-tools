@@ -1260,8 +1260,8 @@ const ImportSharedFileDialog = new (class extends Dialog {
                 <div class="left header">${intl('stats.files.online.title')}</div>
                 <div class="text-center">
                     <p>${intl('stats.files.online.prompt')}</p>
-                    <div class="ui fluid inverted input">
-                        <input type="text" placeholder="" class="text-center" data-op="input">
+                    <div class="ui fluid inverted centered input">
+                        <input type="text" placeholder="" data-op="input">
                     </div>
                     <p data-op="error" class="text-red mt-4">${intl('stats.files.online.invalid')}</p>
                 </div>
