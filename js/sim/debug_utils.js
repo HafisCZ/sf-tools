@@ -83,6 +83,10 @@ const SimulatorDebugDialog = new(class extends Dialog {
       return data;
   }
 
+  _formatKey (key) {
+    return key.replace(/([A-Z])/g, ' $1').trim();
+  }
+
   _setData (object, defaultObject) {
       this.defaultObject = defaultObject;
       this.object = object || defaultObject;
@@ -98,12 +102,14 @@ const SimulatorDebugDialog = new(class extends Dialog {
           `;
 
           for (const [key, value] of Object.entries(groupItems)) {
+              const prettyKey = this._formatKey(key);
+
               if (Array.isArray(value)) {
                   content += '<div class="equal width fields">';
                   for (let i = 0; i < value.length; i++) {
                       content += `
                           <div class="field">
-                              <label>${key} - ${i + 1}</label>
+                              <label>${prettyKey} - ${i + 1}</label>
                               <div class="ui inverted input">
                                 <input type="number" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
                               </div>
@@ -115,7 +121,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
               } else {
                   content += `
                       <div class="field">
-                          <label>${key}</label>
+                          <label>${prettyKey}</label>
                           <div class="ui inverted input">
                             <input type="number" data-path="${group}.${key}" value="${this._convertValue(value)}">
                           </div>
@@ -203,7 +209,7 @@ const SimulatorUtils = new (class {
                 const customValue = _dig(this.customConfig, type, subtype);
 
                 if (Array.isArray(subvalue) ? customValue.some((v, i) => v != subvalue[i]) : customValue != subvalue) {
-                    differences.push(`<div>${subtype}: <span class="text-red">${subvalue}</span> -&gt; <span class="text-green">${customValue}</span></div>`)
+                    differences.push(`<div>${subtype}: <span class="text-red">${subvalue}</span> -&gt; <span class="text-greenyellow">${customValue}</span></div>`)
                 }
             }
 

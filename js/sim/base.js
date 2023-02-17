@@ -141,7 +141,27 @@ FLAGS = Object.defineProperty(
 // Configuration
 CONFIG = Object.defineProperty(
     {
+        Warrior: {
+            HealthMultiplier: 5
+        },
+        Mage: {
+            HealthMultiplier: 2
+        },
+        Scout: {
+            HealthMultiplier: 4
+        },
+        Assassin: {
+            HealthMultiplier: 4
+        },
+        Battlemage: {
+            HealthMultiplier: 5
+        },
+        Berserker: {
+            HealthMultiplier: 4
+        },
         DemonHunter: {
+            HealthMultiplier: 4,
+
             ReviveChance: 400 / 9,
             ReviveChanceDecay: 2,
             ReviveHealth: 0.9,
@@ -180,6 +200,8 @@ CONFIG = Object.defineProperty(
             CatRageCriticalDamageMultiplier: 2.5
         },
         Bard: {
+            HealthMultiplier: 2,
+
             EffectRounds: 4,
 
             HarpValues: [ 40, 55, 75 ],
@@ -435,28 +457,7 @@ class FighterModel {
 
     // Health multiplier
     getHealthMultiplier () {
-        switch (this.Player.Class) {
-            case WARRIOR:
-            case BATTLEMAGE:
-                return 5;
-            case DEMONHUNTER:
-            case SCOUT:
-            case ASSASSIN:
-            case BERSERKER:
-                return 4;
-            case MAGE:
-            case BARD:
-                return 2;
-            case DRUID:
-                switch (this.Player.Mask) {
-                    case MASK_EAGLE: return this.Config.EagleHealthMultiplier;
-                    case MASK_BEAR: return this.Config.BearHealthMultiplier;
-                    case MASK_CAT: return this.Config.CatHealthMultiplier;
-                    default: 0;
-                }
-            default:
-                return 0;
-        }
+        return this.Config.HealthMultiplier;
     }
 
     // Critical Chance
@@ -691,6 +692,14 @@ class DruidModel extends FighterModel {
 
         if (this.Player.Mask == MASK_CAT) {
             this.RageCriticalChance = this.getCriticalChance(target, this.Config.CatRageCriticalChance);
+        }
+    }
+
+    getHealthMultiplier () {
+        switch (this.Player.Mask) {
+            case MASK_EAGLE: return this.Config.EagleHealthMultiplier;
+            case MASK_BEAR: return this.Config.BearHealthMultiplier;
+            case MASK_CAT: return this.Config.CatHealthMultiplier;
         }
     }
 
