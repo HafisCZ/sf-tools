@@ -142,21 +142,29 @@ FLAGS = Object.defineProperty(
 CONFIG = Object.defineProperty(
     {
         Warrior: {
+            Attribute: 'Strength',
+
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 50
         },
         Mage: {
+            Attribute: 'Intelligence',
+
             HealthMultiplier: 2,
             WeaponDamageMultiplier: 4.5,
             MaximumDamageReduction: 10
         },
         Scout: {
+            Attribute: 'Dexterity',
+
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2.5,
             MaximumDamageReduction: 25
         },
         Assassin: {
+            Attribute: 'Dexterity',
+
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
@@ -164,11 +172,15 @@ CONFIG = Object.defineProperty(
             DamageMultiplier: 5 / 8
         },
         Battlemage: {
+            Attribute: 'Strength',
+
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 10
         },
         Berserker: {
+            Attribute: 'Strength',
+
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
@@ -176,6 +188,8 @@ CONFIG = Object.defineProperty(
             DamageMultiplier: 5 / 4
         },
         DemonHunter: {
+            Attribute: 'Dexterity',
+
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2.5,
             MaximumDamageReduction: 50,
@@ -187,6 +201,8 @@ CONFIG = Object.defineProperty(
             ReviveHealthDecay: 0.1
         },
         Druid: {
+            Attribute: 'Intelligence',
+
             WeaponDamageMultiplier: 4.5,
 
             EagleDamageMultiplier: 1 / 3,
@@ -220,6 +236,8 @@ CONFIG = Object.defineProperty(
             CatRageCriticalDamageMultiplier: 2.5
         },
         Bard: {
+            Attribute: 'Intelligence',
+
             HealthMultiplier: 2,
             WeaponDamageMultiplier: 4.5,
             MaximumDamageReduction: 25,
@@ -390,22 +408,7 @@ class FighterModel {
     }
 
     getAttribute (source) {
-        switch (source.Player.Class) {
-            case WARRIOR:
-            case BERSERKER:
-            case BATTLEMAGE:
-                return this.Player.Strength.Total;
-            case SCOUT:
-            case DEMONHUNTER:
-            case ASSASSIN:
-                return this.Player.Dexterity.Total;
-            case MAGE:
-            case DRUID:
-            case BARD:
-                return this.Player.Intelligence.Total;
-            default:
-                return 0;
-        }
+        return this.Player[source.Config.Attribute].Total;
     }
 
     // Damage Reduction
@@ -910,33 +913,29 @@ class BardModel extends FighterModel {
 
         this.BeforeAttack = target.Player.Class != MAGE;
         this.BeforeDamageFinalized = this.Player.Instrument == INSTRUMENT_HARP;
+        
+        this.BonusRounds = 0;
+
+        const mainAttribute = this.getAttribute(this);
+        if (this.Player.Constitution.Total >= mainAttribute / 2) {
+            this.BonusRounds++;
+        }
+        if (this.Player.Constitution.Total >= 3 * mainAttribute / 4) {
+            this.BonusRounds++;
+        }
     }
 
     rollEffectLevel () {
-        let roll = Math.random() * 100;
+        const roll = Math.random() * 100;
 
         return roll < 25 ? 0 : (roll < 75 ? 1 : 2);
-    }
-
-    rollEffectRounds (level) {
-        let rounds = Math.max(1, level);
-
-        if (this.Player.Constitution.Total >= this.Player.Intelligence.Total / 2) {
-            rounds++;
-        }
-
-        if (this.Player.Constitution.Total >= 3 * this.Player.Intelligence.Total / 4) {
-            rounds++;
-        }
-
-        return rounds;
     }
 
     rollEffect (target) {
         let level = this.rollEffectLevel();
 
         this.EffectLevel = level + 1;
-        this.EffectReset = this.rollEffectRounds(level);
+        this.EffectReset = Math.max(1, level) + this.BonusRounds;
         this.EffectCounter = 0;
         this.EffectRound = 0;
 
