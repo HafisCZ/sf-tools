@@ -1076,10 +1076,7 @@ class SimulatorBase {
         }
     }
 
-    fight () {
-        this.turn = 0;
-
-        // Special damage
+    performSpecialAttack () {
         if (this.a.Initial !== false || this.b.Initial !== false) {
             this.turn++;
 
@@ -1104,9 +1101,15 @@ class SimulatorBase {
                 }
             }
         }
+    }
+
+    fight () {
+        this.turn = 0;
 
         this.setRandomInitialFighter();
         this.forwardToBersekerAttack();
+
+        this.performSpecialAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             if (this.performAttack('Weapon1', ATTACK_PRIMARY, false) == false) {
@@ -1128,20 +1131,20 @@ class SimulatorBase {
         return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
     }
 
-    attack (source, target, weapon = source.Weapon1, type = ATTACK_PRIMARY) {
+    attack (source, target, attackWeapon, attackType) {
         if (FIGHT_LOG_ENABLED) {
             FIGHT_LOG.logRage(1 + this.turn / 6);
         }
 
         // Random damage for current round
-        let damage = (1 + this.turn++ / 6) * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
+        const damage = (1 + this.turn++ / 6) * (Math.random() * (1 + attackWeapon.Max - attackWeapon.Min) + attackWeapon.Min);
 
         return source.attack(
             damage,
             target,
             getRandom(target.fetchSkipChance(source)),
             getRandom(source.fetchCriticalChance(target)),
-            type
+            attackType
         );
     }
 }
