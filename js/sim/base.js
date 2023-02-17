@@ -159,7 +159,9 @@ CONFIG = Object.defineProperty(
         Assassin: {
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 25
+            MaximumDamageReduction: 25,
+
+            DamageMultiplier: 5 / 8
         },
         Battlemage: {
             HealthMultiplier: 5,
@@ -169,7 +171,9 @@ CONFIG = Object.defineProperty(
         Berserker: {
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 25
+            MaximumDamageReduction: 25,
+
+            DamageMultiplier: 5 / 4
         },
         DemonHunter: {
             HealthMultiplier: 4,
@@ -622,7 +626,7 @@ class FighterModel {
     }
 
     getDamageMultiplier (target) {
-        return 1;
+        return this.Config.DamageMultiplier || 1;
     }
 }
 
@@ -649,10 +653,6 @@ class AssassinModel extends FighterModel {
         super(i, p);
 
         this.UseSecondaryWeapon = true;
-    }
-
-    getDamageMultiplier (target) {
-        return 5 / 8;
     }
 }
 
@@ -833,11 +833,6 @@ class BerserkerModel extends FighterModel {
         super(i, p);
 
         this.SkipNext = true;
-    }
-
-    getDamageMultiplier () {
-        // Thanks burningcherry for narrowing the hidden damage boost range
-        return 5 / 4;
     }
 
     skipNextRound () {
@@ -1063,19 +1058,21 @@ class SimulatorBase {
         }
     }
 
-    skipAndAttack () {
-        this.turn++;
+    // Returns true if player is alive
+    performAttack (attackWeapon, attackType, increaseRage) {
+        if (increaseRage) {
+            this.turn++;
+        }
 
         if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
         if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
 
-        var damage3 = this.attack(this.a, this.b, this.a.Weapon1, ATTACK_SPECIAL);
+        const damage = this.attack(this.a, this.b, this.a[attackWeapon], attackType);
 
         if (this.b.DamageTaken) {
-            return this.b.onDamageTaken(this.a, damage3) != STATE_DEAD;
+            return this.b.onDamageTaken(this.a, damage) != STATE_DEAD;
         } else {
-            this.b.Health -= damage3;
-            return this.b.Health >= 0
+            return (this.b.Health -= damage) > 0;
         }
     }
 
@@ -1112,42 +1109,16 @@ class SimulatorBase {
         this.forwardToBersekerAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
-            if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
-
-            var damage = this.attack(this.a, this.b);
-
-            if (this.b.DamageTaken) {
-                if (this.b.onDamageTaken(this.a, damage) == STATE_DEAD) {
-                    break;
-                }
-            } else {
-                this.b.Health -= damage;
-                if (this.b.Health <= 0) {
-                    break;
-                }
+            if (this.performAttack('Weapon1', ATTACK_PRIMARY, false) == false) {
+                break;
             }
 
-            if (this.a.Weapon2) {
-                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
-                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
-
-                var damage2 = this.attack(this.a, this.b, this.a.Weapon2, ATTACK_SECONDARY);
-
-                if (this.b.DamageTaken) {
-                    if (this.b.onDamageTaken(this.a, damage2) == STATE_DEAD) {
-                        break;
-                    }
-                } else {
-                    this.b.Health -= damage2;
-                    if (this.b.Health <= 0) {
-                        break;
-                    }
-                }
+            if (this.a.Weapon2 && this.performAttack('Weapon2', ATTACK_SECONDARY, false) == false) {
+                break;
             }
 
             if (this.a.SkipNext) {
-                while (this.a.skipNextRound() && this.skipAndAttack());
+                while (this.a.skipNextRound() && this.performAttack('Weapon1', ATTACK_SPECIAL, true));
             }
 
             [this.a, this.b] = [this.b, this.a];
