@@ -46,7 +46,9 @@ const SimulatorDebugDialog = new(class extends Dialog {
   _getValue (path, def) {
       const value = this.$parent.find(`[data-path="${path}"]`).val()
 
-      if (typeof def === 'boolean') {
+      if (typeof def === 'string') {
+          return value;
+      } else if (typeof def === 'boolean') {
           return value !== '0'
       } else {
           return parseFloat(value || def);
@@ -111,7 +113,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
                           <div class="field">
                               <label>${prettyKey} - ${i + 1}</label>
                               <div class="ui inverted input">
-                                <input type="number" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
+                                <input type="${typeof value[i] === 'string' ? 'text' : 'number'}" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
                               </div>
                           </div>
                       `;
@@ -123,7 +125,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
                       <div class="field">
                           <label>${prettyKey}</label>
                           <div class="ui inverted input">
-                            <input type="number" data-path="${group}.${key}" value="${this._convertValue(value)}">
+                            <input type="${typeof value === 'string' ? 'text' : 'number'}" data-path="${group}.${key}" value="${this._convertValue(value)}">
                           </div>
                       </div>
                   `;
