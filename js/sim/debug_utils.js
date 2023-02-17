@@ -11,7 +11,6 @@ const SimulatorDebugDialog = new(class extends Dialog {
   _createModal () {
       return `
           <div class="bordered inverted dialog">
-              <div class="header">${this.intl('title')}</div>
               <div class="overflow-y-scroll overflow-x-hidden pr-4">
                   <div class="ui small inverted form" data-op="content"></div>
               </div>
@@ -90,7 +89,13 @@ const SimulatorDebugDialog = new(class extends Dialog {
 
       let content = '';
       for (const [group, groupItems] of Object.entries(this.object)) {
-          content += `<h2 class="ui dividing inverted header">${group}</h2>`;
+          content += `
+            <details class="ui accordion">
+              <summary class="title">
+                <h2 class="ui dividing inverted header text-orange:hover">${group}</h2>
+              </summary>
+            <div class="content mb-4">
+          `;
 
           for (const [key, value] of Object.entries(groupItems)) {
               if (Array.isArray(value)) {
@@ -118,6 +123,11 @@ const SimulatorDebugDialog = new(class extends Dialog {
                   `;
               }
           }
+
+          content += `
+              </div>
+            </details>
+          `;
       }
 
       this.$content.html(content);

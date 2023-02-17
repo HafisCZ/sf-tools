@@ -228,6 +228,10 @@
   margin-bottom: 0;
 }
 
+.mb-4 {
+  margin-bottom: 1em;
+}
+
 .\!mb-1 {
   margin-bottom: 0.25em !important;
 }
@@ -303,6 +307,10 @@
   color: orange;
 }
 
+.text-orange\:hover:hover {
+  color: orange !important;
+}
+
 .text-red {
   color: red;
 }
@@ -317,10 +325,6 @@
 
 .\!text-black {
   color: black !important;
-}
-
-.text-orange {
-  color: orange;
 }
 
 .text-lightblue {
