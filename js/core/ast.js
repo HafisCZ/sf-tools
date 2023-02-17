@@ -2604,6 +2604,11 @@ const SP_KEYWORD_MAPPING_1 = {
 
 // Private
 const SP_KEYWORD_MAPPING_2 = {
+    'Webshop ID': {
+        expr: p => p.WebshopID,
+        difference: false,
+        statistics: false
+    },
     'Mount Expire': {
         expr: p => p.MountExpire,
         format: (p, c, e, x) => x ? formatDate(x) : '?',
