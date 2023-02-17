@@ -571,7 +571,7 @@ class FighterModel {
     }
 
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
-    onDamageTaken (source, damage, type = ATTACK_PRIMARY) {
+    onDamageTaken (source, damage) {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
@@ -769,12 +769,12 @@ class DruidModel extends FighterModel {
         }
     }
 
-    onDamageTaken (source, damage, type) {
+    onDamageTaken (source, damage) {
         if (damage == 0) {
             this.RageState = true;
         }
 
-        return super.onDamageTaken(source, damage, type);
+        return super.onDamageTaken(source, damage);
     }
 
     fetchCriticalChance (target) {
@@ -858,8 +858,8 @@ class DemonHunterModel extends FighterModel {
         this.DeathTriggers = 0;
     }
 
-    onDamageTaken (source, damage, type = ATTACK_PRIMARY) {
-        let state = super.onDamageTaken(source, damage, type);
+    onDamageTaken (source, damage) {
+        let state = super.onDamageTaken(source, damage);
 
         if (state == STATE_DEAD) {
             let reviveChance = this.Config.ReviveChance - this.Config.ReviveChanceDecay * this.DeathTriggers;
@@ -981,7 +981,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    onBeforeAttack (target, type) {
+    onBeforeAttack (target) {
         // When this player attacks
         if (this != target) {
             if (this.HealMultiplier) {
@@ -1066,8 +1066,8 @@ class SimulatorBase {
     skipAndAttack () {
         this.turn++;
 
-        if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, ATTACK_SPECIAL);
-        if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_SPECIAL);
+        if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
+        if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
 
         var damage3 = this.attack(this.a, this.b, this.a.Weapon1, ATTACK_SPECIAL);
 
@@ -1112,8 +1112,8 @@ class SimulatorBase {
         this.forwardToBersekerAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, ATTACK_PRIMARY);
-            if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_PRIMARY);
+            if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
+            if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
 
             var damage = this.attack(this.a, this.b);
 
@@ -1129,13 +1129,13 @@ class SimulatorBase {
             }
 
             if (this.a.Weapon2) {
-                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, ATTACK_SECONDARY);
-                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_SECONDARY);
+                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
+                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
 
                 var damage2 = this.attack(this.a, this.b, this.a.Weapon2, ATTACK_SECONDARY);
 
                 if (this.b.DamageTaken) {
-                    if (this.b.onDamageTaken(this.a, damage2, ATTACK_SECONDARY) == STATE_DEAD) {
+                    if (this.b.onDamageTaken(this.a, damage2) == STATE_DEAD) {
                         break;
                     }
                 } else {
