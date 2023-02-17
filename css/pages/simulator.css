@@ -1,5 +1,6 @@
 @import url('../global.css');
 @import url('../editor.css');
+@import url('../core/debug.css');
 
 .sim-player-name-ihof {
     position: relative;

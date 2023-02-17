@@ -3,7 +3,8 @@ class Dialog {
         this.options = Object.assign({
             opacity: 0.85,
             dismissable: false,
-            key: ''
+            key: '',
+            containerClass: ''
         }, options || {});
     }
 
@@ -18,7 +19,7 @@ class Dialog {
 
                 if (!this._hasParent()) {
                     const $dialog = $(this._createModal());
-                    const $container = $(`<div class="dialog container" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity})"></div>`);
+                    const $container = $(`<div class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity})"></div>`);
 
                     $container.append($dialog);
                     $(document.body).append($container);
