@@ -142,25 +142,39 @@ FLAGS = Object.defineProperty(
 CONFIG = Object.defineProperty(
     {
         Warrior: {
-            HealthMultiplier: 5
+            HealthMultiplier: 5,
+            WeaponDamageMultiplier: 2,
+            MaximumDamageReduction: 50
         },
         Mage: {
-            HealthMultiplier: 2
+            HealthMultiplier: 2,
+            WeaponDamageMultiplier: 4.5,
+            MaximumDamageReduction: 10
         },
         Scout: {
-            HealthMultiplier: 4
+            HealthMultiplier: 4,
+            WeaponDamageMultiplier: 2.5,
+            MaximumDamageReduction: 25
         },
         Assassin: {
-            HealthMultiplier: 4
+            HealthMultiplier: 4,
+            WeaponDamageMultiplier: 2,
+            MaximumDamageReduction: 25
         },
         Battlemage: {
-            HealthMultiplier: 5
+            HealthMultiplier: 5,
+            WeaponDamageMultiplier: 2,
+            MaximumDamageReduction: 10
         },
         Berserker: {
-            HealthMultiplier: 4
+            HealthMultiplier: 4,
+            WeaponDamageMultiplier: 2,
+            MaximumDamageReduction: 25
         },
         DemonHunter: {
             HealthMultiplier: 4,
+            WeaponDamageMultiplier: 2.5,
+            MaximumDamageReduction: 50,
 
             ReviveChance: 400 / 9,
             ReviveChanceDecay: 2,
@@ -169,6 +183,8 @@ CONFIG = Object.defineProperty(
             ReviveHealthDecay: 0.1
         },
         Druid: {
+            WeaponDamageMultiplier: 4.5,
+
             EagleDamageMultiplier: 1 / 3,
             BearDamageMultiplier: 4 / 9,
             CatDamageMultiplier: 5 / 9,
@@ -201,6 +217,8 @@ CONFIG = Object.defineProperty(
         },
         Bard: {
             HealthMultiplier: 2,
+            WeaponDamageMultiplier: 4.5,
+            MaximumDamageReduction: 25,
 
             EffectRounds: 4,
 
@@ -405,33 +423,7 @@ class FighterModel {
             }
         }
     }
-
-    // Maximum Damage Reduction
-    getMaximumDamageReduction () {
-        switch (this.Player.Class) {
-            case WARRIOR:
-            case DEMONHUNTER:
-                return 50;
-            case SCOUT:
-            case ASSASSIN:
-            case BERSERKER:
-            case BARD:
-                return 25;
-            case MAGE:
-            case BATTLEMAGE:
-                return 10;
-            case DRUID:
-                switch (this.Player.Mask) {
-                    case MASK_EAGLE: return this.Config.EagleMaxArmorReduction;
-                    case MASK_BEAR: return this.Config.BearMaxArmorReduction;
-                    case MASK_CAT: return this.Config.CatMaxArmorReduction;
-                    default: 0;
-                }
-            default:
-                return 0;
-        }
-    }
-
+    
     // Block Chance
     getBlockChance (source) {
         if (source.Player.Class == MAGE) {
@@ -455,6 +447,11 @@ class FighterModel {
         }
     }
 
+    // Maximum Damage Reduction
+    getMaximumDamageReduction () {
+        return this.Config.MaximumDamageReduction;
+    }
+            
     // Health multiplier
     getHealthMultiplier () {
         return this.Config.HealthMultiplier;
@@ -501,22 +498,7 @@ class FighterModel {
     }
 
     getWeaponDamageMultiplier () {
-        switch (this.Player.Class) {
-            case WARRIOR:
-            case ASSASSIN:
-            case BATTLEMAGE:
-            case BERSERKER:
-                return 2;
-            case SCOUT:
-            case DEMONHUNTER:
-                return 2.5;
-            case MAGE:
-            case DRUID:
-            case BARD:
-                return 4.5;
-            default:
-                return 0;
-        }
+        return this.Config.WeaponDamageMultiplier;
     }
 
     getBaseDamage (secondary = false) {
@@ -700,6 +682,14 @@ class DruidModel extends FighterModel {
             case MASK_EAGLE: return this.Config.EagleHealthMultiplier;
             case MASK_BEAR: return this.Config.BearHealthMultiplier;
             case MASK_CAT: return this.Config.CatHealthMultiplier;
+        }
+    }
+
+    getMaximumDamageReduction () {
+        switch (this.Player.Mask) {
+            case MASK_EAGLE: return this.Config.EagleMaxArmorReduction;
+            case MASK_BEAR: return this.Config.BearMaxArmorReduction;
+            case MASK_CAT: return this.Config.CatMaxArmorReduction;
         }
     }
 
