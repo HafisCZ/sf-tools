@@ -1038,10 +1038,8 @@ class SimulatorBase {
         if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
             [this.a, this.b] = [this.b, this.a];
         }
-    }
 
-    // Thanks to rafa97sam for testing and coding this part that broke me
-    forwardToBersekerAttack () {
+        // Thanks to rafa97sam for testing and coding this part that broke me
         if (this.b.Player.Class == BERSERKER && getRandom(50)) {
             let turnIncrease = 1;
 
@@ -1106,8 +1104,7 @@ class SimulatorBase {
     fight () {
         this.turn = 0;
 
-        this.setRandomInitialFighter();
-        this.forwardToBersekerAttack();
+        this.setInitialFighter();
 
         this.performSpecialAttack();
 
