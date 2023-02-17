@@ -1034,7 +1034,7 @@ class BardModel extends FighterModel {
 
 // Shared class between all simulators in order to make updates simple
 class SimulatorBase {
-    setRandomInitialFighter () {
+    setInitialFighter () {
         if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
             [this.a, this.b] = [this.b, this.a];
         }
