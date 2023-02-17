@@ -81,26 +81,22 @@ class GroupDetailView extends View {
             }
         });
 
-        let exportConstraints = player => player.group == this.identifier;
+        const exportFromDropdown = (timestampRange, dialog = false) => {
+            const exportPromise = DatabaseManager.export(null, timestampRange, (player) => player.group == this.identifier);
+            if (dialog) {
+                exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
+            } else {
+                exportPromise.then(Exporter.json);
+            }
+        }
 
-        this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export(null, this.list.map(entry => entry[0]), exportConstraints).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="export-l"]').click(() => {
-            DatabaseManager.export(null, [ _dig(this.list, 0, 0) ], exportConstraints).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="export-l5"]').click(() => {
-            DatabaseManager.export(null, this.list.slice(0, 5).map(entry => entry[0]), exportConstraints).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="export-s"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp ], exportConstraints).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="export-sr"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(data => DialogController.open(ExportSharedFileDialog, data));
-        });
+        this.$parent.find('[data-op="export"]').click(() => exportFromDropdown(this.list.map(entry => entry[0])));
+        this.$parent.find('[data-op="export-l"]').click(() => exportFromDropdown([ _dig(this.list, 0, 0) ]));
+        this.$parent.find('[data-op="export-l5"]').click(() => exportFromDropdown(this.list.slice(0, 5).map(entry => entry[0])));
+        this.$parent.find('[data-op="export-s"]').click(() => exportFromDropdown([ this.timestamp ]));
+        this.$parent.find('[data-op="export-sr"]').click(() => exportFromDropdown([ this.timestamp, this.reference ]));
+
+        this.$parent.find('[data-op="share"]').click(() => exportFromDropdown([ this.timestamp, this.reference ], true));
 
         // Context menu
         this.$context = $('<div class="ui custom inverted popup right center"></div>');
@@ -773,18 +769,20 @@ class PlayerHistoryView extends View {
             }
         });
 
-        this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export([ this.identifier ]).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="export-l"]').click(() => {
-            DatabaseManager.export([ this.identifier ], [ this.list[0][0] ]).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="export-l5"]').click(() => {
-            DatabaseManager.export([ this.identifier ], this.list.slice(0, 5).map(entry => entry[0])).then(Exporter.json);
-        });
-        this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export([ this.identifier ]).then(data => DialogController.open(ExportSharedFileDialog, data));
-        });
+        const exportFromDropdown = (timestampRange = undefined, dialog = false) => {
+            const exportPromise = DatabaseManager.export([ this.identifier ], timestampRange);
+            if (dialog) {
+                exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
+            } else {
+                exportPromise.then(Exporter.json);
+            }
+        }
+
+        this.$parent.find('[data-op="export"]').click(() => exportFromDropdown());
+        this.$parent.find('[data-op="export-l"]').click(() => exportFromDropdown([ this.list[0][0] ]));
+        this.$parent.find('[data-op="export-l5"]').click(() => exportFromDropdown(this.list.slice(0, 5).map(entry => entry[0])));
+
+        this.$parent.find('[data-op="share"]').click(() => exportFromDropdown(undefined, true));
 
         this.$name = this.$parent.find('[data-op="name"]');
         this.$identifier = this.$parent.find('[data-op="identifier"]');
@@ -1837,30 +1835,20 @@ class PlayersView extends View {
 
 // Files View
 class FilesView extends View {
-    exportConstraint () {
-        if (SiteOptions.export_public_only) {
-            return data => data.own !== 1 && data.own !== true;
-        } else {
-            return undefined;
-        }
-    }
-
     // Export all to json file
     exportAllJson () {
-        DatabaseManager.export(undefined, undefined, this.exportConstraint()).then(Exporter.json);
+        DatabaseManager.export().then(Exporter.json);
     }
 
     // Export all to cloud
     exportAllCloud () {
-        DatabaseManager.export(undefined, undefined, this.exportConstraint()).then(data => DialogController.open(ExportSharedFileDialog, data));
+        DatabaseManager.export().then(data => DialogController.open(ExportSharedFileDialog, data));
     }
 
     // Export selected to json file
     exportSelectedJson () {
         if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles, this.exportConstraint()).then((file) => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(undefined, this.selectedFiles).then(Exporter.json);
         } else {
             const players = [];
             const groups = [];
@@ -1882,7 +1870,7 @@ class FilesView extends View {
     // Export selected to cloud
     exportSelectedCloud () {
         if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles, this.exportConstraint()).then((file) => {
+            DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
                 DialogController.open(ExportSharedFileDialog, file);
             });
         } else {
@@ -2146,7 +2134,7 @@ class FilesView extends View {
         const tags = this.$filter_tags.dropdown('get value');
         const type = parseInt(this.$filter_type.dropdown('get value'));
 
-        DatabaseManager.export(null, null, (data) => {
+        const { players, groups } = DatabaseManager._getFile(null, null, (data) => {
             const isPlayer = DatabaseManager._isPlayer(data.identifier);
 
             const conditions = [
@@ -2169,84 +2157,84 @@ class FilesView extends View {
             ];
 
             return conditions.reduce((acc, condition) => acc && condition, true);
-        }).then(({ players, groups }) => {
-            const entries = players.concat(groups);
+        })
 
-            // Save into current list
-            this.currentEntries = entries.reduce((memo, entry) => {
-                memo[_uuid(entry)] = entry;
-                return memo;
-            }, {});
+        const entries = players.concat(groups);
 
-            const displayEntries = entries.sort((a, b) => b.timestamp - a.timestamp).map((entry) => {
-                const isPlayer = DatabaseManager._isPlayer(entry.identifier);
+        // Save into current list
+        this.currentEntries = entries.reduce((memo, entry) => {
+            memo[_uuid(entry)] = entry;
+            return memo;
+        }, {});
 
-                return `
-                    <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
-                        <td class="cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
-                        <td class="!text-center">${ this.timeMap[entry.timestamp] }</td>
-                        <td class="!text-center">${ this.prefixMap[entry.prefix] }</td>
-                        <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
-                        <td>${ entry.name }</td>
-                        <td>${ isPlayer ? (this.groupMap[entry.group] || '') : '' }</td>
-                        <td>${ entry.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(entry.tag)}; color: white;">${entry.tag}</div>` : '' }</td>
-                    </tr>
-                `
-            });
+        const displayEntries = entries.sort((a, b) => b.timestamp - a.timestamp).map((entry) => {
+            const isPlayer = DatabaseManager._isPlayer(entry.identifier);
 
-            this.$resultsAdvanced.empty();
+            return `
+                <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
+                    <td class="cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
+                    <td class="!text-center">${ this.timeMap[entry.timestamp] }</td>
+                    <td class="!text-center">${ this.prefixMap[entry.prefix] }</td>
+                    <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
+                    <td>${ entry.name }</td>
+                    <td>${ isPlayer ? (this.groupMap[entry.group] || '') : '' }</td>
+                    <td>${ entry.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(entry.tag)}; color: white;">${entry.tag}</div>` : '' }</td>
+                </tr>
+            `
+        });
 
-            this.advancedLoader.start(() => {
-                $(displayEntries.splice(0, 25).join('')).appendTo(this.$resultsAdvanced).find('[data-mark]').click((event) => {
-                    let uuid = event.currentTarget.dataset.mark;
+        this.$resultsAdvanced.empty();
 
-                    if (event.shiftKey && this.lastSelectedEntry && this.lastSelectedEntry != uuid) {
-                        // Elements
-                        const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedEntry}"]`);
-                        const $endSelector = $(`tr[data-tr-mark="${uuid}"]`);
-                        // Element indexes
-                        const startSelectorIndex = $startSelector.index();
-                        const endSelectorIndex = $endSelector.index();
-                        const selectDown = startSelectorIndex < endSelectorIndex;
-                        const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
-                        // Get list of timestamps to be changed
-                        const toChange = [ uuid, this.lastSelectedEntry ];
-                        for (const obj of elementArray.toArray()) {
-                            toChange.push(obj.dataset.trMark);
-                        }
+        this.advancedLoader.start(() => {
+            $(displayEntries.splice(0, 25).join('')).appendTo(this.$resultsAdvanced).find('[data-mark]').click((event) => {
+                let uuid = event.currentTarget.dataset.mark;
 
-                        // Change all timestamps
-                        if (uuid in this.selectedEntries) {
-                            for (const mark of toChange) {
-                                $(`[data-mark="${mark}"] > i`).addClass('outline');
-                                delete this.selectedEntries[mark];
-                            }
-                        } else {
-                            for (const mark of toChange) {
-                                $(`[data-mark="${mark}"] > i`).removeClass('outline');
-                                this.selectedEntries[mark] = this.currentEntries[mark];
-                            }
+                if (event.shiftKey && this.lastSelectedEntry && this.lastSelectedEntry != uuid) {
+                    // Elements
+                    const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedEntry}"]`);
+                    const $endSelector = $(`tr[data-tr-mark="${uuid}"]`);
+                    // Element indexes
+                    const startSelectorIndex = $startSelector.index();
+                    const endSelectorIndex = $endSelector.index();
+                    const selectDown = startSelectorIndex < endSelectorIndex;
+                    const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
+                    // Get list of timestamps to be changed
+                    const toChange = [ uuid, this.lastSelectedEntry ];
+                    for (const obj of elementArray.toArray()) {
+                        toChange.push(obj.dataset.trMark);
+                    }
+
+                    // Change all timestamps
+                    if (uuid in this.selectedEntries) {
+                        for (const mark of toChange) {
+                            $(`[data-mark="${mark}"] > i`).addClass('outline');
+                            delete this.selectedEntries[mark];
                         }
                     } else {
-                        if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
-                            delete this.selectedEntries[uuid];
-                        } else {
-                            this.selectedEntries[uuid] = this.currentEntries[uuid];
+                        for (const mark of toChange) {
+                            $(`[data-mark="${mark}"] > i`).removeClass('outline');
+                            this.selectedEntries[mark] = this.currentEntries[mark];
                         }
                     }
-
-                    this.lastSelectedEntry = uuid;
-                    this.updateSelectedCounter();
-                }).each((index, element) => {
-                    if (this.selectedEntries[element.dataset.mark]) {
-                        element.children[0].classList.remove('outline');
+                } else {
+                    if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
+                        delete this.selectedEntries[uuid];
+                    } else {
+                        this.selectedEntries[uuid] = this.currentEntries[uuid];
                     }
-                });
+                }
 
-                if (displayEntries.length == 0) {
-                    this.advancedLoader.stop();
+                this.lastSelectedEntry = uuid;
+                this.updateSelectedCounter();
+            }).each((index, element) => {
+                if (this.selectedEntries[element.dataset.mark]) {
+                    element.children[0].classList.remove('outline');
                 }
             });
+
+            if (displayEntries.length == 0) {
+                this.advancedLoader.stop();
+            }
         });
     }
 
