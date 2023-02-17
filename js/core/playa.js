@@ -2227,3 +2227,112 @@ function toSimulatorModel (p) {
         }
     };
 }
+
+const _CONVERT_OTHER_GROUP_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'rank', 'names', 'identifier', 'group', 'save'];
+const _CONVERT_OTHER_PLAYER_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'identifier', 'class', 'groupname', 'units', 'fortressrank', 'group', 'version'];
+
+const _OTHER_PLAYER_SAVE_LENGTH = 261;
+const _CONVERT_PLAYER_SAVE = [
+    1, 2, 7, 8, 9, 10, 11, null,
+    // Face data
+    17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+    // Class data
+    27, 28, 29,
+    // Attributes
+    30, 31, 32, 33, 34,
+    35, 36, 37, 38, 39,
+    null, null, null, null, null,
+    // Actions
+    null, null, null,
+    // Items
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+    72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
+    84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
+    96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
+    108, 109, 110, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+    121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132,
+    133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144,
+    145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156,
+    157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168,
+    // Mount & Tower & Raids & Group
+    286, 433, 435,
+    null,
+    // Scrapbook
+    438,
+    // Dungeons
+    null, null,
+    // Group
+    443,
+    // Special flags
+    444,
+    // Armor & Damage
+    447, 448, 449,
+    // Skips
+    null, null, null, null, null, null,
+    null, null, null, null, null, null,
+    // Skips - dungeons
+    null, null, null, null, null, null,
+    null, null, null, null, null,
+    // Potions
+    493, 494, 495, null, null, null, 499, 500, 501,
+    502,
+    // Flags
+    517, 521,
+    null, null,
+    // Fortress
+    524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535,
+    // Skip
+    null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null,
+    // Upgrades & Honor
+    581, 582,
+    null, null, null,
+    // Group & Player dungeons
+    445,
+    null,
+    // Skip - shadow dungeons
+    null, null, null, null,
+    null,
+    // Mask & Instrument
+    653, 701
+];
+
+function toOtherGroupData (group) {
+    const copy = {
+        own: 0
+    };
+
+    for (const field of _CONVERT_OTHER_GROUP_FIELDS) {
+        copy[field] = group[field];
+    }    
+
+    return copy;
+}
+
+function toOtherPlayerData (player) {
+    const copy = {
+        own: 0
+    };
+
+    for (const field of _CONVERT_OTHER_PLAYER_FIELDS) {
+        copy[field] = player[field];
+    }
+
+    if (player.pets) {
+        copy.pets = [0, ...player.pets.slice(104, 109)];
+    }
+
+    copy.save = _CONVERT_PLAYER_SAVE.reduce((memo, sourceIndex, targetIndex) => {
+        if (sourceIndex !== null) {
+            memo[targetIndex] = player.save[sourceIndex];
+        }
+        
+        return memo;
+    }, Array.from({ length: _OTHER_PLAYER_SAVE_LENGTH }).fill(0));
+
+    copy.fortressrank = copy.fortressrank || player.save[583];
+
+    return copy;
+}
