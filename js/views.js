@@ -1983,6 +1983,7 @@ const Localization = new (class {
         window.document.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
         window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.translateTooltip(element));
         window.document.querySelectorAll('[data-intl-placeholder]').forEach(element => this.translatePlaceholder(element));
+        window.document.querySelectorAll('[data-intl-title]').forEach(element => this.translateTitle(element));
     }
 
     findTranslation (key) {
@@ -2008,6 +2009,14 @@ const Localization = new (class {
 
         node.removeAttribute('data-intl-tooltip');
         node.setAttribute('data-tooltip', this.sanitize(val || key));
+    }
+
+    translateTitle (node) {
+        let key = node.getAttribute('data-intl-title');
+        let val = this.findTranslation(key);
+
+        node.removeAttribute('data-intl-title');
+        node.setAttribute('title', this.sanitize(val || key));
     }
 
     translateElement (node) {

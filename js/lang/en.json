@@ -299,9 +299,12 @@
             "options": {
                 "title": "File options",
                 "advanced": "Show advanced file list",
+                "advanced_title": "Manage players and groups individually",
                 "hidden": "Show hidden entries",
                 "export_public_only": "Export only public data",
-                "export_bundle_groups": "Bundle groups with players"
+                "export_public_only_title": "All exports from this site will contain only public data (no private data will be included)",
+                "export_bundle_groups": "Bundle groups with players",
+                "export_bundle_groups_title": "Includes groups for every player selected when exporting via advanced file list"
             },
             "tags": {
                 "single": "Tag",
