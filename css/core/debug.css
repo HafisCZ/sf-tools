@@ -1,0 +1,8 @@
+.dialog.container.debug-dialog {
+  align-items: normal;
+  
+  padding: 1rem;
+  padding-top: calc(1rem + 50px);
+
+  justify-content: left;
+}

@@ -2,7 +2,9 @@ const SimulatorDebugDialog = new(class extends Dialog {
   constructor () {
     super({
       key: 'simulator_debug',
-      dismissable: true
+      dismissable: true,
+      opacity: 0,
+      containerClass: 'debug-dialog'
     })
   }
 
@@ -10,7 +12,7 @@ const SimulatorDebugDialog = new(class extends Dialog {
       return `
           <div class="bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
-              <div class="overflow-y-scroll overflow-x-hidden pr-4" style="max-height: 70vh;">
+              <div class="overflow-y-scroll overflow-x-hidden pr-4">
                   <div class="ui small inverted form" data-op="content"></div>
               </div>
               <div class="ui three fluid buttons">

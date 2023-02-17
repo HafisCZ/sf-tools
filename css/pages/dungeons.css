@@ -1,5 +1,6 @@
 @import url('../global.css');
 @import url('../editor.css');
+@import url('../core/debug.css');
 
 .form.white label {
     color: white !important;
