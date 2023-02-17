@@ -9,9 +9,11 @@ const CHANGELOG = {
             'Added <code>theme text:color background:color</code> setting for custom table themes',
             'Added new dialogs for browsing scripts and managing templates',
             'Added new script &amp; template archive system to replace script history',
+            'Added Webshop ID to player detail and as a private header',
             'Fixed guild deletion via advanced file list',
             'Fixed counting of present guild members',
-            'Fixed scrapbook size'
+            'Fixed scrapbook size',
+            'Fixed private export not including own characters'
         ],
         'Hydra Simulator': [
             'Fixed maximum hydra level after import'
