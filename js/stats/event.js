@@ -710,7 +710,7 @@ class PlayerDetailFloatView extends View {
                             </div>
                             <div class="detail-entry">
                                 <div class="detail-item">${this.intl('extras.webshopid')}</div>
-                                <div class="detail-item text-center">${ player.WebshopID }</div>
+                                <div class="detail-item text-center">${ player.WebshopID || '' }</div>
                             </div>
                         ` : '' }
                     </div>
