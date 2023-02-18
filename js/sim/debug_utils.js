@@ -149,15 +149,22 @@ const SimulatorDebugDialog = new(class extends Dialog {
 })();
 
 const SimulatorUtils = new (class {
-  configure (normalConfig, debugMode = false, debugCopyCallback = null) {
+  configure (normalConfig, debugMode = false, debugCopyCallback = null, debugConfigChangeCallback = null) {
     this.customConfig = null;
     this.normalConfig = normalConfig;
 
     this.debugMode = debugMode;
     this.debugCopyCallback = debugCopyCallback;
+    this.debugConfigChangeCallback = debugConfigChangeCallback;
 
     if (debugMode) {
       this._insertDebugElements()
+    }
+  }
+
+  _changeConfig () {
+    if (this.debugConfigChangeCallback) {
+      this.debugConfigChangeCallback(this.customConfig);
     }
   }
 
@@ -176,20 +183,25 @@ const SimulatorUtils = new (class {
           (config) => {
             this.customConfig = config;
             this._renderConfig();
+            this._changeConfig();
           }
       );
     });
-
-    const $copyButton = $(`
-      <div class="item !p-0">
-        <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" data-inverted="">
-          <i class="copy icon"></i>
-        </button>
-      </div>
-    `).click(() => this._executeCopy());
     
     $dialogButton.insertAfter($('.ui.huge.menu .header.item'))
-    $copyButton.insertAfter($dialogButton);
+
+    if (this.debugCopyCallback) {
+      // Display copy only if callback is enabled
+      const $copyButton = $(`
+        <div class="item !p-0">
+          <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_copy')}" data-inverted="">
+            <i class="copy icon"></i>
+          </button>
+        </div>
+      `).click(() => this._executeCopy());
+      
+      $copyButton.insertAfter($dialogButton);
+    }
   }
 
   _executeCopy () {
