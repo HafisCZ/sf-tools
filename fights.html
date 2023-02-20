@@ -729,9 +729,7 @@
                 var id2 = id + '_2';
 
                 $parent.find('[data-op="Level"]').val(f.Level);
-                $parent.find('[data-op="Class"]').val(
-                    `${PLAYER_CLASS[f.Class]}${f.Class == 9 ? ` - ${INSTRUMENT_TYPES[ f.Instrument ]}` : ''}`
-                );
+                $parent.find('[data-op="Class"]').val(PLAYER_CLASS[f.Class]);
 
                 var skillMain = getAttributeForClass(f, f.Class);
                 var skillTarget = getAttributeForClass(o, f.Class);
@@ -843,7 +841,6 @@
                     copyText(JSON.stringify({
                         Armor: Number($parent.find('[data-op="Armor"]').val()),
                         Class: f.Class,
-                        Instrument: f.Instrument,
                         Name: f.Name,
                         Level: f.Level,
                         Identifier: f.Identifier,
@@ -976,11 +973,7 @@
                         let notes = Math.trunc((attackType % 100) / 10);
                         let level = attackType % 10;
 
-                        displayType = `${INSTRUMENT_TYPES[attacker.Instrument]} Lvl ${level} - ${notes}n`;
-
-                        if (attacker.Instrument == 2 && attackDamage > 0) {
-                            displayDamage = `+ ${formatAsSpacedNumber(attackDamage, ' ')}`;
-                        }
+                        displayType = `Lute Lvl ${level} - ${notes}n`;
                     } else {
                         displayType = ATTACK_TYPES[attackType];
                     }
@@ -1214,8 +1207,6 @@
                             for (let j = i - 1, round; round = rounds[j]; j--) {
                                 if (round.attacker == currentRound.attacker && round.attackType < 100) {
                                     return round.targetHealthLeft;
-                                } else if (round.target == currentRound.attacker && round.attackType > 100 && round.attacker.Instrument == 2) {
-                                    return round.targetHealthLeft;
                                 }
                             }
 
@@ -1238,8 +1229,6 @@
                         for (let i = 0, round; round = rounds[i]; i++) {
                             if (round.attackType < 100) {
                                 round.attackDamage = findPlayerHealth(i) - round.targetHealthLeft;
-                            } else if (round.attackType > 100 && round.attacker.Instrument == 2) {
-                                round.attackDamage = round.targetHealthLeft - findOwnPlayerHealth(i);
                             } else {
                                 round.attackDamage = round.targetHealthLeft;
                             }
@@ -1266,7 +1255,6 @@
                     a.Constitution,
                     a.Luck,
                     a.MaximumLife,
-                    a.Instrument,
                     a.Wpn1,
                     a.Wpn2
                 ]) + JSON.stringify([
@@ -1279,7 +1267,6 @@
                     b.Constitution,
                     b.Luck,
                     b.MaximumLife,
-                    b.Instrument,
                     b.Wpn1,
                     b.Wpn2
                 ]));
@@ -1308,7 +1295,7 @@
                         if (attackType >= 100) {
                             offset--;
 
-                            if (attacker.Class == BARD && attacker.Instrument == INSTRUMENT_LUTE) {
+                            if (attacker.Class == BARD) {
                                 let spellLevel = attackType % 10 - 1;
                                 let spellBonus = 1 + CONFIG.Bard.LuteValues[spellLevel] / 100;
 
