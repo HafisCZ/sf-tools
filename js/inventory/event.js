@@ -835,7 +835,7 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
 
     var mult = (1 + player.Potions.Life / 100);
     var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
-    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 || player.Class == 8 ? 2 : 4));
+    var mult3 = (player.Class == 1 || player.Class == 5 || player.Class == 8 ? 5 : (player.Class == 2 ? 2 : 4));
     var mult4 = player.Level + 1;
     out.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Con * mult4) * mult3) * mult2) * mult) * (1 + (player.Runes.Health + item.getRune(5) - base.getRune(5)) / 100));
 
