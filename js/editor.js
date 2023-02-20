@@ -285,7 +285,6 @@ class Editor extends EditorBase {
             prefix: new Field('[data-path="Prefix"]', ''),
 
             class: new Field('[data-path="Class"]', '1'),
-            mask: new Field('[data-path="Mask"]', '0'),
             instrument: new Field('[data-path="Instrument"]', '0'),
             level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
             armor: new Field('[data-path="Armor"]', '', Field.isNumber),
@@ -337,18 +336,8 @@ class Editor extends EditorBase {
             }
 
             this.fields['shield'].show(value == 1);
-            this.fields['mask'].show(value == 8);
             this.fields['instrument'].show(value == 9);
         }).dropdown('set selected', '1');
-
-        this.fields['mask'].$object.dropdown({
-            values: [0, 1, 2].map(value => ({
-                image: `res/mask${value}.png`,
-                imageClass: '!-ml-3 !mr-2',
-                name: intl(`general.mask${value}`),
-                value
-            }))
-        }).dropdown('set selected', '0');
 
         this.fields['instrument'].$object.dropdown({
             values: [0, 1, 2].map((value) => ({
@@ -524,8 +513,6 @@ class Editor extends EditorBase {
                 data.Items.Wpn2.DamageMin = 25;
             } else if (newClass == 4 /* ASSASSIN */) {
                 data.Items.Wpn2 = data.Items.Wpn1;
-            } else if (newClass == 8 /* DRUID */) {
-                data.Mask = 2;
             } else if (newClass == 9 /* BARD */) {
                 data.Instrument = 0;
             }
@@ -562,13 +549,6 @@ class Editor extends EditorBase {
                         <div class="field">
                             <label>${this.intl('class')}</label>
                             <div class="ui search selection inverted dropdown" data-path="Class">
-                                <div class="text"></div>
-                                <i class="dropdown icon"></i>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>${this.intl('mask')}</label>
-                            <div class="ui selection inverted dropdown" data-path="Mask">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>

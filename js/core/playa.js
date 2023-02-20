@@ -504,7 +504,6 @@ class SFFighter {
         this.Class = dataType.long();
 
         const maskType = dataType.peek();
-        this.Mask = maskType == -11 ? 1 : (maskType == -12 ? 2 : 0);
         this.Instrument = maskType == -52 ? 2 : (maskType == -51 ? 1 : 0);
 
         this.Wpn1 = new SFItem(dataType.sub(12), 1, [1, 1]);
@@ -761,6 +760,7 @@ class SFPlayer {
         switch (this.Class) {
             case 1:
             case 5:
+            case 8:
                 return 5;
             case 7:
             case 3:
@@ -770,12 +770,6 @@ class SFPlayer {
             case 2:
             case 9:
                 return 2;
-            case 8:
-                switch (this.Mask) {
-                    case 1: return 5;
-                    case 2: return 4;
-                    default: 3;
-                }
             default:
                 return 0;
         }
@@ -795,11 +789,7 @@ class SFPlayer {
             case 5:
                 return 10;
             case 8:
-                switch (this.Mask) {
-                    case 1: return 50;
-                    case 2: return 25;
-                    default: 10;
-                }
+                return 40;
             default:
                 return 0;
         }
@@ -1387,8 +1377,7 @@ class SFOtherPlayer extends SFPlayer {
         legacyDungeons.Normal[13] = dataType.long();
         legacyDungeons.Shadow = dataType.byteArray(14);
 
-        dataType.skip(1);
-        this.Mask = dataType.long();
+        dataType.skip(2);
         this.Instrument = Math.max(0, dataType.long() - 1);
 
         dataType = new ComplexDataType(data.pets);
@@ -1676,8 +1665,7 @@ class SFOwnPlayer extends SFPlayer {
         legacyDungeons.Shadow[16] = dataType.byte();
 
         dataType.short();
-        dataType.skip(4);
-        this.Mask = dataType.long();
+        dataType.skip(5);
 
         legacyDungeons.Normal[17] = dataType.short();
         legacyDungeons.Shadow[17] = dataType.short();
@@ -2161,7 +2149,6 @@ function toSimulatorModel (p) {
     return {
         Armor: p.Armor,
         Class: p.Class,
-        Mask: p.Mask,
         Instrument: p.Instrument,
         Name: p.Name,
         Level: p.Level,
@@ -2296,7 +2283,7 @@ const _CONVERT_PLAYER_SAVE = [
     null, null, null, null,
     null,
     // Mask & Instrument
-    653, 701
+    null, 701
 ];
 
 function toOtherGroupData (group) {

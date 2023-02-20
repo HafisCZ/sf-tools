@@ -579,7 +579,6 @@
                         ForceArmor: data.armor ? 0 : (dungeon.armor_multiplier || 1),
                         Armor: data.armor,
                         Class: data.class,
-                        Mask: 0,
                         Instrument: 0,
                         Name: data.name,
                         Level: data.level,
@@ -1328,8 +1327,6 @@
                             player.Items.Wpn2.DamageMin = 25;
                         } else if (cheats.class == 4 /* ASSASSIN */) {
                             player.Items.Wpn2 = player.Items.Wpn1;
-                        } else if (cheats.class == 8 /* DRUID */) {
-                            player.Mask = 2;
                         } else if (cheats.class == 9 /* BARD */) {
                             player.Instrument = 0;
                         }
@@ -1369,12 +1366,12 @@
                     return _tap(getBossData(rawData, rawDungeon), function (data) {
                         let level = data.Level;
                         let health = data.ForceHealth;
-                        let healthMultiplier = [5, 2, 4, 4, 5, 4, 4, [3, 5, 4][data.Mask], 2][data.Class - 1];
+                        let healthMultiplier = [5, 2, 4, 4, 5, 4, 4, 5, 2][data.Class - 1];
 
                         data.Constitution.Total = Math.ceil(health / (healthMultiplier * (level + 1)));
 
                         if (typeof data.Armor === 'undefined') {
-                            let armorMultiplier = [50, 10, 25, 25, 10, 25, 50, [10, 50, 25][data.Mask], 25][data.Class - 1];
+                            let armorMultiplier = [50, 10, 25, 25, 10, 25, 50, 40, 25][data.Class - 1];
 
                             data.Armor = armorMultiplier * level * (rawDungeon.armor_multiplier || 1.0);
                         }

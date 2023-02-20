@@ -52,7 +52,7 @@ FIGHT_LOG = new (class {
 
         this.lastLog = {
             targetA: {
-                ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Mask: playerA.Player.Mask,
+                ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name,
                 Instrument: playerA.Player.Instrument, Level: playerA.Player.Level,
                 MaximumLife: playerA.TotalHealth, Life: playerA.TotalHealth, Strength: playerA.Player.Strength.Total,
                 Dexterity: playerA.Player.Dexterity.Total, Intelligence: playerA.Player.Intelligence.Total,
@@ -61,7 +61,7 @@ FIGHT_LOG = new (class {
                 Wpn1: playerA.Player.Items.Wpn1, Wpn2: playerA.Player.Items.Wpn2
             },
             targetB: {
-                ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name, Mask: playerB.Player.Mask,
+                ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name,
                 Instrument: playerB.Player.Instrument, Level: playerB.Player.Level,
                 MaximumLife: playerB.TotalHealth, Life: playerB.TotalHealth, Strength: playerB.Player.Strength.Total,
                 Dexterity: playerB.Player.Dexterity.Total, Intelligence: playerB.Player.Intelligence.Total,
@@ -146,7 +146,9 @@ CONFIG = Object.defineProperty(
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 50
+            MaximumDamageReduction: 50,
+
+            SkipChance: 25
         },
         Mage: {
             Attribute: 'Intelligence',
@@ -160,7 +162,9 @@ CONFIG = Object.defineProperty(
 
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2.5,
-            MaximumDamageReduction: 25
+            MaximumDamageReduction: 25,
+
+            SkipChance: 50
         },
         Assassin: {
             Attribute: 'Dexterity',
@@ -169,7 +173,8 @@ CONFIG = Object.defineProperty(
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 5 / 8
+            DamageMultiplier: 5 / 8,
+            SkipChance: 50
         },
         Battlemage: {
             Attribute: 'Strength',
@@ -203,37 +208,23 @@ CONFIG = Object.defineProperty(
         Druid: {
             Attribute: 'Intelligence',
 
+            HealthMultiplier: 5,
             WeaponDamageMultiplier: 4.5,
+            MaximumDamageReduction: 40,
 
-            EagleDamageMultiplier: 1 / 3,
-            BearDamageMultiplier: 4 / 9,
-            CatDamageMultiplier: 5 / 9,
+            DamageMultiplier: 1 / 3,
 
-            EagleHealthMultiplier: 3,
-            BearHealthMultiplier: 5,
-            CatHealthMultiplier: 4,
+            SwoopChance: 25,
+            SwoopChanceMin: 0,
+            SwoopChanceMax: 50,
+            SwoopChanceDecay: -5,
+            SwoopMultiplier: 10 / 3,
 
-            EagleMaxArmorReduction: 10,
-            BearMaxArmorReduction: 50,
-            CatMaxArmorReduction: 25,
+            SkipChance: 35,
+            RageSkipChance: 0,
 
-            EagleSwoopChance: 50,
-            EagleSwoopChanceMin: 0,
-            EagleSwoopChanceDecay: 5,
-            EagleSwoopMultiplier: 16,
-        
-            BearBracket: 25,
-            BearMaxTrigger: 75,
-            BearMedTrigger: 50,
-            BearMinTrigger: 25,
-        
-            BearMaxMultiplier: 1,
-            BearMedMultiplier: 0.5,
-            BearMinMultiplier: 0.3,
-            
-            CatNormalEvadeChance: 35,
-            CatRageCriticalChance: 75,
-            CatRageCriticalDamageMultiplier: 2.5
+            RageCriticalChance: 75,
+            RageCriticalDamageMultiplier: 1.8
         },
         Bard: {
             Attribute: 'Intelligence',
@@ -288,6 +279,10 @@ function mergeDeep (target, source) {
     return output;
 }
 
+function clamp (value, min, max) {
+    return value <= min ? min : (value >= max ? max : value);
+}
+
 // Classes
 const WARRIOR = 1;
 const MAGE = 2;
@@ -316,11 +311,6 @@ const STATE_ALIVE = 1;
 const ATTACK_PRIMARY = 0;
 const ATTACK_SECONDARY = 10;
 const ATTACK_SPECIAL = 20;
-
-// Masks
-const MASK_EAGLE = 0;
-const MASK_BEAR = 1;
-const MASK_CAT = 2;
 
 // Instruments
 const INSTRUMENT_HARP = 0;
@@ -423,8 +413,6 @@ class FighterModel {
         } else {
             if (this.Player.Class == BATTLEMAGE) {
                 return Math.min(maximumReduction, this.Player.Armor / source.Player.Level) + 40;
-            } else if (this.Player.Class == DRUID && this.Player.Mask == MASK_BEAR) {
-                return Math.min(maximumReduction, 2 * this.Player.Armor / source.Player.Level);
             } else {
                 return Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
             }
@@ -435,22 +423,10 @@ class FighterModel {
     getBlockChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
+        } else if (this.Player.Class == WARRIOR) {
+            return typeof this.Player.BlockChance !== 'undefined' ? this.Player.BlockChance : this.Config.SkipChance;
         } else {
-            switch (this.Player.Class) {
-                case SCOUT:
-                case ASSASSIN:
-                    return 50;
-                case WARRIOR:
-                    return typeof this.Player.BlockChance !== 'undefined' ? this.Player.BlockChance : 25;
-                case DRUID:
-                    if (this.Player.Mask == MASK_BEAR) {
-                        return 20;
-                    } else {
-                        return 0;
-                    }
-                default:
-                    return 0;
-            }
+            return this.Config.SkipChance || 0;
         }
     }
 
@@ -663,53 +639,17 @@ class DruidModel extends FighterModel {
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
-        if (this.Player.Mask == MASK_EAGLE) {
-            this.SwoopChance = this.Config.EagleSwoopChance;
-        } else if (this.Player.Mask == MASK_CAT) {
-            this.DamageTaken = true;
+        this.SwoopChance = this.Config.SwoopChance;
 
-            this.RageState = false;
-        }
+        this.DamageTaken = true;
+
+        this.RageState = false;
     }
 
     initialize (target) {
         super.initialize(target);
 
-        if (this.Player.Mask == MASK_CAT) {
-            this.RageCriticalChance = this.getCriticalChance(target, this.Config.CatRageCriticalChance);
-        }
-    }
-
-    getHealthMultiplier () {
-        switch (this.Player.Mask) {
-            case MASK_EAGLE: return this.Config.EagleHealthMultiplier;
-            case MASK_BEAR: return this.Config.BearHealthMultiplier;
-            case MASK_CAT: return this.Config.CatHealthMultiplier;
-        }
-    }
-
-    getMaximumDamageReduction () {
-        switch (this.Player.Mask) {
-            case MASK_EAGLE: return this.Config.EagleMaxArmorReduction;
-            case MASK_BEAR: return this.Config.BearMaxArmorReduction;
-            case MASK_CAT: return this.Config.CatMaxArmorReduction;
-        }
-    }
-
-    getDamageMultiplier (target) {
-        let multiplier = 1;
-
-        if (this.Player.Mask == MASK_EAGLE) {
-            multiplier = this.Config.EagleDamageMultiplier;
-        } else if (this.Player.Mask == MASK_CAT) {
-            multiplier = this.Config.CatDamageMultiplier;
-        }
-
-        if (target.Player.Class == MAGE || target.Player.Class == BARD) {
-            multiplier /= 2;
-        }
-
-        return multiplier;
+        this.RageCriticalChance = this.getCriticalChance(target, this.Config.RageCriticalChance);
     }
 
     getHealthLossDamageMultiplier () {
@@ -723,18 +663,31 @@ class DruidModel extends FighterModel {
     }
 
     attack (damage, target, skipped, critical, type) {
-        if (this.Player.Mask == MASK_EAGLE) {
-            if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
-                this.SwoopChance = Math.max(this.Config.EagleSwoopChanceMin, this.SwoopChance - this.Config.EagleSwoopChanceDecay);
+        if (this.RageState) {
+            this.RageState = false;
 
+            return super.attack(
+                damage * (critical ? this.Config.RageCriticalDamageMultiplier : 1),
+                target,
+                skipped,
+                critical,
+                type,
+                true
+            );
+        } else {
+            if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
+                this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
+                
                 // Swoop
-                return super.attack(
-                    damage * this.Config.EagleSwoopMultiplier,
+                const value = super.attack(
+                    damage * this.Config.SwoopMultiplier,
                     target,
                     skipped,
                     false,
                     5
                 );
+                
+                return value;
             } else {
                 return super.attack(
                     damage,
@@ -744,31 +697,6 @@ class DruidModel extends FighterModel {
                     type
                 );
             }
-        } else if (this.Player.Mask == MASK_BEAR) {
-            return super.attack(
-                damage * (this.Config.BearDamageMultiplier + this.getHealthLossDamageMultiplier() / 100),
-                target,
-                skipped,
-                critical,
-                type
-            );
-        } else if (this.Player.Mask == MASK_CAT) {
-            const isInRage = this.RageState;
-
-            if (!skipped && critical && isInRage) {
-                damage *= this.Config.CatRageCriticalDamageMultiplier;
-
-                this.RageState = false;
-            }
-
-            return super.attack(
-                damage,
-                target,
-                skipped,
-                critical,
-                type,
-                isInRage
-            );
         }
     }
 
@@ -781,7 +709,7 @@ class DruidModel extends FighterModel {
     }
 
     fetchCriticalChance (target) {
-        if (this.Player.Mask == MASK_CAT && this.RageState) {
+        if (this.RageState) {
             return this.RageCriticalChance;
         } else {
             return this.CriticalChance;
@@ -791,8 +719,8 @@ class DruidModel extends FighterModel {
     fetchSkipChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
-        } else if (this.Player.Mask == MASK_CAT && !this.RageState) {
-            return this.Config.CatNormalEvadeChance;
+        } else if (this.RageState) {
+            return this.Config.RageSkipChance;
         } else {
             return this.SkipChance;
         }
@@ -805,8 +733,8 @@ class BattlemageModel extends FighterModel {
             return 0;
         } else if (FLAGS.FireballFix) {
             let is2x = target.Player.Class == DRUID || target.Player.Class == BARD;
-            let is4x = target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER || (target.Player.Class == DRUID && target.Player.Mask == MASK_CAT);
-            let is5x = target.Player.Class == WARRIOR || target.Player.Class == DEMONHUNTER || (target.Player.Class == DRUID && target.Player.Mask == MASK_BEAR);
+            let is4x = target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER;
+            let is5x = target.Player.Class == WARRIOR || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID;
 
             if (is5x) {
                 return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
