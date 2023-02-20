@@ -323,7 +323,6 @@
                     delete boss.Face;
                     delete boss.Life;
                     delete boss.Race;
-                    delete boss.Mask;
                     delete boss.Wpn1;
                     delete boss.Wpn2;
                     delete boss.Gender;
@@ -392,13 +391,15 @@
                             if (boss.Class == 2) {
                                 resistance = 0;
                             } else {
-                                if (player.Class == 1 || player.Class == 7 || (player.Class == 8 && player.Mask == 1)) {
+                                if (player.Class == WARRIOR || player.Class == DEMONHUNTER) {
                                     resistance = Math.min(50, resistance);
-                                } else if (player.Class == 2 || (player.Class == 8 && player.Mask == 0)) {
+                                } else if (player.Class == MAGE) {
                                     resistance = Math.min(10, resistance);
-                                } else if (player.Class == 3 || player.Class == 4 || player.Class == 6 || player.Class == 8 || player.Class == BARD) {
+                                } else if (player.Class == DRUID) {
+                                    resistance = Math.min(40, resistance);
+                                } else if (player.Class == SCOUT || player.Class == ASSASSIN || player.Class == BERSERKER || player.Class == BARD) {
                                     resistance = Math.min(25, resistance);
-                                } else if (player.Class == 5) {
+                                } else if (player.Class == BATTLEMAGE) {
                                     resistance = Math.min(10, resistance) + 40;
                                 }
                             }
@@ -499,13 +500,15 @@
                             if (player.Class == 2) {
                                 armorBoss = 0;
                             } else {
-                                if (boss.Class == 1 || boss.Class == 7 || (boss.Class == 8 && boss.Mask == 1)) {
+                                if (boss.Class == WARRIOR || boss.Class == DEMONHUNTER) {
                                     armorBoss = Math.min(50, armorBoss);
-                                } else if (boss.Class == 2 || (boss.Class == 8 && boss.Mask == 0)) {
+                                } else if (boss.Class == MAGE) {
                                     armorBoss = Math.min(10, armorBoss);
-                                } else if (boss.Class == 3 || boss.Class == 4 || boss.Class == 6 || boss.Class == 8 || boss.Class == BARD) {
+                                } else if (boss.Class == DRUID) {
+                                    armorBoss = Math.min(40, armorBoss);
+                                } else if (boss.Class == SCOUT || boss.Class == ASSASSIN || boss.Class == BERSERKER || boss.Class == BARD) {
                                     armorBoss = Math.min(25, armorBoss);
-                                } else if (boss.Class == 5) {
+                                } else if (boss.Class == BATTLEMAGE) {
                                     armorBoss = Math.min(10, armorBoss) + 40;
                                 }
                             }
@@ -587,7 +590,6 @@
                         p.ID,
                         p.Class,
                         p.Level,
-                        p.Mask || 0,
                         p.Instrument || 0,
                         p.Strength.Total,
                         p.Dexterity.Total,
@@ -602,7 +604,6 @@
                         p.ID,
                         p.Class,
                         p.Level,
-                        p.Mask,
                         p.Instrument,
                         p.Strength,
                         p.Dexterity,

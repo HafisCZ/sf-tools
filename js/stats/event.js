@@ -377,7 +377,6 @@ class PlayerDetailFloatView extends View {
             <div class="content" style="padding: 0;">
                 <div class="detail-top">
                     <img class="ui image" src="res/class${ player.Class }.png">
-                    ${ player.Class == 8 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; left: 1.5em; top: 1em; transform: scale(0.49, 0.49);">` : '' }
                     ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; left: 1.5em; top: 1em; transform: scale(0.49, 0.49);">` : '' }
                     <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
                 </div>
