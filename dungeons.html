@@ -579,7 +579,6 @@
                         ForceArmor: data.armor ? 0 : (dungeon.armor_multiplier || 1),
                         Armor: data.armor,
                         Class: data.class,
-                        Instrument: 0,
                         Name: data.name,
                         Level: data.level,
                         ForceHealth: data.health,
@@ -1327,8 +1326,6 @@
                             player.Items.Wpn2.DamageMin = 25;
                         } else if (cheats.class == 4 /* ASSASSIN */) {
                             player.Items.Wpn2 = player.Items.Wpn1;
-                        } else if (cheats.class == 9 /* BARD */) {
-                            player.Instrument = 0;
                         }
 
                         player.Class = cheats.class;

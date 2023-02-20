@@ -21,7 +21,7 @@ FIGHT_LOG = new (class {
             attacker: attacker.Player.ID || attacker.Index,
             attackerSpecialState: !!special,
             target: target.Player.ID || target.Index,
-            targetHealth: Math.max(0, (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth),
+            targetHealth: Math.max(0, (target.Health - (type === 15 || type >= 200 ? 0 : damage)) / target.TotalHealth),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
@@ -52,8 +52,7 @@ FIGHT_LOG = new (class {
 
         this.lastLog = {
             targetA: {
-                ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name,
-                Instrument: playerA.Player.Instrument, Level: playerA.Player.Level,
+                ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
                 MaximumLife: playerA.TotalHealth, Life: playerA.TotalHealth, Strength: playerA.Player.Strength.Total,
                 Dexterity: playerA.Player.Dexterity.Total, Intelligence: playerA.Player.Intelligence.Total,
                 Constitution: playerA.Player.Constitution.Total, Luck: playerA.Player.Luck.Total, Face: playerA.Player.Face,
@@ -61,8 +60,7 @@ FIGHT_LOG = new (class {
                 Wpn1: playerA.Player.Items.Wpn1, Wpn2: playerA.Player.Items.Wpn2
             },
             targetB: {
-                ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name,
-                Instrument: playerB.Player.Instrument, Level: playerB.Player.Level,
+                ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name, Level: playerB.Player.Level,
                 MaximumLife: playerB.TotalHealth, Life: playerB.TotalHealth, Strength: playerB.Player.Strength.Total,
                 Dexterity: playerB.Player.Dexterity.Total, Intelligence: playerB.Player.Intelligence.Total,
                 Constitution: playerB.Player.Constitution.Total, Luck: playerB.Player.Luck.Total, Face: playerB.Player.Face,
@@ -231,13 +229,14 @@ CONFIG = Object.defineProperty(
 
             HealthMultiplier: 2,
             WeaponDamageMultiplier: 4.5,
-            MaximumDamageReduction: 25,
+            MaximumDamageReduction: 50,
+
+            DamageMultiplier: 1.125,
 
             EffectRounds: 4,
-
-            HarpValues: [ 40, 55, 75 ],
-            LuteValues: [ 20, 40, 60 ],
-            FluteValues: [ 5, 7.5, 10 ]
+            EffectBaseDuration: [1, 1, 2],
+            EffectBaseChance: [25, 50, 25],
+            EffectValues: [ 20, 40, 60 ]
         },
     },
     'set',
@@ -311,11 +310,6 @@ const STATE_ALIVE = 1;
 const ATTACK_PRIMARY = 0;
 const ATTACK_SECONDARY = 10;
 const ATTACK_SPECIAL = 20;
-
-// Instruments
-const INSTRUMENT_HARP = 0;
-const INSTRUMENT_LUTE = 1;
-const INSTRUMENT_FLUTE = 2;
 
 // Fighter models
 class FighterModel {
@@ -403,7 +397,7 @@ class FighterModel {
 
     // Damage Reduction
     getDamageReduction (source, maximumReduction = this.getMaximumDamageReduction()) {
-        if (source.Player.Class == MAGE || source.Player.Class == BARD) {
+        if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.ForceArmor) {
             let multiplier = this.Player.ForceArmor * this.Player.Level / source.Player.Level;
@@ -563,19 +557,10 @@ class FighterModel {
         return false;
     }
 
-    // Triggers before damage is finalized
-    onBeforeDamageFinalized (damage, target) {
-        return damage;
-    }
-
     attack (damage, target, skipped, critical, type, special) {
         if (skipped) {
             damage = 0;
         } else {
-            if (target.BeforeDamageFinalized) {
-                damage = target.onBeforeDamageFinalized(damage, target);
-            }
-
             if (critical) {
                 damage *= this.Critical;
             }
@@ -650,16 +635,6 @@ class DruidModel extends FighterModel {
         super.initialize(target);
 
         this.RageCriticalChance = this.getCriticalChance(target, this.Config.RageCriticalChance);
-    }
-
-    getHealthLossDamageMultiplier () {
-        let healthMissing = 100 - Math.trunc(100 * this.Health / this.TotalHealth);
-
-        let missingLow = healthMissing > this.Config.BearMinTrigger ? Math.min(this.Config.BearBracket, healthMissing - this.Config.BearMinTrigger) : 0;
-        let missingMed = healthMissing > this.Config.BearMedTrigger ? Math.min(this.Config.BearBracket, healthMissing - this.Config.BearMedTrigger) : 0;
-        let missingMax = healthMissing > this.Config.BearMaxTrigger ? Math.min(this.Config.BearBracket, healthMissing - this.Config.BearMaxTrigger) : 0;
-
-        return missingLow * this.Config.BearMinMultiplier + missingMed * this.Config.BearMedMultiplier + missingMax * this.Config.BearMaxMultiplier;
     }
 
     attack (damage, target, skipped, critical, type) {
@@ -812,12 +787,14 @@ class BardModel extends FighterModel {
 
         this.resetEffects();
         this.resetTimers();
+
+        this.Bracket0 = this.Config.EffectBaseChance[0];
+        this.Bracket1 = this.Bracket0 + this.Config.EffectBaseChance[1];
+        this.Bracket2 = this.Bracket1 + this.Config.EffectBaseChance[2];
     }
 
     resetEffects () {
-        this.HealMultiplier = 0;
         this.DamageMultiplier = 0;
-        this.IncomingDamageMultiplier = 0;
     }
 
     resetTimers () {
@@ -840,8 +817,7 @@ class BardModel extends FighterModel {
         super.initialize(target);
 
         this.BeforeAttack = target.Player.Class != MAGE;
-        this.BeforeDamageFinalized = this.Player.Instrument == INSTRUMENT_HARP;
-        
+
         this.BonusRounds = 0;
 
         const mainAttribute = this.getAttribute(this);
@@ -854,36 +830,20 @@ class BardModel extends FighterModel {
     }
 
     rollEffectLevel () {
-        const roll = Math.random() * 100;
+        const roll = Math.random() * this.Bracket2;
 
-        return roll < 25 ? 0 : (roll < 75 ? 1 : 2);
+        return roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
     }
 
     rollEffect (target) {
         let level = this.rollEffectLevel();
 
         this.EffectLevel = level + 1;
-        this.EffectReset = Math.max(1, level) + this.BonusRounds;
+        this.EffectReset = this.Config.EffectBaseDuration[level] + this.BonusRounds;
         this.EffectCounter = 0;
         this.EffectRound = 0;
 
-        if (this.Player.Instrument == INSTRUMENT_HARP) {
-            let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, this.Config.HarpValues[level]) / 100);
-
-            this.IncomingDamageMultiplier = multiplier;
-        } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
-            let multiplier = 1 + this.Config.LuteValues[level] / 100;
-
-            this.DamageMultiplier = multiplier;
-        } else if (this.Player.Instrument == INSTRUMENT_FLUTE) {
-            let multiplier = this.Config.FluteValues[level] / 100;
-
-            this.HealMultiplier = multiplier;
-        }
-
-        if (FIGHT_LOG_ENABLED && this.Player.Instrument != INSTRUMENT_LUTE) {
-            FIGHT_LOG.logSpell(this, this.EffectLevel, this.EffectReset);
-        }
+        this.DamageMultiplier = 1 + this.Config.EffectValues[level] / 100;
     }
 
     consumeMultiplier () {
@@ -894,7 +854,7 @@ class BardModel extends FighterModel {
                 this,
                 this.EffectLevel,
                 this.EffectReset - this.EffectCounter + 1,
-                this.Player.Instrument == INSTRUMENT_FLUTE ? this.LastHealthDelta : 0
+                0
             );
         }
 
@@ -906,16 +866,6 @@ class BardModel extends FighterModel {
     onBeforeAttack (target) {
         // When this player attacks
         if (this != target) {
-            if (this.HealMultiplier) {
-                let oldHealth = this.Health;
-                let newHealth = Math.min(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
-
-                this.Health = newHealth;
-                this.LastHealthDelta = newHealth - oldHealth;
-
-                this.consumeMultiplier();
-            }
-
             this.EffectRound += 1;
 
             if (this.EffectRound >= this.Config.EffectRounds) {
@@ -926,10 +876,6 @@ class BardModel extends FighterModel {
 
     attack (damage, target, skipped, critical, type) {
         if (this.DamageMultiplier) {
-            if (critical && skipped) {
-                skipped = false;
-            }
-
             damage *= this.DamageMultiplier;
         }
 
@@ -943,16 +889,6 @@ class BardModel extends FighterModel {
 
         if (this.DamageMultiplier) {
             this.consumeMultiplier();
-        }
-
-        return damage;
-    }
-
-    onBeforeDamageFinalized (damage, target) {
-        if (target.IncomingDamageMultiplier) {
-            damage *= target.IncomingDamageMultiplier;
-
-            target.consumeMultiplier();
         }
 
         return damage;

@@ -503,9 +503,6 @@ class SFFighter {
         this.Gender = dataType.long();
         this.Class = dataType.long();
 
-        const maskType = dataType.peek();
-        this.Instrument = maskType == -52 ? 2 : (maskType == -51 ? 1 : 0);
-
         this.Wpn1 = new SFItem(dataType.sub(12), 1, [1, 1]);
         this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
     }
@@ -1377,8 +1374,7 @@ class SFOtherPlayer extends SFPlayer {
         legacyDungeons.Normal[13] = dataType.long();
         legacyDungeons.Shadow = dataType.byteArray(14);
 
-        dataType.skip(2);
-        this.Instrument = Math.max(0, dataType.long() - 1);
+        dataType.skip(3);
 
         dataType = new ComplexDataType(data.pets);
         dataType.skip(1); // skip
@@ -1720,7 +1716,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Fortress.SecretWoodLimit = dataType.long();
         this.Fortress.SecretStone = dataType.long();
         this.Fortress.SecretStoneLimit = dataType.long();
-        this.Instrument = Math.max(0, dataType.long() - 1);
+        dataType.skip(1);
 
         if (data.idle) {
             this.Idle = {
@@ -2149,7 +2145,6 @@ function toSimulatorModel (p) {
     return {
         Armor: p.Armor,
         Class: p.Class,
-        Instrument: p.Instrument,
         Name: p.Name,
         Level: p.Level,
         Identifier: p.Identifier,
@@ -2277,13 +2272,7 @@ const _CONVERT_PLAYER_SAVE = [
     581, 582,
     null, null, null,
     // Group & Player dungeons
-    445,
-    null,
-    // Skip - shadow dungeons
-    null, null, null, null,
-    null,
-    // Mask & Instrument
-    null, 701
+    445
 ];
 
 function toOtherGroupData (group) {

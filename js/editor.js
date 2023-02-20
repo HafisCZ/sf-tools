@@ -285,7 +285,6 @@ class Editor extends EditorBase {
             prefix: new Field('[data-path="Prefix"]', ''),
 
             class: new Field('[data-path="Class"]', '1'),
-            instrument: new Field('[data-path="Instrument"]', '0'),
             level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
             armor: new Field('[data-path="Armor"]', '', Field.isNumber),
 
@@ -336,17 +335,7 @@ class Editor extends EditorBase {
             }
 
             this.fields['shield'].show(value == 1);
-            this.fields['instrument'].show(value == 9);
         }).dropdown('set selected', '1');
-
-        this.fields['instrument'].$object.dropdown({
-            values: [0, 1, 2].map((value) => ({
-                image: `res/instrument${value}.png`,
-                imageClass: '!-ml-3 !mr-2',
-                name: intl(`general.instrument${value}`),
-                value
-            }))
-        }).dropdown('set selected', '0');
 
         this.fields['potion_life'].$object.dropdown({
             values: [
@@ -504,7 +493,7 @@ class Editor extends EditorBase {
             swapAttributes(data, 'Base');
             swapAttributes(data, 'Total');
 
-            data.Armor = scaleValue(data.Armor, [50, 10, 25, 25, 10, 25, 50, 25, 25]);
+            data.Armor = scaleValue(data.Armor, [50, 10, 25, 25, 10, 25, 50, 40, 50]);
             data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
             data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
 
@@ -513,8 +502,6 @@ class Editor extends EditorBase {
                 data.Items.Wpn2.DamageMin = 25;
             } else if (newClass == 4 /* ASSASSIN */) {
                 data.Items.Wpn2 = data.Items.Wpn1;
-            } else if (newClass == 9 /* BARD */) {
-                data.Instrument = 0;
             }
 
             data.Class = newClass;
@@ -549,13 +536,6 @@ class Editor extends EditorBase {
                         <div class="field">
                             <label>${this.intl('class')}</label>
                             <div class="ui search selection inverted dropdown" data-path="Class">
-                                <div class="text"></div>
-                                <i class="dropdown icon"></i>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>${this.intl('instrument')}</label>
-                            <div class="ui selection inverted dropdown" data-path="Instrument">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>

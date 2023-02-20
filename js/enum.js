@@ -49,18 +49,6 @@ const PLAYER_ACTIONS = [
     'Dungeon'
 ];
 
-const MASK_TYPES = [
-    'None',
-    'Bear',
-    'Cat'
-];
-
-const INSTRUMENT_TYPES = [
-    'Harp',
-    'Lute',
-    'Flute'
-];
-
 const SCROLL_MAP = {
     11: 0,
     31: 1,
