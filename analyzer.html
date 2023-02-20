@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Fight Analyzer</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="css/pages/analyzer.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/sentry.bundle.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/lang.js"></script>
+
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>        
+        <script src="js/changelog.js"></script>
+        <script src="js/views.js"></script>
+
+        <script src="js/sim/dungeon_data.js"></script>
+
+        <script src="js/sim/base.js"></script>
+        <script src="js/sim/debug_utils.js"></script>
+    </head>
+    <body class="inverted">
+        <div class="ui fixed inverted borderless huge menu" style="z-index: 3;">
+            <div class="header item"><a href="index.html">SFTools</a></div>
+            <label for="button-upload">
+                <a class="item"><i class="upload icon"></i> <span data-intl="analyzer.topbar.import"></span></a>
+            </label>
+            <input type="file" accept=".har,.json" class="ui invisible file input" id="button-upload">
+            <a class="item" id="button-clear"><i class="trash alternate outline icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
+        </div>
+
+        <div class="ui main inverted container mb-20" style="width: 65vw;">
+            <div class="ui small inverted form">
+                <div class="field">
+                    <label data-intl="analyzer.form.fight_group"></label>
+                    <div class="ui selection inverted dropdown" data-op="fight-group">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                    </div>
+                </div>
+            </div>
+            <h3 class="ui inverted centered header" data-intl="analyzer.players"></h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <div class="ui grey inverted segment">
+                        <div class="ui small inverted form" data-op="player1">
+                            <h4 class="ui centered inverted header" data-intl="analyzer.form.player1"></h4>
+                            <div class="field">
+                                <label data-intl="editor.name"></label>
+                                <div class="ui inverted centered input">
+                                    <input type="text" disabled data-op="name">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label data-intl="editor.class"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="class">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.level"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="level">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="five fields">
+                                <div class="field">
+                                    <label data-intl="general.attribute1"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="strength">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute2"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="dexterity">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute3"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="intelligence">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute4"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="constitution">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute5"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="luck">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="four fields" data-op="weapon1">
+                                <div class="field">
+                                    <label data-intl="editor.min"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.min" data-intl-placeholder="editor.min_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.max"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.max" data-intl-placeholder="editor.max_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.rune"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.rune_type">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label><br/></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.rune_value" placeholder="0 - 60">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="four fields" data-op="weapon2">
+                                <div class="field">
+                                    <label data-intl="editor.min"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.min" data-intl-placeholder="editor.min_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.max"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.max" data-intl-placeholder="editor.max_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.rune"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.rune_type">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label><br/></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.rune_value" placeholder="0 - 60">
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="ui centered inverted header" data-intl="analyzer.form.editable_data"></h4>
+                            <div class="four fields">
+                                <div class="field">
+                                    <label data-intl="editor.armor"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="armor" data-intl-placeholder="editor.armor_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.fire"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="resistance_fire" placeholder="0 - 75">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.cold"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="resistance_cold" placeholder="0 - 75">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.lightning"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="resistance_lightning" placeholder="0 - 75">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="three fields !mb-0">
+                                <div class="field">
+                                    <label data-intl="editor.portal_damage"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="dungeon" placeholder="0 - 50">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.gladiator"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="gladiator" placeholder="0 - 15">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.weapon_enchant"></label>
+                                    <div class="ui selection inverted dropdown" data-op="enchant">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui grey inverted segment">
+                        <div class="ui small inverted form" data-op="player2">
+                            <h4 class="ui centered inverted header" data-intl="analyzer.form.player2"></h4>
+                            <div class="field">
+                                <label data-intl="editor.name"></label>
+                                <div class="ui inverted centered input">
+                                    <input type="text" disabled data-op="name">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label data-intl="editor.class"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="class">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.level"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="level">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="five fields">
+                                <div class="field">
+                                    <label data-intl="general.attribute1"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="strength">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute2"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="dexterity">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute3"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="intelligence">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute4"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="constitution">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="general.attribute5"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="luck">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="four fields" data-op="weapon1">
+                                <div class="field">
+                                    <label data-intl="editor.min"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.min" data-intl-placeholder="editor.min_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.max"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.max" data-intl-placeholder="editor.max_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.rune"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.rune_type">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label><br/></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon1.rune_value" placeholder="0 - 60">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="four fields" data-op="weapon2">
+                                <div class="field">
+                                    <label data-intl="editor.min"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.min" data-intl-placeholder="editor.min_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.max"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.max" data-intl-placeholder="editor.max_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.rune"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.rune_type">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label><br/></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" disabled data-op="weapon2.rune_value" placeholder="0 - 60">
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="ui centered inverted header" data-intl="analyzer.form.editable_data"></h4>
+                            <div class="four fields">
+                                <div class="field">
+                                    <label data-intl="editor.armor"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="armor" data-intl-placeholder="editor.armor_placeholder">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.fire"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="resistance_fire" placeholder="0 - 75">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.cold"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="resistance_cold" placeholder="0 - 75">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.lightning"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="resistance_lightning" placeholder="0 - 75">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="three fields !mb-0">
+                                <div class="field">
+                                    <label data-intl="editor.portal_damage"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="dungeon" placeholder="0 - 50">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.gladiator"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="gladiator" placeholder="0 - 15">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="editor.weapon_enchant"></label>
+                                    <div class="ui selection inverted dropdown" data-op="enchant">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3 class="ui inverted centered header" data-intl="analyzer.summary.title"></h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <div class="ui grey inverted segment">
+                        <div class="ui small inverted form" data-op="player1_fights">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label data-intl="analyzer.summary.fights_total"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="fights_total" disabled>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="analyzer.summary.fights_won"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="fights_won" disabled>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="analyzer.summary.rounds_total"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="rounds_total" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label data-intl="analyzer.summary.hits_total"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="hits_total" disabled>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="analyzer.summary.hits_critical"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="hits_critical" disabled>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label data-intl="analyzer.summary.hits_blocked"></label>
+                                    <div class="ui inverted centered input">
+                                        <input type="text" data-op="hits_blocked" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            Site.ready(function (urlParams) {
+                // Add debug display
+                SimulatorUtils.configure(
+                  CONFIG,
+                  urlParams.has('debug'),
+                  null,
+                  (config) => console.log('changed', config)
+                );
+
+
+            })
+        </script>
+    </body>
+</html>
