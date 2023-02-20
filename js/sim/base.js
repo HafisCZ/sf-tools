@@ -543,6 +543,7 @@ class FighterModel {
         }
     }
 
+    // Return false for none or any damage to be initially dealt at the beginning of the round (eg BM's Fireball)
     getInitialDamage (target) {
         return false;
     }
@@ -581,6 +582,7 @@ class FighterModel {
         return damage;
     }
 
+    // Runtime getters
     fetchSkipChance (source) {
         return this.SkipChance;
     }
@@ -589,6 +591,7 @@ class FighterModel {
         return this.CriticalChance;
     }
 
+    // Returns extra damage multiplier, default is 1 for no extra damage
     getDamageMultiplier (target) {
         return this.Config.DamageMultiplier || 1;
     }
@@ -794,7 +797,7 @@ class BardModel extends FighterModel {
     }
 
     resetEffects () {
-        this.DamageMultiplier = 0;
+        this.EffectCurrent = 0;
     }
 
     resetTimers () {
@@ -843,7 +846,7 @@ class BardModel extends FighterModel {
         this.EffectCounter = 0;
         this.EffectRound = 0;
 
-        this.DamageMultiplier = 1 + this.Config.EffectValues[level] / 100;
+        this.EffectCurrent = 1 + this.Config.EffectValues[level] / 100;
     }
 
     consumeMultiplier () {
@@ -875,8 +878,8 @@ class BardModel extends FighterModel {
     }
 
     attack (damage, target, skipped, critical, type) {
-        if (this.DamageMultiplier) {
-            damage *= this.DamageMultiplier;
+        if (this.EffectCurrent) {
+            damage *= this.EffectCurrent;
         }
 
         damage = super.attack(
@@ -887,7 +890,7 @@ class BardModel extends FighterModel {
             type
         )
 
-        if (this.DamageMultiplier) {
+        if (this.EffectCurrent) {
             this.consumeMultiplier();
         }
 
