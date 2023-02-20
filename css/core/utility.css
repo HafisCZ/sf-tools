@@ -175,6 +175,10 @@
   margin-top: 1em !important;
 }
 
+.\!mt-6 {
+  margin-top: 1.5em !important;
+}
+
 .mt-0 {
   margin-top: 0;
 }
