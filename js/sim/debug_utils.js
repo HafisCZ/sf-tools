@@ -222,7 +222,7 @@ const SimulatorUtils = new (class {
             for (const [subtype, subvalue] of Object.entries(value)) {
                 const customValue = _dig(this.customConfig, type, subtype);
 
-                if (Array.isArray(subvalue) ? customValue.some((v, i) => v != subvalue[i]) : customValue != subvalue) {
+                if (typeof customValue !== 'undefined' && (Array.isArray(subvalue) ? customValue.some((v, i) => v != subvalue[i]) : customValue != subvalue)) {
                     differences.push(`<div>${subtype}: <span class="text-red">${subvalue}</span> -&gt; <span class="text-greenyellow">${customValue}</span></div>`)
                 }
             }
