@@ -216,7 +216,7 @@ CONFIG = Object.defineProperty(
             SwoopChanceMin: 0,
             SwoopChanceMax: 50,
             SwoopChanceDecay: -5,
-            SwoopMultiplier: 10 / 3,
+            SwoopMultiplier: 3.3,
 
             SkipChance: 35,
             RageSkipChance: 0,
@@ -642,9 +642,7 @@ class DruidModel extends FighterModel {
 
     attack (damage, target, skipped, critical, type) {
         if (this.RageState) {
-            this.RageState = false;
-
-            return super.attack(
+            const returnValue = super.attack(
                 damage * (critical ? this.Config.RageCriticalDamageMultiplier : 1),
                 target,
                 skipped,
@@ -652,29 +650,29 @@ class DruidModel extends FighterModel {
                 type,
                 true
             );
+
+            this.RageState = false;
+
+            return returnValue;
+        } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
+            this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
+            
+            // Swoop
+            return super.attack(
+                damage * this.Config.SwoopMultiplier,
+                target,
+                skipped,
+                false,
+                5
+            );
         } else {
-            if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
-                this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
-                
-                // Swoop
-                const value = super.attack(
-                    damage * this.Config.SwoopMultiplier,
-                    target,
-                    skipped,
-                    false,
-                    5
-                );
-                
-                return value;
-            } else {
-                return super.attack(
-                    damage,
-                    target,
-                    skipped,
-                    critical,
-                    type
-                );
-            }
+            return super.attack(
+                damage,
+                target,
+                skipped,
+                critical,
+                type
+            );
         }
     }
 
