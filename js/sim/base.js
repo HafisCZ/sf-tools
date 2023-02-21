@@ -647,19 +647,20 @@ class DruidModel extends FighterModel {
         }
 
         if (this.RageState) {
-            const returnValue = super.attack(
-                damage * (critical ? this.Config.RageCriticalDamageMultiplier : 1),
+            if (!skipped && critical) {
+                damage *= this.Config.RageCriticalDamageMultiplier;
+
+                this.RageState = false;
+            }
+
+            return super.attack(
+                damage,
                 target,
                 skipped,
                 critical,
                 type,
                 true
             );
-
-            // Reset here due to logging
-            this.RageState = false;
-
-            return returnValue;
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
             
