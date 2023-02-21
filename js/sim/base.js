@@ -632,6 +632,7 @@ class DruidModel extends FighterModel {
         this.DamageTaken = true;
 
         this.RageState = false;
+        this.RageRounds = 0;
     }
 
     initialize (target) {
@@ -641,6 +642,10 @@ class DruidModel extends FighterModel {
     }
 
     attack (damage, target, skipped, critical, type) {
+        if (this.RageState && this.RageRounds++ >= 1) {
+            this.RageState = false;
+        }
+
         if (this.RageState) {
             const returnValue = super.attack(
                 damage * (critical ? this.Config.RageCriticalDamageMultiplier : 1),
@@ -651,6 +656,7 @@ class DruidModel extends FighterModel {
                 true
             );
 
+            // Reset here due to logging
             this.RageState = false;
 
             return returnValue;
@@ -679,6 +685,7 @@ class DruidModel extends FighterModel {
     onDamageTaken (source, damage) {
         if (damage == 0) {
             this.RageState = true;
+            this.RageRounds = 0;
         }
 
         return super.onDamageTaken(source, damage);
