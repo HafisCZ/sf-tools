@@ -626,15 +626,18 @@ class AssassinModel extends FighterModel {
 }
 
 class DruidModel extends FighterModel {
+    constructor (i, p) {
+        super(i, p);
+
+        this.DamageTaken = true;
+    }
+
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
         this.SwoopChance = this.Config.SwoopChance;
 
-        this.DamageTaken = true;
-
         this.RageState = false;
-        this.RageRounds = 0;
     }
 
     initialize (target) {
@@ -644,18 +647,12 @@ class DruidModel extends FighterModel {
     }
 
     attack (damage, target, skipped, critical, type) {
-        if (this.RageState && this.RageRounds++ >= 1) {
-            this.RageState = false;
-        }
-
         if (this.RageState) {
-            if (!skipped && critical) {
+            if (critical) {
                 damage *= this.Config.RageCriticalDamageMultiplier;
-
-                this.RageState = false;
             }
 
-            return super.attack(
+            const returnValue = super.attack(
                 damage,
                 target,
                 skipped,
@@ -663,6 +660,10 @@ class DruidModel extends FighterModel {
                 type,
                 true
             );
+
+            this.RageState = false;
+
+            return returnValue;
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
             
@@ -688,7 +689,6 @@ class DruidModel extends FighterModel {
     onDamageTaken (source, damage) {
         if (damage == 0) {
             this.RageState = true;
-            this.RageRounds = 0;
         }
 
         return super.onDamageTaken(source, damage);
