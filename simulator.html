@@ -352,13 +352,14 @@
                         value
                     }))
                 }).dropdown('setting', 'onChange', (value, text) => {
-                    if ((simulatorMode != 'attack' && simulatorMode != 'defend') || (value != 'attack' && value != 'defend')) {
-                        yourself = -1;
-                    }
-
                     simulatorMode = value;
-                    if (simulatorMode === 'attack' || simulatorMode === 'defend' && selected !== -1) {
-                        yourself = selected;
+
+                    if (simulatorMode === 'attack' || simulatorMode === 'defend') {
+                        if (selected !== -1 && yourself === -1) {
+                            yourself = selected;
+                        }
+                    } else {
+                        yourself = -1;
                     }
 
                     for (var p of players) {
