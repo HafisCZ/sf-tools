@@ -357,6 +357,9 @@
                     }
 
                     simulatorMode = value;
+                    if (simulatorMode === 'attack' || simulatorMode === 'defend' && selected !== -1) {
+                        yourself = selected;
+                    }
 
                     for (var p of players) {
                         p.score = null;
