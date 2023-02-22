@@ -1516,7 +1516,7 @@ const ScriptRepositoryDialog = new (class extends Dialog {
     _createSegment (key, description, author, updatedAt) {
         return `
             <div data-script-key="${key}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
-                <i class="ui big ${DefaultScripts[key] ? 'archive' : 'globe'} disabled icon"></i>
+                <i class="ui big ${DefaultScripts.exists(key) ? 'archive' : 'globe'} disabled icon"></i>
                 <div>    
                     <div>${description}</div>
                     <div class="text-gray">${intl(`dialog.script_repository.list.about${updatedAt ? '_with_date' : ''}`, { author, date: updatedAt ? formatDateOnly(Date.parse(updatedAt)) : null })}</div>
@@ -1539,7 +1539,7 @@ const ScriptRepositoryDialog = new (class extends Dialog {
         this.callback = callback;
 
         let content = '';
-        for (const [type, { author, description }] of Object.entries(DefaultScripts)) {
+        for (const [type, { author, description }] of DefaultScripts.entries()) {
             if (author) {
                 content += this._createSegment(type, description, author, null);
             }
@@ -1573,8 +1573,8 @@ const ScriptRepositoryDialog = new (class extends Dialog {
         const $items = this.$list.find('[data-script-key]');
         $items.off('click').on('click', (event) => {
             const key = event.currentTarget.dataset.scriptKey;
-            if (DefaultScripts[key]) {
-                this._applyScript(DefaultScripts[key].content);
+            if (DefaultScripts.exists(key)) {
+                this._applyScript(DefaultScripts.getContent(key));
             } else {
                 const $icon = $(event.currentTarget).find('i').removeClass('archive globe').addClass('loading sync');
                 this._fetchScript(key).catch(() => {

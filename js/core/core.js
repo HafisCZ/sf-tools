@@ -460,7 +460,7 @@ const ACTION_PROPS = ['players', 'groups'];
 
 const Actions = new (class {
     init () {
-        this.defaultScript = typeof DefaultScripts === 'object' ? DefaultScripts.actions.content : '';
+        this.defaultScript = typeof DefaultScripts === 'object' ? DefaultScripts.getContent('actions') : '';
 
         this._loadScript();
 
