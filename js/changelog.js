@@ -10,6 +10,7 @@ const CHANGELOG = {
             'Added new dialogs for browsing scripts and managing templates',
             'Added new script &amp; template archive system to replace script history',
             'Added Webshop ID to player detail and as a private header',
+            'Added improved public export',
             'Fixed guild deletion via advanced file list',
             'Fixed counting of present guild members',
             'Fixed scrapbook size',
@@ -18,11 +19,18 @@ const CHANGELOG = {
         'Hydra Simulator': [
             'Fixed maximum hydra level after import'
         ],
+        'Fight Simulator': [
+            'Currently selected player will be marked as target when switching to 1 v All or All v 1 modes'
+        ],
         'Fortress Simulator': [
             'Replaced fortifications input with a dropdown'
         ],
         'Hellevator Simulator': [
             'Added prototype simulator'
+        ],
+        'All Simulators': [
+            'Added updated Druid',
+            'Added updated Bard'
         ],
         'All Tools': [
             'Added dark theme',
