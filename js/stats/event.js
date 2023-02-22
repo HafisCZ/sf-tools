@@ -86,7 +86,7 @@ class GroupDetailView extends View {
             if (dialog) {
                 exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
             } else {
-                exportPromise.then(Exporter.json);
+                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Date.now()}`));
             }
         }
 
@@ -772,7 +772,7 @@ class PlayerHistoryView extends View {
             if (dialog) {
                 exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
             } else {
-                exportPromise.then(Exporter.json);
+                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Date.now()}`));
             }
         }
 
