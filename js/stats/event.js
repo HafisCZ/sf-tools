@@ -256,7 +256,7 @@ class GroupDetailView extends View {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? TemplateManager.getContent(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.groups.content));
+        this.table.setSettings(this.templateOverride ? TemplateManager.getContent(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.getContent('groups')));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -798,7 +798,7 @@ class PlayerHistoryView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = ScriptManager.getContent(this.identifier, 'me', DefaultScripts.players.content);
+                    settings = ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players'));
                 } else {
                     this.templateOverride = value;
 
@@ -845,7 +845,7 @@ class PlayerHistoryView extends View {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setSettings(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.players.content));
+        this.table.setSettings(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players')));
 
         this.list.forEach(([ a, b ]) => DatabaseManager._loadPlayer(b));
 
@@ -1284,7 +1284,7 @@ class BrowseView extends View {
         this.$configure.find('.item').removeClass('active');
         this.$configure.settingsButton(ScriptManager.exists('players'));
 
-        this.table.setSettings(ScriptManager.getContent('players', 'players', DefaultScripts.browse.content));
+        this.table.setSettings(ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse')));
 
         this.templateOverride = '';
         this.recalculate = true;
@@ -1303,7 +1303,7 @@ class BrowseView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = ScriptManager.getContent('players', 'players', DefaultScripts.browse.content);
+                    settings = ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse'));
                 } else {
                     this.templateOverride = value;
 
@@ -2781,7 +2781,7 @@ class SettingsView extends View {
 
     // Returns default template for specified key
     _defaultContent (value) {
-        return DefaultScripts[{ players: 'browse', me: 'players', guilds: 'groups' }[this._defaultKey(value)]].content;
+        return DefaultScripts.getContent({ players: 'browse', me: 'players', guilds: 'groups' }[this._defaultKey(value)]);
     }
 
     remove () {
