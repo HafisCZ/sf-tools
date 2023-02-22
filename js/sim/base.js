@@ -405,7 +405,9 @@ class FighterModel {
 
             return Math.min(maximumReduction, maximumReduction * multiplier) + reductionBonus;
         } else {
-            if (this.Player.Class == BATTLEMAGE) {
+            if (this.Player.Class == BARD || this.Player.Class == DRUID) {
+                return Math.min(maximumReduction, 2 * this.Player.Armor / source.Player.Armor);
+            } else if (this.Player.Class == BATTLEMAGE) {
                 return Math.min(maximumReduction, this.Player.Armor / source.Player.Level) + 40;
             } else {
                 return Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
