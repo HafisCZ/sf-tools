@@ -137,7 +137,7 @@ FLAGS = Object.defineProperty(
 );
 
 // Configuration
-CONFIG = Object.defineProperty(
+CONFIG = Object.defineProperties(
     {
         Warrior: {
             Attribute: 'Strength',
@@ -239,11 +239,17 @@ CONFIG = Object.defineProperty(
             EffectValues: [ 20, 40, 60 ]
         },
     },
-    'set',
     {
-        value: function (config) {
-            for (const key of Object.keys(this)) {
-                this[key] = mergeDeep(this[key], (config || {})[key]);
+        set: {
+            value: function (config) {
+                for (const key of Object.keys(this)) {
+                    this[key] = mergeDeep(this[key], (config || {})[key]);
+                }
+            }
+        },
+        forClass: {
+            value: function (index) {
+                return Object.values(this)[index - 1];
             }
         }
     }
