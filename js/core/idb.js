@@ -403,6 +403,10 @@ class PlayaResponse {
         return this._value.split(/\/|,/).map(Number);
     }
 
+    get mixed () {
+        return this._value.split(/\/|,/).map((v) => isNaN(v) ? v : Number(v))
+    }
+
     get number () {
         return parseInt(this._value);
     }
