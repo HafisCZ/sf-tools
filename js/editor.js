@@ -321,20 +321,20 @@ class Editor extends EditorBase {
         };
 
         this.fields['class'].$object.dropdown({
-            values: Object.keys(CLASS_MAP).map((value) => ({
+            values: CONFIG.indexes().map((value) => ({
                 image: `res/class${value}.png`,
                 imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.class${value}`),
                 value
             }))
-        }).dropdown('setting', 'onChange', (value, text) => {
-            if (value == 4) {
+        }).dropdown('setting', 'onChange', (value) => {
+            if (value == ASSASSIN) {
                 $('[data-optional="Weapon2"]').show();
             } else {
                 $('[data-optional="Weapon2"]').hide();
             }
 
-            this.fields['shield'].show(value == 1);
+            this.fields['shield'].show(value == WARRIOR);
         }).dropdown('set selected', '1');
 
         this.fields['potion_life'].$object.dropdown({
@@ -455,7 +455,7 @@ class Editor extends EditorBase {
                     type: 'header',
                     class: 'header text-center'
                 },
-                ...Object.keys(CLASS_MAP).map((value) => ({
+                ...CONFIG.indexes().map((value) => ({
                     image: `res/class${value}.png`,
                     imageClass: '!-ml-3 !mr-2',
                     name: intl(`general.class${value}`),
@@ -472,35 +472,49 @@ class Editor extends EditorBase {
     }
 
     _morph (newClass) {
-        let oldClass = this.fields['class'].get();
+        const oldClass = this.fields['class'].get();
 
         if (this.valid() && oldClass != newClass) {
+            const oldDefinition = CONFIG.fromIndex(oldClass);
+            const newDefinition = CONFIG.fromIndex(newClass);
+
             // Helper methods
-            const swapAttributes = function (obj, type) {
-                let attributes = _array_to_hash(['Main', 'Side1', 'Side2'], kind => [kind, _dig(obj, MAIN_ATTRIBUTE_MAP[kind][oldClass - 1], type)]);
-                for (let kind of ['Main', 'Side1', 'Side2']) {
-                    obj[MAIN_ATTRIBUTE_MAP[kind][newClass - 1]][type] = attributes[kind];
+            const getAttributeList = function (attribute) {
+                return {
+                    'Strength': ['Strength', 'Dexterity', 'Intelligence'],
+                    'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
+                    'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
+                }[attribute]
+            }
+
+            const swapAttributes = function (obj) {
+                const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
+                const newAttributes = getAttributeList(newDefinition.Attribute);
+
+                for (let i = 0; i < 3; i++) {
+                    for (const type of ['Base', 'Total']) {
+                        obj[newAttributes[i]][type] = oldattributes[i][type];
+                    }
                 }
             }
 
-            const scaleValue = function (value, mapping) {
-                return Math.ceil(value / (mapping[oldClass - 1]) * (mapping[newClass - 1]));
+            const scaleValue = function (value, oldValue, newValue) {
+                return Math.ceil(value / oldValue * newValue);
             }
 
             // Convert data
-            let data = this.read();
+            const data = this.read();
 
-            swapAttributes(data, 'Base');
-            swapAttributes(data, 'Total');
+            swapAttributes(data);
 
-            data.Armor = scaleValue(data.Armor, [50, 10, 25, 25, 10, 25, 50, 40, 50]);
-            data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
-            data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
+            data.Armor = scaleValue(data.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+            data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
+            data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
 
-            if (newClass == 1 /* WARRIOR */) {
+            if (newClass == WARRIOR) {
                 data.BlockChance = 25;
                 data.Items.Wpn2.DamageMin = 25;
-            } else if (newClass == 4 /* ASSASSIN */) {
+            } else if (newClass == ASSASSIN) {
                 data.Items.Wpn2 = data.Items.Wpn1;
             }
 

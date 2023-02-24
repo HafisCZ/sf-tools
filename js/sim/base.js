@@ -247,9 +247,14 @@ CONFIG = Object.defineProperties(
                 }
             }
         },
-        forClass: {
+        fromIndex: {
             value: function (index) {
                 return Object.values(this)[index - 1];
+            }
+        },
+        indexes: {
+            value: function () {
+                return Object.keys(this).map((value, index) => index + 1);
             }
         }
     }
