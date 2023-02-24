@@ -462,7 +462,7 @@ class SFItem {
 
 class SFFighter {
     constructor (data) {
-        var dataType = new ComplexDataType(data);
+        let dataType = new ComplexDataType(data);
         dataType.assert(47);
 
         this.ID = dataType.long();
@@ -535,7 +535,7 @@ class SFGroup {
         this.Pet = data.save[378];
         this.Hydra = data.save[379];
 
-        var dataType = new ComplexDataType(data.save.slice(4, 8));
+        let dataType = new ComplexDataType(data.save.slice(4, 8));
         dataType.short();
         this.PortalLife = dataType.short();
         dataType.short();
@@ -562,7 +562,7 @@ class SFGroup {
             this.Knights = data.knights.slice(0, 50);
         }
 
-        for (var i = 0; i < this.Members.length; i++) {
+        for (let i = 0; i < this.Members.length; i++) {
             if (this.Roles[i] == 0 || this.Roles[i] == GUILD_ROLE_INVITED) {
                 if (this.Knights) {
                     this.Knights.splice(i, 1);
@@ -701,7 +701,7 @@ class SFPlayer {
 
         const achievements = data.achievements || [];
         const half = Math.trunc(achievements.length / 2);
-        for (var i = 0; i < ACHIEVEMENTS_COUNT; i++) {
+        for (let i = 0; i < ACHIEVEMENTS_COUNT; i++) {
             if (i >= half) {
                 this.Achievements.push({
                     Owned: false,
@@ -744,52 +744,15 @@ class SFPlayer {
     }
 
     getPrimaryAttribute () {
-        if (this.Class == 1 || this.Class == 5 || this.Class == 6) {
-            return this.Strength;
-        } else if (this.Class == 3 || this.Class == 4 || this.Class == 7) {
-            return this.Dexterity;
-        } else /* 2, 9 */ {
-            return this.Intelligence;
-        }
+        return this[this.Config.Attribute];
     }
 
     getHealthMultiplier () {
-        switch (this.Class) {
-            case 1:
-            case 5:
-            case 8:
-                return 5;
-            case 7:
-            case 3:
-            case 4:
-            case 6:
-                return 4;
-            case 2:
-            case 9:
-                return 2;
-            default:
-                return 0;
-        }
+        return this.Config.HealthMultiplier;
     }
 
     getMaximumDamageReduction () {
-        switch (this.Class) {
-            case 1:
-            case 7:
-                return 50;
-            case 3:
-            case 4:
-            case 6:
-            case 9:
-                return 25;
-            case 2:
-            case 5:
-                return 10;
-            case 8:
-                return 40;
-            default:
-                return 0;
-        }
+        return this.Config.MaximumDamageReduction;
     }
 
     getHealth () {
@@ -802,16 +765,16 @@ class SFPlayer {
     }
 
     getEquipmentBonus (attribute) {
-        var bonus = 0;
-        for (var item of Object.values(this.Items)) {
-            for (var i = 0; i < 3; i++) {
+        let bonus = 0;
+        for (const item of Object.values(this.Items)) {
+            for (let i = 0; i < 3; i++) {
                 if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
                     bonus += item.Attributes[i];
                 }
             }
 
             if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
-                bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
+                bonus += item.GemValue * (item.Type == 1 && this.Class != ASSASSIN ? 2 : 1);
             }
         }
 
@@ -819,9 +782,9 @@ class SFPlayer {
     }
 
     getEquipmentItemBonus (attribute) {
-        var bonus = 0;
-        for (var item of Object.values(this.Items)) {
-            for (var i = 0; i < 3; i++) {
+        let bonus = 0;
+        for (const item of Object.values(this.Items)) {
+            for (let i = 0; i < 3; i++) {
                 if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
                     bonus += item.Attributes[i];
                 }
@@ -832,10 +795,10 @@ class SFPlayer {
     }
 
     getEquipmentUpgradeBonus (attribute) {
-        var bonus = 0;
-        for (var item of Object.values(this.Items)) {
+        let bonus = 0;
+        for (const item of Object.values(this.Items)) {
             if (item.Upgrades > 0) {
-                for (var i = 0; i < 3; i++) {
+                for (let i = 0; i < 3; i++) {
                     if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
                         bonus += item.Attributes[i] - Math.floor(item.Attributes[i] / item.UpgradeMultiplier);
                     }
@@ -847,8 +810,8 @@ class SFPlayer {
     }
 
     getEquipmentGemBonus (attribute) {
-        var bonus = 0;
-        for (var item of Object.values(this.Items)) {
+        let bonus = 0;
+        for (const item of Object.values(this.Items)) {
             if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
                 bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
             }
@@ -858,15 +821,15 @@ class SFPlayer {
     }
 
     getClassBonus (attribute) {
-        if (this.Class == 5 || this.Class == 6) {
-            return Math.ceil((this.Class == 5 ? attribute.Equipment : attribute.Items) * 11 / 100);
+        if (this.Class == BATTLEMAGE || this.Class == ASSASSIN) {
+            return Math.ceil((this.Class == BATTLEMAGE ? attribute.Equipment : attribute.Items) * 11 / 100);
         } else {
             return 0;
         }
     }
 
     getPotionSize (attribute) {
-        for (var potion of this.Potions) {
+        for (const potion of this.Potions) {
             if (potion.Type == attribute.Type) {
                 return potion.Size;
             }
@@ -876,7 +839,7 @@ class SFPlayer {
     }
 
     getPotionIndex (attribute) {
-        for (var i = 0; i < this.Potions.length; i++) {
+        for (let i = 0; i < this.Potions.length; i++) {
             if (this.Potions[i].Type == attribute.Type) {
                 return i;
             }
@@ -886,7 +849,7 @@ class SFPlayer {
     }
 
     getPotionBonus (attribute) {
-        for (var potion of this.Potions) {
+        for (const potion of this.Potions) {
             if (potion.Type == attribute.Type) {
                 return Math.ceil((attribute.Base + attribute.Class + attribute.Equipment) * potion.Size / 100);
             }
@@ -922,8 +885,10 @@ class SFPlayer {
     }
 
     evaluateCommon () {
+        this.Config = CONFIG.fromIndex(this.Class);
+
         this.Primary = this.getPrimaryAttribute();
-        this.ClassBonus = this.Class == 5 || this.Class == 6;
+        this.ClassBonus = this.Class == BATTLEMAGE || this.Class == ASSASSIN;
 
         this.addCalculatedAttributes(this.Strength, this.Pets.Water);
         this.addCalculatedAttributes(this.Dexterity, this.Pets.Light);
@@ -974,10 +939,10 @@ class SFPlayer {
         let partFire = 0;
         let partLightning = 0;
 
-        for (var item of Object.values(this.Items)) {
+        for (const item of Object.values(this.Items)) {
             if (item.HasRune && item.Type != 1) {
-                var rune = item.AttributeTypes[2];
-                var value = item.Attributes[2];
+                const rune = item.AttributeTypes[2];
+                const value = item.Attributes[2];
 
                 if (rune == 31) {
                     this.Runes.Gold += value;
@@ -1032,8 +997,8 @@ class SFPlayer {
         }
 
         if (this.Items.Wpn1.AttributeTypes[2] >= 40) {
-            var rune = this.Items.Wpn1.AttributeTypes[2];
-            var value = this.Items.Wpn1.Attributes[2];
+            const rune = this.Items.Wpn1.AttributeTypes[2];
+            const value = this.Items.Wpn1.Attributes[2];
 
             this.Runes.Damage += value;
             if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
@@ -1049,9 +1014,9 @@ class SFPlayer {
             }
         }
 
-        if (this.Class == 4 && this.Items.Wpn2.AttributeTypes[2] >= 40) {
-            var rune = this.Items.Wpn2.AttributeTypes[2];
-            var value = this.Items.Wpn2.Attributes[2];
+        if (this.Class == ASSASSIN && this.Items.Wpn2.AttributeTypes[2] >= 40) {
+            const rune = this.Items.Wpn2.AttributeTypes[2];
+            const value = this.Items.Wpn2.Attributes[2];
 
             this.Runes.Damage2 += value;
             if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
@@ -1145,7 +1110,7 @@ class SFPlayer {
     injectGroup (group) {
         if (group) {
             // Find index of player in the group
-            let gi = group.Members.findIndex(identifier => identifier == this.Identifier);
+            const gi = group.Members.findIndex(identifier => identifier == this.Identifier);
 
             // Add guild information
             this.Group.Group = group;
@@ -1234,9 +1199,9 @@ class SFOtherPlayer extends SFPlayer {
 
         this.init(data);
 
-        let legacyDungeons = DungeonHelper.template();
+        const legacyDungeons = DungeonHelper.template();
 
-        var dataType = new ComplexDataType(data.save);
+        let dataType = new ComplexDataType(data.save);
         dataType.assert(256);
 
         this.ID = dataType.long();
@@ -1403,9 +1368,9 @@ class SFOwnPlayer extends SFPlayer {
 
         this.init(data);
 
-        let legacyDungeons = DungeonHelper.template();
+        const legacyDungeons = DungeonHelper.template();
 
-        var dataType = new ComplexDataType(data.save);
+        let dataType = new ComplexDataType(data.save);
         dataType.assert(650);
 
         dataType.skip(1); // skip
@@ -1478,8 +1443,8 @@ class SFOwnPlayer extends SFPlayer {
             Mark: {},
             Kunigunde: {}
         };
-        for (var i = 0; i < 5; i++) {
-            var item = new SFItem(dataType.sub(12), 0, [6, i + 1]);
+        for (let i = 0; i < 5; i++) {
+            const item = new SFItem(dataType.sub(12), 0, [6, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Backpack.push(item);
             }
@@ -1490,15 +1455,15 @@ class SFOwnPlayer extends SFPlayer {
         legacyDungeons.Tower = dataType.short();
 
         dataType.skip(1);
-        for (var i = 0; i < 6; i++) {
-            var item = new SFItem(dataType.sub(12), 0, [7, i + 1]);
+        for (let i = 0; i < 6; i++) {
+            const item = new SFItem(dataType.sub(12), 0, [7, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
         }
         dataType.skip(1);
-        for (var i = 0; i < 6; i++) {
-            var item = new SFItem(dataType.sub(12), 0, [8, i + 1]);
+        for (let i = 0; i < 6; i++) {
+            const item = new SFItem(dataType.sub(12), 0, [8, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
@@ -1732,7 +1697,7 @@ class SFOwnPlayer extends SFPlayer {
             };
 
             if (data.idle[77]) {
-                for (var i = 0; i < 10; i++) {
+                for (let i = 0; i < 10; i++) {
                     this.Idle.Upgrades.Money[i]++;
                 }
             }
@@ -1743,7 +1708,7 @@ class SFOwnPlayer extends SFPlayer {
         dataType = new ComplexDataType(data.pets);
         dataType.skip(2);
 
-        let petLevels = dataType.sub(100);
+        const petLevels = dataType.sub(100);
 
         let shadowCount = 0;
         let lightCount = 0;
@@ -1757,27 +1722,27 @@ class SFOwnPlayer extends SFPlayer {
         let waterLevel = 0;
 
         if (petLevels.length) {
-            for (var i = 0; i < 20; i++) {
+            for (let i = 0; i < 20; i++) {
                 shadowCount += petLevels[i] > 0 ? 1 : 0;
                 shadowLevel += petLevels[i];
             }
 
-            for (var i = 0; i < 20; i++) {
+            for (let i = 0; i < 20; i++) {
                 lightCount += petLevels[i + 20] > 0 ? 1 : 0;
                 lightLevel += petLevels[i + 20];
             }
 
-            for (var i = 0; i < 20; i++) {
+            for (let i = 0; i < 20; i++) {
                 earthCount += petLevels[i + 40] > 0 ? 1 : 0;
                 earthLevel += petLevels[i + 40];
             }
 
-            for (var i = 0; i < 20; i++) {
+            for (let i = 0; i < 20; i++) {
                 fireCount += petLevels[i + 60] > 0 ? 1 : 0;
                 fireLevel += petLevels[i + 60];
             }
 
-            for (var i = 0; i < 20; i++) {
+            for (let i = 0; i < 20; i++) {
                 waterCount += petLevels[i + 80] > 0 ? 1 : 0;
                 waterLevel += petLevels[i + 80];
             }
@@ -1839,8 +1804,8 @@ class SFOwnPlayer extends SFPlayer {
 
         if (data.chest) {
             dataType = new ComplexDataType(data.chest);
-            for (var i = 0; i < 45 && dataType.atLeast(12); i++) {
-                var item = new SFItem(dataType.sub(12), 0, [6, i + 6]);
+            for (let i = 0; i < 45 && dataType.atLeast(12); i++) {
+                const item = new SFItem(dataType.sub(12), 0, [6, i + 6]);
                 if (item.Type > 0) {
                     if (i >= 15) {
                         this.Inventory.Chest.push(item);
@@ -1872,12 +1837,12 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(1);
 
         this.Witch.Scrolls = [];
-        for (var i = 0; i < 9; i++) {
-            var index = dataType.long();
-            var picIndex = dataType.long();
-            var date = dataType.long() * 1000 + data.offset;
+        for (let i = 0; i < 9; i++) {
+            dataType.skip();
 
-            var type = picIndex % 1000;
+            const picIndex = dataType.long();
+            const date = dataType.long() * 1000 + data.offset;
+            const type = picIndex % 1000;
 
             this.Witch.Scrolls[SCROLL_MAP[type]] = {
                 Date: date,
@@ -1941,9 +1906,9 @@ class SFOwnPlayer extends SFPlayer {
             this.Inventory.Kunigunde = SFPlayer.loadEquipment(dataType, 4);
 
             this.Companions = {
-                Bert: new SFCompanion(this, bert, this.Inventory.Bert, 1),
-                Mark: new SFCompanion(this, mark, this.Inventory.Mark, 2),
-                Kunigunde: new SFCompanion(this, kuni, this.Inventory.Kunigunde, 3)
+                Bert: new SFCompanion(this, bert, this.Inventory.Bert, WARRIOR),
+                Mark: new SFCompanion(this, mark, this.Inventory.Mark, MAGE),
+                Kunigunde: new SFCompanion(this, kuni, this.Inventory.Kunigunde, SCOUT)
             };
         }
 
@@ -1971,20 +1936,20 @@ class SFCompanion extends SFPlayer {
         this.Underworld = player.Underworld;
 
         this.Items = items;
-        for (var [ key, item ] of Object.entries(this.Items)) {
-            if (player.Class == 5 && this.Class == 2 && item.Class == 2 && item.Type > 1) {
+        for (const [ key, item ] of Object.entries(this.Items)) {
+            if (player.Class == BATTLEMAGE && this.Class == MAGE && item.Class == MAGE && item.Type > 1) {
                 // When player is BattleMage and it's Mage equipment -> Strength into Intelligence
                 this.Items[key] = item.morph(1, 3);
-            } else if (player.Class == 4 && this.Class == 1 && item.Class == 1 && item.Type == 1) {
+            } else if (player.Class == ASSASSIN && this.Class == WARRIOR && item.Class == WARRIOR && item.Type == 1) {
                 // When player is Assassin and it's Warrior weapon -> Dexterity into Strength
                 this.Items[key] = item.morph(2, 1);
-            } else if (player.Class == 7 && this.Class == 1 && item.Class == 1 && item.Type > 1) {
+            } else if (player.Class == DEMONHUNTER && this.Class == WARRIOR && item.Class == WARRIOR && item.Type > 1) {
                 // When player is DemonHunter and it's Warrior equipment -> Dexterity into Strength
                 this.Items[key] = item.morph(2, 1);
-            } else if (player.Class == 8 && this.Class == 3 && item.Class == 3 && item.Type > 1) {
+            } else if (player.Class == DRUID && this.Class == SCOUT && item.Class == SCOUT && item.Type > 1) {
                 // When player is Druid and it's Scout equipment -> Intelligence into Dexterity
                 this.Items[key] = item.morph(3, 2);
-            } else if (player.Class == 9 && this.Class == 3 && item.Class == 3 && item.Type > 1) {
+            } else if (player.Class == BARD && this.Class == SCOUT && item.Class == SCOUT && item.Type > 1) {
                 // When player is Bard and it's Scout equipment -> Intelligence into Dexterity
                 this.Items[key] = item.morph(3, 2);
             }
@@ -2000,6 +1965,8 @@ class SFCompanion extends SFPlayer {
     }
 
     evaluateCompanionCommon(player) {
+        this.Config = CONFIG.fromIndex(this.Class);
+
         this.Primary = this.getPrimaryAttribute();
 
         this.addCalculatedAttributes(this.Strength, player.Pets.Water);
@@ -2024,10 +1991,10 @@ class SFCompanion extends SFPlayer {
             Resistance: 0
         };
 
-        for (var item of Object.values(this.Items)) {
+        for (const item of Object.values(this.Items)) {
             if (item.HasRune) {
-                var rune = item.AttributeTypes[2];
-                var value = item.Attributes[2];
+                const rune = item.AttributeTypes[2];
+                const value = item.Attributes[2];
 
                 if (rune == 31) {
                     this.Runes.Gold += value;
@@ -2115,7 +2082,7 @@ class SFCompanion extends SFPlayer {
     }
 
     static fromTower (dataType) {
-        var data = {
+        const data = {
             Level: dataType.long()
         };
         dataType.skip(3);
