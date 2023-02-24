@@ -305,7 +305,7 @@
                     (config) => {
                         const data = players.map(p => {
                             let m = toSimulatorModel(p.player);
-                            if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
+                            if (p.player.Class == WARRIOR && typeof p.player.BlockChance != 'undefined') {
                                 m.BlockChance = p.player.BlockChance;
                             }
 
@@ -412,11 +412,11 @@
                     SFItem.forceCorrectRune(object.Items.Wpn1);
                     SFItem.forceCorrectRune(object.Items.Wpn2);
 
-                    if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
+                    if (object.Class == WARRIOR && typeof object.BlockChance == 'undefined') {
                         object.BlockChance = object.Items.Wpn2.DamageMin;
                     }
 
-                    if (object.Class != 4) {
+                    if (object.Class != ASSASSIN) {
                         object.Items.Wpn2 = SFItem.empty();
                     }
 
@@ -571,7 +571,7 @@
                 $('#copy-all').click(function () {
                     copyText(JSON.stringify(players.map(p => {
                         let m = toSimulatorModel(p.player);
-                        if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
+                        if (p.player.Class == WARRIOR && typeof p.player.BlockChance != 'undefined') {
                             m.BlockChance = p.player.BlockChance;
                         }
 
