@@ -1305,7 +1305,7 @@ class TableInstance {
         return `
             <tr>
                 <td class="border-right-thin" colspan=${ leftSpan }>Classes</td>
-                <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => PLAYER_CLASS[key] + ': ' + count).join(', ') }</td>
+                <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
             </tr>
             <tr>
                 <td class="border-right-thin" colspan=${ leftSpan }>Joined</td>
