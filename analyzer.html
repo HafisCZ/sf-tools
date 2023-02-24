@@ -439,16 +439,29 @@
                                 })
                             } else if (r['#ownplayersave']) {
                                 // Capture save delta
-                                digestedPlayers.push({
-                                    delta: true,
-                                    save: r['#ownplayersave'].numbers
-                                })
+                                const lastPlayer = digestedPlayers.findLast((entry) => entry.own && entry.name);
+                                if (lastPlayer) {
+                                    const save = Array.from(lastPlayer.save);
+
+                                    for (const [index, value] of _each_block(r['#ownplayersave'].numbers, 2)) {
+                                        save[index] = value;
+                                    }
+
+                                    digestedPlayers.push({
+                                        own: true,
+                                        save,
+                                        name: lastPlayer.name,
+                                        pets: _try(r.ownpets, 'numbers') || lastPlayer.pets,
+                                        tower: _try(r.owntower, 'numbers') || lastPlayer.tower
+                                    })
+                                }
                             } else {
                                 digestedPlayers.push({
                                     own: false,
                                     save: r.otherplayer.numbers,
                                     name: r.otherplayername.string,
-                                    pets: _try(r.otherplayerpetbonus, 'numbers')
+                                    pets: _try(r.otherplayerpetbonus, 'numbers'),
+                                    tower: null
                                 })
                             }
                         }
