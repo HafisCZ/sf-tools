@@ -649,7 +649,7 @@ class DruidModel extends FighterModel {
     initialize (target) {
         super.initialize(target);
 
-        this.RageCriticalChance = this.getCriticalChance(target, this.Config.RageCriticalChance);
+        this.RageCriticalChance = Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level);
     }
 
     attack (damage, target, skipped, critical, type) {
