@@ -184,6 +184,13 @@ function _array_to_hash (array, processor, base = {}) {
     }, base);
 }
 
+function _array_to_default_hash (array, value, base = {}) {
+    return array.reduce((memo, object) => {
+        memo[object] = value;
+        return memo;
+    }, base);
+}
+
 function _invert (hash, integerKeys = false) {
     return Object.entries(hash).reduce((memo, [key, value]) => {
         memo[value] = integerKeys ? parseInt(key) : key;
