@@ -1237,7 +1237,7 @@
                             name: intl('dungeons.cheats.keep_original'),
                             value: 0
                         },
-                        ... Object.keys(CLASS_MAP).map((e) => {
+                        ... CONFIG.indexes().map((e) => {
                             return {
                                 name: `<img class="ui centered image !-ml-3 !mr-2" src="res/class${e}.png">${intl(`general.class${e}`)}`,
                                 value: e
@@ -1259,7 +1259,7 @@
                     let cheats = _array_to_hash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
 
                     if (cheats.pets) {
-                        applyCheat(player, model => {
+                        applyCheat(player, (model) => {
                             model.Pets = {
                                 Water: 40,
                                 Light: 40,
@@ -1271,7 +1271,7 @@
                     }
 
                     if (cheats.enchantments) {
-                        applyCheat(player, model => {
+                        applyCheat(player, (model) => {
                             for (let item of Object.values(model.Items)) {
                                 item.HasEnchantment = true;
                             };
@@ -1281,7 +1281,7 @@
                     // Set potions to player
                     const potions = _compact(['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'].map((type, i) => cheats[type] ? (i + 1) : null))
                     if (potions.length) {
-                        applyCheat(player, model => {
+                        applyCheat(player, (model) => {
                             const potionGroup = potions.slice(0, 3);
 
                             model.Potions = potionGroup.map(type => ({ Type: type, Size: 25 }));
@@ -1290,41 +1290,57 @@
                     }
 
                     if (cheats.class) {
-                        const swapAttributes = function (obj, type, fromClass, toClass) {
-                            let attributes = _array_to_hash(['Main', 'Side1', 'Side2'], kind => [kind, _dig(obj, MAIN_ATTRIBUTE_MAP[kind][fromClass - 1], type)]);
-                            for (let kind of ['Main', 'Side1', 'Side2']) {
-                                obj[MAIN_ATTRIBUTE_MAP[kind][toClass - 1]][type] = attributes[kind];
+                        const oldDefinition = CONFIG.fromIndex(player.Class);
+                        const newDefinition = CONFIG.fromIndex(cheats.class);
+
+                        const getAttributeList = function (attribute) {
+                            return {
+                                'Strength': ['Strength', 'Dexterity', 'Intelligence'],
+                                'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
+                                'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
+                            }[attribute]
+                        }
+
+                        const swapAttributes = function (obj) {
+                            const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
+                            const newAttributes = getAttributeList(newDefinition.Attribute);
+
+                            for (let i = 0; i < 3; i++) {
+                                for (const type of ['Base', 'Total']) {
+                                    obj[newAttributes[i]][type] = oldattributes[i][type];
+                                }
                             }
                         }
 
-                        const scaleValue = function (value, mapping, fromClass, toClass) {
-                            return Math.ceil(value / (mapping[fromClass - 1]) * (mapping[toClass - 1]));
+                        const scaleValue = function (value, oldValue, newValue) {
+                            return Math.ceil(value / oldValue * newValue);
                         }
 
                         // Morph all items to desired class
-                        const getAttributeID = (klass) => ({
-                            'Strength': 1,
-                            'Dexterity': 2,
-                            'Intelligence': 3
-                        })[MAIN_ATTRIBUTE_MAP['Main'][klass - 1]];
+                        const getAttributeID = (attribute) => {
+                            return {
+                                'Strength': 1,
+                                'Dexterity': 2,
+                                'Intelligence': 3
+                            }[attribute]
+                        }
 
                         for (const [type, item] of Object.entries(player.Items)) {
-                            player.Items[type] = item.morph(getAttributeID(player.Class), getAttributeID(cheats.class), true);
+                            player.Items[type] = item.morph(getAttributeID(oldDefinition.Attribute), getAttributeID(newDefinition.Attribute), true);
                         }
 
                         // Swap attributes
-                        swapAttributes(player, 'Base', player.Class, cheats.class);
-                        swapAttributes(player, 'Total', player.Class, cheats.class);
+                        swapAttributes(player);
 
                         // Scale damage & armor
-                        player.Armor = scaleValue(player.Armor, [50, 10, 25, 25, 10, 25, 50, 25, 25], player.Class, cheats.class);
-                        player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5], player.Class, cheats.class);
-                        player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5], player.Class, cheats.class);
+                        player.Armor = scaleValue(player.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+                        player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
+                        player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
 
                         // Set per-class data
-                        if (cheats.class == 1 /* WARRIOR */) {
+                        if (cheats.class == WARRIOR) {
                             player.Items.Wpn2.DamageMin = 25;
-                        } else if (cheats.class == 4 /* ASSASSIN */) {
+                        } else if (cheats.class == ASSASSIN) {
                             player.Items.Wpn2 = player.Items.Wpn1;
                         }
 
@@ -1332,7 +1348,7 @@
                     }
 
                     if (potions.length > 0 || cheats.pets || cheats.class) {
-                        applyCheat(player, model => {
+                        applyCheat(player, (model) => {
                             // Remove pre-calculated bonus
                             for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
                                 model[type].Bonus = undefined;
@@ -1348,7 +1364,7 @@
                     }
 
                     if (cheats.runes) {
-                        applyCheat(player, model => {
+                        applyCheat(player, (model) => {
                             model.Runes.Health = 15;
                             model.Runes.ResistanceFire = 75;
                             model.Runes.ResistanceCold = 75;
@@ -1361,19 +1377,18 @@
 
                 function convertBossToSimulatorFormat (rawData, rawDungeon) {
                     return _tap(getBossData(rawData, rawDungeon), function (data) {
-                        let level = data.Level;
-                        let health = data.ForceHealth;
-                        let healthMultiplier = [5, 2, 4, 4, 5, 4, 4, 5, 2][data.Class - 1];
+                        const definition = CONFIG.fromIndex(data.Class);
 
-                        data.Constitution.Total = Math.ceil(health / (healthMultiplier * (level + 1)));
+                        const level = data.Level;
+                        const health = data.ForceHealth;
+
+                        data.Constitution.Total = Math.ceil(health / (definition.HealthMultiplier * (level + 1)));
 
                         if (typeof data.Armor === 'undefined') {
-                            let armorMultiplier = [50, 10, 25, 25, 10, 25, 50, 40, 25][data.Class - 1];
-
-                            data.Armor = armorMultiplier * level * (rawDungeon.armor_multiplier || 1.0);
+                            data.Armor = definition.MaximumDamageReduction * level * (rawDungeon.armor_multiplier || 1.0);
                         }
 
-                        if (data.Class === 1) {
+                        if (data.Class === WARRIOR) {
                             data.BlockChance = 25;
                         }
                     })

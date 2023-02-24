@@ -153,7 +153,17 @@
             Site.ready(function () {
                 $('#sim-threads').captiveInputField('hydra_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
+                
+                const getAttributeList = function (attribute) {
+                    return {
+                        'Strength': ['Strength', 'Dexterity', 'Intelligence'],
+                        'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
+                        'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
+                    }[attribute]
+                }
 
+                const ATTRIBUTE_MAP = Object.values(CONFIG).map((data) => getAttributeList(data.Attribute));
+                
                 const EditorController = new (class {
                     constructor () {
                         this.fields = {
@@ -255,47 +265,46 @@
                     }
                 }
 
-                function getAtttributeFromMS(type, klass, obj) {
-                    for (const att of ['Main', 'Side1', 'Side2']) {
-                        if (type == MAIN_ATTRIBUTE_MAP[att][klass - 1]) {
-                            return obj[att];
+                function getAtttributeFromMS(type, klass, data) {
+                    for (const [index, att] of Object.entries(['Main', 'Side1', 'Side2'])) {
+                        if (type === ATTRIBUTE_MAP[klass - 1][index]) {
+                            return data[att];
                         }
                     }
                 }
 
                 function getPlayerData (klass) {
-                    let obj = EditorController.read();
-
+                    const data = EditorController.read();
                     return {
                         Armor: null,
-                        Level: obj.Level,
+                        Level: data.Level,
                         Class: klass,
                         Strength: {
-                            Total: getAtttributeFromMS('Strength', klass, obj)
+                            Total: getAtttributeFromMS('Strength', klass, data)
                         },
                         Dexterity: {
-                            Total: getAtttributeFromMS('Dexterity', klass, obj)
+                            Total: getAtttributeFromMS('Dexterity', klass, data)
                         },
                         Intelligence: {
-                            Total: getAtttributeFromMS('Intelligence', klass, obj)
+                            Total: getAtttributeFromMS('Intelligence', klass, data)
                         },
                         Constitution: {
-                            Total: obj.Constitution
+                            Total: data.Constitution
                         },
                         Luck: {
-                            Total: obj.Luck
+                            Total: data.Luck
                         },
                         ForceHealth: null, // automatic
                         ForceArmor: 1,
-                        Attacks: obj.PlayerCount
+                        Attacks: data.PlayerCount
                     }
                 }
 
                 function playersToData (players, hydra) {
-                    let sortedPlayers = _sort_des(players, p => _dig(p, MAIN_ATTRIBUTE_MAP['Main'][p.Class - 1], 'Total'));
-                    let hydraPlayers = _slice_len(sortedPlayers, 0, 25);
+                    const sortedPlayers = _sort_des(players, p => _dig(p, ATTRIBUTE_MAP[p.Class - 1][0], 'Total'));
+                    const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
 
-                    let data = {
+                    const data = {
                         Hydra: hydra || EditorController.fields['hydra'].get(),
                         PlayerCount: players.length,
                         Level: Math.min(Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25), 600)
@@ -305,8 +314,8 @@
                         data[att] = Math.ceil(_sum(hydraPlayers.map(p => _dig(p, att, 'Total'))) / 10);
                     }
 
-                    for (const att of ['Main', 'Side1', 'Side2']) {
-                        data[att] = Math.ceil(_sum(hydraPlayers.map(p => _dig(p, MAIN_ATTRIBUTE_MAP[att][p.Class - 1], 'Total'))) / 10);
+                    for (const [index, att] of Object.entries(['Main', 'Side1', 'Side2'])) {
+                        data[att] = Math.ceil(_sum(hydraPlayers.map(p => _dig(p, ATTRIBUTE_MAP[p.Class - 1][index], 'Total'))) / 10);
                     }
 
                     return data;

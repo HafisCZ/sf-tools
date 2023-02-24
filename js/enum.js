@@ -11,18 +11,6 @@ const PLAYER_CLASS = [
     'Bard'
 ];
 
-const CLASS_MAP = {
-    1: 'Warrior',
-    2: 'Mage',
-    3: 'Scout',
-    4: 'Assassin',
-    5: 'Battle Mage',
-    6: 'Berserker',
-    7: 'Demon Hunter',
-    8: 'Druid',
-    9: 'Bard'
-};
-
 const PLAYER_CLASS_SEARCH = [
     '',
     'warrior',
@@ -35,12 +23,6 @@ const PLAYER_CLASS_SEARCH = [
     'druid',
     'bard'
 ];
-
-const MAIN_ATTRIBUTE_MAP = {
-    'Main': [ 'Strength', 'Intelligence', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Dexterity', 'Intelligence', 'Intelligence' ],
-    'Side1': [ 'Dexterity', 'Strength', 'Strength', 'Strength', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Strength' ],
-    'Side2': [ 'Intelligence', 'Dexterity', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Dexterity', 'Dexterity' ]
-};
 
 const PLAYER_ACTIONS = [
     'Idle',
