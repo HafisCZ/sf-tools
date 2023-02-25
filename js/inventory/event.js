@@ -511,7 +511,7 @@ function getLocalizedBlacksmith2 (label, metal, crystals, metal2, crystals2, rea
 
 function getLocalizedGem (type, value) {
     return `
-        <div class="item"><b>${ GEMATTRIBUTES[type] }</b> +${ value } <img src="res/gem${ type }.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; margin-left: -0.25em; display: inline-block;"></img></div>
+        <div class="item"><b>${ intl(`general.gem${type}`) }</b> +${ value } <img src="res/gem${ type }.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; margin-left: -0.25em; display: inline-block;"></img></div>
     `;
 }
 
@@ -539,7 +539,7 @@ function getLocalizedAttribute (attribute, ups, gemtype, gemvalue, double, mtype
                 ${ upgrades || gem ? content : '' }
             </div>
             <div class="item">
-                <b style="color: ${ COLOR[attribute.Type] };">${ GEMATTRIBUTES[attribute.Type] }</b>
+                <b style="color: ${ COLOR[attribute.Type] };">${ intl(`general.attribute${attribute.Type}`) }</b>
             </div>
         </div>
     `;
@@ -626,21 +626,21 @@ function getCompareSocketLine (base, item) {
             return `
                 <div class="item orange">
                     <div class="sub">+ ${ item.GemValue }</div>
-                    <div class="sub">${ GEMATTRIBUTES[item.GemType] }</div>
+                    <div class="sub">${ intl(`general.gem${item.GemType}`) }</div>
                 </div>
             `;
         } else if (item.GemValue > base.GemValue) {
             return `
                 <div class="item green">
                     <div class="sub">+ ${ item.GemValue - base.GemValue }</div>
-                    <div class="sub">${ GEMATTRIBUTES[item.GemType] }</div>
+                    <div class="sub">${ intl(`general.gem${item.GemType}`) }</div>
                 </div>
             `;
         } else {
             return `
                 <div class="item red">
                     <div class="sub">- ${ Math.abs(item.GemValue - base.GemValue) }</div>
-                    <div class="sub">${ GEMATTRIBUTES[item.GemType] }</div>
+                    <div class="sub">${ intl(`general.gem${item.GemType}`) }</div>
                 </div>
             `;
         }
@@ -656,7 +656,7 @@ function getCompareSocketLine (base, item) {
             return `
                 <div class="item green">
                     <div class="sub">+ ${ item.GemValue }</div>
-                    <div class="sub">${ GEMATTRIBUTES[item.GemType] }</div>
+                    <div class="sub">${ intl(`general.gem${item.GemType}`) }</div>
                 </div>
             `;
         } else {

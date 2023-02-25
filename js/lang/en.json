@@ -161,7 +161,14 @@
         "action0": "Idle",
         "action1": "Working",
         "action2": "Questing",
-        "action3": "Dungeon"
+        "action3": "Dungeon",
+        "gem1": "Strength",
+        "gem2": "Dexterity",
+        "gem3": "Intelligence",
+        "gem4": "Constitution",
+        "gem5": "Luck",
+        "gem6": "Black",
+        "gem7": "Legendary"
     },
     "index": {
         "toggle": "Toggle credits",

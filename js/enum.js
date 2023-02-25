@@ -65,28 +65,6 @@ const SCRAPBOOK_BOUNDARIES = [
     }
 ];
 
-const GEMTYPES = [
-    '',
-    'Strength',
-    'Dexterity',
-    'Intelligence',
-    'Constitution',
-    'Luck',
-    'Black',
-    'Legendary'
-];
-
-const GEMATTRIBUTES = [
-    '',
-    'Strength',
-    'Dexterity',
-    'Intelligence',
-    'Constitution',
-    'Luck',
-    'All',
-    'Main/Con'
-];
-
 const FIGHT_TYPES = {
     PlayerVsPlayer: 0,
     Quest: 1,

@@ -85,8 +85,8 @@ const ExpressionEnum = new (class {
                 'FortressBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => intl(`general.buildings.fortress${i}`)),
                 'PlayerActions': [0, 1, 2, 3].map(i => intl(`general.action${i}`)),
                 'PotionTypes': [0, 1, 2, 3, 4, 5, 6].map(i => i > 0 ? intl(`general.potion${i}`) : ''),
-                'GemTypes': GEMTYPES,
-                'AttributeTypes': GEMATTRIBUTES,
+                'GemTypes': [0, 1, 2, 3, 4, 5, 6, 7].map(i => i > 0 ? intl(`general.gem${i}`) : ''),
+                'AttributeTypes': [0, 1, 2, 3, 4, 5].map(i => i > 0 ? intl(`general.attribute${i}`) : ''),
                 'RuneTypes': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => i > 0 ? intl(`general.rune${i}`) : ''),
                 'UnderworldBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => intl(`general.buildings.underworld${i}`)),
                 'ExperienceCurve': ExperienceRequired,
@@ -3209,7 +3209,7 @@ const SP_KEYWORD_MAPPING_4 = {
     },
     'Item Gem': {
         expr: (p, c, e, i) => i.GemType,
-        format: (p, c, e, x) => GEMTYPES[x],
+        format: (p, c, e, x) => x ? intl(`general.gem${x}`) : '',
         difference: false
     },
     'Item Gem Value': {
