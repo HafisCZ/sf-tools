@@ -1230,7 +1230,7 @@ class InventoryView extends View {
             return `
                 <div class="css-inventory-item ${ isEquip ? 'cursor-pointer' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
                     <div class="css-inventory-item-header">
-                        Empty slot for ${ ITEM_TYPES[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot] } (${ PLAYER_CLASS[this.Player.Class] })
+                        Empty slot for ${ intl(`general.item${[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot]}`) } (${ PLAYER_CLASS[this.Player.Class] })
                     </div>
                 </div>
             `;

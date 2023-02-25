@@ -158,29 +158,6 @@ function getFightTargetName (type, name, face) {
     }
 }
 
-const ITEM_TYPES = [
-    '',
-    'Weapon',
-    'Shield',
-    'Armor',
-    'Shoes',
-    'Gloves',
-    'Helmet',
-    'Belt',
-    'Necklace',
-    'Ring',
-    'Talisman',
-    'Key',
-    'Potion',
-    'Scrapbook',
-    'Scroll',
-    'Gem',
-    'Egg',
-    'Hourglass',
-    'Heart',
-    'Wheel'
-];
-
 const NAME_UNIT_UNDERWORLD = {
     0: 'Goblin',
     1: 'Troll',
