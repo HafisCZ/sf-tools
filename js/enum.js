@@ -1,16 +1,3 @@
-const PLAYER_CLASS = [
-    '',
-    'Warrior',
-    'Mage',
-    'Scout',
-    'Assassin',
-    'Battle Mage',
-    'Berserker',
-    'Demon Hunter',
-    'Druid',
-    'Bard'
-];
-
 const PLAYER_CLASS_SEARCH = [
     '',
     'warrior',
