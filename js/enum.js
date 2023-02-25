@@ -985,30 +985,6 @@ const NAME_MONSTER = {
     1179: 'Berlin Scene Monster'
 }
 
-const ATTACK_TYPES = {
-    0: 'Normal',
-    1: 'Critical',
-    2: 'Catapult',
-    3: 'Blocked',
-    4: 'Evaded',
-    5: 'Swoop',
-    6: 'Swoop Blocked',
-    7: 'Swoop Evaded',
-    8: 'Critical Blocked',
-    9: 'Critical Evaded',
-    10: 'Normal',
-    11: 'Critical',
-    13: 'Blocked',
-    14: 'Evaded',
-    15: 'Fireball',
-    16: 'Fireball blocked',
-    20: 'Normal',
-    21: 'Critical',
-    23: 'Blocked',
-    24: 'Evaded',
-    100: 'Revive'
-};
-
 const ACHIEVEMENTS_COUNT = 103;
 const ACHIEVEMENTS = [
     'Globetrotter',
