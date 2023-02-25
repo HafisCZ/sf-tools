@@ -281,7 +281,7 @@ class ResourcesView extends View {
                         ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
                     </div>
                     <div class="item">
-                        ${ Loca.name(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
+                        ${ Loca.name(item.Type, item.Index, item.Class) } (${ intl(`general.class${item.Class}`) })
                         ${ item.HasRune ? ` <span class="css-inventory-sub runed nobr">${ getNiceRuneText(item.RuneType) }</span>` : '' }
                     </div>
                 </div>
@@ -1230,7 +1230,7 @@ class InventoryView extends View {
             return `
                 <div class="css-inventory-item ${ isEquip ? 'cursor-pointer' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
                     <div class="css-inventory-item-header">
-                        Empty slot for ${ intl(`general.item${[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot]}`) } (${ PLAYER_CLASS[this.Player.Class] })
+                        Empty slot for ${ intl(`general.item${[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot]}`) } (${ intl(`general.class${this.Player.Class}`) })
                     </div>
                 </div>
             `;
@@ -1247,7 +1247,7 @@ class InventoryView extends View {
                             ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
                         </div>
                         <div class="item">
-                            ${ Loca.name(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
+                            ${ Loca.name(item.Type, item.Index, item.Class) } (${ intl(`general.class${item.Class}`) })
                             ${ item.HasRune ? ` <span class="css-inventory-sub runed nobr">${ getNiceRuneText(item.RuneType) }</span>` : '' }
                         </div>
                     </div>

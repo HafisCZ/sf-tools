@@ -729,7 +729,7 @@
                 var id2 = id + '_2';
 
                 $parent.find('[data-op="Level"]').val(f.Level);
-                $parent.find('[data-op="Class"]').val(PLAYER_CLASS[f.Class]);
+                $parent.find('[data-op="Class"]').val(intl(`general.class${f.Class}`));
 
                 var skillMain = getAttributeForClass(f, f.Class);
                 var skillTarget = getAttributeForClass(o, f.Class);

@@ -121,7 +121,7 @@
                         <tr>
                             <td class="bolder" valign="top">${ boss.Name }</td>
                             <td class="bolder" valign="top">${ boss.Level }</td>
-                            <td class="bolder" valign="top">${ PLAYER_CLASS[boss.Class] }</td>
+                            <td class="bolder" valign="top">${ intl(`general.class${boss.Class}`) }</td>
                             <td ${ [ 1, 0, 0, 0, 1, 1, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' } valign="top">${ formatAsSpacedNumber(boss.Strength) }</td>
                             <td ${ [ 0, 0, 1, 1, 0, 0, 1 ][ boss.Class - 1 ] ? 'class="bolder"' : '' } valign="top">${ formatAsSpacedNumber(boss.Dexterity) }</td>
                             <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' } valign="top">${ formatAsSpacedNumber(boss.Intelligence) }</td>
