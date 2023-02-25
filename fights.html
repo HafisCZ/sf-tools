@@ -468,7 +468,7 @@
 
                    rows.push([ 'index', 'attacker', 'target', 'type', 'damage' ]);
                    tab.rounds.forEach((round, i) => {
-                       rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType], round.attackDamage ]);
+                       rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType] || round.attackType, round.attackDamage ]);
                    });
 
                    content.push(rows);
@@ -975,7 +975,7 @@
 
                         displayType = `Lute Lvl ${level} - ${notes}n`;
                     } else {
-                        displayType = ATTACK_TYPES[attackType];
+                        displayType = ATTACK_TYPES[attackType] || attackType;
                     }
 
                     entries.push(generateRow(i, round, displayType, displayDamage));
@@ -1195,8 +1195,8 @@
                                 attacker: attackerID == fighterA.ID ? fighterA : fighterB,
                                 target: attackerID == fighterA.ID ? fighterB : fighterA,
                                 attackSecondary: attackType <= 100 && (attackType >= 10 && attackType <= 14),
-                                attackCrit: attackType <= 100 && (attackType % 10 == 1),
-                                attackMissed: attackType <= 100 && ((attackType % 10 == 3) || (attackType % 10 == 4)),
+                                attackCrit: attackType <= 100 && (attackType % 10 == 1 || attackType == 8 || attackType == 9),
+                                attackMissed: attackType <= 100 && ((attackType % 10 == 3) || (attackType % 10 == 4 || attackType == 6 || attackType == 7)),
                                 attackerSpecialState: false,
                                 attackDamage: 0
                             });
