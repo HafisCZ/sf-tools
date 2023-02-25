@@ -609,9 +609,6 @@ class FighterModel {
         let weapon2 = this.Player.Items.Wpn2;
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
-        if (this.UseSecondaryWeapon) {
-            this.Weapon2 = this.getDamageRange(weapon2, target, true);
-        }
 
         this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
@@ -632,11 +629,7 @@ class FighterModel {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
-    // Allows player to skip opponent's turn completely
-    skipNextRound () {
-        return false;
-    }
-
+    // Attack
     attack (damage, target, skipped, critical, type, special) {
         if (skipped) {
             damage = 0;
@@ -676,6 +669,34 @@ class FighterModel {
     getDamageMultiplier (target) {
         return this.Config.DamageMultiplier || 1;
     }
+
+    // Control wrapper around attack
+    controlAttack (instance, target, weapon, attackType) {
+        const source = this;
+
+        if (source.BeforeAttack) source.onBeforeAttack(target);
+        if (target.BeforeAttack) target.onBeforeAttack(target);
+
+        // Random damage for current round
+        const damage = source.attack(
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            getRandom(target.fetchSkipChance(source)),
+            getRandom(source.fetchCriticalChance(target)),
+            attackType
+        );
+
+        if (target.DamageTaken) {
+            return target.onDamageTaken(source, damage) != STATE_DEAD;
+        } else {
+            return (target.Health -= damage) > 0;
+        }
+    }
+
+    // Take control
+    control (instance, target) {
+        this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL);
+    }
 }
 
 class WarriorModel extends FighterModel {
@@ -697,10 +718,18 @@ class ScoutModel extends FighterModel {
 }
 
 class AssassinModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
+    initialize (target) {
+        super.initialize(target);
 
-        this.UseSecondaryWeapon = true;
+        this.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
+    }
+
+    control (instance, target) {
+        if (this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL) == false) {
+            return;
+        }
+
+        this.controlAttack(instance, target, this.Weapon2, ATTACK_SECONDARY_NORMAL);
     }
 }
 
@@ -825,14 +854,12 @@ class BattlemageModel extends FighterModel {
 }
 
 class BerserkerModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
+    control (instance, target) {
+        if (this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL) == false) {
+            return;
+        }
 
-        this.SkipNext = true;
-    }
-
-    skipNextRound () {
-        return getRandom(50);
+        while (getRandom(50) && instance.getRage() && this.controlAttack(instance, target, this.Weapon1, ATTACK_CHAIN_NORMAL));
     }
 }
 
@@ -1009,27 +1036,9 @@ class SimulatorBase {
         }
     }
 
-    // Returns true if player is alive
-    performAttack (attackWeapon, attackType, increaseRage) {
-        if (increaseRage) {
-            this.turn++;
-        }
-
-        if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
-        if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
-
-        const damage = this.attack(this.a, this.b, this.a[attackWeapon], attackType);
-
-        if (this.b.DamageTaken) {
-            return this.b.onDamageTaken(this.a, damage) != STATE_DEAD;
-        } else {
-            return (this.b.Health -= damage) > 0;
-        }
-    }
-
     performSpecialAttack () {
         if (this.a.Initial !== false || this.b.Initial !== false) {
-            this.turn++;
+            this.getRage();
 
             if (this.a.Initial > 0) {
                 this.b.Health -= this.a.Initial;
@@ -1054,47 +1063,29 @@ class SimulatorBase {
         }
     }
 
+    getRage () {
+        const rage = 1 + this.turn++ / 6;
+
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logRage(rage);
+        }
+
+        return rage;
+    }
+
     fight () {
         this.turn = 0;
 
         this.setInitialFighter();
-
         this.performSpecialAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.performAttack('Weapon1', ATTACK_NORMAL, false) == false) {
-                break;
-            }
-
-            if (this.a.Weapon2 && this.performAttack('Weapon2', ATTACK_SECONDARY_NORMAL, false) == false) {
-                break;
-            }
-
-            if (this.a.SkipNext) {
-                while (this.a.skipNextRound() && this.performAttack('Weapon1', ATTACK_CHAIN_NORMAL, true));
-            }
+            this.a.control(this, this.b);
 
             [this.a, this.b] = [this.b, this.a];
         }
 
         // Winner
         return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
-    }
-
-    attack (source, target, attackWeapon, attackType) {
-        if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logRage(1 + this.turn / 6);
-        }
-
-        // Random damage for current round
-        const damage = (1 + this.turn++ / 6) * (Math.random() * (1 + attackWeapon.Max - attackWeapon.Min) + attackWeapon.Min);
-
-        return source.attack(
-            damage,
-            target,
-            getRandom(target.fetchSkipChance(source)),
-            getRandom(source.fetchCriticalChance(target)),
-            attackType
-        );
     }
 }
