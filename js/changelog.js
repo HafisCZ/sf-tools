@@ -10,6 +10,7 @@ const CHANGELOG = {
             'Added new dialogs for browsing scripts and managing templates',
             'Added new script &amp; template archive system to replace script history',
             'Added Webshop ID to player detail and as a private header',
+            'Added <code>Official Creator</code>, <code>Gold Frame</code> and <code>GT Background</code> headers',
             'Added improved public export',
             'Fixed guild deletion via advanced file list',
             'Fixed counting of present guild members',
