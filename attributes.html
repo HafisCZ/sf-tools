@@ -1483,7 +1483,7 @@
                     if (value >= 393) {
                         return 1500000000;
                     } else {
-                        return ExperienceRequired[value];
+                        return EXPERIENCE_REQUIRED[value];
                     }
                 }
 
@@ -1597,7 +1597,7 @@
                         const MAXIMUM_SOULS_MULTIPLIER = 7.5;
 
                         let soulsMultiplier = (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5));
-                        let souls = Math.ceil((level < 542 ? (SoulsCurve[level] / MAXIMUM_SOULS_MULTIPLIER) : (464075 + (level - 525) * 8663)) * soulsMultiplier);
+                        let souls = Math.ceil((level < 542 ? (SOULS_CURVE[level] / MAXIMUM_SOULS_MULTIPLIER) : (464075 + (level - 525) * 8663)) * soulsMultiplier);
 
                         $('#misc-souls').val(formatValue(souls));
                     }

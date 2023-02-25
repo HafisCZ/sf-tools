@@ -78,7 +78,7 @@ const ExpressionEnum = new (class {
     _load () {
         if (typeof this.values === 'undefined') {
             this.values = {
-                'GoldCurve': GoldCurve,
+                'GoldCurve': GOLD_CURVE,
                 'MountSizes': PLAYER_MOUNT,
                 'AchievementCount': ACHIEVEMENTS_COUNT,
                 'AchievementNames': _sequence(ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
@@ -92,9 +92,9 @@ const ExpressionEnum = new (class {
                 'AttributeTypes': _sequence(6).map(i => i > 0 ? intl(`general.attribute${i}`) : ''),
                 'RuneTypes': _sequence(13).map(i => i > 0 ? intl(`general.rune${i}`) : ''),
                 'UnderworldBuildings': _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)),
-                'ExperienceCurve': ExperienceRequired,
-                'ExperienceTotal': ExperienceTotal,
-                'SoulsCurve': SoulsCurve,
+                'ExperienceCurve': EXPERIENCE_REQUIRED,
+                'ExperienceTotal': EXPERIENCE_TOTAL,
+                'SoulsCurve': SOULS_CURVE,
                 'ScrapbookSize': SCRAPBOOK_COUNT
             };
         }
@@ -1554,7 +1554,7 @@ const SP_FUNCTIONS = {
     // Experience needed
     'expneeded': (level) => {
         if (!isNaN(level)) {
-            return ExperienceTotal[Math.min(393, level)] + Math.max(0, level - 393) * 1500000000;
+            return EXPERIENCE_TOTAL[Math.min(393, level)] + Math.max(0, level - 393) * 1500000000;
         } else {
             return undefined;
         }

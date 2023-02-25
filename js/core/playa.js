@@ -1082,7 +1082,7 @@ class SFPlayer {
 
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
 
-        this.XPTotal = this.XP + ExperienceTotal[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
+        this.XPTotal = this.XP + EXPERIENCE_TOTAL[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
 
         this.Fortress.RaidHonor = this.Fortress.Honor - 10 * (
             this.Fortress.Fortress +

@@ -99,7 +99,7 @@
                     if (this.level >= 393) {
                         return 1500000000;
                     } else {
-                        return ExperienceRequired[this.level];
+                        return EXPERIENCE_REQUIRED[this.level];
                     }
                 }
 
@@ -167,7 +167,7 @@
                     Gold curve
                 */
                 static getGoldCurve (level) {
-                    return level >= 650 ? 10000000 : GoldCurve[level];
+                    return level >= 650 ? 10000000 : GOLD_CURVE[level];
                 }
 
                 /*
