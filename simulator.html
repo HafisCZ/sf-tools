@@ -237,7 +237,7 @@
                                             <td>${Math.trunc(100 * attackRage) / 100}</td>
                                             <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
                                             <td>${Math.trunc(1000 * targetHealth) / 10} %</td>
-                                            <td>${ATTACK_TYPES[attackType] || attackType}</td>
+                                            <td>${intl(`general.attack${attackType}`)}</td>
                                         </tr>
                                         <tr style="background-color: ${attacker === 1 ? '#572626' : '#252d46'}; text-align: left; font-size: 80%;">
                                             <td colspan="3" style="border-right: 1px solid rgba(255,255,255,.1);">${this._stringifyState(attackerState)}</td>

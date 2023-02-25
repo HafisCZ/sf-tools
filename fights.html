@@ -468,7 +468,7 @@
 
                    rows.push([ 'index', 'attacker', 'target', 'type', 'damage' ]);
                    tab.rounds.forEach((round, i) => {
-                       rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType] || round.attackType, round.attackDamage ]);
+                       rows.push([ i, round.attacker.ID, round.target.ID, intl(`general.attack${round.attackType}`), round.attackDamage ]);
                    });
 
                    content.push(rows);
@@ -989,9 +989,9 @@
                         let notes = Math.trunc((attackType % 100) / 10);
                         let level = attackType % 10;
 
-                        displayType = `Lute Lvl ${level} - ${notes}n`;
+                        displayType = intl(`general.attack200`, { level, notes });
                     } else {
-                        displayType = ATTACK_TYPES[attackType] || attackType;
+                        displayType = intl(`general.attack${attackType}`);
                     }
 
                     entries.push(generateRow(i, round, displayType, displayDamage, displayRage));
