@@ -936,14 +936,14 @@
                 }
             }
 
-            function generateRow (i, { attacker, target, attackCrit, attackType, attackerSpecialState }, displayType, displayDamage) {
+            function generateRow (i, { attacker, target, attackCrit, attackType, attackerSpecialState }, displayType, displayDamage, displayRage) {
                 return `
                     <div class="sixteen wide column">
                         <div class="ui basic segment${i % 2 ? ' undertone' : ''}${attackerSpecialState ? ' attacker-special-state' : ''}">
                             <div class="ui grid">
                                 <div class="one wide column"></div>
                                 <div class="one wide column">${i + 1}</div>
-                                <div class="three wide column text-right"><b>${attacker.Name}</b></div>
+                                <div class="three wide column text-right ${displayRage ? '!text-red' : ''}"><b>${attacker.Name}</b></div>
                                 <div class="one wide column text-center">&gt;</div>
                                 <div class="three wide column"><b>${target.Name}</b></div>
                                 <div class="one wide column"></div>
@@ -959,8 +959,24 @@
             function generateRows ({ rounds }) {
                 let entries = [];
 
+                let lastAttacker = null;
+                let lastAttackerMissed = false;
+
                 for (let i = 0, round; round = rounds[i]; i++) {
-                    let { attacker, attackType, attackDamage } = round;
+                    let { attacker, target, attackType, attackDamage, attackMissed } = round;
+
+                    let displayRage = false;
+
+                    if (attacker != lastAttacker) {
+                        if (attacker.Class === DRUID && lastAttackerMissed) {
+                            displayRage = true;
+                        }
+                        
+                        lastAttacker = attacker;
+                        lastAttackerMissed = attackMissed;
+                    } else {
+                        lastAttackerMissed = lastAttackerMissed || attackMissed;
+                    }
 
                     let displayType = '';
                     let displayDamage = '';
@@ -978,7 +994,7 @@
                         displayType = ATTACK_TYPES[attackType] || attackType;
                     }
 
-                    entries.push(generateRow(i, round, displayType, displayDamage));
+                    entries.push(generateRow(i, round, displayType, displayDamage, displayRage));
                 }
 
                 $rounds.html(entries.join(''))
