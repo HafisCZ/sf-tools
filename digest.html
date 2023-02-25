@@ -129,7 +129,7 @@
                             <td valign="top">${ formatAsSpacedNumber(boss.Luck) }</td>
                             <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ]) }${ resistString }</td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Health) }</td>
-                            <td valign="top">${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
+                            <td valign="top">${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ intl(`general.rune${boss.ElementalDamage.Type}`).split(' ')[0] }` : '' }</td>
                             <td class="hint-container">
                                 <span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Min) }</span>
                                 ${ min }${ instances.filter(i => !i.Verified).map(i => `<span class="text-small text-red">${ formatAsSpacedNumber(i.Min) }</span>`).join('<br/>') }

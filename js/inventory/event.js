@@ -391,7 +391,7 @@ function getLocalizedTransmog (item) {
 
 function getLocalizedRune (type, value) {
     return `
-        <div class="item"><b>${ RUNETYPES[type] }</b> +${ value }% <img src="res/rune${ type }.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; margin-left: -0.25em; display: inline-block;"></img></div>
+        <div class="item"><b>${ intl(`general.rune${type}`) }</b> +${ value }% <img src="res/rune${ type }.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; margin-left: -0.25em; display: inline-block;"></img></div>
     `;
 }
 
@@ -591,21 +591,21 @@ function getCompareRuneLine (base, item) {
         return `
             <div class="item green">
                 <div class="sub">+ ${ item.RuneValue - base.RuneValue }%</div>
-                <div class="sub">${ RUNETYPES[item.RuneType] }</div>
+                <div class="sub">${ intl(`general.rune${item.RuneType}`) }</div>
             </div>
         `;
     } else if (!base.HasRune && item.HasRune) {
         return `
             <div class="item green">
                 <div class="sub">+ ${ item.RuneValue }%</div>
-                <div class="sub">${ RUNETYPES[item.RuneType] }</div>
+                <div class="sub">${ intl(`general.rune${item.RuneType}`) }</div>
             </div>
         `;
     } else if (base.HasRune && item.HasRune && base.RuneType != item.RuneType) {
         return `
             <div class="item orange">
                 <div class="sub">+ ${ item.RuneValue }%</div>
-                <div class="sub">${ RUNETYPES[item.RuneType] }</div>
+                <div class="sub">${ intl(`general.rune${item.RuneType}`) }</div>
             </div>
         `;
     } else if (base.HasRune && !item.HasRune) {

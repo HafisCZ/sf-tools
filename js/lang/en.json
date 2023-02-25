@@ -145,7 +145,19 @@
         "item16": "Egg",
         "item17": "Hourglass",
         "item18": "Heart",
-        "item19": "Wheel"
+        "item19": "Wheel",
+        "rune1": "Gold",
+        "rune2": "Epic Chance",
+        "rune3": "Item Quality",
+        "rune4": "XP",
+        "rune5": "Health",
+        "rune6": "Fire Resist",
+        "rune7": "Cold Resist",
+        "rune8": "Lightning Resist",
+        "rune9": "Total Resist",
+        "rune10": "Fire Damage",
+        "rune11": "Cold Damage",
+        "rune12": "Lightning Damage"
     },
     "index": {
         "toggle": "Toggle credits",
@@ -551,18 +563,7 @@
                 "webshopid": "Webshop ID"
             },
             "runes": {
-                "title": "Runes",
-                "gold": "Gold",
-                "experience": "Experience",
-                "epic": "Epic Chance",
-                "quality": "Item Quality",
-                "health": "Health",
-                "fire_damage": "Fire Damage",
-                "cold_damage": "Cold Damage",
-                "lightning_damage": "Lightning Damage",
-                "fire_resist": "Fire Resistance",
-                "cold_resist": "Cold Resistance",
-                "lightning_resist": "Lightning Resistance"
+                "title": "Runes"
             },
             "fortress": {
                 "title": "Fortress",

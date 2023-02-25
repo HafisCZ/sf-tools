@@ -552,67 +552,67 @@ class PlayerDetailFloatView extends View {
                         </div>
                         ${ player.Runes.Gold ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.gold')}</div>
+                                <div class="detail-item">${intl('general.rune1')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Gold }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.XP ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.experience')}</div>
+                                <div class="detail-item">${intl('general.rune4')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.XP }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.Chance ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.epic')}</div>
+                                <div class="detail-item">${intl('general.rune2')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Chance }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.Quality ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.quality')}</div>
+                                <div class="detail-item">${intl('general.rune3')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Quality }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.Health ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.health')}</div>
+                                <div class="detail-item">${intl('general.rune5')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Health }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageFire || player.Runes.Damage2Fire ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.fire_damage')}</div>
+                                <div class="detail-item">${intl('general.rune10')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.DamageFire }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Fire }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageCold || player.Runes.Damage2Cold ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.cold_damage')}</div>
+                                <div class="detail-item">${intl('general.rune11')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.DamageCold }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Cold }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.lightning_damage')}</div>
+                                <div class="detail-item">${intl('general.rune12')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.DamageLightning }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Lightning }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.ResistanceFire ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.fire_resist')}</div>
+                                <div class="detail-item">${intl('general.rune6')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.ResistanceFire }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.ResistanceCold ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.cold_resist')}</div>
+                                <div class="detail-item">${intl('general.rune7')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.ResistanceCold }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.ResistanceLightning ? `
                             <div class="detail-entry">
-                                <div class="detail-item">${this.intl('runes.lightning_resist')}</div>
+                                <div class="detail-item">${intl('general.rune8')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.ResistanceLightning }%</div>
                             </div>
                         ` : '' }

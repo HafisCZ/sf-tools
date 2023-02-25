@@ -754,7 +754,7 @@
                 }
 
                 if (f.Wpn1.AttributeTypes[2] >= 30) {
-                    $parent.find('[data-op="Type1"]').val(RUNETYPES[f.Wpn1.AttributeTypes[2] - 30].split(' ')[0]).parent('div').show();
+                    $parent.find('[data-op="Type1"]').val(intl(`general.rune${f.Wpn1.AttributeTypes[2] - 30}`).split(' ')[0]).parent('div').show();
                     $parent.find('[data-op="Value1"]').val(f.Wpn1.Attributes[2]).parent('div').show();
                 } else {
                     $parent.find('[data-op="Type1"]').parent('div').hide();
@@ -782,7 +782,7 @@
                     }
 
                     if (f.Wpn2.AttributeTypes[2] >= 30) {
-                        $parent.find('[data-op="Type2"]').val(RUNETYPES[f.Wpn2.AttributeTypes[2] - 30].split(' ')[0]).parent('div').show();
+                        $parent.find('[data-op="Type2"]').val(intl(`general.rune${f.Wpn2.AttributeTypes[2] - 30}`).split(' ')[0]).parent('div').show();
                         $parent.find('[data-op="Value2"]').val(f.Wpn2.Attributes[2]).parent('div').show();
                     } else {
                         $parent.find('[data-op="Type2"]').parent('div').hide();

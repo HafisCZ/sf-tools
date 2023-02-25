@@ -87,7 +87,7 @@ const ExpressionEnum = new (class {
                 'PotionTypes': [0, 1, 2, 3, 4, 5, 6].map(i => i > 0 ? intl(`general.potion${i}`) : ''),
                 'GemTypes': GEMTYPES,
                 'AttributeTypes': GEMATTRIBUTES,
-                'RuneTypes': RUNETYPES,
+                'RuneTypes': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => i > 0 ? intl(`general.rune${i}`) : ''),
                 'UnderworldBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => intl(`general.buildings.underworld${i}`)),
                 'ExperienceCurve': ExperienceRequired,
                 'ExperienceTotal': ExperienceTotal,
@@ -3199,7 +3199,7 @@ const SP_KEYWORD_MAPPING_4 = {
     'Item Rune': {
         expr: (p, c, e, i) => i.RuneType,
         width: 180,
-        format: (p, c, e, x) => RUNETYPES[x],
+        format: (p, c, e, x) => x ? intl(`general.rune${x}`) : '',
         difference: false
     },
     'Item Rune Value': {
