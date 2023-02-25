@@ -79,7 +79,7 @@ const ExpressionEnum = new (class {
                 'GoldCurve': GoldCurve,
                 'MountSizes': PLAYER_MOUNT,
                 'AchievementNames': ACHIEVEMENTS,
-                'ItemTypes': ITEM_TYPES,
+                'ItemTypes': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].map(i => i > 0 ? intl(`general.item${i}`) : ''),
                 'GroupRoles': [0, 1, 2, 3, 4].map(i => i > 0 ? intl(`general.rank${i}`) : ''),
                 'Classes': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => i > 0 ? intl(`general.class${i}`) : ''),
                 'FortressBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => intl(`general.buildings.fortress${i}`)),
@@ -2874,7 +2874,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Witch Item': {
         expr: p => p.Witch.Item,
-        format: (p, c, e, x) => x ? ITEM_TYPES[x] : ''
+        format: (p, c, e, x) => x ? intl(`general.item${x}`) : ''
     },
     'Witch Items': {
         expr: p => p.Witch.Items
@@ -3185,7 +3185,7 @@ const SP_KEYWORD_MAPPING_4 = {
     },
     'Item Type': {
         expr: (p, c, e, i) => i.Type,
-        format: (p, c, e, x) => ITEM_TYPES[x],
+        format: (p, c, e, x) => x ? intl(`general.item${x}`) : '',
         difference: false
     },
     'Item Name': {
@@ -3244,7 +3244,7 @@ const SP_KEYWORD_MAPPING_4 = {
     },
     'Item Slot': {
         expr: (p, c, e, i) => i.Slot,
-        format: (p, c, e, x) => x == 2 && p && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
+        format: (p, c, e, x) => x == 2 && p && p.Class == 4 ? intl('general.item1') : intl(`general.item${x}`),
         difference: false
     },
     'Potion Type': {
