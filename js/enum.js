@@ -94,22 +94,6 @@ const GEMATTRIBUTES = [
     'Main/Con'
 ];
 
-const RUNETYPES = [
-    '',
-    'Gold',
-    'Epic Chance',
-    'Item Quality',
-    'XP',
-    'Health',
-    'Fire Resist',
-    'Cold Resist',
-    'Lightning Resist',
-    'Total Resist',
-    'Fire Damage',
-    'Cold Damage',
-    'Lightning Damage'
-];
-
 const FIGHT_TYPES = {
     PlayerVsPlayer: 0,
     Quest: 1,
