@@ -1155,6 +1155,21 @@ class SFPlayer {
         };
     }
 
+    static getFlags (value) {
+        let background = 0;
+        for (let i = 2; i >= 0; i--) {
+            if ((value & (1 << (6 + i))) != 0) {
+                background = i + 1;
+            }
+        }
+
+        return {
+            GroupTournamentBackground: background,
+            GoldFrame: (value & (1 << 5)) != 0,
+            OfficialCreator: (value & (1 << 9)) != 0
+        }
+    }
+
     static getMirrorPieces (value) {
         let p = 0;
 
@@ -1278,9 +1293,7 @@ class SFOtherPlayer extends SFPlayer {
         legacyDungeons.Normal[11] = dataType.long();
 
         this.Group.Joined = dataType.long() * 1000 + data.offset;
-        this.Flags = {
-            Bits: dataType.long()
-        };
+        this.Flags = SFPlayer.getFlags(dataType.long());
         this.Armor = dataType.long();
         this.Damage = {
             Min: dataType.long(),
@@ -1313,8 +1326,8 @@ class SFOtherPlayer extends SFPlayer {
         }];
         _sort_des(this.Potions, potion => potion.Size);
         this.Potions.Life = dataType.long();
-        this.Flags.HideFrame = dataType.long();
-        this.Flags.NoInvite = dataType.long();
+        this.Flags.GoldFrameDisabled = !!dataType.long();
+        this.Flags.InvitesDisabled = !!dataType.long();
         dataType.skip(2); // skip
         this.Fortress = {
             Rank: data.fortressrank,
@@ -1497,9 +1510,7 @@ class SFOwnPlayer extends SFPlayer {
         legacyDungeons.Normal[11] = dataType.long();
 
         this.Group.Joined = dataType.long() * 1000 + data.offset;
-        this.Flags = {
-            Bits: dataType.long()
-        };
+        this.Flags = SFPlayer.getFlags(dataType.long());
         dataType.short(); // skip
 
         legacyDungeons.Group = dataType.byte();
@@ -1554,9 +1565,9 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(12); // skip
         this.Toilet.Capacity = dataType.long();
         dataType.skip(1); // skip
-        this.Flags.HideFrame = dataType.long();
+        this.Flags.GoldFrameDisabled = !!dataType.long();
         dataType.skip(3); //skip
-        this.Flags.NoInvite = dataType.long();
+        this.Flags.InvitesDisabled = !!dataType.long();
         dataType.skip(2); // skip
         this.Fortress = {
             Rank: data.fortressrank,

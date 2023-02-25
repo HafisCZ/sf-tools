@@ -2,6 +2,7 @@
     "general": {
         "no": "No",
         "yes": "Yes",
+        "none": "None",
         "min": "Min",
         "max": "Max",
         "class1": "Warrior",
@@ -122,7 +123,10 @@
         "attack28": "Critical Blocked",
         "attack29": "Critical Evaded",
         "attack100": "Revive",
-        "attack200": "Song #{level} - #{notes}n"
+        "attack200": "Song #{level} - #{notes}n",
+        "gt_background1": "Gold",
+        "gt_background2": "Silver",
+        "gt_background3": "Bronze"
     },
     "index": {
         "toggle": "Toggle credits",

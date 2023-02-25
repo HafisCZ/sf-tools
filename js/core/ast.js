@@ -2499,6 +2499,24 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Data.tag,
         difference: false,
         statistics: false
+    },
+    'Gold Frame': {
+        expr: p => p.Flags.GoldFrame,
+        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        difference: false,
+        statistics: false
+    },
+    'Official Creator': {
+        expr: p => p.Flags.OfficialCreator,
+        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        difference: false,
+        statistics: false
+    },
+    'GT Background': {
+        expr: p => p.Flags.GroupTournamentBackground,
+        format: (p, c, e, x) => x ? intl(`general.gt_background${x}`) : intl('general.none'),
+        difference: false,
+        statistics: false
     }
 };
 
