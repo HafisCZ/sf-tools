@@ -83,7 +83,7 @@ const ExpressionEnum = new (class {
                 'GroupRoles': [0, 1, 2, 3, 4].map(i => i > 0 ? intl(`general.rank${i}`) : ''),
                 'Classes': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => i > 0 ? intl(`general.class${i}`) : ''),
                 'FortressBuildings': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => intl(`general.buildings.fortress${i}`)),
-                'PlayerActions': PLAYER_ACTIONS,
+                'PlayerActions': [0, 1, 2, 3].map(i => intl(`general.action${i}`)),
                 'PotionTypes': [0, 1, 2, 3, 4, 5, 6].map(i => i > 0 ? intl(`general.potion${i}`) : ''),
                 'GemTypes': GEMTYPES,
                 'AttributeTypes': GEMATTRIBUTES,
@@ -2064,7 +2064,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Status': {
         expr: p => p.Action.Status,
-        format: (p, c, e, x) => PLAYER_ACTIONS[x],
+        format: (p, c, e, x) => intl(`general.action${x}`),
         difference: false,
         statistics: false
     },

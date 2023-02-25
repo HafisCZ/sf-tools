@@ -11,13 +11,6 @@ const PLAYER_CLASS_SEARCH = [
     'bard'
 ];
 
-const PLAYER_ACTIONS = [
-    'Idle',
-    'Working',
-    'Questing',
-    'Dungeon'
-];
-
 const SCROLL_MAP = {
     11: 0,
     31: 1,

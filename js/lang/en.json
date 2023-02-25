@@ -157,7 +157,11 @@
         "rune9": "Total Resist",
         "rune10": "Fire Damage",
         "rune11": "Cold Damage",
-        "rune12": "Lightning Damage"
+        "rune12": "Lightning Damage",
+        "action0": "Idle",
+        "action1": "Working",
+        "action2": "Questing",
+        "action3": "Dungeon"
     },
     "index": {
         "toggle": "Toggle credits",
