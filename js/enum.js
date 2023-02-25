@@ -85,14 +85,6 @@ const SCRAPBOOK_BOUNDARIES = [
     }
 ];
 
-function getMirrorPieces (value) {
-    let p = 0;
-    for (var i = 0; i < 15; i++) {
-        if ((value >> i) & 1) p++;
-    }
-    return p;
-}
-
 const GEMTYPES = [
     '',
     'Strength',
