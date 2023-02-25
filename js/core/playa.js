@@ -1155,6 +1155,16 @@ class SFPlayer {
         };
     }
 
+    static getMirrorPieces (value) {
+        let p = 0;
+
+        for (let i = 0; i < 15; i++) {
+            if ((value >> i) & 1) p++;
+        }
+
+        return p;
+    }
+
     static loadAttributes (player, dataType, skipPurchased = true) {
         player.Strength = {
             Type: 1,
@@ -1239,7 +1249,7 @@ class SFOtherPlayer extends SFPlayer {
         dataType.clear(); // skip
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
-        this.MirrorPieces = getMirrorPieces(dataType.short());
+        this.MirrorPieces = SFPlayer.getMirrorPieces(dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
         SFPlayer.loadAttributes(this, dataType);
@@ -1417,7 +1427,7 @@ class SFOwnPlayer extends SFPlayer {
         dataType.clear(); // skip
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
-        this.MirrorPieces = getMirrorPieces(dataType.short());
+        this.MirrorPieces = SFPlayer.getMirrorPieces(dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
         SFPlayer.loadAttributes(this, dataType, false);
