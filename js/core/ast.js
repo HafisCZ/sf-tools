@@ -2045,7 +2045,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Life Potion': {
         expr: p => p.Potions.Life == 25,
-        format: (p, c, e, x) => x ? 'Yes' : 'No'
+        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no')
     },
     'Life Potion Index': {
         expr: p => p.Potions.LifeIndex,
@@ -2380,19 +2380,19 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Pets Unlocked': {
         expr: p => p.Achievements[36].Owned,
-        format: (p, c, e, x) => x ? 'Yes' : 'No',
+        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
         difference: false,
         statistics: false
     },
     'Grail Unlocked': {
         expr: p => p.Achievements[76].Owned,
-        format: (p, c, e, x) => x ? 'Yes' : 'No',
+        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
         difference: false,
         statistics: false
     },
     'Hydra Dead': {
         expr: p => p.Achievements[63].Owned,
-        format: (p, c, e, x) => x ? 'Yes' : 'No',
+        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
         difference: false,
         statistics: false
     },
