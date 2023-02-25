@@ -16,18 +16,18 @@ FIGHT_LOG = new (class {
         }, {});
     }
 
-    _logRound (attacker, target, type, damage, special) {
+    _logRound (attacker, target, damage, type, skip, critical, special) {
         const round = {
             attacker: attacker.Player.ID || attacker.Index,
             attackerSpecialState: !!special,
             target: target.Player.ID || target.Index,
-            targetHealth: Math.max(0, (target.Health - (type === 15 || type >= 200 ? 0 : damage)) / target.TotalHealth),
+            targetHealth: Math.max(0, (target.Health - (type === ATTACK_FIREBALL || type === ATTACK_FIREBALL_BLOCKED || type >= ATTACK_BARD_SONG ? 0 : damage)) / target.TotalHealth),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
-            attackSecondary: type <= 100 && (type >= 10 && type <= 14),
-            attackCrit: type <= 100 && (type % 10 == 1),
-            attackMissed: type <= 100 && ((type % 10 == 3) || (type % 10 == 4))
+            attackSecondary: (type >= ATTACK_SECONDARY_NORMAL && type <= ATTACK_SECONDARY_EVADED) || type === ATTACK_SECONDARY_CRITICAL_BLOCKED || type === ATTACK_SECONDARY_CRITICAL_EVADED,
+            attackCrit: critical,
+            attackMissed: skip
         }
 
         if (FIGHT_LOG_STORE_STATE) {
@@ -77,12 +77,40 @@ FIGHT_LOG = new (class {
         this.currentRage = currentRage;
     }
 
-    logAttack (source, target, type, damage, special) {
+    _calculateType (source, target, type, skip, critical) {
+        const targetWarrior = target.Class === WARRIOR;
+        if (type == ATTACK_SWOOP) {
+            if (skip) {
+                return targetWarrior ? ATTACK_SWOOP_BLOCKED : ATTACK_SWOOP_EVADED;
+            } else {
+                return ATTACK_SWOOP;
+            }
+        } else if (type === ATTACK_NORMAL || type === ATTACK_SECONDARY_NORMAL || type === ATTACK_CHAIN_NORMAL) {
+            if (critical) {
+                if (skip) {
+                    return type + (targetWarrior ? ATTACK_CRITICAL_BLOCKED : ATTACK_CRITICAL_EVADED);
+                } else {
+                    return type + ATTACK_CRITICAL;
+                }
+            } else if (skip) {
+                return type + (targetWarrior ? ATTACK_BLOCKED : ATTACK_EVADED);
+            } else {
+                return type;
+            }
+        } else {
+            return type;
+        }
+    }
+
+    logAttack (source, target, damage, baseType, skip, critical, special) {
+        const type = this._calculateType(source, target, baseType, skip, critical);
         this._logRound(
             source,
             target,
-            type,
             damage,
+            type,
+            skip,
+            critical,
             special
         )
     }
@@ -91,8 +119,11 @@ FIGHT_LOG = new (class {
         this._logRound(
             source,
             target,
-            damage == 0 ? 16 : 15,
-            damage
+            damage,
+            damage == 0 ? ATTACK_FIREBALL_BLOCKED : ATTACK_FIREBALL,
+            false,
+            false,
+            false
         )
     }
 
@@ -100,8 +131,11 @@ FIGHT_LOG = new (class {
         this._logRound(
             source,
             source,
-            100,
-            0
+            0,
+            ATTACK_REVIVE,
+            false,
+            false,
+            false
         )
     }
 
@@ -109,8 +143,11 @@ FIGHT_LOG = new (class {
         this._logRound(
             source,
             source == this.playerA ? this.playerB : this.playerA,
-            200 + 10 * notes + level,
-            damage
+            damage,
+            ATTACK_BARD_SONG + 10 * notes + level,
+            false,
+            false,
+            false
         )
     }
 })();
@@ -293,6 +330,10 @@ function clamp (value, min, max) {
     return value <= min ? min : (value >= max ? max : value);
 }
 
+function getRuneValue (item, rune) {
+    return item.AttributeTypes[2] == rune ? item.Attributes[2] : 0;
+}
+
 // Classes
 const WARRIOR = 1;
 const MAGE = 2;
@@ -309,18 +350,43 @@ const RUNE_FIRE_DAMAGE = 40;
 const RUNE_COLD_DAMAGE = 41;
 const RUNE_LIGHTNING_DAMAGE = 42;
 
-function getRuneValue (item, rune) {
-    return item.AttributeTypes[2] == rune ? item.Attributes[2] : 0;
-}
-
 // States
 const STATE_DEAD = 0;
 const STATE_ALIVE = 1;
 
-// Attacks
-const ATTACK_PRIMARY = 0;
-const ATTACK_SECONDARY = 10;
-const ATTACK_SPECIAL = 20;
+// Attack types
+const ATTACK_NORMAL = 0;
+const ATTACK_CRITICAL = 1;
+const ATTACK_BLOCKED = 3;
+const ATTACK_EVADED = 4;
+const ATTACK_CRITICAL_BLOCKED = 8;
+const ATTACK_CRITICAL_EVADED = 9;
+
+const ATTACK_SECONDARY_NORMAL = 10;
+const ATTACK_SECONDARY_CRITICAL = 11;
+const ATTACK_SECONDARY_BLOCKED = 13;
+const ATTACK_SECONDARY_EVADED = 14;
+const ATTACK_SECONDARY_CRITICAL_BLOCKED = 18;
+const ATTACK_SECONDARY_CRITICAL_EVADED = 19;
+
+const ATTACK_CHAIN_NORMAL = 20;
+const ATTACK_CHAIN_CRITICAL = 21;
+const ATTACK_CHAIN_BLOCKED = 23;
+const ATTACK_CHAIN_EVADED = 24;
+const ATTACK_CHAIN_CRITICAL_BLOCKED = 28;
+const ATTACK_CHAIN_CRITICAL_EVADED = 29;
+
+const ATTACK_CATAPULT = 2;
+
+const ATTACK_FIREBALL = 15;
+const ATTACK_FIREBALL_BLOCKED = 16;
+
+const ATTACK_SWOOP = 5;
+const ATTACK_SWOOP_BLOCKED = 6;
+const ATTACK_SWOOP_EVADED = 7;
+
+const ATTACK_REVIVE = 100;
+const ATTACK_BARD_SONG = 200;
 
 // Fighter models
 class FighterModel {
@@ -586,8 +652,10 @@ class FighterModel {
             FIGHT_LOG.logAttack(
                 this,
                 target,
-                (type % 10 !== 0) ? (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : type) : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type),
                 damage,
+                type,
+                skipped,
+                critical,
                 special
             )
         }
@@ -994,16 +1062,16 @@ class SimulatorBase {
         this.performSpecialAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.performAttack('Weapon1', ATTACK_PRIMARY, false) == false) {
+            if (this.performAttack('Weapon1', ATTACK_NORMAL, false) == false) {
                 break;
             }
 
-            if (this.a.Weapon2 && this.performAttack('Weapon2', ATTACK_SECONDARY, false) == false) {
+            if (this.a.Weapon2 && this.performAttack('Weapon2', ATTACK_SECONDARY_NORMAL, false) == false) {
                 break;
             }
 
             if (this.a.SkipNext) {
-                while (this.a.skipNextRound() && this.performAttack('Weapon1', ATTACK_SPECIAL, true));
+                while (this.a.skipNextRound() && this.performAttack('Weapon1', ATTACK_CHAIN_NORMAL, true));
             }
 
             [this.a, this.b] = [this.b, this.a];
