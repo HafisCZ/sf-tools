@@ -56,6 +56,7 @@ const ExpressionEnum = new (class {
         this.keys = [
             'GoldCurve',
             'MountSizes',
+            'AchievementCount',
             'AchievementNames',
             'ItemTypes',
             'GroupRoles',
@@ -69,7 +70,8 @@ const ExpressionEnum = new (class {
             'UnderworldBuildings',
             'ExperienceCurve',
             'ExperienceTotal',
-            'SoulsCurve'
+            'SoulsCurve',
+            'ScrapbookCount'
         ]
     }
 
@@ -78,7 +80,8 @@ const ExpressionEnum = new (class {
             this.values = {
                 'GoldCurve': GoldCurve,
                 'MountSizes': PLAYER_MOUNT,
-                'AchievementNames': ACHIEVEMENTS,
+                'AchievementCount': ACHIEVEMENTS_COUNT,
+                'AchievementNames': _sequence(ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
                 'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
                 'GroupRoles': _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : ''),
                 'Classes': _sequence(10).map(i => i > 0 ? intl(`general.class${i}`) : ''),
@@ -91,7 +94,8 @@ const ExpressionEnum = new (class {
                 'UnderworldBuildings': _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)),
                 'ExperienceCurve': ExperienceRequired,
                 'ExperienceTotal': ExperienceTotal,
-                'SoulsCurve': SoulsCurve
+                'SoulsCurve': SoulsCurve,
+                'ScrapbookSize': SCRAPBOOK_COUNT
             };
         }
 
