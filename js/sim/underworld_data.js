@@ -22,7 +22,7 @@ const UnderworldUnits = new (class {
         for (let i = 0; i < count; i++) {
             let cappedLevel = Math.min(600, level);
 
-            let attribute = Math.round((level > 500 ? (408.5 * Math.max(0, level - 500) + KeeperCurve[500]) : KeeperCurve[level]) * attributeMultiplier);
+            let attribute = Math.round((level > 500 ? (408.5 * Math.max(0, level - 500) + KEEPER_CURVE[500]) : KEEPER_CURVE[level]) * attributeMultiplier);
             let luck = Math.min(49815, Math.ceil(attribute / 2));
 
             let damage = (cappedLevel + 1) * 2;

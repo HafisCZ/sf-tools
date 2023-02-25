@@ -947,7 +947,7 @@
                             } else if (boss.level >= 393) {
                                 return 3E8;
                             } else {
-                                return ExperienceRequired[boss.level] / 5;
+                                return EXPERIENCE_REQUIRED[boss.level] / 5;
                             }
                         }, 0);
                     }
@@ -1221,7 +1221,7 @@
                     ];
 
                     if (dungeon.id !== 201) {
-                        let experience = boss.level >= 393 ? 3E8 : ExperienceRequired[boss.level] / 5;
+                        let experience = boss.level >= 393 ? 3E8 : EXPERIENCE_REQUIRED[boss.level] / 5;
                         graph.options.title.text.splice(1, 0, `${formatAsSpacedNumber(experience, ' ')} XP`);
                     }
 
