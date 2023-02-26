@@ -2383,19 +2383,19 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Achievements.Owned
     },
     'Pets Unlocked': {
-        expr: p => p.Achievements[36].Owned,
+        expr: p => p.Achievements.PetLover,
         format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
         difference: false,
         statistics: false
     },
     'Grail Unlocked': {
-        expr: p => p.Achievements[76].Owned,
+        expr: p => p.Achievements.Grail,
         format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
         difference: false,
         statistics: false
     },
     'Hydra Dead': {
-        expr: p => p.Achievements[63].Owned,
+        expr: p => p.Achievements.Dehydration,
         format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
         difference: false,
         statistics: false
@@ -2621,7 +2621,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Mount Expire': {
         expr: p => p.MountExpire,
-        format: (p, c, e, x) => x ? formatDate(x) : '?',
+        format: (p, c, e, x) => x > 0 ? formatDate(x) : '',
         difference: false,
         statistics: false
     },
@@ -2651,7 +2651,7 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     'Shrooms': {
-        expr: p => p.Mushrooms ? p.Mushrooms.Current : undefined,
+        expr: p => _dig(p, 'Mushrooms', 'Current'),
         statistics: false
     },
     'Coins': {
@@ -2659,15 +2659,15 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     'Shrooms Total': {
-        expr: p => p.Mushrooms ? p.Mushrooms.Total : undefined,
+        expr: p => _dig(p, 'Mushrooms', 'Total'),
         statistics: false
     },
     'Shrooms Free': {
-        expr: p => p.Mushrooms ? p.Mushrooms.Free : undefined,
+        expr: p => _dig(p, 'Mushrooms', 'Free'),
         statistics: false
     },
     'Shrooms Paid': {
-        expr: p => p.Mushrooms ? p.Mushrooms.Paid : undefined,
+        expr: p => _dig(p, 'Mushrooms', 'Paid'),
         statistics: false
     },
     'Hourglass': {
