@@ -37,15 +37,18 @@ const ARG_MAP_SERVER = {
 }
 
 const ARG_FORMATTERS = {
-    'number': (p, c, e, x) => isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)),
-    'fnumber': (p, c, e, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
-    'nnumber': (p, c, e, x) => isNaN(x) ? undefined : formatAsNamedNumber(x),
-    'date': (p, c, e, x) => isNaN(x) ? undefined : formatDateOnly(x),
-    'bool': (p, c, e, x) => x ? 'Yes' : 'No',
-    'datetime': (p, c, e, x) => isNaN(x) ? undefined : formatDate(x),
-    'time': (p, c, e, x) => isNaN(x) ? undefined : formatTime(x),
-    'duration': (p, c, e, x) => isNaN(x) ? undefined : formatDuration(x),
-    'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
+    'number': (p, x) => isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)),
+    'fnumber': (p, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
+    'spaced_number': (p, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
+    'nnumber': (p, x) => isNaN(x) ? undefined : formatAsNamedNumber(x),
+    'exponential_number': (p, x) => isNaN(x) ? undefined : x.toExponential(3),
+    'date': (p, x) => isNaN(x) ? '' : formatDateOnly(x),
+    'bool': (p, x) => x ? intl('general.yes') : intl('general.no'),
+    'boolean': (p, x) => x ? intl('general.yes') : intl('general.no'),
+    'datetime': (p, x) => isNaN(x) || x <= 0 ? '' : formatDate(x),
+    'time': (p, x) => isNaN(x) ? '' : formatTime(x),
+    'duration': (p, x) => isNaN(x) ? '' : formatDuration(x),
+    'default': (p, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
 class CellStyle {
@@ -1995,8 +1998,10 @@ class Settings {
                 if (typeof output == 'undefined') {
                     if (this.format instanceof Expression) {
                         output = new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.format);
-                    } else if (typeof this.format == 'function') {
-                        output = this.format(player, compare, settings, value, extra, header);
+                    } else if (typeof this.format === 'function') {
+                        output = this.format(player, value);
+                    } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
+                        output = ARG_FORMATTERS[this.format](player, value);
                     }
                 }
 
@@ -2028,8 +2033,10 @@ class Settings {
                 if (this.formatDifference === true) {
                     if (this.format instanceof Expression) {
                         return new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra).eval(this.format);
-                    } else if (typeof this.format == 'function') {
-                        return this.format(player, compare, settings, value, extra);
+                    } else if (typeof this.format === 'function') {
+                        return this.format(player, value);
+                    } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
+                        return ARG_FORMATTERS[this.format](player, value);
                     } else {
                         return nativeDifference;
                     }
@@ -2051,7 +2058,9 @@ class Settings {
                 } else if (this.format instanceof Expression) {
                     return new ExpressionScope(settings).addSelf(value).eval(this.format);
                 } else if (typeof this.format == 'function') {
-                    return this.format(undefined, undefined, settings, value);
+                    return this.format(undefined, value);
+                } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
+                    return ARG_FORMATTERS[this.format](undefined, value);
                 } else {
                     return nativeFormat;
                 }

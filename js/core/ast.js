@@ -1075,11 +1075,11 @@ class Expression {
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
                     var obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj, null, scope.env) : undefined;
+                    return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
                     var obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(scope.player, null, scope.env, obj) : undefined;
+                    return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(scope.player, obj) : undefined;
                 } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
                     // Predefined function
                     return SP_FUNCTIONS[node.op](
@@ -1155,10 +1155,10 @@ class Expression {
             } else if (SP_KEYWORDS_DEFAULT.hasOwnProperty(node)) {
                 return SP_KEYWORDS_DEFAULT[node];
             } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
-                return SP_KEYWORDS[node].expr(scope.player, scope.reference, scope.env);
+                return SP_KEYWORDS[node].expr(scope.player);
             } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
                 const self = scope.getSelf();
-                return self && typeof self === 'object' ? SP_KEYWORDS_INDIRECT[node].expr(scope.player, scope.reference, scope.env, self) : undefined;
+                return self && typeof self === 'object' ? SP_KEYWORDS_INDIRECT[node].expr(scope.player, self) : undefined;
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
             } else if (node in scope.env.variables) {
@@ -1667,7 +1667,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Role': {
         expr: p => _dig(p, 'Group', 'Role'),
         flip: true,
-        format: (p, c, e, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
+        format: (p, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
         difference: false,
         statistics: false
     },
@@ -1767,51 +1767,51 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Base Cost': {
         expr: p => p.Primary.NextCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Strength Cost': {
         expr: p => p.Strength.NextCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Dexterity Cost': {
         expr: p => p.Dexterity.NextCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Intelligence Cost': {
         expr: p => p.Intelligence.NextCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Constitution Cost': {
         expr: p => p.Constitution.NextCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Luck Cost': {
         expr: p => p.Luck.NextCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Base Total Cost': {
         expr: p => p.Primary.TotalCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Strength Total Cost': {
         expr: p => p.Strength.TotalCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Dexterity Total Cost': {
         expr: p => p.Dexterity.TotalCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Intelligence Total Cost': {
         expr: p => p.Intelligence.TotalCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Constitution Total Cost': {
         expr: p => p.Constitution.TotalCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Luck Total Cost': {
         expr: p => p.Luck.TotalCost,
-        format: (p, c, e, x) => formatAsSpacedNumber(x)
+        format: 'spaced_number'
     },
     'Attribute Pet': {
         expr: p => p.Primary.Pet,
@@ -2049,7 +2049,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Life Potion': {
         expr: p => p.Potions.Life == 25,
-        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no')
+        format: 'boolean'
     },
     'Life Potion Index': {
         expr: p => p.Potions.LifeIndex,
@@ -2058,7 +2058,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Runes': {
         expr: p => p.Runes.Runes,
-        format: (p, c, e, x) => `e${ x }`,
+        format: (p, x) => `e${ x }`,
         width: 100
     },
     'Action Index': {
@@ -2068,19 +2068,20 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Status': {
         expr: p => p.Action.Status,
-        format: (p, c, e, x) => intl(`general.action${x}`),
+        format: (p, x) => intl(`general.action${x}`),
         difference: false,
         statistics: false
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
-        format: (p, c, e, x) => x <= 0 ? '' : formatDate(x),
+        format: 'datetime',
         width: 160,
         difference: false,
         statistics: false
     },
     'Action Unclaimed': {
         expr: p => p.OriginalAction.Status < 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
@@ -2304,20 +2305,20 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Class': {
         expr: p => p.Class,
-        format: (p, c, e, x) => intl(`general.class${x}`),
-        difference: false,
+        format: (p, x) => intl(`general.class${x}`),
         flip: true,
+        difference: false,
         statistics: false
     },
     'Race': {
         expr: p => p.Race,
-        format: (p, c, e, x) => intl(`general.race${x}`),
+        format: (p, x) => intl(`general.race${x}`),
         difference: false,
         statistics: false
     },
     'Gender': {
         expr: p => p.Gender,
-        format: (p, c, e, x) => intl(`general.gender${x}`),
+        format: (p, x) => intl(`general.gender${x}`),
         difference: false,
         statistics: false
     },
@@ -2327,7 +2328,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Mount': {
         expr: p => p.Mount,
-        format: (p, c, e, x) => x ? (PLAYER_MOUNT[x] + '%') : '',
+        format: (p, x) => x ? (PLAYER_MOUNT[x] + '%') : '',
         difference: false
     },
     'Awards': {
@@ -2335,7 +2336,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Album': {
         expr: p => Math.ceil(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
-        format: (p, c, e, x) => x.toFixed(2) + '%',
+        format: (p, x) => x.toFixed(2) + '%',
         width: 130,
         decimal: true
     },
@@ -2351,31 +2352,31 @@ const SP_KEYWORD_MAPPING_0 = {
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
-        format: (p, c, e, x) => x >= 0 ? intl(`general.buildings.fortress${x + 1}`) : '',
+        format: (p, x) => x >= 0 ? intl(`general.buildings.fortress${x + 1}`) : '',
         difference: false,
         statistics: false
     },
     'Building Finish': {
         expr: p => p.Fortress.Upgrade.Finish,
-        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        format: 'datetime',
         difference: false,
         statistics: false
     },
     'Building Start': {
         expr: p => p.Fortress.Upgrade.Start,
-        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        format: 'datetime',
         difference: false,
         statistics: false
     },
     'Timestamp': {
         expr: p => p.Timestamp,
-        format: (p, c, e, x) => formatDate(x),
+        format: 'datetime',
         difference: false,
         statistics: false
     },
     'Guild Joined': {
         expr: p => (p && p.hasGuild()) ? p.Group.Joined : undefined,
-        format: (p, c, e, x) => (p && p.hasGuild()) ? formatDate(x) : '',
+        format: 'datetime',
         difference: false,
         statistics: false
     },
@@ -2384,37 +2385,37 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Pets Unlocked': {
         expr: p => p.Achievements.PetLover,
-        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Grail Unlocked': {
         expr: p => p.Achievements.Grail,
-        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Hydra Dead': {
         expr: p => p.Achievements.Dehydration,
-        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'XP': {
         expr: p => p.XP,
-        format: (p, c, e, x) => formatAsSpacedNumber(x),
+        format: 'spaced_number',
         format_diff: true,
         statistics: false
     },
     'XP Required': {
         expr: p => p.XPNext,
-        format: (p, c, e, x) => formatAsSpacedNumber(x),
+        format: 'spaced_number',
         format_diff: true,
         statistics: false
     },
     'XP Total': {
         expr: p => p.XPTotal,
-        format: (p, c, e, x) => formatAsSpacedNumber(x),
+        format: 'spaced_number',
         format_diff: true,
         statistics: false
     },
@@ -2423,46 +2424,55 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Archeological Aura': {
         expr: p => p.Items.Head.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Marios Beard': {
         expr: p => p.Items.Body.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Shadow of the Cowboy': {
         expr: p => p.Items.Hand.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     '36960 Feet Boots': {
         expr: p => p.Items.Feet.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Unholy Acquisitiveness': {
         expr: p => p.Items.Neck.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Thirsty Wanderer': {
         expr: p => p.Items.Belt.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Grave Robbers Prayer': {
         expr: p => p.Items.Ring.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Robber Baron Ritual': {
         expr: p => p.Items.Misc.HasEnchantment ? 1 : 0,
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Sword of Vengeance': {
         expr: p => (p.Items.Wpn1.HasEnchantment ? 1 : 0) + (p.Items.Wpn2.HasEnchantment ? 1 : 0),
+        format: 'boolean',
         difference: false,
         statistics: false
     },
@@ -2483,19 +2493,19 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Potion 1 Type': {
         expr: p => p.Potions[0].Type,
-        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
+        format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
     },
     'Potion 2 Type': {
         expr: p => p.Potions[1].Type,
-        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
+        format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
     },
     'Potion 3 Type': {
         expr: p => p.Potions[2].Type,
-        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
+        format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
     },
@@ -2506,19 +2516,19 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Gold Frame': {
         expr: p => p.Flags.GoldFrame,
-        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'Official Creator': {
         expr: p => p.Flags.OfficialCreator,
-        format: (p, c, e, x) => x ? intl('general.yes') : intl('general.no'),
+        format: 'boolean',
         difference: false,
         statistics: false
     },
     'GT Background': {
         expr: p => p.Flags.GroupTournamentBackground,
-        format: (p, c, e, x) => x ? intl(`general.gt_background${x}`) : intl('general.none'),
+        format: (p, x) => x ? intl(`general.gt_background${x}`) : intl('general.none'),
         difference: false,
         statistics: false
     }
@@ -2529,7 +2539,7 @@ const SP_SPECIAL_CONDITIONS = {
         {
             condition: h => h.maximum,
             apply: h => {
-                h.value.format = (p, c, e, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
+                h.value.format = (p, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
             }
         }
     ],
@@ -2555,14 +2565,14 @@ const SP_SPECIAL_CONDITIONS = {
 const SP_KEYWORD_MAPPING_1 = {
     'Last Active': {
         expr: p => p.LastOnline,
-        format: (p, c, e, x) => formatDate(x),
+        format: 'datetime',
         width: 160,
         difference: false,
         statistics: false
     },
     'Inactive Time': {
         expr: p => p.Timestamp - p.LastOnline,
-        format: (p, c, e, x) => formatDuration(x),
+        format: 'duration',
         flip: true,
         difference: false,
         statistics: false
@@ -2621,7 +2631,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Mount Expire': {
         expr: p => p.MountExpire,
-        format: (p, c, e, x) => x > 0 ? formatDate(x) : '',
+        format: 'datetime',
         difference: false,
         statistics: false
     },
@@ -2676,7 +2686,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Potion Expire': {
         expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
-        format: (p, c, e, x) => x == undefined ? '?' : formatDate(x),
+        format: (p, x) => x == undefined ? '?' : formatDate(x),
         width: 160,
         difference: false,
         statistics: false
@@ -2871,14 +2881,14 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Scroll Finish' : {
         expr: p => p.Witch.Finish,
-        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        format: 'datetime',
         difference: false,
         statistics: false,
         width: 160
     },
     'Witch Item': {
         expr: p => p.Witch.Item,
-        format: (p, c, e, x) => x ? intl(`general.item${x}`) : ''
+        format: (p, x) => x ? intl(`general.item${x}`) : ''
     },
     'Witch Items': {
         expr: p => p.Witch.Items
@@ -2888,7 +2898,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Registered': {
         expr: p => p.Registered,
-        format: (p, c, e, x) => x ? formatDate(x) : '',
+        format: 'datetime',
         width: 160,
         difference: false,
         statistics: false
@@ -2971,12 +2981,12 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Gold Pit Max': {
         expr: p => p.Underworld ? p.Underworld.GoldPitMax : undefined,
-        format: (p, c, e, x) => x ? formatAsSpacedNumber(x) : undefined,
+        format: 'spaced_number',
         statistics: false
     },
     'Gold Pit Hourly': {
         expr: p => p.Underworld ? p.Underworld.GoldPitHourly : undefined,
-        format: (p, c, e, x) => x ? formatAsSpacedNumber(x) : undefined,
+        format: 'spaced_number',
         statistics: false
     },
     'Time Machine Thirst': {
@@ -2998,19 +3008,19 @@ const SP_KEYWORD_MAPPING_2 = {
     'Underworld Building': {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Building : undefined,
         width: 180,
-        format: (p, c, e, x) => x >= 0 ? intl(`general.buildings.underworld${x + 1}`) : '',
+        format: (p, x) => x >= 0 ? intl(`general.buildings.underworld${x + 1}`) : '',
         difference: false,
         statistics: false
     },
     'Underworld Building Finish': {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Finish : -1,
-        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        format: 'datetime',
         difference: false,
         statistics: false
     },
     'Underworld Building Start': {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Start : -1,
-        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        format: 'datetime',
         difference: false,
         statistics: false
     },
@@ -3052,19 +3062,19 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Money': {
         expr: p => p.Idle ? p.Idle.Money : undefined,
-        format: (p, c, e, x) => x.toExponential(3),
+        format: 'exponential_number',
         difference: false,
         statistics: false
     },
     'Runes Collected': {
         expr: p => p.Idle ? p.Idle.Runes : undefined,
-        format: (p, c, e, x) => x.toExponential(3),
+        format: 'exponential_number',
         difference: false,
         statistics: false
     },
     'Runes Ready': {
         expr: p => p.Idle ? p.Idle.ReadyRunes : undefined,
-        format: (p, c, e, x) => x.toExponential(3),
+        format: 'exponential_number',
         difference: false,
         statistics: false
     },
@@ -3153,27 +3163,22 @@ const SP_KEYWORD_MAPPING_2 = {
 // Itemized
 const SP_KEYWORD_MAPPING_4 = {
     'Item Strength': {
-        expr: (p, c, e, i) => i.Strength.Value,
-        format: (p, c, e, x) => x == 0 ? '' : x
+        expr: (p, i) => i.Strength.Value
     },
     'Item Dexterity': {
-        expr: (p, c, e, i) => i.Dexterity.Value,
-        format: (p, c, e, x) => x == 0 ? '' : x
+        expr: (p, i) => i.Dexterity.Value
     },
     'Item Intelligence': {
-        expr: (p, c, e, i) => i.Intelligence.Value,
-        format: (p, c, e, x) => x == 0 ? '' : x
+        expr: (p, i) => i.Intelligence.Value
     },
     'Item Constitution': {
-        expr: (p, c, e, i) => i.Constitution.Value,
-        format: (p, c, e, x) => x == 0 ? '' : x
+        expr: (p, i) => i.Constitution.Value
     },
     'Item Luck': {
-        expr: (p, c, e, i) => i.Luck.Value,
-        format: (p, c, e, x) => x == 0 ? '' : x
+        expr: (p, i) => i.Luck.Value
     },
     'Item Attribute': {
-        expr: (p, c, e, i) => {
+        expr: (p, i) => {
             if (p) {
                 switch (p.Primary.Type) {
                     case 1: return i.Strength.Value;
@@ -3184,89 +3189,87 @@ const SP_KEYWORD_MAPPING_4 = {
             } else {
                 return 0;
             }
-        },
-        format: (p, c, e, x) => x == 0 ? '' : x
+        }
     },
     'Item Type': {
-        expr: (p, c, e, i) => i.Type,
-        format: (p, c, e, x) => x ? intl(`general.item${x}`) : '',
+        expr: (p, i) => i.Type,
+        format: (p, x) => x ? intl(`general.item${x}`) : '',
         difference: false
     },
     'Item Name': {
-        expr: (p, c, e, i) => i.Name,
+        expr: (p, i) => i.Name,
         difference: false
     },
     'Item Upgrades': {
-        expr: (p, c, e, i) => i.Upgrades,
-        format: (p, c, e, x) => x == 0 ? '' : x
+        expr: (p, i) => i.Upgrades
     },
     'Item Rune': {
-        expr: (p, c, e, i) => i.RuneType,
+        expr: (p, i) => i.RuneType,
         width: 180,
-        format: (p, c, e, x) => x ? intl(`general.rune${x}`) : '',
+        format: (p, x) => x ? intl(`general.rune${x}`) : '',
         difference: false
     },
     'Item Rune Value': {
-        expr: (p, c, e, i) => i.RuneValue,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.RuneValue,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Gem': {
-        expr: (p, c, e, i) => i.GemType,
-        format: (p, c, e, x) => x ? intl(`general.gem${x}`) : '',
+        expr: (p, i) => i.GemType,
+        format: (p, x) => x ? intl(`general.gem${x}`) : '',
         difference: false
     },
     'Item Gem Value': {
-        expr: (p, c, e, i) => i.GemValue,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.GemValue,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Gold': {
-        expr: (p, c, e, i) => i.SellPrice.Gold,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.SellPrice.Gold,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Sell Crystal': {
-        expr: (p, c, e, i) => i.SellPrice.Crystal,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.SellPrice.Crystal,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Sell Metal': {
-        expr: (p, c, e, i) => i.SellPrice.Metal,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.SellPrice.Metal,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Dismantle Crystal': {
-        expr: (p, c, e, i) => i.DismantlePrice.Crystal,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.DismantlePrice.Crystal,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Dismantle Metal': {
-        expr: (p, c, e, i) => i.DismantlePrice.Metal,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.DismantlePrice.Metal,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Slot': {
-        expr: (p, c, e, i) => i.Slot,
-        format: (p, c, e, x) => x == 2 && p && p.Class == 4 ? intl('general.item1') : intl(`general.item${x}`),
+        expr: (p, i) => i.Slot,
+        format: (p, x) => x == 2 && p && p.Class == 4 ? intl('general.item1') : intl(`general.item${x}`),
         difference: false
     },
     'Potion Type': {
-        expr: (p, c, e, i) => i.Type,
-        format: (p, c, e, x) => x ? intl(`general.potion${x}`) : '',
+        expr: (p, i) => i.Type,
+        format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false
     },
     'Potion Size': {
-        expr: (p, c, e, i) => i.Size,
-        format: (p, c, e, x) => x == 0 ? '' : x,
+        expr: (p, i) => i.Size,
+        format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
     'Inventory Kind': {
-        expr: (p, c, e, i) => i.Position ? i.Position[0] : undefined,
+        expr: (p, i) => i.Position ? i.Position[0] : undefined,
         difference: false
     },
     'Inventory Slot': {
-        expr: (p, c, e, i) => i.Position ? i.Position[1] : undefined,
+        expr: (p, i) => i.Position ? i.Position[1] : undefined,
         difference: false
     }
 };
