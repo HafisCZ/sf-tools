@@ -236,7 +236,7 @@ class TableInstance {
                             return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
-                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare), showBorder, header.font).bg;
+                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare).bg, showBorder, header.font);
                     }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
                 } else if (header.grouped) {
                     // Create grouped header
