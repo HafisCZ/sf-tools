@@ -719,6 +719,7 @@ class SFPlayer {
             }
         }
 
+        this.Achievements.PetLover = this.Achievements[36].Owned;
         this.Achievements.Dehydration = this.Achievements[63].Owned;
         this.Achievements.Grail = this.Achievements[76].Owned;
 
