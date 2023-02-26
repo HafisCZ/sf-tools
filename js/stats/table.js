@@ -87,7 +87,7 @@ function getSafeExpr (obj, ...args) {
     if (obj instanceof Expression) {
         return (args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]).eval(obj);
     } else {
-        return obj(... args);
+        return obj(args[0]);
     }
 }
 
