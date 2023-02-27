@@ -77,7 +77,7 @@ FIGHT_LOG = new (class {
         this.currentRage = currentRage;
     }
 
-    _calculateType (source, target, type, skip, critical) {
+    _calculateType (target, type, skip, critical) {
         const targetWarrior = target.Class === WARRIOR;
         if (type == ATTACK_SWOOP) {
             if (skip) {
@@ -103,7 +103,7 @@ FIGHT_LOG = new (class {
     }
 
     logAttack (source, target, damage, baseType, skip, critical, special) {
-        const type = this._calculateType(source, target, baseType, skip, critical);
+        const type = this._calculateType(target, baseType, skip, critical);
         this._logRound(
             source,
             target,
