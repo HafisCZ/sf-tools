@@ -32,7 +32,7 @@ class DebugSimulator extends SimulatorBase {
         let matches = [];
 
         for (let { player1, player2 } of this._pairs(players)) {
-            this.fight(...this.prepare(player1, player2));
+            [this.a, this.b] = this.prepare(player1, player2);
 
             matches.push({
                 fighters: this.prepare(player1, player2),
@@ -55,14 +55,5 @@ class DebugSimulator extends SimulatorBase {
         fighter2.reset();
 
         return [ fighter1, fighter2 ];
-    }
-
-    fight (fighter1, fighter2) {
-        this.a = fighter1;
-        this.b = fighter2;
-
-        FIGHT_LOG.logInit(this.a, this.b);
-
-        return super.fight();
     }
 }

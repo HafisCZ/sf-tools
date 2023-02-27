@@ -1076,6 +1076,10 @@ class SimulatorBase {
     fight () {
         this.turn = 0;
 
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logInit(this.a, this.b);
+        }
+
         this.setInitialFighter();
         this.performSpecialAttack();
 

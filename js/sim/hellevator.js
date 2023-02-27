@@ -34,10 +34,6 @@ class HellevatorSimulator extends SimulatorBase {
       this.a = this.ca;
       this.b = this.cb;
 
-      if (FIGHT_LOG_ENABLED) {
-          FIGHT_LOG.logInit(this.a, this.b);
-      }
-
       this.a.reset();
       this.b.reset();
 

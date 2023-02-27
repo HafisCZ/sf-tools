@@ -88,10 +88,6 @@ class DungeonSimulator extends SimulatorBase {
 
             FighterModel.initializeFighters(this.a, this.b);
 
-            if (FIGHT_LOG_ENABLED) {
-                FIGHT_LOG.logInit(this.a, this.b);
-            }
-
             if (this.fight() == 0) {
                 this.la.shift();
             } else {
