@@ -148,13 +148,17 @@ const SimulatorDebugDialog = new (class extends Dialog {
 })();
 
 const SimulatorUtils = new (class {
-    configure ({ params, onCopy, onChange }) {
+    configure ({ params, onCopy, onChange, onInsert, insertType }) {
         // Updated config
         this.currentConfig = null;
 
         // Callbacks
         this._onCopy = onCopy;
         this._onChange = onChange;
+        this._onInsert = onInsert;
+
+        // Data
+        this._insertType = insertType;
 
         // Debug elements
         this.debug = params.has('debug');
@@ -208,6 +212,39 @@ const SimulatorUtils = new (class {
             });
 
             $copyButton.insertAfter($dialogButton);
+        }
+
+        if (typeof this._onInsert === 'function' && typeof this._insertType === 'string') {
+            fetch('js/sim/debug_data.json').then((response) => response.json()).then((data) => {
+                const sampleData = data[this._insertType];
+
+                const $insertButton = $(`
+                    <div class="ui dropdown inverted item !p-0">
+                        <button class="ui basic inverted icon button !box-shadow-none">
+                            <i class="tasks icon"></i>
+                        </button>
+                        <div class="menu" style="width: 300px;"></div>
+                    </div>
+                `);
+
+                $insertButton.dropdown({
+                    action: 'hide',
+                    values: [
+                        {
+                            name: intl('simulator.configure_insert'),
+                            type: 'header',
+                            class: 'header text-center'
+                        },
+                        ...sampleData.map((sample, index) => ({ name: sample.name, value: index }))
+                    ]
+                }).dropdown('setting', 'onChange', (value) => {
+                    const { data } = sampleData[parseInt(value)];
+
+                    this._onInsert(data);
+                });
+
+                $insertButton.insertAfter($dialogButton);
+            })
         }
     }
 

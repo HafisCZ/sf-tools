@@ -310,6 +310,10 @@
 
                             return m;
                         });
+                    },
+                    insertType: 'players',
+                    onInsert: (data) => {
+                        handlePaste(data);
                     }
                 });
 
