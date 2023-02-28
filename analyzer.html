@@ -462,11 +462,28 @@
                         if (text.includes('fightheader')) {
                             const r = PlayaResponse.fromText(text);
 
-                            digestedFights.push({
-                                header: r.fightheader.mixed,
-                                rounds: r.fight.numbers,
-                                winner_id: r.winnerid.number
-                            });
+                            if (r.fightheader1) {
+                                // Shadow or guild fights use indexed fight data
+                                const count = _fast_max(
+                                    Object.keys(r)
+                                    .filter((key) => key.startsWith('fightheader'))
+                                    .map((key) => parseInt(key.match(/(\d*)$/)[0] || '1'))
+                                );
+
+                                for (let i = 1; i <= count; i++) {
+                                    digestedFights.push({
+                                        header: r[`fightheader${i}`].mixed,
+                                        rounds: r[`fight${i}`].numbers,
+                                        winner_id: r[`winnerid${i}`].number
+                                    });
+                                }
+                            } else {
+                                digestedFights.push({
+                                    header: r.fightheader.mixed,
+                                    rounds: r.fight.numbers,
+                                    winner_id: r.winnerid.number
+                                });
+                            }
                         }
                         
                         if (text.includes('playerlookat') || text.includes('ownplayersave')) {
