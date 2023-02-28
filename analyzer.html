@@ -570,6 +570,9 @@
                                 }
 
                                 round.attackRage = 1 + ((i - attackRageOffset) / 6);
+
+                                // Calculate base damage
+                                round.attackBase = round.attackDamage / round.attackRage;
                             }
 
                             // Push fight
