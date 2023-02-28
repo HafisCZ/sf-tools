@@ -177,7 +177,7 @@ const SimulatorNoticeDialog = new (class extends Dialog {
         return `
             <div class="small inverted dialog position-relative">
                 <div class="header text-orange">${title}</div>
-                <div class="text-center" style="line-height: 1.5em;">${content}</div>
+                <div>${content}</div>
                 <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
             </div>
         `;

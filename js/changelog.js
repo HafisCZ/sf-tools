@@ -1,7 +1,17 @@
 const SIMULATOR_NOTICES = [
     {
         title: 'State of the Druid',
-        content: 'Any simulation that include Druid are, due to in-game bugs, not accurate.'
+        content: `
+            <div>
+                <p>Any simulation that include Druid are, due to in-game bugs, not accurate.</p>
+                <p>Current in-game issues:</p>
+                <ul>
+                    <li>Druid deals too high critical damage while enraged</li>
+                    <li>Druid deals too high swoop damage</li>
+                    <li>Druid leaves enraged status immediately, thus suffering no negative effects of his rage</li>
+                </ul>
+            </div>
+        `
     }
 ];
 
