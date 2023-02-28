@@ -1,5 +1,6 @@
 const SIMULATOR_NOTICES = [
     {
+        timestamp: 1677604572002,
         title: 'State of the Druid',
         content: `
             <div>
