@@ -1,7 +1,7 @@
 const SIMULATOR_NOTICES = [
     {
         title: 'State of the Druid',
-        content: 'Any simulations that include Druid are not, due to in-game bugs, accurate.'
+        content: 'Any simulation that include Druid are, due to in-game bugs, not accurate.'
     }
 ];
 
