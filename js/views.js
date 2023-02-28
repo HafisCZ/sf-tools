@@ -172,11 +172,12 @@ const TermsAndConditionsDialog = new (class extends Dialog {
 
 const SimulatorNoticeDialog = new (class extends Dialog {
     _createModal () {
-        const { title, content } = SIMULATOR_NOTICES[0];
+        const { title, content, timestamp } = SIMULATOR_NOTICES[0];
+        const date = new Date(timestamp);
 
         return `
             <div class="small inverted dialog position-relative">
-                <div class="header text-orange">${title}</div>
+                <div class="header text-orange">${date.toLocaleDateString('en-GB', { month: 'long', day: 'numeric' })} - ${title}</div>
                 <div>${content}</div>
                 <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
             </div>
@@ -185,7 +186,7 @@ const SimulatorNoticeDialog = new (class extends Dialog {
 
     _createBindings () {
         this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.simulator_notice_accepted = SIMULATOR_NOTICES.length;
+            SiteOptions.simulator_notice_accepted = SIMULATOR_NOTICES[0].timestamp;
             this.close();
         });
     }
@@ -2113,7 +2114,7 @@ window.addEventListener('DOMContentLoaded', async function () {
             DialogController.open(ChangeLogDialog);
         }
 
-        if (Site.is('simulator') && SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES.length) {
+        if (Site.is('simulator') && SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES[0].timestamp) {
             DialogController.open(SimulatorNoticeDialog);
         }
     }
