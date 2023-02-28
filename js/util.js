@@ -105,6 +105,8 @@ class Constants {
             'orange': '#ffbb33',
             'red': '#ff3547',
             'blue': '#0064b4',
+            'black': '#000000',
+            'white': '#ffffff',
             '15min': 900000,
             '1hour': 3600000,
             '12hours': 43200000,
