@@ -210,7 +210,7 @@
         <!-- UI Handler -->
         <script type="text/javascript">
             $('#show-compare, #show-crystal').hide();
-            Site.ready(function (urlParams) {
+            Site.ready(null, function (urlParams) {
                 Loader.toggle(true);
                 DatabaseManager.load(SELF_PROFILE).then(function () {
                     UI.initialize();

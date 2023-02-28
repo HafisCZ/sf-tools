@@ -416,7 +416,7 @@
                 }
             })()
 
-            Site.ready(function (urlParams) {
+            Site.ready({ type: 'simulator' }, function (urlParams) {
                 $('#cheat-menu-toggle').click(() => {
                     $('#cheat-menu').transition('fade left');
                     $('#cheat-menu-toggle .icon').toggleClass('left right');

@@ -253,7 +253,7 @@
                 }
             })()
 
-            Site.ready(function (urlParams) {
+            Site.ready({ type: 'simulator' }, function (urlParams) {
                 let simulatorMode = 'players_all';
 
                 let editor = new Editor($('#sim-editor'));

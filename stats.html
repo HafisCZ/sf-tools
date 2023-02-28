@@ -514,7 +514,7 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            Site.ready(function (urlParams) {
+            Site.ready(null, function (urlParams) {
                 let profile = ProfileManager.getProfile(urlParams.get('profile'));
                 if (urlParams.has('temp')) {
                     Store.temporary();
