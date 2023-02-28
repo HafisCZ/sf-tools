@@ -452,6 +452,66 @@
                     }
                 }
 
+                // Compute item hash
+                function computeItemHash (item, player = null, secondary = false) {
+                    if (item.AttributeTypes[0] == 0) {
+                        return '';
+                    } else {
+                        const json = [
+                            item.DamageMin,
+                            item.DamageMax,
+                            item.Enchantment,
+                            item.RuneType,
+                            item.RuneValue,
+                            item.GemType,
+                            item.GemValue
+                        ];
+
+                        if (player) {
+                            // Fix weapon damage (is not clamped by fist damage)
+                            const baseDamage = FighterModel.create(null, player).getBaseDamage(secondary);
+
+                            json[0] = Math.max(baseDamage.Min, json[0]);
+                            json[1] = Math.max(baseDamage.Max, json[1]);
+                        }
+
+                        return SHA1(JSON.stringify(json));
+                    }
+                }
+
+                // Compute player hash
+                function computePlayerHash (player) {
+                    const json = [
+                        player.ID,
+                        player.Class,
+                        player.Level
+                    ];
+
+                    if (player instanceof SFFighter) {
+                        json.push(
+                            player.Strength,
+                            player.Dexterity,
+                            player.Intelligence,
+                            player.Constitution,
+                            player.Luck,
+                            computeItemHash(player.Wpn1),
+                            player.Class == ASSASSIN ? computeItemHash(player.Wpn2) : ''
+                        )
+                    } else if (player instanceof SFPlayer) {
+                        json.push(
+                            player.Strength.Total,
+                            player.Dexterity.Total,
+                            player.Intelligence.Total,
+                            player.Constitution.Total,
+                            player.Luck.Total,
+                            computeItemHash(player.Items.Wpn1, player, false),
+                            player.Class == ASSASSIN ? computeItemHash(player.Items.Wpn2, player, true) : ''
+                        )
+                    }
+
+                    return SHA1(JSON.stringify(json));
+                }
+
                 // Extract individual fights from raw data array
                 function digestHAR (json) {
                     const digestedFights = [];
@@ -602,7 +662,42 @@
                         }
                     }
 
-                    console.log(processedFights, digestedPlayers)
+                    const processedPlayers = [];
+                    // Convert all player data into actual player models and optionally companions
+                    for (const data of digestedPlayers) {
+                        const { own, save, name, pets, tower } = data;
+
+                        if (own) {
+                            // Add own player
+                            const player = new SFOwnPlayer(data);
+                            processedPlayers.push(player);
+
+                            // Add companions if present
+                            if (player.Companions) {
+                                processedPlayers.push(
+                                    player.Companions.Bert,
+                                    player.Companions.Mark,
+                                    player.Companions.Kunigunde
+                                )
+                            }
+                        } else {
+                            // Add other player
+                            const player = new SFOtherPlayer(data);
+                            processedPlayers.push(player);
+                        }
+                    }
+
+                    // Compute hashes for all players and fighters
+                    for (const { fighterA, fighterB } of processedFights) {
+                        fighterA.Hash = computePlayerHash(fighterA);
+                        fighterB.Hash = computePlayerHash(fighterB);
+                    }
+
+                    for (const player of processedPlayers) {
+                        player.Hash = computePlayerHash(player);
+                    }
+
+                    console.log(processedFights, processedPlayers)
                 }
             })
         </script>
