@@ -518,8 +518,8 @@
                         // Proceed only if type of fight is known to the system
                         if (Object.values(FIGHT_TYPES).includes(fightType)) {
                             // Parse fighters
-                            const fighterA = new SFFighter(header.slice(05, 52));
-                            const fighterB = new SFFighter(header.slice(52, 99));
+                            const fighterA = new SFFighter(header.slice(05, 52), fightType);
+                            const fighterB = new SFFighter(header.slice(52, 99), fightType);
 
                             // Parse individual rounds (group of 3 numbers)
                             const rawRounds = [];
