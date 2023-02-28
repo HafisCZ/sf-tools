@@ -401,6 +401,47 @@
                     Loader.toggle(false);
                 })
 
+                // Decode attack type
+                function decodeAttackType (attackType) {
+                    if (attackType >= ATTACK_REVIVE) {
+                        return {
+                            attackSecondary: false,
+                            attackCrit: false,
+                            attackMissed: false,
+                            attackSpecial: true
+                        }
+                    } else {
+                        const attackSecondary = [                     
+                            ATTACK_SECONDARY_NORMAL,
+                            ATTACK_SECONDARY_CRITICAL,
+                            ATTACK_SECONDARY_BLOCKED,
+                            ATTACK_SECONDARY_EVADED,
+                            ATTACK_SECONDARY_CRITICAL_BLOCKED,
+                            ATTACK_SECONDARY_CRITICAL_EVADED
+                        ].includes(attackType);
+                        
+                        const attackCrit = [
+                            ATTACK_CRITICAL,
+                            ATTACK_CRITICAL_BLOCKED,
+                            ATTACK_CRITICAL_EVADED
+                        ].includes(attackType % 10);
+
+                        const attackMissed = [
+                            ATTACK_BLOCKED,
+                            ATTACK_EVADED,
+                            ATTACK_CRITICAL_BLOCKED,
+                            ATTACK_CRITICAL_EVADED
+                        ].includes(attackType % 10);
+
+                        return {
+                            attackSecondary,
+                            attackCrit,
+                            attackMissed,
+                            attackSpecial: false
+                        }
+                    }
+                }
+
                 // Extract individual fights from raw data array
                 function digestHAR (json) {
                     const digestedFights = [];
@@ -412,8 +453,8 @@
                             const r = PlayaResponse.fromText(text);
 
                             digestedFights.push({
-                                fightheader: r.fightheader.mixed,
-                                fight: r.fight.numbers,
+                                header: r.fightheader.mixed,
+                                rounds: r.fight.numbers,
                                 winner_id: r.winnerid.number
                             });
                         }
@@ -460,7 +501,67 @@
                         }
                     }
 
-                    console.log(digestedFights, digestedPlayers)
+                    const processedFights = [];
+                    for (const { header, rounds, winner_id } of digestedFights) {
+                        const fightType = header[0];
+
+                        // Proceed only if type of fight is known to the system
+                        if (Object.values(FIGHT_TYPES).includes(fightType)) {
+                            // Parse fighters
+                            const fighterA = new SFFighter(header.slice(05, 52));
+                            const fighterB = new SFFighter(header.slice(52, 99));
+
+                            // Parse individual rounds (group of 3 numbers)
+                            const rawRounds = [];
+                            for (let i = 0; i < rounds.length / 3; i++) {
+                                rawRounds.push(_slice_len(rounds, i * 3, 3));
+                            }
+
+                            // Process each round
+                            const processedRounds = [];
+                            for (const [attackerId, attackType, targetHealthLeft] of rawRounds) {
+                                const [attacker, target] = attackerId == fighterA.ID ? [fighterA, fighterB] : [fighterB, fighterA];
+
+                                processedRounds.push(Object.assign({
+                                    attacker,
+                                    target,
+                                    attackType,
+                                    attackDamage: 0,
+                                    targetHealthLeft,
+                                }, decodeAttackType(attackType)));
+                            }
+
+                            const findHealth = (i) => {
+                                const currentRound = processedRounds[i];
+                                for (let j = i - 1, round; round = processedRounds[j]; j--) {
+                                    if (round.attacker == currentRound.attacker && !round.attackSpecial) {
+                                        return round.targetHealthLeft;
+                                    }
+                                }
+
+                                return currentRound.target.Life;
+                            }
+
+                            // Finalize each round by calculating the correct attack damage
+                            for (let i = 0, round; round = processedRounds[i]; i++) {
+                                if (round.attackSpecial) {
+                                    round.attackDamage = round.targetHealthLeft;
+                                } else {
+                                    round.attackDamage = findHealth(i) - round.targetHealthLeft;
+                                }
+                            }
+
+                            // Push fight
+                            processedFights.push({
+                                fighterA,
+                                fighterB,
+                                winner: winner_id == fighterA.ID ? fighterA : fighterB,
+                                rounds: processedRounds
+                            })
+                        }
+                    }
+
+                    console.log(processedFights, digestedPlayers)
                 }
             })
         </script>
