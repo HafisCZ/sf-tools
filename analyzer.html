@@ -401,6 +401,11 @@
                     Loader.toggle(false);
                 })
 
+                // Utils
+                SimulatorUtils.configure({
+                    params: urlParams
+                });
+
                 // Decode attack type
                 function decodeAttackType (attackType) {
                     if (attackType >= ATTACK_REVIVE) {
@@ -452,6 +457,15 @@
                     }
                 }
 
+                // Create fighter model
+                function createFighterModel (player) {
+                    const model = FighterModel.create(null, player);
+
+                    model.Config = SimulatorUtils.config || model.Config;
+
+                    return model;
+                }
+
                 // Compute item hash
                 function computeItemHash (item, player = null, secondary = false) {
                     if (item.AttributeTypes[0] == 0) {
@@ -469,7 +483,7 @@
 
                         if (player) {
                             // Fix weapon damage (is not clamped by fist damage)
-                            const baseDamage = FighterModel.create(null, player).getBaseDamage(secondary);
+                            const baseDamage = player.Model.getBaseDamage(secondary);
 
                             json[0] = Math.max(baseDamage.Min, json[0]);
                             json[1] = Math.max(baseDamage.Max, json[1]);
@@ -694,7 +708,21 @@
                     }
 
                     for (const player of processedPlayers) {
+                        player.Model = createFighterModel(player);
                         player.Hash = computePlayerHash(player);
+                    }
+
+                    // Merge fighters and hashes
+                    for (const { fighterA, fighterB } of processedFights) {
+                        const playerA = processedPlayers.find((player) => player.Hash === fighterA.Hash);
+                        if (playerA) {
+                            fighterA.Player = playerA;
+                        }
+
+                        const playerB = processedPlayers.find((player) => player.Hash === fighterB.Hash);
+                        if (playerB) {
+                            fighterB.Player = playerB;
+                        }
                     }
 
                     console.log(processedFights, processedPlayers)
