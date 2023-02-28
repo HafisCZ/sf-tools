@@ -461,7 +461,7 @@ class SFItem {
 }
 
 class SFFighter {
-    constructor (data) {
+    constructor (data, fightType) {
         let dataType = new ComplexDataType(data);
         dataType.assert(47);
 
@@ -505,6 +505,10 @@ class SFFighter {
 
         this.Wpn1 = new SFItem(dataType.sub(12), 1, [1, 1]);
         this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
+
+        if (typeof fightType !== 'undefined' && this.isMonster()) {
+            this.Name = getFightTargetName(fightType, null, -this.Face.Mouth);
+        }
     }
 
     getMonsterID () {
