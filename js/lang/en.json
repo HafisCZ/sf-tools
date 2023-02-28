@@ -1154,6 +1154,7 @@
     "dialog": {
         "shared": {
             "cancel": "Cancel",
+            "continue": "Continue",
             "save": "Save",
             "ok": "Ok"
         },
