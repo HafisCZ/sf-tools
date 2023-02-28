@@ -390,13 +390,6 @@
 
         <script type="text/javascript">
             Site.ready(null, function (urlParams) {
-                SimulatorUtils.configure(
-                  CONFIG,
-                  urlParams.has('debug'),
-                  null,
-                  (config) => {}
-                );
-
                 // Upload button
                 $('#button-upload').on('change', async (fileEvent) => {
                     Loader.toggle(true);

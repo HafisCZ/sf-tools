@@ -299,11 +299,10 @@
                     $('#simulate-debug').show();
                 }
 
-                SimulatorUtils.configure(
-                    CONFIG,
-                    modeDebug,
-                    (config) => {
-                        const data = players.map(p => {
+                SimulatorUtils.configure({
+                    params: urlParams,
+                    onCopy: () => {
+                        return players.map(p => {
                             let m = toSimulatorModel(p.player);
                             if (p.player.Class == WARRIOR && typeof p.player.BlockChance != 'undefined') {
                                 m.BlockChance = p.player.BlockChance;
@@ -311,14 +310,8 @@
 
                             return m;
                         });
-
-                        copyJSON({
-                            config,
-                            data,
-                            type: 'custom'
-                        });
                     }
-                )
+                });
 
                 let pasteMode = false;
                 $('#paste-mode').toggleButton(active => pasteMode = active);

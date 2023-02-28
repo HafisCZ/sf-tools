@@ -530,11 +530,10 @@
                 var availableBosses = null;
                 var modeLog = urlParams.has('log');
 
-                SimulatorUtils.configure(
-                    CONFIG,
-                    urlParams.has('debug'),
-                    (config) => {
-                        const data = players.map((p) => {
+                SimulatorUtils.configure({
+                    params: urlParams,
+                    onCopy: () => {
+                        return players.map((p) => {
                             let m = toSimulatorModel(p);
                             if (p.Class == 1 && typeof p.BlockChance != 'undefined') {
                                 m.BlockChance = p.BlockChance;
@@ -542,14 +541,8 @@
 
                             return m;
                         });
-
-                        copyJSON({
-                            config,
-                            data,
-                            type: 'custom'
-                        });
                     }
-                )
+                });
 
                 function settingsChanged () {
                     $('#winchart').addClass('faded-out');
