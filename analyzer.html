@@ -419,6 +419,15 @@
                             ATTACK_SECONDARY_CRITICAL_BLOCKED,
                             ATTACK_SECONDARY_CRITICAL_EVADED
                         ].includes(attackType);
+
+                        const attackChained = [
+                            ATTACK_CHAIN_NORMAL,
+                            ATTACK_CHAIN_CRITICAL,
+                            ATTACK_CHAIN_BLOCKED,
+                            ATTACK_CHAIN_EVADED,
+                            ATTACK_CHAIN_CRITICAL_BLOCKED,
+                            ATTACK_CHAIN_CRITICAL_EVADED
+                        ].includes(attackType);
                         
                         const attackCrit = [
                             ATTACK_CRITICAL,
@@ -437,6 +446,7 @@
                             attackSecondary,
                             attackCrit,
                             attackMissed,
+                            attackChained,
                             attackSpecial: false
                         }
                     }
@@ -542,13 +552,24 @@
                                 return currentRound.target.Life;
                             }
 
-                            // Finalize each round by calculating the correct attack damage
+                            // Finalize each round
+                            let attackRageOffset = 0;
                             for (let i = 0, round; round = processedRounds[i]; i++) {
+                                // Calculate attack damage
                                 if (round.attackSpecial) {
                                     round.attackDamage = round.targetHealthLeft;
                                 } else {
                                     round.attackDamage = findHealth(i) - round.targetHealthLeft;
                                 }
+
+                                // Calculate attack rage
+                                if (round.attackSpecial) {
+                                    attackRageOffset--;
+                                } else if (round.attackChained) {
+                                    attackRageOffset++;
+                                }
+
+                                round.attackRage = 1 + ((i - attackRageOffset) / 6);
                             }
 
                             // Push fight
