@@ -12,6 +12,8 @@ const CHANGELOG = {
             'Added Webshop ID to player detail and as a private header',
             'Added <code>Official Creator</code>, <code>Gold Frame</code> and <code>GT Background</code> headers',
             'Added improved public export',
+            'Added missing header formatting and translations',
+            'Added translations to enums',
             'Fixed guild deletion via advanced file list',
             'Fixed counting of present guild members',
             'Fixed scrapbook size',
