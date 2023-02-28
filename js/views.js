@@ -170,6 +170,27 @@ const TermsAndConditionsDialog = new (class extends Dialog {
     }
 })();
 
+const SimulatorNoticeDialog = new (class extends Dialog {
+    _createModal () {
+        const { title, content, image } = SIMULATOR_NOTICES[0];
+
+        return `
+            <div class="small inverted dialog position-relative">
+                <div class="header text-orange">${title}</div>
+                <div class="text-center" style="line-height: 1.5em;">${content}</div>
+                <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$parent.find('[data-op="accept"]').click(() => {
+            SiteOptions.simulator_notice_accepted = SIMULATOR_NOTICES.length;
+            this.close();
+        });
+    }
+})();
+
 const ChangeLogDialog = new (class extends Dialog {
     constructor () {
         super({
@@ -2090,6 +2111,10 @@ window.addEventListener('DOMContentLoaded', async function () {
 
         if (SiteOptions.version_accepted != MODULE_VERSION) {
             DialogController.open(ChangeLogDialog);
+        }
+
+        if (SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES.length) {
+            DialogController.open(SimulatorNoticeDialog);
         }
     }
 
