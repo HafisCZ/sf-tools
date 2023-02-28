@@ -2113,7 +2113,7 @@ window.addEventListener('DOMContentLoaded', async function () {
             DialogController.open(ChangeLogDialog);
         }
 
-        if (SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES.length) {
+        if (Site.is('simulator') && SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES.length) {
             DialogController.open(SimulatorNoticeDialog);
         }
     }

@@ -207,7 +207,13 @@ const Site = new (class {
         this.resolve();
     }
 
-    ready (callback) {
+    is (type) {
+        return this.metadata && this.metadata.type === type;
+    }
+
+    ready (metadata, callback) {
+        this.metadata = metadata;
+
         this.promise.then(() => {
             this.data = callback(new URLSearchParams(window.location.search)) || {};
         });

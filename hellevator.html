@@ -123,7 +123,7 @@
         <div class="footer text-white" data-intl="hellevator.footer#"></div>
 
         <script type="text/javascript">
-            Site.ready(function () {
+            Site.ready({ type: 'simulator' }, function () {
                 // Iteration fields
                 $('#sim-threads').captiveInputField('hellevator_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('hellevator_sim/iterations', 5000, v => !isNaN(v) && v >= 1);

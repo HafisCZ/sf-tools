@@ -514,7 +514,7 @@
                 }
             })();
 
-            Site.ready(function () {
+            Site.ready({ type: 'simulator' }, function () {
                 $('#sim-threads').captiveInputField('pet_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('pet_sim/iterations', 2.5E6, v => !isNaN(v) && v >= 1);
                 $('#sim-map-iterations').captiveInputField('pet_sim/map_iterations', 1E5, v => !isNaN(v) && v >= 1);

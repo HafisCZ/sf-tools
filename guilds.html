@@ -124,7 +124,7 @@
         </div>
 
         <script type="text/javascript">
-            Site.ready(function () {
+            Site.ready({ type: 'simulator' }, function () {
                 function validateLists () {
                     return playerList[0].length > 0 && playerList[1].length > 0;
                 }
