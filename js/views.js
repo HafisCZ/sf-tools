@@ -172,7 +172,7 @@ const TermsAndConditionsDialog = new (class extends Dialog {
 
 const SimulatorNoticeDialog = new (class extends Dialog {
     _createModal () {
-        const { title, content, image } = SIMULATOR_NOTICES[0];
+        const { title, content } = SIMULATOR_NOTICES[0];
 
         return `
             <div class="small inverted dialog position-relative">
