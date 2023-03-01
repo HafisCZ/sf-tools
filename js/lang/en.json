@@ -983,7 +983,8 @@
             "type": "Type",
             "damage": "Damage",
             "damage_base": "Base damage"
-        }
+        },
+        "view_summary": "View summary"
     },
     "players": {
         "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
@@ -1181,6 +1182,7 @@
             "cancel": "Cancel",
             "continue": "Continue",
             "save": "Save",
+            "close": "Close",
             "ok": "Ok"
         },
         "template_manage": {

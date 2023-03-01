@@ -45,11 +45,19 @@
 
         <div class="ui main inverted container mb-20" style="width: 65vw;">
             <div class="ui small inverted form">
-                <div class="field">
-                    <label data-intl="analyzer.form.fight_group"></label>
-                    <div class="ui selection inverted dropdown" id="fight-group">
-                        <div class="text"></div>
-                        <i class="dropdown icon"></i>
+                <div class="two fields">
+                    <div class="fifteen wide field">
+                        <label data-intl="analyzer.form.fight_group"></label>
+                        <div class="ui selection inverted dropdown" id="fight-group">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <label>&nbsp;</label>
+                        <div class="ui icon small basic inverted right floated button" id="view-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
+                            <i class="ui tasks icon"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -403,11 +411,19 @@
                 </div>
                 <h3 class="ui inverted centered header" data-intl="analyzer.fight_preview"></h3>
                 <div class="ui small inverted form">
-                    <div class="field">
-                        <label data-intl="analyzer.form.fight_list"></label>
-                        <div class="ui selection inverted dropdown" id="fight-list">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
+                    <div class="two fields">
+                        <div class="fifteen wide field">
+                            <label data-intl="analyzer.form.fight_list"></label>
+                            <div class="ui selection inverted dropdown" id="fight-list">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="one wide field">
+                            <label>&nbsp;</label>
+                            <div class="ui icon small basic inverted right floated button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
+                                <i class="ui tasks icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -429,6 +445,68 @@
         </div>
 
         <script type="text/javascript">
+            const FightSummaryDialog = new (class extends Dialog {
+                constructor () {
+                    super({
+                        key: 'shared',
+                        dismissable: true,
+                        opacity: 0
+                    })
+                }
+
+                _createModal () {
+                    return `
+                        <div class="small bordered inverted dialog">
+                            <div>
+                                <table class="ui inverted single very line basic table fixed" data-op="content"></table>
+                            </div>
+                            <button class="ui black fluid button" data-op="cancel">${this.intl('close')}</button>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$closeButton = this.$parent.find('[data-op="cancel"]');
+                    this.$closeButton.click(() => {
+                        this.close();
+                    })
+
+                    this.$content = this.$parent.find('[data-op="content"]');
+                }
+
+                _applyArguments (group, attacksA, attacksB) {
+                    let content = '';
+
+                    // Header
+                    content += `
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
+                                <th style="width: 40%;" class="!text-center">${group.fighterA.Name}</th>
+                                <th style="width: 40%;" class="!text-center">${group.fighterB.Name}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+
+                    // Attacks
+                    const keys = Object.keys(Object.assign({}, attacksA, attacksB));
+                    for (const key of keys) {
+                        content += `
+                            <tr>
+                                <td class="!text-center">${intl(`general.attack${key}`)}</td>
+                                <td class="!text-center">${attacksA[key] || 0}</td>
+                                <td class="!text-center">${attacksB[key] || 0}</td>
+                            </tr>
+                        `;
+                    }
+
+                    content += '</tbody>';
+
+                    this.$content.html(content);
+                }
+            })();
+
             Site.ready(null, function (urlParams) {
                 // Upload button
                 const $buttonUpload = $('#button-upload')
@@ -446,6 +524,9 @@
                 const $fightList = $('#fight-list');
                 const $fightTable = $('#fight-table');
                 const $fightView = $('#fight-view');
+
+                const $viewSummaryGroup = $('#view-summary-group');
+                const $viewSummaryFight = $('#view-summary-fight');
 
                 // Custom fighter
                 class SFFighter {
@@ -1014,6 +1095,7 @@
                         renderPlayer(group.fighterB, playerEditorB);
 
                         renderFightGroup(group);
+                        renderSummary(group);
                     }).dropdown('set selected', '0');
                 }
 
@@ -1036,7 +1118,7 @@
                             const displayBase = attackMissed ? '' : formatAsSpacedNumber(attackBase);
 
                             content += `
-                                <tr${attacker == group.fighterA ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                                <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center">${attackRage.toFixed(2)}</th>
                                     <td class="!text-center">${attacker.Name}</th>
@@ -1062,7 +1144,30 @@
                         const fight = group.fights[parseInt(value)];
 
                         renderFight(group, fight);
+                        renderSummary(group, fight);
                     }).dropdown('set selected', '0');
+                }
+
+                function renderSummary (group, fight) {
+                    const $element = typeof fight === 'undefined' ? $viewSummaryGroup : $viewSummaryFight;
+
+                    $element.off('click').on('click', () => {
+                        const attacksA = {};
+                        const attacksB = {};
+
+                        const rounds = typeof fight === 'undefined' ? group.fights.map((fight) => fight.rounds).flat() : fight.rounds;
+                        for (const { attacker, attackType } of rounds) {
+                            const container = group.fighterA.hash === attacker.hash ? attacksA : attacksB;
+
+                            if (!container[attackType]) {
+                                container[attackType] = 0;
+                            }
+
+                            container[attackType]++;
+                        }
+
+                        DialogController.open(FightSummaryDialog, group, attacksA, attacksB);
+                    });
                 }
             })
         </script>
