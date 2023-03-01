@@ -26,6 +26,7 @@
         <script src="js/stats/settings.js"></script>        
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
+        <script src="js/editor.js"></script>
 
         <script src="js/sim/dungeon_data.js"></script>
 
@@ -46,36 +47,36 @@
             <div class="ui small inverted form">
                 <div class="field">
                     <label data-intl="analyzer.form.fight_group"></label>
-                    <div class="ui selection inverted dropdown" data-op="fight-group">
+                    <div class="ui selection inverted dropdown" id="fight-group">
                         <div class="text"></div>
                         <i class="dropdown icon"></i>
                     </div>
                 </div>
             </div>
-            <div data-op="fight" class="!mt-6" style="display: none;">
+            <div id="fight-view" class="!mt-6" style="display: none;">
                 <h3 class="ui inverted centered header" data-intl="analyzer.players"></h3>
                 <div class="ui two column grid">
                     <div class="column">
                         <div class="ui grey inverted segment">
-                            <div class="ui small inverted form" data-op="player1">
+                            <div class="ui small inverted form" id="player1">
                                 <h4 class="ui centered inverted header" data-intl="analyzer.form.player1"></h4>
                                 <div class="three fields">
                                     <div class="field">
                                         <label data-intl="editor.name"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="name">
+                                            <input type="text" disabled data-path="Name">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.class"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="class">
+                                        <div class="ui selection inverted dropdown pointer-events-none !text-center !pr-4" data-path="Class">
+                                            <div class="text text-center"></div>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.level"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="level">
+                                            <input type="text" disabled data-path="Level">
                                         </div>
                                     </div>
                                 </div>
@@ -83,52 +84,59 @@
                                     <div class="field">
                                         <label data-intl="general.attribute1"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="strength">
+                                            <input type="text" disabled data-path="Strength.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute2"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="dexterity">
+                                            <input type="text" disabled data-path="Dexterity.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute3"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="intelligence">
+                                            <input type="text" disabled data-path="Intelligence.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute4"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="constitution">
+                                            <input type="text" disabled data-path="Constitution.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute5"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="luck">
+                                            <input type="text" disabled data-path="Luck.Total">
                                         </div>
                                     </div>
                                 </div>
                                 <h4 class="ui centered inverted header" data-intl="analyzer.form.editable_data"></h4>
-                                <div class="four fields" data-op="weapon1">
+                                <div class="five fields">
                                     <div class="field">
                                         <label data-intl="editor.min"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon1.min" data-intl-placeholder="editor.min_placeholder">
+                                            <input type="text" data-path="Items.Wpn1.DamageMin" data-intl-placeholder="editor.min_placeholder">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.max"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon1.max" data-intl-placeholder="editor.max_placeholder">
+                                            <input type="text" data-path="Items.Wpn1.DamageMax" data-intl-placeholder="editor.max_placeholder">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="editor.weapon_enchant"></label>
+                                        <div class="ui selection inverted dropdown" data-path="Items.Wpn1.HasEnchantment">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.rune"></label>
                                         <div class="ui inverted centered input">
-                                            <div class="ui selection inverted fluid dropdown" data-op="weapon1.rune_type">
+                                            <div class="ui selection inverted fluid dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
@@ -137,27 +145,34 @@
                                     <div class="field">
                                         <label><br/></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon1.rune_value" placeholder="0 - 60">
+                                            <input type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="four fields" data-op="weapon2">
+                                <div class="five fields" data-optional="Weapon2">
                                     <div class="field">
                                         <label data-intl="editor.min"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon2.min" data-intl-placeholder="editor.min_placeholder">
+                                            <input type="text" data-path="Items.Wpn2.DamageMin" data-intl-placeholder="editor.min_placeholder">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.max"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon2.max" data-intl-placeholder="editor.max_placeholder">
+                                            <input type="text" data-path="Items.Wpn2.DamageMax" data-intl-placeholder="editor.max_placeholder">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="editor.weapon_enchant"></label>
+                                        <div class="ui selection inverted dropdown" data-path="Items.Wpn2.HasEnchantment">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.rune"></label>
                                         <div class="ui inverted centered input">
-                                            <div class="ui selection inverted fluid dropdown" data-op="weapon2.rune_type">
+                                            <div class="ui selection inverted fluid dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
@@ -166,7 +181,7 @@
                                     <div class="field">
                                         <label><br/></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon2.rune_value" placeholder="0 - 60">
+                                            <input type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
                                         </div>
                                     </div>
                                 </div>
@@ -174,46 +189,39 @@
                                     <div class="field">
                                         <label data-intl="editor.armor"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="armor" data-intl-placeholder="editor.armor_placeholder">
+                                            <input type="text" data-path="Armor" data-intl-placeholder="editor.armor_placeholder">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.fire"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="resistance_fire" placeholder="0 - 75">
+                                            <input type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.cold"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="resistance_cold" placeholder="0 - 75">
+                                            <input type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.lightning"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="resistance_lightning" placeholder="0 - 75">
+                                            <input type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="three fields !mb-0">
+                                <div class="two fields !mb-0">
                                     <div class="field">
                                         <label data-intl="editor.portal_damage"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="dungeon" placeholder="0 - 50">
+                                            <input type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.gladiator"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="gladiator" placeholder="0 - 15">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="editor.weapon_enchant"></label>
-                                        <div class="ui selection inverted dropdown" data-op="enchant">
-                                            <div class="text"></div>
-                                            <i class="dropdown icon"></i>
+                                            <input type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                                         </div>
                                     </div>
                                 </div>
@@ -222,25 +230,25 @@
                     </div>
                     <div class="column">
                         <div class="ui grey inverted segment">
-                            <div class="ui small inverted form" data-op="player2">
+                            <div class="ui small inverted form" id="player2">
                                 <h4 class="ui centered inverted header" data-intl="analyzer.form.player2"></h4>
                                 <div class="three fields">
                                     <div class="field">
                                         <label data-intl="editor.name"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="name">
+                                            <input type="text" disabled data-path="Name">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.class"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="class">
+                                        <div class="ui selection inverted dropdown pointer-events-none !text-center !pr-4" data-path="Class">
+                                            <div class="text"></div>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.level"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="level">
+                                            <input type="text" disabled data-path="Level">
                                         </div>
                                     </div>
                                 </div>
@@ -248,52 +256,59 @@
                                     <div class="field">
                                         <label data-intl="general.attribute1"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="strength">
+                                            <input type="text" disabled data-path="Strength.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute2"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="dexterity">
+                                            <input type="text" disabled data-path="Dexterity.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute3"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="intelligence">
+                                            <input type="text" disabled data-path="Intelligence.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute4"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="constitution">
+                                            <input type="text" disabled data-path="Constitution.Total">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="general.attribute5"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" disabled data-op="luck">
+                                            <input type="text" disabled data-path="Luck.Total">
                                         </div>
                                     </div>
                                 </div>
                                 <h4 class="ui centered inverted header" data-intl="analyzer.form.editable_data"></h4>
-                                <div class="four fields" data-op="weapon1">
+                                <div class="five fields">
                                     <div class="field">
                                         <label data-intl="editor.min"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon1.min" data-intl-placeholder="editor.min_placeholder">
+                                            <input type="text" data-path="Items.Wpn1.DamageMin" data-intl-placeholder="editor.min_placeholder">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.max"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon1.max" data-intl-placeholder="editor.max_placeholder">
+                                            <input type="text" data-path="Items.Wpn1.DamageMax" data-intl-placeholder="editor.max_placeholder">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="editor.weapon_enchant"></label>
+                                        <div class="ui selection inverted dropdown" data-path="Items.Wpn1.HasEnchantment">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.rune"></label>
                                         <div class="ui inverted centered input">
-                                            <div class="ui selection inverted fluid dropdown" data-op="weapon1.rune_type">
+                                            <div class="ui selection inverted fluid dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
@@ -302,27 +317,34 @@
                                     <div class="field">
                                         <label><br/></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon1.rune_value" placeholder="0 - 60">
+                                            <input type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="four fields" data-op="weapon2">
+                                <div class="five fields" data-optional="Weapon2">
                                     <div class="field">
                                         <label data-intl="editor.min"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon2.min" data-intl-placeholder="editor.min_placeholder">
+                                            <input type="text" data-path="Items.Wpn2.DamageMin" data-intl-placeholder="editor.min_placeholder">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.max"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon2.max" data-intl-placeholder="editor.max_placeholder">
+                                            <input type="text" data-path="Items.Wpn2.DamageMax" data-intl-placeholder="editor.max_placeholder">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label data-intl="editor.weapon_enchant"></label>
+                                        <div class="ui selection inverted dropdown" data-path="Items.Wpn2.HasEnchantment">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.rune"></label>
                                         <div class="ui inverted centered input">
-                                            <div class="ui selection inverted fluid dropdown" data-op="weapon2.rune_type">
+                                            <div class="ui selection inverted fluid dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
@@ -331,7 +353,7 @@
                                     <div class="field">
                                         <label><br/></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="weapon2.rune_value" placeholder="0 - 60">
+                                            <input type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
                                         </div>
                                     </div>
                                 </div>
@@ -339,46 +361,39 @@
                                     <div class="field">
                                         <label data-intl="editor.armor"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="armor" data-intl-placeholder="editor.armor_placeholder">
+                                            <input type="text" data-path="Armor" data-intl-placeholder="editor.armor_placeholder">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.fire"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="resistance_fire" placeholder="0 - 75">
+                                            <input type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.cold"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="resistance_cold" placeholder="0 - 75">
+                                            <input type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.lightning"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="resistance_lightning" placeholder="0 - 75">
+                                            <input type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="three fields !mb-0">
+                                <div class="two fields !mb-0">
                                     <div class="field">
                                         <label data-intl="editor.portal_damage"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="dungeon" placeholder="0 - 50">
+                                            <input type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                                         </div>
                                     </div>
                                     <div class="field">
                                         <label data-intl="editor.gladiator"></label>
                                         <div class="ui inverted centered input">
-                                            <input type="text" data-op="gladiator" placeholder="0 - 15">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="editor.weapon_enchant"></label>
-                                        <div class="ui selection inverted dropdown" data-op="enchant">
-                                            <div class="text"></div>
-                                            <i class="dropdown icon"></i>
+                                            <input type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                                         </div>
                                     </div>
                                 </div>
@@ -386,16 +401,30 @@
                         </div>
                     </div>
                 </div>
-                <h3 class="ui inverted centered header" data-intl="analyzer.fight"></h3>
+                <h3 class="ui inverted centered header" data-intl="analyzer.fight_preview"></h3>
                 <div class="ui small inverted form">
                     <div class="field">
                         <label data-intl="analyzer.form.fight_list"></label>
-                        <div class="ui selection inverted dropdown" data-op="fight-list">
+                        <div class="ui selection inverted dropdown" id="fight-list">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                 </div>
+                <table class="ui inverted single very line basic table fixed mt-8">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;" class="!text-center">#</th>
+                            <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.rage"></th>
+                            <th style="width: 20%;" class="!text-center" data-intl="analyzer.table.attacker"></th>
+                            <th style="width: 20%;" class="!text-center" data-intl="analyzer.table.target"></th>
+                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.type"></th>
+                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.damage"></th>
+                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.damage_base"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="fight-table"></tbody>
+                </table>
             </div>
         </div>
 
@@ -413,12 +442,230 @@
                     Loader.toggle(false);
                 })
                 
-                const $fightGroup = $('[data-op="fight-group"]');
-                const $fightList = $('[data-op="fight-list"]');
-                const $fightView = $('[data-op="fight"]');
+                const $fightGroup = $('#fight-group');
+                const $fightList = $('#fight-list');
+                const $fightTable = $('#fight-table');
+                const $fightView = $('#fight-view');
 
-                const $player1 = $('[data-op="player1"]');
-                const $player2 = $('[data-op="player2"]');
+                // Custom fighter
+                class SFFighter {
+                    constructor (data, fightType) {
+                        let dataType = new ComplexDataType(data);
+                        dataType.assert(47);
+
+                        this.ID = dataType.long();
+                        this.Name = dataType.string();
+                        this.Level = dataType.long();
+                        this.MaximumLife = dataType.long();
+                        this.Life = dataType.long();
+
+                        this.Strength = {
+                            Total: dataType.long()
+                        };
+
+                        this.Dexterity = {
+                            Total: dataType.long()
+                        };
+
+                        this.Intelligence = {
+                            Total: dataType.long()
+                        };
+
+                        this.Constitution = {
+                            Total: dataType.long()
+                        };
+
+                        this.Luck = {
+                            Total: dataType.long()
+                        };
+
+                        this.Face = {
+                            Mouth: dataType.long(),
+                            Hair: {
+                                Type: dataType.long() % 100,
+                                Color: Math.trunc(dataType.back(1).long() / 100)
+                            },
+                            Brows: {
+                                Type: dataType.long() % 100,
+                                Color: Math.trunc(dataType.back(1).long() / 100)
+                            },
+                            Eyes: dataType.long(),
+                            Beard: {
+                                Type: dataType.long() % 100,
+                                Color: Math.trunc(dataType.back(1).long() / 100)
+                            },
+                            Nose: dataType.long(),
+                            Ears: dataType.long(),
+                            Special: dataType.long(),
+                            Special2: dataType.long(),
+                            Portrait: dataType.long()
+                        };
+
+                        this.Race = dataType.long();
+                        this.Gender = dataType.long();
+                        this.Class = dataType.long();
+
+                        this.Items = {
+                            Wpn1: new SFItem(dataType.sub(12), 1, [1, 1]),
+                            Wpn2: new SFItem(dataType.sub(12), 2, [1, 2])
+                        }
+
+                        if (typeof fightType !== 'undefined' && this.Face.Mouth < 0) {
+                            this.Name = getFightTargetName(fightType, null, -this.Face.Mouth);
+                        }
+                    }
+                }
+
+                // Editor
+                class PlayerEditor {
+                    constructor (parent) {
+                        this.fields = {
+                            name: new Field(`${parent} [data-path="Name"]`, ''),
+
+                            class: new Field(`${parent} [data-path="Class"]`, '1'),
+                            level: new Field(`${parent} [data-path="Level"]`, '0', Field.isPlayerLevel),
+                            armor: new Field(`${parent} [data-path="Armor"]`, '0', Field.isNumber),
+
+                            resistance_fire: new Field(`${parent} [data-path="Runes.ResistanceFire"]`, '0', Field.isResistanceRune),
+                            resistance_cold: new Field(`${parent} [data-path="Runes.ResistanceCold"]`, '0', Field.isResistanceRune),
+                            resistance_lightning: new Field(`${parent} [data-path="Runes.ResistanceLightning"]`, '0', Field.isResistanceRune),
+
+                            portal_damage: new Field(`${parent} [data-path="Dungeons.Group"]`, '0', Field.isDungeon),
+
+                            gladiator: new Field(`${parent} [data-path="Fortress.Gladiator"]`, '0', Field.isUnderworldBuilding),
+
+                            str: new Field(`${parent} [data-path="Strength.Total"]`, '0', Field.isNonZero),
+                            dex: new Field(`${parent} [data-path="Dexterity.Total"]`, '0', Field.isNonZero),
+                            int: new Field(`${parent} [data-path="Intelligence.Total"]`, '0', Field.isNonZero),
+                            con: new Field(`${parent} [data-path="Constitution.Total"]`, '0', Field.isNonZero),
+                            lck: new Field(`${parent} [data-path="Luck.Total"]`, '0', Field.isNumber),
+
+                            weapon1_min: new Field(`${parent} [data-path="Items.Wpn1.DamageMin"]`, '0', Field.isNumber),
+                            weapon1_max: new Field(`${parent} [data-path="Items.Wpn1.DamageMax"]`, '0', Field.isNumber),
+                            weapon1_enchantment: new Field(`${parent} [data-path="Items.Wpn1.HasEnchantment"]`, 'false'),
+                            weapon1_rune: new Field(`${parent} [data-path="Items.Wpn1.AttributeTypes.2"]`, '0'),
+                            weapon1_value: new Field(`${parent} [data-path="Items.Wpn1.Attributes.2"]`, '0', Field.isDamageRune),
+
+                            weapon2_min: new Field(`${parent} [data-path="Items.Wpn2.DamageMin"]`, '0', Field.isNumber),
+                            weapon2_max: new Field(`${parent} [data-path="Items.Wpn2.DamageMax"]`, '0', Field.isNumber),
+                            weapon2_enchantment: new Field(`${parent} [data-path="Items.Wpn2.HasEnchantment"]`, 'false'),
+                            weapon2_rune: new Field(`${parent} [data-path="Items.Wpn2.AttributeTypes.2"]`, '0'),
+                            weapon2_value: new Field(`${parent} [data-path="Items.Wpn2.Attributes.2"]`, '0', Field.isDamageRune)
+                        };
+
+                        this.fields['class'].$object.dropdown({
+                            values: CONFIG.indexes().map((value) => ({
+                                image: `res/class${value}.png`,
+                                imageClass: '!-ml-3 !mr-2',
+                                name: intl(`general.class${value}`),
+                                value
+                            }))
+                        }).dropdown('setting', 'onChange', (value) => {
+                            $(`${parent} [data-optional="Weapon2"]`).toggle(value == ASSASSIN);
+                        }).dropdown('set selected', '1');
+
+                        this.fields['weapon1_rune'].$object.dropdown({
+                            values: [
+                                {
+                                    name: intl('editor.none'),
+                                    value: 0
+                                },
+                                {
+                                    name: intl('editor.fire'),
+                                    value: 40
+                                },
+                                {
+                                    name: intl('editor.cold'),
+                                    value: 41
+                                },
+                                {
+                                    name: intl('editor.lightning'),
+                                    value: 42
+                                }
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['weapon2_rune'].$object.dropdown({
+                            values: [
+                                {
+                                    name: intl('editor.none'),
+                                    value: 0
+                                },
+                                {
+                                    name: intl('editor.fire'),
+                                    value: 40
+                                },
+                                {
+                                    name: intl('editor.cold'),
+                                    value: 41
+                                },
+                                {
+                                    name: intl('editor.lightning'),
+                                    value: 42
+                                }
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['weapon1_enchantment'].$object.dropdown({
+                            values: [
+                                {
+                                    name: intl('general.no'),
+                                    value: false
+                                },
+                                {
+                                    name: intl('general.yes'),
+                                    value: true
+                                }
+                            ]
+                        }).dropdown('set selected', 'false');
+
+                        this.fields['weapon2_enchantment'].$object.dropdown({
+                            values: [
+                                {
+                                    name: intl('general.no'),
+                                    value: false
+                                },
+                                {
+                                    name: intl('general.yes'),
+                                    value: true
+                                }
+                            ]
+                        }).dropdown('set selected', 'false');
+                    }
+
+                    fill (object) {
+                        for (const [key, field] of Object.entries(this.fields)) {
+                            const value = getObjectAt(object, field.path());
+                            if (typeof value === 'undefined') {
+                                field.clear();
+                            } else {
+                                field.set(value);
+                            }
+                        }
+                    }
+
+                    read () {
+                        const object = {};
+                        for (const [key, field] of Object.entries(this.fields)) {
+                            setObjectAt(object, field.path(), field.get());
+                        }
+
+                        return object;
+                    }
+
+                    valid () {
+                        for (const [key, field] of Object.entries(this.fields)) {
+                            if (!field.valid()) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+
+                const playerEditorA = new PlayerEditor('#player1');
+                const playerEditorB = new PlayerEditor('#player2');
 
                 // Utils
                 SimulatorUtils.configure({
@@ -486,8 +733,10 @@
                 }
 
                 // Compute item hash
-                function computeItemHash (item, player = null, secondary = false) {
-                    if (item.AttributeTypes[0] == 0) {
+                function computeItemHash (item, player, secondary = false) {
+                    if (secondary && player.Class !== ASSASSIN) {
+                        return '';
+                    } else if (item.AttributeTypes[0] == 0) {
                         return '';
                     } else {
                         const json = [
@@ -500,7 +749,7 @@
                             item.GemValue
                         ];
 
-                        if (player) {
+                        if (player.model) {
                             // Fix weapon damage (is not clamped by fist damage)
                             const baseDamage = player.model.getBaseDamage(secondary);
 
@@ -517,30 +766,15 @@
                     const json = [
                         player.ID,
                         player.Class,
-                        player.Level
+                        player.Level,
+                        player.Strength.Total,
+                        player.Dexterity.Total,
+                        player.Intelligence.Total,
+                        player.Constitution.Total,
+                        player.Luck.Total,
+                        computeItemHash(player.Items.Wpn1, player, false),
+                        computeItemHash(player.Items.Wpn2, player, true)
                     ];
-
-                    if (player instanceof SFFighter) {
-                        json.push(
-                            player.Strength,
-                            player.Dexterity,
-                            player.Intelligence,
-                            player.Constitution,
-                            player.Luck,
-                            computeItemHash(player.Wpn1),
-                            player.Class == ASSASSIN ? computeItemHash(player.Wpn2) : ''
-                        )
-                    } else if (player instanceof SFPlayer) {
-                        json.push(
-                            player.Strength.Total,
-                            player.Dexterity.Total,
-                            player.Intelligence.Total,
-                            player.Constitution.Total,
-                            player.Luck.Total,
-                            computeItemHash(player.Items.Wpn1, player, false),
-                            player.Class == ASSASSIN ? computeItemHash(player.Items.Wpn2, player, true) : ''
-                        )
-                    }
 
                     return SHA1(JSON.stringify(json));
                 }
@@ -682,7 +916,7 @@
                                 round.attackRage = 1 + ((i - attackRageOffset) / 6);
 
                                 // Calculate base damage
-                                round.attackBase = round.attackDamage / round.attackRage;
+                                round.attackBase = Math.trunc(round.attackDamage / round.attackRage);
                             }
 
                             // Push fight
@@ -776,27 +1010,58 @@
 
                         $fightView.show();
 
-                        renderPlayer(group.fighterA, $player1);
-                        renderPlayer(group.fighterB, $player2);
+                        renderPlayer(group.fighterA, playerEditorA);
+                        renderPlayer(group.fighterB, playerEditorB);
 
-                        renderFights(group.fights);
+                        renderFightGroup(group);
                     }).dropdown('set selected', '0');
                 }
 
-                function renderPlayer (player, element) {
-                    // TODO: Render player
+                function renderPlayer (player, editor) {
+                    editor.fill(player.player || player);
                 }
 
-                function renderFights (fights) {
+                function renderFight (group, fight) {
+                    let content = '';
+
+                    for (let i = 0; i < fight.rounds.length; i++) {
+                        const { attacker, target, attackType, attackRage, attackDamage, attackBase, attackMissed, attackCrit, attackSpecial } = fight.rounds[i];
+
+                        if (attackSpecial) {
+
+                        } else {
+                            const attackClass = attackCrit ? ' text-orangered font-bold' : '';
+
+                            const displayDamage = attackMissed ? '' : formatAsSpacedNumber(attackDamage);
+                            const displayBase = attackMissed ? '' : formatAsSpacedNumber(attackBase);
+
+                            content += `
+                                <tr${attacker == group.fighterA ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                                    <td class="!text-center">${i + 1}</th>
+                                    <td class="!text-center">${attackRage.toFixed(2)}</th>
+                                    <td class="!text-center">${attacker.Name}</th>
+                                    <td class="!text-center">${target.Name}</th>
+                                    <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
+                                    <td class="!text-center${attackClass}">${displayDamage}</th>
+                                    <td class="!text-center${attackClass}">${displayBase}</th>
+                                </tr>
+                            `;
+                        }
+                    }
+
+                    $fightTable.html(content);
+                }
+
+                function renderFightGroup (group) {
                     $fightList.dropdown({
-                        values: fights.map((fight, index) => ({
-                            name: intl('analyzer.fight_title', { rounds: fight.rounds.length, winner: fight.winner.Name }),
+                        values: group.fights.map((fight, index) => ({
+                            name: intl('analyzer.fight_title', { index: index + 1, rounds: fight.rounds.length, winner: fight.winner.Name }),
                             value: index
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
-                        const fight = fights[parseInt(value)];
+                        const fight = group.fights[parseInt(value)];
 
-                        // TODO: Render fight
+                        renderFight(group, fight);
                     }).dropdown('set selected', '0');
                 }
             })

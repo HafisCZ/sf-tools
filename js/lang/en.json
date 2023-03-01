@@ -961,6 +961,30 @@
             }
         }
     },
+    "analyzer": {
+        "topbar": {
+            "import": "Import",
+            "clear": "Clear"
+        },
+        "form": {
+            "fight_group": "Select group",
+            "fight_list": "Select fight",
+            "player1": "Player A",
+            "player2": "Player B",
+            "editable_data": "Editable data"
+        },
+        "players": "Players",
+        "fight_preview": "Fight preview",
+        "fight_title": "#{index}. Winner: #{winner}. Rounds: #{rounds}.",
+        "table": {
+            "rage": "Rage",
+            "attacker": "Attacker",
+            "target": "Target",
+            "type": "Type",
+            "damage": "Damage",
+            "damage_base": "Base damage"
+        }
+    },
     "players": {
         "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
         "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
