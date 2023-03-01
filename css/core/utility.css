@@ -153,6 +153,10 @@
   padding-right: 1em;
 }
 
+.\!pr-4 {
+  padding-right: 1em !important;
+}
+
 .p-4 {
   padding: 1em;
 }
@@ -309,6 +313,10 @@
 /* Text Color */
 .text-orange {
   color: orange;
+}
+
+.text-orangered {
+  color: orangered;
 }
 
 .text-orange\:hover:hover {
