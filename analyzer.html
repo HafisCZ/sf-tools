@@ -419,10 +419,15 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <div class="one wide field">
+                        <div class="one wide field" style="width: 8%;">
                             <label>&nbsp;</label>
-                            <div class="ui icon small basic inverted right floated button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
-                                <i class="ui tasks icon"></i>
+                            <div class="ui right floated buttons">
+                                <div class="ui icon small basic inverted button" id="copy-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="editor.copy">
+                                    <i class="ui copy icon"></i>
+                                </div>
+                                <div class="ui icon small basic inverted button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
+                                    <i class="ui tasks icon"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -527,6 +532,8 @@
 
                 const $viewSummaryGroup = $('#view-summary-group');
                 const $viewSummaryFight = $('#view-summary-fight');
+
+                const $copyFight = $('#copy-fight');
 
                 // Custom fighter
                 class SFFighter {
@@ -1168,6 +1175,12 @@
 
                         DialogController.open(FightSummaryDialog, group, attacksA, attacksB);
                     });
+
+                    if (typeof fight !== 'undefined') {
+                        $copyFight.off('click').on('click', () => {
+                            copyNode($fightTable.closest('table').get(0));
+                        });
+                    }
                 }
             })
         </script>
