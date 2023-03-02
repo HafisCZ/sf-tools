@@ -982,8 +982,8 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
-        "fight_title": "#{index}. Winner: #{winner}. Rounds: #{rounds}.",
         "table": {
+            "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
             "rage": "Rage",
             "attacker": "Attacker",
             "target": "Target",
