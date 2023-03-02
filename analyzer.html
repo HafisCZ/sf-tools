@@ -461,9 +461,7 @@
                 _createModal () {
                     return `
                         <div class="small bordered inverted dialog">
-                            <div>
-                                <table class="ui inverted single very line basic table fixed" data-op="content"></table>
-                            </div>
+                            <div data-op="content"></div>
                             <button class="ui black fluid button" data-op="cancel">${this.intl('close')}</button>
                         </div>
                     `;
@@ -478,34 +476,58 @@
                     this.$content = this.$parent.find('[data-op="content"]');
                 }
 
-                _applyArguments (group, attacksA, attacksB) {
-                    let content = '';
-
-                    // Header
-                    content += `
-                        <thead>
-                            <tr>
-                                <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
-                                <th style="width: 40%;" class="!text-center">${group.fighterA.Name}</th>
-                                <th style="width: 40%;" class="!text-center">${group.fighterB.Name}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                _applyArguments (group, { fighterA, fighterB }) {
+                    let content = `
+                        <h2 class="ui centered inverted header !text-orange">${intl('analyzer.table.damage_heading')}</h2>
+                        <table class="ui inverted single very line basic table fixed">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;" class="!text-center">${intl('analyzer.table.damage')}</th>
+                                    <th style="width: 40%;" class="!text-center">${group.fighterA.Name}</th>
+                                    <th style="width: 40%;" class="!text-center">${group.fighterB.Name}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="!text-center">${intl('editor.min')}</td>
+                                    <td class="!text-center">${formatAsSpacedNumber(fighterA.damage.min)}</td>
+                                    <td class="!text-center">${formatAsSpacedNumber(fighterB.damage.min)}</td>
+                                </tr>
+                                <tr>
+                                    <td class="!text-center">${intl('editor.max')}</td>
+                                    <td class="!text-center">${formatAsSpacedNumber(fighterA.damage.max)}</td>
+                                    <td class="!text-center">${formatAsSpacedNumber(fighterB.damage.max)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 class="ui centered inverted header !text-orange">${intl('analyzer.table.type_heading')}</h2>
+                        <table class="ui inverted single very line basic table fixed">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
+                                    <th style="width: 40%;" class="!text-center">${group.fighterA.Name}</th>
+                                    <th style="width: 40%;" class="!text-center">${group.fighterB.Name}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                     `;
 
                     // Attacks
-                    const keys = Object.keys(Object.assign({}, attacksA, attacksB));
+                    const keys = Object.keys(Object.assign({}, fighterA.attacks, fighterB.attacks));
                     for (const key of keys) {
                         content += `
                             <tr>
                                 <td class="!text-center">${intl(`general.attack${key}`)}</td>
-                                <td class="!text-center">${attacksA[key] || 0}</td>
-                                <td class="!text-center">${attacksB[key] || 0}</td>
+                                <td class="!text-center">${fighterA.attacks[key] || 0}</td>
+                                <td class="!text-center">${fighterB.attacks[key] || 0}</td>
                             </tr>
                         `;
                     }
 
-                    content += '</tbody>';
+                    content += `
+                            </tbody>
+                        </table>
+                    `;
 
                     this.$content.html(content);
                 }
@@ -863,7 +885,7 @@
                         computeItemHash(player.Items.Wpn2, player, true)
                     ];
 
-                    return (JSON.stringify(json));
+                    return JSON.stringify(json);
                 }
 
                 // Extract individual fights from raw data array
@@ -1136,7 +1158,7 @@
                                     <td class="!text-center">${target.Name}</th>
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center${attackClass}">${displayDamage}</th>
-                                    <td class="!text-center${attackClass}">${displayBase}${attackBaseError && !attackMissed ? ' !' : ''}</th>
+                                    <td class="!text-center">${displayBase}${attackBaseError && !attackMissed ? ' <span class="text-orangered">!</span>' : ''}</th>
                                 </tr>
                             `;
                         }
@@ -1163,6 +1185,89 @@
                 let currentGroup = null;
                 let currentFight = null;
 
+                function processGroup (group) {
+                    // Fetch data and initialize models
+                    const model1 = FighterModel.create(0, playerEditorA.read());
+                    const model2 = FighterModel.create(1, playerEditorB.read());
+
+                    // Initialize models
+                    FighterModel.initializeFighters(model1, model2);
+
+                    // Calculate base damage of each round
+                    const flatRounds = group.fights.map((fight) => fight.rounds).flat();
+                    for (const round of flatRounds) {
+                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
+                            continue;
+                        }
+
+                        const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+
+                        // Scaled down weapon damage
+                        let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? model.Weapon2.Base : model.Weapon1.Base);
+
+                        // Special cases
+                        if (round.attackCrit) damage /= model.Critical;
+                        if (round.attackType === ATTACK_SWOOP) damage /= CONFIG.Druid.SwoopMultiplier;
+
+                        round.attackBase = Math.trunc(damage);
+
+                        // Check whether base damage is in range of weapon damage
+                        const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1']
+
+                        round.attackBaseError = !_within(damage, weapon.DamageMin, weapon.DamageMax);
+                    }
+
+                    // Prepare summary
+                    for (const fighter of [group.fighterA, group.fighterB]) {
+                        Object.assign(fighter, {
+                            attacks: {},
+                            damage: {
+                                min: +Infinity,
+                                max: -Infinity
+                            }
+                        });
+                    }
+
+                    // Calculate summary
+                    for (const fight of group.fights) {
+                        fight.fighterA = {
+                            attacks: {},
+                            damage: {
+                                min: +Infinity,
+                                max: -Infinity
+                            }
+                        }
+
+                        fight.fighterB = {
+                            attacks: {},
+                            damage: {
+                                min: +Infinity,
+                                max: -Infinity
+                            }
+                        }
+
+                        for (const { attacker, attackType, attackBase } of fight.rounds) {
+                            const fightContainer = fight[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
+                            const groupContainer = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
+
+                            // Calculate type occurences
+                            fightContainer.attacks[attackType] = (fightContainer.attacks[attackType] || 0) + 1;
+                            groupContainer.attacks[attackType] = (groupContainer.attacks[attackType] || 0) + 1;
+
+                            // Calculate damage range
+                            if (typeof attackBase !== 'undefined') {
+                                const container3 = fightContainer.damage;
+                                container3.min = Math.min(container3.min, attackBase);
+                                container3.max = Math.max(container3.max, attackBase);
+                                
+                                const container4 = groupContainer.damage;
+                                container4.min = Math.min(container4.min, attackBase);
+                                container4.max = Math.max(container4.max, attackBase);
+                            }
+                        }
+                    }
+                }
+
                 function updatePreview (group, fight) {
                     if (typeof group !== 'undefined') {
                         currentGroup = group;
@@ -1170,31 +1275,7 @@
                     }
 
                     if (currentGroup && currentFight) {
-                        // Fetch data and initialize models
-                        const model1 = FighterModel.create(0, playerEditorA.read());
-                        const model2 = FighterModel.create(1, playerEditorB.read());
-
-                        FighterModel.initializeFighters(model1, model2);
-
-                        // Calculate base damage
-                        for (const round of currentFight.rounds) {
-                            if (round.attackSpecial || round.attackType === ATTACK_FIREBALL) {
-                                continue;
-                            }
-
-                            const [attackerModel, targetModel] = round.attacker.hash === currentGroup.fighterA.hash ? [model1, model2] : [model2, model1];
-
-                            // Scaled down weapon damage
-                            let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? attackerModel.Weapon2.Base : attackerModel.Weapon1.Base);
-
-                            // Special cases
-                            if (round.attackCrit) damage /= attackerModel.Critical;
-                            if (round.attackType === ATTACK_SWOOP) damage /= CONFIG.Druid.SwoopMultiplier;
-
-                            round.attackBase = Math.trunc(damage);
-                            round.attackBaseError = false; // TODO: Add check whether in bounds
-                        }
-
+                        processGroup(currentGroup);
                         renderFight(currentGroup, currentFight);
                     }
                 }
@@ -1203,21 +1284,7 @@
                     const $element = typeof fight === 'undefined' ? $viewSummaryGroup : $viewSummaryFight;
 
                     $element.off('click').on('click', () => {
-                        const attacksA = {};
-                        const attacksB = {};
-
-                        const rounds = typeof fight === 'undefined' ? group.fights.map((fight) => fight.rounds).flat() : fight.rounds;
-                        for (const { attacker, attackType } of rounds) {
-                            const container = group.fighterA.hash === attacker.hash ? attacksA : attacksB;
-
-                            if (!container[attackType]) {
-                                container[attackType] = 0;
-                            }
-
-                            container[attackType]++;
-                        }
-
-                        DialogController.open(FightSummaryDialog, group, attacksA, attacksB);
+                        DialogController.open(FightSummaryDialog, group, fight || group);
                     });
 
                     if (typeof fight !== 'undefined') {
