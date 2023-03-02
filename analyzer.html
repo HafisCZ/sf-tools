@@ -582,15 +582,22 @@
                     currentFights = [];
                     currentPlayers = [];
 
+                    currentGroup = null;
+                    currentFight = null;
+
                     render();
                 })
 
                 $buttonExport.click(() => {
-                    exportFights(currentFights);
+                    if (currentFights.length > 0) {
+                        exportFights(currentFights);
+                    }
                 })
 
                 $buttonExportGroup.click(() => {
-                    exportFights(currentGroup); 
+                    if (currentGroup) {
+                        exportFights(currentGroup); 
+                    }
                 })
 
                 $fightCopy.click(() => {
@@ -1109,6 +1116,8 @@
                 }
 
                 function render () {
+                    $fightView.hide();
+
                     // Compute hashes for all players and fighters
                     for (const [index, { fighterA, fighterB }] of Object.entries(currentFights)) {
                         fighterA.hash = computePlayerHash(fighterA);
@@ -1185,26 +1194,40 @@
 
                         const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"'
 
-                        if (attackSpecial) {
-                            const source = attackType === ATTACK_REVIVE ? target : attacker;
+                        if (attackType === ATTACK_REVIVE) {
+                            content += `
+                                <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                                    <td class="!text-center">${i + 1}</th>
+                                    <td class="!text-center"></th>
+                                    <td class="!text-center"${nameStyle}>${target.Name}</th>
+                                    <td class="!text-center"></th>
+                                    <td class="!text-center text-violet">${intl(`general.attack${attackType}`)}</th>
+                                    <td class="!text-center"></th>
+                                    <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
+                                    <td class="!text-center"></th>
+                                </tr>
+                            `;
+                        } else if (attackType >= ATTACK_BARD_SONG) {
+                            const spellNotes = Math.trunc((attackType % 100) / 10);
+                            const spellLevel = attackType % 10;
 
                             content += `
                                 <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center"></th>
-                                    <td class="!text-center"${nameStyle}>${source.Name}</th>
+                                    <td class="!text-center"${nameStyle}>${attacker.Name}</th>
                                     <td class="!text-center"></th>
-                                    <td class="!text-center text-violet">${intl(`general.attack${attackType}`)}</th>
+                                    <td class="!text-center text-violet">${intl(`general.attack200_2`, { spellNotes, spellLevel })}</th>
                                     <td class="!text-center"></th>
-                                    <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / source.Life).toFixed(1)}%</th>
+                                    <td class="!text-center"></th>
                                     <td class="!text-center"></th>
                                 </tr>
                             `;
                         } else {
                             const attackClass = attackCrit ? ' text-orangered font-bold' : '';
 
-                            const displayDamage = attackMissed ? '' : formatAsSpacedNumber(attackDamage);
-                            const displayBase = attackMissed ? '' : formatAsSpacedNumber(attackBase);
+                            const displayDamage = typeof attackBase === 'undefined' ? '' : formatAsSpacedNumber(attackDamage);
+                            const displayBase = typeof attackBase === 'undefined' ? '' : formatAsSpacedNumber(attackBase);
 
                             content += `
                                 <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
@@ -1260,11 +1283,11 @@
                     const flatRounds = group.fights.map((fight) => fight.rounds).flat();
                     for (const [index, round] of Object.entries(flatRounds)) {
                         if (round.attackType >= ATTACK_BARD_SONG) {
-                            const spellLevel = attackType % 10 - 1;
+                            const spellLevel = round.attackType % 10 - 1;
                             const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
                             const superRound = flatRounds[index - 1];
 
-                            superRound.attackBase = Math.trunc(superRound.attackBase / spellBonus);
+                            superRound.attackBase = Math.round(superRound.attackBase / spellBonus);
 
                             continue;
                         } else if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
@@ -1329,8 +1352,10 @@
                             const groupContainer = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
 
                             // Calculate type occurences
-                            fightContainer.attacks[attackType] = (fightContainer.attacks[attackType] || 0) + 1;
-                            groupContainer.attacks[attackType] = (groupContainer.attacks[attackType] || 0) + 1;
+                            if (attackType < ATTACK_BARD_SONG && attackType !== ATTACK_FIREBALL && attackType !== ATTACK_FIREBALL_BLOCKED) {
+                                fightContainer.attacks[attackType] = (fightContainer.attacks[attackType] || 0) + 1;
+                                groupContainer.attacks[attackType] = (groupContainer.attacks[attackType] || 0) + 1;
+                            }
 
                             // Calculate damage range
                             if (typeof attackBase !== 'undefined') {
@@ -1356,7 +1381,9 @@
                 function renderButtons ($element, group, fight) {
                     $element.off('click');
                     $element.click(() => {
-                        DialogController.open(FightSummaryDialog, group, fight || group);
+                        if (currentGroup) {
+                            DialogController.open(FightSummaryDialog, group, fight || group);
+                        }
                     });
                 }
 
