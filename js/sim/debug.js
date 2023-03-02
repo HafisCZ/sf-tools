@@ -33,6 +33,8 @@ class DebugSimulator extends SimulatorBase {
 
         for (let { player1, player2 } of this._pairs(players)) {
             [this.a, this.b] = this.prepare(player1, player2);
+            
+            this.fight();
 
             matches.push({
                 fighters: this.prepare(player1, player2),
