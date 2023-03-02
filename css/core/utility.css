@@ -319,6 +319,10 @@
   color: orangered;
 }
 
+.text-violet {
+  color: violet;
+}
+
 .text-orange\:hover:hover {
   color: orange !important;
 }

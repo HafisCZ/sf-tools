@@ -436,10 +436,11 @@
                         <tr>
                             <th style="width: 5%;" class="!text-center">#</th>
                             <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.rage"></th>
-                            <th style="width: 20%;" class="!text-center" data-intl="analyzer.table.attacker"></th>
-                            <th style="width: 20%;" class="!text-center" data-intl="analyzer.table.target"></th>
+                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.attacker"></th>
+                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.target"></th>
                             <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.type"></th>
                             <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.damage"></th>
+                            <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.health"></th>
                             <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.damage_base"></th>
                         </tr>
                     </thead>
@@ -478,7 +479,7 @@
 
                 _applyArguments (group, { fighterA, fighterB }) {
                     let content = `
-                        <h2 class="ui centered inverted header !text-orange">${intl('analyzer.table.damage_heading')}</h2>
+                        <h2 class="ui centered inverted header">${intl('analyzer.table.damage_heading')}</h2>
                         <table class="ui inverted single very line basic table fixed">
                             <thead>
                                 <tr>
@@ -500,7 +501,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h2 class="ui centered inverted header !text-orange">${intl('analyzer.table.type_heading')}</h2>
+                        <h2 class="ui centered inverted header">${intl('analyzer.table.type_heading')}</h2>
                         <table class="ui inverted single very line basic table fixed">
                             <thead>
                                 <tr>
@@ -1140,10 +1141,23 @@
                     let content = '';
 
                     for (let i = 0; i < fight.rounds.length; i++) {
-                        const { attacker, target, attackType, attackRage, attackDamage, attackBase, attackBaseError, attackMissed, attackCrit, attackSpecial, attackSecondary } = fight.rounds[i];
+                        const { attacker, target, attackType, attackRage, attackDamage, attackBase, attackBaseError, attackMissed, attackCrit, attackSpecial, attackSecondary, targetHealthLeft } = fight.rounds[i];
 
                         if (attackSpecial) {
+                            const source = attackType === ATTACK_REVIVE ? target : attacker;
 
+                            content += `
+                                <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                                    <td class="!text-center">${i + 1}</th>
+                                    <td class="!text-center"></th>
+                                    <td class="!text-center">${source.Name}</th>
+                                    <td class="!text-center"></th>
+                                    <td class="!text-center text-violet">${intl(`general.attack${attackType}`)}</th>
+                                    <td class="!text-center"></th>
+                                    <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / source.Life).toFixed(1)}%</th>
+                                    <td class="!text-center"></th>
+                                </tr>
+                            `;
                         } else {
                             const attackClass = attackCrit ? ' text-orangered font-bold' : '';
 
@@ -1158,6 +1172,7 @@
                                     <td class="!text-center">${target.Name}</th>
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center${attackClass}">${displayDamage}</th>
+                                    <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
                                     <td class="!text-center">${displayBase}${attackBaseError && !attackMissed ? ' <span class="text-orangered">!</span>' : ''}</th>
                                 </tr>
                             `;
