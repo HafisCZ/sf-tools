@@ -981,7 +981,9 @@
             "attacker": "Attacker",
             "target": "Target",
             "type": "Type",
+            "type_heading": "Attack types",
             "damage": "Damage",
+            "damage_heading": "Base damage ranges",
             "damage_base": "Base damage"
         },
         "view_summary": "View summary"
