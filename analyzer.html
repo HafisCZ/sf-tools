@@ -39,7 +39,9 @@
             <label for="button-upload">
                 <a class="item"><i class="upload icon"></i> <span data-intl="analyzer.topbar.import"></span></a>
             </label>
-            <input type="file" accept=".har,.json" class="ui invisible file input" id="button-upload">
+            <input type="file" accept=".har,.json" multiple class="ui invisible file input" id="button-upload">
+            <a class="item" id="button-export"><i class="download icon"></i> <span data-intl="analyzer.topbar.export"></span></a>
+            <a class="item" id="button-clear"><i class="recycle icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
         </div>
 
         <div class="ui main inverted container mb-20" style="width: 65vw;">
@@ -52,10 +54,15 @@
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
-                    <div class="one wide field">
+                    <div class="one wide field" style="width: 8%;">
                         <label>&nbsp;</label>
-                        <div class="ui icon small basic inverted right floated button" id="view-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
-                            <i class="ui tasks icon"></i>
+                        <div class="ui right floated buttons">    
+                            <div class="ui icon small basic inverted button" id="export-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
+                                <i class="ui download icon"></i>
+                            </div>
+                            <div class="ui icon small basic inverted button" id="view-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
+                                <i class="ui tasks icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,7 +81,7 @@
                                             <input type="text" disabled data-path="Name">
                                         </div>
                                     </div>
-                                    <div class="four wide field">
+                                    <div class="five wide field">
                                         <label data-intl="editor.class"></label>
                                         <div class="ui selection inverted dropdown pointer-events-none !text-center !pr-4" data-path="Class">
                                             <div class="text text-center"></div>
@@ -246,7 +253,7 @@
                                             <input type="text" disabled data-path="Name">
                                         </div>
                                     </div>
-                                    <div class="four wide field">
+                                    <div class="five wide field">
                                         <label data-intl="editor.class"></label>
                                         <div class="ui selection inverted dropdown pointer-events-none !text-center !pr-4" data-path="Class">
                                             <div class="text"></div>
@@ -535,18 +542,35 @@
             })();
 
             Site.ready(null, function (urlParams) {
-                // Upload button
-                const $buttonUpload = $('#button-upload')
+                // Buttons
+                const $buttonUpload = $('#button-upload');
+                const $buttonClear = $('#button-clear');
+                const $buttonExport = $('#button-export');
+
+                // Button callbacks
                 $buttonUpload.on('change', async (fileEvent) => {
                     Loader.toggle(true);
 
                     Promise.all(Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
-                        digestHAR(JSON.parse(text));
+                        const json = JSON.parse(text);
+
+                        if (Array.isArray(json)) {
+                            importJSON(json);
+                        } else {
+                            importHAR(json);
+                        }
                     })));
 
                     Loader.toggle(false);
                 })
-                
+
+                $buttonClear.on('click', () => {
+                    currentFights = [];
+                    currentPlayers = [];
+
+                    render();
+                })
+
                 const $fightGroup = $('#fight-group');
                 const $fightList = $('#fight-list');
                 const $fightTable = $('#fight-table');
@@ -890,7 +914,7 @@
                 }
 
                 // Extract individual fights from raw data array
-                function digestHAR (json) {
+                function importHAR (json) {
                     const digestedFights = [];
                     const digestedPlayers = [];
 
@@ -973,7 +997,6 @@
                         }
                     }
 
-                    const processedFights = [];
                     for (const { header, rounds, winner_id } of digestedFights) {
                         const fightType = header[0];
 
@@ -1035,7 +1058,7 @@
                             }
 
                             // Push fight
-                            processedFights.push({
+                            currentFights.push({
                                 fighterA,
                                 fighterB,
                                 winner: winner_id == fighterA.ID ? fighterA : fighterB,
@@ -1044,7 +1067,6 @@
                         }
                     }
 
-                    const processedPlayers = [];
                     // Convert all player data into actual player models and optionally companions
                     for (const data of digestedPlayers) {
                         const { own, save, name, tower } = data;
@@ -1052,11 +1074,11 @@
                         if (own) {
                             // Add own player
                             const player = new SFOwnPlayer(data);
-                            processedPlayers.push(player);
+                            currentPlayers.push(player);
 
                             // Add companions if present
                             if (player.Companions) {
-                                processedPlayers.push(
+                                currentPlayers.push(
                                     player.Companions.Bert,
                                     player.Companions.Mark,
                                     player.Companions.Kunigunde
@@ -1065,31 +1087,35 @@
                         } else {
                             // Add other player
                             const player = new SFOtherPlayer(data);
-                            processedPlayers.push(player);
+                            currentPlayers.push(player);
                         }
                     }
 
+                    render();
+                }
+
+                function render () {
                     // Compute hashes for all players and fighters
-                    for (const [index, { fighterA, fighterB }] of Object.entries(processedFights)) {
+                    for (const [index, { fighterA, fighterB }] of Object.entries(currentFights)) {
                         fighterA.hash = computePlayerHash(fighterA);
                         fighterB.hash = computePlayerHash(fighterB);
 
-                        processedFights[index].hash = `${fighterA.hash}-${fighterB.hash}`;
+                        currentFights[index].hash = `${fighterA.hash}-${fighterB.hash}`;
                     }
 
-                    for (const player of processedPlayers) {
+                    for (const player of currentPlayers) {
                         player.model = FighterModel.create(null, player);
                         player.hash = computePlayerHash(player);
                     }
 
                     // Merge fighters and hashes
-                    for (const { fighterA, fighterB } of processedFights) {
-                        const playerA = processedPlayers.find((player) => player.hash === fighterA.hash);
+                    for (const { fighterA, fighterB } of currentFights) {
+                        const playerA = currentPlayers.find((player) => player.hash === fighterA.hash);
                         if (playerA) {
                             fighterA.player = playerA;
                         }
 
-                        const playerB = processedPlayers.find((player) => player.hash === fighterB.hash);
+                        const playerB = currentPlayers.find((player) => player.hash === fighterB.hash);
                         if (playerB) {
                             fighterB.player = playerB;
                         }
@@ -1097,7 +1123,7 @@
 
                     // Group fights
                     const groupedFights = [];
-                    for (const fight of processedFights) {
+                    for (const fight of currentFights) {
                         let group = groupedFights.find((group) => group.hash === fight.hash);
 
                         if (_nil(group)) {
@@ -1199,6 +1225,9 @@
                 }
 
                 // Current data
+                let currentFights = [];
+                let currentPlayers = [];
+
                 let currentGroup = null;
                 let currentFight = null;
 
