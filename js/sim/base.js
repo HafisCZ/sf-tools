@@ -26,7 +26,7 @@ FIGHT_LOG = new (class {
             attackRage: this.currentRage || 1,
             attackType: type,
             attackChained: ATTACKS_CHAIN.includes(type),
-            attackSecondary: ATTAKCS_SECONDARY.includes(type),
+            attackSecondary: ATTACKS_SECONDARY.includes(type),
             attackCrit: critical,
             attackMissed: skip
         }
@@ -370,7 +370,7 @@ const ATTACK_SECONDARY_EVADED = 14;
 const ATTACK_SECONDARY_CRITICAL_BLOCKED = 18;
 const ATTACK_SECONDARY_CRITICAL_EVADED = 19;
 
-const ATTAKCS_SECONDARY = [                     
+const ATTACKS_SECONDARY = [                     
     ATTACK_SECONDARY_NORMAL,
     ATTACK_SECONDARY_CRITICAL,
     ATTACK_SECONDARY_BLOCKED,
