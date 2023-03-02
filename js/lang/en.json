@@ -335,6 +335,10 @@
             "title": "Underworld",
             "desc": "Simulate the probable outcome of an underworld battle"
         },
+        "analyzer": {
+            "title": "Fight Analyzer",
+            "desc": "Display all fights within a file for detailed analysis"
+        },
         "fights": {
             "title": "Fight viewer",
             "desc": "Display all PVP fights stored within archive file"
