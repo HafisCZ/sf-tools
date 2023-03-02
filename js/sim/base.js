@@ -18,9 +18,9 @@ FIGHT_LOG = new (class {
 
     _logRound (attacker, target, damage, type, skip, critical, special) {
         const round = {
-            attacker: attacker.Player.ID || attacker.Index,
+            attackerId: attacker.Player.ID || attacker.Index,
             attackerSpecialState: !!special,
-            target: target.Player.ID || target.Index,
+            targetId: target.Player.ID || target.Index,
             targetHealthLeft: Math.max(0, (target.Health - (type === ATTACK_FIREBALL || type === ATTACK_FIREBALL_BLOCKED || type >= ATTACK_BARD_SONG ? 0 : damage))),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
@@ -52,21 +52,21 @@ FIGHT_LOG = new (class {
         this.playerB = playerB;
 
         this.lastLog = {
-            targetA: {
+            fighterA: {
                 ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
                 MaximumLife: playerA.TotalHealth, Life: playerA.Health, Strength: { Total: playerA.Player.Strength.Total },
                 Dexterity: { Total: playerA.Player.Dexterity.Total }, Intelligence: { Total: playerA.Player.Intelligence.Total },
                 Constitution: { Total: playerA.Player.Constitution.Total }, Luck: { Total: playerA.Player.Luck.Total }, Face: playerA.Player.Face,
                 Race: playerA.Player.Race, Gender: playerA.Player.Gender, Class: playerA.Player.Class,
-                Wpn1: playerA.Player.Items.Wpn1, Wpn2: playerA.Player.Items.Wpn2
+                Items: { Wpn1: playerA.Player.Items.Wpn1, Wpn2: playerA.Player.Items.Wpn2 }
             },
-            targetB: {
+            fighterB: {
                 ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name, Level: playerB.Player.Level,
                 MaximumLife: playerB.TotalHealth, Life: playerB.Health, Strength: { Total: playerB.Player.Strength.Total },
                 Dexterity: { Total: playerB.Player.Dexterity.Total }, Intelligence: { Total: playerB.Player.Intelligence.Total },
                 Constitution: { Total: playerB.Player.Constitution.Total }, Luck: { Total: playerB.Player.Luck.Total }, Face: playerB.Player.Face,
                 Race: playerB.Player.Race, Gender: playerB.Player.Gender, Class: playerB.Player.Class,
-                Wpn1: playerB.Player.Items.Wpn1, Wpn2: playerB.Player.Items.Wpn2
+                Items: { Wpn1: playerB.Player.Items.Wpn1, Wpn2: playerB.Player.Items.Wpn2 }
             },
             rounds: []
         }
