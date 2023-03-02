@@ -1285,6 +1285,10 @@
 
                     // Verify whether damage is in range
                     for (const round of flatRounds) {
+                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
+                            continue;
+                        }
+
                         const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
                         const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
 
