@@ -1248,9 +1248,18 @@
                 }
 
                 function renderFightGroup (group) {
+                    const selectBase = {
+                        nameA: group.fighterA.Name,
+                        healthA: formatAsSpacedNumber(group.fighterA.Life),
+                        totalHealthA: formatAsSpacedNumber(group.fighterA.MaximumLife),
+                        nameB: group.fighterB.Name,
+                        healthB: formatAsSpacedNumber(group.fighterB.Life),
+                        totalHealthB: formatAsSpacedNumber(group.fighterB.MaximumLife),
+                    };
+
                     $fightList.dropdown({
                         values: group.fights.map((fight, index) => ({
-                            name: intl('analyzer.fight_title', { index: index + 1, rounds: fight.rounds.length, winner: fight.winner.Name }),
+                            name: intl('analyzer.table.select', Object.assign({ index: index + 1, rounds: fight.rounds.length, winner: fight.winner.Name }, selectBase)),
                             value: index
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
