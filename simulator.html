@@ -513,7 +513,10 @@
                             setSort('avg', 0);
 
                             if (logs.length > 0) {
-                                Exporter.json(logs, 'logs');
+                                Exporter.json({
+                                    fights: logs,
+                                    players: players.map(({ player }) => player)
+                                }, 'logs');
                             }
                         })
                     }

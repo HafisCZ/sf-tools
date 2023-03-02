@@ -1199,8 +1199,7 @@
                             if (logs.length > 0) {
                                 Exporter.json({
                                     fights: logs,
-                                    players,
-                                    boss: bossInstance
+                                    players: [...playerInstances, bossInstance]
                                 }, 'logs');
                             }
                         })
