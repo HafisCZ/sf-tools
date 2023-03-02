@@ -1006,7 +1006,7 @@
                             const findHealth = (i) => {
                                 const currentRound = processedRounds[i];
                                 for (let j = i - 1, round; round = processedRounds[j]; j--) {
-                                    if (round.attacker == currentRound.attacker && !round.attackSpecial) {
+                                    if (round.attacker == currentRound.attacker && (round.attackType === ATTACK_REVIVE || !round.attackSpecial)) {
                                         return round.targetHealthLeft;
                                     }
                                 }
