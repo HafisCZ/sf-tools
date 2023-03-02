@@ -718,9 +718,19 @@
                                 }
                             ]
                         }).dropdown('set selected', 'false');
+
+                        for (const field of Object.values(this.fields)) {
+                            field.setListener(() => {
+                                if (!this._frozen) {
+                                    updatePreview();
+                                }
+                            });
+                        }
                     }
 
                     fill (object) {
+                        this._frozen = true;
+
                         for (const [key, field] of Object.entries(this.fields)) {
                             const value = getObjectAt(object, field.path());
                             if (typeof value === 'undefined') {
@@ -729,6 +739,8 @@
                                 field.set(value);
                             }
                         }
+
+                        this._frozen = false;
                     }
 
                     read () {
@@ -808,15 +820,6 @@
                             attackSpecial: false
                         }
                     }
-                }
-
-                // Create fighter model
-                function createFighterModel (player) {
-                    const model = FighterModel.create(null, player);
-
-                    model.Config = SimulatorUtils.config || model.Config;
-
-                    return model;
                 }
 
                 // Compute item hash
@@ -1006,9 +1009,6 @@
                                 }
 
                                 round.attackRage = 1 + ((i - attackRageOffset) / 6);
-
-                                // Calculate base damage
-                                round.attackBase = Math.trunc(round.attackDamage / round.attackRage);
                             }
 
                             // Push fight
@@ -1055,7 +1055,7 @@
                     }
 
                     for (const player of processedPlayers) {
-                        player.model = createFighterModel(player);
+                        player.model = FighterModel.create(null, player);
                         player.hash = computePlayerHash(player);
                     }
 
@@ -1118,7 +1118,7 @@
                     let content = '';
 
                     for (let i = 0; i < fight.rounds.length; i++) {
-                        const { attacker, target, attackType, attackRage, attackDamage, attackBase, attackMissed, attackCrit, attackSpecial } = fight.rounds[i];
+                        const { attacker, target, attackType, attackRage, attackDamage, attackBase, attackBaseError, attackMissed, attackCrit, attackSpecial, attackSecondary } = fight.rounds[i];
 
                         if (attackSpecial) {
 
@@ -1136,7 +1136,7 @@
                                     <td class="!text-center">${target.Name}</th>
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center${attackClass}">${displayDamage}</th>
-                                    <td class="!text-center${attackClass}">${displayBase}</th>
+                                    <td class="!text-center${attackClass}">${displayBase}${attackBaseError && !attackMissed ? ' !' : ''}</th>
                                 </tr>
                             `;
                         }
@@ -1154,9 +1154,49 @@
                     }).dropdown('setting', 'onChange', (value) => {
                         const fight = group.fights[parseInt(value)];
 
-                        renderFight(group, fight);
+                        updatePreview(group, fight);
                         renderSummary(group, fight);
                     }).dropdown('set selected', '0');
+                }
+
+                // Current data
+                let currentGroup = null;
+                let currentFight = null;
+
+                function updatePreview (group, fight) {
+                    if (typeof group !== 'undefined') {
+                        currentGroup = group;
+                        currentFight = fight;
+                    }
+
+                    if (currentGroup && currentFight) {
+                        // Fetch data and initialize models
+                        const model1 = FighterModel.create(0, playerEditorA.read());
+                        const model2 = FighterModel.create(1, playerEditorB.read());
+
+                        FighterModel.initializeFighters(model1, model2);
+
+                        // Calculate base damage
+                        for (const round of currentFight.rounds) {
+                            if (round.attackSpecial || round.attackType === ATTACK_FIREBALL) {
+                                continue;
+                            }
+
+                            const [attackerModel, targetModel] = round.attacker.hash === currentGroup.fighterA.hash ? [model1, model2] : [model2, model1];
+
+                            // Scaled down weapon damage
+                            let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? attackerModel.Weapon2.Base : attackerModel.Weapon1.Base);
+
+                            // Special cases
+                            if (round.attackCrit) damage /= attackerModel.Critical;
+                            if (round.attackType === ATTACK_SWOOP) damage /= CONFIG.Druid.SwoopMultiplier;
+
+                            round.attackBase = Math.trunc(damage);
+                            round.attackBaseError = false; // TODO: Add check whether in bounds
+                        }
+
+                        renderFight(currentGroup, currentFight);
+                    }
                 }
 
                 function renderSummary (group, fight) {

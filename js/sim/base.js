@@ -574,8 +574,7 @@ class FighterModel {
         }
     }
 
-    // Get damage range
-    getDamageRange (weapon, target, secondary = false) {
+    getDamageBase (weapon, target) {
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
@@ -586,9 +585,17 @@ class FighterModel {
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
         let dc = this.getDamageMultiplier(target);
         let dm = dc * mm * (1 + Math.max(aa / 2, aa - ad) / 10);
+
+        return dm;
+    }
+
+    // Get damage range
+    getDamageRange (weapon, target, secondary = false) {
+        let dm = this.getDamageBase(weapon, target);
         let bd = this.getBaseDamage(secondary);
 
         return {
+            Base: dm,
             Max: Math.ceil(dm * Math.max(weapon.DamageMax, bd.Max)),
             Min: Math.ceil(dm * Math.max(weapon.DamageMin, bd.Min))
         };
