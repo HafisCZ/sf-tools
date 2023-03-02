@@ -1949,7 +1949,8 @@ class SFCompanion extends SFPlayer {
     constructor (player, comp, items, pclass) {
         super();
 
-        this.ID = pclass * 10000000 + player.ID;
+        this.ID = -390 - pclass;
+        this.Name = ['', 'Bert', 'Mark', 'Kunigunde'][pclass];
         this.Level = comp.Level;
         this.Class = pclass;
         this.Armor = comp.Armor;

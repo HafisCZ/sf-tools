@@ -40,7 +40,6 @@
                 <a class="item"><i class="upload icon"></i> <span data-intl="analyzer.topbar.import"></span></a>
             </label>
             <input type="file" accept=".har,.json" class="ui invisible file input" id="button-upload">
-            <a class="item" id="button-clear"><i class="trash alternate outline icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
         </div>
 
         <div class="ui main inverted container mb-20" style="width: 65vw;">
@@ -598,7 +597,7 @@
                             Wpn2: new SFItem(dataType.sub(12), 2, [1, 2])
                         }
 
-                        if (typeof fightType !== 'undefined' && this.Face.Mouth < 0) {
+                        if (this.Face.Mouth < 0) {
                             this.Name = getFightTargetName(fightType, null, -this.Face.Mouth);
                         }
                     }
@@ -824,18 +823,15 @@
                 function computeItemHash (item, player, secondary = false) {
                     if (secondary && player.Class !== ASSASSIN) {
                         return '';
-                    } else if (item.AttributeTypes[0] == 0) {
+                    } else if (item.Index == 0) {
                         return '';
                     } else {
                         const json = [
                             item.DamageMin,
                             item.DamageMax,
-                            item.Enchantment,
                             item.RuneType,
-                            item.RuneValue,
-                            item.GemType,
-                            item.GemValue
-                        ];
+                            item.RuneValue
+                        ]
 
                         if (player.model) {
                             // Fix weapon damage (is not clamped by fist damage)
@@ -845,7 +841,7 @@
                             json[1] = Math.max(baseDamage.Max, json[1]);
                         }
 
-                        return SHA1(JSON.stringify(json));
+                        return JSON.stringify(json);
                     }
                 }
 
@@ -864,7 +860,7 @@
                         computeItemHash(player.Items.Wpn2, player, true)
                     ];
 
-                    return SHA1(JSON.stringify(json));
+                    return (JSON.stringify(json));
                 }
 
                 // Extract individual fights from raw data array
@@ -904,15 +900,25 @@
                         if (text.includes('playerlookat') || text.includes('ownplayersave')) {
                             const r = PlayaResponse.fromText(text);
 
-                            if (r.ownplayersave) {
+                            if (r.ownplayersave && r.ownplayername) {
                                 // Read only necessary data from own player
                                 digestedPlayers.push({
                                     own: true,
                                     save: r.ownplayersave.numbers,
-                                    name: _try(r.ownplayername, 'string'),
-                                    pets: _try(r.ownpets, 'numbers'),
+                                    name: r.ownplayername.string,
                                     tower: _try(r.owntower, 'numbers')
                                 })
+                            } else if (r.ownplayersave) {
+                                // Capture save
+                                const lastPlayer = digestedPlayers.findLast((entry) => entry.own && entry.name);
+                                if (lastPlayer) {
+                                    digestedPlayers.push({
+                                        own: true,
+                                        save: r.ownplayersave.numbers,
+                                        name: lastPlayer.name,
+                                        tower: _try(r.owntower, 'numbers') || lastPlayer.tower
+                                    })
+                                }
                             } else if (r['#ownplayersave']) {
                                 // Capture save delta
                                 const lastPlayer = digestedPlayers.findLast((entry) => entry.own && entry.name);
@@ -927,16 +933,14 @@
                                         own: true,
                                         save,
                                         name: lastPlayer.name,
-                                        pets: _try(r.ownpets, 'numbers') || lastPlayer.pets,
                                         tower: _try(r.owntower, 'numbers') || lastPlayer.tower
                                     })
                                 }
-                            } else {
+                            } else if (r.otherplayer && r.otherplayername) {
                                 digestedPlayers.push({
                                     own: false,
                                     save: r.otherplayer.numbers,
                                     name: r.otherplayername.string,
-                                    pets: _try(r.otherplayerpetbonus, 'numbers'),
                                     tower: null
                                 })
                             }
@@ -1020,7 +1024,7 @@
                     const processedPlayers = [];
                     // Convert all player data into actual player models and optionally companions
                     for (const data of digestedPlayers) {
-                        const { own, save, name, pets, tower } = data;
+                        const { own, save, name, tower } = data;
 
                         if (own) {
                             // Add own player
