@@ -21,11 +21,12 @@ FIGHT_LOG = new (class {
             attacker: attacker.Player.ID || attacker.Index,
             attackerSpecialState: !!special,
             target: target.Player.ID || target.Index,
-            targetHealth: Math.max(0, (target.Health - (type === ATTACK_FIREBALL || type === ATTACK_FIREBALL_BLOCKED || type >= ATTACK_BARD_SONG ? 0 : damage)) / target.TotalHealth),
+            targetHealthLeft: Math.max(0, (target.Health - (type === ATTACK_FIREBALL || type === ATTACK_FIREBALL_BLOCKED || type >= ATTACK_BARD_SONG ? 0 : damage))),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
-            attackSecondary: (type >= ATTACK_SECONDARY_NORMAL && type <= ATTACK_SECONDARY_EVADED) || type === ATTACK_SECONDARY_CRITICAL_BLOCKED || type === ATTACK_SECONDARY_CRITICAL_EVADED,
+            attackChained: ATTACKS_CHAIN.includes(type),
+            attackSecondary: ATTAKCS_SECONDARY.includes(type),
             attackCrit: critical,
             attackMissed: skip
         }
@@ -53,17 +54,17 @@ FIGHT_LOG = new (class {
         this.lastLog = {
             targetA: {
                 ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
-                MaximumLife: playerA.TotalHealth, Life: playerA.Health, Strength: playerA.Player.Strength.Total,
-                Dexterity: playerA.Player.Dexterity.Total, Intelligence: playerA.Player.Intelligence.Total,
-                Constitution: playerA.Player.Constitution.Total, Luck: playerA.Player.Luck.Total, Face: playerA.Player.Face,
+                MaximumLife: playerA.TotalHealth, Life: playerA.Health, Strength: { Total: playerA.Player.Strength.Total },
+                Dexterity: { Total: playerA.Player.Dexterity.Total }, Intelligence: { Total: playerA.Player.Intelligence.Total },
+                Constitution: { Total: playerA.Player.Constitution.Total }, Luck: { Total: playerA.Player.Luck.Total }, Face: playerA.Player.Face,
                 Race: playerA.Player.Race, Gender: playerA.Player.Gender, Class: playerA.Player.Class,
                 Wpn1: playerA.Player.Items.Wpn1, Wpn2: playerA.Player.Items.Wpn2
             },
             targetB: {
                 ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name, Level: playerB.Player.Level,
-                MaximumLife: playerB.TotalHealth, Life: playerB.Health, Strength: playerB.Player.Strength.Total,
-                Dexterity: playerB.Player.Dexterity.Total, Intelligence: playerB.Player.Intelligence.Total,
-                Constitution: playerB.Player.Constitution.Total, Luck: playerB.Player.Luck.Total, Face: playerB.Player.Face,
+                MaximumLife: playerB.TotalHealth, Life: playerB.Health, Strength: { Total: playerB.Player.Strength.Total },
+                Dexterity: { Total: playerB.Player.Dexterity.Total }, Intelligence: { Total: playerB.Player.Intelligence.Total },
+                Constitution: { Total: playerB.Player.Constitution.Total }, Luck: { Total: playerB.Player.Luck.Total }, Face: playerB.Player.Face,
                 Race: playerB.Player.Race, Gender: playerB.Player.Gender, Class: playerB.Player.Class,
                 Wpn1: playerB.Player.Items.Wpn1, Wpn2: playerB.Player.Items.Wpn2
             },
@@ -369,12 +370,30 @@ const ATTACK_SECONDARY_EVADED = 14;
 const ATTACK_SECONDARY_CRITICAL_BLOCKED = 18;
 const ATTACK_SECONDARY_CRITICAL_EVADED = 19;
 
+const ATTAKCS_SECONDARY = [                     
+    ATTACK_SECONDARY_NORMAL,
+    ATTACK_SECONDARY_CRITICAL,
+    ATTACK_SECONDARY_BLOCKED,
+    ATTACK_SECONDARY_EVADED,
+    ATTACK_SECONDARY_CRITICAL_BLOCKED,
+    ATTACK_SECONDARY_CRITICAL_EVADED
+];
+
 const ATTACK_CHAIN_NORMAL = 20;
 const ATTACK_CHAIN_CRITICAL = 21;
 const ATTACK_CHAIN_BLOCKED = 23;
 const ATTACK_CHAIN_EVADED = 24;
 const ATTACK_CHAIN_CRITICAL_BLOCKED = 28;
 const ATTACK_CHAIN_CRITICAL_EVADED = 29;
+
+const ATTACKS_CHAIN = [
+    ATTACK_CHAIN_NORMAL,
+    ATTACK_CHAIN_CRITICAL,
+    ATTACK_CHAIN_BLOCKED,
+    ATTACK_CHAIN_EVADED,
+    ATTACK_CHAIN_CRITICAL_BLOCKED,
+    ATTACK_CHAIN_CRITICAL_EVADED
+];
 
 const ATTACK_CATAPULT = 2;
 
