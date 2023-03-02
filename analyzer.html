@@ -851,23 +851,8 @@
                             attackSpecial: true
                         }
                     } else {
-                        const attackSecondary = [                     
-                            ATTACK_SECONDARY_NORMAL,
-                            ATTACK_SECONDARY_CRITICAL,
-                            ATTACK_SECONDARY_BLOCKED,
-                            ATTACK_SECONDARY_EVADED,
-                            ATTACK_SECONDARY_CRITICAL_BLOCKED,
-                            ATTACK_SECONDARY_CRITICAL_EVADED
-                        ].includes(attackType);
-
-                        const attackChained = [
-                            ATTACK_CHAIN_NORMAL,
-                            ATTACK_CHAIN_CRITICAL,
-                            ATTACK_CHAIN_BLOCKED,
-                            ATTACK_CHAIN_EVADED,
-                            ATTACK_CHAIN_CRITICAL_BLOCKED,
-                            ATTACK_CHAIN_CRITICAL_EVADED
-                        ].includes(attackType);
+                        const attackSecondary = ATTACKS_SECONDARY.includes(attackType);
+                        const attackChained = ATTACKS_CHAIN.includes(attackType);
                         
                         const attackCrit = [
                             ATTACK_CRITICAL,
@@ -957,15 +942,13 @@
                                 for (let i = 1; i <= count; i++) {
                                     digestedFights.push({
                                         header: r[`fightheader${i}`].mixed,
-                                        rounds: r[`fight${i}`].numbers,
-                                        winner_id: r[`winnerid${i}`].number
+                                        rounds: r[`fight${i}`].numbers
                                     });
                                 }
                             } else {
                                 digestedFights.push({
                                     header: r.fightheader.mixed,
-                                    rounds: r.fight.numbers,
-                                    winner_id: r.winnerid.number
+                                    rounds: r.fight.numbers
                                 });
                             }
                         }
@@ -1020,7 +1003,7 @@
                         }
                     }
 
-                    for (const { header, rounds, winner_id } of digestedFights) {
+                    for (const { header, rounds } of digestedFights) {
                         const fightType = header[0];
 
                         // Proceed only if type of fight is known to the system
@@ -1084,7 +1067,6 @@
                             currentFights.push({
                                 fighterA,
                                 fighterB,
-                                winner: winner_id == fighterA.ID ? fighterA : fighterB,
                                 rounds: processedRounds
                             })
                         }
@@ -1117,6 +1099,11 @@
 
                 function render () {
                     $fightView.hide();
+
+                    // Set winners
+                    for (const fight of currentFights) {
+                        fight.winner = fight.rounds[fight.rounds.length - 1].attacker;
+                    }
 
                     // Compute hashes for all players and fighters
                     for (const [index, { fighterA, fighterB }] of Object.entries(currentFights)) {
@@ -1400,10 +1387,61 @@
                     // TODO: Import fights
                 }
 
+                const FIGHTER_WHITELIST = [
+                    'ID', 'Name', 'Level', 'MaximumLife', 'Life',
+                    'Strength', 'Dexterity', 'Intelligence', 'Constitution',
+                    'Luck', 'Class', 'Wpn1', 'Wpn2'
+                ];
+
+                const ROUND_WHITELIST = [
+                    'attackChained', 'attackCrit', 'attackDamage', 'attackMissed',
+                    'attackRage', 'attackSecondary', 'attackSpecial', 'attackType',
+                    'targetHealthLeft', 'attackerSpecialState'
+                ];
+
+                function cleanCopy (rawObject, whitelist) {
+                    const object = {};
+                    for (const field of whitelist) {
+                        object[field] = rawObject[field];
+                    }
+
+                    return object;
+                }
+
                 function exportFights (source) {
+                    // Assemble fights
                     const assembledFights = Array.isArray(source) ? source : source.fights.map((fight) => Object.assign({}, fight, source));
 
-                    // TODO: Clean and export fights
+                    // Collect all players and fights
+                    const exportFights = [];
+                    const exportPlayers = {};
+
+                    for (const { fighterA, fighterB, rounds, winner } of assembledFights) {
+                        // Collect players
+                        if (fighterA.player) {
+                            exportPlayers[fighterA.hash] = toSimulatorModel(fighterA.player);
+                        }
+
+                        if (fighterB.player) {
+                            exportPlayers[fighterB.hash] = toSimulatorModel(fighterB.player);
+                        }
+
+                        // Collect fight
+                        exportFights.push({
+                            fighterA: cleanCopy(fighterA, FIGHTER_WHITELIST),
+                            fighterB: cleanCopy(fighterB, FIGHTER_WHITELIST),
+                            rounds: rounds.map((round) => Object.assign(cleanCopy(round, ROUND_WHITELIST), {
+                                attackerId: round.attacker.ID,
+                                targetId: round.target.ID
+                            }))
+                        })
+                    }    
+                    
+                    // Export
+                    Exporter.json({
+                        players: Object.values(exportPlayers),
+                        fights: exportFights
+                    });
                 }
             })
         </script>
