@@ -57,10 +57,10 @@
                     <div class="one wide field" style="width: 8%;">
                         <label>&nbsp;</label>
                         <div class="ui right floated buttons">    
-                            <div class="ui icon small basic inverted button" id="export-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
+                            <div class="ui icon small basic inverted button" id="button-export-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
                                 <i class="ui download icon"></i>
                             </div>
-                            <div class="ui icon small basic inverted button" id="view-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
+                            <div class="ui icon small basic inverted button" id="view-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
                                 <i class="ui tasks icon"></i>
                             </div>
                         </div>
@@ -415,7 +415,7 @@
                         </div>
                     </div>
                 </div>
-                <h3 class="ui inverted centered header" data-intl="analyzer.fight_preview"></h3>
+                <h3 class="ui inverted centered header" data-intl="analyzer.preview"></h3>
                 <div class="ui small inverted form">
                     <div class="two fields">
                         <div class="fifteen wide field">
@@ -428,10 +428,10 @@
                         <div class="one wide field" style="width: 8%;">
                             <label>&nbsp;</label>
                             <div class="ui right floated buttons">
-                                <div class="ui icon small basic inverted button" id="copy-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="editor.copy">
+                                <div class="ui icon small basic inverted button" id="fight-copy" data-inverted="" data-position="bottom center" data-intl-tooltip="editor.copy">
                                     <i class="ui copy icon"></i>
                                 </div>
-                                <div class="ui icon small basic inverted button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.view_summary">
+                                <div class="ui icon small basic inverted button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
                                     <i class="ui tasks icon"></i>
                                 </div>
                             </div>
@@ -486,7 +486,7 @@
 
                 _applyArguments (group, { fighterA, fighterB }) {
                     let content = `
-                        <h2 class="ui centered inverted header">${intl('analyzer.table.damage_heading')}</h2>
+                        <h2 class="ui centered inverted header">${intl('analyzer.summary.damage')}</h2>
                         <table class="ui inverted single very line basic table fixed">
                             <thead>
                                 <tr>
@@ -508,7 +508,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h2 class="ui centered inverted header">${intl('analyzer.table.type_heading')}</h2>
+                        <h2 class="ui centered inverted header">${intl('analyzer.summary.type')}</h2>
                         <table class="ui inverted single very line basic table fixed">
                             <thead>
                                 <tr>
@@ -542,44 +542,60 @@
             })();
 
             Site.ready(null, function (urlParams) {
-                // Buttons
+                // Elements
                 const $buttonUpload = $('#button-upload');
                 const $buttonClear = $('#button-clear');
                 const $buttonExport = $('#button-export');
+                const $buttonExportGroup = $('#button-export-group');
+
+                const $fightGroup = $('#fight-group');
+                const $fightList = $('#fight-list');
+                const $fightTable = $('#fight-table');
+                const $fightView = $('#fight-view');
+                const $fightCopy = $('#fight-copy');
+
+                const $viewSummaryGroup = $('#view-summary-group');
+                const $viewSummaryFight = $('#view-summary-fight');
 
                 // Button callbacks
                 $buttonUpload.on('change', async (fileEvent) => {
                     Loader.toggle(true);
 
-                    Promise.all(Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
+                    await Promise.all(Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
                         const json = JSON.parse(text);
-
-                        if (Array.isArray(json)) {
-                            importJSON(json);
-                        } else {
+    
+                        if (json.log) {
                             importHAR(json);
+                        } else if (json.fights) {
+                            importFights(json);
+                        } else {
+                            Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
                         }
                     })));
+
+                    render();
 
                     Loader.toggle(false);
                 })
 
-                $buttonClear.on('click', () => {
+                $buttonClear.click(() => {
                     currentFights = [];
                     currentPlayers = [];
 
                     render();
                 })
 
-                const $fightGroup = $('#fight-group');
-                const $fightList = $('#fight-list');
-                const $fightTable = $('#fight-table');
-                const $fightView = $('#fight-view');
+                $buttonExport.click(() => {
+                    exportFights(currentFights);
+                })
 
-                const $viewSummaryGroup = $('#view-summary-group');
-                const $viewSummaryFight = $('#view-summary-fight');
+                $buttonExportGroup.click(() => {
+                    exportFights(currentGroup); 
+                })
 
-                const $copyFight = $('#copy-fight');
+                $fightCopy.click(() => {
+                    copyNode($fightTable.closest('table').get(0));
+                });
 
                 // Custom fighter
                 class SFFighter {
@@ -1090,8 +1106,6 @@
                             currentPlayers.push(player);
                         }
                     }
-
-                    render();
                 }
 
                 function render () {
@@ -1155,7 +1169,7 @@
                         renderPlayer(group.fighterB, playerEditorB);
 
                         renderFightGroup(group);
-                        renderSummary(group);
+                        renderButtons($viewSummaryGroup, group);
                     }).dropdown('set selected', '0');
                 }
 
@@ -1219,8 +1233,11 @@
                     }).dropdown('setting', 'onChange', (value) => {
                         const fight = group.fights[parseInt(value)];
 
-                        updatePreview(group, fight);
-                        renderSummary(group, fight);
+                        currentGroup = group;
+                        currentFight = fight;
+
+                        updatePreview();
+                        renderButtons($viewSummaryFight, group, fight);
                     }).dropdown('set selected', '0');
                 }
 
@@ -1314,30 +1331,28 @@
                     }
                 }
 
-                function updatePreview (group, fight) {
-                    if (typeof group !== 'undefined') {
-                        currentGroup = group;
-                        currentFight = fight;
-                    }
-
+                function updatePreview () {
                     if (currentGroup && currentFight) {
                         processGroup(currentGroup);
                         renderFight(currentGroup, currentFight);
                     }
                 }
 
-                function renderSummary (group, fight) {
-                    const $element = typeof fight === 'undefined' ? $viewSummaryGroup : $viewSummaryFight;
-
-                    $element.off('click').on('click', () => {
+                function renderButtons ($element, group, fight) {
+                    $element.off('click');
+                    $element.click(() => {
                         DialogController.open(FightSummaryDialog, group, fight || group);
                     });
+                }
 
-                    if (typeof fight !== 'undefined') {
-                        $copyFight.off('click').on('click', () => {
-                            copyNode($fightTable.closest('table').get(0));
-                        });
-                    }
+                function importFights (json) {
+                    // TODO: Import fights
+                }
+
+                function exportFights (source) {
+                    const assembledFights = Array.isArray(source) ? source : source.fights.map((fight) => Object.assign({}, fight, source));
+
+                    // TODO: Clean and export fights
                 }
             })
         </script>

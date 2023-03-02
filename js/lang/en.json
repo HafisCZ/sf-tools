@@ -979,21 +979,27 @@
             "editable_data": "Editable data"
         },
         "players": "Players",
-        "fight_preview": "Fight preview",
-        "fight_title": "#{index}. Winner: #{winner}. Rounds: #{rounds}.",
+        "preview": "Fight preview",
         "export": "Export fights",
+        "fight_title": "#{index}. Winner: #{winner}. Rounds: #{rounds}.",
         "table": {
             "rage": "Rage",
             "attacker": "Attacker",
             "target": "Target",
             "type": "Type",
             "health": "Health left",
-            "type_heading": "Attack types",
             "damage": "Damage",
-            "damage_heading": "Base damage ranges",
             "damage_base": "Base damage"
         },
-        "view_summary": "View summary"
+        "summary": {
+            "view": "View summary",
+            "damage": "Base damage ranges",
+            "type": "Attack types"
+        },
+        "toast_import_error": {
+            "title": "Import failed",
+            "message": "Ensure that you are importing a valid HAR or fight JSON"
+        }
     },
     "players": {
         "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
