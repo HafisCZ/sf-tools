@@ -1258,8 +1258,16 @@
 
                     // Calculate base damage of each round
                     const flatRounds = group.fights.map((fight) => fight.rounds).flat();
-                    for (const round of flatRounds) {
-                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
+                    for (const [index, round] of Object.entries(flatRounds)) {
+                        if (round.attackType >= ATTACK_BARD_SONG) {
+                            const spellLevel = attackType % 10 - 1;
+                            const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
+                            const superRound = flatRounds[index - 1];
+
+                            superRound.attackBase = Math.trunc(superRound.attackBase / spellBonus);
+
+                            continue;
+                        } else if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
                             continue;
                         }
 
@@ -1273,11 +1281,14 @@
                         if (round.attackType === ATTACK_SWOOP) damage /= CONFIG.Druid.SwoopMultiplier;
 
                         round.attackBase = Math.trunc(damage);
+                    }
 
-                        // Check whether base damage is in range of weapon damage
-                        const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1']
+                    // Verify whether damage is in range
+                    for (const round of flatRounds) {
+                        const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+                        const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
 
-                        round.attackBaseError = !_within(damage, weapon.DamageMin, weapon.DamageMax);
+                        round.attackBaseError = !_within(round.attackBase, weapon.DamageMin, weapon.DamageMax);
                     }
 
                     // Prepare summary
