@@ -561,17 +561,23 @@
                 $buttonUpload.on('change', async (fileEvent) => {
                     Loader.toggle(true);
 
-                    await Promise.all(Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
-                        const json = JSON.parse(text);
-    
-                        if (json.log) {
-                            importHAR(json);
-                        } else if (json.fights) {
-                            importFights(json);
-                        } else {
-                            Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
-                        }
-                    })));
+                    try {
+                        await Promise.all(Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
+                            const json = JSON.parse(text);
+        
+                            if (json.log) {
+                                importHAR(json);
+                            } else if (json.fights) {
+                                importFights(json);
+                            } else {
+                                Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
+                            }
+                        })));
+                    } catch (e) {
+                        console.info(e);
+                        
+                        Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
+                    }
 
                     render();
 
@@ -887,8 +893,8 @@
                         const json = [
                             item.DamageMin,
                             item.DamageMax,
-                            item.RuneType,
-                            item.RuneValue
+                            item.RuneType || item.AttributeTypes[2],
+                            item.RuneValue || item.Attributes[2]
                         ]
 
                         if (player.model) {
@@ -906,7 +912,7 @@
                 // Compute player hash
                 function computePlayerHash (player) {
                     const json = [
-                        player.ID,
+                        // Temporary disabled because of HASH errors // player.ID,
                         player.Class,
                         player.Level,
                         player.Strength.Total,
@@ -1383,8 +1389,23 @@
                     });
                 }
 
-                function importFights (json) {
-                    // TODO: Import fights
+                function importFights ({ players, fights }) {
+                    currentPlayers.push(...players);
+                    
+                    for (const fight of fights) {
+                        const mapping = {
+                            [fight.fighterA.ID]: fight.fighterA,
+                            [fight.fighterB.ID]: fight.fighterB
+                        };
+
+                        // Fill in all attacker & target data for each round
+                        for (const round of fight.rounds) {
+                            round.attacker = mapping[round.attackerId];
+                            round.target = mapping[round.targetId];
+                        }
+
+                        currentFights.push(fight);
+                    }
                 }
 
                 const FIGHTER_WHITELIST = [
