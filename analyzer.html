@@ -558,30 +558,26 @@
                 const $viewSummaryFight = $('#view-summary-fight');
 
                 // Button callbacks
-                $buttonUpload.on('change', async (fileEvent) => {
+                $buttonUpload.on('change', (fileEvent) => {
                     Loader.toggle(true);
 
-                    try {
-                        await Promise.all(Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
-                            const json = JSON.parse(text);
-        
-                            if (json.log) {
-                                importHAR(json);
-                            } else if (json.fights) {
-                                importFights(json);
-                            } else {
-                                Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
-                            }
-                        })));
-                    } catch (e) {
-                        console.info(e);
-                        
-                        Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
-                    }
+                    const promises = Array.from(fileEvent.currentTarget.files).map((file) => file.text().then((text) => {
+                        const json = JSON.parse(text);
+    
+                        if (json.log) {
+                            importHAR(json);
+                        } else if (json.fights) {
+                            importFights(json);
+                        } else {
+                            Toast.warn(intl('analyzer.toast_import_error.title'), intl('analyzer.toast_import_error.message'));
+                        }
+                    }));
 
-                    render();
+                    Promise.all(promises).then(() => {
+                        render();
 
-                    Loader.toggle(false);
+                        Loader.toggle(false);
+                    });
                 })
 
                 $buttonClear.click(() => {
