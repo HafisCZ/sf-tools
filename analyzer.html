@@ -1320,8 +1320,19 @@
                         let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? model.Weapon2.Base : model.Weapon1.Base);
 
                         // Special cases
-                        if (round.attackCrit) damage /= model.Critical;
-                        if (round.attackType === ATTACK_SWOOP) damage /= CONFIG.Druid.SwoopMultiplier;
+                        if (round.attackCrit) {
+                            damage /= model.Critical;
+                        }
+
+                        if (round.attacker.Class === DRUID) {
+                            if (round.attackType === ATTACK_SWOOP) {
+                                damage /= CONFIG.Druid.SwoopMultiplier;
+                            }
+
+                            if (round.attackerSpecialState && round.attackCrit) {
+                                damage /= CONFIG.Druid.RageCriticalDamageMultiplier;
+                            }
+                        }
 
                         round.attackBase = Math.trunc(damage);
                     }
