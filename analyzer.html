@@ -1069,6 +1069,23 @@
                                 round.attackRage = 1 + ((i + attackRageOffset) / 6);
                             }
 
+                            // Add attacker special stage
+                            let lastAttacker = null;
+                            let lastAttackerMissed = false;
+
+                            for (const round of processedRounds) {
+                                if (round.attacker != lastAttacker) {
+                                    if (round.attacker.Class === DRUID && lastAttackerMissed) {
+                                        round.attackerSpecialState = true;
+                                    }
+                                    
+                                    lastAttacker = round.attacker;
+                                    lastAttackerMissed = round.attackMissed;
+                                } else {
+                                    lastAttackerMissed = lastAttackerMissed || round.attackMissed;
+                                }
+                            }
+
                             // Push fight
                             currentFights.push({
                                 fighterA,
@@ -1284,6 +1301,7 @@
                     // Calculate base damage of each round
                     const flatRounds = group.fights.map((fight) => fight.rounds).flat();
                     for (const [index, round] of Object.entries(flatRounds)) {
+                        // We are assuming that lute round always follows after bard attack
                         if (round.attackType >= ATTACK_BARD_SONG) {
                             const spellLevel = round.attackType % 10 - 1;
                             const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
