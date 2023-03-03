@@ -936,7 +936,7 @@
                         computeItemHash(player.Items.Wpn2, player, true)
                     ];
 
-                    return JSON.stringify(json);
+                    return SHA1(JSON.stringify(json));
                 }
 
                 // Extract individual fights from raw data array
@@ -1146,6 +1146,7 @@
                         fighterB.hash = computePlayerHash(fighterB);
 
                         currentFights[index].hash = `${fighterA.hash}-${fighterB.hash}`;
+                        currentFights[index].index = String(index);
                     }
 
                     for (const player of currentPlayers) {
@@ -1182,17 +1183,17 @@
                             groupedFights.push(group);
                         }
 
-                        group.fights.push({ rounds: fight.rounds, winner: fight.winner });
+                        group.fights.push({ index: fight.index, rounds: fight.rounds, winner: fight.winner });
                     }
 
                     // Display in dropdown
                     $fightGroup.dropdown({
-                        values: groupedFights.map((group, index) => ({
+                        values: groupedFights.map((group) => ({
                             name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${group.fighterA.Name} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${group.fighterB.Name} (${group.fights.length})`,
-                            value: index
+                            value: group.hash
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
-                        const group = groupedFights[parseInt(value)];
+                        const group = groupedFights.find((group) => group.hash === value);
 
                         $fightView.show();
 
@@ -1201,7 +1202,11 @@
 
                         renderFightGroup(group);
                         renderButtons($viewSummaryGroup, group);
-                    }).dropdown('set selected', '0');
+                    });
+
+                    if (groupedFights.length > 0) {
+                        $fightGroup.dropdown('set selected', _dig(currentGroup, 'hash') || groupedFights[0].hash);
+                    }
                 }
 
                 function renderPlayer (player, editor) {
@@ -1282,17 +1287,17 @@
                     $fightList.dropdown({
                         values: group.fights.map((fight, index) => ({
                             name: intl('analyzer.table.select', Object.assign({ index: index + 1, rounds: fight.rounds.length, winner: fight.winner.Name }, selectBase)),
-                            value: index
+                            value: fight.index
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
-                        const fight = group.fights[parseInt(value)];
+                        const fight = group.fights.find((fight) => fight.index === value);
 
                         currentGroup = group;
                         currentFight = fight;
 
                         updatePreview();
                         renderButtons($viewSummaryFight, group, fight);
-                    }).dropdown('set selected', '0');
+                    }).dropdown('set selected', _dig(currentFight, 'index') || group.fights[0].index);
                 }
 
                 // Current data
