@@ -37,7 +37,7 @@ const SimulatorDebugDialog = new (class extends Dialog {
 
         this.$resetButton = this.$parent.find('[data-op="reset"]');
         this.$resetButton.click(() => {
-            this._setData(CONFIG);
+            this._setData();
         })
 
         this.$content = this.$parent.find('[data-op="content"]');
@@ -66,7 +66,7 @@ const SimulatorDebugDialog = new (class extends Dialog {
     _readData () {
         const data = {};
 
-        for (const [group, groupItems] of Object.entries(CONFIG)) {
+        for (const [group, groupItems] of Object.entries(this.defaultConfig)) {
             data[group] = {}
 
             for (const [key, value] of Object.entries(groupItems)) {
@@ -89,11 +89,11 @@ const SimulatorDebugDialog = new (class extends Dialog {
         return key.replace(/([A-Z])/g, ' $1').trim();
     }
 
-    _setData (object) {
-        this.object = object || CONFIG;
+    _setData (currentConfig) {
+        this.currentConfig = currentConfig || this.defaultConfig;
 
         let content = '';
-        for (const [group, groupItems] of Object.entries(this.object)) {
+        for (const [group, groupItems] of Object.entries(this.currentConfig)) {
             content += `
                 <details class="ui accordion">
                     <summary class="title">
@@ -140,10 +140,13 @@ const SimulatorDebugDialog = new (class extends Dialog {
         this.$content.html(content);
     }
 
-    _applyArguments (object, callback) {
+    _applyArguments (currentConfig, defaultConfig, callback) {
         this.callback = callback;
 
-        this._setData(object);
+        this.currentConfig = null;
+        this.defaultConfig = defaultConfig;
+
+        this._setData(currentConfig);
     }
 })();
 
@@ -151,6 +154,7 @@ const SimulatorUtils = new (class {
     configure ({ params, onCopy, onChange, onInsert, insertType }) {
         // Updated config
         this.currentConfig = null;
+        this.defaultConfig = mergeDeep({}, CONFIG);
 
         // Callbacks
         this._onCopy = onCopy;
@@ -180,6 +184,7 @@ const SimulatorUtils = new (class {
             DialogController.open(
                 SimulatorDebugDialog,
                 this.currentConfig,
+                this.defaultConfig,
                 (config) => {
                     this.currentConfig = config;
                     this._renderConfig();
@@ -255,7 +260,7 @@ const SimulatorUtils = new (class {
 
         let content = '';
         if (this.currentConfig) {
-            for (const [type, value] of Object.entries(CONFIG)) {
+            for (const [type, value] of Object.entries(this.defaultConfig)) {
                 const differences = [];
                 for (const [subtype, subvalue] of Object.entries(value)) {
                     const customValue = _dig(this.currentConfig, type, subtype);
