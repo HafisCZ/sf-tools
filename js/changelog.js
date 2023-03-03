@@ -37,6 +37,9 @@ const CHANGELOG = {
             'Fixed scrapbook size',
             'Fixed private export not including own characters'
         ],
+        'Fight Analyzer': [
+            'Added new tool that serves as a replacement for Fight Viewer and Boss Viewer'
+        ],
         'Hydra Simulator': [
             'Fixed maximum hydra level after import'
         ],
