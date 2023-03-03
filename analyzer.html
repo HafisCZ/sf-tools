@@ -844,7 +844,13 @@
 
                 // Utils
                 SimulatorUtils.configure({
-                    params: urlParams
+                    params: urlParams,
+                    onChange: (config) => {
+                        // Set config and render
+                        CONFIG.set(config);
+
+                        render();
+                    }
                 });
 
                 // Decode attack type
