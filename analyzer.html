@@ -425,11 +425,14 @@
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
-                        <div class="one wide field" style="width: 8%;">
+                        <div class="one wide field" style="width: 11%;">
                             <label>&nbsp;</label>
                             <div class="ui right floated buttons">
                                 <div class="ui icon small basic inverted button" id="fight-copy" data-inverted="" data-position="bottom center" data-intl-tooltip="editor.copy">
                                     <i class="ui copy icon"></i>
+                                </div>
+                                <div class="ui icon small basic inverted button" id="button-export-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
+                                    <i class="ui download icon"></i>
                                 </div>
                                 <div class="ui icon small basic inverted button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
                                     <i class="ui tasks icon"></i>
@@ -547,6 +550,7 @@
                 const $buttonClear = $('#button-clear');
                 const $buttonExport = $('#button-export');
                 const $buttonExportGroup = $('#button-export-group');
+                const $buttonExportFight = $('#button-export-fight');
 
                 const $fightGroup = $('#fight-group');
                 const $fightList = $('#fight-list');
@@ -599,6 +603,12 @@
                 $buttonExportGroup.click(() => {
                     if (currentGroup) {
                         exportFights(currentGroup); 
+                    }
+                })
+
+                $buttonExportFight.click(() => {
+                    if (currentFight) {
+                        exportFights(currentFight, currentGroup);
                     }
                 })
 
@@ -1178,7 +1188,7 @@
                     // Display in dropdown
                     $fightGroup.dropdown({
                         values: groupedFights.map((group, index) => ({
-                            name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${group.fighterA.Name} - <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${group.fighterB.Name} (${group.fights.length})`,
+                            name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${group.fighterA.Name} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${group.fighterB.Name} (${group.fights.length})`,
                             value: index
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
@@ -1460,9 +1470,11 @@
                     return object;
                 }
 
-                function exportFights (source) {
+                function exportFights (source, parent) {
                     // Assemble fights
-                    const assembledFights = Array.isArray(source) ? source : source.fights.map((fight) => Object.assign({}, fight, source));
+                    const assembledFights = Array.isArray(source) ? source : (
+                        typeof parent !== 'undefined' ? [Object.assign({}, source, parent)] : source.fights.map((fight) => Object.assign({}, fight, source))
+                    );
 
                     // Collect all players and fights
                     const exportFights = [];
