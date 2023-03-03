@@ -1242,8 +1242,8 @@
                         } else {
                             const attackClass = attackCrit ? ' text-orangered font-bold' : '';
 
-                            const displayDamage = typeof attackBase === 'undefined' ? '' : formatAsSpacedNumber(attackDamage);
-                            const displayBase = typeof attackBase === 'undefined' ? '' : formatAsSpacedNumber(attackBase);
+                            const displayDamage = typeof attackBase !== 'undefined' || attackType === ATTACK_FIREBALL ? formatAsSpacedNumber(attackDamage) : '';
+                            const displayBase = typeof attackBase !== 'undefined' ? formatAsSpacedNumber(attackBase) : '';
 
                             content += `
                                 <tr style="${attacker.hash == group.fighterA.hash ? 'background-color: #202020; color: darkgray;' : ''}${attackerSpecialState ? 'border: 2px dashed purple !important;' : ''}">
@@ -1316,7 +1316,7 @@
                             superRound.attackBase = Math.round(superRound.attackBase / spellBonus);
 
                             continue;
-                        } else if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
+                        } else if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL || round.attackType === ATTACK_FIREBALL_BLOCKED) {
                             continue;
                         }
 
@@ -1345,7 +1345,7 @@
 
                     // Verify whether damage is in range
                     for (const round of flatRounds) {
-                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL) {
+                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL || round.attackType === ATTACK_FIREBALL_BLOCKED) {
                             continue;
                         }
 
