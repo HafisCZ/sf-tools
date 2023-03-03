@@ -250,7 +250,7 @@ const SimulatorUtils = new (class {
 
     _renderConfig () {
         if (typeof this.$display === 'undefined') {
-            this.$display = $('<div class="text-white position-absolute left-8 bottom-8" style="font-size: 90%;"></div>').appendTo($(document.body));
+            this.$display = $('<div class="text-white position-fixed left-8 bottom-8" style="font-size: 90%;"></div>').appendTo($(document.body));
         }
 
         let content = '';
