@@ -438,7 +438,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="ui inverted single very line basic table fixed mt-8">
+                <table class="ui inverted single very line basic table fixed mt-8" style="border-collapse: collapse;">
                     <thead>
                         <tr>
                             <th style="width: 5%;" class="!text-center">#</th>
@@ -1183,7 +1183,7 @@
                     let content = '';
 
                     for (let i = 0; i < fight.rounds.length; i++) {
-                        const { attacker, target, attackType, attackRage, attackDamage, attackBase, attackBaseError, attackMissed, attackCrit, attackSpecial, attackSecondary, targetHealthLeft } = fight.rounds[i];
+                        const { attacker, target, attackType, attackerSpecialState, attackRage, attackDamage, attackBase, attackBaseError, attackMissed, attackCrit, attackSpecial, attackSecondary, targetHealthLeft } = fight.rounds[i];
 
                         const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"'
 
@@ -1223,7 +1223,7 @@
                             const displayBase = typeof attackBase === 'undefined' ? '' : formatAsSpacedNumber(attackBase);
 
                             content += `
-                                <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                                <tr style="${attacker.hash == group.fighterA.hash ? 'background-color: #202020; color: darkgray;' : ''}${attackerSpecialState ? 'border: 2px dashed purple !important;' : ''}">
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center">${attackRage.toFixed(2)}</th>
                                     <td class="!text-center"${nameStyle}>${attacker.Name}</th>
