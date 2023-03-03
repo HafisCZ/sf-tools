@@ -49,7 +49,7 @@
                 <div class="two fields">
                     <div class="fifteen wide field">
                         <label data-intl="analyzer.form.fight_group"></label>
-                        <div class="ui selection inverted dropdown" id="fight-group">
+                        <div class="ui selection inverted dropdown" style="padding: .78571429rem 1.14285714rem;" id="fight-group">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -1159,7 +1159,7 @@
                     // Display in dropdown
                     $fightGroup.dropdown({
                         values: groupedFights.map((group, index) => ({
-                            name: `${group.fighterA.Name} - ${group.fighterB.Name} (${group.fights.length})`,
+                            name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${group.fighterA.Name} - <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${group.fighterB.Name} (${group.fights.length})`,
                             value: index
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
