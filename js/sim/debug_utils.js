@@ -223,16 +223,61 @@ const SimulatorUtils = new (class {
         if (typeof this._onLog === 'function') {
             // Display log button if enabled
             const $logButton = $(`
-                <div class="item !p-0">
-                    <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_log')}" data-inverted="">
+                <div class="ui dropdown inverted item !p-0">
+                    <button class="ui basic inverted icon button !box-shadow-none">
                         <i class="file archive icon"></i>
                     </button>
+                    <div class="menu" style="width: 350px; font-size: 1rem;"></div>
                 </div>
             `);
 
-            $logButton.click(() => {
-                this._onLog();
-            });
+            $logButton.dropdown({
+                values: [
+                    {
+                        name: intl('simulator.configure_log'),
+                        type: 'header',
+                        class: 'header text-center'
+                    },
+                    {
+                        value: 'file',
+                        name: intl('simulator.configure_log_file'),
+                        icon: 'download'
+                    },
+                    {
+                        value: 'broadcast',
+                        name: intl('simulator.configure_log_broadcast'),
+                        icon: 'rss'
+                    },
+                ],
+                on: 'hover',
+                action: 'hide',
+                delay : {
+                    hide: 100,
+                    show: 0
+                }
+            }).dropdown('setting', 'onChange', (value) => {
+                this._onLog((json) => {
+                    if (value === 'file') {
+                        Exporter.json(json);
+                    } else if (value === 'broadcast') {
+                        const broadcastToken = SHA1(String(Math.random()));
+                        const broadcastChannel = new BroadcastChannel(broadcastToken);
+
+                        broadcastChannel.addEventListener('message', ({ data: { type, data } }) => {
+                            if (type === 'token' && data === broadcastToken) {
+                                broadcastChannel.postMessage({
+                                    type: 'data',
+                                    data: json
+                                });
+
+                                broadcastChannel.close();
+                            }
+                        })
+
+                        window.open(`${window.location.origin}/analyzer?broadcast=${broadcastToken}`, '_blank');
+                    }
+                });
+            })
 
             $logButton.insertAfter($dialogButton);
         }
@@ -242,11 +287,11 @@ const SimulatorUtils = new (class {
                 const sampleData = data[this._insertType];
 
                 const $insertButton = $(`
-                    <div class="ui dropdown inverted item !p-0">
-                        <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_insert')}" data-inverted="">
+                    <div class="ui mini dropdown inverted item !p-0">
+                        <button class="ui basic inverted icon button !box-shadow-none">
                             <i class="tasks icon"></i>
                         </button>
-                        <div class="menu" style="width: 300px;"></div>
+                        <div class="menu" style="width: 300px; font-size: 1rem;"></div>
                     </div>
                 `);
 
@@ -259,7 +304,12 @@ const SimulatorUtils = new (class {
                             class: 'header text-center'
                         },
                         ...sampleData.map((sample, index) => ({ name: sample.name, value: index }))
-                    ]
+                    ],
+                    on: 'hover',
+                    delay : {
+                        hide: 100,
+                        show: 0
+                    }
                 }).dropdown('setting', 'onChange', (value) => {
                     const { data } = sampleData[parseInt(value)];
 
