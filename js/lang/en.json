@@ -1181,8 +1181,12 @@
             "title": "Your user name or password is not valid",
             "message": "Please ensure that it is in correct format (username@url)"
         },
-        "credentials_error": "Wrong username or password",
-        "download_error": "Download failed"
+        "errors": {
+            "network_error": "Server cannot be reached",
+            "name_not_whitelisted_error": "Player not whitelisted",
+            "error_wrong_pass": "Incorrect password",
+            "error_player_not_found": "Character was not found on the server"
+        }
     },
     "database": {
         "open_error": {

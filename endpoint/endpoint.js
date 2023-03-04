@@ -131,10 +131,16 @@ const EndpointDialog = new (class extends Dialog {
         this.$temporary.parent().toggle(allowTemporary);
     }
 
-    _showError (text, hard = false) {
+    _localizeError (rawError) {
+        const error = rawError.toLowerCase().replace(/\s|:/g, '_');
+
+        return this.intl(`errors.${error}`);
+    }
+
+    _showError (error, hard = false) {
         this.$step6.show();
 
-        this.$errorText.text(text);
+        this.$errorText.text(this._localizeError(error));
         this.$errorButton.one('click', () => {
             this.$step6.hide();
 
@@ -297,17 +303,17 @@ const EndpointDialog = new (class extends Dialog {
     }
 
     _funcLoginSingle (server, username, password) {
-        this.endpoint.login_query_only(server, username, password, (text) => this._import(text), () => {
+        this.endpoint.login_query_only(server, username, password, (text) => this._import(text), (error) => {
             this.$step4.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(error);
         });
     };
 
     _funcLoginHOF (server, username, password) {
-        this.endpoint.login_query_hall_of_fame(server, username, password, (text) => this._import(text), () => {
+        this.endpoint.login_query_hall_of_fame(server, username, password, (text) => this._import(text), (error) => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(error);
         }, (percent) => {
             this.$step4.hide();
             this.$step5.show();
@@ -316,10 +322,10 @@ const EndpointDialog = new (class extends Dialog {
     }
 
     _funcLoginAll (server, username, password, kind = 'members') {
-        this.endpoint.login_query_many(server, username, password, (text) => text.split(';')[kind === 'members' ? 0 : 1], (text) => this._import(text), () => {
+        this.endpoint.login_query_many(server, username, password, (text) => text.split(';')[kind === 'members' ? 0 : 1], (text) => this._import(text), (error) => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(error);
         }, (percent) => {
             this.$step4.hide();
             this.$step5.show();
@@ -377,17 +383,17 @@ const EndpointDialog = new (class extends Dialog {
 
                 $(checkbox).checkbox('setting', 'onChecked', () => {
                     this._setDownloading(name);
-                    this.endpoint.query_single(name, (value) => {
+                    this.endpoint.query_single(name, () => {
                         this._removeDownloading(name);
-                    }, () => {
+                    }, (error) => {
                         this.$step3.hide();
-                        this._showError(this.intl('download_error'));
+                        this._showError(error);
                     });
                 })
             }
-        }, () => {
+        }, (error) => {
             this.$step4.hide();
-            this._showError(this.intl('credentials_error'));
+            this._showError(error);
         });
     }
 
