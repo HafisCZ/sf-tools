@@ -313,8 +313,8 @@
                     onInsert: (data) => {
                         handlePaste(data);
                     },
-                    onLog: () => {
-                        executeSimulation(1, 50, true);
+                    onLog: (callback) => {
+                        executeSimulation(1, 50, callback);
                     }
                 });
 
@@ -473,7 +473,7 @@
                     }
                 })
 
-                function executeSimulation (instances, iterations, log) {
+                function executeSimulation (instances, iterations, logCallback) {
                     const canSimulate = players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
 
                     if (canSimulate) {
@@ -489,7 +489,7 @@
                                 ({ results: _results, logs: _logs }) => {
                                     results.push(_results);
 
-                                    if (log) {
+                                    if (logCallback) {
                                         logs = logs.concat(_logs);
                                     }
                                 },
@@ -499,7 +499,7 @@
                                     flags: getSimulatorFlags(),
                                     config: SimulatorUtils.config,
                                     mode: simulatorMode,
-                                    log,
+                                    log: !!logCallback,
                                     iterations
                                 }
                             )
@@ -512,10 +512,10 @@
                             setSort('avg', 0);
 
                             if (logs.length > 0) {
-                                Exporter.json({
+                                logCallback({
                                     fights: logs,
                                     players: players.map(({ player }) => player)
-                                }, 'logs');
+                                });
                             }
                         })
                     }

@@ -616,6 +616,40 @@
                     copyNode($fightTable.closest('table').get(0));
                 });
 
+                // Listener
+                if (urlParams.has('broadcast')) {
+                    const broadcastToken = urlParams.get('broadcast')
+                    const broadcastChannel = new BroadcastChannel(broadcastToken);
+
+                    // Listen for data
+                    broadcastChannel.addEventListener('message', ({ data: { type, data } }) => {
+                        if (type === 'data') {
+                            Loader.toggle(true);
+
+                            currentFights = [];
+                            currentPlayers = [];
+
+                            currentGroup = null;
+                            currentFight = null;
+
+                            importFights(data);
+
+                            render();
+
+                            Loader.toggle(false);
+
+                            // Cleanup
+                            broadcastChannel.close();
+                        }
+                    });
+                    
+                    // When ready send message to channel
+                    broadcastChannel.postMessage({
+                        type: 'token',
+                        data: broadcastToken
+                    });
+                }
+
                 // Custom fighter
                 class SFFighter {
                     constructor (data, fightType) {

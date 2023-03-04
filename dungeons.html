@@ -541,8 +541,8 @@
                             return m;
                         });
                     },
-                    onLog: () => {
-                        executeSimulation(1, 50, true);
+                    onLog: (callback) => {
+                        executeSimulation(1, 50, callback);
                     }
                 });
 
@@ -1150,7 +1150,7 @@
                     }
                 })
 
-                function executeSimulation (instances, iterations, log) {
+                function executeSimulation (instances, iterations, logCallback) {
                     if (boss && editor.valid()) {
                         const bossInstance = getBossData(boss, dungeon);
                         const playerInstances = preparePlayerInstances(dungeon);
@@ -1174,8 +1174,8 @@
                                     players: playerInstances,
                                     boss: bossInstance,
                                     config: SimulatorUtils.config,
-                                    iterations,
-                                    log
+                                    log: !!logCallback,
+                                    iterations
                                 }
                             )
                         }
@@ -1196,10 +1196,10 @@
 
                             // Download logs
                             if (logs.length > 0) {
-                                Exporter.json({
+                                logCallback({
                                     fights: logs,
                                     players: [...playerInstances, bossInstance]
-                                }, 'logs');
+                                })
                             }
                         })
                     }
