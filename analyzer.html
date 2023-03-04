@@ -1474,7 +1474,13 @@
                     });
                 }
 
-                function importFights ({ players, fights }) {
+                function importFights ({ players, fights, config }) {
+                    // Set and render simulator configuration
+                    CONFIG.set(config);
+
+                    SimulatorUtils.config = config;
+
+                    // Insert players & fights
                     currentPlayers.push(...players);
                     
                     for (const fight of fights) {

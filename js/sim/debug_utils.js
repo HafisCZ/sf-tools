@@ -366,7 +366,12 @@ const SimulatorUtils = new (class {
         }
     }
 
-    get config() {
+    get config () {
         return this.currentConfig;
+    }
+
+    set config (data) {
+        this.currentConfig = data;
+        this._renderConfig();
     }
 })();
