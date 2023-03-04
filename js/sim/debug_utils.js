@@ -151,7 +151,7 @@ const SimulatorDebugDialog = new (class extends Dialog {
 })();
 
 const SimulatorUtils = new (class {
-    configure ({ params, onCopy, onChange, onInsert, insertType }) {
+    configure ({ params, onCopy, onChange, onInsert, onLog, insertType }) {
         // Updated config
         this.currentConfig = null;
         this.defaultConfig = mergeDeep({}, CONFIG);
@@ -160,6 +160,7 @@ const SimulatorUtils = new (class {
         this._onCopy = onCopy;
         this._onChange = onChange;
         this._onInsert = onInsert;
+        this._onLog = onLog;
 
         // Data
         this._insertType = insertType;
@@ -219,13 +220,30 @@ const SimulatorUtils = new (class {
             $copyButton.insertAfter($dialogButton);
         }
 
+        if (typeof this._onLog === 'function') {
+            // Display log button if enabled
+            const $logButton = $(`
+                <div class="item !p-0">
+                    <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_log')}" data-inverted="">
+                        <i class="file archive icon"></i>
+                    </button>
+                </div>
+            `);
+
+            $logButton.click(() => {
+                this._onLog();
+            });
+
+            $logButton.insertAfter($dialogButton);
+        }
+
         if (typeof this._onInsert === 'function' && typeof this._insertType === 'string') {
             fetch('js/sim/debug_data.json').then((response) => response.json()).then((data) => {
                 const sampleData = data[this._insertType];
 
                 const $insertButton = $(`
                     <div class="ui dropdown inverted item !p-0">
-                        <button class="ui basic inverted icon button !box-shadow-none">
+                        <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure_insert')}" data-inverted="">
                             <i class="tasks icon"></i>
                         </button>
                         <div class="menu" style="width: 300px;"></div>
