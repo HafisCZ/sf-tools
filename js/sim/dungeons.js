@@ -9,7 +9,7 @@ self.addEventListener('message', function ({ data: { flags, config, players, bos
 
     self.postMessage({
         results: new DungeonSimulator().simulate(players, boss, iterations || 100000, hpcap || 5000),
-        log: FIGHT_LOG.dump(),
+        logs: FIGHT_LOG.dump(),
         index
     });
 
