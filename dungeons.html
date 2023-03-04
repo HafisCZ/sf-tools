@@ -528,7 +528,6 @@
                 var dungeon_current = null;
                 var dungeon = null;
                 var availableBosses = null;
-                var modeLog = urlParams.has('log');
 
                 SimulatorUtils.configure({
                     params: urlParams,
@@ -541,6 +540,9 @@
 
                             return m;
                         });
+                    },
+                    onLog: () => {
+                        executeSimulation(1, 50, true);
                     }
                 });
 
@@ -1148,10 +1150,7 @@
                     }
                 })
 
-                $('#sim-run').click(function () {
-                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
-                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-
+                function executeSimulation (instances, iterations, log) {
                     if (boss && editor.valid()) {
                         const bossInstance = getBossData(boss, dungeon);
                         const playerInstances = preparePlayerInstances(dungeon);
@@ -1165,18 +1164,18 @@
 
                         for (let i = 0; i < instances; i++) {
                             batch.add(
-                                ({ results: { score, healths }, log }) => {
+                                ({ results: { score, healths }, logs: _logs }) => {
                                     results.push(healths);
-                                    logs = logs.concat(log);
+                                    logs = logs.concat(_logs);
 
                                     totalScore += score;
                                 },
                                 {
                                     players: playerInstances,
                                     boss: bossInstance,
+                                    config: SimulatorUtils.config,
                                     iterations,
-                                    log: modeLog,
-                                    config: SimulatorUtils.config
+                                    log
                                 }
                             )
                         }
@@ -1204,6 +1203,13 @@
                             }
                         })
                     }
+                }
+
+                $('#sim-run').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
+                    executeSimulation(instances, iterations, false);
                 });
 
                 function showGraph (graph, dungeon, boss, score, tries, healths, showExperience = false) {
