@@ -514,7 +514,8 @@
                             if (logs.length > 0) {
                                 logCallback({
                                     fights: logs,
-                                    players: players.map(({ player }) => player)
+                                    players: players.map(({ player }) => player),
+                                    config: SimulatorUtils.config
                                 });
                             }
                         })

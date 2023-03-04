@@ -1198,7 +1198,8 @@
                             if (logs.length > 0) {
                                 logCallback({
                                     fights: logs,
-                                    players: [...playerInstances, bossInstance]
+                                    players: [...playerInstances, bossInstance],
+                                    config: SimulatorUtils.config
                                 })
                             }
                         })
