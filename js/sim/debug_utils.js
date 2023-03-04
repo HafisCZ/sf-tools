@@ -274,7 +274,7 @@ const SimulatorUtils = new (class {
                             }
                         })
 
-                        window.open(`${window.location.origin}/analyzer?broadcast=${broadcastToken}`, '_blank');
+                        window.open(`${window.location.origin}/analyzer?debug&broadcast=${broadcastToken}`, '_blank');
                     }
                 });
             })
