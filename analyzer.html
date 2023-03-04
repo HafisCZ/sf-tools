@@ -1297,7 +1297,12 @@
 
                         updatePreview();
                         renderButtons($viewSummaryFight, group, fight);
-                    }).dropdown('set selected', _dig(currentFight, 'index') || group.fights[0].index);
+                    });
+
+                    const defaultFightIndex = group.fights[0].index;
+                    const currentFightIndex = _dig(currentFight, 'index');
+
+                    $fightList.dropdown('set selected', group.fights.some((fight) => fight.index === currentFightIndex) ? currentFightIndex : defaultFightIndex);
                 }
 
                 // Current data
