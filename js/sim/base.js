@@ -1047,16 +1047,15 @@ class SimulatorBase {
 
         // Thanks to rafa97sam for testing and coding this part that broke me
         if (this.b.Player.Class == BERSERKER && getRandom(50)) {
-            let turnIncrease = 1;
+            this.getRage();
 
             if (this.a.Player.Class == BERSERKER) {
                 while (getRandom(50)) {
-                    turnIncrease += 1;
+                    this.getRage();
+
                     [this.a, this.b] = [this.b, this.a];
                 }
             }
-
-            this.turn += turnIncrease;
 
             [this.a, this.b] = [this.b, this.a];
         }
