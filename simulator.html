@@ -293,9 +293,7 @@
                     };
                 }
 
-                let modeDump = urlParams.has('log');
-                let modeDebug = urlParams.has('debug');
-                if (modeDebug) {
+                if (urlParams.has('debug')) {
                     $('#simulate-debug').show();
                 }
 
@@ -314,6 +312,9 @@
                     insertType: 'players',
                     onInsert: (data) => {
                         handlePaste(data);
+                    },
+                    onLog: () => {
+                        executeSimulation(1, 50, true);
                     }
                 });
 
@@ -470,11 +471,7 @@
                     }
                 })
 
-                // Run simulation
-                $('#simulate').click(function () {
-                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
-                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
-
+                function executeSimulation (instances, iterations, log) {
                     const canSimulate = players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
 
                     if (canSimulate) {
@@ -490,7 +487,7 @@
                                 ({ results: _results, logs: _logs }) => {
                                     results.push(_results);
 
-                                    if (modeDump) {
+                                    if (log) {
                                         logs = logs.concat(_logs);
                                     }
                                 },
@@ -498,9 +495,9 @@
                                     player: simulatorMode === 'all' || simulatorMode === 'tournament' ? players[i] : players.find(p => p.index == yourself),
                                     target: simulatorMode === 'all' || simulatorMode === 'tournament' ? players : players[i],
                                     flags: getSimulatorFlags(),
-                                    log: modeDump,
                                     config: SimulatorUtils.config,
                                     mode: simulatorMode,
+                                    log,
                                     iterations
                                 }
                             )
@@ -520,6 +517,14 @@
                             }
                         })
                     }
+                }
+
+                // Run simulation
+                $('#simulate').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
+                    executeSimulation(instances, iterations, false);
                 });
 
                 function addPlayer () {
