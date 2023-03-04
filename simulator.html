@@ -364,8 +364,10 @@
                         p.score = null;
                     }
 
+                    Store.shared.set('player_sim/mode', value, true);
+
                     clearSort();
-                }).dropdown('set selected', 'all')
+                }).dropdown('set selected', Store.shared.get('player_sim/mode', 'all', true))
 
                 $('#sim-editor input').on('paste', function (event) {
                     event.stopPropagation();
