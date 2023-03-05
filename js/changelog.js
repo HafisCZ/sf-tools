@@ -38,13 +38,15 @@ const CHANGELOG = {
             'Fixed private export not including own characters'
         ],
         'Fight Analyzer': [
-            'Added new tool that serves as a replacement for Fight Viewer and Boss Viewer'
+            'Added new tool that serves as a replacement for Fight Viewer and Boss Viewer',
+            'Added missing enemy names'
         ],
         'Hydra Simulator': [
             'Fixed maximum hydra level after import'
         ],
         'Fight Simulator': [
-            'Currently selected player will be marked as target when switching to 1 v All or All v 1 modes'
+            'Currently selected player will be marked as target when switching to 1 v All or All v 1 modes',
+            'Currently selected simulator mode will now be persistent'
         ],
         'Fortress Simulator': [
             'Replaced fortifications input with a dropdown'
@@ -52,14 +54,15 @@ const CHANGELOG = {
         'Hellevator Simulator': [
             'Added prototype simulator'
         ],
-        'All Simulators': [
-            'Added updated Druid',
-            'Added updated Bard'
+        'Endpoint': [
+            'Added proper error messages when login or data capture fails'
         ],
         'All Tools': [
             'Added dark theme',
             'Added new terms &amp; conditions that must be accepted before using Endpoint',
             'Added links to community-made tools on the main page',
+            'Added updated Druid',
+            'Added updated Bard',
             'Updated styling of all dialogs',
             'Removed fight viewer tool',
             'Removed boss viewer tool'
