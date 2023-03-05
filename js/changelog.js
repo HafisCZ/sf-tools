@@ -60,7 +60,9 @@ const CHANGELOG = {
             'Added dark theme',
             'Added new terms &amp; conditions that must be accepted before using Endpoint',
             'Added links to community-made tools on the main page',
-            'Updated styling of all dialogs'
+            'Updated styling of all dialogs',
+            'Removed fight viewer tool',
+            'Removed boss viewer tool'
         ]
     },
     'v5.2897': {
