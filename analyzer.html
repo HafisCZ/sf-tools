@@ -55,9 +55,12 @@
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
-                    <div class="one wide field" style="width: 8%;">
+                    <div class="one wide field" style="width: 11%;">
                         <label>&nbsp;</label>
-                        <div class="ui right floated buttons">    
+                        <div class="ui right floated buttons">
+                            <div class="ui icon small basic inverted button" id="button-reset-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.clear_changes">
+                                <i class="ui recycle icon"></i>
+                            </div>  
                             <div class="ui icon small basic inverted button" id="button-export-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
                                 <i class="ui download icon"></i>
                             </div>
@@ -550,6 +553,7 @@
                 const $buttonExport = $('#button-export');
                 const $buttonExportGroup = $('#button-export-group');
                 const $buttonExportFight = $('#button-export-fight');
+                const $buttonResetGroup = $('#button-reset-group');
 
                 const $fightGroup = $('#fight-group');
                 const $fightList = $('#fight-list');
@@ -603,6 +607,15 @@
                 $buttonExportFight.click(() => {
                     if (currentFight) {
                         exportFights(currentFight, currentGroup);
+                    }
+                })
+
+                $buttonResetGroup.click(() => {
+                    if (currentGroup) {
+                        delete currentGroup.fighterA.editor;
+                        delete currentGroup.fighterB.editor;
+
+                        render();
                     }
                 })
 
