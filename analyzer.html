@@ -584,12 +584,7 @@
                 })
 
                 $buttonClear.click(() => {
-                    currentFights = [];
-                    currentPlayers = [];
-
-                    currentGroup = null;
-                    currentFight = null;
-
+                    reset();
                     render();
                 })
 
@@ -623,11 +618,7 @@
                     broadcast.on('data', (data) => {
                         Loader.toggle(true);
 
-                        currentFights = [];
-                        currentPlayers = [];
-
-                        currentGroup = null;
-                        currentFight = null;
+                        reset();
 
                         importFights(data);
 
@@ -1176,6 +1167,14 @@
                             currentPlayers.push(player);
                         }
                     }
+                }
+
+                function reset () {
+                    currentFights = [];
+                    currentPlayers = [];
+
+                    currentGroup = null;
+                    currentFight = null;
                 }
 
                 function render () {
