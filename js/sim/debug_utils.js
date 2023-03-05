@@ -260,21 +260,14 @@ const SimulatorUtils = new (class {
                     if (value === 'file') {
                         Exporter.json(json);
                     } else if (value === 'broadcast') {
-                        const broadcastToken = SHA1(String(Math.random()));
-                        const broadcastChannel = new BroadcastChannel(broadcastToken);
+                        const broadcast = new Broadcast();
 
-                        broadcastChannel.addEventListener('message', ({ data: { type, data } }) => {
-                            if (type === 'token' && data === broadcastToken) {
-                                broadcastChannel.postMessage({
-                                    type: 'data',
-                                    data: json
-                                });
-
-                                broadcastChannel.close();
-                            }
+                        broadcast.on('token', () => {
+                            broadcast.send('data', json);
+                            broadcast.close();
                         })
 
-                        window.open(`${window.location.origin}/analyzer?debug&broadcast=${broadcastToken}`, '_blank');
+                        window.open(`${window.location.origin}/analyzer?debug&broadcast=${broadcast.token}`, '_blank');
                     }
                 });
             })

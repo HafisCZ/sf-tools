@@ -618,36 +618,30 @@
 
                 // Listener
                 if (urlParams.has('broadcast')) {
-                    const broadcastToken = urlParams.get('broadcast')
-                    const broadcastChannel = new BroadcastChannel(broadcastToken);
+                    const token = urlParams.get('broadcast');
+                    const broadcast = new Broadcast(token);
 
-                    // Listen for data
-                    broadcastChannel.addEventListener('message', ({ data: { type, data } }) => {
-                        if (type === 'data') {
-                            Loader.toggle(true);
+                    broadcast.on('data', (data) => {
+                        Loader.toggle(true);
 
-                            currentFights = [];
-                            currentPlayers = [];
+                        currentFights = [];
+                        currentPlayers = [];
 
-                            currentGroup = null;
-                            currentFight = null;
+                        currentGroup = null;
+                        currentFight = null;
 
-                            importFights(data);
+                        importFights(data);
 
-                            render();
+                        render();
 
-                            Loader.toggle(false);
+                        Loader.toggle(false);
 
-                            // Cleanup
-                            broadcastChannel.close();
-                        }
-                    });
-                    
+                        // Cleanup
+                        broadcast.close();
+                    })
+
                     // When ready send message to channel
-                    broadcastChannel.postMessage({
-                        type: 'token',
-                        data: broadcastToken
-                    });
+                    broadcast.send('token', token);
                 }
 
                 // Custom fighter
