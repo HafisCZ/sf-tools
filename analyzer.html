@@ -496,8 +496,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 20%;" class="!text-center">${intl('analyzer.table.damage')}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${group.fighterA.Name}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${group.fighterB.Name}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterA)}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterB)}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -518,8 +518,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${group.fighterA.Name}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${group.fighterB.Name}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterA)}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterB)}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1247,7 +1247,7 @@
                     // Display in dropdown
                     $fightGroup.dropdown({
                         values: groupedFights.map((group) => ({
-                            name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${group.fighterA.Name} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${group.fighterB.Name} (${group.fights.length})`,
+                            name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${getFighterName(group.fighterA)} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${getFighterName(group.fighterB)} (${group.fights.length})`,
                             value: group.hash
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
@@ -1284,7 +1284,7 @@
                                 <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center"></th>
-                                    <td class="!text-center"${nameStyle}>${target.Name}</th>
+                                    <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
                                     <td class="!text-center"></th>
                                     <td class="!text-center text-violet">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center"></th>
@@ -1300,7 +1300,7 @@
                                 <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center"></th>
-                                    <td class="!text-center"${nameStyle}>${attacker.Name}</th>
+                                    <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
                                     <td class="!text-center"></th>
                                     <td class="!text-center text-violet">${intl(`general.attack200_2`, { spellNotes, spellLevel })}</th>
                                     <td class="!text-center"></th>
@@ -1318,8 +1318,8 @@
                                 <tr style="${attacker.hash == group.fighterA.hash ? 'background-color: #202020; color: darkgray;' : ''}${attackerSpecialState ? 'border: 2px dashed purple !important;' : ''}">
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center">${attackRage.toFixed(2)}</th>
-                                    <td class="!text-center"${nameStyle}>${attacker.Name}</th>
-                                    <td class="!text-center"${nameStyle}>${target.Name}</th>
+                                    <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
+                                    <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center${attackClass}">${displayDamage}</th>
                                     <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
@@ -1332,19 +1332,23 @@
                     $fightTable.html(content);
                 }
 
+                function getFighterName (fighter) {
+                    return _dig(fighter.player, 'Name') || fighter.Name;
+                }
+
                 function renderFightGroup (group) {
                     const selectBase = {
-                        nameA: group.fighterA.Name,
+                        nameA: getFighterName(group.fighterA),
                         healthA: formatAsSpacedNumber(group.fighterA.Life),
                         totalHealthA: formatAsSpacedNumber(group.fighterA.MaximumLife),
-                        nameB: group.fighterB.Name,
+                        nameB: getFighterName(group.fighterB),
                         healthB: formatAsSpacedNumber(group.fighterB.Life),
                         totalHealthB: formatAsSpacedNumber(group.fighterB.MaximumLife),
                     };
 
                     $fightList.dropdown({
                         values: group.fights.map((fight, index) => ({
-                            name: intl('analyzer.table.select', Object.assign({ index: index + 1, rounds: fight.rounds.length, winner: fight.winner.Name }, selectBase)),
+                            name: intl('analyzer.table.select', Object.assign({ index: index + 1, rounds: fight.rounds.length, winner: getFighterName(fight.winner) }, selectBase)),
                             value: fight.index
                         }))
                     }).dropdown('setting', 'onChange', (value) => {
