@@ -1905,7 +1905,7 @@ class SFCompanion extends SFPlayer {
         super();
 
         this.ID = -390 - pclass;
-        this.Name = ['', 'Bert', 'Mark', 'Kunigunde'][pclass];
+        this.Name = intl(`general.companion${pclass}_full`, { player: player.Name });
         this.Level = comp.Level;
         this.Class = pclass;
         this.Armor = comp.Armor;

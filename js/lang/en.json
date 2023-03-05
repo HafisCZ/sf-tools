@@ -169,7 +169,13 @@
         "gem4": "Constitution",
         "gem5": "Luck",
         "gem6": "Black",
-        "gem7": "Legendary"
+        "gem7": "Legendary",
+        "companion1": "Bert",
+        "companion2": "Mark",
+        "companion3": "Kunigunde",
+        "companion1_full": "#{player}'s Bert",
+        "companion2_full": "#{player}'s Mark",
+        "companion3_full": "#{player}'s Kunigunde"
     },
     "achievements": {
         "0": "Globetrotter",
@@ -913,10 +919,6 @@
         "simulate_next": "More",
         "player": "Player",
         "enemy": "Enemy",
-        "yourself": "You",
-        "bert": "Bert",
-        "mark": "Mark",
-        "kunigunde": "Kunigunde",
         "open": "Currently open dungeons",
         "graph": {
             "y": "Boss HP Left",
