@@ -593,7 +593,7 @@ const Actions = new (class {
 
 class Broadcast {
     constructor (token = this._randomToken()) {
-        Logger.log('CHANNEL', `Creating new channel ${token}`);
+        Logger.log('CHANNEL', `Creating channel ${token}`);
 
         this._token = token;
         this._channel = new BroadcastChannel(token);
@@ -618,6 +618,8 @@ class Broadcast {
     }
 
     close () {
+        Logger.log('CHANNEL', `Closing channel ${this._token}`)
+
         this._channel.close();
     }
 
