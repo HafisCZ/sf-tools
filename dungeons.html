@@ -476,7 +476,12 @@
                     );
                 });
 
-                let helperNames = ['player', 'bert', 'mark', 'kunigunde'].map(k => intl(`dungeons.${k}`));
+                const HELPER_NAMES = [
+                    intl('dungeons.player'),
+                    intl('general.companion1'),
+                    intl('general.companion2'),
+                    intl('general.companion3')
+                ]
 
                 let editor = new (class extends Editor {
                     constructor ($parent, callback) {
@@ -503,7 +508,7 @@
                         this.fields['potion_life'].toggle(index == 0);
                         this.fields['level'].toggle(index == 0);
                         this.fields['shield'].show(object.Class == 1 && index == 0);
-                        this.fields['name'].set(helperNames[index]);
+                        this.fields['name'].set(HELPER_NAMES[index]);
 
                         this.resumeListener();
                     }
@@ -722,7 +727,7 @@
                                     <img class="ui medium centered image" style="width: 50px; opacity: 75%;" src="res/portrait${ i ? i : '' }.png">
                                 </div>
                                 <div class="eight wide column text-center">
-                                    <b>${intl(`dungeons.${['yourself', 'bert', 'mark', 'kunigunde'][i]}`)}</b>
+                                    <b>${HELPER_NAMES[i]}</b>
                                 </div>
                                 <div class="four wide column"></div>
                             </div>
