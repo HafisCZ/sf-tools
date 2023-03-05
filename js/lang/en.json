@@ -980,6 +980,7 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
+        "clear_changes": "Reset to original state",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
             "rage": "Rage",
