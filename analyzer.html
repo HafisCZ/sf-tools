@@ -643,6 +643,11 @@
 
                     // When ready send message to channel
                     broadcast.send('token', token);
+
+                    // Remove broadcast param
+                    urlParams.delete('broadcast');
+
+                    window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${urlParams.toString().replace(/=&/g, '&').replace(/=$/, '')}`)
                 }
 
                 // Custom fighter
