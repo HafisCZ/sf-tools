@@ -1255,7 +1255,7 @@
                 }
 
                 function renderPlayer (player, editor) {
-                    editor.fill(player.player || player);
+                    editor.fill(player.player || player.editor || player);
                 }
 
                 function renderFight (group, fight) {
@@ -1358,9 +1358,12 @@
                 let currentFight = null;
 
                 function processGroup (group) {
+                    group.fighterA.editor = playerEditorA.read();
+                    group.fighterB.editor = playerEditorB.read();
+
                     // Fetch data and initialize models
-                    const model1 = FighterModel.create(0, playerEditorA.read());
-                    const model2 = FighterModel.create(1, playerEditorB.read());
+                    const model1 = FighterModel.create(0, group.fighterA.editor);
+                    const model2 = FighterModel.create(1, group.fighterB.editor);
 
                     // Initialize models
                     FighterModel.initializeFighters(model1, model2);
