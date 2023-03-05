@@ -4,22 +4,22 @@ class SFItem {
     }
 
     constructor (data, slot, pos) {
-        var dataType = new ComplexDataType(data);
+        let dataType = new ComplexDataType(data);
         dataType.assert(12);
 
-        var type = dataType.short();
-        var socket = dataType.byte();
-        var enchantmentType = dataType.byte();
-        var picIndex = dataType.short();
-        var enchantmentPower = dataType.short();
-        var damageMin = dataType.long();
-        var damageMax = dataType.long();
-        var attributeType = [dataType.long(), dataType.long(), dataType.long()];
-        var attributeValue = [dataType.long(), dataType.long(), dataType.long()];
-        var gold = dataType.long();
-        var coins = dataType.byte();
-        var upgradeLevel = dataType.byte();
-        var socketPower = dataType.short();
+        let type = dataType.short();
+        let socket = dataType.byte();
+        let enchantmentType = dataType.byte();
+        let picIndex = dataType.short();
+        let enchantmentPower = dataType.short();
+        let damageMin = dataType.long();
+        let damageMax = dataType.long();
+        let attributeType = [dataType.long(), dataType.long(), dataType.long()];
+        let attributeValue = [dataType.long(), dataType.long(), dataType.long()];
+        let gold = dataType.long();
+        let coins = dataType.byte();
+        let upgradeLevel = dataType.byte();
+        let socketPower = dataType.short();
 
         this.Data = data;
         this.Slot = slot;
@@ -72,9 +72,24 @@ class SFItem {
 
         this.RuneType = this.getRuneType();
         this.RuneValue = this.getRuneValue();
+    }
 
-        this.Name = Loca.name(this.Type, this.Index, this.Class);
-        this.ImageUrl = Loca.pic(this.Type, this.Index, this.Color, this.Class);
+    get ImageUrl () {
+        if (!this._ImageUrlSet) {
+            this._ImageUrlSet = true;
+            this._ImageUrl = Loca.pic(this.Type, this.Index, this.Color, this.Class);
+        }
+
+        return this._ImageUrl;
+    }
+
+    get Name () {
+        if (!this._NameSet) {console.log('Read')
+            this._NameSet = true;
+            this._Name = Loca.name(this.Type, this.Index, this.Class);
+        }
+
+        return this._Name;
     }
 
     morph (from, to, force = false) {
@@ -457,66 +472,6 @@ class SFItem {
                 Crystal: dism.Crystal + sell.Crystal
             };
         }
-    }
-}
-
-class SFFighter {
-    constructor (data, fightType) {
-        let dataType = new ComplexDataType(data);
-        dataType.assert(47);
-
-        this.ID = dataType.long();
-        this.Name = dataType.string();
-        this.Level = dataType.long();
-        this.MaximumLife = dataType.long();
-        this.Life = dataType.long();
-
-        this.Strength = dataType.long();
-        this.Dexterity = dataType.long();
-        this.Intelligence = dataType.long();
-        this.Constitution = dataType.long();
-        this.Luck = dataType.long();
-
-        this.Face = {
-            Mouth: dataType.long(),
-            Hair: {
-                Type: dataType.long() % 100,
-                Color: Math.trunc(dataType.back(1).long() / 100)
-            },
-            Brows: {
-                Type: dataType.long() % 100,
-                Color: Math.trunc(dataType.back(1).long() / 100)
-            },
-            Eyes: dataType.long(),
-            Beard: {
-                Type: dataType.long() % 100,
-                Color: Math.trunc(dataType.back(1).long() / 100)
-            },
-            Nose: dataType.long(),
-            Ears: dataType.long(),
-            Special: dataType.long(),
-            Special2: dataType.long(),
-            Portrait: dataType.long()
-        };
-
-        this.Race = dataType.long();
-        this.Gender = dataType.long();
-        this.Class = dataType.long();
-
-        this.Wpn1 = new SFItem(dataType.sub(12), 1, [1, 1]);
-        this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
-
-        if (typeof fightType !== 'undefined' && this.isMonster()) {
-            this.Name = getFightTargetName(fightType, null, -this.Face.Mouth);
-        }
-    }
-
-    getMonsterID () {
-        return -this.Face.Mouth;
-    }
-
-    isMonster () {
-        return this.Face.Mouth < 0;
     }
 }
 

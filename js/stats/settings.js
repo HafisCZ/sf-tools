@@ -1394,7 +1394,7 @@ class Settings {
     constructor (string, type, scriptType = 0) {
         this.code = string;
         this.type = type;
-        this.env_id = RandomSHA();
+        this.env_id = randomSHA1();
 
         // Constants
         this.constants = new Constants();

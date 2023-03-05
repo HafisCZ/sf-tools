@@ -624,7 +624,7 @@ class Broadcast {
     }
 
     _randomToken () {
-        return SHA1(String(Math.random()));
+        return randomSHA1();
     }
 
     get token () {
