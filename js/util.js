@@ -338,30 +338,6 @@ class WorkerBatch {
     }
 }
 
-function reverseHealthMultipliers (level, healthMultiplier, constitution, totalHealth) {
-	let baseHealth = (level + 1) * healthMultiplier * constitution;
-	for (let potion = 0; potion <= 1; potion++) {
-		for (let runes = 0; runes <= 15; runes++) {
-			for (let portal = 0; portal <= 50; portal++) {
-				let calculatedHealth = Math.ceil(Math.ceil(Math.ceil(baseHealth * (1 + portal / 100)) * (1 + runes / 100)) * (potion == 0 ? 0 : 1.25));
-				if (Math.abs(calculatedHealth - totalHealth) <= 5 * healthMultiplier) {
-					return {
-						potion: potion == 0 ? 0 : 25,
-						runes: runes,
-						portal: portal
-					};
-				}
-			}
-		}
-	}
-
-    return {
-        potion: 0,
-        runes: 0,
-        portal: 0
-    };
-}
-
 function parseOwnDate (text) {
     if (typeof(text) == 'string') {
         let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);
@@ -799,29 +775,6 @@ function formatAsSpacedNumber(n, delim = '&nbsp') {
     return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (delim + char) : char).join('');
 }
 
-function * parsePlayaResponse (response) {
-    var o = response.split('&').filter(x => x.length);
-    for (var i = 0, a; a = o[i]; i++) {
-        yield a.split(':', 2);
-    }
-}
-
-function * filterPlayaJSON (o, tt = [], a = []) {
-    for (var i in o) {
-        if (i == 'url') {
-            a[0] = o[i];
-        } else if (i == 'startedDateTime') {
-            a[1] = new Date(o[i]);
-        } else {
-            const t = tt.concat(i);
-            yield [i, o[i], a[0], a[1]];
-            if (o[i] != null && typeof(o[i]) == 'object') {
-                yield * filterPlayaJSON(o[i], t, a);
-            }
-        }
-    }
-}
-
 function * iterate (array) {
     for (let i = 0; i < array.length; i++) {
         yield {
@@ -932,15 +885,6 @@ function compareItems (a, b) {
 
 function getPotionType (type) {
     return type == 16 ? 6 : (type == 0 ? 0 : 1 + (type - 1) % 5);
-}
-
-function getAt(obj, ... path) {
-    var x = obj;
-    for (var i = 0, l = path.length; i < l; i++) {
-        x = x[path[i]];
-        if (!x) return null;
-    }
-    return x;
 }
 
 function getObjectAt (obj, path) {
@@ -1156,6 +1100,6 @@ function SHA1 (text) {
     return (cvt_hex(H0) + cvt_hex(H1) /* + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4) */ ).toLowerCase();
 }
 
-function RandomSHA () {
+function randomSHA1 () {
     return SHA1(Math.random().toString()).slice(0, 8);
 }

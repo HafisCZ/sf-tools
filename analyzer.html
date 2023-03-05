@@ -15,10 +15,9 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
-        <script src="js/lang.js"></script>
 
         <script src="js/core/util.js"></script>
-        <script src="js/core/playa.js"></script>
+        <script src="js/core/models.js"></script>
         <script src="js/core/core.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/core/idb.js"></script>
@@ -32,6 +31,8 @@
 
         <script src="js/sim/base.js"></script>
         <script src="js/sim/debug_utils.js"></script>
+
+        <script src="js/playa/monsters.js"></script>
     </head>
     <body class="inverted">
         <div class="ui fixed inverted borderless huge menu" style="z-index: 3;">
@@ -708,7 +709,21 @@
                         }
 
                         if (this.Face.Mouth < 0) {
-                            this.Name = getFightTargetName(fightType, null, -this.Face.Mouth);
+                            this.Name = this._findName(fightType, -this.Face.Mouth);
+                        }
+                    }
+
+                    _findName (type, face) {
+                        if (NAME_UNIT_COMPANION[face]) {
+                            return NAME_UNIT_COMPANION[face];
+                        } else if (type == FIGHT_TYPES.Shadow) {
+                            return `Shadow ${ NAME_MONSTER[face] }`;
+                        } else if (NAME_MONSTER[face]) {
+                            return NAME_MONSTER[face];
+                        } else if (type == FIGHT_TYPES.Underworld) {
+                            return NAME_UNIT_UNDERWORLD[Math.trunc((face - 899) / 20)];
+                        } else {
+                            return 'Unknown';
                         }
                     }
                 }
