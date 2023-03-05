@@ -19,7 +19,8 @@ const Logger = new (class {
             'IN_WARN': 'ebd883',
             'APPINFO': 'd29af8',
             'MESSAGE': 'ffffff',
-            'APICALL': 'd99ab5'
+            'APICALL': 'd99ab5',
+            'CHANNEL': 'fccb81'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
@@ -589,3 +590,42 @@ const Actions = new (class {
         }
     }
 })();
+
+class Broadcast {
+    constructor (token = this._randomToken()) {
+        Logger.log('CHANNEL', `Creating new channel ${token}`);
+
+        this._token = token;
+        this._channel = new BroadcastChannel(token);
+    }
+
+    on (type, callback) {
+        this._channel.addEventListener('message', ({ data: { type: _type, data } }) => {
+            if (_type === type) {
+                Logger.log('CHANNEL', `Received ${type} from ${this._token}`);
+
+                callback(data);
+            }
+        })
+    }
+
+    send (type, data) {
+        Logger.log('CHANNEL', `Sending ${type} to ${this._token}`);
+
+        this._channel.postMessage({
+            type, data
+        });
+    }
+
+    close () {
+        this._channel.close();
+    }
+
+    _randomToken () {
+        return SHA1(String(Math.random()));
+    }
+
+    get token () {
+        return this._token;
+    }
+}
