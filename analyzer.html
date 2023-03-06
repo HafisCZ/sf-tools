@@ -928,12 +928,20 @@
                             ATTACK_CRITICAL_EVADED
                         ].includes(attackType % 10);
 
-                        const attackMissed = [
+                        const attackMissedDefault = [
                             ATTACK_BLOCKED,
                             ATTACK_EVADED,
                             ATTACK_CRITICAL_BLOCKED,
                             ATTACK_CRITICAL_EVADED
                         ].includes(attackType % 10);
+
+                        const attackMissedSpecial = [
+                            ATTACK_SWOOP_BLOCKED,
+                            ATTACK_SWOOP_EVADED,
+                            ATTACK_FIREBALL_BLOCKED
+                        ].includes(attackType);
+
+                        const attackMissed = attackMissedDefault || attackMissedSpecial;
 
                         return {
                             attackSecondary,
@@ -1394,7 +1402,18 @@
 
                     // Decorate each round
                     for (const round of flatRounds) {
-                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL_BLOCKED) {
+                        // Swap type to fireball if BM swoops
+                        if (round.attacker.Class == BATTLEMAGE && [ATTACK_SWOOP, ATTACK_SWOOP_EVADED, ATTACK_SWOOP_BLOCKED].includes(round.attackType)) {
+                            round.attackType = round.attackType === ATTACK_SWOOP ? ATTACK_FIREBALL : ATTACK_FIREBALL_BLOCKED;
+                        }
+
+                        // Log attack
+                        if (round.attackType < ATTACK_BARD_SONG && round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_FIREBALL_BLOCKED) {
+                            round.hasLog = true;
+                        }
+
+                        // Skip if missed or special
+                        if (round.attackSpecial || round.attackMissed) {
                             continue;
                         }
 
@@ -1477,18 +1496,18 @@
                             }
                         }
 
-                        for (const { attacker, attackType, attackBase } of fight.rounds) {
+                        for (const { attacker, attackType, hasLog, attackBase, hasBase } of fight.rounds) {
                             const fightContainer = fight[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
                             const groupContainer = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
 
                             // Calculate type occurences
-                            if (attackType < ATTACK_BARD_SONG && attackType !== ATTACK_FIREBALL && attackType !== ATTACK_FIREBALL_BLOCKED) {
+                            if (hasLog) {
                                 fightContainer.attacks[attackType] = (fightContainer.attacks[attackType] || 0) + 1;
                                 groupContainer.attacks[attackType] = (groupContainer.attacks[attackType] || 0) + 1;
                             }
 
                             // Calculate damage range
-                            if (typeof attackBase !== 'undefined') {
+                            if (hasBase) {
                                 const container3 = fightContainer.damage;
                                 container3.min = Math.min(container3.min, attackBase);
                                 container3.max = Math.max(container3.max, attackBase);
@@ -1517,12 +1536,12 @@
                                 fighterA: {
                                     attacks: fighterA.attacks,
                                     damage: fighterA.damage,
-                                    name: getFighterName(fighterA)
+                                    name: getFighterName(group.fighterA)
                                 },
                                 fighterB: {
                                     attacks: fighterB.attacks,
                                     damage: fighterB.damage,
-                                    name: getFighterName(fighterB)
+                                    name: getFighterName(group.fighterB)
                                 }
                             }
 

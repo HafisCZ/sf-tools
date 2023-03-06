@@ -119,7 +119,7 @@ FIGHT_LOG = new (class {
             target,
             damage,
             damage == 0 ? ATTACK_FIREBALL_BLOCKED : ATTACK_FIREBALL,
-            false,
+            damage == 0,
             false,
             false
         )
