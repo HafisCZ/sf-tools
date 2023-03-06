@@ -53,8 +53,8 @@ const HellevatorEnemies = new (class {
       Level: level,
       Class: klass,
       NoBaseDamage: true,
-      ForceArmor: 1,
-      ForceHealth: health,
+      Armor: level * CONFIG.fromIndex(klass).MaximumDamageReduction,
+      Health: health,
       Potions: { Life: 0 },
       Dungeons: {
         Player: 0,

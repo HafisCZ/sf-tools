@@ -40,13 +40,13 @@ class GuildSimulator extends SimulatorBase {
             let model = FighterModel.create(index, player);
             if (inactive == 1) {
                 // Inactive players have their HP reduced by 50%
-                model.Player.ForceHealthMultiplier = 0.5;
+                model.Player.HealthMultiplier = 0.5;
             } else if (inactive == 2) {
                 // Inactive players beyond 21 days have their HP reduced by 90%
-                model.Player.ForceHealthMultiplier = 0.1;
+                model.Player.HealthMultiplier = 0.1;
             } else {
                 // Rest modifier
-                model.Player.ForceHealthMultiplier = 1.0;
+                model.Player.HealthMultiplier = 1.0;
             }
 
             return model;
