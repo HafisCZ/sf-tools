@@ -968,11 +968,13 @@
                         ]
 
                         if (player.model) {
-                            // Fix weapon damage (is not clamped by fist damage)
+                            // Fix weapon damage (is not clamped by fist damage only if min is below min)
                             const baseDamage = player.model.getBaseDamage(secondary);
 
-                            json[0] = Math.max(baseDamage.Min, json[0]);
-                            json[1] = Math.max(baseDamage.Max, json[1]);
+                            if (json[0] < baseDamage.Min) {
+                                json[0] = Math.max(baseDamage.Min, json[0]);
+                                json[1] = Math.max(baseDamage.Max, json[1]);
+                            }
                         }
 
                         return JSON.stringify(json);
