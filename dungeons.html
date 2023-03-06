@@ -575,12 +575,11 @@
 
                 function getBossData (data, dungeon) {
                     return {
-                        ForceArmor: data.armor ? 0 : (dungeon.armor_multiplier || 1),
-                        Armor: data.armor,
+                        Armor: data.armor || ((dungeon.armor_multiplier || 1) * (data.level * CONFIG.fromIndex(data.class).MaximumDamageReduction)),
                         Class: data.class,
                         Name: data.name,
                         Level: data.level,
-                        ForceHealth: data.health,
+                        Health: data.health,
                         NoBaseDamage: true,
                         Identifier: 999,
                         Strength: { Total: data.str },
@@ -971,7 +970,7 @@
                         let hp_d = 1.22;
 
                         playerInstances[1].BlockChance = 0;
-                        playerInstances[1].ForceHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                        playerInstances[1].Health = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
                     }
 
                     return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
@@ -1383,7 +1382,7 @@
                         const definition = CONFIG.fromIndex(data.Class);
 
                         const level = data.Level;
-                        const health = data.ForceHealth;
+                        const health = data.Health;
 
                         data.Constitution.Total = Math.ceil(health / (definition.HealthMultiplier * (level + 1)));
 

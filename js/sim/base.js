@@ -492,11 +492,6 @@ class FighterModel {
     getDamageReduction (source, maximumReduction = this.getMaximumDamageReduction()) {
         if (source.Player.Class == MAGE) {
             return 0;
-        } else if (this.Player.ForceArmor) {
-            let multiplier = this.Player.ForceArmor * this.Player.Level / source.Player.Level;
-            let reductionBonus = this.Player.Class == BATTLEMAGE ? 40 : 0;
-
-            return Math.min(maximumReduction, maximumReduction * multiplier) + reductionBonus;
         } else {
             if (this.Player.Class == BARD || this.Player.Class == DRUID) {
                 return Math.min(maximumReduction, 2.0 * this.Player.Armor / source.Player.Level);
@@ -555,15 +550,15 @@ class FighterModel {
 
     // Health
     getHealth () {
-        if (this.Player.ForceHealth) {
-            return this.Player.ForceHealth;
+        if (this.Player.Health) {
+            return this.Player.Health;
         } else {
             var a = 1 + this.Player.Potions.Life / 100;
             var b = 1 + this.Player.Dungeons.Player / 100;
             var c = 1 + this.Player.Runes.Health / 100;
             var d = this.Player.Level + 1;
             var e = this.getHealthMultiplier();
-            var f = (typeof this.Player.ForceHealthMultiplier === 'undefined' ? 1 : this.Player.ForceHealthMultiplier);
+            var f = (typeof this.Player.HealthMultiplier === 'undefined' ? 1 : this.Player.HealthMultiplier);
 
             return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e) * f);
         }
