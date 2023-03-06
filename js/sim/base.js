@@ -48,9 +48,6 @@ FIGHT_LOG = new (class {
     }
 
     logInit (playerA, playerB) {
-        this.playerA = playerA;
-        this.playerB = playerB;
-
         this.lastLog = {
             fighterA: {
                 ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
@@ -140,10 +137,10 @@ FIGHT_LOG = new (class {
         )
     }
 
-    logSpell (source, level, notes, damage = 0) {
+    logSpell (source, target, level, notes, damage = 0) {
         this._logRound(
             source,
-            source == this.playerA ? this.playerB : this.playerA,
+            target,
             damage,
             ATTACK_BARD_SONG + 10 * notes + level,
             false,
@@ -989,12 +986,13 @@ class BardModel extends FighterModel {
         this.EffectCurrent = 1 + this.Config.EffectValues[level] / 100;
     }
 
-    consumeMultiplier () {
+    consumeMultiplier (target) {
         this.EffectCounter += 1;
 
         if (FIGHT_LOG_ENABLED) {
             FIGHT_LOG.logSpell(
                 this,
+                target,
                 this.EffectLevel,
                 this.EffectReset - this.EffectCounter + 1,
                 0
@@ -1031,7 +1029,7 @@ class BardModel extends FighterModel {
         )
 
         if (this.EffectCurrent) {
-            this.consumeMultiplier();
+            this.consumeMultiplier(target);
         }
 
         return damage;
