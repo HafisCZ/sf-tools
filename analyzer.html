@@ -496,8 +496,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 20%;" class="!text-center">${intl('analyzer.table.damage')}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterA)}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterB)}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterA.name}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterB.name}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -518,8 +518,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterA)}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${getFighterName(group.fighterB)}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterA.name}</th>
+                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterB.name}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1512,7 +1512,21 @@
                     $element.off('click');
                     $element.click(() => {
                         if (currentGroup) {
-                            DialogController.open(FightSummaryDialog, group, fight || group);
+                            const { fighterA, fighterB } = fight || group;
+                            const data = {
+                                fighterA: {
+                                    attacks: fighterA.attacks,
+                                    damage: fighterA.damage,
+                                    name: getFighterName(fighterA)
+                                },
+                                fighterB: {
+                                    attacks: fighterB.attacks,
+                                    damage: fighterB.damage,
+                                    name: getFighterName(fighterB)
+                                }
+                            }
+
+                            DialogController.open(FightSummaryDialog, group, data);
                         }
                     });
                 }
