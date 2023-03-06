@@ -1275,7 +1275,12 @@
                     let content = '';
 
                     for (let i = 0; i < fight.rounds.length; i++) {
-                        const { attacker, target, attackType, attackerSpecialState, attackRage, attackDamage, attackBase, attackBaseError, attackMissed, attackCrit, attackSpecial, attackSecondary, targetHealthLeft } = fight.rounds[i];
+                        const {
+                            attacker, target, attackType, attackerSpecialState, attackRage,
+                            attackDamage, attackBase, attackMissed, attackCrit,
+                            attackSpecial, attackSecondary, targetHealthLeft,
+                            hasDamage, hasBase, hasError
+                        } = fight.rounds[i];
 
                         const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"'
 
@@ -1311,8 +1316,8 @@
                         } else {
                             const attackClass = attackCrit ? ' text-orangered font-bold' : '';
 
-                            const displayDamage = typeof attackBase !== 'undefined' || attackType === ATTACK_FIREBALL ? formatAsSpacedNumber(attackDamage) : '';
-                            const displayBase = typeof attackBase !== 'undefined' ? formatAsSpacedNumber(attackBase) : '';
+                            const displayDamage = hasDamage ? formatAsSpacedNumber(attackDamage) : '';
+                            const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
 
                             content += `
                                 <tr style="${attacker.hash == group.fighterA.hash ? 'background-color: #202020; color: darkgray;' : ''}${attackerSpecialState ? 'border: 2px dashed purple !important;' : ''}">
@@ -1323,7 +1328,7 @@
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center${attackClass}">${displayDamage}</th>
                                     <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
-                                    <td class="!text-center">${displayBase}${attackBaseError && !attackMissed ? ' <span class="text-orangered">!</span>' : ''}</th>
+                                    <td class="!text-center">${displayBase}${hasError ? ' <span class="text-orangered">!</span>' : ''}</th>
                                 </tr>
                             `;
                         }
@@ -1385,8 +1390,19 @@
                     // Initialize models
                     FighterModel.initializeFighters(model1, model2);
 
-                    // Calculate base damage of each round
                     const flatRounds = group.fights.map((fight) => fight.rounds).flat();
+
+                    // Decorate each round
+                    for (const round of flatRounds) {
+                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL_BLOCKED) {
+                            continue;
+                        }
+
+                        round.hasDamage = true;
+                        round.hasBase = round.attackType !== ATTACK_FIREBALL;
+                    }
+
+                    // Calculate base damage of each round
                     for (const [index, round] of Object.entries(flatRounds)) {
                         // We are assuming that lute round always follows after bard attack
                         if (round.attackType >= ATTACK_BARD_SONG) {
@@ -1397,43 +1413,39 @@
                             superRound.attackBase = Math.round(superRound.attackBase / spellBonus);
 
                             continue;
-                        } else if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL || round.attackType === ATTACK_FIREBALL_BLOCKED) {
-                            continue;
-                        }
+                        } else if (round.hasBase) {
+                            const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
 
-                        const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+                            // Scaled down weapon damage
+                            let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? model.Weapon2.Base : model.Weapon1.Base);
 
-                        // Scaled down weapon damage
-                        let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? model.Weapon2.Base : model.Weapon1.Base);
-
-                        // Special cases
-                        if (round.attackCrit) {
-                            damage /= model.Critical;
-                        }
-
-                        if (round.attacker.Class === DRUID) {
-                            if (round.attackType === ATTACK_SWOOP) {
-                                damage /= CONFIG.Druid.SwoopMultiplier;
+                            // Special cases
+                            if (round.attackCrit) {
+                                damage /= model.Critical;
                             }
 
-                            if (round.attackerSpecialState && round.attackCrit) {
-                                damage /= CONFIG.Druid.RageCriticalDamageMultiplier;
-                            }
-                        }
+                            if (round.attacker.Class === DRUID) {
+                                if (round.attackType === ATTACK_SWOOP) {
+                                    damage /= CONFIG.Druid.SwoopMultiplier;
+                                }
 
-                        round.attackBase = Math.trunc(damage);
+                                if (round.attackerSpecialState && round.attackCrit) {
+                                    damage /= CONFIG.Druid.RageCriticalDamageMultiplier;
+                                }
+                            }
+
+                            round.attackBase = Math.trunc(damage);
+                        }
                     }
 
                     // Verify whether damage is in range
                     for (const round of flatRounds) {
-                        if (round.attackSpecial || round.attackMissed || round.attackType === ATTACK_FIREBALL || round.attackType === ATTACK_FIREBALL_BLOCKED) {
-                            continue;
+                        if (round.hasBase) {
+                            const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+                            const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
+
+                            round.hasError = !_within(round.attackBase, weapon.DamageMin, weapon.DamageMax);
                         }
-
-                        const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
-                        const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
-
-                        round.attackBaseError = !_within(round.attackBase, weapon.DamageMin, weapon.DamageMax);
                     }
 
                     // Prepare summary
