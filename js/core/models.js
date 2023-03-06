@@ -781,7 +781,7 @@ class SFPlayer {
     }
 
     getClassBonus (attribute) {
-        if (this.Class == BATTLEMAGE || this.Class == ASSASSIN) {
+        if (this.Class == BATTLEMAGE || this.Class == BERSERKER) {
             return Math.ceil((this.Class == BATTLEMAGE ? attribute.Equipment : attribute.Items) * 11 / 100);
         } else {
             return 0;
@@ -848,7 +848,7 @@ class SFPlayer {
         this.Config = CONFIG.fromIndex(this.Class);
 
         this.Primary = this.getPrimaryAttribute();
-        this.ClassBonus = this.Class == BATTLEMAGE || this.Class == ASSASSIN;
+        this.ClassBonus = this.Class == BATTLEMAGE || this.Class == BERSERKER;
 
         this.addCalculatedAttributes(this.Strength, this.Pets.Water);
         this.addCalculatedAttributes(this.Dexterity, this.Pets.Light);
