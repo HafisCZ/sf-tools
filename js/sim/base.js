@@ -21,7 +21,7 @@ FIGHT_LOG = new (class {
             attackerId: attacker.Player.ID || attacker.Index,
             attackerSpecialState: !!special,
             targetId: target.Player.ID || target.Index,
-            targetHealthLeft: Math.max(0, (target.Health - (type === ATTACK_FIREBALL || type === ATTACK_FIREBALL_BLOCKED || type >= ATTACK_BARD_SONG ? 0 : damage))),
+            targetHealthLeft: Math.max(0, target.Health - damage),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
@@ -137,11 +137,11 @@ FIGHT_LOG = new (class {
         )
     }
 
-    logSpell (source, target, level, notes, damage = 0) {
+    logSpell (source, target, level, notes) {
         this._logRound(
             source,
             target,
-            damage,
+            0,
             ATTACK_BARD_SONG + 10 * notes + level,
             false,
             false,
@@ -409,9 +409,6 @@ class FighterModel {
     static initializeFighters (fighterA, fighterB) {
         fighterA.initialize(fighterB);
         fighterB.initialize(fighterA);
-
-        fighterA.Initial = fighterA.getInitialDamage(fighterB);
-        fighterB.Initial = fighterB.getInitialDamage(fighterA);
     }
 
     static create (index, player) {
@@ -637,11 +634,6 @@ class FighterModel {
         }
     }
 
-    // Return false for none or any damage to be initially dealt at the beginning of the round (eg BM's Fireball)
-    getInitialDamage (target) {
-        return false;
-    }
-
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
     onDamageTaken (source, damage) {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
@@ -709,6 +701,11 @@ class FighterModel {
         } else {
             return (target.Health -= damage) > 0;
         }
+    }
+
+    // Before anyone takes control
+    before (instance, target) {
+
     }
 
     // Take control
@@ -840,7 +837,7 @@ class DruidModel extends FighterModel {
 }
 
 class BattlemageModel extends FighterModel {
-    getInitialDamage (target) {
+    getFireballDamage (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
         } else if (FLAGS.FireballFix) {
@@ -866,6 +863,26 @@ class BattlemageModel extends FighterModel {
                 return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
             } else {
                 return 0;
+            }
+        }
+    }
+
+    before (instance, target) {
+        if (target.Player.Class !== BATTLEMAGE || instance.turn === 0) {
+            instance.getRage();
+
+            const damage = this.getFireballDamage(target);
+
+            if (FIGHT_LOG_ENABLED) {
+                FIGHT_LOG.logFireball(this, target, damage);
+            }
+
+            if (damage === 0) {
+                // Do nothing
+            } else if (target.DamageTaken) {
+                target.onDamageTaken(this, damage);
+            } else {
+                target.Health -= damage;
             }
         }
     }
@@ -989,8 +1006,7 @@ class BardModel extends FighterModel {
                 this,
                 target,
                 this.EffectLevel,
-                this.EffectReset - this.EffectCounter + 1,
-                0
+                this.EffectReset - this.EffectCounter + 1
             );
         }
 
@@ -1033,7 +1049,7 @@ class BardModel extends FighterModel {
 
 // Shared class between all simulators in order to make updates simple
 class SimulatorBase {
-    setInitialFighter () {
+    shuffle () {
         if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
             [this.a, this.b] = [this.b, this.a];
         }
@@ -1054,33 +1070,6 @@ class SimulatorBase {
         }
     }
 
-    performSpecialAttack () {
-        if (this.a.Initial !== false || this.b.Initial !== false) {
-            this.getRage();
-
-            if (this.a.Initial > 0) {
-                this.b.Health -= this.a.Initial;
-
-                if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logFireball(this.a, this.b, this.a.Initial);
-                }
-            } else if (this.b.Initial > 0) {
-                this.a.Health -= this.b.Initial;
-
-                if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logFireball(this.b, this.a, this.b.Initial);
-                }
-            } else if (FIGHT_LOG_ENABLED) {
-                // Report fireball blocked
-                if (this.a.Player.Class === BATTLEMAGE) {
-                    FIGHT_LOG.logFireball(this.a, this.b, 0);
-                } else {
-                    FIGHT_LOG.logFireball(this.b, this.a, 0);
-                }
-            }
-        }
-    }
-
     getRage () {
         const rage = 1 + this.turn++ / 6;
 
@@ -1098,8 +1087,10 @@ class SimulatorBase {
             FIGHT_LOG.logInit(this.a, this.b);
         }
 
-        this.setInitialFighter();
-        this.performSpecialAttack();
+        this.shuffle();
+
+        this.a.before(this, this.b);
+        this.b.before(this, this.a);
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             this.a.control(this, this.b);
