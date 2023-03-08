@@ -1324,7 +1324,7 @@
                                 </tr>
                             `;
                         } else {
-                            const attackClass = attackCrit ? ' text-orangered font-bold' : '';
+                            const attackClass = attackCrit ? ' text-orangered font-bold' : (attackType === ATTACK_FIREBALL || attackType === ATTACK_FIREBALL_BLOCKED ? ' text-violet' : '');
 
                             const displayDamage = hasDamage ? formatAsSpacedNumber(attackDamage) : '';
                             const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
