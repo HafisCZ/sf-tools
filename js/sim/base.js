@@ -501,7 +501,7 @@ class FighterModel {
     }
     
     // Block Chance
-    getBlockChance (source) {
+    getSkipChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Class == WARRIOR) {
@@ -612,24 +612,30 @@ class FighterModel {
 
     // Initialize model
     initialize (target) {
-        // Round modifiers
+        // Random modifiers
         this.AttackFirst = this.Player.Items.Hand.HasEnchantment || false;
-        this.SkipChance = this.getBlockChance(target);
-        this.CriticalChance = this.getCriticalChance(target);
         this.TotalHealth = this.getHealth();
 
+        // Damage reduction
         target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
 
         // Weapon
-        let weapon1 = this.Player.Items.Wpn1;
-        let weapon2 = this.Player.Items.Wpn2;
+        const weapon1 = this.Player.Items.Wpn1;
+        const weapon2 = this.Player.Items.Wpn2;
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
 
+        // Default state
+        this.SkipChance = this.getSkipChance(target);
+        this.CriticalChance = this.getCriticalChance(target);
         this.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     reset (resetHealth = true) {
+        // Reset state to default
+        this.State = this;
+
+        // Reset health if required (never for guild fights or dungeon fights)
         if (resetHealth) {
             this.Health = this.TotalHealth || this.getHealth();
         }
@@ -640,13 +646,23 @@ class FighterModel {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
+    // Returns true when model is in special state
+    specialState () {
+        return this.State !== this;
+    }
+
+    // Enters special or default state if no state given
+    enterState (state = this) {
+        this.State = state;
+    }
+
     // Attack
-    attack (damage, target, skipped, critical, type, special) {
+    attack (damage, target, skipped, critical, type) {
         if (skipped) {
             damage = 0;
         } else {
             if (critical) {
-                damage *= this.fetchCriticalMultiplier();
+                damage *= this.State.CriticalMultiplier;
             }
 
             damage = Math.ceil(damage);
@@ -660,24 +676,11 @@ class FighterModel {
                 type,
                 skipped,
                 critical,
-                special
+                this.specialState()
             )
         }
 
         return damage;
-    }
-
-    // Runtime getters
-    fetchSkipChance () {
-        return this.SkipChance;
-    }
-
-    fetchCriticalMultiplier () {
-        return this.CriticalMultiplier;
-    }
-
-    fetchCriticalChance () {
-        return this.CriticalChance;
     }
 
     // Returns extra damage multiplier, default is 1 for no extra damage
@@ -696,8 +699,8 @@ class FighterModel {
         const damage = source.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
-            getRandom(target.fetchSkipChance()),
-            getRandom(source.fetchCriticalChance()),
+            getRandom(target.State.SkipChance),
+            getRandom(source.State.CriticalChance),
             attackType
         );
 
@@ -766,29 +769,29 @@ class DruidModel extends FighterModel {
         super.reset(resetHealth);
 
         this.SwoopChance = this.Config.SwoopChance;
-        this.RageState = false;
     }
 
     initialize (target) {
         super.initialize(target);
 
-        this.RageSkipChance = target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance;
-        this.RageCriticalMultiplier = this.CriticalMultiplier + this.Config.RageCriticalBonus;
-        this.RageCriticalChance = Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level);
+        this.RageState = {
+            SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
+            CriticalMultiplier: this.CriticalMultiplier + this.Config.RageCriticalBonus,
+            CriticalChance: Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level)
+        }
     }
 
     attack (damage, target, skipped, critical, type) {
-        if (this.RageState) {
+        if (this.specialState()) {
             const returnValue = super.attack(
                 damage,
                 target,
                 skipped,
                 critical,
-                type,
-                true
+                type
             );
 
-            this.RageState = false;
+            this.enterState();
 
             return returnValue;
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
@@ -815,34 +818,10 @@ class DruidModel extends FighterModel {
 
     onDamageTaken (source, damage) {
         if (damage == 0) {
-            this.RageState = true;
+            this.enterState(this.RageState);
         }
 
         return super.onDamageTaken(source, damage);
-    }
-
-    fetchCriticalMultiplier () {
-        if (this.RageState) {
-            return this.RageCriticalMultiplier
-        } else {
-            return this.CriticalMultiplier;
-        }
-    }
-
-    fetchCriticalChance () {
-        if (this.RageState) {
-            return this.RageCriticalChance;
-        } else {
-            return this.CriticalChance;
-        }
-    }
-
-    fetchSkipChance () {
-        if (this.RageState) {
-            return this.RageSkipChance;
-        } else {
-            return this.SkipChance;
-        }
     }
 }
 
