@@ -550,14 +550,16 @@ class FighterModel {
         if (this.Player.Health) {
             return this.Player.Health;
         } else {
-            var a = 1 + this.Player.Potions.Life / 100;
-            var b = 1 + this.Player.Dungeons.Player / 100;
-            var c = 1 + this.Player.Runes.Health / 100;
-            var d = this.Player.Level + 1;
-            var e = this.getHealthMultiplier();
-            var f = (typeof this.Player.HealthMultiplier === 'undefined' ? 1 : this.Player.HealthMultiplier);
+            let health = this.Player.Constitution.Total;
+            health *= this.getHealthMultiplier();
+            health *= this.Player.Level + 1;
 
-            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e) * f);
+            health = Math.ceil(health * (1 + this.Player.Potions.Life / 100));
+            health = Math.ceil(health * (1 + this.Player.Dungeons.Player / 100));
+            health = Math.ceil(health * (1 + this.Player.Runes.Health / 100));
+            health = Math.ceil(health * (typeof this.Player.HealthMultiplier === 'undefined' ? 1 : this.Player.HealthMultiplier));
+
+            return health;
         }
     }
 
@@ -567,12 +569,11 @@ class FighterModel {
 
     getBaseDamage (secondary = false) {
         if (this.Player.Level > 10 && !this.Player.NoBaseDamage) {
-            const num = (this.Player.Level - 9) * this.getWeaponDamageMultiplier();
-            const mul = secondary ? 0.1 : 0.7;
+            const num = (secondary ? 0.1 : 0.7) * (this.Player.Level - 9) * this.getWeaponDamageMultiplier();
 
             return {
-                Min: Math.max(1, Math.ceil(mul * num * 2 / 3)),
-                Max: Math.max(2, Math.round(mul * num * 4 / 3))
+                Min: Math.max(1, Math.ceil(num * 2 / 3)),
+                Max: Math.max(2, Math.round(num * 4 / 3))
             };
         } else {
             return {
@@ -587,14 +588,14 @@ class FighterModel {
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
 
-        let mm = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
-
         let aa = this.getAttribute(this);
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
-        let dc = this.getDamageMultiplier(target);
-        let dm = dc * mm * (1 + Math.max(aa / 2, aa - ad) / 10);
 
-        return dm;
+        let base = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
+        base *= this.getDamageMultiplier(target);
+        base *= 1 + Math.max(aa / 2, aa - ad) / 10
+
+        return base;
     }
 
     // Get damage range
