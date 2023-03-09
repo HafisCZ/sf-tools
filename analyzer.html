@@ -1464,8 +1464,9 @@
                         if (round.hasBase) {
                             const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
                             const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
+                            const variance = 1;
 
-                            round.hasError = !_within(round.attackBase, weapon.DamageMin, weapon.DamageMax);
+                            round.hasError = !_within(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
                         }
                     }
 
