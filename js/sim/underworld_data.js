@@ -31,6 +31,7 @@ const UnderworldUnits = new (class {
                 Level: cappedLevel,
                 Class: 1,
                 NoBaseDamage: true, // Keep damage even if too low
+                NoGladiator: true,
                 Armor: cappedLevel * 50,
                 BlockChance: shieldMode ? 25 : 0,
                 Potions: {
