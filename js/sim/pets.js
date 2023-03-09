@@ -1,6 +1,6 @@
-const WARRIOR = 1;
-const MAGE = 2;
-const SCOUT = 3;
+const PET_WARRIOR = 1;
+const PET_MAGE = 2;
+const PET_SCOUT = 3;
 
 function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);
@@ -146,29 +146,29 @@ class PetModel {
         this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet] * multiplier);
         this.DefenseAttribute = Math.trunc(this.Attribute * 0.5);
         this.LuckAttribute = Math.trunc(PET_FACTOR_MAP_LUCK[this.Pet] * multiplier);
-        this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == WARRIOR ? 5 : (this.Class == MAGE ? 2 : 4));
-        this.Armor = this.Level * (this.Class == WARRIOR ? 50 : (this.Class == SCOUT ? 25 : 10));
+        this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == PET_WARRIOR ? 5 : (this.Class == PET_MAGE ? 2 : 4));
+        this.Armor = this.Level * (this.Class == PET_WARRIOR ? 50 : (this.Class == PET_SCOUT ? 25 : 10));
     }
 
     initialize (target) {
-        var multa = Math.trunc((this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1));
+        var multa = Math.trunc((this.Class == PET_WARRIOR ? 2 : (this.Class == PET_MAGE ? 4.5 : 2.5)) * (this.Level + 1));
         var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
         var multc = (this.Boss == false && target.Boss == false && this.hasAdvantage(target)) ? 1.25 : 1;
 
         var ap = target.Armor / this.Level;
-        if (this.Class == MAGE) {
+        if (this.Class == PET_MAGE) {
             ap = 0;
-        } else if (target.Class == MAGE) {
+        } else if (target.Class == PET_MAGE) {
             ap = Math.min(10, ap);
-        } else if (target.Class == WARRIOR) {
+        } else if (target.Class == PET_WARRIOR) {
             ap = Math.min(50, ap);
-        } else if (target.Class == SCOUT) {
+        } else if (target.Class == PET_SCOUT) {
             ap = Math.min(25, ap);
         }
 
         this.Damage = Math.trunc(multa * multb * multc * (1 - ap / 100));
         this.Critical = 2 * (1 + 0.05 * this.Gladiator);
-        this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
+        this.SkipChance = target.Class == PET_MAGE ? 0 : (this.Class == PET_WARRIOR ? 25 : (this.Class == PET_MAGE ? 0 : 50));
         this.CriticalChance = Math.min(50, 5 * this.LuckAttribute / (target.Level * 2));
     }
 
@@ -216,7 +216,7 @@ class PetSimulator {
         this.ca.initialize(this.cb);
         this.cb.initialize(this.ca);
 
-        if ((this.ca.Class == MAGE || this.cb.Class == MAGE) && !this.fightPossible() && !this.fightPossible(true)) {
+        if ((this.ca.Class == PET_MAGE || this.cb.Class == PET_MAGE) && !this.fightPossible() && !this.fightPossible(true)) {
             return 0;
         } else {
             var score = 0;
