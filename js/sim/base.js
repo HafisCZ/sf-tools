@@ -206,7 +206,7 @@ CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 5 / 8,
+            DamageMultiplier: 0.625,
             SkipChance: 50
         },
         Battlemage: {
@@ -223,7 +223,7 @@ CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 5 / 4
+            DamageMultiplier: 1.25
         },
         DemonHunter: {
             Attribute: 'Dexterity',
@@ -232,7 +232,7 @@ CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2.5,
             MaximumDamageReduction: 50,
 
-            ReviveChance: 400 / 9,
+            ReviveChance: 44,
             ReviveChanceDecay: 2,
             ReviveHealth: 0.9,
             ReviveHealthMin: 0.1,
