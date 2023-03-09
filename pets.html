@@ -683,17 +683,17 @@
                     }
 
                     fillDebugInformation (model, initialized) {
-                        this.fields['class'].set(intl(`general.class${model.Class}`));
+                        this.fields['class'].set(intl(`general.class${model.Player.Class}`));
                         this.fields['health'].set(formatAsSpacedNumber(model.TotalHealth, ' '));
-                        this.fields['attribute'].set(formatAsSpacedNumber(model.Attribute, ' '));
-                        this.fields['defense'].set(formatAsSpacedNumber(model.DefenseAttribute, ' '));
-                        this.fields['luck'].set(formatAsSpacedNumber(model.LuckAttribute, ' '));
+                        this.fields['attribute'].set(formatAsSpacedNumber(model.Player[model.Config.Attribute].Total, ' '));
+                        this.fields['defense'].set(formatAsSpacedNumber(model.Player[model.Config.Attribute === 'Strength' ? 'Intelligence' : 'Strength'].Total, ' '));
+                        this.fields['luck'].set(formatAsSpacedNumber(model.Player.Luck.Total, ' '));
 
                         if (initialized) {
                             this.fields['skip'].set(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : intl('pets.editor.none'));
-                            this.fields['damage'].set(formatAsSpacedNumber(model.Damage, ' '));
+                            this.fields['damage'].set(formatAsSpacedNumber(model.Weapon1.Min, ' '));
                             this.fields['chance'].set(model.CriticalChance > 0 ? `${ model.CriticalChance.toFixed(2) }%` : intl('pets.editor.none'));
-                            this.fields['critical'].set(`${ Math.round(100 * model.Critical) }%`);
+                            this.fields['critical'].set(`${ Math.round(100 * model.CriticalMultiplier) }%`);
                         } else {
                             for (let name of ['skip', 'damage', 'chance', 'critical']) {
                                 this.fields[name].clear();
