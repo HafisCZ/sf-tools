@@ -123,7 +123,8 @@
         "attack28": "Critical Blocked",
         "attack29": "Critical Evaded",
         "attack100": "Revive",
-        "attack200": "Song #{level} - #{notes}n",
+        "attack200": "Bard Song",
+        "attack200_2": "Bard Song L#{spellLevel} - #{spellNotes} notes",
         "gt_background1": "Gold",
         "gt_background2": "Silver",
         "gt_background3": "Bronze",
@@ -168,7 +169,13 @@
         "gem4": "Constitution",
         "gem5": "Luck",
         "gem6": "Black",
-        "gem7": "Legendary"
+        "gem7": "Legendary",
+        "companion1": "Bert",
+        "companion2": "Mark",
+        "companion3": "Kunigunde",
+        "companion1_full": "#{player}'s Bert",
+        "companion2_full": "#{player}'s Mark",
+        "companion3_full": "#{player}'s Kunigunde"
     },
     "achievements": {
         "0": "Globetrotter",
@@ -334,6 +341,10 @@
         "underworld": {
             "title": "Submundo",
             "desc": "Simula o resultado provável de um combate de submundo"
+        },
+        "analyzer": {
+            "title": "Fight Analyzer",
+            "desc": "Display all fights within a file for detailed analysis"
         },
         "fights": {
             "title": "Visualizador de Luta",
@@ -908,10 +919,6 @@
         "simulate_next": "Mais",
         "player": "Jogador",
         "enemy": "Inimigo",
-        "yourself": "Tu",
-        "bert": "Berto",
-        "mark": "Marco",
-        "kunigunde": "Segismundo",
         "open": "Masmorras disponíveis",
         "graph": {
             "y": "HP do Boss Restante",
@@ -959,6 +966,41 @@
                 "title": "Simulação de thread #{done} / #{total} concluída",
                 "message#": "<b>Tempo:</b> #{time} segundos"
             }
+        }
+    },
+    "analyzer": {
+        "topbar": {
+            "import": "Import",
+            "clear": "Clear",
+            "export": "Export"
+        },
+        "form": {
+            "fight_group": "Select group",
+            "fight_list": "Select fight",
+            "editable_data": "Editable data"
+        },
+        "players": "Players",
+        "preview": "Fight preview",
+        "export": "Export fights",
+        "clear_changes": "Reset to original state",
+        "table": {
+            "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
+            "rage": "Rage",
+            "attacker": "Attacker",
+            "target": "Target",
+            "type": "Type",
+            "health": "Health left",
+            "damage": "Damage",
+            "damage_base": "Base damage"
+        },
+        "summary": {
+            "view": "View summary",
+            "damage": "Base damage ranges",
+            "type": "Attack types"
+        },
+        "toast_import_error": {
+            "title": "Import failed",
+            "message": "Ensure that you are importing a valid HAR or fight JSON"
         }
     },
     "players": {
@@ -1064,6 +1106,10 @@
         "simulate_debug": "Simular no modo de debug",
         "configure": "Configure o simulador",
         "configure_copy": "Copie todos, incluindo a configuração atual",
+        "configure_insert": "Insert sample data",
+        "configure_log": "Run simulation with logging enabled",
+        "configure_log_file": "Save to file",
+        "configure_log_broadcast": "Open with analyzer",
         "clipboard": {
             "copy_all": "Copiar todos",
             "paste_mode": "Alterne Adicionar/Substituir modo de inserção"
@@ -1136,8 +1182,13 @@
             "title": "Nome de utilizador ou palavra-chave inválidos!",
             "message": "Por favor, certifique-se de que está no formato correto (username@url)"
         },
-        "credentials_error": "Nome do utilizador ou palavra-passe inválidos",
-        "download_error": "Falha na transferência"
+        "errors": {
+            "network_error": "Server cannot be reached",
+            "name_not_whitelisted_error": "Player not whitelisted",
+            "error_wrong_pass": "Incorrect password",
+            "error_player_not_found": "Character was not found on the server",
+            "error_sessionid_invalid": "Session expired or interrupted by another device"
+        }
     },
     "database": {
         "open_error": {
@@ -1156,6 +1207,7 @@
             "cancel": "Cancelar",
             "continue": "Continue",
             "save": "Salvar",
+            "close": "Close",
             "ok": "Ok"
         },
         "template_manage": {
