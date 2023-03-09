@@ -26,7 +26,9 @@
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
         <script src="js/editor.js"></script>
+        <script src="js/sim/base.js"></script>
         <script src="js/sim/underworld_data.js"></script>
+        <script src="js/sim/debug_utils.js"></script>
 
         <script src="endpoint/endpoint.js"></script>
     </head>
@@ -100,7 +102,10 @@
                                 <button class="ui fluid small basic inverted button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
                             <div class="eight wide column">
-                                <button class="ui small basic inverted icon right floated button" data-position="bottom center" data-intl-tooltip="underworld.shield_mode" data-inverted="" id="shield-mode"><i class="shield alternate icon"></i></button>
+                                <div class="ui small basic inverted icon right floated buttons">
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" data-inverted="" id="gladiator-mode"><i class="bolt icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="underworld.shield_mode" data-inverted="" id="shield-mode"><i class="shield alternate icon"></i></button>
+                                </div>
                             </div>
                         </div>
                         <div class="css-small-row row">
@@ -156,7 +161,7 @@
         </div>
 
         <script type="text/javascript">
-            Site.ready({ type: 'simulator' }, function () {
+            Site.ready({ type: 'simulator' }, function (urlParams) {
                 // Handle simulate button validation
                 let $simulateButton = $('#simulate');
                 function updateSimulateButton () {
@@ -270,6 +275,38 @@
                 let shieldMode = false;
                 $('#shield-mode').toggleButton(active => shieldMode = active);
 
+                let gladiatorMode = false;
+                $('#gladiator-mode').captiveToggleButton('underworld_sim/gladiator', (active) => {
+                    gladiatorMode = active;
+                })
+
+                function getSimulatorFlags () {
+                    return {
+                        Gladiator15: gladiatorMode
+                    };
+                }
+
+                SimulatorUtils.configure({
+                    params: urlParams,
+                    onCopy: () => {
+                        return playerList.map((p) => {
+                            let m = toSimulatorModel(p.player);
+                            if (p.player.Class == WARRIOR && typeof p.player.BlockChance != 'undefined') {
+                                m.BlockChance = p.player.BlockChance;
+                            }
+
+                            return m;
+                        });
+                    },
+                    insertType: 'players',
+                    onInsert: (data) => {
+                        handlePaste(data);
+                    },
+                    onLog: (callback) => {
+                        executeSimulation(1, 50, callback);
+                    }
+                });
+
                 // Paste handler
                 $(document.body).on('paste', function (event) {
                     try {
@@ -321,6 +358,8 @@
                 }
 
                 function handlePaste (data) {
+                    data = SimulatorUtils.handlePaste(data);
+
                     if (Array.isArray(data)) {
                         if (pasteMode == false) {
                             playerList = [];
@@ -469,13 +508,9 @@
                     });
                 }
 
-                $('#simulate').click(function () {
-                    // Ensure input is valid
+                function executeSimulation (instances, iterations, logCallback) {
                     const underworldValid = underworldEditor.valid() && ['goblin', 'troll', 'keeper'].reduce((memo, name) => memo + underworldEditor.fields[name].get(), 0) > 0;
                     const playersValid = playerList.length > 0;
-
-                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
-                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
                     if (underworldValid && playersValid) {
                         const results = [];
@@ -483,15 +518,24 @@
 
                         updatePlayerList(true);
 
+                        let logs = [];
+
                         for (let i = 0; i < playerList.length; i++) {
                             batch.add(
-                                ({ results: _results }) => {
+                                ({ results: _results, logs: _logs }) => {
                                     results.push(_results);
+
+                                    if (logCallback) {
+                                        logs = logs.concat(_logs);
+                                    }
                                 },
                                 {
                                     units: UnderworldUnits.fromEditor(underworldEditor.read(), shieldMode),
                                     player: playerList[i],
-                                    iterations
+                                    iterations,
+                                    flags: getSimulatorFlags(),
+                                    config: SimulatorUtils.config,
+                                    log: !!logCallback
                                 }
                             );
                         }
@@ -502,8 +546,23 @@
                             playerList = results;
                             
                             updatePlayerList();
+
+                            if (logs.length > 0) {
+                                logCallback({
+                                    fights: logs,
+                                    players: playerList.map(({ player }) => player),
+                                    config: SimulatorUtils.config
+                                });
+                            }
                         });
                     }
+                }
+
+                $('#simulate').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
+                    executeSimulation(instances, iterations);
                 })
             });
         </script>
