@@ -184,8 +184,8 @@
                 }
 
                 _generatePreview (p1, p2) {
-                    const o1 = Localization._generateTranslation({}, p1);
-                    const o2 = Localization._generateTranslation({}, p2);
+                    const o1 = Localization._generateTranslation({}, Object.assign({}, p1, { State: '' }));
+                    const o2 = Localization._generateTranslation({}, Object.assign({}, p2, { State: '' }));
 
                     const keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
                     for (const bannedKey of ['Player.Identifier', 'Player.Prefix']) {
@@ -198,7 +198,7 @@
                 _stringifyState (state) {
                     const keys = new Set(Object.keys(state));
 
-                    for (const bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack', 'RageCriticalChance']) {
+                    for (const bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'CriticalMultiplier', 'State', 'RageState', 'DamageReduction', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack']) {
                         keys.delete(bannedKey);
                     }
 
