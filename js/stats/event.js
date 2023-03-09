@@ -68,7 +68,7 @@ class GroupDetailView extends View {
                 var ta = Number(this.timestamp);
                 var tb = Number(this.reference);
 
-                $(doc).find('thead').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
+                $(doc).find('tbody').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
             });
         });
 
