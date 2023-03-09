@@ -534,8 +534,8 @@ class FighterModel {
         let reducingGladiator = target.Player.Fortress.Gladiator || 0;
 
         if (FLAGS.Gladiator15) {
-            ownGladiator = 15;
-            reducingGladiator = 15;
+            ownGladiator = this.Player.NoGladiator ? 0 : 15;
+            reducingGladiator = target.Player.NoGladiator ? 0 : 15;
         }
 
         if (FLAGS.NoGladiatorReduction) {
