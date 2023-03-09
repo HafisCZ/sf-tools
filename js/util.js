@@ -221,10 +221,10 @@ const Workers = new (class {
         return this.fetchCache[location];
     }
 
-    async _fetchObject (type, includeBase = true) {
+    async _fetchObject (type) {
         if (typeof this.objectCache[type] === 'undefined') {
             let blob = new Blob([
-                (includeBase ? await this._fetchContent('js/sim/base.js') : '') + await this._fetchContent(`js/sim/${type}.js`)
+                (await this._fetchContent('js/sim/base.js')) + (await this._fetchContent(`js/sim/${type}.js`))
             ], { type: 'text/javascript' });
 
             this.objectCache[type] = URL.createObjectURL(blob);
@@ -234,11 +234,11 @@ const Workers = new (class {
     }
 
     async _prefetch (type) {
-        await this._fetchObject(type, type !== 'pets');
+        await this._fetchObject(type);
     }
 
     async createWorker (type) {
-        return new Worker(await this._fetchObject(type, type !== 'pets'));
+        return new Worker(await this._fetchObject(type));
     }
 })();
 
