@@ -13,7 +13,7 @@ const UnderworldUnits = new (class {
         return [12, 15, 20, 30, 40, 55, 70, 85, 100, 120, 140, 165, 190, 220, 250][building - 1] + upgrades;
     }
 
-    createUnits (building, upgrades, counts, attributeMultiplier, shieldMode) {
+    createUnits (index, building, upgrades, counts, attributeMultiplier, shieldMode) {
         let units = [];
 
         let count = this.getUnitCount(building, counts);
@@ -28,6 +28,7 @@ const UnderworldUnits = new (class {
             let damage = (cappedLevel + 1) * 2;
 
             units.push({
+                Name: NAME_UNIT_UNDERWORLD[index],
                 Level: cappedLevel,
                 Class: 1,
                 NoBaseDamage: true, // Keep damage even if too low
@@ -82,9 +83,9 @@ const UnderworldUnits = new (class {
     }
 
     fromEditor (data, shieldMode) {
-        let goblins = this.createUnits(data.GoblinPit, data.GoblinUpgrades, [1, 2, 3, 4, 5], 1 / Math.sqrt(5), shieldMode);
-        let trolls = this.createUnits(data.TrollBlock, data.TrollUpgrades, [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4], 0.5, shieldMode);
-        let keepers = this.createUnits(data.Keeper, data.KeeperUpgrades, [1], 1, shieldMode);
+        let goblins = this.createUnits(0, data.GoblinPit, data.GoblinUpgrades, [1, 2, 3, 4, 5], 1 / Math.sqrt(5), shieldMode);
+        let trolls = this.createUnits(1, data.TrollBlock, data.TrollUpgrades, [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4], 0.5, shieldMode);
+        let keepers = this.createUnits(2, data.Keeper, data.KeeperUpgrades, [1], 1, shieldMode);
 
         return [...goblins, ...trolls, ...keepers];
     }
