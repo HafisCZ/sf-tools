@@ -245,7 +245,7 @@ CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 4.5,
             MaximumDamageReduction: 40,
 
-            DamageMultiplier: 0.34,
+            DamageMultiplier: 1 / 3,
 
             SwoopChance: 25,
             SwoopChanceMin: 0,
