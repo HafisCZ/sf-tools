@@ -1436,17 +1436,14 @@
                             continue;
                         } else if (round.hasBase) {
                             const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+                            const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.RageState : model;
 
                             // Scaled down weapon damage
                             let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? model.Weapon2.Base : model.Weapon1.Base);
 
                             // Special cases
                             if (round.attackCrit) {
-                                if (round.attacker.Class === DRUID && round.attackerSpecialState) {
-                                    damage /= model.RageCriticalMultiplier;
-                                } else {
-                                    damage /= model.CriticalMultiplier;
-                                }
+                                damage /= state.CriticalMultiplier;
                             }
 
                             if (round.attacker.Class === DRUID && round.attackType === ATTACK_SWOOP) {
