@@ -1,7 +1,7 @@
 // Version stuff
-const MODULE_VERSION_MAJOR = '5';
-const MODULE_VERSION = 'v5.2897';
-const TABLE_VERSION = 'v10';
+const MODULE_VERSION_MAJOR = '6';
+const MODULE_VERSION = 'v6.3632';
+const TABLE_VERSION = 'v10.1';
 const CORE_VERSION = 'v3.5';
 
 const Logger = new (class {

@@ -17,7 +17,7 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
-    'v5.XXXX': {
+    'v6.3632': {
         'Statistics': [
             'Added <code>Race</code> header',
             'Added translated values to headers and enums',
