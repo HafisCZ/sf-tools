@@ -1442,17 +1442,15 @@
 
                             // Special cases
                             if (round.attackCrit) {
-                                damage /= model.Critical;
+                                if (round.attacker.Class === DRUID && round.attackerSpecialState) {
+                                    damage /= model.RageCriticalMultiplier;
+                                } else {
+                                    damage /= model.CriticalMultiplier;
+                                }
                             }
 
-                            if (round.attacker.Class === DRUID) {
-                                if (round.attackType === ATTACK_SWOOP) {
-                                    damage /= CONFIG.Druid.SwoopMultiplier;
-                                }
-
-                                if (round.attackerSpecialState && round.attackCrit) {
-                                    damage /= CONFIG.Druid.RageCriticalDamageMultiplier;
-                                }
+                            if (round.attacker.Class === DRUID && round.attackType === ATTACK_SWOOP) {
+                                damage /= model.SwoopMultiplier;
                             }
 
                             round.attackBase = Math.trunc(damage);

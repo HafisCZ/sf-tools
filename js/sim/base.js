@@ -245,19 +245,19 @@ CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 4.5,
             MaximumDamageReduction: 40,
 
-            DamageMultiplier: 1 / 3,
+            DamageMultiplier: 0.34,
 
             SwoopChance: 25,
             SwoopChanceMin: 0,
             SwoopChanceMax: 50,
             SwoopChanceDecay: -5,
-            SwoopMultiplier: 3.3,
+            SwoopBonus: 0.825,
 
             SkipChance: 35,
             RageSkipChance: 0,
 
             RageCriticalChance: 75,
-            RageCriticalDamageMultiplier: 1.8
+            RageCriticalBonus: 1.8
         },
         Bard: {
             Attribute: 'Intelligence',
@@ -626,7 +626,7 @@ class FighterModel {
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
 
-        this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
+        this.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     reset (resetHealth = true) {
@@ -646,7 +646,7 @@ class FighterModel {
             damage = 0;
         } else {
             if (critical) {
-                damage *= this.Critical;
+                damage *= this.fetchCriticalMultiplier();
             }
 
             damage = Math.ceil(damage);
@@ -668,11 +668,15 @@ class FighterModel {
     }
 
     // Runtime getters
-    fetchSkipChance (source) {
+    fetchSkipChance () {
         return this.SkipChance;
     }
 
-    fetchCriticalChance (target) {
+    fetchCriticalMultiplier () {
+        return this.CriticalMultiplier;
+    }
+
+    fetchCriticalChance () {
         return this.CriticalChance;
     }
 
@@ -692,8 +696,8 @@ class FighterModel {
         const damage = source.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
-            getRandom(target.fetchSkipChance(source)),
-            getRandom(source.fetchCriticalChance(target)),
+            getRandom(target.fetchSkipChance()),
+            getRandom(source.fetchCriticalChance()),
             attackType
         );
 
@@ -754,28 +758,27 @@ class DruidModel extends FighterModel {
         super(i, p);
 
         this.DamageTaken = true;
+
+        this.SwoopMultiplier = (this.Config.DamageMultiplier + this.Config.SwoopBonus) / this.Config.DamageMultiplier;
     }
 
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
         this.SwoopChance = this.Config.SwoopChance;
-
         this.RageState = false;
     }
 
     initialize (target) {
         super.initialize(target);
 
+        this.RageSkipChance = target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance;
+        this.RageCriticalMultiplier = this.CriticalMultiplier + this.Config.RageCriticalBonus;
         this.RageCriticalChance = Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level);
     }
 
     attack (damage, target, skipped, critical, type) {
         if (this.RageState) {
-            if (critical) {
-                damage *= this.Config.RageCriticalDamageMultiplier;
-            }
-
             const returnValue = super.attack(
                 damage,
                 target,
@@ -793,7 +796,7 @@ class DruidModel extends FighterModel {
             
             // Swoop
             return super.attack(
-                damage * this.Config.SwoopMultiplier,
+                damage * this.SwoopMultiplier,
                 target,
                 skipped,
                 false,
@@ -818,7 +821,15 @@ class DruidModel extends FighterModel {
         return super.onDamageTaken(source, damage);
     }
 
-    fetchCriticalChance (target) {
+    fetchCriticalMultiplier () {
+        if (this.RageState) {
+            return this.RageCriticalMultiplier
+        } else {
+            return this.CriticalMultiplier;
+        }
+    }
+
+    fetchCriticalChance () {
         if (this.RageState) {
             return this.RageCriticalChance;
         } else {
@@ -826,11 +837,9 @@ class DruidModel extends FighterModel {
         }
     }
 
-    fetchSkipChance (source) {
-        if (source.Player.Class == MAGE) {
-            return 0;
-        } else if (this.RageState) {
-            return this.Config.RageSkipChance;
+    fetchSkipChance () {
+        if (this.RageState) {
+            return this.RageSkipChance;
         } else {
             return this.SkipChance;
         }
