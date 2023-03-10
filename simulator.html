@@ -326,6 +326,7 @@
 
                     $hiddenRows.hide();
                     $target.css('margin-right', '-2rem').css('padding-right', '1rem');
+                    $target.css('color', 'black');
 
                     html2canvas($target.get(0), {
                         logging: false,
@@ -333,6 +334,7 @@
                         onclone: doc => {
                             $hiddenRows.show();
                             $target.css('margin-right', '').css('padding-right', '');
+                            $target.css('color', '');
 
                             $(doc).find('.selected').removeClass('selected');
                         }
