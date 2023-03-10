@@ -1,11 +1,17 @@
-self.addEventListener('message', function ({ data: { players, mode, iterations } }) {
+self.addEventListener('message', function ({ data: { config, players, mode, iterations, log } }) {
+    CONFIG.set(config);
     FLAGS.set({
         NoGladiatorReduction: true
     });
 
+    if (log) {
+        FIGHT_LOG_ENABLED = true;
+    }
+
     if (mode == 'pet') {
         self.postMessage({
-            results: new PetSimulator().simulate(players[0], players[1], iterations)
+            results: new PetSimulator().simulate(players[0], players[1], iterations),
+            logs: FIGHT_LOG.dump()
         });
     } else if (mode == 'map') {
         var r = [];
@@ -214,12 +220,16 @@ class PetModel {
         return PetModel.normalize(false, type, pet, level, bonus, gladiator);
     }
 
-    static fromObject (obj, index = 0) {
-        const object = obj.Boss ?
-            PetModel.fromHabitat(obj.Type, obj.Pet) :
-            PetModel.fromPet(obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
+    static getPlayer (obj) {
+        if (obj.Boss) {
+            return PetModel.fromHabitat(obj.Type, obj.Pet);
+        } else {
+            return PetModel.fromPet(obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
+        }
+    }
 
-        return FighterModel.create(index, object);
+    static getModel (obj, index = 0) {
+        return FighterModel.create(index, PetModel.getPlayer(obj));
     }
 }
 
@@ -240,8 +250,8 @@ class PetSimulator extends SimulatorBase {
     }
 
     cache (source, target) {
-        this.ca = PetModel.fromObject(source, 0);
-        this.cb = PetModel.fromObject(target, 1);
+        this.ca = PetModel.getModel(source, 0);
+        this.cb = PetModel.getModel(target, 1);
 
         FighterModel.initializeFighters(this.ca, this.cb);
     }
