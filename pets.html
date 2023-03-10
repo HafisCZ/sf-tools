@@ -634,6 +634,8 @@
                             }
                         }
 
+                        object.Name = intl(`pets.names.${this.fields.pet.get()}`);
+
                         return object;
                     }
 
@@ -844,13 +846,7 @@
                             if (logs.length > 0) {
                                 logCallback({
                                     fights: logs,
-                                    players: [petA.read(), petB.read()].map((pet) => {
-                                        const player = FighterModel.normalize(PetModel.getPlayer(pet));
-
-                                        player.Name = intl(`pets.names.${pet.Pet}`);
-
-                                        return player;
-                                    }),
+                                    players: [petA.read(), petB.read()].map((pet) => FighterModel.normalize(PetModel.getPlayer(pet))),
                                     config: SimulatorUtils.config
                                 });
                             }
