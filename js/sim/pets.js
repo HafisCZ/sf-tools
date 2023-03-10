@@ -1,4 +1,8 @@
 self.addEventListener('message', function ({ data: { players, mode, iterations } }) {
+    FLAGS.set({
+        NoGladiatorReduction: true
+    });
+
     if (mode == 'pet') {
         self.postMessage({
             results: new PetSimulator().simulate(players[0], players[1], iterations)
@@ -117,100 +121,117 @@ const PET_HABITAT_MAP = [
     1, 3, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 75
 ];
 
-class PetModel {
-    constructor (boss, index, type, pet, level, bonus, gladiator) {
-        this.Index = index;
-
-        // Sets
-        this.Type = type;
-        this.Pet = pet;
-        this.Level = level;
-        this.Bonus = bonus;
-        this.Gladiator = gladiator;
-        this.Boss = boss;
-
-        let multiplier = (this.Level + 1) * (1 + this.Bonus / 100);
-
-        // Vars
-        this.Class = PET_CLASS_MAP[this.Type][this.Pet] + 1;
-        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet] * multiplier);
-        this.DefenseAttribute = Math.trunc(this.Attribute * 0.5);
-        this.LuckAttribute = Math.trunc(PET_FACTOR_MAP_LUCK[this.Pet] * multiplier);
-        this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == WARRIOR ? 5 : (this.Class == MAGE ? 2 : 4));
-        this.Armor = this.Level * (this.Class == WARRIOR ? 50 : (this.Class == SCOUT ? 25 : 10));
-    }
-
-    initialize (target) {
-        var multa = Math.trunc((this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1));
-        var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
-        var multc = (this.Boss == false && target.Boss == false && this.hasAdvantage(target)) ? 1.25 : 1;
-
-        var ap = target.Armor / this.Level;
-        if (this.Class == MAGE) {
-            ap = 0;
-        } else if (target.Class == MAGE) {
-            ap = Math.min(10, ap);
-        } else if (target.Class == WARRIOR) {
-            ap = Math.min(50, ap);
-        } else if (target.Class == SCOUT) {
-            ap = Math.min(25, ap);
-        }
-
-        this.Damage = Math.trunc(multa * multb * multc * (1 - ap / 100));
-        this.Critical = 2 * (1 + 0.05 * this.Gladiator);
-        this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
-        this.CriticalChance = Math.min(50, 5 * this.LuckAttribute / (target.Level * 2));
-    }
-
-    hasAdvantage (target) {
-        switch (this.Type) {
-            case HABITAT_SHADOW: return target.Type == HABITAT_WATER;
-            case HABITAT_LIGHT: return target.Type == HABITAT_SHADOW;
-            case HABITAT_EARTH: return target.Type == HABITAT_LIGHT;
-            case HABITAT_FIRE: return target.Type == HABITAT_EARTH;
-            case HABITAT_WATER: return target.Type == HABITAT_FIRE;
+FighterModel.prototype.hasAdvantage = function (target) {
+    if (this.Player.Boss || target.Player.Boss) {
+        return false;
+    } else {
+        switch (this.Player.Type) {
+            case HABITAT_SHADOW: return target.Player.Type == HABITAT_WATER;
+            case HABITAT_LIGHT: return target.Player.Type == HABITAT_SHADOW;
+            case HABITAT_EARTH: return target.Player.Type == HABITAT_LIGHT;
+            case HABITAT_FIRE: return target.Player.Type == HABITAT_EARTH;
+            case HABITAT_WATER: return target.Player.Type == HABITAT_FIRE;
             default: return false;
         }
     }
+}
 
-    getDefenseAtribute (source) {
-        return (this.Class == source.Class ? this.Attribute : this.DefenseAttribute) / 2;
+FighterModel.prototype.getBaseDamage = function () {
+    const damage = Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
+
+    return {
+        Min: damage,
+        Max: damage
+    }
+}
+
+FighterModel.prototype.getDamageMultiplier = function (target) {
+    const multiplier = this.Config.DamageMultiplier || 1;
+
+    if (this.hasAdvantage(target)) {
+        return multiplier * 1.25;
+    } else {
+        return multiplier;
+    }
+}
+
+class PetModel {
+    static normalize (boss, type, pet, level, bonus, gladiator) {
+        const klass = PET_CLASS_MAP[type][pet] + 1;
+        const multiplier = (level + 1) * (1 + bonus / 100);
+
+        const main = Math.trunc(PET_FACTOR_MAP[pet] * multiplier);
+        const luck =  Math.trunc(PET_FACTOR_MAP_LUCK[pet] * multiplier);
+
+        const config = CONFIG.fromIndex(klass);
+
+        const getAttribute = (type) => {
+            return type === config.Attribute ? main : Math.trunc(main / 2);
+        }
+
+        return {
+            Boss: boss,
+            Type: type,
+            Pet: pet,
+            Class: klass,
+            Level: level,
+            Armor: level * config.MaximumDamageReduction,
+            Strength: {
+                Total: getAttribute('Strength')
+            },
+            Dexterity: {
+                Total: getAttribute('Dexterity')
+            },
+            Intelligence: {
+                Total: getAttribute('Intelligence')
+            },
+            Constitution: {
+                Total: main
+            },
+            Luck: {
+                Total: luck
+            },
+            Fortress: {
+                Gladiator: gladiator
+            }
+        };
     }
 
     static getBonus (pack, at100, at150, at200) {
         return 5 * Math.trunc(pack + at200 + at150 * 0.75 + at100 * 0.5);
     }
 
-    static fromPet (boss, index, type, pet, level, pack, at100, at150, at200, gladiator) {
-        return new PetModel(boss, index, type, pet, level, PetModel.getBonus(pack, at100, at150, at200), gladiator);
+    static fromHabitat (type, pet) {
+        const level = PET_HABITAT_MAP[pet];
+        const bonus = 5 + 5 * pet;
+
+        return PetModel.normalize(true, type, pet, level, bonus, 0);
     }
 
-    static fromHabitat (boss, index, type, pet) {
-        return new PetModel(boss, index, type, pet, PET_HABITAT_MAP[pet], 5 + 5 * pet, 0);
+    static fromPet (type, pet, level, pack, at100, at150, at200, gladiator) {
+        const bonus = PetModel.getBonus(pack, at100, at150, at200);
+
+        return PetModel.normalize(false, type, pet, level, bonus, gladiator);
     }
 
-    static fromObject (obj) {
-        if (obj.Boss) {
-            return PetModel.fromHabitat(obj.Boss, obj.Index, obj.Type, obj.Pet);
-        } else {
-            return PetModel.fromPet(obj.Boss, obj.Index, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
-        }
+    static fromObject (obj, index = 0) {
+        const object = obj.Boss ?
+            PetModel.fromHabitat(obj.Type, obj.Pet) :
+            PetModel.fromPet(obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
+
+        return FighterModel.create(index, object);
     }
 }
 
-class PetSimulator {
+class PetSimulator extends SimulatorBase {
     simulate (source, target, iterations) {
-        this.ca = PetModel.fromObject(source);
-        this.cb = PetModel.fromObject(target);
+        this.cache(source, target);
 
-        this.ca.initialize(this.cb);
-        this.cb.initialize(this.ca);
-
-        if ((this.ca.Class == MAGE || this.cb.Class == MAGE) && !this.fightPossible() && !this.fightPossible(true)) {
+        if ((this.ca.Player.Class == MAGE || this.cb.Player.Class == MAGE) && !this.fightPossible() && !this.fightPossible(true)) {
             return 0;
         } else {
-            var score = 0;
-            for (var i = 0; i < iterations; i++) {
+            let score = 0;
+            for (let i = 0; i < iterations; i++) {
                 score += this.fight();
             }
 
@@ -218,68 +239,50 @@ class PetSimulator {
         }
     }
 
-    // Checks whether the fight is even possible or not for mage vs x class. Thanks to burningcherry for the idea & code example.
-    fightPossible (enemyStarts = false) {
-        this.a = this.ca;
-        this.b = this.cb;
-        if (enemyStarts) {
-            [this.b, this.a] = [this.a, this.b];
-        }
+    cache (source, target) {
+        this.ca = PetModel.fromObject(source, 0);
+        this.cb = PetModel.fromObject(target, 1);
 
-        this.a.Health = this.a.TotalHealth;
-        this.b.Health = this.b.TotalHealth;
-
-        this.turn = 0;
-
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            var rage = 1 + this.turn++ / 6;
-
-            this.b.Health -= rage * this.a.Damage * (enemyStarts ? 1 : this.a.Critical);
-            if (this.b.Health <= 0) {
-                return !enemyStarts;
-            }
-
-            rage = 1 + this.turn++ / 6;
-            this.a.Health -= rage * this.b.Damage * (enemyStarts ? this.b.Critical : 1);
-            if (this.a.Health <= 0) {
-                return enemyStarts;
-            }
-        }
+        FighterModel.initializeFighters(this.ca, this.cb);
     }
 
     fight () {
         this.a = this.ca;
         this.b = this.cb;
 
-        this.a.Health = this.a.TotalHealth;
-        this.b.Health = this.b.TotalHealth;
+        this.a.reset();
+        this.b.reset();
 
-        this.turn = 0;
-
-        if (getRandom(50)) {
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            if (!this.attack(this.a, this.b)) {
-                break;
-            }
-
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+        return super.fight();
     }
 
-    attack (source, target) {
-        var turn = this.turn++;
-        var rage = 1 + turn / 6;
+    // Checks whether the fight is even possible or not for mage vs x class. Thanks to burningcherry for the idea & code example.
+    fightPossible (enemyStarts = false) {
+        this.a = this.ca;
+        this.b = this.cb;
 
-        if (!getRandom(target.SkipChance)) {
-            target.Health -= rage * source.Damage * (getRandom(source.CriticalChance) ? source.Critical : 1);
-            return target.Health > 0;
-        } else {
-            return true;
+        if (enemyStarts) {
+            [this.b, this.a] = [this.a, this.b];
+        }
+        
+        this.a.reset();
+        this.b.reset();
+        
+        this.turn = 0;
+
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            let rage = 1 + this.turn++ / 6;
+
+            this.b.Health -= rage * this.a.Weapon1.Min * (enemyStarts ? 1 : this.a.CriticalMultiplier);
+            if (this.b.Health <= 0) {
+                return !enemyStarts;
+            }
+
+            rage = 1 + this.turn++ / 6;
+            this.a.Health -= rage * this.b.Weapon1.Min * (enemyStarts ? this.b.CriticalMultiplier : 1);
+            if (this.a.Health <= 0) {
+                return enemyStarts;
+            }
         }
     }
 }

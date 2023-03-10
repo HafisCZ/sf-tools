@@ -551,7 +551,7 @@
                         this.fields['gladiator'].$object.dropdown({
                             values: [
                                 { name: intl('pets.editor.none'), value: 0 },
-                                ... [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ].map(gladiator => {
+                                ... [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ].map((gladiator) => {
                                     return {
                                         name: `${ gladiator } (${ gladiator * 5 }%)`,
                                         value: gladiator
@@ -621,11 +621,9 @@
                     }
 
                     read () {
-                        let object = {
-                            Index: this.Index
-                        };
+                        const object = {};
 
-                        for (let [key, field] of Object.entries(this.fields)) {
+                        for (const [key, field] of Object.entries(this.fields)) {
                             if (IGNORED_FIELDS.includes(key)) {
                                 continue;
                             } else if (key == 'pet') {
@@ -639,10 +637,11 @@
                     }
 
                     valid () {
-                        let isBoss = this.fields['boss'].get() == 1;
-                        for (let [key, field] of Object.entries(this.fields)) {
-                            let isIgnoredField = IGNORED_FIELDS.includes(key);
-                            let isBossIgnoredField = isBoss && NON_BOSS_FIELDS.includes(key);
+                        const isBoss = this.fields['boss'].get() == 1;
+
+                        for (const [key, field] of Object.entries(this.fields)) {
+                            const isIgnoredField = IGNORED_FIELDS.includes(key);
+                            const isBossIgnoredField = isBoss && NON_BOSS_FIELDS.includes(key);
 
                             if (!isIgnoredField && !isBossIgnoredField && !field.valid()) {
                                 return false;
@@ -656,12 +655,12 @@
                         if (IGNORED_FIELDS.includes(name) || this._ignoreChanges) return;
 
                         if (name == 'type') {
-                            let type = this.fields['type'].get();
+                            const type = this.fields['type'].get();
 
                             this.fields['pet'].set(type * 20);
                             this.fields['pet'].$object.find('.item').each((i, e) => {
-                                let $e = $(e);
-                                let id = parseInt($e.attr('data-value'));
+                                const $e = $(e);
+                                const id = parseInt($e.attr('data-value'));
 
                                 if (Math.trunc(id / 20) == type) {
                                     $e.show();
@@ -672,10 +671,10 @@
                         }
 
                         if (this.valid()) {
-                            models[this.Index] = PetModel.fromObject(this.read());
+                            this.model = PetModel.fromObject(this.read());
                             this.$debugDisplay.show();
                         } else {
-                            models[this.Index] = undefined;
+                            this.model = false;
                             this.$debugDisplay.hide();
                         }
 
@@ -703,7 +702,9 @@
                 };
 
                 function refreshModels () {
-                    let [a, b] = models;
+                    const a = petA.model;
+                    const b = petB.model;
+
                     if (a && b) {
                         a.initialize(b);
                         b.initialize(a);
@@ -711,8 +712,12 @@
                         petA.fillDebugInformation(a, true);
                         petB.fillDebugInformation(b, true);
                     } else if (a) {
+                        a.initialize(a);
+
                         petA.fillDebugInformation(a, false);
                     } else if (b) {
+                        b.initialize(b);
+
                         petB.fillDebugInformation(b, false);
                     }
 
@@ -723,10 +728,8 @@
                     }
                 }
 
-                var models = [ undefined, undefined ];
-                
-                var petA = new PetController('#sim-a', 0);
-                var petB = new PetController('#sim-b', 1);
+                const petA = new PetController('#sim-a', 0);
+                const petB = new PetController('#sim-b', 1);
                 
                 petA.fill();
                 petA.valid();
@@ -877,6 +880,8 @@
                         const [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
                         petA.fill(playerPet);
                         petB.fill(bossPet);
+
+                        refreshModels();
                     }
                 });
 
@@ -903,8 +908,7 @@
                             Pack: pack,
                             At100: at100,
                             At150: at150,
-                            At200: at200,
-                            Index: 0
+                            At200: at200
                         }
                     });
 
@@ -923,20 +927,25 @@
                             Pack: 0,
                             At100: 0,
                             At150: 0,
-                            At200: 0,
-                            Index: 1
+                            At200: 0
                         };
                     }
 
-                    let petModels = _sort_des(pets.filter(data => data.Level).map(data => PetModel.fromObject(data)), model => model.TotalHealth);
-                    let bestPet = petModels.find(model => model.Class == petClass);
+                    let petModels = _sort_des(pets.filter((data) => data.Level).map((data) => {
+                        const model = PetModel.fromObject(data);
+                        
+                        model.initialize(model);
+
+                        return model;
+                    }), model => model.TotalHealth);
+                    let bestPet = petModels.find(model => model.Player.Class == petClass);
                     if (petClass == null && !bestPet) {
                         bestPet = petModels[0];
                     }
 
                     if (bestPet) {
-                        pet1 = pets[bestPet.Pet];
-                        pet1.Class = bestPet.Class;
+                        pet1 = pets[bestPet.Player.Pet];
+                        pet1.Class = bestPet.Player.Class;
                     }
 
                     return [pet1, pet2];
