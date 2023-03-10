@@ -728,10 +728,12 @@ class WarriorModel extends FighterModel {
 
 class MageModel extends FighterModel {
     getDamageMultiplier (target) {
+        const multiplier = super.getDamageMultiplier(target);
+
         if (target.Player.Class == BERSERKER) {
-            return 2;
+            return multiplier * 2;
         } else {
-            return 1;
+            return multiplier;
         }
     }
 }
