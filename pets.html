@@ -30,6 +30,7 @@
         <script src="js/sim/base.js"></script>
         <script src="js/sim/pets.js"></script>
         <script src="js/editor.js"></script>
+        <script src="js/sim/debug_utils.js"></script>
     </head>
     <body class="inverted">
         <div class="ui fixed inverted borderless huge menu">
@@ -514,7 +515,7 @@
                 }
             })();
 
-            Site.ready({ type: 'simulator' }, function () {
+            Site.ready({ type: 'simulator' }, function (urlParams) {
                 $('#sim-threads').captiveInputField('pet_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('pet_sim/iterations', 2.5E6, v => !isNaN(v) && v >= 1);
                 $('#sim-map-iterations').captiveInputField('pet_sim/map_iterations', 1E5, v => !isNaN(v) && v >= 1);
@@ -671,7 +672,7 @@
                         }
 
                         if (this.valid()) {
-                            this.model = PetModel.fromObject(this.read());
+                            this.model = PetModel.getModel(this.read());
                             this.$debugDisplay.show();
                         } else {
                             this.model = false;
@@ -736,6 +737,18 @@
 
                 petB.fill();
                 petB.valid();
+
+                SimulatorUtils.configure({
+                    params: urlParams,
+                    onLog: (callback) => {
+                        executeSimulation(1, 50, callback);
+                    },
+                    onChange: (config) => {
+                        CONFIG.set(config);
+
+                        refreshModels();
+                    }
+                });
                 
                 let player = null;
                 function updateDungeonButton (withPlayer = null) {
@@ -774,7 +787,8 @@
                                         {
                                             mode: 'pet',
                                             players: [pet1, pet2],
-                                            iterations
+                                            iterations,
+                                            config: SimulatorUtils.config
                                         }
                                     )
                                 }
@@ -796,24 +810,28 @@
                     }
                 })
 
-                $('#simulate').click(function () {
-                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
-                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2.5E6);
-
+                function executeSimulation (instances, iterations, logCallback) {
                     if (petA.valid() && petB.valid()) {
                         const results = [];
+                        let logs = [];
 
                         const batch = new WorkerBatch('pets');
 
                         for (let i = 0; i < instances; i++) {
                             batch.add(
-                                ({ results: _results }) => {
+                                ({ results: _results, logs: _logs }) => {
                                     results.push(_results);
+
+                                    if (logCallback) {
+                                        logs = logs.concat(_logs);
+                                    }
                                 },
                                 {
                                     mode: 'pet',
                                     players: [petA.read(), petB.read()],
-                                    iterations
+                                    iterations,
+                                    config: SimulatorUtils.config,
+                                    log: !!logCallback
                                 }
                             )
                         }
@@ -822,8 +840,29 @@
                             const chance = _sum(results) / instances;
 
                             $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
+
+                            if (logs.length > 0) {
+                                logCallback({
+                                    fights: logs,
+                                    players: [petA.read(), petB.read()].map((pet) => {
+                                        const player = FighterModel.normalize(PetModel.getPlayer(pet));
+
+                                        player.Name = intl(`pets.names.${pet.Pet}`);
+
+                                        return player;
+                                    }),
+                                    config: SimulatorUtils.config
+                                });
+                            }
                         })
                     }
+                }
+
+                $('#simulate').click(function () {
+                    const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+                    const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2.5E6);
+
+                    executeSimulation(instances, iterations);
                 });
 
                 function generatePetMap (mapCount) {
@@ -847,7 +886,8 @@
                                     {
                                         mode: 'map',
                                         players: [a, Object.assign({}, b, { Pet: i })],
-                                        iterations
+                                        iterations,
+                                        config: SimulatorUtils.config
                                     }
                                 )
                             }
@@ -932,7 +972,7 @@
                     }
 
                     let petModels = _sort_des(pets.filter((data) => data.Level).map((data) => {
-                        const model = PetModel.fromObject(data);
+                        const model = PetModel.getModel(data);
                         
                         model.initialize(model);
 
