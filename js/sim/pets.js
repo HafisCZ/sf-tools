@@ -142,15 +142,6 @@ FighterModel.prototype.hasAdvantage = function (target) {
     }
 }
 
-FighterModel.prototype.getBaseDamage = function () {
-    const damage = Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
-
-    return {
-        Min: damage,
-        Max: damage
-    }
-}
-
 FighterModel.prototype.getDamageMultiplier = function (target) {
     const multiplier = this.Config.DamageMultiplier || 1;
 
@@ -162,7 +153,7 @@ FighterModel.prototype.getDamageMultiplier = function (target) {
 }
 
 class PetModel {
-    static normalize (boss, type, pet, level, bonus, gladiator) {
+    static normalize (boss, name, type, pet, level, bonus, gladiator) {
         const klass = PET_CLASS_MAP[type][pet] + 1;
         const multiplier = (level + 1) * (1 + bonus / 100);
 
@@ -170,12 +161,14 @@ class PetModel {
         const luck =  Math.trunc(PET_FACTOR_MAP_LUCK[pet] * multiplier);
 
         const config = CONFIG.fromIndex(klass);
+        const damage = Math.trunc((level + 1) * config.WeaponDamageMultiplier);
 
         const getAttribute = (type) => {
             return type === config.Attribute ? main : Math.trunc(main / 2);
         }
 
         return {
+            Name: name,
             Boss: boss,
             Type: type,
             Pet: pet,
@@ -199,7 +192,14 @@ class PetModel {
             },
             Fortress: {
                 Gladiator: gladiator
-            }
+            },
+            Items: {
+                Wpn1: {
+                    DamageMin: damage,
+                    DamageMax: damage
+                }
+            },
+            NoBaseDamage: true
         };
     }
 
@@ -207,24 +207,24 @@ class PetModel {
         return 5 * Math.trunc(pack + at200 + at150 * 0.75 + at100 * 0.5);
     }
 
-    static fromHabitat (type, pet) {
+    static fromHabitat (name, type, pet) {
         const level = PET_HABITAT_MAP[pet];
         const bonus = 5 + 5 * pet;
 
-        return PetModel.normalize(true, type, pet, level, bonus, 0);
+        return PetModel.normalize(true, name, type, pet, level, bonus, 0);
     }
 
-    static fromPet (type, pet, level, pack, at100, at150, at200, gladiator) {
+    static fromPet (name, type, pet, level, pack, at100, at150, at200, gladiator) {
         const bonus = PetModel.getBonus(pack, at100, at150, at200);
 
-        return PetModel.normalize(false, type, pet, level, bonus, gladiator);
+        return PetModel.normalize(false, name, type, pet, level, bonus, gladiator);
     }
 
     static getPlayer (obj) {
         if (obj.Boss) {
-            return PetModel.fromHabitat(obj.Type, obj.Pet);
+            return PetModel.fromHabitat(obj.Name, obj.Type, obj.Pet);
         } else {
-            return PetModel.fromPet(obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
+            return PetModel.fromPet(obj.Name, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
         }
     }
 
