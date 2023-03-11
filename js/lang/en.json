@@ -972,7 +972,8 @@
         "topbar": {
             "import": "Import",
             "clear": "Clear",
-            "export": "Export"
+            "export": "Export",
+            "options": "Options"
         },
         "form": {
             "fight_group": "Select group",
@@ -1209,6 +1210,22 @@
             "save": "Save",
             "close": "Close",
             "ok": "Ok"
+        },
+        "analyzer_options": {
+            "title": "Analyzer Options",
+            "option": {
+                "rage_display_mode": {
+                    "title": "Rage display mode",
+                    "value": {
+                        "decimal": "Decimal",
+                        "percentage": "Percentage",
+                        "fraction": "Fractional"
+                    }
+                },
+                "base_damage_error_margin": {
+                    "title": "Acceptable base error"
+                }
+            }
         },
         "template_manage": {
             "title": "Templates",
