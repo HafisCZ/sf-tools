@@ -43,6 +43,7 @@
             <input type="file" accept=".har,.json" multiple class="ui invisible file input" id="button-upload">
             <a class="item" id="button-export"><i class="download icon"></i> <span data-intl="analyzer.topbar.export"></span></a>
             <a class="item" id="button-clear"><i class="recycle icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
+            <a class="item" id="button-options"><i class="cog icon"></i> <span data-intl="analyzer.topbar.options"></span></a>
         </div>
 
         <div class="ui main inverted container mb-20" style="width: 65vw;">
@@ -462,6 +463,81 @@
         </div>
 
         <script type="text/javascript">
+            const AnalyzerOptionsDialog = new (class extends Dialog {
+                constructor () {
+                    super({
+                        key: 'analyzer_options',
+                        dismissable: true,
+                        opacity: 0
+                    });
+                }
+
+                _createModal () {
+                    return `
+                        <div class="small bordered inverted dialog">
+                            <div class="header">${this.intl('title')}</div>
+                            <div>
+                                <div class="ui small inverted form" data-op="content"></div>
+                            </div>
+                            <button class="ui button fluid !text-black !background-orange" data-op="ok">${intl('dialog.shared.ok')}</button>
+                        </div>
+                    `;
+                }
+
+                _createBindings () {
+                    this.$ok = this.$parent.operator('ok');
+                    this.$ok.click(() => this.close());
+
+                    this.$content = this.$parent.operator('content');
+                }
+
+                _applyArguments (options, data) {
+                    if (!this.$content.empty()) return;
+
+                    for (const [ key, option ] of Object.entries(data)) {
+                        if (option.type === 'dropdown') {
+                            const $element = $(`
+                                <div class="field">
+                                    <label>${this.intl(`option.${key}.title`)}</label>
+                                    <div class="ui selection inverted fluid dropdown">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                            `);
+
+                            const selectedValue = options[key];
+
+                            $element.find('.ui.dropdown').dropdown({
+                                values: option.keys.map((value) => ({ value, name: this.intl(`option.${key}.value.${value}`), selected: value === selectedValue })),
+                                onChange: (value) => {
+                                    options[key] = value;
+                                    option.onChange();
+                                }
+                            })
+
+                            $element.appendTo(this.$content);
+                        } else if (option.type === 'number') {
+                            const $element = $(`
+                                <div class="field">
+                                    <label>${this.intl(`option.${key}.title`)}</label>
+                                    <div class="ui inverted input">
+                                        <input type="number" value="${options[key]}">
+                                    </div>
+                                </div>
+                            `);
+
+                            $element.find('.ui.input').change((event) => {
+                                options[key] = parseInt(event.target.value);
+                                option.onChange();
+                            })
+
+                            $element.appendTo(this.$content);
+                        }
+                    }
+                }
+            })();
+
             const FightSummaryDialog = new (class extends Dialog {
                 constructor () {
                     super({
@@ -551,6 +627,8 @@
                 const $buttonUpload = $('#button-upload');
                 const $buttonClear = $('#button-clear');
                 const $buttonExport = $('#button-export');
+                const $buttonOptions = $('#button-options');
+            
                 const $buttonExportGroup = $('#button-export-group');
                 const $buttonExportFight = $('#button-export-fight');
                 const $buttonResetGroup = $('#button-reset-group');
@@ -586,6 +664,28 @@
                         Loader.toggle(false);
                     });
                 })
+
+                $buttonOptions.click(() => {
+                    const options = {
+                        rage_display_mode: {
+                            type: 'dropdown',
+                            keys: Object.keys(ATTACK_RAGE_FORMATS),
+                            onChange: () => {
+                                if (currentFight) {
+                                    renderFight(currentGroup, currentFight);
+                                }
+                            }
+                        },
+                        base_damage_error_margin: {
+                            type: 'number',
+                            onChange: () => {
+                                updatePreview();
+                            }
+                        }
+                    }
+
+                    DialogController.open(AnalyzerOptionsDialog, analyzerOptions, options);
+                });
 
                 $buttonClear.click(() => {
                     reset();
@@ -897,6 +997,14 @@
 
                 const playerEditorA = new PlayerEditor('#player1');
                 const playerEditorB = new PlayerEditor('#player2');
+
+                const analyzerOptions = new OptionsHandler(
+                    'analyzer',
+                    {
+                        rage_display_mode: 'decimal',
+                        base_damage_error_margin: 1
+                    }
+                )
 
                 // Utils
                 SimulatorUtils.configure({
@@ -1281,7 +1389,15 @@
                     editor.fill(player.player || player.editor || player);
                 }
 
+                const ATTACK_RAGE_FORMATS = {
+                    'decimal': (rage) => rage.toFixed(2),
+                    'percentage': (rage) => `${Math.trunc(100 * rage)}%`,
+                    'fraction': (rage) => `${rage * 6}/6`,
+                }
+
                 function renderFight (group, fight) {
+                    const formatAttackRage = ATTACK_RAGE_FORMATS[analyzerOptions.rage_display_mode];
+
                     let content = '';
 
                     for (let i = 0; i < fight.rounds.length; i++) {
@@ -1332,7 +1448,7 @@
                             content += `
                                 <tr style="${attacker.hash == group.fighterA.hash ? 'background-color: #202020; color: darkgray;' : ''}${attackerSpecialState ? 'border: 2px dashed purple !important;' : ''}">
                                     <td class="!text-center">${i + 1}</th>
-                                    <td class="!text-center">${attackRage.toFixed(2)}</th>
+                                    <td class="!text-center">${formatAttackRage(attackRage)}</th>
                                     <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
                                     <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
@@ -1390,6 +1506,8 @@
                 let currentFight = null;
 
                 function processGroup (group) {
+                    const variance = parseInt(analyzerOptions.base_damage_error_margin);
+
                     group.fighterA.editor = playerEditorA.read();
                     group.fighterB.editor = playerEditorB.read();
 
@@ -1459,7 +1577,6 @@
                         if (round.hasBase) {
                             const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
                             const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
-                            const variance = 1;
 
                             round.hasError = !_within(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
                         }
