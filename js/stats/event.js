@@ -158,8 +158,9 @@ class GroupDetailView extends View {
             },
             values: [
                 {
-                    name: `<b>${intl('stats.templates.quick_swap')}</b>`,
-                    type: 'header'
+                    name: intl('stats.templates.quick_swap'),
+                    type: 'header',
+                    class: 'header font-bold !text-center'
                 },
                 ... TemplateManager.sortedList().map(({ name }) => {
                     return {
@@ -813,8 +814,9 @@ class PlayerHistoryView extends View {
             },
             values: [
                 {
-                    name: `<b>${intl('stats.templates.quick_swap')}</b>`,
-                    type: 'header'
+                    name: intl('stats.templates.quick_swap'),
+                    type: 'header',
+                    class: 'header font-bold !text-center'
                 },
                 ... TemplateManager.sortedList().map(({ name }) => {
                     return {
@@ -1319,8 +1321,9 @@ class BrowseView extends View {
             },
             values: [
                 {
-                    name: `<b>${intl(`stats.templates.quick_swap`)}</b>`,
-                    type: 'header'
+                    name: intl('stats.templates.quick_swap'),
+                    type: 'header',
+                    class: 'header font-bold !text-center'
                 },
                 ... TemplateManager.sortedList().map(({ name }) => {
                     return {
