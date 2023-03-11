@@ -56,12 +56,15 @@
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
-                    <div class="one wide field" style="width: 11%;">
+                    <div class="one wide field" style="width: 14%;">
                         <label>&nbsp;</label>
                         <div class="ui right floated buttons">
                             <div class="ui icon small basic inverted button" id="button-reset-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.clear_changes">
                                 <i class="ui recycle icon"></i>
-                            </div>  
+                            </div>
+                            <div class="ui icon small basic inverted button" id="button-copy-group" data-inverted="" data-position="bottom center" data-intl-tooltip="editor.copy">
+                                <i class="ui copy icon"></i>
+                            </div>
                             <div class="ui icon small basic inverted button" id="button-export-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
                                 <i class="ui download icon"></i>
                             </div>
@@ -632,6 +635,7 @@
                 const $buttonExportGroup = $('#button-export-group');
                 const $buttonExportFight = $('#button-export-fight');
                 const $buttonResetGroup = $('#button-reset-group');
+                const $buttonCopyGroup = $('#button-copy-group');
 
                 const $fightGroup = $('#fight-group');
                 const $fightList = $('#fight-list');
@@ -721,6 +725,22 @@
 
                 $fightCopy.click(() => {
                     copyNode($fightTable.closest('table').get(0));
+                });
+
+                $buttonCopyGroup.click(() => {
+                    if (currentGroup) {
+                        const generator = (player) => Localization._generateTranslation({}, player);
+
+                        const playerA = generator(currentGroup.fighterA.editor);
+                        const playerB = generator(currentGroup.fighterB.editor);
+
+                        const matrix = [];
+                        for (const key of Object.keys(playerA)) {
+                            matrix.push([key.replace(/^\./, ''), playerA[key], playerB[key]]);
+                        }
+
+                        copyMatrix(matrix);
+                    }
                 });
 
                 // Listener

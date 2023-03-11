@@ -46,6 +46,20 @@ function copyNode (node) {
     window.getSelection().removeAllRanges();
 }
 
+function copyMatrix (matrix) {
+    const element = document.createElement('table');
+    element.insertAdjacentHTML(
+        'afterbegin',
+        `<tbody>${matrix.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>`
+    )
+
+    document.body.appendChild(element);
+
+    copyNode(element);
+
+    document.body.removeChild(element);
+}
+
 function copyGrid (headers, values, transformer) {
     let thead = `<tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr>`;
     let tbody = values.map(row => `<tr>${row.map(value => `<td>${value}</td>`).join('')}</tr>`).join('');
