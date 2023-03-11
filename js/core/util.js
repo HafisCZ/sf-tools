@@ -239,6 +239,10 @@ function _empty (obj) {
     }
 }
 
+function _none (array, processor) {
+    return !array.some(processor);
+}
+
 function _not_empty (obj) {
     return !_empty(obj);
 }
