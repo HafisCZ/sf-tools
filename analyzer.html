@@ -609,7 +609,7 @@
                     for (const key of keys) {
                         content += `
                             <tr>
-                                <td class="!text-center">${intl(`general.attack${key}`)}</td>
+                                <td class="!text-center">${intl(`general.attack${key}`)} #${key}</td>
                                 <td class="!text-center">${fighterA.attacks[key] || 0}</td>
                                 <td class="!text-center">${fighterB.attacks[key] || 0}</td>
                             </tr>
