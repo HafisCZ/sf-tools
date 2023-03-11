@@ -197,7 +197,7 @@ class GroupDetailView extends View {
             }
         }
 
-        for (var [ timestamp, group ] of this.list) {
+        for (const [ timestamp, group ] of this.list) {
             listTimestamp.push({
                 name: formatEntry(group),
                 value: timestamp,
@@ -212,8 +212,6 @@ class GroupDetailView extends View {
                 });
             }
         }
-
-        listReference[0].selected = true;
 
         // Dropdowns
         this.$timestamp.dropdown({
