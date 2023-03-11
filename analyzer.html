@@ -1412,7 +1412,7 @@
                 const ATTACK_RAGE_FORMATS = {
                     'decimal': (rage) => rage.toFixed(2),
                     'percentage': (rage) => `${Math.trunc(100 * rage)}%`,
-                    'fraction': (rage) => `${rage * 6}/6`,
+                    'fraction': (rage) => `${Math.round(rage * 6)}/6`,
                 }
 
                 function renderFight (group, fight) {
@@ -1767,6 +1767,10 @@
                         players: Object.values(exportPlayers),
                         fights: exportFights
                     });
+                }
+
+                return {
+                    getPlayers: () => currentPlayers
                 }
             })
         </script>
