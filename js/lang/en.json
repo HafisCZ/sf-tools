@@ -1107,7 +1107,6 @@
         "add": "Add",
         "save": "Save",
         "simulate": "Simulate",
-        "simulate_debug": "Simulate in debug mode",
         "configure": "Configure simulator",
         "configure_copy": "Copy everyone including current configuration",
         "configure_insert": "Insert sample data",

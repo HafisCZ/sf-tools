@@ -74,7 +74,6 @@
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" data-inverted="" id="ihof-mode"><i class="trophy icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" data-inverted="" id="fireball-mode"><i class="balance scale icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.no_attribute_reduction_mode" data-inverted="" id="no-attribute-reduction-mode"><i class="fire icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.simulate_debug" data-inverted="" id="simulate-debug" style="display: none;"><i class="power off icon"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -150,108 +149,6 @@
         </div>
 
         <script type="text/javascript">
-            const SimulatorDebugRunDialog = new (class extends Dialog {
-                constructor () {
-                    super({
-                        dismissable: true
-                    })
-                }
-
-                _createModal () {
-                    return `
-                        <div class="big bordered inverted dialog">
-                            <div class="header flex justify-content-between items-center">
-                                <div></div>
-                                <div>Debug Match</div>
-                                <i class="ui small link close icon" data-op="close"></i>
-                            </div>
-                            <div class="overflow-y-scroll" data-op="content" style="max-height: 80vh;"></div>
-                        </div>
-                    `;
-                }
-
-                _createBindings () {
-                    this.$content = this.$parent.find('[data-op="content"]');
-
-                    this.$close = this.$parent.find('[data-op="close"]');
-                    this.$close.click(() => {
-                        this.close();
-                    });
-                }
-
-                _formatPreviewValue (v) {
-                    return Number.isInteger(v) ? formatAsSpacedNumber(v, ' ') : v;
-                }
-
-                _generatePreview (p1, p2) {
-                    const o1 = Localization._generateTranslation({}, Object.assign({}, p1, { State: '' }));
-                    const o2 = Localization._generateTranslation({}, Object.assign({}, p2, { State: '' }));
-
-                    const keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
-                    for (const bannedKey of ['Player.Identifier', 'Player.Prefix']) {
-                        keys.delete(bannedKey);
-                    }
-
-                    return Array.from(keys).map((key) => `<tr><td>${key}</td><td>${this._formatPreviewValue(o1[key])}</td><td>${this._formatPreviewValue(o2[key])}</td></tr>`).join('');
-                }
-
-                _stringifyState (state) {
-                    const keys = new Set(Object.keys(state));
-
-                    for (const bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'CriticalMultiplier', 'State', 'RageState', 'DamageReduction', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack']) {
-                        keys.delete(bannedKey);
-                    }
-
-                    return Array.from(keys).map(key => `${key}: ${state[key]}`).join(', ')
-                }
-
-                _applyArguments (data) {
-                    let content = '';
-
-                    for (const { fighters, sample } of data) {
-                        content += `
-                            <table class="ui single inverted !text-center very compact fixed table">
-                                <tbody>
-                                    ${this._generatePreview(...fighters)}
-                                </tbody>
-                            </table>
-                            <table class="ui single inverted !text-center very compact fixed table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Attacker</th>
-                                        <th>Target</th>
-                                        <th>Rage</th>
-                                        <th>Damage</th>
-                                        <th>Health Left</th>
-                                        <th>Type</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${sample.map(({ attackerId, attackerState, targetId, targetState, attackDamage, attackRage, attackType, targetHealthLeft }, index) => `
-                                        <tr style="background-color: ${attackerId === 1 ? '#572626' : '#252d46'}">
-                                            <td rowspan="2" style="border-right: 1px solid rgba(255,255,255,.1);">${index}</td>
-                                            <td>${fighters[attackerId].Player.Name}</td>
-                                            <td>${fighters[targetId].Player.Name}</td>
-                                            <td>${Math.trunc(100 * attackRage) / 100}</td>
-                                            <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
-                                            <td>${Math.max(0, 100 * targetHealthLeft / fighters[targetId].Health).toFixed(1)} %</td>
-                                            <td>${intl(`general.attack${attackType}`)}</td>
-                                        </tr>
-                                        <tr style="background-color: ${attackerId === 1 ? '#572626' : '#252d46'}; text-align: left; font-size: 80%;">
-                                            <td colspan="3" style="border-right: 1px solid rgba(255,255,255,.1);">${this._stringifyState(attackerState)}</td>
-                                            <td colspan="3">${this._stringifyState(targetState)}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        `;
-                    }
-
-                    this.$content.html(content);
-                }
-            })()
-
             Site.ready({ type: 'simulator' }, function (urlParams) {
                 let simulatorMode = 'players_all';
 
@@ -290,10 +187,6 @@
                         NoAttributeReduction: noAttributeReductionMode,
                         FireballFix: fireballMode
                     };
-                }
-
-                if (urlParams.has('debug')) {
-                    $('#simulate-debug').show();
                 }
 
                 SimulatorUtils.configure({
@@ -454,25 +347,6 @@
 
                 $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
-
-                $('#simulate-debug').click(function () {
-                    const canSimulate = players.length > 1;
-
-                    if (canSimulate) {
-                        const batch = new WorkerBatch('debug');
-
-                        batch.add(
-                            ({ json }) => DialogController.open(SimulatorDebugRunDialog, json),
-                            {
-                                flags: getSimulatorFlags(),
-                                config: SimulatorUtils.config,
-                                players: players.map(({ player }) => mergeSoft(new SFPlayer(), preparePlayerData(player)).toSimulatorModel())
-                            }
-                        )
-
-                        batch.run(1);
-                    }
-                })
 
                 function executeSimulation (instances, iterations, logCallback) {
                     const canSimulate = players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
