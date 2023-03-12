@@ -734,7 +734,11 @@
                 })
 
                 $fightCopy.click(() => {
+                    renderFight(currentGroup, currentFight, true);
+
                     copyNode($fightTable.closest('table').get(0));
+
+                    renderFight(currentGroup, currentFight, false);
                 });
 
                 $buttonCopyGroup.click(() => {
@@ -1436,19 +1440,19 @@
 
                 const BARD_NOTE_COLORS = ['c4c4c4', '5e7fc4', 'd1a130'];
 
-                function renderState (state) {
+                function renderState (state, copyMode) {
                     if (state) {
                         if (state.type === 'druid_rage') {
-                            return `<i class="ui paw icon text-orangered" title="${intl('analyzer.special_state.druid_rage')}"></i>`;
+                            return copyMode ? 'druid_rage' : `<i class="ui paw icon text-orangered" title="${intl('analyzer.special_state.druid_rage')}"></i>`;
                         } else if (state.type === 'bard_song') {
-                            return `<span title="${intl('analyzer.special_state.bard_song')}" style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
+                            return copyMode ? `bard_song_${state.level}` : `<span title="${intl('analyzer.special_state.bard_song')}" style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
                         }
                     }
 
                     return '';
                 }
 
-                function renderFight (group, fight) {
+                function renderFight (group, fight, copyMode = false) {
                     const formatAttackRage = ATTACK_RAGE_FORMATS[analyzerOptions.rage_display_mode];
 
                     let content = '';
@@ -1462,8 +1466,8 @@
 
                         const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"';
 
-                        const attackerState = renderState(attackerSpecialDisplay);
-                        const targetState = renderState(targetSpecialDisplay);
+                        const attackerState = renderState(attackerSpecialDisplay, copyMode);
+                        const targetState = renderState(targetSpecialDisplay, copyMode);
 
                         if (hasIgnore) {
                             // Do nothing if attack is ignored in display
