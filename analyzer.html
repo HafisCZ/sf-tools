@@ -453,11 +453,13 @@
                             <th style="width: 5%;" class="!text-center">#</th>
                             <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.rage"></th>
                             <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.attacker"></th>
+                            <th style="width: 5%;" class="!text-center"></th>
                             <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.target"></th>
+                            <th style="width: 5%;" class="!text-center"></th>
                             <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.type"></th>
-                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.damage"></th>
+                            <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.damage"></th>
                             <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.health"></th>
-                            <th style="width: 15%;" class="!text-center" data-intl="analyzer.table.damage_base"></th>
+                            <th style="width: 10%;" class="!text-center" data-intl="analyzer.table.damage_base"></th>
                         </tr>
                     </thead>
                     <tbody id="fight-table"></tbody>
@@ -1421,6 +1423,20 @@
                     'fraction': (rage) => `${Math.round(rage * 6)}/6`,
                 }
 
+                const BARD_NOTE_COLORS = ['c4c4c4', '5e7fc4', 'd1a130'];
+
+                function renderState (state) {
+                    if (state) {
+                        if (state.type === 'druid_rage') {
+                            return '<i class="ui paw icon text-orangered"></i>';
+                        } else if (state.type === 'bard_song') {
+                            return `<span style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
+                        }
+                    }
+
+                    return '';
+                }
+
                 function renderFight (group, fight) {
                     const formatAttackRage = ATTACK_RAGE_FORMATS[analyzerOptions.rage_display_mode];
 
@@ -1428,40 +1444,31 @@
 
                     for (let i = 0; i < fight.rounds.length; i++) {
                         const {
-                            attacker, target, attackType, attackerSpecialState, attackRage,
-                            attackDamage, attackBase, attackMissed, attackCrit,
-                            attackSpecial, attackSecondary, targetHealthLeft,
-                            hasDamage, hasBase, hasError
+                            attacker, target, attackType, attackRage, attackDamage, attackBase, attackMissed, attackCrit,
+                            attackSpecial, attackSecondary, targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
+                            hasDamage, hasBase, hasError, hasIgnore
                         } = fight.rounds[i];
 
-                        const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"'
+                        const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"';
 
-                        if (attackType === ATTACK_REVIVE) {
+                        const attackerState = renderState(attackerSpecialDisplay);
+                        const targetState = renderState(targetSpecialDisplay);
+
+                        if (hasIgnore) {
+                            // Do nothing if attack is ignored in display
+                            continue;
+                        } else if (attackType === ATTACK_REVIVE) {
                             content += `
                                 <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center"></th>
                                     <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
+                                    <td class="!text-center">${attackerState}</th>
+                                    <td class="!text-center"></th>
                                     <td class="!text-center"></th>
                                     <td class="!text-center text-violet">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center"></th>
                                     <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
-                                    <td class="!text-center"></th>
-                                </tr>
-                            `;
-                        } else if (attackType >= ATTACK_BARD_SONG) {
-                            const spellNotes = Math.trunc((attackType % 100) / 10);
-                            const spellLevel = attackType % 10;
-
-                            content += `
-                                <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
-                                    <td class="!text-center">${i + 1}</th>
-                                    <td class="!text-center"></th>
-                                    <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
-                                    <td class="!text-center"></th>
-                                    <td class="!text-center text-violet">${intl(`general.attack200_2`, { spellNotes, spellLevel })}</th>
-                                    <td class="!text-center"></th>
-                                    <td class="!text-center"></th>
                                     <td class="!text-center"></th>
                                 </tr>
                             `;
@@ -1472,11 +1479,13 @@
                             const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
 
                             content += `
-                                <tr style="${attacker.hash == group.fighterA.hash ? 'background-color: #202020; color: darkgray;' : ''}${attackerSpecialState ? 'border: 2px dashed purple !important;' : ''}">
+                                <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                                     <td class="!text-center">${i + 1}</th>
                                     <td class="!text-center">${formatAttackRage(attackRage)}</th>
                                     <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
+                                    <td class="!text-center">${attackerState}</th>
                                     <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
+                                    <td class="!text-center">${targetState}</th>
                                     <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
                                     <td class="!text-center${attackClass}">${displayDamage}</th>
                                     <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
@@ -1558,6 +1567,15 @@
                             round.hasLog = true;
                         }
 
+                        // Set display special state
+                        if (round.attackerSpecialState && round.attacker.Class === DRUID) {
+                            round.attackerSpecialDisplay = { type: 'druid_rage' };
+                        }
+
+                        if (round.targetSpecialState && round.target.Class === DRUID) {
+                            round.targetSpecialDisplay = { type: 'druid_rage' };
+                        }
+
                         // Skip if missed or special
                         if (round.attackSpecial || round.attackMissed) {
                             continue;
@@ -1572,10 +1590,14 @@
                         // We are assuming that lute round always follows after bard attack
                         if (round.attackType >= ATTACK_BARD_SONG) {
                             const spellLevel = round.attackType % 10 - 1;
+                            const spellNotes = Math.trunc((round.attackType % 100) / 10);
                             const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
                             const superRound = flatRounds[index - 1];
 
                             superRound.attackBase = Math.round(superRound.attackBase / spellBonus);
+                            superRound.attackerSpecialDisplay = { type: 'bard_song', level: spellLevel, notes: spellNotes };
+
+                            round.hasIgnore = true;
 
                             continue;
                         } else if (round.hasBase) {
