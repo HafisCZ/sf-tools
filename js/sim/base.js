@@ -1,19 +1,8 @@
 FIGHT_LOG_ENABLED = false;
-FIGHT_LOG_STORE_STATE = false;
 
 FIGHT_LOG = new (class {
     constructor () {
         this.allLogs = [];
-    }
-
-    _storeState (model) {
-        return Object.entries(model).reduce((memo, [key, value]) => {
-            if (typeof value !== 'object' && typeof value !== 'undefined') {
-                memo[key] = value;
-            }
-
-            return memo;
-        }, {});
     }
 
     _logRound (attacker, target, damage, type, skip, critical) {
@@ -30,11 +19,6 @@ FIGHT_LOG = new (class {
             attackSecondary: ATTACKS_SECONDARY.includes(type),
             attackCrit: critical,
             attackMissed: skip
-        }
-
-        if (FIGHT_LOG_STORE_STATE) {
-            round.attackerState = this._storeState(attacker);
-            round.targetState = this._storeState(target);
         }
 
         this.lastLog.rounds.push(round);
