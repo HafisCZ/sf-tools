@@ -729,10 +729,16 @@
 
                 $buttonCopyGroup.click(() => {
                     if (currentGroup) {
-                        const generator = (player) => Localization._generateTranslation({}, player);
+                        const generator = ({ MaximumLife, editor }) => {
+                            const object = Localization._generateTranslation({ }, editor);
 
-                        const playerA = generator(currentGroup.fighterA.editor);
-                        const playerB = generator(currentGroup.fighterB.editor);
+                            object.TotalHealth = MaximumLife;
+
+                            return object;
+                        }
+
+                        const playerA = generator(currentGroup.fighterA);
+                        const playerB = generator(currentGroup.fighterB);
 
                         const matrix = [];
                         for (const key of Object.keys(playerA)) {
