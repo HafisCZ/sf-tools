@@ -1004,6 +1004,17 @@
         "special_state": {
             "druid_rage": "Druid is enraged",
             "bard_song": "Bard has played a song"
+        },
+        "sidebar": {
+            "damages": {
+                "weapon1_range_base": "Input range",
+                "weapon2_range_base": "Input range (secondary)",
+                "weapon1_range": "Normal range",
+                "weapon2_range": "Normal range (secondary)",
+                "weapon1_range_critical": "Critical range",
+                "weapon2_range_critical": "Critical range (secondary)",
+                "weapon1_range_swoop": "Swoop range"
+            }
         }
     },
     "players": {

@@ -467,6 +467,21 @@
             </div>
         </div>
 
+        <div class="position-fixed right-0" style="top: calc(50px + 9.7em);">
+            <div class="ui small basic inverted icon button" id="button-damages-open">
+                <i class="ui angle double left icon"></i>
+            </div>
+        </div>
+
+        <div id="sidebar-damages" class="position-fixed right-0 h-screen z-2 !border-radius-1" style="border-left: 1px solid rgba(255, 255,255, .5); border-top: 1px solid rgba(255, 255,255, .5); width: 300px; top: calc(50px + 9.7em); display: none;">
+            <div class="position-absolute" style="left: -1px; top: -1px; z-index: 3;">
+                <div class="ui small basic inverted icon button" id="button-damages-close">
+                    <i class="ui angle double right icon"></i>
+                </div>
+            </div>
+            <div id="sidebar-damages-content" class="flex flex-col p-4" style="gap: 2.5em;"></div>
+        </div>
+
         <script type="text/javascript">
             const AnalyzerOptionsDialog = new (class extends Dialog {
                 constructor () {
@@ -611,6 +626,8 @@
                 const $buttonClear = $('#button-clear');
                 const $buttonExport = $('#button-export');
                 const $buttonOptions = $('#button-options');
+                const $buttonDamagesOpen = $('#button-damages-open');
+                const $buttonDamagesClose = $('#button-damages-close');
             
                 const $buttonExportGroup = $('#button-export-group');
                 const $buttonExportFight = $('#button-export-fight');
@@ -625,6 +642,9 @@
 
                 const $viewSummaryGroup = $('#view-summary-group');
                 const $viewSummaryFight = $('#view-summary-fight');
+
+                const $sidebarDamages = $('#sidebar-damages');
+                const $sidebarDamagesContent = $('#sidebar-damages-content');
 
                 // Button callbacks
                 $buttonUpload.on('change', (fileEvent) => {
@@ -701,6 +721,16 @@
 
                         render();
                     }
+                })
+
+                $buttonDamagesOpen.click(() => {
+                    $buttonDamagesOpen.transition('fade right');
+                    $sidebarDamages.transition('fade left');
+                });
+
+                $buttonDamagesClose.click(() => {
+                    $buttonDamagesOpen.transition('fade right');
+                    $sidebarDamages.transition('fade left');
                 })
 
                 $fightCopy.click(() => {
@@ -1312,6 +1342,9 @@
 
                     currentGroup = null;
                     currentFight = null;
+
+                    // Remove all sidebar damage content
+                    $sidebarDamagesContent.empty();
                 }
 
                 function render () {
@@ -1612,15 +1645,22 @@
                     for (const fighter of [group.fighterA, group.fighterB]) {
                         Object.assign(fighter, {
                             attacks: {},
-                            damage1: {
-                                min: +Infinity,
-                                max: -Infinity
-                            },
-                            damage2: {
-                                min: +Infinity,
-                                max: -Infinity
-                            }
+                            damages: {}
                         });
+
+                        const items = fighter.editor.Items;
+
+                        fighter.damages.weapon1_range_base = {
+                            min: items.Wpn1.DamageMin,
+                            max: items.Wpn1.DamageMax
+                        };
+
+                        if (fighter.Class === ASSASSIN) {
+                            fighter.damages.weapon2_range_base = {
+                                min: items.Wpn2.DamageMin,
+                                max: items.Wpn2.DamageMax
+                            };
+                        }
                     }
 
                     // Calculate summary
@@ -1633,7 +1673,7 @@
                             attacks: {}
                         }
 
-                        for (const { attacker, attackType, hasLog, attackBase, hasBase, attackSecondary } of fight.rounds) {
+                        for (const { attacker, attackType, hasLog, hasError, attackBase, hasBase, attackSecondary, attackCrit } of fight.rounds) {
                             const fightContainer = fight[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
                             const groupContainer = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
 
@@ -1645,10 +1685,21 @@
 
                             // Calculate damage range
                             if (hasBase) {
-                                const container3 = groupContainer[attackSecondary ? 'damage1' : 'damage2'];
-                            
-                                container3.min = Math.min(container3.min, attackBase);
-                                container3.max = Math.max(container3.max, attackBase);
+                                const key = `${attackSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP ? '_swoop' : ''}${attackCrit ? '_critical' : ''}`;
+
+                                if (typeof groupContainer.damages[key] === 'undefined') {
+                                    groupContainer.damages[key] = {
+                                        min: +Infinity,
+                                        max: -Infinity,
+                                        err: false
+                                    };
+                                }
+
+                                const range = groupContainer.damages[key];
+
+                                range.min = Math.min(range.min, attackBase);
+                                range.max = Math.max(range.max, attackBase);
+                                range.err = range.err || hasError
                             }
                         }
                     }
@@ -1656,8 +1707,60 @@
 
                 function updatePreview () {
                     if (currentGroup && currentFight) {
+                        // Process base damages within the group
                         processGroup(currentGroup);
+
+                        // Render table with fight rounds
                         renderFight(currentGroup, currentFight);
+
+                        // Render sidebar
+                        renderDamagesSidebar(currentGroup);
+                    }
+                }
+
+                const RANGE_TYPES = [
+                    'weapon1_range_base',
+                    'weapon1_range',
+                    'weapon1_range_critical',
+                    'weapon1_range_swoop',
+                    'weapon2_range_base',
+                    'weapon2_range',
+                    'weapon2_range_critical'
+                ];
+
+                function renderDamagesSidebar (group) {
+                    $sidebarDamagesContent.empty();
+
+                    for (const fighter of [group.fighterA, group.fighterB]) {
+                        const { Class: klass, damages } = fighter;
+                        
+                        let content = '';
+                        for (const type of RANGE_TYPES) {
+                            if (type in damages) {
+                                const { min, max, err } = damages[type];
+
+                                content += `
+                                    <div class="field">
+                                        <label class="${err ? '!text-orangered' : ''}">${intl(`analyzer.sidebar.damages.${type}`)}${err ? ' !' : ''}</label>
+                                        <div class="ui inverted centered input">
+                                            <input type="text" class="${err ? '!text-orangered' : ''}" disabled value="${min} - ${max}">
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }
+
+                        $sidebarDamagesContent.append(`
+                            <div class="ui small inverted form">
+                                <div class="field">
+                                    <h3 class="ui centered inverted header flex items-center justify-content-center gap-2">
+                                        <img style="width: 30px; height: 30px;" src="res/class${klass}.png">
+                                        <div class="mt-1">${getFighterName(fighter)}</div>
+                                    </h3>
+                                </div>
+                                ${content}
+                            </div>
+                        `);
                     }
                 }
 
