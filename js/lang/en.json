@@ -995,7 +995,6 @@
         },
         "summary": {
             "view": "View summary",
-            "damage": "Base damage ranges",
             "type": "Attack types"
         },
         "toast_import_error": {

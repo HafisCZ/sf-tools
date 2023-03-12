@@ -572,28 +572,6 @@
 
                 _applyArguments (group, { fighterA, fighterB }) {
                     let content = `
-                        <h2 class="ui centered inverted header">${intl('analyzer.summary.damage')}</h2>
-                        <table class="ui inverted single very line basic table fixed">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%;" class="!text-center">${intl('analyzer.table.damage')}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterA.name}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterB.name}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="!text-center">${intl('editor.min')}</td>
-                                    <td class="!text-center">${formatAsSpacedNumber(fighterA.damage.min)}</td>
-                                    <td class="!text-center">${formatAsSpacedNumber(fighterB.damage.min)}</td>
-                                </tr>
-                                <tr>
-                                    <td class="!text-center">${intl('editor.max')}</td>
-                                    <td class="!text-center">${formatAsSpacedNumber(fighterA.damage.max)}</td>
-                                    <td class="!text-center">${formatAsSpacedNumber(fighterB.damage.max)}</td>
-                                </tr>
-                            </tbody>
-                        </table>
                         <h2 class="ui centered inverted header">${intl('analyzer.summary.type')}</h2>
                         <table class="ui inverted single very line basic table fixed">
                             <thead>
@@ -1634,7 +1612,11 @@
                     for (const fighter of [group.fighterA, group.fighterB]) {
                         Object.assign(fighter, {
                             attacks: {},
-                            damage: {
+                            damage1: {
+                                min: +Infinity,
+                                max: -Infinity
+                            },
+                            damage2: {
                                 min: +Infinity,
                                 max: -Infinity
                             }
@@ -1644,22 +1626,14 @@
                     // Calculate summary
                     for (const fight of group.fights) {
                         fight.fighterA = {
-                            attacks: {},
-                            damage: {
-                                min: +Infinity,
-                                max: -Infinity
-                            }
+                            attacks: {}
                         }
 
                         fight.fighterB = {
-                            attacks: {},
-                            damage: {
-                                min: +Infinity,
-                                max: -Infinity
-                            }
+                            attacks: {}
                         }
 
-                        for (const { attacker, attackType, hasLog, attackBase, hasBase } of fight.rounds) {
+                        for (const { attacker, attackType, hasLog, attackBase, hasBase, attackSecondary } of fight.rounds) {
                             const fightContainer = fight[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
                             const groupContainer = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
 
@@ -1671,13 +1645,10 @@
 
                             // Calculate damage range
                             if (hasBase) {
-                                const container3 = fightContainer.damage;
+                                const container3 = groupContainer[attackSecondary ? 'damage1' : 'damage2'];
+                            
                                 container3.min = Math.min(container3.min, attackBase);
                                 container3.max = Math.max(container3.max, attackBase);
-                                
-                                const container4 = groupContainer.damage;
-                                container4.min = Math.min(container4.min, attackBase);
-                                container4.max = Math.max(container4.max, attackBase);
                             }
                         }
                     }
@@ -1698,12 +1669,10 @@
                             const data = {
                                 fighterA: {
                                     attacks: fighterA.attacks,
-                                    damage: fighterA.damage,
                                     name: getFighterName(group.fighterA)
                                 },
                                 fighterB: {
                                     attacks: fighterB.attacks,
-                                    damage: fighterB.damage,
                                     name: getFighterName(group.fighterB)
                                 }
                             }
