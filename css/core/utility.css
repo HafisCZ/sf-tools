@@ -40,6 +40,14 @@
   right: 0.75em;
 }
 
+.top-0 {
+  top: 0;
+}
+
+.right-0 {
+  right: 0;
+}
+
 .top-4 {
   top: 1em;
 }
@@ -72,6 +80,10 @@
 
 .h-full {
   height: 100%;
+}
+
+.h-screen {
+  height: 100vh;
 }
 
 /* Display */
@@ -319,6 +331,10 @@
   color: orangered;
 }
 
+.\!text-orangered {
+  color: orangered !important;
+}
+
 .text-violet {
   color: violet;
 }
@@ -465,6 +481,10 @@
 
 .border-left-gray {
   border-left: 1px solid rgb(58, 58, 58);
+}
+
+.border-top-gray {
+  border-top: 1px solid rgb(58, 58, 58);
 }
 
 .\!border-radius-1 {
