@@ -18,7 +18,8 @@ FIGHT_LOG = new (class {
             attackChained: ATTACKS_CHAIN.includes(type),
             attackSecondary: ATTACKS_SECONDARY.includes(type),
             attackCrit: critical,
-            attackMissed: skip
+            attackMissed: skip,
+            attackSpecial: type >= ATTACK_REVIVE
         }
 
         this.lastLog.rounds.push(round);
