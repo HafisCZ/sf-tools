@@ -61,7 +61,8 @@ FIGHT_LOG = new (class {
     }
 
     _calculateType (target, type, skip, critical) {
-        const targetWarrior = target.Class === WARRIOR;
+        const targetWarrior = target.Player.Class === WARRIOR;
+
         if (type == ATTACK_SWOOP) {
             if (skip) {
                 return targetWarrior ? ATTACK_SWOOP_BLOCKED : ATTACK_SWOOP_EVADED;
