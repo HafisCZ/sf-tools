@@ -16,11 +16,12 @@ FIGHT_LOG = new (class {
         }, {});
     }
 
-    _logRound (attacker, target, damage, type, skip, critical, special) {
+    _logRound (attacker, target, damage, type, skip, critical) {
         const round = {
             attackerId: attacker.Player.ID || attacker.Index,
-            attackerSpecialState: !!special,
+            attackerSpecialState: attacker.specialState(),
             targetId: target.Player.ID || target.Index,
+            targetSpecialState: target.specialState(),
             targetHealthLeft: Math.max(0, target.Health - damage),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
@@ -100,7 +101,7 @@ FIGHT_LOG = new (class {
         }
     }
 
-    logAttack (source, target, damage, baseType, skip, critical, special) {
+    logAttack (source, target, damage, baseType, skip, critical) {
         const type = this._calculateType(target, baseType, skip, critical);
         this._logRound(
             source,
@@ -108,8 +109,7 @@ FIGHT_LOG = new (class {
             damage,
             type,
             skip,
-            critical,
-            special
+            critical
         )
     }
 
@@ -120,7 +120,6 @@ FIGHT_LOG = new (class {
             damage,
             damage == 0 ? ATTACK_FIREBALL_BLOCKED : ATTACK_FIREBALL,
             damage == 0,
-            false,
             false
         )
     }
@@ -132,7 +131,6 @@ FIGHT_LOG = new (class {
             0,
             ATTACK_REVIVE,
             false,
-            false,
             false
         )
     }
@@ -143,7 +141,6 @@ FIGHT_LOG = new (class {
             target,
             0,
             ATTACK_BARD_SONG + 10 * notes + level,
-            false,
             false,
             false
         )
@@ -675,8 +672,7 @@ class FighterModel {
                 damage,
                 type,
                 skipped,
-                critical,
-                this.specialState()
+                critical
             )
         }
 
