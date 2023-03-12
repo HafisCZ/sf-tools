@@ -124,7 +124,6 @@
         "attack29": "Critical Evaded",
         "attack100": "Revive",
         "attack200": "Bard Song",
-        "attack200_2": "Bard Song L#{spellLevel} - #{spellNotes} notes",
         "gt_background1": "Gold",
         "gt_background2": "Silver",
         "gt_background3": "Bronze",
@@ -1002,6 +1001,10 @@
         "toast_import_error": {
             "title": "Import failed",
             "message": "Ensure that you are importing a valid HAR or fight JSON"
+        },
+        "special_state": {
+            "druid_rage": "Druid is enraged",
+            "bard_song": "Bard has played a song"
         }
     },
     "players": {

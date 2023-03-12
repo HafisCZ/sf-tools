@@ -1428,9 +1428,9 @@
                 function renderState (state) {
                     if (state) {
                         if (state.type === 'druid_rage') {
-                            return '<i class="ui paw icon text-orangered"></i>';
+                            return `<i class="ui paw icon text-orangered" title="${intl('analyzer.special_state.druid_rage')}"></i>`;
                         } else if (state.type === 'bard_song') {
-                            return `<span style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
+                            return `<span title="${intl('analyzer.special_state.bard_song')}" style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
                         }
                     }
 
