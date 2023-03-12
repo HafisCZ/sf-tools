@@ -134,6 +134,10 @@
   padding-bottom: 0 !important;
 }
 
+.pb-1 {
+  padding-bottom: 0.25em;
+}
+
 .px-12 {
   padding-left: 3em;
   padding-right: 3em;
@@ -481,6 +485,10 @@
 
 .border-left-gray {
   border-left: 1px solid rgb(58, 58, 58);
+}
+
+.border-bottom-gray {
+  border-bottom: 1px solid rgb(58, 58, 58);
 }
 
 .border-top-gray {
