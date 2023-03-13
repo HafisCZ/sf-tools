@@ -1024,7 +1024,7 @@ class BardModel extends FighterModel {
 class SimulatorBase {
     shuffle () {
         if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
-            [this.a, this.b] = [this.b, this.a];
+            const swap = this.a; this.a = this.b; this.b = swap;
         }
 
         // Thanks to rafa97sam for testing and coding this part that broke me
@@ -1035,11 +1035,13 @@ class SimulatorBase {
                 while (getRandom(50)) {
                     this.getRage();
 
-                    [this.a, this.b] = [this.b, this.a];
+                    // Swap
+                    const swap = this.a; this.a = this.b; this.b = swap;
                 }
             }
 
-            [this.a, this.b] = [this.b, this.a];
+            // Swap
+            const swap = this.a; this.a = this.b; this.b = swap;
         }
     }
 
@@ -1068,7 +1070,8 @@ class SimulatorBase {
         while (this.a.Health > 0 && this.b.Health > 0) {
             this.a.control(this, this.b);
 
-            [this.a, this.b] = [this.b, this.a];
+            // Swap
+            const swap = this.a; this.a = this.b; this.b = swap;
         }
 
         // Winner
