@@ -9,53 +9,64 @@ self.addEventListener('message', function ({ data: { config, players, mode, iter
     }
 
     if (mode == 'pet') {
+        const simulator = new PetSimulator();
+
+        const p1 = PetModel.getModel(players[0], 0);
+        const p2 = PetModel.getModel(players[1], 1);
+
         self.postMessage({
-            results: new PetSimulator().simulate(players[0], players[1], iterations),
+            results: simulator.simulate(p1, p2, iterations),
             logs: FIGHT_LOG.dump()
         });
     } else if (mode == 'map') {
-        var r = [];
-        var obj = players[0];
+        const simulator = new PetSimulator();
 
-        var orig = obj.Level;
-        var p100 = obj.At100 + 1;
+        const p1 = PetModel.getModel(players[0], 0);
+        const p2 = PetModel.getModel(players[1], 1);
+
+        let r = [];
+        let obj = players[0];
+
+        let orig = obj.Level;
+        let p100 = obj.At100 + 1;
 
         let origGladiator = obj.Gladiator;
 
-        for (var level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
+        for (let level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
             obj.Level = level + 1;
 
             if (obj.Level == 100 && orig != 100) {
                 obj.At100 = p100;
             }
 
-            if (!r[level]) {
+            if (typeof r[level] === 'undefined') {
                 r[level] = [];
             }
 
             obj.Gladiator = 15;
-            r[level][15] = new PetSimulator().simulate(obj, players[1], iterations);
 
-            if (r[level - 1] != undefined) {
+            r[level][15] = simulator.simulate(PetModel.upgrade(p1, obj), p2, iterations);
+
+            if (typeof r[level - 1] !== 'undefined') {
                 if (r[level - 1][15] > r[level][15]) {
                     r[level][15] = r[level - 1][15];
                 }
             }
 
             if (r[level][15] == 0) {
-                for (var i = origGladiator; i < 15; i++) {
+                for (let i = origGladiator; i < 15; i++) {
                     r[level][i] = 0;
                 }
             } else {
-                for (var glad = 14; glad >= origGladiator; glad--) {
+                for (let glad = 14; glad >= origGladiator; glad--) {
                     obj.Gladiator = glad;
 
-                    r[level][glad] = new PetSimulator().simulate(obj, players[1], iterations);
+                    r[level][glad] = simulator.simulate(PetModel.upgrade(p1, obj), p2, iterations);
                     if (r[level][glad] > r[level][glad + 1]) {
                         r[level][glad] = r[level][glad + 1];
                     }
 
-                    if (r[level - 1] != undefined) {
+                    if (typeof r[level - 1] !== 'undefined') {
                         if (r[level - 1][glad] > r[level][glad]) {
                             r[level][glad] = r[level - 1][glad];
                         }
@@ -153,7 +164,54 @@ FighterModel.prototype.getDamageMultiplier = function (target) {
 }
 
 class PetModel {
-    static normalize (boss, name, type, pet, level, bonus, gladiator) {
+    static upgrade (model, obj) {
+        const bonus = PetModel.getBonus(obj.Pack, obj.At100, obj.At150, obj.At200);
+
+        const multiplier = (obj.Level + 1) * (1 + bonus / 100);
+
+        const main = Math.trunc(PET_FACTOR_MAP[obj.Pet] * multiplier);
+        const luck = Math.trunc(PET_FACTOR_MAP_LUCK[obj.Pet] * multiplier);
+
+        const getAttribute = (type) => {
+            return type === model.Config.Attribute ? main : Math.trunc(main / 2);
+        }
+
+        const damage = Math.trunc((obj.Level + 1) * model.Config.WeaponDamageMultiplier);
+
+        // Update level + stats
+        Object.assign(model.Player, {
+            Level: obj.Level,
+            Armor: obj.Level * model.Config.MaximumDamageReduction,
+            Strength: {
+                Total: getAttribute('Strength')
+            },
+            Dexterity: {
+                Total: getAttribute('Dexterity')
+            },
+            Intelligence: {
+                Total: getAttribute('Intelligence')
+            },
+            Constitution: {
+                Total: main
+            },
+            Luck: {
+                Total: luck
+            },
+            Fortress: {
+                Gladiator: obj.Gladiator
+            }
+        });
+
+        // Update damage
+        Object.assign(model.Player.Items.Wpn1, {
+            DamageMin: damage,
+            DamageMax: damage
+        });
+
+        return model;
+    }
+
+    static _normalize (boss, name, type, pet, level, bonus, gladiator) {
         const klass = PET_CLASS_MAP[type][pet] + 1;
         const multiplier = (level + 1) * (1 + bonus / 100);
 
@@ -207,24 +265,16 @@ class PetModel {
         return 5 * Math.trunc(pack + at200 + at150 * 0.75 + at100 * 0.5);
     }
 
-    static fromHabitat (name, type, pet) {
-        const level = PET_HABITAT_MAP[pet];
-        const bonus = 5 + 5 * pet;
-
-        return PetModel.normalize(true, name, type, pet, level, bonus, 0);
-    }
-
-    static fromPet (name, type, pet, level, pack, at100, at150, at200, gladiator) {
-        const bonus = PetModel.getBonus(pack, at100, at150, at200);
-
-        return PetModel.normalize(false, name, type, pet, level, bonus, gladiator);
-    }
-
     static getPlayer (obj) {
         if (obj.Boss) {
-            return PetModel.fromHabitat(obj.Name, obj.Type, obj.Pet);
+            const level = PET_HABITAT_MAP[obj.Pet];
+            const bonus = 5 + 5 * obj.Pet;
+
+            return PetModel._normalize(true, obj.Name, obj.Type, obj.Pet, level, bonus, 0);
         } else {
-            return PetModel.fromPet(obj.Name, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
+            const bonus = PetModel.getBonus(obj.Pack, obj.At100, obj.At150, obj.At200);
+
+            return PetModel._normalize(false, obj.Name, obj.Type, obj.Pet, obj.Level, bonus, obj.Gladiator);
         }
     }
 
@@ -250,8 +300,8 @@ class PetSimulator extends SimulatorBase {
     }
 
     cache (source, target) {
-        this.ca = PetModel.getModel(source, 0);
-        this.cb = PetModel.getModel(target, 1);
+        this.ca = source;
+        this.cb = target;
 
         FighterModel.initializeFighters(this.ca, this.cb);
     }
