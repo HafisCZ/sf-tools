@@ -21,6 +21,12 @@ class SFItem {
         let upgradeLevel = dataType.byte();
         let socketPower = dataType.short();
 
+        if (attributeType[1] === 4 && attributeType[2] === 5) {
+            // Legacy attribute
+            attributeType = [20 + attributeType[0], 0, 0];
+            attributeValue = [attributeValue[0], 0, 0];
+        }
+
         this.Data = data;
         this.Slot = slot;
         this.Position = pos;
