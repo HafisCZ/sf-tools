@@ -569,7 +569,7 @@
 
                 _createModal () {
                     return `
-                        <div class="small bordered inverted dialog">
+                        <div class="bordered inverted dialog">
                             <div data-op="content"></div>
                             <button class="ui black fluid button" data-op="cancel">${this.intl('close')}</button>
                         </div>
@@ -585,6 +585,14 @@
                     this.$content = this.$parent.find('[data-op="content"]');
                 }
 
+                _percentage (value, total) {
+                    if (value) {
+                        return ` ${(Math.trunc(1000 * value / total) / 10).toFixed(1)}%`
+                    } else {
+                        return '';
+                    }
+                }
+
                 _applyArguments (group, { fighterA, fighterB }) {
                     let content = `
                         <h2 class="ui centered inverted header">${intl('analyzer.summary.type')}</h2>
@@ -592,8 +600,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterA.name}</th>
-                                    <th style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterB.name}</th>
+                                    <th colspan="2" style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterA.name}</th>
+                                    <th colspan="2" style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterB.name}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -601,12 +609,26 @@
 
                     // Attacks
                     const keys = Object.keys(Object.assign({}, fighterA.attacks, fighterB.attacks));
+                    
+                    const totalA = _sum(Object.values(fighterA.attacks));
+                    const totalB = _sum(Object.values(fighterB.attacks));
+
+                    content += `
+                        <tr>
+                            <td class="!text-center">Total</td>
+                            <td colspan="2" class="!text-center">${totalA}</td>
+                            <td colspan="2" class="!text-center">${totalB}</td>
+                        </tr>
+                    `;
+
                     for (const key of keys) {
                         content += `
                             <tr>
                                 <td class="!text-center">${intl(`general.attack${key}`)} #${key}</td>
-                                <td class="!text-center">${fighterA.attacks[key] || 0}</td>
-                                <td class="!text-center">${fighterB.attacks[key] || 0}</td>
+                                <td class="!text-center">${fighterA.attacks[key] || ''}</td>
+                                <td class="!text-center">${this._percentage(fighterA.attacks[key], totalA)}</td>
+                                <td class="!text-center">${fighterB.attacks[key] || ''}</td>
+                                <td class="!text-center">${this._percentage(fighterB.attacks[key], totalB)}</td>
                             </tr>
                         `;
                     }
