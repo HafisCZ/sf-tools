@@ -357,7 +357,7 @@ const PetData = [
         location: PetLocation.Gnarogrim,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => player.Rank <= 1000 || player.Honor >= 50000
     },
     {
         location: PetLocation.BustedLands,
@@ -375,13 +375,13 @@ const PetData = [
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Dungeons', 'Shadow', 11) === 10
     },
     {
         location: PetLocation.SunburnDesert,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Pets', 'Dungeons', 0) === 20
     },
     {
         location: PetLocation.StumbleSteppe,
@@ -471,7 +471,10 @@ const PetData = [
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => {
+            const group = _dig(player, 'Group', 'Group');
+            return group && (group.Rank <= 100 || group.Honor >= 2500);
+        }
     },
     {
         location: PetLocation.Northrunt,
@@ -495,13 +498,13 @@ const PetData = [
         location: PetLocation.RottenLands,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Dungeons', 'Tower') === 100
     },
     {
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Pets', 'Dungeons', 1) === 20
     },
     {
         location: PetLocation.StumbleSteppe,
@@ -609,19 +612,25 @@ const PetData = [
         location: PetLocation.StumbleSteppe,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => {
+            const fortress = player.Fortress;
+            return fortress && (fortress.Rank <= 100 || fortress.Honor >= 2500);
+        }
     },
     {
         location: PetLocation.GemMine,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => {
+            const fortress = player.Fortress;
+            return fortress && fortress.GemMine >= 20;
+        }
     },
     {
         location: PetLocation.MoldyForest,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Pets', 'Dungeons', 2) === 20
     },
     {
         location: PetLocation.Nevermoor,
@@ -735,13 +744,13 @@ const PetData = [
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Dungeons', 'Player') === 50
     },
     {
         location: PetLocation.Gnarogrim,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Pets', 'Dungeons', 3) === 20
     },
     {
         location: PetLocation.Magmaron,
@@ -831,7 +840,10 @@ const PetData = [
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => {
+            const pets = player.Pets;
+            return pets && (pets.Rank <= 100 || pets.Honor >= 4000);
+        }
     },
     {
         location: PetLocation.MagicShop,
@@ -849,18 +861,21 @@ const PetData = [
         location: PetLocation.Toilet,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => {
+            const toilet = player.Toilet;
+            return toilet && toilet.Aura >= 20;
+        }
     },
     {
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Dungeons', 'Normal', 17) === 10
     },
     {
         location: PetLocation.Nevermoor,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        special: (player) => _dig(player, 'Pets', 'Dungeons', 4) === 20
     }
 ];
