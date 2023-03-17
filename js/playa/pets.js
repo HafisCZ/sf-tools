@@ -21,8 +21,9 @@ const PetLocation = {
     SunburnDesert: 19,
     TuskMountain: 20,
     GemMine: 201,
-    MagicShop: 202,
-    Toilet: 203
+    WeaponShop: 202,
+    MagicShop: 203,
+    Toilet: 204
 };
 
 // Time ranges
@@ -267,211 +268,211 @@ const PetData = [
         location: PetLocation.Nevermoor,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Maerwyn,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SprawlingJungle,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SplitCanyon,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackForest,
         next: isPetAvailable(PetTime.night, PetDate.monday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackWaterSwamp,
         next: isPetAvailable(PetTime.witch, PetDate.any),
         time: 'witch',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.EvernightForest,
         next: isPetAvailable(PetTime.day, PetDate.summer),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.day, PetDate.winter),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.ShadowrockMountain,
         next: isPetAvailable(PetTime.night, PetDate.friday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.MoldyForest,
         next: isPetAvailable(PetTime.day, PetDate.fall),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.FloodedCaldwell,
         next: isPetAvailable(PetTime.night, PetDate.monday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.TuskMountain,
         next: isPetAvailable(PetTime.night, PetDate.tuesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.night, PetDate.wednesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.StumbleSteppe,
         next: isPetAvailable(PetTime.day, PetDate.thursday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackForest,
         next: isPetAvailable(PetTime.any, PetDate.special_halloween),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Gnarogrim,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => player.Rank <= 1000 || player.Honor >= 50000
+        condition: (player) => player.Rank <= 1000 || player.Honor >= 50000
     },
     {
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.any, PetDate.event_experience),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.RottenLands,
         next: isPetAvailable(PetTime.any, PetDate.special_friday_13th),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Dungeons', 'Shadow', 11) === 10
+        condition: (player) => _dig(player, 'Dungeons', 'Shadow', 11) === 10
     },
     {
         location: PetLocation.SunburnDesert,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Pets', 'Dungeons', 0) === 20
+        condition: (player) => _dig(player, 'Pets', 'Dungeons', 0) === 20
     },
     {
         location: PetLocation.StumbleSteppe,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.MoldyForest,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.ShadowrockMountain,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SprawlingJungle,
         next: isPetAvailable(PetTime.night, PetDate.spring),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Nevermoor,
         next: isPetAvailable(PetTime.day, PetDate.saturday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SunburnDesert,
         next: isPetAvailable(PetTime.day, PetDate.summer),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.FloodedCaldwell,
         next: isPetAvailable(PetTime.day, PetDate.fall),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.night, PetDate.monday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.day, PetDate.tuesday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.TuskMountain,
         next: isPetAvailable(PetTime.day, PetDate.sunday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Northrunt,
         next: isPetAvailable(PetTime.night, PetDate.wednesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.EvernightForest,
         next: isPetAvailable(PetTime.day, PetDate.thursday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackWaterSwamp,
         next: isPetAvailable(PetTime.day, PetDate.friday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => {
+        condition: (player) => {
             const group = _dig(player, 'Group', 'Group');
             return group && (group.Rank <= 100 || group.Honor >= 2500);
         }
@@ -480,139 +481,139 @@ const PetData = [
         location: PetLocation.Northrunt,
         next: isPetAvailable(PetTime.day, PetDate.december),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SplitCanyon,
         next: isPetAvailable(PetTime.any, PetDate.special_april_fools),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.any, PetDate.event_epic),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.RottenLands,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Dungeons', 'Tower') === 100
+        condition: (player) => _dig(player, 'Dungeons', 'Tower') === 100
     },
     {
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Pets', 'Dungeons', 1) === 20
+        condition: (player) => _dig(player, 'Pets', 'Dungeons', 1) === 20
     },
     {
         location: PetLocation.StumbleSteppe,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Gnarogrim,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackForest,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Northrunt,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.TuskMountain,
         next: isPetAvailable(PetTime.day, PetDate.summer),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackWaterSwamp,
         next: isPetAvailable(PetTime.day, PetDate.fall),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SplitCanyon,
         next: isPetAvailable(PetTime.day, PetDate.winter),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Magmaron,
         next: isPetAvailable(PetTime.day, PetDate.spring),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Magmaron,
         next: isPetAvailable(PetTime.night, PetDate.sunday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Maerwyn,
         next: isPetAvailable(PetTime.day, PetDate.monday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.night, PetDate.tuesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.EvernightForest,
         next: isPetAvailable(PetTime.day, PetDate.wednesday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.RottenLands,
         next: isPetAvailable(PetTime.day, PetDate.thursday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Maerwyn,
         next: isPetAvailable(PetTime.any, PetDate.special_easter),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SprawlingJungle,
         next: isPetAvailable(PetTime.any, PetDate.special_whitsun),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.any, PetDate.event_gold),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.StumbleSteppe,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => {
+        condition: (player) => {
             const fortress = player.Fortress;
             return fortress && (fortress.Rank <= 100 || fortress.Honor >= 2500);
         }
@@ -621,7 +622,7 @@ const PetData = [
         location: PetLocation.GemMine,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => {
+        condition: (player) => {
             const fortress = player.Fortress;
             return fortress && fortress.GemMine >= 20;
         }
@@ -630,217 +631,217 @@ const PetData = [
         location: PetLocation.MoldyForest,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Pets', 'Dungeons', 2) === 20
+        condition: (player) => _dig(player, 'Pets', 'Dungeons', 2) === 20
     },
     {
         location: PetLocation.Nevermoor,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.FloodedCaldwell,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackWaterSwamp,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.TuskMountain,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.night, PetDate.tuesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.MoldyForest,
         next: isPetAvailable(PetTime.night, PetDate.fall),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SplitCanyon,
         next: isPetAvailable(PetTime.day, PetDate.monday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SunburnDesert,
         next: isPetAvailable(PetTime.day, PetDate.spring),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.day, PetDate.winter),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SprawlingJungle,
         next: isPetAvailable(PetTime.night, PetDate.wednesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.StumbleSteppe,
         next: isPetAvailable(PetTime.day, PetDate.thursday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackForest,
         next: isPetAvailable(PetTime.day, PetDate.summer),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Magmaron,
         next: isPetAvailable(PetTime.day, PetDate.friday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.EvernightForest,
         next: isPetAvailable(PetTime.night, PetDate.saturday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
-        location: PetLocation.MagicShop,
+        location: PetLocation.WeaponShop,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        condition: true
     },
     {
         location: PetLocation.Maerwyn,
         next: isPetAvailable(PetTime.any, PetDate.event_forest),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.FloodedCaldwell,
         next: isPetAvailable(PetTime.any, PetDate.special_valentine),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.EvernightForest,
         next: isPetAvailable(PetTime.any, PetDate.special_new_year),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Dungeons', 'Player') === 50
+        condition: (player) => _dig(player, 'Dungeons', 'Player') === 50
     },
     {
         location: PetLocation.Gnarogrim,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Pets', 'Dungeons', 3) === 20
+        condition: (player) => _dig(player, 'Pets', 'Dungeons', 3) === 20
     },
     {
         location: PetLocation.Magmaron,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.EvernightForest,
         next: isPetAvailable(PetTime.night, PetDate.any),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Northrunt,
         next: isPetAvailable(PetTime.day, PetDate.any),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.RottenLands,
         next: isPetAvailable(PetTime.day, PetDate.monday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.TuskMountain,
         next: isPetAvailable(PetTime.night, PetDate.tuesday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SplitCanyon,
         next: isPetAvailable(PetTime.day, PetDate.wednesday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.FloodedCaldwell,
         next: isPetAvailable(PetTime.day, PetDate.winter),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.MoldyForest,
         next: isPetAvailable(PetTime.night, PetDate.thursday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.day, PetDate.friday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.BlackWaterSwamp,
         next: isPetAvailable(PetTime.day, PetDate.saturday),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Erogenion,
         next: isPetAvailable(PetTime.night, PetDate.fall),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SprawlingJungle,
         next: isPetAvailable(PetTime.day, PetDate.summer),
         time: 'day',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.ShadowrockMountain,
         next: isPetAvailable(PetTime.night, PetDate.sunday),
         time: 'night',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => {
+        condition: (player) => {
             const pets = player.Pets;
             return pets && (pets.Rank <= 100 || pets.Honor >= 4000);
         }
@@ -849,19 +850,19 @@ const PetData = [
         location: PetLocation.MagicShop,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: true
+        condition: true
     },
     {
         location: PetLocation.SkullIsland,
         next: isPetAvailable(PetTime.any, PetDate.special_birthday),
         time: 'any',
-        special: false
+        condition: true
     },
     {
         location: PetLocation.Toilet,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => {
+        condition: (player) => {
             const toilet = player.Toilet;
             return toilet && toilet.Aura >= 20;
         }
@@ -870,12 +871,12 @@ const PetData = [
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Dungeons', 'Normal', 17) === 10
+        condition: (player) => _dig(player, 'Dungeons', 'Normal', 17) === 10
     },
     {
         location: PetLocation.Nevermoor,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        special: (player) => _dig(player, 'Pets', 'Dungeons', 4) === 20
+        condition: (player) => _dig(player, 'Pets', 'Dungeons', 4) === 20
     }
 ];

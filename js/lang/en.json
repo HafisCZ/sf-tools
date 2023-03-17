@@ -748,7 +748,11 @@
         "simulate": "Simulate",
         "simulate_dungeons": "Simulate all remaining dungeons",
         "results": "Results",
-        "available": "Available",
+        "calendar": {
+            "collected": "Collected",
+            "available": "Available",
+            "locked": "Locked"
+        },
         "map": {
             "gladiator": "Glad"
         },
@@ -782,8 +786,9 @@
             "19": "Sunburn Desert",
             "20": "Tusk Mountain",
             "201": "Gem Mine",
-            "202": "Magic Shop",
-            "203": "Arcane Toilet"
+            "202": "Weapon Shop",
+            "203": "Magic Shop",
+            "204": "Arcane Toilet"
         },
         "names": {
             "0": "Slurp",
