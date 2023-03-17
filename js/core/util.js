@@ -45,6 +45,10 @@ function _push_unless_includes(arr, obj) {
     }
 }
 
+function _excludes (arr, obj) {
+    return !arr.includes(obj);
+}
+
 function _clamp (value, min, max) {
     return value <= min ? min : (value >= max ? max : value);
 }
@@ -311,7 +315,7 @@ function _format_duration(ms) {
     let mil = ms % 1000;
     let sec = ((ms -= mil) / 1000) % 60;
     let min = ((ms -= sec * 1000) / 60000) % 60;
-    let hrs = ((ms -= min * 60000) / 360000);
+    let hrs = ((ms -= min * 60000) / 3600000);
 
     return _join_sentence([
         hrs > 0 ? `${hrs} h` : '',
