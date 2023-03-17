@@ -311,18 +311,22 @@ function _join_sentence (array) {
     return array.join(', ') + last;
 }
 
-function _format_duration(ms) {
+function _format_duration(ms, limit = 4) {
     let mil = ms % 1000;
     let sec = ((ms -= mil) / 1000) % 60;
     let min = ((ms -= sec * 1000) / 60000) % 60;
-    let hrs = ((ms -= min * 60000) / 3600000);
+    let hrs = ((ms -= min * 60000) / 3600000) % 24;
+    let day = ((ms -= hrs * 3600000) / 86400000) % 7;
+    let wks = ((ms -= day * 86400000) / (7 * 86400000));
 
     return _join_sentence([
+        wks > 0 ? `${wks} w` : '',
+        day > 0 ? `${day} d` : '',
         hrs > 0 ? `${hrs} h` : '',
         min > 0 ? `${min} m` : '',
         sec > 0 ? `${sec} s` : '',
         mil > 0 ? `${mil} ms` : ''
-    ].filter(value => value));
+    ].filter(value => value).slice(0, limit));
 }
 
 function _rbgaToHex (rgba) {

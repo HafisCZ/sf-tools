@@ -14,208 +14,68 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
+        <script src="js/core/util.js"></script>
         <script src="js/pets/pets.js"></script>
         <script src="js/core/core.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
-
-        <script src="js/playa/monsters.js"></script>
     </head>
     <body class="inverted">
         <div class="ui fixed inverted borderless huge menu">
             <div class="header item"><a href="index.html">SFTools</a></div>
-            <div class="item" id="p-date"></div>
         </div>
 
-        <div class="pp-main text-white">
-            <div class="ui grid">
-                <div class="four wide column">
-                    <i class="circle icon" style="color: #32c700"></i> Can be caught anytime<br/>
-                    <i class="circle icon" style="color: #eb4034"></i> Can be caught anytime but has special requirements<br/>
-                    <i class="circle icon" style="color: #FFA500"></i> Can be caught during the day (06:00 - 17:59)<br/>
-                    <i class="circle icon" style="color: #2f2b90"></i> Can be caught during the night (00:00 - 05:59 and 18:00 - 23:59)<br/>
-                    <i class="circle icon" style="color: #4B0082"></i> Can be caught during the witching hour (00:00 - 00:59)<br/><br/>
-                </div>
-                <div class="four wide column">
-                    <i class="warning icon"></i> You can catch event specific pets even during special events<br/>
-                    <i class="warning icon"></i> Some events may be inaccurate because there is no set date<br/>
-                    <i class="warning icon"></i> You can click on the icon of the pet to hide it<br/>
-                    <i class="warning icon"></i> Hover over the pet name to display requirements to catch it
-                </div>
-                <div class="eight wide column">
-                    <div class="ui tiny inverted form">
-                        <div class="four wide field">
-                            <label>Sort by</label>
-                            <div class="ui selection inverted dropdown" id="sort">
-                                <div class="text"></div>
-                                <i class="dropdown icon"></i>
+        <div class="ui main inverted container">
+            <div class="ui five columns stackable grid" id="pet-grid">
+
+            </div>
+        </div>
+
+        <script>
+            Site.ready(null, function () {
+                const $petGrid = $('#pet-grid');
+
+                const PET_COLORS = [
+                    '#A596CE',
+                    '#E9D067',
+                    '#ADC35A',
+                    '#FDA700',
+                    '#60CDEF'
+                ];
+                
+                const now = new Date();
+                const entries = [];
+
+                for (let index = 0; index < 100; index++) {
+                    const { location, next: [start, end], time, special } = PetData[index];
+
+                    const availableNow = start <= now && now <= end;
+                    const availableInMs = Math.trunc(Math.max(0, start - now) / 1000) * 1000;
+                    const availableIn = _format_duration(availableInMs, 2);
+
+                    const content = `
+                        <div class="ui column">
+                            <div style="height: 240px; background: ${PET_COLORS[Math.trunc(index / 20)]}; color: black; border-radius: 0.25em;" class="p-4 flex flex-col items-center justify-content-between text-center pet-hoverable cursor-pointer">
+                                <b>${availableNow ? `<i class="ui check icon"></i> ${intl('pets.available')}` : `<i class="ui clock outline icon"></i> ${availableIn}`}</b>
+                                <img class="ui centered image" style="margin: 0.5em; width: 100px; height: 100px;" src="res/pets/monster${index + 800}.png">
+                                <h2 class="ui header" style="margin: 0;">${intl(`pets.names.${index}`)}</h2>
+                                <span>${intl(`pets.locations.${location}`)}</span>
+                                <div class="pet-hover flex flex-col justify-content-center items-center">
+                                    <div>${intl(`pets.descriptions.${index}`)}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <table class="fixed-header" style="margin: auto;">
-                <thead id="pp-head">
-
-                </thead>
-                <tbody id="pp-body" class="opaque-rows">
-
-                </tbody>
-            </table>
-        </div>
-
-        <script type="text/javascript">
-            var offset = 0;
-            var option = 0;
-            var ghosted = new Array(100).fill(false);
-
-            var now = new Date();
-
-            const PET_COLORS = [
-                '#A596CE',
-                '#E9D067',
-                '#ADC35A',
-                '#FDA700',
-                '#60CDEF'
-            ];
-
-            $('#sort').dropdown({
-                values: [
-                    { name: 'Default', value: 0 },
-                    { name: 'Can be found', value: 1 }
-                ]
-            }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
-                option = Number(value);
-                refresh();
-            });
-
-            function toggleGhost (index) {
-                ghosted[index] = !ghosted[index];
-                refresh();
-            }
-
-            function refresh() {
-                var timestamp = offset ? new Date().setDate(new Date().getDate() + offset) : Date.now();
-
-                var date = new Date(timestamp);
-                var content = '';
-
-                const TOTAL_DAYS = 59;
-
-                for (var i = 0; i < TOTAL_DAYS; i++) {
-                    content += `
-                        <td class="text-white" style="width: 1.5em; height: 4em !important; position: relative; ${date.getDay() == 0 ? 'border-right: 1px solid white !important;' : ''}">
-                            ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? `
-                                    <div class="rotated" style="position: absolute; left: -0.3em; top: 1em; width: 3em; height: 2em; font-weight: bold;">
-                                        TODAY
-                                    </div>
-                                ` : `
-                                    <div class="rotated" style="position: absolute; left: -0.3em; top: 1.25em; width: 3em; height: 2em;">
-                                        ${ (date.getDate() < 10 ? '0' : '') + date.getDate() }.${ (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1) }.${ date.getFullYear().toString().substring(2) }
-                                    </div>
-                                ` }
-                        </td>`;
-                    date.setDate(date.getDate() + 1);
-                }
-
-                $('#pp-head').html(`
-                    <tr style="height: 4em; border-bottom: 2px solid white;">
-                        <td style="border-right: 1px solid white !important;">
-                            <div style="width: 12em; padding: 0.5em;">
-                                <div class="ui three basic inverted buttons">
-                                    <div class="ui button" id="p-remove">- 7</div>
-                                    <div class="ui button" id="p-zero">0</div>
-                                    <div class="ui button" id="p-add">+ 7</div>
-                                </div>
-                            </div>
-                        </td>
-                        ${ content }
-                    </tr>
-                `);
-
-                $('#p-add').click(() => {
-                    offset += 7;
-                    refresh();
-                });
-
-                $('#p-remove').click(() => {
-                    offset -= 7;
-                    refresh();
-                });
-
-                $('#p-zero').click(() => {
-                    offset = 0;
-                    refresh();
-                });
-
-                var entries = [];
-
-                for (var i = 0; i < 100; i++) {
-                    var name = NAME_MONSTER[i + 800];
-                    var image = `res/pets/monster${ 800 + i }.png`;
-                    var description = PetDescriptions[i];
-
-                    var entry = `
-                        <tr class="text-white ${ ghosted[i] ? 'ghosted' : ''}">
-                            <td style="background: ${ PET_COLORS[Math.trunc(i / 20)] }">
-                                <div class="css-img-container cursor-pointer" style="width: 4em;" data-id="${ i }">
-                                    <img class="ui centered image" src="${ image }">
-                                </div>
-                            </td>
-                            <td style="border-right: 1px solid white !important;" data-tooltip="${ description }" data-position="right center" data-inverted="">
-                                <div style="width: 8em;">
-                                    <b>${ name }</b>
-                                </div>
-                            </td>
                     `;
 
-                    date = new Date(timestamp);
-                    var possibleToday = Pets[i].Date(date);
-
-                    for (var j = 0; j < TOTAL_DAYS; j++) {
-                        var color = '';
-                        var possible = Pets[i].Date(date);
-                        if (possible) {
-                            if (Pets[i].Special) {
-                                color = '#eb4034';
-                            } else if (Pets[i].Time == PetTime.Any) {
-                                color = '#32c700';
-                            } else if (Pets[i].Time == PetTime.Day) {
-                                color = '#FFA500';
-                            } else if (Pets[i].Time == PetTime.Night) {
-                                color = '#2f2b90';
-                            } else if (Pets[i].Time == PetTime.FirstHour) {
-                                color = '#4B0082';
-                            }
-                        }
-
-                        entry += `<td class="text-center ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? 'today' : '' }" style="background: ${ color }; width: 1.5em; ${date.getDay() == 0 ? 'border-right: 1px solid white !important;' : ''}"></td>`;
-                        date.setDate(date.getDate() + 1);
-                    }
-
-                    entry += '</tr>';
-
                     entries.push({
-                        index: i,
-                        content: entry,
-                        ql: i + (Pets[i].Special ? 100 : 0) + (!possibleToday ? 1000 : 0) + (ghosted[i] ? 10000 : 0)
+                        availableInMs,
+                        content
                     });
                 }
 
-                if (option == 0) {
-                    entries.sort((a, b) => a.index - b.index);
-                } else {
-                    entries.sort((a, b) => a.ql - b.ql);
-                }
-
-                $('#pp-body').html(entries.reduce((str, entry) => str + entry.content, ''));
-                $('[data-id]').click(function() {
-                    toggleGhost(Number($(this).attr('data-id')));
-                });
-            }
-
-            refresh();
+                $petGrid.html(_sort_asc(entries, (entry) => entry.availableInMs).map((entry) => entry.content).join(''))
+            });
         </script>
     </body>
 </html>
