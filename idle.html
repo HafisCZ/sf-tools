@@ -520,7 +520,6 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
-                    dark: true,
                     scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && player.Level >= 105 && player.Idle),
                     callback: (player) => {
                         EditorController.load(player);
