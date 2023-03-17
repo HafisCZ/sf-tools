@@ -376,7 +376,7 @@ const PetData = [
         location: PetLocation.PlainsOfOzkorr,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        condition: (player) => _dig(player, 'Dungeons', 'Shadow', 11) === 10
+        condition: (player) => _dig(player, 'Dungeons', 'Shadow', 12) === 10
     },
     {
         location: PetLocation.SunburnDesert,
@@ -871,7 +871,7 @@ const PetData = [
         location: PetLocation.BustedLands,
         next: isPetAvailable(PetTime.any, PetDate.any),
         time: 'any',
-        condition: (player) => _dig(player, 'Dungeons', 'Normal', 17) === 10
+        condition: (player) => _dig(player, 'Dungeons', 'Normal', 24) === 10
     },
     {
         location: PetLocation.Nevermoor,
