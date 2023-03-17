@@ -10,6 +10,12 @@ class EndpointController {
                 this.window = this.$iframe.get(0).contentWindow;
                 await this.window.load();
 
+                if (SiteOptions.debug) {
+                    this.window.callback['log'] = function (type, data) {
+                        Logger.log('DEBUGGR', `${type}: ${data}`);
+                    }
+                }
+
                 Logger.log('ECLIENT', 'Client started');
                 resolve(this);
             });
