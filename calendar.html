@@ -56,36 +56,66 @@
                 ];
                 
                 const now = new Date();
-                const entries = [];
+                const hiddenPets = Array.from({ length: 100 }).fill(false);
 
-                for (let index = 0; index < 100; index++) {
-                    const { location, next: [start, end], time, special } = PetData[index];
+                function render () {
+                    const entries = [];
 
-                    const availableNow = start <= now && now <= end;
-                    const availableInMs = Math.trunc(Math.max(0, start - now) / 1000) * 1000;
-                    const availableIn = _format_duration(availableInMs, 2);
+                    for (let index = 0; index < 100; index++) {
+                        const { location, next: [start, end], time, special } = PetData[index];
 
-                    const content = `
-                        <div class="ui column">
-                            <div style="height: 240px; background: ${PET_COLORS[Math.trunc(index / 20)]}; color: black; border-radius: 0.25em;" class="p-4 flex flex-col items-center justify-content-between text-center pet-hoverable cursor-pointer">
-                                <b>${availableNow ? `<i class="ui check icon"></i> ${intl('pets.available')}` : `<i class="ui clock outline icon"></i> ${availableIn}`}</b>
-                                <img class="ui centered image" style="margin: 0.5em; width: 100px; height: 100px;" src="res/pets/monster${index + 800}.png">
-                                <h2 class="ui header" style="margin: 0;">${intl(`pets.names.${index}`)}</h2>
-                                <span>${intl(`pets.locations.${location}`)}</span>
-                                <div class="pet-hover flex flex-col justify-content-center items-center">
-                                    <div>${intl(`pets.descriptions.${index}`)}</div>
+                        const availableNow = start <= now && now <= end;
+                        const availableInMs = Math.trunc(Math.max(0, start - now) / 1000) * 1000;
+                        const availableIn = _format_duration(availableInMs, 2);
+
+                        const hidden = hiddenPets[index];
+
+                        const content = `
+                            <div class="ui column">
+                                <div data-pet="${index}" style="opacity: ${hidden ? '50' : '100'}%; height: 240px; background: ${PET_COLORS[Math.trunc(index / 20)]}; color: black; border-radius: 0.25em;" class="p-4 flex flex-col items-center justify-content-between text-center pet-hoverable cursor-pointer">
+                                    <b>${availableNow ? `<i class="ui check icon"></i> ${intl('pets.available')}` : `<i class="ui clock outline icon"></i> ${availableIn}`}</b>
+                                    <img class="ui centered image" style="margin: 0.5em; width: 100px; height: 100px;" src="res/pets/monster${index + 800}.png">
+                                    <h2 class="ui header" style="margin: 0;">${intl(`pets.names.${index}`)}</h2>
+                                    <span>${intl(`pets.locations.${location}`)}</span>
+                                    <div class="pet-hover flex flex-col justify-content-center items-center">
+                                        <div>${intl(`pets.descriptions.${index}`)}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
-                    entries.push({
-                        availableInMs,
-                        content
-                    });
+                        entries.push({
+                            availableInMs,
+                            hidden,
+                            content
+                        });
+                    }
+
+                    $petGrid.html(_sort_asc(entries, (entry) => entry.hidden ? Infinity : entry.availableInMs).map((entry) => entry.content).join(''));
+                    $petGrid.find('[data-pet]').click((event) => {
+                        const index = parseInt(event.currentTarget.dataset.pet);
+
+                        hiddenPets[index] = !hiddenPets[index];
+
+                        render();
+                    })
                 }
 
-                $petGrid.html(_sort_asc(entries, (entry) => entry.availableInMs).map((entry) => entry.content).join(''))
+                render();
+
+                StatisticsIntegration.configure({
+                    profile: SELF_PROFILE,
+                    type: 'players',
+                    dark: true,
+                    scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && _dig(player, 'Pets', 'Levels')),
+                    callback: (player) => {
+                        for (let i = 0; i < 100; i++) {
+                            hiddenPets[i] = _dig(player, 'Pets', 'Levels', i) > 0;
+                        }
+
+                        render()
+                    }
+                });
             });
         </script>
     </body>

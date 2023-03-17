@@ -2,6 +2,7 @@
 
 .pet-hoverable > * {
   transition: opacity 0.1s linear;
+  pointer-events: none;
 }
 
 .pet-hoverable {
