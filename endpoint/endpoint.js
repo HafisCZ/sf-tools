@@ -643,13 +643,12 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
 })();
 
 const StatisticsIntegration = new (class {
-    configure ({ profile, type, callback, scope, generator, dark }) {
+    configure ({ profile, type, callback, scope, generator }) {
         this.type = type;
         this.profile = profile;
         this.callback = callback;
         this.scope = scope;
         this.generator = generator;
-        this.dark = dark;
 
         // Parent
         this.$parent = $(this._html()).appendTo($(document.body));
@@ -687,11 +686,11 @@ const StatisticsIntegration = new (class {
     _html () {
         return `
             <div class="position-absolute left-8 top-8 z-2" style="width: 18em;">
-                <div class="ui fluid basic ${this.dark ? 'inverted' : ''} button" data-op="poll"><i class="sync alternate icon"></i>${intl(`simulator.poll.${this.type}`)}</div>
+                <div class="ui fluid basic inverted button" data-op="poll"><i class="sync alternate icon"></i>${intl(`simulator.poll.${this.type}`)}</div>
                 <div data-op="container" style="display: none;">
                     <div data-op="list"></div>
                     <div class="mt-2 flex">
-                        <div class="ui three basic tiny fluid ${this.dark ? 'inverted' : ''} buttons">
+                        <div class="ui three basic tiny fluid inverted buttons">
                             <div class="ui button" data-op="import-endpoint">Endpoint</div>
                             <label class="ui button" for="endpoint-button-upload">HAR</label>
                             <input type="file" multiple data-op="import-file" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
@@ -786,12 +785,12 @@ const StatisticsIntegration = new (class {
                 const { visible, hidden } = this._generateItem(item);
 
                 const $button = $(`
-                    <div class="ui small fluid basic vertical animated ${this.dark ? 'inverted' : ''} button !mt-2">
+                    <div class="ui small fluid basic vertical animated inverted button !mt-2">
                         <div class="visible content">${visible}</div>
                         <div class="hidden content">
                             <div>
                                 <span>${hidden}</span>
-                                <div data-op="hide" class="ui basic mini icon ${this.dark ? 'inverted' : ''} button" style="position: absolute; right: 0; top: calc(-1em * 2 / 3);"><i class="ui eye slash icon"></i></div>
+                                <div data-op="hide" class="ui basic mini icon inverted button" style="position: absolute; right: 0; top: calc(-1em * 2 / 3);"><i class="ui eye slash icon"></i></div>
                             </div>
                         </div>
                     </div>

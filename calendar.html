@@ -110,7 +110,6 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
-                    dark: true,
                     scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && _dig(player, 'Pets', 'Levels')),
                     callback: (player) => {
                         for (let i = 0; i < 100; i++) {

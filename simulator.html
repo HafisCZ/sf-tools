@@ -620,7 +620,6 @@
                 StatisticsIntegration.configure({
                     profile: FIGHT_SIMULATOR_PROFILE,
                     type: 'players',
-                    dark: true,
                     generator: function (dm, $list) {
                         for (let [prefix, players] of Object.entries(_group_by(dm.getLatestPlayers(), p => p.Prefix))) {
                             $list.append($(`

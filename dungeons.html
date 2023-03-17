@@ -830,7 +830,6 @@
                 StatisticsIntegration.configure({
                     profile: SELF_PROFILE,
                     type: 'players',
-                    dark: true,
                     scope: (dm) => dm.getLatestPlayers(),
                     callback: (player) => {
                         dungeon = DUNGEON_DATA[dungeon_current];
