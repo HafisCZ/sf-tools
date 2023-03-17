@@ -20,7 +20,8 @@ const Logger = new (class {
             'APPINFO': 'd29af8',
             'MESSAGE': 'ffffff',
             'APICALL': 'd99ab5',
-            'CHANNEL': 'fccb81'
+            'CHANNEL': 'fccb81',
+            'DEBUGGR': 'ffa8a8'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
