@@ -35,6 +35,7 @@
     <body class="inverted">
         <div class="ui fixed inverted borderless huge menu">
             <div class="header item"><a href="index.html">SFTools</a></div>
+            <a class="item" id="button-clear"><i class="recycle icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
         </div>
 
         <div class="ui main inverted container mb-20">
@@ -44,6 +45,7 @@
         <script>
             Site.ready(null, function () {
                 const $petGrid = $('#pet-grid');
+                const $buttonClear = $('#button-clear');
 
                 const PET_COLORS = [
                     '#A596CE',
@@ -63,6 +65,13 @@
 
                 let currentPlayer = null;
                 let currentPets = Array.from({ length: 100 }).fill(false);
+
+                $buttonClear.click(() => {
+                    currentPlayer = null;
+                    currentPets.fill(false);
+
+                    render();
+                })
 
                 function generateTitle (availableNow, availableIn, petOwned, petLocked) {
                     if (petOwned) {
