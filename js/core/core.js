@@ -355,6 +355,15 @@ const SELF_PROFILE = {
     only_players: true
 };
 
+const SELF_PROFILE_WITH_GROUP = {
+    primary: {
+        name: 'own',
+        mode: 'equals',
+        value: ['1']
+    },
+    secondary: null
+};
+
 const FIGHT_SIMULATOR_PROFILE = {
     only_players: true,
     block_preload: true

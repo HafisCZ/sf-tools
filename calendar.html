@@ -56,7 +56,7 @@
                 const PET_TIME_ICONS = {
                     'day': 'sun',
                     'night': 'moon',
-                    'witch': 'hourglass'
+                    'witch': 'stopwatch'
                 };
                 
                 const now = new Date();
@@ -108,7 +108,7 @@
                 render();
 
                 StatisticsIntegration.configure({
-                    profile: SELF_PROFILE,
+                    profile: SELF_PROFILE_WITH_GROUP,
                     type: 'players',
                     scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && _dig(player, 'Pets', 'Levels')),
                     callback: (player) => {
