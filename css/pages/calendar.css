@@ -1,64 +1,25 @@
 @import url('../global.css');
 
-.css-img-container {
-  width: 30px;
-  height: 30px;
-  margin: auto;
+.pet-hoverable > * {
+  transition: opacity 0.1s linear;
 }
 
-.opaque-rows tr:nth-child(even) {
-  background-color: #7d7d7d3f;
+.pet-hoverable {
+  position: relative;
 }
 
-.css-img-container img {
-  width: 30px;
-  height: 30px;
+.pet-hover {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0.5em;
 }
 
-.pp-main {
-  margin: 1.5em;
+.pet-hoverable:hover > :not(.pet-hover) {
+  opacity: 0;
 }
 
-.rotated {
-  transform: rotate(-90deg);
+.pet-hoverable:hover .pet-hover {
+  opacity: 1;
 }
 
-.ghosted .text-center {
-  opacity: 40%;
-}
-
-.fixed-header {
-  text-align: center !important;
-  font-family: 'Roboto', sans-serif !important;
-  border-spacing: 0 !important;
-  border-collapse: collapse !important;
-  font-weight: 300 !important;
-  font-size: 1.35em !important;
-  color: #212529 !important;
-  border: none !important;
-}
-
-.fixed-header thead tr {
-  display: block;
-  margin-right: 17px;
-}
-
-.fixed-header tbody {
-  overflow: auto;
-  display: block;
-  height: 69vh;
-  width: 100%;
-}
-
-.fixed-header td {
-  padding: 0 !important;
-  border-top: none !important;
-  border-left: none !important;
-  height: 1.9em !important;
-}
-
-.today::after {
-  background: linear-gradient(#fff, #fff) no-repeat center / 3px 100%;
-  color: transparent;
-  content: "|";
-}
