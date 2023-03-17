@@ -1600,7 +1600,7 @@
                         }
 
                         // Log attack
-                        if (round.attackType < ATTACK_BARD_SONG && round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_FIREBALL_BLOCKED) {
+                        if (round.attackType < ATTACK_BARD_SONG && round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_FIREBALL_BLOCKED && round.attackType !== ATTACK_CATAPULT) {
                             round.hasLog = true;
                         }
 
@@ -1619,7 +1619,7 @@
                         }
 
                         round.hasDamage = true;
-                        round.hasBase = round.attackType !== ATTACK_FIREBALL;
+                        round.hasBase = round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_CATAPULT;
                     }
 
                     // Calculate base damage of each round
@@ -1886,7 +1886,7 @@
                                 targetId: round.target.ID
                             }))
                         })
-                    }    
+                    }
                     
                     // Export
                     Exporter.json({
