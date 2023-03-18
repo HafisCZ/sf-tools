@@ -135,7 +135,7 @@ class TableInstance {
         this.createTable = () => Object.assign(this.sharedProperties(), this[['createHistoryTable', 'createPlayersTable', 'createGroupTable'][this.type]]())
 
         // Loop over all categories
-        for (let { object: category, index: categoryIndex, array: categories } of iterate(this.settings.categories)) {
+        this.settings.categories.forEach((category, categoryIndex, categories) => {
             // Add expression alias
             if (category.expa) {
                 category.expa_eval = category.expa(this.settings, category);
@@ -149,7 +149,7 @@ class TableInstance {
             let lastCategory = categoryIndex == categories.length - 1;
 
             // Loop over all headers
-            for (let { object: header, index: headerIndex, array: headers } of iterate(category.headers)) {
+            category.headers.forEach((header, headerIndex, headers) => {
                 let lastHeader = headerIndex == headers.length - 1;
                 let nextHeader = headers[headerIndex + 1];
 
@@ -334,12 +334,12 @@ class TableInstance {
                         return getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
                     }, showBorder);
                 }
-            }
+            })
 
             if (filteredCategories ? (filteredCategories.includes(group.name) || filteredCategories.find(filterKey => filterKey == `$${ categoryIndex + 1 }`)) : group.length) {
                 this.config.push(group);
             }
-        }
+        })
 
         // Scale everything
         if (this.settings.globals.scale) {
