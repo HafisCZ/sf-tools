@@ -789,16 +789,6 @@ function formatAsSpacedNumber(n, delim = '&nbsp') {
     return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (delim + char) : char).join('');
 }
 
-function * iterate (array) {
-    for (let i = 0; i < array.length; i++) {
-        yield {
-            index: i,
-            array: array,
-            object: array[i]
-        }
-    }
-}
-
 class ComplexDataType {
     constructor (values) {
         this.values = values || [];
@@ -979,15 +969,6 @@ function join (a, c, b, m) {
 function SHA1 (text) {
     function rotate_left (n, s) {
         return (n << s) | (n >>> (32 - s));
-    }
-
-    function lsb_hex (val) {
-        var str = '';
-        for (var i = 0; i <= 6; i += 2) {
-            str += ((val >>> (i * 4 + 4)) & 0x0f).toString(16) + ((val >>> (i * 4)) & 0x0f).toString(16);
-        }
-
-        return str;
     }
 
     function cvt_hex (val) {
