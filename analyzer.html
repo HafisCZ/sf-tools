@@ -1641,7 +1641,7 @@
                     // Calculate base damage of each round
                     for (const [index, round] of Object.entries(flatRounds)) {
                         // We are assuming that lute round always follows after bard attack
-                        if (round.attackType >= ATTACK_BARD_SONG) {
+                        if (round.attackType >= ATTACK_BARD_SONG && index > 0) {
                             const spellLevel = round.attackType % 10 - 1;
                             const spellNotes = Math.trunc((round.attackType % 100) / 10);
                             const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
