@@ -232,6 +232,10 @@
   margin-right: 0.5em !important;
 }
 
+.ml-auto {
+  margin-left: auto;
+}
+
 .\!mt-1 {
   margin-top: 0.25em !important;
 }
