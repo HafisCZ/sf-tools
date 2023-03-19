@@ -17,6 +17,34 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Statistics': [
+            'Added <code>Pet Rank</code> and <code>Pet Honor</code> headers',
+            'Fixed loading of old characters with legacy 3-stat items'
+        ],
+        'Fight Simulator': [
+            'Removed debug simulator'
+        ],
+        'Pet Simulator': [
+            'Added dependency on player simulator in order to accommodate possible future reworks',
+            'Added support for logging'
+        ],
+        'Pet Calendar': [
+            'Reworked tool',
+            'Added support for translations'
+        ],
+        'Fight Analyzer': [
+            'Added option to copy player data as a table',
+            'Added decimal, percentage and fractional options for enrage counter',
+            'Added customizable base damage error margin',
+            'Added new custom state display for Bards and Druids',
+            'Added new damage range sidebar',
+            'Fixed catapult attack'
+        ],
+        'All Simulators': [
+            'Improved performance'
+        ]
+    },
     'v6.3632': {
         'Statistics': [
             'Added <code>Race</code> header',
