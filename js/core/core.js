@@ -229,6 +229,8 @@ const Site = new (class {
 
         if (type === 'april_fools_day') {
             return date.getMonth() === 3 && date.getDate() === 1;
+        } else if (type === 'winter') {
+            return [0, 1, 11].includes(date.getMonth());
         } else {
             return false;
         }
