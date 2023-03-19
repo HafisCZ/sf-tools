@@ -1074,7 +1074,7 @@
                     let $el = $(id);
                     $el.on('change input', () => {
                         if (validate($el)) {
-                            callback(getValue(id, min, max));
+                            callback(getClampedValue(id, min, max));
                         }
                     });
                 }
@@ -1577,22 +1577,22 @@
 
                 $('#priceat-attribute').on('change input', function () {
                     if (validate($(this))) {
-                        const value = _clamp($(this).numberVal(), 1, Infinity);
+                        const value = getClampedValue(this, 1, Infinity);
                         const cost = calculateAttributePrice(value - 1);
 
                         $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
                     }
                 });
 
-                function getValue (element, min, max) {
-                    return Math.max(min, Math.min(max, $(element).numberVal()));
+                function getClampedValue (selector, min, max) {
+                    return _clamp($(selector).numberVal(), min, max);
                 }
 
                 $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
                     if (validate($('#misc-level'), $('#misc-gate'), $('#misc-torture'))) {
-                        const level = getValue('#misc-level', 1, 800);
-                        const gate = getValue('#misc-gate', 0, 15);
-                        const torture = getValue('#misc-torture', 0, 15);
+                        const level = getClampedValue('#misc-level', 1, 800);
+                        const gate = getClampedValue('#misc-gate', 0, 15);
+                        const torture = getClampedValue('#misc-torture', 0, 15);
 
                         const MAXIMUM_SOULS_MULTIPLIER = 7.5;
 
@@ -1620,28 +1620,28 @@
 
                 $('#xp-level, #xp-hydra, #xp-academy').on('change input', function () {
                     if (validate($('#xp-level'), $('#xp-hydra'), $('#xp-academy'))) {
-                        const level = _clamp($('#xp-level').numberVal(), 1, 799);
-                        const hydra = _clamp($('#xp-hydra').numberVal(), 0, 20);
-                        const academy = _clamp($('#xp-academy').numberVal(), 1, 20);
+                        const level = getClampedValue('#xp-level', 1, 799);
+                        const hydra = getClampedValue('#xp-hydra', 0, 20);
+                        const academy = getClampedValue('#xp-academy', 1, 20);
 
-                        var xp = getExperienceRequired(level);
-                        var multiplier = 1.5 + 0.75 * (level - 1);
-                        var base = xp / multiplier;
-                        var daily = (1 + 0.25 * hydra) * base;
-                        var arena = base / 10;
-                        var hbase = (base / 30) / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-                        var hourly = academy * hbase;
-                        var capacity = academy * getAcademyMultiplier(academy) * hbase;
-                        var time = capacity / hourly;
+                        const xp = getExperienceRequired(level);
+                        const multiplier = 1.5 + 0.75 * (level - 1);
+                        const base = xp / multiplier;
+                        const daily = (1 + 0.25 * hydra) * base;
+                        const arena = base / 10;
+                        const hbase = (base / 30) / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+                        const hourly = academy * hbase;
+                        const capacity = academy * getAcademyMultiplier(academy) * hbase;
+                        const time = capacity / hourly;
 
-                        var wheel2 = Math.trunc(base / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99))));
-                        var wheel1 = Math.trunc(wheel2 / 2);
+                        const wheel2 = Math.trunc(base / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99))));
+                        const wheel1 = Math.trunc(wheel2 / 2);
 
-                        var calendar1 = Math.ceil(xp / 15);
-                        var calendar2 = Math.ceil(xp / 10);
-                        var calendar3 = Math.ceil(xp / 5);
-                        var habitat = 6 * hbase * multiplier;
-                        var twister = Math.min(xp / 50, 30E6);
+                        const calendar1 = Math.ceil(xp / 15);
+                        const calendar2 = Math.ceil(xp / 10);
+                        const calendar3 = Math.ceil(xp / 5);
+                        const habitat = 6 * hbase * multiplier;
+                        const twister = Math.min(xp / 50, 30E6);
 
                         $('#xp-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
                         $('#xp-next').val(formatAsSpacedNumber(xp, ' '));
@@ -1665,42 +1665,22 @@
 
                 $('#quest-level, #quest-xp, #quest-gold, #quest-tower, #quest-book, #quest-rxp, #quest-rgold').on('change input', function () {
                     if (validate($('#quest-level'), $('#quest-xp'), $('#quest-gold'), $('#quest-tower'), $('#quest-book'), $('#quest-rxp'), $('#quest-rgold'))) {
-                        var level = Number($('#quest-level').val());
-                        if (level < 1) level = 1;
-                        else if (level > 800) level = 800;
+                        const level = getClampedValue('#quest-level', 1, 800);
+                        const gxp = getClampedValue('#quest-xp', 0, 200);
+                        const ggold = getClampedValue('#quest-gold', 0, 200);
+                        const book = getClampedValue('#quest-book', 0, 100);
+                        const tower = getClampedValue('#quest-tower', 0, 100);
+                        const rxp = getClampedValue('#quest-rxp', 0, 10);
+                        const rgold = getClampedValue('#quest-rgold', 0, 50);
 
-                        var gxp = Number($('#quest-xp').val());
-                        if (gxp > 200) gxp = 200;
-                        else if (gxp < 0) gxp = 0;
+                        const basexp = getExperienceRequired(level) / (1.5 + 0.75 * (level - 1));
+                        const basegold = getGoldCurve(level) * 12 / 1000;
 
-                        var ggold = Number($('#quest-gold').val());
-                        if (ggold > 200) ggold = 200;
-                        else if (ggold < 0) ggold = 0;
+                        const xpmin = (1 + rxp / 100) * (1 + gxp / 100 + book / 100) * basexp / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+                        const xpmax = xpmin * 5;
 
-                        var book = Number($('#quest-book').val());
-                        if (book > 100) book = 100;
-                        else if (book < 0) book = 0;
-
-                        var tower = Number($('#quest-tower').val());
-                        if (tower > 100) tower = 100;
-                        else if (tower < 0) tower = 0;
-
-                        var rxp = Number($('#quest-rxp').val());
-                        if (rxp > 10) rxp = 10;
-                        else if (rxp < 0) rxp = 0;
-
-                        var rgold = Number($('#quest-rgold').val());
-                        if (rgold > 50) rgold = 50;
-                        else if (rgold < 0) rgold = 0;
-
-                        var basexp = getExperienceRequired(level) / (1.5 + 0.75 * (level - 1));
-                        var basegold = getGoldCurve(level) * 12 / 1000;
-
-                        var xpmin = (1 + rxp / 100) * (1 + gxp / 100 + book / 100) * basexp / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-                        var xpmax = xpmin * 5;
-
-                        var goldmin = Math.min(10000000, 1 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
-                        var goldmax = Math.min(10000000, 5 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
+                        const goldmin = Math.min(10000000, 1 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
+                        const goldmax = Math.min(10000000, 5 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
 
                         $('#quest-goldmin').val(formatValue(goldmin));
                         $('#quest-goldmax').val(formatValue(goldmax));
@@ -1711,29 +1691,12 @@
 
                 $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit, #gold-runes').on('change input', function () {
                     if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'), $('#gold-pit'))) {
-                        var level = Number($('#gold-level').val());
-                        if (level < 1) level = 1;
-                        else if (level > 800) level = 800;
-
-                        var guild = Number($('#gold-guild').val());
-                        if (guild > 200) guild = 200;
-                        else if (guild < 0) guild = 0;
-
-                        var tower = Number($('#gold-tower').val());
-                        if (tower > 100) tower = 100;
-                        else if (tower < 0) tower = 0;
-
-                        var mine = Number($('#gold-mine').val());
-                        if (mine < 1) mine = 1;
-                        else if (mine > 14) mine = 14;
-
-                        var runes = Number($('#gold-runes').val());
-                        if (runes < 0) runes = 0;
-                        else if (runes > 5) runes = 5;
-
-                        var pit = Number($('#gold-pit').val());
-                        if (pit < 1) pit = 1;
-                        else if (pit > 100) pit = 100;
+                        const level = getClampedValue('#gold-level', 1, 800);
+                        const guild = getClampedValue('#gold-guild', 0, 200);
+                        const tower = getClampedValue('#gold-tower', 0, 100);
+                        const mine = getClampedValue('#gold-mine', 1, 14);
+                        const runes = getClampedValue('#gold-runes', 0, 5);
+                        const pit = getClampedValue('#gold-pit', 1, 100);
 
                         var num = getGoldCurve(level) * 12 / 1000;
 
