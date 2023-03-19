@@ -503,13 +503,15 @@
                 });
 
                 // On paste event handler
-                var players = [ editor.empty(1), editor.empty(1), editor.empty(2), editor.empty(3) ];
+                let players = [ editor.empty(1), editor.empty(1), editor.empty(2), editor.empty(3) ];
 
-                var boss_current = null;
-                var boss = null;
-                var dungeon_current = null;
-                var dungeon = null;
-                var availableBosses = null;
+                let boss_current = null;
+                let boss = null;
+                let dungeon_current = null;
+                let dungeon = null;
+                let availableBosses = null;
+
+                let selected = 0;
 
                 SimulatorUtils.configure({
                     params: urlParams,
@@ -645,8 +647,6 @@
                     show();
                 }).dropdown('set selected', '1');
 
-                var selected = 0;
-
                 $(document.body).on('paste', function (event) {
                     if (event.target.type != 'text') {
                         try {
@@ -667,8 +667,8 @@
                     if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
 
                     if (selected > 0) {
-                        for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
-                            var path = editor.fields[key].path();
+                        for (const key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
+                            const path = editor.fields[key].path();
                             setObjectAt(data, path, getObjectAt(players[0], path));
                         }
                     }
@@ -678,10 +678,10 @@
 
                 function saveEditor () {
                     if (editor.valid()) {
-                        var obj = editor.read();
+                        const obj = editor.read();
                         if (selected == 0) {
-                            for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
-                                var path = editor.fields[key].path();
+                            for (const key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
+                                const path = editor.fields[key].path();
 
                                 setObjectAt(players[1], path, getObjectAt(obj, path));
                                 setObjectAt(players[2], path, getObjectAt(obj, path));
@@ -695,9 +695,9 @@
 
                 // Show fighters
                 function show () {
-                    var content1 = '';
+                    let content1 = '';
 
-                    for (var i = 0; i < 4; i++) {
+                    for (let i = 0; i < 4; i++) {
                         content1 += `
                             <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
                                 <div class="four wide text-center column">
