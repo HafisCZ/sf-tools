@@ -51,7 +51,7 @@
                 <div class="two fields">
                     <div class="fifteen wide field">
                         <label data-intl="analyzer.form.fight_group"></label>
-                        <div class="ui selection inverted dropdown" style="padding: .78571429rem 1.14285714rem;" id="fight-group">
+                        <div class="ui selection inverted dropdown" style="padding: .78571429rem 1.14285714rem;" id="group-list">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
@@ -68,7 +68,7 @@
                             <div class="ui icon small basic inverted button" id="button-export-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
                                 <i class="ui download icon"></i>
                             </div>
-                            <div class="ui icon small basic inverted button" id="view-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
+                            <div class="ui icon small basic inverted button" id="button-summary-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
                                 <i class="ui tasks icon"></i>
                             </div>
                         </div>
@@ -440,7 +440,7 @@
                                 <div class="ui icon small basic inverted button" id="button-export-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.export">
                                     <i class="ui download icon"></i>
                                 </div>
-                                <div class="ui icon small basic inverted button" id="view-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
+                                <div class="ui icon small basic inverted button" id="button-summary-fight" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.summary.view">
                                     <i class="ui tasks icon"></i>
                                 </div>
                             </div>
@@ -656,14 +656,14 @@
                 const $buttonResetGroup = $('#button-reset-group');
                 const $buttonCopyGroup = $('#button-copy-group');
 
-                const $fightGroup = $('#fight-group');
+                const $groupList = $('#group-list');
                 const $fightList = $('#fight-list');
                 const $fightTable = $('#fight-table');
                 const $fightView = $('#fight-view');
                 const $fightCopy = $('#fight-copy');
 
-                const $viewSummaryGroup = $('#view-summary-group');
-                const $viewSummaryFight = $('#view-summary-fight');
+                const $buttonSummaryGroup = $('#button-summary-group');
+                const $buttonSummaryFight = $('#button-summary-fight');
 
                 const $sidebarDamages = $('#sidebar-damages');
                 const $sidebarDamagesContent = $('#sidebar-damages-content');
@@ -1373,8 +1373,24 @@
                     $sidebarDamagesContent.empty();
                 }
 
+                function renderGeneralButtons () {
+                    const buttonsEnabled = currentFights.length > 0;
+                    const buttonsMethod = buttonsEnabled ? 'removeClass' : 'addClass';
+
+                    for (const $button of [$buttonExport, $buttonClear, $buttonSummaryGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup, $buttonDamagesOpen]) {
+                        $button[buttonsMethod]('disabled');
+                    }
+
+                    if (!buttonsEnabled) {
+                        $sidebarDamages.hide();
+                        $buttonDamagesOpen.show();
+                    } 
+                }
+
                 function render () {
                     $fightView.hide();
+
+                    renderGeneralButtons();
 
                     // Set winners
                     for (const fight of currentFights) {
@@ -1428,7 +1444,7 @@
                     }
 
                     // Display in dropdown
-                    $fightGroup.dropdown({
+                    $groupList.dropdown({
                         values: groupedFights.map((group) => ({
                             name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${getFighterName(group.fighterA)} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${getFighterName(group.fighterB)} (${group.fights.length})`,
                             value: group.hash
@@ -1442,11 +1458,11 @@
                         renderPlayer(group.fighterB, playerEditorB);
 
                         renderFightGroup(group);
-                        renderButtons($viewSummaryGroup, group);
+                        renderButtons($buttonSummaryGroup, group);
                     });
 
                     if (groupedFights.length > 0) {
-                        $fightGroup.dropdown('set selected', _dig(currentGroup, 'hash') || groupedFights[0].hash);
+                        $groupList.dropdown('set selected', _dig(currentGroup, 'hash') || groupedFights[0].hash);
                     }
                 }
 
@@ -1561,7 +1577,7 @@
                         currentFight = fight;
 
                         updatePreview();
-                        renderButtons($viewSummaryFight, group, fight);
+                        renderButtons($buttonSummaryFight, group, fight);
                     });
 
                     const defaultFightIndex = group.fights[0].index;
@@ -1894,6 +1910,8 @@
                         fights: exportFights
                     });
                 }
+
+                render();
 
                 return {
                     getPlayers: () => currentPlayers
