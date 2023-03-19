@@ -292,6 +292,11 @@
         </div>
         <script>
             Site.ready(null, function () {
+                const $drvcs = $('.drvcs');
+                if (Site.isEvent('winter')) {
+                    $drvcs.attr('src', 'res/drvcs_winter.png');
+                }
+
                 function formatDate (date) {
                     if (typeof date !== 'object') {
                         date = new Date(date);
