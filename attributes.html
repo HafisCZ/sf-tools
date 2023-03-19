@@ -18,6 +18,8 @@
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
         <script src="js/core/ui.js"></script>
+        <script src="js/core/util.js"></script>
+        <script src="js/plugins.js"></script>
     </head>
     <body class="inverted">
         <div class="ui fixed inverted borderless huge menu">
@@ -1575,17 +1577,15 @@
 
                 $('#priceat-attribute').on('change input', function () {
                     if (validate($(this))) {
-                        var value = Number($(this).val());
-                        if (value < 1) value = 1;
-
-                        var cost = calculateAttributePrice(value - 1);
+                        const value = _clamp($(this).numberVal(), 1, Infinity);
+                        const cost = calculateAttributePrice(value - 1);
 
                         $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
                     }
                 });
 
                 function getValue (element, min, max) {
-                    return Math.max(min, Math.min(max, Number($(element).val())));
+                    return Math.max(min, Math.min(max, $(element).numberVal()));
                 }
 
                 $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
@@ -1596,8 +1596,8 @@
 
                         const MAXIMUM_SOULS_MULTIPLIER = 7.5;
 
-                        let soulsMultiplier = (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5));
-                        let souls = Math.ceil((level < 542 ? (SOULS_CURVE[level] / MAXIMUM_SOULS_MULTIPLIER) : (464075 + (level - 525) * 8663)) * soulsMultiplier);
+                        const soulsMultiplier = (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5));
+                        const souls = Math.ceil((level < 542 ? (SOULS_CURVE[level] / MAXIMUM_SOULS_MULTIPLIER) : (464075 + (level - 525) * 8663)) * soulsMultiplier);
 
                         $('#misc-souls').val(formatValue(souls));
                     }
@@ -1605,14 +1605,14 @@
 
                 $('#pricebetween-from, #pricebetween-to').on('change input', function () {
                     if (validate($('#pricebetween-from'), $('#pricebetween-to'))) {
-                        var from = Number($('#pricebetween-from').val());
-                        var to = Number($('#pricebetween-to').val());
+                        let from = $('#pricebetween-from').numberVal();
+                        let to = $('#pricebetween-to').numberVal();
 
                         if (from > to) {
                             [from, to] = [to, from];
                         }
 
-                        var cost = calculateTotalAttributePrice(to - 1) - calculateTotalAttributePrice(from - 1);
+                        const cost = calculateTotalAttributePrice(to - 1) - calculateTotalAttributePrice(from - 1);
 
                         $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
                     }
@@ -1620,17 +1620,9 @@
 
                 $('#xp-level, #xp-hydra, #xp-academy').on('change input', function () {
                     if (validate($('#xp-level'), $('#xp-hydra'), $('#xp-academy'))) {
-                        var level = Number($('#xp-level').val());
-                        if (level < 1) level = 1;
-                        else if (level > 799) level = 799;
-
-                        var hydra = Number($('#xp-hydra').val());
-                        if (hydra > 20) hydra = 20;
-                        else if (hydra < 0) hydra = 0;
-
-                        var academy = Number($('#xp-academy').val());
-                        if (academy > 20) academy = 20;
-                        else if (academy < 1) academy = 1;
+                        const level = _clamp($('#xp-level').numberVal(), 1, 799);
+                        const hydra = _clamp($('#xp-hydra').numberVal(), 0, 20);
+                        const academy = _clamp($('#xp-academy').numberVal(), 1, 20);
 
                         var xp = getExperienceRequired(level);
                         var multiplier = 1.5 + 0.75 * (level - 1);
