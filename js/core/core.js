@@ -139,6 +139,10 @@ const OptionsHandler = class {
         }
     }
 
+    reset (key) {
+        this[key] = this.defaults[key];
+    }
+
     keys () {
         return Object.keys(this.defaults);
     }
@@ -185,7 +189,8 @@ const SiteOptions = new OptionsHandler(
         debug: false,
         export_public_only: false,
         export_bundle_groups: true,
-        unsafe_delete: false
+        unsafe_delete: false,
+        event_override: []
     }
 )
 
@@ -211,6 +216,22 @@ const Site = new (class {
 
     is (type) {
         return this.metadata && this.metadata.type === type;
+    }
+
+    isEvent (type) {
+        if (Array.isArray(SiteOptions.event_override)) {
+            if (SiteOptions.event_override.includes(type)) {
+                return true;
+            }
+        }
+
+        const date = new Date();
+
+        if (type === 'april_fools_day') {
+            return date.getMonth() === 3 && date.getDate() === 1;
+        } else {
+            return false;
+        }
     }
 
     ready (metadata, callback) {

@@ -436,7 +436,7 @@
                     return str;
                 }
 
-                let shouldRandomizeNames = new Date().getMonth() == 3 && new Date().getDate() == 1;
+                let shouldRandomizeNames = Site.isEvent('april_fools_day');
 
                 for (let dungeon of Object.values(DUNGEON_DATA)) {
                     dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
