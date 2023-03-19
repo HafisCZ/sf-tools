@@ -192,6 +192,80 @@ const SimulatorNoticeDialog = new (class extends Dialog {
     }
 })();
 
+const SimulatorShopDialog = new (class extends Dialog {
+    _createModal () {
+        const packs = [
+            {
+                icon: 'white wallet',
+                title: 'Saver Pack',
+                items: ['1 simulation', '1 character scan'],
+                value: 1
+            },
+            {
+                icon: 'blue fish',
+                title: 'Starter Pack',
+                items: ['10 simulations', '2 character scans'],
+                value: 5
+            },
+            {
+                icon: 'green frog',
+                title: 'F2P Pack',
+                items: ['100 simulations', '10 character scans'],
+                value: 10
+            },
+            {
+                icon: 'brown horse',
+                title: 'Casual Pack',
+                items: ['1000 simulations', '25 character scans'],
+                value: 25
+            },
+            {
+                icon: 'red dragon',
+                title: 'Dragon Pack for big spenders',
+                items: ['10000 simulations', '100 character scans'],
+                value: 99
+            },
+            {
+                icon: 'yellow hat wizard',
+                title: 'Shakes\'s Dream Pack',
+                items: ['Unlimited simulations', '1000 character scans'],
+                value: 149
+            }
+        ]
+
+        let content = '';
+        for (const { icon, title, items, value } of packs) {
+            content += `
+                <div data-op="close" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-4 items-center">
+                    <i class="ui big ${icon} icon"></i>
+                    <div>    
+                        <div>${title}</div>
+                        <div class="text-gray">${items.join(', ')}</div>
+                    </div>
+                    <div class="ml-auto">${value} €</div>
+                </div>
+            `
+        }
+
+        return `
+            <div class="inverted small bordered dialog">
+                <div class="header">SFTools Shop</div>
+                <div class="text-center">Oops, it looks like you ran out of your free simulations. To continue please purchase a simulation pack below:</div>
+                <div class="flex flex-col gap-2">
+                    ${content}
+                </div>
+            </div>
+        `
+    }
+
+    _createBindings () {
+        const $close = this.$parent.operator('close');
+        $close.click(() => {
+            this.close();
+        })
+    }
+})
+
 const ChangeLogDialog = new (class extends Dialog {
     constructor () {
         super({
@@ -2116,6 +2190,10 @@ window.addEventListener('DOMContentLoaded', async function () {
 
         if (Site.is('simulator') && SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES[0].timestamp) {
             DialogController.open(SimulatorNoticeDialog);
+        }
+
+        if (Site.is('simulator') && Site.isEvent('april_fools_day')) {
+            DialogController.open(SimulatorShopDialog);
         }
     }
 
