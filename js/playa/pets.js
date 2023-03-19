@@ -615,7 +615,7 @@ const PetData = [
         time: 'any',
         condition: (player) => {
             const fortress = player.Fortress;
-            return fortress && (fortress.Rank <= 100 || fortress.Honor >= 2500);
+            return fortress && fortress.Rank > 0 && (fortress.Rank <= 100 || fortress.Honor >= 2500);
         }
     },
     {
@@ -843,7 +843,7 @@ const PetData = [
         time: 'any',
         condition: (player) => {
             const pets = player.Pets;
-            return pets && (pets.Rank <= 100 || pets.Honor >= 4000);
+            return pets && pets.Rank > 0 && (pets.Rank <= 100 || pets.Honor >= 4000);
         }
     },
     {
