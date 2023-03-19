@@ -2699,6 +2699,13 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Metal,
         statistics: false
     },
+    'Pet Rank': {
+        expr: p => p.Pets.Rank <= 0 ? undefined : p.Pets.Rank,
+        flip: true
+    },
+    'Pet Honor': {
+        expr: p => p.Pets.Honor
+    },
     '1 Catacombs': {
         expr: p => Math.max(0, p.Dungeons.Normal[0])
     },
