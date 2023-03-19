@@ -422,33 +422,11 @@
                 });
                 $('#cheat-menu .checkbox').checkbox('set unchecked');
 
-                function randomizeString (orig) {
-                    let str = ''
-                    for (let i = 0; i < orig.length; i++) {
-                        if (/[a-z]/.test(orig[i])) {
-                            str += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
-                        } else if (/[A-Z]/.test(orig[i])) {
-                            str += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
-                        } else {
-                            str += orig[i];
-                        }
-                    }
-                    return str;
-                }
-
-                let shouldRandomizeNames = Site.isEvent('april_fools_day');
-
                 for (let dungeon of Object.values(DUNGEON_DATA)) {
                     dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
-                    if (shouldRandomizeNames) {
-                        dungeon.name = randomizeString(dungeon.name);
-                    }
 
                     for (let enemy of Object.values(dungeon.floors)) {
                         enemy.name = intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
-                        if (shouldRandomizeNames) {
-                            enemy.name = randomizeString(enemy.name);
-                        }
                     }
                 }
 
