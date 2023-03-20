@@ -20,7 +20,8 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added <code>Pet Rank</code> and <code>Pet Honor</code> headers',
-            'Fixed loading of old characters with legacy 3-stat items'
+            'Fixed loading of old characters with legacy 3-stat items',
+            'Fixed players picked inconsistently for comparison'
         ],
         'Fight Simulator': [
             'Removed debug simulator'

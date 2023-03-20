@@ -1,6 +1,6 @@
-FIGHT_LOG_ENABLED = false;
+let FIGHT_LOG_ENABLED = false;
 
-FIGHT_LOG = new (class {
+const FIGHT_LOG = new (class {
     constructor () {
         this.allLogs = [];
     }
@@ -134,7 +134,7 @@ FIGHT_LOG = new (class {
 })();
 
 // Flags
-FLAGS = Object.defineProperty(
+const FLAGS = Object.defineProperty(
     {
         // Values
         Gladiator15: false,
@@ -155,7 +155,7 @@ FLAGS = Object.defineProperty(
 );
 
 // Configuration
-CONFIG = Object.defineProperties(
+const CONFIG = Object.defineProperties(
     {
         Warrior: {
             Attribute: 'Strength',
