@@ -44,8 +44,7 @@ class PlayerSelectView extends View {
             content += '</div>';
 
             this.$parent.find('[data-op="list"]').html(content).find('[data-id]').click(function (event) {
-                var obj = $(event.currentTarget);
-                UI.show(UI.Inventory, obj.attr('data-id'));
+                UI.show(UI.Inventory, { id: event.currentTarget.dataset.id });
             });
         } else {
             this.$parent.html('<h1 class="ui centered header">The Inventory Manager depends on the Statistics module.<br/><br/>You will have to upload a file containing your character<br/>before you will be able to use this module.</h1>');
@@ -74,9 +73,9 @@ class ResourcesView extends View {
         this.$summary = this.$parent.find('[data-op="summary"]');
     }
 
-    show (id) {
+    show ({ id }) {
         $('#show-compare, #show-crystal').show().off('click');
-        $('#show-compare').on('click', () => UI.show(UI.Inventory, id));
+        $('#show-compare').on('click', () => UI.show(UI.Inventory, { id }));
         UI.reset(true);
 
         // Clear
@@ -1052,9 +1051,9 @@ class InventoryView extends View {
         });
     }
 
-    show (id) {
+    show ({ id }) {
         $('#show-compare, #show-crystal').show().off('click');
-        $('#show-crystal').on('click', () => UI.show(UI.Resources, id));
+        $('#show-crystal').on('click', () => UI.show(UI.Resources, { id }));
         UI.reset(true);
 
         this.$parent.find('[data-op="list"]').html('');
@@ -1328,14 +1327,14 @@ const UI = {
             $('#show-back').off('click');
         }
     },
-    show: function (screen, ... arguments) {
+    show: function (screen, args) {
         UI.current = screen;
 
         $('#show-compare, #show-crystal').off('click').hide();
         $('.ui.container').hide();
 
         screen.$parent.show();
-        screen.show(... arguments);
+        screen.show(args);
     },
     initialize: function () {
         $(document).on('contextmenu', function () {
