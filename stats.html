@@ -545,7 +545,9 @@
                     });
 
                     UI.register(UI.Players, 'show-players');
+                    UI.register(UI.PlayerHistory, 'show-players', { buttonEnabled: false });
                     UI.register(UI.Groups, 'show-groups');
+                    UI.register(UI.GroupDetail, 'show-groups', { buttonEnabled: false });
                     UI.register(UI.Browse, 'show-browse');
                     UI.register(UI.Files, 'show-files');
                     UI.register(UI.Settings, 'show-settings');
