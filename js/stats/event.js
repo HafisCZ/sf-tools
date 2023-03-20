@@ -125,7 +125,7 @@ class GroupDetailView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Settings, this.identifier, () => UI.returnTo(UI.GroupDetail))
+                UI.show(UI.Settings, { key: this.identifier })
             }
         });
 
@@ -172,11 +172,11 @@ class GroupDetailView extends View {
         });
     }
 
-    show (identitifier) {
+    show ({ identifier }) {
         this.refreshTemplateDropdown();
 
-        this.identifier = identitifier;
-        this.group = DatabaseManager.getGroup(identitifier);
+        this.identifier = identifier;
+        this.group = DatabaseManager.getGroup(identifier);
 
         this.$name.html(this.group.Latest.Name);
         this.$identifier.html(this.identifier);
@@ -325,7 +325,7 @@ class GroupDetailView extends View {
             this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
         }, (block) => {
             let blockClickable = block.find('[data-id]').click((event) => {
-                UI.PlayerDetail.show(event.currentTarget.dataset.id, this.timestamp, this.reference);
+                UI.PlayerDetail.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
             });
 
             this.$context.context('bind', blockClickable);
@@ -339,7 +339,7 @@ class GroupDetailView extends View {
     }
 }
 
-// Player Detail FLot View
+// Player Detail Float View
 class PlayerDetailFloatView extends View {
     constructor (player) {
         super(player);
@@ -349,7 +349,7 @@ class PlayerDetailFloatView extends View {
         return intl(`stats.player.${key}`);
     }
 
-    show (identifier, timestamp, reference = timestamp) {
+    show ({ identifier, timestamp, reference }) {
         let playerObject = DatabaseManager.getPlayer(identifier);
         let timestampsReverse = playerObject.List.map(([ts, ]) => ts).reverse(); // Newest to oldest
         let timestamps = playerObject.List.map(([ts, ]) => ts); // Oldest to newest
@@ -753,7 +753,7 @@ class PlayerHistoryView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Settings, this.identifier, () => UI.returnTo(UI.PlayerHistory))
+                UI.show(UI.Settings, { key: this.identifier })
             }
         });
 
@@ -826,7 +826,7 @@ class PlayerHistoryView extends View {
         });
     }
 
-    show (identifier) {
+    show ({ identifier }) {
         this.refreshTemplateDropdown();
         this.identifier = identifier;
 
@@ -991,7 +991,7 @@ class BrowseView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Settings, 'players', () => UI.returnTo(UI.Browse))
+                UI.show(UI.Settings, { key: 'players' })
             }
         });
 
@@ -1335,7 +1335,7 @@ class BrowseView extends View {
                 if (event.ctrlKey) {
                     $(event.currentTarget).toggleClass('css-op-select');
                 } else {
-                    UI.PlayerDetail.show(event.currentTarget.dataset.id, this.timestamp, this.reference);
+                    UI.PlayerDetail.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
                 }
             }).mousedown((event) => {
                 event.preventDefault();
@@ -1520,7 +1520,7 @@ class GroupsView extends View {
     show () {
         const viewableGroups = Object.entries(DatabaseManager.Groups);
         if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter(([, g]) => g.MembersPresent).length > 0)) {
-            UI.show(UI.GroupDetail, viewableGroups[0][0]);
+            UI.show(UI.GroupDetail, { identifier: viewableGroups[0][0] });
         } else {
             this.load();
         }
@@ -1560,7 +1560,7 @@ class GroupsView extends View {
         this.loader.start(() => {
             const $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
             $fields.click(function () {
-                UI.show(UI.GroupDetail, $(this).data('id'));
+                UI.show(UI.GroupDetail, { identifier: this.dataset.id });
             })
 
             this.$context.context('bind', $fields);
@@ -1773,7 +1773,7 @@ class PlayersView extends View {
     show () {
         let identitifiers = Object.keys(DatabaseManager.Players);
         if (identitifiers.length == 1) {
-            UI.show(UI.PlayerHistory, identitifiers[0]);
+            UI.show(UI.PlayerHistory, { identifier: identitifiers[0] });
         } else {
             this.load();
         }
@@ -1812,7 +1812,7 @@ class PlayersView extends View {
         this.loader.start(() => {
             let $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
             $fields.click(function () {
-                UI.show(UI.PlayerHistory, $(this).data('id'));
+                UI.show(UI.PlayerHistory, { identifier: this.dataset.id });
             })
 
             this.$context.context('bind', $fields);
@@ -2022,7 +2022,7 @@ class FilesView extends View {
         this.prepareCheckbox('hidden', 'hidden');
         SiteOptions.onChange('hidden', async () => {
             await DatabaseManager.reloadHidden();
-            this.show(true);
+            this.show({ forceUpdate: true });
         });
 
         this.prepareCheckbox('export_public_only', 'export-public-only');
@@ -2039,7 +2039,7 @@ class FilesView extends View {
         this.$advancedCenter.toggle(advanced);
         this.$simpleCenter.toggle(!advanced);
         this.simple = !advanced;
-        if (!supressUpdate) this.show(true);
+        if (!supressUpdate) this.show({ forceUpdate: true });
     }
 
     markAll () {
@@ -2593,7 +2593,7 @@ class FilesView extends View {
         this.updateEntrySearchResults();
     }
 
-    show (forceUpdate = false) {
+    show ({ forceUpdate }) {
         this.selectedEntries = {};
         this.selectedFiles = [];
 
@@ -2677,7 +2677,7 @@ class SettingsView extends View {
 
         this.$reset = this.$parent.operator('reset');
         this.$reset.click(() => {
-            this.show(this.script.key, this.returnTo);
+            this.show({ key: this.script.name });
         });
 
         this.$save = this.$parent.operator('save');
@@ -2790,10 +2790,14 @@ class SettingsView extends View {
         }
     }
 
-    show (key = 'players', returnTo = null) {
-        this._setScript(key);
+    show ({ origin, key }) {
+        if ([UI.Browse, UI.GroupDetail, UI.PlayerHistory].includes(origin)) {
+            this.returnTo = () => UI.returnTo(origin);
+        } else if (typeof origin !== 'undefined') {
+            this.returnTo = null;
+        }
 
-        this.returnTo = returnTo;
+        this._setScript(key || _dig(origin, 'identifier') || 'players');
         this._updateSidebars();
     }
 
