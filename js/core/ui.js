@@ -24,7 +24,8 @@ class View {
 const UI = new (class {
     constructor () {
         this.current = null;
-        this.buttons = {};
+
+        this.views = {};
     }
 
     init (controllers) {
@@ -33,9 +34,11 @@ const UI = new (class {
         }
     }
 
-    show (screen, ... args) {
+    show (screen, args) {
+        const origin = this.current;
+
         this._showScreen(screen);
-        screen.show(... args);
+        screen.show(Object.assign({ origin }, args));
     }
 
     returnTo (screen) {
@@ -43,13 +46,25 @@ const UI = new (class {
         screen.reload();
     }
 
-    register (view, id) {
+    register (view, id, metadata = {}) {
         const element = document.getElementById(id);
-        this.buttons[view.sha] = element;
+
         if (element) {
-            element.addEventListener('click', () => {
-                this.show(view);
-            });
+            const object = Object.assign(
+                {
+                    buttonElement: element,
+                    buttonEnabled: true
+                },
+                metadata
+            )
+
+            if (object.buttonEnabled) {
+                element.addEventListener('click', () => {
+                    this.show(view);
+                });
+            }
+
+            this.views[view.sha] = object
         }
     }
 
@@ -62,11 +77,11 @@ const UI = new (class {
         screen.$parent.show();
 
         const name = screen.sha;
-        if (this.buttons[name]) {
-            for (const [, el] of Object.entries(this.buttons)) {
-                el.classList.remove('!text-orange');
+        if (this.views[name]) {
+            for (const { buttonElement } of Object.values(this.views)) {
+                buttonElement.classList.remove('!text-orange');
             }
-            this.buttons[name].classList.add('!text-orange');
+            this.views[name].buttonElement.classList.add('!text-orange');
         }
     }
 })();
