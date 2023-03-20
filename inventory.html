@@ -218,7 +218,7 @@
 
                     var id = urlParams.get('id');
                     if (DatabaseManager.Players[id]) {
-                        UI.show(UI.Inventory, id);
+                        UI.show(UI.Inventory, { id });
                         UI.reset(true);
                     } else {
                         UI.show(UI.PlayerSelect);
