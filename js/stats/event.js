@@ -1164,27 +1164,23 @@ class BrowseView extends View {
                 this.table = this.tableBase;
             }
 
-            var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
+            const entries = new PlayersTableArray(perf, this.timestamp, this.reference);
 
-            for (var player of Object.values(DatabaseManager.Players)) {
-                var hidden = DatabaseManager.Hidden.has(player.Latest.Identifier);
-                if (this.hidden || !hidden || this.shidden) {
-                    var currentPlayer = player.List.find(entry => entry[0] <= this.timestamp);
-                    if (currentPlayer) {
-                        var xx = player.List.concat();
-                        xx.reverse();
-                        var ts = xx.find(p => p[0] >= this.reference && p[0] <= currentPlayer[0]);
-
-                        var matches = true;
-                        for (var term of terms) {
-                            matches &= term.test(term.arg, DatabaseManager._loadPlayer(currentPlayer[1]), this.timestamp, (ts || currentPlayer)[1]);
-                        }
-
-                        if (matches) {
-                            let pp = currentPlayer[1];
-                            let cp = (ts || currentPlayer)[1];
-
-                            entries.add(DatabaseManager._loadPlayer(pp), DatabaseManager._loadPlayer(cp), currentPlayer[1].Timestamp == this.timestamp, hidden);
+            for (const [identifier, { List: list }] of Object.entries(DatabaseManager.Players)) {
+                const hidden = DatabaseManager.Hidden.has(identifier);
+                if (this.hidden || this.shidden || !hidden) {
+                    const currentEntry = list.find((entry) => entry[0] <= this.timestamp);
+                    if (currentEntry) {
+                        const [timestamp, currentPlayer] = currentEntry;
+                        const [reference, comparePlayer] = list.find((entry) => entry[0] <= this.reference && entry[0] <= timestamp) || currentEntry;
+                        
+                        if (terms.every((term) => term.test(term.arg, DatabaseManager._loadPlayer(currentPlayer), this.timestamp, reference))) {
+                            entries.add(
+                                DatabaseManager._loadPlayer(currentPlayer),
+                                DatabaseManager._loadPlayer(comparePlayer),
+                                timestamp == this.timestamp,
+                                hidden
+                            )
                         }
                     }
                 }
