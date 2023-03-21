@@ -1727,6 +1727,8 @@ const ScriptArchiveDialog = new (class extends Dialog {
             return 'save';
         } else if (type === 'remove') {
             return 'trash alternate outline';
+        } else if (type === 'discard' ) {
+            return 'recycle';
         } else {
             return 'question';
         }
