@@ -527,27 +527,48 @@
                 Loader.toggle(true);
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
-                        Players: new PlayersTab('view-players'),
-                        PlayerDetail: new PlayerDetailTab('view-player-detail'),
-                        PlayerModal: new PlayerModalTab('view-player-modal'),
-                        Groups: new GroupsTab('view-groups'),
-                        GroupDetail: new GroupDetailTab('view-group-detail'),
-                        Browse: new BrowseTab('view-browse'),
-                        Scripts: new ScriptsTab('view-scripts'),
-                        Files: new FilesTab('view-files'),
-                        Settings: new SettingsTab('view-settings'),
-                        Profiles: new ProfilesTab('view-profiles')
+                        Players: {
+                            tab: new PlayersTab('view-players'),
+                            buttonId: 'show-players'
+                        },
+                        PlayerDetail: {
+                            tab: new PlayerDetailTab('view-player-detail'),
+                            buttonId: 'show-players',
+                            buttonClickable: false
+                        },
+                        PlayerModal: {
+                            tab: new PlayerModalTab('view-player-modal')
+                        },
+                        Groups: {
+                            tab: new GroupsTab('view-groups'),
+                            buttonId: 'show-groups'
+                        },
+                        GroupDetail: {
+                            tab: new GroupDetailTab('view-group-detail'),
+                            buttonId: 'show-groups',
+                            buttonClickable: false
+                        },
+                        Browse: {
+                            tab: new BrowseTab('view-browse'),
+                            buttonId: 'show-browse'
+                        },
+                        Scripts: {
+                            tab: new ScriptsTab('view-scripts'),
+                            buttonId: 'show-scripts'
+                        },
+                        Files: {
+                            tab: new FilesTab('view-files'),
+                            buttonId: 'show-files'
+                        },
+                        Settings: {
+                            tab: new SettingsTab('view-settings'),
+                            buttonId: 'show-settings'
+                        },
+                        Profiles: {
+                            tab: new ProfilesTab('view-profiles'),
+                            buttonId: 'show-profiles'
+                        }
                     });
-
-                    UI.register(UI.Players, { buttonId: 'show-players' });
-                    UI.register(UI.PlayerDetail, { buttonId: 'show-players', buttonClickable: false });
-                    UI.register(UI.Groups, { buttonId: 'show-groups' });
-                    UI.register(UI.GroupDetail, { buttonId: 'show-groups', buttonClickable: false });
-                    UI.register(UI.Browse, { buttonId: 'show-browse' });
-                    UI.register(UI.Scripts, { buttonId: 'show-scripts' });
-                    UI.register(UI.Files, { buttonId: 'show-files' });
-                    UI.register(UI.Settings, { buttonId: 'show-settings' });
-                    UI.register(UI.Profiles, { buttonId: 'show-profiles' });
 
                     Loader.toggle(false);
 
