@@ -54,8 +54,8 @@ const UI = new (class {
         screen.reload();
     }
 
-    register (view, id, metadata = {}) {
-        const element = document.getElementById(id);
+    register (view, data = {}) {
+        const element = document.getElementById(data.buttonId);
 
         if (element) {
             const object = Object.assign(
@@ -63,7 +63,7 @@ const UI = new (class {
                     buttonElement: element,
                     buttonClickable: true
                 },
-                metadata
+                data
             )
 
             if (object.buttonClickable) {

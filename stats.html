@@ -539,15 +539,15 @@
                         Profiles: new ProfilesTab('view-profiles')
                     });
 
-                    UI.register(UI.Players, 'show-players');
-                    UI.register(UI.PlayerDetail, 'show-players', { buttonClickable: false });
-                    UI.register(UI.Groups, 'show-groups');
-                    UI.register(UI.GroupDetail, 'show-groups', { buttonClickable: false });
-                    UI.register(UI.Browse, 'show-browse');
-                    UI.register(UI.Scripts, 'show-scripts');
-                    UI.register(UI.Files, 'show-files');
-                    UI.register(UI.Settings, 'show-settings');
-                    UI.register(UI.Profiles, 'show-profiles');
+                    UI.register(UI.Players, { buttonId: 'show-players' });
+                    UI.register(UI.PlayerDetail, { buttonId: 'show-players', buttonClickable: false });
+                    UI.register(UI.Groups, { buttonId: 'show-groups' });
+                    UI.register(UI.GroupDetail, { buttonId: 'show-groups', buttonClickable: false });
+                    UI.register(UI.Browse, { buttonId: 'show-browse' });
+                    UI.register(UI.Scripts, { buttonId: 'show-scripts' });
+                    UI.register(UI.Files, { buttonId: 'show-files' });
+                    UI.register(UI.Settings, { buttonId: 'show-settings' });
+                    UI.register(UI.Profiles, { buttonId: 'show-profiles' });
 
                     Loader.toggle(false);
 
