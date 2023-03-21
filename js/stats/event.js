@@ -2591,7 +2591,7 @@ class FilesView extends View {
         this.updateEntrySearchResults();
     }
 
-    show ({ forceUpdate }) {
+    show (params) {
         this.selectedEntries = {};
         this.selectedFiles = [];
 
@@ -2604,7 +2604,7 @@ class FilesView extends View {
         this.$migrateHidden.toggle(!this.simple && SiteOptions.hidden);
 
         // Set counters
-        if (this.lastChange != DatabaseManager.LastChange || forceUpdate) {
+        if (this.lastChange != DatabaseManager.LastChange || (params && params.forceUpdate)) {
             this.lastChange = DatabaseManager.LastChange;
             if (this.simple) {
                 this.updateFileList();
