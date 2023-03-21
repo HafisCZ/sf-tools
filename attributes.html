@@ -996,10 +996,10 @@
                     GoldTable: new GenericTab('tab-gold-table', false)
                 });
 
-                UI.register(UI.GoldExperience, 'show-attributes');
-                UI.register(UI.Fortress, 'show-fortress');
-                UI.register(UI.Underworld, 'show-underworld');
-                UI.register(UI.GoldTable, 'show-gold-table');
+                UI.register(UI.GoldExperience, { buttonId: 'show-attributes' });
+                UI.register(UI.Fortress, { buttonId: 'show-fortress' });
+                UI.register(UI.Underworld, { buttonId: 'show-underworld' });
+                UI.register(UI.GoldTable, { buttonId: 'show-gold-table' });
 
                 UI.show(UI.GoldExperience);
 
