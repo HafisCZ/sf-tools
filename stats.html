@@ -45,13 +45,13 @@
             <a class="item" id="show-players"><i class="small user icon"></i><span data-intl="stats.topbar.players"></span></a>
             <a class="item" id="show-groups"><i class="small archive icon"></i><span data-intl="stats.topbar.guilds"></span></a>
             <a class="item" id="show-browse"><i class="small database icon"></i><span data-intl="stats.topbar.browse"></span></a>
-            <a class="item" id="show-settings"><i class="small edit icon"></i><span data-intl="stats.topbar.scripts"></span></a>
+            <a class="item" id="show-scripts"><i class="small edit icon"></i><span data-intl="stats.topbar.scripts"></span></a>
             <a class="item" id="show-files"><i class="small folder open icon"></i><span data-intl="stats.topbar.files"></span></a>
-            <a class="item" id="show-options"><i class="small cog icon"></i><span data-intl="stats.topbar.settings"></span></a>
+            <a class="item" id="show-settings"><i class="small cog icon"></i><span data-intl="stats.topbar.settings"></span></a>
             <div class="right menu" id="show-right-menu">
                 <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i><span data-intl="stats.topbar.temporary"></span></a>
                 <a class="item" href="changelog.html" target="_blank"><i class="small sticky note icon"></i><span data-intl="stats.topbar.changelog"></span></a>
-                <a class="item" id="show-profile"><i class="small wrench icon"></i><span data-intl="stats.topbar.profile"></span></a>
+                <a class="item" id="show-profiles"><i class="small wrench icon"></i><span data-intl="stats.topbar.profile"></span></a>
             </div>
         </div>
 
@@ -197,8 +197,7 @@
             </div>
         </div>
 
-        <!-- SettingsView -->
-        <div id="view-settings" class="ui main inverted container" style="display: none; width: 95vw;">
+        <div id="view-scripts" class="ui main inverted container" style="display: none; width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
                     <div class="ui inverted form">
@@ -326,11 +325,9 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <!-- PlayerDetailFloatView -->
-        <div id="modal-playerdetail" class="ui basic large modal"></div>
+        <div id="view-player-modal" class="ui basic large modal"></div>
 
-        <!-- PlayerHistoryView -->
-        <div id="view-history" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-player-detail" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide center aligned column !pb-0">
@@ -361,8 +358,7 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <!-- GroupDetailView -->
-        <div id="view-groupdetail" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-group-detail" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="four wide column">
                     <div class="flex flex-col">
@@ -415,8 +411,7 @@
             </div>
         </div>
 
-        <!-- OptionsView -->
-        <div id="view-options" class="ui main inverted container" style="display: none;">
+        <div id="view-settings" class="ui main inverted container" style="display: none;">
             <div class="ui grid">
                 <div class="six wide column">
                     <div class="ui inverted segment">
@@ -519,7 +514,7 @@
                 if (urlParams.has('temp')) {
                     Store.temporary();
 
-                    $('#show-profile').addClass('pointer-events-none opacity-50');
+                    $('#show-profiles').addClass('pointer-events-none opacity-50');
                     $('.css-temporary').show();
 
                     profile = {
@@ -532,27 +527,27 @@
                 Loader.toggle(true);
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
-                        Settings: new SettingsView('view-settings'),
-                        Files: new FilesView('view-files'),
                         Players: new PlayersView('view-players'),
                         Groups: new GroupsView('view-groups'),
                         Browse: new BrowseView('view-browse'),
-                        PlayerHistory: new PlayerHistoryView('view-history'),
-                        PlayerDetail: new PlayerDetailFloatView('modal-playerdetail'),
-                        GroupDetail: new GroupDetailView('view-groupdetail'),
+                        Scripts: new ScriptsView('view-scripts'),
+                        Files: new FilesView('view-files'),
+                        Settings: new SettingsView('view-settings'),
                         Profiles: new ProfilesView('view-profiles'),
-                        Options: new OptionsView('view-options')
+                        PlayerDetail: new PlayerDetailView('view-player-detail'),
+                        GroupDetail: new GroupDetailView('view-group-detail'),
+                        PlayerModal: new PlayerModalView('view-player-modal')
                     });
 
                     UI.register(UI.Players, 'show-players');
-                    UI.register(UI.PlayerHistory, 'show-players', { buttonEnabled: false });
+                    UI.register(UI.PlayerDetail, 'show-players', { buttonClickable: false });
                     UI.register(UI.Groups, 'show-groups');
-                    UI.register(UI.GroupDetail, 'show-groups', { buttonEnabled: false });
+                    UI.register(UI.GroupDetail, 'show-groups', { buttonClickable: false });
                     UI.register(UI.Browse, 'show-browse');
                     UI.register(UI.Files, 'show-files');
+                    UI.register(UI.Scripts, 'show-scripts');
+                    UI.register(UI.Profiles, 'show-profiles');
                     UI.register(UI.Settings, 'show-settings');
-                    UI.register(UI.Profiles, 'show-profile');
-                    UI.register(UI.Options, 'show-options');
 
                     Loader.toggle(false);
 
@@ -560,7 +555,7 @@
                         'players': UI.Players,
                         'groups': UI.Groups,
                         'browse': UI.Browse,
-                        'scripts': UI.Settings,
+                        'scripts': UI.Scripts,
                         'files': UI.Files
                     }[SiteOptions.tab] || UI.Groups);
 

@@ -125,7 +125,7 @@ class GroupDetailView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Settings, { key: this.identifier })
+                UI.show(UI.Scripts, { key: this.identifier })
             }
         });
 
@@ -325,7 +325,7 @@ class GroupDetailView extends View {
             this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
         }, (block) => {
             let blockClickable = block.find('[data-id]').click((event) => {
-                UI.PlayerDetail.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
+                UI.PlayerModal.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
             });
 
             this.$context.context('bind', blockClickable);
@@ -339,8 +339,7 @@ class GroupDetailView extends View {
     }
 }
 
-// Player Detail Float View
-class PlayerDetailFloatView extends View {
+class PlayerModalView extends View {
     constructor (player) {
         super(player);
     }
@@ -718,8 +717,7 @@ class PlayerDetailFloatView extends View {
     }
 }
 
-// History View
-class PlayerHistoryView extends View {
+class PlayerDetailView extends View {
     constructor (parent) {
         super(parent);
 
@@ -753,7 +751,7 @@ class PlayerHistoryView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Settings, { key: this.identifier })
+                UI.show(UI.Scripts, { key: this.identifier })
             }
         });
 
@@ -991,7 +989,7 @@ class BrowseView extends View {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Settings, { key: 'players' })
+                UI.show(UI.Scripts, { key: 'players' })
             }
         });
 
@@ -1335,7 +1333,7 @@ class BrowseView extends View {
                 if (event.ctrlKey) {
                     $(event.currentTarget).toggleClass('css-op-select');
                 } else {
-                    UI.PlayerDetail.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
+                    UI.PlayerModal.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
                 }
             }).mousedown((event) => {
                 event.preventDefault();
@@ -1773,7 +1771,7 @@ class PlayersView extends View {
     show () {
         let identitifiers = Object.keys(DatabaseManager.Players);
         if (identitifiers.length == 1) {
-            UI.show(UI.PlayerHistory, { identifier: identitifiers[0] });
+            UI.show(UI.PlayerDetail, { identifier: identitifiers[0] });
         } else {
             this.load();
         }
@@ -1812,7 +1810,7 @@ class PlayersView extends View {
         this.loader.start(() => {
             let $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
             $fields.click(function () {
-                UI.show(UI.PlayerHistory, { identifier: this.dataset.id });
+                UI.show(UI.PlayerDetail, { identifier: this.dataset.id });
             })
 
             this.$context.context('bind', $fields);
@@ -2621,8 +2619,7 @@ class FilesView extends View {
     }
 }
 
-// Settings View
-class SettingsView extends View {
+class ScriptsView extends View {
     constructor (parent) {
         super(parent);
 
@@ -2791,7 +2788,7 @@ class SettingsView extends View {
     }
 
     show ({ origin, key }) {
-        if ([UI.Browse, UI.GroupDetail, UI.PlayerHistory].includes(origin)) {
+        if ([UI.Browse, UI.GroupDetail, UI.PlayerDetail].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
             this.returnTo = null;
@@ -2954,7 +2951,7 @@ class SettingsView extends View {
     }
 }
 
-class OptionsView extends View {
+class SettingsView extends View {
     constructor (parent) {
         super(parent)
 
