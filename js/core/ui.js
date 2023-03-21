@@ -1,4 +1,4 @@
-class View {
+class Tab {
     constructor (parent) {
         this.sha = SHA1(String(Math.random()));
         this.$parent = $(`#${ parent }`);
