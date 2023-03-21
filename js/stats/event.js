@@ -2674,6 +2674,7 @@ class ScriptsView extends View {
 
         this.$reset = this.$parent.operator('reset');
         this.$reset.click(() => {
+            this.hide();
             this.show({ key: this.script.name });
         });
 
@@ -2854,6 +2855,12 @@ class ScriptsView extends View {
         if (this.script) {
             this.$parent.find('[data-template-name]').removeClass('background-light');
             this.$parent.find(`[data-template-name="${this.script.parent}"]`).addClass('background-light');
+        }
+    }
+
+    hide () {
+        if (Object.keys(this.changes).length > 0) {
+            ScriptArchive.add('discard_script', this.script.name, this.script.version || 1, this.editor.content);
         }
     }
 
