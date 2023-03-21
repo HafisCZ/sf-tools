@@ -8,6 +8,10 @@ class View {
 
     }
 
+    hide () {
+
+    }
+
     load () {
 
     }
@@ -36,12 +40,16 @@ const UI = new (class {
 
     show (screen, args) {
         const origin = this.current;
+        if (origin) origin.hide({ target: screen });
 
         this._showScreen(screen);
         screen.show(Object.assign({ origin }, args));
     }
 
     returnTo (screen) {
+        const origin = this.current;
+        if (origin) origin.hide({ target: screen });
+
         this._showScreen(screen);
         screen.reload();
     }
