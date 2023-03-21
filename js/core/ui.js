@@ -1,6 +1,5 @@
 class Tab {
     constructor (parent) {
-        this.sha = SHA1(String(Math.random()));
         this.$parent = $(`#${ parent }`);
     }
 
@@ -29,67 +28,65 @@ const UI = new (class {
     constructor () {
         this.current = null;
 
-        this.views = {};
+        this.tabs = {};
     }
 
-    init (controllers) {
-        for (const [key, controller] of Object.entries(controllers)) {
-            this[key] = controller;
-        }
-    }
+    init (configs) {
+        for (const [name, config] of Object.entries(configs)) {
+            const tab = (this[name] = config.tab);
 
-    show (screen, args) {
-        const origin = this.current;
-        if (origin) origin.hide({ target: screen });
+            tab._registeredName = name;
 
-        this._showScreen(screen);
-        screen.show(Object.assign({ origin }, args));
-    }
+            if ('buttonId' in config) {
+                const buttonElement = document.getElementById(config.buttonId);
 
-    returnTo (screen) {
-        const origin = this.current;
-        if (origin) origin.hide({ target: screen });
+                Object.assign(config, {
+                    buttonElement
+                })
 
-        this._showScreen(screen);
-        screen.reload();
-    }
-
-    register (view, data = {}) {
-        const element = document.getElementById(data.buttonId);
-
-        if (element) {
-            const object = Object.assign(
-                {
-                    buttonElement: element,
-                    buttonClickable: true
-                },
-                data
-            )
-
-            if (object.buttonClickable) {
-                element.addEventListener('click', () => {
-                    this.show(view);
-                });
+                if (config.buttonClickable !== false) {
+                    config.buttonElement.addEventListener('click', () => {
+                        this.show(tab);
+                    });
+                }
             }
 
-            this.views[view.sha] = object
+            this.tabs[tab._registeredName] = config;
         }
     }
 
-    _showScreen (screen) {
-        this.current = screen;
+    show (tab, args) {
+        const origin = this.current;
+        if (origin) origin.hide({ target: tab });
+
+        this._showScreen(tab);
+        tab.show(Object.assign({ origin }, args));
+    }
+
+    returnTo (tab) {
+        const origin = this.current;
+        if (origin) origin.hide({ target: tab });
+
+        this._showScreen(tab);
+        tab.reload();
+    }
+
+    _showScreen (tab) {
+        this.current = tab;
 
         window.scrollTo(0, 0);
 
         $('.ui.container').hide();
-        screen.$parent.show();
+        tab.$parent.show();
 
-        const name = screen.sha;
-        if (this.views[name]) {
-            for (const { buttonElement } of Object.values(this.views)) {
-                buttonElement.classList.remove('!text-orange');
+        if (this.tabs[tab._registeredName].buttonElement) {
+            for (const { buttonElement } of Object.values(this.tabs)) {
+                if (buttonElement) {
+                    buttonElement.classList.remove('!text-orange');
+                }
             }
-            this.views[name].buttonElement.classList.add('!text-orange');
+
+            this.tabs[tab._registeredName].buttonElement.classList.add('!text-orange');
         }
     }
 })();

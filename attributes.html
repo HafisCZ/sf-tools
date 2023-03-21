@@ -990,16 +990,23 @@
 
             Site.ready(null, function () {
                 UI.init({
-                    GoldExperience: new GenericTab('tab-gold-experience', false),
-                    Fortress: new GenericTab('tab-fortress', true),
-                    Underworld: new GenericTab('tab-underworld', true),
-                    GoldTable: new GenericTab('tab-gold-table', false)
+                    GoldExperience: {
+                        tab: new GenericTab('tab-gold-experience', false),
+                        buttonId: 'show-attributes'
+                    },
+                    Fortress: {
+                        tab: new GenericTab('tab-fortress', true),
+                        buttonId: 'show-fortress'
+                    },
+                    Underworld: {
+                        tab: new GenericTab('tab-underworld', true),
+                        buttonId: 'show-underworld'
+                    },
+                    GoldTable: {
+                        tab: new GenericTab('tab-gold-table', false),
+                        buttonId: 'show-gold-table'
+                    }
                 });
-
-                UI.register(UI.GoldExperience, { buttonId: 'show-attributes' });
-                UI.register(UI.Fortress, { buttonId: 'show-fortress' });
-                UI.register(UI.Underworld, { buttonId: 'show-underworld' });
-                UI.register(UI.GoldTable, { buttonId: 'show-gold-table' });
 
                 UI.show(UI.GoldExperience);
 
