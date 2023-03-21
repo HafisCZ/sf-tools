@@ -1,5 +1,5 @@
 // View
-class View {
+class Tab {
     constructor (parent) {
         this.$parent = $(`#${ parent }`);
     }
@@ -18,7 +18,7 @@ class View {
 }
 
 // Character select view
-class PlayerSelectView extends View {
+class PlayerSelectTab extends Tab{
     constructor (parent) {
         super(parent);
         var players = Object.values(DatabaseManager.Players).map(player => player.Latest);
@@ -57,7 +57,7 @@ class PlayerSelectView extends View {
 }
 
 // Resources View
-class ResourcesView extends View {
+class ResourcesTab extends Tab{
     constructor (parent) {
         super(parent);
 
@@ -998,7 +998,7 @@ function isAllowedType (item) {
 }
 
 // Inventory View
-class InventoryView extends View {
+class InventoryTab extends Tab{
     constructor (parent) {
         super(parent);
 
@@ -1341,8 +1341,8 @@ const UI = {
             event.preventDefault();
         });
 
-        UI.PlayerSelect = new PlayerSelectView('view-playerselect');
-        UI.Inventory = new InventoryView('view-inventory');
-        UI.Resources = new ResourcesView('view-resources');
+        UI.PlayerSelect = new PlayerSelectTab('view-playerselect');
+        UI.Inventory = new InventoryTab('view-inventory');
+        UI.Resources = new ResourcesTab('view-resources');
     }
 }

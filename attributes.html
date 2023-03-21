@@ -976,20 +976,24 @@
         </div>
 
         <script type="text/javascript">
-            Site.ready(null, function () {
-                class Tab extends View {
-                    constructor (el, opts) {
-                        super(el);
-                        this.opts = opts;
-                        this.show = () => $('#floating-opts').toggle(this.opts);
-                    }
+            class GenericTab extends Tab{
+                constructor (parent, showOptions) {
+                    super(parent);
+
+                    this.showOptions = showOptions;
                 }
 
+                show () {
+                    $('#floating-opts').toggle(this.showOptions);
+                }
+            }
+
+            Site.ready(null, function () {
                 UI.init({
-                    GoldExperience: new Tab('tab-gold-experience', false),
-                    Fortress: new Tab('tab-fortress', true),
-                    Underworld: new Tab('tab-underworld', true),
-                    GoldTable: new Tab('tab-gold-table', false)
+                    GoldExperience: new GenericTab('tab-gold-experience', false),
+                    Fortress: new GenericTab('tab-fortress', true),
+                    Underworld: new GenericTab('tab-underworld', true),
+                    GoldTable: new GenericTab('tab-gold-table', false)
                 });
 
                 UI.register(UI.GoldExperience, 'show-attributes');

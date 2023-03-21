@@ -527,16 +527,16 @@
                 Loader.toggle(true);
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
-                        Players: new PlayersView('view-players'),
-                        PlayerDetail: new PlayerDetailView('view-player-detail'),
-                        PlayerModal: new PlayerModalView('view-player-modal'),
-                        Groups: new GroupsView('view-groups'),
-                        GroupDetail: new GroupDetailView('view-group-detail'),
-                        Browse: new BrowseView('view-browse'),
-                        Scripts: new ScriptsView('view-scripts'),
-                        Files: new FilesView('view-files'),
-                        Settings: new SettingsView('view-settings'),
-                        Profiles: new ProfilesView('view-profiles')
+                        Players: new PlayersTab('view-players'),
+                        PlayerDetail: new PlayerDetailTab('view-player-detail'),
+                        PlayerModal: new PlayerModalTab('view-player-modal'),
+                        Groups: new GroupsTab('view-groups'),
+                        GroupDetail: new GroupDetailTab('view-group-detail'),
+                        Browse: new BrowseTab('view-browse'),
+                        Scripts: new ScriptsTab('view-scripts'),
+                        Files: new FilesTab('view-files'),
+                        Settings: new SettingsTab('view-settings'),
+                        Profiles: new ProfilesTab('view-profiles')
                     });
 
                     UI.register(UI.Players, 'show-players');

@@ -28,7 +28,7 @@ class DynamicLoader {
 }
 
 // Group Detail View
-class GroupDetailView extends View {
+class GroupDetailTab extends Tab{
     constructor (parent) {
         super(parent);
 
@@ -339,7 +339,7 @@ class GroupDetailView extends View {
     }
 }
 
-class PlayerModalView extends View {
+class PlayerModalTab extends Tab{
     constructor (player) {
         super(player);
     }
@@ -717,7 +717,7 @@ class PlayerModalView extends View {
     }
 }
 
-class PlayerDetailView extends View {
+class PlayerDetailTab extends Tab{
     constructor (parent) {
         super(parent);
 
@@ -866,7 +866,7 @@ class PlayerDetailView extends View {
 }
 
 // Browse View
-class BrowseView extends View {
+class BrowseTab extends Tab{
     constructor (parent) {
         super(parent);
 
@@ -1350,7 +1350,7 @@ class BrowseView extends View {
 }
 
 // Groups View
-class GroupsView extends View {
+class GroupsTab extends Tab{
     _prepareOption (operator, key, storeKey) {
         this.$parent.operator(operator).toggleButton((state) => {
             SiteOptions[storeKey] = (this[key] = state);
@@ -1575,7 +1575,7 @@ class GroupsView extends View {
 }
 
 // Players View
-class PlayersView extends View {
+class PlayersTab extends Tab{
     _prepareOption (operator, key, storeKey) {
         this.$parent.operator(operator).toggleButton((state) => {
             SiteOptions[storeKey] = (this[key] = state);
@@ -1827,7 +1827,7 @@ class PlayersView extends View {
 }
 
 // Files View
-class FilesView extends View {
+class FilesTab extends Tab{
     // Export all to json file
     exportAllJson () {
         DatabaseManager.export().then(Exporter.json);
@@ -2619,7 +2619,7 @@ class FilesView extends View {
     }
 }
 
-class ScriptsView extends View {
+class ScriptsTab extends Tab{
     constructor (parent) {
         super(parent);
 
@@ -2958,7 +2958,7 @@ class ScriptsView extends View {
     }
 }
 
-class SettingsView extends View {
+class SettingsTab extends Tab{
     constructor (parent) {
         super(parent)
 
@@ -3063,7 +3063,7 @@ const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', '
 const PROFILES_GROUP_PROPS = ['timestamp', 'identifier', 'prefix', 'own', 'name', 'identifier', 'save'];
 const PROFILES_GROUP_INDEXES = ['own', 'identifier', 'timestamp', 'prefix'];
 
-class ProfilesView extends View {
+class ProfilesTab extends Tab{
     constructor (parent) {
         super(parent);
 
