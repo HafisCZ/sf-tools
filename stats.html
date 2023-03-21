@@ -528,15 +528,15 @@
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
                         Players: new PlayersView('view-players'),
+                        PlayerDetail: new PlayerDetailView('view-player-detail'),
+                        PlayerModal: new PlayerModalView('view-player-modal'),
                         Groups: new GroupsView('view-groups'),
+                        GroupDetail: new GroupDetailView('view-group-detail'),
                         Browse: new BrowseView('view-browse'),
                         Scripts: new ScriptsView('view-scripts'),
                         Files: new FilesView('view-files'),
                         Settings: new SettingsView('view-settings'),
-                        Profiles: new ProfilesView('view-profiles'),
-                        PlayerDetail: new PlayerDetailView('view-player-detail'),
-                        GroupDetail: new GroupDetailView('view-group-detail'),
-                        PlayerModal: new PlayerModalView('view-player-modal')
+                        Profiles: new ProfilesView('view-profiles')
                     });
 
                     UI.register(UI.Players, 'show-players');
@@ -544,10 +544,10 @@
                     UI.register(UI.Groups, 'show-groups');
                     UI.register(UI.GroupDetail, 'show-groups', { buttonClickable: false });
                     UI.register(UI.Browse, 'show-browse');
-                    UI.register(UI.Files, 'show-files');
                     UI.register(UI.Scripts, 'show-scripts');
-                    UI.register(UI.Profiles, 'show-profiles');
+                    UI.register(UI.Files, 'show-files');
                     UI.register(UI.Settings, 'show-settings');
+                    UI.register(UI.Profiles, 'show-profiles');
 
                     Loader.toggle(false);
 
