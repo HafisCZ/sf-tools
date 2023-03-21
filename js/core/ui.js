@@ -31,7 +31,7 @@ const UI = new (class {
         this.tabs = {};
     }
 
-    init (configs) {
+    register (configs) {
         for (const [name, config] of Object.entries(configs)) {
             const tab = (this[name] = config.tab);
 

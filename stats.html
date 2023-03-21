@@ -526,7 +526,7 @@
 
                 Loader.toggle(true);
                 DatabaseManager.load(profile).then(function () {
-                    UI.init({
+                    UI.register({
                         Players: {
                             tab: new PlayersTab('view-players'),
                             buttonId: 'show-players'
