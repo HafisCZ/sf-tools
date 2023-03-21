@@ -53,12 +53,12 @@ const UI = new (class {
             const object = Object.assign(
                 {
                     buttonElement: element,
-                    buttonEnabled: true
+                    buttonClickable: true
                 },
                 metadata
             )
 
-            if (object.buttonEnabled) {
+            if (object.buttonClickable) {
                 element.addEventListener('click', () => {
                     this.show(view);
                 });
