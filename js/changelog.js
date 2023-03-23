@@ -20,6 +20,9 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added <code>Pet Rank</code> and <code>Pet Honor</code> headers',
+            'Added discarded scripts to script archive',
+            'Added return action to script tab when opened from any table',
+            'Added show-on-hover to Webshop ID inside player detail',
             'Fixed loading of old characters with legacy 3-stat items',
             'Fixed players picked inconsistently for comparison'
         ],
