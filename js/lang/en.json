@@ -686,7 +686,8 @@
             "extras": {
                 "title": "Extras",
                 "registered": "Registered",
-                "webshopid": "Webshop ID"
+                "webshopid": "Webshop ID",
+                "webshopid_placeholder": "Hover to display"
             },
             "runes": {
                 "title": "Runes"

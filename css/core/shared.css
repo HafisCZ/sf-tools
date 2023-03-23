@@ -101,3 +101,27 @@ input:disabled {
   padding-top: 0.3em !important;
   padding-bottom: 0.3em !important;
 }
+
+/* Hover to display */
+.hover-to-display {
+  position: relative;
+}
+
+.hover-to-display > div.to-display {
+  opacity: 0;
+}
+
+.hover-to-display > div.to-hover {
+  inset: 0;
+  position: absolute;
+  pointer-events: none;
+  color: gray;
+}
+
+.hover-to-display:hover > div.to-display {
+  opacity: 1;
+}
+
+.hover-to-display:hover > div.to-hover {
+  opacity: 0;
+}

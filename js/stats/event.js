@@ -702,7 +702,10 @@ class PlayerModalTab extends Tab{
                             </div>
                             <div class="detail-entry">
                                 <div class="detail-item">${this.intl('extras.webshopid')}</div>
-                                <div class="detail-item text-center">${ player.WebshopID || '' }</div>
+                                <div class="detail-item text-center hover-to-display">
+                                    <div class="to-display">${ player.WebshopID || '' }</div>
+                                    <div class="to-hover">${this.intl('extras.webshopid_placeholder')}</div>    
+                                </div>
                             </div>
                         ` : '' }
                     </div>
