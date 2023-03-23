@@ -1436,6 +1436,7 @@ Site.ready(null, function (urlParams) {
     render();
 
     return {
-        getPlayers: () => currentPlayers
+        getPlayers: () => currentPlayers,
+        getFights: () => currentFights
     }
 })
