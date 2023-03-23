@@ -1,7 +1,7 @@
 const ScriptType = {
-    History: 0,
-    Players: 1,
-    Group: 2
+    Player: 0,
+    Group: 1,
+    Browse: 2
 }
 
 const EditorType = {
@@ -121,8 +121,8 @@ class RuleEvaluator {
 
 const FilterTypes = {
     'Guild': ScriptType.Group,
-    'Player': ScriptType.History,
-    'Players': ScriptType.Players
+    'Player': ScriptType.Player,
+    'Players': ScriptType.Browse
 };
 
 const Highlighter = new (class {
@@ -1683,8 +1683,8 @@ class Settings {
         // Special constants for macros
         let constants = new Constants();
         constants.addConstant('guild', ScriptType.Group);
-        constants.addConstant('player', ScriptType.History);
-        constants.addConstant('players', ScriptType.Players);
+        constants.addConstant('player', ScriptType.Player);
+        constants.addConstant('players', ScriptType.Browse);
 
         // Generate initial settings
         let settings = Settings.handleMacroVariables(lines, constants);
@@ -2413,7 +2413,7 @@ class Settings {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.type == ScriptType.Players) {
+            if (this.type == ScriptType.Browse) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),

@@ -95,6 +95,7 @@ function getSafeExpr (obj, ...args) {
 class TableInstance {
     constructor (settings, type, filteredCategories = null) {
         // Parameters
+        this.type = type;
         this.settings = new Settings(settings, type);
 
         // Handle trackers
@@ -126,13 +127,17 @@ class TableInstance {
             }
         }
 
-        this.type = type;
-
         this.config = [];
         this.sorting = [];
 
         // Table generator
-        this.createTable = () => Object.assign(this.sharedProperties(), this[['createHistoryTable', 'createPlayersTable', 'createGroupTable'][this.type]]())
+        const createMethods = {
+            [ScriptType.Player]: 'createPlayerTable',
+            [ScriptType.Group]: 'createGroupTable',
+            [ScriptType.Browse]: 'createBrowseTable'
+        }
+
+        this.createTable = () => Object.assign(this.sharedProperties(), this[createMethods[this.type]]())
 
         // Loop over all categories
         this.settings.categories.forEach((category, categoryIndex, categories) => {
@@ -406,7 +411,7 @@ class TableInstance {
 
     // Set players
     setEntries (array, skipEvaluation = false, manualSort = null) {
-        if (this.type == ScriptType.History) {
+        if (this.type == ScriptType.Player) {
             this.array = array.map(([ timestamp, e ]) => {
                 let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
                 let disc = this.settings.discardRules.some(rule => new ExpressionScope(this.settings).with(obj, obj).eval(rule));
@@ -414,7 +419,7 @@ class TableInstance {
 
                 return disc ? null : [ timestamp, obj ];
             }).filter(e => e);
-        } else if (this.type == ScriptType.Players) {
+        } else if (this.type == ScriptType.Browse) {
             this.array = array.map(obj => {
                 let { player, compare } = obj;
 
@@ -435,22 +440,22 @@ class TableInstance {
         }
 
         // Evaluate variables
-        if (this.type == ScriptType.History) {
+        if (this.type == ScriptType.Player) {
             this.settings.evalHistory(this.array.map(p => p[1]), array.map(p => p[1]));
         } else if (!skipEvaluation) {
-            if (this.type == ScriptType.Players) {
+            if (this.type == ScriptType.Browse) {
                 this.settings.evalPlayers(this.array, array);
             } else {
                 this.settings.evalGuilds(this.array, array);
             }
         }
 
-        if (!skipEvaluation || this.type == ScriptType.History) {
+        if (!skipEvaluation || this.type == ScriptType.Player) {
             ExpressionCache.reset();
             this.clearCache();
         }
 
-        if (manualSort && this.type != ScriptType.History) {
+        if (manualSort && this.type != ScriptType.Player) {
             this.array.sort((a, b) => manualSort(b.player, b.compare) - manualSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
         }
 
@@ -483,7 +488,7 @@ class TableInstance {
         let dividerStyle = this.getCellDividerStyle();
         let rowHeight = this.settings.getRowHeight();
 
-        if (this.type == ScriptType.History) {
+        if (this.type == ScriptType.Player) {
             // Loop over all items of the array
             for (let i = 0; i < this.array.length; i++) {
                 // Get variables
@@ -527,7 +532,7 @@ class TableInstance {
                     content: content
                 })
             }
-        } else if (this.type == ScriptType.Players) {
+        } else if (this.type == ScriptType.Browse) {
             // Whether timestamps match
             let noCompare = this.array.reference == this.array.timestamp;
 
@@ -930,7 +935,7 @@ class TableInstance {
         }
     }
 
-    createHistoryTable () {
+    createPlayerTable () {
         // Width of the whole table
         let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
         let indexStyle = this.settings.getIndexStyle();
@@ -1037,7 +1042,7 @@ class TableInstance {
     }
 
     // Create players table
-    createPlayersTable () {
+    createBrowseTable () {
         // Width of the whole table
         let nameWidth = this.settings.getNameStyle();
         let serverWidth = this.settings.getServerStyle();
@@ -1273,7 +1278,7 @@ class TableInstance {
     }
 
     getArrayForStatistics () {
-        if (this.type == 0) {
+        if (this.type == ScriptType.Player) {
             return this.array.map(([timestamp, player], index, array) => {
                 return {
                     player: player,
@@ -1488,7 +1493,7 @@ class TableController {
             ExpressionCache.start();
 
             this.table.setEntries(... this.entries);
-            if (this.type != ScriptType.History) {
+            if (this.type != ScriptType.Player) {
                 this.table.sort();
             }
 
@@ -1496,7 +1501,7 @@ class TableController {
         }
 
         // Reset sorting
-        if (sorting != null && this.type != ScriptType.History) {
+        if (sorting != null && this.type != ScriptType.Player) {
             this.table.sorting = sorting;
             this.table.sort();
         }

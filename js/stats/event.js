@@ -725,7 +725,7 @@ class PlayerDetailTab extends Tab{
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
-        this.table = new TableController(this.$table, ScriptType.History);
+        this.table = new TableController(this.$table, ScriptType.Player);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -876,8 +876,8 @@ class BrowseTab extends Tab{
         this.$table = this.$parent.find('[data-op="table"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table, ScriptType.Players);
-        this.tableQ = new TableController(this.$table, ScriptType.Players);
+        this.tableBase = new TableController(this.$table, ScriptType.Browse);
+        this.tableQ = new TableController(this.$table, ScriptType.Browse);
 
         // Keep track of what table is displayed and swap if necessary later
         this.table = this.tableBase;
