@@ -157,6 +157,11 @@ const FLAGS = Object.defineProperty(
 // Configuration
 const CONFIG = Object.defineProperties(
     {
+        General: {
+            CritBase: 2,
+            CritGladiatorBonus: 0.11,
+            CritEnchantmentBonus: 0.05
+        },
         Warrior: {
             Attribute: 'Strength',
 
@@ -234,13 +239,13 @@ const CONFIG = Object.defineProperties(
             SwoopChanceMin: 0,
             SwoopChanceMax: 50,
             SwoopChanceDecay: -5,
-            SwoopBonus: 0.825,
+            SwoopBonus: 0.775,
 
             SkipChance: 35,
             RageSkipChance: 0,
 
             RageCriticalChance: 75,
-            RageCriticalBonus: 1.8
+            RageCriticalBonus: 3.6
         },
         Bard: {
             Attribute: 'Intelligence',
@@ -267,12 +272,12 @@ const CONFIG = Object.defineProperties(
         },
         fromIndex: {
             value: function (index) {
-                return Object.values(this)[index - 1];
+                return Object.values(this)[index];
             }
         },
         indexes: {
             value: function () {
-                return Object.keys(this).map((value, index) => index + 1);
+                return Array.from({ length: Object.keys(this).length - 1 }, (_, i) => i + 1);
             }
         }
     }
@@ -461,7 +466,11 @@ class FighterModel {
     constructor (index, player) {
         this.Index = index;
         this.Player = FighterModel.normalize(player);
-        this.Config = CONFIG[this.constructor.name.slice(0, -5)];
+        this.Config = Object.assign(
+            {},
+            CONFIG[this.constructor.name.slice(0, -5)],
+            CONFIG.General
+        );
     }
 
     getAttribute (source) {
@@ -511,7 +520,10 @@ class FighterModel {
 
     // Critical Multiplier
     getCriticalMultiplier (weapon, weapon2, target) {
-        let baseMultiplier = (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) ? 1.05 : 1;
+        let multiplier = this.Config.CritBase;
+        if (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) {
+            multiplier += this.Config.CritEnchantmentBonus;
+        }
 
         let ownGladiator = this.Player.Fortress.Gladiator || 0;
         let reducingGladiator = target.Player.Fortress.Gladiator || 0;
@@ -525,7 +537,9 @@ class FighterModel {
             reducingGladiator = 0;
         }
 
-        return 2 * baseMultiplier * (1 + 0.05 * Math.max(0, ownGladiator - reducingGladiator));
+        multiplier += this.Config.CritGladiatorBonus * Math.max(0, ownGladiator - reducingGladiator);
+
+        return multiplier;
     }
 
     // Health
@@ -753,6 +767,7 @@ class DruidModel extends FighterModel {
         super.reset(resetHealth);
 
         this.SwoopChance = this.Config.SwoopChance;
+        this.RequestState = false;
     }
 
     initialize (target) {
@@ -766,18 +781,22 @@ class DruidModel extends FighterModel {
     }
 
     attack (damage, target, skipped, critical, type) {
+        if (this.RequestState) {
+            this.RequestState = false;
+
+            this.enterState(this.RageState);
+        } else if (this.specialState()) {
+            this.enterState();
+        }
+
         if (this.specialState()) {
-            const returnValue = super.attack(
+            return super.attack(
                 damage,
                 target,
                 skipped,
                 critical,
                 type
             );
-
-            this.enterState();
-
-            return returnValue;
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
             
@@ -801,8 +820,8 @@ class DruidModel extends FighterModel {
     }
 
     onDamageTaken (source, damage) {
-        if (damage == 0) {
-            this.enterState(this.RageState);
+        if (damage == 0 && !this.specialState()) {
+            this.RequestState = true;
         }
 
         return super.onDamageTaken(source, damage);
