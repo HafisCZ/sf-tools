@@ -1311,20 +1311,27 @@
                                 round.attackRage = 1 + ((i + attackRageOffset) / 6);
                             }
 
-                            // Add attacker special stage
-                            let lastAttacker = null;
-                            let lastAttackerMissed = false;
+                            // Add special state
+                            if (fighterA.Class === DRUID || fighterB.Class === DRUID) {
+                                // Run only when one of the fighters is a druid as only they have special states
+                                for (const fighter of [fighterA, fighterB].filter((fighter) => fighter.Class === DRUID)) {
+                                    let requestState = false;
+                                    let keepState = false;
 
-                            for (const round of processedRounds) {
-                                if (round.attacker != lastAttacker) {
-                                    if (round.attacker.Class === DRUID && lastAttackerMissed) {
-                                        round.attackerSpecialState = true;
+                                    for (const round of processedRounds) {
+                                        if (round.attackSpecial) {
+                                            continue;
+                                        } else if (round.attacker === fighter) {
+                                            round.attackerSpecialState = requestState;
+
+                                            keepState = requestState && !keepState;
+                                            requestState = false;
+                                        } else if (round.attackMissed && !keepState) {
+                                            requestState = true;
+                                        } else if (keepState) {
+                                            round.targetSpecialState = true;
+                                        }
                                     }
-                                    
-                                    lastAttacker = round.attacker;
-                                    lastAttackerMissed = round.attackMissed;
-                                } else {
-                                    lastAttackerMissed = lastAttackerMissed || round.attackMissed;
                                 }
                             }
 
