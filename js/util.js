@@ -113,8 +113,8 @@ function copyGrid (headers, values, transformer) {
 })();
 
 class Constants {
-    constructor () {
-        this.Values = {
+    constructor (values = null) {
+        this.Values = values || {
             'green': '#00c851',
             'orange': '#ffbb33',
             'red': '#ff3547',
