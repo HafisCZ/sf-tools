@@ -1117,6 +1117,7 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
+        "analyze": "Statistical analysis",
         "clear_changes": "Reset to original state",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
@@ -1373,6 +1374,12 @@
                     "title": "Acceptable base error"
                 }
             }
+        },
+        "fight_statistical_analysis": {
+            "title": "Statistical analysis",
+            "selector": "Selector expression",
+            "count": "Count",
+            "add": "Add new selector"
         },
         "template_manage": {
             "title": "Templates",

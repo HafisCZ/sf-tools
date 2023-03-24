@@ -73,10 +73,10 @@ const AnalyzerOptionsDialog = new (class extends Dialog {
     }
 })();
 
-const FightSummaryDialog = new (class extends Dialog {
+const FightStatisticalAnalysisDialog = new (class extends Dialog {
     constructor () {
         super({
-            key: 'shared',
+            key: 'fight_statistical_analysis',
             dismissable: true,
             opacity: 0
         })
@@ -85,79 +85,93 @@ const FightSummaryDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="bordered inverted dialog">
-                <div data-op="content"></div>
-                <button class="ui black fluid button" data-op="cancel">${this.intl('close')}</button>
+                <div class="header">${this.intl('title')}</div>
+                <div class="ui inverted form flex flex-col gap-4 pr-4 overflow-y-scroll" data-op="content" style="height: 50vh;"></div>
+                <div class="ui two fluid buttons">
+                    <button class="ui button !text-black !background-orange" data-op="add">${this.intl('add')}</button>
+                    <button class="ui black button" data-op="cancel">${intl('dialog.shared.close')}</button>
+                </div>
             </div>
         `;
     }
 
     _createBindings () {
-        this.$closeButton = this.$parent.find('[data-op="cancel"]');
+        this.$closeButton = this.$parent.operator('cancel');
         this.$closeButton.click(() => {
             this.close();
         })
 
-        this.$content = this.$parent.find('[data-op="content"]');
+        this.$content = this.$parent.operator('content');
+
+        this.$add = this.$parent.operator('add');
+        this.$add.click(() => {
+            this._inject();
+        })
     }
 
-    _percentage (value, total) {
-        if (value) {
-            return ` ${(Math.trunc(1000 * value / total) / 10).toFixed(1)}%`
-        } else {
-            return '';
-        }
+    _inject () {
+        const index = this.groups.length;
+
+        const $group = $(`
+            <div class="fields !mb-0">
+                <div class="twelve wide field">
+                    <label>${this.intl('selector')}</label>
+                    <div class="ta-wrapper" style="height: initial;">
+                        <input data-op="selector" class="ta-area" data-op="primary" type="text" placeholder="${this.intl('selector')}">
+                        <div data-op="overlay" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                    </div>
+                </div>
+                <div class="four wide field">
+                    <label>${this.intl('count')}</label>
+                    <div class="ui inverted centered input">
+                        <input data-op="count" type="text" disabled>
+                    </div>
+                </div>
+            </div>
+        `).appendTo(this.$content);
+
+        const $selector = $group.operator('selector');
+        const $overlay = $group.operator('overlay');
+        const $count = $group.operator('count');
+
+        $selector.on('change input', (event) => {
+            const html = Highlighter.expression(event.currentTarget.value || '', undefined, ['player1', 'player2']).text
+            $overlay.html(html);
+
+            this._changed();
+        })
+
+        this.groups.push({
+            index,
+            selector: $selector,
+            count: $count
+        })
+
+        this._changed();
     }
 
-    _applyArguments (group, { fighterA, fighterB }) {
-        let content = `
-            <h2 class="ui centered inverted header">${intl('analyzer.summary.type')}</h2>
-            <table class="ui inverted single very line basic table fixed">
-                <thead>
-                    <tr>
-                        <th style="width: 20%;" class="!text-center">${intl('analyzer.table.type')}</th>
-                        <th colspan="2" style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterA.name}</th>
-                        <th colspan="2" style="width: 40%; text-overflow: ellipsis; white-space: nowrap;" class="!text-center">${fighterB.name}</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        // Attacks
-        const keys = Object.keys(Object.assign({}, fighterA.attacks, fighterB.attacks));
+    _changed () {
+        const globalScope = new ExpressionScope().add({ player1: this.fighterA, player2: this.fighterB });
         
-        const totalA = _sum(Object.values(fighterA.attacks));
-        const totalB = _sum(Object.values(fighterB.attacks));
+        for (const { selector, count } of this.groups) {
+            const expression = new Expression(selector.val() || 'true');
 
-        content += `
-            <tr>
-                <td class="!text-center">${intl('stats.files.filters.any')}</td>
-                <td colspan="2" class="!text-center">${totalA}</td>
-                <td colspan="2" class="!text-center">${totalB}</td>
-            </tr>
-        `;
-
-        for (const key of keys) {
-            content += `
-                <tr>
-                    <td class="!text-center">${intl(`general.attack${key}`)} #${key}</td>
-                    <td class="!text-center">${fighterA.attacks[key] || ''}</td>
-                    <td class="!text-center">${this._percentage(fighterA.attacks[key], totalA)}</td>
-                    <td class="!text-center">${fighterB.attacks[key] || ''}</td>
-                    <td class="!text-center">${this._percentage(fighterB.attacks[key], totalB)}</td>
-                </tr>
-            `;
+            count.val(this.rounds.filter((round) => expression.eval(globalScope.copy().addSelf(round))).length);
         }
+    }
 
-        content += `
-                </tbody>
-            </table>
-        `;
+    _applyArguments ({ fights, fighterA, fighterB }) {
+        this.fighterA = fighterA;
+        this.fighterB = fighterB;
+        this.rounds = fights.map((fight) => fight.rounds).flat().filter((round) => !round.attackSpecial);
 
-        this.$content.html(content);
+        this.groups = [];
+
+        this._inject();
     }
 })();
 
-Site.ready(null, function (urlParams) {
+Site.ready(null, function (urlParams) {//DialogController.open(FightStatisticalAnalysisDialog, {fights:[]})
     // Elements
     const $buttonUpload = $('#button-upload');
     const $buttonClear = $('#button-clear');
@@ -170,15 +184,13 @@ Site.ready(null, function (urlParams) {
     const $buttonExportFight = $('#button-export-fight');
     const $buttonResetGroup = $('#button-reset-group');
     const $buttonCopyGroup = $('#button-copy-group');
+    const $buttonAnalyzeGroup = $('#button-analyze-group');
 
     const $groupList = $('#group-list');
     const $fightList = $('#fight-list');
     const $fightTable = $('#fight-table');
     const $fightView = $('#fight-view');
     const $fightCopy = $('#fight-copy');
-
-    const $buttonSummaryGroup = $('#button-summary-group');
-    const $buttonSummaryFight = $('#button-summary-fight');
 
     const $sidebarDamages = $('#sidebar-damages');
     const $sidebarDamagesContent = $('#sidebar-damages-content');
@@ -299,6 +311,12 @@ Site.ready(null, function (urlParams) {
             copyMatrix(matrix);
         }
     });
+
+    $buttonAnalyzeGroup.click(() => {
+        if (currentGroup) {
+            DialogController.open(FightStatisticalAnalysisDialog, currentGroup);
+        }
+    })
 
     // Listener
     if (urlParams.has('broadcast')) {
@@ -861,9 +879,7 @@ Site.ready(null, function (urlParams) {
 
         // Convert all player data into actual player models and optionally companions
         for (const data of digestedPlayers) {
-            const { own, save, name, tower } = data;
-
-            if (own) {
+            if (data.own) {
                 // Add own player
                 const player = new SFOwnPlayer(data);
                 currentPlayers.push(player);
@@ -899,7 +915,7 @@ Site.ready(null, function (urlParams) {
         const buttonsEnabled = currentFights.length > 0;
         const buttonsMethod = buttonsEnabled ? 'removeClass' : 'addClass';
 
-        for (const $button of [$buttonExport, $buttonClear, $buttonSummaryGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup, $buttonDamagesOpen]) {
+        for (const $button of [$buttonExport, $buttonClear, $buttonAnalyzeGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup, $buttonDamagesOpen]) {
             $button[buttonsMethod]('disabled');
         }
 
@@ -980,7 +996,6 @@ Site.ready(null, function (urlParams) {
             renderPlayer(group.fighterB, playerEditorB, soft);
 
             renderFightGroup(group);
-            renderButtons($buttonSummaryGroup, group);
         });
 
         if (groupedFights.length > 0) {
@@ -1099,7 +1114,6 @@ Site.ready(null, function (urlParams) {
             currentFight = fight;
 
             updatePreview();
-            renderButtons($buttonSummaryFight, group, fight);
         });
 
         const defaultFightIndex = group.fights[0].index;
@@ -1135,11 +1149,6 @@ Site.ready(null, function (urlParams) {
             // Swap type to fireball if BM swoops
             if (round.attacker.Class == BATTLEMAGE && [ATTACK_SWOOP, ATTACK_SWOOP_EVADED, ATTACK_SWOOP_BLOCKED].includes(round.attackType)) {
                 round.attackType = round.attackType === ATTACK_SWOOP ? ATTACK_FIREBALL : ATTACK_FIREBALL_BLOCKED;
-            }
-
-            // Log attack
-            if (round.attackType < ATTACK_BARD_SONG && round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_FIREBALL_BLOCKED && round.attackType !== ATTACK_CATAPULT) {
-                round.hasLog = true;
             }
 
             // Set display special state
@@ -1207,10 +1216,7 @@ Site.ready(null, function (urlParams) {
 
         // Prepare summary
         for (const fighter of [group.fighterA, group.fighterB]) {
-            Object.assign(fighter, {
-                attacks: {},
-                damages: {}
-            });
+            fighter.damages = {};
 
             const items = fighter.editor.Items;
 
@@ -1229,37 +1235,22 @@ Site.ready(null, function (urlParams) {
 
         // Calculate summary
         for (const fight of group.fights) {
-            fight.fighterA = {
-                attacks: {}
-            }
-
-            fight.fighterB = {
-                attacks: {}
-            }
-
-            for (const { attacker, attackType, hasLog, hasError, attackBase, hasBase, attackSecondary, attackCrit } of fight.rounds) {
-                const fightContainer = fight[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
-                const groupContainer = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
-
-                // Calculate type occurences
-                if (hasLog) {
-                    fightContainer.attacks[attackType] = (fightContainer.attacks[attackType] || 0) + 1;
-                    groupContainer.attacks[attackType] = (groupContainer.attacks[attackType] || 0) + 1;
-                }
+            for (const { attacker, attackType, hasError, attackBase, hasBase, attackSecondary, attackCrit } of fight.rounds) {
+                const container = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
 
                 // Calculate damage range
                 if (hasBase) {
                     const key = `${attackSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP ? '_swoop' : ''}${attackCrit ? '_critical' : ''}`;
 
-                    if (typeof groupContainer.damages[key] === 'undefined') {
-                        groupContainer.damages[key] = {
+                    if (typeof container.damages[key] === 'undefined') {
+                        container.damages[key] = {
                             min: +Infinity,
                             max: -Infinity,
                             err: false
                         };
                     }
 
-                    const range = groupContainer.damages[key];
+                    const range = container.damages[key];
 
                     range.min = Math.min(range.min, attackBase);
                     range.max = Math.max(range.max, attackBase);
@@ -1326,27 +1317,6 @@ Site.ready(null, function (urlParams) {
                 </div>
             `);
         }
-    }
-
-    function renderButtons ($element, group, fight) {
-        $element.off('click');
-        $element.click(() => {
-            if (currentGroup) {
-                const { fighterA, fighterB } = fight || group;
-                const data = {
-                    fighterA: {
-                        attacks: fighterA.attacks,
-                        name: getFighterName(group.fighterA)
-                    },
-                    fighterB: {
-                        attacks: fighterB.attacks,
-                        name: getFighterName(group.fighterB)
-                    }
-                }
-
-                DialogController.open(FightSummaryDialog, group, data);
-            }
-        });
     }
 
     function importFights ({ players, fights, config }) {
