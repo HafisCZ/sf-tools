@@ -590,7 +590,7 @@ Site.ready(null, function (urlParams) {
             // Set config and render
             CONFIG.set(config);
 
-            render();
+            render(true);
         }
     });
 
@@ -909,7 +909,7 @@ Site.ready(null, function (urlParams) {
         } 
     }
 
-    function render () {
+    function render (soft = false) {
         $fightView.hide();
 
         renderGeneralButtons();
@@ -976,8 +976,8 @@ Site.ready(null, function (urlParams) {
 
             $fightView.show();
 
-            renderPlayer(group.fighterA, playerEditorA);
-            renderPlayer(group.fighterB, playerEditorB);
+            renderPlayer(group.fighterA, playerEditorA, soft);
+            renderPlayer(group.fighterB, playerEditorB, soft);
 
             renderFightGroup(group);
             renderButtons($buttonSummaryGroup, group);
@@ -988,8 +988,8 @@ Site.ready(null, function (urlParams) {
         }
     }
 
-    function renderPlayer (player, editor) {
-        editor.fill(player.player || player.editor || player);
+    function renderPlayer (player, editor, soft) {
+        editor.fill(soft ? (player.editor || player.player) : (player.player || player.editor) || player);
     }
 
     const ATTACK_RAGE_FORMATS = {
