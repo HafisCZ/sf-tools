@@ -43,6 +43,7 @@ const CHANGELOG = {
             'Added customizable base damage error margin',
             'Added new custom state display for Bards and Druids',
             'Added new damage range sidebar',
+            'Added statistical analysis tool',
             'Fixed catapult attack'
         ],
         'All Simulators': [
