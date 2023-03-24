@@ -171,7 +171,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
     }
 })();
 
-Site.ready(null, function (urlParams) {//DialogController.open(FightStatisticalAnalysisDialog, {fights:[]})
+Site.ready(null, function (urlParams) {
     // Elements
     const $buttonUpload = $('#button-upload');
     const $buttonClear = $('#button-clear');
