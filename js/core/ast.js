@@ -1173,7 +1173,7 @@ class Expression {
                     ExpressionCache.set(scope, node, value);
                     return value;
                 }
-            } else if (scope.env.lists.hasOwnProperty(node)) {
+            } else if (scope.env.lists && scope.env.lists.hasOwnProperty(node)) {
                 return scope.env.lists[node];
             } else if (scope.env.constants.exists(node)) {
                 // Return constant

@@ -1377,9 +1377,10 @@
         },
         "fight_statistical_analysis": {
             "title": "Statistical analysis",
-            "selector": "Selector expression",
+            "selector": "Filter expression",
             "count": "Count",
-            "add": "Add new selector"
+            "add": "Add new counter",
+            "variables": "Available variables:"
         },
         "template_manage": {
             "title": "Templates",
