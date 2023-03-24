@@ -203,6 +203,8 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
 
         this.groups = [];
 
+        this.$content.empty();
+
         this._inject();
     }
 })();
