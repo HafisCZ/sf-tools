@@ -46,6 +46,11 @@
             <a class="item" id="button-export"><i class="download icon"></i> <span data-intl="analyzer.topbar.export"></span></a>
             <a class="item" id="button-clear"><i class="recycle icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
             <a class="item" id="button-options"><i class="cog icon"></i> <span data-intl="analyzer.topbar.options"></span></a>
+            <div class="right menu" id="show-right-menu">
+                <a class="item" id="button-reset-group" data-position="bottom center" data-intl-tooltip="analyzer.clear_changes" data-inverted=""><i class="ui eraser icon"></i></a>
+                <a class="item" id="button-analyze-group" data-position="bottom center" data-intl-tooltip="analyzer.analyze" data-inverted=""><i class="ui chalkboard icon"></i></a>
+                <a class="item" id="button-damages" data-position="bottom center" data-intl-tooltip="analyzer.sidebar.toggles.damages" data-inverted=""><i class="ui stream icon"></i></a>
+            </div>
         </div>
 
         <div class="ui main inverted container mb-20" style="width: 65vw;">
@@ -58,15 +63,9 @@
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
-                    <div class="one wide field" style="width: 14.5em;">
+                    <div class="one wide field" style="width: 7.5em;">
                         <label>&nbsp;</label>
                         <div class="ui right floated buttons">
-                            <div class="ui icon basic inverted button" id="button-reset-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.clear_changes">
-                                <i class="ui recycle icon"></i>
-                            </div>
-                            <div class="ui icon basic inverted button" id="button-analyze-group" data-inverted="" data-position="bottom center" data-intl-tooltip="analyzer.analyze">
-                                <i class="ui chalkboard icon"></i>
-                            </div>
                             <div class="ui icon basic inverted button" id="button-copy-group" data-inverted="" data-position="bottom center" data-intl-tooltip="editor.copy">
                                 <i class="ui copy icon"></i>
                             </div>
@@ -466,18 +465,7 @@
             </div>
         </div>
 
-        <div class="position-absolute right-0" style="top: calc(50px + 9.7em);">
-            <div class="ui small basic inverted icon button" id="button-damages-open" style="box-shadow: 0 0 0 1px rgb(58, 58, 58) inset;">
-                <i class="ui angle double left icon"></i>
-            </div>
-        </div>
-
         <div id="sidebar-damages" class="position-absolute right-0 z-2 !border-radius-1 border-left-gray border-top-gray border-bottom-gray pb-1" style="width: 300px; top: calc(50px + 9.7em); display: none;">
-            <div class="position-absolute" style="left: -1px; top: -1px; z-index: 3;">
-                <div class="ui small basic inverted icon button" id="button-damages-close" style="box-shadow: 0 0 0 1px rgb(58, 58, 58) inset;">
-                    <i class="ui angle double right icon"></i>
-                </div>
-            </div>
             <div id="sidebar-damages-content" class="flex flex-col p-4" style="gap: 2.5em;"></div>
         </div>
     </body>

@@ -1129,10 +1129,6 @@
             "damage": "Damage",
             "damage_base": "Base damage"
         },
-        "summary": {
-            "view": "View summary",
-            "type": "Attack types"
-        },
         "toast_import_error": {
             "title": "Import failed",
             "message": "Ensure that you are importing a valid HAR or fight JSON"
@@ -1142,6 +1138,9 @@
             "bard_song": "Bard has played a song"
         },
         "sidebar": {
+            "toggles": {
+                "damages": "Show damage ranges"
+            },
             "damages": {
                 "weapon1_range_base": "Input range",
                 "weapon2_range_base": "Input range (secondary)",
