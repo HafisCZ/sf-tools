@@ -592,7 +592,7 @@ class FighterModel {
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 
-        return base;
+        return Math.trunc(base);
     }
 
     // Get damage range
