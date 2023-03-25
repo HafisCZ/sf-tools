@@ -93,7 +93,7 @@ Site.ready(null, function () {
     StatisticsIntegration.configure({
         profile: SELF_PROFILE_WITH_GROUP,
         type: 'players',
-        scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && _dig(player, 'Pets', 'Levels')),
+        scope: (dm) => dm.getLatestPlayers(true).filter((player) => _dig(player, 'Pets', 'Levels')),
         callback: (player) => {
             currentPlayer = player;
 

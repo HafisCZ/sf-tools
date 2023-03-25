@@ -588,7 +588,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     StatisticsIntegration.configure({
         profile: SELF_PROFILE,
         type: 'players',
-        scope: (dm) => dm.getLatestPlayers(),
+        scope: (dm) => dm.getLatestPlayers(true),
         callback: (player) => {
             dungeon = DUNGEON_DATA[dungeon_current];
             boss = boss_current;

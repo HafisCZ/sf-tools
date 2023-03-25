@@ -83,7 +83,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     StatisticsIntegration.configure({
         profile: SELF_PROFILE,
         type: 'players',
-        scope: (dm) => dm.getLatestPlayers().filter(({ Underworld: uw }) => typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0)),
+        scope: (dm) => dm.getLatestPlayers(true).filter(({ Underworld: uw }) => typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0)),
         callback: (player) => {
             underworldEditor.fill(player.Underworld);
 

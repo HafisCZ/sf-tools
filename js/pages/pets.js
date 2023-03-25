@@ -541,7 +541,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     StatisticsIntegration.configure({
         profile: SELF_PROFILE,
         type: 'players',
-        scope: (dm) => dm.getLatestPlayers().filter((player) => typeof player.Pets !== 'undefined' && player.Pets.TotalLevel),
+        scope: (dm) => dm.getLatestPlayers(true).filter((player) => typeof player.Pets !== 'undefined' && player.Pets.TotalLevel),
         callback: (player) => {
             updateDungeonButton(player);
 

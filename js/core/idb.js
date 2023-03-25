@@ -876,8 +876,14 @@ const DatabaseManager = new (class {
         }
     }
 
-    getLatestPlayers () {
-        return Object.values(this.Players).map(player => player.Latest);
+    getLatestPlayers (onlyOwn = false) {
+        const array = Object.values(this.Players).map(player => player.Latest);
+
+        if (onlyOwn) {
+            return array.filter((player) => player.Own);
+        } else {
+            return array;
+        }
     }
 
     isHidden (id, ts) {
