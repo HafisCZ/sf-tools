@@ -31,16 +31,8 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   font-size: 70%;
 }
 
-#view-groupdetail .dropdown.text-full-width > .text {
+#view-group-detail .dropdown.text-full-width > .text {
   width: calc(100% - 2.5em);
-}
-
-#view-settings > .ui.basic.segment {
-  padding: 0;
-}
-
-#modal-settings > .ui.basic.segment {
-  padding: 0;
 }
 
 .detail-top {
