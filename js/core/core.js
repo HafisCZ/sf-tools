@@ -147,6 +147,10 @@ const OptionsHandler = class {
         return Object.keys(this.defaults);
     }
 
+    toggle (key) {
+        this[key] = !this[key];
+    }
+
     changed (option) {
         for (const { name, callback } of this.listeners) {
             if (name == option) callback(this.options[option]);

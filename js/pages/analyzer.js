@@ -215,8 +215,7 @@ Site.ready(null, function (urlParams) {
     const $buttonClear = $('#button-clear');
     const $buttonExport = $('#button-export');
     const $buttonOptions = $('#button-options');
-    const $buttonDamagesOpen = $('#button-damages-open');
-    const $buttonDamagesClose = $('#button-damages-close');
+    const $buttonDamages = $('#button-damages');
 
     const $buttonExportGroup = $('#button-export-group');
     const $buttonExportFight = $('#button-export-fight');
@@ -308,16 +307,6 @@ Site.ready(null, function (urlParams) {
 
             render();
         }
-    })
-
-    $buttonDamagesOpen.click(() => {
-        $buttonDamagesOpen.hide();
-        $sidebarDamages.show();
-    });
-
-    $buttonDamagesClose.click(() => {
-        $buttonDamagesOpen.show();
-        $sidebarDamages.hide();
     })
 
     $fightCopy.click(() => {
@@ -635,9 +624,23 @@ Site.ready(null, function (urlParams) {
         'analyzer',
         {
             rage_display_mode: 'decimal',
-            base_damage_error_margin: 1
+            base_damage_error_margin: 1,
+            damages_sidebar: false
         }
     )
+
+    $buttonDamages.click(() => {
+        analyzerOptions.toggle('damages_sidebar');
+
+        renderDamagesSidebar(currentGroup);
+        renderToggles();
+    })
+
+    function renderToggles () {
+        $buttonDamages[analyzerOptions.damages_sidebar ? 'addClass' : 'removeClass']('!text-orange');
+    }
+
+    renderToggles();
 
     // Utils
     SimulatorUtils.configure({
@@ -953,14 +956,9 @@ Site.ready(null, function (urlParams) {
         const buttonsEnabled = currentFights.length > 0;
         const buttonsMethod = buttonsEnabled ? 'removeClass' : 'addClass';
 
-        for (const $button of [$buttonExport, $buttonClear, $buttonAnalyzeGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup, $buttonDamagesOpen]) {
+        for (const $button of [$buttonExport, $buttonClear, $buttonAnalyzeGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup]) {
             $button[buttonsMethod]('disabled');
         }
-
-        if (!buttonsEnabled) {
-            $sidebarDamages.hide();
-            $buttonDamagesOpen.show();
-        } 
     }
 
     function render (soft = false) {
@@ -1038,6 +1036,8 @@ Site.ready(null, function (urlParams) {
 
         if (groupedFights.length > 0) {
             $groupList.dropdown('set selected', _dig(currentGroup, 'hash') || groupedFights[0].hash);
+        } else {
+            renderDamagesSidebar(null);
         }
     }
 
@@ -1322,6 +1322,13 @@ Site.ready(null, function (urlParams) {
     ];
 
     function renderDamagesSidebar (group) {
+        if (analyzerOptions.damages_sidebar && group) {
+            $sidebarDamages.show();
+        } else {
+            $sidebarDamages.hide();
+            return;
+        }
+
         $sidebarDamagesContent.empty();
 
         for (const fighter of [group.fighterA, group.fighterB]) {
