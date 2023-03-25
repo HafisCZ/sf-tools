@@ -368,7 +368,7 @@ Site.ready(null, function () {
     StatisticsIntegration.configure({
         profile: SELF_PROFILE,
         type: 'players',
-        scope: (dm) => dm.getLatestPlayers().filter((player) => player.Own && player.Level >= 105 && player.Idle),
+        scope: (dm) => dm.getLatestPlayers(true).filter((player) => player.Level >= 105 && player.Idle),
         callback: (player) => {
             EditorController.load(player);
         }
