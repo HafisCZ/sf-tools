@@ -592,7 +592,7 @@ class FighterModel {
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 
-        return Math.max(1, Math.trunc(base));
+        return base;
     }
 
     // Get damage range
@@ -602,8 +602,8 @@ class FighterModel {
 
         return {
             Base: dm,
-            Max: Math.ceil(dm * Math.max(weapon.DamageMax, bd.Max)),
-            Min: Math.ceil(dm * Math.max(weapon.DamageMin, bd.Min))
+            Max: dm * Math.max(weapon.DamageMax, bd.Max),
+            Min: dm * Math.max(weapon.DamageMin, bd.Min)
         };
     }
 
@@ -662,7 +662,7 @@ class FighterModel {
                 damage *= this.State.CriticalMultiplier;
             }
 
-            damage = Math.ceil(damage);
+            damage = Math.trunc(damage);
         }
 
         if (FIGHT_LOG_ENABLED) {
