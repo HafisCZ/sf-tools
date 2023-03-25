@@ -216,6 +216,7 @@ Site.ready(null, function (urlParams) {
     const $buttonExport = $('#button-export');
     const $buttonOptions = $('#button-options');
     const $buttonDamages = $('#button-damages');
+    const $buttonGladiator = $('#button-gladiator');
 
     const $buttonExportGroup = $('#button-export-group');
     const $buttonExportFight = $('#button-export-fight');
@@ -636,8 +637,18 @@ Site.ready(null, function (urlParams) {
         renderToggles();
     })
 
+    $buttonGladiator.click(() => {
+        FLAGS.set({
+            NoGladiatorReduction: !FLAGS.NoGladiatorReduction
+        });
+
+        updatePreview();
+        renderToggles();
+    })
+
     function renderToggles () {
         $buttonDamages[analyzerOptions.damages_sidebar ? 'addClass' : 'removeClass']('!text-orange');
+        $buttonGladiator[FLAGS.NoGladiatorReduction ? 'addClass' : 'removeClass']('!text-orange');
     }
 
     renderToggles();
