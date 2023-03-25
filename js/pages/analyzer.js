@@ -1072,8 +1072,8 @@ Site.ready(null, function (urlParams) {
 
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
-                attacker, target, attackType, attackRage, attackDamage, attackBase, attackMissed, attackCrit,
-                attackSpecial, attackSecondary, targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
+                attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
+                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
                 hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
 
@@ -1413,7 +1413,7 @@ Site.ready(null, function (urlParams) {
         const exportFights = [];
         const exportPlayers = {};
 
-        for (const { fighterA, fighterB, rounds, winner } of assembledFights) {
+        for (const { fighterA, fighterB, rounds } of assembledFights) {
             // Collect players
             if (fighterA.player) {
                 exportPlayers[fighterA.hash] = toSimulatorModel(fighterA.player);
