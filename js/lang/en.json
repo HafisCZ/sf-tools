@@ -1118,6 +1118,7 @@
         "preview": "Fight preview",
         "export": "Export fights",
         "analyze": "Statistical analysis",
+        "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
