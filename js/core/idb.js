@@ -886,10 +886,6 @@ const DatabaseManager = new (class {
         }
     }
 
-    isHidden (id, ts) {
-        return _dig(this.Players, id, ts, 'Data', 'hidden');
-    }
-
     // Get group
     getGroup (identifier, timestamp) {
         if (timestamp && this.Groups[identifier]) {
