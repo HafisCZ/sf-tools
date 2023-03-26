@@ -1040,6 +1040,8 @@ Site.ready(null, function (urlParams) {
             group.fights.push({ index: fight.index, rounds: fight.rounds, winner: fight.winner });
         }
 
+        _sort_des(groupedFights, (fight) => fight.fights.length);
+
         // Display in dropdown
         $groupList.dropdown({
             values: groupedFights.map((group) => ({
