@@ -439,6 +439,7 @@ Site.ready(null, function (urlParams) {
             }
 
             if (this.Face.Mouth < 0) {
+                this.Boss = true;
                 this.Name = this._findName(fightType, -this.Face.Mouth);
             }
         }
@@ -972,6 +973,14 @@ Site.ready(null, function (urlParams) {
         }
     }
 
+    function injectComputedData (object) {
+        if (object.Boss) {
+            const config = CONFIG.fromIndex(object.Class);
+
+            object.Armor = object.Level * config.MaximumDamageReduction;
+        }
+    }
+
     function render (soft = false) {
         $fightView.hide();
 
@@ -986,6 +995,9 @@ Site.ready(null, function (urlParams) {
         for (const [index, { fighterA, fighterB }] of Object.entries(currentFights)) {
             fighterA.hash = computePlayerHash(fighterA);
             fighterB.hash = computePlayerHash(fighterB);
+
+            injectComputedData(fighterA);
+            injectComputedData(fighterB);
 
             currentFights[index].hash = `${fighterA.hash}-${fighterB.hash}`;
             currentFights[index].index = String(index);
