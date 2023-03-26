@@ -1,4 +1,4 @@
-DUNGEON_DATA = {
+const DUNGEON_DATA = {
     '1': {
         id: 1,
         intl: '1',
