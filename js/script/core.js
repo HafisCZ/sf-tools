@@ -2789,11 +2789,11 @@ class Settings {
         var settings = Settings.parseConstants(string, type);
         var content = '';
 
-        SettingsHighlightCache.setCurrent(settings);
+        ScriptHighlightCache.setCurrent(settings);
 
         for (let line of string.split('\n')) {
-            if (SettingsHighlightCache.has(line)) {
-                content += SettingsHighlightCache.get(line);
+            if (ScriptHighlightCache.has(line)) {
+                content += ScriptHighlightCache.get(line);
             } else {
                 let [ commandLine, comment, commentIndex ] = Settings.stripComments(line, false);
                 let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
@@ -2816,7 +2816,7 @@ class Settings {
                     currentContent += Highlighter.comment(comment).text;
                 }
 
-                SettingsHighlightCache.store(line, currentContent);
+                ScriptHighlightCache.store(line, currentContent);
 
                 content += currentContent;
             }
@@ -2828,7 +2828,7 @@ class Settings {
     }
 };
 
-const SettingsHighlightCache = new (class {
+const ScriptHighlightCache = new (class {
     initialize () {
         this.hash = null;
         this.cache = {};
