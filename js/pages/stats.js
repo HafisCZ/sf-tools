@@ -28,7 +28,7 @@ class DynamicLoader {
 }
 
 // Group Detail View
-class GroupDetailTab extends Tab{
+class GroupDetailTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -325,7 +325,7 @@ class GroupDetailTab extends Tab{
             this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
         }, (block) => {
             let blockClickable = block.find('[data-id]').click((event) => {
-                UI.PlayerModal.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
+                DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
             });
 
             this.$context.context('bind', blockClickable);
@@ -339,388 +339,7 @@ class GroupDetailTab extends Tab{
     }
 }
 
-class PlayerModalTab extends Tab{
-    constructor (player) {
-        super(player);
-    }
-
-    intl (key) {
-        return intl(`stats.player.${key}`);
-    }
-
-    show ({ identifier, timestamp, reference }) {
-        let playerObject = DatabaseManager.getPlayer(identifier);
-        let timestampsReverse = playerObject.List.map(([ts, ]) => ts).reverse(); // Newest to oldest
-        let timestamps = playerObject.List.map(([ts, ]) => ts); // Oldest to newest
-        let timestampCurrent = timestamps.find(t => t <= timestamp) || playerObject.LatestTimestamp;
-        let timestampReference = timestampsReverse.find(t => t >= reference && t <= timestampCurrent);
-        if (!timestampReference) {
-            timestampReference = timestampCurrent;
-        }
-
-        let player = DatabaseManager.getPlayer(identifier, timestampCurrent);
-        let compare = DatabaseManager.getPlayer(identifier, timestampReference);
-
-        var diff = player.Timestamp != compare.Timestamp;
-        var asDiff = (a, b, formatter) => {
-            if (a != b && b != undefined && a != undefined) {
-                var fnum = formatter ? formatter(a - b) : (a - b);
-                return ` <span>${ a - b > 0 ? `+${ fnum }` : fnum }</span>`;
-            } else {
-                return '';
-            }
-        }
-
-        this.$parent.html(`
-            <div class="content" style="padding: 0;">
-                <div class="detail-top">
-                    <img class="ui image" src="res/class${ player.Class }.png">
-                    <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
-                </div>
-                <div class="detail-timestamp">
-                    ${ formatDate(player.Timestamp) }${ diff ? ` - ${ formatDate(compare.Timestamp) }` : '' }
-                </div>
-                <div class="detail-identifier">
-                    ${ player.Identifier }
-                </div>
-                <div class="detail-content">
-                    <div class="detail-panel">
-                        <!-- Player -->
-                        <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">${this.intl('attributes')}</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute1')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }${ asDiff(player.Strength.Total, compare.Strength.Total, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute2')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }${ asDiff(player.Dexterity.Total, compare.Dexterity.Total, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute3')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }${ asDiff(player.Intelligence.Total, compare.Intelligence.Total, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute4')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }${ asDiff(player.Constitution.Total, compare.Constitution.Total, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute5')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }${ asDiff(player.Luck.Total, compare.Luck.Total, formatAsSpacedNumber) }</div>
-                        </div>
-                        <br/>
-                        <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">${this.intl('basis')}</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute1')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Base) }${ asDiff(player.Strength.Base, compare.Strength.Base, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute2')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Base) }${ asDiff(player.Dexterity.Base, compare.Dexterity.Base, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute3')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Base) }${ asDiff(player.Intelligence.Base, compare.Intelligence.Base, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute4')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Base) }${ asDiff(player.Constitution.Base, compare.Constitution.Base, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${intl('general.attribute5')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Base) }${ asDiff(player.Luck.Base, compare.Luck.Base, formatAsSpacedNumber) }</div>
-                        </div>
-                        <br/>
-                        <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">${this.intl('miscellaneous')}</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('armor')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Armor) }${ asDiff(player.Armor, compare.Armor, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('damage')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage.Min) } - ${ formatAsSpacedNumber(player.Damage.Max) }</div>
-                        </div>
-                        ${ player.Class == 4 ? `
-                            <div class="detail-entry">
-                                <div class="detail-item"></div>
-                                <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage2.Min) } - ${ formatAsSpacedNumber(player.Damage2.Max) }</div>
-                            </div>
-                        ` : '' }
-                        <br/>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('health')}</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }</div>
-                        </div>
-                        ${ player.Potions[0].Size ? `
-                            <br/>
-                            <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">${this.intl('potions')}</div>
-                            </div>
-                            ${player.Potions.map(potion => {
-                                if (potion.Size) {
-                                    return `
-                                        <div class="detail-entry">
-                                            <div class="detail-item">${intl(`general.potion${potion.Type}`)}</div>
-                                            <div class="detail-item text-center">+ ${potion.Size}%</div>
-                                        </div>
-                                    `;
-                                } else {
-                                    return '';
-                                }
-                            }).join('')}
-                        ` : '' }
-                    </div>
-                    <div class="detail-panel">
-                        ${ player.hasGuild() ? `
-                            <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">${this.intl('guild')}</div>
-                            </div>
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('name')}</div>
-                                <div class="detail-item text-center">${ player.Group.Name }</div>
-                            </div>
-                            ${ player.Group.Role ? `
-                                <div class="detail-entry">
-                                    <div class="detail-item">${this.intl('role')}</div>
-                                    <div class="detail-item text-center">${intl(`general.rank${player.Group.Role}`)}</div>
-                                </div>
-                            ` : '' }
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('joined_on')}</div>
-                                <div class="detail-item text-center">${ formatDate(player.Group.Joined) }</div>
-                            </div>
-                            <br/>
-                        ` : '' }
-                        <!-- Group -->
-                        <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">${this.intl('bonuses')}</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('scrapbook')}</div>
-                            <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }${ asDiff(player.Book, compare.Book, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('achievements')}</div>
-                            <div class="detail-item text-center">${ player.Achievements.Owned } / ${ ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('mount')}</div>
-                            <div class="detail-item text-center">${ PLAYER_MOUNT[player.Mount] }%</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('heath_bonus')}</div>
-                            <div class="detail-item text-center">${ player.Dungeons.Player }%${ asDiff(player.Dungeons.Player, compare.Dungeons.Player) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('damage_bonus')}</div>
-                            <div class="detail-item text-center">${ player.Dungeons.Group }%${ asDiff(player.Dungeons.Group, compare.Dungeons.Group) }</div>
-                        </div>
-                        ${ player.Group && player.Group.Treasure ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('treasure')}</div>
-                                <div class="detail-item text-center">${ player.Group.Treasure }${ asDiff(player.Group.Treasure, compare.Group.Treasure) }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Group && player.Group.Instructor ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('instructor')}</div>
-                                <div class="detail-item text-center">${ player.Group.Instructor }${ asDiff(player.Group.Instructor, compare.Group.Instructor) }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Group && player.Group.Pet ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('pet')}</div>
-                                <div class="detail-item text-center">${ player.Group.Pet }${ asDiff(player.Group.Pet, compare.Group.Pet) }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Fortress && player.Fortress.Knights ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('knights')}</div>
-                                <div class="detail-item text-center">${ player.Fortress.Knights }${ asDiff(player.Fortress.Knights, compare.Fortress.Knights) }</div>
-                            </div>
-                        ` : '' }
-                        <br/>
-                        <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">${this.intl('runes.title')}</div>
-                        </div>
-                        ${ player.Runes.Gold ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune1')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.Gold }%</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.XP ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune4')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.XP }%</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.Chance ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune2')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.Chance }%</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.Quality ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune3')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.Quality }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.Health ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune5')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.Health }%</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.DamageFire || player.Runes.Damage2Fire ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune10')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.DamageFire }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Fire }%` : '' }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.DamageCold || player.Runes.Damage2Cold ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune11')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.DamageCold }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Cold }%` : '' }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune12')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.DamageLightning }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Lightning }%` : '' }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.ResistanceFire ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune6')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.ResistanceFire }%</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.ResistanceCold ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune7')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.ResistanceCold }%</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Runes.ResistanceLightning ? `
-                            <div class="detail-entry">
-                                <div class="detail-item">${intl('general.rune8')}</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.ResistanceLightning }%</div>
-                            </div>
-                        ` : '' }
-                    </div>
-                    <div class="detail-panel">
-                        <!-- Fortress -->
-                        <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">${this.intl('fortress.title')}</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.upgrades')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Upgrades }${ asDiff(player.Fortress.Upgrades, compare.Fortress.Upgrades) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.rank')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Rank }${ asDiff(player.Fortress.Rank, compare.Fortress.Rank) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.honor')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Honor }${ asDiff(player.Fortress.Honor, compare.Fortress.Honor) }</div>
-                        </div>
-                        <br/>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building1')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Fortress }${ asDiff(player.Fortress.Fortress, compare.Fortress.Fortress) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building2')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.LaborerQuarters }${ asDiff(player.Fortress.LaborerQuarters, compare.Fortress.LaborerQuarters) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building3')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }${ asDiff(player.Fortress.WoodcutterGuild, compare.Fortress.WoodcutterGuild) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building4')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Quarry }${ asDiff(player.Fortress.Quarry, compare.Fortress.Quarry) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building5')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.GemMine }${ asDiff(player.Fortress.GemMine, compare.Fortress.GemMine) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building6')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Academy }${ asDiff(player.Fortress.Academy, compare.Fortress.Academy) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building7')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.ArcheryGuild }${ asDiff(player.Fortress.ArcheryGuild, compare.Fortress.ArcheryGuild) } (${ player.Fortress.ArcheryGuild * 2 }x ${ player.Fortress.Archers }${ asDiff(player.Fortress.Archers, compare.Fortress.Archers) })</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building8')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Barracks }${ asDiff(player.Fortress.Barracks, compare.Fortress.Barracks) } (${ player.Fortress.Barracks * 3 }x ${ player.Fortress.Warriors }${ asDiff(player.Fortress.Warriors, compare.Fortress.Warriors) })</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building9')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.MageTower }${ asDiff(player.Fortress.MageTower, compare.Fortress.MageTower) } (${ player.Fortress.MageTower }x ${ player.Fortress.Mages }${ asDiff(player.Fortress.Mages, compare.Fortress.Mages) })</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building10')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Treasury }${ asDiff(player.Fortress.Treasury, compare.Fortress.Treasury) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building11')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Smithy }${ asDiff(player.Fortress.Smithy, compare.Fortress.Smithy) }</div>
-                        </div>
-                        <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building12')}</div>
-                            <div class="detail-item text-center">${ player.Fortress.Fortifications }${ asDiff(player.Fortress.Fortifications, compare.Fortress.Fortifications) } (${ player.Fortress.Wall }${ asDiff(player.Fortress.Wall, compare.Fortress.Wall) })</div>
-                        </div>
-                        ${ player.Fortress.Upgrade.Building >= 0 ? `
-                            <br/>
-                            <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">${this.intl('fortress.working')}</div>
-                            </div>
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl(`fortress.building${player.Fortress.Upgrade.Building + 1}`)}</div>
-                                <div class="detail-item text-center">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
-                            </div>
-                        ` : '' }
-                        ${ player.Own ? `
-                            <br/>
-                            <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">${this.intl('extras.title')}</div>
-                            </div>
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('extras.registered')}</div>
-                                <div class="detail-item text-center">${ formatDate(player.Registered) }</div>
-                            </div>
-                            <div class="detail-entry">
-                                <div class="detail-item">${this.intl('extras.webshopid')}</div>
-                                <div class="detail-item text-center hover-to-display">
-                                    <div class="to-display">${ player.WebshopID || '' }</div>
-                                    <div class="to-hover">${this.intl('extras.webshopid_placeholder')}</div>    
-                                </div>
-                            </div>
-                        ` : '' }
-                    </div>
-                </div>
-            </div>
-        `);
-
-        this.$parent.modal({
-            centered: false,
-            transition: 'fade'
-        }).modal('show');
-    }
-}
-
-class PlayerDetailTab extends Tab{
+class PlayerDetailTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -869,7 +488,7 @@ class PlayerDetailTab extends Tab{
 }
 
 // Browse View
-class BrowseTab extends Tab{
+class BrowseTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -1336,7 +955,7 @@ class BrowseTab extends Tab{
                 if (event.ctrlKey) {
                     $(event.currentTarget).toggleClass('css-op-select');
                 } else {
-                    UI.PlayerModal.show({ identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp });
+                    DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
                 }
             }).mousedown((event) => {
                 event.preventDefault();
@@ -1353,7 +972,7 @@ class BrowseTab extends Tab{
 }
 
 // Groups View
-class GroupsTab extends Tab{
+class GroupsTab extends Tab {
     _prepareOption (operator, key, storeKey) {
         this.$parent.operator(operator).toggleButton((state) => {
             SiteOptions[storeKey] = (this[key] = state);
@@ -1578,7 +1197,7 @@ class GroupsTab extends Tab{
 }
 
 // Players View
-class PlayersTab extends Tab{
+class PlayersTab extends Tab {
     _prepareOption (operator, key, storeKey) {
         this.$parent.operator(operator).toggleButton((state) => {
             SiteOptions[storeKey] = (this[key] = state);
@@ -1830,7 +1449,7 @@ class PlayersTab extends Tab{
 }
 
 // Files View
-class FilesTab extends Tab{
+class FilesTab extends Tab {
     // Export all to json file
     exportAllJson () {
         DatabaseManager.export().then(Exporter.json);
@@ -2622,7 +2241,7 @@ class FilesTab extends Tab{
     }
 }
 
-class ScriptsTab extends Tab{
+class ScriptsTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -2961,7 +2580,7 @@ class ScriptsTab extends Tab{
     }
 }
 
-class SettingsTab extends Tab{
+class SettingsTab extends Tab {
     constructor (parent) {
         super(parent)
 
@@ -3066,7 +2685,7 @@ const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', '
 const PROFILES_GROUP_PROPS = ['timestamp', 'identifier', 'prefix', 'own', 'name', 'identifier', 'save'];
 const PROFILES_GROUP_INDEXES = ['own', 'identifier', 'timestamp', 'prefix'];
 
-class ProfilesTab extends Tab{
+class ProfilesTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -3202,9 +2821,6 @@ Site.ready(null, function (urlParams) {
                 tab: new PlayerDetailTab('view-player-detail'),
                 buttonId: 'show-players',
                 buttonClickable: false
-            },
-            PlayerModal: {
-                tab: new PlayerModalTab('view-player-modal')
             },
             Groups: {
                 tab: new GroupsTab('view-groups'),

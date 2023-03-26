@@ -18,7 +18,7 @@ class Tab {
 }
 
 // Character select view
-class PlayerSelectTab extends Tab{
+class PlayerSelectTab extends Tab {
     constructor (parent) {
         super(parent);
         var players = Object.values(DatabaseManager.Players).map(player => player.Latest);
@@ -57,7 +57,7 @@ class PlayerSelectTab extends Tab{
 }
 
 // Resources View
-class ResourcesTab extends Tab{
+class ResourcesTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -998,7 +998,7 @@ function isAllowedType (item) {
 }
 
 // Inventory View
-class InventoryTab extends Tab{
+class InventoryTab extends Tab {
     constructor (parent) {
         super(parent);
 
