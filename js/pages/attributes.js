@@ -1,4 +1,4 @@
-class GenericTab extends Tab{
+class GenericTab extends Tab {
     constructor (parent, showOptions) {
         super(parent);
 

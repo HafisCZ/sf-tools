@@ -100,6 +100,10 @@
   align-items: center;
 }
 
+.\!items-start {
+  align-items: flex-start !important;
+}
+
 .justify-content-center {
   justify-content: center;
 }

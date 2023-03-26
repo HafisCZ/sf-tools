@@ -17,6 +17,8 @@ div.dialog.container {
   scrollbar-color: rgba(0, 0, 0, .25) rgba(0, 0, 0, .1);
   scrollbar-width: thin;
 
+  overflow-y: scroll !important;
+
   line-height: 1.3em;
 }
 
@@ -47,6 +49,10 @@ div.dialog.container > .dialog > div {
 
 div.dialog.container > .very.big.dialog {
   width: 1250px;
+}
+
+div.dialog.container > .medium.big.dialog {
+  width: 1180px;
 }
 
 div.dialog.container > .big.dialog {

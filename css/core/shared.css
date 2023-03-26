@@ -62,25 +62,6 @@ body {
   overflow-x: auto;
 }
 
-body.dimmed {
-  overflow: hidden !important;
-  margin-right: 17px !important;
-}
-
-body.dimmed .menu {
-  margin-right: 17px !important;
-}
-
-
-/* Modals */
-.modals {
-  overflow-y: scroll !important;
-}
-
-.modals.fade.out {
-  overflow: hidden !important;
-}
-
 /* Inputs */
 input:disabled {
   opacity: 1 !important;
