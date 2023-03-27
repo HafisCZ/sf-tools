@@ -1,8 +1,9 @@
 class Field {
-    constructor (querryString, defaultValue, validator = undefined) {
+    constructor (querryString, defaultValue, validator = undefined, formatter = undefined) {
         this.$object = $(querryString);
         this.defaultValue = defaultValue.toString();
         this.validator = validator;
+        this.formatter = formatter;
         this.isDropdown = this.$object.hasClass('dropdown');
         this.$object.on('change input', () => {
             if (this.triggerAlways || this.valid()) {
@@ -53,7 +54,7 @@ class Field {
         if (this.isDropdown) {
             this.$object.dropdown('set selected', value.toString());
         } else {
-            this.$object.val(value);
+            this.$object.val(this.formatter ? this.formatter(value) : value);
         }
     }
 
