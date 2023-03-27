@@ -1010,6 +1010,9 @@ Site.ready(null, function (urlParams) {
             player.hash = computePlayerHash(player);
         }
 
+        // Unique players by hash
+        currentPlayers = currentPlayers.filter((value, index, self) => self.findIndex((object) => object.hash === value.hash) === index);
+
         // Merge fighters and hashes
         for (const { fighterA, fighterB } of currentFights) {
             const playerA = currentPlayers.find((player) => player.hash === fighterA.hash);
