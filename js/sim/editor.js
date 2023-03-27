@@ -25,7 +25,9 @@ class Field {
 
     get () {
         var value = this.isDropdown ? this.$object.dropdown('get value') : this.$object.val();
-        if (isNaN(value)) {
+        if (this.formatter) {
+            return this.formatter.get(value);
+        } else if (isNaN(value)) {
             if (value == 'true') {
                 return true;
             } else if (value == 'false') {
@@ -54,7 +56,7 @@ class Field {
         if (this.isDropdown) {
             this.$object.dropdown('set selected', value.toString());
         } else {
-            this.$object.val(this.formatter ? this.formatter(value) : value);
+            this.$object.val(this.formatter ? this.formatter.set(value) : value);
         }
     }
 
