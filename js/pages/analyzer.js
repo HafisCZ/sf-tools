@@ -304,6 +304,7 @@ class PlayerEditor {
             class: new Field(`${parent} [data-path="Class"]`, '1'),
             level: new Field(`${parent} [data-path="Level"]`, '0', Field.isPlayerLevel),
             armor: new Field(`${parent} [data-path="Armor"]`, '0', Field.isNumber),
+            maximum_life: new Field(`${parent} [data-path="MaximumLife"]`, '0', null, (value) => formatAsSpacedNumber(value, ' ')),
 
             resistance_fire: new Field(`${parent} [data-path="Runes.ResistanceFire"]`, '0', Field.isResistanceRune),
             resistance_cold: new Field(`${parent} [data-path="Runes.ResistanceCold"]`, '0', Field.isResistanceRune),
@@ -566,13 +567,7 @@ Site.ready(null, function (urlParams) {
 
     $buttonCopyGroup.click(() => {
         if (currentGroup) {
-            const generator = ({ MaximumLife, editor }) => {
-                const object = Localization._generateTranslation({}, editor);
-
-                object.TotalHealth = MaximumLife;
-
-                return object;
-            }
+            const generator = ({ editor }) => Localization._generateTranslation({}, editor);
 
             const playerA = generator(currentGroup.fighterA);
             const playerB = generator(currentGroup.fighterB);
