@@ -18,6 +18,7 @@ div.dialog.container {
   scrollbar-width: thin;
 
   overflow-y: scroll !important;
+  overscroll-behavior: contain;
 
   line-height: 1.3em;
 }
