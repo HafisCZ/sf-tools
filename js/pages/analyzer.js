@@ -209,6 +209,252 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
     }
 })();
 
+// Custom fighter
+class SFFighter {
+    constructor (data, fightType) {
+        let dataType = new ComplexDataType(data);
+        dataType.assert(47);
+
+        this.ID = dataType.long();
+        this.Name = dataType.string();
+        this.Level = dataType.long();
+        this.MaximumLife = dataType.long();
+        this.Life = dataType.long();
+
+        this.Strength = {
+            Total: dataType.long()
+        };
+
+        this.Dexterity = {
+            Total: dataType.long()
+        };
+
+        this.Intelligence = {
+            Total: dataType.long()
+        };
+
+        this.Constitution = {
+            Total: dataType.long()
+        };
+
+        this.Luck = {
+            Total: dataType.long()
+        };
+
+        this.Face = {
+            Mouth: dataType.long(),
+            Hair: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Brows: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Eyes: dataType.long(),
+            Beard: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Nose: dataType.long(),
+            Ears: dataType.long(),
+            Special: dataType.long(),
+            Special2: dataType.long(),
+            Portrait: dataType.long()
+        };
+
+        this.Race = dataType.long();
+        this.Gender = dataType.long();
+        this.Class = dataType.long();
+
+        this.Items = {
+            Wpn1: new SFItem(dataType.sub(12), 1, [1, 1]),
+            Wpn2: new SFItem(dataType.sub(12), 2, [1, 2])
+        }
+
+        if (this.Face.Mouth < 0) {
+            this.Boss = true;
+            this.Name = this._findName(fightType, -this.Face.Mouth);
+        }
+    }
+
+    _findName (type, face) {
+        if (NAME_UNIT_COMPANION[face]) {
+            return NAME_UNIT_COMPANION[face];
+        } else if (type == FIGHT_TYPES.Shadow) {
+            return `Shadow ${ NAME_MONSTER[face] }`;
+        } else if (NAME_MONSTER[face]) {
+            return NAME_MONSTER[face];
+        } else if (type == FIGHT_TYPES.Underworld) {
+            return NAME_UNIT_UNDERWORLD[Math.trunc((face - 899) / 20)];
+        } else {
+            return 'Unknown';
+        }
+    }
+}
+
+// Editor
+class PlayerEditor {
+    constructor (parent, callback) {
+        this.callback = callback;
+
+        this.fields = {
+            name: new Field(`${parent} [data-path="Name"]`, ''),
+
+            class: new Field(`${parent} [data-path="Class"]`, '1'),
+            level: new Field(`${parent} [data-path="Level"]`, '0', Field.isPlayerLevel),
+            armor: new Field(`${parent} [data-path="Armor"]`, '0', Field.isNumber),
+
+            resistance_fire: new Field(`${parent} [data-path="Runes.ResistanceFire"]`, '0', Field.isResistanceRune),
+            resistance_cold: new Field(`${parent} [data-path="Runes.ResistanceCold"]`, '0', Field.isResistanceRune),
+            resistance_lightning: new Field(`${parent} [data-path="Runes.ResistanceLightning"]`, '0', Field.isResistanceRune),
+
+            portal_damage: new Field(`${parent} [data-path="Dungeons.Group"]`, '0', Field.isDungeon),
+
+            gladiator: new Field(`${parent} [data-path="Fortress.Gladiator"]`, '0', Field.isUnderworldBuilding),
+
+            str: new Field(`${parent} [data-path="Strength.Total"]`, '0', Field.isNonZero),
+            dex: new Field(`${parent} [data-path="Dexterity.Total"]`, '0', Field.isNonZero),
+            int: new Field(`${parent} [data-path="Intelligence.Total"]`, '0', Field.isNonZero),
+            con: new Field(`${parent} [data-path="Constitution.Total"]`, '0', Field.isNonZero),
+            lck: new Field(`${parent} [data-path="Luck.Total"]`, '0', Field.isNumber),
+
+            weapon1_min: new Field(`${parent} [data-path="Items.Wpn1.DamageMin"]`, '0', Field.isNumber),
+            weapon1_max: new Field(`${parent} [data-path="Items.Wpn1.DamageMax"]`, '0', Field.isNumber),
+            weapon1_enchantment: new Field(`${parent} [data-path="Items.Wpn1.HasEnchantment"]`, 'false'),
+            weapon1_rune: new Field(`${parent} [data-path="Items.Wpn1.AttributeTypes.2"]`, '0'),
+            weapon1_value: new Field(`${parent} [data-path="Items.Wpn1.Attributes.2"]`, '0', Field.isDamageRune),
+
+            weapon2_min: new Field(`${parent} [data-path="Items.Wpn2.DamageMin"]`, '0', Field.isNumber),
+            weapon2_max: new Field(`${parent} [data-path="Items.Wpn2.DamageMax"]`, '0', Field.isNumber),
+            weapon2_enchantment: new Field(`${parent} [data-path="Items.Wpn2.HasEnchantment"]`, 'false'),
+            weapon2_rune: new Field(`${parent} [data-path="Items.Wpn2.AttributeTypes.2"]`, '0'),
+            weapon2_value: new Field(`${parent} [data-path="Items.Wpn2.Attributes.2"]`, '0', Field.isDamageRune)
+        };
+
+        this.fields['class'].$object.dropdown({
+            values: CONFIG.indexes().map((value) => ({
+                image: `res/class${value}.png`,
+                imageClass: '!-ml-3 !mr-2',
+                name: intl(`general.class${value}`),
+                value
+            }))
+        }).dropdown('setting', 'onChange', (value) => {
+            $(`${parent} [data-optional="Weapon2"]`).toggle(value == ASSASSIN);
+        }).dropdown('set selected', '1');
+
+        this.fields['weapon1_rune'].$object.dropdown({
+            values: [
+                {
+                    name: intl('editor.none'),
+                    value: 0
+                },
+                {
+                    name: intl('editor.fire'),
+                    value: 40
+                },
+                {
+                    name: intl('editor.cold'),
+                    value: 41
+                },
+                {
+                    name: intl('editor.lightning'),
+                    value: 42
+                }
+            ]
+        }).dropdown('set selected', '0');
+
+        this.fields['weapon2_rune'].$object.dropdown({
+            values: [
+                {
+                    name: intl('editor.none'),
+                    value: 0
+                },
+                {
+                    name: intl('editor.fire'),
+                    value: 40
+                },
+                {
+                    name: intl('editor.cold'),
+                    value: 41
+                },
+                {
+                    name: intl('editor.lightning'),
+                    value: 42
+                }
+            ]
+        }).dropdown('set selected', '0');
+
+        this.fields['weapon1_enchantment'].$object.dropdown({
+            values: [
+                {
+                    name: intl('general.no'),
+                    value: false
+                },
+                {
+                    name: intl('general.yes'),
+                    value: true
+                }
+            ]
+        }).dropdown('set selected', 'false');
+
+        this.fields['weapon2_enchantment'].$object.dropdown({
+            values: [
+                {
+                    name: intl('general.no'),
+                    value: false
+                },
+                {
+                    name: intl('general.yes'),
+                    value: true
+                }
+            ]
+        }).dropdown('set selected', 'false');
+
+        for (const field of Object.values(this.fields)) {
+            field.setListener(() => {
+                if (!this._frozen) {
+                    this.callback();
+                }
+            });
+        }
+    }
+
+    fill (object) {
+        this._frozen = true;
+
+        for (const [key, field] of Object.entries(this.fields)) {
+            const value = getObjectAt(object, field.path());
+            if (typeof value === 'undefined') {
+                field.clear();
+            } else {
+                field.set(value);
+            }
+        }
+
+        this._frozen = false;
+    }
+
+    read () {
+        const object = {};
+        for (const [key, field] of Object.entries(this.fields)) {
+            setObjectAt(object, field.path(), field.get());
+        }
+
+        return object;
+    }
+
+    valid () {
+        for (const [key, field] of Object.entries(this.fields)) {
+            if (!field.valid()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
 Site.ready(null, function (urlParams) {
     // Elements
     const $buttonUpload = $('#button-upload');
@@ -321,7 +567,7 @@ Site.ready(null, function (urlParams) {
     $buttonCopyGroup.click(() => {
         if (currentGroup) {
             const generator = ({ MaximumLife, editor }) => {
-                const object = Localization._generateTranslation({ }, editor);
+                const object = Localization._generateTranslation({}, editor);
 
                 object.TotalHealth = MaximumLife;
 
@@ -375,252 +621,8 @@ Site.ready(null, function (urlParams) {
         window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${urlParams.toString().replace(/=&/g, '&').replace(/=$/, '')}`)
     }
 
-    // Custom fighter
-    class SFFighter {
-        constructor (data, fightType) {
-            let dataType = new ComplexDataType(data);
-            dataType.assert(47);
-
-            this.ID = dataType.long();
-            this.Name = dataType.string();
-            this.Level = dataType.long();
-            this.MaximumLife = dataType.long();
-            this.Life = dataType.long();
-
-            this.Strength = {
-                Total: dataType.long()
-            };
-
-            this.Dexterity = {
-                Total: dataType.long()
-            };
-
-            this.Intelligence = {
-                Total: dataType.long()
-            };
-
-            this.Constitution = {
-                Total: dataType.long()
-            };
-
-            this.Luck = {
-                Total: dataType.long()
-            };
-
-            this.Face = {
-                Mouth: dataType.long(),
-                Hair: {
-                    Type: dataType.long() % 100,
-                    Color: Math.trunc(dataType.back(1).long() / 100)
-                },
-                Brows: {
-                    Type: dataType.long() % 100,
-                    Color: Math.trunc(dataType.back(1).long() / 100)
-                },
-                Eyes: dataType.long(),
-                Beard: {
-                    Type: dataType.long() % 100,
-                    Color: Math.trunc(dataType.back(1).long() / 100)
-                },
-                Nose: dataType.long(),
-                Ears: dataType.long(),
-                Special: dataType.long(),
-                Special2: dataType.long(),
-                Portrait: dataType.long()
-            };
-
-            this.Race = dataType.long();
-            this.Gender = dataType.long();
-            this.Class = dataType.long();
-
-            this.Items = {
-                Wpn1: new SFItem(dataType.sub(12), 1, [1, 1]),
-                Wpn2: new SFItem(dataType.sub(12), 2, [1, 2])
-            }
-
-            if (this.Face.Mouth < 0) {
-                this.Boss = true;
-                this.Name = this._findName(fightType, -this.Face.Mouth);
-            }
-        }
-
-        _findName (type, face) {
-            if (NAME_UNIT_COMPANION[face]) {
-                return NAME_UNIT_COMPANION[face];
-            } else if (type == FIGHT_TYPES.Shadow) {
-                return `Shadow ${ NAME_MONSTER[face] }`;
-            } else if (NAME_MONSTER[face]) {
-                return NAME_MONSTER[face];
-            } else if (type == FIGHT_TYPES.Underworld) {
-                return NAME_UNIT_UNDERWORLD[Math.trunc((face - 899) / 20)];
-            } else {
-                return 'Unknown';
-            }
-        }
-    }
-
-    // Editor
-    class PlayerEditor {
-        constructor (parent) {
-            this.fields = {
-                name: new Field(`${parent} [data-path="Name"]`, ''),
-
-                class: new Field(`${parent} [data-path="Class"]`, '1'),
-                level: new Field(`${parent} [data-path="Level"]`, '0', Field.isPlayerLevel),
-                armor: new Field(`${parent} [data-path="Armor"]`, '0', Field.isNumber),
-
-                resistance_fire: new Field(`${parent} [data-path="Runes.ResistanceFire"]`, '0', Field.isResistanceRune),
-                resistance_cold: new Field(`${parent} [data-path="Runes.ResistanceCold"]`, '0', Field.isResistanceRune),
-                resistance_lightning: new Field(`${parent} [data-path="Runes.ResistanceLightning"]`, '0', Field.isResistanceRune),
-
-                portal_damage: new Field(`${parent} [data-path="Dungeons.Group"]`, '0', Field.isDungeon),
-
-                gladiator: new Field(`${parent} [data-path="Fortress.Gladiator"]`, '0', Field.isUnderworldBuilding),
-
-                str: new Field(`${parent} [data-path="Strength.Total"]`, '0', Field.isNonZero),
-                dex: new Field(`${parent} [data-path="Dexterity.Total"]`, '0', Field.isNonZero),
-                int: new Field(`${parent} [data-path="Intelligence.Total"]`, '0', Field.isNonZero),
-                con: new Field(`${parent} [data-path="Constitution.Total"]`, '0', Field.isNonZero),
-                lck: new Field(`${parent} [data-path="Luck.Total"]`, '0', Field.isNumber),
-
-                weapon1_min: new Field(`${parent} [data-path="Items.Wpn1.DamageMin"]`, '0', Field.isNumber),
-                weapon1_max: new Field(`${parent} [data-path="Items.Wpn1.DamageMax"]`, '0', Field.isNumber),
-                weapon1_enchantment: new Field(`${parent} [data-path="Items.Wpn1.HasEnchantment"]`, 'false'),
-                weapon1_rune: new Field(`${parent} [data-path="Items.Wpn1.AttributeTypes.2"]`, '0'),
-                weapon1_value: new Field(`${parent} [data-path="Items.Wpn1.Attributes.2"]`, '0', Field.isDamageRune),
-
-                weapon2_min: new Field(`${parent} [data-path="Items.Wpn2.DamageMin"]`, '0', Field.isNumber),
-                weapon2_max: new Field(`${parent} [data-path="Items.Wpn2.DamageMax"]`, '0', Field.isNumber),
-                weapon2_enchantment: new Field(`${parent} [data-path="Items.Wpn2.HasEnchantment"]`, 'false'),
-                weapon2_rune: new Field(`${parent} [data-path="Items.Wpn2.AttributeTypes.2"]`, '0'),
-                weapon2_value: new Field(`${parent} [data-path="Items.Wpn2.Attributes.2"]`, '0', Field.isDamageRune)
-            };
-
-            this.fields['class'].$object.dropdown({
-                values: CONFIG.indexes().map((value) => ({
-                    image: `res/class${value}.png`,
-                    imageClass: '!-ml-3 !mr-2',
-                    name: intl(`general.class${value}`),
-                    value
-                }))
-            }).dropdown('setting', 'onChange', (value) => {
-                $(`${parent} [data-optional="Weapon2"]`).toggle(value == ASSASSIN);
-            }).dropdown('set selected', '1');
-
-            this.fields['weapon1_rune'].$object.dropdown({
-                values: [
-                    {
-                        name: intl('editor.none'),
-                        value: 0
-                    },
-                    {
-                        name: intl('editor.fire'),
-                        value: 40
-                    },
-                    {
-                        name: intl('editor.cold'),
-                        value: 41
-                    },
-                    {
-                        name: intl('editor.lightning'),
-                        value: 42
-                    }
-                ]
-            }).dropdown('set selected', '0');
-
-            this.fields['weapon2_rune'].$object.dropdown({
-                values: [
-                    {
-                        name: intl('editor.none'),
-                        value: 0
-                    },
-                    {
-                        name: intl('editor.fire'),
-                        value: 40
-                    },
-                    {
-                        name: intl('editor.cold'),
-                        value: 41
-                    },
-                    {
-                        name: intl('editor.lightning'),
-                        value: 42
-                    }
-                ]
-            }).dropdown('set selected', '0');
-
-            this.fields['weapon1_enchantment'].$object.dropdown({
-                values: [
-                    {
-                        name: intl('general.no'),
-                        value: false
-                    },
-                    {
-                        name: intl('general.yes'),
-                        value: true
-                    }
-                ]
-            }).dropdown('set selected', 'false');
-
-            this.fields['weapon2_enchantment'].$object.dropdown({
-                values: [
-                    {
-                        name: intl('general.no'),
-                        value: false
-                    },
-                    {
-                        name: intl('general.yes'),
-                        value: true
-                    }
-                ]
-            }).dropdown('set selected', 'false');
-
-            for (const field of Object.values(this.fields)) {
-                field.setListener(() => {
-                    if (!this._frozen) {
-                        updatePreview();
-                    }
-                });
-            }
-        }
-
-        fill (object) {
-            this._frozen = true;
-
-            for (const [key, field] of Object.entries(this.fields)) {
-                const value = getObjectAt(object, field.path());
-                if (typeof value === 'undefined') {
-                    field.clear();
-                } else {
-                    field.set(value);
-                }
-            }
-
-            this._frozen = false;
-        }
-
-        read () {
-            const object = {};
-            for (const [key, field] of Object.entries(this.fields)) {
-                setObjectAt(object, field.path(), field.get());
-            }
-
-            return object;
-        }
-
-        valid () {
-            for (const [key, field] of Object.entries(this.fields)) {
-                if (!field.valid()) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    const playerEditorA = new PlayerEditor('#player1');
-    const playerEditorB = new PlayerEditor('#player2');
+    const playerEditorA = new PlayerEditor('#player1', () => updatePreview());
+    const playerEditorB = new PlayerEditor('#player2', () => updatePreview());
 
     const analyzerOptions = new OptionsHandler(
         'analyzer',
