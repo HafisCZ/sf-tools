@@ -1155,19 +1155,22 @@ Site.ready(null, function (urlParams) {
         return _dig(fighter.player, 'Name') || fighter.Name;
     }
 
+    function getFighterStatus (fighter) {
+        let text = getFighterName(fighter);
+        if (fighter.Life !== fighter.MaximumLife) {
+            text += ` (${formatAsSpacedNumber(fighter.Life)})`
+        }
+
+        return text;
+    }
+
     function renderFightGroup (group) {
-        const selectBase = {
-            nameA: getFighterName(group.fighterA),
-            healthA: formatAsSpacedNumber(group.fighterA.Life),
-            totalHealthA: formatAsSpacedNumber(group.fighterA.MaximumLife),
-            nameB: getFighterName(group.fighterB),
-            healthB: formatAsSpacedNumber(group.fighterB.Life),
-            totalHealthB: formatAsSpacedNumber(group.fighterB.MaximumLife),
-        };
+        const nameA = getFighterStatus(group.fighterA);
+        const nameB = getFighterStatus(group.fighterB);
 
         $fightList.dropdown({
             values: group.fights.map((fight, index) => ({
-                name: intl('analyzer.table.select', Object.assign({ index: index + 1, rounds: fight.rounds.length, winner: getFighterName(fight.winner) }, selectBase)),
+                name: intl('analyzer.table.select', { index: index + 1, rounds: fight.rounds.length, winner: getFighterName(fight.winner), nameA, nameB }),
                 value: fight.index
             }))
         }).dropdown('setting', 'onChange', (value) => {

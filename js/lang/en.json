@@ -1121,7 +1121,7 @@
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
+            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
             "rage": "Rage",
             "attacker": "Attacker",
             "target": "Target",
