@@ -81,7 +81,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
             opacity: 0
         })
 
-        this.keywords = ['Player 1', 'Player 2', 'Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type'];
+        this.keywords = ['Player 1', 'Player 2', 'Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'Last Round'];
     }
 
     _createModal () {
@@ -186,7 +186,8 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
     _applyArguments ({ fights, fighterA, fighterB }) {
         this.fighterA = fighterA;
         this.fighterB = fighterB;
-        this.rounds = fights.map((fight) => fight.rounds).flat().filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState }) => ({
+
+        this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState }, index, array) => ({
             Attacker: attacker,
             Target: target,
             'Attacker State': attackerSpecialState,
@@ -198,8 +199,9 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
             Damage: attackDamage,
             Rage: attackRage,
             Special: attackSpecial,
-            Type: attackType
-        }));
+            Type: attackType,
+            'Last Round': index === array.length - 1
+        }))).flat();
 
         this.groups = [];
 
