@@ -58,7 +58,7 @@ const CHANGELOG = {
             'Fixed statistics integration displaying other players when imported via integration'
         ]
     },
-    'v6.3632': {
+    'v6.3263': {
         'Statistics': [
             'Added <code>Race</code> header',
             'Added translated values to headers and enums',
