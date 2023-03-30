@@ -124,7 +124,6 @@
         "attack29": "Critical Evaded",
         "attack100": "Revive",
         "attack200": "Bard Song",
-        "attack200_2": "Bard Song L#{spellLevel} - #{spellNotes} notes",
         "gt_background1": "Gold",
         "gt_background2": "Silver",
         "gt_background3": "Bronze",
@@ -148,40 +147,40 @@
         "item18": "Heart",
         "item19": "Wheel",
         "rune1": "Gold",
-        "rune2": "Epic Chance",
-        "rune3": "Item Quality",
+        "rune2": "Epic chance",
+        "rune3": "Item Qualität",
         "rune4": "XP",
-        "rune5": "Health",
-        "rune6": "Fire Resist",
-        "rune7": "Cold Resist",
-        "rune8": "Lightning Resist",
-        "rune9": "Total Resist",
-        "rune10": "Fire Damage",
-        "rune11": "Cold Damage",
-        "rune12": "Lightning Damage",
-        "action0": "Idle",
-        "action1": "Working",
-        "action2": "Questing",
+        "rune5": "Leben",
+        "rune6": "Wiederstand gegen Feuer",
+        "rune7": "Wiederstand gegen Eis",
+        "rune8": "Wiederstand gegen Blitz",
+        "rune9": "Gesamt Widerstand",
+        "rune10": "Feuer Schaden",
+        "rune11": "Eis Schaden",
+        "rune12": "Blitz Schaden",
+        "action0": "Inaktiv",
+        "action1": "Arbeitend",
+        "action2": "Questend",
         "action3": "Dungeon",
-        "gem1": "Strength",
-        "gem2": "Dexterity",
-        "gem3": "Intelligence",
-        "gem4": "Constitution",
-        "gem5": "Luck",
-        "gem6": "Black",
+        "gem1": "Stärke",
+        "gem2": "Geschick",
+        "gem3": "Intelligenz",
+        "gem4": "Ausdauer",
+        "gem5": "Glück",
+        "gem6": "Schwarz",
         "gem7": "Legendary",
-        "companion1": "Bert",
-        "companion2": "Mark",
+        "companion1": "Bertram",
+        "companion2": "Markwart",
         "companion3": "Kunigunde",
-        "companion1_full": "#{player}'s Bert",
-        "companion2_full": "#{player}'s Mark",
+        "companion1_full": "#{player}'s Bertram",
+        "companion2_full": "#{player}'s Markwart",
         "companion3_full": "#{player}'s Kunigunde"
     },
     "achievements": {
-        "0": "Globetrotter",
-        "1": "The Count",
-        "2": "The King",
-        "3": "Raider",
+        "0": "Weltenbummler",
+        "1": "Der Graf",
+        "2": "Der König",
+        "3": "Plünderer",
         "4": "Storyteller",
         "5": "Boss of Easteros",
         "6": "Dark Wanderer",
@@ -443,7 +442,7 @@
             "settings": "Einstellungen",
             "temporary": "Temporäre Session",
             "changelog": "Änderungsprotokoll",
-            "profile": "Profil"
+            "profile": "Profiles"
         },
         "files": {
             "titles": {
@@ -687,7 +686,8 @@
             "extras": {
                 "title": "Extras",
                 "registered": "Erstellt am",
-                "webshopid": "Webshop ID"
+                "webshopid": "Webshop ID",
+                "webshopid_placeholder": "Hover to display"
             },
             "runes": {
                 "title": "Runen"
@@ -749,6 +749,11 @@
         "simulate": "Simulieren",
         "simulate_dungeons": "Alle verbleibenden Dungeons simulieren",
         "results": "Resultate",
+        "calendar": {
+            "collected": "Collected",
+            "available": "Available",
+            "locked": "Locked"
+        },
         "map": {
             "gladiator": "Gladi"
         },
@@ -758,6 +763,33 @@
             "2": "Erde",
             "3": "Feuer",
             "4": "Wasser"
+        },
+        "locations": {
+            "0": "Black Forest",
+            "1": "Black Water Swamp",
+            "2": "Busted Lands",
+            "3": "Erogenion",
+            "4": "Evernight Forest",
+            "5": "Flooded Caldwell",
+            "6": "Gnarogrim",
+            "7": "Maerwyn",
+            "8": "Magmaron",
+            "9": "Moldy Forest",
+            "10": "Nevermoor",
+            "11": "Northrunt",
+            "12": "Plains Of Ozkorr",
+            "13": "Rotten Lands",
+            "14": "Shadowrock Mountain",
+            "15": "Skull Island",
+            "16": "Split Canyon",
+            "17": "Sprawling Jungle",
+            "18": "Stumble Steppe",
+            "19": "Sunburn Desert",
+            "20": "Tusk Mountain",
+            "201": "Gem Mine",
+            "202": "Weapon Shop",
+            "203": "Magic Shop",
+            "204": "Arcane Toilet"
         },
         "names": {
             "0": "Schlorps",
@@ -860,6 +892,108 @@
             "97": "Unnda",
             "98": "Tritostach",
             "99": "Hydrospir"
+        },
+        "descriptions": {
+            "0": "Can be found in Nevermoor during the day.",
+            "1": "Can be found in Maerwynn at night.",
+            "2": "Can be found in Sprawling Jungle at night.",
+            "3": "Can be found in Split Canyon at night.",
+            "4": "Can be found in Black Forest on Monday night.",
+            "5": "Can be found in Black Water Swamp during witching hour. (00:00 - 01:00 a.m.)",
+            "6": "Can be found in Evernight Forest on summer days.",
+            "7": "Can be found on Skull Island on winter days.",
+            "8": "Can be found on Shadowrock Mountain on Friday night.",
+            "9": "Can be found in Moldy Forest on fall days.",
+            "10": "Can be found in Flooded Caldwell on Monday night.",
+            "11": "Can be found on Tusk Mountain on Tuesday night.",
+            "12": "Can be found in Erogenion on Wednesday night.",
+            "13": "Can be found in Stumble Steppe on Thursday during the day.",
+            "14": "Can be found in Black Forest on Halloween.",
+            "15": "Can be found in Gnarogrim. Required: Hall of fame top 1,000 or 50,000 honor when finishing the quest.",
+            "16": "Can be found in Busted Lands during XP Event.",
+            "17": "Can be found in Rotten Lands on Friday the 13th.",
+            "18": "Is rewarded for clearing 10th floor of the 15th dungeon of the Shadow World. Location: Plains of Oz'Korr.",
+            "19": "Can be found on the last floor of the Shadow Habitat. Location: Sunburn Desert.",
+            "20": "Can be found in Stumble Steppe during the day.",
+            "21": "Can be found in Moldy Forest at night.",
+            "22": "Can be found in Erogenion during the day.",
+            "23": "Can be found on Shadowrock Mountain during the day.",
+            "24": "Can be found in Sprawling Jungle on spring nights.",
+            "25": "Can be found in Nevermoor on Saturday during the day.",
+            "26": "Can be found in Sunburn Desert on summer days.",
+            "27": "Can be found in Flooded Caldwell on fall days.",
+            "28": "Can be found on Skull Island on Monday night.",
+            "29": "Can be found in Busted Lands on Tuesday during the day.",
+            "30": "Can be found on Tusk Mountain on Sunday during the day.",
+            "31": "Can be found in Northrunt on Wednesday night.",
+            "32": "Can be found in Evernight Forest on Thursday during the day.",
+            "33": "Can be found in Black Water Swamp on Friday during the day.",
+            "34": "Can be found in Erogenion. Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.",
+            "35": "Can be found in Northrunt in December.",
+            "36": "Can be found in Split Canyon on April Fools' Day. For real!",
+            "37": "Can be found in Erogenion during Epic Event.",
+            "38": "Is a reward for clearing the Tower. Location: Rotten Lands.",
+            "39": "Can be found on the last floor of the Light Habitat. Location: Plains of Oz'Korr.",
+            "40": "Can be found in Stumble Steppe during the day.",
+            "41": "Can be found in Gnarogrim at night.",
+            "42": "Can be found in Erogenion during the day.",
+            "43": "Can be found in Black Forest during the day.",
+            "44": "Can be found in Northrunt at night.",
+            "45": "Can be found on Tusk Mountain on summer days.",
+            "46": "Can be found in Black Water Swamp on fall days.",
+            "47": "Can be found in in Split Canyon on winter days.",
+            "48": "Can be found in Magmaron on spring days.",
+            "49": "Can be found in Nevermoor on Sunday night.",
+            "50": "Can be found in Maerwynn on Monday during the day.",
+            "51": "Can be found in Busted Lands on Tuesday night.",
+            "52": "Can be found in Evernight Forest on Wednesday during the day.",
+            "53": "Can be found in Rotten Lands on Thursday during the day.",
+            "54": "Can be found in Maerwynn on Easter.",
+            "55": "Can be found in Sprawling Jungle on Whitsun.",
+            "56": "Can be found in Plains of Oz'Korr during Gold Event.",
+            "57": "Can be found in Stumble Steppe. Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.",
+            "58": "Can be found in the gem mine. Required: Mine level 20.",
+            "59": "Can be found on the last floor of the Earth Habitat. Location: Moldy Forest.",
+            "60": "Can be found in Nevermoor during the day.",
+            "61": "Can be found in Flooded Caldwell at night.",
+            "62": "Can be found in Black Water Swamp at night.",
+            "63": "Can be found on Tusk Mountain during the day.",
+            "64": "Can be found in Busted Lands on Tuesday night.",
+            "65": "Can be found in Moldy Forest on fall nights.",
+            "66": "Can be found in Split Canyon on Monday during the day.",
+            "67": "Can be found in Sunburn Desert on spring days.",
+            "68": "Can be found in Plains of Oz'Korr on winter days.",
+            "69": "Can be found in Sprawling Jungle on Wednesday night.",
+            "70": "Can be found in Stumble Steppe on Thursday during the day.",
+            "71": "Can be found in Black Forest on summer days.",
+            "72": "Can be found in Magmaron on Friday during the day.",
+            "73": "Can be found in Evernight Forest on Saturday night.",
+            "74": "Can't be found in the wild, but in your local weapon shop.",
+            "75": "Can be found in Maerwynn during Forest Rarities Event.",
+            "76": "Can be found in Flooded Caldwell on Valentine's Day.",
+            "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
+            "78": "Is a reward for clearing the single-player Demon Portal. Location: Skull Island.",
+            "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
+            "80": "Can be found in Magmaron during the day.",
+            "81": "Can be found on Skull Island during the day.",
+            "82": "Can be found in Evernight Forest at night.",
+            "83": "Can be found in Northrunt during the day.",
+            "84": "Can be found in Rotten Lands on Monday during the day.",
+            "85": "Can be found on Tusk Mountain on Tuesday night.",
+            "86": "Can be found in Split Canyon on Wednesday during the day.",
+            "87": "Can be found in Flooded Caldwell on winter days.",
+            "88": "Can be found in Moldy Forest on Thursday night.",
+            "89": "Can be found on Skull Island on Friday during the day.",
+            "90": "Can be found in Black Water Swamp on Saturday during the day.",
+            "91": "Can be found in Erogenion on fall nights.",
+            "92": "Can be found in Sprawling Jungle on summer days.",
+            "93": "Can be found on Shadowrock Mountain on Sunday night.",
+            "94": "Can be found on Skull Island. Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.",
+            "95": "Can't be found in the wild, but in your local magic shop.",
+            "96": "Can be found on Skull Island during the Birthday Event.",
+            "97": "Can be found in the Arcane Toilet. Required: Aura level 20.",
+            "98": "Is rewarded for the next quest after clearing dungeon 22. Location: Busted Lands.",
+            "99": "Can be found on the last floor of the Water Habitat. Location: Nevermoor."
         },
         "bulk": {
             "not_possible": "Nicht möglich",
@@ -972,7 +1106,8 @@
         "topbar": {
             "import": "Import",
             "clear": "Clear",
-            "export": "Export"
+            "export": "Export",
+            "options": "Options"
         },
         "form": {
             "fight_group": "Select group",
@@ -982,9 +1117,11 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
+        "analyze": "Statistical analysis",
+        "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} (#{healthA} / #{totalHealthA}) - #{nameB} (#{healthB} / #{totalHealthB}) - Winner: #{winner}",
+            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
             "rage": "Rage",
             "attacker": "Attacker",
             "target": "Target",
@@ -993,14 +1130,27 @@
             "damage": "Damage",
             "damage_base": "Base damage"
         },
-        "summary": {
-            "view": "View summary",
-            "damage": "Base damage ranges",
-            "type": "Attack types"
-        },
         "toast_import_error": {
             "title": "Import failed",
             "message": "Ensure that you are importing a valid HAR or fight JSON"
+        },
+        "special_state": {
+            "druid_rage": "Druid is enraged",
+            "bard_song": "Bard has played a song"
+        },
+        "sidebar": {
+            "toggles": {
+                "damages": "Show damage ranges"
+            },
+            "damages": {
+                "weapon1_range_base": "Input range",
+                "weapon2_range_base": "Input range (secondary)",
+                "weapon1_range": "Normal range",
+                "weapon2_range": "Normal range (secondary)",
+                "weapon1_range_critical": "Critical range",
+                "weapon2_range_critical": "Critical range (secondary)",
+                "weapon1_range_swoop": "Swoop range"
+            }
         }
     },
     "players": {
@@ -1103,7 +1253,6 @@
         "add": "Hinzufügen",
         "save": "Speichern",
         "simulate": "Simulieren",
-        "simulate_debug": "Im Debug-Modus simulieren",
         "configure": "Simulator konfigurieren",
         "configure_copy": "Kopiere alle inklusive der aktuellen Einstellungen",
         "configure_insert": "Insert sample data",
@@ -1210,6 +1359,29 @@
             "close": "Close",
             "ok": "Ok"
         },
+        "analyzer_options": {
+            "title": "Analyzer Options",
+            "option": {
+                "rage_display_mode": {
+                    "title": "Rage display mode",
+                    "value": {
+                        "decimal": "Decimal",
+                        "percentage": "Percentage",
+                        "fraction": "Fractional"
+                    }
+                },
+                "base_damage_error_margin": {
+                    "title": "Acceptable base error"
+                }
+            }
+        },
+        "fight_statistical_analysis": {
+            "title": "Statistical analysis",
+            "selector": "Filter expression",
+            "count": "Count",
+            "add": "Add new counter",
+            "variables": "Available variables:"
+        },
         "template_manage": {
             "title": "Vorlagen",
             "general": "Generell",
@@ -1238,6 +1410,7 @@
                 "overwrite_script": "Skript von neuer Version überschrieben",
                 "save_script": "Skript gespeichert",
                 "remove_script": "Script removed",
+                "discard_script": "Script changes were discarded",
                 "create_template": "Template created",
                 "overwrite_template": "Template overwritten by new version",
                 "save_template": "Template saved",
