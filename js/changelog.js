@@ -43,11 +43,19 @@ const CHANGELOG = {
             'Added customizable base damage error margin',
             'Added new custom state display for Bards and Druids',
             'Added new damage range sidebar',
+            'Added missing health field',
             'Added statistical analysis tool',
-            'Fixed catapult attack'
+            'Added gladiator reduction mode',
+            'Fixed catapult attack',
+            'Fixed grouped fights not sorted by fight count'
         ],
         'All Simulators': [
-            'Improved performance'
+            'Improved performance',
+            'Improved accuracy'
+        ],
+        'All Tools': [
+            'Fixed scrolling when a dialog is visible',
+            'Fixed statistics integration displaying other players when imported via integration'
         ]
     },
     'v6.3632': {
