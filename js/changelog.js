@@ -17,7 +17,7 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v6.3394': {
         'Statistics': [
             'Added <code>Pet Rank</code> and <code>Pet Honor</code> headers',
             'Added discarded scripts to script archive',

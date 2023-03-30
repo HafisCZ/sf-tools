@@ -1,6 +1,6 @@
 // Version stuff
 const MODULE_VERSION_MAJOR = '6';
-const MODULE_VERSION = 'v6.3632';
+const MODULE_VERSION = 'v6.3394';
 const TABLE_VERSION = 'v10.1';
 const CORE_VERSION = 'v3.5';
 
