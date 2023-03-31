@@ -159,7 +159,7 @@ const CONFIG = Object.defineProperties(
     {
         General: {
             CritBase: 2,
-            CritGladiatorBonus: 0.11,
+            CritGladiatorBonus: 0.05,
             CritEnchantmentBonus: 0.05
         },
         Warrior: {
@@ -522,7 +522,7 @@ class FighterModel {
     getCriticalMultiplier (weapon, weapon2, target) {
         let multiplier = this.Config.CritBase;
         if (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) {
-            multiplier += this.Config.CritEnchantmentBonus;
+            multiplier *= 1 + this.Config.CritEnchantmentBonus;
         }
 
         let ownGladiator = this.Player.Fortress.Gladiator || 0;
@@ -537,7 +537,7 @@ class FighterModel {
             reducingGladiator = 0;
         }
 
-        multiplier += this.Config.CritGladiatorBonus * Math.max(0, ownGladiator - reducingGladiator);
+        multiplier *= 1 + this.Config.CritGladiatorBonus * Math.max(0, ownGladiator - reducingGladiator);
 
         return multiplier;
     }
