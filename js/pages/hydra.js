@@ -10,8 +10,8 @@ Site.ready({ type: 'simulator' }, function () {
         }[attribute]
     }
 
-    const ATTRIBUTE_MAP = Object.values(CONFIG).map((data) => getAttributeList(data.Attribute));
-    
+    const ATTRIBUTE_MAP = CONFIG.classes().map((data) => getAttributeList(data.Attribute));
+
     const EditorController = new (class {
         constructor () {
             this.fields = {

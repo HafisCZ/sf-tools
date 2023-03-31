@@ -279,6 +279,11 @@ const CONFIG = Object.defineProperties(
             value: function () {
                 return Array.from({ length: Object.keys(this).length - 1 }, (_, i) => i + 1);
             }
+        },
+        classes: {
+            value: function () {
+                return Object.values(this).slice(1);
+            }
         }
     }
 );
