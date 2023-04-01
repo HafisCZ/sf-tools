@@ -71,7 +71,7 @@ const ExpressionEnum = new (class {
             'ExperienceCurve',
             'ExperienceTotal',
             'SoulsCurve',
-            'ScrapbookCount'
+            'ScrapbookSize'
         ]
     }
 
