@@ -300,6 +300,10 @@
   margin-bottom: 5em;
 }
 
+.mb-12 {
+  margin-bottom: 3em;
+}
+
 /* Text Size */
 .text-5 {
   font-size: 1.25em;
@@ -475,6 +479,10 @@
 /* Font Family */
 .font-arial {
   font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.font-monospace {
+  font-family: monospace !important;
 }
 
 /* Box Shadow */
