@@ -1371,6 +1371,9 @@
                 "function": "functions(...)",
                 "enum": "Enumerations",
                 "constant": "@constants"
+            },
+            "description": {
+                
             }
         },
         "analyzer_options": {
