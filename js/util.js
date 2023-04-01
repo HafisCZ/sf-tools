@@ -184,6 +184,10 @@ class Constants {
         this.Values[key] = value;
     }
 
+    keys () {
+        return Object.keys(this.Values);
+    }
+
     /*
         Old stuff
     */

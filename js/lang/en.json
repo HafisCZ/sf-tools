@@ -576,6 +576,7 @@
             "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
+                "manual": "Manual",
                 "scripts": "Scripts",
                 "templates": "Templates",
                 "save": "Save",
@@ -589,7 +590,7 @@
                     "actions": "Actions",
                     "modify": "Script",
                     "library": "Libraries",
-                    "archive": "Archive"
+                    "help": "Help"
                 }
             },
             "types": {
@@ -1358,6 +1359,19 @@
             "save": "Save",
             "close": "Close",
             "ok": "Ok"
+        },
+        "script_manual": {
+            "title": "Reference manual",
+            "heading": {
+                "header": "Headers for all characters",
+                "header_protected": "Headers for own guild members",
+                "header_private": "Headers for own characters",
+                "header_scoped": "Subheaders for objects",
+                "header_itemizable": "Subheaders for inventory",
+                "function": "functions(...)",
+                "enum": "Enumerations",
+                "constant": "@constants"
+            }
         },
         "analyzer_options": {
             "title": "Analyzer Options",

@@ -1838,3 +1838,56 @@ const PlayerDetailDialog = new (class extends Dialog {
     `);
   }
 })()
+
+const ScriptManualDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            dismissable: true,
+            opacity: 0,
+            key: 'script_manual'
+        })
+    }
+
+    _createModal () {
+        let content = '';
+
+        const data = [
+            ['ta-reserved', 'header', Object.keys(SP_KEYWORD_MAPPING_0)],
+            ['ta-reserved-protected', 'header_protected', Object.keys(SP_KEYWORD_MAPPING_1)],
+            ['ta-reserved-private', 'header_private', Object.keys(SP_KEYWORD_MAPPING_2)],
+            ['ta-reserved-itemizable', 'header_itemizable', Object.keys(SP_KEYWORD_MAPPING_5)],
+            ['ta-reserved-scoped', 'header_scoped', Object.keys(SP_KEYWORD_MAPPING_4)],
+            ['ta-function', 'function', ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all'].concat(Object.keys(SP_FUNCTIONS))],
+            ['ta-enum', 'enum', ExpressionEnum.keys],
+            ['ta-constant', 'constant', Constants.DEFAULT.keys(), Constants.DEFAULT.Values]
+        ];
+
+        for (const [klass, type, list, descriptions] of data) {
+            content += `
+                <div class="mb-12">
+                    <h3 class="text-center ${klass} mb-4">${this.intl(`heading.${type}`)}</h3>
+                    <div class="ui three columns grid">
+                        ${list.map((name) => `<div class="column text-center">${name}${descriptions && descriptions[name] ? `<br><span class="text-gray font-monospace">${descriptions[name]}</span>` : ''}</div>`).join('')}
+                    </div>
+                </div>
+            `
+        }
+
+        return `
+            <div class="inverted bordered dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="overflow-y-scroll" style="height: 70vh;">${content}</div>
+            </div>
+        `
+    }
+
+    _createBindings () {
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.hide();
+        })
+    }
+})()

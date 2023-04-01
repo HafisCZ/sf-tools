@@ -2255,9 +2255,14 @@ class ScriptsTab extends Tab {
         this.$selectorInput = this.$parent.operator('selector-input');
 
         // Right sidebar
-        this.$libraryWiki = this.$parent.operator('library-wiki');
-        this.$libraryWiki.click(() => {
+        this.$helpWiki = this.$parent.operator('help-wiki');
+        this.$helpWiki.click(() => {
             window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank');
+        });
+
+        this.$helpManual = this.$parent.operator('help-manual');
+        this.$helpManual.click(() => {
+            DialogController.open(ScriptManualDialog);
         });
 
         this.$libraryScripts = this.$parent.operator('library-scripts');
@@ -2277,8 +2282,8 @@ class ScriptsTab extends Tab {
         });
 
         // Archive
-        this.$archive = this.$parent.operator('archive');
-        this.$archive.click(() => {
+        this.$libraryArchive = this.$parent.operator('library-archive');
+        this.$libraryArchive.click(() => {
             DialogController.open(ScriptArchiveDialog, (content) => {
                 if (content === true) {
                     this._updateSidebars();
@@ -2553,9 +2558,9 @@ class ScriptsTab extends Tab {
         }
 
         if (ScriptArchive.empty()) {
-            this.$archive.addClass('disabled');
+            this.$libraryArchive.addClass('disabled');
         } else {
-            this.$archive.removeClass('disabled');
+            this.$libraryArchive.removeClass('disabled');
         }
 
         this._updateButtons();
