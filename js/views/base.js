@@ -566,6 +566,10 @@ const Localization = new (class {
         window.document.querySelectorAll('[data-intl-title]').forEach(element => this.translateTitle(element));
     }
 
+    hasTranslation (key) {
+        return key in this.translation;
+    }
+
     findTranslation (key) {
         let obj = this.translation[key];
         if (!obj) {

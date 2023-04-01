@@ -1851,6 +1851,11 @@ const ScriptManualDialog = new (class extends Dialog {
     _createModal () {
         let content = '';
 
+        const enumDescriptions = {
+            'AchievementCount': ExpressionEnum.get('AchievementCount'),
+            'ScrapbookSize': ExpressionEnum.get('ScrapbookSize')
+        }
+
         const data = [
             ['ta-reserved', 'header', Object.keys(SP_KEYWORD_MAPPING_0)],
             ['ta-reserved-protected', 'header_protected', Object.keys(SP_KEYWORD_MAPPING_1)],
@@ -1858,16 +1863,24 @@ const ScriptManualDialog = new (class extends Dialog {
             ['ta-reserved-itemizable', 'header_itemizable', Object.keys(SP_KEYWORD_MAPPING_5)],
             ['ta-reserved-scoped', 'header_scoped', Object.keys(SP_KEYWORD_MAPPING_4)],
             ['ta-function', 'function', ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all'].concat(Object.keys(SP_FUNCTIONS))],
-            ['ta-enum', 'enum', ExpressionEnum.keys],
+            ['ta-enum', 'enum', ExpressionEnum.keys,  enumDescriptions],
             ['ta-constant', 'constant', Constants.DEFAULT.keys(), Constants.DEFAULT.Values]
         ];
 
         for (const [klass, type, list, descriptions] of data) {
+            let innerContent = '';
+            for (const item of list) {
+                const key = item.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/ /g, '_').replace(/_{2,}/, '_').replace(/^_/, '');
+                const description = (descriptions ? descriptions[item] : false) || (Localization.hasTranslation(`dialog.script_manual.description.${key}`) ? this.intl(`description.${key}`) : false);
+
+                innerContent += `<div class="column text-center">${item}${description ? `<br><span class="text-gray font-monospace">${description}</span>` : ''}</div>`
+            }
+
             content += `
                 <div class="mb-12">
                     <h3 class="text-center ${klass} mb-4">${this.intl(`heading.${type}`)}</h3>
                     <div class="ui three columns grid">
-                        ${list.map((name) => `<div class="column text-center">${name}${descriptions && descriptions[name] ? `<br><span class="text-gray font-monospace">${descriptions[name]}</span>` : ''}</div>`).join('')}
+                        ${innerContent}
                     </div>
                 </div>
             `
