@@ -462,6 +462,14 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
     })
 
+    function getDungeonExperience ({ boss, dungeon }) {
+        if (dungeon.id === 201) {
+            return 0;
+        } else {
+            return (boss.level >= 393 ? 1.5E9 : EXPERIENCE_REQUIRED[boss.level]) / (dungeon.id === 203 ? 50 : 5);
+        }
+    }
+
     function showMassDungeonResults (bosses, results, sort, calculateTotalExperience) {
         let entries = bosses.map((dungeon, index) => {
             let result = _dig(results, index);
@@ -499,15 +507,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
         let experienceTotal = 0;
         if (calculateTotalExperience) {
-            experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
-                if (dungeon.id === 201) {
-                    return 0;
-                } else if (boss.level >= 393) {
-                    return 3E8;
-                } else {
-                    return EXPERIENCE_REQUIRED[boss.level] / 5;
-                }
-            }, 0);
+            experienceTotal = _mapped_sum(entries, getDungeonExperience, 0);
         }
 
         DialogController.open(
@@ -776,14 +776,14 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         executeSimulation(instances, iterations, false);
     });
 
-    function showGraph (graph, dungeon, boss, score, tries, healths, showExperience = false) {
+    function showGraph (graph, dungeon, boss, score, tries, healths) {
         graph.options.title.text = [
             `${ dungeon.id !== 201 && dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
             intl('dungeons.graph.winrate', { rate: (100 * score / tries).toFixed(2), score: formatAsSpacedNumber(score, ' '), tries: formatAsSpacedNumber(tries, ' ') })
         ];
 
-        if (dungeon.id !== 201) {
-            let experience = boss.level >= 393 ? 3E8 : EXPERIENCE_REQUIRED[boss.level] / 5;
+        const experience = getDungeonExperience({ dungeon, boss });
+        if (experience > 0) {
             graph.options.title.text.splice(1, 0, `${formatAsSpacedNumber(experience, ' ')} XP`);
         }
 
