@@ -1570,7 +1570,7 @@ const PlayerDetailDialog = new (class extends Dialog {
                     <div class="detail-item">${this.intl('damage')}</div>
                     <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage.Min) } - ${ formatAsSpacedNumber(player.Damage.Max) }</div>
                 </div>
-                ${ player.Class == 4 ? `
+                ${ player.Class == ASSASSIN ? `
                     <div class="detail-entry">
                         <div class="detail-item"></div>
                         <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage2.Min) } - ${ formatAsSpacedNumber(player.Damage2.Max) }</div>
@@ -1629,14 +1629,18 @@ const PlayerDetailDialog = new (class extends Dialog {
                     <div class="detail-item">${this.intl('scrapbook')}</div>
                     <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }${ asDiff(player.Book, compare.Book, formatAsSpacedNumber) }</div>
                 </div>
-                <div class="detail-entry">
-                    <div class="detail-item">${this.intl('achievements')}</div>
-                    <div class="detail-item text-center">${ player.Achievements.Owned } / ${ ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
-                </div>
-                <div class="detail-entry">
-                    <div class="detail-item">${this.intl('mount')}</div>
-                    <div class="detail-item text-center">${ PLAYER_MOUNT[player.Mount] }%</div>
-                </div>
+                ${ player.Own || player.Achievements.Owned > 0 ? `
+                    <div class="detail-entry">
+                        <div class="detail-item">${this.intl('achievements')}</div>
+                        <div class="detail-item text-center">${ player.Achievements.Owned } / ${ ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
+                    </div>
+                ` : '' }
+                ${ player.Mount ? `
+                    <div class="detail-entry">
+                        <div class="detail-item">${this.intl('mount')}</div>
+                        <div class="detail-item text-center">${ PLAYER_MOUNT[player.Mount] }%</div>
+                    </div>
+                ` : '' }
                 <div class="detail-entry">
                     <div class="detail-item">${this.intl('heath_bonus')}</div>
                     <div class="detail-item text-center">${ player.Dungeons.Player }%${ asDiff(player.Dungeons.Player, compare.Dungeons.Player) }</div>
