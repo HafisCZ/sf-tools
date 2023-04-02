@@ -22,8 +22,16 @@ Site.ready({ type: 'simulator' }, function () {
 
             this.fields['range_start'] = new Field('#range-start', '1', Field.createRange(1, 500));
             this.fields['range_end'] = new Field('#range-end', '500', Field.createRange(1, 500));
+            this.fields['range_theme'] = new Field('#range-theme', '');
 
-            for (const fieldName of ['range_start', 'range_end']) {
+            this.fields['range_theme'].$object.dropdown({
+                values: HELLEVATOR_THEMES.map((value) => ({
+                    name: intl(`hellevator.theme.${value}`),
+                    value
+                }))
+            }).dropdown('set selected', String(HELLEVATOR_THEMES[0]));
+
+            for (const fieldName of ['range_start', 'range_end', 'range_theme']) {
                 this.fields[fieldName].setListener(() => this._changeListener());
             }
 
@@ -37,6 +45,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             object.RangeStart = this.fields.range_start.get();
             object.RangeEnd = this.fields.range_end.get();
+            object.RangeTheme = this.fields.range_theme.get();
 
             super.fill(object);
             
@@ -175,7 +184,7 @@ Site.ready({ type: 'simulator' }, function () {
     }
     
     // Buttons
-    $('#simulate').click(function () {
+    $('#simulate').click(async function () {
         const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
         const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
 
@@ -184,7 +193,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             const player = editor.read();
 
-            const enemies = HellevatorEnemies.floorRange(player.RangeStart, Math.max(player.RangeStart, player.RangeEnd));
+            const enemies = await HellevatorEnemies.floorRange(player.RangeStart, Math.max(player.RangeStart, player.RangeEnd), player.RangeTheme);
             const scores = [];
 
             const batch = new WorkerBatch('hellevator');

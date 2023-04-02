@@ -1036,9 +1036,17 @@
     "hellevator": {
         "range": {
             "start": "Start at floor",
-            "end": "End at floor"
+            "end": "End at floor",
+            "theme": "Theme"
         },
         "element": "Element",
+        "theme": {
+            "0": "Lust and Anger",
+            "1": "Treachery",
+            "2": "Fraud",
+            "3": "Gluttony",
+            "4": "Greed"
+        },
         "win": {
             "all": "All #{count} floors were defeated with 100% chance",
             "none": "All #{count} floors are impossible to defeat",
