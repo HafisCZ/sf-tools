@@ -2866,7 +2866,7 @@ Site.ready(null, function (urlParams) {
             'browse': UI.Browse,
             'scripts': UI.Scripts,
             'files': UI.Files
-        }[SiteOptions.tab] || UI.Groups);
+        }[urlParams.get('tab') || SiteOptions.tab] || UI.Groups);
 
         if (urlParams.has('template')) {
             DialogController.open(SaveOnlineScriptDialog, urlParams.get('template'));
