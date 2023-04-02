@@ -208,6 +208,12 @@ Site.ready(null, function (urlParams) {
         });
     })
 
+    const GROUP_SORTERS = {
+        'default': (group) => group.index,
+        'fight_count': (group) => group.fights.length,
+        'fighter_b_level': (group) => group.fighterB.Level
+    }
+
     $buttonOptions.click(() => {
         const options = {
             rage_display_mode: {
@@ -223,6 +229,13 @@ Site.ready(null, function (urlParams) {
                 type: 'number',
                 onChange: () => {
                     updatePreview();
+                }
+            },
+            group_sort: {
+                type: 'dropdown',
+                keys: Object.keys(GROUP_SORTERS),
+                onChange: () => {
+                    render(true);
                 }
             }
         }
@@ -329,7 +342,8 @@ Site.ready(null, function (urlParams) {
         {
             rage_display_mode: 'decimal',
             base_damage_error_margin: 1,
-            damages_sidebar: false
+            damages_sidebar: false,
+            group_sort: 'fight_count'
         }
     )
 
@@ -733,6 +747,7 @@ Site.ready(null, function (urlParams) {
 
             if (_nil(group)) {
                 group = {
+                    index: groupedFights.length,
                     hash: fight.hash,
                     fighterA: fight.fighterA,
                     fighterB: fight.fighterB,
@@ -745,7 +760,7 @@ Site.ready(null, function (urlParams) {
             group.fights.push({ index: fight.index, rounds: fight.rounds, winner: fight.winner });
         }
 
-        _sort_des(groupedFights, (fight) => fight.fights.length);
+        _sort_des(groupedFights, GROUP_SORTERS[analyzerOptions.group_sort])
 
         // Display in dropdown
         $groupList.dropdown({
