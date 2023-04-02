@@ -188,6 +188,13 @@ function _sequence (length, base = 0) {
     return Array.from({ length }, (_, i) => i + base);
 }
 
+function _array_from_indexes (indexes, processor, base = []) {
+    return indexes.reduce((memo, index) => {
+        memo[index] = processor(index);
+        return memo;
+    }, base);
+}
+
 function _array_to_hash (array, processor, base = {}) {
     return array.reduce((memo, object, i) => {
         const [key, value] = processor(object, i);
