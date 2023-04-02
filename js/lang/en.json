@@ -1389,6 +1389,14 @@
                 },
                 "base_damage_error_margin": {
                     "title": "Acceptable base error"
+                },
+                "group_sort": {
+                    "title": "Sort groups by",
+                    "value": {
+                        "default": "Default",
+                        "fight_count": "Fight count",
+                        "fighter_b_level": "Level of player B"
+                    }
                 }
             }
         },
