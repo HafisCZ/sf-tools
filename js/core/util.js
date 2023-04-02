@@ -195,6 +195,16 @@ function _array_from_indexes (indexes, processor, base = []) {
     }, base);
 }
 
+function _merge (target, source) {
+    for (const [key, value] of Object.entries(source)) {
+        if (!target.hasOwnProperty(key)) {
+            target[key] = value;
+        }
+    }
+
+    return target;
+}
+
 function _array_to_hash (array, processor, base = {}) {
     return array.reduce((memo, object, i) => {
         const [key, value] = processor(object, i);

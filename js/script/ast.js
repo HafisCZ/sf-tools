@@ -1152,8 +1152,14 @@ class Expression {
             } else if (node == 'row_index') {
                 // Return row index
                 return scope.env.row_indexes && scope.player ? scope.env.row_indexes[`${ scope.player.Identifier }_${ scope.player.Timestamp }`] : undefined;
-            } else if (SP_KEYWORDS_DEFAULT.hasOwnProperty(node)) {
-                return SP_KEYWORDS_DEFAULT[node];
+            } else if (node === 'undefined') {
+                return undefined;
+            } else if (node === 'null') {
+                return null;
+            } else if (node === 'true') {
+                return true;
+            } else if (node === 'false') {
+                return false;
             } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
                 return SP_KEYWORDS[node].expr(scope.player);
             } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
@@ -3319,18 +3325,15 @@ const SP_KEYWORD_MAPPING_5_HO = {
     }
 }
 
-const SP_KEYWORDS = {};
-mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_0);
-mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_1);
-mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_2);
-mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_5);
+const SP_KEYWORDS = Object.assign(
+    {},
+    SP_KEYWORD_MAPPING_0,
+    SP_KEYWORD_MAPPING_1,
+    SP_KEYWORD_MAPPING_2,
+    SP_KEYWORD_MAPPING_5
+)
 
-const SP_KEYWORDS_INDIRECT = {};
-mergeSoft(SP_KEYWORDS_INDIRECT, SP_KEYWORD_MAPPING_4);
-
-const SP_KEYWORDS_DEFAULT = {
-    'undefined': undefined,
-    'null': null,
-    'true': true,
-    'false': false
-};
+const SP_KEYWORDS_INDIRECT = Object.assign(
+    {},
+    SP_KEYWORD_MAPPING_4
+);

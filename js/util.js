@@ -689,14 +689,6 @@ function getColorFromName (name) {
     }
 }
 
-function mergeSoft (a, b) {
-    for (var [k, v] of Object.entries(b)) {
-        if (!a.hasOwnProperty(k)) a[k] = b[k];
-    }
-
-    return a;
-}
-
 const GOLD_CURVE = (function (base, max, clamp) {
     for (let i = base.length; i < max; i++) {
         base[i] = Math.min(Math.floor((base[i - 1] + Math.floor(base[Math.floor(i / 2)] / 3) + Math.floor(base[Math.floor(i / 3)] / 4)) / 5) * 5, clamp);
