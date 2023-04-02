@@ -17,6 +17,23 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Statistics': [
+            'Added new in-tool manual as a replacement for old manual page',
+            'Added missing images of legendary items',
+            'Fixed scrapbook count enum'
+        ],
+        'Dungeon Simulator': [
+            'Fixed Twister experience display'
+        ],
+        'Hellevator Simulator': [
+            'Added theme selector',
+            'Added monster damage ranges'
+        ],
+        'Fight Analyzer': [
+            'Added customizable group sorting'
+        ]
+    },
     'v6.3394': {
         'Statistics': [
             'Added <code>Pet Rank</code> and <code>Pet Honor</code> headers',
