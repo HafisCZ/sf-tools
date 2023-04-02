@@ -672,6 +672,7 @@ Site.ready(null, function (urlParams) {
     function reset () {
         currentFights = [];
         currentPlayers = [];
+        currentGroups = [];
 
         currentGroup = null;
         currentFight = null;
@@ -741,35 +742,36 @@ Site.ready(null, function (urlParams) {
         }
 
         // Group fights
-        const groupedFights = [];
+        currentGroups = [];
+
         for (const fight of currentFights) {
-            let group = groupedFights.find((group) => group.hash === fight.hash);
+            let group = currentGroups.find((group) => group.hash === fight.hash);
 
             if (_nil(group)) {
                 group = {
-                    index: groupedFights.length,
+                    index: currentGroups.length,
                     hash: fight.hash,
                     fighterA: fight.fighterA,
                     fighterB: fight.fighterB,
                     fights: []
                 }
 
-                groupedFights.push(group);
+                currentGroups.push(group);
             }
 
             group.fights.push({ index: fight.index, rounds: fight.rounds, winner: fight.winner });
         }
 
-        _sort_des(groupedFights, GROUP_SORTERS[analyzerOptions.group_sort])
+        _sort_des(currentGroups, GROUP_SORTERS[analyzerOptions.group_sort])
 
         // Display in dropdown
         $groupList.dropdown({
-            values: groupedFights.map((group) => ({
+            values: currentGroups.map((group) => ({
                 name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${getFighterName(group.fighterA)} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${getFighterName(group.fighterB)} (${group.fights.length})`,
                 value: group.hash
             }))
         }).dropdown('setting', 'onChange', (value) => {
-            const group = groupedFights.find((group) => group.hash === value);
+            const group = currentGroups.find((group) => group.hash === value);
 
             $fightView.show();
 
@@ -779,8 +781,8 @@ Site.ready(null, function (urlParams) {
             renderFightGroup(group);
         });
 
-        if (groupedFights.length > 0) {
-            $groupList.dropdown('set selected', _dig(currentGroup, 'hash') || groupedFights[0].hash);
+        if (currentGroups.length > 0) {
+            $groupList.dropdown('set selected', _dig(currentGroup, 'hash') || currentGroups[0].hash);
         } else {
             renderDamagesSidebar(null);
         }
@@ -911,6 +913,7 @@ Site.ready(null, function (urlParams) {
     // Current data
     let currentFights = [];
     let currentPlayers = [];
+    let currentGroups = [];
 
     let currentGroup = null;
     let currentFight = null;
@@ -1200,6 +1203,7 @@ Site.ready(null, function (urlParams) {
 
     return {
         getPlayers: () => currentPlayers,
-        getFights: () => currentFights
+        getFights: () => currentFights,
+        getGroups: () => currentGroups
     }
 })
