@@ -792,7 +792,7 @@ class BrowseTab extends Tab {
                     const currentEntry = list.find((entry) => entry[0] <= this.timestamp);
                     if (currentEntry) {
                         const [timestamp, currentPlayer] = currentEntry;
-                        const [reference, comparePlayer] = list.find((entry) => entry[0] <= this.reference && entry[0] <= timestamp) || currentEntry;
+                        const [reference, comparePlayer] = list.concat().reverse().find((entry) => entry[0] >= this.reference && entry[0] <= timestamp) || currentEntry;
                         
                         if (terms.every((term) => term.test(term.arg, DatabaseManager._loadPlayer(currentPlayer), this.timestamp, reference))) {
                             entries.add(
