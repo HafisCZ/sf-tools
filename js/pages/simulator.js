@@ -182,7 +182,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
             for (let entry of data) {
                 players.push({
-                    player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
+                    player: _merge(new SFPlayer(), preparePlayerData(entry)),
                     score: null,
                     index: iterator++
                 })
