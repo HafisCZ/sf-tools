@@ -199,7 +199,11 @@ const SiteOptions = new OptionsHandler(
 )
 
 const Exporter = new (class {
-    json (content, name = new Date().toISOString().replace(/[\-\:\.T]/g, '_').replace(/Z$/, '')) {
+    get time () {
+        return new Date().toISOString().replace(/[\-\:\.T]/g, '_').replace(/Z$/, '');
+    }
+
+    json (content, name = this.time) {
         download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
     }
 })();

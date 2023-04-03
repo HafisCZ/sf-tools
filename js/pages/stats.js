@@ -86,7 +86,7 @@ class GroupDetailTab extends Tab {
             if (dialog) {
                 exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
             } else {
-                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Date.now()}`));
+                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Exporter.time}`));
             }
         }
 
@@ -391,7 +391,7 @@ class PlayerDetailTab extends Tab {
             if (dialog) {
                 exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
             } else {
-                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Date.now()}`));
+                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Exporter.time}`));
             }
         }
 
@@ -1452,7 +1452,7 @@ class PlayersTab extends Tab {
 class FilesTab extends Tab {
     // Export all to json file
     exportAllJson () {
-        DatabaseManager.export().then(Exporter.json);
+        DatabaseManager.export().then((data) => Exporter.json(data, `files_${Exporter.time}`));
     }
 
     // Export all to cloud
@@ -1463,7 +1463,7 @@ class FilesTab extends Tab {
     // Export selected to json file
     exportSelectedJson () {
         if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles).then(Exporter.json);
+            DatabaseManager.export(undefined, this.selectedFiles).then((data) => Exporter.json(data, `files_${Exporter.time}`));
         } else {
             const players = [];
             const groups = [];
@@ -1475,10 +1475,13 @@ class FilesTab extends Tab {
                 }
             }
 
-            Exporter.json({
-                players,
-                groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
-            });
+            Exporter.json(
+                {
+                    players,
+                    groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
+                },
+                `files_${Exporter.time}`
+            );
         }
     }
 
@@ -2653,7 +2656,7 @@ class SettingsTab extends Tab {
 
         Exporter.json(
             await Site.dump(),
-            `recovery_dump_${formatDate(Date.now()).replace(/\W/g, '_')}`
+            `recovery_dump_${Exporter.time}`
         );
 
         Loader.toggle(false);

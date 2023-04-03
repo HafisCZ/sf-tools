@@ -258,7 +258,10 @@ const SimulatorUtils = new (class {
             }).dropdown('setting', 'onChange', (value) => {
                 this._onLog((json) => {
                     if (value === 'file') {
-                        Exporter.json(json);
+                        Exporter.json(
+                            json,
+                            `simulator_log_${Exporter.time}`
+                        );
                     } else if (value === 'broadcast') {
                         const broadcast = new Broadcast();
 
