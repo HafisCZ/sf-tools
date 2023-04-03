@@ -1193,10 +1193,13 @@ Site.ready(null, function (urlParams) {
         }
         
         // Export
-        Exporter.json({
-            players: Object.values(exportPlayers),
-            fights: exportFights
-        });
+        Exporter.json(
+            {
+                players: Object.values(exportPlayers),
+                fights: exportFights
+            },
+            `analyzer_${Exporter.time}`
+        );
     }
 
     render();
