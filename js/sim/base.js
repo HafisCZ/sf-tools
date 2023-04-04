@@ -838,7 +838,7 @@ class BattlemageModel extends FighterModel {
         } else {
             const multiplier = 0.05 * target.Config.HealthMultiplier;
 
-            return Math.min(Math.ceil(target.Health / 3), Math.ceil(this.Health * multiplier));
+            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth * multiplier));
         }
     }
 
