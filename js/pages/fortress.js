@@ -43,33 +43,37 @@ Site.ready({ type: 'simulator' }, function () {
                 fortifications_level: new Field('[data-path="FortificationsLevel"]', '0', Field.createRange(0, 20))
             })
 
-            this.fields['warrior_level'].$object.dropdown({
+            this.fields['warrior_level'].initialize({
                 values: Object.entries(FORTRESS_WARRIOR_MAP).map(([id, { level }]) => ({
                     name: level,
                     value: id
-                }))
-            }).dropdown('set selected', '0');
+                })),
+                value: '0'
+            });
 
-            this.fields['archer_level'].$object.dropdown({
+            this.fields['archer_level'].initialize({
                 values: Object.entries(FORTRESS_ARCHER_MAP).map(([id, { level }]) => ({
                     name: level,
                     value: id
-                }))
-            }).dropdown('set selected', '0');
+                })),
+                value: '0'
+            });
 
-            this.fields['mage_level'].$object.dropdown({
+            this.fields['mage_level'].initialize({
                 values: Object.entries(FORTRESS_MAGE_MAP).map(([id, { level }]) => ({
                     name: level,
                     value: id
-                }))
-            }).dropdown('set selected', '0');
+                })),
+                value: '0'
+            });
             
-            this.fields['fortifications_level'].$object.dropdown({
+            this.fields['fortifications_level'].initialize({
                 values: Object.entries(FORTRESS_WALL_MAP).map(([id, { level }]) => ({
                     name: `${id == 0 ? intl('editor.none') : id} - ${intl('editor.level')} ${level}`,
                     value: id
-                }))
-            }).dropdown('set selected', '0');
+                })),
+                value: '0'
+            });
 
             for (const field of this.fieldsArray) {
                 field.setListener(() => this.onChangeLister());

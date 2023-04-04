@@ -19,12 +19,13 @@ Site.ready({ type: 'simulator' }, function () {
         _bind () {
             this.fields['name'].editable(false);
 
-            this.fields['range_theme'].$object.dropdown({
+            this.fields['range_theme'].initialize({
                 values: HELLEVATOR_THEMES.map((value) => ({
                     name: intl(`hellevator.theme.${value}`),
                     value
-                }))
-            }).dropdown('set selected', String(HELLEVATOR_THEMES[0]));
+                })),
+                value: HELLEVATOR_THEMES[0]
+            });
 
             for (const field of this.fieldsArray) {
                 field.triggerAlways = true;

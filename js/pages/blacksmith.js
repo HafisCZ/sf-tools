@@ -84,14 +84,15 @@ Site.ready(null, function () {
                 double: new Field('[data-path="double"]', 'false')
             })
 
-            this.fields['type'].$object.dropdown({
+            this.fields['type'].initialize({
                 values: ['normal_1', 'normal_2', 'epic_3', 'epic_5'].map(value => ({
                     name: intl(`blacksmith.item.types.${value}`),
                     value
-                }))
-            }).dropdown('set selected', 'normal_1');
+                })),
+                value: 'normal_1'
+            });
 
-            this.fields['double'].$object.dropdown({
+            this.fields['double'].initialize({
                 values: [
                     {
                         name: intl('general.no'),
@@ -101,8 +102,9 @@ Site.ready(null, function () {
                         name: intl('general.yes'),
                         value: true
                     }
-                ]
-            }).dropdown('set selected', 'false');
+                ],
+                value: 'false'
+            });
 
             for (const field of this.fieldsArray) {
                 field.triggerAlways = true;

@@ -38,18 +38,20 @@ class PlayerEditor extends EditorBase {
 
         this.callback = callback;
 
-        this.fields['class'].$object.dropdown({
+        this.fields['class'].initialize({
             values: CONFIG.indexes().map((value) => ({
                 image: `res/class${value}.png`,
                 imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.class${value}`),
                 value
-            }))
-        }).dropdown('setting', 'onChange', (value) => {
-            $(`${parent} [data-optional="Weapon2"]`).toggle(value == ASSASSIN);
-        }).dropdown('set selected', '1');
+            })),
+            onChange: (value) => {
+                $(`${parent} [data-optional="Weapon2"]`).toggle(value == ASSASSIN);
+            },
+            value: '1'
+        });
 
-        this.fields['weapon1_rune'].$object.dropdown({
+        this.fields['weapon1_rune'].initialize({
             values: [
                 {
                     name: intl('editor.none'),
@@ -67,10 +69,11 @@ class PlayerEditor extends EditorBase {
                     name: intl('editor.lightning'),
                     value: 42
                 }
-            ]
-        }).dropdown('set selected', '0');
+            ],
+            value: '0'
+        });
 
-        this.fields['weapon2_rune'].$object.dropdown({
+        this.fields['weapon2_rune'].initialize({
             values: [
                 {
                     name: intl('editor.none'),
@@ -88,10 +91,11 @@ class PlayerEditor extends EditorBase {
                     name: intl('editor.lightning'),
                     value: 42
                 }
-            ]
-        }).dropdown('set selected', '0');
+            ],
+            value: '0'
+        });
 
-        this.fields['weapon1_enchantment'].$object.dropdown({
+        this.fields['weapon1_enchantment'].initialize({
             values: [
                 {
                     name: intl('general.no'),
@@ -101,10 +105,11 @@ class PlayerEditor extends EditorBase {
                     name: intl('general.yes'),
                     value: true
                 }
-            ]
-        }).dropdown('set selected', 'false');
+            ],
+            value: 'false'
+        });
 
-        this.fields['weapon2_enchantment'].$object.dropdown({
+        this.fields['weapon2_enchantment'].initialize({
             values: [
                 {
                     name: intl('general.no'),
@@ -114,8 +119,9 @@ class PlayerEditor extends EditorBase {
                     name: intl('general.yes'),
                     value: true
                 }
-            ]
-        }).dropdown('set selected', 'false');
+            ],
+            value: 'false'
+        });
 
         for (const field of Object.values(this.fields)) {
             field.setListener(() => {
@@ -129,7 +135,7 @@ class PlayerEditor extends EditorBase {
     fill (object, editable) {
         this._frozen = true;
 
-        for (const [key, field] of Object.entries(this.fields)) {
+        for (const [key, field] of this.fieldsEntries) {
             const source = key === 'maximum_life' ? object : (editable || object);
             const value = getObjectAt(source, field.path());
 

@@ -32,7 +32,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
             this.Index = index;
 
-            this.fields['gladiator'].$object.dropdown({
+            this.fields['gladiator'].initialize({
                 values: [
                     { name: intl('pets.editor.none'), value: 0 },
                     ... [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ].map((gladiator) => {
@@ -41,38 +41,41 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                             value: gladiator
                         }
                     })
-                ]
-            }).dropdown('set selected', '0');
+                ],
+                value: '0'
+            });
 
-            this.fields['boss'].$object.dropdown({
+            this.fields['boss'].initialize({
                 values: [
                     { name: intl('general.no'), value: 0 },
                     { name: intl('general.yes'), value: 1 }
-                ]
-            }).dropdown('setting', 'onChange', (value, text) => {
-                for (let name of NON_BOSS_FIELDS) {
-                    this.fields[name].toggle(value == 0);
-                }
-            }).dropdown('set selected', '0');
+                ],
+                onChange: (value) => {
+                    for (const name of NON_BOSS_FIELDS) {
+                        this.fields[name].toggle(value == 0);
+                    }
+                },
+                value: '0'
+            });
 
-            this.fields['pet'].$object.dropdown({
+            this.fields['pet'].initialize({
                 fullTextSearch: true,
-                values: new Array(100).fill(0).map((_ , i) => {
-                    return {
-                        name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name">${intl(`pets.names.${i}`)}</span>`,
-                        value: i
-                    };
-                })
-            }).dropdown('set selected', '0');
+                values: new Array(100).fill(0).map((_ , value) => ({
+                    name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + value }.png"><span class="pet-name">${intl(`pets.names.${value}`)}</span>`,
+                    value
+                })),
+                value: '0'
+            });
 
-            this.fields['type'].$object.dropdown({
+            this.fields['type'].initialize({
                 values: [0, 1, 2, 3, 4].map((index) => {
                     return {
                         name: intl(`pets.types.${index}`),
                         value: index
                     }
-                })
-            }).dropdown('set selected', '0');
+                }),
+                value: '0'
+            });
 
             this.$debugDisplay = $(`${root} [data-debug]`);
             this.$debugDisplay.hide();
