@@ -103,7 +103,7 @@ Site.ready({ type: 'simulator' }, function () {
         }
 
         clear () {
-            for (let [key, field] of Object.entries(this.fields)) {
+            for (const field of Object.values(this.fields)) {
                 field.clear();
             }
         }
