@@ -185,7 +185,7 @@ Site.ready({ type: 'simulator' }, function () {
     StatisticsIntegration.configure({
         profile: HYDRA_PROFILE,
         type: 'guilds',
-        scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MembersTotal == gi.MembersPresent)[0])),
+        scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MembersTotal == gi.MembersPresent && gi.MembersTotal >= 10)[0])),
         callback: (group) => {
             EditorController.fill(
                 playersToData(
