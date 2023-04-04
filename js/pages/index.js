@@ -12,13 +12,16 @@ Site.ready(null, function () {
         return date.toLocaleString('en-GB', { dateStyle: 'long', timeStyle: 'short' }).replace(' at', '');
     }
 
+    const branch = window.location.hostname.startsWith('beta.') ? 'beta' : ''
+
     const item = Store.shared.get('version', { expire: 0 });
     if (item.expire < Date.now()) {
         $.ajax(
             "https://api.github.com/repos/hafiscz/sf-tools/commits",
             {
                 data: {
-                    per_page: 1
+                    per_page: 1,
+                    sha: branch
                 },
                 dataType: 'jsonp',
                 type: 'get'
