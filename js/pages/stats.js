@@ -140,7 +140,6 @@ class GroupDetailTab extends Tab {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
-            preserveHTML: true,
             action: (value, text, element) => {
                 this.$configure.find('.item').removeClass('active');
 
@@ -409,7 +408,6 @@ class PlayerDetailTab extends Tab {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
-            preserveHTML: true,
             action: (value, text, element) => {
                 this.$configure.find('.item').removeClass('active');
 
@@ -911,7 +909,6 @@ class BrowseTab extends Tab {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
-            preserveHTML: true,
             action: (value, text, element) => {
                 this.$configure.find('.item').removeClass('active');
 

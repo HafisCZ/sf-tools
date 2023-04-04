@@ -797,7 +797,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     $('[data-cheat="class"]').dropdown({
-        preserveHTML: true,
         values: [
             {
                 name: intl('dungeons.cheats.keep_original'),
