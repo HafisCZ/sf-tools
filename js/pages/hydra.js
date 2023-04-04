@@ -12,9 +12,9 @@ Site.ready({ type: 'simulator' }, function () {
 
     const ATTRIBUTE_MAP = CONFIG.classes().map((data) => getAttributeList(data.Attribute));
 
-    const EditorController = new (class {
+    const editor = new (class extends EditorBase {
         constructor () {
-            this.fields = {
+            super({
                 players: new Field('[data-path="PlayerCount"]', '', Field.isHydraPlayerCount),
                 level: new Field('[data-path="Level"]', '', Field.isHydraPetLevel),
                 str: new Field('[data-path="Main"]', '', Field.isNonZero),
@@ -23,10 +23,9 @@ Site.ready({ type: 'simulator' }, function () {
                 con: new Field('[data-path="Constitution"]', '', Field.isNonZero),
                 lck: new Field('[data-path="Luck"]', '', Field.isNonZero),
                 hydra: new Field('[data-path="Hydra"]', '1')
-            };
+            })
 
-            this.fields['hydra'].$object.dropdown({
-                preserveHTML: true,
+            this.fields.hydra.$object.dropdown({
                 values: Object.entries(HYDRA_MAP).map(([id, { class: klass }]) => {
                     return {
                         name: `<img class="ui centered image !-ml-3 !mr-2" src="res/class${klass}.png"><span>${intl(`hydra.names.${id}`)}</span>`,
@@ -35,54 +34,14 @@ Site.ready({ type: 'simulator' }, function () {
                 })
             }).dropdown('set selected', '1');
 
-            for (let field of Object.values(this.fields)) {
+            for (const field of this.fieldsArray) {
                 field.setListener(() => clearResults());
             }
-        }
-
-        fill (object) {
-            if (object) {
-                for (const field of Object.values(this.fields)) {
-                    field.set(getObjectAt(object, field.path()));
-                }
-            } else {
-                for (const field of Object.values(this.fields)) {
-                    field.clear();
-                }
-            }
-        }
-
-        read () {
-            let object = {};
-            for (const field of Object.values(this.fields)) {
-                setObjectAt(object, field.path(), field.get());
-            }
-
-            return object;
-        }
-
-        valid () {
-            for (const field of Object.values(this.fields)) {
-                if (!field.valid()) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        genEmpty () {
-            const object = {};
-            for (const field of Object.values(this.fields)) {
-                setObjectAt(object, field.path(), field.defaultValue);
-            }
-
-            return object;
         }
     })();
 
     function getHydraData () {
-        let obj = HYDRA_MAP[EditorController.read().Hydra];
+        let obj = HYDRA_MAP[editor.read().Hydra];
 
         return {
             Armor: obj.armor,
@@ -122,7 +81,7 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     function getPlayerData (klass) {
-        const data = EditorController.read();
+        const data = editor.read();
         return {
             Level: data.Level,
             Class: klass,
@@ -151,7 +110,7 @@ Site.ready({ type: 'simulator' }, function () {
         const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
 
         const data = {
-            Hydra: hydra || EditorController.fields['hydra'].get(),
+            Hydra: hydra || editor.fields['hydra'].get(),
             PlayerCount: players.length,
             Level: Math.min(Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25), 600)
         }
@@ -172,7 +131,7 @@ Site.ready({ type: 'simulator' }, function () {
             try {
                 const players = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                 if (Array.isArray(players)) {
-                    EditorController.fill(playersToData(players));
+                    editor.fill(playersToData(players));
                 }
             } catch (e) {
                 // Do nothing
@@ -187,7 +146,7 @@ Site.ready({ type: 'simulator' }, function () {
         type: 'guilds',
         scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MembersTotal == gi.MembersPresent && gi.MembersTotal >= 10)[0])),
         callback: (group) => {
-            EditorController.fill(
+            editor.fill(
                 playersToData(
                     _compact(group.Members.map(pid => DatabaseManager.getPlayer(pid, group.Timestamp))),
                     (group.Hydra || 0) + 1
@@ -200,7 +159,7 @@ Site.ready({ type: 'simulator' }, function () {
         const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
         const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
-        if (EditorController.valid()) {
+        if (editor.valid()) {
             const results = [];
 
             const hydra = getHydraData();
@@ -256,7 +215,7 @@ Site.ready({ type: 'simulator' }, function () {
 
     function clearResults () {
         const $simButton = $('#simulate');
-        if (EditorController.valid()) {
+        if (editor.valid()) {
             $simButton.removeClass('disabled');
         } else {
             $simButton.addClass('disabled');

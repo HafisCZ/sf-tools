@@ -6,11 +6,9 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     const IGNORED_FIELDS = ['class', 'health', 'attribute', 'defense', 'luck', 'skip', 'damage', 'chance', 'critical'];
     const NON_BOSS_FIELDS = ['level', 'at100', 'at150', 'at200', 'pack', 'gladiator'];
 
-    class PetController {
+    class PetEditor extends EditorBase {
         constructor (root, index) {
-            this.Index = index;
-
-            this.fields = {
+            super({
                 type: new Field(`${root} [data-path="Type"]`, '0'),
                 pet: new Field(`${root} [data-path="Pet"]`, '0'),
                 boss: new Field(`${root} [data-path="Boss"]`, '0'),
@@ -30,7 +28,9 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 damage: new Field(`${root} [data-path="Damage"]`, '?'),
                 chance: new Field(`${root} [data-path="Chance"]`, '?'),
                 critical: new Field(`${root} [data-path="Critical"]`, '?')
-            };
+            })
+
+            this.Index = index;
 
             this.fields['gladiator'].$object.dropdown({
                 values: [
@@ -78,7 +78,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             this.$debugDisplay = $(`${root} [data-debug]`);
             this.$debugDisplay.hide();
 
-            for (let [name, field] of Object.entries(this.fields)) {
+            for (const [name, field] of this.fieldsEntries) {
                 if (!IGNORED_FIELDS.includes(name)) {
                     field.setListener(() => this.changeListener(name));
                     field.triggerAlways = true;
@@ -88,7 +88,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
         fill (object) {
             if (object) {
-                for (var [key, field] of Object.entries(this.fields)) {
+                for (const [key, field] of this.fieldsEntries) {
                     if (IGNORED_FIELDS.includes(key)) {
                         field.clear();
                     } else if (key == 'pet') {
@@ -98,16 +98,14 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     }
                 }
             } else {
-                for (const field of Object.values(this.fields)) {
-                    field.clear();
-                }
+                this.clear();
             }
         }
 
         read () {
             const object = {};
 
-            for (const [key, field] of Object.entries(this.fields)) {
+            for (const [key, field] of this.fieldsEntries) {
                 if (IGNORED_FIELDS.includes(key)) {
                     continue;
                 } else if (key == 'pet') {
@@ -125,7 +123,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         valid () {
             const isBoss = this.fields['boss'].get() == 1;
 
-            for (const [key, field] of Object.entries(this.fields)) {
+            for (const [key, field] of this.fieldsEntries) {
                 const isIgnoredField = IGNORED_FIELDS.includes(key);
                 const isBossIgnoredField = isBoss && NON_BOSS_FIELDS.includes(key);
 
@@ -214,8 +212,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
     }
 
-    const petA = new PetController('#sim-a', 0);
-    const petB = new PetController('#sim-b', 1);
+    const petA = new PetEditor('#sim-a', 0);
+    const petB = new PetEditor('#sim-b', 1);
     
     petA.fill();
     petA.valid();

@@ -27,47 +27,24 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     updateSaveButton();
 
     // Editor configuration
-    let playerEditor = new Editor('#player-editor');
-    let underworldEditor = new (class {
-        constructor (mount) {
-            this.fields = {
-                goblin: new Field(`${mount} [data-path="GoblinPit"]`, '0', Field.isUnderworldBuilding),
-                goblin_upgrades: new Field(`${mount} [data-path="GoblinUpgrades"]`, '0', Field.isNumber),
-                troll: new Field(`${mount} [data-path="TrollBlock"]`, '0', Field.isUnderworldBuilding),
-                troll_upgrades: new Field(`${mount} [data-path="TrollUpgrades"]`, '0', Field.isNumber),
-                keeper: new Field(`${mount} [data-path="Keeper"]`, '0', Field.isUnderworldBuilding),
-                keeper_upgrades: new Field(`${mount} [data-path="KeeperUpgrades"]`, '0', Field.isNumber),
-            }
+    Editor.createPlayerEditor('#player-editor');
+    const playerEditor = new Editor('#player-editor');
 
-            for (let field of Object.values(this.fields)) {
+    const underworldEditor = new (class extends EditorBase {
+        constructor (selector) {
+            super({
+                goblin: new Field(`${selector} [data-path="GoblinPit"]`, '0', Field.isUnderworldBuilding),
+                goblin_upgrades: new Field(`${selector} [data-path="GoblinUpgrades"]`, '0', Field.isNumber),
+                troll: new Field(`${selector} [data-path="TrollBlock"]`, '0', Field.isUnderworldBuilding),
+                troll_upgrades: new Field(`${selector} [data-path="TrollUpgrades"]`, '0', Field.isNumber),
+                keeper: new Field(`${selector} [data-path="Keeper"]`, '0', Field.isUnderworldBuilding),
+                keeper_upgrades: new Field(`${selector} [data-path="KeeperUpgrades"]`, '0', Field.isNumber),
+            })
+
+            for (const field of this.fieldsArray) {
                 field.setListener(() => this.onChangeLister());
                 field.triggerAlways = true;
             }
-        }
-
-        fill (data) {
-            if (data) {
-                for (let field of Object.values(this.fields)) {
-                    field.set(getObjectAt(data, field.path()));
-                }
-            } else {
-                for (let field of Object.values(this.fields)) {
-                    field.clear();
-                }
-            }
-        }
-
-        read () {
-            let data = {};
-            for (let field of Object.values(this.fields)) {
-                setObjectAt(data, field.path(), field.get());
-            }
-
-            return data;
-        }
-
-        valid () {
-            return Object.values(this.fields).every(field => field.valid())
         }
 
         onChangeLister () {
