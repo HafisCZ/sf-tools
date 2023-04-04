@@ -126,11 +126,13 @@ class PlayerEditor {
         }
     }
 
-    fill (object) {
+    fill (object, editable) {
         this._frozen = true;
 
-        for (const field of Object.values(this.fields)) {
-            const value = getObjectAt(object, field.path());
+        for (const [key, field] of Object.entries(this.fields)) {
+            const source = key === 'maximum_life' ? object : (editable || object);
+            const value = getObjectAt(source, field.path());
+
             if (typeof value === 'undefined') {
                 field.clear();
             } else {
@@ -789,7 +791,7 @@ Site.ready(null, function (urlParams) {
     }
 
     function renderPlayer (player, editor, soft) {
-        editor.fill(soft ? (player.editor || player.player) : (player.player || player.editor) || player);
+        editor.fill(player, soft ? (player.editor || player.player) : (player.player || player.editor));
     }
 
     const ATTACK_RAGE_FORMATS = {
