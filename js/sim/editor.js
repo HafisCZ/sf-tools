@@ -180,19 +180,19 @@ class Field {
 class EditorBase {
     fill (object) {
         if (object) {
-            for (var [key, field] of Object.entries(this.fields)) {
+            for (const field of Object.values(this.fields)) {
                 field.set(getObjectAt(object, field.path()));
             }
         } else {
-            for (var [key, field] of Object.entries(this.fields)) {
+            for (const field of Object.values(this.fields)) {
                 field.clear();
             }
         }
     }
 
     read () {
-        let object = {};
-        for (var [key, field] of Object.entries(this.fields)) {
+        const object = {};
+        for (const field of Object.values(this.fields)) {
             setObjectAt(object, field.path(), field.get());
         }
 
@@ -200,13 +200,13 @@ class EditorBase {
     }
 
     clear () {
-        for (var [key, field] of Object.entries(this.fields)) {
+        for (const field of Object.values(this.fields)) {
             field.clear();
         }
     }
 
     valid () {
-        for (var [key, field] of Object.entries(this.fields)) {
+        for (const field of Object.values(this.fields)) {
             if (!field.valid()) {
                 return false;
             }
@@ -228,8 +228,8 @@ class Editor extends EditorBase {
     }
 
     read () {
-        var object = new SFPlayer();
-        for (var [key, field] of Object.entries(this.fields)) {
+        const object = new SFPlayer();
+        for (const field of Object.values(this.fields)) {
             setObjectAt(object, field.path(), field.get());
         }
 
@@ -237,8 +237,9 @@ class Editor extends EditorBase {
     }
 
     valid () {
-        var ass = this.fields['class'].get() != 4;
-        for (var [key, field] of Object.entries(this.fields)) {
+        const ass = this.fields['class'].get() != 4;
+
+        for (const [key, field] of Object.entries(this.fields)) {
             if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
                 continue;
             }
@@ -252,8 +253,8 @@ class Editor extends EditorBase {
     }
 
     empty (defClass = undefined) {
-        var object = new SFPlayer();
-        for (var [key, field] of Object.entries(this.fields)) {
+        const object = new SFPlayer();
+        for (const field of Object.values(this.fields)) {
             setObjectAt(object, field.path(), field.defaultValue);
         }
 

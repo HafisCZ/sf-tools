@@ -42,11 +42,11 @@ Site.ready({ type: 'simulator' }, function () {
 
         fill (object) {
             if (object) {
-                for (var [key, field] of Object.entries(this.fields)) {
+                for (const field of Object.values(this.fields)) {
                     field.set(getObjectAt(object, field.path()));
                 }
             } else {
-                for (var [key, field] of Object.entries(this.fields)) {
+                for (const field of Object.values(this.fields)) {
                     field.clear();
                 }
             }
@@ -54,7 +54,7 @@ Site.ready({ type: 'simulator' }, function () {
 
         read () {
             let object = {};
-            for (var [key, field] of Object.entries(this.fields)) {
+            for (const field of Object.values(this.fields)) {
                 setObjectAt(object, field.path(), field.get());
             }
 
@@ -62,7 +62,7 @@ Site.ready({ type: 'simulator' }, function () {
         }
 
         valid () {
-            for (var [key, field] of Object.entries(this.fields)) {
+            for (const field of Object.values(this.fields)) {
                 if (!field.valid()) {
                     return false;
                 }
@@ -72,8 +72,8 @@ Site.ready({ type: 'simulator' }, function () {
         }
 
         genEmpty () {
-            let object = {};
-            for (var [key, field] of Object.entries(this.fields)) {
+            const object = {};
+            for (const field of Object.values(this.fields)) {
                 setObjectAt(object, field.path(), field.defaultValue);
             }
 

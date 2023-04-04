@@ -98,7 +98,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     }
                 }
             } else {
-                for (var [key, field] of Object.entries(this.fields)) {
+                for (const field of Object.values(this.fields)) {
                     field.clear();
                 }
             }
