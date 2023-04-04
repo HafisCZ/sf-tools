@@ -129,7 +129,7 @@ class PlayerEditor {
     fill (object) {
         this._frozen = true;
 
-        for (const [key, field] of Object.entries(this.fields)) {
+        for (const field of Object.values(this.fields)) {
             const value = getObjectAt(object, field.path());
             if (typeof value === 'undefined') {
                 field.clear();
@@ -143,7 +143,7 @@ class PlayerEditor {
 
     read () {
         const object = {};
-        for (const [key, field] of Object.entries(this.fields)) {
+        for (const field of Object.values(this.fields)) {
             setObjectAt(object, field.path(), field.get());
         }
 
@@ -151,7 +151,7 @@ class PlayerEditor {
     }
 
     valid () {
-        for (const [key, field] of Object.entries(this.fields)) {
+        for (const field of Object.values(this.fields)) {
             if (!field.valid()) {
                 return false;
             }
