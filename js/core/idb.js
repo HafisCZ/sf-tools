@@ -608,7 +608,7 @@ const DatabaseManager = new (class {
             prefixes.add(player.Latest.Data.prefix);
         }
 
-        for (const [identifier, group] of Object.entries(this.Groups)) {
+        for (const group of Object.values(this.Groups)) {
             group.LatestTimestamp = 0;
             group.LatestDisplayTimestamp = 0;
             group.List = Object.entries(group).reduce((array, [ ts, obj ]) => {
