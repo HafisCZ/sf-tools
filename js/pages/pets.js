@@ -57,7 +57,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
             this.fields['pet'].$object.dropdown({
                 fullTextSearch: true,
-                preserveHTML: true,
                 values: new Array(100).fill(0).map((_ , i) => {
                     return {
                         name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name">${intl(`pets.names.${i}`)}</span>`,
