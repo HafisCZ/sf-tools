@@ -1,5 +1,23 @@
 const SIMULATOR_NOTICES = [
     {
+        timestamp: 1680636642663,
+        title: 'Battle Mage &amp; Critical Damage',
+        content: `
+            <div>
+                <ul>
+                    <li>Critical damage calculation was changed from multiplicative mode <code class="wrap-none">(2 * 1.75 * 1.05 = 3.675)</code> to additive mode <code class="wrap-none">(2 + 1.65 + 0.05 = 3.7)</code></li>
+                    <li class="mt-2">BATTLE MAGE was updated:
+                        <ul class="gap-2">
+                            <li>Gains +400% armor instead of flat +40% damage resistance</li>
+                            <li>Deals correct fireball damage against all classes (based on total health)</li>
+                            <li>No longer blocks incoming fireballs</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        `
+    },
+    {
         timestamp: 1677604572002,
         title: 'State of the Druid',
         content: `
