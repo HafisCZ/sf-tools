@@ -19,11 +19,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         gladiatorMode = active;
     })
 
-    let fireballMode = false;
-    $('#fireball-mode').toggleButton(active => {
-        fireballMode = active;
-    })
-
     let noAttributeReductionMode = false;
     $('#no-attribute-reduction-mode').toggleButton(active => {
         noAttributeReductionMode = active;
@@ -33,8 +28,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         return {
             Gladiator15: gladiatorMode,
             NoGladiatorReduction: ihofMode,
-            NoAttributeReduction: noAttributeReductionMode,
-            FireballFix: fireballMode
+            NoAttributeReduction: noAttributeReductionMode
         };
     }
 

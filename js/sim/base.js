@@ -140,9 +140,7 @@ const FLAGS = Object.defineProperty(
         Gladiator15: false,
         // Reductions
         NoGladiatorReduction: false,
-        NoAttributeReduction: false,
-        // Behaviors
-        FireballFix: false,
+        NoAttributeReduction: false
     },
     'set',
     {
@@ -159,7 +157,7 @@ const CONFIG = Object.defineProperties(
     {
         General: {
             CritBase: 2,
-            CritGladiatorBonus: 0.05,
+            CritGladiatorBonus: 0.11,
             CritEnchantmentBonus: 0.05
         },
         Warrior: {
@@ -202,7 +200,9 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 10
+            MaximumDamageReduction: 50,
+
+            ArmorMultiplier: 5
         },
         Berserker: {
             Attribute: 'Strength',
@@ -234,6 +234,7 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 40,
 
             DamageMultiplier: 1 / 3,
+            ArmorMultiplier: 2,
 
             SwoopChance: 25,
             SwoopChanceMin: 0,
@@ -255,6 +256,7 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 50,
 
             DamageMultiplier: 1.125,
+            ArmorMultiplier: 2,
 
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
@@ -487,13 +489,9 @@ class FighterModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else {
-            if (this.Player.Class == BARD || this.Player.Class == DRUID) {
-                return Math.min(maximumReduction, 2.0 * this.Player.Armor / source.Player.Level);
-            } else if (this.Player.Class == BATTLEMAGE) {
-                return Math.min(maximumReduction, this.Player.Armor / source.Player.Level) + 40;
-            } else {
-                return Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
-            }
+            const armorMultiplier = this.Config.ArmorMultiplier || 1;
+
+            return Math.min(maximumReduction, armorMultiplier * this.Player.Armor / source.Player.Level);
         }
     }
     
@@ -527,7 +525,7 @@ class FighterModel {
     getCriticalMultiplier (weapon, weapon2, target) {
         let multiplier = this.Config.CritBase;
         if (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) {
-            multiplier *= 1 + this.Config.CritEnchantmentBonus;
+            multiplier += this.Config.CritEnchantmentBonus;
         }
 
         let ownGladiator = this.Player.Fortress.Gladiator || 0;
@@ -542,7 +540,7 @@ class FighterModel {
             reducingGladiator = 0;
         }
 
-        multiplier *= 1 + this.Config.CritGladiatorBonus * Math.max(0, ownGladiator - reducingGladiator);
+        multiplier += this.Config.CritGladiatorBonus * Math.max(0, ownGladiator - reducingGladiator);
 
         return multiplier;
     }
@@ -835,52 +833,30 @@ class DruidModel extends FighterModel {
 
 class BattlemageModel extends FighterModel {
     getFireballDamage (target) {
-        if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
+        if (target.Player.Class == MAGE) {
             return 0;
-        } else if (FLAGS.FireballFix) {
-            let is2x = target.Player.Class == DRUID || target.Player.Class == BARD;
-            let is4x = target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER;
-            let is5x = target.Player.Class == WARRIOR || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID;
-
-            if (is5x) {
-                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
-            } else if (is4x) {
-                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
-            } else if (is2x) {
-                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 10));
-            } else {
-                return 0;
-            }
         } else {
-            if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID || target.Player.Class == BARD) {
-                return Math.ceil(target.TotalHealth / 3);
-            } else if (target.Player.Class == WARRIOR) {
-                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
-            } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN) {
-                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
-            } else {
-                return 0;
-            }
+            const multiplier = 0.05 * target.Config.HealthMultiplier;
+
+            return Math.min(Math.ceil(target.Health / 3), Math.ceil(this.Health * multiplier));
         }
     }
 
     before (instance, target) {
-        if (target.Player.Class !== BATTLEMAGE || instance.turn === 0) {
-            instance.getRage();
+        instance.getRage();
+        
+        const damage = this.getFireballDamage(target);
 
-            const damage = this.getFireballDamage(target);
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logFireball(this, target, damage);
+        }
 
-            if (FIGHT_LOG_ENABLED) {
-                FIGHT_LOG.logFireball(this, target, damage);
-            }
-
-            if (damage === 0) {
-                // Do nothing
-            } else if (target.DamageTaken) {
-                target.onDamageTaken(this, damage);
-            } else {
-                target.Health -= damage;
-            }
+        if (damage === 0) {
+            // Do nothing
+        } else if (target.DamageTaken) {
+            target.onDamageTaken(this, damage);
+        } else {
+            target.Health -= damage;
         }
     }
 }
