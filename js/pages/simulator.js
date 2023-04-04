@@ -1,7 +1,9 @@
 Site.ready({ type: 'simulator' }, function (urlParams) {
     let simulatorMode = 'players_all';
 
-    let editor = new Editor($('#sim-editor'));
+    Editor.createPlayerEditor('#sim-editor');
+    const editor = new Editor('#sim-editor');
+
     var selected = -1;
     var yourself = -1;
 

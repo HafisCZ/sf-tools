@@ -1,9 +1,7 @@
 // Editor
-class PlayerEditor {
+class PlayerEditor extends EditorBase {
     constructor (parent, callback) {
-        this.callback = callback;
-
-        this.fields = {
+        super({
             name: new Field(`${parent} [data-path="Name"]`, ''),
 
             class: new Field(`${parent} [data-path="Class"]`, '1'),
@@ -36,7 +34,9 @@ class PlayerEditor {
             weapon2_enchantment: new Field(`${parent} [data-path="Items.Wpn2.HasEnchantment"]`, 'false'),
             weapon2_rune: new Field(`${parent} [data-path="Items.Wpn2.AttributeTypes.2"]`, '0'),
             weapon2_value: new Field(`${parent} [data-path="Items.Wpn2.Attributes.2"]`, '0', Field.isDamageRune)
-        };
+        })
+
+        this.callback = callback;
 
         this.fields['class'].$object.dropdown({
             values: CONFIG.indexes().map((value) => ({
@@ -141,25 +141,6 @@ class PlayerEditor {
         }
 
         this._frozen = false;
-    }
-
-    read () {
-        const object = {};
-        for (const field of Object.values(this.fields)) {
-            setObjectAt(object, field.path(), field.get());
-        }
-
-        return object;
-    }
-
-    valid () {
-        for (const field of Object.values(this.fields)) {
-            if (!field.valid()) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
 

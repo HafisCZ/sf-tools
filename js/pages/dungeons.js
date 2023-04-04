@@ -44,11 +44,18 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         intl('general.companion3')
     ]
 
-    let editor = new (class extends Editor {
-        constructor ($parent, callback) {
-            super($parent, callback);
+    Editor.createPlayerEditor('#sim-editor');
 
+    function editorUpdate () {
+        saveEditor();
+        settingsChanged();
+    }
+
+    const editor = new (class extends Editor {
+        _bind () {
             this.fields['name'].editable(false);
+
+            super._bind();
         }
 
         fill (object, index = 0) {
@@ -80,10 +87,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             saveEditor();
             settingsChanged();
         }
-    })($('#sim-editor'), () => {
-        saveEditor();
-        settingsChanged();
-    });
+    })('#sim-editor', editorUpdate)
 
     // On paste event handler
     let players = [ editor.empty(1), editor.empty(1), editor.empty(2), editor.empty(3) ];

@@ -78,13 +78,11 @@ Site.ready(null, function () {
 
     const EditorController = new (class extends EditorBase {
         constructor () {
-            super();
-
-            this.fields = {
+            super({
                 type: new Field('[data-path="type"]', 'normal_1'),
                 value: new Field('[data-path="value"]', 0, Field.isNumber),
                 double: new Field('[data-path="double"]', 'false')
-            };
+            })
 
             this.fields['type'].$object.dropdown({
                 values: ['normal_1', 'normal_2', 'epic_3', 'epic_5'].map(value => ({
@@ -106,7 +104,7 @@ Site.ready(null, function () {
                 ]
             }).dropdown('set selected', 'false');
 
-            for (let field of Object.values(this.fields)) {
+            for (const field of this.fieldsArray) {
                 field.triggerAlways = true;
                 field.setListener(() => generateTable());
             }

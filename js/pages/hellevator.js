@@ -14,15 +14,10 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     // Editor
+    Editor.createPlayerEditor('#sim-editor');
     const editor = new (class extends Editor {
-        constructor ($parent, callback) {
-            super($parent, callback);
-
+        _bind () {
             this.fields['name'].editable(false);
-
-            this.fields['range_start'] = new Field('#range-start', '1', Field.createRange(1, 500));
-            this.fields['range_end'] = new Field('#range-end', '500', Field.createRange(1, 500));
-            this.fields['range_theme'] = new Field('#range-theme', '');
 
             this.fields['range_theme'].$object.dropdown({
                 values: HELLEVATOR_THEMES.map((value) => ({
@@ -31,21 +26,15 @@ Site.ready({ type: 'simulator' }, function () {
                 }))
             }).dropdown('set selected', String(HELLEVATOR_THEMES[0]));
 
-            for (const fieldName of ['range_start', 'range_end', 'range_theme']) {
-                this.fields[fieldName].setListener(() => this._changeListener());
-            }
-
-            for (let field of Object.values(this.fields)) {
+            for (const field of this.fieldsArray) {
                 field.triggerAlways = true;
             }
+
+            super._bind();
         }
 
         fill (object) {
             this.pauseListener();
-
-            object.RangeStart = this.fields.range_start.get();
-            object.RangeEnd = this.fields.range_end.get();
-            object.RangeTheme = this.fields.range_theme.get();
 
             super.fill(object);
             
@@ -58,7 +47,18 @@ Site.ready({ type: 'simulator' }, function () {
                 updateButtons(this.valid());
             }
         }
-    })($('#sim-editor'));
+    })(
+        '#sim-editor',
+        null,
+        Editor.getExtendedEditorFields(
+            '#sim-editor',
+            {
+                range_start: new Field('#range-start', '1', Field.createRange(1, 500)),
+                range_end: new Field('#range-end', '500', Field.createRange(1, 500)),
+                range_theme: new Field('#range-theme', '')
+            }
+        )
+    )
 
     // Paste
     $('input').on('paste', function (event) {

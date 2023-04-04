@@ -28,7 +28,8 @@ Site.ready({ type: 'simulator' }, function () {
     updateSaveButton();
 
     // Editor configuration
-    let playerEditor = new Editor('#player-editor');
+    Editor.createPlayerEditor('#player-editor');
+    const editor = new Editor('#player-editor');
 
     let currentList = 0;
     $('[data-guild]').click(({ currentTarget }) => {
@@ -37,7 +38,7 @@ Site.ready({ type: 'simulator' }, function () {
         document.querySelector(`[data-guild]:not([data-guild="${currentList}"])`).classList.remove('active-guild');
         currentTarget.classList.add('active-guild');
 
-        playerEditor.clear();
+        editor.clear();
         playerCurrentIndex = -1;
 
         updateSaveButton();
@@ -124,7 +125,7 @@ Site.ready({ type: 'simulator' }, function () {
             if (pasteMode == false) {
                 playerList[currentList] = [];
 
-                playerEditor.clear();
+                editor.clear();
 
                 playerCurrentIndex = -1;
                 updateSaveButton();
@@ -140,7 +141,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             updatePlayerList();
         } else if (data.Class || data.save) {
-            playerEditor.fill(preparePlayerData(data));
+            editor.fill(preparePlayerData(data));
         }
     }
 
@@ -157,7 +158,7 @@ Site.ready({ type: 'simulator' }, function () {
 
     // Add methods
     function addPlayer () {
-        let player = playerEditor.read();
+        let player = editor.read();
         if (player.Name == '') {
             player.Name = `Player ${playerList[currentList].length + 1}`;
         }
@@ -171,11 +172,11 @@ Site.ready({ type: 'simulator' }, function () {
         playerCurrentIndex = -1;
         updateSaveButton();
 
-        playerEditor.clear();
+        editor.clear();
     }
 
     $('#add-player').click(function () {
-        if (playerEditor.valid()) {
+        if (editor.valid()) {
             addPlayer();
             updatePlayerList();
         }
@@ -183,11 +184,11 @@ Site.ready({ type: 'simulator' }, function () {
 
     // Save methods
     $saveButton.click(function () {
-        if (playerEditor.valid()) {
+        if (editor.valid()) {
             if (playerCurrentIndex != -1) {
                 let index = playerList[currentList].findIndex(entry => entry.index == playerCurrentIndex);
                 if (index != -1) {
-                    playerList[currentList][index].player = playerEditor.read()
+                    playerList[currentList][index].player = editor.read()
                 }
             } else {
                 addPlayer();
@@ -235,7 +236,7 @@ Site.ready({ type: 'simulator' }, function () {
             playerCurrentIndex = parseInt(this.dataset.index);
             updateSaveButton();
 
-            playerEditor.fill(playerList[currentList].find(entry => entry.index == playerCurrentIndex).player);
+            editor.fill(playerList[currentList].find(entry => entry.index == playerCurrentIndex).player);
 
             updatePlayerList();
         })
@@ -267,7 +268,7 @@ Site.ready({ type: 'simulator' }, function () {
         $('[data-trash]').click(function () {
             let index = parseInt(this.dataset.trash);
             if (index == playerCurrentIndex) {
-                playerEditor.clear();
+                editor.clear();
 
                 playerCurrentIndex = -1;
                 updateSaveButton();
@@ -308,7 +309,7 @@ Site.ready({ type: 'simulator' }, function () {
         type: 'guilds',
         scope: (dm) => _compact(Object.values(dm.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MembersTotal == gi.MembersPresent)[0])),
         callback: (group) => {
-            playerEditor.clear();
+            editor.clear();
             playerCurrentIndex = -1;
             updateSaveButton();
 

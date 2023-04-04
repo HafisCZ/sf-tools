@@ -11,7 +11,7 @@ Site.ready({ type: 'simulator' }, function () {
     let listIndex = -1;
 
     function updateButtons () {
-        if (fortressEditor.valid()) {
+        if (editor.valid()) {
             $addButton.removeClass('disabled');
         } else {
             $addButton.addClass('disabled');
@@ -31,9 +31,9 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     // Editor configuration
-    const fortressEditor = new (class {
+    const editor = new (class extends EditorBase {
         constructor () {
-            this.fields = {
+            super({
                 warrior_count: new Field('[data-path="WarriorCount"]', '1', Field.createRange(1, 45)),
                 warrior_level: new Field('[data-path="WarriorLevel"]', '0'),
                 archer_count: new Field('[data-path="ArcherCount"]', '0', Field.createRange(0, 30)),
@@ -41,7 +41,7 @@ Site.ready({ type: 'simulator' }, function () {
                 mage_count: new Field('[data-path="MageCount"]', '0', Field.createRange(0, 15)),
                 mage_level: new Field('[data-path="MageLevel"]', '0'),
                 fortifications_level: new Field('[data-path="FortificationsLevel"]', '0', Field.createRange(0, 20))
-            }
+            })
 
             this.fields['warrior_level'].$object.dropdown({
                 values: Object.entries(FORTRESS_WARRIOR_MAP).map(([id, { level }]) => ({
@@ -71,40 +71,9 @@ Site.ready({ type: 'simulator' }, function () {
                 }))
             }).dropdown('set selected', '0');
 
-            for (let field of Object.values(this.fields)) {
+            for (const field of this.fieldsArray) {
                 field.setListener(() => this.onChangeLister());
                 field.triggerAlways = true;
-            }
-        }
-
-        fill (data) {
-            if (data) {
-                for (let field of Object.values(this.fields)) {
-                    field.set(getObjectAt(data, field.path()));
-                }
-            } else {
-                for (let field of Object.values(this.fields)) {
-                    field.clear();
-                }
-            }
-        }
-
-        read () {
-            let data = {};
-            for (let field of Object.values(this.fields)) {
-                setObjectAt(data, field.path(), field.get());
-            }
-
-            return data;
-        }
-
-        valid () {
-            return Object.values(this.fields).every(field => field.valid())
-        }
-
-        clear () {
-            for (const field of Object.values(this.fields)) {
-                field.clear();
             }
         }
 
@@ -114,8 +83,8 @@ Site.ready({ type: 'simulator' }, function () {
     })('#fortress-editor');
 
     // Reset editor content
-    fortressEditor.valid();
-    fortressEditor.onChangeLister();
+    editor.valid();
+    editor.onChangeLister();
 
     // Captive inputs
     $('#sim-threads').captiveInputField('fortress_sim/threads', 4, v => !isNaN(v) && v >= 1);
@@ -158,7 +127,7 @@ Site.ready({ type: 'simulator' }, function () {
         $list.find('[data-index]').click(function () {
             listIndex = parseInt($(this).attr('data-index'));
 
-            fortressEditor.fill(list.find(it => it.index === listIndex).data);
+            editor.fill(list.find(it => it.index === listIndex).data);
 
             listUpdate();
         });
@@ -172,7 +141,7 @@ Site.ready({ type: 'simulator' }, function () {
             }
 
             if (localIndex == listIndex) {
-                fortressEditor.clear();
+                editor.clear();
                 listIndex = -1;
             }
 
@@ -182,7 +151,7 @@ Site.ready({ type: 'simulator' }, function () {
 
     function addListItem () {
         list.push({
-            data: fortressEditor.read(),
+            data: editor.read(),
             index: (listIndex = listLength++),
             score: null
         });
@@ -192,17 +161,17 @@ Site.ready({ type: 'simulator' }, function () {
 
     // Callbacks
     $addButton.click(() => {
-        if (fortressEditor.valid()) {
+        if (editor.valid()) {
             addListItem();
         }
     })
 
     $saveButton.click(() => {
-        if (fortressEditor.valid()) {
+        if (editor.valid()) {
             if (listIndex >= 0) {
                 let item = list.find(it => it.index == listIndex);
                 if (item) {
-                    item.data = fortressEditor.read();
+                    item.data = editor.read();
                     item.score = null;
                 }
 

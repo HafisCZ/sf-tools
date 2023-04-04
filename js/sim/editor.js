@@ -178,21 +178,34 @@ class Field {
 }
 
 class EditorBase {
-    fill (object) {
-        if (object) {
-            for (const field of Object.values(this.fields)) {
-                field.set(getObjectAt(object, field.path()));
-            }
-        } else {
-            for (const field of Object.values(this.fields)) {
-                field.clear();
-            }
+    constructor (fields) {
+        this.fields = fields;
+        this.fieldsEntries = Object.entries(fields);
+        this.fieldsArray = Object.values(fields);
+
+        for (const [key, field] of this.fieldsEntries) {
+            field.key = key;
         }
     }
 
-    read () {
-        const object = {};
-        for (const field of Object.values(this.fields)) {
+    fill (object) {
+        if (object) {
+            for (const field of this.fieldsArray) {
+                const value = getObjectAt(object, field.path());
+
+                if (typeof value === 'undefined') {
+                    field.clear();
+                } else {
+                    field.set(value);
+                }
+            }
+        } else {
+            this.clear();
+        }
+    }
+
+    read (object = {}) {
+        for (const field of this.fieldsArray) {
             setObjectAt(object, field.path(), field.get());
         }
 
@@ -200,27 +213,73 @@ class EditorBase {
     }
 
     clear () {
-        for (const field of Object.values(this.fields)) {
+        for (const field of this.fieldsArray) {
             field.clear();
         }
     }
 
     valid () {
-        for (const field of Object.values(this.fields)) {
-            if (!field.valid()) {
-                return false;
-            }
-        }
-
-        return true;
+        return this.fieldsArray.every((field) => field.valid());
     }
 }
 
 class Editor extends EditorBase {
-    constructor ($parent, callback) {
-        super();
+    static createPlayerEditor (selector) {
+        document.querySelector(selector).innerHTML = Editor.getPlayerEditorHTML();
+    }
 
-        this._html(typeof $parent === 'string' ? $($parent) : $parent);
+    static getExtendedEditorFields (selector, extension) {
+        return Object.assign(
+            extension,
+            Editor.getEditorFields(selector)
+        )
+    }
+
+    static getEditorFields (selector) {
+        return {
+            name: new Field(`${selector} [data-path="Name"`, ''),
+            prefix: new Field(`${selector} [data-path="Prefix"`, ''),
+
+            class: new Field(`${selector} [data-path="Class"`, '1'),
+            level: new Field(`${selector} [data-path="Level"`, '', Field.isPlayerLevel),
+            armor: new Field(`${selector} [data-path="Armor"`, '', Field.isNumber),
+
+            resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"`, '', Field.isResistanceRune),
+            resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"`, '', Field.isResistanceRune),
+            resistance_lightning: new Field(`${selector} [data-path="Runes.ResistanceLightning"`, '', Field.isResistanceRune),
+
+            portal_hp: new Field(`${selector} [data-path="Dungeons.Player"`, '', Field.isDungeon),
+            portal_damage: new Field(`${selector} [data-path="Dungeons.Group"`, '', Field.isDungeon),
+
+            runes_health: new Field(`${selector} [data-path="Runes.Health"`, '', Field.isHealthRune),
+            gladiator: new Field(`${selector} [data-path="Fortress.Gladiator"`, '', Field.isUnderworldBuilding),
+            potion_life: new Field(`${selector} [data-path="Potions.Life"`, '0'),
+            enchantment: new Field(`${selector} [data-path="Items.Hand.HasEnchantment"`, 'false'),
+            shield: new Field(`${selector} [data-path="BlockChance"`, '25'),
+
+            str: new Field(`${selector} [data-path="Strength.Total"`, '', Field.isNonZero),
+            dex: new Field(`${selector} [data-path="Dexterity.Total"`, '', Field.isNonZero),
+            int: new Field(`${selector} [data-path="Intelligence.Total"`, '', Field.isNonZero),
+            con: new Field(`${selector} [data-path="Constitution.Total"`, '', Field.isNonZero),
+            lck: new Field(`${selector} [data-path="Luck.Total"`, '', Field.isNumber),
+
+            weapon1_min: new Field(`${selector} [data-path="Items.Wpn1.DamageMin"`, '', Field.isNumber),
+            weapon1_max: new Field(`${selector} [data-path="Items.Wpn1.DamageMax"`, '', Field.isNumber),
+            weapon1_enchantment: new Field(`${selector} [data-path="Items.Wpn1.HasEnchantment"`, 'false'),
+            weapon1_rune: new Field(`${selector} [data-path="Items.Wpn1.AttributeTypes.2"`, '0'),
+            weapon1_value: new Field(`${selector} [data-path="Items.Wpn1.Attributes.2"`, '', Field.isDamageRune),
+
+            weapon2_min: new Field(`${selector} [data-path="Items.Wpn2.DamageMin"`, '', Field.isNumber),
+            weapon2_max: new Field(`${selector} [data-path="Items.Wpn2.DamageMax"`, '', Field.isNumber),
+            weapon2_enchantment: new Field(`${selector} [data-path="Items.Wpn2.HasEnchantment"`, 'false'),
+            weapon2_rune: new Field(`${selector} [data-path="Items.Wpn2.AttributeTypes.2"`, '0'),
+            weapon2_value: new Field(`${selector} [data-path="Items.Wpn2.Attributes.2"`, '', Field.isDamageRune)
+        }
+    }
+
+    constructor (selector, callback = null, fields = Editor.getEditorFields(selector)) {
+        super(fields);
+
         this._bind();
 
         this._changeCallback = callback;
@@ -228,12 +287,7 @@ class Editor extends EditorBase {
     }
 
     read () {
-        const object = new SFPlayer();
-        for (const field of Object.values(this.fields)) {
-            setObjectAt(object, field.path(), field.get());
-        }
-
-        return object;
+        return super.read(new SFPlayer());
     }
 
     valid () {
@@ -284,46 +338,6 @@ class Editor extends EditorBase {
     }
 
     _bind () {
-        this.fields = {
-            name: new Field('[data-path="Name"]', ''),
-            prefix: new Field('[data-path="Prefix"]', ''),
-
-            class: new Field('[data-path="Class"]', '1'),
-            level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
-            armor: new Field('[data-path="Armor"]', '', Field.isNumber),
-
-            resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
-            resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', Field.isResistanceRune),
-            resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', Field.isResistanceRune),
-
-            portal_hp: new Field('[data-path="Dungeons.Player"]', '', Field.isDungeon),
-            portal_damage: new Field('[data-path="Dungeons.Group"]', '', Field.isDungeon),
-
-            runes_health: new Field('[data-path="Runes.Health"]', '', Field.isHealthRune),
-            gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isUnderworldBuilding),
-            potion_life: new Field('[data-path="Potions.Life"]', '0'),
-            enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
-            shield: new Field('[data-path="BlockChance"]', '25'),
-
-            str: new Field('[data-path="Strength.Total"]', '', Field.isNonZero),
-            dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNonZero),
-            int: new Field('[data-path="Intelligence.Total"]', '', Field.isNonZero),
-            con: new Field('[data-path="Constitution.Total"]', '', Field.isNonZero),
-            lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
-
-            weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isNumber),
-            weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isNumber),
-            weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
-            weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
-            weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', Field.isDamageRune),
-
-            weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isNumber),
-            weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isNumber),
-            weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
-            weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
-            weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', Field.isDamageRune)
-        };
-
         this.fields['class'].$object.dropdown({
             values: CONFIG.indexes().map((value) => ({
                 image: `res/class${value}.png`,
@@ -470,7 +484,7 @@ class Editor extends EditorBase {
             this._morph(parseInt(value));
         });
 
-        for (let field of Object.values(this.fields)) {
+        for (const field of this.fieldsArray) {
             field.setListener(() => this._changeListener());
         }
     }
@@ -531,12 +545,12 @@ class Editor extends EditorBase {
         }
     }
 
-    _html ($parent) {
-        $parent.html(`
+    static getPlayerEditorHTML () {
+        return `
             <div class="flex flex-col gap-2">
                 <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="field">
-                        <label>${this.intl('name')}</label>
+                        <label>${intl('editor.name')}</label>
                         <div class="ui icon right action inverted centered input">
                             <input type="text" data-path="Name">
                             <input type="hidden" data-path="Prefix">
@@ -544,7 +558,7 @@ class Editor extends EditorBase {
                                 <div class="ui top right pointing inverted dropdown button morph">
                                     <i class="exchange link icon"></i>
                                 </div>
-                                <div class="ui button copy-current" data-position="right center" data-inverted="" data-tooltip="${this.intl('copy')}">
+                                <div class="ui button copy-current" data-position="right center" data-inverted="" data-tooltip="${intl('editor.copy')}">
                                     <i class="outline copy link icon"></i>
                                 </div>
                             </div>
@@ -552,14 +566,14 @@ class Editor extends EditorBase {
                     </div>
                     <div class="two fields">
                         <div class="field">
-                            <label>${this.intl('class')}</label>
+                            <label>${intl('editor.class')}</label>
                             <div class="ui search selection inverted dropdown" data-path="Class">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('level')}</label>
+                            <label>${intl('editor.level')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Level" placeholder="1 - 800">
                             </div>
@@ -601,26 +615,26 @@ class Editor extends EditorBase {
                 <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="five fields !mb-0">
                         <div class="field">
-                            <label>${this.intl('min')}</label>
+                            <label>${intl('editor.min')}</label>
                             <div class="ui inverted centered input">
-                                <input type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                                <input type="text" data-path="Items.Wpn1.DamageMin" placeholder="${intl('editor.min_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('max')}</label>
+                            <label>${intl('editor.max')}</label>
                             <div class="ui inverted centered input">
-                                <input type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                                <input type="text" data-path="Items.Wpn1.DamageMax" placeholder="${intl('editor.max_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('weapon_enchant')}</label>
+                            <label>${intl('editor.weapon_enchant')}</label>
                             <div class="ui selection inverted dropdown" data-path="Items.Wpn1.HasEnchantment">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('rune')}</label>
+                            <label>${intl('editor.rune')}</label>
                             <div class="ui selection inverted dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
@@ -637,26 +651,26 @@ class Editor extends EditorBase {
                 <div class="ui grey inverted segment !p-2 !m-0" data-optional="Weapon2">
                     <div class="five fields !mb-0">
                         <div class="field">
-                            <label>${this.intl('min')}</label>
+                            <label>${intl('editor.min')}</label>
                             <div class="ui inverted centered input">
-                                <input type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
+                                <input type="text" data-path="Items.Wpn2.DamageMin" placeholder="${intl('editor.min_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('max')}</label>
+                            <label>${intl('editor.max')}</label>
                             <div class="ui inverted centered input">
-                                <input type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
+                                <input type="text" data-path="Items.Wpn2.DamageMax" placeholder="${intl('editor.max_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('weapon_enchant')}</label>
+                            <label>${intl('editor.weapon_enchant')}</label>
                             <div class="ui selection inverted dropdown" data-path="Items.Wpn2.HasEnchantment">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('rune')}</label>
+                            <label>${intl('editor.rune')}</label>
                             <div class="ui selection inverted dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
@@ -673,31 +687,31 @@ class Editor extends EditorBase {
                 <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="four fields !mb-0">
                         <div class="field">
-                            <label>${this.intl('armor')}</label>
+                            <label>${intl('editor.armor')}</label>
                             <div class="ui inverted centered input">
-                                <input type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
+                                <input type="text" data-path="Armor" placeholder="${intl('editor.armor_placeholder')}">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('block')}</label>
+                            <label>${intl('editor.block')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="BlockChance" placeholder="0 - 25">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('fire')}</label>
+                            <label>${intl('editor.fire')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('cold')}</label>
+                            <label>${intl('editor.cold')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('lightning')}</label>
+                            <label>${intl('editor.lightning')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
                             </div>
@@ -707,19 +721,19 @@ class Editor extends EditorBase {
                 <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
-                            <label>${this.intl('portal_health')}</label>
+                            <label>${intl('editor.portal_health')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Dungeons.Player" placeholder="0 - 50">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('rune_health')}</label>
+                            <label>${intl('editor.rune_health')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Runes.Health" placeholder="0 - 15">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('life_potion')}</label>
+                            <label>${intl('editor.life_potion')}</label>
                             <div class="ui selection inverted dropdown" data-path="Potions.Life">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
@@ -730,19 +744,19 @@ class Editor extends EditorBase {
                 <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
-                            <label>${this.intl('portal_damage')}</label>
+                            <label>${intl('editor.portal_damage')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('gladiator')}</label>
+                            <label>${intl('editor.gladiator')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                             </div>
                         </div>
                         <div class="field">
-                            <label>${this.intl('hand_enchant')}</label>
+                            <label>${intl('editor.hand_enchant')}</label>
                             <div class="ui selection inverted dropdown" data-path="Items.Hand.HasEnchantment">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
@@ -751,6 +765,6 @@ class Editor extends EditorBase {
                     </div>
                 </div>
             </div>
-        `);
+        `;
     }
 }
