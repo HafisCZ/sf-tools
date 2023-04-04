@@ -25,14 +25,15 @@ Site.ready({ type: 'simulator' }, function () {
                 hydra: new Field('[data-path="Hydra"]', '1')
             })
 
-            this.fields.hydra.$object.dropdown({
+            this.fields.hydra.initialize({
                 values: Object.entries(HYDRA_MAP).map(([id, { class: klass }]) => {
                     return {
                         name: `<img class="ui centered image !-ml-3 !mr-2" src="res/class${klass}.png"><span>${intl(`hydra.names.${id}`)}</span>`,
                         value: id
                     };
-                })
-            }).dropdown('set selected', '1');
+                }),
+                value: '1'
+            });
 
             for (const field of this.fieldsArray) {
                 field.setListener(() => clearResults());

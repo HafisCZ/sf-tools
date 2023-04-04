@@ -12,6 +12,14 @@ class Field {
         });
     }
 
+    initialize (data) {
+        const value = data.value;
+        delete data.value;
+
+        this.$object.dropdown(data);
+        this.$object.dropdown('set selected', String(value));
+    }
+
     valid () {
         var isValid = this.validator ? this.validator(this.get()) : true;
         if (isValid) {
@@ -54,7 +62,7 @@ class Field {
         }
 
         if (this.isDropdown) {
-            this.$object.dropdown('set selected', value.toString());
+            this.$object.dropdown('set selected', String(value));
         } else {
             this.$object.val(this.formatter ? this.formatter.set(value) : value);
         }
@@ -293,7 +301,7 @@ class Editor extends EditorBase {
     valid () {
         const ass = this.fields['class'].get() != 4;
 
-        for (const [key, field] of Object.entries(this.fields)) {
+        for (const [key, field] of this.fieldsEntries) {
             if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
                 continue;
             }
@@ -338,24 +346,26 @@ class Editor extends EditorBase {
     }
 
     _bind () {
-        this.fields['class'].$object.dropdown({
+        this.fields['class'].initialize({
             values: CONFIG.indexes().map((value) => ({
                 image: `res/class${value}.png`,
                 imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.class${value}`),
                 value
-            }))
-        }).dropdown('setting', 'onChange', (value) => {
-            if (value == ASSASSIN) {
-                $('[data-optional="Weapon2"]').show();
-            } else {
-                $('[data-optional="Weapon2"]').hide();
-            }
+            })),
+            onChange: (value) => {
+                if (value == ASSASSIN) {
+                    $('[data-optional="Weapon2"]').show();
+                } else {
+                    $('[data-optional="Weapon2"]').hide();
+                }
 
-            this.fields['shield'].show(value == WARRIOR);
-        }).dropdown('set selected', '1');
+                this.fields['shield'].show(value == WARRIOR);
+            },
+            value: '1'
+        });
 
-        this.fields['potion_life'].$object.dropdown({
+        this.fields['potion_life'].initialize({
             values: [
                 {
                     name: intl('general.no'),
@@ -365,10 +375,11 @@ class Editor extends EditorBase {
                     name: intl('general.yes'),
                     value: 25
                 }
-            ]
-        }).dropdown('set selected', '0');
+            ],
+            value: '0'
+        });
 
-        this.fields['weapon1_rune'].$object.dropdown({
+        this.fields['weapon1_rune'].initialize({
             values: [
                 {
                     name: this.intl('none'),
@@ -386,10 +397,11 @@ class Editor extends EditorBase {
                     name: this.intl('lightning'),
                     value: 42
                 }
-            ]
-        }).dropdown('set selected', '0');
+            ],
+            value: '0'
+        });
 
-        this.fields['weapon2_rune'].$object.dropdown({
+        this.fields['weapon2_rune'].initialize({
             values: [
                 {
                     name: this.intl('none'),
@@ -407,10 +419,11 @@ class Editor extends EditorBase {
                     name: this.intl('lightning'),
                     value: 42
                 }
-            ]
-        }).dropdown('set selected', '0');
+            ],
+            value: '0'
+        })
 
-        this.fields['enchantment'].$object.dropdown({
+        this.fields['enchantment'].initialize({
             values: [
                 {
                     name: intl('general.no'),
@@ -420,10 +433,11 @@ class Editor extends EditorBase {
                     name: intl('general.yes'),
                     value: true
                 }
-            ]
-        }).dropdown('set selected', 'false');
+            ],
+            value: 'false'
+        });
 
-        this.fields['weapon1_enchantment'].$object.dropdown({
+        this.fields['weapon1_enchantment'].initialize({
             values: [
                 {
                     name: intl('general.no'),
@@ -433,10 +447,11 @@ class Editor extends EditorBase {
                     name: intl('general.yes'),
                     value: true
                 }
-            ]
-        }).dropdown('set selected', 'false');
+            ],
+            value: 'false'
+        });
 
-        this.fields['weapon2_enchantment'].$object.dropdown({
+        this.fields['weapon2_enchantment'].initialize({
             values: [
                 {
                     name: intl('general.no'),
@@ -446,8 +461,9 @@ class Editor extends EditorBase {
                     name: intl('general.yes'),
                     value: true
                 }
-            ]
-        }).dropdown('set selected', 'false');
+            ],
+            value: 'false'
+        });
 
         // Copy
         $('div.copy-current').click(() => copyText(JSON.stringify(this.read())));
@@ -465,7 +481,7 @@ class Editor extends EditorBase {
             }
         })('div.morph', '');
 
-        this.morph.$object.dropdown({
+        this.morph.initialize({
             action: 'hide',
             values: [
                 {
@@ -479,9 +495,10 @@ class Editor extends EditorBase {
                     name: intl(`general.class${value}`),
                     value
                 }))
-            ]
-        }).dropdown('setting', 'onChange', (value) => {
-            this._morph(parseInt(value));
+            ],
+            onChange: (value) => {
+                this._morph(parseInt(value));
+            }
         });
 
         for (const field of this.fieldsArray) {

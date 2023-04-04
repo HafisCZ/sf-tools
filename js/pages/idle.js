@@ -132,9 +132,10 @@ Site.ready(null, function () {
                     upgrade_estimation: new Field(fieldPath('upgrade_estimation'), '')
                 }
 
-                row.upgrades.$object.dropdown({
-                    values: [0, 1, 2, 3, 4].map(value => ({ value, name: intl(`idle.upgrades.${value}`) }))
-                }).dropdown('set selected', '0');
+                row.upgrades.initialize({
+                    values: [0, 1, 2, 3, 4].map(value => ({ value, name: intl(`idle.upgrades.${value}`) })),
+                    value: '0'
+                });
 
                 return row;
             });
