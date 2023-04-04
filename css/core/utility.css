@@ -471,6 +471,10 @@
   line-height: 1em !important;
 }
 
+.wrap-none {
+  white-space: nowrap;
+}
+
 /* zIndex */
 .z-2 {
   z-index: 2;
