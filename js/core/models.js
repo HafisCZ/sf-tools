@@ -1121,6 +1121,30 @@ class SFPlayer {
         };
     }
 
+    static getScroll (value) {
+        const scrollMap = {
+            11: 0,
+            31: 1,
+            41: 2,
+            51: 3,
+            61: 4,
+            71: 5,
+            81: 6,
+            91: 7,
+            101: 8
+        };
+
+        return scrollMap[value];
+    }
+
+    static getMount (value) {
+        const mountMap = [
+            0, 10, 20, 30, 50
+        ]
+
+        return mountMap[value];
+    }
+
     static getFlags (value) {
         let background = 0;
         for (let i = 2; i >= 0; i--) {
@@ -1180,6 +1204,12 @@ class SFPlayer {
         // Skip purchased attributes
         if (skipPurchased) {
             dataType.skip(5);
+        } else {
+            player.Strength.Purchased = dataType.long();
+            player.Dexterity.Purchased = dataType.long();
+            player.Intelligence.Purchased = dataType.long();
+            player.Constitution.Purchased = dataType.long();
+            player.Luck.Purchased = dataType.long();
         }
     }
 }
@@ -1242,7 +1272,7 @@ class SFOtherPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
         this.Items = SFPlayer.loadEquipment(dataType, 1);
-        this.Mount = dataType.short();
+        this.Mount = SFPlayer.getMount(dataType.short());
 
         legacyDungeons.Tower = dataType.short();
         legacyDungeons.Raid = dataType.short();
@@ -1410,11 +1440,6 @@ class SFOwnPlayer extends SFPlayer {
         this.Class = dataType.short();
         dataType.clear(); // skip
         SFPlayer.loadAttributes(this, dataType, false);
-        this.Strength.Purchased = dataType.long();
-        this.Dexterity.Purchased = dataType.long();
-        this.Intelligence.Purchased = dataType.long();
-        this.Constitution.Purchased = dataType.long();
-        this.Luck.Purchased = dataType.long();
         this.Action = {
             Status: dataType.short()
         };
@@ -1439,7 +1464,7 @@ class SFOwnPlayer extends SFPlayer {
             }
         }
         dataType.skip(58); // skip
-        this.Mount = dataType.short();
+        this.Mount = SFPlayer.getMount(dataType.short());
 
         legacyDungeons.Tower = dataType.short();
 
@@ -1835,7 +1860,7 @@ class SFOwnPlayer extends SFPlayer {
             const date = dataType.long() * 1000 + data.offset;
             const type = picIndex % 1000;
 
-            this.Witch.Scrolls[SCROLL_MAP[type]] = {
+            this.Witch.Scrolls[SFPlayer.getScroll(type)] = {
                 Date: date,
                 Type: type,
                 Owned: _between(date, 0, this.Timestamp)

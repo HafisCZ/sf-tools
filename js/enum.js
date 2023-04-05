@@ -11,26 +11,6 @@ const PLAYER_CLASS_SEARCH = [
     'bard'
 ];
 
-const SCROLL_MAP = {
-    11: 0,
-    31: 1,
-    41: 2,
-    51: 3,
-    61: 4,
-    71: 5,
-    81: 6,
-    91: 7,
-    101: 8
-};
-
-const PLAYER_MOUNT = [
-    '',
-    '10',
-    '20',
-    '30',
-    '50'
-];
-
 // _dig(SCRAPBOOK_BOUNDARIES, ColorClass, Type - 1)
 const SCRAPBOOK_BOUNDARIES = [
     {
