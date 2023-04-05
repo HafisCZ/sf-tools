@@ -413,7 +413,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 cheatsWasEnabled = true;
             }
 
-            showData(player.toSimulatorShadowModel());
+            showData(toSimulatorShadowModel(player));
 
             let normalDungeons = player.Dungeons.Normal;
             let shadowDungeons = player.Dungeons.Shadow;
