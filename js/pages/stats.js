@@ -59,7 +59,7 @@ class GroupDetailTab extends Tab {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            copyText(JSON.stringify(this.table.getArray().map(p => p.player.toSimulatorModel())));
+            copyText(JSON.stringify(this.table.getArray().map(p => toSimulatorModel(p.player))));
         });
 
         // Save
@@ -107,13 +107,13 @@ class GroupDetailTab extends Tab {
                 {
                     label: intl('stats.copy.player'),
                     action: (source) => {
-                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorModel()));
+                        copyText(JSON.stringify(toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp))));
                     }
                 },
                 {
                     label: intl('stats.copy.player_companions'),
                     action: (source) => {
-                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
+                        copyText(JSON.stringify(toSimulatorShadowModel(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp))));
                     }
                 }
             ]
@@ -557,9 +557,9 @@ class BrowseTab extends Tab {
                         let cnt = null;
 
                         if (sel.length) {
-                            cnt = sel.toArray().map(x => DatabaseManager.getPlayer($(x).attr('data-id'), $(x).attr('data-ts')).toSimulatorModel());
+                            cnt = sel.toArray().map(x => toSimulatorModel(DatabaseManager.getPlayer($(x).attr('data-id'), $(x).attr('data-ts'))));
                         } else {
-                            cnt = DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')).toSimulatorModel();
+                            cnt = toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')));
                         }
 
                         copyText(JSON.stringify(cnt));
@@ -568,7 +568,7 @@ class BrowseTab extends Tab {
                 {
                     label: intl('stats.copy.player_companions'),
                     action: (source) => {
-                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')).toSimulatorShadowModel()));
+                        copyText(JSON.stringify(toSimulatorShadowModel(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')))));
                     }
                 },
                 {
@@ -600,7 +600,7 @@ class BrowseTab extends Tab {
                 array = array.slice(0, slice);
             }
 
-            copyText(JSON.stringify(array.map(p => p.player.toSimulatorModel())));
+            copyText(JSON.stringify(array.map(p => toSimulatorModel(p.player))));
         });
 
         // Configuration
@@ -1010,7 +1010,7 @@ class GroupsTab extends Tab {
                         let group = DatabaseManager.getGroup(source.attr('data-id')).Latest;
                         copyText(JSON.stringify(group.Members.map(id => {
                             if (DatabaseManager.hasPlayer(id, group.Timestamp)) {
-                                return DatabaseManager.getPlayer(id, group.Timestamp).toSimulatorModel();
+                                return toSimulatorModel(DatabaseManager.getPlayer(id, group.Timestamp));
                             } else {
                                 return null;
                             }
@@ -1230,13 +1230,13 @@ class PlayersTab extends Tab {
                 {
                     label: intl('stats.copy.player'),
                     action: (source) => {
-                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorModel()));
+                        copyText(JSON.stringify(toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id')).Latest)));
                     }
                 },
                 {
                     label: intl('stats.copy.player_companions'),
                     action: (source) => {
-                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
+                        copyText(JSON.stringify(toSimulatorShadowModel(DatabaseManager.getPlayer(source.attr('data-id')).Latest)));
                     }
                 },
                 {

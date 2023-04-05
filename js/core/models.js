@@ -697,14 +697,6 @@ class SFPlayer {
         }
     }
 
-    toSimulatorModel () {
-        return toSimulatorModel(this);
-    }
-
-    toSimulatorShadowModel () {
-        return toSimulatorShadowModel(this);
-    }
-
     hasGuild () {
         return this.Group.Identifier != null;
     }
@@ -2118,11 +2110,11 @@ class SFCompanion extends SFPlayer {
 
 function toSimulatorShadowModel (p) {
     return p.Companions ? [
-        p.toSimulatorModel(),
+        toSimulatorModel(p),
         toSimulatorModel(p.Companions.Bert),
         toSimulatorModel(p.Companions.Mark),
         toSimulatorModel(p.Companions.Kunigunde),
-    ] : p.toSimulatorModel();
+    ] : toSimulatorModel(p);
 }
 
 function toSimulatorModel (p) {

@@ -315,7 +315,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             playerList[currentList] = group.Members.map(memberId => {
                 return {
-                    player: DatabaseManager.getPlayer(memberId, group.Timestamp).toSimulatorModel(),
+                    player: toSimulatorModel(DatabaseManager.getPlayer(memberId, group.Timestamp)),
                     inactive: 0,
                     index: playerIndex++
                 };
