@@ -547,8 +547,10 @@ class Editor extends EditorBase {
             data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
 
             if (newClass == WARRIOR) {
-                data.BlockChance = 25;
-                data.Items.Wpn2.DamageMin = 25;
+                data.BlockChance = newDefinition.SkipChance;
+
+                data.Items.Wpn2 = SFItem.empty();
+                data.Items.Wpn2.DamageMin = newDefinition.SkipChance;
             } else if (newClass == ASSASSIN) {
                 data.Items.Wpn2 = data.Items.Wpn1;
             }
