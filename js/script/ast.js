@@ -55,7 +55,6 @@ const ExpressionEnum = new (class {
     constructor () {
         this.keys = [
             'GoldCurve',
-            'MountSizes',
             'AchievementCount',
             'AchievementNames',
             'ItemTypes',
@@ -79,7 +78,6 @@ const ExpressionEnum = new (class {
         if (typeof this.values === 'undefined') {
             this.values = {
                 'GoldCurve': GOLD_CURVE,
-                'MountSizes': PLAYER_MOUNT,
                 'AchievementCount': ACHIEVEMENTS_COUNT,
                 'AchievementNames': _sequence(ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
                 'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
@@ -2334,7 +2332,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Mount': {
         expr: p => p.Mount,
-        format: (p, x) => x ? (PLAYER_MOUNT[x] + '%') : '',
+        format: (p, x) => x ? `${x}%` : '',
         difference: false
     },
     'Awards': {
