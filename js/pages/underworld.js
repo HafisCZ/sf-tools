@@ -102,14 +102,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     SimulatorUtils.configure({
         params: urlParams,
         onCopy: () => {
-            return playerList.map((p) => {
-                let m = toSimulatorModel(p.player);
-                if (p.player.Class == WARRIOR && typeof p.player.BlockChance != 'undefined') {
-                    m.BlockChance = p.player.BlockChance;
-                }
-
-                return m;
-            });
+            return playerList.map((p) => ModelUtils.toSimulatorModel(p.player));
         },
         insertType: 'players',
         onInsert: (data) => {
@@ -159,11 +152,11 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         SFItem.forceCorrectRune(object.Items.Wpn1);
         SFItem.forceCorrectRune(object.Items.Wpn2);
 
-        if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
+        if (object.Class == WARRIOR && typeof object.BlockChance == 'undefined') {
             object.BlockChance = object.Items.Wpn2.DamageMin;
         }
 
-        if (object.Class != 4) {
+        if (object.Class != ASSASSIN) {
             object.Items.Wpn2 = SFItem.empty();
         }
 
@@ -199,14 +192,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     $('#copy-all').click(function () {
-        copyText(JSON.stringify(playerList.map(({ player }) => {
-            let model = toSimulatorModel(player);
-            if (player.Class == 1 && typeof player.BlockChance != 'undefined') {
-                model.BlockChance = player.BlockChance;
-            }
-
-            return model;
-        })));
+        copyText(JSON.stringify(playerList.map(({ player }) => ModelUtils.toSimulatorModel(player))));
     })
 
     // Add methods

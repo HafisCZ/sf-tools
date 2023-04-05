@@ -103,14 +103,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     SimulatorUtils.configure({
         params: urlParams,
         onCopy: () => {
-            return players.map((p) => {
-                let m = toSimulatorModel(p);
-                if (p.Class == 1 && typeof p.BlockChance != 'undefined') {
-                    m.BlockChance = p.BlockChance;
-                }
-
-                return m;
-            });
+            return players.map((p) => ModelUtils.toSimulatorModel(p.player));
         },
         onLog: (callback) => {
             executeSimulation(1, 50, callback);
@@ -250,8 +243,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         SFItem.forceCorrectRune(data.Items.Wpn1);
         SFItem.forceCorrectRune(data.Items.Wpn2);
 
-        if (data.Class == 1 && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
-        if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
+        if (data.Class == WARRIOR && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
+        if (data.Class != ASSASSIN) data.Items.Wpn2 = SFItem.empty();
 
         if (selected > 0) {
             for (const key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
@@ -413,7 +406,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 cheatsWasEnabled = true;
             }
 
-            showData(toSimulatorShadowModel(player));
+            showData(ModelUtils.toSimulatorModel(player, true));
 
             let normalDungeons = player.Dungeons.Normal;
             let shadowDungeons = player.Dungeons.Shadow;
