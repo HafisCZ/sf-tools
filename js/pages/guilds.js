@@ -146,14 +146,7 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     $('#copy-all').click(function () {
-        copyText(JSON.stringify(playerList[currentList].map(({ player }) => {
-            let model = toSimulatorModel(player);
-            if (player.Class == 1 && typeof player.BlockChance != 'undefined') {
-                model.BlockChance = player.BlockChance;
-            }
-
-            return model;
-        })));
+        copyText(JSON.stringify(playerList[currentList].map((p) => ModelUtils.toSimulatorModel(p.player))));
     })
 
     // Add methods
@@ -315,7 +308,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             playerList[currentList] = group.Members.map(memberId => {
                 return {
-                    player: toSimulatorModel(DatabaseManager.getPlayer(memberId, group.Timestamp)),
+                    player: ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(memberId, group.Timestamp)),
                     inactive: 0,
                     index: playerIndex++
                 };

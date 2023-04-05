@@ -1170,13 +1170,13 @@ const DatabaseManager = new (class {
         if (SiteOptions.export_public_only) {
             for (const [index, group] of Object.entries(data.groups)) {
                 if (group.own) {
-                    data.groups[index] = toOtherGroupData(group);
+                    data.groups[index] = ModelUtils.toOtherGroup(group);
                 }
             }
 
             for (const [index, player] of Object.entries(data.players)) {
                 if (player.own) {
-                    data.players[index] = toOtherPlayerData(player);
+                    data.players[index] = ModelUtils.toOtherPlayer(player);
                 }
             }
         }

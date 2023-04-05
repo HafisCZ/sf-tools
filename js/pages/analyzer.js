@@ -1163,11 +1163,11 @@ Site.ready(null, function (urlParams) {
         for (const { fighterA, fighterB, rounds } of assembledFights) {
             // Collect players
             if (fighterA.player) {
-                exportPlayers[fighterA.hash] = toSimulatorModel(fighterA.player);
+                exportPlayers[fighterA.hash] = ModelUtils.toSimulatorModel(fighterA.player);
             }
 
             if (fighterB.player) {
-                exportPlayers[fighterB.hash] = toSimulatorModel(fighterB.player);
+                exportPlayers[fighterB.hash] = ModelUtils.toSimulatorModel(fighterB.player);
             }
 
             // Collect fight

@@ -1063,6 +1063,10 @@ class SFPlayer {
             this.Fortress.Mages = this.Data.units[2];
             this.Fortress.Archers = this.Data.units[3];
         }
+
+        if (this.Class === WARRIOR) {
+            this.BlockChance = this.Items.Wpn2.Armor;
+        }
     }
 
     injectGroup (group) {
@@ -2108,82 +2112,127 @@ class SFCompanion extends SFPlayer {
     }
 }
 
-function toSimulatorShadowModel (p) {
-    return p.Companions ? [
-        toSimulatorModel(p),
-        toSimulatorModel(p.Companions.Bert),
-        toSimulatorModel(p.Companions.Mark),
-        toSimulatorModel(p.Companions.Kunigunde),
-    ] : toSimulatorModel(p);
-}
-
-function toSimulatorModel (p) {
-    return {
-        Armor: p.Armor,
-        Class: p.Class,
-        Name: p.Name,
-        Level: p.Level,
-        Identifier: p.Identifier,
-        Prefix: p.Prefix,
-        Constitution: {
-            Total: p.Constitution.Total
-        },
-        Dexterity: {
-            Total: p.Dexterity.Total
-        },
-        Dungeons: {
-            Player: p.Dungeons.Player,
-            Group: p.Dungeons.Group
-        },
-        Fortress: {
-            Gladiator: p.Fortress.Gladiator || 0,
-        },
-        Intelligence: {
-            Total: p.Intelligence.Total
-        },
-        Strength: {
-            Total: p.Strength.Total
-        },
-        Potions: {
-            Life: p.Potions.Life
-        },
-        Luck: {
-            Total: p.Luck.Total
-        },
-        Runes: {
-            Health: p.Runes.Health,
-            ResistanceCold: p.Runes.ResistanceCold,
-            ResistanceFire: p.Runes.ResistanceFire,
-            ResistanceLightning: p.Runes.ResistanceLightning
-        },
-        Items: {
-            Hand: {
-                HasEnchantment: p.Items.Hand.HasEnchantment
-            },
-            Wpn1: {
-                AttributeTypes: {
-                    2: p.Items.Wpn1.AttributeTypes[2]
-                },
-                Attributes: {
-                    2: p.Items.Wpn1.Attributes[2]
-                },
-                DamageMax: p.Items.Wpn1.DamageMax,
-                DamageMin: p.Items.Wpn1.DamageMin,
-                HasEnchantment: p.Items.Wpn1.HasEnchantment
-            },
-            Wpn2: {
-                AttributeTypes: {
-                    2: p.Items.Wpn2.AttributeTypes[2]
-                },
-                Attributes: {
-                    2: p.Items.Wpn2.Attributes[2]
-                },
-                DamageMax: p.Items.Wpn2.DamageMax,
-                DamageMin: p.Items.Wpn2.DamageMin,
-                HasEnchantment: p.Items.Wpn2.HasEnchantment
-            }
+class ModelUtils {
+    static toSimulatorModel (model, includeCompanions = false) {
+        if (includeCompanions && typeof model.Companions !== 'undefined') {
+            return [
+                ModelUtils._toSimulatorModel(model),
+                ModelUtils._toSimulatorModel(model.Companions.Bert),
+                ModelUtils._toSimulatorModel(model.Companions.Mark),
+                ModelUtils._toSimulatorModel(model.Companions.Kunigunde),
+            ]
+        } else {
+            return ModelUtils._toSimulatorModel(model);
         }
-    };
+    }
+
+    static toOtherGroup (group) {
+        const copy = {
+            own: 0
+        };
+    
+        for (const field of _CONVERT_OTHER_GROUP_FIELDS) {
+            copy[field] = group[field];
+        }    
+    
+        return copy;
+    }
+    
+    static toOtherPlayer (player) {
+        const copy = {
+            own: 0
+        };
+    
+        for (const field of _CONVERT_OTHER_PLAYER_FIELDS) {
+            copy[field] = player[field];
+        }
+    
+        if (player.pets) {
+            copy.pets = [0, ...player.pets.slice(104, 109)];
+        }
+    
+        copy.save = _CONVERT_PLAYER_SAVE.reduce((memo, sourceIndex, targetIndex) => {
+            if (sourceIndex !== null) {
+                memo[targetIndex] = player.save[sourceIndex];
+            }
+            
+            return memo;
+        }, Array.from({ length: _OTHER_PLAYER_SAVE_LENGTH }).fill(0));
+    
+        copy.fortressrank = copy.fortressrank || player.save[583];
+    
+        return copy;
+    }
+    
+    static _toSimulatorModel (model) {
+        return {
+            Armor: model.Armor,
+            Class: model.Class,
+            Name: model.Name,
+            Level: model.Level,
+            Identifier: model.Identifier,
+            Prefix: model.Prefix,
+            BlockChance: model.BlockChance,
+            Constitution: {
+                Total: model.Constitution.Total
+            },
+            Dexterity: {
+                Total: model.Dexterity.Total
+            },
+            Dungeons: {
+                Player: model.Dungeons.Player,
+                Group: model.Dungeons.Group
+            },
+            Fortress: {
+                Gladiator: model.Fortress.Gladiator || 0,
+            },
+            Intelligence: {
+                Total: model.Intelligence.Total
+            },
+            Strength: {
+                Total: model.Strength.Total
+            },
+            Potions: {
+                Life: model.Potions.Life
+            },
+            Luck: {
+                Total: model.Luck.Total
+            },
+            Runes: {
+                Health: model.Runes.Health,
+                ResistanceCold: model.Runes.ResistanceCold,
+                ResistanceFire: model.Runes.ResistanceFire,
+                ResistanceLightning: model.Runes.ResistanceLightning
+            },
+            Items: {
+                Hand: {
+                    HasEnchantment: model.Items.Hand.HasEnchantment
+                },
+                Wpn1: {
+                    AttributeTypes: {
+                        2: model.Items.Wpn1.AttributeTypes[2]
+                    },
+                    Attributes: {
+                        2: model.Items.Wpn1.Attributes[2]
+                    },
+                    DamageMax: model.Items.Wpn1.DamageMax,
+                    DamageMin: model.Items.Wpn1.DamageMin,
+                    HasEnchantment: model.Items.Wpn1.HasEnchantment
+                },
+                Wpn2: {
+                    AttributeTypes: {
+                        2: model.Items.Wpn2.AttributeTypes[2]
+                    },
+                    Attributes: {
+                        2: model.Items.Wpn2.Attributes[2]
+                    },
+                    DamageMax: model.Items.Wpn2.DamageMax,
+                    DamageMin: model.Items.Wpn2.DamageMin,
+                    HasEnchantment: model.Items.Wpn2.HasEnchantment
+                }
+            }
+        };
+    }
 }
 
 const _CONVERT_OTHER_GROUP_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'rank', 'names', 'identifier', 'group', 'save'];
@@ -2250,41 +2299,3 @@ const _CONVERT_PLAYER_SAVE = [
     // Group & Player dungeons
     445
 ];
-
-function toOtherGroupData (group) {
-    const copy = {
-        own: 0
-    };
-
-    for (const field of _CONVERT_OTHER_GROUP_FIELDS) {
-        copy[field] = group[field];
-    }    
-
-    return copy;
-}
-
-function toOtherPlayerData (player) {
-    const copy = {
-        own: 0
-    };
-
-    for (const field of _CONVERT_OTHER_PLAYER_FIELDS) {
-        copy[field] = player[field];
-    }
-
-    if (player.pets) {
-        copy.pets = [0, ...player.pets.slice(104, 109)];
-    }
-
-    copy.save = _CONVERT_PLAYER_SAVE.reduce((memo, sourceIndex, targetIndex) => {
-        if (sourceIndex !== null) {
-            memo[targetIndex] = player.save[sourceIndex];
-        }
-        
-        return memo;
-    }, Array.from({ length: _OTHER_PLAYER_SAVE_LENGTH }).fill(0));
-
-    copy.fortressrank = copy.fortressrank || player.save[583];
-
-    return copy;
-}
