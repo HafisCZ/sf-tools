@@ -3,10 +3,6 @@
         return this.find(`[data-op="${op}"]`);
     }
 
-    $.fn.numberVal = function () {
-        return Number(this.val());
-    }
-
     $.fn.searchfield = function (command, arg) {
         return this.each(function () {
             var $this = $(this);
