@@ -618,7 +618,7 @@ Site.ready(null, function () {
     });
 
     function getClampedValue (selector, min, max) {
-        return _clamp($(selector).numberVal(), min, max);
+        return _clamp(Number($(selector).val()), min, max);
     }
 
     $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
@@ -638,14 +638,10 @@ Site.ready(null, function () {
 
     $('#pricebetween-from, #pricebetween-to').on('change input', function () {
         if (validate($('#pricebetween-from'), $('#pricebetween-to'))) {
-            let from = $('#pricebetween-from').numberVal();
-            let to = $('#pricebetween-to').numberVal();
+            const attStart = getClampedValue('#pricebetween-from', 1, Infinity);
+            const attEnd = getClampedValue('#pricebetween-to', attStart, Infinity);
 
-            if (from > to) {
-                [from, to] = [to, from];
-            }
-
-            const cost = calculateTotalAttributePrice(to - 1) - calculateTotalAttributePrice(from - 1);
+            const cost = calculateTotalAttributePrice(attEnd - 1) - calculateTotalAttributePrice(attStart - 1);
 
             $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
         }
