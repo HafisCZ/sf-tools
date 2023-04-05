@@ -27,6 +27,120 @@ class DynamicLoader {
     }
 }
 
+// Context menu handler
+class CustomMenu {
+    constructor (parent, items) {
+        this.parent = parent;
+        this.source = null;
+        this.timer = null;
+
+        this.container = document.createElement('div');
+        this.container.setAttribute('class', 'ui custom inverted popup right center css-context-menu hidden');
+
+        this.parent.insertAdjacentElement('afterbegin', this.container);
+
+        for (const { label, action } of items) {
+            const item = document.createElement('div');
+            item.setAttribute('class', 'ui fluid basic inverted button css-context-menu-item');
+            item.innerText = label;
+
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                action(this.source);
+
+                if (this._visible()) {
+                    this._hide();
+                }
+            });
+
+            this.container.insertAdjacentElement('beforeend', item);
+        }
+
+        window.addEventListener('click', () => {
+            if (this._visible()) {
+                this._hide();
+            }
+        })
+
+        this.container.addEventListener('mouseenter', () => {
+            this._endTimer();
+        })
+
+        this.container.addEventListener('mouseleave', () => {
+            this._startTimer();
+        })
+    }
+
+    attach (elements) {
+        this.source = null;
+
+        for (const element of elements) {
+            element.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const bounds = event.currentTarget.getBoundingClientRect();
+                this._show(
+                    event.currentTarget,
+                    window.scrollX + bounds.left + bounds.width,
+                    window.scrollY + bounds.top
+                )
+            })
+        }
+    }
+
+    _visible () {
+        return this.container.classList.contains('visible');
+    }
+
+    _hidden () {
+        return this.container.classList.contains('hidden');
+    }
+
+    _startTimer () {
+        if (this.timer) {
+            return;
+        }
+
+        this.timer = setTimeout(
+            () => this._hide(),
+            1500
+        );
+    }
+
+    _endTimer () {
+        if (this.timer) {
+            clearTimeout(this.timer);
+
+            this.timer = null;
+        }
+    }
+
+    _show (element, x, y) {
+        this.source = element;
+
+        this.container.style.left = `${x}px`;
+        this.container.style.top = `${y}px`;
+
+        if (this._hidden()) {
+            $(this.container).transition('fade').show();
+        }
+
+        this._endTimer();
+        this._startTimer();
+    }
+
+    _hide () {
+        if (this._visible()) {
+            $(this.container).transition('fade').hide();
+        }
+
+        this._endTimer();
+    }
+}
+
 // Group Detail View
 class GroupDetailTab extends Tab {
     constructor (parent) {
@@ -99,25 +213,23 @@ class GroupDetailTab extends Tab {
         this.$parent.find('[data-op="share"]').click(() => exportFromDropdown([ this.timestamp, this.reference ], true));
 
         // Context menu
-        this.$context = $('<div class="ui custom inverted popup right center"></div>');
-        this.$parent.prepend(this.$context);
-
-        this.$context.context('create', {
-            items: [
+        this.contextMenu = new CustomMenu(
+            this.$parent.get(0),
+            [
                 {
                     label: intl('stats.copy.player'),
-                    action: (source) => {
-                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp))));
+                    action: (target) => {
+                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(target.dataset.id, this.timestamp))));
                     }
                 },
                 {
                     label: intl('stats.copy.player_companions'),
-                    action: (source) => {
-                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp), true)));
+                    action: (target) => {
+                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(target.dataset.id, this.timestamp), true)));
                     }
                 }
             ]
-        });
+        );
 
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
@@ -323,11 +435,11 @@ class GroupDetailTab extends Tab {
         this.table.refresh(() => {
             this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
         }, (block) => {
-            let blockClickable = block.find('[data-id]').click((event) => {
+            const blockClickable = block.find('[data-id]').click((event) => {
                 DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
             });
 
-            this.$context.context('bind', blockClickable);
+            this.contextMenu.attach(blockClickable.get());
         });
     }
 
@@ -530,11 +642,9 @@ class BrowseTab extends Tab {
         });
 
         // Context menu
-        this.$context = $('<div class="ui custom inverted popup right center"></div>');
-        this.$parent.prepend(this.$context);
-
-        this.$context.context('create', {
-            items: [
+        this.contextMenu = new CustomMenu(
+            this.$parent.get(0),
+            [
                 {
                     label: intl('stats.context.hide'),
                     action: (source) => {
@@ -544,7 +654,7 @@ class BrowseTab extends Tab {
                                 DatabaseManager.hideIdentifier($(el).attr('data-id'));
                             }
                         } else {
-                            DatabaseManager.hideIdentifier(source.attr('data-id'));
+                            DatabaseManager.hideIdentifier(source.dataset.id);
                         }
 
                         this.$filter.trigger('change');
@@ -557,9 +667,9 @@ class BrowseTab extends Tab {
                         let cnt = null;
 
                         if (sel.length) {
-                            cnt = sel.toArray().map(x => ModelUtils.toSimulatorModel(DatabaseManager.getPlayer($(x).attr('data-id'), $(x).attr('data-ts'))));
+                            cnt = sel.toArray().map(x => ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(x.dataset.id, x.dataset.ts)));
                         } else {
-                            cnt = ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')));
+                            cnt = ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.dataset.id, source.dataset.ts));
                         }
 
                         copyText(JSON.stringify(cnt));
@@ -568,14 +678,14 @@ class BrowseTab extends Tab {
                 {
                     label: intl('stats.copy.player_companions'),
                     action: (source) => {
-                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')), true)));
+                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.dataset.id, source.dataset.ts), true)));
                     }
                 },
                 {
                     label: intl('stats.fast_export.label'),
                     action: (source) => {
-                        let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => $(el).attr('data-id'));
-                        ids.push(source.attr('data-id'));
+                        let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
+                        ids.push(source.dataset.id);
 
                         DatabaseManager.export(_uniq(ids)).then(data => DialogController.open(ExportSharedFileDialog, data));
                     }
@@ -584,13 +694,13 @@ class BrowseTab extends Tab {
                     label: intl('stats.context.remove'),
                     action: (source) => {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
-                        let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.data('id')];
+                        let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.dataset.id];
 
                         DatabaseManager.safeRemove({ identifiers }, () => this.$filter.trigger('change'));
                     }
                 }
             ]
-        });
+        );
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
@@ -948,7 +1058,7 @@ class BrowseTab extends Tab {
 
     refresh () {
         this.table.refresh(undefined, (block) => {
-            let blockClickable = block.find('[data-id]').click((event) => {
+            const blockClickable = block.find('[data-id]').click((event) => {
                 if (event.ctrlKey) {
                     $(event.currentTarget).toggleClass('css-op-select');
                 } else {
@@ -958,7 +1068,7 @@ class BrowseTab extends Tab {
                 event.preventDefault();
             });
 
-            this.$context.context('bind', blockClickable);
+            this.contextMenu.attach(blockClickable.get());
         });
     }
 
@@ -992,22 +1102,21 @@ class GroupsTab extends Tab {
         // Observer
         this.loader = new DynamicLoader(this.$list.get(0));
 
-        this.$context = $('<div class="ui custom inverted popup right center"></div>');
-        this.$parent.prepend(this.$context);
-
-        this.$context.context('create', {
-            items: [
+        // Context menu
+        this.contextMenu = new CustomMenu(
+            this.$parent.get(0),
+            [
                 {
                     label: intl('stats.context.hide'),
                     action: (source) => {
-                        DatabaseManager.hideIdentifier(source.attr('data-id'));
+                        DatabaseManager.hideIdentifier(source.dataset.id);
                         this.show();
                     }
                 },
                 {
                     label: intl('stats.copy.player'),
                     action: (source) => {
-                        let group = DatabaseManager.getGroup(source.attr('data-id')).Latest;
+                        let group = DatabaseManager.getGroup(source.dataset.id).Latest;
                         copyText(JSON.stringify(group.Members.map(id => {
                             if (DatabaseManager.hasPlayer(id, group.Timestamp)) {
                                 return ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(id, group.Timestamp));
@@ -1020,7 +1129,7 @@ class GroupsTab extends Tab {
                 {
                     label: intl('stats.fast_export.label'),
                     action: (source) => {
-                        const group = source.attr('data-id');
+                        const group = source.dataset.id;
                         const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
                         DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => DialogController.open(ExportSharedFileDialog, data));
                     }
@@ -1028,11 +1137,11 @@ class GroupsTab extends Tab {
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        DatabaseManager.safeRemove({ identifiers: [ source.data('id') ] }, () => this.show());
+                        DatabaseManager.safeRemove({ identifiers: [ source.dataset.id ] }, () => this.show());
                     }
                 }
             ]
-        });
+        )
 
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
@@ -1175,12 +1284,11 @@ class GroupsTab extends Tab {
         }
 
         this.loader.start(() => {
-            const $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
-            $fields.click(function () {
+            const blockClickable = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]').click(function () {
                 UI.show(UI.GroupDetail, { identifier: this.dataset.id });
             })
 
-            this.$context.context('bind', $fields);
+            this.contextMenu.attach(blockClickable.get());
 
             if (rows.length == 0) {
                 this.loader.stop();
@@ -1217,42 +1325,42 @@ class PlayersTab extends Tab {
         this.loader = new DynamicLoader(this.$list.get(0));
 
         // Context menu
-        this.$context = $('<div class="ui custom inverted popup right center"></div>').prependTo(this.$parent);
-        this.$context.context('create', {
-            items: [
+        this.contextMenu = new CustomMenu(
+            this.$parent.get(0),
+            [
                 {
                     label: intl('stats.context.hide'),
                     action: (source) => {
-                        DatabaseManager.hideIdentifier(source.attr('data-id'));
+                        DatabaseManager.hideIdentifier(source.dataset.id);
                         this.show();
                     }
                 },
                 {
                     label: intl('stats.copy.player'),
                     action: (source) => {
-                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id')).Latest)));
+                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.dataset.id).Latest)));
                     }
                 },
                 {
                     label: intl('stats.copy.player_companions'),
                     action: (source) => {
-                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.attr('data-id')).Latest, true)));
+                        copyText(JSON.stringify(ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(source.dataset.id).Latest, true)));
                     }
                 },
                 {
                     label: intl('stats.fast_export.label'),
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(data => DialogController.open(ExportSharedFileDialog, data));
+                        DatabaseManager.export([ source.dataset.id ]).then(data => DialogController.open(ExportSharedFileDialog, data));
                     }
                 },
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        DatabaseManager.safeRemove({ identifiers: [ source.data('id') ] }, () => this.show());
+                        DatabaseManager.safeRemove({ identifiers: [ source.dataset.id ] }, () => this.show());
                     }
                 }
             ]
-        });
+        )
 
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
@@ -1427,12 +1535,11 @@ class PlayersTab extends Tab {
         }
 
         this.loader.start(() => {
-            let $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
-            $fields.click(function () {
+            const blockClickable = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]').click(function () {
                 UI.show(UI.PlayerDetail, { identifier: this.dataset.id });
             })
 
-            this.$context.context('bind', $fields);
+            this.contextMenu.attach(blockClickable.get());
 
             if (rows.length == 0) {
                 this.loader.stop();
