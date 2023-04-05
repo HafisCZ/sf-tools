@@ -720,21 +720,21 @@ const DataManageDialog = new (class extends Dialog {
 
       if (identifiers.length > 0) {
           players.push(
-              ...identifiers.filter(id => DatabaseManager._isPlayer(id)).map(id => DatabaseManager.Players[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...identifiers.filter(id => DatabaseManager.isPlayer(id)).map(id => DatabaseManager.Players[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
           )
 
           groups.push(
-              ...identifiers.filter(id => !DatabaseManager._isPlayer(id)).map(id => DatabaseManager.Groups[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...identifiers.filter(id => DatabaseManager.isGroup(id)).map(id => DatabaseManager.Groups[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
           )
       }
 
       if (instances.length > 0) {
           players.push(
-              ...instances.filter(({ identifier }) => DatabaseManager._isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...instances.filter(({ identifier }) => DatabaseManager.isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
           )
 
           groups.push(
-              ...instances.filter(({ identifier }) => !DatabaseManager._isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...instances.filter(({ identifier }) => DatabaseManager.isGroup(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
           )
       }
 

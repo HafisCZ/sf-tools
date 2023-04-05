@@ -1465,7 +1465,7 @@ class FilesTab extends Tab {
             const players = [];
             const groups = [];
             for (const entry of Object.values(this.selectedEntries)) {
-                if (DatabaseManager._isPlayer(entry.identifier)) {
+                if (DatabaseManager.isPlayer(entry.identifier)) {
                     players.push(entry);
                 } else {
                     groups.push(entry);
@@ -1492,7 +1492,7 @@ class FilesTab extends Tab {
             const players = [];
             const groups = [];
             for (const entry of Object.values(this.selectedEntries)) {
-                if (DatabaseManager._isPlayer(entry.identifier)) {
+                if (DatabaseManager.isPlayer(entry.identifier)) {
                     players.push(entry);
                 } else {
                     groups.push(entry);
@@ -1750,7 +1750,7 @@ class FilesTab extends Tab {
         const type = parseInt(this.$filter_type.dropdown('get value'));
 
         const { players, groups } = DatabaseManager._getFile(null, null, (data) => {
-            const isPlayer = DatabaseManager._isPlayer(data.identifier);
+            const isPlayer = DatabaseManager.isPlayer(data.identifier);
 
             const conditions = [
                 // Prefix
@@ -1783,7 +1783,7 @@ class FilesTab extends Tab {
         }, {});
 
         const displayEntries = entries.sort((a, b) => b.timestamp - a.timestamp).map((entry) => {
-            const isPlayer = DatabaseManager._isPlayer(entry.identifier);
+            const isPlayer = DatabaseManager.isPlayer(entry.identifier);
 
             return `
                 <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
@@ -1858,8 +1858,8 @@ class FilesTab extends Tab {
             return {
                 timestamp: ts,
                 prettyDate: formatDate(ts),
-                playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
-                groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
+                playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager.isPlayer(id)),
+                groupCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager.isGroup(id)),
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
                 tags: (() => {
                     const tagMap = DatabaseManager.findUsedTags([ts]);
@@ -2577,7 +2577,7 @@ class ScriptsTab extends Tab {
     _getScriptIcon (value) {
         if (this.reservedScripts.includes(value)) {
             return { players: 'database', me: 'user', guilds: 'archive' }[value];
-        } else if (DatabaseManager._isPlayer(value)) {
+        } else if (DatabaseManager.isPlayer(value)) {
             return 'user';
         } else {
             return 'archive';
