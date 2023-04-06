@@ -1829,13 +1829,15 @@ const PlayerDetailDialog = new (class extends Dialog {
                         <div class="detail-item">${this.intl('extras.registered')}</div>
                         <div class="detail-item text-center">${ formatDate(player.Registered) }</div>
                     </div>
-                    <div class="detail-entry">
-                        <div class="detail-item">${this.intl('extras.webshopid')}</div>
-                        <div class="detail-item text-center hover-to-display">
-                            <div class="to-display">${ player.WebshopID || '' }</div>
-                            <div class="to-hover">${this.intl('extras.webshopid_placeholder')}</div>    
+                    ${ player.WebshopID ? `
+                        <div class="detail-entry">
+                            <div class="detail-item">${this.intl('extras.webshopid')}</div>
+                            <div class="detail-item text-center hover-to-display">
+                                <div class="to-display">${ player.WebshopID }</div>
+                                <div class="to-hover">${this.intl('extras.webshopid_placeholder')}</div>    
+                            </div>
                         </div>
-                    </div>
+                    ` : '' }
                 ` : '' }
             </div>
         </div>
