@@ -637,23 +637,15 @@ Site.ready(null, function (urlParams) {
 
         // Convert all player data into actual player models and optionally companions
         for (const data of digestedPlayers) {
-            if (data.own) {
-                // Add own player
-                const player = new SFOwnPlayer(data);
-                currentPlayers.push(player);
+            const player = new PlayerModel(data);
+            currentPlayers.push(player);
 
-                // Add companions if present
-                if (player.Companions) {
-                    currentPlayers.push(
-                        player.Companions.Bert,
-                        player.Companions.Mark,
-                        player.Companions.Kunigunde
-                    )
-                }
-            } else {
-                // Add other player
-                const player = new SFOtherPlayer(data);
-                currentPlayers.push(player);
+            if (player.Companions) {
+                currentPlayers.push(
+                    player.Companions.Bert,
+                    player.Companions.Mark,
+                    player.Companions.Kunigunde
+                )
             }
         }
     }

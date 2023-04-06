@@ -295,7 +295,7 @@ class Editor extends EditorBase {
     }
 
     read () {
-        return super.read(new SFPlayer());
+        return super.read(new PlayerModel());
     }
 
     valid () {
@@ -315,7 +315,7 @@ class Editor extends EditorBase {
     }
 
     empty (defClass = undefined) {
-        const object = new SFPlayer();
+        const object = new PlayerModel();
         for (const field of Object.values(this.fields)) {
             setObjectAt(object, field.path(), field.defaultValue);
         }
