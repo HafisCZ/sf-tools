@@ -37,7 +37,7 @@ class GuildSimulator extends SimulatorBase {
 
     cache (guild, index) {
         return guild.map(({ player, inactive }) => {
-            let model = FighterModel.create(index, player);
+            let model = SimulatorModel.create(index, player);
             if (inactive == 1) {
                 // Inactive players have their HP reduced by 50%
                 model.Player.HealthMultiplier = 0.5;
@@ -64,7 +64,7 @@ class GuildSimulator extends SimulatorBase {
             this.a = this.la[0];
             this.b = this.lb[0];
 
-            FighterModel.initializeFighters(this.a, this.b);
+            SimulatorModel.initializeFighters(this.a, this.b);
 
             if (this.fight() == 0) {
                 this.la.shift();

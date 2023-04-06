@@ -103,7 +103,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     SimulatorUtils.configure({
         params: urlParams,
         onCopy: () => {
-            return players.map((p) => ModelUtils.toSimulatorModel(p.player));
+            return players.map((p) => ModelUtils.toSimulatorData(p.player));
         },
         onLog: (callback) => {
             executeSimulation(1, 50, callback);
@@ -406,7 +406,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 cheatsWasEnabled = true;
             }
 
-            showData(ModelUtils.toSimulatorModel(player, true));
+            showData(ModelUtils.toSimulatorData(player, true));
 
             let normalDungeons = player.Dungeons.Normal;
             let shadowDungeons = player.Dungeons.Shadow;

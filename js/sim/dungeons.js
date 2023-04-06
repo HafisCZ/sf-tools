@@ -69,8 +69,8 @@ class DungeonSimulator extends SimulatorBase {
     }
 
     cache (players, boss) {
-        this.cache_players = players.map(player => FighterModel.create(0, player));
-        this.cache_boss = FighterModel.create(1, boss);
+        this.cache_players = players.map(player => SimulatorModel.create(0, player));
+        this.cache_boss = SimulatorModel.create(1, boss);
     }
 
     battle () {
@@ -86,7 +86,7 @@ class DungeonSimulator extends SimulatorBase {
             this.a = this.la[0];
             this.b = this.lb[0];
 
-            FighterModel.initializeFighters(this.a, this.b);
+            SimulatorModel.initializeFighters(this.a, this.b);
 
             if (this.fight() == 0) {
                 this.la.shift();

@@ -102,7 +102,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     SimulatorUtils.configure({
         params: urlParams,
         onCopy: () => {
-            return playerList.map((p) => ModelUtils.toSimulatorModel(p.player));
+            return playerList.map((p) => ModelUtils.toSimulatorData(p.player));
         },
         insertType: 'players',
         onInsert: (data) => {
@@ -192,7 +192,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     $('#copy-all').click(function () {
-        copyText(JSON.stringify(playerList.map(({ player }) => ModelUtils.toSimulatorModel(player))));
+        copyJSON(playerList.map(({ player }) => ModelUtils.toSimulatorData(player)));
     })
 
     // Add methods

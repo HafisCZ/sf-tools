@@ -400,7 +400,7 @@ const ATTACK_REVIVE = 100;
 const ATTACK_BARD_SONG = 200;
 
 // Fighter models
-class FighterModel {
+class SimulatorModel {
     static initializeFighters (fighterA, fighterB) {
         fighterA.initialize(fighterB);
         fighterB.initialize(fighterA);
@@ -472,7 +472,7 @@ class FighterModel {
 
     constructor (index, player) {
         this.Index = index;
-        this.Player = FighterModel.normalize(player);
+        this.Player = SimulatorModel.normalize(player);
         this.Config = Object.assign(
             {},
             CONFIG[this.constructor.name.slice(0, -5)],
@@ -721,11 +721,11 @@ class FighterModel {
     }
 }
 
-class WarriorModel extends FighterModel {
+class WarriorModel extends SimulatorModel {
 
 }
 
-class MageModel extends FighterModel {
+class MageModel extends SimulatorModel {
     getDamageMultiplier (target) {
         const multiplier = super.getDamageMultiplier(target);
 
@@ -737,11 +737,11 @@ class MageModel extends FighterModel {
     }
 }
 
-class ScoutModel extends FighterModel {
+class ScoutModel extends SimulatorModel {
 
 }
 
-class AssassinModel extends FighterModel {
+class AssassinModel extends SimulatorModel {
     initialize (target) {
         super.initialize(target);
 
@@ -757,7 +757,7 @@ class AssassinModel extends FighterModel {
     }
 }
 
-class DruidModel extends FighterModel {
+class DruidModel extends SimulatorModel {
     constructor (i, p) {
         super(i, p);
 
@@ -831,7 +831,7 @@ class DruidModel extends FighterModel {
     }
 }
 
-class BattlemageModel extends FighterModel {
+class BattlemageModel extends SimulatorModel {
     getFireballDamage (target) {
         if (target.Player.Class == MAGE) {
             return 0;
@@ -861,7 +861,7 @@ class BattlemageModel extends FighterModel {
     }
 }
 
-class BerserkerModel extends FighterModel {
+class BerserkerModel extends SimulatorModel {
     control (instance, target) {
         if (this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL) == false) {
             return;
@@ -871,7 +871,7 @@ class BerserkerModel extends FighterModel {
     }
 }
 
-class DemonHunterModel extends FighterModel {
+class DemonHunterModel extends SimulatorModel {
     constructor (i, p) {
         super(i, p);
 
@@ -906,7 +906,7 @@ class DemonHunterModel extends FighterModel {
     }
 }
 
-class BardModel extends FighterModel {
+class BardModel extends SimulatorModel {
     constructor (i, p) {
         super(i, p);
 

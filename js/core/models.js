@@ -2113,16 +2113,16 @@ class CompanionModel extends PlayerModel {
 }
 
 class ModelUtils {
-    static toSimulatorModel (model, includeCompanions = false) {
+    static toSimulatorData (model, includeCompanions = false) {
         if (includeCompanions && typeof model.Companions !== 'undefined') {
             return [
-                ModelUtils._toSimulatorModel(model),
-                ModelUtils._toSimulatorModel(model.Companions.Bert),
-                ModelUtils._toSimulatorModel(model.Companions.Mark),
-                ModelUtils._toSimulatorModel(model.Companions.Kunigunde),
+                ModelUtils._toSimulatorData(model),
+                ModelUtils._toSimulatorData(model.Companions.Bert),
+                ModelUtils._toSimulatorData(model.Companions.Mark),
+                ModelUtils._toSimulatorData(model.Companions.Kunigunde),
             ]
         } else {
-            return ModelUtils._toSimulatorModel(model);
+            return ModelUtils._toSimulatorData(model);
         }
     }
 
@@ -2164,7 +2164,7 @@ class ModelUtils {
         return copy;
     }
     
-    static _toSimulatorModel (model) {
+    static _toSimulatorData (model) {
         return {
             Armor: model.Armor,
             Class: model.Class,

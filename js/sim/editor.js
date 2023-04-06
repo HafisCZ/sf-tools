@@ -466,7 +466,7 @@ class Editor extends EditorBase {
         });
 
         // Copy
-        $('div.copy-current').click(() => copyText(JSON.stringify(this.read())));
+        $('div.copy-current').click(() => copyJSON(this.read()));
 
         // Morph
         this.morph = new (class extends Field {

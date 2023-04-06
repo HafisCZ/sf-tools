@@ -212,7 +212,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
 })();
 
 // Custom fighter
-class SFFighter {
+class FighterModel {
   constructor (data, fightType) {
       let dataType = new ComplexDataType(data);
       dataType.assert(47);

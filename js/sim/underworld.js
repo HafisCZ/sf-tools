@@ -31,13 +31,13 @@ class UnderworldSimulator extends SimulatorBase {
 
     cache (units, player) {
         this.units = units.map(unit => {
-            let model = FighterModel.create(0, unit);
+            let model = SimulatorModel.create(0, unit);
             model.AttackFirst = false;
 
             return model;
         });
 
-        this.player = FighterModel.create(1, player);
+        this.player = SimulatorModel.create(1, player);
         this.player.AttackFirst = false;
     }
 
@@ -53,7 +53,7 @@ class UnderworldSimulator extends SimulatorBase {
             this.a = this.la[0];
             this.b = this.lb[0];
 
-            FighterModel.initializeFighters(this.a, this.b);
+            SimulatorModel.initializeFighters(this.a, this.b);
 
             if (this.fight() == 0) {
                 this.la.shift();

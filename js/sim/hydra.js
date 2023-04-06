@@ -1,5 +1,5 @@
 // Override some methods
-FighterModel.prototype.getBaseDamage = function () {
+SimulatorModel.prototype.getBaseDamage = function () {
     const damage = Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
 
     return {
@@ -46,8 +46,8 @@ class HydraSimulator extends SimulatorBase {
     }
 
     cache (pet, hydra) {
-        this.ca = Array(pet.Attacks).fill(null).map(() => FighterModel.create(0, pet));
-        this.cb = [ FighterModel.create(1, hydra) ];
+        this.ca = Array(pet.Attacks).fill(null).map(() => SimulatorModel.create(0, pet));
+        this.cb = [ SimulatorModel.create(1, hydra) ];
     }
 
     battle () {
@@ -61,7 +61,7 @@ class HydraSimulator extends SimulatorBase {
             this.a = this.la[0];
             this.b = this.lb[0];
 
-            FighterModel.initializeFighters(this.a, this.b);
+            SimulatorModel.initializeFighters(this.a, this.b);
 
             if (this.fight() == 0) {
                 this.la.shift();
