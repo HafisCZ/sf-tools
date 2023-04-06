@@ -704,7 +704,7 @@ const DatabaseManager = new (class {
                 const filter = new Expression(profile.secondary_g);
                 for (const group of groups) {
                     ExpressionCache.reset();
-                    if (new ExpressionCache().addSelf(group).eval(filter)) {
+                    if (new ExpressionScope().addSelf(group).eval(filter)) {
                         this._initModel('Group', group);
                     }
                 }
@@ -728,7 +728,7 @@ const DatabaseManager = new (class {
             const filter = new Expression(profile.secondary);
             for (const player of players) {
                 ExpressionCache.reset();
-                if (new ExpressionCache().addSelf(player).eval(filter)) {
+                if (new ExpressionScope().addSelf(player).eval(filter)) {
                     this._initModel('Player', player);
                 }
             }
