@@ -24,10 +24,10 @@ class HellevatorSimulator extends SimulatorBase {
   }
 
   cache (source, target) {
-      this.ca = FighterModel.create(0, source);
-      this.cb = FighterModel.create(1, target);
+      this.ca = SimulatorModel.create(0, source);
+      this.cb = SimulatorModel.create(1, target);
 
-      FighterModel.initializeFighters(this.ca, this.cb);
+      SimulatorModel.initializeFighters(this.ca, this.cb);
   }
 
   fight () {

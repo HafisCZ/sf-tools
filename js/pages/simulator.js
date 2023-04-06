@@ -37,7 +37,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     SimulatorUtils.configure({
         params: urlParams,
         onCopy: () => {
-            return players.map(p => ModelUtils.toSimulatorModel(p.player));
+            return players.map(p => ModelUtils.toSimulatorData(p.player));
         },
         insertType: 'players',
         onInsert: (data) => {
@@ -290,7 +290,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     });
 
     $('#copy-all').click(function () {
-        copyText(JSON.stringify(players.map(p => ModelUtils.toSimulatorModel(p.player))));
+        copyJSON(players.map(p => ModelUtils.toSimulatorData(p.player)));
     });
 
     $('#add-player').click(function () {

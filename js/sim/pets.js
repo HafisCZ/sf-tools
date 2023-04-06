@@ -138,7 +138,7 @@ const PET_HABITAT_MAP = [
     1, 3, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 75
 ];
 
-FighterModel.prototype.hasAdvantage = function (target) {
+SimulatorModel.prototype.hasAdvantage = function (target) {
     if (this.Player.Boss || target.Player.Boss) {
         return false;
     } else {
@@ -153,7 +153,7 @@ FighterModel.prototype.hasAdvantage = function (target) {
     }
 }
 
-FighterModel.prototype.getDamageMultiplier = function (target) {
+SimulatorModel.prototype.getDamageMultiplier = function (target) {
     const multiplier = this.Config.DamageMultiplier || 1;
 
     if (this.hasAdvantage(target)) {
@@ -279,7 +279,7 @@ class PetModel {
     }
 
     static getModel (obj, index = 0) {
-        return FighterModel.create(index, PetModel.getPlayer(obj));
+        return SimulatorModel.create(index, PetModel.getPlayer(obj));
     }
 }
 
@@ -303,7 +303,7 @@ class PetSimulator extends SimulatorBase {
         this.ca = source;
         this.cb = target;
 
-        FighterModel.initializeFighters(this.ca, this.cb);
+        SimulatorModel.initializeFighters(this.ca, this.cb);
     }
 
     fight () {

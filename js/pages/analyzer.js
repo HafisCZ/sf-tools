@@ -548,8 +548,8 @@ Site.ready(null, function (urlParams) {
             // Proceed only if type of fight is known to the system
             if (Object.values(FIGHT_TYPES).includes(fightType)) {
                 // Parse fighters
-                const fighterA = new SFFighter(header.slice(05, 52), fightType);
-                const fighterB = new SFFighter(header.slice(52, 99), fightType);
+                const fighterA = new FighterModel(header.slice(05, 52), fightType);
+                const fighterB = new FighterModel(header.slice(52, 99), fightType);
 
                 // Parse individual rounds (group of 3 numbers)
                 const rawRounds = [];
@@ -702,7 +702,7 @@ Site.ready(null, function (urlParams) {
         }
 
         for (const player of currentPlayers) {
-            player.model = FighterModel.create(null, player);
+            player.model = SimulatorModel.create(null, player);
             player.hash = computePlayerHash(player);
         }
 
@@ -906,11 +906,11 @@ Site.ready(null, function (urlParams) {
         group.fighterB.editor = playerEditorB.read();
 
         // Fetch data and initialize models
-        const model1 = FighterModel.create(0, group.fighterA.editor);
-        const model2 = FighterModel.create(1, group.fighterB.editor);
+        const model1 = SimulatorModel.create(0, group.fighterA.editor);
+        const model2 = SimulatorModel.create(1, group.fighterB.editor);
 
         // Initialize models
-        FighterModel.initializeFighters(model1, model2);
+        SimulatorModel.initializeFighters(model1, model2);
 
         const flatRounds = group.fights.map((fight) => fight.rounds).flat();
 
@@ -1155,11 +1155,11 @@ Site.ready(null, function (urlParams) {
         for (const { fighterA, fighterB, rounds } of assembledFights) {
             // Collect players
             if (fighterA.player) {
-                exportPlayers[fighterA.hash] = ModelUtils.toSimulatorModel(fighterA.player);
+                exportPlayers[fighterA.hash] = ModelUtils.toSimulatorData(fighterA.player);
             }
 
             if (fighterB.player) {
-                exportPlayers[fighterB.hash] = ModelUtils.toSimulatorModel(fighterB.player);
+                exportPlayers[fighterB.hash] = ModelUtils.toSimulatorData(fighterB.player);
             }
 
             // Collect fight

@@ -28,7 +28,7 @@ class FortressSimulator extends SimulatorBase {
     }
 
     cache (array, index) {
-        return array.map((player) => FighterModel.create(index, player));
+        return array.map((player) => SimulatorModel.create(index, player));
     }
 
     battle () {
@@ -42,7 +42,7 @@ class FortressSimulator extends SimulatorBase {
             this.a = this.la[0];
             this.b = this.lb[0];
 
-            FighterModel.initializeFighters(this.a, this.b);
+            SimulatorModel.initializeFighters(this.a, this.b);
 
             if (this.fight() == 0) {
                 this.la.shift();

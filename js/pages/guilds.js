@@ -146,7 +146,7 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     $('#copy-all').click(function () {
-        copyText(JSON.stringify(playerList[currentList].map((p) => ModelUtils.toSimulatorModel(p.player))));
+        copyJSON(playerList[currentList].map((p) => ModelUtils.toSimulatorData(p.player)));
     })
 
     // Add methods
@@ -308,7 +308,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             playerList[currentList] = group.Members.map(memberId => {
                 return {
-                    player: ModelUtils.toSimulatorModel(DatabaseManager.getPlayer(memberId, group.Timestamp)),
+                    player: ModelUtils.toSimulatorData(DatabaseManager.getPlayer(memberId, group.Timestamp)),
                     inactive: 0,
                     index: playerIndex++
                 };

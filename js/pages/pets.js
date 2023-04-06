@@ -329,7 +329,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 if (logs.length > 0) {
                     logCallback({
                         fights: logs,
-                        players: [petA.read(), petB.read()].map((pet) => FighterModel.normalize(PetModel.getPlayer(pet))),
+                        players: [petA.read(), petB.read()].map((pet) => SimulatorModel.normalize(PetModel.getPlayer(pet))),
                         config: SimulatorUtils.config
                     });
                 }
