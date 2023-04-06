@@ -67,7 +67,7 @@ Site.ready({ type: 'simulator' }, function () {
     });
 
     function preparePlayerData (data) {
-        let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+        let object = data.Class ? data : new PlayerModel(data);
 
         SFItem.forceCorrectRune(object.Items.Wpn1);
         SFItem.forceCorrectRune(object.Items.Wpn2);

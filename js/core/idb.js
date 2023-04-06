@@ -644,10 +644,10 @@ const DatabaseManager = new (class {
     // INTERNAL: Load player from proxy
     _loadPlayer (lazyPlayer) {
         if (lazyPlayer && lazyPlayer.IsProxy) {
-            const { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
+            const { Identifier: identifier, Timestamp: timestamp, Data: data } = lazyPlayer;
 
             // Get player
-            const player = own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+            const player = new PlayerModel(data);
             player.injectGroup(this.getGroup(player.Group.Identifier, timestamp));
 
             let playerObj = this.Players[identifier];

@@ -913,11 +913,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 }
 
                 // Evaluate commons
-                if (model instanceof SFCompanion) {
-                    model.evaluateCompanionCommon(player);
-                } else {
-                    model.evaluateCommon();
-                }
+                model.evaluateCommon();
             });
         }
 

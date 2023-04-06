@@ -104,7 +104,7 @@ Site.ready({ type: 'simulator' }, function () {
 
     // Paste handler
     function preparePlayerData (data) {
-        let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+        let object = data.Class ? data : new PlayerModel(data);
 
         SFItem.forceCorrectRune(object.Items.Wpn1);
         SFItem.forceCorrectRune(object.Items.Wpn2);
@@ -133,7 +133,7 @@ Site.ready({ type: 'simulator' }, function () {
 
             for (let entry of data) {
                 playerList[currentList].push({
-                    player: _merge(new SFPlayer(), preparePlayerData(entry)),
+                    player: _merge(new PlayerModel(), preparePlayerData(entry)),
                     inactive: 0,
                     index: playerIndex++
                 })
