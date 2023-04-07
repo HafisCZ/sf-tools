@@ -37,9 +37,21 @@ const SIMULATOR_NOTICES = [
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
+            'Added new file export dialog',
             'Added new in-tool manual as a replacement for old manual page',
             'Added missing images of legendary items',
-            'Fixed scrapbook count enum'
+            'Added <code>tab</code> url query to directly open specified tab',
+            'Added new custom context menu',
+            'Added performance optimizations',
+            'Replaced <code>Mount</code> value with actual mount size instead of index',
+            'Replaced <code>Slot</code> item field',
+            'Replaced <code>Position</code> item field with <code>SlotType</code> and <code>SlotIndex</code> fields',
+            'Removed <code>MountSizes</code> enum',
+            'Removed <code>Item Slot</code> header',
+            'Fixed scrapbook count enum',
+            'Fixed player detail displaying missing data',
+            'Fixed secondary player & group profile filters',
+            'Fixed tooltip alignment'
         ],
         'Dungeon Simulator': [
             'Fixed Twister experience display'
@@ -50,6 +62,10 @@ const CHANGELOG = {
         ],
         'Fight Analyzer': [
             'Added customizable group sorting'
+        ],
+        'All Simulators': [
+            'Added reworked battlemage',
+            'Added reworked critical damage calculation'
         ]
     },
     'v6.3394': {
