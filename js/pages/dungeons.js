@@ -913,7 +913,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 }
 
                 // Evaluate commons
-                model.evaluateCommon();
+                model.evaluateCommon(player);
             });
         }
 
