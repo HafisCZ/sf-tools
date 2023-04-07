@@ -19,16 +19,6 @@ function _has (arr, obj) {
     return arr.indexOf(obj) > -1;
 }
 
-function _any_true (arr, m) {
-    for (const a of arr) {
-        if (m(a)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function _all_true (arr, m) {
     for (const a of arr) {
         if (!m(a)) {
@@ -53,14 +43,6 @@ function _clamp (value, min, max) {
     return value <= min ? min : (value >= max ? max : value);
 }
 
-function _present (obj) {
-    return obj !== null && typeof obj !== 'undefined';
-}
-
-function _nil (obj) {
-    return !_present(obj);
-}
-
 function _remove (arr, obj) {
     if (arr) {
         const index = arr.indexOf(obj);
@@ -71,7 +53,7 @@ function _remove (arr, obj) {
 }
 
 function _compact (obj) {
-    return obj.filter(val => _present(val));
+    return obj.filter(val => val);
 }
 
 function _len_of_when (array, key) {
@@ -92,10 +74,6 @@ function _sort_des (array, map) {
 
 function _int_keys(hash) {
     return Object.keys(hash).map(v => parseInt(v));
-}
-
-function _hash_to_query (hash) {
-    return Object.entries(hash).map(([key, value]) => `${key}=${value}`).join('&');
 }
 
 function _safe_int(val) {
@@ -134,20 +112,6 @@ function _uuid (data) {
     return `${ data.identifier }-${ data.timestamp }`;
 }
 
-function _str_if_present (strings, ... args) {
-    if (args.some(_nil)) {
-        return undefined;
-    } else {
-        const len = strings.length;
-        let arr = strings[0];
-        for (let i = 1; i < len; i++) {
-            arr += args[i - 1];
-            arr += strings[i];
-        }
-        return arr;
-    }
-}
-
 function _uniq (array) {
     return Array.from(new Set(array));
 }
@@ -156,20 +120,12 @@ function _sum (array, base = 0) {
     return array.reduce((m, v) => m + v, base);
 }
 
-function _mapped_sum(array, map, base = 0) {
+function _mapped_sum (array, map, base = 0) {
     return array.reduce((m, v) => m + map(v), base);
 }
 
 function _slice_len (array, begin, len) {
     return array.slice(begin, begin + len);
-}
-
-function _jsonify (text) {
-    if (typeof text === 'string') {
-        return JSON.parse(text);
-    } else {
-        return text;
-    }
 }
 
 function _pretty_prefix (prefix) {
@@ -227,11 +183,6 @@ function _invert (hash, integerKeys = false) {
     }, {});
 }
 
-function _tap (object, processor) {
-    processor(object);
-    return object;
-}
-
 function _group_by (array, processor) {
     let groups = {};
     for (const object of array) {
@@ -258,10 +209,6 @@ function _empty (obj) {
     } else {
         return Object.keys(obj).length == 0;
     }
-}
-
-function _none (array, processor) {
-    return !array.some(processor);
 }
 
 function _not_empty (obj) {

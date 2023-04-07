@@ -347,7 +347,7 @@ const SiteAPI = new (class {
     }
 
     async get (endpoint, params = {}) {
-        const url = `${this.baseUrl}${endpoint}?${_hash_to_query(params)}`;
+        const url = `${this.baseUrl}${endpoint}?${new URLSearchParams(params).toString()}`;
         this.log('GET', url);
 
         return new Promise((resolve, reject) => {
