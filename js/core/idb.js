@@ -1290,14 +1290,14 @@ const DatabaseManager = new (class {
 
             this._updateLists();
         } else {
-            for (let group of groups) {
+            for (const group of groups) {
                 this._addGroup(group);
                 this._addMetadata(group.identifier, group.timestamp);
     
                 await this.Database.set('groups', group);
             }
     
-            for (let player of players) {
+            for (const player of players) {
                 this._addPlayer(player);
                 this._addMetadata(player.identifier, player.timestamp);
     
@@ -1307,8 +1307,8 @@ const DatabaseManager = new (class {
             await this._updateMetadata();
     
             this._updateLists();
-            for (const { identifier, timestamp } of players) {
-                await this._track(identifier, timestamp);
+            for (const player of players) {
+                await this._track(player.identifier, player.timestamp);
             }
     
             await Actions.apply(players, groups);

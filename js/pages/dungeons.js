@@ -376,13 +376,9 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     let cheatsEnabled = false;
-    let cheatsWasEnabled = false;
 
     $('#cheats-enabled').closest('.checkbox').change((el) => {
         cheatsEnabled = el.target.checked;
-        if (cheatsEnabled) {
-            cheatsWasEnabled = true;
-        }
     });
 
     StatisticsIntegration.configure({
@@ -393,17 +389,9 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             dungeon = DUNGEON_DATA[dungeon_current];
             boss = boss_current;
 
-            if (cheatsWasEnabled) {
-                DatabaseManager._addPlayer(player.Data);
-                player = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
-
-                cheatsWasEnabled = false;
-            }
-
             if (cheatsEnabled) {
+                player = new PlayerModel(player.Data);
                 applyCheats(player);
-
-                cheatsWasEnabled = true;
             }
 
             showData(ModelUtils.toSimulatorData(player, true));
