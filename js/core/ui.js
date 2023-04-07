@@ -44,6 +44,10 @@ const UI = new (class {
                     buttonElement
                 })
 
+                if (config.buttonDisabled) {
+                    config.buttonElement.classList.add('disabled');
+                }
+
                 if (config.buttonClickable !== false) {
                     config.buttonElement.addEventListener('click', () => {
                         this.show(tab);
