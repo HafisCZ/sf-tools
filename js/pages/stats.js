@@ -186,31 +186,21 @@ class GroupDetailTab extends Tab {
             });
         });
 
-        this.$parent.find('[data-op="export-dropdown"]').dropdown({
-            on: 'hover',
-            action: 'hide',
-            delay : {
-                hide: 100,
-                show: 0
-            }
+        this.$parent.operator('export').click(() => {
+            const createExport = (timestamps) => (() => DatabaseManager.export(null, timestamps, (player) => player.group == this.identifier))
+
+            DialogController.open(
+                ExportFileDialog,
+                {
+                    currentWithReference: createExport([ this.timestamp, this.reference ]),
+                    current: createExport([ this.timestamp ]),
+                    last: createExport([ _dig(this.list, 0, 0) ]),
+                    last5: createExport(this.list.slice(0, 5).map(entry => entry[0])),
+                    all: createExport(this.list.map(entry => entry[0]))
+                },
+                this.identifier
+            )
         });
-
-        const exportFromDropdown = (timestampRange, dialog = false) => {
-            const exportPromise = DatabaseManager.export(null, timestampRange, (player) => player.group == this.identifier);
-            if (dialog) {
-                exportPromise.then((data) => DialogController.open(ExportFileDialog, data))
-            } else {
-                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Exporter.time}`));
-            }
-        }
-
-        this.$parent.find('[data-op="export"]').click(() => exportFromDropdown(this.list.map(entry => entry[0])));
-        this.$parent.find('[data-op="export-l"]').click(() => exportFromDropdown([ _dig(this.list, 0, 0) ]));
-        this.$parent.find('[data-op="export-l5"]').click(() => exportFromDropdown(this.list.slice(0, 5).map(entry => entry[0])));
-        this.$parent.find('[data-op="export-s"]').click(() => exportFromDropdown([ this.timestamp ]));
-        this.$parent.find('[data-op="export-sr"]').click(() => exportFromDropdown([ this.timestamp, this.reference ]));
-
-        this.$parent.find('[data-op="share"]').click(() => exportFromDropdown([ this.timestamp, this.reference ], true));
 
         // Context menu
         this.contextMenu = new CustomMenu(
@@ -488,29 +478,19 @@ class PlayerDetailTab extends Tab {
             }
         });
 
-        this.$parent.find('[data-op="export-dropdown"]').dropdown({
-            on: 'hover',
-            action: 'hide',
-            delay : {
-                hide   : 100,
-                show   : 0
-            }
+        this.$parent.operator('export').click(() => {
+            const createExport = (timestamps) => (() => DatabaseManager.export([ this.identifier ], timestamps))
+
+            DialogController.open(
+                ExportFileDialog,
+                {
+                    last: createExport([ _dig(this.list, 0, 0) ]),
+                    last5: createExport(this.list.slice(0, 5).map(entry => entry[0])),
+                    all: createExport()
+                },
+                this.identifier
+            )
         });
-
-        const exportFromDropdown = (timestampRange = undefined, dialog = false) => {
-            const exportPromise = DatabaseManager.export([ this.identifier ], timestampRange);
-            if (dialog) {
-                exportPromise.then((data) => DialogController.open(ExportFileDialog, data))
-            } else {
-                exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Exporter.time}`));
-            }
-        }
-
-        this.$parent.find('[data-op="export"]').click(() => exportFromDropdown());
-        this.$parent.find('[data-op="export-l"]').click(() => exportFromDropdown([ this.list[0][0] ]));
-        this.$parent.find('[data-op="export-l5"]').click(() => exportFromDropdown(this.list.slice(0, 5).map(entry => entry[0])));
-
-        this.$parent.find('[data-op="share"]').click(() => exportFromDropdown(undefined, true));
 
         this.$name = this.$parent.find('[data-op="name"]');
         this.$identifier = this.$parent.find('[data-op="identifier"]');
@@ -682,12 +662,16 @@ class BrowseTab extends Tab {
                     }
                 },
                 {
-                    label: intl('stats.fast_export.label'),
+                    label: intl('stats.share.title_short'),
                     action: (source) => {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
                         ids.push(source.dataset.id);
 
-                        DatabaseManager.export(_uniq(ids)).then(data => DialogController.open(ExportFileDialog, data));
+                        DialogController.open(
+                            ExportFileDialog,
+                            () => DatabaseManager.export(_uniq(ids)),
+                            'players'
+                        )
                     }
                 },
                 {
@@ -1127,11 +1111,16 @@ class GroupsTab extends Tab {
                     }
                 },
                 {
-                    label: intl('stats.fast_export.label'),
+                    label: intl('stats.share.title_short'),
                     action: (source) => {
                         const group = source.dataset.id;
                         const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
-                        DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => DialogController.open(ExportFileDialog, data));
+
+                        DialogController.open(
+                            ExportFileDialog,
+                            () => DatabaseManager.export([ group, ... _uniq(members) ]),
+                            group
+                        );
                     }
                 },
                 {
@@ -1348,9 +1337,13 @@ class PlayersTab extends Tab {
                     }
                 },
                 {
-                    label: intl('stats.fast_export.label'),
+                    label: intl('stats.share.title_short'),
                     action: (source) => {
-                        DatabaseManager.export([ source.dataset.id ]).then(data => DialogController.open(ExportFileDialog, data));
+                        DialogController.open(
+                            ExportFileDialog,
+                            () => DatabaseManager.export([ source.dataset.id ]),
+                            source.dataset.id
+                        )
                     }
                 },
                 {
@@ -1555,47 +1548,27 @@ class PlayersTab extends Tab {
 // Files View
 class FilesTab extends Tab {
     // Export all to json file
-    exportAllJson () {
-        DatabaseManager.export().then((data) => Exporter.json(data, `files_${Exporter.time}`));
-    }
-
-    // Export all to cloud
-    exportAllCloud () {
-        DatabaseManager.export().then(data => DialogController.open(ExportFileDialog, data));
-    }
-
-    // Export selected to json file
-    exportSelectedJson () {
-        if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles).then((data) => Exporter.json(data, `files_${Exporter.time}`));
-        } else {
-            const players = [];
-            const groups = [];
-            for (const entry of Object.values(this.selectedEntries)) {
-                if (DatabaseManager.isPlayer(entry.identifier)) {
-                    players.push(entry);
-                } else {
-                    groups.push(entry);
-                }
-            }
-
-            Exporter.json(
-                {
-                    players,
-                    groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups)
-                },
-                `files_${Exporter.time}`
-            );
-        }
+    exportAll () {
+        DialogController.open(
+            ExportFileDialog,
+            () => DatabaseManager.export(),
+            'files'
+        );
     }
 
     // Export selected to cloud
-    exportSelectedCloud () {
+    exportSelected () {
         if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
-                DialogController.open(ExportFileDialog, file);
-            });
+            if (this.selectedFiles.length === 0) return;
+
+            DialogController.open(
+                ExportFileDialog,
+                () => DatabaseManager.export(undefined, this.selectedFiles),
+                'files'
+            );
         } else {
+            if (this.selectedEntries.length === 0) return;
+
             const players = [];
             const groups = [];
             for (const entry of Object.values(this.selectedEntries)) {
@@ -1608,10 +1581,8 @@ class FilesTab extends Tab {
 
             DialogController.open(
                 ExportFileDialog,
-                {
-                    players,
-                    groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups)
-                }
+                () => ({ players, groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups) }),
+                'files'
             );
         }
     }
@@ -1716,10 +1687,8 @@ class FilesTab extends Tab {
 
         this.$fileCounter = this.$parent.find('[data-op="selected-counter"]');
 
-        this.$parent.find('[data-op="export"]').click(() => this.exportAllJson());
-        this.$parent.find('[data-op="export-partial"]').click(() => this.exportSelectedJson());
-        this.$parent.find('[data-op="cloud-export"]').click(() => this.exportAllCloud());
-        this.$parent.find('[data-op="cloud-export-partial"]').click(() => this.exportSelectedCloud());
+        this.$parent.find('[data-op="export"]').click(() => this.exportAll());
+        this.$parent.find('[data-op="export-partial"]').click(() => this.exportSelected());
         this.$parent.find('[data-op="delete-all"]').click(() => this.deleteAll());
         this.$parent.find('[data-op="delete"]').click(() => this.deleteSelected());
         this.$parent.find('[data-op="merge"]').click(() => this.mergeSelected());
