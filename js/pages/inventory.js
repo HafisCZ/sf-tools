@@ -1136,7 +1136,7 @@ class InventoryTab extends Tab {
     refresh () {
         // Character selection
         if (this.Selected == 0) {
-            this.$equipped.html(this.toList(this.player.filter(i => i.Slot != 2 || this.Player.Class == 4)));
+            this.$equipped.html(this.toList(this.player.filter(i => i.SlotIndex != 10 || this.Player.Class == 4)));
         } else if (this.Selected == 1) {
             this.$equipped.html(this.toList(this.bert));
         } else if (this.Selected == 2) {
@@ -1229,7 +1229,7 @@ class InventoryTab extends Tab {
             return `
                 <div class="css-inventory-item ${ isEquip ? 'cursor-pointer' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
                     <div class="css-inventory-item-header">
-                        Empty slot for ${ intl(`general.item${[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot]}`) } (${ intl(`general.class${this.Player.Class}`) })
+                        Empty slot for ${ intl(`general.item${item.SlotIndex}`) } (${ intl(`general.class${this.Player.Class}`) })
                     </div>
                 </div>
             `;

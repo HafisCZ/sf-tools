@@ -3260,11 +3260,6 @@ const SP_KEYWORD_MAPPING_4 = {
         format: (p, x) => x == 0 ? '' : x,
         difference: false
     },
-    'Item Slot': {
-        expr: (p, i) => i.Slot,
-        format: (p, x) => x == 2 && p && p.Class == 4 ? intl('general.item1') : intl(`general.item${x}`),
-        difference: false
-    },
     'Potion Type': {
         expr: (p, i) => i.Type,
         format: (p, x) => x ? intl(`general.potion${x}`) : '',
@@ -3276,11 +3271,11 @@ const SP_KEYWORD_MAPPING_4 = {
         difference: false
     },
     'Inventory Kind': {
-        expr: (p, i) => i.Position ? i.Position[0] : undefined,
+        expr: (p, i) => i.SlotType,
         difference: false
     },
     'Inventory Slot': {
-        expr: (p, i) => i.Position ? i.Position[1] : undefined,
+        expr: (p, i) => i.SlotIndex,
         difference: false
     }
 };
