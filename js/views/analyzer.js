@@ -270,8 +270,8 @@ class FighterModel {
       this.Class = dataType.long();
 
       this.Items = {
-          Wpn1: new SFItem(dataType.sub(12), 1, [1, 1]),
-          Wpn2: new SFItem(dataType.sub(12), 2, [1, 2])
+          Wpn1: new ItemModel(dataType.sub(12), 1, [1, 1]),
+          Wpn2: new ItemModel(dataType.sub(12), 2, [1, 2])
       }
 
       if (this.Face.Mouth < 0) {
