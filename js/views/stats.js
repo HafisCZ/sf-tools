@@ -766,7 +766,7 @@ const DataManageDialog = new (class extends Dialog {
   }
 })();
 
-const ImportSharedFileDialog = new (class extends Dialog {
+const ImportFileDialog = new (class extends Dialog {
   _createModal () {
       return `
           <div class="very small inverted dialog">
@@ -852,7 +852,7 @@ const ImportSharedFileDialog = new (class extends Dialog {
   }
 })();
 
-const ExportSharedFileDialog = new (class extends Dialog {
+const ExportFileDialog = new (class extends Dialog {
   _createModal () {
       return `
           <div class="very small inverted dialog">

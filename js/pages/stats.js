@@ -198,7 +198,7 @@ class GroupDetailTab extends Tab {
         const exportFromDropdown = (timestampRange, dialog = false) => {
             const exportPromise = DatabaseManager.export(null, timestampRange, (player) => player.group == this.identifier);
             if (dialog) {
-                exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
+                exportPromise.then((data) => DialogController.open(ExportFileDialog, data))
             } else {
                 exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Exporter.time}`));
             }
@@ -500,7 +500,7 @@ class PlayerDetailTab extends Tab {
         const exportFromDropdown = (timestampRange = undefined, dialog = false) => {
             const exportPromise = DatabaseManager.export([ this.identifier ], timestampRange);
             if (dialog) {
-                exportPromise.then((data) => DialogController.open(ExportSharedFileDialog, data))
+                exportPromise.then((data) => DialogController.open(ExportFileDialog, data))
             } else {
                 exportPromise.then((data) => Exporter.json(data, `${this.identifier}_${Exporter.time}`));
             }
@@ -687,7 +687,7 @@ class BrowseTab extends Tab {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
                         ids.push(source.dataset.id);
 
-                        DatabaseManager.export(_uniq(ids)).then(data => DialogController.open(ExportSharedFileDialog, data));
+                        DatabaseManager.export(_uniq(ids)).then(data => DialogController.open(ExportFileDialog, data));
                     }
                 },
                 {
@@ -1131,7 +1131,7 @@ class GroupsTab extends Tab {
                     action: (source) => {
                         const group = source.dataset.id;
                         const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
-                        DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => DialogController.open(ExportSharedFileDialog, data));
+                        DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => DialogController.open(ExportFileDialog, data));
                     }
                 },
                 {
@@ -1350,7 +1350,7 @@ class PlayersTab extends Tab {
                 {
                     label: intl('stats.fast_export.label'),
                     action: (source) => {
-                        DatabaseManager.export([ source.dataset.id ]).then(data => DialogController.open(ExportSharedFileDialog, data));
+                        DatabaseManager.export([ source.dataset.id ]).then(data => DialogController.open(ExportFileDialog, data));
                     }
                 },
                 {
@@ -1561,7 +1561,7 @@ class FilesTab extends Tab {
 
     // Export all to cloud
     exportAllCloud () {
-        DatabaseManager.export().then(data => DialogController.open(ExportSharedFileDialog, data));
+        DatabaseManager.export().then(data => DialogController.open(ExportFileDialog, data));
     }
 
     // Export selected to json file
@@ -1593,7 +1593,7 @@ class FilesTab extends Tab {
     exportSelectedCloud () {
         if (this.simple) {
             DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
-                DialogController.open(ExportSharedFileDialog, file);
+                DialogController.open(ExportFileDialog, file);
             });
         } else {
             const players = [];
@@ -1607,7 +1607,7 @@ class FilesTab extends Tab {
             }
 
             DialogController.open(
-                ExportSharedFileDialog,
+                ExportFileDialog,
                 {
                     players,
                     groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups)
@@ -1700,7 +1700,7 @@ class FilesTab extends Tab {
 
     // Import file via cloud
     importCloud () {
-        DialogController.open(ImportSharedFileDialog, () => this.show());
+        DialogController.open(ImportFileDialog, () => this.show());
     }
 
     // Prepare checkbox
