@@ -52,6 +52,22 @@ function _remove (arr, obj) {
     }
 }
 
+function _filter_in_place (array, predicate) {
+    let index1 = 0;
+    let index2 = 0;
+
+    while (index1 < array.length) {
+      if (predicate(array[index1])) {
+        array[index2] = array[index1];
+        index2++;
+      }
+
+      index1++;
+    }
+
+    array.length = index2;
+}
+
 function _compact (obj) {
     return obj.filter(val => val);
 }

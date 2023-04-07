@@ -1252,10 +1252,11 @@ const DatabaseManager = new (class {
     }
 
     async _addFile (entries, playerEntries, groupEntries, flags = {}) {
-        let players = playerEntries || [];
-        let groups = groupEntries || [];
+        const players = playerEntries || [];
+        const groups = groupEntries || [];
+
         if (entries) {
-            for (let entry of entries) {
+            for (const entry of entries) {
                 if (this.isPlayer(entry.identifier)) {
                     players.push(entry);
                 } else {
@@ -1273,8 +1274,8 @@ const DatabaseManager = new (class {
         }
 
         if (flags.skipExisting) {
-            groups = groups.filter(({ identifier, timestamp }) => !this.hasGroup(identifier, timestamp))
-            players = players.filter(({ identifier, timestamp }) => !this.hasPlayer(identifier, timestamp))
+            _filter_in_place(groups, (group) => !this.hasGroup(group.identifier, group.timestamp));
+            _filter_in_place(players, (player) => !this.hasPlayer(player.identifier, player.timestamp));
         }
 
         if (flags.temporary) {
