@@ -2881,7 +2881,6 @@ Site.ready(null, function (urlParams) {
     if (urlParams.has('temp')) {
         Store.temporary();
 
-        $('#show-profiles').addClass('disabled');
         $('.css-temporary').show();
 
         profile = {
@@ -2930,7 +2929,8 @@ Site.ready(null, function (urlParams) {
             },
             Profiles: {
                 tab: new ProfilesTab('view-profiles'),
-                buttonId: 'show-profiles'
+                buttonId: 'show-profiles',
+                buttonDisabled: urlParams.has('temp')
             }
         });
 
