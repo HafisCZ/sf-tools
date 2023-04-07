@@ -46,7 +46,6 @@ class ItemModel {
         this.Armor = damageMin;
         this.DamageMin = damageMin;
         this.DamageMax = damageMax;
-        this.DamageAverage = (damageMax + damageMin) / 2;
         this.Upgrades = upgradeLevel;
         this.UpgradeMultiplier = Math.pow(1.03, upgradeLevel);
         this.AttributeTypes = attributeType;
@@ -90,7 +89,7 @@ class ItemModel {
     }
 
     get Name () {
-        if (!this._NameSet) {console.log('Read')
+        if (!this._NameSet) {
             this._NameSet = true;
             this._Name = Loca.name(this.Type, this.Index, this.Class);
         }
@@ -108,6 +107,7 @@ class ItemModel {
                     data[i + 4] = to + 20;
                 }
             }
+
             return new ItemModel(data, this.Slot, this.Position);
         } else {
             return new ItemModel(this.Data, this.Slot, this.Position);
