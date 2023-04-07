@@ -853,106 +853,176 @@ const ImportFileDialog = new (class extends Dialog {
 })();
 
 const ExportFileDialog = new (class extends Dialog {
-  _createModal () {
-      return `
-          <div class="very small inverted dialog">
-              <div class="header">${intl('stats.share.title')}</div>
-              <div class="height: 17em;">
-                  <h4 class="ui inverted header">${intl('stats.share.options')}</h4>
-                  <div class="mt-2">
-                      <div class="ui inverted checkbox" data-op="once">
-                          <input type="checkbox" name="checkbox_once">
-                          <label for="checkbox_once"><span>${intl('stats.share.single_use')}</span>
-                              <br>
-                              <span class="text-gray">${intl('stats.share.single_use_notice')}</span>
-                          </label>
-                      </div>
-                  </div>
-                  <div data-op="block">
-                      <div class="mt-6">
-                          <h4 class="ui inverted header">${intl('stats.share.code')}:</h4>
-                          <div class="text-center">
-                              <code style="white-space: pre;" data-op="code"></code>
-                          </div>
-                      </div>
-                      <div class="text-gray mt-6">${intl('stats.share.expire')}</div>
-                  </div>
-              </div>
-              <div class="ui fluid two buttons">
-                  <div class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</div>
-                  <div class="ui button !text-black !background-orange" data-op="ok">${intl('stats.share.get')}</div>
-              </div>
-          </div>
-      `;
-  }
+    _createModal () {
+        return `
+            <div class="small bordered inverted dialog">
+                <div class="header">${intl('stats.share.title')}</div>
+                <div class="height: 17em;">
+                    <div class="ui inverted form" data-op="form">
+                        <div class="field" data-op="file-container">
+                            <label>${intl('stats.share.file')}</label>
+                            <div class="ui selection inverted dropdown" data-op="file">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${intl('stats.share.format')}</label>
+                            <div class="ui selection inverted dropdown" data-op="format">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field !mt-6">
+                            <div class="ui inverted checkbox" data-op="public">
+                                <input type="checkbox" name="public">
+                                <label for="public">${intl('stats.share.public')}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-op="code-container">
+                        <div class="mt-6">
+                            <h4 class="ui inverted header">${intl('stats.share.code')}:</h4>
+                            <div class="text-center">
+                                <code style="white-space: pre;" data-op="code"></code>
+                            </div>
+                        </div>
+                        <div class="text-gray mt-6">${intl('stats.share.expire')}</div>
+                    </div>
+                </div>
+                <div class="ui fluid two buttons">
+                    <div class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</div>
+                    <div class="ui button !text-black !background-orange" data-op="ok">${intl('stats.share.get')}</div>
+                </div>
+            </div>
+        `;
+    }
 
-  _createBindings () {
-      this.$once = this.$parent.operator('once');
+    _createBindings () {
+        this.$format = this.$parent.operator('format');
+        this.$format.dropdown({
+            values: ['json', 'code', 'code_reusable'].map((value, i) => ({ value, name: intl(`stats.share.formats.${value}`), selected: i === 0 }))
+        });
 
-      this.$code = this.$parent.operator('code');
-      this.$block = this.$parent.operator('block');
-      
-      this.$ok = this.$parent.operator('ok');
-      this.$ok.click(() => {
-          if (this.code) {
-              this.close();
-          } else {
-              const once = this.$once.checkbox('is checked');
-  
-              this._setLoading(true);
-              this._send(once);
-          }
-      });
+        this.$public = this.$parent.operator('public');
+        this.$public.checkbox('set unchecked');
+        
+        this.$codeContainer = this.$parent.operator('code-container');
+        this.$code = this.$parent.operator('code');
 
-      this.$cancel = this.$parent.operator('cancel');
-      this.$cancel.click(() => {
-          this.close();
-      })
-  }
+        this.$fileContainer = this.$parent.operator('file-container');
+        this.$file = this.$parent.operator('file');
 
-  _applyArguments (data) {
-      this.data = data;
-      this.code = null;
+        this.$cancel = this.$parent.operator('cancel');
+        this.$cancel.click(() => {
+            this.close();
+        });
 
-      this.$once.checkbox('set checked');
+        this.$ok = this.$parent.operator('ok');
+        this.$ok.click(() => {
+            this._exportOrClose();
+        });
 
-      this.$block.hide();
+        this.$form = this.$parent.operator('form');
+    }
 
-      this.$ok.text(intl('stats.share.get'));
-  }
+    async _exportFile () {
+        const fileGetter = typeof this.files === 'function' ? this.files : this.files[this.$file.dropdown('get value')];
+        const filePublic = this.$public.checkbox('is checked');
 
-  _setLoading (loading) {
-      if (loading) {
-          this.$ok.addClass('loading disabled');
-          this.$cancel.addClass('disabled');
-      } else {
-          this.$ok.removeClass('loading disabled');
-          this.$cancel.removeClass('disabled');
-      }
-  }
+        const exportPublic = SiteOptions.export_public_only;
+        if (exportPublic || !filePublic) {
+            return await fileGetter();
+        } else if (filePublic) {
+            SiteOptions.export_public_only = true;
 
-  _send (once) {
-      SiteAPI.post('file_create', {
-          content: JSON.stringify({ data: this.data }),
-          multiple: !once
-      }).then(({ file }) => {
-          this._setLoading(false);
+            const file = await fileGetter();
 
-          if (file.key) {
-              this.code = file.key;
-  
-              this.$block.show();
-              this.$code.text(file.key);
+            SiteOptions.export_public_only = false;
 
-              this.$ok.text(intl('dialog.shared.ok'));
-          } else {
-             this.$ok.transition('shake');
-          }
-      }).catch(() => {
-          this._setLoading(false);
-          this.$ok.transition('shake');
-      })
-  }
+            return file;
+        }
+    }
+
+    _exportOrClose () {
+        const mode = this.$format.dropdown('get value');
+        if (mode === 'json') {
+            this._setLoading(true);
+            this._exportFile().then((data) => {
+                Exporter.json(
+                    data,
+                    `${this.filesPrefix || 'export'}_${Exporter.time}`
+                )
+
+                this._setLoading(false);
+                this.close();
+            })
+        } else if (this.code) {
+            this.close();
+        } else {
+            const reusable = this.$format.dropdown('get value') === 'code_reusable';
+
+            this._setLoading(true);
+            this._publish(reusable);
+        }
+    }
+
+    _applyArguments (files, filesPrefix) {
+        this.files = files;
+        this.filesPrefix = filesPrefix;
+        this.code = null;
+
+        if (typeof this.files === 'function') {
+            this.$fileContainer.hide();
+        } else {
+            const keys = Object.keys(this.files)
+
+            this.$fileContainer.show();
+            this.$file.dropdown({
+                values: keys.map((value) => ({ value, name: intl(`stats.share.files.${value}`), selected: value === keys[0] }))
+            })
+        }
+
+        this.$codeContainer.hide();
+
+        this.$ok.text(intl('stats.share.get'))
+
+        this.$form.show();
+    }
+
+    _setLoading (loading) {
+        if (loading) {
+            this.$ok.addClass('loading disabled');
+            this.$cancel.addClass('disabled');
+        } else {
+            this.$ok.removeClass('loading disabled');
+            this.$cancel.removeClass('disabled');
+        }
+    }
+
+    async _publish (reusable) {
+        SiteAPI.post('file_create', {
+            content: JSON.stringify({ data: await this._exportFile() }),
+            multiple: reusable
+        }).then(({ file }) => {
+            this._setLoading(false);
+
+            if (file.key) {
+                this.code = file.key;
+    
+                this.$form.hide();
+                this.$codeContainer.show();
+                this.$code.text(file.key);
+
+                this.$ok.text(intl('dialog.shared.ok'));
+            } else {
+                this.$ok.transition('shake');
+            }
+        }).catch(() => {
+            this._setLoading(false);
+            this.$ok.transition('shake');
+        })
+    }
 })();
 
 const ScriptRepositoryDialog = new (class extends Dialog {

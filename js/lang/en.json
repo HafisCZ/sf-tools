@@ -616,24 +616,31 @@
         "browse": {
             "hidden": "Show hidden"
         },
-        "fast_export": {
-            "label": "Share",
-            "title": "Export options",
-            "all": "All",
-            "latest": "Latest",
-            "latest5": "Latest 5",
-            "selected": "Selected",
-            "selected_both": "Selected & Reference"
-        },
         "share": {
-            "title": "File sharing",
+            "title": "File export",
+            "title_short": "Export",
             "options": "Options",
             "code": "Your code",
-            "get": "Get code",
+            "file": "Selection",
+            "format": "Format",
+            "get": "Export",
             "ok": "Ok",
+            "public": "Export only public data (regardless of your current global setting)",
             "expire": "The code will automatically expire after 2 days.",
             "single_use": "Single use only",
-            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people.",
+            "files": {
+                "all": "All",
+                "last": "Latest",
+                "last5": "Latest 5",
+                "current": "Selected",
+                "currentWithReference": "Selected & Reference"
+            },
+            "formats": {
+                "json": "JSON file",
+                "code": "Online code (1 use or 2 days)",
+                "code_reusable": "Online code (2 days)"
+            }
         },
         "online_templates": {
             "title": "Public scripts",
