@@ -1161,7 +1161,9 @@ const DatabaseManager = new (class {
     // Share - object
     // Archive - string
     async import (text, timestamp, timestampOffset, flags) {
-        await this._import(_jsonify(text), timestamp, timestampOffset, flags);
+        const data = typeof text === 'string' ? JSON.parse(text) : text;
+
+        await this._import(data, timestamp, timestampOffset, flags);
     }
 
     async export (identifiers, timestamps, constraint) {
@@ -1184,7 +1186,7 @@ const DatabaseManager = new (class {
         return data;
     }
 
-    getGroupsFor (players, groups, bundleGroups = true) {
+    relatedGroupData (players, groups, bundleGroups = true) {
         const entries = {};
         for (const group of groups) {
             entries[_uuid(group)] = group;
@@ -1193,7 +1195,7 @@ const DatabaseManager = new (class {
         if (bundleGroups) {
             for (const player of players) {
                 const group = _dig(this.Groups, player.group, player.timestamp, 'Data');
-                if (_present(group) && !entries[_uuid(group)]) {
+                if (group) {
                     entries[_uuid(group)] = group;
                 }
             }
@@ -1206,18 +1208,18 @@ const DatabaseManager = new (class {
         let players = [];
         let groups = [];
 
-        if (!_present(identifiers)) {
+        if (!identifiers) {
             identifiers = this.Identifiers.keys();
         }
 
-        if (!_present(timestamps)) {
+        if (!timestamps) {
             timestamps = this.Timestamps.keys();
         }
 
         for (let timestamp of timestamps) {
             let timestampIdentifiers = this.Timestamps.array(timestamp);
 
-            if (!_present(timestampIdentifiers) || timestampIdentifiers.size == 0) {
+            if (!timestampIdentifiers || timestampIdentifiers.size == 0) {
                 continue;
             }
 
@@ -1229,7 +1231,7 @@ const DatabaseManager = new (class {
                 let isPlayer = this.isPlayer(identifier);
                 let data = _dig(this, isPlayer ? 'Players' : 'Groups', identifier, timestamp, 'Data');
 
-                if (!_present(constraint) || constraint(data)) {
+                if (!constraint || constraint(data)) {
                     (isPlayer ? players : groups).push(data);
                 }
             }
@@ -1371,7 +1373,7 @@ const DatabaseManager = new (class {
         let trackerChanged = false;
         for (const [ name, { ast, out } ] of this.TrackerConfigEntries) {
             const currentTracker = playerTracker[name];
-            if (new ExpressionScope().with(player).eval(ast) && (_nil(currentTracker) || currentTracker.ts > timestamp)) {
+            if (new ExpressionScope().with(player).eval(ast) && (!currentTracker || currentTracker.ts > timestamp)) {
                 playerTracker[name] = {
                     ts: timestamp,
                     out: out ? new ExpressionScope().with(player).eval(out) : timestamp

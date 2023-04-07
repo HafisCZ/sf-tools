@@ -728,7 +728,7 @@ Site.ready(null, function (urlParams) {
         for (const fight of currentFights) {
             let group = currentGroups.find((group) => group.hash === fight.hash);
 
-            if (_nil(group)) {
+            if (!group) {
                 group = {
                     index: currentGroups.length,
                     hash: fight.hash,

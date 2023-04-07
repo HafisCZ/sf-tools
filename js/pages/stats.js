@@ -1582,7 +1582,7 @@ class FilesTab extends Tab {
             Exporter.json(
                 {
                     players,
-                    groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
+                    groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups)
                 },
                 `files_${Exporter.time}`
             );
@@ -1610,7 +1610,7 @@ class FilesTab extends Tab {
                 ExportSharedFileDialog,
                 {
                     players,
-                    groups: DatabaseManager.getGroupsFor(players, groups, SiteOptions.export_bundle_groups)
+                    groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups)
                 }
             );
         }
@@ -1999,7 +1999,7 @@ class FilesTab extends Tab {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
         });
 
-        if (_present(this.expressionFilter) && this.expressionFilter.isValid()) {
+        if (this.expressionFilter && this.expressionFilter.isValid()) {
             currentFilesAll = currentFilesAll.filter(({ tags: { tagList }, timestamp, version }) => {
                 return this.expressionFilter.eval(new ExpressionScope().addSelf(
                     Object.assign(

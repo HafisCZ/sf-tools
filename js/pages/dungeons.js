@@ -930,22 +930,24 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     function convertBossToSimulatorFormat (rawData, rawDungeon) {
-        return _tap(getBossData(rawData, rawDungeon), function (data) {
-            const definition = CONFIG.fromIndex(data.Class);
+        const data = getBossData(rawData, rawDungeon);
 
-            const level = data.Level;
-            const health = data.Health;
+        const definition = CONFIG.fromIndex(data.Class);
 
-            data.Constitution.Total = Math.ceil(health / (definition.HealthMultiplier * (level + 1)));
+        const level = data.Level;
+        const health = data.Health;
 
-            if (typeof data.Armor === 'undefined') {
-                data.Armor = definition.MaximumDamageReduction * level * (rawDungeon.armor_multiplier || 1.0);
-            }
+        data.Constitution.Total = Math.ceil(health / (definition.HealthMultiplier * (level + 1)));
 
-            if (data.Class === WARRIOR) {
-                data.BlockChance = 25;
-            }
-        })
+        if (typeof data.Armor === 'undefined') {
+            data.Armor = definition.MaximumDamageReduction * level * (rawDungeon.armor_multiplier || 1.0);
+        }
+
+        if (data.Class === WARRIOR) {
+            data.BlockChance = 25;
+        }
+
+        return data;
     }
 
     return {
