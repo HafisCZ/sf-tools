@@ -106,15 +106,15 @@ Site.ready({ type: 'simulator' }, function () {
     function preparePlayerData (data) {
         let object = data.Class ? data : new PlayerModel(data);
 
-        SFItem.forceCorrectRune(object.Items.Wpn1);
-        SFItem.forceCorrectRune(object.Items.Wpn2);
+        ItemModel.forceCorrectRune(object.Items.Wpn1);
+        ItemModel.forceCorrectRune(object.Items.Wpn2);
 
         if (object.Class == WARRIOR && typeof object.BlockChance == 'undefined') {
             object.BlockChance = object.Items.Wpn2.DamageMin;
         }
 
         if (object.Class != ASSASSIN) {
-            object.Items.Wpn2 = SFItem.empty();
+            object.Items.Wpn2 = ItemModel.empty();
         }
 
         return object;

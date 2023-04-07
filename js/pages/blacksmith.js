@@ -9,7 +9,7 @@ class Blacksmith {
     }
 
     static upgradeList (type, value, double) {
-        let item = SFItem.empty();
+        let item = ItemModel.empty();
 
         item.Type = 1;
         item.PicIndex = double ? 1000 : 1;

@@ -240,11 +240,11 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
     function loadEditor (data) {
-        SFItem.forceCorrectRune(data.Items.Wpn1);
-        SFItem.forceCorrectRune(data.Items.Wpn2);
+        ItemModel.forceCorrectRune(data.Items.Wpn1);
+        ItemModel.forceCorrectRune(data.Items.Wpn2);
 
         if (data.Class == WARRIOR && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
-        if (data.Class != ASSASSIN) data.Items.Wpn2 = SFItem.empty();
+        if (data.Class != ASSASSIN) data.Items.Wpn2 = ItemModel.empty();
 
         if (selected > 0) {
             for (const key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {

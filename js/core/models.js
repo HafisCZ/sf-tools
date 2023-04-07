@@ -1,6 +1,6 @@
-class SFItem {
+class ItemModel {
     static empty () {
-        return new SFItem(new Array(12).fill(0), 0, [0, 0]);
+        return new ItemModel(new Array(12).fill(0), 0, [0, 0]);
     }
 
     constructor (data, slot, pos) {
@@ -108,9 +108,9 @@ class SFItem {
                     data[i + 4] = to + 20;
                 }
             }
-            return new SFItem(data, this.Slot, this.Position);
+            return new ItemModel(data, this.Slot, this.Position);
         } else {
-            return new SFItem(this.Data, this.Slot, this.Position);
+            return new ItemModel(this.Data, this.Slot, this.Position);
         }
     }
 
@@ -139,7 +139,7 @@ class SFItem {
     }
 
     clone () {
-        return new SFItem(this.Data, this.Slot, this.Position);
+        return new ItemModel(this.Data, this.Slot, this.Position);
     }
 
     getAttribute (id) {
@@ -738,7 +738,7 @@ class PlayerModel {
             Kunigunde: {}
         };
         for (let i = 0; i < 5; i++) {
-            const item = new SFItem(dataType.sub(12), 0, [6, i + 1]);
+            const item = new ItemModel(dataType.sub(12), 0, [6, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Backpack.push(item);
             }
@@ -750,14 +750,14 @@ class PlayerModel {
 
         dataType.skip(1);
         for (let i = 0; i < 6; i++) {
-            const item = new SFItem(dataType.sub(12), 0, [7, i + 1]);
+            const item = new ItemModel(dataType.sub(12), 0, [7, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
         }
         dataType.skip(1);
         for (let i = 0; i < 6; i++) {
-            const item = new SFItem(dataType.sub(12), 0, [8, i + 1]);
+            const item = new ItemModel(dataType.sub(12), 0, [8, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
@@ -1101,7 +1101,7 @@ class PlayerModel {
         if (data.chest) {
             dataType = new ComplexDataType(data.chest);
             for (let i = 0; i < 45 && dataType.atLeast(12); i++) {
-                const item = new SFItem(dataType.sub(12), 0, [6, i + 6]);
+                const item = new ItemModel(dataType.sub(12), 0, [6, i + 6]);
                 if (item.Type > 0) {
                     if (i >= 15) {
                         this.Inventory.Chest.push(item);
@@ -1825,16 +1825,16 @@ class PlayerModel {
 
     static loadEquipment (dataType, inventoryType) {
         return {
-            Head: new SFItem(dataType.sub(12), 6, [inventoryType, 1]),
-            Body: new SFItem(dataType.sub(12), 3, [inventoryType, 2]),
-            Hand: new SFItem(dataType.sub(12), 5, [inventoryType, 3]),
-            Feet: new SFItem(dataType.sub(12), 4, [inventoryType, 4]),
-            Neck: new SFItem(dataType.sub(12), 8, [inventoryType, 5]),
-            Belt: new SFItem(dataType.sub(12), 7, [inventoryType, 6]),
-            Ring: new SFItem(dataType.sub(12), 9, [inventoryType, 7]),
-            Misc: new SFItem(dataType.sub(12), 10, [inventoryType, 8]),
-            Wpn1: new SFItem(dataType.sub(12), 1, [inventoryType, 9]),
-            Wpn2: new SFItem(dataType.sub(12), 2, [inventoryType, 10])
+            Head: new ItemModel(dataType.sub(12), 6, [inventoryType, 1]),
+            Body: new ItemModel(dataType.sub(12), 3, [inventoryType, 2]),
+            Hand: new ItemModel(dataType.sub(12), 5, [inventoryType, 3]),
+            Feet: new ItemModel(dataType.sub(12), 4, [inventoryType, 4]),
+            Neck: new ItemModel(dataType.sub(12), 8, [inventoryType, 5]),
+            Belt: new ItemModel(dataType.sub(12), 7, [inventoryType, 6]),
+            Ring: new ItemModel(dataType.sub(12), 9, [inventoryType, 7]),
+            Misc: new ItemModel(dataType.sub(12), 10, [inventoryType, 8]),
+            Wpn1: new ItemModel(dataType.sub(12), 1, [inventoryType, 9]),
+            Wpn2: new ItemModel(dataType.sub(12), 2, [inventoryType, 10])
         };
     }
 

@@ -549,7 +549,7 @@ class Editor extends EditorBase {
             if (newClass == WARRIOR) {
                 data.BlockChance = newDefinition.SkipChance;
 
-                data.Items.Wpn2 = SFItem.empty();
+                data.Items.Wpn2 = ItemModel.empty();
                 data.Items.Wpn2.DamageMin = newDefinition.SkipChance;
             } else if (newClass == ASSASSIN) {
                 data.Items.Wpn2 = data.Items.Wpn1;
