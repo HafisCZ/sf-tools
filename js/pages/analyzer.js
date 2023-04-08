@@ -214,6 +214,15 @@ Site.ready(null, function (urlParams) {
                     }
                 }
             },
+            type_display_mode: {
+                type: 'dropdown',
+                keys: Object.keys(ATTACK_TYPE_FORMATS),
+                onChange: () => {
+                    if (currentFight) {
+                        renderFight(currentGroup, currentFight);
+                    }
+                }
+            },
             base_damage_error_margin: {
                 type: 'number',
                 onChange: () => {
@@ -330,9 +339,10 @@ Site.ready(null, function (urlParams) {
         'analyzer',
         {
             rage_display_mode: 'decimal',
+            type_display_mode: 'text',
             base_damage_error_margin: 1,
             damages_sidebar: false,
-            group_sort: 'fight_count'
+            group_sort: 'fight_count',
         }
     )
 
@@ -591,11 +601,12 @@ Site.ready(null, function (urlParams) {
                     } else {
                         round.attackDamage = findHealth(i) - round.targetHealthLeft;
                     }
-
-                    // Calculate attack rage
+                    
                     if (round.attackSpecial) {
+                        // Decrease rage if it's a special attack (revive, note)
                         attackRageOffset--;
                     } else if (round.attackChained) {
+                        // Increase rage if it's a chained attack
                         attackRageOffset++;
                     }
 
@@ -779,6 +790,11 @@ Site.ready(null, function (urlParams) {
         'fraction': (rage) => `${Math.round(rage * 6)}/6`,
     }
 
+    const ATTACK_TYPE_FORMATS = {
+        'text': (type) => intl(`general.attack${type}`),
+        'text_with_id': (type) => `${intl(`general.attack${type}`)} #${type}`
+    }
+
     const BARD_NOTE_COLORS = ['c4c4c4', '5e7fc4', 'd1a130'];
 
     function renderState (state, copyMode) {
@@ -795,6 +811,7 @@ Site.ready(null, function (urlParams) {
 
     function renderFight (group, fight, copyMode = false) {
         const formatAttackRage = ATTACK_RAGE_FORMATS[analyzerOptions.rage_display_mode];
+        const formatAttackType = ATTACK_TYPE_FORMATS[analyzerOptions.type_display_mode];
 
         let content = '';
 
@@ -822,7 +839,7 @@ Site.ready(null, function (urlParams) {
                         <td class="!text-center">${attackerState}</th>
                         <td class="!text-center"></th>
                         <td class="!text-center"></th>
-                        <td class="!text-center text-violet">${intl(`general.attack${attackType}`)}</th>
+                        <td class="!text-center text-violet">${formatAttackType(attackType)}</th>
                         <td class="!text-center"></th>
                         <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
                         <td class="!text-center"></th>
@@ -842,7 +859,7 @@ Site.ready(null, function (urlParams) {
                         <td class="!text-center">${attackerState}</th>
                         <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
                         <td class="!text-center">${targetState}</th>
-                        <td class="!text-center${attackClass}">${intl(`general.attack${attackType}`)}</th>
+                        <td class="!text-center${attackClass}">${formatAttackType(attackType)}</th>
                         <td class="!text-center${attackClass}">${displayDamage}</th>
                         <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
                         <td class="!text-center">${displayBase}${hasError ? ' <span class="text-orangered">!</span>' : ''}</th>

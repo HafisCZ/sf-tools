@@ -1402,6 +1402,13 @@
                         "fraction": "Fractional"
                     }
                 },
+                "type_display_mode": {
+                    "title": "Attack type display mode",
+                    "value": {
+                        "text": "Name",
+                        "text_with_id": "Name with ID"
+                    }
+                },
                 "base_damage_error_margin": {
                     "title": "Acceptable base error"
                 },
