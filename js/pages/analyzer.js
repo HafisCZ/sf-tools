@@ -803,6 +803,8 @@ Site.ready(null, function (urlParams) {
                 return copyMode ? 'druid_rage' : `<i class="ui paw icon text-orangered" title="${intl('analyzer.special_state.druid_rage')}"></i>`;
             } else if (state.type === 'bard_song') {
                 return copyMode ? `bard_song_${state.level}` : `<span title="${intl('analyzer.special_state.bard_song')}" style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
+            } else if (state.type === 'berserker_rage') {
+                return copyMode ? 'berserker_rage' : `<i class="ui bolt icon text-orangered" title="${intl('analyzer.special_state.berserker_rage')}"></i>`;
             }
         }
 
@@ -945,6 +947,10 @@ Site.ready(null, function (urlParams) {
 
             if (round.targetSpecialState && round.target.Class === DRUID) {
                 round.targetSpecialDisplay = { type: 'druid_rage' };
+            }
+
+            if (round.attackChained) {
+                round.attackerSpecialDisplay = { type: 'berserker_rage' }
             }
 
             // Skip if missed or special

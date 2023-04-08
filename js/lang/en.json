@@ -1152,6 +1152,7 @@
         },
         "special_state": {
             "druid_rage": "Druid is enraged",
+            "berserker_rage": "Berserker is enraged",
             "bard_song": "Bard has played a song"
         },
         "sidebar": {
