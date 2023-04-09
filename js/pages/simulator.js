@@ -187,7 +187,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
     function executeSimulation (instances, iterations, logCallback) {
-        const canSimulate = players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
+        const canSimulate = players.length > 0 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
 
         if (canSimulate) {
             const results = [];
