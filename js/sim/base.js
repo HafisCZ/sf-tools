@@ -689,15 +689,6 @@ class SimulatorModel {
 
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
-        if ((this.Player.Class !== MAGE || instance.turn > 0) && target.Player.Class === BERSERKER && getRandom(50)) {
-            instance.getRage();
-
-            target.Enraged = true;
-
-            // Return false but player is not dead, just prevents second attack from ASSASSIN
-            return false;
-        }
-
         const source = this;
 
         if (source.BeforeAttack) source.onBeforeAttack(target);
@@ -731,6 +722,10 @@ class SimulatorModel {
     // Take control
     control (instance, target) {
         this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL);
+    }
+
+    controlSkip (instance, source) {
+        return false;
     }
 }
 
@@ -809,6 +804,16 @@ class BerserkerModel extends SimulatorModel {
 
     control (instance, target) {
         this.controlAttack(instance, target, this.Weapon1, this.Enraged ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
+    }
+
+    controlSkip (instance, source) {
+        if (source.Player.Class === MAGE && instance.turn === 0 && source.AttackFirst > this.AttackFirst) {
+            return false;
+        } else if (getRandom(50)) {
+            return (this.Enraged = true);
+        } else {
+            return false;
+        }
     }
 }
 
@@ -1063,7 +1068,11 @@ class SimulatorBase {
         this.b.before(this, this.a);
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            this.a.control(this, this.b);
+            if (this.b.controlSkip(this, this.a)) {
+                this.getRage();
+            } else {
+                this.a.control(this, this.b);
+            }
 
             // Swap
             const swap = this.a; this.a = this.b; this.b = swap;
