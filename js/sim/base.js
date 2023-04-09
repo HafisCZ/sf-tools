@@ -757,80 +757,6 @@ class AssassinModel extends SimulatorModel {
     }
 }
 
-class DruidModel extends SimulatorModel {
-    constructor (i, p) {
-        super(i, p);
-
-        this.DamageTaken = true;
-
-        this.SwoopMultiplier = (this.Config.DamageMultiplier + this.Config.SwoopBonus) / this.Config.DamageMultiplier;
-    }
-
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
-        this.SwoopChance = this.Config.SwoopChance;
-        this.RequestState = false;
-    }
-
-    initialize (target) {
-        super.initialize(target);
-
-        this.RageState = {
-            SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
-            CriticalMultiplier: this.CriticalMultiplier + this.Config.RageCriticalBonus,
-            CriticalChance: Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level)
-        }
-    }
-
-    attack (damage, target, skipped, critical, type) {
-        if (this.RequestState) {
-            this.RequestState = false;
-
-            this.enterState(this.RageState);
-        } else if (this.specialState()) {
-            this.enterState();
-        }
-
-        if (this.specialState()) {
-            return super.attack(
-                damage,
-                target,
-                skipped,
-                critical,
-                type
-            );
-        } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
-            this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
-            
-            // Swoop
-            return super.attack(
-                damage * this.SwoopMultiplier,
-                target,
-                skipped,
-                false,
-                5
-            );
-        } else {
-            return super.attack(
-                damage,
-                target,
-                skipped,
-                critical,
-                type
-            );
-        }
-    }
-
-    onDamageTaken (source, damage) {
-        if (damage == 0 && !this.specialState()) {
-            this.RequestState = true;
-        }
-
-        return super.onDamageTaken(source, damage);
-    }
-}
-
 class BattlemageModel extends SimulatorModel {
     getFireballDamage (target) {
         if (target.Player.Class == MAGE) {
@@ -903,6 +829,80 @@ class DemonHunterModel extends SimulatorModel {
         }
 
         return state;
+    }
+}
+
+class DruidModel extends SimulatorModel {
+    constructor (i, p) {
+        super(i, p);
+
+        this.DamageTaken = true;
+
+        this.SwoopMultiplier = (this.Config.DamageMultiplier + this.Config.SwoopBonus) / this.Config.DamageMultiplier;
+    }
+
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
+
+        this.SwoopChance = this.Config.SwoopChance;
+        this.RequestState = false;
+    }
+
+    initialize (target) {
+        super.initialize(target);
+
+        this.RageState = {
+            SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
+            CriticalMultiplier: this.CriticalMultiplier + this.Config.RageCriticalBonus,
+            CriticalChance: Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level)
+        }
+    }
+
+    attack (damage, target, skipped, critical, type) {
+        if (this.RequestState) {
+            this.RequestState = false;
+
+            this.enterState(this.RageState);
+        } else if (this.specialState()) {
+            this.enterState();
+        }
+
+        if (this.specialState()) {
+            return super.attack(
+                damage,
+                target,
+                skipped,
+                critical,
+                type
+            );
+        } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
+            this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
+            
+            // Swoop
+            return super.attack(
+                damage * this.SwoopMultiplier,
+                target,
+                skipped,
+                false,
+                5
+            );
+        } else {
+            return super.attack(
+                damage,
+                target,
+                skipped,
+                critical,
+                type
+            );
+        }
+    }
+
+    onDamageTaken (source, damage) {
+        if (damage == 0 && !this.specialState()) {
+            this.RequestState = true;
+        }
+
+        return super.onDamageTaken(source, damage);
     }
 }
 
