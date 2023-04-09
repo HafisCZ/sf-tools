@@ -608,10 +608,6 @@ Site.ready(null, function (urlParams) {
                     } else if (round.attackChained) {
                         // Increase rage if it's a chained attack
                         attackRageOffset++;
-
-                        if (i > 0 && round.attacker != processedRounds[i - 1].attacker) {
-                            attackRageOffset++;
-                        }
                     }
 
                     round.attackRage = 1 + ((i + attackRageOffset) / 6);
