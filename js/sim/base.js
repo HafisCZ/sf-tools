@@ -26,7 +26,39 @@ const FIGHT_LOG = new (class {
     }
 
     dump () {
-        return this.allLogs;
+        return this.allLogs.map((log) => {
+            const fighterA = log.fighterA.Class === BERSERKER ? log.fighterA.ID : null;
+            let fighterAEnraged = false;
+
+            const fighterB = log.fighterB.Class === BERSERKER ? log.fighterB.ID : null;
+            let fighterBEnraged = false;
+
+            for (const round of log.rounds) {
+                if (round.attackMissed) {
+                    if (round.targetId === fighterA) {
+                        fighterAEnraged = true;
+                        round.remove = true;
+                    } else if (round.targetId === fighterB) {
+                        fighterBEnraged = true;
+                        round.remove = true;
+                    }
+                } else if (round.attackerId === fighterA && fighterAEnraged) {
+                    round.attackType += ATTACK_CHAIN_NORMAL;
+                    round.attackChained = true;
+
+                    fighterAEnraged = false;
+                } else if (round.attackerId === fighterB && fighterBEnraged) {
+                    round.attackType += ATTACK_CHAIN_NORMAL;
+                    round.attackChained = true;
+
+                    fighterBEnraged = false;
+                }
+            }
+            
+            log.rounds = log.rounds.filter((round) => !round.remove)
+
+            return log;
+        });
     }
 
     clear () {
@@ -689,6 +721,24 @@ class SimulatorModel {
 
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
+        if (target.Player.Class === BERSERKER && getRandom(50)) {
+            instance.getRage();
+
+            if (FIGHT_LOG_ENABLED) {
+                FIGHT_LOG.logAttack(
+                    this,
+                    target,
+                    0,
+                    attackType,
+                    true,
+                    false
+                )
+            }
+
+            // Return false but player is not dead, just prevents second attack from ASSASSIN
+            return false;
+        }
+
         const source = this;
 
         if (source.BeforeAttack) source.onBeforeAttack(target);
@@ -788,13 +838,7 @@ class BattlemageModel extends SimulatorModel {
 }
 
 class BerserkerModel extends SimulatorModel {
-    control (instance, target) {
-        if (this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL) == false) {
-            return;
-        }
 
-        while (getRandom(50) && instance.getRage() && this.controlAttack(instance, target, this.Weapon1, ATTACK_CHAIN_NORMAL));
-    }
 }
 
 class DemonHunterModel extends SimulatorModel {
@@ -1022,29 +1066,6 @@ class BardModel extends SimulatorModel {
 
 // Shared class between all simulators in order to make updates simple
 class SimulatorBase {
-    shuffle () {
-        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
-            const swap = this.a; this.a = this.b; this.b = swap;
-        }
-
-        // Thanks to rafa97sam for testing and coding this part that broke me
-        if (this.b.Player.Class == BERSERKER && getRandom(50)) {
-            this.getRage();
-
-            if (this.a.Player.Class == BERSERKER) {
-                while (getRandom(50)) {
-                    this.getRage();
-
-                    // Swap
-                    const swap = this.a; this.a = this.b; this.b = swap;
-                }
-            }
-
-            // Swap
-            const swap = this.a; this.a = this.b; this.b = swap;
-        }
-    }
-
     getRage () {
         const rage = 1 + this.turn++ / 6;
 
@@ -1062,7 +1083,10 @@ class SimulatorBase {
             FIGHT_LOG.logInit(this.a, this.b);
         }
 
-        this.shuffle();
+        // Shuffle
+        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
+            const swap = this.a; this.a = this.b; this.b = swap;
+        }
 
         this.a.before(this, this.b);
         this.b.before(this, this.a);
