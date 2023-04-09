@@ -26,39 +26,7 @@ const FIGHT_LOG = new (class {
     }
 
     dump () {
-        return this.allLogs.map((log) => {
-            const fighterA = log.fighterA.Class === BERSERKER ? log.fighterA.ID : null;
-            let fighterAEnraged = false;
-
-            const fighterB = log.fighterB.Class === BERSERKER ? log.fighterB.ID : null;
-            let fighterBEnraged = false;
-
-            for (const round of log.rounds) {
-                if (round.attackMissed) {
-                    if (round.targetId === fighterA) {
-                        fighterAEnraged = true;
-                        round.remove = true;
-                    } else if (round.targetId === fighterB) {
-                        fighterBEnraged = true;
-                        round.remove = true;
-                    }
-                } else if (round.attackerId === fighterA && fighterAEnraged) {
-                    round.attackType += ATTACK_CHAIN_NORMAL;
-                    round.attackChained = true;
-
-                    fighterAEnraged = false;
-                } else if (round.attackerId === fighterB && fighterBEnraged) {
-                    round.attackType += ATTACK_CHAIN_NORMAL;
-                    round.attackChained = true;
-
-                    fighterBEnraged = false;
-                }
-            }
-            
-            log.rounds = log.rounds.filter((round) => !round.remove)
-
-            return log;
-        });
+        return this.allLogs;
     }
 
     clear () {
@@ -721,19 +689,10 @@ class SimulatorModel {
 
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
-        if (target.Player.Class === BERSERKER && getRandom(50)) {
+        if ((this.Player.Class !== MAGE || instance.turn > 0) && target.Player.Class === BERSERKER && getRandom(50)) {
             instance.getRage();
 
-            if (FIGHT_LOG_ENABLED) {
-                FIGHT_LOG.logAttack(
-                    this,
-                    target,
-                    0,
-                    attackType,
-                    true,
-                    false
-                )
-            }
+            target.Enraged = true;
 
             // Return false but player is not dead, just prevents second attack from ASSASSIN
             return false;
@@ -752,6 +711,10 @@ class SimulatorModel {
             getRandom(source.State.CriticalChance),
             attackType
         );
+
+        if (this.Player.Class === BERSERKER) {
+            this.Enraged = false;
+        }
 
         if (target.DamageTaken) {
             return target.onDamageTaken(source, damage) != STATE_DEAD;
@@ -838,7 +801,15 @@ class BattlemageModel extends SimulatorModel {
 }
 
 class BerserkerModel extends SimulatorModel {
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
 
+        this.Enraged = false;
+    }
+
+    control (instance, target) {
+        this.controlAttack(instance, target, this.Weapon1, this.Enraged ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
+    }
 }
 
 class DemonHunterModel extends SimulatorModel {
