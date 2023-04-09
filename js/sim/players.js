@@ -113,26 +113,20 @@ class FightSimulator extends SimulatorBase {
 
     // Fight 1v1s only
     simulateSingle (player, target, iterations, invert) {
-        if (player.player == target.player) {
-            target.score = {
-                avg: 50
-            };
-        } else {
-            let score = 0;
-            this.cache(player.player, target.player);
+        let score = 0;
+        this.cache(player.player, target.player);
 
-            for (let i = 0; i < iterations; i++) {
-                score += this.fight();
-            }
-
-            if (invert) {
-                score = iterations - score;
-            }
-
-            target.score = {
-                avg: 100 * score / iterations
-            };
+        for (let i = 0; i < iterations; i++) {
+            score += this.fight();
         }
+
+        if (invert) {
+            score = iterations - score;
+        }
+
+        target.score = {
+            avg: 100 * score / iterations
+        };
 
         return target;
     }
