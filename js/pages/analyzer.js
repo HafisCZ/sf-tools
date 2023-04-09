@@ -834,7 +834,7 @@ Site.ready(null, function (urlParams) {
                 continue;
             } else if (attackType === ATTACK_REVIVE) {
                 content += `
-                    <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                    <tr${attacker.ID == group.fighterA.ID ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                         <td class="!text-center">${i + 1}</th>
                         <td class="!text-center"></th>
                         <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
@@ -854,7 +854,7 @@ Site.ready(null, function (urlParams) {
                 const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
 
                 content += `
-                    <tr${attacker.hash == group.fighterA.hash ? ' style="background-color: #202020; color: darkgray;"' : ''}>
+                    <tr${attacker.ID == group.fighterA.ID ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                         <td class="!text-center">${i + 1}</th>
                         <td class="!text-center">${formatAttackRage(attackRage)}</th>
                         <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
@@ -978,7 +978,7 @@ Site.ready(null, function (urlParams) {
 
                 continue;
             } else if (round.hasBase) {
-                const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+                const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
                 const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.RageState : model;
 
                 // Scaled down weapon damage
@@ -1000,7 +1000,7 @@ Site.ready(null, function (urlParams) {
         // Verify whether damage is in range
         for (const round of flatRounds) {
             if (round.hasBase) {
-                const model = round.attacker.hash === currentGroup.fighterA.hash ? model1 : model2;
+                const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
                 const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
 
                 round.hasError = !_within(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
@@ -1029,7 +1029,7 @@ Site.ready(null, function (urlParams) {
         // Calculate summary
         for (const fight of group.fights) {
             for (const { attacker, attackType, hasError, attackBase, hasBase, attackSecondary, attackCrit } of fight.rounds) {
-                const container = group[group.fighterA.hash === attacker.hash ? 'fighterA' : 'fighterB'];
+                const container = group[group.fighterA.ID === attacker.ID ? 'fighterA' : 'fighterB'];
 
                 // Calculate damage range
                 if (hasBase) {
