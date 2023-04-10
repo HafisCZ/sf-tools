@@ -249,7 +249,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         updateSimulateButton();
 
         if (playerList.every(entry => typeof entry.score === 'number')) {
-            _sort_des(playerList, entry => entry.player.Level + 1000 * entry.score);
+            _sortDesc(playerList, entry => entry.player.Level + 1000 * entry.score);
         }
 
         let content = ''
@@ -340,7 +340,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
 
             batch.run(instances).then((duration) => {
-                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
 
                 playerList = results;
                 

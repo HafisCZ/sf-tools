@@ -47,8 +47,8 @@ class PlayersTableArray extends Array {
         super();
 
         this.perf = perf;
-        this.timestamp = _safe_int(ts);
-        this.reference = _safe_int(rs);
+        this.timestamp = _safeInt(ts);
+        this.reference = _safeInt(rs);
     }
 
     add (player, compare, latest, hidden) {
@@ -69,8 +69,8 @@ class GroupTableArray extends Array {
 
         this.joined = joined;
         this.kicked = kicked;
-        this.timestamp = _safe_int(ts);
-        this.reference = _safe_int(rs);
+        this.timestamp = _safeInt(ts);
+        this.reference = _safeInt(rs);
         this.missing = missing;
     }
 
@@ -113,7 +113,7 @@ class TableInstance {
                         Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } found but overwritten by ${ trackerSettings.trackers[trackerName].hash }!`);
                     }
                 } else {
-                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ formatDate(Date.now()) }`;
+                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ _formatDate(Date.now()) }`;
                     isset |= true;
 
                     Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } added automatically!`);
@@ -180,7 +180,7 @@ class TableInstance {
                             values = Array.isArray(value) ? value : [value];
                         }
 
-                        let allBlank = _all_true(header.headers, h => !(h.expa || h.alias || h.name));
+                        let allBlank = _every(header.headers, h => !(h.expa || h.alias || h.name));
                         let generators = header.headers.map((embedHeader) => {
                             return {
                                 name: () => {
@@ -516,7 +516,7 @@ class TableInstance {
                     // Add date
                     content += `
                         <td class="border-right-thin" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
-                            ${ formatDate(timestamp) }
+                            ${ _formatDate(timestamp) }
                         </td>
                     `;
                 }

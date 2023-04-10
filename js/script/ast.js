@@ -82,7 +82,7 @@ const ExpressionEnum = new (class {
                 'AchievementNames': _sequence(ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
                 'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
                 'GroupRoles': _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : ''),
-                'Classes': _array_from_indexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']),
+                'Classes': _arrayFromIndexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']),
                 'FortressBuildings': _sequence(12, 1).map(i => intl(`general.buildings.fortress${i}`)),
                 'PlayerActions': _sequence(4).map(i => intl(`general.action${i}`)),
                 'PotionTypes': _sequence(7).map(i => i > 0 ? intl(`general.potion${i}`) : ''),
@@ -1314,14 +1314,14 @@ const SP_FUNCTIONS = {
         if (isNaN(value) || value < 0) {
             return undefined;
         } else {
-            return formatDate(value);
+            return _formatDate(value);
         }
     },
     'time': (value) => {
         if (isNaN(value) || value < 0) {
             return undefined;
         } else {
-            return formatTime(value);
+            return _formatDate(value, false, true);
         }
     },
     // Duration string
@@ -1329,7 +1329,7 @@ const SP_FUNCTIONS = {
         if (isNaN(value)) {
             return undefined;
         } else {
-            return formatDuration(value);
+            return _formatDurationLegacy(value);
         }
     },
     // Date string
@@ -1337,7 +1337,7 @@ const SP_FUNCTIONS = {
         if (isNaN(value) || value < 0) {
             return undefined;
         } else {
-            return formatDateOnly(value);
+            return _formatDate(value, true, false);
         }
     },
     // Spaced number
@@ -2690,7 +2690,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Potion Expire': {
         expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
-        format: (p, x) => x == undefined ? '?' : formatDate(x),
+        format: (p, x) => x == undefined ? '?' : _formatDate(x),
         width: 160,
         difference: false,
         statistics: false

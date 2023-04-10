@@ -206,7 +206,7 @@ Site.ready({ type: 'simulator' }, function () {
             }
 
             batch.run(instances).then((duration) => {
-                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
                 
                 for (const { score, index: _index } of results) {
                     const localIndex = list.findIndex(it => it.index == _index);

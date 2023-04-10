@@ -32,7 +32,7 @@ const FileEditDialog = new (class extends Dialog {
       });
 
       this.$parent.find('[data-op="save"]').click(() => {
-          const newTimestamp = Math.trunc(parseOwnDate(this.$timestamp.val()) / 60000);
+          const newTimestamp = Math.trunc(_parseDate(this.$timestamp.val()) / 60000);
           if (newTimestamp && newTimestamp != this.truncatedTimestamp) {
               this.close();
               Loader.toggle(true);
@@ -49,7 +49,7 @@ const FileEditDialog = new (class extends Dialog {
       this.callback = callback;
       this.sourceTimestamp = timestamp;
       this.truncatedTimestamp = Math.trunc(timestamp / 60000);
-      this.$timestamp.val(formatDate(timestamp));
+      this.$timestamp.val(_formatDate(timestamp));
   }
 })();
 
@@ -149,7 +149,7 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
 
           this.data = script;
 
-          this.$date.val(formatDate(new Date(date)));
+          this.$date.val(_formatDate(new Date(date)));
           this.$name.val(description);
           this.$author.val(author);
 
@@ -625,7 +625,7 @@ const TemplateSaveDialog = new (class extends Dialog {
   _getName () {
       const dropdownText = this.$dropdown.dropdown('get value');
 
-      return dropdownText.trim() || `New template (${formatDate(Date.now())})`;
+      return dropdownText.trim() || `New template (${_formatDate(Date.now())})`;
   }
 
   _applyArguments (name, callback) {
@@ -709,7 +709,7 @@ const DataManageDialog = new (class extends Dialog {
               <div>
                   <h3>${this.intl('label.file')}</h3>
                   <ul>
-                      ${timestamps.map(ts => `<li style="margin-bottom: 5px;">${formatDate(ts)}</li>`).join('')}
+                      ${timestamps.map(ts => `<li style="margin-bottom: 5px;">${_formatDate(ts)}</li>`).join('')}
                   </ul>
               </div>
           `;
@@ -720,21 +720,21 @@ const DataManageDialog = new (class extends Dialog {
 
       if (identifiers.length > 0) {
           players.push(
-              ...identifiers.filter(id => DatabaseManager.isPlayer(id)).map(id => DatabaseManager.Players[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...identifiers.filter(id => DatabaseManager.isPlayer(id)).map(id => DatabaseManager.Players[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _formatPrefix(prefix), name, timestamp: _formatDate(timestamp) }))
           )
 
           groups.push(
-              ...identifiers.filter(id => DatabaseManager.isGroup(id)).map(id => DatabaseManager.Groups[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...identifiers.filter(id => DatabaseManager.isGroup(id)).map(id => DatabaseManager.Groups[id].Latest.Data).map(({ prefix, name, timestamp }) => ({ prefix: _formatPrefix(prefix), name, timestamp: _formatDate(timestamp) }))
           )
       }
 
       if (instances.length > 0) {
           players.push(
-              ...instances.filter(({ identifier }) => DatabaseManager.isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...instances.filter(({ identifier }) => DatabaseManager.isPlayer(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _formatPrefix(prefix), name, timestamp: _formatDate(timestamp) }))
           )
 
           groups.push(
-              ...instances.filter(({ identifier }) => DatabaseManager.isGroup(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _pretty_prefix(prefix), name, timestamp: formatDate(timestamp) }))
+              ...instances.filter(({ identifier }) => DatabaseManager.isGroup(identifier)).map(({ prefix, name, timestamp }) => ({ prefix: _formatPrefix(prefix), name, timestamp: _formatDate(timestamp) }))
           )
       }
 
@@ -1101,7 +1101,7 @@ const ScriptRepositoryDialog = new (class extends Dialog {
               <i class="ui big ${DefaultScripts.exists(key) ? 'archive' : 'globe'} disabled icon"></i>
               <div>    
                   <div>${description}</div>
-                  <div class="text-gray">${intl(`dialog.script_repository.list.about${updatedAt ? '_with_date' : ''}`, { author, date: updatedAt ? formatDateOnly(Date.parse(updatedAt)) : null })}</div>
+                  <div class="text-gray">${intl(`dialog.script_repository.list.about${updatedAt ? '_with_date' : ''}`, { author, date: updatedAt ? _formatDate(Date.parse(updatedAt), true, false) : null })}</div>
               </div>
           </div>
       `;
@@ -1109,7 +1109,7 @@ const ScriptRepositoryDialog = new (class extends Dialog {
 
   _showOnline (scripts) {
       let content = '';
-      for (const { author, description, key, date } of _sort_des(scripts, (script) => Date.parse(script.date))) {
+      for (const { author, description, key, date } of _sortDesc(scripts, (script) => Date.parse(script.date))) {
           content += this._createSegment(key, description, author, date);
       }
 
@@ -1226,7 +1226,7 @@ const ScriptArchiveDialog = new (class extends Dialog {
               <i class="ui big ${this._getIcon(type.split('_')[0])} disabled icon"></i>
               <div>
                   <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${name}</div>
-                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: formatDate(timestamp), expire: formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
+                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
               </div>
           </div>
       `;
@@ -1348,7 +1348,7 @@ const TemplateManageDialog = new (class extends Dialog {
               <i class="ui big ${online ? 'globe' : 'archive'} disabled icon"></i>
               <div>
                   <div>${name}</div>
-                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${formatDate(timestamp)}</div>
+                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${_formatDate(timestamp)}</div>
               </div>
               <i class="ui thumbtack icon text-gray text-white:hover" style="margin-left: auto;"></i>
           </div>
@@ -1447,7 +1447,7 @@ const TemplateManageDialog = new (class extends Dialog {
       const { version, timestamp, online } = (this.template = TemplateManager.get(name));
       this.$templateName.val(name);
       this.$templateVersion.val(`v${isNaN(version) ? 1 : version}`);
-      this.$templateUpdated.val(formatDate(timestamp));
+      this.$templateUpdated.val(_formatDate(timestamp));
 
       // Unlock buttons
       for (const $element of this.$formActions) {
@@ -1459,7 +1459,7 @@ const TemplateManageDialog = new (class extends Dialog {
           this.$actionRepublish.show();
 
           const { key, version, timestamp: _timestamp } = online;
-          this.$templatePublished.val(formatDate(_timestamp));
+          this.$templatePublished.val(_formatDate(_timestamp));
           this.$templatePublishedVersion.val(`v${isNaN(version) ? 1 : version}`)
           this.$templateKey.val(key);
       } else {
@@ -1573,7 +1573,7 @@ const PlayerDetailDialog = new (class extends Dialog {
             <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
         </div>
         <div class="detail-timestamp">
-            ${ formatDate(player.Timestamp) }${ diff ? ` - ${ formatDate(compare.Timestamp) }` : '' }
+            ${ _formatDate(player.Timestamp) }${ diff ? ` - ${ _formatDate(compare.Timestamp) }` : '' }
         </div>
         <div class="detail-identifier">
             ${ player.Identifier }
@@ -1687,7 +1687,7 @@ const PlayerDetailDialog = new (class extends Dialog {
                     ` : '' }
                     <div class="detail-entry">
                         <div class="detail-item">${this.intl('joined_on')}</div>
-                        <div class="detail-item text-center">${ formatDate(player.Group.Joined) }</div>
+                        <div class="detail-item text-center">${ _formatDate(player.Group.Joined) }</div>
                     </div>
                     <br/>
                 ` : '' }
@@ -1887,7 +1887,7 @@ const PlayerDetailDialog = new (class extends Dialog {
                     </div>
                     <div class="detail-entry">
                         <div class="detail-item">${this.intl(`fortress.building${player.Fortress.Upgrade.Building + 1}`)}</div>
-                        <div class="detail-item text-center">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
+                        <div class="detail-item text-center">${ _formatDate(player.Fortress.Upgrade.Finish) }</div>
                     </div>
                 ` : '' }
                 ${ player.Own ? `
@@ -1897,7 +1897,7 @@ const PlayerDetailDialog = new (class extends Dialog {
                     </div>
                     <div class="detail-entry">
                         <div class="detail-item">${this.intl('extras.registered')}</div>
-                        <div class="detail-item text-center">${ formatDate(player.Registered) }</div>
+                        <div class="detail-item text-center">${ _formatDate(player.Registered) }</div>
                     </div>
                     ${ player.WebshopID ? `
                         <div class="detail-entry">

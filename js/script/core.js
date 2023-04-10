@@ -42,12 +42,12 @@ const ARG_FORMATTERS = {
     'spaced_number': (p, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
     'nnumber': (p, x) => isNaN(x) ? undefined : formatAsNamedNumber(x),
     'exponential_number': (p, x) => isNaN(x) ? undefined : x.toExponential(3),
-    'date': (p, x) => isNaN(x) ? '' : formatDateOnly(x),
+    'date': (p, x) => isNaN(x) ? '' : _formatDate(x, true, false),
     'bool': (p, x) => x ? intl('general.yes') : intl('general.no'),
     'boolean': (p, x) => x ? intl('general.yes') : intl('general.no'),
-    'datetime': (p, x) => isNaN(x) || x <= 0 ? '' : formatDate(x),
-    'time': (p, x) => isNaN(x) ? '' : formatTime(x),
-    'duration': (p, x) => isNaN(x) ? '' : formatDuration(x),
+    'datetime': (p, x) => isNaN(x) || x <= 0 ? '' : _formatDate(x),
+    'time': (p, x) => isNaN(x) ? '' : _formatDate(x, false, true),
+    'duration': (p, x) => isNaN(x) ? '' : _formatDurationLegacy(x),
     'default': (p, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
@@ -2580,7 +2580,7 @@ class Settings {
             classes: array.reduce((c, { player }) => {
                 c[player.Class]++;
                 return c;
-            }, _array_to_default_hash(CONFIG.indexes(), 0))
+            }, _arrayToDefaultHash(CONFIG.indexes(), 0))
         }
 
         this.array = array;
@@ -2652,7 +2652,7 @@ class Settings {
             classes: array.reduce((c, { player }) => {
                 c[player.Class]++;
                 return c;
-            }, _array_to_default_hash(CONFIG.indexes(), 0))
+            }, _arrayToDefaultHash(CONFIG.indexes(), 0))
         }
 
         this.array = array;
@@ -2877,7 +2877,7 @@ const ScriptArchive = new (class {
     }
 
     all () {
-        return _sort_des(this.data, ({ timestamp }) => timestamp);
+        return _sortDesc(this.data, ({ timestamp }) => timestamp);
     }
 
     get (timestamp) {
@@ -3066,7 +3066,7 @@ const TemplateManager = new (class {
     }
 
     sortedList () {
-        return _sort_des(_sort_des(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
+        return _sortDesc(_sortDesc(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
     }
 
     get (name) {

@@ -1,7 +1,6 @@
 const SIMULATOR_NOTICES = [
     {
         timestamp: 1680636642663,
-        title: 'Battle Mage &amp; Critical Damage',
         content: `
             <div>
                 <ul>
@@ -19,7 +18,6 @@ const SIMULATOR_NOTICES = [
     },
     {
         timestamp: 1677604572002,
-        title: 'State of the Druid',
         content: `
             <div>
                 <p>Any simulation that include Druid are, due to in-game bugs, not accurate.</p>
@@ -65,7 +63,8 @@ const CHANGELOG = {
         ],
         'All Simulators': [
             'Added reworked battlemage',
-            'Added reworked critical damage calculation'
+            'Added reworked critical damage calculation',
+            'Added more accurate berserker'
         ]
     },
     'v6.3394': {

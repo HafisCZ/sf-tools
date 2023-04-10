@@ -19,7 +19,7 @@ function _has (arr, obj) {
     return arr.indexOf(obj) > -1;
 }
 
-function _all_true (arr, m) {
+function _every (arr, m) {
     for (const a of arr) {
         if (!m(a)) {
             return false;
@@ -29,7 +29,7 @@ function _all_true (arr, m) {
     return true;
 }
 
-function _push_unless_includes(arr, obj) {
+function _pushUnlessIncludes(arr, obj) {
     if (!_has(arr, obj)) {
         arr.push(obj);
     }
@@ -52,7 +52,7 @@ function _remove (arr, obj) {
     }
 }
 
-function _filter_in_place (array, predicate) {
+function _filterInPlace (array, predicate) {
     let index1 = 0;
     let index2 = 0;
 
@@ -72,15 +72,7 @@ function _compact (obj) {
     return obj.filter(val => val);
 }
 
-function _len_of_when (array, key) {
-    let count = 0;
-    for (const obj of array) {
-        if (obj && obj[key]) count++;
-    }
-    return count;
-}
-
-function _sort_des (array, map) {
+function _sortDesc (array, map) {
     if (map) {
         return array.sort((a, b) => map(b) - map(a));
     } else {
@@ -88,11 +80,11 @@ function _sort_des (array, map) {
     }
 }
 
-function _int_keys(hash) {
+function _intKeys(hash) {
     return Object.keys(hash).map(v => parseInt(v));
 }
 
-function _safe_int(val) {
+function _safeInt(val) {
     if (isNaN(val)) {
         return undefined;
     } else {
@@ -100,7 +92,7 @@ function _safe_int(val) {
     }
 }
 
-function _sort_asc (array, map) {
+function _sortAsc (array, map) {
     if (map) {
         return array.sort((a, b) => map(a) - map(b));
     } else {
@@ -108,7 +100,7 @@ function _sort_asc (array, map) {
     }
 }
 
-function _len_where (array, filter) {
+function _lenWhere (array, filter) {
     let count = 0;
     for (const obj of array) {
         if (filter(obj)) count++;
@@ -136,15 +128,15 @@ function _sum (array, base = 0) {
     return array.reduce((m, v) => m + v, base);
 }
 
-function _mapped_sum (array, map, base = 0) {
+function _mappedSum (array, map, base = 0) {
     return array.reduce((m, v) => m + map(v), base);
 }
 
-function _slice_len (array, begin, len) {
+function _sliceLen (array, begin, len) {
     return array.slice(begin, begin + len);
 }
 
-function _pretty_prefix (prefix) {
+function _formatPrefix (prefix) {
     if (_empty(prefix)) {
         return '';
     }
@@ -160,7 +152,7 @@ function _sequence (length, base = 0) {
     return Array.from({ length }, (_, i) => i + base);
 }
 
-function _array_from_indexes (indexes, processor, base = []) {
+function _arrayFromIndexes (indexes, processor, base = []) {
     return indexes.reduce((memo, index) => {
         memo[index] = processor(index);
         return memo;
@@ -177,7 +169,7 @@ function _merge (target, source) {
     return target;
 }
 
-function _array_to_hash (array, processor, base = {}) {
+function _arrayToHash (array, processor, base = {}) {
     return array.reduce((memo, object, i) => {
         const [key, value] = processor(object, i);
         memo[key] = value;
@@ -185,7 +177,7 @@ function _array_to_hash (array, processor, base = {}) {
     }, base);
 }
 
-function _array_to_default_hash (array, value, base = {}) {
+function _arrayToDefaultHash (array, value, base = {}) {
     return array.reduce((memo, object) => {
         memo[object] = value;
         return memo;
@@ -199,7 +191,7 @@ function _invert (hash, integerKeys = false) {
     }, {});
 }
 
-function _group_by (array, processor) {
+function _groupBy (array, processor) {
     let groups = {};
     for (const object of array) {
         let key = processor(object);
@@ -227,7 +219,7 @@ function _empty (obj) {
     }
 }
 
-function _not_empty (obj) {
+function _notEmpty (obj) {
     return !_empty(obj);
 }
 
@@ -244,7 +236,7 @@ function _strToHSL (str) {
     return `hsl(${ (_hashCode(str) * 113) % 360 }, 100%, 30%)`;
 }
 
-function _string_to_binary(str) {
+function _stringToBinary(str) {
     const arr = new Uint16Array(str.length);
     for (let i = 0; i < arr.length; i++) {
         arr[i] = str.charCodeAt(i);
@@ -253,7 +245,7 @@ function _string_to_binary(str) {
     return btoa(String.fromCharCode(...new Uint8Array(arr.buffer)));
 }
 
-function _binary_to_string(bin) {
+function _binaryToString(bin) {
   const binary = atob(bin);
   const bytes = new Uint8Array(binary.length);
 
@@ -264,13 +256,13 @@ function _binary_to_string(bin) {
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 }
 
-function * _each_block(arr, size) {
+function * _eachBlock(arr, size) {
     for (let i = 0; i < arr.length / size; i++) {
         yield arr.slice(i * size, i * size + size);
     }
 }
 
-function _fast_max(arr) {
+function _fastMax(arr) {
     let m = arr[0];
     for (let i of arr) {
         if (i > m) m = i;
@@ -278,20 +270,12 @@ function _fast_max(arr) {
     return m;
 }
 
-function _fast_min(arr) {
-    let m = arr[0];
-    for (let i of arr) {
-        if (i < m) m = i;
-    }
-    return m;
-}
-
-function _join_sentence (array) {
+function _joinSentence (array) {
     let last = array.length > 1 ? ` and ${array.pop()}` : ''
     return array.join(', ') + last;
 }
 
-function _format_duration(ms, limit = 4) {
+function _formatDuration(ms, limit = 4) {
     let mil = ms % 1000;
     let sec = ((ms -= mil) / 1000) % 60;
     let min = ((ms -= sec * 1000) / 60000) % 60;
@@ -299,7 +283,7 @@ function _format_duration(ms, limit = 4) {
     let day = ((ms -= hrs * 3600000) / 86400000) % 7;
     let wks = ((ms -= day * 86400000) / (7 * 86400000));
 
-    return _join_sentence([
+    return _joinSentence([
         wks > 0 ? `${wks} w` : '',
         day > 0 ? `${day} d` : '',
         hrs > 0 ? `${hrs} h` : '',
@@ -330,7 +314,57 @@ function _parseColor (text) {
 }
 
 function _padLeft (text, length, char) {
+    text = String(text)
     return char.repeat(Math.max(0, length - text.length)) + text;
+}
+
+function _formatDate (date, showDate = true, showTime = true) {
+    if (date == '' || date == undefined) {
+        return '';
+    } else {
+        date = new Date(_clamp(date, 0, 1E15));
+
+        const datePart = showDate ? `${_padLeft(date.getDate(), 2, '0')}.${_padLeft(date.getMonth() + 1, 2, '0')}.${date.getFullYear()}${showTime ? ' ' : ''}` : '';
+        const timePart = showTime ? `${_padLeft(date.getHours(), 2, '0')}:${_padLeft(date.getMinutes(), 2, '0')}` : '';
+
+        return datePart + timePart;
+    }
+}
+
+function _parseDate (text) {
+    if (typeof(text) == 'string') {
+        let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);
+        if (objs.length == 7) {
+            objs = objs.map(x => parseInt(x));
+
+            let date = new Date();
+
+            date.setFullYear(objs[3]);
+            date.setMonth(objs[2] - 1);
+            date.setDate(objs[1])
+
+            date.setHours(objs[4]);
+            date.setMinutes(objs[5]);
+
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+
+            return date.getTime();
+        } else {
+            return undefined;
+        }
+    } else {
+        return undefined;
+    }
+}
+
+function _formatDurationLegacy (duration) {
+    if (duration == '' || duration == undefined) return '';
+    duration = Math.max(0, duration);
+    var days = Math.trunc(duration / (1000 * 60 * 60 * 24));
+    var hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
+    return _padLeft(days, Math.max(2, days.toString().length), '0') + ':' + _padLeft(hours, 2, '0') + ':' + _padLeft(minutes, 2, '0');
 }
 
 function _invertColor (color, mono = false) {

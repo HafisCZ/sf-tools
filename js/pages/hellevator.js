@@ -209,7 +209,7 @@ Site.ready({ type: 'simulator' }, function () {
             }
 
             batch.run(instances).then((duration) => {
-                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
 
                 renderEnemies(enemies, scores);
             });

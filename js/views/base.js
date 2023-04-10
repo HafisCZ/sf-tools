@@ -177,7 +177,7 @@ const SimulatorNoticeDialog = new (class extends Dialog {
 
         return `
             <div class="small inverted dialog position-relative">
-                <div class="header text-orange">${date.toLocaleDateString('en-GB', { month: 'long', day: 'numeric' })} - ${title}</div>
+                <div class="header text-orange">${_formatDate(date, true, false)}${title ? ` - ${title}` : ''}</div>
                 <div>${content}</div>
                 <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
             </div>
@@ -675,12 +675,14 @@ window.addEventListener('DOMContentLoaded', async function () {
             DialogController.open(ChangeLogDialog);
         }
 
-        if (Site.is('simulator') && SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES[0].timestamp) {
-            DialogController.open(SimulatorNoticeDialog);
-        }
+        if (Site.is('simulator')) {
+            if (SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES[0].timestamp) {
+                DialogController.open(SimulatorNoticeDialog);
+            }
 
-        if (Site.is('simulator') && Site.isEvent('april_fools_day')) {
-            DialogController.open(SimulatorShopDialog);
+            if (Site.isEvent('april_fools_day')) {
+                DialogController.open(SimulatorShopDialog);
+            }
         }
     }
 

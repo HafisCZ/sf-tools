@@ -107,8 +107,8 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     function playersToData (players, hydra) {
-        const sortedPlayers = _sort_des(players, p => _dig(p, ATTRIBUTE_MAP[p.Class - 1][0], 'Total'));
-        const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
+        const sortedPlayers = _sortDesc(players, p => _dig(p, ATTRIBUTE_MAP[p.Class - 1][0], 'Total'));
+        const hydraPlayers = _sliceLen(sortedPlayers, 0, 25);
 
         const data = {
             Hydra: hydra || editor.fields['hydra'].get(),
@@ -182,7 +182,7 @@ Site.ready({ type: 'simulator' }, function () {
             }
 
             batch.run(instances).then((duration) => {
-                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
                 
                 showResults(results);
             })

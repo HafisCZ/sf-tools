@@ -191,7 +191,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     $('#dungeon-list').dropdown({
-        values: _sort_asc(Object.values(DUNGEON_DATA), ({ pos }) => pos).map(({ name, shadow, floors, id: value }) => {
+        values: _sortAsc(Object.values(DUNGEON_DATA), ({ pos }) => pos).map(({ name, shadow, floors, id: value }) => {
             return {
                 name: shadow ? `<span class="dungeon-shadow">${name}<span>` : name,
                 value,
@@ -414,7 +414,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 $('#available-list').parent('.field').removeClass('disabled');
                 $('#sim-run-all, #sim-run-next').removeClass('disabled');
                 $('#available-list').dropdown({
-                    values: _sort_asc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
+                    values: _sortAsc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
                         return {
                             name: `<span class="${_dungeon.shadow ? 'dungeon-shadow' : ''}">
                                         <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
@@ -492,7 +492,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
         let experienceTotal = 0;
         if (calculateTotalExperience) {
-            experienceTotal = _mapped_sum(entries, getDungeonExperience, 0);
+            experienceTotal = _mappedSum(entries, getDungeonExperience, 0);
         }
 
         DialogController.open(
@@ -739,7 +739,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     finalResults[i] = healthsSum / instances;
                 }
 
-                showGraph(chart, dungeon, boss, totalScore, instances * iterations, _sort_asc(finalResults));
+                showGraph(chart, dungeon, boss, totalScore, instances * iterations, _sortAsc(finalResults));
                 $('#winchart').removeClass('faded-out');
 
                 // Download logs
@@ -802,7 +802,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     function applyCheats (player) {
-        let cheats = _array_to_hash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
+        let cheats = _arrayToHash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
 
         if (cheats.pets) {
             applyCheat(player, (model) => {

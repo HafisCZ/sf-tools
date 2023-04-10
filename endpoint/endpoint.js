@@ -638,7 +638,7 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
 
             const data = _dig(DatabaseManager.getAny(identifier), 'Latest', 'Data');
 
-            $item.find('input').val(data ? `${data.name} @ ${_pretty_prefix(data.prefix)}` : identifier);
+            $item.find('input').val(data ? `${data.name} @ ${_formatPrefix(data.prefix)}` : identifier);
             $item.find('i').click(() => {
                 $item.remove();
             });
@@ -760,13 +760,13 @@ const StatisticsIntegration = new (class {
         } else /* if (this.type === 'guilds') */ {
             return {
                 visible: `${item.Name} @ ${item.Prefix}`,
-                hidden: formatDate(item.Timestamp)
+                hidden: _formatDate(item.Timestamp)
             };
         }
     }
 
     _prepare (scope) {
-        _sort_des(scope, item => item.Timestamp);
+        _sortDesc(scope, item => item.Timestamp);
 
         if (this.options.ignored_duration) {
             scope = scope.filter(item => item.Timestamp > (Date.now() - this.options.ignored_duration));

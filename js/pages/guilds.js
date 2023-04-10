@@ -195,7 +195,7 @@ Site.ready({ type: 'simulator' }, function () {
     function updatePlayerList () {
         updateSimulateButton();
 
-        _sort_des(playerList[currentList], entry => entry.player.Level);
+        _sortDesc(playerList[currentList], entry => entry.player.Level);
 
         let content = ''
         for (let i = 0; i < playerList[currentList].length; i++) {
@@ -279,7 +279,7 @@ Site.ready({ type: 'simulator' }, function () {
     }
 
     function displayResults (results, iterations) {
-        let score = 100 * _mapped_sum(results, r => r.score) / iterations;
+        let score = 100 * _mappedSum(results, r => r.score) / iterations;
 
         $('div.row.results').html(`
             <div class="sixteen wide column" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
@@ -343,7 +343,7 @@ Site.ready({ type: 'simulator' }, function () {
             }
 
             batch.run(instances).then((duration) => {
-                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
                 
                 displayResults(results, instances * iterations);
             });
