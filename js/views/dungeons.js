@@ -119,7 +119,7 @@ const SimulatorResultsDialog = new (class extends Dialog {
           <div class="tight inverted bordered very small dialog">
               <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid #262626;">
                   <div>${intl(`dungeons.results`)}</div>
-                  <div data-op="screenshot" class="ui tiny basic inverted icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
+                  <div data-op="screenshot" class="ui tiny basic inverted icon button" data-inverted="" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}">
                       <i class="download icon"></i>
                   </div>
               </div>
