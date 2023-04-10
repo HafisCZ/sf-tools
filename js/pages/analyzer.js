@@ -482,7 +482,7 @@ Site.ready(null, function (urlParams) {
 
                 if (r.fightheader1) {
                     // Shadow or guild fights use indexed fight data
-                    const count = _fast_max(
+                    const count = _fastMax(
                         Object.keys(r)
                         .filter((key) => key.startsWith('fightheader'))
                         .map((key) => parseInt(key.match(/(\d*)$/)[0] || '1'))
@@ -530,7 +530,7 @@ Site.ready(null, function (urlParams) {
                     if (lastPlayer) {
                         const save = Array.from(lastPlayer.save);
 
-                        for (const [index, value] of _each_block(r['#ownplayersave'].numbers, 2)) {
+                        for (const [index, value] of _eachBlock(r['#ownplayersave'].numbers, 2)) {
                             save[index] = value;
                         }
 
@@ -564,7 +564,7 @@ Site.ready(null, function (urlParams) {
                 // Parse individual rounds (group of 3 numbers)
                 const rawRounds = [];
                 for (let i = 0; i < rounds.length / 3; i++) {
-                    rawRounds.push(_slice_len(rounds, i * 3, 3));
+                    rawRounds.push(_sliceLen(rounds, i * 3, 3));
                 }
 
                 // Process each round
@@ -754,7 +754,7 @@ Site.ready(null, function (urlParams) {
             group.fights.push({ index: fight.index, rounds: fight.rounds, winner: fight.winner });
         }
 
-        _sort_des(currentGroups, GROUP_SORTERS[analyzerOptions.group_sort])
+        _sortDesc(currentGroups, GROUP_SORTERS[analyzerOptions.group_sort])
 
         // Display in dropdown
         $groupList.dropdown({

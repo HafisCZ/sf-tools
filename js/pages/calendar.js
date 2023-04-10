@@ -51,7 +51,7 @@ Site.ready(null, function () {
 
             const availableNow = start <= now && now <= end;
             const availableInMs = Math.trunc(Math.max(0, start - now) / 1000) * 1000;
-            const availableIn = _format_duration(availableInMs, 2);
+            const availableIn = _formatDuration(availableInMs, 2);
 
             const petOwned = currentPets[index];
             const petLocked = currentPlayer && (Math.max(currentPlayer.Pets.Dungeons[petType] || 0, 2) < petIndex || (typeof condition === 'function' && !condition(currentPlayer)));
@@ -78,7 +78,7 @@ Site.ready(null, function () {
             });
         }
 
-        $petGrid.html(_sort_asc(entries, (entry) => entry.availableInMs).map((entry) => entry.content).join(''));
+        $petGrid.html(_sortAsc(entries, (entry) => entry.availableInMs).map((entry) => entry.content).join(''));
         $petGrid.find('[data-pet]').click((event) => {
             const index = parseInt(event.currentTarget.dataset.pet);
 

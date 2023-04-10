@@ -152,7 +152,7 @@ class GroupDetailTab extends Tab {
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
             var node = document.createElement('div');
-            node.innerHTML = `${ formatDate(Number(this.timestamp)) } - ${ formatDate(Number(this.reference)) }`;
+            node.innerHTML = `${ _formatDate(Number(this.timestamp)) } - ${ _formatDate(Number(this.reference)) }`;
 
             document.body.prepend(node);
             var range = document.createRange();
@@ -182,7 +182,7 @@ class GroupDetailTab extends Tab {
                 var ta = Number(this.timestamp);
                 var tb = Number(this.reference);
 
-                $(doc).find('tbody').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
+                $(doc).find('tbody').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${ _formatDate(ta) }${ ta != tb ? ` - ${ _formatDate(tb) }` : '' }</td></tr>`));
             });
         });
 
@@ -292,9 +292,9 @@ class GroupDetailTab extends Tab {
 
         const formatEntry = (group) => {
             if (group.MembersPresent >= group.MembersTotal) {
-                return formatDate(group.Timestamp);
+                return _formatDate(group.Timestamp);
             } else {
-                return `<div class="flex justify-content-between"><span>${formatDate(group.Timestamp)}</span><span class="text-gray">${group.MembersPresent} / ${group.MembersTotal}</span></div>`
+                return `<div class="flex justify-content-between"><span>${_formatDate(group.Timestamp)}</span><span class="text-gray">${group.MembersPresent} / ${group.MembersTotal}</span></div>`
             }
         }
 
@@ -720,7 +720,7 @@ class BrowseTab extends Tab {
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
             'create',
-            _array_to_hash(
+            _arrayToHash(
                 ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 'qc', 't'],
                 k => [k, intl(`stats.filters.${k}`)]
             )
@@ -930,13 +930,13 @@ class BrowseTab extends Tab {
 
         for (const timestamp of DatabaseManager.PlayerTimestamps) {
             timestamps.push({
-                name: formatDate(timestamp),
+                name: _formatDate(timestamp),
                 value: timestamp,
                 selected: timestamp == DatabaseManager.LatestPlayer
             });
 
             references.push({
-                name: formatDate(timestamp),
+                name: _formatDate(timestamp),
                 value: timestamp,
                 selected: timestamp == DatabaseManager.LatestPlayer
             });
@@ -1135,7 +1135,7 @@ class GroupsTab extends Tab {
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
             'create',
-            _array_to_hash(
+            _arrayToHash(
                 ['g', 's', 'l', 'h', 'a', 'd'],
                 k => [k, intl(`stats.filters.${k}`)]
             )
@@ -1260,7 +1260,7 @@ class GroupsTab extends Tab {
                         filteredEntries.slice(i, i + 5).map((group) => `
                             <div class="column">
                                 <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.Hidden.has(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
-                                    <span class="text-85% my-2">${ formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
+                                    <span class="text-85% my-2">${ _formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
                                     <img class="ui image" src="res/group.png" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
                                     <h3 class="ui inverted header !mt-0 !mb-1">${ group.Latest.Name }</h3>
@@ -1358,7 +1358,7 @@ class PlayersTab extends Tab {
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
             'create',
-            _array_to_hash(
+            _arrayToHash(
                 ['c', 'p', 'g', 's', 'e', 'l', 'a', 'h', 'd'],
                 k => [k, intl(`stats.filters.${k}`)]
             )
@@ -1515,7 +1515,7 @@ class PlayersTab extends Tab {
                         filteredEntries.slice(i, i + 5).map((player) => `
                             <div class="column">
                                 <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
-                                    <span class="text-85% my-2">${ formatDate(player.LatestTimestamp) }</span>
+                                    <span class="text-85% my-2">${ _formatDate(player.LatestTimestamp) }</span>
                                     <img class="ui image" src="res/class${ player.Latest.Class }.png" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
                                     <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
@@ -1588,7 +1588,7 @@ class FilesTab extends Tab {
     }
 
     tagSelected () {
-        if (this.simple && _not_empty(this.selectedFiles)) {
+        if (this.simple && _notEmpty(this.selectedFiles)) {
             DialogController.open(EditFileTagDialog, this.selectedFiles, () => this.show());
         }
     }
@@ -1743,7 +1743,7 @@ class FilesTab extends Tab {
             let filesToMark = [];
             let filesToIgnore = [];
 
-            for (const timestamp of _int_keys(this.currentFiles)) {
+            for (const timestamp of _intKeys(this.currentFiles)) {
                 if (this.selectedFiles.includes(timestamp)) {
                     filesToIgnore.push(timestamp);
                 } else {
@@ -1751,7 +1751,7 @@ class FilesTab extends Tab {
                 }
             }
 
-            let visibleEntries = _array_to_hash(this.$resultsSimple.find('td[data-timestamp]').toArray(), (el) => [el.dataset.timestamp, el.children[0]]);
+            let visibleEntries = _arrayToHash(this.$resultsSimple.find('td[data-timestamp]').toArray(), (el) => [el.dataset.timestamp, el.children[0]]);
 
             let noneToMark = _empty(filesToMark);
             if (noneToMark && !_empty(filesToIgnore)) {
@@ -1781,7 +1781,7 @@ class FilesTab extends Tab {
                 }
             }
 
-            let visibleEntries = _array_to_hash(this.$resultsAdvanced.find('td[data-mark]').toArray(), (el) => [el.dataset.mark, el.children[0]]);
+            let visibleEntries = _arrayToHash(this.$resultsAdvanced.find('td[data-mark]').toArray(), (el) => [el.dataset.mark, el.children[0]]);
 
             let noneToMark = _empty(entriesToMark);
             if (noneToMark && !_empty(entriesToIgnore)) {
@@ -1930,16 +1930,16 @@ class FilesTab extends Tab {
     }
 
     updateFileSearchResults () {
-        let currentFilesAll = (SiteOptions.groups_empty ? _int_keys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps).map((ts) => {
+        let currentFilesAll = (SiteOptions.groups_empty ? _intKeys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps).map((ts) => {
             return {
                 timestamp: ts,
-                prettyDate: formatDate(ts),
-                playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager.isPlayer(id)),
-                groupCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager.isGroup(id)),
+                prettyDate: _formatDate(ts),
+                playerCount: _lenWhere(DatabaseManager.Timestamps[ts], id => DatabaseManager.isPlayer(id)),
+                groupCount: _lenWhere(DatabaseManager.Timestamps[ts], id => DatabaseManager.isGroup(id)),
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
                 tags: (() => {
                     const tagMap = DatabaseManager.findUsedTags([ts]);
-                    const tagEntries = _sort_des(Object.entries(tagMap), ([, a]) => a);
+                    const tagEntries = _sortDesc(Object.entries(tagMap), ([, a]) => a);
 
                     let tagContent = '';
                     for (const [name, count] of tagEntries) {
@@ -1983,10 +1983,10 @@ class FilesTab extends Tab {
             });
         }
 
-        this.currentFiles = _array_to_hash(currentFilesAll, file => [file.timestamp, file]);
+        this.currentFiles = _arrayToHash(currentFilesAll, file => [file.timestamp, file]);
         this.$resultsSimple.empty();
 
-        const entries = _sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, tags: { tagContent } }]) => {
+        const entries = _sortDesc(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, tags: { tagContent } }]) => {
             const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
             return `
@@ -2033,7 +2033,7 @@ class FilesTab extends Tab {
                     } else {
                         for (const ts of toChange) {
                             $(`[data-timestamp="${ts}"] > i`).removeClass('outline');
-                            _push_unless_includes(this.selectedFiles, ts);
+                            _pushUnlessIncludes(this.selectedFiles, ts);
                         }
                     }
                 } else {
@@ -2159,8 +2159,8 @@ class FilesTab extends Tab {
     }
 
     updateEntryLists () {
-        this.prefixMap = _array_to_hash(DatabaseManager.Prefixes, (prefix) => [prefix, _pretty_prefix(prefix)]);
-        this.timeMap = _array_to_hash(DatabaseManager.Timestamps.keys(), (ts) => [ts, formatDate(ts)]);
+        this.prefixMap = _arrayToHash(DatabaseManager.Prefixes, (prefix) => [prefix, _formatPrefix(prefix)]);
+        this.timeMap = _arrayToHash(DatabaseManager.Timestamps.keys(), (ts) => [ts, _formatDate(ts)]);
         this.playerMap = DatabaseManager.PlayerNames;
         this.groupMap = Object.assign({ 0: intl('stats.files.filters.none') }, DatabaseManager.GroupNames);
 
@@ -2203,13 +2203,13 @@ class FilesTab extends Tab {
             <div class="field">
                 <label>${intl('stats.files.filters.player')} (<span data-op="unique-player"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-player">
-                    ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }${ playerNameFrequency[value] > 1 ? ` - ${_pretty_prefix(player)}` : '' }</option>`).join('') }
+                    ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }${ playerNameFrequency[value] > 1 ? ` - ${_formatPrefix(player)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.group')} (<span data-op="unique-group"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-group">
-                    ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }${ groupNameFrequency[value] > 1 ? ` - ${_pretty_prefix(group)}` : '' }</option>`).join('') }
+                    ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }${ groupNameFrequency[value] > 1 ? ` - ${_formatPrefix(group)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
@@ -2575,7 +2575,7 @@ class ScriptsTab extends Tab {
                 <div data-template-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script && this.script.parent === name ? 'background-light' : ''}">
                     <div>
                         <div>${name}</div>
-                        <div class="text-gray">v${isNaN(version) ? 1 : version} - ${formatDate(timestamp)}</div>
+                        <div class="text-gray">v${isNaN(version) ? 1 : version} - ${_formatDate(timestamp)}</div>
                     </div>
                 </div>
             `;

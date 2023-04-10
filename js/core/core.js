@@ -500,7 +500,7 @@ const ProfileManager = new (class {
             [ 'default', this.profiles['default'] ],
             [ 'own', this.profiles['own'] ],
             [ 'month_old', this.profiles['month_old'] ],
-            ..._sort_des(Object.entries(this.profiles).filter(([key, ]) => !this.isDefault(key)), ([, val]) => val.updated || 0)
+            ..._sortDesc(Object.entries(this.profiles).filter(([key, ]) => !this.isDefault(key)), ([, val]) => val.updated || 0)
         ];
     }
 })();
@@ -570,7 +570,7 @@ const Actions = new (class {
     }
 
     async apply (playerData, groupData) {
-        if (_not_empty(this.actions)) {
+        if (_notEmpty(this.actions)) {
             let players = playerData.map(({identifier, timestamp}) => DatabaseManager.getPlayer(identifier, timestamp));
             let groups = groupData.map(({identifier, timestamp}) => DatabaseManager.getGroup(identifier, timestamp));
 

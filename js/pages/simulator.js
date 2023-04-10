@@ -219,7 +219,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
 
             batch.run(instances).then((duration) => {
-                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _format_duration(duration) }));
+                Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
 
                 players = results;
                 setSort('avg', 0);
@@ -452,7 +452,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         profile: FIGHT_SIMULATOR_PROFILE,
         type: 'players',
         generator: function (dm, $list) {
-            for (let [prefix, players] of Object.entries(_group_by(dm.getLatestPlayers(), p => p.Prefix))) {
+            for (let [prefix, players] of Object.entries(_groupBy(dm.getLatestPlayers(), p => p.Prefix))) {
                 $list.append($(`
                     <div class="ui fluid basic left pointing scrolling dropdown small button inverted !text-center !mt-2">
                         <span class="">${prefix}</span>

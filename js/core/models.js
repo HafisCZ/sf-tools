@@ -485,7 +485,7 @@ class SFGroup {
     constructor (data) {
         this.Data = data;
 
-        this.Prefix = _pretty_prefix(data.prefix);
+        this.Prefix = _formatPrefix(data.prefix);
         this.ID = data.save[0];
         this.Identifier = data.prefix + '_g' + this.ID;
 
@@ -831,7 +831,7 @@ class PlayerModel {
             Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }];
-        _sort_des(this.Potions, potion => potion.Size);
+        _sortDesc(this.Potions, potion => potion.Size);
         this.Potions.Life = dataType.long();
         dataType.skip(12); // skip
         this.Toilet.Capacity = dataType.long();
@@ -978,13 +978,13 @@ class PlayerModel {
         if (data.idle) {
             this.Idle = {
                 Sacrifices: data.idle[2],
-                Buildings: _slice_len(data.idle, 3, 10),
+                Buildings: _sliceLen(data.idle, 3, 10),
                 Money: data.idle[73],
                 ReadyRunes: data.idle[75],
                 Runes: data.idle[76],
                 Upgrades: {
-                    Speed: _slice_len(data.idle, 43, 10),
-                    Money: _slice_len(data.idle, 53, 10)
+                    Speed: _sliceLen(data.idle, 43, 10),
+                    Money: _sliceLen(data.idle, 53, 10)
                 }
             };
 
@@ -1082,7 +1082,7 @@ class PlayerModel {
         this.Pets.TotalLevel = shadowLevel + lightLevel + fireLevel + earthLevel + waterLevel;
 
         this.Name = data.name;
-        this.Prefix = _pretty_prefix(data.prefix);
+        this.Prefix = _formatPrefix(data.prefix);
         this.Identifier = data.prefix + '_p' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
@@ -1147,7 +1147,7 @@ class PlayerModel {
             };
         }
 
-        this.Witch.Stage = _len_of_when(this.Witch.Scrolls, 'Owned');
+        this.Witch.Stage = _lenWhere(this.Witch.Scrolls, (scroll) => scroll.Owned);
 
         if (data.tower) {
             this.Underworld.GoblinUpgrades = data.tower[146];
@@ -1186,7 +1186,7 @@ class PlayerModel {
             this.Underworld.TimeMachineDaily = dataType.long();
         }
 
-        if (_not_empty(data.tower)) {
+        if (_notEmpty(data.tower)) {
             dataType = new ComplexDataType(data.tower);
 
             dataType.skip(3);
@@ -1315,7 +1315,7 @@ class PlayerModel {
             Type: getPotionType(dataType.back(6).long()),
             Size: dataType.skip(5).long()
         }];
-        _sort_des(this.Potions, potion => potion.Size);
+        _sortDesc(this.Potions, potion => potion.Size);
         this.Potions.Life = dataType.long();
         this.Flags.GoldFrameDisabled = !!dataType.long();
         this.Flags.InvitesDisabled = !!dataType.long();
@@ -1366,7 +1366,7 @@ class PlayerModel {
         };
 
         this.Name = data.name;
-        this.Prefix = _pretty_prefix(data.prefix);
+        this.Prefix = _formatPrefix(data.prefix);
         this.Identifier = data.prefix + '_p' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;

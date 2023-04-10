@@ -74,7 +74,7 @@ const DATABASE_PARAMS = [
                 const groups = await database.all('groups');
                 const entries = [].concat(players, groups);
 
-                const metadata = _array_to_hash(await database.all('metadata'), entry => [ entry.timestamp, Object.assign(entry, { identifiers: [] }) ]);
+                const metadata = _arrayToHash(await database.all('metadata'), entry => [ entry.timestamp, Object.assign(entry, { identifiers: [] }) ]);
 
                 for (const { timestamp: dirty_timestamp, identifier } of entries) {
                     const timestamp = parseInt(dirty_timestamp);
@@ -369,7 +369,7 @@ class PlayaResponse {
     }
 
     static fromText (text) {
-        return _array_to_hash(text.split('&').filter(_not_empty), item => {
+        return _arrayToHash(text.split('&').filter(_notEmpty), item => {
             const [key, ...val] = item.split(':');
 
             const normalizedKey = this._normalizeKey(key);
@@ -519,7 +519,7 @@ const DatabaseManager = new (class {
             Timestamp: data.timestamp,
             Own: data.own,
             Name: data.name,
-            Prefix: _pretty_prefix(data.prefix),
+            Prefix: _formatPrefix(data.prefix),
             Class: data.class || ((data.own ? data.save[29] : data.save[20]) % 65536),
             Group: {
                 Identifier: data.group,
@@ -593,7 +593,7 @@ const DatabaseManager = new (class {
                 return array;
             }, []);
 
-            _sort_des(player.List, le => le[0]);
+            _sortDesc(player.List, le => le[0]);
 
             if (this.Profile.block_preload) {
                 player.Latest = player[player.LatestTimestamp];
@@ -628,7 +628,7 @@ const DatabaseManager = new (class {
                 return array;
             }, []);
 
-            _sort_des(group.List, le => le[0]);
+            _sortDesc(group.List, le => le[0]);
             group.Latest = group[group.LatestTimestamp];
             group.Own = group.List.find(x => x[1].Own) != undefined;
 
@@ -694,7 +694,7 @@ const DatabaseManager = new (class {
 
         if (!profile.only_players) {
             const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
-            const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_not_empty(groupFilter) ? (
+            const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_notEmpty(groupFilter) ? (
                 await this.Database.all('groups', ... groupFilter)
             ) : (
                 await this.Database.all('groups')
@@ -715,10 +715,10 @@ const DatabaseManager = new (class {
             }
         }
 
-        this.Metadata = _array_to_hash(await this.Database.all('metadata'), md => [ md.timestamp, md ]);
+        this.Metadata = _arrayToHash(await this.Database.all('metadata'), md => [ md.timestamp, md ]);
 
         const playerFilter = DatabaseUtils.profileFilter(profile);
-        let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
+        let players = DatabaseUtils.filterArray(profile) || (_notEmpty(playerFilter) ? (
             await this.Database.where('players', ... playerFilter)
         ) : (
             await this.Database.where('players')
@@ -829,7 +829,7 @@ const DatabaseManager = new (class {
             this.Metadata[timestamp] = { timestamp, identifiers: [] }
         }
 
-        _push_unless_includes(this.Metadata[timestamp].identifiers, identifier);
+        _pushUnlessIncludes(this.Metadata[timestamp].identifiers, identifier);
         this._metadataDelta.push(timestamp);
     }
 
@@ -1000,7 +1000,7 @@ const DatabaseManager = new (class {
     async migrateHiddenFiles () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
             const players = Array.from(identifiers).filter(identifier => this.isPlayer(identifier));
-            if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
+            if (_every(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
                 for (const id of players) {
                     const player = this.Players[id][timestamp].Data;
                     delete player['hidden'];
@@ -1125,8 +1125,8 @@ const DatabaseManager = new (class {
     }
 
     async hideTimestamps (... timestamps) {
-        if (_not_empty(timestamps)) {
-            const shouldHide = !_all_true(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
+        if (_notEmpty(timestamps)) {
+            const shouldHide = !_every(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
 
             for (const timestamp of timestamps) {
                 for (const identifier of this.Timestamps.array(timestamp)) {
@@ -1274,8 +1274,8 @@ const DatabaseManager = new (class {
         }
 
         if (flags.skipExisting) {
-            _filter_in_place(groups, (group) => !this.hasGroup(group.identifier, group.timestamp));
-            _filter_in_place(players, (player) => !this.hasPlayer(player.identifier, player.timestamp));
+            _filterInPlace(groups, (group) => !this.hasGroup(group.identifier, group.timestamp));
+            _filterInPlace(players, (player) => !this.hasPlayer(player.identifier, player.timestamp));
         }
 
         if (flags.temporary) {
@@ -1328,10 +1328,10 @@ const DatabaseManager = new (class {
         const addTrackers = _compact(this.TrackerConfigEntries.map(([ name, { ast, out, hash } ]) => this.TrackerData[name] != hash ? name : undefined));
         const remTrackers = Object.keys(this.TrackerData).filter(name => !this.TrackerConfig[name]);
 
-        this.TrackerData = _array_to_hash(this.TrackerConfigEntries, ([name, { hash }]) => [name, hash]);;
+        this.TrackerData = _arrayToHash(this.TrackerConfigEntries, ([name, { hash }]) => [name, hash]);;
         Store.set('tracker_data', this.TrackerData);
 
-        if (_not_empty(remTrackers)) {
+        if (_notEmpty(remTrackers)) {
             for (const name of remTrackers) {
                 Logger.log('TRACKER', `Removed tracker ${ name }`);
             }
@@ -1341,7 +1341,7 @@ const DatabaseManager = new (class {
             }
         }
 
-        if (_not_empty(addTrackers)) {
+        if (_notEmpty(addTrackers)) {
             for (const [ name, { hash } ] of this.TrackerConfigEntries) {
                 if (this.TrackerData[name]) {
                     if (hash != this.TrackerData[name]) {

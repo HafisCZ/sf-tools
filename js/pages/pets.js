@@ -283,7 +283,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             Toast.info(intl('pets.bulk.toast.title'), `<b>${intl('pets.bulk.toast.matches')}</b> ${batch.size()}`);
 
             batch.run(instances).then(() => {
-                _sort_des(results, i => i.chance);
+                _sortDesc(results, i => i.chance);
 
                 const resultClasses = [0, 0, 0, 0, 0];
 
@@ -412,9 +412,9 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         let gladiator = _try(player.Fortress, 'Gladiator') || 0;
         let pack = player.Pets[`${currentName}Count`];
         let petLevels = player.Pets[`${currentName}Levels`];
-        let at100 = _len_where(petLevels, l => _between(l, 100 - 1, 150));
-        let at150 = _len_where(petLevels, l => _between(l, 150 - 1, 200));
-        let at200 = _len_where(petLevels, l => l == 200);
+        let at100 = _lenWhere(petLevels, l => _between(l, 100 - 1, 150));
+        let at150 = _lenWhere(petLevels, l => _between(l, 150 - 1, 200));
+        let at200 = _lenWhere(petLevels, l => l == 200);
 
         let pets = petLevels.map((level, i) => {
             return {
@@ -449,7 +449,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             };
         }
 
-        let petModels = _sort_des(pets.filter((data) => data.Level).map((data) => {
+        let petModels = _sortDesc(pets.filter((data) => data.Level).map((data) => {
             const model = PetModel.getModel(data);
             
             model.initialize(model);

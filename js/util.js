@@ -1,28 +1,3 @@
-// Convert number to fixed amount of zeroes
-function trail (c, n) {
-    return '0'.repeat(n - c.toString().length) + c;
-}
-
-// Format date
-function formatDateOnly (date) {
-    if (date == '' || date == undefined) return '';
-    date = new Date(Math.max(0, Math.min(1e15, date)));
-    return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear();
-}
-
-// Format datetime
-function formatDate (date) {
-    if (date == '' || date == undefined) return '';
-    date = new Date(Math.max(0, Math.min(1e15, date)));
-    return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
-}
-
-function formatTime (date) {
-    if (date == '' || date == undefined) return '';
-    date = new Date(Math.max(0, Math.min(1e15, date)));
-    return trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
-}
-
 function copyJSON (json) {
     copyText(JSON.stringify(json));
 }
@@ -337,7 +312,7 @@ class WorkerBatch {
                 const duration = Date.now() - this.timestamp;
 
                 Loader.toggle(false);
-                Logger.log('MESSAGE', `Simulator took ${_format_duration(duration)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
+                Logger.log('MESSAGE', `Simulator took ${_formatDuration(duration)} with ${this.workersTotal} sets using ${instances} concurrent threads.`);
 
                 resolve(duration);
             };
@@ -354,42 +329,6 @@ class WorkerBatch {
             }
         })
     }
-}
-
-function parseOwnDate (text) {
-    if (typeof(text) == 'string') {
-        let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);
-        if (objs.length == 7) {
-            objs = objs.map(x => parseInt(x));
-
-            let date = new Date();
-
-            date.setFullYear(objs[3]);
-            date.setMonth(objs[2] - 1);
-            date.setDate(objs[1])
-
-            date.setHours(objs[4]);
-            date.setMinutes(objs[5]);
-
-            date.setSeconds(0);
-            date.setMilliseconds(0);
-
-            return date.getTime();
-        } else {
-            return undefined;
-        }
-    } else {
-        return undefined;
-    }
-}
-
-function formatDuration (duration) {
-    if (duration == '' || duration == undefined) return '';
-    duration = Math.max(0, duration);
-    var days = Math.trunc(duration / (1000 * 60 * 60 * 24));
-    var hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
-    return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
 const NumberLabels = [
