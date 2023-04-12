@@ -576,6 +576,7 @@
             "list": "Modelli disponibili",
             "sidebar": {
                 "wiki": "Wiki",
+                "manual": "Manual",
                 "scripts": "Script",
                 "templates": "Template",
                 "save": "Salva",
@@ -589,7 +590,7 @@
                     "actions": "Azioni",
                     "modify": "Script",
                     "library": "Librerie",
-                    "archive": "Archivio"
+                    "help": "Help"
                 }
             },
             "types": {
@@ -615,24 +616,31 @@
         "browse": {
             "hidden": "Mostra nascosti"
         },
-        "fast_export": {
-            "label": "Condividi",
-            "title": "Opzioni esporta",
-            "all": "Tutti",
-            "latest": "Ultimi",
-            "latest5": "Ultimi 5",
-            "selected": "Selezionati",
-            "selected_both": "Selezionati & Riferimento"
-        },
         "share": {
-            "title": "Condividi file",
+            "title": "File export",
+            "title_short": "Export",
             "options": "Opzioni",
             "code": "Il tuo codice",
-            "get": "Ottieni codice",
+            "file": "Selection",
+            "format": "Format",
+            "get": "Export",
             "ok": "Ok",
+            "public": "Export only public data (regardless of your current global setting)",
             "expire": "Il codice scadrà automaticamente dopo 2 giorni.",
             "single_use": "Uso singolo",
-            "single_use_notice": "Tieni questa opzione attiva se non intendi condividere il file con più persone."
+            "single_use_notice": "Tieni questa opzione attiva se non intendi condividere il file con più persone.",
+            "files": {
+                "all": "All",
+                "last": "Latest",
+                "last5": "Latest 5",
+                "current": "Selected",
+                "currentWithReference": "Selected & Reference"
+            },
+            "formats": {
+                "json": "JSON file",
+                "code": "Online code (1 use or 2 days)",
+                "code_reusable": "Online code (2 days)"
+            }
         },
         "online_templates": {
             "title": "Script pubblici",
@@ -1035,9 +1043,17 @@
     "hellevator": {
         "range": {
             "start": "Inizia dal piano",
-            "end": "Termina al piano"
+            "end": "Termina al piano",
+            "theme": "Theme"
         },
         "element": "Elemento",
+        "theme": {
+            "0": "Lust and Anger",
+            "1": "Treachery",
+            "2": "Fraud",
+            "3": "Gluttony",
+            "4": "Greed"
+        },
         "win": {
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
             "none": "Tutti i #{count} piani sono impossibili da sconfiggere",
@@ -1136,6 +1152,7 @@
         },
         "special_state": {
             "druid_rage": "Il druido è infuriato",
+            "berserker_rage": "Berserker is enraged",
             "bard_song": "Il bardo ha suonato un brano"
         },
         "sidebar": {
@@ -1359,6 +1376,20 @@
             "close": "Chiudi",
             "ok": "Ok"
         },
+        "script_manual": {
+            "title": "Reference manual",
+            "heading": {
+                "header": "Headers for all characters",
+                "header_protected": "Headers for own guild members",
+                "header_private": "Headers for own characters",
+                "header_scoped": "Subheaders for objects",
+                "header_itemizable": "Subheaders for inventory",
+                "function": "functions(...)",
+                "enum": "Enumerations",
+                "constant": "@constants"
+            },
+            "description": {}
+        },
         "analyzer_options": {
             "title": "Opzioni Analizzatore",
             "option": {
@@ -1370,8 +1401,23 @@
                         "fraction": "Frazionaria"
                     }
                 },
+                "type_display_mode": {
+                    "title": "Attack type display mode",
+                    "value": {
+                        "text": "Name",
+                        "text_with_id": "Name with ID"
+                    }
+                },
                 "base_damage_error_margin": {
                     "title": "Errore di base accettabile"
+                },
+                "group_sort": {
+                    "title": "Sort groups by",
+                    "value": {
+                        "default": "Default",
+                        "fight_count": "Fight count",
+                        "fighter_b_level": "Level of player B"
+                    }
                 }
             }
         },

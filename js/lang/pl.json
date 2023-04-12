@@ -576,6 +576,7 @@
             "list": "Dostępne szablony",
             "sidebar": {
                 "wiki": "Wiki",
+                "manual": "Ręczne",
                 "scripts": "Skrypty",
                 "templates": "Szablony",
                 "save": "Zapisz",
@@ -589,7 +590,7 @@
                     "actions": "Działania",
                     "modify": "Skrypt",
                     "library": "Biblioteki",
-                    "archive": "Archiwum"
+                    "help": "Pomoc"
                 }
             },
             "types": {
@@ -615,24 +616,31 @@
         "browse": {
             "hidden": "Pokaż ukryte"
         },
-        "fast_export": {
-            "label": "Udostępnij",
-            "title": "Opcje exportu",
-            "all": "Wszystko",
-            "latest": "Najnowsze",
-            "latest5": "Najnowsze 5",
-            "selected": "Wybrane",
-            "selected_both": "Wybrane i powiązane z nimi"
-        },
         "share": {
-            "title": "Udostępnianie plików",
+            "title": "Eksport pliku",
+            "title_short": "Eksportuj",
             "options": "Opcje",
             "code": "Twój kod",
-            "get": "Zdobądź kod",
+            "file": "Wybór",
+            "format": "Format",
+            "get": "Eksportuj",
             "ok": "Ok",
+            "public": "Eksportuj tylko dane publiczne (niezależnie od obecnego ustawienia globalnego)",
             "expire": "Kod wygaśnie automacznie po 2 dniach.",
             "single_use": "Jednorazowy",
-            "single_use_notice": "Proszę rozważyć pozostawienie tej opcji włączonej, chyba że planujesz udostępnić plik wielu osobom."
+            "single_use_notice": "Proszę rozważyć pozostawienie tej opcji włączonej, chyba że planujesz udostępnić plik wielu osobom.",
+            "files": {
+                "all": "Wszystkie",
+                "last": "Najnowsze",
+                "last5": "Najnowsze 5",
+                "current": "Wybrane",
+                "currentWithReference": "Wybrane i powiązane z nimi"
+            },
+            "formats": {
+                "json": "Plik JSON",
+                "code": "Kod online (1 użycie lub 2 dni)",
+                "code_reusable": "Kod online (2 dni)"
+            }
         },
         "online_templates": {
             "title": "Publiczne skrytpy",
@@ -1035,9 +1043,17 @@
     "hellevator": {
         "range": {
             "start": "Rozpocznij na piętrze",
-            "end": "Zakończ na piętrze"
+            "end": "Zakończ na piętrze",
+            "theme": "Motyw"
         },
         "element": "Żywioł",
+        "theme": {
+            "0": "Żądza i gniew",
+            "1": "Zdrada",
+            "2": "Oszustwo",
+            "3": "Obżarstwo",
+            "4": "Chciwość"
+        },
         "win": {
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
             "none": "Nie można pokonać wszystkich #{count} pięter",
@@ -1136,6 +1152,7 @@
         },
         "special_state": {
             "druid_rage": "Druid jest wściekły",
+            "berserker_rage": "Berserker is enraged",
             "bard_song": "Bard zagrał utwór"
         },
         "sidebar": {
@@ -1359,6 +1376,20 @@
             "close": "Zamknij",
             "ok": "Ok"
         },
+        "script_manual": {
+            "title": "Instrukcja obsługi",
+            "heading": {
+                "header": "Nagłówki dla wszystkich postaci",
+                "header_protected": "Nagrody dla własnych członków gildii",
+                "header_private": "Nagłówki dla własnych postaci",
+                "header_scoped": "Podnagłówki obiektów",
+                "header_itemizable": "Podnagłówki do ekwipunku",
+                "function": "funkcje(...)",
+                "enum": "Wyliczenia",
+                "constant": "@stałe"
+            },
+            "description": {}
+        },
         "analyzer_options": {
             "title": "Opcje analizatora",
             "option": {
@@ -1370,8 +1401,23 @@
                         "fraction": "Ułamkowy"
                     }
                 },
+                "type_display_mode": {
+                    "title": "Attack type display mode",
+                    "value": {
+                        "text": "Name",
+                        "text_with_id": "Name with ID"
+                    }
+                },
                 "base_damage_error_margin": {
                     "title": "Dopuszczalny błąd podstawowy"
+                },
+                "group_sort": {
+                    "title": "Sortuj grupy według",
+                    "value": {
+                        "default": "Domyślny",
+                        "fight_count": "Licznik walk",
+                        "fighter_b_level": "Poziom gracza B"
+                    }
                 }
             }
         },
