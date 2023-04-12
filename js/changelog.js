@@ -38,7 +38,7 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v6.3469': {
         'Statistics': [
             'Added new file export dialog',
             'Added new in-tool manual as a replacement for old manual page',
