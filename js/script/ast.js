@@ -1671,9 +1671,9 @@ const SP_KEYWORD_MAPPING_0 = {
         statistics: false
     },
     'Role': {
-        expr: p => _dig(p, 'Group', 'Role'),
+        expr: p => (p && p.hasGuild()) ? _dig(p, 'Group', 'Role') : undefined,
         flip: true,
-        format: (p, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
+        format: (p, x) => x ? intl(`general.rank${x}`) : '',
         difference: false,
         statistics: false
     },
