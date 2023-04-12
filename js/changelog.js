@@ -1,15 +1,20 @@
 const SIMULATOR_NOTICES = [
     {
-        timestamp: 1680636642663,
+        timestamp: 1680636642665,
         content: `
             <div>
                 <ul>
                     <li>Critical damage calculation was changed from multiplicative mode <code class="wrap-none">(2 * 1.75 * 1.05 = 3.675)</code> to additive mode <code class="wrap-none">(2 + 1.65 + 0.05 = 3.7)</code></li>
                     <li class="mt-2">BATTLE MAGE was updated:
                         <ul class="gap-2">
-                            <li>Gains +400% armor instead of flat +40% damage resistance</li>
+                            <li>Now has 500% armor factor instead of flat +40% damage resistance</li>
                             <li>Deals correct fireball damage against all classes (based on total health)</li>
                             <li>No longer blocks incoming fireballs</li>
+                        </ul>
+                    </li>
+                    <li class="mt-2">Any simulation that include Druid are, due to following in-game bugs, not accurate:
+                        <ul class="gap-2">
+                            <li>Druid does not use correct critical chance while enraged</li>
                         </ul>
                     </li>
                 </ul>
