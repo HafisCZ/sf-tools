@@ -108,7 +108,7 @@
         "attack7": "Swoop Evaded",
         "attack8": "Critical Blocked",
         "attack9": "Critical Evaded",
-        "attack10": "Normal",
+        "attack10": "Běžný",
         "attack11": "Critical",
         "attack13": "Blocked",
         "attack14": "Evaded",
@@ -122,15 +122,15 @@
         "attack24": "Evaded",
         "attack28": "Critical Blocked",
         "attack29": "Critical Evaded",
-        "attack100": "Revive",
+        "attack100": "Oživit",
         "attack200": "Bard Song",
-        "gt_background1": "Gold",
+        "gt_background1": "Zlato",
         "gt_background2": "Silver",
         "gt_background3": "Bronze",
-        "item1": "Weapon",
+        "item1": "Zbraň",
         "item2": "Shield",
         "item3": "Armor",
-        "item4": "Shoes",
+        "item4": "Boty",
         "item5": "Rukavice",
         "item6": "Helma",
         "item7": "Opasek",
@@ -139,9 +139,9 @@
         "item10": "Talisman",
         "item11": "Klíč",
         "item12": "Potion",
-        "item13": "Scrapbook",
+        "item13": "Album",
         "item14": "Scroll",
-        "item15": "Gem",
+        "item15": "Drahokam",
         "item16": "Vejce",
         "item17": "Přesýpací hodiny",
         "item18": "Srdce",
@@ -162,8 +162,8 @@
         "action1": "Working",
         "action2": "Questing",
         "action3": "Dungeon",
-        "gem1": "Strength",
-        "gem2": "Dexterity",
+        "gem1": "Síla",
+        "gem2": "Obratnost",
         "gem3": "Intelligence",
         "gem4": "Constitution",
         "gem5": "Luck",
@@ -198,7 +198,7 @@
         "18": "Animal Trainer",
         "19": "Pet Fattening",
         "20": "Heavy Spinner",
-        "21": "Hero",
+        "21": "Hrdina",
         "22": "Elite",
         "23": "Tip of the Iceberg",
         "24": "Superhero",
@@ -576,6 +576,7 @@
             "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
+                "manual": "Manual",
                 "scripts": "Skripty",
                 "templates": "Šablony",
                 "save": "Uložit",
@@ -589,7 +590,7 @@
                     "actions": "Actions",
                     "modify": "Script",
                     "library": "Libraries",
-                    "archive": "Archive"
+                    "help": "Help"
                 }
             },
             "types": {
@@ -615,24 +616,31 @@
         "browse": {
             "hidden": "Zobrazit skryté"
         },
-        "fast_export": {
-            "label": "Sdílet",
-            "title": "Rychlý export",
-            "all": "Vše",
-            "latest": "Poslední",
-            "latest5": "Posledních 5",
-            "selected": "Vybrané",
-            "selected_both": "Vybrané & k porovnání"
-        },
         "share": {
-            "title": "Sdílení souborů",
+            "title": "File export",
+            "title_short": "Export",
             "options": "Možnosti",
             "code": "Tvůj kód",
-            "get": "Získat kód",
+            "file": "Selection",
+            "format": "Format",
+            "get": "Export",
             "ok": "Ok",
+            "public": "Export only public data (regardless of your current global setting)",
             "expire": "Kód automaticky expiruje za 2 dny.",
             "single_use": "Jedno použití",
-            "single_use_notice": "Zanechejte tuto možnost aktivní pokud sdílíte soubory pouze s jednou osobou."
+            "single_use_notice": "Zanechejte tuto možnost aktivní pokud sdílíte soubory pouze s jednou osobou.",
+            "files": {
+                "all": "All",
+                "last": "Latest",
+                "last5": "Latest 5",
+                "current": "Selected",
+                "currentWithReference": "Selected & Reference"
+            },
+            "formats": {
+                "json": "JSON file",
+                "code": "Online code (1 use or 2 days)",
+                "code_reusable": "Online code (2 days)"
+            }
         },
         "online_templates": {
             "title": "Veřejné skripty",
@@ -1035,9 +1043,17 @@
     "hellevator": {
         "range": {
             "start": "Start at floor",
-            "end": "End at floor"
+            "end": "End at floor",
+            "theme": "Theme"
         },
         "element": "Element",
+        "theme": {
+            "0": "Lust and Anger",
+            "1": "Treachery",
+            "2": "Fraud",
+            "3": "Gluttony",
+            "4": "Greed"
+        },
         "win": {
             "all": "All #{count} floors were defeated with 100% chance",
             "none": "All #{count} floors are impossible to defeat",
@@ -1136,6 +1152,7 @@
         },
         "special_state": {
             "druid_rage": "Druid is enraged",
+            "berserker_rage": "Berserker is enraged",
             "bard_song": "Bard has played a song"
         },
         "sidebar": {
@@ -1359,6 +1376,20 @@
             "close": "Close",
             "ok": "Ok"
         },
+        "script_manual": {
+            "title": "Reference manual",
+            "heading": {
+                "header": "Headers for all characters",
+                "header_protected": "Headers for own guild members",
+                "header_private": "Headers for own characters",
+                "header_scoped": "Subheaders for objects",
+                "header_itemizable": "Subheaders for inventory",
+                "function": "functions(...)",
+                "enum": "Enumerations",
+                "constant": "@constants"
+            },
+            "description": {}
+        },
         "analyzer_options": {
             "title": "Analyzer Options",
             "option": {
@@ -1370,8 +1401,23 @@
                         "fraction": "Fractional"
                     }
                 },
+                "type_display_mode": {
+                    "title": "Attack type display mode",
+                    "value": {
+                        "text": "Name",
+                        "text_with_id": "Name with ID"
+                    }
+                },
                 "base_damage_error_margin": {
                     "title": "Acceptable base error"
+                },
+                "group_sort": {
+                    "title": "Sort groups by",
+                    "value": {
+                        "default": "Default",
+                        "fight_count": "Fight count",
+                        "fighter_b_level": "Level of player B"
+                    }
                 }
             }
         },

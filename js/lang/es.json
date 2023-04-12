@@ -576,6 +576,7 @@
             "list": "Plantillas disponibles",
             "sidebar": {
                 "wiki": "Wiki",
+                "manual": "Manual",
                 "scripts": "Scripts",
                 "templates": "Plantillas",
                 "save": "Guardar",
@@ -589,7 +590,7 @@
                     "actions": "Acciones",
                     "modify": "Script",
                     "library": "Librerías",
-                    "archive": "Archivo"
+                    "help": "Help"
                 }
             },
             "types": {
@@ -615,24 +616,31 @@
         "browse": {
             "hidden": "Mostrar ocultos"
         },
-        "fast_export": {
-            "label": "Compartir",
-            "title": "Opciones de exportación",
-            "all": "Todos",
-            "latest": "Últimos",
-            "latest5": "Últimos 5",
-            "selected": "Seleccionado",
-            "selected_both": "Seleccionado y Referencia"
-        },
         "share": {
-            "title": "Compartir archivo",
+            "title": "File export",
+            "title_short": "Export",
             "options": "Opciones",
             "code": "Tu código",
-            "get": "Obtener código",
+            "file": "Selection",
+            "format": "Format",
+            "get": "Export",
             "ok": "Aceptar",
+            "public": "Export only public data (regardless of your current global setting)",
             "expire": "El código caducará automáticamente después de 2 días.",
             "single_use": "Sólo uso único",
-            "single_use_notice": "Por favor, considere mantener esta opción habilitada a menos que planee compartir el archivo con varias personas."
+            "single_use_notice": "Por favor, considere mantener esta opción habilitada a menos que planee compartir el archivo con varias personas.",
+            "files": {
+                "all": "All",
+                "last": "Latest",
+                "last5": "Latest 5",
+                "current": "Selected",
+                "currentWithReference": "Selected & Reference"
+            },
+            "formats": {
+                "json": "JSON file",
+                "code": "Online code (1 use or 2 days)",
+                "code_reusable": "Online code (2 days)"
+            }
         },
         "online_templates": {
             "title": "Scripts públicos",
@@ -1035,9 +1043,17 @@
     "hellevator": {
         "range": {
             "start": "Comenzar en el piso",
-            "end": "Finalizar en el piso"
+            "end": "Finalizar en el piso",
+            "theme": "Theme"
         },
         "element": "Elemento",
+        "theme": {
+            "0": "Lust and Anger",
+            "1": "Treachery",
+            "2": "Fraud",
+            "3": "Gluttony",
+            "4": "Greed"
+        },
         "win": {
             "all": "Todos los #{count} pisos fueron derrotados con 100% de probabilidad",
             "none": "Todos los pisos #{count} son imposibles de derrotar",
@@ -1136,6 +1152,7 @@
         },
         "special_state": {
             "druid_rage": "Druid is enraged",
+            "berserker_rage": "Berserker is enraged",
             "bard_song": "Bard has played a song"
         },
         "sidebar": {
@@ -1359,6 +1376,20 @@
             "close": "Cerrar",
             "ok": "Aceptar"
         },
+        "script_manual": {
+            "title": "Reference manual",
+            "heading": {
+                "header": "Headers for all characters",
+                "header_protected": "Headers for own guild members",
+                "header_private": "Headers for own characters",
+                "header_scoped": "Subheaders for objects",
+                "header_itemizable": "Subheaders for inventory",
+                "function": "functions(...)",
+                "enum": "Enumerations",
+                "constant": "@constants"
+            },
+            "description": {}
+        },
         "analyzer_options": {
             "title": "Analyzer Options",
             "option": {
@@ -1370,8 +1401,23 @@
                         "fraction": "Fractional"
                     }
                 },
+                "type_display_mode": {
+                    "title": "Attack type display mode",
+                    "value": {
+                        "text": "Name",
+                        "text_with_id": "Name with ID"
+                    }
+                },
                 "base_damage_error_margin": {
                     "title": "Acceptable base error"
+                },
+                "group_sort": {
+                    "title": "Sort groups by",
+                    "value": {
+                        "default": "Default",
+                        "fight_count": "Fight count",
+                        "fighter_b_level": "Level of player B"
+                    }
                 }
             }
         },
