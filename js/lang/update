@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'zip'
+
+class Updater
+  def initialize(argv:)
+    @filepath = argv[0]
+  end
+
+  def run
+    Zip::File.open(@filepath) do |zip|
+      zip.each do |file|
+        next unless file.name.end_with?('.json')
+
+        File.binwrite(
+          file.name.split('/').last,
+          zip.read(file.name)
+        )
+      end
+    end
+
+    File.delete(@filepath)
+  end
+end
+
+# Execution
+Updater.new(argv: ARGV).run if __FILE__ == $0
