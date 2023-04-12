@@ -1708,7 +1708,7 @@ const PlayerDetailDialog = new (class extends Dialog {
                 ${ player.Mount ? `
                     <div class="detail-entry">
                         <div class="detail-item">${this.intl('mount')}</div>
-                        <div class="detail-item text-center">${ player.Mount }%</div>
+                        <div class="detail-item text-center">${ player.MountValue }%</div>
                     </div>
                 ` : '' }
                 <div class="detail-entry">

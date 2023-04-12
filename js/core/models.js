@@ -744,7 +744,8 @@ class PlayerModel {
             }
         }
         dataType.skip(58); // skip
-        this.Mount = PlayerModel.getMount(dataType.short());
+        this.Mount = dataType.short();
+        this.MountValue = PlayerModel.getMount(this.Mount);
 
         legacyDungeons.Tower = dataType.short();
 
@@ -1267,7 +1268,8 @@ class PlayerModel {
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
         this.Items = PlayerModel.loadEquipment(dataType, 1);
-        this.Mount = PlayerModel.getMount(dataType.short());
+        this.Mount = dataType.short();
+        this.MountValue = PlayerModel.getMount(this.Mount);
 
         legacyDungeons.Tower = dataType.short();
         legacyDungeons.Raid = dataType.short();
@@ -1856,7 +1858,7 @@ class PlayerModel {
 
     static getMount (value) {
         const mountMap = [
-            0, 10, 20, 30, 50
+            '', 10, 20, 30, 50
         ]
 
         return mountMap[value];
