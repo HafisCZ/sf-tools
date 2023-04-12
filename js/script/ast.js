@@ -70,7 +70,8 @@ const ExpressionEnum = new (class {
             'ExperienceCurve',
             'ExperienceTotal',
             'SoulsCurve',
-            'ScrapbookSize'
+            'ScrapbookSize',
+            'MountSizes'
         ]
     }
 
@@ -93,7 +94,8 @@ const ExpressionEnum = new (class {
                 'ExperienceCurve': EXPERIENCE_REQUIRED,
                 'ExperienceTotal': EXPERIENCE_TOTAL,
                 'SoulsCurve': SOULS_CURVE,
-                'ScrapbookSize': SCRAPBOOK_COUNT
+                'ScrapbookSize': SCRAPBOOK_COUNT,
+                'MountSizes': ['', 10, 20, 30, 50]
             };
         }
 
@@ -2332,7 +2334,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Mount': {
         expr: p => p.Mount,
-        format: (p, x) => x ? `${x}%` : '',
+        format: (p, x) => x ? `${p.MountValue}%` : '',
         difference: false
     },
     'Awards': {
