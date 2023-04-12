@@ -2334,7 +2334,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Mount': {
         expr: p => p.Mount,
-        format: (p, x) => x ? `${p.MountValue}%` : '',
+        format: (p, x) => x ? `${['', 10, 20, 30, 50][x]}%` : '',
         difference: false
     },
     'Awards': {
