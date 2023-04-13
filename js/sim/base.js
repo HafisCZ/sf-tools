@@ -200,9 +200,8 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 50,
-
-            ArmorMultiplier: 5
+            MaximumDamageReduction: 10,
+            MaximumDamageReductionMultiplier: 5
         },
         Berserker: {
             Attribute: 'Strength',
@@ -231,10 +230,10 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 4.5,
-            MaximumDamageReduction: 40,
+            MaximumDamageReduction: 20,
+            MaximumDamageReductionMultiplier: 2,
 
             DamageMultiplier: 1 / 3,
-            ArmorMultiplier: 2,
 
             SwoopChance: 25,
             SwoopChanceMin: 0,
@@ -253,10 +252,10 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 2,
             WeaponDamageMultiplier: 4.5,
-            MaximumDamageReduction: 50,
+            MaximumDamageReduction: 25,
+            MaximumDamageReductionMultiplier: 2,
 
             DamageMultiplier: 1.125,
-            ArmorMultiplier: 2,
 
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
@@ -489,9 +488,7 @@ class SimulatorModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else {
-            const armorMultiplier = this.Config.ArmorMultiplier || 1;
-
-            return Math.min(maximumReduction, armorMultiplier * this.Player.Armor / source.Player.Level);
+            return (this.Config.MaximumDamageReductionMultiplier || 1) * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
         }
     }
     
