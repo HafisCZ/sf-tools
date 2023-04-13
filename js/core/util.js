@@ -322,7 +322,7 @@ function _formatDate (date, showDate = true, showTime = true) {
     if (date == '' || date == undefined) {
         return '';
     } else {
-        date = new Date(_clamp(date, 0, 1E15));
+        date = new Date(_clamp(Number(date), 0, 1E15));
 
         const datePart = showDate ? `${_padLeft(date.getDate(), 2, '0')}.${_padLeft(date.getMonth() + 1, 2, '0')}.${date.getFullYear()}${showTime ? ' ' : ''}` : '';
         const timePart = showTime ? `${_padLeft(date.getHours(), 2, '0')}:${_padLeft(date.getMinutes(), 2, '0')}` : '';
