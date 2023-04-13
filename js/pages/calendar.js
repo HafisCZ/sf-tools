@@ -54,7 +54,7 @@ Site.ready(null, function () {
             const availableIn = _formatDuration(availableInMs, 2);
 
             const petOwned = currentPets[index];
-            const petLocked = currentPlayer && (Math.max(currentPlayer.Pets.Dungeons[petType] || 0, 2) < petIndex || (typeof condition === 'function' && !condition(currentPlayer)));
+            const petLocked = currentPlayer && (Math.max(currentPlayer.Pets.Dungeons[petType] || 0, 3) <= petIndex || (typeof condition === 'function' && !condition(currentPlayer)));
 
             const title = generateTitle(availableNow, availableIn, petOwned, petLocked);
 
