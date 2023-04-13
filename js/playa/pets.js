@@ -51,6 +51,10 @@ const PetDateUtils = {
     weekday: function (day) {
         return function * () {
             const date = new Date();
+            if (date.getDay() === day) {
+                yield date;
+            }
+
             date.setDate(date.getDate() + (((day + 7 - date.getDay()) % 7) || 7));
     
             for (let i = 0; i < PET_DATE_MAX_LOOKUP; i++) {
