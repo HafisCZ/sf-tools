@@ -1521,6 +1521,7 @@ const DatabaseManager = new (class {
                     data.idle = _try(r.idle, 'numbers');
                     data.calendar = _try(r.calenderinfo, 'numbers');
                     data.webshopid = _try(r.webshopid, 'string');
+                    data.resources = _try(r.resources, 'numbers');
 
                     // Post-process
                     if (data.save[435]) {
