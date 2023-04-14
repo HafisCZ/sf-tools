@@ -38,6 +38,11 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Statistics': [
+            'Added missing player resources'
+        ]
+    },
     'v6.3469': {
         'Statistics': [
             'Added new file export dialog',
