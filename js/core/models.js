@@ -666,8 +666,32 @@ class PlayerModel {
         }
     }
 
+    static getResources (data) {
+        const resourcesData = new ComplexDataType(data);
+        resourcesData.skip(1);
+
+        return {
+            Mushrooms: resourcesData.long(),
+            Gold: resourcesData.long(),
+            Coins: resourcesData.long(),
+            Hourglass: resourcesData.long(),
+            Wood: resourcesData.long(),
+            SecretWood: resourcesData.long(),
+            Stone: resourcesData.long(),
+            SecretStone: resourcesData.long(),
+            Metal: resourcesData.long(),
+            Crystals: resourcesData.long(),
+            ShadowFood: resourcesData.long(),
+            LightFood: resourcesData.long(),
+            EarthFood: resourcesData.long(),
+            FireFood: resourcesData.long(),
+            WaterFood: resourcesData.long()
+        }
+    }
+
     _initOwn (data) {
         const legacyDungeons = DungeonHelper.template();
+        const resources = PlayerModel.getResources(data.resources);
 
         let dataType = new ComplexDataType(data.save);
         dataType.assert(650);
@@ -857,10 +881,10 @@ class PlayerModel {
             Fortifications: dataType.long()
         }
         dataType.skip(6);
-        this.Hourglass = dataType.long();
+        this.Hourglass = dataType.long() || resources.Hourglass;
         dataType.skip(1);
-        this.Fortress.Wood = dataType.long();
-        this.Fortress.Stone = dataType.long();
+        this.Fortress.Wood = dataType.long() || resources.Wood;
+        this.Fortress.Stone = dataType.long() || resources.Stone;
 
         legacyDungeons.Normal[13] = dataType.long();
 
@@ -884,7 +908,7 @@ class PlayerModel {
             Start: dataType.long() * 1000 + data.offset
         }
         dataType.skip(4);
-        this.Coins = dataType.long();
+        this.Coins = dataType.long() || resources.Coins;
         dataType.skip(2);
         this.Fortress.Upgrades = dataType.long();
         this.Fortress.Honor = dataType.long();
@@ -970,9 +994,9 @@ class PlayerModel {
         legacyDungeons.Shadow[18] = dataType.short();
 
         dataType.skip(7);
-        this.Fortress.SecretWood = dataType.long();
+        this.Fortress.SecretWood = dataType.long() || resources.SecretWood;
         this.Fortress.SecretWoodLimit = dataType.long();
-        this.Fortress.SecretStone = dataType.long();
+        this.Fortress.SecretStone = dataType.long() || resources.SecretStone;
         this.Fortress.SecretStoneLimit = dataType.long();
         dataType.skip(1);
 
@@ -1072,14 +1096,14 @@ class PlayerModel {
         this.Pets.Rank = dataType.long();
         this.Pets.Honor = dataType.long();
         dataType.skip(20);
-        this.Metal = dataType.long();
-        this.Crystals = dataType.long();
+        this.Metal = dataType.long() || resources.Metal;
+        this.Crystals = dataType.long() || resources.Crystals;
         dataType.skip(2);
-        this.Pets.ShadowFood = dataType.long();
-        this.Pets.LightFood = dataType.long();
-        this.Pets.EarthFood = dataType.long();
-        this.Pets.FireFood = dataType.long();
-        this.Pets.WaterFood = dataType.long();
+        this.Pets.ShadowFood = dataType.long() || resources.ShadowFood;
+        this.Pets.LightFood = dataType.long() || resources.LightFood;
+        this.Pets.EarthFood = dataType.long() || resources.EarthFood;
+        this.Pets.FireFood = dataType.long() || resources.FireFood;
+        this.Pets.WaterFood = dataType.long() || resources.WaterFood;
         this.Pets.TotalLevel = shadowLevel + lightLevel + fireLevel + earthLevel + waterLevel;
 
         this.Name = data.name;

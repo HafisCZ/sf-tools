@@ -153,8 +153,8 @@ function _sequence (length, base = 0) {
 }
 
 function _arrayFromIndexes (indexes, processor, base = []) {
-    return indexes.reduce((memo, index) => {
-        memo[index] = processor(index);
+    return indexes.reduce((memo, index, i) => {
+        memo[index] = processor(index, i);
         return memo;
     }, base);
 }
