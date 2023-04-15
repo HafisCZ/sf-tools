@@ -566,7 +566,7 @@ const PetData = [
         condition: true
     },
     {
-        location: PetLocation.Magmaron,
+        location: PetLocation.Nevermoor,
         next: isPetAvailable(PetTime.night, PetDate.sunday),
         time: 'night',
         condition: true
