@@ -181,6 +181,10 @@
   padding: 1em;
 }
 
+.p-2 {
+  padding: 0.5em;
+}
+
 .py-4 {
   padding-bottom: 1em;
   padding-top: 1em;

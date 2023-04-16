@@ -1375,7 +1375,11 @@
             "continue": "Continue",
             "save": "Save",
             "close": "Close",
-            "ok": "Ok"
+            "ok": "Ok",
+            "apply": "Apply"
+        },
+        "analyzer_autofill": {
+            "title": "Available data"
         },
         "script_manual": {
             "title": "Reference manual",
