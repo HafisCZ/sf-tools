@@ -130,6 +130,32 @@ class PlayerEditor extends EditorBase {
                 }
             });
         }
+
+        this.autoFields = [
+            'armor', 'gladiator', 'portal_damage', 'resistance_fire', 'resistance_cold', 'resistance_lightning',
+            'weapon1_min', 'weapon1_max', 'weapon1_enchantment', 'weapon1_rune', 'weapon1_value',
+            'weapon2_min', 'weapon2_max', 'weapon2_enchantment', 'weapon2_rune', 'weapon2_value'
+        ];
+    }
+
+    autofill (object) {
+        this._frozen = true;
+
+        for (const [key, field] of this.fieldsEntries) {
+            if (this.autoFields.includes(key)) {
+                const value = getObjectAt(object, field.path());
+
+                if (typeof value === 'undefined') {
+                    field.clear();
+                } else {
+                    field.set(value);
+                }
+            }
+        }
+
+        this._frozen = false;
+
+        this.callback();
     }
 
     fill (object, editable) {
@@ -173,6 +199,9 @@ Site.ready(null, function (urlParams) {
 
     const $sidebarDamages = $('#sidebar-damages');
     const $sidebarDamagesContent = $('#sidebar-damages-content');
+
+    const $autofill1 = $('#player1').operator('autofill');
+    const $autofill2 = $('#player2').operator('autofill');
 
     // Button callbacks
     $buttonUpload.on('change', (fileEvent) => {
@@ -300,6 +329,18 @@ Site.ready(null, function (urlParams) {
     $buttonAnalyzeGroup.click(() => {
         if (currentGroup) {
             DialogController.open(FightStatisticalAnalysisDialog, currentGroup);
+        }
+    })
+
+    $autofill1.click(() => {
+        if (currentGroup) {
+            DialogController.open(AnalyzerAutofillDialog, (data) => playerEditorA.autofill(data));
+        }
+    })
+
+    $autofill2.click(() => {
+        if (currentGroup) {
+            DialogController.open(AnalyzerAutofillDialog, (data) => playerEditorB.autofill(data));
         }
     })
 
