@@ -1133,6 +1133,7 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
+        "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
