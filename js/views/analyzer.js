@@ -230,7 +230,7 @@ const AnalyzerAutofillDialog = new (class extends Dialog {
                 <div class="ui inverted form">
                     <div class="field">
                         <div class="ui inverted input">
-                            <input type="text" data-op="search">
+                            <input type="text" data-op="search" placeholder="${this.intl('search')}">
                         </div>
                     </div>
                 </div>
