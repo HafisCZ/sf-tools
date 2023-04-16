@@ -1379,7 +1379,8 @@
             "apply": "Apply"
         },
         "analyzer_autofill": {
-            "title": "Available data"
+            "title": "Available data",
+            "search": "Search by dungeon or boss name ..."
         },
         "script_manual": {
             "title": "Reference manual",
