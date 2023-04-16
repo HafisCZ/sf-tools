@@ -188,18 +188,18 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
       this.fighterB = fighterB;
 
       this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState }, index, array) => ({
-          Attacker: attacker,
-          Target: target,
+          'Attacker': attacker,
+          'Target': target,
           'Attacker State': attackerSpecialState,
           'Target State': targetSpecialState,
           'Player 1 Attacking': attacker.ID === fighterA.ID,
           'Player 2 Attacking': attacker.ID === fighterB.ID,
-          Critical: attackCrit,
-          Missed: attackMissed,
-          Damage: attackDamage,
-          Rage: attackRage,
-          Special: attackSpecial,
-          Type: attackType,
+          'Critical': attackCrit,
+          'Missed': attackMissed,
+          'Damage': attackDamage,
+          'Rage': attackRage,
+          'Special': attackSpecial,
+          'Type': attackType,
           'Last Round': index === array.length - 1
       }))).flat();
 
@@ -209,6 +209,160 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
 
       this._inject();
   }
+})();
+
+const AnalyzerAutofillDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            key: 'analyzer_autofill',
+            dismissable: true,
+            opacity: 0
+        })
+    }
+
+    _createModal () {
+        return `
+            <div class="small bordered inverted dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="ui inverted form">
+                    <div class="field">
+                        <div class="ui inverted input">
+                            <input type="text" data-op="search">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui inverted form flex flex-col gap-4 pr-4 overflow-y-scroll" data-op="content" style="height: 50vh;"></div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$content = this.$parent.operator('content');
+        
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        })
+
+        this.$search = this.$parent.operator('search');
+        this.$search.on('input change', () => {
+            this._refresh();
+        })
+
+        this._generateContent();
+        this._refresh();
+    }
+
+    _refresh () {
+        const term = this.$search.val().trim().toLowerCase();
+        if (term.length > 0) {
+            for (const item of this.items) {
+                item.element[item.dungeon.includes(term) || item.boss.includes(term) ? 'show' : 'hide']();
+            }
+        } else {
+            for (const item of this.items) {
+                item.element.show();
+            }
+        }
+    }
+
+    _getBossRunes (runes) {
+        let values = [0, 0, 0];
+    
+        if (runes && runes.res) {
+            if (Array.isArray(runes.res)) {
+                values = runes.res;
+            } else {
+                values[runes.type - 40] = runes.res;
+            }
+        }
+
+        return {
+            Health: 0,
+            ResistanceFire: values[0],
+            ResistanceCold: values[1],
+            ResistanceLightning: values[2]
+        }
+    }
+
+    _convert (dungeon, data) {
+        return {
+            Armor: data.armor || ((dungeon.armor_multiplier || 1) * (data.level * CONFIG.fromIndex(data.class).MaximumDamageReduction)),
+            Dungeons: { Group: 0 },
+            Fortress: { Gladiator: data.gladiator || 0 },
+            Runes: this._getBossRunes(data.runes),
+            Items: {
+                Hand: {},
+                Wpn1: {
+                    AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
+                    Attributes: { 2: data.runes ? data.runes.damage : 0 },
+                    DamageMax: data.max,
+                    DamageMin: data.min,
+                    HasEnchantment: false
+                },
+                Wpn2: {
+                    AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
+                    Attributes: { 2: data.runes ? data.runes.damage : 0 },
+                    DamageMax: data.max,
+                    DamageMin: data.min,
+                    HasEnchantment: false
+                }
+            }
+        };
+    }
+
+    _generateContent () {
+        for (const dungeon of Object.values(DUNGEON_DATA)) {
+            dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
+    
+            for (const enemy of Object.values(dungeon.floors)) {
+                enemy.name = intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
+            }
+        }
+
+        this.items = [];
+        this.$content.empty();
+
+        for (const dungeon of _sortAsc(Object.values(DUNGEON_DATA), ({ pos }) => pos).filter(({ floors }) => Object.keys(floors).length > 0)) {
+            for (const boss of Object.values(dungeon.floors)) {
+                const $element = $(`
+                    <div class="!border-radius-1 border-gray p-2 background-dark:hover cursor-pointer flex gap-4 items-center">
+                        <img class="ui image" style="width: 3em; height: 3em;" src="res/class${boss.class}.png">
+                        <div>
+                            <div class="text-gray">${dungeon.name}</div>
+                            <div>${boss.pos}. ${boss.name}</div>
+                        </div>
+                        <div style="margin-left: auto; mr-1">
+                            <i class="ui big ${dungeon.shadow ? 'users purple' : 'user'} disabled icon"></i>
+                        </div>
+                    </div>
+                `);
+
+                $element.click(() => {
+                    this.close();
+                    this.callback(this._convert(dungeon, boss));
+                })
+
+                this.$content.append($element);
+
+                this.items.push({
+                    dungeon: dungeon.name.toLowerCase(),
+                    boss: boss.name.toLowerCase(),
+                    element: $element
+                })
+            }
+        }
+    }
+
+    _applyArguments (callback) {
+        this.callback = callback;
+
+        this.$search.val('');
+        this._refresh();
+    }
 })();
 
 // Custom fighter
