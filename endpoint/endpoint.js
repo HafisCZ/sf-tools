@@ -10,12 +10,6 @@ class EndpointController {
                 this.window = this.$iframe.get(0).contentWindow;
                 await this.window.load();
 
-                if (SiteOptions.debug) {
-                    this.window.callback['log'] = function (type, data) {
-                        Logger.log('DEBUGGR', `${type}: ${data}`);
-                    }
-                }
-
                 Logger.log('ECLIENT', 'Client started');
                 resolve(this);
             });
@@ -29,83 +23,48 @@ class EndpointController {
         this.$iframe.attr('src', '');
     }
 
-    login (server, username, password, callback, error) {
-        this.window.callback['login'] = callback;
-        this.window.error['login'] = error;
-
-        Logger.log('ECLIENT', `Logging in as ${ username }@${ server }`);
-        this.window.login(server, username, password);
+    onProgress (callback) {
+        this.window.callback['progress'] = callback;
     }
 
-    login_query_only (server, username, password, callback, error) {
-        // Bind error callbacks
-        this.window.error['login'] = error;
-        this.window.error['query'] = error;
+    login (server, username, password) {
+        return new Promise((resolve, reject) => {
+            this.window.callback['login'] = resolve;
+            this.window.error['login'] = reject;
 
-        // Bind success callbacks
-        this.window.callback['query'] = callback;
-        this.window.callback['login'] = () => {
-            // Fire collect on login success
-            Logger.log('ECLIENT', `Collecting data`);
-            this.window.query_collect();
-        }
-
-        // Login
-        Logger.log('ECLIENT', `Logging in as ${ username }@${ server }`);
-        this.window.login(server, username, password);
+            Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
+            this.window.login(server, username, password);
+        })
     }
 
-    login_query_many (server, username, password, filter, callback, error, progress) {
-        // Bind error callbacks
-        this.window.error['login'] = error;
-        this.window.error['query'] = error;
+    query (characterNames) {
+        return new Promise((resolve, reject) => {
+            this.window.callback['query'] = resolve;
+            this.window.error['query'] = reject;
 
-        // Bind success callbacks
-        this.window.callback['progress'] = progress;
-        this.window.callback['query'] = callback;
-        this.window.callback['login'] = (text) => {
-            // Query all
-            Logger.log('ECLIENT', `Query many`);
-            this.window.query_many(filter(text));
-        }
-
-        // Login
-        Logger.log('ECLIENT', `Logging in as ${ username }@${ server }`);
-        this.window.login(server, username, password);
+            Logger.log('ECLIENT', 'Query many');
+            this.window.query_many(characterNames.join(','));
+        })
     }
 
-    login_query_hall_of_fame (server, username, password, callback, error, progress) {
-        // Bind error callbacks
-        this.window.error['login'] = error;
-        this.window.error['query'] = error;
+    querySelf () {
+        return new Promise((resolve, reject) => {
+            this.window.callback['query'] = resolve;
+            this.window.error['query'] = reject;
 
-        // Bind success callbacks
-        this.window.callback['progress'] = progress;
-        this.window.callback['query'] = callback;
-        this.window.callback['login'] = () => {
-            // Query all
-            Logger.log('ECLIENT', `Query HOF`);
+            Logger.log('ECLIENT', 'Query self');
+            this.window.query_self();
+        })
+    }
+
+    queryHOF () {
+        return new Promise((resolve, reject) => {
+            this.window.callback['query'] = resolve;
+            this.window.error['query'] = reject;
+
+            Logger.log('ECLIENT', 'Query HOF');
             this.window.query_hall_of_fame();
-        }
-
-        // Login
-        Logger.log('ECLIENT', `Logging in as ${ username }@${ server }`);
-        this.window.login(server, username, password);
-    }
-
-    query_single (id, callback, error) {
-        this.window.callback['query_single'] = callback;
-        this.window.error['query'] = error;
-
-        Logger.log('ECLIENT', `Querying character: ${ id }`);
-        this.window.query_single(id);
-    }
-
-    query_collect (callback) {
-        this.window.callback['query'] = callback;
-
-        Logger.log('ECLIENT', `Collecting data`);
-        this.window.query_collect();
+        })
     }
 }
 
@@ -128,9 +87,6 @@ const EndpointDialog = new (class extends Dialog {
         this.$step4.hide();
         this.$step5.hide();
         this.$step6.hide();
-        
-        // Clear variables
-        this.downloading = new Set();
 
         // Toggle temporary capture checkbox
         this.$temporary.checkbox('set unchecked');
@@ -158,22 +114,6 @@ const EndpointDialog = new (class extends Dialog {
         });
     }
 
-    _setDownloading (name) {
-        this.downloading.add(name);
-        if (this.downloading.size > 0) {
-            this.$import.attr('disabled', 'true');
-            this.$import.addClass('loading');
-        }
-    }
-
-    _removeDownloading (name) {
-        this.downloading.delete(name);
-        if (this.downloading.size == 0) {
-            this.$import.removeAttr('disabled');
-            this.$import.removeClass('loading');
-        }
-    }
-
     _termsAccepted () {
         return SiteOptions.endpoint_terms_accepted;
     }
@@ -183,6 +123,12 @@ const EndpointDialog = new (class extends Dialog {
 
         this.$step0.hide();
         this.$step1.show();
+    }
+
+    _progress (percent) {
+        this.$step4.hide();
+        this.$step5.show();
+        this.$progress.progress({ percent })
     }
 
     _createBindings () {
@@ -235,17 +181,15 @@ const EndpointDialog = new (class extends Dialog {
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
-        this.$import = this.$parent.find('[data-op="import"]');
         this.$login = this.$parent.find('[data-op="login"]');
 
         this.endpoint = undefined;
 
         this.$parent.find('[data-op="back"]').click(() => this.close(false));
 
+        this.$import = this.$parent.find('[data-op="import"]');
         this.$import.click(() => {
-            this.$step4.show();
-            this.$step3.hide();
-            this.endpoint.query_collect((text) => this._import(text));
+            this._importSelection();
         });
 
         const executeLogin = async () => {
@@ -271,6 +215,8 @@ const EndpointDialog = new (class extends Dialog {
                     this.$step2.show();
                     await this.endpoint.load();
 
+                    this.endpoint.onProgress((progress) => this._progress(progress));
+
                     this.$step2.hide();
                 }
 
@@ -278,15 +224,15 @@ const EndpointDialog = new (class extends Dialog {
 
                 const mode = this.$mode.dropdown('get value');
                 if (mode === 'own') {
-                    this._funcLoginSingle(server, username, password);
+                    this._funcLoginSelf(server, username, password);
                 } else if (mode === 'guild') {
-                    this._funcLoginAll(server, username, password, 'members');
+                    this._funcLoginMany(server, username, password, 'members');
                 } else if (mode === 'friends') {
-                    this._funcLoginAll(server, username, password, 'friends');
+                    this._funcLoginMany(server, username, password, 'friends');
                 } else if (mode === 'hall_of_fame') {
                     this._funcLoginHOF(server, username, password);
                 } else /* default */ {
-                    this._funcLogin(server, username, password);
+                    this._funcLoginSelect(server, username, password);
                 }
             }
         }
@@ -308,99 +254,83 @@ const EndpointDialog = new (class extends Dialog {
         });
     }
 
-    _funcLoginSingle (server, username, password) {
-        this.endpoint.login_query_only(server, username, password, (text) => this._import(text), (error) => {
+    _funcLoginSelf (server, username, password) {
+        this.endpoint.login(server, username, password)
+            .then(() => this.endpoint.querySelf())
+            .then((text) => this._import(text))
+            .catch((error) => {
             this.$step4.hide();
             this._showError(error);
-        });
+        })
     };
 
     _funcLoginHOF (server, username, password) {
-        this.endpoint.login_query_hall_of_fame(server, username, password, (text) => this._import(text), (error) => {
+        this.endpoint.login(server, username, password)
+            .then(() => this.endpoint.queryHOF())
+            .then((text) => this._import(text))
+            .catch((error) => {
             this.$step4.hide();
-            this.$step5.hide();
             this._showError(error);
-        }, (percent) => {
-            this.$step4.hide();
-            this.$step5.show();
-            this.$progress.progress({ percent })
-        });
+        })
     }
 
-    _funcLoginAll (server, username, password, kind = 'members') {
-        this.endpoint.login_query_many(server, username, password, (text) => text.split(';')[kind === 'members' ? 0 : 1], (text) => this._import(text), (error) => {
+    _funcLoginMany (server, username, password, kind = 'members') {
+        this.endpoint.login(server, username, password)
+            .then((text) => this.endpoint.query(text.split(';')[kind === 'members' ? 0 : 1].split(',')))
+            .then((text) => this._import(text))
+            .catch((error) => {
             this.$step4.hide();
-            this.$step5.hide();
             this._showError(error);
-        }, (percent) => {
-            this.$step4.hide();
-            this.$step5.show();
-            this.$progress.progress({ percent })
-        });
+        })
     };
 
-    _funcLogin (server, username, password) {
-        this.endpoint.login(server, username, password, (text) => {
+    _funcLoginSelect (server, username, password) {
+        this.endpoint.login(server, username, password)
+            .then((text) => {
+            let html = '';
+            for (const [index, names] of Object.entries(text.split(';').map((list) => list.split(',')))) {
+                const icon = index === 0 ? 'user cirle' : 'thumbs up';
+                for (const name of names) {
+                    html += `
+                        <div class="item">
+                            <div class="ui inverted checkbox w-full">
+                                <input type="checkbox" name="${name}">
+                                <label for="${name}">
+                                    <div class="flex justify-content-between">
+                                        <span>${name}</span>
+                                        <i class="ui ${icon} icon"></i>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            this.$list.html(html);
+            this.$list.find('.checkbox').checkbox();
+            this.$list.find('.checkbox').first().checkbox('set checked', 'true').checkbox('set disabled');
+
             this.$step4.hide();
             this.$step3.show();
-
-            let content = '';
-            const [members, friends] = text.split(';');
-
-            for (const name of members.split(',')) {
-                content += `
-                    <div class="item">
-                        <div class="ui inverted checkbox w-full">
-                            <input type="checkbox" name="${ name }">
-                            <label for="${ name }">
-                                <div class="flex justify-content-between">
-                                    ${ name }
-                                    <i class="ui user circle icon"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                `;
-            }
-
-            for (const name of friends.split(',').slice(1)) {
-                content += `
-                    <div class="item">
-                        <div class="ui inverted checkbox w-full">
-                            <input type="checkbox" name="${ name }">
-                            <label for="${ name }">
-                                <div class="flex justify-content-between">
-                                    ${ name }
-                                    <i class="ui thumbs up icon"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                `;
-            }
-
-            this.$list.html(content);
-            $('.list .checkbox').checkbox({
-                uncheckable: false
-            }).first().checkbox('set checked', 'true').checkbox('set disabled');
-
-            for (const checkbox of $('.list .checkbox').slice(1)) {
-                const name = $(checkbox).find('input').attr('name');
-
-                $(checkbox).checkbox('setting', 'onChecked', () => {
-                    this._setDownloading(name);
-                    this.endpoint.query_single(name, () => {
-                        this._removeDownloading(name);
-                    }, (error) => {
-                        this.$step3.hide();
-                        this._showError(error);
-                    });
-                })
-            }
-        }, (error) => {
+        }).catch((error) => {
             this.$step4.hide();
             this._showError(error);
-        });
+        })
+    }
+
+    _importSelection () {
+        this.$step4.show();
+        this.$step3.hide();
+
+        const names = this.$list.find('.checkbox input:checked').get().map((input) => input.getAttribute('name'));
+
+        this.endpoint.query(names)
+            .then((text) => this._import(text))
+            .catch((error) => {
+            this.$step4.hide();
+            this._showError(error);
+        })
     }
 
     close (actionSuccess) {
