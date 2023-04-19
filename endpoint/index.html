@@ -41,10 +41,6 @@
                 }));
             }
 
-            window.query_single = function (id) {
-                window.unity.SendMessage('Controller', 'QuerySingle', id);
-            }
-
             window.query_many = function (ids) {
                 window.unity.SendMessage('Controller', 'QueryMany', ids);
             }
@@ -53,8 +49,8 @@
                 window.unity.SendMessage('Controller', 'QueryHallOfFame');
             }
 
-            window.query_collect = function () {
-                window.unity.SendMessage('Controller', 'QuerySingleCollect');
+            window.query_self = function () {
+                window.unity.SendMessage('Controller', 'QuerySelf');
             }
         </script>
     </body>
