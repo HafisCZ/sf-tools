@@ -1,6 +1,14 @@
 class EndpointController {
-    constructor ($iframe) {
+    constructor ($iframe, progressCallback) {
         this.$iframe = $iframe;
+        this.progressCallback = progressCallback;
+    }
+
+    async destroy () {
+        await this.window.destroy();
+
+        Logger.log('ECLIENT', 'Client stopped');
+        this.$iframe.attr('src', '');
     }
 
     load () {
@@ -16,43 +24,34 @@ class EndpointController {
         }) 
     }
 
-    async destroy () {
-        await this.window.destroy();
-
-        Logger.log('ECLIENT', 'Client stopped');
-        this.$iframe.attr('src', '');
-    }
-
-    login (server, username, password) {
-        Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
-
-        return new Promise((resolve, reject) => {
-            this.window.callback = (data) => {
-                if (data.error) {
-                    reject(data.error);
-                } else {
-                    resolve(data);
-                }
-            }
-
-            this.window.login(server, username, password);
-        })
-    }
-
-    query (progress, characterNames) {
-        Logger.log('ECLIENT', 'Query many');
-
+    _promisify (callback) {
         return new Promise((resolve, reject) => {
             this.window.callback = (data) => {
                 if (data.error) {
                     reject(data.error);
                 } else if (data.progress) {
-                    progress(data.progress);
+                    this.progressCallback(data.progress);
                 } else {
                     resolve(data);
                 }
             }
 
+            callback();
+        })
+    }
+
+    login (server, username, password) {
+        Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
+
+        return this._promisify(() => {
+            this.window.login(server, username, password);
+        })
+    }
+
+    query (characterNames) {
+        Logger.log('ECLIENT', 'Query many');
+
+        return this._promisify(() => {
             this.window.query_many(characterNames.join(','));
         })
     }
@@ -60,33 +59,15 @@ class EndpointController {
     querySelf () {
         Logger.log('ECLIENT', 'Query self');
 
-        return new Promise((resolve, reject) => {
-            this.window.callback = (data) => {
-                if (data.error) {
-                    reject(data.error);
-                } else {
-                    resolve(data);
-                }
-            }
-
+        return this._promisify(() => {
             this.window.query_self();
         })
     }
 
-    queryHOF (progress) {
+    queryHOF () {
         Logger.log('ECLIENT', 'Query HOF');
 
-        return new Promise((resolve, reject) => {
-            this.window.callback = (data) => {
-                if (data.error) {
-                    reject(data.error);
-                } else if (data.progress) {
-                    progress(data.progress);
-                } else {
-                    resolve(data);
-                }
-            }
-
+        return this._promisify(() => {
             this.window.query_hall_of_fame();
         })
     }
@@ -147,12 +128,6 @@ const EndpointDialog = new (class extends Dialog {
 
         this.$step0.hide();
         this.$step1.show();
-    }
-
-    _progress (percent) {
-        this.$step4.hide();
-        this.$step5.show();
-        this.$progress.progress({ percent })
     }
 
     _createBindings () {
@@ -234,7 +209,14 @@ const EndpointDialog = new (class extends Dialog {
                 this.$step1.hide();
 
                 if (typeof this.endpoint === 'undefined') {
-                    this.endpoint = new EndpointController(this.$iframe);
+                    this.endpoint = new EndpointController(
+                        this.$iframe,
+                        (percent) => {
+                            this.$step4.hide();
+                            this.$step5.show();
+                            this.$progress.progress({ percent })
+                        }
+                    );
 
                     this.$step2.show();
                     await this.endpoint.load();
@@ -288,7 +270,7 @@ const EndpointDialog = new (class extends Dialog {
 
     _funcLoginHOF (server, username, password) {
         this.endpoint.login(server, username, password)
-            .then(() => this.endpoint.queryHOF((p) => this._progress(p)))
+            .then(() => this.endpoint.queryHOF())
             .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
@@ -298,7 +280,7 @@ const EndpointDialog = new (class extends Dialog {
 
     _funcLoginMany (server, username, password, kind = 'members') {
         this.endpoint.login(server, username, password)
-            .then((data) => this.endpoint.query((p) => this._progress(p), data[kind]))
+            .then((data) => this.endpoint.query(data[kind]))
             .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
@@ -346,7 +328,7 @@ const EndpointDialog = new (class extends Dialog {
 
         const names = this.$list.find('.checkbox input:checked').get().map((input) => input.getAttribute('name'));
 
-        this.endpoint.query((p) => this._progress(p), names)
+        this.endpoint.query(names)
             .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
