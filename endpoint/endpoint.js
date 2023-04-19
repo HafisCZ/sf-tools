@@ -23,46 +23,70 @@ class EndpointController {
         this.$iframe.attr('src', '');
     }
 
-    onProgress (callback) {
-        this.window.callback['progress'] = callback;
-    }
-
     login (server, username, password) {
-        return new Promise((resolve, reject) => {
-            this.window.callback['login'] = resolve;
-            this.window.error['login'] = reject;
+        Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
 
-            Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
+        return new Promise((resolve, reject) => {
+            this.window.callback = (data) => {
+                if (data.error) {
+                    reject(data.error);
+                } else {
+                    resolve(data);
+                }
+            }
+
             this.window.login(server, username, password);
         })
     }
 
-    query (characterNames) {
-        return new Promise((resolve, reject) => {
-            this.window.callback['query'] = resolve;
-            this.window.error['query'] = reject;
+    query (progress, characterNames) {
+        Logger.log('ECLIENT', 'Query many');
 
-            Logger.log('ECLIENT', 'Query many');
+        return new Promise((resolve, reject) => {
+            this.window.callback = (data) => {
+                if (data.error) {
+                    reject(data.error);
+                } else if (data.progress) {
+                    progress(data.progress);
+                } else {
+                    resolve(data);
+                }
+            }
+
             this.window.query_many(characterNames.join(','));
         })
     }
 
     querySelf () {
-        return new Promise((resolve, reject) => {
-            this.window.callback['query'] = resolve;
-            this.window.error['query'] = reject;
+        Logger.log('ECLIENT', 'Query self');
 
-            Logger.log('ECLIENT', 'Query self');
+        return new Promise((resolve, reject) => {
+            this.window.callback = (data) => {
+                if (data.error) {
+                    reject(data.error);
+                } else {
+                    resolve(data);
+                }
+            }
+
             this.window.query_self();
         })
     }
 
-    queryHOF () {
-        return new Promise((resolve, reject) => {
-            this.window.callback['query'] = resolve;
-            this.window.error['query'] = reject;
+    queryHOF (progress) {
+        Logger.log('ECLIENT', 'Query HOF');
 
-            Logger.log('ECLIENT', 'Query HOF');
+        return new Promise((resolve, reject) => {
+            this.window.callback = (data) => {
+                if (data.error) {
+                    reject(data.error);
+                } else if (data.progress) {
+                    progress(data.progress);
+                } else {
+                    resolve(data);
+                }
+            }
+
             this.window.query_hall_of_fame();
         })
     }
@@ -215,8 +239,6 @@ const EndpointDialog = new (class extends Dialog {
                     this.$step2.show();
                     await this.endpoint.load();
 
-                    this.endpoint.onProgress((progress) => this._progress(progress));
-
                     this.$step2.hide();
                 }
 
@@ -257,7 +279,7 @@ const EndpointDialog = new (class extends Dialog {
     _funcLoginSelf (server, username, password) {
         this.endpoint.login(server, username, password)
             .then(() => this.endpoint.querySelf())
-            .then((text) => this._import(text))
+            .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
             this._showError(error);
@@ -266,8 +288,8 @@ const EndpointDialog = new (class extends Dialog {
 
     _funcLoginHOF (server, username, password) {
         this.endpoint.login(server, username, password)
-            .then(() => this.endpoint.queryHOF())
-            .then((text) => this._import(text))
+            .then(() => this.endpoint.queryHOF((p) => this._progress(p)))
+            .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
             this._showError(error);
@@ -276,8 +298,8 @@ const EndpointDialog = new (class extends Dialog {
 
     _funcLoginMany (server, username, password, kind = 'members') {
         this.endpoint.login(server, username, password)
-            .then((text) => this.endpoint.query(text.split(';')[kind === 'members' ? 0 : 1].split(',')))
-            .then((text) => this._import(text))
+            .then((data) => this.endpoint.query((p) => this._progress(p), data[kind]))
+            .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
             this._showError(error);
@@ -286,10 +308,10 @@ const EndpointDialog = new (class extends Dialog {
 
     _funcLoginSelect (server, username, password) {
         this.endpoint.login(server, username, password)
-            .then((text) => {
+            .then((data) => {
             let html = '';
-            for (const [index, names] of Object.entries(text.split(';').map((list) => list.split(',')))) {
-                const icon = index === 0 ? 'user cirle' : 'thumbs up';
+
+            for (const [icon, names] of Object.entries({ 'user cirle': data.members, 'thumbs up': data.friends })) {
                 for (const name of names) {
                     html += `
                         <div class="item">
@@ -309,7 +331,6 @@ const EndpointDialog = new (class extends Dialog {
 
             this.$list.html(html);
             this.$list.find('.checkbox').checkbox();
-            this.$list.find('.checkbox').first().checkbox('set checked', 'true').checkbox('set disabled');
 
             this.$step4.hide();
             this.$step3.show();
@@ -325,8 +346,8 @@ const EndpointDialog = new (class extends Dialog {
 
         const names = this.$list.find('.checkbox input:checked').get().map((input) => input.getAttribute('name'));
 
-        this.endpoint.query(names)
-            .then((text) => this._import(text))
+        this.endpoint.query((p) => this._progress(p), names)
+            .then((data) => this._import(data.data))
             .catch((error) => {
             this.$step4.hide();
             this._showError(error);
