@@ -48,6 +48,14 @@ class EndpointController {
         })
     }
 
+    continueLogin (server, username, id) {
+        Logger.log('ECLIENT', `Continuing logging in as ${username}@${server}`);
+
+        return this._promisify(() => {
+            this.window.continue_login(server, username, id);
+        })
+    }
+
     query (characterNames) {
         Logger.log('ECLIENT', 'Query many');
 
@@ -92,6 +100,7 @@ const EndpointDialog = new (class extends Dialog {
         this.$step4.hide();
         this.$step5.hide();
         this.$step6.hide();
+        this.$step7.hide();
 
         // Toggle temporary capture checkbox
         this.$temporary.checkbox('set unchecked');
@@ -152,6 +161,8 @@ const EndpointDialog = new (class extends Dialog {
         this.$step5 = this.$parent.find('[data-op="step5"]');
         // Error
         this.$step6 = this.$parent.find('[data-op="step6"]');
+        // Character Selector
+        this.$step7 = this.$parent.find('[data-op="step7"]');
 
         this.$progress = this.$step5.find('.ui.progress');
 
@@ -180,6 +191,7 @@ const EndpointDialog = new (class extends Dialog {
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
+        this.$characterList = this.$parent.operator('character-list');
         this.$login = this.$parent.find('[data-op="login"]');
 
         this.endpoint = undefined;
@@ -194,16 +206,22 @@ const EndpointDialog = new (class extends Dialog {
         const executeLogin = async () => {
             var username = this.$username.val();
             var password = this.$password.val();
-            var server = '';
+            var server = null;
 
-            if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
-                [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
+            if (username.includes('@')) {
+                // Separate username & server combo
+                [ username, server ] = username.split('@', 2);
             } else {
-                Toast.warn(this.intl('user_error.title'), this.intl('user_error.message'));
-                return;
+                // TODO: Add correct server
+                server = null;
             }
 
-            if (username.length < 3 || password.length < 3 || !/\.sfgame\./.test(server)) {
+            const usernameTooShort = username.length < 3;
+            const passwordTooShort = password.length < 3;
+            const serverInvalid = !/\.(?:sfgame|playa-games)\./.test(server);
+
+            if (usernameTooShort || passwordTooShort || serverInvalid) {
+                Toast.warn(this.intl('user_error.title'), this.intl('user_error.message'));
                 return;
             } else {
                 this.$step1.hide();
@@ -226,17 +244,19 @@ const EndpointDialog = new (class extends Dialog {
 
                 this.$step4.show();
 
+                const promise = this._funcLogin(server, username, password);
+                
                 const mode = this.$mode.dropdown('get value');
                 if (mode === 'own') {
-                    this._funcLoginSelf(server, username, password);
+                    this._funcCaptureSelf(promise);
                 } else if (mode === 'guild') {
-                    this._funcLoginMany(server, username, password, 'members');
+                    this._funcCaptureMany(promise, 'members');
                 } else if (mode === 'friends') {
-                    this._funcLoginMany(server, username, password, 'friends');
+                    this._funcCaptureMany(promise, 'friends');
                 } else if (mode === 'hall_of_fame') {
-                    this._funcLoginHOF(server, username, password);
+                    this._funcCaptureHOF(promise);
                 } else /* default */ {
-                    this._funcLoginSelect(server, username, password);
+                    this._funcCaptureSelect(promise);
                 }
             }
         }
@@ -258,39 +278,89 @@ const EndpointDialog = new (class extends Dialog {
         });
     }
 
-    _funcLoginSelf (server, username, password) {
-        this.endpoint.login(server, username, password)
-            .then(() => this.endpoint.querySelf())
-            .then((data) => this._import(data.data))
-            .catch((error) => {
+    async _getServer (id) {
+        if (typeof this.serverList === 'undefined') {
+            this.serverList = await fetch('/js/playa/servers.json').then((data) => data.json());
+        }
+
+        return this.serverList[id];
+    }
+
+    _funcLogin (server, username, password) {
+        return this.endpoint.login(server, username, password).then((data) => {
+            return new Promise(async (resolve, reject) => {
+                if (data.type === 'sso') {
+                    this.$characterList.empty();
+
+                    for (const { id, name, server_id } of data.characters) {
+                        const server = await this._getServer(server_id);
+                        if (!server) {
+                            continue;
+                        }
+
+                        const $element = $(`
+                            <div class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                                <div>
+                                    <div>${name}</div>
+                                    <div class="text-gray">${server}</div>
+                                </div>
+                            </div>
+                        `);
+                        
+                        $element.click(() => {
+                            this.$step7.hide();
+                            this.$step4.show();
+
+                            this.endpoint.continueLogin(server, name, id)
+                            .then((data) => resolve(data))
+                            .catch((error) => reject(error));
+                        });
+
+                        this.$characterList.append($element);
+                    }
+    
+                    this.$step4.hide();
+                    this.$step7.show();
+                } else {
+                    resolve(data);
+                }
+            })
+        });
+    }
+
+    _funcCaptureSelf (promise) {
+        promise
+        .then(() => this.endpoint.querySelf())
+        .then((data) => this._import(data.data))
+        .catch((error) => {
             this.$step4.hide();
             this._showError(error);
         })
     };
 
-    _funcLoginHOF (server, username, password) {
-        this.endpoint.login(server, username, password)
-            .then(() => this.endpoint.queryHOF())
-            .then((data) => this._import(data.data))
-            .catch((error) => {
+    _funcCaptureHOF (promise) {
+        promise
+        .then(() => this.endpoint.queryHOF())
+        .then((data) => this._import(data.data))
+        .catch((error) => {
             this.$step4.hide();
             this._showError(error);
         })
     }
 
-    _funcLoginMany (server, username, password, kind = 'members') {
-        this.endpoint.login(server, username, password)
-            .then((data) => this.endpoint.query(data[kind]))
-            .then((data) => this._import(data.data))
-            .catch((error) => {
+    _funcCaptureMany (promise, kind = 'members') {
+        promise
+        .then((data) => this.endpoint.query(data[kind]))
+        .then((data) => this._import(data.data))
+        .catch((error) => {
             this.$step4.hide();
             this._showError(error);
         })
     };
 
-    _funcLoginSelect (server, username, password) {
-        this.endpoint.login(server, username, password)
-            .then((data) => {
+    _funcCaptureSelect (promise) {
+        promise
+        .then((data) => {
             let html = '';
 
             for (const [icon, names] of Object.entries({ 'user cirle': data.members, 'thumbs up': data.friends })) {
@@ -356,6 +426,7 @@ const EndpointDialog = new (class extends Dialog {
                 <div data-op="step4">${this._createStep4()}</div>
                 <div data-op="step5">${this._createStep5()}</div>
                 <div data-op="step6">${this._createStep6()}</div>
+                <div data-op="step7">${this._createStep7()}</div>
             </div>
         `;
     }
@@ -438,6 +509,18 @@ const EndpointDialog = new (class extends Dialog {
                 <button class="ui secondary button" data-op="back">${this.intl('cancel')}</button>
                 <button class="ui !text-black !background-orange button" data-op="import">${this.intl('continue')}</button>
             </div>
+        `;
+    }
+
+    // Player selection screen
+    _createStep7 () {
+        return `
+            <h2 class="ui header centered inverted">${this.intl('step7.title')}</h2>
+            <hr/>
+            <div data-op="character-list" class="text-white" style="height: 30em; overflow-y: auto;">
+
+            </div>
+            <button class="ui secondary button w-full" data-op="back">${this.intl('cancel')}</button>
         `;
     }
 
