@@ -1345,6 +1345,9 @@
             "title": "Contacting the server for information",
             "message": "Fetching data"
         },
+        "step7": {
+            "title": "Select your character"
+        },
         "user_error": {
             "title": "Your user name or password is not valid",
             "message": "Please ensure that it is in correct format (username@url)"

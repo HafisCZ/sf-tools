@@ -8,6 +8,8 @@
         <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
         <script src="build/endpoint.loader.js"></script>
         <script type="text/javascript">
+            const version = '151000000000';
+
             window.callback = null;
             window.unity = null;
 
@@ -32,11 +34,20 @@
 
             window.login = function (server, username, password) {
                 window.unity.SendMessage('Controller', 'Login', JSON.stringify({
-                    server: server,
-                    username: username,
-                    password: password,
-                    version: '151000000000'
+                    server,
+                    username,
+                    password,
+                    version
                 }));
+            }
+
+            window.continue_login = function (server, username, id) {
+                window.unity.SendMessage('Controller', 'ContinueLogin', JSON.stringify({
+                    server,
+                    username,
+                    id,
+                    version
+                }))
             }
 
             window.query_many = function (ids) {
