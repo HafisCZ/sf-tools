@@ -1353,8 +1353,8 @@
             "message": "Please ensure that it is in correct format (username@url)"
         },
         "errors": {
-            "network_error": "Server cannot be reached",
-            "name_not_whitelisted_error": "Player not whitelisted",
+            "error_unreachable": "Server cannot be reached",
+            "error_malformed_url": "Server URL is not valid",
             "error_wrong_pass": "Incorrect password",
             "error_player_not_found": "Character was not found on the server",
             "error_sessionid_invalid": "Session expired or interrupted by another device"
