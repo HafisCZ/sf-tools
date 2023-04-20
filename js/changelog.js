@@ -40,7 +40,8 @@ const SIMULATOR_NOTICES = [
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
-            'Added missing player resources'
+            'Added missing player resources',
+            'Fixed manual dialog not closable via close button'
         ],
         'Pet Simulator': [
             'Fixed display of gladiator % damage'

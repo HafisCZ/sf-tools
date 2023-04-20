@@ -1976,7 +1976,7 @@ const ScriptManualDialog = new (class extends Dialog {
     _createBindings () {
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
-            this.hide();
+            this.close();
         })
     }
 })()
