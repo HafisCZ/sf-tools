@@ -44,6 +44,9 @@ const CHANGELOG = {
         ],
         'Pet Simulator': [
             'Fixed display of gladiator % damage'
+        ],
+        'Endpoint': [
+            'Added support for ???'
         ]
     },
     'v6.3469': {
