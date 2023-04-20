@@ -292,7 +292,7 @@ const EndpointDialog = new (class extends Dialog {
                 if (data.type === 'sso') {
                     this.$characterList.empty();
 
-                    for (const { id, name, server_id } of data.characters) {
+                    for (const { id, name, server_id } of _sortAsc(data.characters, (c) => c.order)) {
                         const server = await this._getServer(server_id);
                         if (!server) {
                             continue;
