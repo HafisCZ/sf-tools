@@ -41,6 +41,9 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added missing player resources'
+        ],
+        'Pet Simulator': [
+            'Fixed display of gladiator % damage'
         ]
     },
     'v6.3469': {
