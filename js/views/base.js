@@ -286,9 +286,9 @@ const ChangeLogDialog = new (class extends Dialog {
 
             content += '</ul>';
         } else if (entries) {
-            for (const [ category, changes ] of Object.entries(entries)) {
+            for (const category of Object.keys(entries)) {
                 content += `<h4 class="text-orange text-center">${category}</h4><ul>`
-                for (const entry of changes) {
+                for (const entry of entries[category]) {
                     content += `<li class="mt-2">${entry}</li>`
                 }
 
@@ -513,11 +513,11 @@ const ConfirmDialog = new (class extends Dialog {
 
 const Localization = new (class {
     _generateTranslation (base, object, ... path) {
-        for (let [key, value] of Object.entries(object)) {
-            if (typeof value === 'object') {
-                this._generateTranslation(base, value, ... path, key);
+        for (const key of Object.keys(object)) {
+            if (typeof object[key] === 'object') {
+                this._generateTranslation(base, object[key], ... path, key);
             } else {
-                base[`${path.join('.')}.${key}`] = value;
+                base[`${path.join('.')}.${key}`] = object[key];
             }
         }
 

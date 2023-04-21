@@ -576,7 +576,7 @@ class DungeonHelper {
             const normal = dungeonData.light;
             const shadow = dungeonData.shadow;
 
-            for (const [index, dungeonIndex] of Object.entries(DungeonHelper.PLAYA_TO_INTERNAL_MAPPING)) {
+            for (const [index, dungeonIndex] of DungeonHelper.PLAYA_TO_INTERNAL_MAPPING_ENTRIES) {
                 dungeons.Normal[index] = normal[dungeonIndex];
                 dungeons.Shadow[index] = shadow[dungeonIndex];
             }
@@ -637,6 +637,8 @@ DungeonHelper.DUNGEON_LOCKED = -2;
 DungeonHelper.PLAYA_TO_INTERNAL_MAPPING = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
 ];
+
+DungeonHelper.PLAYA_TO_INTERNAL_MAPPING_ENTRIES = Object.entries(DungeonHelper.PLAYA_TO_INTERNAL_MAPPING);
 
 DungeonHelper.LEGACY_TO_INTERNAL_MAPPING = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18

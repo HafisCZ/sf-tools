@@ -1703,7 +1703,7 @@ class Settings {
         let definition = this.customDefinitions[name];
         if (definition) {
             // Merge commons
-            for (var [ key, value ] of Object.entries(definition)) {
+            for (const key of Object.keys(definition)) {
                 if (!obj.hasOwnProperty(key)) obj[key] = definition[key];
             }
 
@@ -1767,7 +1767,7 @@ class Settings {
     // Merge mapping to object
     mergeMapping (obj, mapping) {
         // Merge commons
-        for (var [ key, value ] of Object.entries(mapping)) {
+        for (const key of Object.keys(mapping)) {
             if (!obj.hasOwnProperty(key)) obj[key] = mapping[key];
         }
 
@@ -1799,8 +1799,8 @@ class Settings {
 
     merge (obj, mapping) {
         // Merge all non-objects
-        for (var [ key, value ] of Object.entries(mapping)) {
-            if (!obj.hasOwnProperty(key) && typeof value != 'object') obj[key] = mapping[key];
+        for (const key of Object.keys(mapping)) {
+            if (!obj.hasOwnProperty(key) && typeof mapping[key] != 'object') obj[key] = mapping[key];
         }
 
         this.mergeStyles(obj, mapping.style);
@@ -1828,9 +1828,9 @@ class Settings {
         if (sourceVars) {
             if (obj.vars) {
                 // Add vars
-                for (let [ name, value ] of Object.entries(sourceVars)) {
+                for (const name of Object.keys(sourceVars)) {
                     if (!obj.vars.hasOwnProperty(name)) {
-                        obj.vars[name] = value;
+                        obj.vars[name] = sourceVars[name];
                     }
                 }
             } else {
