@@ -358,30 +358,36 @@ const EndpointDialog = new (class extends Dialog {
         })
     };
 
+    _renderSelectItems (array, icon) {
+        let html = '';
+
+        for (const name of array) {
+            html += `
+                <div class="item">
+                    <div class="ui inverted checkbox w-full">
+                        <input type="checkbox" name="${name}">
+                        <label for="${name}">
+                            <div class="flex justify-content-between">
+                                <span>${name}</span>
+                                <i class="ui ${icon} icon"></i>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            `;
+        }
+
+        return html;
+    }
+
     _funcCaptureSelect (promise) {
         promise
         .then((data) => {
-            let html = '';
+            this.$list.html(`
+                ${this._renderSelectItems(data.members, 'user circle')}
+                ${this._renderSelectItems(data.friends, 'thumbs up')}
+            `);
 
-            for (const [icon, names] of Object.entries({ 'user cirle': data.members, 'thumbs up': data.friends })) {
-                for (const name of names) {
-                    html += `
-                        <div class="item">
-                            <div class="ui inverted checkbox w-full">
-                                <input type="checkbox" name="${name}">
-                                <label for="${name}">
-                                    <div class="flex justify-content-between">
-                                        <span>${name}</span>
-                                        <i class="ui ${icon} icon"></i>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            this.$list.html(html);
             this.$list.find('.checkbox').checkbox();
 
             this.$step4.hide();
