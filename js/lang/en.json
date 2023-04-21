@@ -1264,6 +1264,14 @@
             "20": "Countless-headed Hydra"
         }
     },
+    "integration": {
+        "file": "File",
+        "game": "Endpoint",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
+    },
     "simulator": {
         "paste_target#": "Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator",
         "threads": "Simulator threads. Keep this number BELOW your processor core count!",
@@ -1284,10 +1292,6 @@
         "win_chance": "Win %",
         "min_chance": "Min %",
         "max_chance": "Max %",
-        "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
-        },
         "toast": {
             "title": "Simulation finished",
             "message": "Simulation took #{duration}"
