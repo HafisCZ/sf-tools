@@ -1380,7 +1380,7 @@ const SP_FUNCTIONS = {
     },
     // Minimum
     'min': (... values) => {
-        return Math.min(... values.reduce((collector, value) => {
+        return _fastMin(values.reduce((collector, value) => {
             if (Array.isArray(value)) {
                 collector.push(... value);
             } else {
@@ -1392,7 +1392,7 @@ const SP_FUNCTIONS = {
     },
     // Maximum
     'max': (... values) => {
-        return Math.max(... values.reduce((collector, value) => {
+        return _fastMax(values.reduce((collector, value) => {
             if (Array.isArray(value)) {
                 collector.push(... value);
             } else {
