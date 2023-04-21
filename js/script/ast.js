@@ -275,7 +275,7 @@ class Expression {
         let nextName = false;
 
         // Go through all tokens
-        for (var i = 0, token, value; i < tokens.length; i++) {
+        for (var i = 0, token; i < tokens.length; i++) {
             token = tokens[i];
             if (/\S/.test(token)) {
                 // Prepare token
@@ -354,7 +354,6 @@ class Expression {
     evalEmbeddedVariables (tableVariables) {
         // All variables in the token string
         let variables = [];
-        let locals = [];
 
         // Current variable
         let brackets = 0;
@@ -917,15 +916,15 @@ class Expression {
     evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
-                return scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
+                return scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
             } else {
-                return scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
+                return scope.clone().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
             }
         } else {
             if (segmented) {
-                return this.evalInternal(scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
+                return this.evalInternal(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
             } else {
-                return this.evalInternal(scope.copy().addSelf(obj).add({ loop_index, loop_array }), arg);
+                return this.evalInternal(scope.clone().addSelf(obj).add({ loop_index, loop_array }), arg);
             }
         }
     }
@@ -1032,10 +1031,10 @@ class Expression {
                         scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
                     }
 
-                    return scope.copy().add(scope2).eval(mapper.ast);
+                    return scope.clone().add(scope2).eval(mapper.ast);
                 } else if (node.op == 'difference' && node.args.length == 1) {
                     var a = this.evalInternal(scope, node.args[0]);
-                    var b = this.evalInternal(scope.copy().with(scope.reference, scope.reference), node.args[0]);
+                    var b = this.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
 
                     if (isNaN(a) || isNaN(b)) {
                         return undefined;
