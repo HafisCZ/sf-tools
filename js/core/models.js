@@ -846,15 +846,15 @@ class PlayerModel {
             Fill: dataType.long()
         }
         this.Potions = [{
-            Type: getPotionType(dataType.long()),
+            Type: PlayerModel.getPotionType(dataType.long()),
             Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }, {
-            Type: getPotionType(dataType.back(6).long()),
+            Type: PlayerModel.getPotionType(dataType.back(6).long()),
             Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }, {
-            Type: getPotionType(dataType.back(6).long()),
+            Type: PlayerModel.getPotionType(dataType.back(6).long()),
             Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }];
@@ -1334,13 +1334,13 @@ class PlayerModel {
         legacyDungeons.Normal[12] = dataType.long() - 120;
 
         this.Potions = [{
-            Type: getPotionType(dataType.long()),
+            Type: PlayerModel.getPotionType(dataType.long()),
             Size: dataType.skip(5).long()
         }, {
-            Type: getPotionType(dataType.back(6).long()),
+            Type: PlayerModel.getPotionType(dataType.back(6).long()),
             Size: dataType.skip(5).long()
         }, {
-            Type: getPotionType(dataType.back(6).long()),
+            Type: PlayerModel.getPotionType(dataType.back(6).long()),
             Size: dataType.skip(5).long()
         }];
         _sortDesc(this.Potions, potion => potion.Size);
@@ -1903,6 +1903,10 @@ class PlayerModel {
             GoldFrame: (value & (1 << 5)) != 0,
             OfficialCreator: (value & (1 << 9)) != 0
         }
+    }
+
+    static getPotionType (type) {
+        return type == 16 ? 6 : (type == 0 ? 0 : 1 + (type - 1) % 5);
     }
 
     static getMirrorPieces (value) {
