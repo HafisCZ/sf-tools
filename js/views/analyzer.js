@@ -179,7 +179,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
       for (const { selector, count } of this.groups) {
           const expression = new Expression(selector.val() || 'true');
 
-          count.val(this.rounds.filter((round) => expression.eval(globalScope.copy().addSelf(round))).length);
+          count.val(this.rounds.filter((round) => expression.eval(globalScope.clone().addSelf(round))).length);
       }
   }
 
