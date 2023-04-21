@@ -2523,7 +2523,7 @@ class Settings {
         this.evalRowIndexes(array);
 
         // Purify array
-        array = [ ... array ];
+        array = [].concat(array);
 
         // Get shared scope
         let scope = this.createSegmentedArray(array, (player, index, arr) => [player, arr[index + 1] || player]);
@@ -2660,8 +2660,8 @@ class Settings {
         this.timestamp = array.timestamp;
         this.reference = array.reference;
 
-        array = [ ... array ];
-        unfilteredArray = [ ... unfilteredArray ];
+        array = [].concat(array);
+        unfilteredArray = [].concat(unfilteredArray);
 
         // Get segmented lists
         let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);

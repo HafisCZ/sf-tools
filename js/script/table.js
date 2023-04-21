@@ -994,15 +994,15 @@ class TableInstance {
                     this.cache.statistics = this.getStatistics(leftSpan, [
                         {
                             name: 'Minimum',
-                            expression: array => Math.min(... array)
+                            expression: array => _fastMin(array)
                         },
                         {
                             name: 'Average',
-                            expression: array => array.reduce((a, b) => a + b, 0) / array.length
+                            expression: array => _fastAvg(array)
                         },
                         {
                             name: 'Maximum',
-                            expression: array => Math.max(... array)
+                            expression: array => _fastMax(array)
                         }
                     ]);
                 }
@@ -1106,15 +1106,15 @@ class TableInstance {
                     this.cache.statistics = this.getStatistics(leftSpan, [
                         {
                             name: 'Minimum',
-                            expression: array => Math.min(... array)
+                            expression: array => _fastMin(array)
                         },
                         {
                             name: 'Average',
-                            expression: array => array.reduce((a, b) => a + b, 0) / array.length
+                            expression: array => _fastAvg(array)
                         },
                         {
                             name: 'Maximum',
-                            expression: array => Math.max(... array)
+                            expression: array => _fastMax(array)
                         }
                     ]);
                 }
@@ -1179,15 +1179,15 @@ class TableInstance {
                     this.cache.statistics = this.getStatistics(leftSpan, [
                         {
                             name: 'Minimum',
-                            expression: array => Math.min(... array)
+                            expression: array => _fastMin(array)
                         },
                         {
                             name: 'Average',
-                            expression: array => array.reduce((a, b) => a + b, 0) / array.length
+                            expression: array => _fastAvg(array)
                         },
                         {
                             name: 'Maximum',
-                            expression: array => Math.max(... array)
+                            expression: array => _fastMax(array)
                         }
                     ]);
                 }

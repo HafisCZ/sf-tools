@@ -270,6 +270,22 @@ function _fastMax(arr) {
     return m;
 }
 
+function _fastMin(arr) {
+    let m = arr[0];
+    for (let i of arr) {
+        if (i < m) m = i;
+    }
+    return m;
+}
+
+function _fastAvg(arr) {
+    let m = 0;
+    for (let i of arr) {
+        m += i;
+    }
+    return m / arr.length;
+}
+
 function _joinSentence (array) {
     let last = array.length > 1 ? ` and ${array.pop()}` : ''
     return array.join(', ') + last;
