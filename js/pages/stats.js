@@ -178,11 +178,13 @@ class GroupDetailTab extends Tab {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            downloadScreenshot(this.$table, `${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }.png`, doc => {
-                var ta = Number(this.timestamp);
-                var tb = Number(this.reference);
+            this.table.toImage(($document) => {
+                const ta = Number(this.timestamp);
+                const tb = Number(this.reference);
 
-                $(doc).find('tbody').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${ _formatDate(ta) }${ ta != tb ? ` - ${ _formatDate(tb) }` : '' }</td></tr>`));
+                $document.find('tbody').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${_formatDate(ta)}${ta != tb ? ` - ${_formatDate(tb)}` : ''}</td></tr>`));
+            }).then((blob) => {
+                Exporter.png(blob, `${this.group.Latest.Name}.${this.timestamp}${this.timestamp != this.reference ? `.${this.reference}` : ''}`);
             });
         });
 
@@ -463,9 +465,9 @@ class PlayerDetailTab extends Tab {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            this.table.forceInject();
-
-            downloadScreenshot(this.$table, `${ this.player.Name }_${ Date.now() }.png`);
+            this.table.toImage().then((blob) => {
+                Exporter.png(blob, `${this.player.Name}.${Exporter.time}`);
+            });
         });
 
         // Configuration
@@ -616,9 +618,9 @@ class BrowseTab extends Tab {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            this.table.forceInject();
-
-            downloadScreenshot(this.$table, `players.${ this.timestamp }.png`);
+            this.table.toImage().then((blob) => {
+                Exporter.png(blob, `players.${this.timestamp}`);
+            });
         });
 
         // Context menu

@@ -1373,6 +1373,33 @@ class TableController {
         this.echanged = true;
     }
 
+    async toImage (cloneCallback) {
+        return new Promise(async (resolve) => {
+            const canvas = await html2canvas(this.$table.get(0), {
+                logging: false,
+                allowTaint: true,
+                useCORS: true,
+                onclone: (document) => {
+                    const $document = $(document);
+    
+                    const $tableBody = $document.find('table.sftools-table tbody').first();
+                    if ($tableBody.find('tr.css-entry.border-bottom-thick, tr.css-entry.border-bottom-thin').length && $tableBody.hasClass('css-entry-opaque')) {
+                        $tableBody.removeClass('css-entry-opaque').addClass('css-entry-opaque-image');
+                    }
+    
+                    $('<tr class="border-bottom-thick"></tr>').insertAfter($document.find('tr.css-entry.border-bottom-thick'));
+                    $('<tr class="border-bottom-thin"></tr>').insertAfter($document.find('tr.css-entry.border-bottom-thin'));
+        
+                    if (cloneCallback) {
+                        cloneCallback($document);
+                    }
+                }
+            });
+
+            canvas.toBlob(resolve);
+        });
+    }
+
     setSettings (code) {
         // If settings have changed
         if (this.settings != code) {

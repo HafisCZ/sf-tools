@@ -866,34 +866,6 @@ function download (e, d) {
     document.body.removeChild(o);
 }
 
-// Download node as image
-function downloadScreenshot ($node, filename, onClone) {
-    html2canvas($node.get(0), {
-        logging: false,
-        allowTaint: true,
-        useCORS: true,
-        onclone: doc => {
-            let $table = $(doc).find('table.sftools-table tbody');
-            $table.each((index, el) => {
-                if ($(el).find('tr.css-entry.border-bottom-thick, tr.css-entry.border-bottom-thin').length && $(el).hasClass('css-entry-opaque')) {
-                    $(el).removeClass('css-entry-opaque').addClass('css-entry-opaque-image');
-                }
-            });
-
-            $('<tr class="border-bottom-thick"></tr>').insertAfter($(doc).find('tr.css-entry.border-bottom-thick'));
-            $('<tr class="border-bottom-thin"></tr>').insertAfter($(doc).find('tr.css-entry.border-bottom-thin'));
-
-            if (onClone) {
-                onClone(doc);
-            }
-        }
-    }).then((canvas) => {
-        canvas.toBlob((blob) => {
-            download(filename, blob);
-        });
-    });
-}
-
 // Fast join array to string
 function join (a, c, b, m) {
     var r = '';
