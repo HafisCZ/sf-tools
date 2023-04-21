@@ -742,9 +742,23 @@ class TableInstance {
         this.sorting = [ ...this.global_sorting ];
     }
 
+    _compareItems (a, b) {
+        if (typeof(a) == 'string' && typeof(b) == 'string') {
+            if (a == '') return 1;
+            else if (b == '') return -1;
+            else return a.localeCompare(b);
+        } else if (a == undefined) {
+            return 1;
+        } else if (b == undefined) {
+            return -1;
+        } else {
+            return b - a;
+        }
+    }
+
     _sort_globally (a, b, sort_list) {
         if (sort_list) {
-            return sort_list.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key])))), undefined);
+            return sort_list.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? this._compareItems(a.sorting[key], b.sorting[key]) : this._compareItems(b.sorting[key], a.sorting[key])))), undefined);
         } else {
             return undefined;
         }

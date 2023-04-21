@@ -808,24 +808,6 @@ class ComplexDataType {
     }
 }
 
-function compareItems (a, b) {
-    if (typeof(a) == 'string' && typeof(b) == 'string') {
-        if (a == '') return 1;
-        else if (b == '') return -1;
-        else return a.localeCompare(b);
-    } else if (a == undefined) {
-        return 1;
-    } else if (b == undefined) {
-        return -1;
-    } else {
-        return b - a;
-    }
-}
-
-function getPotionType (type) {
-    return type == 16 ? 6 : (type == 0 ? 0 : 1 + (type - 1) % 5);
-}
-
 function getObjectAt (obj, path) {
     if (!obj) return undefined;
     var sub = path.split('.');
