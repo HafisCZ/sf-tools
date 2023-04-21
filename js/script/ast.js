@@ -116,7 +116,7 @@ const ExpressionEnum = new (class {
 })();
 
 class ExpressionScope {
-    copy () {
+    clone () {
         let _copy = new ExpressionScope(this.env);
         _copy.self = [ ... this.self ];
         _copy.indirect = [ ... this.indirect ];
