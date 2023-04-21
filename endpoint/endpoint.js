@@ -708,13 +708,13 @@ const StatisticsIntegration = new (class {
     _html () {
         return `
             <div class="position-absolute left-8 top-8 z-2" style="width: 18em;">
-                <div class="ui fluid basic inverted button" data-op="poll"><i class="sync alternate icon"></i>${intl(`simulator.poll.${this.type}`)}</div>
+                <div class="ui fluid basic inverted button" data-op="poll"><i class="sync alternate icon"></i>${intl(`integration.poll.${this.type}`)}</div>
                 <div data-op="container" style="display: none;">
                     <div data-op="list"></div>
                     <div class="mt-2 flex">
                         <div class="ui three basic tiny fluid inverted buttons">
-                            <div class="ui button" data-op="import-endpoint">Endpoint</div>
-                            <label class="ui button" for="endpoint-button-upload">HAR</label>
+                            <div class="ui button" data-op="import-endpoint">${intl('integration.game')}</div>
+                            <label class="ui button" for="endpoint-button-upload">${intl('integration.file')}</label>
                             <input type="file" multiple data-op="import-file" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
                             <div class="ui icon button" style="display: none; max-width: 3em;" data-op="show-options"><i class="ui cog icon"></i></div>
                         </div>
