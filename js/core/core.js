@@ -204,7 +204,11 @@ const Exporter = new (class {
     }
 
     json (content, name = this.time) {
-        download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+        window.download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+    }
+
+    png (content, name = this.time) {
+        window.download(`${ name }.png`, content, { type: 'image/png' });
     }
 })();
 
