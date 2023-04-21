@@ -208,7 +208,11 @@ const Exporter = new (class {
     }
 
     png (content, name = this.time) {
-        window.download(`${ name }.png`, content, { type: 'image/png' });
+        window.download(`${ name }.png`, content);
+    }
+
+    csv (content, name = this.time) {
+        window.download(`${ name }.csv`, new Blob([ content ], { type: 'text/csv' }));
     }
 })();
 
