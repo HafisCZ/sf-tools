@@ -160,9 +160,9 @@ function _arrayFromIndexes (indexes, processor, base = []) {
 }
 
 function _merge (target, source) {
-    for (const [key, value] of Object.entries(source)) {
+    for (const key of Object.keys(source)) {
         if (!target.hasOwnProperty(key)) {
-            target[key] = value;
+            target[key] = source[key];
         }
     }
 
