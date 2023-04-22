@@ -977,6 +977,30 @@ class TableInstance {
         }
     }
 
+    // Renders members into cache
+    _renderMembers (leftSpan) {
+        if (typeof this.cache.members == 'undefined') {
+            if (this.settings.globals.members) {
+                this.cache.members = `
+                    <tr>
+                        <td class="border-right-thin" colspan=${ leftSpan }>Classes</td>
+                        <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin" colspan=${ leftSpan }>Joined</td>
+                        <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin" colspan=${ leftSpan }>Left</td>
+                        <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
+                    </tr>
+                `;
+            } else {
+                this.cache.members = '';
+            }
+        }
+    }
+
     createPlayerTable () {
         // Width of the whole table
         let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
@@ -1166,15 +1190,7 @@ class TableInstance {
         }
 
         this._renderStatistics(leftSpan);
-
-        // Get member list
-        if (typeof this.cache.members == 'undefined') {
-            if (this.settings.globals.members) {
-                this.cache.members = this.getMembers(leftSpan);
-            } else {
-                this.cache.members = '';
-            }
-        }
+        this._renderMembers(leftSpan);
 
         // Create left headers
         let headerTitle, categoryTitle;
@@ -1275,23 +1291,6 @@ class TableInstance {
                     ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
-        `;
-    }
-
-    getMembers (leftSpan) {
-        return `
-            <tr>
-                <td class="border-right-thin" colspan=${ leftSpan }>Classes</td>
-                <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan=${ leftSpan }>Joined</td>
-                <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan=${ leftSpan }>Left</td>
-                <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
-            </tr>
         `;
     }
 
