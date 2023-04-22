@@ -1141,6 +1141,7 @@ class TableInstance {
             <tr class="headers">
                 ${ categoryTitle }
                 ${ this.getCategoryBlock(true) }
+            </tr>
             <tr class="headers border-bottom-thick">
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
@@ -1258,6 +1259,7 @@ class TableInstance {
             <tr class="headers">
                 ${ categoryTitle }
                 ${ this.getCategoryBlock(true) }
+            </tr>
             <tr class="headers border-bottom-thick">
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
