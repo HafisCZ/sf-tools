@@ -949,6 +949,34 @@ class TableInstance {
         }
     }
 
+    // Renders statistics rows into cache
+    _renderStatistics (leftSpan) {
+        if (typeof this.cache.statistics == 'undefined') {
+            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
+                if (this.settings.customStatistics.length) {
+                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
+                } else {
+                    this.cache.statistics = this.getStatistics(leftSpan, [
+                        {
+                            name: 'Minimum',
+                            expression: array => _fastMin(array)
+                        },
+                        {
+                            name: 'Average',
+                            expression: array => _fastAvg(array)
+                        },
+                        {
+                            name: 'Maximum',
+                            expression: array => _fastMax(array)
+                        }
+                    ]);
+                }
+            } else {
+                this.cache.statistics = '';
+            }
+        }
+    }
+
     createPlayerTable () {
         // Width of the whole table
         let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
@@ -999,31 +1027,7 @@ class TableInstance {
             }
         }
 
-        // Get statistics
-        if (typeof this.cache.statistics == 'undefined') {
-            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
-                if (this.settings.customStatistics.length) {
-                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
-                } else {
-                    this.cache.statistics = this.getStatistics(leftSpan, [
-                        {
-                            name: 'Minimum',
-                            expression: array => _fastMin(array)
-                        },
-                        {
-                            name: 'Average',
-                            expression: array => _fastAvg(array)
-                        },
-                        {
-                            name: 'Maximum',
-                            expression: array => _fastMax(array)
-                        }
-                    ]);
-                }
-            } else {
-                this.cache.statistics = '';
-            }
-        }
+        this._renderStatistics(leftSpan);
 
         this.cache.table = `
             <tr class="headers">
@@ -1111,31 +1115,7 @@ class TableInstance {
             }
         }
 
-        // Get statistics
-        if (typeof this.cache.statistics == 'undefined') {
-            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
-                if (this.settings.customStatistics.length) {
-                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
-                } else {
-                    this.cache.statistics = this.getStatistics(leftSpan, [
-                        {
-                            name: 'Minimum',
-                            expression: array => _fastMin(array)
-                        },
-                        {
-                            name: 'Average',
-                            expression: array => _fastAvg(array)
-                        },
-                        {
-                            name: 'Maximum',
-                            expression: array => _fastMax(array)
-                        }
-                    ]);
-                }
-            } else {
-                this.cache.statistics = '';
-            }
-        }
+        this._renderStatistics(leftSpan);
 
         this.cache.table = `
             <tr class="headers">
@@ -1185,31 +1165,7 @@ class TableInstance {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, row.eval.compare));
         }
 
-        // Get statistics
-        if (typeof this.cache.statistics == 'undefined') {
-            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
-                if (this.settings.customStatistics.length) {
-                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
-                } else {
-                    this.cache.statistics = this.getStatistics(leftSpan, [
-                        {
-                            name: 'Minimum',
-                            expression: array => _fastMin(array)
-                        },
-                        {
-                            name: 'Average',
-                            expression: array => _fastAvg(array)
-                        },
-                        {
-                            name: 'Maximum',
-                            expression: array => _fastMax(array)
-                        }
-                    ]);
-                }
-            } else {
-                this.cache.statistics = '';
-            }
-        }
+        this._renderStatistics(leftSpan);
 
         // Get member list
         if (typeof this.cache.members == 'undefined') {
