@@ -1049,9 +1049,24 @@ class TableInstance {
 
     // Create guilds table
     createGroupTable () {
-        // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
+        }
+
+        if (this.entries.missing.length) {
+            this.cache.missing = `
+                <tr class="font-weight: bold;">
+                    ${
+                        CellGenerator.WideCell(
+                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
+                            undefined,
+                            this.flatSpan,
+                            'center'
+                        )
+                    }
+                </tr>`;
+        } else {
+            this.cache.missing = '';
         }
 
         this._renderStatistics();
@@ -1067,7 +1082,6 @@ class TableInstance {
                 ${ this.getHeaderBlock() }
             </tr>
             ${ this.cache.injector }
-            ${ this.entries.missing.length ? `<tr class="font-weight: bold;">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flatSpan, 'center') }</tr>` : '' }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
