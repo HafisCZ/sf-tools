@@ -510,7 +510,6 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     index,
-                    player,
                     node,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
@@ -580,7 +579,6 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     index,
-                    player,
                     node,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
@@ -642,7 +640,6 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     index,
-                    player,
                     node,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
