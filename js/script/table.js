@@ -591,9 +591,6 @@ class TableInstance {
             // Whether timestamps match
             let comparable = this.array.reference != this.array.timestamp;
 
-            // Add missing entries to the entry list
-            this.entries.missing = this.array.missing;
-
             // Loop over all items of the array
             for (let { player, compare, index } of this.array) {
                 let html = '';
@@ -980,12 +977,12 @@ class TableInstance {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
         }
 
-        if (this.entries.missing.length) {
+        if (this.array.missing.length) {
             this.cache.missing = `
                 <tr class="font-weight: bold;">
                     ${
                         CellGenerator.WideCell(
-                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
+                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.array.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
                             undefined,
                             this.flatSpan,
                             'center'
