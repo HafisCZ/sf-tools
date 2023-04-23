@@ -790,38 +790,38 @@ class TableInstance {
         }
     }
 
-    getCell ({ visible, align, padding, style, action }, value, color, border, cellWidth) {
+    getCell (header, value, color, border, cellWidth) {
         return CellGenerator.Cell(
             value,
             color.bg,
-            visible ? color.fg : false,
+            header.visible ? color.fg : false,
             border,
-            align,
-            padding,
-            style ? style.cssText : undefined,
+            header.align,
+            header.padding,
+            header.style ? header.style.cssText : undefined,
             cellWidth,
-            action
+            header.action
         );
     }
 
-    getEmptyCell ({ ndef, ndefc, style }, border = undefined, span = 0, cellWidth = undefined) {
+    getEmptyCell (header, border = undefined, span = 0, cellWidth = undefined) {
         if (span) {
             return CellGenerator.PlainSpan(
                 span,
-                ndef == undefined ? '?' : ndef,
+                header.ndef == undefined ? '?' : header.ndef,
                 border,
                 undefined,
-                ndefc,
-                style ? style.cssText : undefined
+                header.ndefc,
+                header.style ? header.style.cssText : undefined
             );
         } else {
             return CellGenerator.Plain(
-                ndef == undefined ? '?' : ndef,
+                header.ndef == undefined ? '?' : header.ndef,
                 border,
                 undefined,
-                ndefc,
-                style ? style.cssText : undefined,
-                cellWidth
+                header.ndefc,
+                header.style ? header.style.cssText : undefined,
+                header.cellWidth
             );
         }
     }
