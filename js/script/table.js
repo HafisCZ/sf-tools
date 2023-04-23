@@ -376,8 +376,6 @@ class TableInstance {
         this.rightFlatWidth = this.config.reduce((a, b) => a + b.width, 0);
         this.rightFlatSpan = this.rightFlat.reduce((t, h) => t + h.span, 0);
 
-        this.cellDivider = this.getCellDivider();
-
         this.clearCache();
 
         this.global_key = '_index';
@@ -760,20 +758,6 @@ class TableInstance {
     clearCache () {
         // Reset
         this.cache = { };
-    }
-
-    getCellDivider () {
-        let lineType = this.settings.getLinedStyle();
-        if (lineType == 2) {
-            // Thick
-            return `<tr class="border-bottom-thick"></tr>`;
-        } else if (lineType == 1) {
-            // Thin
-            return `<tr class="border-bottom-thin"></tr>`;
-        } else {
-            // None
-            return '';
-        }
     }
 
     getCellDividerStyle () {
