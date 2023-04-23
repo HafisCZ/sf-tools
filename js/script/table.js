@@ -1385,10 +1385,12 @@ class TableController {
         this.injectCount = this.injectCount || SiteOptions.load_rows || 50;
         this.injectorElement = this.bodyElement.querySelector('[data-entry-injector]');
 
-        const entriesSlice = entries.splice(0, this.injectCount);
-        for (const entry of entriesSlice) {
-            this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
-            onInject(entry.node);
+        if (this.injectorElement) {
+            const entriesSlice = entries.splice(0, this.injectCount);
+            for (const entry of entriesSlice) {
+                this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
+                onInject(entry.node);
+            }
         }
 
         // Check table content for unwanted tags
@@ -1402,10 +1404,12 @@ class TableController {
             this.element.style.width = `${width}px`;
             this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
 
-            if (entries.length > 0 && this.injectorElement) {
-                this.prepareInjector(entries, onInject);
-            } else {
-                this.injectorElement.remove();
+            if (this.injectorElement) {
+                if (entries.length > 0) {
+                    this.prepareInjector(entries, onInject);
+                } else {
+                    this.injectorElement.remove();
+                }
             }
         }
 
