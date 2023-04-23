@@ -905,7 +905,7 @@ const SettingsCommands = [
         Layout
     */
     new Command(
-        /^layout ((\||\_|table|statistics|rows|members)(\s+(\||\_|table|statistics|rows|members))*)$/,
+        /^layout ((\||\_|table|missing|statistics|rows|members)(\s+(\||\_|table|missing|statistics|rows|members))*)$/,
         (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
         (root, layout) => Highlighter.keyword('layout ').constant(layout)
     ),
@@ -2502,6 +2502,7 @@ class Settings {
             } else if (this.type == ScriptType.Group) {
                 return [
                     'table',
+                    'missing',
                     ... (hasStatistics || hasRows || hasMembers ? [ '_' ] : []),
                     ... (hasStatistics ? [ 'statistics' ] : []),
                     ... (hasRows ? [ '|', 'rows' ] : []),
