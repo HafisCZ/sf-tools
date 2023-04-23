@@ -882,13 +882,8 @@ class TableInstance {
         return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
-    getDivider (bottomSpacer, topSpacer) {
+    getDivider (bottomSpacer) {
         return `
-            ${ topSpacer ? `
-                <tr>
-                    <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }"></td>
-                </tr>
-            ` : '' }
             <tr class="border-bottom-thick"></tr>
             ${ bottomSpacer ? `
                 <tr>
@@ -996,11 +991,11 @@ class TableInstance {
 
         let spacer = this.getSpacer();
         let injector = this.getInjector();
-        let divider = this.cache.divider = this.getDivider(false, false);
+        let divider = this.cache.divider = this.getDivider(false);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(true, false);
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(true);
         }
 
         this._renderStatistics();
@@ -1042,7 +1037,7 @@ class TableInstance {
 
         let spacer = this.getSpacer();
         let injector = this.getInjector();
-        let divider = this.cache.divider = this.getDivider(false, false);
+        let divider = this.cache.divider = this.getDivider(false);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
@@ -1088,7 +1083,7 @@ class TableInstance {
 
         let spacer = this.getSpacer();
         let injector = this.getInjector();
-        let divider = this.cache.divider = this.getDivider(false, false);
+        let divider = this.cache.divider = this.getDivider(false);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
