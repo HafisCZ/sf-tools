@@ -706,8 +706,7 @@ class TableInstance {
     _recreateCache () {
         this.cache = {
             spacer: this.getSpacer(),
-            divider: this.getDivider(),
-            table: this.getTable()
+            divider: this.getDivider()
         }
     }
 
@@ -873,6 +872,8 @@ class TableInstance {
     }
 
     getContent () {
+        this.cache.table = this.getTable();
+
         let content = '';
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
 
