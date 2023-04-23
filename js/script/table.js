@@ -764,8 +764,7 @@ class TableInstance {
         this.cache = {
             spacer: this.getSpacer(),
             injector: this.getInjector(),
-            divider: this.getDivider(false)
-
+            divider: this.getDivider()
         };
     }
 
@@ -875,14 +874,9 @@ class TableInstance {
         return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
-    getDivider (bottomSpacer) {
+    getDivider () {
         return `
             <tr class="border-bottom-thick"></tr>
-            ${ bottomSpacer ? `
-                <tr>
-                    <td colspan="${ this.flatSpan }"></td>
-                </tr>
-            ` : '' }
         `;
     }
 
@@ -980,7 +974,7 @@ class TableInstance {
 
     createPlayerTable () {
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(true);
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.cache.divider + this.cache.spacer;
         }
 
         this._renderStatistics();
