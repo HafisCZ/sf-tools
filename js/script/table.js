@@ -1003,7 +1003,7 @@ class TableInstance {
                 } else if (block == '_') {
                     return this.cache.spacer;
                 } else {
-                    return this.cache[block];
+                    return this.cache[block] || '';
                 }
             })
         };
@@ -1041,7 +1041,7 @@ class TableInstance {
                 } else if (block == '_') {
                     return this.cache.spacer;
                 } else {
-                    return this.cache[block];
+                    return this.cache[block] || '';
                 }
             })
         };
@@ -1095,7 +1095,7 @@ class TableInstance {
                 } else if (block == '_') {
                     return this.cache.spacer;
                 } else {
-                    return this.cache[block];
+                    return this.cache[block] || '';
                 }
             })
         };
