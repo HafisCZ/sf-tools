@@ -1452,6 +1452,97 @@ class Settings {
         // Push last embed && category
         this.pushEmbed();
         this.pushCategory();
+
+        if (this.type !== null) {
+            this._prepareLeftCategory();            
+        }
+    }
+
+    _prepareLeftCategory () {
+        if (this.globals['custom left']) {
+            // Can skip as category should already exist
+        } else {
+            const headers = [];
+            if (this.type === ScriptType.Player) {
+                const dateHeader = this.createHeader('Date');
+
+                this.mergeMapping(dateHeader, {
+                    expr: (p) => p.Timestamp,
+                    format: (p, x) => _formatDate(x),
+                    width: 200
+                });
+
+                headers.push(dateHeader);
+            } else if (this.type === ScriptType.Group) {
+                const nameHeader = this.createHeader('Name');
+
+                this.mergeMapping(nameHeader, {
+                    expr: (p) => p.Name,
+                    width: this.getNameStyle(),
+                    action: 'show'
+                });
+
+                headers.push(nameHeader);
+            } else if (this.type === ScriptType.Browse) {
+                const serverWidth = this.getServerStyle();
+                if (serverWidth) {
+                    const serverHeader = this.createHeader('Server');
+
+                    this.mergeMapping(serverHeader, {
+                        expr: (p) => p.Prefix,
+                        width: serverWidth
+                    });
+
+                    headers.push(serverHeader);
+                }
+
+                const nameHeader = this.createHeader('Name');
+
+                this.mergeMapping(nameHeader, {
+                    expr: (p) => p.Name,
+                    width: this.getNameStyle(),
+                    action: 'show'
+                });
+
+                headers.push(nameHeader);
+            }
+
+            for (const header of headers) {
+                this._injectLeftHeaderStyling(header);
+            }
+
+            this.categories.unshift({
+                name: '',
+                empty: true,
+                headers
+            });
+        }
+
+        if (this.globals.indexed) {
+            const indexHeader = this.createHeader('#');
+            
+            this.mergeMapping(indexHeader, {
+                expr: (p) => 0,
+                width: 50
+            });
+
+            this._injectLeftHeaderStyling(indexHeader);
+
+            this.categories[0].headers.unshift(indexHeader);
+        }
+    }
+
+    _injectLeftHeaderStyling (header) {
+        header.visible = true;
+
+        header.color.text = this.shared.text;
+        header.color.background = this.shared.background;
+
+        if (header.color.background) {
+            header.color.rules.addRule('db', 0, header.color.background);
+        }
+
+        this.mergeTextColor(header, header);
     }
 
     static handleConditionals (lines, type, scope) {
@@ -2068,17 +2159,20 @@ class Settings {
         }
     }
 
+    createHeader (name) {
+        return {
+            name,
+            value: this.getValueBlock(),
+            color: this.getColorBlock()
+        };
+    }
+
     // Create new header
     addHeader (name, grouped = 0) {
         this.push();
 
         // Header
-        this.header = {
-            name: name,
-            value: this.getValueBlock(),
-            color: this.getColorBlock()
-        };
-
+        this.header = this.createHeader(name);
         if (grouped) {
             this.header.grouped = grouped;
         }
@@ -2103,13 +2197,8 @@ class Settings {
     addRow (name, expression) {
         this.push();
 
-        // Row
-        this.row = {
-            name: name,
-            ast: expression,
-            value: this.getValueBlock(),
-            color: this.getColorBlock()
-        }
+        this.row = this.createHeader(name);
+        this.row.ast = expression;
     }
 
     // Create definition
@@ -2388,17 +2477,8 @@ class Settings {
         }
     }
 
-    // Random getters and stuff
-    getIndexStyle () {
-        return this.globals.indexed;
-    }
-
     getServerStyle () {
         return this.globals.server == undefined ? 100 : this.globals.server;
-    }
-
-    getBackgroundStyle () {
-        return this.shared.background;
     }
 
     getTheme () {
