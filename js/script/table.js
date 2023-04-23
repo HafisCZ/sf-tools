@@ -362,16 +362,10 @@ class TableInstance {
             return array;
         }, []);
 
-        if (this.settings.globals['custom left']) {
-            this.configLeft = this.config.splice(0, 1);
-            if (this.configLeft.length == 0) {
-                this.configLeft = this.leftFlat = this.leftFlatSpan = this.leftFlatWidth = undefined;
-            } else {
-                this.leftFlat = this.configLeft[0].headers;
-                this.leftFlatSpan = this.leftFlat.reduce((a, b) => a + b.span, 0);
-                this.leftFlatWidth = this.leftFlat.reduce((a, b) => a + b.width, 0);
-            }
-        }
+        this.configLeft = this.config.splice(0, 1);
+        this.leftFlat = this.configLeft[0].headers;
+        this.leftFlatSpan = this.leftFlat.reduce((a, b) => a + b.span, 0);
+        this.leftFlatWidth = this.leftFlat.reduce((a, b) => a + b.width, 0);
 
         // Generate flat list
         this.rightFlat = this.config.reduce((array, group) => {
@@ -455,7 +449,7 @@ class TableInstance {
             this.clearCache();
         }
 
-        if (manualSort && this.type != ScriptType.Player) {
+        if (manualSort) {
             this.array.sort((a, b) => manualSort(b.player, b.compare) - manualSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
         }
 
@@ -483,111 +477,39 @@ class TableInstance {
         this.entries = [];
 
         // Common settings
-        let backgroundColor = this.settings.getBackgroundStyle();
-        let indexStyle = this.settings.getIndexStyle();
         let dividerStyle = this.getCellDividerStyle();
         let rowHeight = this.settings.getRowHeight();
 
         if (this.type == ScriptType.Player) {
             // Loop over all items of the array
-            for (let i = 0; i < this.array.length; i++) {
+            for (let index = 0; index < this.array.length; index++) {
                 // Get variables
-                let [ timestamp, player ] = this.array[i];
-                let compare = i < this.array.length - 1 ? this.array[i + 1][1] : player;
+                let player = this.array[index][1];
+                let compare = index < this.array.length - 1 ? this.array[index + 1][1] : player;
 
-                // Add table row start tag
-                let content = `<tr class="css-entry ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
-                let color = this.getForegroundColor(backgroundColor, player, compare);
-
-                // Add row index if enabled
-                if (indexStyle) {
-                    content += `
-                        <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
-                            ${ i + 1 }
-                        </td>
-                    `;
+                let html = '';
+                for (let header of this.flat) {
+                    html += this.getCellContent(header, player, compare);
                 }
 
-                if (this.leftFlat) {
-                    for (let header of this.leftFlat) {
-                        content += this.getCellContent(header, player, compare);
-                    }
-                } else {
-                    // Add date
-                    content += `
-                        <td class="border-right-thin" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
-                            ${ _formatDate(timestamp) }
-                        </td>
-                    `;
+                const node = document.createElement('tr');
+                node.classList.add('css-entry');
+
+                if (dividerStyle) {
+                    node.classList.add(dividerStyle);
                 }
 
-                // Add columns
-                for (let header of this.rightFlat) {
-                    content += this.getCellContent(header, player, compare);
+                if (rowHeight) {
+                    node.style.height = `${rowHeight}px`;
                 }
+
+                node.innerHTML = html;
 
                 // Create new entry and push it to the list
                 this.entries.push({
-                    player: player,
-                    content: content
-                })
-            }
-        } else if (this.type == ScriptType.Browse) {
-            // Whether timestamps match
-            let noCompare = this.array.reference == this.array.timestamp;
-
-            // Loop over all items of the array
-            for (let { player, compare, hidden, index, latest } of this.array) {
-                // Add table row start tag
-                let content = `<tr class="css-entry ${ hidden ? 'opacity-50' :'' } ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
-                let color = this.getForegroundColor(backgroundColor, player, compare);
-
-                // Add row index if enabled
-                if (indexStyle) {
-                    content += `
-                        <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
-                            ${ indexStyle == 1 ? (index + 1) : '{__INDEX__}' }
-                        </td>
-                    `;
-                }
-
-                if (this.leftFlat) {
-                    for (let header of this.leftFlat) {
-                        content += this.getCellContent(header, player, compare);
-                    }
-                } else {
-                    // Add server if enabled
-                    let serverStyle = this.settings.getServerStyle();
-                    if (serverStyle === undefined || serverStyle > 0) {
-                        content += `
-                            <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
-                                ${ SiteOptions.obfuscated ? 'server' : player.Prefix }
-                            </td>
-                        `;
-                    }
-
-                    // Add name
-                    let showOutdated = this.settings.getOutdatedStyle();
-                    content += `
-                        <td class="border-right-thin cursor-pointer ${ !latest && showOutdated ? '!text-red' : '' }" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}" data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
-                            <span class="css-op-select-el"></span>
-                            ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
-                        </td>
-                    `;
-                }
-
-                // Add columns
-                for (let header of this.rightFlat) {
-                    content += this.getCellContent(header, player, compare);
-                }
-
-                // Add table row end tag
-                content += `</tr>`;
-
-                // Create new entry and push it to the list
-                this.entries.push({
-                    player: player,
-                    content: content,
+                    index,
+                    player,
+                    node,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
                         if (order) {
@@ -614,9 +536,77 @@ class TableInstance {
                         return obj;
                     }, {
                         // Default sorting keys
-                        '_name': player.Name,
-                        '_index': index,
-                        '_server': player.Prefix
+                        '_index': index
+                    })
+                })
+            }
+        } else if (this.type == ScriptType.Browse) {
+            // Whether timestamps match
+            let noCompare = this.array.reference == this.array.timestamp;
+            let outdated = this.settings.getOutdatedStyle();
+
+            // Loop over all items of the array
+            for (let { player, compare, hidden, index, latest } of this.array) {
+                let html = '';
+                for (let header of this.flat) {
+                    html += this.getCellContent(header, player, compare);
+                }
+
+                const node = document.createElement('tr');
+                node.classList.add('css-entry');
+
+                if (hidden) {
+                    node.classList.add('opacity-50');
+                }
+
+                if (dividerStyle) {
+                    node.classList.add(dividerStyle);
+                }
+
+                if (rowHeight) {
+                    node.style.height = `${rowHeight}px`;
+                }
+
+                node.innerHTML = html;
+
+                if (outdated && !latest) {
+                    node.querySelectorAll('[data-id]').forEach((element) => {
+                        element.classList.add('!text-red');
+                    })
+                }
+
+                // Create new entry and push it to the list
+                this.entries.push({
+                    index,
+                    player,
+                    node,
+                    sorting: this.flat.reduce((obj, header) => {
+                        let { order, sortkey, flip, expr, sort } = header;
+                        if (order) {
+                            // Use special order expression if supplied
+                            let difference = undefined;
+                            let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
+
+                            if (!noCompare) {
+                                // Get difference
+                                difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
+                            }
+
+                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
+                        } else {
+                            // Return native sorting function
+                            obj[sortkey] = sort(player, compare);
+                        }
+
+                        if (this.settings.globals.order_by) {
+                            obj['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
+                        }
+
+                        // Return sorting object
+                        return obj;
+                    }, {
+                        // Default sorting keys
+                        '_index': index
                     })
                 });
             }
@@ -629,44 +619,29 @@ class TableInstance {
 
             // Loop over all items of the array
             for (let { player, compare, index } of this.array) {
-                // Add table row start tag
-                let content = `<tr class="css-entry ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
-                let color = this.getForegroundColor(backgroundColor, player, compare);
-
-                // Add row index if enabled
-                if (indexStyle) {
-                    content += `
-                        <td style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}">
-                            ${ indexStyle == 1 ? (index + 1) : '{__INDEX__}' }
-                        </td>
-                    `;
+                let html = '';
+                for (let header of this.flat) {
+                    html += this.getCellContent(header, player, compare);
                 }
 
-                if (this.leftFlat) {
-                    for (let header of this.leftFlat) {
-                        content += this.getCellContent(header, player, compare);
-                    }
-                } else {
-                    // Add name
-                    content += `
-                        <td class="border-right-thin cursor-pointer" style="${ backgroundColor ? `background: ${ backgroundColor };` : '' }${color}" data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
-                            ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
-                        </td>
-                    `;
+                const node = document.createElement('tr');
+                node.classList.add('css-entry');
+
+                if (dividerStyle) {
+                    node.classList.add(dividerStyle);
                 }
 
-                // Add columns
-                for (let header of this.rightFlat) {
-                    content += this.getCellContent(header, player, compare);
+                if (rowHeight) {
+                    node.style.height = `${rowHeight}px`;
                 }
 
-                // Add table row end tag
-                content += `</tr>`;
+                node.innerHTML = html;
 
                 // Create new entry and push it to the list
                 this.entries.push({
-                    player: player,
-                    content: content,
+                    index,
+                    player,
+                    node,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
                         if (order) {
@@ -693,12 +668,14 @@ class TableInstance {
                         return obj;
                     }, {
                         // Default sorting keys
-                        '_name': player.Name,
                         '_index': index
                     })
                 });
             }
         }
+
+        // Cache length
+        this.entriesLength = this.entries.length;
     }
 
     // Remove key from sorting queue
@@ -736,6 +713,18 @@ class TableInstance {
     // Execute sort
     sort () {
         this.entries.sort((a, b) => this._sort_globally(a, b, this.sorting) || this._sort_default(a, b));
+
+        // Insert indexes
+        const indexedStyle = this.settings.globals.indexed;
+        if (indexedStyle === 1) {
+            for (let i = 0; i < this.entriesLength; i++) {
+                this.entries[i].node.querySelector('td').innerText = this.entries[i].index + 1;
+            }
+        } else if (indexedStyle === 2) {
+            for (let i = 0; i < this.entriesLength; i++) {
+                this.entries[i].node.querySelector('td').innerText = i + 1;
+            }
+        }
     }
 
     setDefaultSorting () {
@@ -893,42 +882,42 @@ class TableInstance {
         return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
-    getDivider (leftSpan, bottomSpacer, topSpacer) {
+    getDivider (bottomSpacer, topSpacer) {
         return `
             ${ topSpacer ? `
                 <tr>
-                    <td colspan="${ this.rightFlatSpan + leftSpan }"></td>
+                    <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }"></td>
                 </tr>
             ` : '' }
             <tr class="border-bottom-thick"></tr>
             ${ bottomSpacer ? `
                 <tr>
-                    <td colspan="${ this.rightFlatSpan + leftSpan }"></td>
+                    <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }"></td>
                 </tr>
             ` : '' }
         `;
     }
 
-    getSpacer (leftSpan) {
+    getSpacer () {
         return `
             <tr>
-                <td colspan="${ this.rightFlatSpan + leftSpan }"></td>
+                <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }"></td>
             </tr>
         `;
     }
 
-    getInjector (leftSpan) {
+    getInjector () {
         return `
             <tr data-entry-injector>
-                <td colspan="${ this.rightFlatSpan + leftSpan }" style="height: 8px;"></td>
+                <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }" style="height: 8px;"></td>
             </tr>
         `;
     }
 
-    getRow (leftSpan, row, val, cmp = undefined, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
+    getRow (row, val, cmp = undefined, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
         return `
             <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">${ row.name }</td>
+                <td class="border-right-thin" colspan="${ this.leftFlatSpan }">${ row.name }</td>
                 ${ CellGenerator.WideCell(
                     this.getCellDisplayValue(row, val, cmp, player, compare, extra),
                     this.getCellColor(row, val, player, compare, extra, ignoreBase),
@@ -950,13 +939,13 @@ class TableInstance {
     }
 
     // Renders statistics rows into cache
-    _renderStatistics (leftSpan) {
+    _renderStatistics () {
         if (typeof this.cache.statistics == 'undefined') {
             if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
                 if (this.settings.customStatistics.length) {
-                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
+                    this.cache.statistics = this.getStatistics(this.leftFlatSpan, this.settings.customStatistics);
                 } else {
-                    this.cache.statistics = this.getStatistics(leftSpan, [
+                    this.cache.statistics = this.getStatistics(this.leftFlatSpan, [
                         {
                             name: 'Minimum',
                             expression: array => _fastMin(array)
@@ -978,20 +967,20 @@ class TableInstance {
     }
 
     // Renders members into cache
-    _renderMembers (leftSpan) {
+    _renderMembers () {
         if (typeof this.cache.members == 'undefined') {
             if (this.settings.globals.members) {
                 this.cache.members = `
                     <tr>
-                        <td class="border-right-thin" colspan=${ leftSpan }>Classes</td>
+                        <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Classes</td>
                         <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
                     </tr>
                     <tr>
-                        <td class="border-right-thin" colspan=${ leftSpan }>Joined</td>
+                        <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Joined</td>
                         <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
                     </tr>
                     <tr>
-                        <td class="border-right-thin" colspan=${ leftSpan }>Left</td>
+                        <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Left</td>
                         <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
                     </tr>
                 `;
@@ -1003,64 +992,27 @@ class TableInstance {
 
     createPlayerTable () {
         // Width of the whole table
-        let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
-        let indexStyle = this.settings.getIndexStyle();
+        let tableWidth = this.rightFlatWidth + this.leftFlatWidth;
 
-        let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
-        let spacer = this.getSpacer(leftSpan);
-        let injector = this.getInjector(leftSpan);
-        let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
+        let spacer = this.getSpacer();
+        let injector = this.getInjector();
+        let divider = this.cache.divider = this.getDivider(false, false);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(leftSpan, true, false);
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(true, false);
         }
 
-        // Create left headers
-        let headerTitle, categoryTitle;
-
-        if (this.configLeft) {
-            categoryTitle = this.getCategoryBlock(false, this.configLeft, true);
-            headerTitle = this.getHeaderBlock(false, this.configLeft, true);
-
-            if (indexStyle) {
-                if (this.settings.getTitleAlign()) {
-                    categoryTitle = `<td></td>` + categoryTitle;
-                    headerTitle = `<td style="width: 50px;" colspan="1" class="border-bottom-thick">#</td>` + headerTitle;
-                } else {
-                    categoryTitle = `<td style="width: 50px;" colspan="1" rowspan="2" class="border-bottom-thick">#</td>` + categoryTitle;
-                }
-            }
-        } else {
-            if (this.settings.getTitleAlign()) {
-                categoryTitle = `
-                    <td colspan="${ indexStyle ? 2 : 1 }" class="border-right-thin"></td>
-                `;
-
-                headerTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" colspan="1" class="border-bottom-thick">#</td>` : '' }
-                    <td style="width: 200px;" colspan="1" class="border-bottom-thick border-right-thin">Date</td>
-                `;
-            } else {
-                categoryTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" colspan="1" rowspan="2" class="border-bottom-thick">#</td>` : '' }
-                    <td style="width: 200px;" colspan="1" rowspan="2" class="border-bottom-thick border-right-thin">Date</td>
-                `;
-
-                headerTitle = '';
-            }
-        }
-
-        this._renderStatistics(leftSpan);
+        this._renderStatistics();
 
         this.cache.table = `
             <tr class="headers">
-                ${ categoryTitle }
-                ${ this.getCategoryBlock(false) }
+                ${ this.getCategoryBlock(this.configLeft, true) }
+                ${ this.getCategoryBlock() }
             </tr>
             <tr class="headers border-bottom-thick">
-                ${ headerTitle }
-                ${ this.getHeaderBlock(false) }
+                ${ this.getHeaderBlock(this.configLeft, true) }
+                ${ this.getHeaderBlock() }
             </tr>
             ${ injector }
         `;
@@ -1070,7 +1022,7 @@ class TableInstance {
         // Create table Content
         return {
             width: tableWidth,
-            entries: this.entries.map(e => e.content),
+            entries: this.entries,
             content: join(layout, (block) => {
                 if (block == '|') {
                     return divider;
@@ -1086,69 +1038,27 @@ class TableInstance {
     // Create players table
     createBrowseTable () {
         // Width of the whole table
-        let nameWidth = this.settings.getNameStyle();
-        let serverWidth = this.settings.getServerStyle();
-        let indexStyle = this.settings.getIndexStyle();
+        let tableWidth = this.rightFlatWidth + this.leftFlatWidth;
 
-        let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || (nameWidth + serverWidth)) + (indexStyle ? 50 : 0);
-
-        let leftSpan = (this.leftFlatSpan || (1 + (serverWidth ? 1 : 0))) + (indexStyle ? 1 : 0);
-        let spacer = this.getSpacer(leftSpan);
-        let injector = this.getInjector(leftSpan);
-        let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
+        let spacer = this.getSpacer();
+        let injector = this.getInjector();
+        let divider = this.cache.divider = this.getDivider(false, false);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, row.eval.compare));
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
         }
 
-        // Create left headers
-        let headerTitle, categoryTitle;
-
-        if (this.configLeft) {
-            categoryTitle = this.getCategoryBlock(true, this.configLeft, true);
-            headerTitle = this.getHeaderBlock(true, this.configLeft, true);
-
-            if (indexStyle) {
-                if (this.settings.getTitleAlign()) {
-                    categoryTitle = `<td></td>` + categoryTitle;
-                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
-                } else {
-                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
-                }
-            }
-        } else {
-            if (this.settings.getTitleAlign()) {
-                categoryTitle = `
-                    <td colspan="${ leftSpan }" class="border-right-thin"></td>
-                `;
-
-                headerTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" class="border-bottom-thick cursor-pointer" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
-                `;
-            } else {
-                categoryTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
-                `;
-
-                headerTitle = '';
-            }
-        }
-
-        this._renderStatistics(leftSpan);
+        this._renderStatistics();
 
         this.cache.table = `
             <tr class="headers">
-                ${ categoryTitle }
-                ${ this.getCategoryBlock(true) }
+                ${ this.getCategoryBlock(this.configLeft, true) }
+                ${ this.getCategoryBlock() }
             </tr>
             <tr class="headers border-bottom-thick">
-                ${ headerTitle }
-                ${ this.getHeaderBlock(true) }
+                ${ this.getHeaderBlock(this.configLeft, true) }
+                ${ this.getHeaderBlock() }
             </tr>
             ${ injector }
         `;
@@ -1158,7 +1068,7 @@ class TableInstance {
 
         return {
             width: tableWidth,
-            entries: (forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries).map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
+            entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
             content: join(layout, (block) => {
                 if (block == '|') {
                     return divider;
@@ -1174,77 +1084,38 @@ class TableInstance {
     // Create guilds table
     createGroupTable () {
         // Width of the whole table
-        let nameWidth = this.settings.getNameStyle();
-        let indexStyle = this.settings.getIndexStyle();
+        let tableWidth = this.rightFlatWidth + this.leftFlatWidth;
 
-        let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || nameWidth) + (indexStyle ? 50 : 0);
-
-        let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
-        let spacer = this.getSpacer(leftSpan);
-        let injector = this.getInjector(leftSpan);
-        let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
+        let spacer = this.getSpacer();
+        let injector = this.getInjector();
+        let divider = this.cache.divider = this.getDivider(false, false);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, row.eval.compare));
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
         }
 
-        this._renderStatistics(leftSpan);
-        this._renderMembers(leftSpan);
-
-        // Create left headers
-        let headerTitle, categoryTitle;
-
-        if (this.configLeft) {
-            categoryTitle = this.getCategoryBlock(true, this.configLeft, true);
-            headerTitle = this.getHeaderBlock(true, this.configLeft, true);
-
-            if (indexStyle) {
-                if (this.settings.getTitleAlign()) {
-                    categoryTitle = `<td></td>` + categoryTitle;
-                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
-                } else {
-                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
-                }
-            }
-        } else {
-            if (this.settings.getTitleAlign()) {
-                categoryTitle = `
-                    <td colspan="${ leftSpan }" class="border-right-thin"></td>
-                `;
-
-                headerTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
-                `;
-            } else {
-                categoryTitle = `
-                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick cursor-pointer" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin cursor-pointer" ${ this.getSortingTag('_name') }>Name</td>
-                `;
-
-                headerTitle = '';
-            }
-        }
+        this._renderStatistics();
+        this._renderMembers();
 
         this.cache.table = `
             <tr class="headers">
-                ${ categoryTitle }
-                ${ this.getCategoryBlock(true) }
+                ${ this.getCategoryBlock(this.configLeft, true) }
+                ${ this.getCategoryBlock() }
             </tr>
             <tr class="headers border-bottom-thick">
-                ${ headerTitle }
-                ${ this.getHeaderBlock(true) }
+                ${ this.getHeaderBlock(this.configLeft, true) }
+                ${ this.getHeaderBlock() }
             </tr>
             ${ injector }
-            ${ this.entries.missing.length ? `<tr class="font-weight: bold;">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
+            ${ this.entries.missing.length ? `<tr class="font-weight: bold;">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + this.leftFlatSpan, 'center') }</tr>` : '' }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
 
         return {
             width: tableWidth,
-            entries: this.entries.map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
+            entries: this.entries,
             content: join(layout, (block) => {
                 if (block == '|') {
                     return divider;
@@ -1294,7 +1165,7 @@ class TableInstance {
         `;
     }
 
-    getCategoryBlock (sortable, config = this.config, alwaysRightBorder = false) {
+    getCategoryBlock (config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
         return join(config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
@@ -1303,7 +1174,7 @@ class TableInstance {
                 return join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'cursor-pointer' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.getSortingTag(sortkey) }>${ headerName }</td>`
                 });
             } else {
                 return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
@@ -1311,7 +1182,7 @@ class TableInstance {
         });
     }
 
-    getHeaderBlock (sortable, config = this.config, alwaysRightBorder = false) {
+    getHeaderBlock (config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
         return join(config, ({ headers, empty }, categoryIndex, categoryArray) => {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
@@ -1322,7 +1193,7 @@ class TableInstance {
                 return join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'cursor-pointer' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.getSortingTag(sortkey) }>${ name }</td>`
                 });
             }
         });
@@ -1442,7 +1313,7 @@ class TableController {
             let blockSize = Math.min(this.injectorEntries.length, size);
             this.injectCount += blockSize;
 
-            let entries = $(this.injectorEntries.splice(0, size).join(''));
+            let entries = $(this.injectorEntries.splice(0, size));
             this.injectorCallback(entries);
 
             this.injectorElement.before(entries);
@@ -1491,15 +1362,13 @@ class TableController {
             ExpressionCache.start();
 
             this.table.setEntries(... this.entries);
-            if (this.type != ScriptType.Player) {
-                this.table.sort();
-            }
+            this.table.sort();
 
             ExpressionCache.stop();
         }
 
         // Reset sorting
-        if (sorting != null && this.type != ScriptType.Player) {
+        if (sorting != null) {
             this.table.sorting = sorting;
             this.table.sort();
         }
@@ -1535,7 +1404,9 @@ class TableController {
         this.injectorElement = $body.find('[data-entry-injector]');
         this.injectCount = this.injectCount || SiteOptions.load_rows || 50;
 
-        onInject($(entries.splice(0, this.injectCount).join('')).insertBefore(this.injectorElement));
+        entries = entries.map((entry) => entry.node);
+
+        onInject($(entries.splice(0, this.injectCount)).insertBefore(this.injectorElement));
 
         // Check table content for unwanted tags
         if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {
