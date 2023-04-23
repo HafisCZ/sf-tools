@@ -473,6 +473,37 @@ class TableInstance {
         }
     }
 
+    _generateSorting (player, compare, index, comparable) {
+        const sorting = {
+            '_index': index
+        };
+
+        for (const header of this.flat) {
+            let { order, sortkey, flip, expr, sort } = header;
+            if (order) {
+                // Use special order expression if supplied
+                let difference = undefined;
+                let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
+
+                if (comparable) {
+                    // Get difference
+                    difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
+                }
+
+                sorting[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
+            } else {
+                // Return native sorting function
+                sorting[sortkey] = sort(player, compare);
+            }
+        }
+
+        if (this.settings.globals.order_by) {
+            sorting['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
+        }
+
+        return sorting;
+    }
+
     // Generate entries
     generateEntries () {
         // Clear current entries
@@ -511,39 +542,12 @@ class TableInstance {
                 this.entries.push({
                     index,
                     node,
-                    sorting: this.flat.reduce((obj, header) => {
-                        let { order, sortkey, flip, expr, sort } = header;
-                        if (order) {
-                            // Use special order expression if supplied
-                            let difference = undefined;
-                            let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
-
-                            if (!noCompare) {
-                                // Get difference
-                                difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
-                            }
-
-                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
-                        } else {
-                            // Return native sorting function
-                            obj[sortkey] = sort(player, compare);
-                        }
-
-                        if (this.settings.globals.order_by) {
-                            obj['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
-                        }
-
-                        // Return sorting object
-                        return obj;
-                    }, {
-                        // Default sorting keys
-                        '_index': index
-                    })
+                    sorting: this._generateSorting(player, compare, index, true)
                 })
             }
         } else if (this.type == ScriptType.Browse) {
             // Whether timestamps match
-            let noCompare = this.array.reference == this.array.timestamp;
+            let comparable = this.array.reference != this.array.timestamp;
             let outdated = this.settings.getOutdatedStyle();
 
             // Loop over all items of the array
@@ -580,39 +584,12 @@ class TableInstance {
                 this.entries.push({
                     index,
                     node,
-                    sorting: this.flat.reduce((obj, header) => {
-                        let { order, sortkey, flip, expr, sort } = header;
-                        if (order) {
-                            // Use special order expression if supplied
-                            let difference = undefined;
-                            let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
-
-                            if (!noCompare) {
-                                // Get difference
-                                difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
-                            }
-
-                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
-                        } else {
-                            // Return native sorting function
-                            obj[sortkey] = sort(player, compare);
-                        }
-
-                        if (this.settings.globals.order_by) {
-                            obj['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
-                        }
-
-                        // Return sorting object
-                        return obj;
-                    }, {
-                        // Default sorting keys
-                        '_index': index
-                    })
+                    sorting: this._generateSorting(player, compare, index, comparable)
                 });
             }
         } else if (this.type == ScriptType.Group) {
             // Whether timestamps match
-            let noCompare = this.array.reference == this.array.timestamp;
+            let comparable = this.array.reference != this.array.timestamp;
 
             // Add missing entries to the entry list
             this.entries.missing = this.array.missing;
@@ -641,34 +618,7 @@ class TableInstance {
                 this.entries.push({
                     index,
                     node,
-                    sorting: this.flat.reduce((obj, header) => {
-                        let { order, sortkey, flip, expr, sort } = header;
-                        if (order) {
-                            // Use special order expression if supplied
-                            let difference = undefined;
-                            let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
-
-                            if (!noCompare) {
-                                // Get difference
-                                difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
-                            }
-
-                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
-                        } else {
-                            // Return native sorting function
-                            obj[sortkey] = sort(player, compare);
-                        }
-
-                        if (this.settings.globals.order_by) {
-                            obj['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
-                        }
-
-                        // Return sorting object
-                        return obj;
-                    }, {
-                        // Default sorting keys
-                        '_index': index
-                    })
+                    sorting: this._generateSorting(player, compare, index, comparable)
                 });
             }
         }
