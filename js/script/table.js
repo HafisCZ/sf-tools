@@ -376,7 +376,11 @@ class TableInstance {
         this.rightFlatWidth = this.config.reduce((a, b) => a + b.width, 0);
         this.rightFlatSpan = this.rightFlat.reduce((t, h) => t + h.span, 0);
 
-        this.clearCache();
+        this.flatWidth = this.leftFlatWidth + this.rightFlatWidth;
+        this.flatSpan = this.leftFlatSpan + this.rightFlatSpan;
+
+        // Caching
+        this._recreateCache();
 
         this.global_key = '_index';
         this.global_ord = 1;
@@ -444,7 +448,7 @@ class TableInstance {
 
         if (!skipEvaluation || this.type == ScriptType.Player) {
             ExpressionCache.reset();
-            this.clearCache();
+            this._recreateCache();
         }
 
         if (manualSort) {
@@ -755,9 +759,14 @@ class TableInstance {
         return this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]);
     }
 
-    clearCache () {
+    _recreateCache () {
         // Reset
-        this.cache = { };
+        this.cache = {
+            spacer: this.getSpacer(),
+            injector: this.getInjector(),
+            divider: this.getDivider(false)
+
+        };
     }
 
     getCellDividerStyle () {
@@ -871,7 +880,7 @@ class TableInstance {
             <tr class="border-bottom-thick"></tr>
             ${ bottomSpacer ? `
                 <tr>
-                    <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }"></td>
+                    <td colspan="${ this.flatSpan }"></td>
                 </tr>
             ` : '' }
         `;
@@ -880,7 +889,7 @@ class TableInstance {
     getSpacer () {
         return `
             <tr>
-                <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }"></td>
+                <td colspan="${ this.flatSpan }"></td>
             </tr>
         `;
     }
@@ -888,7 +897,7 @@ class TableInstance {
     getInjector () {
         return `
             <tr data-entry-injector>
-                <td colspan="${ this.rightFlatSpan + this.leftFlatSpan }" style="height: 8px;"></td>
+                <td colspan="${ this.flatSpan }" style="height: 8px;"></td>
             </tr>
         `;
     }
@@ -970,14 +979,6 @@ class TableInstance {
     }
 
     createPlayerTable () {
-        // Width of the whole table
-        let tableWidth = this.rightFlatWidth + this.leftFlatWidth;
-
-        let spacer = this.getSpacer();
-        let injector = this.getInjector();
-        let divider = this.cache.divider = this.getDivider(false);
-
-        // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(true);
         }
@@ -993,20 +994,20 @@ class TableInstance {
                 ${ this.getHeaderBlock(this.configLeft, true) }
                 ${ this.getHeaderBlock() }
             </tr>
-            ${ injector }
+            ${ this.cache.injector }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
 
         // Create table Content
         return {
-            width: tableWidth,
+            width: this.flatWidth,
             entries: this.entries,
             content: join(layout, (block) => {
                 if (block == '|') {
-                    return divider;
+                    return this.cache.divider;
                 } else if (block == '_') {
-                    return spacer;
+                    return this.cache.spacer;
                 } else {
                     return this.cache[block];
                 }
@@ -1016,14 +1017,6 @@ class TableInstance {
 
     // Create players table
     createBrowseTable () {
-        // Width of the whole table
-        let tableWidth = this.rightFlatWidth + this.leftFlatWidth;
-
-        let spacer = this.getSpacer();
-        let injector = this.getInjector();
-        let divider = this.cache.divider = this.getDivider(false);
-
-        // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
         }
@@ -1039,20 +1032,20 @@ class TableInstance {
                 ${ this.getHeaderBlock(this.configLeft, true) }
                 ${ this.getHeaderBlock() }
             </tr>
-            ${ injector }
+            ${ this.cache.injector }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
         let forcedLimit = this.array.perf || this.settings.getEntryLimit();
 
         return {
-            width: tableWidth,
+            width: this.flatWidth,
             entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
             content: join(layout, (block) => {
                 if (block == '|') {
-                    return divider;
+                    return this.cache.divider;
                 } else if (block == '_') {
-                    return spacer;
+                    return this.cache.spacer;
                 } else {
                     return this.cache[block];
                 }
@@ -1062,13 +1055,6 @@ class TableInstance {
 
     // Create guilds table
     createGroupTable () {
-        // Width of the whole table
-        let tableWidth = this.rightFlatWidth + this.leftFlatWidth;
-
-        let spacer = this.getSpacer();
-        let injector = this.getInjector();
-        let divider = this.cache.divider = this.getDivider(false);
-
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
@@ -1086,20 +1072,20 @@ class TableInstance {
                 ${ this.getHeaderBlock(this.configLeft, true) }
                 ${ this.getHeaderBlock() }
             </tr>
-            ${ injector }
-            ${ this.entries.missing.length ? `<tr class="font-weight: bold;">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + this.leftFlatSpan, 'center') }</tr>` : '' }
+            ${ this.cache.injector }
+            ${ this.entries.missing.length ? `<tr class="font-weight: bold;">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flatSpan, 'center') }</tr>` : '' }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
 
         return {
-            width: tableWidth,
+            width: this.flatWidth,
             entries: this.entries,
             content: join(layout, (block) => {
                 if (block == '|') {
-                    return divider;
+                    return this.cache.divider;
                 } else if (block == '_') {
-                    return spacer;
+                    return this.cache.spacer;
                 } else {
                     return this.cache[block];
                 }
