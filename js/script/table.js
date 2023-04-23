@@ -510,8 +510,12 @@ class TableInstance {
         this.entries = [];
 
         // Common settings
-        let dividerStyle = this.getCellDividerStyle();
-        let rowHeight = this.settings.getRowHeight();
+        const dividerStyle = this.getCellDividerStyle();
+        const rowHeight = this.settings.getRowHeight();
+        const comparable = this.type === ScriptType.Player || this.array.reference != this.array.timestamp;;
+
+        // Hoist
+        const self = this;
 
         if (this.type == ScriptType.Player) {
             // Loop over all items of the array
@@ -542,49 +546,52 @@ class TableInstance {
                 this.entries.push({
                     index,
                     node,
-                    sorting: this._generateSorting(player, compare, index, true)
+                    sorting: this._generateSorting(player, compare, index, comparable)
                 })
             }
         } else if (this.type == ScriptType.Browse) {
-            // Whether timestamps match
-            let comparable = this.array.reference != this.array.timestamp;
-            let outdated = this.settings.getOutdatedStyle();
+            const outdated = this.settings.getOutdatedStyle();
 
             // Loop over all items of the array
-            for (let { player, compare, hidden, index, latest } of this.array) {
-                let html = '';
-                for (let header of this.flat) {
-                    html += this.getCellContent(header, player, compare);
-                }
-
-                const node = document.createElement('tr');
-                node.classList.add('css-entry');
-
-                if (hidden) {
-                    node.classList.add('opacity-50');
-                }
-
-                if (dividerStyle) {
-                    node.classList.add(dividerStyle);
-                }
-
-                if (rowHeight) {
-                    node.style.height = `${rowHeight}px`;
-                }
-
-                node.innerHTML = html;
-
-                if (outdated && !latest) {
-                    node.querySelectorAll('[data-id]').forEach((element) => {
-                        element.classList.add('!text-red');
-                    })
-                }
-
-                // Create new entry and push it to the list
+            for (const entry of this.array) {
                 this.entries.push({
-                    index,
-                    node,
-                    sorting: this._generateSorting(player, compare, index, comparable)
+                    index: entry.index,
+                    get node () {
+                        delete this.node;
+
+                        let html = '';
+                        for (const header of self.flat) {
+                            html += self.getCellContent(header, entry.player, entry.compare);
+                        }
+
+                        const node = document.createElement('tr');
+                        node.classList.add('css-entry');
+        
+                        if (entry.hidden) {
+                            node.classList.add('opacity-50');
+                        }
+        
+                        if (dividerStyle) {
+                            node.classList.add(dividerStyle);
+                        }
+        
+                        if (rowHeight) {
+                            node.style.height = `${rowHeight}px`;
+                        }
+        
+                        node.innerHTML = html;
+        
+                        if (outdated && !entry.latest) {
+                            node.querySelectorAll('[data-id]').forEach((element) => {
+                                element.classList.add('!text-red');
+                            })
+                        }
+
+                        this.rendered = true;
+
+                        return (this.node = node);
+                    },
+                    sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable)
                 });
             }
         } else if (this.type == ScriptType.Group) {
@@ -659,16 +666,23 @@ class TableInstance {
     // Execute sort
     sort () {
         this.entries.sort((a, b) => this._sort_globally(a, b, this.sorting) || this._sort_default(a, b));
+    }
 
-        // Insert indexes
+    reflowIndexes () {
         const indexedStyle = this.settings.globals.indexed;
         if (indexedStyle === 1) {
             for (let i = 0; i < this.entriesLength; i++) {
-                this.entries[i].node.querySelector('td').innerText = this.entries[i].index + 1;
+                const entry = this.entries[i];
+                if (entry.rendered) {
+                    entry.node.querySelector('td').innerText = this.entries[i].index + 1;
+                }
             }
         } else if (indexedStyle === 2) {
             for (let i = 0; i < this.entriesLength; i++) {
-                this.entries[i].node.querySelector('td').innerText = i + 1;
+                const entry = this.entries[i];
+                if (entry.rendered) {
+                    entry.node.querySelector('td').innerText = i + 1;
+                }
             }
         }
     }
@@ -1202,6 +1216,8 @@ class TableController {
                 this.injectorCallback(entry.node);
             }
 
+            this.table.reflowIndexes();
+
             if (this.injectorEntries.length == 0) {
                 this.injectorObserver.disconnect();
             }
@@ -1293,6 +1309,8 @@ class TableController {
                 this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
                 onInject(entry.node);
             }
+
+            this.table.reflowIndexes();
         }
 
         // Check table content for unwanted tags
