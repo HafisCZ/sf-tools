@@ -760,12 +760,11 @@ class TableInstance {
     }
 
     _recreateCache () {
-        // Reset
         this.cache = {
             spacer: this.getSpacer(),
-            injector: this.getInjector(),
-            divider: this.getDivider()
-        };
+            divider: this.getDivider(),
+            table: this.getTable()
+        }
     }
 
     getCellDividerStyle () {
@@ -874,6 +873,22 @@ class TableInstance {
         return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
+    getTable () {
+        return `
+            <tr class="headers">
+                ${ this.getCategoryBlock(this.configLeft, true) }
+                ${ this.getCategoryBlock() }
+            </tr>
+            <tr class="headers border-bottom-thick">
+                ${ this.getHeaderBlock(this.configLeft, true) }
+                ${ this.getHeaderBlock() }
+            </tr>
+            <tr data-entry-injector>
+                <td colspan="${ this.flatSpan }" style="height: 8px;"></td>
+            </tr>
+        `
+    }
+
     getDivider () {
         return `
             <tr class="border-bottom-thick"></tr>
@@ -884,14 +899,6 @@ class TableInstance {
         return `
             <tr>
                 <td colspan="${ this.flatSpan }"></td>
-            </tr>
-        `;
-    }
-
-    getInjector () {
-        return `
-            <tr data-entry-injector>
-                <td colspan="${ this.flatSpan }" style="height: 8px;"></td>
             </tr>
         `;
     }
@@ -916,8 +923,26 @@ class TableInstance {
         return {
             theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
-            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ]
+            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
+            width: this.flatWidth
+        };
+    }
+
+    getContent () {
+        let content = '';
+        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
+
+        for (const block of layout) {
+            if (block == '|') {
+                content += this.cache.divider;
+            } else if (block == '_') {
+                content += this.cache.spacer;
+            } else {
+                content += this.cache[block] || '';
+            }
         }
+
+        return content;
     }
 
     // Renders statistics rows into cache
@@ -979,33 +1004,10 @@ class TableInstance {
 
         this._renderStatistics();
 
-        this.cache.table = `
-            <tr class="headers">
-                ${ this.getCategoryBlock(this.configLeft, true) }
-                ${ this.getCategoryBlock() }
-            </tr>
-            <tr class="headers border-bottom-thick">
-                ${ this.getHeaderBlock(this.configLeft, true) }
-                ${ this.getHeaderBlock() }
-            </tr>
-            ${ this.cache.injector }
-        `;
-
-        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
-
         // Create table Content
         return {
-            width: this.flatWidth,
             entries: this.entries,
-            content: join(layout, (block) => {
-                if (block == '|') {
-                    return this.cache.divider;
-                } else if (block == '_') {
-                    return this.cache.spacer;
-                } else {
-                    return this.cache[block] || '';
-                }
-            })
+            content: this.getContent()
         };
     }
 
@@ -1017,33 +1019,11 @@ class TableInstance {
 
         this._renderStatistics();
 
-        this.cache.table = `
-            <tr class="headers">
-                ${ this.getCategoryBlock(this.configLeft, true) }
-                ${ this.getCategoryBlock() }
-            </tr>
-            <tr class="headers border-bottom-thick">
-                ${ this.getHeaderBlock(this.configLeft, true) }
-                ${ this.getHeaderBlock() }
-            </tr>
-            ${ this.cache.injector }
-        `;
-
-        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
         let forcedLimit = this.array.perf || this.settings.getEntryLimit();
 
         return {
-            width: this.flatWidth,
             entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
-            content: join(layout, (block) => {
-                if (block == '|') {
-                    return this.cache.divider;
-                } else if (block == '_') {
-                    return this.cache.spacer;
-                } else {
-                    return this.cache[block] || '';
-                }
-            })
+            content: this.getContent()
         };
     }
 
@@ -1072,32 +1052,9 @@ class TableInstance {
         this._renderStatistics();
         this._renderMembers();
 
-        this.cache.table = `
-            <tr class="headers">
-                ${ this.getCategoryBlock(this.configLeft, true) }
-                ${ this.getCategoryBlock() }
-            </tr>
-            <tr class="headers border-bottom-thick">
-                ${ this.getHeaderBlock(this.configLeft, true) }
-                ${ this.getHeaderBlock() }
-            </tr>
-            ${ this.cache.injector }
-        `;
-
-        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
-
         return {
-            width: this.flatWidth,
             entries: this.entries,
-            content: join(layout, (block) => {
-                if (block == '|') {
-                    return this.cache.divider;
-                } else if (block == '_') {
-                    return this.cache.spacer;
-                } else {
-                    return this.cache[block] || '';
-                }
-            })
+            content: this.getContent()
         };
     }
 
