@@ -1206,8 +1206,16 @@ class TableInstance {
 }
 
 class TableController {
-    constructor ($table, type) {
-        this.$table = $table;
+    constructor ($table, type) {        
+        this.headElement = document.createElement('thead');
+        this.bodyElement = document.createElement('tbody');
+        
+        this.element = $table.get(0);
+        this.element.replaceChildren(
+            this.headElement,
+            this.bodyElement
+        )
+
         this.type = type;
 
         // Changed by default
@@ -1217,7 +1225,7 @@ class TableController {
 
     async toImage (cloneCallback) {
         return new Promise(async (resolve) => {
-            const canvas = await html2canvas(this.$table.get(0), {
+            const canvas = await html2canvas(this.element, {
                 logging: false,
                 allowTaint: true,
                 useCORS: true,
@@ -1293,7 +1301,7 @@ class TableController {
         this.injectorCounter = 0;
 
         this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.75 });
-        this.injectorObserver.observe(this.injectorElement.get(0));
+        this.injectorObserver.observe(this.injectorElement);
     }
 
     forceInject () {
@@ -1313,10 +1321,11 @@ class TableController {
             let blockSize = Math.min(this.injectorEntries.length, size);
             this.injectCount += blockSize;
 
-            let entries = $(this.injectorEntries.splice(0, size));
-            this.injectorCallback(entries);
-
-            this.injectorElement.before(entries);
+            let entriesSlice = this.injectorEntries.splice(0, size);
+            for (const entry of entriesSlice) {
+                this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
+                this.injectorCallback(entry.node);
+            }
 
             if (this.injectorEntries.length == 0) {
                 this.injectorObserver.disconnect();
@@ -1385,6 +1394,8 @@ class TableController {
         // Get table content
         let { content, entries, style, class: klass, theme, width } = this.table.createTable();
 
+        entries = [].concat(entries);
+
         let themeClass = 'theme-light';
         let themeStyle = '';
         if (typeof theme === 'string') {
@@ -1394,28 +1405,31 @@ class TableController {
             themeStyle = `--table-foreground: ${text}; --table-background: ${background}`;
         }
 
-        let $body = $(`
-            <thead></thead>
-            <tbody style="${themeStyle} ${style.join(' ')}" class="${themeClass} ${klass.join(' ')}">
-                ${content}
-            </tbody>
-        `);
+        this.bodyElement.setAttribute('style', `${themeStyle} ${style.join(' ')}`);
+        this.bodyElement.setAttribute('class', `${themeClass} ${klass.join(' ')}`);
+        this.bodyElement.innerHTML = content;
 
-        this.injectorElement = $body.find('[data-entry-injector]');
         this.injectCount = this.injectCount || SiteOptions.load_rows || 50;
+        this.injectorElement = this.bodyElement.querySelector('[data-entry-injector]');
 
-        entries = entries.map((entry) => entry.node);
-
-        onInject($(entries.splice(0, this.injectCount)).insertBefore(this.injectorElement));
+        const entriesSlice = entries.splice(0, this.injectCount);
+        for (const entry of entriesSlice) {
+            this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
+            onInject(entry.node);
+        }
 
         // Check table content for unwanted tags
-        if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {
-            // Show error
-            this.$table.html(`<div>${intl('stats.settings.insecure_error#')}</div>`).css('width', `50vw`).css('left', `25vw`);
-        } else {
-            this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
+        if (!SiteOptions.insecure && this.bodyElement.querySelector('script, iframe, img[onerror]')) {
+            // Show insecure error
+            this.element.style.width = '50vw';
+            this.element.style.left = '25vw';
 
-            if (entries.length > 0 && this.injectorElement.get(0)) {
+            this.bodyElement.innerHTML = `<div>${intl('stats.settings.insecure_error#')}</div>`;
+        } else {
+            this.element.style.width = `${width}px`;
+            this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
+
+            if (entries.length > 0 && this.injectorElement) {
                 this.prepareInjector(entries, onInject);
             } else {
                 this.injectorElement.remove();
@@ -1423,40 +1437,47 @@ class TableController {
         }
 
         // Bind sorting
-        this.$table.find('[data-sortable]').click(event => {
-            let sortKey = $(event.target).attr('data-sortable-key');
-            if (event.originalEvent.ctrlKey) {
-                // Remove all sorting except current key if CTRL is held down
-                this.table.sorting = this.table.sorting.filter(s => s.key == sortKey)
-            }
-
-            // Sort by key
-            this.table.setSorting(sortKey);
-
-            // Redraw table
-            this.refresh(onChange, onInject);
-        }).contextmenu(event => {
-            event.preventDefault();
-
-            if (this.table.sorting && this.table.sorting.length) {
-                // Do only if any sorting exists
-                if (event.originalEvent.ctrlKey) {
-                    // Clear sorting if CTRL is held down
-                    this.table.clearSorting();
-                } else {
-                    // Remove current key
-                    this.table.removeSorting($(event.target).attr('data-sortable-key'));
+        const sortables = Array.from(this.bodyElement.querySelectorAll('[data-sortable]'));
+        for (const sortable of sortables) {
+            sortable.addEventListener('click', (event) => {
+                let sortKey = event.target.dataset.sortableKey;
+                if (event.ctrlKey) {
+                    // Remove all sorting except current key if CTRL is held down
+                    this.table.sorting = this.table.sorting.filter(s => s.key == sortKey)
                 }
-
+    
+                // Sort by key
+                this.table.setSorting(sortKey);
+    
                 // Redraw table
                 this.refresh(onChange, onInject);
-            } else if (this.table.global_sorting) {
-                this.table.setDefaultSorting();
-                this.refresh(onChange, onInject);
-            }
-        }).mousedown(event => {
-            event.preventDefault();
-        });
+            })
+
+            sortable.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+
+                if (this.table.sorting && this.table.sorting.length) {
+                    // Do only if any sorting exists
+                    if (event.ctrlKey) {
+                        // Clear sorting if CTRL is held down
+                        this.table.clearSorting();
+                    } else {
+                        // Remove current key
+                        this.table.removeSorting(event.target.dataset.sortableKey);
+                    }
+    
+                    // Redraw table
+                    this.refresh(onChange, onInject);
+                } else if (this.table.global_sorting) {
+                    this.table.setDefaultSorting();
+                    this.refresh(onChange, onInject);
+                }
+            })
+
+            sortable.addEventListener('mousedown', (event) => {
+                event.preventDefault();
+            })
+        }
 
         // Log stuff to console
         if (schanged || echanged || ignore) {

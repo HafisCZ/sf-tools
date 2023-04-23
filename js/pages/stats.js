@@ -426,12 +426,15 @@ class GroupDetailTab extends Tab {
     refresh () {
         this.table.refresh(() => {
             this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
-        }, (block) => {
-            const blockClickable = block.find('[data-id]').click((event) => {
-                DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
-            });
+        }, (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
+                })
+            }
 
-            this.contextMenu.attach(blockClickable.get());
+            this.contextMenu.attach(clickableElements);
         });
     }
 
@@ -584,11 +587,12 @@ class BrowseTab extends Tab {
     constructor (parent) {
         super(parent);
 
-        this.$table = this.$parent.find('[data-op="table"]');
+        this.$table1 = this.$parent.find('[data-op="table1"]');
+        this.$table2 = this.$parent.find('[data-op="table2"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table, ScriptType.Browse);
-        this.tableQ = new TableController(this.$table, ScriptType.Browse);
+        this.tableBase = new TableController(this.$table1, ScriptType.Browse);
+        this.tableQ = new TableController(this.$table2, ScriptType.Browse);
 
         // Keep track of what table is displayed and swap if necessary later
         this.table = this.tableBase;
@@ -599,7 +603,7 @@ class BrowseTab extends Tab {
             this.table.forceInject();
 
             var range = document.createRange();
-            range.selectNode(this.$table.get(0));
+            range.selectNode(this.table.element);
 
             window.getSelection().removeAllRanges();
 
@@ -1042,19 +1046,36 @@ class BrowseTab extends Tab {
         });
     }
 
-    refresh () {
-        this.table.refresh(undefined, (block) => {
-            const blockClickable = block.find('[data-id]').click((event) => {
-                if (event.ctrlKey) {
-                    $(event.currentTarget).toggleClass('css-op-select');
-                } else {
-                    DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
-                }
-            }).mousedown((event) => {
-                event.preventDefault();
-            });
+    _toggleTable (table) {
+        if (table === this.table) {
+            table.element.style.display = '';
+        } else {
+            
+            table.element.style.display = 'none';
+        }
+    }
 
-            this.contextMenu.attach(blockClickable.get());
+    refresh () {
+        this._toggleTable(this.tableBase);
+        this._toggleTable(this.tableQ);
+
+        this.table.refresh(undefined, (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    if (event.ctrlKey) {
+                        event.currentTarget.classList.toggle('css-op-select');
+                    } else {
+                        DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
+                    }
+                });
+
+                clickableElement.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                })
+            }
+
+            this.contextMenu.attach(clickableElements);
         });
     }
 
