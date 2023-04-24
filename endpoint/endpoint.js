@@ -212,8 +212,7 @@ const EndpointDialog = new (class extends Dialog {
                 // Separate username & server combo
                 [ username, server ] = username.split('@', 2);
             } else {
-                // TODO: Add correct server
-                server = null;
+                server = 'sso.playa-games.com';
             }
 
             const usernameTooShort = username.length < 3;
