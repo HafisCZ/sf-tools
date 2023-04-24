@@ -40,14 +40,20 @@ const SIMULATOR_NOTICES = [
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
+            'Improved performance of table rendering',
             'Added missing player resources',
-            'Fixed manual dialog not closable via close button'
+            'Added all valid css colors as constants',
+            'Fixed manual dialog not closable via close button',
+            'Fixed sorting',
+            'Fixed undefined text when table block is not available',
+            'Fixed missing table row end tag'
         ],
         'Pet Simulator': [
             'Fixed display of gladiator % damage'
         ],
         'Endpoint': [
-            'Added support for ???'
+            'Added support for S&F Accounts',
+            'Reworked communication'
         ]
     },
     'v6.3469': {
