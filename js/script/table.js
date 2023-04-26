@@ -41,8 +41,7 @@ class HeaderGroup {
     }
 }
 
-// Special array for players only
-class PlayersTableArray extends Array {
+class BrowseTableArray extends Array {
     constructor (perf, ts, rs) {
         super();
 
@@ -62,7 +61,16 @@ class PlayersTableArray extends Array {
     }
 }
 
-// Special array for group only
+class PlayerTableArray extends Array {
+    add (player, compare) {
+        super.push({
+            player,
+            compare: compare || player,
+            index: this.length
+        })
+    }
+}
+
 class GroupTableArray extends Array {
     constructor (joined, kicked, ts, rs, missing) {
         super();
@@ -407,15 +415,9 @@ class TableInstance {
 
     // Set players
     setEntries (array, skipEvaluation = false, manualSort = null) {
-        if (this.type == ScriptType.Player) {
-            this.array = array.map(([ timestamp, e ]) => {
-                let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
-                let disc = this.settings.discardRules.some(rule => new ExpressionScope(this.settings).with(obj, obj).eval(rule));
-                ExpressionCache.reset();
-
-                return disc ? null : [ timestamp, obj ];
-            }).filter(e => e);
-        } else if (this.type == ScriptType.Browse) {
+        if (this.type === ScriptType.Group) {
+            this.array = array;
+        } else {
             this.array = array.map(obj => {
                 let { player, compare } = obj;
 
@@ -428,21 +430,22 @@ class TableInstance {
                 return disc ? null : obj;
             }).filter(e => e);
 
-            this.array.perf = array.perf;
-            this.array.timestamp = array.timestamp;
-            this.array.reference = array.reference;
-        } else {
-            this.array = array;
+            // Copy over lost properties
+            if (this.type == ScriptType.Browse) {
+                this.array.perf = array.perf;
+                this.array.timestamp = array.timestamp;
+                this.array.reference = array.reference;
+            }
         }
 
         // Evaluate variables
         if (this.type == ScriptType.Player) {
-            this.settings.evalHistory(this.array.map(p => p[1]), array.map(p => p[1]));
+            this.settings.evalPlayer(this.array, array);
         } else if (!skipEvaluation) {
             if (this.type == ScriptType.Browse) {
-                this.settings.evalPlayers(this.array, array);
+                this.settings.evalBrowse(this.array, array);
             } else {
-                this.settings.evalGuilds(this.array, array);
+                this.settings.evalGuild(this.array, array);
             }
         }
 
@@ -512,21 +515,17 @@ class TableInstance {
         // Common settings
         const dividerStyle = this.getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
-        const comparable = this.type === ScriptType.Player || this.array.reference != this.array.timestamp;;
+        const comparable = this.type === ScriptType.Player || this.array.reference != this.array.timestamp;
 
         // Hoist
         const self = this;
 
         if (this.type == ScriptType.Player) {
             // Loop over all items of the array
-            for (let index = 0; index < this.array.length; index++) {
-                // Get variables
-                let player = this.array[index][1];
-                let compare = index < this.array.length - 1 ? this.array[index + 1][1] : player;
-
+            for (const entry of this.array) {
                 let html = '';
                 for (let header of this.flat) {
-                    html += this.getCellContent(header, player, compare);
+                    html += this.getCellContent(header, entry.player, entry.compare);
                 }
 
                 const node = document.createElement('tr');
@@ -544,10 +543,10 @@ class TableInstance {
 
                 // Create new entry and push it to the list
                 this.entries.push({
-                    index,
-                    player,
+                    index: entry.index,
+                    player: entry.player,
                     node,
-                    sorting: this._generateSorting(player, compare, index, comparable)
+                    sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable)
                 })
             }
         } else if (this.type == ScriptType.Browse) {
@@ -1028,19 +1027,6 @@ class TableInstance {
         }
     }
 
-    getArrayForStatistics () {
-        if (this.type == ScriptType.Player) {
-            return this.array.map(([timestamp, player], index, array) => {
-                return {
-                    player: player,
-                    compare: array[index + 1] ? array[index + 1][1] : player
-                };
-            });
-        } else {
-            return this.array;
-        }
-    }
-
     getStatistics (leftSpan, entries) {
         return `
             <tr>
@@ -1051,7 +1037,7 @@ class TableInstance {
             ${ join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
+                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;

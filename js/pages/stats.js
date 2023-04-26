@@ -549,6 +549,14 @@ class PlayerDetailTab extends Tab {
         this.list = list;
         this.player = player;
 
+        this.array = new PlayerTableArray();
+        for (let i = 0; i < list.length; i++) {
+            const p = _dig(list, i, 1);
+            const c = _dig(list, i + 1, 1);
+
+            this.array.add(p, c || p);
+        }
+
         this.$name.html(this.player.Name);
         this.$identifier.html(this.identifier);
 
@@ -562,7 +570,7 @@ class PlayerDetailTab extends Tab {
         // Table instance
         this.table.setSettings(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players')));
 
-        this.list.forEach(([ a, b ]) => DatabaseManager._loadPlayer(b));
+        this.array.forEach((e) => DatabaseManager._loadPlayer(e.player));
 
         this.refresh();
     }
@@ -572,7 +580,7 @@ class PlayerDetailTab extends Tab {
         this.$configure.settingsButton(ScriptManager.exists(this.identifier));
 
         // Table stuff
-        this.table.setEntries(this.list);
+        this.table.setEntries(this.array);
         this.table.refresh();
     }
 
@@ -882,7 +890,7 @@ class BrowseTab extends Tab {
                 this.table = this.tableBase;
             }
 
-            const entries = new PlayersTableArray(perf, this.timestamp, this.reference);
+            const entries = new BrowseTableArray(perf, this.timestamp, this.reference);
 
             for (const [identifier, { List: list }] of Object.entries(DatabaseManager.Players)) {
                 const hidden = DatabaseManager.Hidden.has(identifier);

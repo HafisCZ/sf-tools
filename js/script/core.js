@@ -2599,7 +2599,7 @@ class Settings {
         return segmentedArray;
     }
 
-    evalHistory (array, unfilteredArray) {
+    evalPlayer (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array);
 
@@ -2607,8 +2607,8 @@ class Settings {
         array = [].concat(array);
 
         // Get shared scope
-        let scope = this.createSegmentedArray(array, (player, index, arr) => [player, arr[index + 1] || player]);
-        let unfilteredScope = this.createSegmentedArray(unfilteredArray, (player, index, arr) => [player, arr[index + 1] || player]);
+        let scope = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
+        let unfilteredScope = this.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
@@ -2648,7 +2648,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalPlayers (array, unfilteredArray) {
+    evalBrowse (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
@@ -2718,7 +2718,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalGuilds (array, unfilteredArray) {
+    evalGuild (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
