@@ -960,9 +960,27 @@ class TableInstance {
         }
     }
 
+    _renderMissing () {
+        if (this.array.missing.length) {
+            this.cache.missing = `
+                <tr class="font-weight: bold;">
+                    ${
+                        CellGenerator.WideCell(
+                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.array.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
+                            undefined,
+                            this.flatSpan,
+                            'center'
+                        )
+                    }
+                </tr>`;
+        } else {
+            this.cache.missing = '';
+        }
+    }
+
     createPlayerTable () {
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.cache.divider + this.cache.spacer;
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))) + this.cache.divider + this.cache.spacer;
         }
 
         this._renderStatistics();
@@ -996,22 +1014,7 @@ class TableInstance {
             this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
         }
 
-        if (this.array.missing.length) {
-            this.cache.missing = `
-                <tr class="font-weight: bold;">
-                    ${
-                        CellGenerator.WideCell(
-                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.array.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
-                            undefined,
-                            this.flatSpan,
-                            'center'
-                        )
-                    }
-                </tr>`;
-        } else {
-            this.cache.missing = '';
-        }
-
+        this._renderMissing();
         this._renderStatistics();
         this._renderMembers();
 
