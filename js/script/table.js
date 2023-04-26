@@ -910,57 +910,59 @@ class TableInstance {
 
     // Renders statistics rows into cache
     _renderStatistics () {
-        if (typeof this.cache.statistics == 'undefined') {
-            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
-                if (this.settings.customStatistics.length) {
-                    this.cache.statistics = this.getStatistics(this.leftFlatSpan, this.settings.customStatistics);
-                } else {
-                    this.cache.statistics = this.getStatistics(this.leftFlatSpan, [
-                        {
-                            name: 'Minimum',
-                            expression: array => _fastMin(array)
-                        },
-                        {
-                            name: 'Average',
-                            expression: array => _fastAvg(array)
-                        },
-                        {
-                            name: 'Maximum',
-                            expression: array => _fastMax(array)
-                        }
-                    ]);
-                }
+        if (typeof this.cache.statistics !== 'undefined') return;
+
+        if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
+            if (this.settings.customStatistics.length) {
+                this.cache.statistics = this.getStatistics(this.leftFlatSpan, this.settings.customStatistics);
             } else {
-                this.cache.statistics = '';
+                this.cache.statistics = this.getStatistics(this.leftFlatSpan, [
+                    {
+                        name: 'Minimum',
+                        expression: array => _fastMin(array)
+                    },
+                    {
+                        name: 'Average',
+                        expression: array => _fastAvg(array)
+                    },
+                    {
+                        name: 'Maximum',
+                        expression: array => _fastMax(array)
+                    }
+                ]);
             }
+        } else {
+            this.cache.statistics = '';
         }
     }
 
     // Renders members into cache
     _renderMembers () {
-        if (typeof this.cache.members == 'undefined') {
-            if (this.settings.globals.members) {
-                this.cache.members = `
-                    <tr>
-                        <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Classes</td>
-                        <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Joined</td>
-                        <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Left</td>
-                        <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
-                    </tr>
-                `;
-            } else {
-                this.cache.members = '';
-            }
+        if (typeof this.cache.members !== 'undefined') return;
+
+        if (this.settings.globals.members) {
+            this.cache.members = `
+                <tr>
+                    <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Classes</td>
+                    <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Joined</td>
+                    <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Left</td>
+                    <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
+                </tr>
+            `;
+        } else {
+            this.cache.members = '';
         }
     }
 
     _renderMissing () {
+        if (typeof this.cache.missing !== 'undefined') return;
+
         if (this.array.missing.length) {
             this.cache.missing = `
                 <tr class="font-weight: bold;">
@@ -979,9 +981,7 @@ class TableInstance {
     }
 
     _renderRows (includePlayer = false) {
-        if (typeof this.cache.rows !== 'undefined') {
-            return;
-        }
+        if (typeof this.cache.rows !== 'undefined') return;
 
         if (this.settings.customRows.length) {
             if (includePlayer) {
