@@ -980,7 +980,7 @@ class TableInstance {
 
     createPlayerTable () {
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))) + this.cache.divider + this.cache.spacer;
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player')));
         }
 
         this._renderStatistics();
