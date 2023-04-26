@@ -546,6 +546,7 @@ class TableInstance {
                     index: entry.index,
                     player: entry.player,
                     node,
+                    rendered: true,
                     sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable)
                 })
             }
@@ -624,6 +625,7 @@ class TableInstance {
                     index,
                     player,
                     node,
+                    rendered: true,
                     sorting: this._generateSorting(player, compare, index, comparable)
                 });
             }
