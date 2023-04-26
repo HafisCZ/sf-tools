@@ -607,7 +607,9 @@ function getColorFromRGBA (r, g, b, a) {
     return '#' + '0'.repeat(2 - hr.length) + hr + '0'.repeat(2 - hg.length) + hg + '0'.repeat(2 - hb.length) + hb + '0'.repeat(2 - ha.length) + ha;
 }
 
-function getColorFromName (name) {
+const GET_COLOR_FROM_NAME_CACHE = new Map();
+
+function _getColorFromName (name) {
     if (name in COLOR_MAP) {
         return COLOR_MAP[name];
     } else {
@@ -625,6 +627,18 @@ function getColorFromName (name) {
         } else {
             return name;
         }
+    }
+}
+
+function getColorFromName (name) {
+    if (GET_COLOR_FROM_NAME_CACHE.has(name)) {
+        return GET_COLOR_FROM_NAME_CACHE.get(name);
+    } else {
+        const color = _getColorFromName(name);
+
+        GET_COLOR_FROM_NAME_CACHE.set(name, color);
+
+        return color;
     }
 }
 
@@ -674,7 +688,9 @@ function toCSSColor (color) {
     return style.color;
 }
 
-function getCSSColor (color) {
+const GET_CSS_COLOR_CACHE = new Map();
+
+function _getCSSColor (color) {
     if (COLOR_MAP.hasOwnProperty(color)) {
         return toCSSColor(COLOR_MAP[color]);
     } else if (/^\#([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
@@ -687,6 +703,18 @@ function getCSSColor (color) {
         return getColorFromRGBA(...color.slice(color.indexOf('(') + 1, color.lastIndexOf(')')).split(',').map(n => n.trim()));
     } else {
         return '';
+    }
+}
+
+function getCSSColor (name) {
+    if (GET_CSS_COLOR_CACHE.has(name)) {
+        return GET_CSS_COLOR_CACHE.get(name);
+    } else {
+        const color = _getCSSColor(name);
+
+        GET_CSS_COLOR_CACHE.set(name, color);
+
+        return color;
     }
 }
 
