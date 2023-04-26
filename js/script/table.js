@@ -864,13 +864,13 @@ class TableInstance {
         `;
     }
 
-    getRow (row, val, cmp = undefined, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
+    getRow (row, val, cmp, player = undefined) {
         return `
             <tr>
                 <td class="border-right-thin" colspan="${ this.leftFlatSpan }">${ row.name }</td>
                 ${ CellGenerator.WideCell(
-                    this.getCellDisplayValue(row, val, cmp, player, compare, extra),
-                    this.getCellColor(row, val, player, compare, extra, ignoreBase),
+                    this.getCellDisplayValue(row, val, cmp, player),
+                    this.getCellColor(row, val, player),
                     this.getRowSpan(row.width),
                     row.align,
                     row.padding,
@@ -978,11 +978,24 @@ class TableInstance {
         }
     }
 
-    createPlayerTable () {
-        if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player')));
+    _renderRows (includePlayer = false) {
+        if (typeof this.cache.rows !== 'undefined') {
+            return;
         }
 
+        if (this.settings.customRows.length) {
+            if (includePlayer) {
+                this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player')));
+            } else {
+                this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
+            }
+        } else {
+            this.cache.rows = '';
+        }
+    }
+
+    createPlayerTable () {
+        this._renderRows(true);
         this._renderStatistics();
 
         // Create table Content
@@ -994,10 +1007,7 @@ class TableInstance {
 
     // Create players table
     createBrowseTable () {
-        if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
-        }
-
+        this._renderRows();
         this._renderStatistics();
 
         let forcedLimit = this.array.perf || this.settings.getEntryLimit();
@@ -1010,10 +1020,7 @@ class TableInstance {
 
     // Create guilds table
     createGroupTable () {
-        if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
-        }
-
+        this._renderRows();
         this._renderMissing();
         this._renderStatistics();
         this._renderMembers();
