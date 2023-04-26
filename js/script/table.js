@@ -545,6 +545,7 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     index,
+                    player,
                     node,
                     sorting: this._generateSorting(player, compare, index, comparable)
                 })
@@ -556,6 +557,7 @@ class TableInstance {
             for (const entry of this.array) {
                 this.entries.push({
                     index: entry.index,
+                    player: entry.player,
                     get node () {
                         delete this.node;
 
@@ -621,6 +623,7 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     index,
+                    player,
                     node,
                     sorting: this._generateSorting(player, compare, index, comparable)
                 });
