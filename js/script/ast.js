@@ -13,7 +13,7 @@ const ExpressionCache = new (class {
     }
 
     reset () {
-        this.cache = {};
+        this.cache = new Map();
     }
 
     start () {
@@ -28,17 +28,17 @@ const ExpressionCache = new (class {
 
     set (s, n, v) {
         if (s.player && s.reference) {
-            this.cache[this.key(s, n)] = v;
+            this.cache.set(this.key(s, n), v);
         }
     }
 
     get (s, n) {
-        return this.cache[this.key(s, n)];
+        return this.cache.get(this.key(s, n));
     }
 
     has (s, n) {
         this.calls++;
-        if (s.player && s.reference && (this.key(s, n) in this.cache)) {
+        if (s.player && s.reference && this.cache.has(this.key(s, n))) {
             this.hits++;
             return true;
         } else {
