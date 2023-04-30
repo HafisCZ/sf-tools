@@ -41,15 +41,18 @@ class HeaderGroup {
     }
 }
 
-class BrowseTableArray extends Array {
-    constructor (perf, ts, rs) {
+class TableArray extends Array {
+    constructor (data) {
         super();
 
-        this.perf = perf;
-        this.timestamp = _safeInt(ts);
-        this.reference = _safeInt(rs);
+        if (data) {
+            Object.assign(this, data);
+        }
     }
+}
 
+// entryLimit, externalSort, suppressUpdate, timestamp, reference
+class BrowseTableArray extends TableArray {
     add (player, compare, latest, hidden) {
         super.push({
             player: player,
@@ -61,7 +64,7 @@ class BrowseTableArray extends Array {
     }
 }
 
-class PlayerTableArray extends Array {
+class PlayerTableArray extends TableArray {
     add (player, compare) {
         super.push({
             player,
@@ -71,17 +74,8 @@ class PlayerTableArray extends Array {
     }
 }
 
-class GroupTableArray extends Array {
-    constructor (joined, kicked, ts, rs, missing) {
-        super();
-
-        this.joined = joined;
-        this.kicked = kicked;
-        this.timestamp = _safeInt(ts);
-        this.reference = _safeInt(rs);
-        this.missing = missing;
-    }
-
+// joined, kicked, missing, timestamp, reference
+class GroupTableArray extends TableArray {
     add (player, compare) {
         super.push({
             player: player,
@@ -414,7 +408,7 @@ class TableInstance {
     }
 
     // Set players
-    setEntries (array, skipEvaluation = false, manualSort = null) {
+    setEntries (array) {
         if (this.type === ScriptType.Group) {
             this.array = array;
         } else {
@@ -432,7 +426,7 @@ class TableInstance {
 
             // Copy over lost properties
             if (this.type == ScriptType.Browse) {
-                this.array.perf = array.perf;
+                this.array.entryLimit = array.entryLimit;
                 this.array.timestamp = array.timestamp;
                 this.array.reference = array.reference;
             }
@@ -441,7 +435,7 @@ class TableInstance {
         // Evaluate variables
         if (this.type == ScriptType.Player) {
             this.settings.evalPlayer(this.array, array);
-        } else if (!skipEvaluation) {
+        } else if (!array.suppressUpdate) {
             if (this.type == ScriptType.Browse) {
                 this.settings.evalBrowse(this.array, array);
             } else {
@@ -449,13 +443,13 @@ class TableInstance {
             }
         }
 
-        if (!skipEvaluation || this.type == ScriptType.Player) {
+        if (!array.suppressUpdate) {
             ExpressionCache.reset();
             this._recreateCache();
         }
 
-        if (manualSort) {
-            this.array.sort((a, b) => manualSort(b.player, b.compare) - manualSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
+        if (array.externalSort) {
+            this.array.sort((a, b) => array.externalSort(b.player, b.compare) - array.externalSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
         }
 
         this.generateEntries();
@@ -1010,7 +1004,7 @@ class TableInstance {
         this._renderRows();
         this._renderStatistics();
 
-        let forcedLimit = this.array.perf || this.settings.getEntryLimit();
+        let forcedLimit = this.array.entryLimit || this.settings.getEntryLimit();
 
         return {
             entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
@@ -1159,8 +1153,8 @@ class TableController {
         return this.table ? this.table.settings.getEntryLimit() : 0;
     }
 
-    setEntries (... args) {
-        this.entries = args;
+    setEntries (entries) {
+        this.entries = entries;
         this.echanged = true;
     }
 
@@ -1262,7 +1256,7 @@ class TableController {
         if (this.echanged || this.schanged) {
             ExpressionCache.start();
 
-            this.table.setEntries(... this.entries);
+            this.table.setEntries(this.entries);
             this.table.sort();
 
             ExpressionCache.stop();

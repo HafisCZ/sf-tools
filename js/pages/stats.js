@@ -384,13 +384,13 @@ class GroupDetailTab extends Tab {
 
         // Members
         var members = [];
-        var missingMembers = [];
+        var missing = [];
         for (var id of current.Members) {
             let player = DatabaseManager.getPlayer(id, this.timestamp);
             if (player) {
                 members.push(player);
             } else {
-                missingMembers.push(current.Names[current.Members.findIndex(x => x == id)]);
+                missing.push(current.Names[current.Members.findIndex(x => x == id)]);
             }
         }
 
@@ -414,7 +414,14 @@ class GroupDetailTab extends Tab {
         }
 
         // Add entries
-        var entries = new GroupTableArray(joined, kicked, this.timestamp, this.reference, missingMembers);
+        const entries = new GroupTableArray({
+            joined,
+            kicked,
+            missing,
+            timestamp: _safeInt(this.timestamp),
+            reference: _safeInt(this.reference)
+        });
+
         members.forEach(function (player) {
             entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
         });
@@ -703,7 +710,7 @@ class BrowseTab extends Tab {
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
             var array = this.table.getInternalEntries();
-            var slice = this.table.getArray().perf || this.table.getEntryLimit();
+            var slice = this.table.getArray().entryLimit || this.table.getEntryLimit();
             if (slice) {
                 array = array.slice(0, slice);
             }
@@ -760,7 +767,7 @@ class BrowseTab extends Tab {
                 }
             ];
 
-            var perf = undefined;
+            var entryLimit = undefined;
 
             this.shidden = false;
             this.autosort = undefined;
@@ -849,7 +856,7 @@ class BrowseTab extends Tab {
                         this.autosort = (player, compare) => new ExpressionScope().with(player, compare).eval(ast);
                     }
                 } else if (key == 'f') {
-                    perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
+                    entryLimit = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 } else if (key == 'r') {
                     this.recalculate = true;
                 } else if (key == 'h') {
@@ -890,7 +897,13 @@ class BrowseTab extends Tab {
                 this.table = this.tableBase;
             }
 
-            const entries = new BrowseTableArray(perf, this.timestamp, this.reference);
+            const entries = new BrowseTableArray({
+                entryLimit,
+                timestamp: _safeInt(this.timestamp),
+                reference: _safeInt(this.reference),
+                externalSort: this.autosort,
+                suppressUpdate: !this.recalculate
+            });
 
             for (const [identifier, { List: list }] of Object.entries(DatabaseManager.Players)) {
                 const hidden = DatabaseManager.Hidden.has(identifier);
@@ -912,7 +925,7 @@ class BrowseTab extends Tab {
                 }
             }
 
-            this.table.setEntries(entries, !this.recalculate, this.autosort);
+            this.table.setEntries(entries);
 
             this.refresh();
 
