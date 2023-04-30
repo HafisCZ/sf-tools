@@ -718,7 +718,9 @@ function getCSSColor (name) {
     }
 }
 
-function getCSSBackground (color) {
+const GET_CSS_BACKGROUND_CACHE = new Map();
+
+function _getCSSBackground (color) {
     let c = getCSSColor(color);
     if (c) {
         return c;
@@ -731,10 +733,36 @@ function getCSSBackground (color) {
     }
 }
 
-function getCSSColorFromBackground (string) {
+function getCSSBackground (name) {
+    if (GET_CSS_BACKGROUND_CACHE.has(name)) {
+        return GET_CSS_BACKGROUND_CACHE.get(name);
+    } else {
+        const color = _getCSSBackground(name);
+
+        GET_CSS_BACKGROUND_CACHE.set(name, color);
+
+        return color;
+    }
+}
+
+const GET_CSS_COLOR_FROM_BACKGROUND_CACHE = new Map();
+
+function _getCSSColorFromBackground (string) {
     var style = new Option().style;
     style.background = string;
     return style['background-color'];
+}
+
+function getCSSColorFromBackground (name) {
+    if (GET_CSS_COLOR_FROM_BACKGROUND_CACHE.has(name)) {
+        return GET_CSS_COLOR_FROM_BACKGROUND_CACHE.get(name);
+    } else {
+        const color = _getCSSColorFromBackground(name);
+
+        GET_CSS_COLOR_FROM_BACKGROUND_CACHE.set(name, color);
+
+        return color;
+    }
 }
 
 function getCSSFont(string) {
