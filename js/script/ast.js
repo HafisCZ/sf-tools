@@ -759,7 +759,7 @@ class Expression {
         while (['||', '&&'].includes(this.peek())) {
             let operator = this.get();
             node = {
-                op: operator == '||' ? operator : SP_OPERATORS[operator],
+                op: operator,
                 args: [node, this.getBool()]
             };
         }
@@ -1023,6 +1023,16 @@ class Expression {
                         return resolved1;
                     } else {
                         return this.evalInternal(scope, branch2);
+                    }
+                } else if (node.op == '&&') {
+                    let branch1 = node.args[0];
+                    let branch2 = node.args[1];
+
+                    let resolved1 = this.evalInternal(scope, branch1);
+                    if (resolved1) {
+                        return this.evalInternal(scope, branch2);
+                    } else {
+                        return false;
                     }
                 } else if (scope.env.functions[node.op]) {
                     var mapper = scope.env.functions[node.op];
