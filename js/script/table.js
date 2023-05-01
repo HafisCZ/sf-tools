@@ -93,33 +93,7 @@ class TableInstance {
         this.settings = new Settings(settings, type);
 
         // Handle trackers
-        let trackers = this.settings.trackers;
-        if (Object.keys(trackers).length > 0) {
-            // Get current tracker settings
-            let trackerSettings = Actions.getInstance();
-            let trackerCode = trackerSettings.code;
-
-            // Go through all required trackers
-            let isset = false;
-            for (let [ trackerName, tracker ] of Object.entries(trackers)) {
-                if (trackerName in trackerSettings.trackers) {
-                    if (tracker.hash != trackerSettings.trackers[trackerName].hash) {
-                        Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } found but overwritten by ${ trackerSettings.trackers[trackerName].hash }!`);
-                    }
-                } else {
-                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ _formatDate(Date.now()) }`;
-                    isset |= true;
-
-                    Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } added automatically!`);
-                }
-            }
-
-            // Save settings
-            if (isset) {
-                Actions.setScript(trackerCode);
-                DatabaseManager.refreshTrackers();
-            }
-        }
+        this._updateTrackers();
 
         this.config = [];
         this.sorting = [];
@@ -396,6 +370,37 @@ class TableInstance {
 
             this.global_sorting = sorting;
             this.setDefaultSorting();
+        }
+    }
+
+    _updateTrackers () {
+        let trackers = this.settings.trackers;
+
+        if (Object.keys(trackers).length > 0) {
+            // Get current tracker settings
+            let trackerSettings = Actions.getInstance();
+            let trackerCode = trackerSettings.code;
+
+            // Go through all required trackers
+            let isset = false;
+            for (let [ trackerName, tracker ] of Object.entries(trackers)) {
+                if (trackerName in trackerSettings.trackers) {
+                    if (tracker.hash != trackerSettings.trackers[trackerName].hash) {
+                        Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } found but overwritten by ${ trackerSettings.trackers[trackerName].hash }!`);
+                    }
+                } else {
+                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ _formatDate(Date.now()) }`;
+                    isset |= true;
+
+                    Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } added automatically!`);
+                }
+            }
+
+            // Save settings
+            if (isset) {
+                Actions.setScript(trackerCode);
+                DatabaseManager.refreshTrackers();
+            }
         }
     }
 
