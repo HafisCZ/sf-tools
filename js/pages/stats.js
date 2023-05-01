@@ -1689,19 +1689,29 @@ class FilesTab extends Tab {
 
     // Import file via har
     importJson (fileEvent) {
-        Loader.toggle(true);
+        Loader.toggle(true, { progress: true });
 
-        let pendingPromises = [];
-        Array.from(fileEvent.currentTarget.files).forEach(file => {
-            pendingPromises.push(file.text().then(fileContent => {
-                return DatabaseManager.import(fileContent, file.lastModified).catch((e) => {
+        const files = Array.from(fileEvent.currentTarget.files);
+
+        let filesDone = 0;
+        let filesCount = files.length;
+
+        let promises = [];
+
+        for (const file of files) {
+            const promise = file.text().then(async (content) => {
+                await DatabaseManager.import(content, file.lastModified).catch((e) => {
                     Toast.error(intl('database.import_error'), e.message);
                     Logger.error(e, 'Error occured while trying to import a file!');
-                })
-            }))
-        });
+                });
 
-        Promise.all(pendingPromises).then(() => this.show());
+                Loader.progress(++filesDone / filesCount);
+            });
+
+            promises.push(promise);
+        }
+
+        Promise.all(promises).then(() => this.show());
     }
 
     // Import file via endpoint

@@ -759,14 +759,26 @@ const StatisticsIntegration = new (class {
     }
 
     _importFile (event) {
-        Loader.toggle(true);
+        Loader.toggle(true, { progress: true });
 
-        const promises = [];
-        for (const file of Array.from(event.target.files)) {
-            promises.push(file.text().then((fileContent) => DatabaseManager.import(fileContent, file.lastModified)).catch((e) => {
-                Toast.error(intl('database.import_error'), e.message);
-                Logger.error(e, 'Error occured while trying to import a file!');
-            }));
+        const files = Array.from(event.target.files);
+
+        let filesDone = 0;
+        let filesCount = files.length;
+
+        let promises = [];
+
+        for (const file of files) {
+            const promise = file.text().then(async (content) => {
+                await DatabaseManager.import(content, file.lastModified).catch((e) => {
+                    Toast.error(intl('database.import_error'), e.message);
+                    Logger.error(e, 'Error occured while trying to import a file!');
+                });
+
+                Loader.progress(++filesDone / filesCount);
+            });
+
+            promises.push(promise);
         }
 
         Promise.all(promises).then(() => this._poll());
