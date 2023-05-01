@@ -286,6 +286,14 @@ function _fastAvg(arr) {
     return m / arr.length;
 }
 
+function _fastSum(arr) {
+    let m = 0;
+    for (let i of arr) {
+        m += i;
+    }
+    return m;
+}
+
 function _joinSentence (array) {
     let last = array.length > 1 ? ` and ${array.pop()}` : ''
     return array.join(', ') + last;
