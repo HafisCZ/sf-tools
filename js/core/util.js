@@ -291,6 +291,16 @@ function _joinSentence (array) {
     return array.join(', ') + last;
 }
 
+function _join (array, mapper, c,d) {
+    if (c || d)throw 'fuck';
+    let text = '';
+    for (let i = 0; i < array.length; i++) {
+        text += mapper(array[i], i, array);
+    }
+
+    return text;
+}
+
 function _formatDuration(ms, limit = 4) {
     let mil = ms % 1000;
     let sec = ((ms -= mil) / 1000) % 60;
