@@ -570,7 +570,8 @@ class TableInstance {
 
     // Remove key from sorting queue
     removeSorting (key) {
-        var index = this.sorting.findIndex(sort => sort.key == key);
+        const index = this.sorting.findIndex(sort => sort.key == key);
+
         if (index != -1) {
             this.sorting.splice(index, 1);
             this.sort();
@@ -579,9 +580,11 @@ class TableInstance {
 
     // Add key to sorting queue
     setSorting (key = undefined) {
-        var index = this.sorting.findIndex(sort => sort.key == key);
+        const index = this.sorting.findIndex(sort => sort.key == key);
+
         if (index == -1) {
-            var obj = this.flat.find(header => header.sortkey == key);
+            const obj = this.flat.find(header => header.sortkey == key);
+
             this.sorting.push({
                 key: key,
                 flip: obj == undefined ? (key == '_index') : obj.flip,
@@ -602,11 +605,12 @@ class TableInstance {
 
     // Execute sort
     sort () {
-        this.entries.sort((a, b) => this._sort_globally(a, b, this.sorting) || this._sort_default(a, b));
+        this.entries.sort((a, b) => this._sortGlobally(a, b) || this._sortDefault(a, b));
     }
 
     reflowIndexes () {
         const indexedStyle = this.settings.globals.indexed;
+
         if (indexedStyle === 1) {
             for (let i = 0; i < this.entriesLength; i++) {
                 const entry = this.entries[i];
@@ -642,15 +646,15 @@ class TableInstance {
         }
     }
 
-    _sort_globally (a, b, sort_list) {
-        if (sort_list) {
-            return sort_list.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? this._compareItems(a.sorting[key], b.sorting[key]) : this._compareItems(b.sorting[key], a.sorting[key])))), undefined);
+    _sortGlobally (a, b) {
+        if (this.sorting) {
+            return this.sorting.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? this._compareItems(a.sorting[key], b.sorting[key]) : this._compareItems(b.sorting[key], a.sorting[key])))), undefined);
         } else {
             return undefined;
         }
     }
 
-    _sort_default (a, b) {
+    _sortDefault (a, b) {
         return this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]);
     }
 
