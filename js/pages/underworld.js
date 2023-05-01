@@ -260,7 +260,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' } text-white" data-index="${ index }">
                     <div class="player-index">${ i + 1 }</div>
                     <div class="three wide text-center column">
-                        <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                        <img class="ui medium centered image" style="width: 50px;" src="${_classImageUrl(player.Class)}">
                     </div>
                     <div class="two wide column">
                         <b>${ player.Level }</b>

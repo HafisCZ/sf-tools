@@ -384,7 +384,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'purple-border' : 'transparent-border' }" data-index="${ index }">
                     <div class="player-index">${ i + 1 }</div>
                     <div class="two wide text-center column">
-                        <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                        <img class="ui medium centered image" style="width: 50px;" src="${_classImageUrl(player.Class)}">
                     </div>
                     <div class="one wide text-center column">
                         <b>${ player.Level }</b>
@@ -465,7 +465,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                                 players.sort((a, b) => b.Own - a.Own || b.Timestamp - a.Timestamp).map(player => {
                                     return `
                                         <div class="item" data-value="${player.Identifier}">
-                                            <img class="ui centered image !-ml-3 !mr-2" src="res/class${ player.Class }.png"><span>${ player.Level } - ${ player.Name }</span>
+                                            <img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(player.Class)}"><span>${ player.Level } - ${ player.Name }</span>
                                         </div>
                                     `;
                                 }).join('')

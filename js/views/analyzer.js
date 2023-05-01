@@ -330,7 +330,7 @@ const AnalyzerAutofillDialog = new (class extends Dialog {
             for (const boss of Object.values(dungeon.floors)) {
                 const $element = $(`
                     <div class="!border-radius-1 border-gray p-2 background-dark:hover cursor-pointer flex gap-4 items-center">
-                        <img class="ui image" style="width: 3em; height: 3em;" src="res/class${boss.class}.png">
+                        <img class="ui image" style="width: 3em; height: 3em;" src="${_classImageUrl(boss.class)}">
                         <div>
                             <div class="text-gray">${dungeon.name}</div>
                             <div>${boss.pos}. ${boss.name}</div>

@@ -205,7 +205,7 @@ Site.ready({ type: 'simulator' }, function () {
                 <div class="text-white row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' } ${ inactive > 0 ? 'opacity-50' : '' }" data-index="${ index }">
                     <div class="player-index">${ i + 1 }</div>
                     <div class="three wide text-center column">
-                        <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                        <img class="ui medium centered image" style="width: 50px;" src="${_classImageUrl(player.Class)}">
                     </div>
                     <div class="two wide column">
                         <b>${ player.Level }</b>

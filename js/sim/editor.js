@@ -348,7 +348,7 @@ class Editor extends EditorBase {
     _bind () {
         this.fields['class'].initialize({
             values: CONFIG.indexes().map((value) => ({
-                image: `res/class${value}.png`,
+                image: _classImageUrl(value),
                 imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.class${value}`),
                 value
@@ -490,7 +490,7 @@ class Editor extends EditorBase {
                     class: 'header text-center'
                 },
                 ...CONFIG.indexes().map((value) => ({
-                    image: `res/class${value}.png`,
+                    image: _classImageUrl(value),
                     imageClass: '!-ml-3 !mr-2',
                     name: intl(`general.class${value}`),
                     value

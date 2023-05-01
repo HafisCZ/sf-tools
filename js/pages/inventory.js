@@ -32,7 +32,7 @@ class PlayerSelectTab extends Tab {
                     ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                     <div class="column">
                         <div class="ui segment css-inventory-player css-transparent cursor-pointer" data-id="${ player.Identifier }">
-                            <img class="ui medium centered image" src="res/class${ player.Class }.png">
+                            <img class="ui medium centered image" src="${_classImageUrl(player.Class)}">
                             <h3 class="ui !mt-4 !mb-0 centered muted header">${ player.Prefix }</h3>
                             <h3 class="ui !mt-0 centered header">${ player.Name }</h3>
                         </div>

@@ -1569,7 +1569,7 @@ const PlayerDetailDialog = new (class extends Dialog {
 
     this.$content.html(`
         <div class="detail-top">
-            <img class="ui image" src="res/class${ player.Class }.png">
+            <img class="ui image" src="${_classImageUrl(player.Class)}">
             <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
         </div>
         <div class="detail-timestamp">

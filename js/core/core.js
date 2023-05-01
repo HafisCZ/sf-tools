@@ -190,11 +190,11 @@ const SiteOptions = new OptionsHandler(
         load_rows: 50,
         persisted: false,
         locale: 'en',
-        debug: false,
         export_public_only: false,
         export_bundle_groups: true,
         unsafe_delete: false,
-        event_override: []
+        event_override: [],
+        legacy_battlemage_icon: false
     }
 )
 

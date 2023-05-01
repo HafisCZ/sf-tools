@@ -1560,7 +1560,7 @@ class PlayersTab extends Tab {
                             <div class="column">
                                 <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
                                     <span class="text-85% my-2">${ _formatDate(player.LatestTimestamp) }</span>
-                                    <img class="ui image" src="res/class${ player.Latest.Class }.png" width="173" height="173">
+                                    <img class="ui image" src="${_classImageUrl(player.Latest.Class)}" width="173" height="173">
                                     <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
                                     <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
                                 </div>
@@ -2737,6 +2737,7 @@ class SettingsTab extends Tab {
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
         this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
+        this.prepareCheckbox('legacy_battlemage_icon', 'legacy-battlemage-icon');
         this.prepareCheckbox('terms_accepted', 'terms');
 
         SiteOptions.onChange('terms_accepted', enabled => {

@@ -1613,6 +1613,9 @@ const SP_FUNCTIONS = {
     },
     'img': (src, width, height) => {
         return `<img src="${src}"${typeof width != 'undefined' ? ` width="${width}"` : ''}${typeof height != 'undefined' ? ` height="${height}"` : ''}/>`;
+    },
+    'class_img': (klass, width, height) => {
+        return `<img src="${_classImageUrl(klass)}"${typeof width != 'undefined' ? ` width="${width}"` : ''}${typeof height != 'undefined' ? ` height="${height}"` : ''}/>`;
     }
 }
 

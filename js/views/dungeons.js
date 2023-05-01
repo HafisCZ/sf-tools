@@ -176,7 +176,7 @@ const SimulatorResultsDialog = new (class extends Dialog {
               <div class="row" data-id="${index}" style="padding: 0; padding-left: 8px;">
                   <div class="eleven wide column" style="position: relative; padding-top: 1rem; padding-bottom: 1rem;">
                       <span class="${dungeon.shadow ? 'dungeon-shadow' : ''}"">
-                          <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
+                          <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="${_classImageUrl(boss.class)}">&nbsp;
                           <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${dungeon.name}</span>
                           <span style="position: absolute; left: 3em; top: 1.4em;">#${boss.pos} - ${boss.name}</span>
                       </span>
