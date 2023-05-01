@@ -503,27 +503,35 @@ class TableInstance {
 
     // Generate entries
     generateEntries () {
-        // Clear current entries
-        this.entries = [];
-
         // Common settings
         const dividerStyle = this.getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
         const comparable = this.type === ScriptType.Player || this.array.reference != this.array.timestamp;
+        const outdated = this.type === ScriptType.Browse && this.settings.getOutdatedStyle();
+        const hidden = this.type === ScriptType.Browse;
 
         // Hoist
         const self = this;
 
-        if (this.type == ScriptType.Player) {
-            // Loop over all items of the array
-            for (const entry of this.array) {
+        // Generate entries
+        this.entries = this.array.map((entry) => ({
+            index: entry.index,
+            player: entry.player,
+            sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable),
+            get node () {
+                delete this.node;
+
                 let html = '';
-                for (let header of this.flat) {
-                    html += this.getCellContent(header, entry.player, entry.compare);
+                for (const header of self.flat) {
+                    html += self.getCellContent(header, entry.player, entry.compare);
                 }
 
                 const node = document.createElement('tr');
                 node.classList.add('css-entry');
+
+                if (hidden && entry.hidden) {
+                    node.classList.add('opacity-50');
+                }
 
                 if (dividerStyle) {
                     node.classList.add(dividerStyle);
@@ -535,91 +543,17 @@ class TableInstance {
 
                 node.innerHTML = html;
 
-                // Create new entry and push it to the list
-                this.entries.push({
-                    index: entry.index,
-                    player: entry.player,
-                    node,
-                    rendered: true,
-                    sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable)
-                })
-            }
-        } else if (this.type == ScriptType.Browse) {
-            const outdated = this.settings.getOutdatedStyle();
-
-            // Loop over all items of the array
-            for (const entry of this.array) {
-                this.entries.push({
-                    index: entry.index,
-                    player: entry.player,
-                    get node () {
-                        delete this.node;
-
-                        let html = '';
-                        for (const header of self.flat) {
-                            html += self.getCellContent(header, entry.player, entry.compare);
-                        }
-
-                        const node = document.createElement('tr');
-                        node.classList.add('css-entry');
-        
-                        if (entry.hidden) {
-                            node.classList.add('opacity-50');
-                        }
-        
-                        if (dividerStyle) {
-                            node.classList.add(dividerStyle);
-                        }
-        
-                        if (rowHeight) {
-                            node.style.height = `${rowHeight}px`;
-                        }
-        
-                        node.innerHTML = html;
-        
-                        if (outdated && !entry.latest) {
-                            node.querySelectorAll('[data-id]').forEach((element) => {
-                                element.classList.add('!text-red');
-                            })
-                        }
-
-                        this.rendered = true;
-
-                        return (this.node = node);
-                    },
-                    sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable)
-                });
-            }
-        } else if (this.type == ScriptType.Group) {
-            for (let { player, compare, index } of this.array) {
-                let html = '';
-                for (let header of this.flat) {
-                    html += this.getCellContent(header, player, compare);
+                if (outdated && !entry.latest) {
+                    node.querySelectorAll('[data-id]').forEach((element) => {
+                        element.classList.add('!text-red');
+                    })
                 }
 
-                const node = document.createElement('tr');
-                node.classList.add('css-entry');
+                this.rendered = true;
 
-                if (dividerStyle) {
-                    node.classList.add(dividerStyle);
-                }
-
-                if (rowHeight) {
-                    node.style.height = `${rowHeight}px`;
-                }
-
-                node.innerHTML = html;
-
-                // Create new entry and push it to the list
-                this.entries.push({
-                    index,
-                    player,
-                    node,
-                    rendered: true,
-                    sorting: this._generateSorting(player, compare, index, comparable)
-                });
+                return (this.node = node);
             }
-        }
+        }));
 
         // Cache length
         this.entriesLength = this.entries.length;
