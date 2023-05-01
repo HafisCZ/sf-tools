@@ -185,29 +185,8 @@ class TableInstance {
         this.flatSpan = this.leftFlatSpan + this.rightFlatSpan;
 
         // Caching
-        this._recreateCache();
-
-        this.global_key = '_index';
-        this.global_ord = 1;
-
-        if (this.settings.globals.order_by) {
-            this.global_key = '_order_by';
-        } else if (this.flat.some(x => 'glob_order' in x)) {
-            const sorting = [];
-
-            for (const { sortkey, glob_order } of this.flat) {
-                if (typeof glob_order != 'undefined') {
-                    sorting.splice(typeof glob_order.index === 'undefined' ? sorting.length : glob_order.index, 0, {
-                        key: sortkey,
-                        flip: undefined,
-                        order: glob_order.ord ? 2 : 1
-                    });
-                }
-            }
-
-            this.global_sorting = sorting;
-            this.setDefaultSorting();
-        }
+        this._createCache();
+        this._createSorting();
     }
 
     _addHeader (group, header, showBorder) {
@@ -475,7 +454,7 @@ class TableInstance {
 
         if (!array.suppressUpdate) {
             ExpressionCache.reset();
-            this._recreateCache();
+            this._createCache();
         }
 
         if (array.externalSort) {
@@ -675,10 +654,34 @@ class TableInstance {
         return this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]);
     }
 
-    _recreateCache () {
+    _createCache () {
         this.cache = {
             spacer: this.getSpacer(),
             divider: this.getDivider()
+        }
+    }
+
+    _createSorting () {
+        this.global_key = '_index';
+        this.global_ord = 1;
+
+        if (this.settings.globals.order_by) {
+            this.global_key = '_order_by';
+        } else if (this.flat.some(x => 'glob_order' in x)) {
+            const sorting = [];
+
+            for (const { sortkey, glob_order } of this.flat) {
+                if (typeof glob_order != 'undefined') {
+                    sorting.splice(typeof glob_order.index === 'undefined' ? sorting.length : glob_order.index, 0, {
+                        key: sortkey,
+                        flip: undefined,
+                        order: glob_order.ord ? 2 : 1
+                    });
+                }
+            }
+
+            this.global_sorting = sorting;
+            this.setDefaultSorting();
         }
     }
 
