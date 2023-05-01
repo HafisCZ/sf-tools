@@ -1473,7 +1473,7 @@ class PlayerModel {
 
     getEquipmentBonus (attribute) {
         let bonus = 0;
-        for (const item of Object.values(this.Items)) {
+        for (const item of this.ItemsArray) {
             for (let i = 0; i < 3; i++) {
                 if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
                     bonus += item.Attributes[i];
@@ -1490,7 +1490,7 @@ class PlayerModel {
 
     getEquipmentItemBonus (attribute) {
         let bonus = 0;
-        for (const item of Object.values(this.Items)) {
+        for (const item of this.ItemsArray) {
             for (let i = 0; i < 3; i++) {
                 if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
                     bonus += item.Attributes[i];
@@ -1503,7 +1503,7 @@ class PlayerModel {
 
     getEquipmentUpgradeBonus (attribute) {
         let bonus = 0;
-        for (const item of Object.values(this.Items)) {
+        for (const item of this.ItemsArray) {
             if (item.Upgrades > 0) {
                 for (let i = 0; i < 3; i++) {
                     if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
@@ -1518,7 +1518,7 @@ class PlayerModel {
 
     getEquipmentGemBonus (attribute) {
         let bonus = 0;
-        for (const item of Object.values(this.Items)) {
+        for (const item of this.ItemsArray) {
             if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
                 bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
             }
@@ -1593,6 +1593,7 @@ class PlayerModel {
 
     evaluateCommon () {
         this.Config = CONFIG.fromIndex(this.Class);
+        this.ItemsArray = Object.values(this.Items);
 
         this.Primary = this.getPrimaryAttribute();
         this.ClassBonus = this.Class == BATTLEMAGE || this.Class == BERSERKER;
@@ -1646,7 +1647,7 @@ class PlayerModel {
         let partFire = 0;
         let partLightning = 0;
 
-        for (const item of Object.values(this.Items)) {
+        for (const item of this.ItemsArray) {
             if (item.HasRune && item.Type != 1) {
                 const rune = item.AttributeTypes[2];
                 const value = item.Attributes[2];
@@ -2011,6 +2012,7 @@ class CompanionModel extends PlayerModel {
 
     evaluateCommon(player) {
         this.Config = CONFIG.fromIndex(this.Class);
+        this.ItemsArray = Object.values(this.Items);
 
         this.Primary = this.getPrimaryAttribute();
 
@@ -2036,7 +2038,7 @@ class CompanionModel extends PlayerModel {
             Resistance: 0
         };
 
-        for (const item of Object.values(this.Items)) {
+        for (const item of this.ItemsArray) {
             if (item.HasRune) {
                 const rune = item.AttributeTypes[2];
                 const value = item.Attributes[2];
