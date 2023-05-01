@@ -904,13 +904,6 @@ function download (e, d) {
     document.body.removeChild(o);
 }
 
-// Fast join array to string
-function join (a, c, b, m) {
-    var r = '';
-    for (var i = (b != undefined ? b : 0), l = m == undefined ? a.length : Math.min(a.length, m); i < l; ++i) r += c(a[i], i, a);
-    return r;
-}
-
 function SHA1 (text) {
     function rotate_left (n, s) {
         return (n << s) | (n >>> (32 - s));

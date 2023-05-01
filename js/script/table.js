@@ -257,7 +257,7 @@ class TableInstance {
                         } else {
                             let cmps = header.difference ? getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
 
-                            return join(vals, (val, index) => {
+                            return _join(vals, (val, index) => {
                                 let showEndBorder = showBorder && index == header.grouped - 1;
                                 let extra = {
                                     index: index
@@ -979,9 +979,9 @@ class TableInstance {
 
         if (this.settings.customRows.length) {
             if (includePlayer) {
-                this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player')));
+                this.cache.rows = _join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player')));
             } else {
-                this.cache.rows = join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
+                this.cache.rows = _join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
             }
         } else {
             this.cache.rows = '';
@@ -1037,13 +1037,13 @@ class TableInstance {
         return `
             <tr>
                 <td class="border-right-thin" colspan="${ leftSpan }"></td>
-                ${ join(this.rightFlat, ({ span, statistics, generators, name }) => `<td colspan="${ span }">${ statistics && generators.statistics ? name : '' }</td>`) }
+                ${ _join(this.rightFlat, ({ span, statistics, generators, name }) => `<td colspan="${ span }">${ statistics && generators.statistics ? name : '' }</td>`) }
             </tr>
             ${ this.cache.divider }
-            ${ join(entries, ({ name, ast, expression }) => `
+            ${ _join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
+                    ${ _join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
@@ -1051,11 +1051,11 @@ class TableInstance {
 
     getCategoryBlock (config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
-        return join(config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
+        return _join(config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
 
             if (empty && !aligned) {
-                return join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
+                return _join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
                     return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.getSortingTag(sortkey) }>${ headerName }</td>`
@@ -1068,13 +1068,13 @@ class TableInstance {
 
     getHeaderBlock (config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
-        return join(config, ({ headers, empty }, categoryIndex, categoryArray) => {
+        return _join(config, ({ headers, empty }, categoryIndex, categoryArray) => {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
 
             if (empty && !aligned) {
                 return '';
             } else {
-                return join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
+                return _join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
                     return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.getSortingTag(sortkey) }>${ name }</td>`
