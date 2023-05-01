@@ -137,175 +137,11 @@ class TableInstance {
                 }
 
                 if (header.embedded) {
-                    if (header.columns && !header.width) {
-                        header.width = _sum(header.columns);
-                    }
-
-                    group.add(header, (player, compare) => {
-                        let values = [null];
-                        if (header.expr) {
-                            let value = new ExpressionScope(this.settings).with(player, compare).via(header).eval(header.expr);
-                            values = Array.isArray(value) ? value : [value];
-                        }
-
-                        let allBlank = _every(header.headers, h => !(h.expa || h.alias || h.name));
-                        let generators = header.headers.map((embedHeader) => {
-                            return {
-                                name: () => {
-                                    let expa_eval = undefined;
-                                    if (embedHeader.expa) {
-                                        expa_eval = embedHeader.expa(this.settings, category);
-                                        if (expa_eval != undefined) {
-                                            expa_eval = String(expa_eval);
-                                        }
-                                    }
-
-                                    let name = expa_eval || embedHeader.alias || embedHeader.name || '';
-
-                                    return this.getCell(
-                                        embedHeader,
-                                        name,
-                                        '',
-                                        embedHeader.border,
-                                         _dig(header, 'columns', 0) || Math.max(100, name.length * 12)
-                                    );
-                                },
-                                get: (value, i) => {
-                                    let val = this.safeEval(
-                                        embedHeader.expr,
-                                        player,
-                                        compare,
-                                        this.settings,
-                                        new ExpressionScope(this.settings).with(player, compare).addSelf(value).via(embedHeader),
-                                        embedHeader
-                                    );
-
-                                    if (val == undefined) {
-                                        return this.getEmptyCell(embedHeader, false, undefined, _dig(header, 'columns', i + 1));
-                                    } else {
-                                        let cmp = embedHeader.difference ? this.safeEval(
-                                            embedHeader.expr,
-                                            compare,
-                                            compare,
-                                            this.settings.getCompareEnvironment(),
-                                            new ExpressionScope(this.settings.getCompareEnvironment()).with(compare, compare).addSelf(value).via(embedHeader),
-                                            embedHeader
-                                        ) : undefined;
-
-                                        return this.getCell(
-                                            embedHeader,
-                                            this.getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
-                                            this.getCellColor(embedHeader, val, player, compare, undefined, false, value),
-                                            embedHeader.border,
-                                            _dig(header, 'columns', i + 1)
-                                        );
-                                    }
-                                }
-                            };
-                        });
-
-                        let rowHeight = header.row_height ? ` style="height: ${header.row_height}px;"` : '';
-                        let entries = generators.map(({ name, get }) => {
-                            return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
-                        }).join('');
-
-                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare).bg, showBorder, header.font);
-                    }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
+                    this._addEmbeddedHeader(group, header, showBorder);
                 } else if (header.grouped) {
-                    // Create grouped header
-                    let callWidth = header.width || 100;
-                    group.add(header, (player, compare) => {
-                        // Cell
-                        let vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
-
-                        if (!Array.isArray(vals)) {
-                            return this.getEmptyCell(header, showBorder, header.grouped);
-                        } else {
-                            let cmps = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
-
-                            return _join(vals, (val, index) => {
-                                let showEndBorder = showBorder && index == header.grouped - 1;
-                                let extra = {
-                                    index: index
-                                };
-
-                                if (val == undefined) {
-                                    return this.getEmptyCell(header, showEndBorder);
-                                } else {
-                                    return this.getCell(
-                                        header,
-                                        this.getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
-                                        this.getCellColor(header, val, player, compare, extra),
-                                        showEndBorder,
-                                        callWidth
-                                    );
-                                }
-                            });
-                        }
-                    }, null, (player, compare) => {
-                        // Sort
-                        let vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
-
-                        if (Array.isArray(vals)) {
-                            return vals.reduce((a, b) => a + b, 0);
-                        } else {
-                            return vals;
-                        }
-                    }, showBorder, header.grouped);
+                    this._addGroupedHeader(group, header, showBorder);
                 } else {
-                    // Create normal header
-                    group.add(header, (player, compare) => {
-                        // Cell
-                        let val = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
-
-                        if (val == undefined) {
-                            return this.getEmptyCell(header, showBorder);
-                        } else {
-                            let cmp = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
-                            return this.getCell(
-                                header,
-                                this.getCellDisplayValue(header, val, cmp, player, compare),
-                                this.getCellColor(header, val, player, compare),
-                                showBorder
-                            );
-                        }
-                    }, (players, operation) => {
-                        // Statistics
-                        let val = players.map(({ player, compare }) => this.safeEval(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
-                        if (val.length) {
-                            // Get value and trunc if necessary
-                            val = operation(val);
-                            if (!header.decimal) {
-                                val = Math.trunc(val);
-                            }
-
-                            // Compare value
-                            let cmp = undefined;
-                            if (header.difference) {
-                                cmp = players.map(({ compare }) => this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
-                                if (cmp.length) {
-                                    cmp = operation(cmp);
-
-                                    if (!header.decimal) {
-                                        cmp = Math.trunc(cmp);
-                                    }
-                                } else {
-                                    cmp = undefined;
-                                }
-                            }
-
-                            return CellGenerator.Cell(
-                                this.getStatisticsDisplayValue(header, val, cmp),
-                                '',
-                                header.statistics_color ? this.getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
-                            );
-                        } else {
-                            return this.getEmptyCell(header);
-                        }
-                    }, (player, compare) => {
-                        // Sort
-                        return this.safeEval(header.expr, player, compare, this.settings, undefined, header);
-                    }, showBorder);
+                    this._addHeader(group, header, showBorder);
                 }
             })
 
@@ -316,10 +152,11 @@ class TableInstance {
 
         // Scale everything
         if (this.settings.globals.scale) {
-            var factor = this.settings.globals.scale / 100;
-            for (var category of this.config) {
+            const factor = this.settings.globals.scale / 100;
+
+            for (const category of this.config) {
                 category.width = Math.ceil(category.width * factor);
-                for (var header of category.headers) {
+                for (const header of category.headers) {
                     header.width = Math.ceil(header.width * factor);
                 }
             }
@@ -356,9 +193,9 @@ class TableInstance {
         if (this.settings.globals.order_by) {
             this.global_key = '_order_by';
         } else if (this.flat.some(x => 'glob_order' in x)) {
-            let sorting = [];
+            const sorting = [];
 
-            for (let { sortkey, glob_order } of this.flat) {
+            for (const { sortkey, glob_order } of this.flat) {
                 if (typeof glob_order != 'undefined') {
                     sorting.splice(typeof glob_order.index === 'undefined' ? sorting.length : glob_order.index, 0, {
                         key: sortkey,
@@ -371,6 +208,194 @@ class TableInstance {
             this.global_sorting = sorting;
             this.setDefaultSorting();
         }
+    }
+
+    _addHeader (group, header, showBorder) {
+        group.add(
+            header,
+            (player, compare) => {
+                const val = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
+
+                if (val == undefined) {
+                    return this.getEmptyCell(header, showBorder);
+                } else {
+                    const cmp = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
+                    return this.getCell(
+                        header,
+                        this.getCellDisplayValue(header, val, cmp, player, compare),
+                        this.getCellColor(header, val, player, compare),
+                        showBorder
+                    );
+                }
+            },
+            (players, operation) => {
+                let val = players.map(({ player, compare }) => this.safeEval(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
+                if (val.length) {
+                    // Get value and trunc if necessary
+                    val = operation(val);
+                    if (!header.decimal) {
+                        val = Math.trunc(val);
+                    }
+
+                    // Compare value
+                    let cmp = undefined;
+                    if (header.difference) {
+                        cmp = players.map(({ compare }) => this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
+                        if (cmp.length) {
+                            cmp = operation(cmp);
+
+                            if (!header.decimal) {
+                                cmp = Math.trunc(cmp);
+                            }
+                        } else {
+                            cmp = undefined;
+                        }
+                    }
+
+                    return CellGenerator.Cell(
+                        this.getStatisticsDisplayValue(header, val, cmp),
+                        '',
+                        header.statistics_color ? this.getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
+                    );
+                } else {
+                    return this.getEmptyCell(header);
+                }
+            },
+            (player, compare) => this.safeEval(header.expr, player, compare, this.settings, undefined, header),
+            showBorder
+        );
+    }
+
+    _addGroupedHeader (group, header, showBorder) {
+        let callWidth = header.width || 100;
+
+        group.add(
+            header,
+            (player, compare) => {
+                const vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
+
+                if (!Array.isArray(vals)) {
+                    return this.getEmptyCell(header, showBorder, header.grouped);
+                } else {
+                    const cmps = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
+
+                    return _join(vals, (val, index) => {
+                        const showEndBorder = showBorder && index == header.grouped - 1;
+                        const extra = {
+                            index: index
+                        };
+
+                        if (val == undefined) {
+                            return this.getEmptyCell(header, showEndBorder);
+                        } else {
+                            return this.getCell(
+                                header,
+                                this.getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
+                                this.getCellColor(header, val, player, compare, extra),
+                                showEndBorder,
+                                callWidth
+                            );
+                        }
+                    });
+                }
+            },
+            null,
+            (player, compare) => {
+                const vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
+
+                if (Array.isArray(vals)) {
+                    return _fastSum(vals);
+                } else {
+                    return vals;
+                }
+            },
+            showBorder,
+            header.grouped
+        );
+    }
+
+    _addEmbeddedHeader (group, header, showBorder) {
+        if (header.columns && !header.width) {
+            header.width = _sum(header.columns);
+        }
+
+        group.add(
+            header,
+            (player, compare) => {
+                let values = [null];
+
+                if (header.expr) {
+                    const value = new ExpressionScope(this.settings).with(player, compare).via(header).eval(header.expr);
+                    values = Array.isArray(value) ? value : [value];
+                }
+
+                const allBlank = _every(header.headers, h => !(h.expa || h.alias || h.name));
+                const generators = header.headers.map((embedHeader) => {
+                    return {
+                        name: () => {
+                            let expa_eval = undefined;
+                            if (embedHeader.expa) {
+                                expa_eval = embedHeader.expa(this.settings, category);
+                                if (expa_eval != undefined) {
+                                    expa_eval = String(expa_eval);
+                                }
+                            }
+
+                            const name = expa_eval || embedHeader.alias || embedHeader.name || '';
+
+                            return this.getCell(
+                                embedHeader,
+                                name,
+                                '',
+                                embedHeader.border,
+                                _dig(header, 'columns', 0) || Math.max(100, name.length * 12)
+                            );
+                        },
+                        get: (value, i) => {
+                            const val = this.safeEval(
+                                embedHeader.expr,
+                                player,
+                                compare,
+                                this.settings,
+                                new ExpressionScope(this.settings).with(player, compare).addSelf(value).via(embedHeader),
+                                embedHeader
+                            );
+
+                            if (val == undefined) {
+                                return this.getEmptyCell(embedHeader, false, undefined, _dig(header, 'columns', i + 1));
+                            } else {
+                                const cmp = embedHeader.difference ? this.safeEval(
+                                    embedHeader.expr,
+                                    compare,
+                                    compare,
+                                    this.settings.getCompareEnvironment(),
+                                    new ExpressionScope(this.settings.getCompareEnvironment()).with(compare, compare).addSelf(value).via(embedHeader),
+                                    embedHeader
+                                ) : undefined;
+
+                                return this.getCell(
+                                    embedHeader,
+                                    this.getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
+                                    this.getCellColor(embedHeader, val, player, compare, undefined, false, value),
+                                    embedHeader.border,
+                                    _dig(header, 'columns', i + 1)
+                                );
+                            }
+                        }
+                    };
+                });
+
+                const rowHeight = header.row_height ? ` style="height: ${header.row_height}px;"` : '';
+                const entries = generators.map(({ name, get }) => {
+                    return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
+                }).join('');
+
+                return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare).bg, showBorder, header.font);
+            },
+            null,
+            null,
+            showBorder
+        );
     }
 
     _updateTrackers () {
@@ -495,7 +520,7 @@ class TableInstance {
                 sorting[sortkey] = this.safeEval(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
             } else {
                 // Return native sorting function
-                sorting[sortkey] = sort(player, compare);
+                sorting[sortkey] = sort ? sort(player, compare) : 0;
             }
         }
 
