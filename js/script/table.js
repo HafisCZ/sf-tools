@@ -1167,14 +1167,21 @@ class TableController {
 
     inject (size = this.injectorBlockSize) {
         if (this.injectorCounter++ > 0) {
-            let timestamp = Date.now();
+            const timestamp = Date.now();
 
-            let blockSize = Math.min(this.injectorEntries.length, size);
+            const blockSize = Math.min(this.injectorEntries.length, size);
             this.injectCount += blockSize;
 
-            let entriesSlice = this.injectorEntries.splice(0, size);
+            const entriesSlice = this.injectorEntries.splice(0, size);
+            const fragment = new DocumentFragment();
+
             for (const entry of entriesSlice) {
-                this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
+                fragment.append(entry.node);
+            }
+
+            this.injectorElement.parentElement.insertBefore(fragment, this.injectorElement);
+
+            for (const entry of entriesSlice) {
                 this.injectorCallback(entry.node);
             }
 
@@ -1267,8 +1274,15 @@ class TableController {
 
         if (this.injectorElement) {
             const entriesSlice = entries.splice(0, this.injectCount);
+            const fragment = new DocumentFragment();
+
             for (const entry of entriesSlice) {
-                this.injectorElement.insertAdjacentElement('beforebegin', entry.node);
+                fragment.append(entry.node);
+            }
+
+            this.injectorElement.parentElement.insertBefore(fragment, this.injectorElement);
+
+            for (const entry of entriesSlice) {
                 onInject(entry.node);
             }
 
