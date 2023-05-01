@@ -85,14 +85,6 @@ class GroupTableArray extends TableArray {
     }
 }
 
-function getSafeExpr (obj, ...args) {
-    if (obj instanceof Expression) {
-        return (args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]).eval(obj);
-    } else {
-        return obj(args[0]);
-    }
-}
-
 // Table instance
 class TableInstance {
     constructor (settings, type, filteredCategories = null) {
@@ -205,7 +197,7 @@ class TableInstance {
                                     );
                                 },
                                 get: (value, i) => {
-                                    let val = getSafeExpr(
+                                    let val = this.safeEval(
                                         embedHeader.expr,
                                         player,
                                         compare,
@@ -217,7 +209,7 @@ class TableInstance {
                                     if (val == undefined) {
                                         return this.getEmptyCell(embedHeader, false, undefined, _dig(header, 'columns', i + 1));
                                     } else {
-                                        let cmp = embedHeader.difference ? getSafeExpr(
+                                        let cmp = embedHeader.difference ? this.safeEval(
                                             embedHeader.expr,
                                             compare,
                                             compare,
@@ -250,12 +242,12 @@ class TableInstance {
                     let callWidth = header.width || 100;
                     group.add(header, (player, compare) => {
                         // Cell
-                        let vals = getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
+                        let vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                         if (!Array.isArray(vals)) {
                             return this.getEmptyCell(header, showBorder, header.grouped);
                         } else {
-                            let cmps = header.difference ? getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
+                            let cmps = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
 
                             return _join(vals, (val, index) => {
                                 let showEndBorder = showBorder && index == header.grouped - 1;
@@ -278,7 +270,7 @@ class TableInstance {
                         }
                     }, null, (player, compare) => {
                         // Sort
-                        let vals = getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
+                        let vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                         if (Array.isArray(vals)) {
                             return vals.reduce((a, b) => a + b, 0);
@@ -290,12 +282,12 @@ class TableInstance {
                     // Create normal header
                     group.add(header, (player, compare) => {
                         // Cell
-                        let val = getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
+                        let val = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                         if (val == undefined) {
                             return this.getEmptyCell(header, showBorder);
                         } else {
-                            let cmp = header.difference ? getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
+                            let cmp = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
                             return this.getCell(
                                 header,
                                 this.getCellDisplayValue(header, val, cmp, player, compare),
@@ -305,7 +297,7 @@ class TableInstance {
                         }
                     }, (players, operation) => {
                         // Statistics
-                        let val = players.map(({ player, compare }) => getSafeExpr(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
+                        let val = players.map(({ player, compare }) => this.safeEval(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
                         if (val.length) {
                             // Get value and trunc if necessary
                             val = operation(val);
@@ -316,7 +308,7 @@ class TableInstance {
                             // Compare value
                             let cmp = undefined;
                             if (header.difference) {
-                                cmp = players.map(({ compare }) => getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
+                                cmp = players.map(({ compare }) => this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
                                 if (cmp.length) {
                                     cmp = operation(cmp);
 
@@ -338,7 +330,7 @@ class TableInstance {
                         }
                     }, (player, compare) => {
                         // Sort
-                        return getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
+                        return this.safeEval(header.expr, player, compare, this.settings, undefined, header);
                     }, showBorder);
                 }
             })
@@ -404,6 +396,14 @@ class TableInstance {
 
             this.global_sorting = sorting;
             this.setDefaultSorting();
+        }
+    }
+
+    safeEval (obj, ...args) {
+        if (obj instanceof Expression) {
+            return (args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]).eval(obj);
+        } else {
+            return obj(args[0]);
         }
     }
 
@@ -480,14 +480,14 @@ class TableInstance {
             if (order) {
                 // Use special order expression if supplied
                 let difference = undefined;
-                let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
+                let value = this.safeEval(expr, player, compare, this.settings, undefined, header);
 
                 if (comparable) {
                     // Get difference
-                    difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
+                    difference = (flip ? -1 : 1) * (value - this.safeEval(expr, compare, compare, this.settings, undefined, header));
                 }
 
-                sorting[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
+                sorting[sortkey] = this.safeEval(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
             } else {
                 // Return native sorting function
                 sorting[sortkey] = sort(player, compare);
@@ -495,7 +495,7 @@ class TableInstance {
         }
 
         if (this.settings.globals.order_by) {
-            sorting['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
+            sorting['_order_by'] = this.safeEval(this.settings.globals.order_by, player, compare, this.settings)
         }
 
         return sorting;
