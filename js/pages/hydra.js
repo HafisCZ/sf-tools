@@ -28,7 +28,7 @@ Site.ready({ type: 'simulator' }, function () {
             this.fields.hydra.initialize({
                 values: Object.entries(HYDRA_MAP).map(([id, { class: klass }]) => {
                     return {
-                        name: `<img class="ui centered image !-ml-3 !mr-2" src="res/class${klass}.png"><span>${intl(`hydra.names.${id}`)}</span>`,
+                        name: `<img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(klass)}"><span>${intl(`hydra.names.${id}`)}</span>`,
                         value: id
                     };
                 }),
@@ -201,7 +201,7 @@ Site.ready({ type: 'simulator' }, function () {
             content += `
                 <div style="flex: 1 1 32%; margin: 0.5em; ${score == 0 ? 'opacity: 60%' : ''}">
                     <h3 class="ui centered inverted header !mt-0">
-                        <img class="ui centered image" style="width: 4em; margin-top: -1em; margin-bottom: -0.66em; margin-left: -0.66em;" src="res/class${pet.Class}.png">
+                        <img class="ui centered image" style="width: 4em; margin-top: -1em; margin-bottom: -0.66em; margin-left: -0.66em;" src="${_classImageUrl(pet.Class)}">
                         <span>${(100 * score / iterations).toFixed(2)}%</span>
                     </h3>
                     <hr/>

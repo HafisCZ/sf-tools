@@ -159,7 +159,7 @@ Site.ready({ type: 'simulator' }, function () {
                     <div class="row !p-0">
                         <div class="two wide text-center column">${enemy.Floor}</div>
                         <div class="three wide text-center column">
-                            <img class="ui medium centered image" style="width: 50px;" src="res/class${enemy.Class}.png">
+                            <img class="ui medium centered image" style="width: 50px;" src="${_classImageUrl(enemy.Class)}">
                         </div>
                         <div class="three wide text-center column">
                             <img class="ui medium centered image" style="width: 50px;" src="res/element${enemy.Items.Wpn1.AttributeTypes[2] - 40}.webp">    

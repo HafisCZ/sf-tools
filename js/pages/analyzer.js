@@ -40,7 +40,7 @@ class PlayerEditor extends EditorBase {
 
         this.fields['class'].initialize({
             values: CONFIG.indexes().map((value) => ({
-                image: `res/class${value}.png`,
+                image: _classImageUrl(value),
                 imageClass: '!-ml-3 !mr-2',
                 name: intl(`general.class${value}`),
                 value
@@ -800,7 +800,7 @@ Site.ready(null, function (urlParams) {
         // Display in dropdown
         $groupList.dropdown({
             values: currentGroups.map((group) => ({
-                name: `<img class="!-ml-3 !mr-2" src="res/class${group.fighterA.Class}.png">${getFighterName(group.fighterA)} &nbsp;&nbsp;- <img class="!mr-2" src="res/class${group.fighterB.Class}.png">${getFighterName(group.fighterB)} (${group.fights.length})`,
+                name: `<img class="!-ml-3 !mr-2" src="${_classImageUrl(group.fighterA.Class)}">${getFighterName(group.fighterA)} &nbsp;&nbsp;- <img class="!mr-2" src="${_classImageUrl(group.fighterB.Class)}">${getFighterName(group.fighterB)} (${group.fights.length})`,
                 value: group.hash
             }))
         }).dropdown('setting', 'onChange', (value) => {
@@ -1150,7 +1150,7 @@ Site.ready(null, function (urlParams) {
                 <div class="ui small inverted form">
                     <div class="field">
                         <h3 class="ui centered inverted header flex items-center justify-content-center gap-2">
-                            <img style="width: 30px; height: 30px;" src="res/class${klass}.png">
+                            <img style="width: 30px; height: 30px;" src="${_classImageUrl(klass)}">
                             <div class="mt-1">${getFighterName(fighter)}</div>
                         </h3>
                     </div>

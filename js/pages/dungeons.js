@@ -206,7 +206,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             values: Object.entries(dungeon.floors).map(([ id, _boss ]) => {
                 return {
                     name: `<span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }"">
-                                <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">
+                                <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">
                                 ${ _boss.pos }. ${ _boss.name }
                                 ${ getDisplayRunes(_boss.runes) }
                             <span>`,
@@ -417,7 +417,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     values: _sortAsc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
                         return {
                             name: `<span class="${_dungeon.shadow ? 'dungeon-shadow' : ''}">
-                                        <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
+                                        <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">&nbsp;
                                             <span class="boss-dungeon-name">${ _dungeon.name }</span>
                                             <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>
                                             ${ getDisplayRunes(_boss.runes) }
@@ -785,7 +785,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             },
             ... CONFIG.indexes().map((e) => {
                 return {
-                    name: `<img class="ui centered image !-ml-3 !mr-2" src="res/class${e}.png">${intl(`general.class${e}`)}`,
+                    name: `<img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(e)}">${intl(`general.class${e}`)}`,
                     value: e
                 };
             })
