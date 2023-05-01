@@ -1076,7 +1076,7 @@ const DatabaseManager = new (class {
                 i.timestamp = to;
             }
 
-            await this._addFile(null, file.players, file.groups);
+            await this._addFile(file.players, file.groups);
             await this.removeTimestamps(from);
         }
     }
@@ -1097,7 +1097,7 @@ const DatabaseManager = new (class {
                     item.timestamp = newestTimestamp;
                 }
 
-                await this._addFile(null, file.players, file.groups, { skipExisting: true });
+                await this._addFile(file.players, file.groups, { skipExisting: true });
             }
 
             await this.removeTimestamps(... timestamps);
@@ -1251,19 +1251,9 @@ const DatabaseManager = new (class {
         return /_g\d/.test(identifier);
     }
 
-    async _addFile (entries, playerEntries, groupEntries, flags = {}) {
+    async _addFile (playerEntries, groupEntries, flags = {}) {
         const players = playerEntries || [];
         const groups = groupEntries || [];
-
-        if (entries) {
-            for (const entry of entries) {
-                if (this.isPlayer(entry.identifier)) {
-                    players.push(entry);
-                } else {
-                    groups.push(entry);
-                }
-            }
-        }
 
         for (const group of groups) {
             MigrationUtils.migrateGroup(group);
@@ -1596,17 +1586,28 @@ const DatabaseManager = new (class {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
                 for (let file of json) {
-                    await this._addFile(null, file.players, file.groups, flags);
+                    await this._addFile(file.players, file.groups, flags);
                 }
             } else {
-                await this._addFile(json, null, null, flags);
+                const players = [];
+                const groups = [];
+
+                for (const entry of json) {
+                    if (this.isPlayer(entry.identifier)) {
+                        players.push(entry);
+                    } else {
+                        groups.push(entry);
+                    }
+                }
+
+                await this._addFile(players, groups, flags);
             }
         } else if (typeof json == 'object' && _dig(json, 'players')) {
-            await this._addFile(null, json.players, json.groups, flags);
+            await this._addFile(json.players, json.groups, flags);
         } else {
             // HAR, Endpoint
             let { players, groups } = this._import_har(json, timestamp, timestampOffset);
-            await this._addFile(null, players, groups, flags);
+            await this._addFile(players, groups, flags);
         }
     }
 })();
