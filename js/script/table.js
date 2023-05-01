@@ -591,10 +591,6 @@ class TableInstance {
                 });
             }
         } else if (this.type == ScriptType.Group) {
-            // Whether timestamps match
-            let comparable = this.array.reference != this.array.timestamp;
-
-            // Loop over all items of the array
             for (let { player, compare, index } of this.array) {
                 let html = '';
                 for (let header of this.flat) {
