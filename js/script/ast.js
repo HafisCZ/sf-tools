@@ -173,10 +173,6 @@ class ExpressionScope {
         return this.self[offset];
     }
 
-    eval (expr) {
-        return expr.eval(this);
-    }
-
     has (key) {
         if (this.self.length && typeof this.self[0] === 'object' && this.self[0] !== null && key in this.self[0]) {
             return true;
@@ -916,9 +912,9 @@ class Expression {
     evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
-                return scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
+                return mapper.ast.eval(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }));
             } else {
-                return scope.clone().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
+                return mapper.ast.eval(scope.clone().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index, loop_array }));
             }
         } else {
             if (segmented) {
@@ -1041,7 +1037,7 @@ class Expression {
                         scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
                     }
 
-                    return scope.clone().add(scope2).eval(mapper.ast);
+                    return mapper.ast.eval(scope.clone().add(scope2));
                 } else if (node.op == 'difference' && node.args.length == 1) {
                     var a = this.evalInternal(scope, node.args[0]);
                     var b = this.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
@@ -1184,7 +1180,7 @@ class Expression {
                     return ExpressionCache.get(scope, node);
                 } else {
                     ExpressionCache.set(scope, node, undefined);
-                    let value = new ExpressionScope(scope.env).with(scope.player, scope.reference).via(scope.header).eval(variable.ast);
+                    let value = variable.ast.eval(new ExpressionScope(scope.env).with(scope.player, scope.reference).via(scope.header));
                     ExpressionCache.set(scope, node, value);
                     return value;
                 }

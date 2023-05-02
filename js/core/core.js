@@ -596,8 +596,8 @@ const Actions = new (class {
             if (type == 'player') {
                 for (const player of players) {
                     let scope = new ExpressionScope().with(player, player);
-                    if (scope.eval(conditionExpr)) {
-                        let tag = scope.eval(tagExpr);
+                    if (conditionExpr.eval(scope)) {
+                        let tag = tagExpr.eval(scope);
                         if (player.Data.tag != tag) {
                             await DatabaseManager.setTagFor(player.Identifier, player.Timestamp, tag);
                         }
@@ -606,8 +606,8 @@ const Actions = new (class {
             } else if (type == 'file') {
                 let mappedPlayers = Object.assign(players.map(p => [p, p]), { segmented: true });
                 let scope = new ExpressionScope().add({ players: mappedPlayers, groups });
-                if (scope.eval(conditionExpr)) {
-                    const tag = scope.eval(tagExpr);
+                if (conditionExpr.eval(scope)) {
+                    const tag = tagExpr.eval(scope);
                     for (const { Identifier: id, Timestamp: ts, Data: data } of players) {
                         if (data.tag != tag) {
                             await DatabaseManager.setTagFor(id, ts, tag);
@@ -625,7 +625,7 @@ const Actions = new (class {
 
                 for (const player of players) {
                     let scope = new ExpressionScope().with(player, player);
-                    if (scope.eval(conditionExpr)) {
+                    if (conditionExpr.eval(scope)) {
                         playersToRemove.push(player.Data);
                     }
                 }

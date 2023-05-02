@@ -355,7 +355,7 @@ SettingsCommands.register(
     (root, name, expression) => {
         let ast = new Expression(expression);
         if (ast.isValid()) {
-            root.addConstant(name, new ExpressionScope(root).eval(ast));
+            root.addConstant(name, ast.eval(new ExpressionScope(root)));
         }
     },
     (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
@@ -1182,7 +1182,7 @@ SettingsCommands.register(
     (root, expression) => {
         let ast = new Expression(expression, root);
         if (ast.isValid()) {
-            root.addAliasExpression((a, b) => new ExpressionScope(a).eval(ast, b));
+            root.addAliasExpression((a, b) => ast.eval(new ExpressionScope(a)));
         }
     },
     (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
@@ -1529,7 +1529,7 @@ class Settings {
                 } else {
                     let condExpression = new Expression(cond);
                     if (condExpression.isValid()) {
-                        let result = scope.eval(condExpression);
+                        let result = condExpression.eval(scope);
                         shouldDiscard = ruleMustBeTrue ? result : !result;
                         condition = true;
                     }
@@ -1543,7 +1543,7 @@ class Settings {
                         } else {
                             let condExpression = new Expression(cond);
                             if (condExpression.isValid()) {
-                                let result = scope.eval(condExpression);
+                                let result = condExpression.eval(scope);
                                 shouldDiscard = !result;
                             }
                         }
@@ -1604,7 +1604,7 @@ class Settings {
 
                 let valuesExpression = new Expression(values);
                 if (valuesExpression.isValid()) {
-                    variableValues = scope.eval(valuesExpression);
+                    variableValues = valuesExpression.eval(scope);
                     if (!variableValues) {
                         variableValues = [];
                     } else if (!Array.isArray(variableValues)) {
@@ -1711,7 +1711,7 @@ class Settings {
 
                     let ast = new Expression(expression);
                     if (ast.isValid()) {
-                        settings.constants.addConstant(name, new ExpressionScope(settings).eval(ast));
+                        settings.constants.addConstant(name, ast.eval(new ExpressionScope(settings)));
                     }
                 }
             }
@@ -2005,7 +2005,7 @@ class Settings {
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
                 // Get color from expression
-                const expressionColor = this.expr ? new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.expr) : undefined;
+                const expressionColor = this.expr ? this.expr.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)) : undefined;
                 // Get color from color block
                 const blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
 
@@ -2017,7 +2017,7 @@ class Settings {
                 if (this.text === true) {
                     textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.background), true);
                 } else if (this.text) {
-                    textColor = getCSSColor(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.text));
+                    textColor = getCSSColor(this.text.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
                 }
 
                 // Return color or empty string
@@ -2045,7 +2045,7 @@ class Settings {
                 // Get value from format expression
                 if (typeof output == 'undefined') {
                     if (this.format instanceof Expression) {
-                        output = new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.format);
+                        output = this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header));
                     } else if (typeof this.format === 'function') {
                         output = this.format(player, value);
                     } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
@@ -2080,7 +2080,7 @@ class Settings {
 
                 if (this.formatDifference === true) {
                     if (this.format instanceof Expression) {
-                        return new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra).eval(this.format);
+                        return this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
                     } else if (typeof this.format === 'function') {
                         return this.format(player, value);
                     } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
@@ -2089,7 +2089,7 @@ class Settings {
                         return nativeDifference;
                     }
                 } else if (this.formatDifference instanceof Expression) {
-                    return new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra).eval(this.formatDifference);
+                    return this.formatDifference.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
                 } else if (typeof this.formatDifference == 'function') {
                     return this.formatDifference(settings, value);
                 } else {
@@ -2102,9 +2102,9 @@ class Settings {
                 if (this.formatStatistics === false) {
                     return nativeFormat;
                 } else if (this.formatStatistics) {
-                    return new ExpressionScope(settings).addSelf(value).eval(this.formatStatistics);
+                    return this.formatStatistics.eval(new ExpressionScope(settings).addSelf(value));
                 } else if (this.format instanceof Expression) {
-                    return new ExpressionScope(settings).addSelf(value).eval(this.format);
+                    return this.format.eval(new ExpressionScope(settings).addSelf(value));
                 } else if (typeof this.format == 'function') {
                     return this.format(undefined, value);
                 } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
@@ -2581,7 +2581,7 @@ class Settings {
             // Run only if it is a table variable
             if (variable.tableVariable) {
                 // Get value
-                let value = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredScope : scope).eval(variable.ast);
+                let value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredScope : scope));
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -2594,7 +2594,7 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = new ExpressionScope(this).with(array[0]).addSelf(array).eval(row.ast);
+            let currentValue = row.ast.eval(new ExpressionScope(this).with(array[0]).addSelf(array));
 
             row.eval = {
                 value: currentValue
@@ -2642,8 +2642,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent).eval(variable.ast);
-                let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare).eval(variable.ast);
+                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2662,8 +2662,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = new ExpressionScope(this).addSelf(arrayCurrent).eval(row.ast);
-            let compareValue = sameTimestamp ? currentValue : new ExpressionScope(compareEnvironment).addSelf(arrayCompare).eval(row.ast);
+            let currentValue = row.ast.eval(new ExpressionScope(this).addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(new ExpressionScope(compareEnvironment).addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,
@@ -2722,8 +2722,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent).eval(variable.ast);
-                let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare).eval(variable.ast);
+                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2742,8 +2742,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent).eval(row.ast);
-            let compareValue = sameTimestamp ? currentValue : new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare).eval(row.ast);
+            let currentValue = row.ast.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,

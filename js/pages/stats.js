@@ -860,14 +860,14 @@ class BrowseTab extends Tab {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player, timestamp, compare) => new ExpressionScope().with(player, compare).eval(arg),
+                            test: (arg, player, timestamp, compare) => arg.eval(new ExpressionScope().with(player, compare)),
                             arg: ast
                         });
                     }
                 } else if (key == 'sr') {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
-                        this.autosort = (player, compare) => new ExpressionScope().with(player, compare).eval(ast);
+                        this.autosort = (player, compare) => ast.eval(new ExpressionScope().with(player, compare));
                     }
                 } else if (key == 'f') {
                     entryLimit = isNaN(arg) ? 1 : Math.max(1, Number(arg));
@@ -1510,7 +1510,7 @@ class PlayersTab extends Tab {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player) => new ExpressionScope().with(player, player).addSelf(player).eval(arg),
+                            test: (arg, player) => arg.eval(new ExpressionScope().with(player, player).addSelf(player)),
                             arg: ast
                         });
                     }

@@ -704,7 +704,7 @@ const DatabaseManager = new (class {
                 const filter = new Expression(profile.secondary_g);
                 for (const group of groups) {
                     ExpressionCache.reset();
-                    if (new ExpressionScope().addSelf(group).eval(filter)) {
+                    if (filter.eval(new ExpressionScope().addSelf(group))) {
                         this._initModel('Group', group);
                     }
                 }
@@ -728,7 +728,7 @@ const DatabaseManager = new (class {
             const filter = new Expression(profile.secondary);
             for (const player of players) {
                 ExpressionCache.reset();
-                if (new ExpressionScope().addSelf(player).eval(filter)) {
+                if (filter.eval(new ExpressionScope().addSelf(player))) {
                     this._initModel('Player', player);
                 }
             }
@@ -1364,10 +1364,10 @@ const DatabaseManager = new (class {
         let trackerChanged = false;
         for (const [ name, { ast, out } ] of this.TrackerConfigEntries) {
             const currentTracker = playerTracker[name];
-            if (new ExpressionScope().with(player).eval(ast) && (!currentTracker || currentTracker.ts > timestamp)) {
+            if (ast.eval(new ExpressionScope().with(player)) && (!currentTracker || currentTracker.ts > timestamp)) {
                 playerTracker[name] = {
                     ts: timestamp,
-                    out: out ? new ExpressionScope().with(player).eval(out) : timestamp
+                    out: out ? out.eval(new ExpressionScope().with(player)) : timestamp
                 }
                 trackerChanged = true;
             }
