@@ -432,7 +432,7 @@ class GroupDetailTab extends Tab {
 
     refresh () {
         this.table.refresh(() => {
-            this.$table.find('tbody').append($('<tr style="height: 2em;"></tr>'));
+            this.table.bodyElement.insertAdjacentHTML('beforeend', '<tr style="height: 2em;"></tr>');
         }, (element) => {
             const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
             for (const clickableElement of clickableElements) {
