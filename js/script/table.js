@@ -84,10 +84,10 @@ class GroupTableArray extends TableArray {
 
 // Table instance
 class TableInstance {
-    constructor (settings, type, filteredCategories = null) {
+    constructor (settings, tableType, filteredCategories = null) {
         // Parameters
-        this.type = type;
-        this.settings = new Settings(settings, type);
+        this.tableType = tableType;
+        this.settings = new Settings(settings, tableType);
 
         // Handle trackers
         this._updateTrackers();
@@ -102,7 +102,7 @@ class TableInstance {
             [TableType.Browse]: 'createBrowseTable'
         }
 
-        this.createTable = () => Object.assign(this.sharedProperties(), this[createMethods[this.type]]())
+        this.createTable = () => Object.assign(this.sharedProperties(), this[createMethods[tableType]]())
 
         // Loop over all categories
         this.settings.categories.forEach((category, categoryIndex, categories) => {
@@ -419,7 +419,7 @@ class TableInstance {
 
     // Set players
     setEntries (array) {
-        if (this.type === TableType.Group) {
+        if (this.tableType === TableType.Group) {
             this.array = array;
         } else {
             this.array = array.map(obj => {
@@ -435,7 +435,7 @@ class TableInstance {
             }).filter(e => e);
 
             // Copy over lost properties
-            if (this.type == TableType.Browse) {
+            if (this.tableType == TableType.Browse) {
                 this.array.entryLimit = array.entryLimit;
                 this.array.timestamp = array.timestamp;
                 this.array.reference = array.reference;
@@ -443,10 +443,10 @@ class TableInstance {
         }
 
         // Evaluate variables
-        if (this.type == TableType.Player) {
+        if (this.tableType == TableType.Player) {
             this.settings.evalPlayer(this.array, array);
         } else if (!array.suppressUpdate) {
-            if (this.type == TableType.Browse) {
+            if (this.tableType == TableType.Browse) {
                 this.settings.evalBrowse(this.array, array);
             } else {
                 this.settings.evalGuild(this.array, array);
@@ -516,9 +516,10 @@ class TableInstance {
         // Common settings
         const dividerStyle = this.getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
-        const comparable = this.type === TableType.Player || this.array.reference != this.array.timestamp;
-        const outdated = this.type === TableType.Browse && this.settings.getOutdatedStyle();
-        const hidden = this.type === TableType.Browse;
+
+        const comparable = this.tableType === TableType.Player || this.array.reference != this.array.timestamp;
+        const outdated = this.tableType === TableType.Browse && this.settings.getOutdatedStyle();
+        const hidden = this.tableType === TableType.Browse;
 
         // Hoist
         const self = this;
@@ -1058,7 +1059,7 @@ class TableInstance {
 }
 
 class TableController {
-    constructor ($table, type) {        
+    constructor ($table, tableType) {        
         this.headElement = document.createElement('thead');
         this.bodyElement = document.createElement('tbody');
         
@@ -1068,7 +1069,7 @@ class TableController {
             this.bodyElement
         )
 
-        this.type = type;
+        this.tableType = tableType;
 
         // Changed by default
         this.schanged = true;
@@ -1217,7 +1218,7 @@ class TableController {
                 this.categories = undefined;
             }
 
-            this.table = new TableInstance(this.settings, this.type, this.categories);
+            this.table = new TableInstance(this.settings, this.tableType, this.categories);
             this.ignore = false;
 
             if (this.categories) {
