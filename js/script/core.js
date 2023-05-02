@@ -1425,7 +1425,8 @@ class Settings {
                 this.mergeMapping(dateHeader, {
                     expr: (p) => p.Timestamp,
                     format: (p, x) => _formatDate(x),
-                    width: 200
+                    width: 200,
+                    action: 'show'
                 });
 
                 headers.push(dateHeader);
