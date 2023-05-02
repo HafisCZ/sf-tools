@@ -480,6 +480,25 @@ class PlayerDetailTab extends Tab {
             });
         });
 
+        // Context menu
+        this.contextMenu = new CustomMenu(
+            this.$parent.get(0),
+            [
+                {
+                    label: intl('stats.copy.player'),
+                    action: (target) => {
+                        copyJSON(ModelUtils.toSimulatorData(DatabaseManager.getPlayer(target.dataset.id, target.dataset.ts)));
+                    }
+                },
+                {
+                    label: intl('stats.copy.player_companions'),
+                    action: (target) => {
+                        copyJSON(ModelUtils.toSimulatorData(DatabaseManager.getPlayer(target.dataset.id, target.dataset.ts), true));
+                    }
+                }
+            ]
+        );
+
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
@@ -596,6 +615,8 @@ class PlayerDetailTab extends Tab {
                     DialogController.open(PlayerDetailDialog, { identifier: dataset.id, timestamp: dataset.ts, reference: dataset.ts })
                 });
             }
+
+            this.contextMenu.attach(clickableElements);
         });
     }
 
