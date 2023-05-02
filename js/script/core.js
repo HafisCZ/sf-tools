@@ -1327,7 +1327,7 @@ const SettingsCommands = [
         /^push$/,
         (root) => root.push(),
         (root) => Highlighter.keyword('push')
-    ).parseAlways(),
+    ),
     /*
         Tag action
     */
