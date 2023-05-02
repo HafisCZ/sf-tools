@@ -2555,7 +2555,7 @@ class ScriptsTab extends Tab {
         if (this.returnTo) {
             this.returnTo();
         } else {
-            this.show();
+            this.show({});
         }
     }
 
