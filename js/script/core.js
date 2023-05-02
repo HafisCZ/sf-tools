@@ -1437,9 +1437,10 @@ class Settings {
         this.embed = null;
 
         // Parse settings
-        for (let line of Settings.handleMacros(string, tableType)) {
-            let command = SettingsCommands.find(command => command.isValid(line));
-            if (command && command.canParse && (command.scriptType === true || command.scriptType == scriptType)) {
+        for (const line of Settings.handleMacros(string, tableType)) {
+            const command = SettingsCommands.find(command => command.canParse && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(line));
+  
+            if (command) {
                 command.parse(this, line);
             }
         }
@@ -2844,13 +2845,11 @@ class Settings {
         const settings = new Settings('');
 
         for (const line of Settings.handleMacros(string)) {
-            let trimmed = Settings.stripComments(line)[0].trim();
+            const trimmed = Settings.stripComments(line)[0].trim();
+            const command = SettingsCommands.find(command => command.canParse && command.canParseAsConstant && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed))
 
-            for (const command of SettingsCommands) {
-                if (command.canParse && command.canParseAsConstant && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed)) {
-                    command.parse(settings, trimmed);
-                    break;
-                }
+            if (command) {
+                command.parse(settings, trimmed);
             }
         }
 
@@ -2869,8 +2868,9 @@ class Settings {
                 currentContent += prefix.replace(/ /g, '&nbsp;');
 
                 if (trimmed) {
-                    let command = SettingsCommands.find(command => command.isValid(trimmed));
-                    if (command && (command.scriptType === true || command.scriptType == scriptType)) {
+                    const command = SettingsCommands.find(command => (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed));
+
+                    if (command) {
                         const lineHtml = command.format(settings, trimmed);
                         currentContent += (typeof lineHtml === 'object' ? lineHtml.text : lineHtml);
                     } else {
