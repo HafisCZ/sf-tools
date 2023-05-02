@@ -164,6 +164,11 @@ class TableInstance {
             return array;
         }, []);
 
+        this.sortMap = new Map();
+        for (const header of this.flat) {
+            this.sortMap.set(header.sortkey, header);
+        }
+
         this.configLeft = this.config.splice(0, 1);
         this.leftFlat = this.configLeft[0].headers;
         this.leftFlatSpan = this.leftFlat.reduce((a, b) => a + b.span, 0);
@@ -481,34 +486,44 @@ class TableInstance {
     }
 
     _generateSorting (player, compare, index, comparable) {
-        const sorting = {
-            '_index': index
-        };
+        const self = this;
 
-        for (const header of this.flat) {
-            let { order, sortkey, flip, expr, sort } = header;
-            if (order) {
-                // Use special order expression if supplied
-                let difference = undefined;
-                let value = this.safeEval(expr, player, compare, this.settings, undefined, header);
+        return new Proxy({
+            '_index': index,
+            '_order_by': this.settings.globals.order_by ? this.safeEval(this.settings.globals.order_by, player, compare, this.settings) : undefined
+        }, {
+            get: function (target, prop) {
+                if (target[prop]) {
+                    return target[prop];
+                } else {
+                    const header = self.sortMap.get(prop);
+                    if (header) {
+                        const { order, flip, expr, sort } = header;
 
-                if (comparable) {
-                    // Get difference
-                    difference = (flip ? -1 : 1) * (value - this.safeEval(expr, compare, compare, this.settings, undefined, header));
+                        let sortValue = undefined;
+                        if (order) {
+                            // Use special order expression if supplied
+                            let difference = undefined;
+                            let value = self.safeEval(expr, player, compare, self.settings, undefined, header);
+            
+                            if (comparable) {
+                                // Get difference
+                                difference = (flip ? -1 : 1) * (value - self.safeEval(expr, compare, compare, self.settings, undefined, header));
+                            }
+            
+                            sortValue = self.safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value).add({ difference }));
+                        } else {
+                            // Return native sorting function
+                            sortValue = sort ? sort(player, compare) : 0;
+                        }
+    
+                        return(target[prop] = sortValue);
+                    } else {
+                        return index;
+                    }
                 }
-
-                sorting[sortkey] = this.safeEval(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
-            } else {
-                // Return native sorting function
-                sorting[sortkey] = sort ? sort(player, compare) : 0;
             }
-        }
-
-        if (this.settings.globals.order_by) {
-            sorting['_order_by'] = this.safeEval(this.settings.globals.order_by, player, compare, this.settings)
-        }
-
-        return sorting;
+        })
     }
 
     // Generate entries
