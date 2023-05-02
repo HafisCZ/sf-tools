@@ -43,6 +43,7 @@ const CHANGELOG = {
             'Improved performance of table rendering',
             'Added missing player resources',
             'Added all valid css colors as constants',
+            'Added new battlemage icon',
             'Fixed manual dialog not closable via close button',
             'Fixed sorting',
             'Fixed undefined text when table block is not available',
