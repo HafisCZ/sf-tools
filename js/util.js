@@ -21,22 +21,6 @@ function copyNode (node) {
     window.getSelection().removeAllRanges();
 }
 
-function copyGrid (headers, values, transformer) {
-    let thead = `<tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr>`;
-    let tbody = values.map(row => `<tr>${row.map(value => `<td>${value}</td>`).join('')}</tr>`).join('');
-    if (transformer) {
-        tbody = transformer(tbody);
-    }
-
-    let element = document.createElement('table');
-    element.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`;
-    document.body.appendChild(element);
-
-    copyNode(element);
-
-    document.body.removeChild(element);
-}
-
 // text()
 (function () {
     File.prototype.text = File.prototype.text || function () {
