@@ -254,1134 +254,1094 @@ class Command {
     }
 }
 
-const SettingsCommands = [
-    /*
-        If not
-    */
-    new Command(
-        /^if not (.+)$/,
-        null,
-        (root, arg) => Highlighter.keyword('if not ').value(arg).asMacro()
-    ).parseNever(),
-    /*
-        If
-    */
-    new Command(
-        /^if (.+)$/,
-        null,
-        (root, arg) => Highlighter.keyword('if ').value(arg).asMacro()
-    ).parseNever(),
-    /*
-        Else if
-    */
-    new Command(
-        /^else if (.+)$/,
-        null,
-        (root, arg) => Highlighter.keyword('else if ').value(arg).asMacro()
-    ).parseNever(),
-    /*
-        Else
-    */
-    new Command(
-        /^else$/,
-        null,
-        (root) => Highlighter.keyword('else').asMacro()
-    ).parseNever(),
-    /*
-        Loop
-    */
-    new Command(
-        /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
-        null,
-        (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro()
-    ).parseNever(),
-    /*
-        End loop or condition
-    */
-    new Command(
-        /^end$/,
-        null,
-        (root) => Highlighter.keyword('end').asMacro()
-    ).parseNever(),
-    /*
-        Macro-compatible function
-    */
-    new Command(
-        /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
-        (root, name, args, expression) => {
+const SettingsCommands = (new class {
+    constructor () {
+        this._commands = [];
+    }
+
+    register (name, regexp, parse, format) {
+        const command = new Command(regexp, parse, format);
+
+        this[name] = command;
+        this._commands.push(command);
+
+        return command;
+    }
+
+    find (predicate) {
+        return this._commands.find(predicate);
+    }
+})
+
+/*
+    Command registrations
+*/
+SettingsCommands.register(
+    'MACRO_IFNOT',
+    /^if not (.+)$/,
+    null,
+    (root, arg) => Highlighter.keyword('if not ').value(arg).asMacro()
+).parseNever()
+
+SettingsCommands.register(
+    'MACRO_IF',
+    /^if (.+)$/,
+    null,
+    (root, arg) => Highlighter.keyword('if ').value(arg).asMacro()
+).parseNever()
+
+SettingsCommands.register(
+    'MACRO_ELSEIF',
+    /^else if (.+)$/,
+    null,
+    (root, arg) => Highlighter.keyword('else if ').value(arg).asMacro()
+).parseNever()
+
+SettingsCommands.register(
+    'MACRO_ELSE',
+    /^else$/,
+    null,
+    (root) => Highlighter.keyword('else').asMacro()
+).parseNever()
+
+SettingsCommands.register(
+    'MACRO_LOOP',
+    /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
+    null,
+    (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro()
+).parseNever()
+
+SettingsCommands.register(
+    'MACRO_END',
+    /^end$/,
+    null,
+    (root) => Highlighter.keyword('end').asMacro()
+).parseNever()
+
+SettingsCommands.register(
+    'MACRO_FUNCTION',
+    /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
+    (root, name, args, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addFunction(name, ast, args.split(',').map(v => v.trim()));
+        }
+    },
+    (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
+).parseAsConstant()
+
+SettingsCommands.register(
+    'MACRO_VARIABLE',
+    /^mset (\w+[\w ]*) as (.+)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addVariable(name, ast, false);
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
+).parseAsConstant()
+
+SettingsCommands.register(
+    'MACRO_CONST',
+    /^const (\w+) (.+)$/,
+    (root, name, value) => root.addConstant(name, value),
+    (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
+).parseAsConstant()
+
+SettingsCommands.register(
+    'MACRO_CONSTEXPR',
+    /^constexpr (\w+) (.+)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression);
+        if (ast.isValid()) {
+            root.addConstant(name, new ExpressionScope(root).eval(ast));
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
+).parseAsConstant()
+
+SettingsCommands.register(
+    'TABLE_SERVER',
+    /^server ((@?)(\S+))$/,
+    (root, value, a, b) => {
+        let val = root.constants.getValue(a, b);
+        if (val != undefined) {
+            if (isNaN(val)) {
+                val = ARG_MAP_SERVER[val];
+            }
+
+            if (!isNaN(val)) {
+                root.addGlobal('server', Number(val));
+            }
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('server ');
+
+        let val = root.constants.getValue(a, b);
+        if (ARG_MAP_SERVER.hasOwnProperty(value)) {
+            return acc.boolean(value, value === 'on');
+        } else if (root.constants.isValid(a, b) && !isNaN(val)) {
+            return acc.constant(value);
+        } else if (a == '@' || isNaN(val)) {
+            return acc.error(value);
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_NAME',
+    /^name ((@?)(\S+))$/,
+    (root, value, a, b) => {
+        let val = root.constants.getValue(a, b);
+        if (val != undefined && !isNaN(val)) {
+            root.addGlobal('name', Number(val));
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('name ');
+
+        let val = root.constants.getValue(a, b);
+        if (root.constants.isValid(a, b) && !isNaN(val)) {
+            return acc.constant(value);
+        } else if (a == '@' || isNaN(val)) {
+            return acc.error(value);
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_WIDTH',
+    /^width ((@?)(\S+))$/,
+    (root, value, a, b) => {
+        let val = root.constants.getValue(a, b);
+        if (val != undefined && !isNaN(val)) {
+            root.addShared('width', Number(val));
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('width ');
+
+        let val = root.constants.getValue(a, b);
+        if (root.constants.isValid(a, b) && !isNaN(val)) {
+            return acc.constant(value);
+        } else if (a == '@' || isNaN(val)) {
+            return acc.error(value);
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_COLUMNS',
+    /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
+    (root, parts) => {
+        let values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
+        if (values.length > 0) {
+            root.addLocal('columns', values);
+        }
+    },
+    (root, parts) => {
+        return Highlighter.keyword('columns ').join(
+            parts.split(','),
+            (part) => {
+                const value = root.constants.get(part.trim());
+                if (isNaN(value)) {
+                    return 'error';
+                } else if (part.trim()[0] == '@') {
+                    return 'constant';
+                } else {
+                    return 'value';
+                }
+            }
+        )
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_NOT_DEFINED_VALUE',
+    /^not defined value ((@?)(.+))$/,
+    (root, value, a, b) => {
+        let val = root.constants.getValue(a, b);
+        if (val != undefined) {
+            root.addShared('ndef', val);
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('not defined value ');
+        
+        if (root.constants.isValid(a, b)) {
+            return acc.constant(value);
+        } else if (a == '@') {
+            return acc.error(value);
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+    
+SettingsCommands.register(
+    'TABLE_NOT_DEFINED_COLOR',
+    /^not defined color ((@?)(.+))$/,
+    (root, value, a, b) => {
+        let val = getCSSColor(root.constants.getValue(a, b));
+        if (val != undefined && val) {
+            root.addShared('ndefc', val);
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('not defined color ');
+        
+        let val = getCSSColor(root.constants.getValue(a, b));
+        if (root.constants.isValid(a, b) && val) {
+            return acc.constant(value);
+        } else if (a == '@' || !val) {
+            return acc.error(value);
+        } else {
+            return acc.color(value, val);
+        }
+    }
+)
+    
+SettingsCommands.register(
+    'TABLE_VALUE_DEFAULT',
+    /^value default ((@?)(\S+[\S ]*))$/,
+    (root, value, a, b) => {
+        let val = root.constants.getValue(a, b);
+        if (val != undefined) {
+            root.addValueRule(ARG_MAP['default'], 0, val);
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('value ').constant('default ');
+
+        if (root.constants.isValid(a, b)) {
+            return acc.constant(value);
+        } else if (a == '@') {
+            return acc.error(value);
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+    
+SettingsCommands.register(
+    'TABLE_VALUE_RULE',
+    /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
+    (root, rule, value, a, b, value2, a2, b2) => {
+        let ref = root.constants.getValue(a, b);
+        let val = root.constants.getValue(a2, b2);
+
+        if (val != undefined && ref != undefined) {
+            root.addValueRule(ARG_MAP[rule], ref, val);
+        }
+    },
+    (root, rule, value, a, b, value2, a2, b2) => {
+        const acc = Highlighter.keyword('value ').constant(rule).space();
+
+        if (root.constants.isValid(a, b)) {
+            acc.constant(value);
+        } else if (a == '@') {
+            acc.error(value);
+        } else {
+            acc.value(value);
+        }
+
+        acc.space();
+
+        if (root.constants.isValid(a2, b2)) {
+            acc.constant(value2);
+        } else if (a2 == '@') {
+            acc.error(value2);
+        } else {
+            acc.value(value2);
+        }
+
+        return acc;
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_COLOR_DEFAULT',
+    /^color default ((@?)(\S+[\S ]*))$/,
+    (root, value, a, b) => {
+        let val = getCSSColor(root.constants.getValue(a, b));
+        if (val != undefined && val) {
+            root.addColorRule(ARG_MAP['default'], 0, val);
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('color ').constant('default ');
+        
+        let val = getCSSColor(root.constants.getValue(a, b));
+        if (root.constants.isValid(a, b) && val) {
+            return acc.constant(value);
+        } else if (a == '@' || !val) {
+            return acc.error(value);
+        } else {
+            return acc.color(value, val);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_COLOR_RULE',
+    /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
+    (root, rule, value, a, b, value2, a2, b2) => {
+        let ref = root.constants.getValue(a, b);
+        let val = getCSSColor(root.constants.getValue(a2, b2));
+
+        if (val != undefined && ref != undefined && val) {
+            root.addColorRule(ARG_MAP[rule], ref, val);
+        }
+    },
+    (root, rule, value, a, b, value2, a2, b2) => {
+        const acc = Highlighter.keyword('color ').constant(rule).space();
+        
+        let val = getCSSColor(root.constants.getValue(a2, b2));
+        if (root.constants.isValid(a, b)) {
+            value = acc.constant(value);
+        } else if (a == '@') {
+            value = acc.error(value);
+        } else {
+            value = acc.value(value);
+        }
+
+        acc.space();
+
+        if (root.constants.isValid(a2, b2) && val) {
+            value2 = acc.constant(value2);
+        } else if (a2 == '@' || !val) {
+            value2 = acc.error(value2);
+        } else {
+            value2 = acc.color(value2, val);
+        }
+
+        return acc;
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_ALIAS',
+    /^alias ((@?)(.+))$/,
+    (root, value, a, b) => {
+        let val = root.constants.getValue(a, b);
+        if (val != undefined) {
+            root.addAlias(val);
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('alias ');
+        
+        if (root.constants.isValid(a, b)) {
+            return acc.constant(value);
+        } else if (a == '@') {
+            return acc.error(value);
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_FORMAT_STATISTICS',
+    /^format statistics (.+)$/,
+    (root, expression) => {
+        if (expression == 'on') {
+            root.addFormatStatisticsExpression(true);
+        } else if (expression == 'off') {
+            root.addFormatStatisticsExpression(false);
+        } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            root.addFormatStatisticsExpression(ARG_FORMATTERS[expression])
+        } else {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addFunction(name, ast, args.split(',').map(v => v.trim()));
+                root.addFormatStatisticsExpression(ast);
             }
-        },
-        (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
-    ).parseAsConstant(),
-    /*
-        Macro-compatible variable
-    */
-    new Command(
-        /^mset (\w+[\w ]*) as (.+)$/,
-        (root, name, expression) => {
+        }
+    },
+    (root, expression) => {
+        const acc = Highlighter.keyword('format statistics ');
+        if (expression === 'on' || expression == 'off') {
+            return acc.boolean(expression, expression === 'on');
+        } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            return acc.constant(expression);
+        } else {
+            return acc.expression(expression, root);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_FORMAT_DIFFERENCE',
+    /^format difference (.+)$/,
+    (root, expression) => {
+        if (expression == 'on') {
+            root.addFormatDifferenceExpression(true);
+        } else if (expression == 'off') {
+            root.addFormatDifferenceExpression(false);
+        } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            root.addFormatDifferenceExpression(ARG_FORMATTERS[expression])
+        } else {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addVariable(name, ast, false);
+                root.addFormatDifferenceExpression(ast);
             }
-        },
-        (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
-    ).parseAsConstant(),
-    /*
-        Constant
-    */
-    new Command(
-        /^const (\w+) (.+)$/,
-        (root, name, value) => root.addConstant(name, value),
-        (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
-    ).parseAsConstant(),
-    /*
-        Constant Expression
-    */
-    new Command(
-        /^constexpr (\w+) (.+)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression);
+        }
+    },
+    (root, expression) => {
+        const acc = Highlighter.keyword('format difference ');
+        if (expression === 'on' || expression == 'off') {
+            return acc.boolean(expression, expression === 'on');
+        } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            return acc.constant(expression);
+        } else {
+            return acc.expression(expression, root);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_BACKGROUND',
+    /^background ((@?)(.+))$/,
+    (root, value, a, b) => {
+        let val = getCSSColor(root.constants.getValue(a, b));
+        if (val != undefined && val) {
+            root.addShared('background', val);
+        }
+    },
+    (root, value, a, b) => {
+        const acc = Highlighter.keyword('background ');
+        
+        let val = getCSSColor(root.constants.getValue(a, b));
+        if (root.constants.isValid(a, b) && val) {
+            return acc.constant(value);
+        } else if (a == '@' || !val) {
+            return acc.error(value);
+        } else {
+            return acc.color(value, val);
+        }
+    }
+)
+    
+SettingsCommands.register(
+    'TABLE_FORMAT',
+    /^(format|expf) (.+)$/,
+    (root, token, expression) => {
+        if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            root.addFormatExpression(ARG_FORMATTERS[expression])
+        } else {
+            let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addConstant(name, new ExpressionScope(root).eval(ast));
-            }
-        },
-        (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
-    ).parseAsConstant(),
-    /*
-        Server column
-    */
-    new Command(
-        /^server ((@?)(\S+))$/,
-        (root, value, a, b) => {
-            let val = root.constants.getValue(a, b);
-            if (val != undefined) {
-                if (isNaN(val)) {
-                    val = ARG_MAP_SERVER[val];
-                }
-
-                if (!isNaN(val)) {
-                    root.addGlobal('server', Number(val));
-                }
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('server ');
-
-            let val = root.constants.getValue(a, b);
-            if (ARG_MAP_SERVER.hasOwnProperty(value)) {
-                return acc.boolean(value, value === 'on');
-            } else if (root.constants.isValid(a, b) && !isNaN(val)) {
-                return acc.constant(value);
-            } else if (a == '@' || isNaN(val)) {
-                return acc.error(value);
-            } else {
-                return acc.value(value);
+                root.addFormatExpression(ast);
             }
         }
-    ),
-    /*
-        Name column
-    */
-    new Command(
-        /^name ((@?)(\S+))$/,
-        (root, value, a, b) => {
-            let val = root.constants.getValue(a, b);
-            if (val != undefined && !isNaN(val)) {
-                root.addGlobal('name', Number(val));
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('name ');
-
-            let val = root.constants.getValue(a, b);
-            if (root.constants.isValid(a, b) && !isNaN(val)) {
-                return acc.constant(value);
-            } else if (a == '@' || isNaN(val)) {
-                return acc.error(value);
-            } else {
-                return acc.value(value);
+    },
+    (root, token, expression) => {
+        const acc = Highlighter.keyword(token).space();
+        if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            return acc.constant(expression);
+        } else {
+            return acc.expression(expression, root);
+        }
+    }
+)
+      
+SettingsCommands.register(
+    'TABLE_CATEGORY',
+    /^((?:\w+)(?:\,\w+)*:|)category(?: (.+))?$/,
+    (root, extensions, name) => {
+        root.addCategory(name || '', name == undefined);
+        if (extensions) {
+            root.addExtension(... extensions.slice(0, -1).split(','));
+        }
+    },
+    (root, extensions, name) => {
+        const acc = Highlighter.constant(extensions || '').keyword('category');
+        if (name) {
+            return acc.space().identifier(name);
+        } else {
+            return acc;
+        }
+    }
+)
+      
+SettingsCommands.register(
+    'TABLE_GROUPED_HEADER',
+    /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
+    (root, extensions, name, length) => {
+        if (length > 0) {
+            root.addHeader(name || '', Number(length));
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
             }
         }
-    ),
-    /*
-        Column width
-    */
-    new Command(
-        /^width ((@?)(\S+))$/,
-        (root, value, a, b) => {
-            let val = root.constants.getValue(a, b);
-            if (val != undefined && !isNaN(val)) {
-                root.addShared('width', Number(val));
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('width ');
-
-            let val = root.constants.getValue(a, b);
-            if (root.constants.isValid(a, b) && !isNaN(val)) {
-                return acc.constant(value);
-            } else if (a == '@' || isNaN(val)) {
-                return acc.error(value);
-            } else {
-                return acc.value(value);
-            }
-        }
-    ),
-    /*
-        Embed width configuration
-    */
-    new Command(
-        /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
-        (root, parts) => {
-            let values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
-            if (values.length > 0) {
-                root.addLocal('columns', values);
-            }
-        },
-        (root, parts) => {
-            return Highlighter.keyword('columns ').join(
-                parts.split(','),
-                (part) => {
-                    const value = root.constants.get(part.trim());
-                    if (isNaN(value)) {
-                        return 'error';
-                    } else if (part.trim()[0] == '@') {
-                        return 'constant';
-                    } else {
-                        return 'value';
-                    }
-                }
-            )
-        }
-    ),
-    /*
-        Not defined value
-    */
-    new Command(
-        /^not defined value ((@?)(.+))$/,
-        (root, value, a, b) => {
-            let val = root.constants.getValue(a, b);
-            if (val != undefined) {
-                root.addShared('ndef', val);
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('not defined value ');
-            
-            if (root.constants.isValid(a, b)) {
-                return acc.constant(value);
-            } else if (a == '@') {
-                return acc.error(value);
-            } else {
-                return acc.value(value);
-            }
-        }
-    ),
-    /*
-        Not defined color
-    */
-    new Command(
-        /^not defined color ((@?)(.+))$/,
-        (root, value, a, b) => {
-            let val = getCSSColor(root.constants.getValue(a, b));
-            if (val != undefined && val) {
-                root.addShared('ndefc', val);
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('not defined color ');
-            
-            let val = getCSSColor(root.constants.getValue(a, b));
-            if (root.constants.isValid(a, b) && val) {
-                return acc.constant(value);
-            } else if (a == '@' || !val) {
-                return acc.error(value);
-            } else {
-                return acc.color(value, val);
-            }
-        }
-    ),
-    /*
-        Value default rule
-    */
-    new Command(
-        /^value default ((@?)(\S+[\S ]*))$/,
-        (root, value, a, b) => {
-            let val = root.constants.getValue(a, b);
-            if (val != undefined) {
-                root.addValueRule(ARG_MAP['default'], 0, val);
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('value ').constant('default ');
-
-            if (root.constants.isValid(a, b)) {
-                return acc.constant(value);
-            } else if (a == '@') {
-                return acc.error(value);
-            } else {
-                return acc.value(value);
-            }
-        }
-    ),
-    /*
-        Value rules
-    */
-    new Command(
-        /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
-        (root, rule, value, a, b, value2, a2, b2) => {
-            let ref = root.constants.getValue(a, b);
-            let val = root.constants.getValue(a2, b2);
-
-            if (val != undefined && ref != undefined) {
-                root.addValueRule(ARG_MAP[rule], ref, val);
-            }
-        },
-        (root, rule, value, a, b, value2, a2, b2) => {
-            const acc = Highlighter.keyword('value ').constant(rule).space();
-
-            if (root.constants.isValid(a, b)) {
-                acc.constant(value);
-            } else if (a == '@') {
-                acc.error(value);
-            } else {
-                acc.value(value);
-            }
-
+    },
+    (root, extensions, name, length) => {
+        const acc = Highlighter.constant(extensions || '').keyword('header');
+        if (name != undefined) {
             acc.space();
 
-            if (root.constants.isValid(a2, b2)) {
-                acc.constant(value2);
-            } else if (a2 == '@') {
-                acc.error(value2);
+            if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
+                acc.header(name);
+            } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
+                acc.header(name, '-protected');
+            } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
+                acc.header(name, '-private');
+            } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
+                acc.header(name, '-itemizable');
             } else {
-                acc.value(value2);
-            }
-
-            return acc;
-        }
-    ),
-    /*
-        Color default rule
-    */
-    new Command(
-        /^color default ((@?)(\S+[\S ]*))$/,
-        (root, value, a, b) => {
-            let val = getCSSColor(root.constants.getValue(a, b));
-            if (val != undefined && val) {
-                root.addColorRule(ARG_MAP['default'], 0, val);
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('color ').constant('default ');
-            
-            let val = getCSSColor(root.constants.getValue(a, b));
-            if (root.constants.isValid(a, b) && val) {
-                return acc.constant(value);
-            } else if (a == '@' || !val) {
-                return acc.error(value);
-            } else {
-                return acc.color(value, val);
+                acc.identifier(name);
             }
         }
-    ),
-    /*
-        Color rules
-    */
-    new Command(
-        /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
-        (root, rule, value, a, b, value2, a2, b2) => {
-            let ref = root.constants.getValue(a, b);
-            let val = getCSSColor(root.constants.getValue(a2, b2));
+        
+        return acc.keyword(' as group of ').value(length);
+    }
+)
 
-            if (val != undefined && ref != undefined && val) {
-                root.addColorRule(ARG_MAP[rule], ref, val);
-            }
-        },
-        (root, rule, value, a, b, value2, a2, b2) => {
-            const acc = Highlighter.keyword('color ').constant(rule).space();
-            
-            let val = getCSSColor(root.constants.getValue(a2, b2));
-            if (root.constants.isValid(a, b)) {
-                value = acc.constant(value);
-            } else if (a == '@') {
-                value = acc.error(value);
-            } else {
-                value = acc.value(value);
-            }
-
+SettingsCommands.register(
+    'TABLE_HEADER',
+    /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))?$/,
+    (root, extensions, name) => {
+        root.addHeader(name || '');
+        if (extensions) {
+            root.addExtension(... extensions.slice(0, -1).split(','));
+        }
+    },
+    (root, extensions, name) => {
+        const acc = Highlighter.constant(extensions || '').keyword('header');
+        if (name != undefined) {
             acc.space();
 
-            if (root.constants.isValid(a2, b2) && val) {
-                value2 = acc.constant(value2);
-            } else if (a2 == '@' || !val) {
-                value2 = acc.error(value2);
+            if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
+                acc.header(name);
+            } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
+                acc.header(name, '-protected');
+            } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
+                acc.header(name, '-private');
+            } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
+                acc.header(name, '-itemizable');
             } else {
-                value2 = acc.color(value2, val);
+                acc.identifier(name);
             }
-
+        }
+        
+        return acc;
+    }
+)
+    
+SettingsCommands.register(
+    'TABLE_ROW',
+    /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
+    (root, extensions, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addRow(name, ast);
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
+            }
+        }
+    },
+    (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
+)
+      
+SettingsCommands.register(
+    'TABLE_VAR',
+    /^var (\w+) (.+)$/,
+    (root, name, value) => root.addHeaderVariable(name, value),
+    (root, name, value) => Highlighter.keyword('var ').constant(name).space().value(value)
+)
+    
+SettingsCommands.register(
+    'TABLE_EMBED_END',
+    /^embed end$/,
+    (root) => root.pushEmbed(),
+    (root) => Highlighter.keyword('embed end')
+)
+      
+SettingsCommands.register(
+    'TABLE_EMBED',
+    /^((?:\w+)(?:\,\w+)*:|)embed(?: (.+))?$/,
+    (root, extensions, name) => {
+        root.embedBlock(name || '');
+        if (extensions) {
+            root.addExtension(... extensions.slice(0, -1).split(','));
+        }
+    },
+    (root, extensions, name) => {
+        const acc = Highlighter.constant(extensions || '').keyword('embed');
+        if (name) {
+            return acc.space().identifier(name);
+        } else {
             return acc;
         }
-    ),
-    /*
-        Alias
-    */
-    new Command(
-        /^alias ((@?)(.+))$/,
-        (root, value, a, b) => {
-            let val = root.constants.getValue(a, b);
-            if (val != undefined) {
-                root.addAlias(val);
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('alias ');
-            
-            if (root.constants.isValid(a, b)) {
-                return acc.constant(value);
-            } else if (a == '@') {
-                return acc.error(value);
-            } else {
-                return acc.value(value);
-            }
-        }
-    ),
-    /*
-        Statistics format expression
-    */
-    new Command(
-        /^format statistics (.+)$/,
-        (root, expression) => {
-            if (expression == 'on') {
-                root.addFormatStatisticsExpression(true);
-            } else if (expression == 'off') {
-                root.addFormatStatisticsExpression(false);
-            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-                root.addFormatStatisticsExpression(ARG_FORMATTERS[expression])
-            } else {
-                let ast = new Expression(expression, root);
-                if (ast.isValid()) {
-                    root.addFormatStatisticsExpression(ast);
-                }
-            }
-        },
-        (root, expression) => {
-            const acc = Highlighter.keyword('format statistics ');
-            if (expression === 'on' || expression == 'off') {
-                return acc.boolean(expression, expression === 'on');
-            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-                return acc.constant(expression);
-            } else {
-                return acc.expression(expression, root);
-            }
-        }
-    ),
-    /*
-        Difference format expression
-    */
-    new Command(
-        /^format difference (.+)$/,
-        (root, expression) => {
-            if (expression == 'on') {
-                root.addFormatDifferenceExpression(true);
-            } else if (expression == 'off') {
-                root.addFormatDifferenceExpression(false);
-            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-                root.addFormatDifferenceExpression(ARG_FORMATTERS[expression])
-            } else {
-                let ast = new Expression(expression, root);
-                if (ast.isValid()) {
-                    root.addFormatDifferenceExpression(ast);
-                }
-            }
-        },
-        (root, expression) => {
-            const acc = Highlighter.keyword('format difference ');
-            if (expression === 'on' || expression == 'off') {
-                return acc.boolean(expression, expression === 'on');
-            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-                return acc.constant(expression);
-            } else {
-                return acc.expression(expression, root);
-            }
-        }
-    ),
-    /*
-        Cell background
-    */
-    new Command(
-        /^background ((@?)(.+))$/,
-        (root, value, a, b) => {
-            let val = getCSSColor(root.constants.getValue(a, b));
-            if (val != undefined && val) {
-                root.addShared('background', val);
-            }
-        },
-        (root, value, a, b) => {
-            const acc = Highlighter.keyword('background ');
-            
-            let val = getCSSColor(root.constants.getValue(a, b));
-            if (root.constants.isValid(a, b) && val) {
-                return acc.constant(value);
-            } else if (a == '@' || !val) {
-                return acc.error(value);
-            } else {
-                return acc.color(value, val);
-            }
-        }
-    ),
-    /*
-        Format expression
-    */
-    new Command(
-        /^(format|expf) (.+)$/,
-        (root, token, expression) => {
-            if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-                root.addFormatExpression(ARG_FORMATTERS[expression])
-            } else {
-                let ast = new Expression(expression, root);
-                if (ast.isValid()) {
-                    root.addFormatExpression(ast);
-                }
-            }
-        },
-        (root, token, expression) => {
-            const acc = Highlighter.keyword(token).space();
-            if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-                return acc.constant(expression);
-            } else {
-                return acc.expression(expression, root);
-            }
-        }
-    ),
-    /*
-        Category
-    */
-    new Command(
-        /^((?:\w+)(?:\,\w+)*:|)category(?: (.+))?$/,
-        (root, extensions, name) => {
-            root.addCategory(name || '', name == undefined);
-            if (extensions) {
-                root.addExtension(... extensions.slice(0, -1).split(','));
-            }
-        },
-        (root, extensions, name) => {
-            const acc = Highlighter.constant(extensions || '').keyword('category');
-            if (name) {
-                return acc.space().identifier(name);
-            } else {
-                return acc;
-            }
-        }
-    ),
-    /*
-        Grouped header
-    */
-    new Command(
-        /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
-        (root, extensions, name, length) => {
-            if (length > 0) {
-                root.addHeader(name || '', Number(length));
-                if (extensions) {
-                    root.addExtension(... extensions.slice(0, -1).split(','));
-                }
-            }
-        },
-        (root, extensions, name, length) => {
-            const acc = Highlighter.constant(extensions || '').keyword('header');
-            if (name != undefined) {
-                acc.space();
+    }
+)
 
-                if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
-                    acc.header(name);
-                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
-                    acc.header(name, '-protected');
-                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
-                    acc.header(name, '-private');
-                } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
-                    acc.header(name, '-itemizable');
-                } else {
-                    acc.identifier(name);
-                }
-            }
-            
-            return acc.keyword(' as group of ').value(length);
-        }
-    ),
-    /*
-        Header
-    */
-    new Command(
-        /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))?$/,
-        (root, extensions, name) => {
-            root.addHeader(name || '');
-            if (extensions) {
-                root.addExtension(... extensions.slice(0, -1).split(','));
-            }
-        },
-        (root, extensions, name) => {
-            const acc = Highlighter.constant(extensions || '').keyword('header');
-            if (name != undefined) {
-                acc.space();
+SettingsCommands.register(
+    'TABLE_LAYOUT',
+    /^layout ((\||\_|table|missing|statistics|rows|members)(\s+(\||\_|table|missing|statistics|rows|members))*)$/,
+    (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
+    (root, layout) => Highlighter.keyword('layout ').constant(layout)
+)
 
-                if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
-                    acc.header(name);
-                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
-                    acc.header(name, '-protected');
-                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
-                    acc.header(name, '-private');
-                } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
-                    acc.header(name, '-itemizable');
-                } else {
-                    acc.identifier(name);
-                }
-            }
-            
-            return acc;
+SettingsCommands.register(
+    'TABLE_VARIABLE_GLOBAL_LONG',
+    /^set (\w+[\w ]*) with all as (.+)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addVariable(name, ast, true);
         }
-    ),
-    /*
-        Row
-    */
-    new Command(
-        /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
-        (root, extensions, name, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addRow(name, ast);
-                if (extensions) {
-                    root.addExtension(... extensions.slice(0, -1).split(','));
-                }
-            }
-        },
-        (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
-    ),
-    /*
-        Var
-    */
-    new Command(
-        /^var (\w+) (.+)$/,
-        (root, name, value) => root.addHeaderVariable(name, value),
-        (root, name, value) => Highlighter.keyword('var ').constant(name).space().value(value)
-    ),
-    /*
-        Embedded table end
-    */
-    new Command(
-        /^embed end$/,
-        (root) => root.pushEmbed(),
-        (root) => Highlighter.keyword('embed end')
-    ),
-    /*
-        Embedded table
-    */
-    new Command(
-        /^((?:\w+)(?:\,\w+)*:|)embed(?: (.+))?$/,
-        (root, extensions, name) => {
-            root.embedBlock(name || '');
-            if (extensions) {
-                root.addExtension(... extensions.slice(0, -1).split(','));
-            }
-        },
-        (root, extensions, name) => {
-            const acc = Highlighter.constant(extensions || '').keyword('embed');
-            if (name) {
-                return acc.space().identifier(name);
-            } else {
-                return acc;
-            }
-        }
-    ),
-    /*
-        Layout
-    */
-    new Command(
-        /^layout ((\||\_|table|missing|statistics|rows|members)(\s+(\||\_|table|missing|statistics|rows|members))*)$/,
-        (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
-        (root, layout) => Highlighter.keyword('layout ').constant(layout)
-    ),
-    /*
-        Table variable
-    */
-    new Command(
-        /^set (\w+[\w ]*) with all as (.+)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addVariable(name, ast, true);
-            }
-        },
-        (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
-    ).parseAsConstant(),
-    /*
-        New syntax for table variable
-    */
-    new Command(
-        /^set \$(\w+[\w ]*) as (.+)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addVariable(name, ast, true);
-            }
-        },
-        (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root)
-    ).parseAsConstant(),
-    /*
-        New syntax for unfiltered table variable
-    */
-    new Command(
-        /^set \$\$(\w+[\w ]*) as (.+)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addVariable(name, ast, 'unfiltered');
-            }
-        },
-        (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
-    ).parseAsConstant(),
-    /*
-        Function
-    */
-    new Command(
-        /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
-        (root, name, args, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addFunction(name, ast, args.split(',').map(v => v.trim()));
-            }
-        },
-        (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
-    ).parseAsConstant(),
-    /*
-        Variable
-    */
-    new Command(
-        /^set (\w+[\w ]*) as (.+)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addVariable(name, ast, false);
-            }
-        },
-        (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root)
-    ).parseAsConstant(),
-    /*
-        Lined
-    */
-    new Command(
-        /^lined$/,
-        (root, value) => root.addGlobal('lined', 1),
-        (root, value) => Highlighter.keyword('lined')
-    ),
-    new Command(
-        /^lined (on|off|thin|thick)$/,
-        (root, value) => root.addGlobal('lined', ARG_MAP[value]),
-        (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
-    ),
-    /*
-        Theme
-    */
-    new Command(
-        /^theme (light|dark)$/,
-        (root, value) => root.addGlobal('theme', value),
-        (root, value) => Highlighter.keyword('theme ').boolean(value, true)
-    ),
-    new Command(
-        /^theme text:(\S+) background:(\S+)$/,
-        (root, textColor, backgroundColor) => {
-            root.addGlobal('theme', {
-                text: getCSSColor(textColor),
-                background: getCSSBackground(backgroundColor)
-            });
-        },
-        (root, textColor, backgroundColor) => Highlighter.keyword('theme ').constant('text:').color(textColor, getCSSColor(textColor)).constant(' background:').color(backgroundColor, getCSSColor(backgroundColor))
-    ),
-    /*
-        Performance (entry cutoff)
-    */
-    new Command(
-        /^performance (\d+)$/,
-        (root, value) => {
-            if (value > 0) {
-                root.addGlobal('performance', Number(value));
-            }
-        },
-        (root, value) => Highlighter.keyword('performance ')[value > 0 ? 'value' : 'error'](value)
-    ),
-    /*
-        Scale
-    */
-    new Command(
-        /^scale (\d+)$/,
-        (root, value) => {
-            if (value > 0) {
-                root.addGlobal('scale', Number(value));
-            }
-        },
-        (root, value) => Highlighter.keyword('scale ')[value > 0 ? 'value' : 'error'](value)
-    ),
-    /*
-        Row height
-    */
-    new Command(
-        /^row height (\d+)$/,
-        (root, value) => {
-            if (value > 0) {
-                root.addGlobalEmbedable('row_height', Number(value));
-            }
-        },
-        (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
-    ),
-    /*
-        Font
-    */
-    new Command(
-        /^font (.+)$/,
-        (root, font) => {
-            let value = getCSSFont(font);
-            if (value) {
-                root.addGlobalEmbedable('font', value);
-            }
-        },
-        (root, font) => Highlighter.keyword('font ')[getCSSFont(font) ? 'value' : 'error'](font)
-    ),
-    /*
-        Shared options
-    */
-    new Command(
-        /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
-        (root, key, value) => root.addShared(key, ARG_MAP[value]),
-        (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
-    ),
-    /*
-        Clean
-    */
-    new Command(
-        /^clean$/,
-        (root) => root.addLocal('clean', 1),
-        (root) => Highlighter.keyword('clean')
-    ),
-    new Command(
-        /^clean hard$/,
-        (root) => root.addLocal('clean', 2),
-        (root) => Highlighter.keyword('clean ').constant('hard')
-    ),
-    /*
-        Action
-    */
-    new Command(
-        /^action (none|show)$/,
-        (root, value) => root.addAction(value),
-        (root, value) => Highlighter.keyword('action ').constant(value)
-    ),
-    /*
-        Indexing
-    */
-    new Command(
-        /^indexed$/,
-        (root, value) => root.addGlobal('indexed', 1),
-        (root, value) => Highlighter.keyword('indexed')
-    ),
-    new Command(
-        /^indexed (on|off|static)$/,
-        (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
-        (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
-    ),
-    /*
-        Global options
-    */
-    new Command(
-        /^(members|outdated|opaque|large rows|align title)$/,
-        (root, key) => root.addGlobal(key, true),
-        (root, key) => Highlighter.keyword(key)
-    ),
-    new Command(
-        /^(members|outdated|opaque|large rows|align title) (on|off)$/,
-        (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
-        (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
-    ),
-    /*
-        Custom left category
-    */
-    new Command(
-        /^((?:\w+)(?:\,\w+)*:|)left category$/,
-        (root, extensions) => {
-            root.addGlobal('custom left', true);
-            root.addCategory('', true);
-            if (extensions) {
-                root.addExtension(... extensions.slice(0, -1).split(','));
-            }
-        },
-        (root, extensions) => Highlighter.constant(extensions || '').keyword('left category')
-    ),
-    /*
-        Statistics
-    */
-    new Command(
-        /^statistics (\S+[\S ]*) as (\S+[\S ]*)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addStatistics(name, ast);
-            }
-        },
-        (root, name, expression) => Highlighter.keyword('statistics ').constant(name).keyword(' as ').expression(expression, root)
-    ),
-    /*
-        Extra expression
-    */
-    new Command(
-        /^extra (.+)$/,
-        (root, value) => root.addFormatExtraExpression(a => value),
-        (root, value) => Highlighter.keyword('extra ').value(value)
-    ),
-    /*
-        Cell style
-    */
-    new Command(
-        /^style ([a-zA-Z\-]+) (.*)$/,
-        (root, style, value) => root.addStyle(style, value),
-        (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
-    ),
-    /*
-        Cell content visibility
-        Cell content breaking
-        Toggle statistics color
-    */
-    new Command(
-        /^(visible|breakline|statistics color) (on|off)$/,
-        (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
-        (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
-    ),
-    /*
-        Cell border
-    */
-    new Command(
-        /^border (none|left|right|both|top|bottom)$/,
-        (root, value) => root.addShared('border', ARG_MAP[value]),
-        (root, value) => Highlighter.keyword('border ').constant(value)
-    ),
-    /*
-        Order expression
-    */
-    new Command(
-        /^order by (.+)$/,
-        (root, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addLocal('order', ast);
-            }
-        },
-        (root, expression) => Highlighter.keyword('order by ').expression(expression, root)
-    ),
-    new Command(
-        /^glob order (asc|des)$/,
-        (root, value) => root.addGlobOrder(undefined, value == 'asc'),
-        (root, value) => Highlighter.keyword('glob order ').constant(value)
-    ),
-    new Command(
-        /^glob order (asc|des) (\d+)$/,
-        (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
-        (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
-    ),
-    /*
-        Value expression
-    */
-    new Command(
-        /^expr (.+)$/,
-        (root, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addLocal('expr', ast);
-            }
-        },
-        (root, expression) => Highlighter.keyword('expr ').expression(expression, root)
-    ),
-    /*
-        Alias expression
-    */
-    new Command(
-        /^expa (.+)$/,
-        (root, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addAliasExpression((a, b) => new ExpressionScope(a).eval(ast, b));
-            }
-        },
-        (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
-    ),
-    /*
-        Cell alignment
-    */
-    new Command(
-        /^align (left|right|center)$/,
-        (root, value) => root.addShared('align', value),
-        (root, value) => Highlighter.keyword('align ').constant(value)
-    ),
-    new Command(
-        /^align (left|right|center) (left|right|center)$/,
-        (root, value, value2) => {
-            root.addShared('align', value);
-            root.addShared('align_title', value2);
-        },
-        (root, value, value2) => Highlighter.keyword('align ').constant(value).space().constant(value2)
-    ),
-    /*
-        Discard expression
-    */
-    new Command(
-        /^discard (.+)$/,
-        (root, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addDiscardRule(ast);
-            }
-        },
-        (root, expression) => Highlighter.keyword('discard ').expression(expression, root)
-    ),
-    /*
-        Order all expression
-    */
-    new Command(
-        /^order all by (.+)$/,
-        (root, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addDefaultOrder(ast);
-            }
-        },
-        (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
-    ),
-    /*
-        Color expression
-    */
-    new Command(
-        /^expc (.+)$/,
-        (root, expression) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.addColorExpression(ast);
-            }
-        },
-        (root, expression) => Highlighter.keyword('expc ').expression(expression, root)
-    ),
-    new Command(
-        /^text (auto|(?:.+))$/,
-        (root, value) => {
-            if (value === 'auto') {
-                root.addTextColorExpression(true);
-            } else {
-                const ast = new Expression(value, root);
-                if (ast.isValid()) {
-                    root.addTextColorExpression(ast);
-                }
-            }
-        },
-        (root, value) => {
-            const acc = Highlighter.keyword('text ');
-            if (value === 'auto') {
-                return acc.boolean(value, true);
-            } else {
-                return acc.expression(value, root);
-            }
-        }
-    ),
-    /*
-        Cell padding (left only)
-    */
-    new Command(
-        /^padding (.+)$/,
-        (root, value) => root.addLocal('padding', value),
-        (root, value) => Highlighter.keyword('padding ').value(value)
-    ),
-    /*
-        Define extension
-    */
-    new Command(
-        /^define (\w+)$/,
-        (root, name) => root.addDefinition(name),
-        (root, name) => Highlighter.keyword('define ').identifier(name),
-        true
-    ),
-    /*
-        Apply extension
-    */
-    new Command(
-        /^extend (\w+)$/,
-        (root, name) => root.addExtension(name),
-        (root, name) => Highlighter.keyword('extend ').constant(name)
-    ),
-    /*
-        Force push current header / row / statistic
-    */
-    new Command(
-        /^push$/,
-        (root) => root.push(),
-        (root) => Highlighter.keyword('push')
-    ),
-    /*
-        Tag action
-    */
-    new Command(
-        /^tag (player|file) as (.+) if (.+)$/,
-        (root, type, tag, expr) => {
-            let ast1 = new Expression(tag);
-            let ast2 = new Expression(expr);
-            if (ast1.isValid() && ast2.isValid()) {
-                root.addActionEntry('tag', type, ast1, ast2);
-            }
-        },
-        (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, ACTION_PROPS).keyword(' if ').expression(expr, undefined, ACTION_PROPS)
-    ).forScriptType(ScriptType.Action),
-    new Command(
-        /^remove player if (.+)$/,
-        (root, expr) => {
-            let ast1 = new Expression(expr);
-            if (ast1.isValid()) {
-                root.addActionEntry('remove', 'player', ast1);
-            }
-        },
-        (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, ACTION_PROPS)
-    ).forScriptType(ScriptType.Action),
-    /*
-        Tracker
-    */
-    new Command(
-        /^(track (\w+(?:[ \w]*\w)?) as (.+) when (.+))$/,
-        (root, str, name, arg, arg2) => {
-            let ast = new Expression(arg);
-            let ast2 = new Expression(arg2);
-            if (ast.isValid() && ast2.isValid()) {
-                root.addTracker(name, str, ast2, ast);
-            }
-        },
-        (root, str, name, arg, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg).keyword(' when ').expression(arg2)
-    ).anyType(),
-    new Command(
-        /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
-        (root, str, name, arg) => {
-            let ast = new Expression(arg);
-            if (ast.isValid()) {
-                root.addTracker(name, str, ast);
-            }
-        },
-        (root, str, name, arg) => Highlighter.keyword('track ').constant(name).keyword(' when ').expression(arg)
-    ).anyType()
-];
+    },
+    (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
+).parseAsConstant()
 
-SettingsCommands.MACRO_IFNOT = SettingsCommands[0];
-SettingsCommands.MACRO_IF = SettingsCommands[1];
-SettingsCommands.MACRO_ELSEIF = SettingsCommands[2];
-SettingsCommands.MACRO_ELSE = SettingsCommands[3];
-SettingsCommands.MACRO_LOOP = SettingsCommands[4];
-SettingsCommands.MACRO_END = SettingsCommands[5];
-SettingsCommands.MACRO_FUNCTION = SettingsCommands[6];
-SettingsCommands.MACRO_VARIABLE = SettingsCommands[7];
-SettingsCommands.MACRO_CONST = SettingsCommands[8];
-SettingsCommands.MACRO_CONSTEXPR = SettingsCommands[9];
+SettingsCommands.register(
+    'TABLE_VARIABLE_GLOBAL',
+    /^set \$(\w+[\w ]*) as (.+)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addVariable(name, ast, true);
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root)
+).parseAsConstant()
+
+SettingsCommands.register(
+    'TABLE_VARIABLE_UNFILTERED',
+    /^set \$\$(\w+[\w ]*) as (.+)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addVariable(name, ast, 'unfiltered');
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
+).parseAsConstant()
+
+SettingsCommands.register(
+    'TABLE_FUNCTION',
+    /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
+    (root, name, args, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addFunction(name, ast, args.split(',').map(v => v.trim()));
+        }
+    },
+    (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
+).parseAsConstant()
+
+SettingsCommands.register(
+    'TABLE_VARIABLE',
+    /^set (\w+[\w ]*) as (.+)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addVariable(name, ast, false);
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root)
+).parseAsConstant()
+
+SettingsCommands.register(
+    'TABLE_LINED',
+    /^lined$/,
+    (root, value) => root.addGlobal('lined', 1),
+    (root, value) => Highlighter.keyword('lined')
+)
+
+SettingsCommands.register(
+    'TABLE_LINED_LONG',
+    /^lined (on|off|thin|thick)$/,
+    (root, value) => root.addGlobal('lined', ARG_MAP[value]),
+    (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
+)
+
+SettingsCommands.register(
+    'TABLE_THEME',
+    /^theme (light|dark)$/,
+    (root, value) => root.addGlobal('theme', value),
+    (root, value) => Highlighter.keyword('theme ').boolean(value, true)
+)
+
+SettingsCommands.register(
+    'TABLE_THEME_LONG',
+    /^theme text:(\S+) background:(\S+)$/,
+    (root, textColor, backgroundColor) => {
+        root.addGlobal('theme', {
+            text: getCSSColor(textColor),
+            background: getCSSBackground(backgroundColor)
+        });
+    },
+    (root, textColor, backgroundColor) => Highlighter.keyword('theme ').constant('text:').color(textColor, getCSSColor(textColor)).constant(' background:').color(backgroundColor, getCSSColor(backgroundColor))
+)
+
+SettingsCommands.register(
+    'TABLE_PERFORMANCE',
+    /^performance (\d+)$/,
+    (root, value) => {
+        if (value > 0) {
+            root.addGlobal('performance', Number(value));
+        }
+    },
+    (root, value) => Highlighter.keyword('performance ')[value > 0 ? 'value' : 'error'](value)
+)
+
+SettingsCommands.register(
+    'TABLE_SCALE',
+    /^scale (\d+)$/,
+    (root, value) => {
+        if (value > 0) {
+            root.addGlobal('scale', Number(value));
+        }
+    },
+    (root, value) => Highlighter.keyword('scale ')[value > 0 ? 'value' : 'error'](value)
+)
+
+SettingsCommands.register(
+    'TABLE_ROW_HEIGHT',
+    /^row height (\d+)$/,
+    (root, value) => {
+        if (value > 0) {
+            root.addGlobalEmbedable('row_height', Number(value));
+        }
+    },
+    (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
+)
+
+SettingsCommands.register(
+    'TABLE_FONT',
+    /^font (.+)$/,
+    (root, font) => {
+        let value = getCSSFont(font);
+        if (value) {
+            root.addGlobalEmbedable('font', value);
+        }
+    },
+    (root, font) => Highlighter.keyword('font ')[getCSSFont(font) ? 'value' : 'error'](font)
+)
+
+SettingsCommands.register(
+    'TABLE_OPTIONS',
+    /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
+    (root, key, value) => root.addShared(key, ARG_MAP[value]),
+    (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
+)
+
+SettingsCommands.register(
+    'TABLE_CLEAN',
+    /^clean$/,
+    (root) => root.addLocal('clean', 1),
+    (root) => Highlighter.keyword('clean')
+)
+
+SettingsCommands.register(
+    'TABLE_CLEAN_HARD',
+    /^clean hard$/,
+    (root) => root.addLocal('clean', 2),
+    (root) => Highlighter.keyword('clean ').constant('hard')
+)
+
+SettingsCommands.register(
+    'TABLE_ACTION',
+    /^action (none|show)$/,
+    (root, value) => root.addAction(value),
+    (root, value) => Highlighter.keyword('action ').constant(value)
+)
+
+SettingsCommands.register(
+    'TABLE_INDEXED',
+    /^indexed$/,
+    (root, value) => root.addGlobal('indexed', 1),
+    (root, value) => Highlighter.keyword('indexed')
+)
+
+SettingsCommands.register(
+    'TABLE_INDEXED_LONG',
+    /^indexed (on|off|static)$/,
+    (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
+    (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
+)
+
+SettingsCommands.register(
+    'TABLE_OPTIONS_GLOBAL',
+    /^(members|outdated|opaque|large rows|align title)$/,
+    (root, key) => root.addGlobal(key, true),
+    (root, key) => Highlighter.keyword(key)
+)
+
+SettingsCommands.register(
+    'TABLE_OPTIONS_GLOBAL_LONG',
+    /^(members|outdated|opaque|large rows|align title) (on|off)$/,
+    (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
+    (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
+)
+
+SettingsCommands.register(
+    'TABLE_LEFT_CATEGORY',
+    /^((?:\w+)(?:\,\w+)*:|)left category$/,
+    (root, extensions) => {
+        root.addGlobal('custom left', true);
+        root.addCategory('', true);
+        if (extensions) {
+            root.addExtension(... extensions.slice(0, -1).split(','));
+        }
+    },
+    (root, extensions) => Highlighter.constant(extensions || '').keyword('left category')
+)
+
+SettingsCommands.register(
+    'TABLE_STATISTICS',
+    /^statistics (\S+[\S ]*) as (\S+[\S ]*)$/,
+    (root, name, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addStatistics(name, ast);
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('statistics ').constant(name).keyword(' as ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_EXTRA',
+    /^extra (.+)$/,
+    (root, value) => root.addFormatExtraExpression(a => value),
+    (root, value) => Highlighter.keyword('extra ').value(value)
+)
+
+SettingsCommands.register(
+    'TABLE_STYLE',
+    /^style ([a-zA-Z\-]+) (.*)$/,
+    (root, style, value) => root.addStyle(style, value),
+    (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
+)
+
+SettingsCommands.register(
+    'TABBLE_OPTIONS_SHARED',
+    /^(visible|breakline|statistics color) (on|off)$/,
+    (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
+    (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
+)
+
+SettingsCommands.register(
+    'TABLE_BORDER',
+    /^border (none|left|right|both|top|bottom)$/,
+    (root, value) => root.addShared('border', ARG_MAP[value]),
+    (root, value) => Highlighter.keyword('border ').constant(value)
+)
+
+SettingsCommands.register(
+    'TABLE_ORDER',
+    /^order by (.+)$/,
+    (root, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addLocal('order', ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('order by ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_GLOBAL_ORDER',
+    /^glob order (asc|des)$/,
+    (root, value) => root.addGlobOrder(undefined, value == 'asc'),
+    (root, value) => Highlighter.keyword('glob order ').constant(value)
+)
+
+SettingsCommands.register(
+    'TABLE_GLOBAL_ORDER_INDEXED',
+    /^glob order (asc|des) (\d+)$/,
+    (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
+    (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
+)
+
+SettingsCommands.register(
+    'TABLE_EXPRESSION',
+    /^expr (.+)$/,
+    (root, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addLocal('expr', ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('expr ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_ALIAS_EXPRESSION',
+    /^expa (.+)$/,
+    (root, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addAliasExpression((a, b) => new ExpressionScope(a).eval(ast, b));
+        }
+    },
+    (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_ALIGN',
+    /^align (left|right|center)$/,
+    (root, value) => root.addShared('align', value),
+    (root, value) => Highlighter.keyword('align ').constant(value)
+)
+
+SettingsCommands.register(
+    'TABLE_ALIGN_LONG',
+    /^align (left|right|center) (left|right|center)$/,
+    (root, value, value2) => {
+        root.addShared('align', value);
+        root.addShared('align_title', value2);
+    },
+    (root, value, value2) => Highlighter.keyword('align ').constant(value).space().constant(value2)
+)
+
+SettingsCommands.register(
+    'TABLE_DISCARD',
+    /^discard (.+)$/,
+    (root, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addDiscardRule(ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('discard ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_ORDER_ALL',
+    /^order all by (.+)$/,
+    (root, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addDefaultOrder(ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_COLOR_EXPRESSION',
+    /^expc (.+)$/,
+    (root, expression) => {
+        let ast = new Expression(expression, root);
+        if (ast.isValid()) {
+            root.addColorExpression(ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('expc ').expression(expression, root)
+)
+
+SettingsCommands.register(
+    'TABLE_TEXT',
+    /^text (auto|(?:.+))$/,
+    (root, value) => {
+        if (value === 'auto') {
+            root.addTextColorExpression(true);
+        } else {
+            const ast = new Expression(value, root);
+            if (ast.isValid()) {
+                root.addTextColorExpression(ast);
+            }
+        }
+    },
+    (root, value) => {
+        const acc = Highlighter.keyword('text ');
+        if (value === 'auto') {
+            return acc.boolean(value, true);
+        } else {
+            return acc.expression(value, root);
+        }
+    }
+)
+
+SettingsCommands.register(
+    'TABLE_PADDING',
+    /^padding (.+)$/,
+    (root, value) => root.addLocal('padding', value),
+    (root, value) => Highlighter.keyword('padding ').value(value)
+)
+
+SettingsCommands.register(
+    'TABLE_DEFINE',
+    /^define (\w+)$/,
+    (root, name) => root.addDefinition(name),
+    (root, name) => Highlighter.keyword('define ').identifier(name),
+    true
+)
+
+SettingsCommands.register(
+    'TABLE_EXTEND',
+    /^extend (\w+)$/,
+    (root, name) => root.addExtension(name),
+    (root, name) => Highlighter.keyword('extend ').constant(name)
+)
+
+SettingsCommands.register(
+    'TABLE_PUSH',
+    /^push$/,
+    (root) => root.push(),
+    (root) => Highlighter.keyword('push')
+)
+
+SettingsCommands.register(
+    'ACTION_TAG',
+    /^tag (player|file) as (.+) if (.+)$/,
+    (root, type, tag, expr) => {
+        let ast1 = new Expression(tag);
+        let ast2 = new Expression(expr);
+        if (ast1.isValid() && ast2.isValid()) {
+            root.addActionEntry('tag', type, ast1, ast2);
+        }
+    },
+    (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, ACTION_PROPS).keyword(' if ').expression(expr, undefined, ACTION_PROPS)
+).forScriptType(ScriptType.Action)
+
+SettingsCommands.register(
+    'ACTION_REMOVE_PLAYER',
+    /^remove player if (.+)$/,
+    (root, expr) => {
+        let ast1 = new Expression(expr);
+        if (ast1.isValid()) {
+            root.addActionEntry('remove', 'player', ast1);
+        }
+    },
+    (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, ACTION_PROPS)
+).forScriptType(ScriptType.Action)
+
+SettingsCommands.register(
+    'ACTION_TRACK_MAPPED',
+    /^(track (\w+(?:[ \w]*\w)?) as (.+) when (.+))$/,
+    (root, str, name, arg, arg2) => {
+        let ast = new Expression(arg);
+        let ast2 = new Expression(arg2);
+        if (ast.isValid() && ast2.isValid()) {
+            root.addTracker(name, str, ast2, ast);
+        }
+    },
+    (root, str, name, arg, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg).keyword(' when ').expression(arg2)
+).anyType()
+
+SettingsCommands.register(
+    'ACTION_TRACK',
+    /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
+    (root, str, name, arg) => {
+        let ast = new Expression(arg);
+        if (ast.isValid()) {
+            root.addTracker(name, str, ast);
+        }
+    },
+    (root, str, name, arg) => Highlighter.keyword('track ').constant(name).keyword(' when ').expression(arg)
+).anyType()
 
 class Settings {
     // Contructor
