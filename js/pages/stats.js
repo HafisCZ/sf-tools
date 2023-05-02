@@ -540,7 +540,7 @@ class PlayerDetailTab extends Tab {
                 }
 
                 this.table.setSettings(settings);
-                this.table.refresh();
+                this.refresh();
 
                 this.$configure.dropdown('hide');
             },
@@ -591,14 +591,13 @@ class PlayerDetailTab extends Tab {
 
         this.array.forEach((e) => DatabaseManager._loadPlayer(e.player));
 
+        // Configuration indicator
+        this.$configure.settingsButton(ScriptManager.exists(this.identifier));
+        
         this.refresh();
     }
 
     refresh () {
-        // Configuration indicator
-        this.$configure.settingsButton(ScriptManager.exists(this.identifier));
-
-        // Table stuff
         this.table.setEntries(this.array);
         this.table.refresh(undefined, (element) => {
             const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
