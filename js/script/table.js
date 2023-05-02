@@ -1150,7 +1150,7 @@ class TableController {
 
         this.injectorCallback = callback;
         this.injectorEntries = entries;
-        this.injectorBlockSize = 25;
+        this.injectorBlockSize = Math.trunc((SiteOptions.load_rows || 50) / 2);
         this.injectorCounter = 0;
 
         this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.75 });
