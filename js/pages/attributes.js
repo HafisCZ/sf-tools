@@ -853,6 +853,22 @@ Site.ready(null, function () {
         $('#data-gold-table tbody').html(text);
     })();
 
+    function copyGrid (headers, values, transformer) {
+        let thead = `<tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr>`;
+        let tbody = values.map(row => `<tr>${row.map(value => `<td>${value}</td>`).join('')}</tr>`).join('');
+        if (transformer) {
+            tbody = transformer(tbody);
+        }
+    
+        const element = document.createElement('table');
+        element.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+        document.body.appendChild(element);
+    
+        copyNode(element);
+    
+        document.body.removeChild(element);
+    }
+
     $('#copy-table').click(function () {
         copyGrid(
             $('#data-gold-table th').toArray().map(th => th.innerText),
