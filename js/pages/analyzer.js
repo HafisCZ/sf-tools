@@ -322,7 +322,14 @@ Site.ready(null, function (urlParams) {
                 matrix.push([key.replace(/^\./, ''), playerA[key], playerB[key]]);
             }
 
-            copyMatrix(matrix);
+            const element = document.createElement('table');
+            element.innerHTML = `<tbody>${matrix.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>`;
+
+            document.body.appendChild(element);
+
+            copyNode(element);
+
+            document.body.removeChild(element);
         }
     });
 

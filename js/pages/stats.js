@@ -463,14 +463,7 @@ class PlayerDetailTab extends Tab {
         this.$parent.find('[data-op="copy"]').click(() => {
             this.table.forceInject();
 
-            var range = document.createRange();
-            range.selectNode(this.$table.get(0));
-
-            window.getSelection().removeAllRanges();
-
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            window.getSelection().removeAllRanges();
+            copyNode(this.table.element);
         });
 
         // Save
@@ -646,14 +639,7 @@ class BrowseTab extends Tab {
         this.$parent.find('[data-op="copy"]').click(() => {
             this.table.forceInject();
 
-            var range = document.createRange();
-            range.selectNode(this.table.element);
-
-            window.getSelection().removeAllRanges();
-
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            window.getSelection().removeAllRanges();
+            copyNode(this.table.element);
         });
 
         document.addEventListener('keyup', (event) => {
