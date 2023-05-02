@@ -2791,23 +2791,6 @@ class Settings {
         this.evalRules();
     }
 
-    static parseConstants(string, type) {
-        let settings = new Settings('');
-
-        for (var line of Settings.handleMacros(string)) {
-            let trimmed = Settings.stripComments(line)[0].trim();
-
-            for (let command of SettingsCommands) {
-                if (command.canParse && command.canParseAsConstant && (command.type === true || command.type == type) && command.isValid(trimmed)) {
-                    command.parse(settings, trimmed);
-                    break;
-                }
-            }
-        }
-
-        return settings;
-    }
-
     static checkEscapeTrail (line, index) {
         if (line[index - 1] != '\\') {
             return false;
@@ -2857,7 +2840,19 @@ class Settings {
 
     // Format code
     static format (string, type = 0) {
-        var settings = Settings.parseConstants(string, type);
+        const settings = new Settings('');
+
+        for (const line of Settings.handleMacros(string)) {
+            let trimmed = Settings.stripComments(line)[0].trim();
+
+            for (let command of SettingsCommands) {
+                if (command.canParse && command.canParseAsConstant && (command.type === true || command.type == type) && command.isValid(trimmed)) {
+                    command.parse(settings, trimmed);
+                    break;
+                }
+            }
+        }
+
         var content = '';
 
         ScriptHighlightCache.setCurrent(settings);
