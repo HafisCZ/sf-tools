@@ -212,7 +212,7 @@ class Command {
         this.internalParse = parse;
         this.internalFormat = format;
 
-        this.canParseAlways = false;
+        this.canParseAsConstant = false;
         this.canParse = true;
         this.type = 0;
     }
@@ -233,8 +233,8 @@ class Command {
         return this.internalFormat(root, ... string.match(this.regexp).slice(1));
     }
 
-    parseAlways () {
-        this.canParseAlways = true;
+    parseAsConstant () {
+        this.canParseAsConstant = true;
         return this;
     }
 
@@ -315,7 +315,7 @@ const SettingsCommands = [
             }
         },
         (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Macro-compatible variable
     */
@@ -328,7 +328,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Constant
     */
@@ -336,7 +336,7 @@ const SettingsCommands = [
         /^const (\w+) (.+)$/,
         (root, name, value) => root.addConstant(name, value),
         (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Constant Expression
     */
@@ -349,7 +349,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Server column
     */
@@ -915,7 +915,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         New syntax for table variable
     */
@@ -928,7 +928,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root)
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         New syntax for unfiltered table variable
     */
@@ -941,7 +941,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Function
     */
@@ -954,7 +954,7 @@ const SettingsCommands = [
             }
         },
         (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Variable
     */
@@ -967,7 +967,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root)
-    ).parseAlways(),
+    ).parseAsConstant(),
     /*
         Lined
     */
@@ -2791,10 +2791,6 @@ class Settings {
         this.evalRules();
     }
 
-    /*
-        Old shit
-    */
-
     static parseConstants(string, type) {
         let settings = new Settings('');
 
@@ -2802,7 +2798,7 @@ class Settings {
             let trimmed = Settings.stripComments(line)[0].trim();
 
             for (let command of SettingsCommands) {
-                if (command.canParse && command.canParseAlways && (command.type === true || command.type == type) && command.isValid(trimmed)) {
+                if (command.canParse && command.canParseAsConstant && (command.type === true || command.type == type) && command.isValid(trimmed)) {
                     command.parse(settings, trimmed);
                     break;
                 }
