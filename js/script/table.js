@@ -661,10 +661,9 @@ class TableInstance {
     }
 
     _createCache () {
-        this.cache = {
-            spacer: this.getSpacer(),
-            divider: this.getDivider()
-        }
+        this.cache = new Map();
+        this.cache.set('spacer', this.getSpacer());
+        this.cache.set('divider', this.getDivider());
     }
 
     _createSorting () {
@@ -853,18 +852,18 @@ class TableInstance {
     }
 
     getContent () {
-        this.cache.table = this.getTable();
+        this.cache.set('table', this.getTable());
 
         let content = '';
-        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
+        let layout = this.settings.getLayout(this.cache.get('statistics'), this.cache.get('rows'), this.cache.get('members'));
 
         for (const block of layout) {
             if (block == '|') {
-                content += this.cache.divider;
+                content += this.cache.get('divider');
             } else if (block == '_') {
-                content += this.cache.spacer;
+                content += this.cache.get('spacer');
             } else {
-                content += this.cache[block] || '';
+                content += this.cache.get(block) || '';
             }
         }
 
@@ -873,13 +872,13 @@ class TableInstance {
 
     // Renders statistics rows into cache
     _renderStatistics () {
-        if (typeof this.cache.statistics !== 'undefined') return;
-
-        if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
+        if (this.cache.has('statistics')) {
+            return;
+        } else if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
             if (this.settings.customStatistics.length) {
-                this.cache.statistics = this.getStatistics(this.leftFlatSpan, this.settings.customStatistics);
+                this.cache.set('statistics', this.getStatistics(this.leftFlatSpan, this.settings.customStatistics));
             } else {
-                this.cache.statistics = this.getStatistics(this.leftFlatSpan, [
+                this.cache.set('statistics', this.getStatistics(this.leftFlatSpan, [
                     {
                         name: 'Minimum',
                         expression: array => _fastMin(array)
@@ -892,19 +891,19 @@ class TableInstance {
                         name: 'Maximum',
                         expression: array => _fastMax(array)
                     }
-                ]);
+                ]));
             }
         } else {
-            this.cache.statistics = '';
+            this.cache.set('statistics', '');
         }
     }
 
     // Renders members into cache
     _renderMembers () {
-        if (typeof this.cache.members !== 'undefined') return;
-
-        if (this.settings.globals.members) {
-            this.cache.members = `
+        if (this.cache.has('members')) {
+            return;
+        } else if (this.settings.globals.members) {
+            this.cache.set('members', `
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Classes</td>
                     <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
@@ -917,17 +916,17 @@ class TableInstance {
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Left</td>
                     <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
                 </tr>
-            `;
+            `);
         } else {
-            this.cache.members = '';
+            this.cache.set('members', '');
         }
     }
 
     _renderMissing () {
-        if (typeof this.cache.missing !== 'undefined') return;
-
-        if (this.array.missing.length) {
-            this.cache.missing = `
+        if (this.cache.has('missing')) {
+            return;
+        } else if (this.array.missing.length) {
+            this.cache.set('missing', `
                 <tr class="font-weight: bold;">
                     ${
                         CellGenerator.WideCell(
@@ -937,23 +936,24 @@ class TableInstance {
                             'center'
                         )
                     }
-                </tr>`;
+                </tr>
+            `);
         } else {
-            this.cache.missing = '';
+            this.cache.set('missing', '');
         }
     }
 
     _renderRows (includePlayer = false) {
-        if (typeof this.cache.rows !== 'undefined') return;
-
-        if (this.settings.customRows.length) {
+        if (this.cache.has('rows')) {
+            return;
+        } else if (this.settings.customRows.length) {
             if (includePlayer) {
-                this.cache.rows = _join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player')));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))));
             } else {
-                this.cache.rows = _join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare)));
             }
         } else {
-            this.cache.rows = '';
+            this.cache.set('rows', '');
         }
     }
 
@@ -1008,7 +1008,7 @@ class TableInstance {
                 <td class="border-right-thin" colspan="${ leftSpan }"></td>
                 ${ _join(this.rightFlat, ({ span, statistics, generators, name }) => `<td colspan="${ span }">${ statistics && generators.statistics ? name : '' }</td>`) }
             </tr>
-            ${ this.cache.divider }
+            ${ this.cache.get('divider') }
             ${ _join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
