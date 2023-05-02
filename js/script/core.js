@@ -1,4 +1,4 @@
-const ScriptType = {
+const TableType = {
     Player: 0,
     Group: 1,
     Browse: 2
@@ -120,9 +120,9 @@ class RuleEvaluator {
 }
 
 const FilterTypes = {
-    'Guild': ScriptType.Group,
-    'Player': ScriptType.Player,
-    'Players': ScriptType.Browse
+    'Guild': TableType.Group,
+    'Player': TableType.Player,
+    'Players': TableType.Browse
 };
 
 const Highlighter = new (class {
@@ -1457,7 +1457,7 @@ class Settings {
             // Can skip as category should already exist
         } else {
             const headers = [];
-            if (this.type === ScriptType.Player) {
+            if (this.type === TableType.Player) {
                 const dateHeader = this.createHeader('Date');
 
                 this.mergeMapping(dateHeader, {
@@ -1467,7 +1467,7 @@ class Settings {
                 });
 
                 headers.push(dateHeader);
-            } else if (this.type === ScriptType.Group) {
+            } else if (this.type === TableType.Group) {
                 const nameHeader = this.createHeader('Name');
 
                 this.mergeMapping(nameHeader, {
@@ -1477,7 +1477,7 @@ class Settings {
                 });
 
                 headers.push(nameHeader);
-            } else if (this.type === ScriptType.Browse) {
+            } else if (this.type === TableType.Browse) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
                     const serverHeader = this.createHeader('Server');
@@ -1767,9 +1767,9 @@ class Settings {
 
         // Special constants for macros
         let constants = new Constants();
-        constants.addConstant('guild', ScriptType.Group);
-        constants.addConstant('player', ScriptType.Player);
-        constants.addConstant('players', ScriptType.Browse);
+        constants.addConstant('guild', TableType.Group);
+        constants.addConstant('player', TableType.Player);
+        constants.addConstant('players', TableType.Browse);
 
         // Generate initial settings
         let settings = Settings.handleMacroVariables(lines, constants);
@@ -2487,13 +2487,13 @@ class Settings {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.type == ScriptType.Browse) {
+            if (this.type == TableType.Browse) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),
                     'table'
                 ];
-            } else if (this.type == ScriptType.Group) {
+            } else if (this.type == TableType.Group) {
                 return [
                     'table',
                     'missing',
