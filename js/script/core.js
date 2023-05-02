@@ -4,9 +4,9 @@ const TableType = {
     Browse: 2
 }
 
-const EditorType = {
-    DEFAULT: 0,
-    ACTIONS: 1
+const ScriptType = {
+    Table: 0,
+    Action: 1
 }
 
 const ARG_MAP = {
@@ -214,7 +214,7 @@ class Command {
 
         this.canParseAsConstant = false;
         this.canParse = true;
-        this.type = 0;
+        this.scriptType = ScriptType.Table;
     }
 
     isValid (string) {
@@ -243,13 +243,13 @@ class Command {
         return this;
     }
 
-    specialType (type) {
-        this.type = type;
+    forScriptType (scriptType) {
+        this.scriptType = scriptType;
         return this;
     }
 
     anyType () {
-        this.type = true;
+        this.scriptType = true;
         return this;
     }
 }
@@ -1335,7 +1335,7 @@ const SettingsCommands = [
             }
         },
         (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, ACTION_PROPS).keyword(' if ').expression(expr, undefined, ACTION_PROPS)
-    ).specialType(EditorType.ACTIONS),
+    ).forScriptType(ScriptType.Action),
     new Command(
         /^remove player if (.+)$/,
         (root, expr) => {
@@ -1345,7 +1345,7 @@ const SettingsCommands = [
             }
         },
         (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, ACTION_PROPS)
-    ).specialType(EditorType.ACTIONS),
+    ).forScriptType(ScriptType.Action),
     /*
         Tracker
     */
@@ -1385,9 +1385,10 @@ SettingsCommands.MACRO_CONSTEXPR = SettingsCommands[9];
 
 class Settings {
     // Contructor
-    constructor (string, type, scriptType = 0) {
+    constructor (string, tableType = null, scriptType = ScriptType.Table) {
         this.code = string;
-        this.type = type;
+        this.tableType = tableType;
+        this.scriptType = scriptType;
         this.env_id = randomSHA1();
 
         // Constants
@@ -1436,9 +1437,9 @@ class Settings {
         this.embed = null;
 
         // Parse settings
-        for (let line of Settings.handleMacros(string, type)) {
+        for (let line of Settings.handleMacros(string, tableType)) {
             let command = SettingsCommands.find(command => command.isValid(line));
-            if (command && command.canParse && (command.type === true || command.type == scriptType)) {
+            if (command && command.canParse && (command.scriptType === true || command.scriptType == scriptType)) {
                 command.parse(this, line);
             }
         }
@@ -1447,7 +1448,7 @@ class Settings {
         this.pushEmbed();
         this.pushCategory();
 
-        if (this.type !== null) {
+        if (this.tableType !== null) {
             this._prepareLeftCategory();            
         }
     }
@@ -1457,7 +1458,7 @@ class Settings {
             // Can skip as category should already exist
         } else {
             const headers = [];
-            if (this.type === TableType.Player) {
+            if (this.tableType === TableType.Player) {
                 const dateHeader = this.createHeader('Date');
 
                 this.mergeMapping(dateHeader, {
@@ -1467,7 +1468,7 @@ class Settings {
                 });
 
                 headers.push(dateHeader);
-            } else if (this.type === TableType.Group) {
+            } else if (this.tableType === TableType.Group) {
                 const nameHeader = this.createHeader('Name');
 
                 this.mergeMapping(nameHeader, {
@@ -1477,7 +1478,7 @@ class Settings {
                 });
 
                 headers.push(nameHeader);
-            } else if (this.type === TableType.Browse) {
+            } else if (this.tableType === TableType.Browse) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
                     const serverHeader = this.createHeader('Server');
@@ -1539,7 +1540,7 @@ class Settings {
         this.mergeTextColor(header, header);
     }
 
-    static handleConditionals (lines, type, scope) {
+    static handleConditionals (lines, tableType, scope) {
         let output = [];
 
         let condition = false;
@@ -1561,7 +1562,7 @@ class Settings {
 
                 let cond = rule.parseAsMacro(line)[0].trim();
                 if (cond in FilterTypes) {
-                    shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == type) : (FilterTypes[cond] != type);
+                    shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == tableType) : (FilterTypes[cond] != tableType);
                     condition = true;
                 } else {
                     let condExpression = new Expression(cond);
@@ -1576,7 +1577,7 @@ class Settings {
                     if (shouldDiscard) {
                         let cond = SettingsCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
                         if (cond in FilterTypes) {
-                            shouldDiscard = FilterTypes[cond] != type;
+                            shouldDiscard = FilterTypes[cond] != tableType;
                         } else {
                             let condExpression = new Expression(cond);
                             if (condExpression.isValid()) {
@@ -1757,12 +1758,12 @@ class Settings {
         return settings;
     }
 
-    static handleMacros (string, type) {
+    static handleMacros (string, tableType) {
         let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
 
         // Scope for macros
         let scope = new ExpressionScope().add({
-            table: type,
+            table: tableType,
         }).add(SiteOptions.options);
 
         // Special constants for macros
@@ -1774,7 +1775,7 @@ class Settings {
         // Generate initial settings
         let settings = Settings.handleMacroVariables(lines, constants);
         while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
-            lines = Settings.handleConditionals(lines, type, scope.environment(settings));
+            lines = Settings.handleConditionals(lines, tableType, scope.environment(settings));
             settings = Settings.handleMacroVariables(lines, constants);
             lines = Settings.handleLoops(lines, scope.environment(settings));
             settings = Settings.handleMacroVariables(lines, constants);
@@ -2487,13 +2488,13 @@ class Settings {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.type == TableType.Browse) {
+            if (this.tableType == TableType.Browse) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),
                     'table'
                 ];
-            } else if (this.type == TableType.Group) {
+            } else if (this.tableType == TableType.Group) {
                 return [
                     'table',
                     'missing',
@@ -2839,25 +2840,25 @@ class Settings {
     }
 
     // Format code
-    static format (string, type = 0) {
+    static format (string, scriptType = ScriptType.Table) {
         const settings = new Settings('');
 
         for (const line of Settings.handleMacros(string)) {
             let trimmed = Settings.stripComments(line)[0].trim();
 
-            for (let command of SettingsCommands) {
-                if (command.canParse && command.canParseAsConstant && (command.type === true || command.type == type) && command.isValid(trimmed)) {
+            for (const command of SettingsCommands) {
+                if (command.canParse && command.canParseAsConstant && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed)) {
                     command.parse(settings, trimmed);
                     break;
                 }
             }
         }
 
-        var content = '';
+        let content = '';
 
         ScriptHighlightCache.setCurrent(settings);
 
-        for (let line of string.split('\n')) {
+        for (const line of string.split('\n')) {
             if (ScriptHighlightCache.has(line)) {
                 content += ScriptHighlightCache.get(line);
             } else {
@@ -2869,7 +2870,7 @@ class Settings {
 
                 if (trimmed) {
                     let command = SettingsCommands.find(command => command.isValid(trimmed));
-                    if (command && (command.type === true || command.type == type)) {
+                    if (command && (command.scriptType === true || command.scriptType == scriptType)) {
                         const lineHtml = command.format(settings, trimmed);
                         currentContent += (typeof lineHtml === 'object' ? lineHtml.text : lineHtml);
                     } else {
@@ -3145,11 +3146,11 @@ const TemplateManager = new (class {
 })();
 
 class ScriptEditor {
-    constructor (parent, editorType, changeCallback) {
+    constructor (parent, scriptType, changeCallback) {
         this.parent = parent.get(0);
         
         this.changeCallback = changeCallback;
-        this.editorType = editorType;
+        this.scriptType = scriptType;
 
         this.area = this.parent.querySelector('textarea');
         this.wrapper = this.parent.querySelector('.ta-wrapper');
@@ -3188,7 +3189,7 @@ class ScriptEditor {
 
             this.mask.remove();
             this.mask = maskClone.cloneNode(true);
-            this.mask.innerHTML = Settings.format(value, this.editorType);
+            this.mask.innerHTML = Settings.format(value, this.scriptType);
             this.mask.style.transform = scrollTransform;
 
             this.wrapper.insertAdjacentElement('beforeend', this.mask);
