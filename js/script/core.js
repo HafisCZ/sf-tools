@@ -214,7 +214,6 @@ class Command {
 
         this.canParseAlways = false;
         this.canParse = true;
-        this.canCopy = false;
         this.type = 0;
     }
 
@@ -241,11 +240,6 @@ class Command {
 
     parseNever () {
         this.canParse = false;
-        return this;
-    }
-
-    copyable () {
-        this.canCopy = true;
         return this;
     }
 
@@ -435,7 +429,7 @@ const SettingsCommands = [
                 return acc.value(value);
             }
         }
-    ).copyable(),
+    ),
     /*
         Embed width configuration
     */
@@ -462,7 +456,7 @@ const SettingsCommands = [
                 }
             )
         }
-    ).copyable(),
+    ),
     /*
         Not defined value
     */
@@ -485,7 +479,7 @@ const SettingsCommands = [
                 return acc.value(value);
             }
         }
-    ).copyable(),
+    ),
     /*
         Not defined color
     */
@@ -509,7 +503,7 @@ const SettingsCommands = [
                 return acc.color(value, val);
             }
         }
-    ).copyable(),
+    ),
     /*
         Value default rule
     */
@@ -532,7 +526,7 @@ const SettingsCommands = [
                 return acc.value(value);
             }
         }
-    ).copyable(),
+    ),
     /*
         Value rules
     */
@@ -569,7 +563,7 @@ const SettingsCommands = [
 
             return acc;
         }
-    ).copyable(),
+    ),
     /*
         Color default rule
     */
@@ -593,7 +587,7 @@ const SettingsCommands = [
                 return acc.color(value, val);
             }
         }
-    ).copyable(),
+    ),
     /*
         Color rules
     */
@@ -631,7 +625,7 @@ const SettingsCommands = [
 
             return acc;
         }
-    ).copyable(),
+    ),
     /*
         Alias
     */
@@ -654,7 +648,7 @@ const SettingsCommands = [
                 return acc.value(value);
             }
         }
-    ).copyable(),
+    ),
     /*
         Statistics format expression
     */
@@ -684,7 +678,7 @@ const SettingsCommands = [
                 return acc.expression(expression, root);
             }
         }
-    ).copyable(),
+    ),
     /*
         Difference format expression
     */
@@ -714,7 +708,7 @@ const SettingsCommands = [
                 return acc.expression(expression, root);
             }
         }
-    ).copyable(),
+    ),
     /*
         Cell background
     */
@@ -738,7 +732,7 @@ const SettingsCommands = [
                 return acc.color(value, val);
             }
         }
-    ).copyable(),
+    ),
     /*
         Format expression
     */
@@ -762,7 +756,7 @@ const SettingsCommands = [
                 return acc.expression(expression, root);
             }
         }
-    ).copyable(),
+    ),
     /*
         Category
     */
@@ -782,7 +776,7 @@ const SettingsCommands = [
                 return acc;
             }
         }
-    ).copyable(),
+    ),
     /*
         Grouped header
     */
@@ -816,7 +810,7 @@ const SettingsCommands = [
             
             return acc.keyword(' as group of ').value(length);
         }
-    ).copyable(),
+    ),
     /*
         Header
     */
@@ -848,7 +842,7 @@ const SettingsCommands = [
             
             return acc;
         }
-    ).copyable(),
+    ),
     /*
         Row
     */
@@ -872,7 +866,7 @@ const SettingsCommands = [
         /^var (\w+) (.+)$/,
         (root, name, value) => root.addHeaderVariable(name, value),
         (root, name, value) => Highlighter.keyword('var ').constant(name).space().value(value)
-    ).copyable(),
+    ),
     /*
         Embedded table end
     */
@@ -880,7 +874,7 @@ const SettingsCommands = [
         /^embed end$/,
         (root) => root.pushEmbed(),
         (root) => Highlighter.keyword('embed end')
-    ).copyable(),
+    ),
     /*
         Embedded table
     */
@@ -900,7 +894,7 @@ const SettingsCommands = [
                 return acc;
             }
         }
-    ).copyable(),
+    ),
     /*
         Layout
     */
@@ -1061,7 +1055,7 @@ const SettingsCommands = [
         /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
         (root, key, value) => root.addShared(key, ARG_MAP[value]),
         (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
-    ).copyable(),
+    ),
     /*
         Clean
     */
@@ -1069,12 +1063,12 @@ const SettingsCommands = [
         /^clean$/,
         (root) => root.addLocal('clean', 1),
         (root) => Highlighter.keyword('clean')
-    ).copyable(),
+    ),
     new Command(
         /^clean hard$/,
         (root) => root.addLocal('clean', 2),
         (root) => Highlighter.keyword('clean ').constant('hard')
-    ).copyable(),
+    ),
     /*
         Action
     */
@@ -1082,7 +1076,7 @@ const SettingsCommands = [
         /^action (none|show)$/,
         (root, value) => root.addAction(value),
         (root, value) => Highlighter.keyword('action ').constant(value)
-    ).copyable(),
+    ),
     /*
         Indexing
     */
@@ -1143,7 +1137,7 @@ const SettingsCommands = [
         /^extra (.+)$/,
         (root, value) => root.addFormatExtraExpression(a => value),
         (root, value) => Highlighter.keyword('extra ').value(value)
-    ).copyable(),
+    ),
     /*
         Cell style
     */
@@ -1151,7 +1145,7 @@ const SettingsCommands = [
         /^style ([a-zA-Z\-]+) (.*)$/,
         (root, style, value) => root.addStyle(style, value),
         (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
-    ).copyable(),
+    ),
     /*
         Cell content visibility
         Cell content breaking
@@ -1161,7 +1155,7 @@ const SettingsCommands = [
         /^(visible|breakline|statistics color) (on|off)$/,
         (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
         (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
-    ).copyable(),
+    ),
     /*
         Cell border
     */
@@ -1169,7 +1163,7 @@ const SettingsCommands = [
         /^border (none|left|right|both|top|bottom)$/,
         (root, value) => root.addShared('border', ARG_MAP[value]),
         (root, value) => Highlighter.keyword('border ').constant(value)
-    ).copyable(),
+    ),
     /*
         Order expression
     */
@@ -1182,17 +1176,17 @@ const SettingsCommands = [
             }
         },
         (root, expression) => Highlighter.keyword('order by ').expression(expression, root)
-    ).copyable(),
+    ),
     new Command(
         /^glob order (asc|des)$/,
         (root, value) => root.addGlobOrder(undefined, value == 'asc'),
         (root, value) => Highlighter.keyword('glob order ').constant(value)
-    ).copyable(),
+    ),
     new Command(
         /^glob order (asc|des) (\d+)$/,
         (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
         (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
-    ).copyable(),
+    ),
     /*
         Value expression
     */
@@ -1205,7 +1199,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => Highlighter.keyword('expr ').expression(expression, root)
-    ).copyable(),
+    ),
     /*
         Alias expression
     */
@@ -1218,7 +1212,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
-    ).copyable(),
+    ),
     /*
         Cell alignment
     */
@@ -1226,7 +1220,7 @@ const SettingsCommands = [
         /^align (left|right|center)$/,
         (root, value) => root.addShared('align', value),
         (root, value) => Highlighter.keyword('align ').constant(value)
-    ).copyable(),
+    ),
     new Command(
         /^align (left|right|center) (left|right|center)$/,
         (root, value, value2) => {
@@ -1234,7 +1228,7 @@ const SettingsCommands = [
             root.addShared('align_title', value2);
         },
         (root, value, value2) => Highlighter.keyword('align ').constant(value).space().constant(value2)
-    ).copyable(),
+    ),
     /*
         Discard expression
     */
@@ -1273,7 +1267,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => Highlighter.keyword('expc ').expression(expression, root)
-    ).copyable(),
+    ),
     new Command(
         /^text (auto|(?:.+))$/,
         (root, value) => {
@@ -1294,7 +1288,7 @@ const SettingsCommands = [
                 return acc.expression(value, root);
             }
         }
-    ).copyable(),
+    ),
     /*
         Cell padding (left only)
     */
@@ -1302,7 +1296,7 @@ const SettingsCommands = [
         /^padding (.+)$/,
         (root, value) => root.addLocal('padding', value),
         (root, value) => Highlighter.keyword('padding ').value(value)
-    ).copyable(),
+    ),
     /*
         Define extension
     */
