@@ -305,7 +305,7 @@ class TableInstance {
                     let values = [null];
 
                     if (header.expr) {
-                        const value = new ExpressionScope(this.settings).with(player, compare).via(header).eval(header.expr);
+                        const value = header.expr.eval(new ExpressionScope(this.settings).with(player, compare).via(header));
                         values = Array.isArray(value) ? value : [value];
                     }
 
@@ -411,7 +411,7 @@ class TableInstance {
 
     safeEval (obj, ...args) {
         if (obj instanceof Expression) {
-            return (args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]).eval(obj);
+            return obj.eval((args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]));
         } else {
             return obj(args[0]);
         }
@@ -428,7 +428,7 @@ class TableInstance {
                 let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
                 let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
 
-                let disc = this.settings.discardRules.some(rule => new ExpressionScope(this.settings).with(p, c).eval(rule));
+                let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
                 ExpressionCache.reset();
 
                 return disc ? null : obj;
@@ -470,7 +470,7 @@ class TableInstance {
         if (this.settings.shared.text === true) {
             textColor = _invertColor(_parseColor(backgroundColor), true)
         } else if (this.settings.shared.text) {
-            textColor = getCSSColor(new ExpressionScope(this.settings).with(player, compare).eval(this.settings.shared.text))
+            textColor = getCSSColor(this.settings.shared.text.eval(new ExpressionScope(this.settings).with(player, compare)))
         }
 
         if (textColor) {
@@ -1012,7 +1012,7 @@ class TableInstance {
             ${ _join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ _join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
+                    ${ _join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(new ExpressionScope(this.settings).addSelf(array))) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
