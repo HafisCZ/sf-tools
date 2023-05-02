@@ -131,7 +131,7 @@ const OptionsHandler = class {
                 },
                 set: function (value) {
                     this.options[name] = value;
-                    Logger.log('R_FLAGS', `${this.key}.${name} set to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
+                    Logger.log('R_FLAGS', `Set ${this.key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
                     Store.shared.set(this.key, this.options);
                     this.changed(name);
                 }
