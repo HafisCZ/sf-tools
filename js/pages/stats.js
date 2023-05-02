@@ -147,7 +147,7 @@ class GroupDetailTab extends Tab {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
-        this.table = new TableController(this.$table, ScriptType.Group);
+        this.table = new TableController(this.$table, TableType.Group);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -457,7 +457,7 @@ class PlayerDetailTab extends Tab {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
-        this.table = new TableController(this.$table, ScriptType.Player);
+        this.table = new TableController(this.$table, TableType.Player);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -606,8 +606,8 @@ class BrowseTab extends Tab {
         this.$table2 = this.$parent.find('[data-op="table2"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table1, ScriptType.Browse);
-        this.tableQ = new TableController(this.$table2, ScriptType.Browse);
+        this.tableBase = new TableController(this.$table1, TableType.Browse);
+        this.tableQ = new TableController(this.$table2, TableType.Browse);
 
         // Keep track of what table is displayed and swap if necessary later
         this.table = this.tableBase;

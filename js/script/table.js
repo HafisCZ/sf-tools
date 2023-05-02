@@ -97,9 +97,9 @@ class TableInstance {
 
         // Table generator
         const createMethods = {
-            [ScriptType.Player]: 'createPlayerTable',
-            [ScriptType.Group]: 'createGroupTable',
-            [ScriptType.Browse]: 'createBrowseTable'
+            [TableType.Player]: 'createPlayerTable',
+            [TableType.Group]: 'createGroupTable',
+            [TableType.Browse]: 'createBrowseTable'
         }
 
         this.createTable = () => Object.assign(this.sharedProperties(), this[createMethods[this.type]]())
@@ -419,7 +419,7 @@ class TableInstance {
 
     // Set players
     setEntries (array) {
-        if (this.type === ScriptType.Group) {
+        if (this.type === TableType.Group) {
             this.array = array;
         } else {
             this.array = array.map(obj => {
@@ -435,7 +435,7 @@ class TableInstance {
             }).filter(e => e);
 
             // Copy over lost properties
-            if (this.type == ScriptType.Browse) {
+            if (this.type == TableType.Browse) {
                 this.array.entryLimit = array.entryLimit;
                 this.array.timestamp = array.timestamp;
                 this.array.reference = array.reference;
@@ -443,10 +443,10 @@ class TableInstance {
         }
 
         // Evaluate variables
-        if (this.type == ScriptType.Player) {
+        if (this.type == TableType.Player) {
             this.settings.evalPlayer(this.array, array);
         } else if (!array.suppressUpdate) {
-            if (this.type == ScriptType.Browse) {
+            if (this.type == TableType.Browse) {
                 this.settings.evalBrowse(this.array, array);
             } else {
                 this.settings.evalGuild(this.array, array);
@@ -516,9 +516,9 @@ class TableInstance {
         // Common settings
         const dividerStyle = this.getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
-        const comparable = this.type === ScriptType.Player || this.array.reference != this.array.timestamp;
-        const outdated = this.type === ScriptType.Browse && this.settings.getOutdatedStyle();
-        const hidden = this.type === ScriptType.Browse;
+        const comparable = this.type === TableType.Player || this.array.reference != this.array.timestamp;
+        const outdated = this.type === TableType.Browse && this.settings.getOutdatedStyle();
+        const hidden = this.type === TableType.Browse;
 
         // Hoist
         const self = this;
