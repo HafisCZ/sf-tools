@@ -2480,7 +2480,7 @@ class ScriptsTab extends Tab {
 
         this.editor = new ScriptEditor(
             this.$parent,
-            EditorType.DEFAULT,
+            ScriptType.Table,
             (value) => this._contentChanged(this.script && value !== this.script.content, 'content')
         )
 
@@ -2761,7 +2761,7 @@ class SettingsTab extends Tab {
             this.editor.content = Actions.getScript();
         });
 
-        this.editor = new ScriptEditor(this.$parent, EditorType.ACTIONS, val => {
+        this.editor = new ScriptEditor(this.$parent, ScriptType.Action, val => {
             if (val === Actions.getScript()) {
                 this.$save.addClass('disabled');
                 this.$reset.addClass('disabled');

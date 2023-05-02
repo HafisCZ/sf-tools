@@ -541,7 +541,7 @@ const Actions = new (class {
     }
 
     _executeScript () {
-        this.instance = new Settings(this.script || '', null, EditorType.ACTIONS)
+        this.instance = new Settings(this.script || '', null, ScriptType.Action)
 
         this.actions = this.instance.actions;
         this.trackers = this.instance.trackers;
