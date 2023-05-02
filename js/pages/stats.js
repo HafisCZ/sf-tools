@@ -588,7 +588,15 @@ class PlayerDetailTab extends Tab {
 
         // Table stuff
         this.table.setEntries(this.array);
-        this.table.refresh();
+        this.table.refresh(undefined, (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    const dataset = event.currentTarget.dataset;
+                    DialogController.open(PlayerDetailDialog, { identifier: dataset.id, timestamp: dataset.ts, reference: dataset.ts })
+                });
+            }
+        });
     }
 
     reload () {
