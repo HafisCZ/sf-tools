@@ -785,7 +785,7 @@ class TableInstance {
             return displayValue;
         } else {
             let diff = (flip ? -1 : 1) * (val - cmp);
-            if (Object.is(diff, NaN) && !ex_difference) {
+            if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
                 return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
@@ -799,7 +799,7 @@ class TableInstance {
             return displayValue;
         } else {
             let diff = (flip ? -1 : 1) * (val - cmp);
-            if (Object.is(diff, NaN) && !ex_difference) {
+            if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
                 return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(undefined, undefined, this.settings, diff));
