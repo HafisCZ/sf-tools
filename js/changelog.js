@@ -38,7 +38,7 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v6.3586': {
         'Statistics': [
             'Improved performance of table rendering',
             'Added missing player resources',
