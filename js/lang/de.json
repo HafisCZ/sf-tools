@@ -181,105 +181,105 @@
         "1": "Der Graf",
         "2": "Der König",
         "3": "Plünderer",
-        "4": "Storyteller",
-        "5": "Boss of Easteros",
-        "6": "Dark Wanderer",
-        "7": "Shadow Player",
-        "8": "Twister Tamer",
-        "9": "Shroomer",
-        "10": "Lucky Fellow",
-        "11": "Rip-off Rip-off",
-        "12": "Epic Purist",
-        "13": "Invincible",
-        "14": "Jeweler",
-        "15": "Mule",
-        "16": "Dragon Rider",
-        "17": "Cryptozoologist",
-        "18": "Animal Trainer",
-        "19": "Pet Fattening",
-        "20": "Heavy Spinner",
-        "21": "Hero",
+        "4": "Märchenonkel",
+        "5": "Boss von Osteros",
+        "6": "Dunkler Wanderer",
+        "7": "Schattenspieler",
+        "8": "Wirbelwindstürmer",
+        "9": "Pilzer",
+        "10": "Glückspilzer",
+        "11": "Abzocker-Abzocker",
+        "12": "Epischer Purist",
+        "13": "Unbesiegbar",
+        "14": "Juwelier",
+        "15": "Packesel",
+        "16": "Drachengreifer",
+        "17": "Kryptozoologe",
+        "18": "Tiertrainer",
+        "19": "Mastbetrieb",
+        "20": "Drehwurm",
+        "21": "Held",
         "22": "Elite",
-        "23": "Tip of the Iceberg",
-        "24": "Superhero",
-        "25": "Epic Superhero",
-        "26": "Collecting Mania",
-        "27": "Big Spender",
-        "28": "For Seven Days",
+        "23": "Spitze des Eisbergs",
+        "24": "Superheld",
+        "25": "Superduperheld",
+        "26": "Sammelwut",
+        "27": "Großspender",
+        "28": "Sieben Tage lang",
         "29": "Always On",
-        "30": "King of Kings",
-        "31": "Elite Guild",
-        "32": "Petshop Boy",
-        "33": "Song of the Blacksmith",
-        "34": "Sky is the Limit",
-        "35": "Anniversary",
-        "36": "Pet Lover",
-        "37": "Finally 18",
-        "38": "Shadow World Cruise",
-        "39": "Urgent Need",
-        "40": "Alter Ego",
-        "41": "Naturism",
-        "42": "Epic Companions",
-        "43": "Square Eyes",
-        "44": "Miner",
-        "45": "Fashion-conscious",
-        "46": "Black Gold",
-        "47": "Witchcraft",
-        "48": "Reliable",
-        "49": "Collect 'Em All",
-        "50": "Metropolis",
-        "51": "Big City",
-        "52": "Small City",
-        "53": "Gold Storage",
-        "54": "Soul Storage",
-        "55": "Slaughterer of the Best",
-        "56": "Top 100 Topper",
-        "57": "Top 1,000 Topper",
-        "58": "Horror of Heroes",
+        "30": "König unter Königen",
+        "31": "Elitegilde",
+        "32": "Pet Shop Boy",
+        "33": "Lied der Schmiedin",
+        "34": "Sky is the limit",
+        "35": "Jubiläum",
+        "36": "Tierfreund",
+        "37": "Endlich 18",
+        "38": "Schattenweltreise",
+        "39": "Dringendes Bedürfnis",
+        "40": "Zweites Selbst",
+        "41": "FKK",
+        "42": "Epische Begleiter",
+        "43": "Viereckige Augen",
+        "44": "Tiefschürfend",
+        "45": "Modebewusst",
+        "46": "Schwarzes Gold",
+        "47": "Hexenwerk",
+        "48": "Verlässlich",
+        "49": "Schnappe sie alle",
+        "50": "Weltstadt",
+        "51": "Großstadt",
+        "52": "Kleinstadt",
+        "53": "Goldspeicher",
+        "54": "Seelenspeicher",
+        "55": "Bestenschlächter",
+        "56": "Top-100-Topper",
+        "57": "Top-1000-Topper",
+        "58": "Heldenschreck",
         "59": "Outsourcing",
-        "60": "Academic Orders",
-        "61": "Good vs. Evil",
-        "62": "Commentary Cracker",
+        "60": "Akademische Weihen",
+        "61": "Gut gegen Böse",
+        "62": "Kommentarspalter",
         "63": "Dehydration",
-        "64": "Deep Mining Master",
-        "65": "Special Agent",
-        "66": "St. Nicholas",
-        "67": "Reinvent the Wheel",
+        "64": "Tiefbaumeister",
+        "65": "Geheimagent",
+        "66": "Nikolaus",
+        "67": "Rad neu erfinden",
         "68": "Second Screen",
-        "69": "Day X",
-        "70": "Rune Millionaire",
-        "71": "Runes, runes, runes",
-        "72": "Capitalist",
-        "73": "Stinking rich",
-        "74": "Rune Master",
-        "75": "Arena Manager",
+        "69": "Tag X",
+        "70": "Runenmillionär",
+        "71": "Runen, Runen, Runen",
+        "72": "Kapitalist",
+        "73": "Steinreich",
+        "74": "Rune-Master",
+        "75": "Arena-Manager",
         "76": "Lancelot",
-        "77": "Door Opener",
+        "77": "Türöffner",
         "78": "Odin",
         "79": "Loki",
         "80": "Zeus",
         "81": "Hades",
-        "82": "Five of a Kind",
-        "83": "Capacious Pockets",
-        "84": "Birth of a Legend",
-        "85": "Living Legend",
-        "86": "Second Wardrobe",
-        "87": "100-Timer",
-        "88": "A Thousand Points Plan",
-        "89": "Ten Grand",
-        "90": "Tavern Brawler",
-        "91": "Closing Time",
-        "92": "Rune Emperor",
-        "93": "Dragon Adept",
-        "94": "Chaser of Dragons",
-        "95": "Bright Ghost Hunter",
-        "96": "Dark Ghost Hunter",
-        "97": "League of Incompetence",
-        "98": "League of Vindictiveness",
-        "99": "Ying Dojo Master",
-        "100": "Yang Dojo Master",
-        "101": "Understander of Giants",
-        "102": "Tamer of Giants"
+        "82": "Fünferpasch",
+        "83": "Tiefe Taschen",
+        "84": "Beginn einer Legende",
+        "85": "Lebende Legende",
+        "86": "Zweitgarderobe",
+        "87": "Hundertsassa",
+        "88": "Tausend-Punkte-Plan",
+        "89": "Zehn Riesen",
+        "90": "Kneipenschläger",
+        "91": "Sperrstunde",
+        "92": "Runenkaiser",
+        "93": "Drachenkenner",
+        "94": "Drachenhetzer",
+        "95": "Heller Geisterjäger",
+        "96": "Dunkler Geisterjäger",
+        "97": "Liga der Inkompetenz",
+        "98": "Liga der Rachsucht",
+        "99": "Ying Dojo-Master",
+        "100": "Yang Dojo-Master",
+        "101": "Riesenversteher",
+        "102": "Riesenbändiger"
     },
     "index": {
         "toggle": "Credits umschalten",
@@ -576,7 +576,7 @@
             "list": "Verfügbare Skripte",
             "sidebar": {
                 "wiki": "Wiki",
-                "manual": "Manual",
+                "manual": "Handbuch",
                 "scripts": "Skripte",
                 "templates": "Vorlagen",
                 "save": "Speichern",
@@ -590,7 +590,7 @@
                     "actions": "Aktionen",
                     "modify": "Skript",
                     "library": "Bibliotheken",
-                    "help": "Help"
+                    "help": "Hilfe"
                 }
             },
             "types": {
@@ -630,10 +630,10 @@
             "single_use": "Nur zur einmaligen Verwendung",
             "single_use_notice": "Bitte diese Option aktiviert lassen, es sei denn, die Datei solll mit mehreren Personen geteilt werden.",
             "files": {
-                "all": "All",
-                "last": "Latest",
-                "last5": "Latest 5",
-                "current": "Selected",
+                "all": "Alle",
+                "last": "Letztes",
+                "last5": "Letzten 5",
+                "current": "Ausgewählt",
                 "currentWithReference": "Selected & Reference"
             },
             "formats": {
@@ -728,6 +728,7 @@
             "insecure": "Unsichere html-Tags zulassen",
             "insecure_error#": "Diese Tabelle konnte nicht angezeigt werden, da sie HTML-Tags enthält, die nicht zulässig sind.<br/>Bitte entfernen Sie diese aus Ihren Einstellungen und versuchen Sie es erneut.",
             "unsafe_delete": "Bestätigung beim Löschen von Dateien überspringen",
+            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Nutzungsbedingungen akzeptieren",
             "tab": "Standard-Tab",
             "preload": "Zeilen vorladen",
@@ -759,8 +760,8 @@
         "results": "Resultate",
         "calendar": {
             "collected": "Collected",
-            "available": "Available",
-            "locked": "Locked"
+            "available": "Verfügbar",
+            "locked": "Gesperrt"
         },
         "map": {
             "gladiator": "Gladi"
@@ -902,9 +903,9 @@
             "99": "Hydrospir"
         },
         "descriptions": {
-            "0": "Can be found in Nevermoor during the day.",
-            "1": "Can be found in Maerwynn at night.",
-            "2": "Can be found in Sprawling Jungle at night.",
+            "0": "Kann Dir tagsüber in der Region Nevermoor begegnen.",
+            "1": "Kann Dir nachts in der Region Maerwynn begegnen.",
+            "2": "Kann Dir nachts im Wucherdschungel begegnen.",
             "3": "Can be found in Split Canyon at night.",
             "4": "Can be found in Black Forest on Monday night.",
             "5": "Can be found in Black Water Swamp during witching hour. (00:00 - 01:00 a.m.)",
@@ -1044,11 +1045,11 @@
         "range": {
             "start": "Start auf der Etage",
             "end": "Ende auf der Etage",
-            "theme": "Theme"
+            "theme": "Erscheinungsbild"
         },
         "element": "Element",
         "theme": {
-            "0": "Lust and Anger",
+            "0": "Lust und Zorn",
             "1": "Treachery",
             "2": "Fraud",
             "3": "Gluttony",
@@ -1120,34 +1121,35 @@
     },
     "analyzer": {
         "topbar": {
-            "import": "Import",
-            "clear": "Clear",
-            "export": "Export",
-            "options": "Options"
+            "import": "Importiere",
+            "clear": "Leeren",
+            "export": "Exportieren",
+            "options": "Optionen"
         },
         "form": {
-            "fight_group": "Select group",
-            "fight_list": "Select fight",
-            "editable_data": "Editable data"
+            "fight_group": "Gruppe auswählen",
+            "fight_list": "Kampf auswählen",
+            "editable_data": "Editierbare Daten"
         },
-        "players": "Players",
+        "players": "Spieler",
         "preview": "Fight preview",
         "export": "Export fights",
+        "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
-            "rage": "Rage",
-            "attacker": "Attacker",
-            "target": "Target",
-            "type": "Type",
-            "health": "Health left",
-            "damage": "Damage",
-            "damage_base": "Base damage"
+            "rage": "Kampfrausch",
+            "attacker": "Angreifer",
+            "target": "Ziel",
+            "type": "Typ",
+            "health": "Verbleibende Gesundheit",
+            "damage": "Schaden",
+            "damage_base": "Basisschaden"
         },
         "toast_import_error": {
-            "title": "Import failed",
+            "title": "Import fehlgeschlagen",
             "message": "Ensure that you are importing a valid HAR or fight JSON"
         },
         "special_state": {
@@ -1263,6 +1265,14 @@
             "20": "Unzählige-köpfige Hydra"
         }
     },
+    "integration": {
+        "file": "File",
+        "game": "Endpoint",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
+    },
     "simulator": {
         "paste_target#": "Klicken Sie hier und drücken Sie <b>CTRL&nbsp;+&nbsp;V</b> zum Einfügen in den Simulator",
         "threads": "Simulator-Threads. Halten Sie diese Zahl UNTER der Anzahl Ihrer Prozessorkerne!",
@@ -1274,7 +1284,7 @@
         "configure_copy": "Kopiere alle inklusive der aktuellen Einstellungen",
         "configure_insert": "Insert sample data",
         "configure_log": "Run simulation with logging enabled",
-        "configure_log_file": "Save to file",
+        "configure_log_file": "Als Datei speichern",
         "configure_log_broadcast": "Open with analyzer",
         "clipboard": {
             "copy_all": "Alle kopieren",
@@ -1283,10 +1293,6 @@
         "win_chance": "Sieg %",
         "min_chance": "Min. %",
         "max_chance": "Max. %",
-        "poll": {
-            "players": "Gespeicherte Spieler abrufen",
-            "guilds": "Gespeicherte Gilden abrufen"
-        },
         "toast": {
             "title": "Simulation abgeschlossen",
             "message": "Simulation dauerte #{duration}"
@@ -1344,16 +1350,23 @@
             "title": "Kontaktiere den Server für Informationen",
             "message": "Abrufen von Daten"
         },
+        "step7": {
+            "title": "Select your character"
+        },
         "user_error": {
             "title": "Ihr Benutzername oder Passwort ist ungültig",
             "message": "Bitte achten Sie auf das richtige Format (Benutzername@url)"
         },
         "errors": {
-            "network_error": "Server cannot be reached",
-            "name_not_whitelisted_error": "Player not whitelisted",
-            "error_wrong_pass": "Incorrect password",
-            "error_player_not_found": "Character was not found on the server",
-            "error_sessionid_invalid": "Session expired or interrupted by another device"
+            "error_unreachable": "Server cannot be reached",
+            "error_malformed_url": "Server URL is not valid",
+            "error_wrong_pass": "Falsches Passwort",
+            "error_player_not_found": "Charakter wurde nicht auf dem Server gefunden",
+            "error_sessionid_invalid": "Session expired or interrupted by another device",
+            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_unknown_or_wrong_credentials": "Falscher Account Name oder Passwort",
+            "playa_account_not_active": "Dein Account ist nicht aktiv",
+            "playa_account_empty": "Your account has no characters"
         }
     },
     "database": {
@@ -1371,10 +1384,15 @@
     "dialog": {
         "shared": {
             "cancel": "Abbrechen",
-            "continue": "Continue",
+            "continue": "Weiter",
             "save": "Speichern",
-            "close": "Close",
-            "ok": "Ok"
+            "close": "Schließen",
+            "ok": "Ok",
+            "apply": "Anwenden"
+        },
+        "analyzer_autofill": {
+            "title": "Vorhandene Daten",
+            "search": "Suche nach Dungeon oder Boss Namen ..."
         },
         "script_manual": {
             "title": "Reference manual",
@@ -1386,7 +1404,7 @@
                 "header_itemizable": "Subheaders for inventory",
                 "function": "functions(...)",
                 "enum": "Enumerations",
-                "constant": "@constants"
+                "constant": "@Konstanten"
             },
             "description": {}
         },
@@ -1405,28 +1423,28 @@
                     "title": "Attack type display mode",
                     "value": {
                         "text": "Name",
-                        "text_with_id": "Name with ID"
+                        "text_with_id": "Name mit ID"
                     }
                 },
                 "base_damage_error_margin": {
                     "title": "Acceptable base error"
                 },
                 "group_sort": {
-                    "title": "Sort groups by",
+                    "title": "Gruppen sortieren nach",
                     "value": {
-                        "default": "Default",
-                        "fight_count": "Fight count",
-                        "fighter_b_level": "Level of player B"
+                        "default": "Standard",
+                        "fight_count": "Kampfanzahl",
+                        "fighter_b_level": "Stufe von Spieler B"
                     }
                 }
             }
         },
         "fight_statistical_analysis": {
-            "title": "Statistical analysis",
-            "selector": "Filter expression",
-            "count": "Count",
-            "add": "Add new counter",
-            "variables": "Available variables:"
+            "title": "Statistische Analyse",
+            "selector": "Filterausdruck",
+            "count": "Anzahl",
+            "add": "Zähler hinzufügen",
+            "variables": "Verfügbare Variablen:"
         },
         "template_manage": {
             "title": "Vorlagen",
@@ -1449,18 +1467,18 @@
             "error": "Die Aktion war nicht erfolgreich"
         },
         "script_archive": {
-            "title": "Script archive",
+            "title": "Skript Archiv",
             "clear": "Alle Elemente aus dem Archiv löschen",
             "types": {
                 "create_script": "Skript erstellt",
                 "overwrite_script": "Skript von neuer Version überschrieben",
                 "save_script": "Skript gespeichert",
-                "remove_script": "Script removed",
+                "remove_script": "Skript entfernt",
                 "discard_script": "Script changes were discarded",
-                "create_template": "Template created",
-                "overwrite_template": "Template overwritten by new version",
-                "save_template": "Template saved",
-                "remove_template": "Template removed"
+                "create_template": "Vorlage erstellt",
+                "overwrite_template": "Vorlage von neuer Version überschrieben",
+                "save_template": "Vorlage gespeichert",
+                "remove_template": "Vorlage entfernt"
             },
             "item": {
                 "description": "Archived: #{change}. Expires: #{expire}",
@@ -1578,7 +1596,7 @@
         },
         "template_save": {
             "title": "Vorlage speichern",
-            "select": "Add new or select existing template",
+            "select": "Neue Vorlage hinzufügen oder vorhandene auswählen",
             "or": "oder",
             "name": "Name der Vorlage",
             "cancel": "Abbrechen",

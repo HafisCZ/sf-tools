@@ -728,6 +728,7 @@
             "insecure": "Permitir tags html inseguras",
             "insecure_error#": "Esta tabela não foi exibida porque contém tags HTML que são proibidas.<br/>Por favor, remova-as das suas configurações e tente novamente.",
             "unsafe_delete": "Saltar confirmação quando excluir ficheiros",
+            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Aceitar os termos de serviço",
             "tab": "Separador padrão",
             "preload": "Pré-Carregar linhas da tabela",
@@ -1133,6 +1134,7 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
+        "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
@@ -1263,6 +1265,14 @@
             "20": "Hidra com cabeças infinitas"
         }
     },
+    "integration": {
+        "file": "File",
+        "game": "Endpoint",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
+    },
     "simulator": {
         "paste_target#": "Clica aqui e pressiona <b>CTRL&nbsp;+&nbsp;V</b> para copiar para o simulador",
         "threads": "Simulador threads. Mantém este número ABAIXO do teu processador core count!",
@@ -1283,10 +1293,6 @@
         "win_chance": "Vitória %",
         "min_chance": "Mín %",
         "max_chance": "Máx %",
-        "poll": {
-            "players": "Sondar jogadores guardados",
-            "guilds": "Sondar guildas guardadas"
-        },
         "toast": {
             "title": "Simulação finalizada",
             "message": "A simulação levou #{duration}"
@@ -1344,16 +1350,23 @@
             "title": "A contactar informações do servidor",
             "message": "Obter dados"
         },
+        "step7": {
+            "title": "Select your character"
+        },
         "user_error": {
             "title": "Nome de utilizador ou palavra-chave inválidos!",
             "message": "Por favor, certifique-se de que está no formato correto (username@url)"
         },
         "errors": {
-            "network_error": "Server cannot be reached",
-            "name_not_whitelisted_error": "Player not whitelisted",
+            "error_unreachable": "Server cannot be reached",
+            "error_malformed_url": "Server URL is not valid",
             "error_wrong_pass": "Incorrect password",
             "error_player_not_found": "Character was not found on the server",
-            "error_sessionid_invalid": "Session expired or interrupted by another device"
+            "error_sessionid_invalid": "Session expired or interrupted by another device",
+            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
+            "playa_account_not_active": "Your account is not active",
+            "playa_account_empty": "Your account has no characters"
         }
     },
     "database": {
@@ -1374,7 +1387,12 @@
             "continue": "Continue",
             "save": "Salvar",
             "close": "Close",
-            "ok": "Ok"
+            "ok": "Ok",
+            "apply": "Apply"
+        },
+        "analyzer_autofill": {
+            "title": "Available data",
+            "search": "Search by dungeon or boss name ..."
         },
         "script_manual": {
             "title": "Reference manual",
