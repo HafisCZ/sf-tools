@@ -543,7 +543,7 @@ const EndpointDialog = new (class extends Dialog {
         return `
             <h2 class="ui header centered inverted">${this.intl('step7.title')}</h2>
             <hr/>
-            <div data-op="character-list" class="text-white" style="height: 30em; overflow-y: auto;">
+            <div data-op="character-list" class="text-white flex flex-col gap-2" style="height: 30em; overflow-y: auto;">
 
             </div>
             <button class="ui secondary button w-full" data-op="back">${this.intl('cancel')}</button>
