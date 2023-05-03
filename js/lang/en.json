@@ -530,6 +530,7 @@
         },
         "copy": {
             "image": "Save as image",
+            "csv": "Save as CSV",
             "basic": "Copy table",
             "fight": "Copy table for fight simulator",
             "player": "Copy",

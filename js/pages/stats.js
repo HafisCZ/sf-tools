@@ -188,6 +188,12 @@ class GroupDetailTab extends Tab {
             });
         });
 
+        this.$parent.find('[data-op="save-csv"]').click(() => {
+            this.table.toCSV().then((blob) => {
+                Exporter.csv(blob, `${this.group.Latest.Name}.${this.timestamp}${this.timestamp != this.reference ? `.${this.reference}` : ''}`);
+            });
+        });
+
         this.$parent.operator('export').click(() => {
             const createExport = (timestamps) => (() => DatabaseManager.export(null, timestamps, (player) => player.group == this.identifier))
 
@@ -473,6 +479,12 @@ class PlayerDetailTab extends Tab {
             });
         });
 
+        this.$parent.find('[data-op="save-csv"]').click(() => {
+            this.table.toCSV().then((blob) => {
+                Exporter.csv(blob, `${this.player.Name}.${Exporter.time}`);
+            });
+        });
+
         // Context menu
         this.contextMenu = new CustomMenu(
             this.$parent.get(0),
@@ -653,6 +665,12 @@ class BrowseTab extends Tab {
         this.$parent.find('[data-op="save"]').click(() => {
             this.table.toImage().then((blob) => {
                 Exporter.png(blob, `players.${this.timestamp}`);
+            });
+        });
+
+        this.$parent.find('[data-op="save-csv"]').click(() => {
+            this.table.toCSV().then((blob) => {
+                Exporter.csv(blob, `players.${this.timestamp}`);
             });
         });
 
