@@ -1137,7 +1137,7 @@ class TableController {
 
                 const children = node.childNodes;
                 for (let i = 0; i < headersLength; i++) {
-                    stack[i] = children[i].innerText;
+                    stack[i] = children[i].innerText.replace(/[\s]/m, ' ');
                 }
 
                 data.push(JSON.stringify(stack).slice(1, -1));
