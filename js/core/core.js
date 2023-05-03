@@ -212,7 +212,7 @@ const Exporter = new (class {
     }
 
     csv (content, name = this.time) {
-        window.download(`${ name }.csv`, new Blob([ content.map((row) => row.join(',')).join('\n') ], { type: 'text/csv' }));
+        window.download(`${ name }.csv`, new Blob([ content ], { type: 'text/csv' }));
     }
 })();
 
