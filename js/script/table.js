@@ -1115,7 +1115,36 @@ class TableController {
             });
 
             canvas.toBlob(resolve);
-        });
+        })
+    }
+
+    async toCSV () {
+        return new Promise((resolve) => {
+            const headers = this.table.flat.map((header) => header.name);
+            const headersLength = headers.length;
+
+            const data = [
+                JSON.stringify(headers).slice(1, -1)
+            ];
+
+            for (const entry of this.table.entries) {
+                const stack = Array(headersLength);
+                const node = entry.node.cloneNode(true);
+
+                for (const diff of node.querySelectorAll('[data-difference]')) {
+                    diff.remove();
+                }
+
+                const children = node.childNodes;
+                for (let i = 0; i < headersLength; i++) {
+                    stack[i] = children[i].innerText;
+                }
+
+                data.push(JSON.stringify(stack).slice(1, -1));
+            }
+
+            resolve(data.join('\n'));
+        })
     }
 
     setSettings (code) {
