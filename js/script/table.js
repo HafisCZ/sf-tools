@@ -1425,7 +1425,7 @@ const CellGenerator = {
     },
     // Difference
     Difference: function (d, b, c) {
-        return d != 0 ? ` <span>${ b ? '(' : '' }${ d > 0 ? '+' : '' }${ c == null ? d : c }${ b ? ')' : '' }</span>` : '';
+        return d != 0 ? ` <span data-difference>${ b ? '(' : '' }${ d > 0 ? '+' : '' }${ c == null ? d : c }${ b ? ')' : '' }</span>` : '';
     },
     // Empty cell
     Empty: function (b) {
