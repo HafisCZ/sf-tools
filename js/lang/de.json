@@ -384,6 +384,7 @@
     },
     "terms": {
         "title": "Nutzungsbedingungen",
+        "title2": "Usage",
         "button": {
             "accept_full": "Ich verstehe und akzeptiere diese Bedingungen",
             "accept": "Akzeptieren",
@@ -422,7 +423,9 @@
             "clause0": "Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.",
             "clause1": "All data entered is sent directly to the game server without involvement of any 3rd party.",
             "clause2": "It is not possible to capture any other players than those explicitly stated within the application.",
-            "clause3": "All data collection is done using normal means, without any use of forbidden actions."
+            "clause3": "All data collection is done using normal means, without any use of forbidden actions.",
+            "clause4": "You can access your S&F Account using your username and password.",
+            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {

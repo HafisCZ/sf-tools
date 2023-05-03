@@ -384,6 +384,7 @@
     },
     "terms": {
         "title": "Obchodních podmínkách",
+        "title2": "Usage",
         "button": {
             "accept_full": "Rozumím a přijímám tyto podmínky",
             "accept": "Přijmout",
@@ -422,7 +423,9 @@
             "clause0": "Koncový bod je malá Jednotková aplikace propojená s nástrojem, který vám umožňuje přihlásit se do hry a sbírat omezená herní data bez zdlouhavého procesu vytváření HAR souboru.",
             "clause1": "Všechna zadaná data jsou odesílána přímo na herní server bez zapojení jakékoli třetí strany.",
             "clause2": "Není možné zachytit žádné jiné hráče, než které jsou výslovně uvedeny v žádosti.",
-            "clause3": "Veškerý sběr údajů se provádí za použití běžných prostředků bez použití zakázaných opatření."
+            "clause3": "Veškerý sběr údajů se provádí za použití běžných prostředků bez použití zakázaných opatření.",
+            "clause4": "You can access your S&F Account using your username and password.",
+            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {
@@ -576,7 +579,7 @@
             "list": "Available templates",
             "sidebar": {
                 "wiki": "Wiki",
-                "manual": "Manual",
+                "manual": "Manuál",
                 "scripts": "Skripty",
                 "templates": "Šablony",
                 "save": "Uložit",
@@ -756,7 +759,7 @@
             "ten": "Generovat dalších 10"
         },
         "simulate": "Simulovat",
-        "simulate_dungeons": "Simulate all remaining dungeons",
+        "simulate_dungeons": "Simulovat zbývající podzemí",
         "results": "Výsledky",
         "calendar": {
             "collected": "Collected",
@@ -2038,7 +2041,7 @@
             "10": "Zeus"
         },
         "21": {
-            "name": "Tavern of the Dark Doppelgangers",
+            "name": "Hospoda temných dvojníků",
             "1": "Tančící houbička",
             "2": "Stráž opuštěného města",
             "3": "Brutální barman",
@@ -2051,7 +2054,7 @@
             "10": "Falešný Fidget"
         },
         "22": {
-            "name": "Dragon's Hoard",
+            "name": "Dračí poklad",
             "1": "Nepříliš kousavý drak",
             "2": "Zlatý drak s planoucím pohledem",
             "3": "Svůdná matka drakopic",
@@ -2064,7 +2067,7 @@
             "10": "Rozzlobená matka draků"
         },
         "23": {
-            "name": "House of Horrors",
+            "name": "Dům hrůzy",
             "1": "Příborová hlava",
             "2": "Koncepční důkaz",
             "3": "Drákula",
@@ -2090,7 +2093,7 @@
             "10": "Captain Monday"
         },
         "25": {
-            "name": "Dojo of Childhood Heroes",
+            "name": "Dojo hrdinů z dětství",
             "1": "Magická školačka",
             "2": "Pán dvojníků",
             "3": "Přátelský pomocník ze sousedství",
@@ -2103,7 +2106,7 @@
             "10": "Podvodný spratek"
         },
         "26": {
-            "name": "Monster Grotto",
+            "name": "Sluj příšer",
             "1": "Deltopus",
             "2": "Vlasatý ženich",
             "3": "Monster Truck",
@@ -2116,7 +2119,7 @@
             "10": "Příšera berlínské scény"
         },
         "27": {
-            "name": "City of Intrigues",
+            "name": "Město intrik",
             "1": "Padouch pohodář",
             "2": "Brigita",
             "3": "Sněhulák a stínový vlk",
@@ -2129,7 +2132,7 @@
             "10": "Neuhořelka"
         },
         "28": {
-            "name": "School of Magic Express",
+            "name": "Expres kouzelnické školy",
             "1": "Nestoudný kajícník",
             "2": "Ten velmi nadaný (a potom taky Ron)",
             "3": "Stumbledoor",
@@ -2142,7 +2145,7 @@
             "10": "Však ty víš kdo…"
         },
         "29": {
-            "name": "Ash Mountain",
+            "name": "Popelavá hora",
             "1": "Velerukáv",
             "2": "Urči si ruku",
             "3": "Našeptávač zmijoplaz",
@@ -2168,7 +2171,7 @@
             "10": "Marv zvaný Drobná obtíž"
         },
         "201": {
-            "name": "Tower",
+            "name": "Věž",
             "1": "Žijící Pan Perníček",
             "2": "Zelená Víla Pitilka",
             "3": "Cinvalida",
@@ -2271,7 +2274,7 @@
             "100": "Rapunzel"
         },
         "202": {
-            "name": "Continuous Loop of Idols",
+            "name": "Dlouhá řada idolů",
             "1": "DoctorBenx",
             "2": "Zakreble",
             "3": "Golden Gianpy",
@@ -2295,7 +2298,7 @@
             "21": "Dorzer"
         },
         "203": {
-            "name": "Twister",
+            "name": "Tornádo",
             "486": "Šedý ghúl",
             "658": "Krvavý okultista",
             "711": "Gragoš ničitel",

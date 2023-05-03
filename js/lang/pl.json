@@ -384,6 +384,7 @@
     },
     "terms": {
         "title": "Zasady i warunki użytkowania",
+        "title2": "Usage",
         "button": {
             "accept_full": "Rozumiem i akceptuję te warunki",
             "accept": "Akceptuj",
@@ -422,7 +423,9 @@
             "clause0": "Endpoint to mała aplikacja Unity połączona z narzędziem, które pozwala ci zalogować się do gry i zbierać ograniczone dane gry bez długiego procesu tworzenia pliku HAR.",
             "clause1": "Wszystkie wprowadzone dane są wysyłane bezpośrednio do serwera gry bez udziału osób trzecich.",
             "clause2": "Nie jest możliwe uchwycenie innych graczy niż wyraźnie określone w aplikacji.",
-            "clause3": "Wszystkie dane zbierane są przy użyciu zwykłych środków, bez jakiegokolwiek stosowania zakazanych działań."
+            "clause3": "Wszystkie dane zbierane są przy użyciu zwykłych środków, bez jakiegokolwiek stosowania zakazanych działań.",
+            "clause4": "You can access your S&F Account using your username and password.",
+            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {
@@ -728,7 +731,7 @@
             "insecure": "Zezwalaj na niezabezpieczone tagi html",
             "insecure_error#": "Ta tabela nie została wyświetlona, ponieważ zawiera znaczniki HTML, które są zabronione.<br/>Proszę usunąć je ze swoich ustawień i spróbować ponownie.",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
+            "legacy_battlemage_icon": "Użyj poprzedniej ikony paladyna",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
@@ -1267,7 +1270,7 @@
     },
     "integration": {
         "file": "Plik",
-        "game": "Punkt końcowy",
+        "game": "Endpoint",
         "poll": {
             "players": "Załaduj zapisanych graczy",
             "guilds": "Załaduj zapisane gildie"
@@ -1363,10 +1366,10 @@
             "error_wrong_pass": "Nieprawidłowe hasło",
             "error_player_not_found": "Nie znaleziono postaci na serwerze",
             "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie",
-            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
-            "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkowanika lub hasło",
+            "error_login_only_with_sf_account_allowed": "Musisz zalogować się swoim kontem, aby uzyskać dostęp do tej postaci",
+            "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkownika lub hasło",
             "playa_account_not_active": "Twoje konto jest nieaktywne",
-            "playa_account_empty": "Your account has no characters"
+            "playa_account_empty": "Twoje konto nie ma postaci"
         }
     },
     "database": {

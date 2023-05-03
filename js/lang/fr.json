@@ -384,6 +384,7 @@
     },
     "terms": {
         "title": "Conditions générales",
+        "title2": "Usage",
         "button": {
             "accept_full": "I understand & accept these terms",
             "accept": "Accepter",
@@ -422,7 +423,9 @@
             "clause0": "Endpoint est une petite application d'unité intégrée à l'outil qui vous permet de vous connecter au jeu et de collecter des données de jeu limitées sans le long processus de création d'un fichier HAR.",
             "clause1": "Toutes les données saisies sont envoyées directement au serveur de jeu sans implication de tiers.",
             "clause2": "Il n'est pas possible de capturer d'autres joueurs que ceux explicitement mentionnés dans l'application.",
-            "clause3": "Toute collecte de données est effectuée par des moyens normaux, sans aucune utilisation des actions interdites."
+            "clause3": "Toute collecte de données est effectuée par des moyens normaux, sans aucune utilisation des actions interdites.",
+            "clause4": "You can access your S&F Account using your username and password.",
+            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {
