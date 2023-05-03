@@ -146,29 +146,29 @@
         "item17": "Sablier",
         "item18": "Cœur",
         "item19": "Wheel",
-        "rune1": "Gold",
+        "rune1": "Or",
         "rune2": "Epic Chance",
-        "rune3": "Item Quality",
-        "rune4": "XP",
-        "rune5": "Health",
-        "rune6": "Fire Resist",
-        "rune7": "Cold Resist",
-        "rune8": "Lightning Resist",
-        "rune9": "Total Resist",
-        "rune10": "Fire Damage",
-        "rune11": "Cold Damage",
-        "rune12": "Lightning Damage",
-        "action0": "Idle",
+        "rune3": "Qualité de l'objet",
+        "rune4": "EXP",
+        "rune5": "Santé",
+        "rune6": "Résistance au Feu",
+        "rune7": "Résistance au froid",
+        "rune8": "Résistance à la Foudre",
+        "rune9": "Résistance totale",
+        "rune10": "Dégâts de Feu",
+        "rune11": "Dégâts de froid",
+        "rune12": "Dégâts de Foudre",
+        "action0": "Inactif",
         "action1": "Working",
         "action2": "Questing",
-        "action3": "Dungeon",
-        "gem1": "Strength",
-        "gem2": "Dexterity",
+        "action3": "Donjon",
+        "gem1": "Force",
+        "gem2": "Dextérité",
         "gem3": "Intelligence",
         "gem4": "Constitution",
-        "gem5": "Luck",
-        "gem6": "Black",
-        "gem7": "Legendary",
+        "gem5": "Chance",
+        "gem6": "Noir",
+        "gem7": "Légendaire",
         "companion1": "Bert",
         "companion2": "Mark",
         "companion3": "Kunigunde",
@@ -177,11 +177,11 @@
         "companion3_full": "#{player}'s Kunigunde"
     },
     "achievements": {
-        "0": "Globetrotter",
-        "1": "The Count",
-        "2": "The King",
-        "3": "Raider",
-        "4": "Storyteller",
+        "0": "Globe-trotter",
+        "1": "Le comte",
+        "2": "Le Roi",
+        "3": "Pilleur",
+        "4": "Conteur d'histoires",
         "5": "Boss of Easteros",
         "6": "Dark Wanderer",
         "7": "Shadow Player",
@@ -193,9 +193,9 @@
         "13": "Invincible",
         "14": "Jeweler",
         "15": "Mule",
-        "16": "Dragon Rider",
+        "16": "Chevaucheur de dragon",
         "17": "Cryptozoologist",
-        "18": "Animal Trainer",
+        "18": "Dresseur d'animaux",
         "19": "Engraissement de familier",
         "20": "Heavy Spinner",
         "21": "Héro",
@@ -226,7 +226,7 @@
         "46": "Or Noir",
         "47": "Sorcellerie",
         "48": "Fiable",
-        "49": "Collect 'Em All",
+        "49": "Récoltez les tous",
         "50": "Métropole",
         "51": "Grande Ville",
         "52": "Petite Ville",
@@ -249,9 +249,9 @@
         "69": "Day X",
         "70": "Rune Millionaire",
         "71": "Runes, runes, runes",
-        "72": "Capitalist",
+        "72": "Capitaliste",
         "73": "Stinking rich",
-        "74": "Rune Master",
+        "74": "Maître des runes",
         "75": "Arena Manager",
         "76": "Lancelot",
         "77": "Door Opener",
@@ -274,12 +274,12 @@
         "94": "Chaser of Dragons",
         "95": "Bright Ghost Hunter",
         "96": "Dark Ghost Hunter",
-        "97": "League of Incompetence",
+        "97": "Ligue de l'Incompétence",
         "98": "League of Vindictiveness",
         "99": "Ying Dojo Master",
         "100": "Yang Dojo Master",
         "101": "Understander of Giants",
-        "102": "Tamer of Giants"
+        "102": "Apprivoiseur de géants"
     },
     "index": {
         "toggle": "Afficher les crédits",
@@ -383,7 +383,7 @@
         "text": "Il semblerai que cette page n'existe pas, veuillez verifier votre recherche"
     },
     "terms": {
-        "title": "Terms and Conditions",
+        "title": "Conditions générales",
         "button": {
             "accept_full": "I understand & accept these terms",
             "accept": "Accepter",
@@ -442,7 +442,7 @@
             "settings": "Paramètres",
             "temporary": "Session Temporaire",
             "changelog": "Journal de modifications",
-            "profile": "Profiles"
+            "profile": "Profils"
         },
         "files": {
             "titles": {
@@ -584,17 +584,17 @@
                 "archive": "Archive de script",
                 "close": "Revenir en arrière",
                 "remove": "Supprimer",
-                "reset": "Discard changes",
-                "save_template": "Save as template",
+                "reset": "Annuler les modifications",
+                "save_template": "Enregistrer comme modèle",
                 "header": {
                     "actions": "Actions",
                     "modify": "Script",
-                    "library": "Libraries",
-                    "help": "Help"
+                    "library": "Bibliothèques",
+                    "help": "Aide"
                 }
             },
             "types": {
-                "me": "Me",
+                "me": "Moi",
                 "players": "Joueurs",
                 "guilds": "Guildes",
                 "default": "Défaut"
@@ -610,7 +610,7 @@
         "guilds": {
             "other": "Afficher les autres guildes",
             "hidden": "Afficher les joueurs masqués",
-            "empty": "Show empty groups",
+            "empty": "Afficher les groupes vides",
             "missing": "Données manquantes pour les membres suivants :"
         },
         "browse": {
@@ -618,14 +618,14 @@
         },
         "share": {
             "title": "File export",
-            "title_short": "Export",
+            "title_short": "Exporter",
             "options": "Options",
             "code": "Votre code",
             "file": "Selection",
-            "format": "Format",
-            "get": "Export",
+            "format": "Formater",
+            "get": "Exporter",
             "ok": "Ok",
-            "public": "Export only public data (regardless of your current global setting)",
+            "public": "Exporter uniquement les données publiques (indépendamment de vos paramètres globaux actuels)",
             "expire": "Le code expirera automatiquement après 2 jours.",
             "single_use": "Usage unique",
             "single_use_notice": "Pensez à garder cette option activée, sauf si vous envisagez de partager le fichier avec plusieurs personnes.",
@@ -728,6 +728,7 @@
             "insecure": "Autoriser les balises HTML non sécurisées",
             "insecure_error#": "Ce tableau n'a pas été affiché car il contient des balises HTML qui sont interdites.<br/>Veuillez les supprimer de vos paramètres et réessayer.",
             "unsafe_delete": "Ignorer la confirmation lors de la suppression des fichiers",
+            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Accepter les conditions d'utilisation",
             "tab": "Onglet par défaut",
             "preload": "Précharger les lignes",
@@ -1133,6 +1134,7 @@
         "players": "Players",
         "preview": "Fight preview",
         "export": "Export fights",
+        "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
@@ -1263,6 +1265,14 @@
             "20": "Hydre à beaucoup trop de têtes"
         }
     },
+    "integration": {
+        "file": "File",
+        "game": "Endpoint",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
+    },
     "simulator": {
         "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le Simulateur",
         "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombre de cœurs de votre processeur",
@@ -1283,10 +1293,6 @@
         "win_chance": "% de Victoire",
         "min_chance": "Min %",
         "max_chance": "Max %",
-        "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
-        },
         "toast": {
             "title": "Simulation finished",
             "message": "Simulation took #{duration}"
@@ -1344,16 +1350,23 @@
             "title": "Contacting the server for information",
             "message": "Fetching data"
         },
+        "step7": {
+            "title": "Select your character"
+        },
         "user_error": {
             "title": "Your user name or password is not valid",
             "message": "Please ensure that it is in correct format (username@url)"
         },
         "errors": {
-            "network_error": "Server cannot be reached",
-            "name_not_whitelisted_error": "Player not whitelisted",
+            "error_unreachable": "Server cannot be reached",
+            "error_malformed_url": "Server URL is not valid",
             "error_wrong_pass": "Incorrect password",
             "error_player_not_found": "Character was not found on the server",
-            "error_sessionid_invalid": "Session expired or interrupted by another device"
+            "error_sessionid_invalid": "Session expired or interrupted by another device",
+            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
+            "playa_account_not_active": "Your account is not active",
+            "playa_account_empty": "Your account has no characters"
         }
     },
     "database": {
@@ -1374,7 +1387,12 @@
             "continue": "Continue",
             "save": "Save",
             "close": "Close",
-            "ok": "Ok"
+            "ok": "Ok",
+            "apply": "Apply"
+        },
+        "analyzer_autofill": {
+            "title": "Available data",
+            "search": "Search by dungeon or boss name ..."
         },
         "script_manual": {
             "title": "Reference manual",

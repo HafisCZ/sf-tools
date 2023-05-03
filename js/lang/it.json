@@ -442,7 +442,7 @@
             "settings": "Impostazioni",
             "temporary": "Sessione temporanea",
             "changelog": "Changelog",
-            "profile": "Profiles"
+            "profile": "Profili"
         },
         "files": {
             "titles": {
@@ -576,7 +576,7 @@
             "list": "Modelli disponibili",
             "sidebar": {
                 "wiki": "Wiki",
-                "manual": "Manual",
+                "manual": "Manuale",
                 "scripts": "Script",
                 "templates": "Template",
                 "save": "Salva",
@@ -590,7 +590,7 @@
                     "actions": "Azioni",
                     "modify": "Script",
                     "library": "Librerie",
-                    "help": "Help"
+                    "help": "Aiuto"
                 }
             },
             "types": {
@@ -617,29 +617,29 @@
             "hidden": "Mostra nascosti"
         },
         "share": {
-            "title": "File export",
-            "title_short": "Export",
+            "title": "Esportazione file",
+            "title_short": "Esporta",
             "options": "Opzioni",
             "code": "Il tuo codice",
-            "file": "Selection",
-            "format": "Format",
-            "get": "Export",
+            "file": "Selezione",
+            "format": "Formato",
+            "get": "Esporta",
             "ok": "Ok",
-            "public": "Export only public data (regardless of your current global setting)",
+            "public": "Esporta solo dati pubblici (indipendentemente dalle impostazioni globali attuali)",
             "expire": "Il codice scadrà automaticamente dopo 2 giorni.",
             "single_use": "Uso singolo",
             "single_use_notice": "Tieni questa opzione attiva se non intendi condividere il file con più persone.",
             "files": {
-                "all": "All",
-                "last": "Latest",
-                "last5": "Latest 5",
-                "current": "Selected",
-                "currentWithReference": "Selected & Reference"
+                "all": "Tutti",
+                "last": "Ultimi",
+                "last5": "Ultimi 5",
+                "current": "Selezionati",
+                "currentWithReference": "Selezionati & Riferimento"
             },
             "formats": {
-                "json": "JSON file",
-                "code": "Online code (1 use or 2 days)",
-                "code_reusable": "Online code (2 days)"
+                "json": "File JSON",
+                "code": "Codice online (1 utilizzo o 2 giorni)",
+                "code_reusable": "Codice online (2 giorni)"
             }
         },
         "online_templates": {
@@ -695,7 +695,7 @@
                 "title": "Extra",
                 "registered": "Registrato il",
                 "webshopid": "Webshop ID",
-                "webshopid_placeholder": "Hover to display"
+                "webshopid_placeholder": "Passa sopra per visualizzare"
             },
             "runes": {
                 "title": "Rune"
@@ -728,6 +728,7 @@
             "insecure": "Consenti tag html non sicuri",
             "insecure_error#": "Questa tabella non è stata mostrata perchè contiene tag html non consentiti.<br/>Per favore, rimuovi i tag dalle opzioni e riprova.",
             "unsafe_delete": "Non chiedere conferma per cancellare i file",
+            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Accetta i Termini di Servizio",
             "tab": "Tab iniziale",
             "preload": "Pre-carica righe",
@@ -758,9 +759,9 @@
         "simulate_dungeons": "Simula tutti i dungeon rimanenti",
         "results": "Risultati",
         "calendar": {
-            "collected": "Collected",
-            "available": "Available",
-            "locked": "Locked"
+            "collected": "Raccolti",
+            "available": "Disponibili",
+            "locked": "Bloccati"
         },
         "map": {
             "gladiator": "Gladiatore"
@@ -773,31 +774,31 @@
             "4": "Acqua"
         },
         "locations": {
-            "0": "Black Forest",
-            "1": "Black Water Swamp",
-            "2": "Busted Lands",
+            "0": "Foresta Nera",
+            "1": "Palude Acquanera",
+            "2": "Lande Crepate",
             "3": "Erogenion",
-            "4": "Evernight Forest",
-            "5": "Flooded Caldwell",
+            "4": "Bosco Semprenotte",
+            "5": "Terra Sommersa",
             "6": "Gnarogrim",
             "7": "Maerwyn",
             "8": "Magmaron",
-            "9": "Moldy Forest",
-            "10": "Nevermoor",
-            "11": "Northrunt",
-            "12": "Plains Of Ozkorr",
-            "13": "Rotten Lands",
-            "14": "Shadowrock Mountain",
-            "15": "Skull Island",
-            "16": "Split Canyon",
-            "17": "Sprawling Jungle",
-            "18": "Stumble Steppe",
-            "19": "Sunburn Desert",
-            "20": "Tusk Mountain",
-            "201": "Gem Mine",
-            "202": "Weapon Shop",
-            "203": "Magic Shop",
-            "204": "Arcane Toilet"
+            "9": "Foresta Ammuffita",
+            "10": "Brughinera",
+            "11": "Nordignolo",
+            "12": "Pianure di Oz'Korr",
+            "13": "Terre Marce",
+            "14": "Montagna Roccaombrosa",
+            "15": "Isola del Teschio",
+            "16": "Canyon Spaccato",
+            "17": "Giungla Strisciante",
+            "18": "Steppa Inceppa",
+            "19": "Deserto Arso",
+            "20": "Montagna Zanna",
+            "201": "Miniera di gemme",
+            "202": "Armeria",
+            "203": "Shop Magie",
+            "204": "Gabinetto Arcano"
         },
         "names": {
             "0": "Slurp",
@@ -902,106 +903,106 @@
             "99": "Idrospir"
         },
         "descriptions": {
-            "0": "Can be found in Nevermoor during the day.",
-            "1": "Can be found in Maerwynn at night.",
-            "2": "Can be found in Sprawling Jungle at night.",
-            "3": "Can be found in Split Canyon at night.",
-            "4": "Can be found in Black Forest on Monday night.",
-            "5": "Can be found in Black Water Swamp during witching hour. (00:00 - 01:00 a.m.)",
-            "6": "Can be found in Evernight Forest on summer days.",
-            "7": "Can be found on Skull Island on winter days.",
-            "8": "Can be found on Shadowrock Mountain on Friday night.",
-            "9": "Can be found in Moldy Forest on fall days.",
-            "10": "Can be found in Flooded Caldwell on Monday night.",
-            "11": "Can be found on Tusk Mountain on Tuesday night.",
-            "12": "Can be found in Erogenion on Wednesday night.",
-            "13": "Can be found in Stumble Steppe on Thursday during the day.",
-            "14": "Can be found in Black Forest on Halloween.",
-            "15": "Can be found in Gnarogrim. Required: Hall of fame top 1,000 or 50,000 honor when finishing the quest.",
-            "16": "Can be found in Busted Lands during XP Event.",
-            "17": "Can be found in Rotten Lands on Friday the 13th.",
-            "18": "Is rewarded for clearing 10th floor of the 15th dungeon of the Shadow World. Location: Plains of Oz'Korr.",
-            "19": "Can be found on the last floor of the Shadow Habitat. Location: Sunburn Desert.",
-            "20": "Can be found in Stumble Steppe during the day.",
-            "21": "Can be found in Moldy Forest at night.",
-            "22": "Can be found in Erogenion during the day.",
-            "23": "Can be found on Shadowrock Mountain during the day.",
-            "24": "Can be found in Sprawling Jungle on spring nights.",
-            "25": "Can be found in Nevermoor on Saturday during the day.",
-            "26": "Can be found in Sunburn Desert on summer days.",
-            "27": "Can be found in Flooded Caldwell on fall days.",
-            "28": "Can be found on Skull Island on Monday night.",
-            "29": "Can be found in Busted Lands on Tuesday during the day.",
-            "30": "Can be found on Tusk Mountain on Sunday during the day.",
-            "31": "Can be found in Northrunt on Wednesday night.",
-            "32": "Can be found in Evernight Forest on Thursday during the day.",
-            "33": "Can be found in Black Water Swamp on Friday during the day.",
-            "34": "Can be found in Erogenion. Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "35": "Can be found in Northrunt in December.",
-            "36": "Can be found in Split Canyon on April Fools' Day. For real!",
-            "37": "Can be found in Erogenion during Epic Event.",
-            "38": "Is a reward for clearing the Tower. Location: Rotten Lands.",
-            "39": "Can be found on the last floor of the Light Habitat. Location: Plains of Oz'Korr.",
-            "40": "Can be found in Stumble Steppe during the day.",
-            "41": "Can be found in Gnarogrim at night.",
-            "42": "Can be found in Erogenion during the day.",
-            "43": "Can be found in Black Forest during the day.",
-            "44": "Can be found in Northrunt at night.",
-            "45": "Can be found on Tusk Mountain on summer days.",
-            "46": "Can be found in Black Water Swamp on fall days.",
-            "47": "Can be found in in Split Canyon on winter days.",
-            "48": "Can be found in Magmaron on spring days.",
-            "49": "Can be found in Nevermoor on Sunday night.",
-            "50": "Can be found in Maerwynn on Monday during the day.",
-            "51": "Can be found in Busted Lands on Tuesday night.",
-            "52": "Can be found in Evernight Forest on Wednesday during the day.",
-            "53": "Can be found in Rotten Lands on Thursday during the day.",
-            "54": "Can be found in Maerwynn on Easter.",
-            "55": "Can be found in Sprawling Jungle on Whitsun.",
-            "56": "Can be found in Plains of Oz'Korr during Gold Event.",
-            "57": "Can be found in Stumble Steppe. Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "58": "Can be found in the gem mine. Required: Mine level 20.",
-            "59": "Can be found on the last floor of the Earth Habitat. Location: Moldy Forest.",
-            "60": "Can be found in Nevermoor during the day.",
-            "61": "Can be found in Flooded Caldwell at night.",
-            "62": "Can be found in Black Water Swamp at night.",
-            "63": "Can be found on Tusk Mountain during the day.",
-            "64": "Can be found in Busted Lands on Tuesday night.",
-            "65": "Can be found in Moldy Forest on fall nights.",
-            "66": "Can be found in Split Canyon on Monday during the day.",
-            "67": "Can be found in Sunburn Desert on spring days.",
-            "68": "Can be found in Plains of Oz'Korr on winter days.",
-            "69": "Can be found in Sprawling Jungle on Wednesday night.",
-            "70": "Can be found in Stumble Steppe on Thursday during the day.",
-            "71": "Can be found in Black Forest on summer days.",
-            "72": "Can be found in Magmaron on Friday during the day.",
-            "73": "Can be found in Evernight Forest on Saturday night.",
-            "74": "Can't be found in the wild, but in your local weapon shop.",
-            "75": "Can be found in Maerwynn during Forest Rarities Event.",
-            "76": "Can be found in Flooded Caldwell on Valentine's Day.",
-            "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
-            "78": "Is a reward for clearing the single-player Demon Portal. Location: Skull Island.",
-            "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
-            "80": "Can be found in Magmaron during the day.",
-            "81": "Can be found on Skull Island during the day.",
-            "82": "Can be found in Evernight Forest at night.",
-            "83": "Can be found in Northrunt during the day.",
-            "84": "Can be found in Rotten Lands on Monday during the day.",
-            "85": "Can be found on Tusk Mountain on Tuesday night.",
-            "86": "Can be found in Split Canyon on Wednesday during the day.",
-            "87": "Can be found in Flooded Caldwell on winter days.",
-            "88": "Can be found in Moldy Forest on Thursday night.",
-            "89": "Can be found on Skull Island on Friday during the day.",
-            "90": "Can be found in Black Water Swamp on Saturday during the day.",
-            "91": "Can be found in Erogenion on fall nights.",
-            "92": "Can be found in Sprawling Jungle on summer days.",
-            "93": "Can be found on Shadowrock Mountain on Sunday night.",
-            "94": "Can be found on Skull Island. Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.",
-            "95": "Can't be found in the wild, but in your local magic shop.",
-            "96": "Can be found on Skull Island during the Birthday Event.",
-            "97": "Can be found in the Arcane Toilet. Required: Aura level 20.",
-            "98": "Is rewarded for the next quest after clearing dungeon 22. Location: Busted Lands.",
-            "99": "Can be found on the last floor of the Water Habitat. Location: Nevermoor."
+            "0": "Può essere trovato a Nevermoor durante il giorno.",
+            "1": "Può essere trovato a Maerwynn di notte.",
+            "2": "Può essere trovato nella Giungla Strisciante di notte.",
+            "3": "Può essere trovato nel Canyon Spaccato di notte.",
+            "4": "Può essere trovato nella Foresta Nera il lunedì notte.",
+            "5": "Può essere trovato nella Palude Acquanera nell'ora delle streghe. (00:00 - 01:00 a.m.)",
+            "6": "Può essere trovato nel Bosco Semprenotte nei giorni estivi.",
+            "7": "Può essere trovato sull'Isola del Teschio nei giorni invernali.",
+            "8": "Può essere trovato sulla Montagna Roccaombrosa il venerdi notte.",
+            "9": "Può essere trovato a Foresta Ammuffita nei giorni autunnali.",
+            "10": "Può essere trovato nella Terra Sommersa il lunedì notte.",
+            "11": "Può essere trovato sulla Montagna Zanna il martedì notte.",
+            "12": "Può essere trovato a Erogenion il mercoledì notte.",
+            "13": "Può essere trovato nella Steppa Inceppa il giovedì, durante il giorno.",
+            "14": "Può essere trovato nella Foresta Nera ad Halloween.",
+            "15": "Può essere trovato a Gnarogrim. Requisiti: top 1.000 della Hall of Fame o 50.000 punti onore alla fine della missione.",
+            "16": "Può essere trovato nelle Lande Crepate durante l'evento XP Eccezionale.",
+            "17": "Può essere trovato nelle Terre Marce il venerdì 13.",
+            "18": "È il premio per aver completato il piano 10 del 15esimo dungeon nel mondo delle ombre. Zona: Pianure di Oz'Korr.",
+            "19": "Può essere trovato all'ultimo piano dell'Habitat delle Ombre. Zona: Deserto Arso.",
+            "20": "Può essere trovato nella Steppa Inceppa di giorno.",
+            "21": "Può essere trovato nella Foresta Ammuffita di notte.",
+            "22": "Può essere trovato a Erogenion di giorno.",
+            "23": "Può essere trovato sulla Montagna Roccaombrosa di giorno.",
+            "24": "Può essere trovato nella Giungla Strisciante nelle notti primaverili.",
+            "25": "Può essere trovato a Nevermoor il sabato durante il giorno.",
+            "26": "Può essere trovato nel Deserto Arso nei giorni estivi.",
+            "27": "Può essere trovato nella Terra Sommersa nei giorni autunnali.",
+            "28": "Può essere trovato sull'Isola del Teschio il lunedì notte.",
+            "29": "Può essere trovato nella Steppa Inceppa il martedì durante il giorno.",
+            "30": "Può essere trovato sulla Montagna Zanna la domenica, di giorno.",
+            "31": "Può essere trovato a Nordignolo il mercoledì notte.",
+            "32": "Può essere trovato nel Bosco Semprenotte il giovedì, di giorno.",
+            "33": "Può essere trovato nella Palude Acquanera il venerdì, di giorno.",
+            "34": "Può essere trovato a Erogenion. Requisiti: gilda nella top 100 della hall of fame o 2.500 punti onore alla fine della missione.",
+            "35": "Può essere trovato a Nordignolo durante la vendita di funghi di Natale.",
+            "36": "Può essere trovato nel Canyon Spaccato il primo Aprile. Non è uno scherzo!",
+            "37": "Può essere trovato a Erogenion durante Trionfo Epico.",
+            "38": "È una ricompensa per aver completato la Torre. Zona: Terre Marce.",
+            "39": "Può essere trovato all'ultimo piano dell'Habitat della Luce. Zona: Pianure di Oz'Korr.",
+            "40": "Può essere trovato nella Steppa Inceppa di giorno.",
+            "41": "Può essere trovato a Gnarogrim di notte.",
+            "42": "Può essere trovato a Erogenion di giorno.",
+            "43": "Può essere trovato nella Foresta Nera di giorno.",
+            "44": "Può essere trovato a Nordignolo di notte.",
+            "45": "Può essere trovato sulla Montagna Zanna nei giorni estivi.",
+            "46": "Può essere trovato nella Palude Acquanera nei giorni autunnali.",
+            "47": "Può essere trovato nel Canyon Spaccato nei giorni invernali.",
+            "48": "Può essere trovato a Magmaron nei giorni primaverili.",
+            "49": "Può essere trovato nella Brughinera la domenica notte.",
+            "50": "Può essere trovato a Maerwynn il lunedì, durante il giorno.",
+            "51": "Può essere trovato nelle Lande Crepate il martedì notte.",
+            "52": "Può essere trovato nel Bosco Semprenotte il mercoledì, durante il giorno.",
+            "53": "Può essere trovato nelle Terre Marce il giovedì, di giorno.",
+            "54": "Può essere trovato a Maerwynn a Pasqua.",
+            "55": "Può essere trovato nella Giungla Strisciante nell'evento di Pentecoste.",
+            "56": "Può essere trovato nelle Pianure di Oz'Korr durante l'evento Oro io ti Adoro.",
+            "57": "Può essere trovato nella Steppa Inceppa. Requisiti: fortezza nella top 100 della hall of fame o 2.500 punti onore alla fine della missione.",
+            "58": "Può essere trovato nella miniera di gemme. Requisiti: Miniera livello 20.",
+            "59": "Può essere trovato all'ultimo piano dell'habitat della Terra. Zona: Foresta Ammuffita.",
+            "60": "Può essere trovato nella Brughinera di giorno.",
+            "61": "Può essere trovato nella Terra Sommersa di notte.",
+            "62": "Può essere trovato nella Palude Acquanera di notte.",
+            "63": "Può essere trovato sulla Montagna Zanna di giorno.",
+            "64": "Può essere trovato nelle Lande Crepate il martedì notte.",
+            "65": "Può essere trovato nella Foresta Ammuffita nelle notti d'autunno.",
+            "66": "Può essere trovato nel Canyon Spaccato il lunedì, di giorno.",
+            "67": "Può essere trovato nel Deserto Arso nei giorni primaverili.",
+            "68": "Può essere trovato nelle Pianure di Oz'Korr nei giorni invernali.",
+            "69": "Può essere trovato nella Giungla Strisciante il mercoledì notte.",
+            "70": "Può essere trovato nella Steppa Inceppa il giovedì, di giorno.",
+            "71": "Può essere trovato nella Foresta Nera nei giorni estivi.",
+            "72": "Può essere trovato a Magmaron il venerdì, di giorno.",
+            "73": "Può essere trovato nel Bosco Semprenotte il sabato notte.",
+            "74": "Non può essere trovato nelle terre selvaggie, ma nell'armeria.",
+            "75": "Può essere trovato a Maerwynn durante l'Ora del Gabinetto Pulito.",
+            "76": "Può essere trovato nella Terra Sommersa a San Valentino.",
+            "77": "Può essere trovato nel Bosco Semprenotte alla vigilia di Capodanno e Capodanno.",
+            "78": "È una ricompensa per aver completato il portale demoniaco. Zona: Isola del Teschio.",
+            "79": "Può essere trovato all'ultimo piano dell'habitat del Fuoco. Zona: Gnarogrim.",
+            "80": "Può essere trovato a Magmaron di giorno.",
+            "81": "Può essere trovato sull'Isola del Teschio di giorno.",
+            "82": "Può essere trovato nel Bosco Semprenotte di notte.",
+            "83": "Può essere trovato a Nordignolo di giorno.",
+            "84": "Può essere trovato nelle Terre Marce il lunedì, di giorno.",
+            "85": "Può essere trovato sulla Montagna Zanna il martedì notte.",
+            "86": "Può essere trovato nel Canyon Spaccato il mercoledì, di giorno.",
+            "87": "Può essere trovato nella Terra Sommersa nei giorni invernali.",
+            "88": "Può essere trovato nella Foresta Ammuffita il giovedì notte.",
+            "89": "Può essere trovato sull'Isola del Teschio il venerdì, di giorno.",
+            "90": "Può essere trovato nella Palude Acquanera il sabato, di giorno.",
+            "91": "Può essere trovato a Erogenion nelle notti autunnali.",
+            "92": "Può essere trovato nella Giungla Strisciante nei giorni estivi.",
+            "93": "Può essere trovato sulla Montagna Roccaombrosa la domenica notte.",
+            "94": "Può essere trovato sull'Isola del Teschio. Requisiti: famiglio nella top 100 della hall of fame o 4.000 punti onore alla fine della missione.",
+            "95": "Non può essere trovato allo stato brado, ma nel negozio di magie locale.",
+            "96": "Può essere trovato sull'Isola del Teschio durante l'evento Compleanno.",
+            "97": "Può essere trovato nel Gabinetto Arcano. Requisiti: livello aura 20.",
+            "98": "È la ricompensa per la missione successiva dopo il completamento del dungeon della Luce 22. Zona: Lande Crepate.",
+            "99": "Può essere trovato all'ultimo piano dell'habitat d'Acqua. Zona: Brughinera."
         },
         "bulk": {
             "not_possible": "Impossibile",
@@ -1044,15 +1045,15 @@
         "range": {
             "start": "Inizia dal piano",
             "end": "Termina al piano",
-            "theme": "Theme"
+            "theme": "Tema"
         },
         "element": "Elemento",
         "theme": {
-            "0": "Lust and Anger",
-            "1": "Treachery",
-            "2": "Fraud",
-            "3": "Gluttony",
-            "4": "Greed"
+            "0": "Desiderio e Rabbia",
+            "1": "Tradimento",
+            "2": "Frode",
+            "3": "Golosità",
+            "4": "Avidità"
         },
         "win": {
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
@@ -1133,11 +1134,12 @@
         "players": "Giocatori",
         "preview": "Anteprima scontro",
         "export": "Esporta scontri",
-        "analyze": "Statistical analysis",
-        "gladiator": "Gladiator not reduced",
+        "autofill": "Fill editable data in from predefined list",
+        "analyze": "Analisi statistica",
+        "gladiator": "Gladiatore non ridotto",
         "clear_changes": "Ripristina allo stato iniziale",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
+            "select": "#{index} - #{rounds} round - #{nameA} - #{nameB} - Vincitore: #{winner}",
             "rage": "Rabbia",
             "attacker": "Attaccante",
             "target": "Bersaglio",
@@ -1152,12 +1154,12 @@
         },
         "special_state": {
             "druid_rage": "Il druido è infuriato",
-            "berserker_rage": "Berserker is enraged",
+            "berserker_rage": "Il Berserker è infuriato",
             "bard_song": "Il bardo ha suonato un brano"
         },
         "sidebar": {
             "toggles": {
-                "damages": "Show damage ranges"
+                "damages": "Mostra intervalli di danno"
             },
             "damages": {
                 "weapon1_range_base": "Intervallo ingresso",
@@ -1263,6 +1265,14 @@
             "20": "Idra con molte teste"
         }
     },
+    "integration": {
+        "file": "File",
+        "game": "Endpoint",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
+    },
     "simulator": {
         "paste_target#": "Clicca qui e premi <b>CTRL&nbsp;+&nbsp;V</b> per incollare nel simulatore",
         "threads": "Thread di simulazione. Mantieni questo numero SOTTO al numero dei core del tuo processore!",
@@ -1283,10 +1293,6 @@
         "win_chance": "% vittoria",
         "min_chance": "% min",
         "max_chance": "% max",
-        "poll": {
-            "players": "Importa personaggi salvati",
-            "guilds": "Importa gilde salvate"
-        },
         "toast": {
             "title": "Simulazione completata",
             "message": "La simulazione ha richiesto #{duration}"
@@ -1344,16 +1350,23 @@
             "title": "Contattando il server",
             "message": "Raccogliendo i dati"
         },
+        "step7": {
+            "title": "Select your character"
+        },
         "user_error": {
             "title": "Username o password non validi!",
             "message": "Assicurati che il formato sia corretto (username@url)"
         },
         "errors": {
-            "network_error": "Impossibile raggiungere il server",
-            "name_not_whitelisted_error": "Il giocatore non è nella lista bianca",
+            "error_unreachable": "Server cannot be reached",
+            "error_malformed_url": "Server URL is not valid",
             "error_wrong_pass": "Password errata",
             "error_player_not_found": "Il personaggio non è stato trovato sul server",
-            "error_sessionid_invalid": "Sessione scaduta o interrotta da un altro dispositivo"
+            "error_sessionid_invalid": "Sessione scaduta o interrotta da un altro dispositivo",
+            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
+            "playa_account_not_active": "Your account is not active",
+            "playa_account_empty": "Your account has no characters"
         }
     },
     "database": {
@@ -1374,19 +1387,24 @@
             "continue": "Continua",
             "save": "Salva",
             "close": "Chiudi",
-            "ok": "Ok"
+            "ok": "Ok",
+            "apply": "Apply"
+        },
+        "analyzer_autofill": {
+            "title": "Available data",
+            "search": "Search by dungeon or boss name ..."
         },
         "script_manual": {
-            "title": "Reference manual",
+            "title": "Guida di riferimento",
             "heading": {
-                "header": "Headers for all characters",
-                "header_protected": "Headers for own guild members",
-                "header_private": "Headers for own characters",
-                "header_scoped": "Subheaders for objects",
-                "header_itemizable": "Subheaders for inventory",
-                "function": "functions(...)",
-                "enum": "Enumerations",
-                "constant": "@constants"
+                "header": "Intestazioni per tutti i personaggi",
+                "header_protected": "Intestazioni per i membri della gilda",
+                "header_private": "Intestazioni per i propri personaggi",
+                "header_scoped": "Sotto-intestazioni per oggetti",
+                "header_itemizable": "Sotto-intestazioni per l'inventario",
+                "function": "funzioni(...)",
+                "enum": "Enumerazioni",
+                "constant": "@costanti"
             },
             "description": {}
         },
@@ -1402,31 +1420,31 @@
                     }
                 },
                 "type_display_mode": {
-                    "title": "Attack type display mode",
+                    "title": "Modalità visualizzazione tipo di attacco",
                     "value": {
-                        "text": "Name",
-                        "text_with_id": "Name with ID"
+                        "text": "Nome",
+                        "text_with_id": "Nome con ID"
                     }
                 },
                 "base_damage_error_margin": {
                     "title": "Errore di base accettabile"
                 },
                 "group_sort": {
-                    "title": "Sort groups by",
+                    "title": "Ordina gruppi per",
                     "value": {
-                        "default": "Default",
-                        "fight_count": "Fight count",
-                        "fighter_b_level": "Level of player B"
+                        "default": "Predefinito",
+                        "fight_count": "Conteggio lotta",
+                        "fighter_b_level": "Livello del giocatore B"
                     }
                 }
             }
         },
         "fight_statistical_analysis": {
-            "title": "Statistical analysis",
-            "selector": "Filter expression",
-            "count": "Count",
-            "add": "Add new counter",
-            "variables": "Available variables:"
+            "title": "Analisi statistica",
+            "selector": "Espressione Filtro",
+            "count": "Conteggio",
+            "add": "Aggiungi nuovo contatore",
+            "variables": "Variabili disponibili:"
         },
         "template_manage": {
             "title": "Modelli",
@@ -1456,7 +1474,7 @@
                 "overwrite_script": "Script sovrascritto da una nuova versione",
                 "save_script": "Script salvato",
                 "remove_script": "Script rimosso",
-                "discard_script": "Script changes were discarded",
+                "discard_script": "Le modifiche allo script sono state scartate",
                 "create_template": "Modello creato",
                 "overwrite_template": "Modello sovrascritto da nuova versione",
                 "save_template": "Modello salvato",

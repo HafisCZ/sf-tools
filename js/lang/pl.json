@@ -576,7 +576,7 @@
             "list": "Dostępne szablony",
             "sidebar": {
                 "wiki": "Wiki",
-                "manual": "Ręczne",
+                "manual": "Instrukcja",
                 "scripts": "Skrypty",
                 "templates": "Szablony",
                 "save": "Zapisz",
@@ -623,7 +623,7 @@
             "code": "Twój kod",
             "file": "Wybór",
             "format": "Format",
-            "get": "Eksportuj",
+            "get": "Export",
             "ok": "Ok",
             "public": "Eksportuj tylko dane publiczne (niezależnie od obecnego ustawienia globalnego)",
             "expire": "Kod wygaśnie automacznie po 2 dniach.",
@@ -728,6 +728,7 @@
             "insecure": "Zezwalaj na niezabezpieczone tagi html",
             "insecure_error#": "Ta tabela nie została wyświetlona, ponieważ zawiera znaczniki HTML, które są zabronione.<br/>Proszę usunąć je ze swoich ustawień i spróbować ponownie.",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
+            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
@@ -1133,6 +1134,7 @@
         "players": "Gracze",
         "preview": "Podgląd walki",
         "export": "Eksportuj walki",
+        "autofill": "Uzupełnij dane z wcześniej zdefiniowanej listy",
         "analyze": "Analizator statystyczny",
         "gladiator": "Gladiator nie obniżony",
         "clear_changes": "Resetuj do stanu początkowego",
@@ -1152,7 +1154,7 @@
         },
         "special_state": {
             "druid_rage": "Druid jest wściekły",
-            "berserker_rage": "Berserker is enraged",
+            "berserker_rage": "Berserker jest w furii",
             "bard_song": "Bard zagrał utwór"
         },
         "sidebar": {
@@ -1263,6 +1265,14 @@
             "20": "Hydra o niewiarygodniej ilości głów"
         }
     },
+    "integration": {
+        "file": "Plik",
+        "game": "Punkt końcowy",
+        "poll": {
+            "players": "Załaduj zapisanych graczy",
+            "guilds": "Załaduj zapisane gildie"
+        }
+    },
     "simulator": {
         "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
         "threads": "Wątki symulacji. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
@@ -1283,10 +1293,6 @@
         "win_chance": "Szansa na zwycięstwo %",
         "min_chance": "Minimalna szansa %",
         "max_chance": "Maksymalna szansa %",
-        "poll": {
-            "players": "Załaduj zapisanych graczy",
-            "guilds": "Załaduj zapisane gildie"
-        },
         "toast": {
             "title": "Symulacja zakończona",
             "message": "Symulacja zajęła #{duration}"
@@ -1344,16 +1350,23 @@
             "title": "Łączenie z serwerem",
             "message": "Pobieranie danych"
         },
+        "step7": {
+            "title": "Wybierz swoją postać"
+        },
         "user_error": {
             "title": "Nieprawidłowa nazwa użytkowanika lub hasło",
             "message": "Proszę upewnij się, że jest we własciwej formie(nazwa użytkownika@url)"
         },
         "errors": {
-            "network_error": "Serwer jest nieosiągalny",
-            "name_not_whitelisted_error": "Gracz nie jest na białej liście",
+            "error_unreachable": "Serwer jest nieosiągalny",
+            "error_malformed_url": "Adres serwera jest nieprawidłowy",
             "error_wrong_pass": "Nieprawidłowe hasło",
             "error_player_not_found": "Nie znaleziono postaci na serwerze",
-            "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie"
+            "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie",
+            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkowanika lub hasło",
+            "playa_account_not_active": "Twoje konto jest nieaktywne",
+            "playa_account_empty": "Your account has no characters"
         }
     },
     "database": {
@@ -1374,7 +1387,12 @@
             "continue": "Kontynuuj",
             "save": "Zapisz",
             "close": "Zamknij",
-            "ok": "Ok"
+            "ok": "Ok",
+            "apply": "Zastosuj"
+        },
+        "analyzer_autofill": {
+            "title": "Dostępne dane",
+            "search": "Szukaj według nazwy lochu lub bossa ..."
         },
         "script_manual": {
             "title": "Instrukcja obsługi",
@@ -1402,10 +1420,10 @@
                     }
                 },
                 "type_display_mode": {
-                    "title": "Attack type display mode",
+                    "title": "Tryb wyświetlania typu ataku",
                     "value": {
-                        "text": "Name",
-                        "text_with_id": "Name with ID"
+                        "text": "Nazwa",
+                        "text_with_id": "Nazwa z ID"
                     }
                 },
                 "base_damage_error_margin": {
@@ -1415,7 +1433,7 @@
                     "title": "Sortuj grupy według",
                     "value": {
                         "default": "Domyślny",
-                        "fight_count": "Licznik walk",
+                        "fight_count": "Liczba walk",
                         "fighter_b_level": "Poziom gracza B"
                     }
                 }
