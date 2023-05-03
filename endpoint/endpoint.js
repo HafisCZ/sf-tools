@@ -399,15 +399,19 @@ const EndpointDialog = new (class extends Dialog {
     _funcCaptureSelect (promise) {
         promise
         .then((data) => {
-            this.$list.html(`
-                ${this._renderSelectItems(data.members, 'user circle')}
-                ${this._renderSelectItems(data.friends, 'thumbs up')}
-            `);
+            if (data.members.length > 0 || data.friends.length > 0) {
+                this.$list.html(`
+                    ${this._renderSelectItems(data.members, 'user circle')}
+                    ${this._renderSelectItems(data.friends, 'thumbs up')}
+                `);
 
-            this.$list.find('.checkbox').checkbox();
+                this.$list.find('.checkbox').checkbox();
 
-            this.$step4.hide();
-            this.$step3.show();
+                this.$step4.hide();
+                this.$step3.show();
+            } else {
+                this._funcCaptureSelf(promise);
+            }
         }).catch((error) => {
             this.$step4.hide();
             this._showError(error);
