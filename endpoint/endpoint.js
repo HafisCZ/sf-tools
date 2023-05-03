@@ -129,11 +129,11 @@ const EndpointDialog = new (class extends Dialog {
     }
 
     _termsAccepted () {
-        return SiteOptions.endpoint_terms_accepted;
+        return SiteOptions.endpoint_terms_accepted === 2;
     }
 
     _termsAccept () {
-        SiteOptions.endpoint_terms_accepted = true;
+        SiteOptions.endpoint_terms_accepted = 2;
 
         this.$step0.hide();
         this.$step1.show();
@@ -462,12 +462,19 @@ const EndpointDialog = new (class extends Dialog {
         return `
             <div class="flex flex-col gap-2 p-4" style="border: 1px solid #262626; background: #0b0c0c; border-radius: 0.5em; margin: -2em;">
                 <h1 class="ui inverted header text-center !mb-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">${intl('terms.title')}</h1>
-                <div class="overflow-y-scroll text-white" style="max-height: 45vh;">
+                <div class="text-white">
                     <ul>
                         <li>${intl('terms.endpoint.clause0')}</li>
                         <li class="mt-2">${intl('terms.endpoint.clause1')}</li>
                         <li class="mt-2">${intl('terms.endpoint.clause2')}</li>
                         <li class="mt-2">${intl('terms.endpoint.clause3')}</li>
+                    </ul>
+                </div>
+                <h1 class="ui inverted header text-center !mb-0 !mt-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">${intl('terms.title2')}</h1>
+                <div class="text-white">
+                    <ul>
+                        <li>${intl('terms.endpoint.clause4')}</li>
+                        <li class="mt-2">${intl('terms.endpoint.clause5')}</li>
                     </ul>
                 </div>
                 <div class="ui two buttons">
@@ -485,7 +492,7 @@ const EndpointDialog = new (class extends Dialog {
                 <div class="field">
                     <label>${this.intl('username')}</label>
                     <div class="ui inverted input">
-                        <input type="text" autocomplete="username" data-op="username" name="username" placeholder="username@s1.sfgame.de" pattern="^(.{3,})@(.+\.sfgame\..+)$">
+                        <input type="text" autocomplete="username" data-op="username" name="username">
                     </div>
                 </div>
                 <div class="field">
