@@ -1363,6 +1363,7 @@
             "error_wrong_pass": "Incorrect password",
             "error_player_not_found": "Character was not found on the server",
             "error_sessionid_invalid": "Session expired or interrupted by another device",
+            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
             "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
             "playa_account_not_active": "Your account is not active"
         }
