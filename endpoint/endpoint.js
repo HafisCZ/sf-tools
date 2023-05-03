@@ -291,35 +291,52 @@ const EndpointDialog = new (class extends Dialog {
                 if (data.type === 'sso') {
                     this.$characterList.empty();
 
-                    for (const { id, name, server_id } of _sortAsc(data.characters, (c) => c.order)) {
-                        const server = await this._getServer(server_id);
-                        if (!server) {
-                            continue;
-                        }
-
-                        const $element = $(`
-                            <div class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
-                                <div>
-                                    <div>${name}</div>
-                                    <div class="text-gray">${server}</div>
-                                </div>
-                            </div>
-                        `);
-                        
-                        $element.click(() => {
-                            this.$step7.hide();
-                            this.$step4.show();
-
-                            this.endpoint.continueLogin(server, name, id)
-                            .then((data) => resolve(data))
-                            .catch((error) => reject(error));
-                        });
-
-                        this.$characterList.append($element);
+                    // Inject server url
+                    for (const character of data.characters) {
+                        character.server = await this._getServer(character.server_id);
                     }
+
+                    // Continue method
+                    const continueLogin = (server, name, id) => {
+                        this.endpoint.continueLogin(server, name, id)
+                        .then((data) => resolve(data))
+                        .catch((error) => reject(error));
+                    }
+
+                    const characters = _sortAsc(data.characters.filter((c) => c.server), (c) => c.order);
+                    if (characters.length > 1) {
+                        // Multiple characters in account, must choose
+                        for (const { server, name, id } of characters) {
+                            const $element = $(`
+                                <div class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                                    <div>
+                                        <div>${name}</div>
+                                        <div class="text-gray">${server}</div>
+                                    </div>
+                                </div>
+                            `);
+                            
+                            $element.click(() => {
+                                this.$step7.hide();
+                                this.$step4.show();
     
-                    this.$step4.hide();
-                    this.$step7.show();
+                                continueLogin(server, name, id);
+                            });
+    
+                            this.$characterList.append($element);
+                        }
+        
+                        this.$step4.hide();
+                        this.$step7.show();
+                    } else if (characters.length === 1) {
+                        // One account, can just continue
+                        const { server, name, id } = characters[0];
+
+                        continueLogin(server, name, id);
+                    } else {
+                        // No accounts, show error
+                        reject('playa_account_empty');
+                    }
                 } else {
                     resolve(data);
                 }
