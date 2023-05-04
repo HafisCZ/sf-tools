@@ -1,4 +1,4 @@
-const ExpressionRegExp = (function () {
+const EXPRESSION_REGEXP = (function () {
     try {
         return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\$|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|(?<!\\.)\\d+(?:.\\d+)?e\\d+|(?<!\\.)\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
     } catch (e) {
@@ -207,7 +207,7 @@ ExpressionScope.DEFAULT_SCOPE = new ExpressionScope();
 class Expression {
     constructor (string, settings = null) {
         this.string = string;
-        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP).map(token => token.trim()).filter(token => token.length);
         this.root = false;
 
         if (this.tokens.length == 0) {
@@ -267,7 +267,7 @@ class Expression {
 
     // Format
     static format (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extraIdentifiers) {
-        var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp);
+        var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP);
         let nextName = false;
 
         // Go through all tokens
