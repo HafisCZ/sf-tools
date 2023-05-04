@@ -337,7 +337,7 @@ class Expression {
                 this.cacheable = this.cacheable && this.checkCacheableNode(this.root);
 
                 // Check if expression was resolved by post process and unwrap string if necessary
-                if (typeof this.root === 'number' || (typeof this.root === 'object' && this.root.raw)) {
+                if (typeof this.root === 'number' || (typeof this.root === 'object' && this.root.op === 'string')) {
                     this.resolved = true;
                     this.root = this.unwrap(this.root);
                 }
@@ -484,7 +484,7 @@ class Expression {
     }
 
     unwrap (obj) {
-        if (obj && obj.raw) {
+        if (typeof obj === 'object' && obj.op === 'string') {
             return obj.args;
         } else {
             return obj;
@@ -493,7 +493,7 @@ class Expression {
 
     wrapString (str) {
         return {
-            raw: true,
+            op: 'string',
             args: str
         }
     }
@@ -560,7 +560,7 @@ class Expression {
             op: 'format',
             args: [
                 {
-                    raw: true,
+                    op: 'string',
                     args: val.slice(1, val.length - 1)
                 },
                 ... this.evalRepeatedExpression(')', ',', () => this.evalExpression(), () => 'undefined')
@@ -808,7 +808,7 @@ class Expression {
             } else if (node.op == 'random' || node.op == 'now') {
                 return false;
             } else {
-                if (node.args && !node.raw) {
+                if (node.args && node.op !== 'string') {
                     for (let arg of node.args) {
                         if (!this.checkCacheableNode(arg)) {
                             return false;
@@ -825,18 +825,18 @@ class Expression {
 
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
     postProcess (tableVariables, node) {
-        if (typeof(node) == 'object' && !node.raw) {
+        if (typeof(node) == 'object' && node.op !== 'string') {
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
                     node.args[i] = this.postProcess(tableVariables, node.args[i]);
                 }
             }
 
-            if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
-                const res = node.op(... node.args.map(a => a.raw ? a.args : a));
+            if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
+                const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.wrapString(res) : res;
-            } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.op != 'random' && node.op != 'now' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
-                const res = SP_FUNCTIONS[node.op](... node.args.map(a => a.raw ? a.args : a));
+            } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.op != 'random' && node.op != 'now' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
+                const res = SP_FUNCTIONS[node.op](... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.wrapString(res) : res;
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
@@ -845,7 +845,7 @@ class Expression {
             let index = parseInt(node.slice(1));
             if (index < this.subexpressions.length) {
                 let subnode = this.subexpressions[index];
-                if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.raw)) {
+                if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.op === 'string')) {
                     return subnode;
                 } else if (typeof subnode == 'string' && subnode in tableVariables && !isNaN(tableVariables[subnode].ast.root)) {
                     return tableVariables[subnode].ast.root;
@@ -903,11 +903,11 @@ class Expression {
     }
 
     evalInternal (scope, node) {
-        if (typeof(node) == 'object') {
-            if (node.raw) {
-                return node.args;
-            } else if (typeof(node.op) == 'string') {
-                if (node.op == 'format' && node.args.length > 0) {
+        if (typeof node === 'object') {
+            if (typeof node.op === 'string') {
+                if (node.op === 'string') {
+                    return node.args;
+                } else if (node.op == 'format' && node.args.length > 0) {
                     var str = this.evalInternal(scope, node.args[0]);
                     if (typeof str === 'string') {
                         var arg = node.args.slice(1).map(a => this.evalInternal(scope, a));
