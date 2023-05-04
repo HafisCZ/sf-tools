@@ -141,6 +141,20 @@ class CustomMenu {
     }
 }
 
+// Search class list
+const PLAYER_CLASS_SEARCH = [
+    '',
+    'warrior',
+    'mage',
+    'scout',
+    'assassin',
+    'battle mage',
+    'berserker',
+    'demon hunter',
+    'druid',
+    'bard'
+];
+
 // Group Detail View
 class GroupDetailTab extends Tab {
     constructor (parent) {

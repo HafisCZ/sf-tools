@@ -1,3 +1,37 @@
+// _dig(SCRAPBOOK_BOUNDARIES, ColorClass, Type - 1)
+const SCRAPBOOK_BOUNDARIES = [
+    {
+        '7': [800, 1010],
+        '8': [1050, 1210],
+        '9': [1250, 1324]
+    },
+    {
+        '0': [1364, 1664],
+        '1': [1704, 1804],
+        '2': [1844, 1944],
+        '3': [1984, 2084],
+        '4': [2124, 2224],
+        '5': [2264, 2364],
+        '6': [2404, 2504]
+    },
+    {
+        '0': [2544, 2644],
+        '2': [2684, 2784],
+        '3': [2824, 2924],
+        '4': [2964, 3064],
+        '5': [3104, 3204],
+        '6': [3244, 3344]
+    },
+    {
+        '0': [3384, 3484],
+        '2': [3524, 3624],
+        '3': [3664, 3764],
+        '4': [3804, 3904],
+        '5': [3944, 4044],
+        '6': [4084, 4184]
+    }
+];
+
 class ItemModel {
     static empty () {
         return new ItemModel(new Array(12).fill(0), 0, 0);
@@ -11,7 +45,7 @@ class ItemModel {
         let socket = dataType.byte();
         let enchantmentType = dataType.byte();
         let picIndex = dataType.short();
-        let enchantmentPower = dataType.short();
+        dataType.short();
         let damageMin = dataType.long();
         let damageMax = dataType.long();
         let attributeType = [dataType.long(), dataType.long(), dataType.long()];
