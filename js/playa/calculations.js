@@ -1,75 +1,362 @@
-const RUNE_VALUE = {
-    GOLD: function (rune) {
-        return rune < 2 ? 0 : (3 + 2 * (rune - 2));
-    },
-    EPIC_FIND: function (rune) {
-        return rune < 2 ? 0 : (3 + 2 * (rune - 2));
-    },
-    ITEM_QUALITY: function (rune) {
-        switch (rune) {
-            case 1: return 3;
-            case 2: return 19;
-            case 3: return 50;
-            case 4: return 75;
-            case 5: return 99;
-            default: return 0;
-        }
-    },
-    XP: function (rune) {
-        switch (rune) {
-            case 1: return 3;
-            case 2: return 9;
-            case 3: return 25;
-            case 4: return 35;
-            case 5: return 45;
-            case 6: return 55;
-            case 7: return 65;
-            case 8: return 75;
-            case 9: return 85;
-            case 10: return 95;
-            default: return 0;
-        }
-    },
-    HEALTH: function (rune) {
-        switch (rune) {
-            case 1: return 3;
-            case 2: return 6;
-            case 3: return 17;
-            case 4: return 23;
-            case 5: return 30;
-            case 6: return 36;
-            case 7: return 43;
-            case 8: return 50;
-            case 9: return 56;
-            case 10: return 64;
-            case 11: return 72;
-            case 12: return 80;
-            case 13: return 88;
-            case 14: return 94;
-            case 15: return 99;
-            default: return 0;
-        }
-    },
-    SINGLE_RESISTANCE: function (rune) {
-        if (rune < 2) {
-            return 0;
-        } else {
-            return Math.floor((rune - 0.4) / 0.75);
-        }
-    },
-    TOTAL_RESISTANCE: function (rune) {
-        return RUNE_VALUE.SINGLE_RESISTANCE(rune * 3);
-    },
-    ELEMENTAL_DAMAGE: function (rune) {
-        if (rune < 2) {
-            return 0;
-        } else {
-            return Math.floor((rune - 0.3) / 0.6);
-        }
-    }
-}
+class Calculations {
+  // Returns base experience
+  static experienceBase (level) {
+    return this.experienceNextLevel(level) / this.experienceMultiplier(level);
+  }
 
-const EXPERIENCE_REQUIRED = [
+  // Returns reduced base experience
+  static experienceReducedBase (level) {
+    return Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+  }
+
+  // Returns experience multiplier
+  static experienceMultiplier (level) {
+    return 0.75 * Math.max(0, level + 1);
+  }
+
+  // Returns curve of experience needed for next level
+  static experienceNextLevelCurve () {
+    return this.#EXPERIENCE_NEXT;
+  }
+
+  // Returns experience needed for specific level
+  static experienceNextLevel (level) {
+    return this.#EXPERIENCE_NEXT[_clamp(level, 0, 393)];
+  }
+
+  // Returns curve of total experience needed for next level
+  static experienceTotalLevelCurve () {
+    return this.#EXPERIENCE_TOTAL;
+  }
+
+  // Returns total experience needed for specific level
+  static experienceTotalLevel (level) {
+    return this.#EXPERIENCE_TOTAL[_clamp(level, 0, 393)] + Math.max(0, level - 393) * 1500000000;
+  }
+
+  // Returns minimum experience reward from quest segment
+  static experienceQuestMin (level, book, guildInstructor, runes) {
+    return (1 + _clamp(guildInstructor, 0, 200) / 100 + _clamp(book, 0, 100) / 100) * this.experienceBase(level) / 11 / this.experienceReducedBase(level) * (1 + _clamp(runes, 0, 10) / 100);
+  }
+
+  // Returns maximum experience reward from quest segment
+  static experienceQuestMax (level, book, guildInstructor, runes) {
+    return this.experienceQuestMin(level, book, guildInstructor, runes) * 5;
+  }
+
+  // Returns experience from secret mission of the day
+  static experienceSecretMission (level, hydra) {
+    return this.experienceBase(level) * (1 + 0.25 * _clamp(hydra, 0, 20));
+  }
+
+  // Returns experience from arena fight
+  static experienceArena (level) {
+    return this.experienceBase(level) / 10;
+  }
+
+  // Returns experience from multiple wheel book
+  static experienceWheelBooks (level) {
+    return Math.trunc(this.experienceBase(level) / Calculations.experienceReducedBase(level));
+  }
+
+  // Returns experience from wheel book
+  static experienceWheelBook (level) {
+    return Math.trunc(this.experienceWheelBooks(level) / 2);
+  }
+
+  // Returns experience from calendar with books [0, 1, 2]
+  static experienceCalendar (level, book) {
+    return Math.ceil(this.experienceNextLevel(level) / (5 * (3 - _clamp(book, 0, 2))));
+  }
+
+  // Returns experience reward for defeating pet dungeon enemy
+  static experiencePetHabitat (level) {
+    return 6 * this.experienceMultiplier(level) * this.experienceBase(level) / this.experienceReducedBase(level) / 30;
+  }
+
+  // Returns experience reward for defeating twister enemy
+  static experienceTwisterEnemy (level) {
+      return Math.min(30E6, this.experienceNextLevel(level) / 50);
+  }
+
+  // Returns multiplier for experience from academy
+  static experienceAcademyMultiplier (academy) {
+    switch (_clamp(academy, 1, 20)) {
+      case 1: return 1;
+      case 2: return 1.1;
+      case 3: return 1.2;
+      case 4: return 1.3;
+      case 5: return 1.4;
+      case 6: return 1.5;
+      case 7: return 1.6;
+      case 8: return 2.0;
+      case 9: return 2.4;
+      case 10: return 3.2;
+      case 11: return 4.0;
+      case 12: return 4.8;
+      case 13: return 6.4;
+      case 14: return 8.0;
+      case 15: return 9.6;
+      case 16: return 10.0;
+      case 17: return 10.4;
+      case 18: return 10.8;
+      case 19: return 11.2;
+      case 20: return 12;
+    }
+  }
+
+  // Returns hourly output of academy
+  static experienceAcademyHourly (level, academy) {
+    return _clamp(academy, 1, 20) * this.experienceBase(level) / this.experienceReducedBase(level) / 30;
+  }
+
+  // Return capacity of academy
+  static experienceAcademyCapacity (level, academy) {
+    return this.experienceAcademyHourly(level, academy) * this.experienceAcademyMultiplier(academy);
+  }
+
+  // Returns curve of souls gained from lure
+  static soulsCurve () {
+    return this.#SOULS_CURVE;
+  }
+
+  // Returns souls gained from lure
+  static souls (level, gate, torture) {
+    level = Math.max(level, 0);
+    gate = _clamp(gate, 0, 15);
+    torture = _clamp(torture, 0, 15);
+
+    return Math.ceil(
+      (level < 542 ? (this.#SOULS_CURVE[level] / 7.5) : (464075 + (level - 525) * 8663)) * (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5))
+    );
+  }
+
+  // Returns basic gold curve
+  static goldCurve () {
+    return this.GOLD_CURVE;
+  }
+
+  // Returns gold
+  static gold (level) {
+    const value = this.GOLD_CURVE[_clamp(level, 0, 640)];
+    
+    return typeof value === 'undefined' ? 1E9 : value
+  }
+
+  // Returns gold from griffin mount
+  static goldEnvironmentalReward (level) {
+    return Math.min(10E6, this.goldBase(level));
+  }
+
+  // Return base gold
+  static goldBase (level) {
+    return this.gold(level) * 12 / 1000;
+  }
+
+  // Return cost of an attribute
+  static goldAttributeCost (attribute) {
+    let cost = 0;
+
+    for (let i = 0; i < 5; i++) {
+      let num = Math.floor(1 + (attribute + i) / 5);
+
+      cost = num >= 800 ? 5E9 : (cost + this.gold(num));
+    }
+
+    cost = 5 * Math.floor(Math.floor(cost / 5) / 5) / 100;
+    return cost < 10 ? cost : Math.min(1E7, Math.floor(cost));
+  }
+
+  // Return total cost of an attribute
+  static goldAttributeTotalCost (attribute) {
+    let cost = 0;
+
+    if (attribute > 3200) {
+      cost += 1E7 * (attribute - 3200);
+      attribute = 3200;
+    }
+
+    return cost + (this.GOLD_ATTRIBUTE_TOTAL[attribute - 1] || 0);
+  }
+
+  // Returns gold reward from tower enemy
+  static goldTowerEnemy (level) {
+    return 9 * this.gold(level + 2 ) / 100;
+  }
+
+  // Returns gold reward from twister enemy
+  static goldTwisterEnemy (level) {
+    return 2 * this.gold(level) / 100;
+  }
+
+  // Returns maximum gold gained from arena fight
+  static goldArena (level) {
+    return level > 95 ? Math.trunc(this.goldTwisterEnemy(level) / this.goldArenaMultiplier(level)) : level
+  }
+
+  // Returns multiplier for arena gold
+  static goldArenaMultiplier (level) {
+    if (level >= 300) {
+      return 10;
+    } else if (level >= 250) {
+        return 15;
+    } else if (level >= 200) {
+        return 20;
+    } else if (level >= 150) {
+        return 24;
+    } else {
+        return 28;
+    }
+  }
+
+  // Get gold from dices [0, 1, 2]
+  static goldDice (level, dices) {
+    return Math.pow(5, _clamp(dices, 0, 2)) * this.goldBase(level) / 3;
+  }
+
+  // Returns gold from guard duty
+  static goldGuardDuty (level, tower, guildTreasure) {
+    return Math.min(10E6, (this.goldBase(level) / 3) * (1 + _clamp(tower, 0, 100) / 100 + _clamp(guildTreasure, 0, 200) / 100));
+  }
+
+  // Returns gold value of a mined gem of sizes [0, 1, 2]
+  static goldGem (level, mine, gemSize) {
+    return Math.min(10E6, 2 * this.goldGemMineMultiplier(mine) * this.gold(level + _clamp(gemSize, 0, 2) * 5) / 1000)
+  }
+
+  // Returns multiplier for gold value of a mined gem
+  static goldGemMineMultiplier (mine) {
+    switch (_clamp(mine, 1, 14)) {
+      case 1: return 1;
+      case 2: return 2;
+      case 3: return 3;
+      case 4: return 4;
+      case 5: return 6;
+      case 6: return 8;
+      case 7: return 10;
+      case 8: return 12;
+      case 9: return 14;
+      case 10: return 16;
+      case 11: return 18;
+      case 12: return 20;
+      case 13: return 22;
+      case 14: return 24;
+    }
+  }
+
+  // Returns cost of witch scroll
+  static goldWitchScroll (level) {
+    return Math.min(10E6, this.goldBase(level) * 12.5 / 3);
+  }
+
+  // Returns gold cost of fortress reroll
+  static goldFortressReroll (level) {
+    return this.goldBase(level) * 5 / 8;
+  }
+
+  // Returns gold value of witch potions
+  static goldWitchPotion (level) {
+    return this.goldBase(level) * 5 / 6;
+  }
+
+  // Returns base potion gold reduced by runes
+  static goldPotionBase (level, runes) {
+    return (1 + Math.min(1, Math.max(0, (90 - level) / 10))) * this.gold(Math.max(1, level - _clamp(runes, 0, 5))) * 15 / 1000
+  }
+
+  // Returns purchase cost of potion size [0, 1, 2]
+  static goldPotionCost (level, runes, potionSize) {
+    return Math.min(5E6, this.goldPotionBase(level, runes) / Math.pow(2, 2 - _clamp(potionSize, 0, 2)));
+  }
+
+  // Returns purchase cost of life potion with mushrooms
+  static goldLifePotionCost (level, runes) {
+    return Math.min(5E6, this.goldPotionBase(level, runes) / 3);
+  }
+
+  // Returns purchase cost of life potion without mushrooms
+  static goldLifePotionShroomlessCost (level, runes) {
+    return Math.min(10E6, this.goldPotionBase(level, runes));
+  }
+
+  // Returns gold from calendar bar
+  static goldCalendarBar (level) {
+    return 2.5 * this.goldBase(level);
+  }
+
+  // Returns gold from 3 calendar bar
+  static goldCalendarBars (level) {
+    return 25 * this.goldBase(level) / 3;
+  }
+
+  // Returns cost of one hourglass
+  static goldHourglassCost (level, runes) {
+    const value = Math.min(375000, this.goldPotionBase(level, runes) / 6);
+
+    if (value > 37500) {
+      return 375000;
+    } else {
+      return value;
+    }
+  }
+
+  // Returns cost of 10 hourglasses
+  static goldHourglassPackCost (level, runes) {
+    return Math.min(3750000, 10 * this.goldHourglassCost(level, runes));
+  }
+
+  // Returns hourly production of gold pit
+  static goldPitHourly (level, pit) {
+    pit = _clamp(pit, 1, 100);
+
+    return (this.goldBase(level) * pit / 75) * (1 + Math.max(0, pit - 15) / 100)
+  }
+
+  // Returns gold pit capacity
+  static goldPitCapacity (level, pit) {
+    pit = _clamp(pit, 1, 100);
+
+    return Math.min(300E6, this.goldPitHourly(level, pit) * pit * Math.max(2, 12 / pit));
+  }
+
+  // Returns minimum gold reward from quest segment
+  static goldQuestMin (level, tower, guildTreasure, runes) {
+    return Math.min(10000000, 1 * (1 + _clamp(guildTreasure, 0, 200) / 100 + _clamp(tower, 0, 100) / 100) * this.goldBase(level) / 11) * (1 + _clamp(runes, 0, 50) / 100);
+  }
+
+  // Returns maximum gold reward from quest segment
+  static goldQuestMax (level, tower, guildTreasure, runes) {
+    return Math.min(10000000, 5 * (1 + _clamp(guildTreasure, 0, 200) / 100 + _clamp(tower, 0, 100) / 100) * this.goldBase(level) / 11) * (1 + _clamp(runes, 0, 50) / 100);
+  }
+
+  /*
+    Data
+  */
+  static get GOLD_CURVE () {
+    delete this.GOLD_CURVE;
+
+    const array = [0, 25, 50, 75];
+
+    for (let i = array.length; i < 650; i++) {
+      array[i] = Math.min(Math.floor((array[i - 1] + Math.floor(array[Math.floor(i / 2)] / 3) + Math.floor(array[Math.floor(i / 3)] / 4)) / 5) * 5, 1E9);
+    }
+
+    return (this.GOLD_CURVE = array)
+  }
+
+  static get GOLD_ATTRIBUTE_TOTAL () {
+    delete this.GOLD_ATTRIBUTE_TOTAL;
+
+    const array = [];
+
+    for (let i = 0; i < 3200; i++) {
+      array[i] = (array[i - 1] || 0) + this.goldAttributeCost(i);
+    }
+
+    return (this.GOLD_ATTRIBUTE_TOTAL = array)
+  }
+
+  static #EXPERIENCE_NEXT = [
     0, 400, 900, 1400, 1800, 2200, 2890, 3580, 4405, 5355, 6435, 7515, 8925, 10335, 11975, 13715, 15730, 17745, 20250, 22755, 25620, 28660, 32060, 35460, 39535, 43610, 48155, 52935,
     58260, 63585, 69760, 75935, 82785, 89905, 97695, 105485, 114465, 123445, 133260, 143425, 154545, 165665, 178210, 190755, 204430, 218540, 233785, 249030, 266140, 283250, 301715,
     320685, 341170, 361655, 384360, 407065, 431545, 456650, 483530, 510410, 540065, 569720, 601435, 633910, 668670, 703430, 741410, 779390, 819970, 861400, 905425, 949450, 997485,
@@ -92,9 +379,9 @@ const EXPERIENCE_REQUIRED = [
     852514095, 864824885, 877455675, 890086465, 902995095, 915955220, 929193185, 942431150, 956014120, 969597090, 983470400, 997398375, 1011626725, 1025855075, 1040443405, 1055031735,
     1069933505, 1084893105, 1100166150, 1115439195, 1131099560, 1146759925, 1162747145, 1178794835, 1195180710, 1211566585, 1228357310, 1245148035, 1262290985, 1279497900, 1297057040,
     1314616180, 1332609455, 1350602730, 1368963280, 1387391470, 1406199095, 1425006720, 1444267210, 1463527700, 1483183310, 1500000000
-];
-
-const EXPERIENCE_TOTAL = [
+  ];
+  
+  static #EXPERIENCE_TOTAL = [
     0, 0, 400, 1300, 2700, 4500, 6700, 9590, 13170, 17575, 22930, 29365, 36880, 45805, 56140, 68115, 81830, 97560, 115305, 135555, 158310, 183930, 212590, 244650, 280110, 319645, 363255,
     411410, 464345, 522605, 586190, 655950, 731885, 814670, 904575, 1002270, 1107755, 1222220, 1345665, 1478925, 1622350, 1776895, 1942560, 2120770, 2311525, 2515955, 2734495, 2968280,
     3217310, 3483450, 3766700, 4068415, 4389100, 4730270, 5091925, 5476285, 5883350, 6314895, 6771545, 7255075, 7765485, 8305550, 8875270, 9476705, 10110615, 10779285, 11482715, 12224125,
@@ -120,9 +407,9 @@ const EXPERIENCE_TOTAL = [
     54837787245, 55753742465, 56682935650, 57625366800, 58581380920, 59550978010, 60534448410, 61531846785, 62543473510, 63569328585, 64609771990, 65664803725, 66734737230, 67819630335,
     68919796485, 70035235680, 71166335240, 72313095165, 73475842310, 74654637145, 75849817855, 77061384440, 78289741750, 79534889785, 80797180770, 82076678670, 83373735710, 84688351890,
     86020961345, 87371564075, 88740527355, 90127918825, 91534117920, 92959124640, 94403391850, 95866919550, 97350102860
-];
-
-const SOULS_CURVE = [
+  ];
+  
+  static #SOULS_CURVE = [
     0, 2175, 2295, 2415, 2535, 2648, 2768, 2888, 3000, 3120, 3240, 3360, 3473, 3593, 3713, 3825, 3945, 4065, 4185, 4298, 4418, 4538, 4650, 4770, 4890, 5010, 5123, 5243, 5363, 5475, 5595,
     5715, 5835, 5948, 6068, 6188, 6255, 6330, 6398, 6465, 6540, 6608, 6683, 6750, 6825, 6893, 6960, 7035, 7103, 7178, 7245, 7320, 7388, 7455, 7530, 7598, 7673, 7740, 7815, 7883, 7950,
     8025, 8093, 8168, 8235, 8310, 8378, 8445, 8520, 8588, 8663, 8768, 8873, 8978, 9083, 9188, 9300, 9405, 9510, 9615, 9720, 9825, 9930, 10043, 10148, 10253, 10358, 10463, 10568, 10673,
@@ -146,4 +433,79 @@ const SOULS_CURVE = [
     1726313, 1791278, 1856250, 1921223, 1986195, 2051168, 2116140, 2181113, 2246085, 2311058, 2376030, 2441003, 2505975, 2570948, 2635920, 2700893, 2765865, 2830838, 2895810, 2960783,
     3025755, 3090728, 3155700, 3220673, 3285645, 3350618, 3415590, 3480563, 3545535, 3610508, 3675480, 3740453, 3805425, 3870398, 3935370, 4000343, 4065315, 4130288, 4195260, 4260233,
     4325205, 4390178, 4455150, 4520123
-];
+  ];
+}
+
+/*
+  Item rune to runes conversions
+*/
+const RUNE_VALUE = {
+  GOLD: function (rune) {
+      return rune < 2 ? 0 : (3 + 2 * (rune - 2));
+  },
+  EPIC_FIND: function (rune) {
+      return rune < 2 ? 0 : (3 + 2 * (rune - 2));
+  },
+  ITEM_QUALITY: function (rune) {
+      switch (rune) {
+          case 1: return 3;
+          case 2: return 19;
+          case 3: return 50;
+          case 4: return 75;
+          case 5: return 99;
+          default: return 0;
+      }
+  },
+  XP: function (rune) {
+      switch (rune) {
+          case 1: return 3;
+          case 2: return 9;
+          case 3: return 25;
+          case 4: return 35;
+          case 5: return 45;
+          case 6: return 55;
+          case 7: return 65;
+          case 8: return 75;
+          case 9: return 85;
+          case 10: return 95;
+          default: return 0;
+      }
+  },
+  HEALTH: function (rune) {
+      switch (rune) {
+          case 1: return 3;
+          case 2: return 6;
+          case 3: return 17;
+          case 4: return 23;
+          case 5: return 30;
+          case 6: return 36;
+          case 7: return 43;
+          case 8: return 50;
+          case 9: return 56;
+          case 10: return 64;
+          case 11: return 72;
+          case 12: return 80;
+          case 13: return 88;
+          case 14: return 94;
+          case 15: return 99;
+          default: return 0;
+      }
+  },
+  SINGLE_RESISTANCE: function (rune) {
+      if (rune < 2) {
+          return 0;
+      } else {
+          return Math.floor((rune - 0.4) / 0.75);
+      }
+  },
+  TOTAL_RESISTANCE: function (rune) {
+      return RUNE_VALUE.SINGLE_RESISTANCE(rune * 3);
+  },
+  ELEMENTAL_DAMAGE: function (rune) {
+      if (rune < 2) {
+          return 0;
+      } else {
+          return Math.floor((rune - 0.3) / 0.6);
+      }
+  }
+}

@@ -78,9 +78,7 @@ const ExpressionEnum = new (class {
     _load () {
         if (typeof this.values === 'undefined') {
             this.values = {
-                'GoldCurve': GOLD_CURVE,
-                'AchievementCount': ACHIEVEMENTS_COUNT,
-                'AchievementNames': _sequence(ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
+                'GoldCurve': Calculations.goldCurve(),
                 'AchievementCount': PlayerModel.ACHIEVEMENTS_COUNT,
                 'AchievementNames': _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
                 'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
@@ -93,10 +91,9 @@ const ExpressionEnum = new (class {
                 'AttributeTypes': _sequence(6).map(i => i > 0 ? intl(`general.attribute${i}`) : ''),
                 'RuneTypes': _sequence(13).map(i => i > 0 ? intl(`general.rune${i}`) : ''),
                 'UnderworldBuildings': _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)),
-                'ExperienceCurve': EXPERIENCE_REQUIRED,
-                'ExperienceTotal': EXPERIENCE_TOTAL,
-                'SoulsCurve': SOULS_CURVE,
-                'ScrapbookSize': SCRAPBOOK_COUNT,
+                'ExperienceCurve': Calculations.experienceNextLevelCurve(),
+                'ExperienceTotal': Calculations.experienceTotalLevelCurve(),
+                'SoulsCurve': Calculations.soulsCurve(),
                 'ScrapbookSize': PlayerModel.SCRAPBOOK_COUNT,
                 'MountSizes': ['', 10, 20, 30, 50]
             };
@@ -1533,7 +1530,7 @@ const SP_FUNCTIONS = {
     // Total attribute price
     'statsum': (attribute) => {
         if (!isNaN(attribute)) {
-            return calculateTotalAttributePrice(parseInt(attribute));
+            return Calculations.goldAttributeTotalCost(parseInt(attribute));
         } else {
             return undefined;
         }
@@ -1541,7 +1538,7 @@ const SP_FUNCTIONS = {
     // Attribute price
     'statcost': (attribute) => {
         if (!isNaN(attribute)) {
-            return calculateAttributePrice(parseInt(attribute));
+            return Calculations.goldAttributeCost(parseInt(attribute));
         } else {
             return undefined;
         }
@@ -1549,7 +1546,7 @@ const SP_FUNCTIONS = {
     // Experience needed
     'expneeded': (level) => {
         if (!isNaN(level)) {
-            return EXPERIENCE_TOTAL[Math.min(393, level)] + Math.max(0, level - 393) * 1500000000;
+            return Calculations.experienceTotalLevel(level);
         } else {
             return undefined;
         }
