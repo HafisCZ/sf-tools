@@ -1,7 +1,3 @@
-
-const ACHIEVEMENTS_COUNT = 103;
-const SCRAPBOOK_COUNT = 2283;
-
 const RUNE_VALUE = {
     GOLD: function (rune) {
         return rune < 2 ? 0 : (3 + 2 * (rune - 2));

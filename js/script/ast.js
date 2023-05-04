@@ -81,6 +81,8 @@ const ExpressionEnum = new (class {
                 'GoldCurve': GOLD_CURVE,
                 'AchievementCount': ACHIEVEMENTS_COUNT,
                 'AchievementNames': _sequence(ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
+                'AchievementCount': PlayerModel.ACHIEVEMENTS_COUNT,
+                'AchievementNames': _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
                 'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
                 'GroupRoles': _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : ''),
                 'Classes': _arrayFromIndexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']),
@@ -95,6 +97,7 @@ const ExpressionEnum = new (class {
                 'ExperienceTotal': EXPERIENCE_TOTAL,
                 'SoulsCurve': SOULS_CURVE,
                 'ScrapbookSize': SCRAPBOOK_COUNT,
+                'ScrapbookSize': PlayerModel.SCRAPBOOK_COUNT,
                 'MountSizes': ['', 10, 20, 30, 50]
             };
         }
@@ -203,6 +206,7 @@ class ExpressionScope {
 
     static get DEFAULT () {
         delete this.DEFAULT;
+
         return (this.DEFAULT = new this());
     }
 }
@@ -2329,7 +2333,7 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Achievements.Owned
     },
     'Album': {
-        expr: p => Math.ceil(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
+        expr: p => Math.ceil(10000 * p.BookPercentage) / 100,
         format: (p, x) => x.toFixed(2) + '%',
         width: 130,
         decimal: true
