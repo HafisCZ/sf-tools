@@ -19,12 +19,6 @@ const FIGHT_TYPES = {
     FortRevenge: 109
 };
 
-const GUILD_ROLE_NONE = 0;
-const GUILD_ROLE_LEADER = 1;
-const GUILD_ROLE_OFFICER = 2;
-const GUILD_ROLE_MEMBER = 3;
-const GUILD_ROLE_INVITED = 4;
-
 const ACHIEVEMENTS_COUNT = 103;
 const SCRAPBOOK_COUNT = 2283;
 

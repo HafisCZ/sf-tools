@@ -32,6 +32,12 @@ const SCRAPBOOK_BOUNDARIES = [
     }
 ];
 
+const GUILD_ROLE_NONE = 0;
+const GUILD_ROLE_LEADER = 1;
+const GUILD_ROLE_OFFICER = 2;
+const GUILD_ROLE_MEMBER = 3;
+const GUILD_ROLE_INVITED = 4;
+
 class ItemModel {
     static empty () {
         return new ItemModel(new Array(12).fill(0), 0, 0);
