@@ -200,9 +200,12 @@ class ExpressionScope {
 
         return undefined;
     }
-}
 
-ExpressionScope.DEFAULT_SCOPE = new ExpressionScope();
+    static get DEFAULT () {
+        delete this.DEFAULT;
+        return (this.DEFAULT = new this());
+    }
+}
 
 class ExpressionRenderer {
     static render (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extras) {
@@ -857,7 +860,7 @@ class Expression {
     }
 
     // Outside eval function (always call this from outside of the Expression class)
-    eval (scope = ExpressionScope.DEFAULT_SCOPE) {
+    eval (scope = ExpressionScope.DEFAULT) {
         this.subexpressions_cache_indexes = [];
         this.subexpressions_cache = [];
 
