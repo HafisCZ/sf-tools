@@ -695,6 +695,9 @@ class DungeonHelper {
 }
 
 class PlayerModel {
+    static ACHIEVEMENTS_COUNT = 103;
+    static SCRAPBOOK_COUNT = 2283;
+
     constructor (data) {
         if (data) {
             this._initShared(data);
@@ -1454,7 +1457,7 @@ class PlayerModel {
 
         const achievements = data.achievements || [];
         const half = Math.trunc(achievements.length / 2);
-        for (let i = 0; i < ACHIEVEMENTS_COUNT; i++) {
+        for (let i = 0; i < PlayerModel.ACHIEVEMENTS_COUNT; i++) {
             if (i >= half) {
                 this.Achievements.push({
                     Owned: false,
@@ -1830,6 +1833,8 @@ class PlayerModel {
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
 
         this.XPTotal = this.XP + EXPERIENCE_TOTAL[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
+
+        this.BookPercentage = this.Book / PlayerModel.SCRAPBOOK_COUNT;
 
         this.Fortress.RaidHonor = this.Fortress.Honor - 10 * (
             this.Fortress.Fortress +

@@ -201,55 +201,9 @@ const COLOR_MAP = {
     'yellowgreen': '#9acd32'
 };
 
-const DEFAULT_CONSTANTS = Object.assign({}, COLOR_MAP, {
-    'green': '#00c851',
-    'orange': '#ffbb33',
-    'red': '#ff3547',
-    'blue': '#0064b4',
-    '15min': 900000,
-    '1hour': 3600000,
-    '12hours': 43200000,
-    '1day': 86400000,
-    '3days': 259200000,
-    '7days': 604800000,
-    '21days': 1814400000,
-    'mount10': 1,
-    'mount20': 2,
-    'mount30': 3,
-    'mount50': 4,
-    'none': 0,
-    'warrior': 1,
-    'mage': 2,
-    'scout': 3,
-    'assassin': 4,
-    'battlemage': 5,
-    'berserker': 6,
-    'demonhunter': 7,
-    'druid': 8,
-    'bard': 9,
-    'empty': '',
-    'tiny': 40,
-    'small': 60,
-    'normal': 100,
-    'large': 160,
-    'huge': 200,
-    'scrapbook': SCRAPBOOK_COUNT,
-    'max': -1,
-    'weapon': 1,
-    'shield': 2,
-    'breastplate': 3,
-    'shoes': 4,
-    'gloves': 5,
-    'helmet': 6,
-    'belt': 7,
-    'necklace': 8,
-    'ring': 9,
-    'talisman': 10
-})
-
 class Constants {
     constructor (values = null) {
-        this.Values = values || DEFAULT_CONSTANTS;
+        this.Values = values || Constants.DEFAULT_CONSTANTS_VALUES;
     }
 
     get (key) {
@@ -287,7 +241,58 @@ class Constants {
 
     static get DEFAULT () {
         delete this.DEFAULT;
+
         return (this.DEFAULT = new this());
+    }
+
+    static get DEFAULT_CONSTANTS_VALUES () {
+        delete this.DEFAULT_CONSTANTS_VALUES;
+
+        return (this.DEFAULT_CONSTANTS_VALUES = Object.assign({}, COLOR_MAP, {
+            'green': '#00c851',
+            'orange': '#ffbb33',
+            'red': '#ff3547',
+            'blue': '#0064b4',
+            '15min': 900000,
+            '1hour': 3600000,
+            '12hours': 43200000,
+            '1day': 86400000,
+            '3days': 259200000,
+            '7days': 604800000,
+            '21days': 1814400000,
+            'mount10': 1,
+            'mount20': 2,
+            'mount30': 3,
+            'mount50': 4,
+            'none': 0,
+            'warrior': 1,
+            'mage': 2,
+            'scout': 3,
+            'assassin': 4,
+            'battlemage': 5,
+            'berserker': 6,
+            'demonhunter': 7,
+            'druid': 8,
+            'bard': 9,
+            'empty': '',
+            'tiny': 40,
+            'small': 60,
+            'normal': 100,
+            'large': 160,
+            'huge': 200,
+            'scrapbook': PlayerModel.SCRAPBOOK_COUNT,
+            'max': -1,
+            'weapon': 1,
+            'shield': 2,
+            'breastplate': 3,
+            'shoes': 4,
+            'gloves': 5,
+            'helmet': 6,
+            'belt': 7,
+            'necklace': 8,
+            'ring': 9,
+            'talisman': 10
+        }))
     }
 }
 

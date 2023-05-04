@@ -1697,12 +1697,12 @@ const PlayerDetailDialog = new (class extends Dialog {
                 </div>
                 <div class="detail-entry">
                     <div class="detail-item">${this.intl('scrapbook')}</div>
-                    <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }${ asDiff(player.Book, compare.Book, formatAsSpacedNumber) }</div>
+                    <div class="detail-item text-center">${ player.Book } / ${ PlayerModel.SCRAPBOOK_COUNT }${ asDiff(player.Book, compare.Book, formatAsSpacedNumber) }</div>
                 </div>
                 ${ player.Own || player.Achievements.Owned > 0 ? `
                     <div class="detail-entry">
                         <div class="detail-item">${this.intl('achievements')}</div>
-                        <div class="detail-item text-center">${ player.Achievements.Owned } / ${ ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
+                        <div class="detail-item text-center">${ player.Achievements.Owned } / ${ PlayerModel.ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
                     </div>
                 ` : '' }
                 ${ player.Mount ? `
