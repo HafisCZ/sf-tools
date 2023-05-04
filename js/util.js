@@ -617,46 +617,6 @@ function getColorFromName (name) {
     }
 }
 
-const GOLD_CURVE = (function (base, max, clamp) {
-    for (let i = base.length; i < max; i++) {
-        base[i] = Math.min(Math.floor((base[i - 1] + Math.floor(base[Math.floor(i / 2)] / 3) + Math.floor(base[Math.floor(i / 3)] / 4)) / 5) * 5, clamp);
-    }
-
-    return base;
-})([0, 25, 50, 75], 650, 1E9);
-
-function getGoldCurve (value) {
-    return GOLD_CURVE[value] == undefined ? 1E9 : GOLD_CURVE[value];
-}
-
-function calculateAttributePrice (attribute) {
-    var price = 0;
-    for (var i = 0; i < 5; i++) {
-        var num = Math.floor(1 + (attribute + i) / 5);
-        price = num >= 800 ? 5E9 : (price + getGoldCurve(num));
-    }
-
-    price = 5 * Math.floor(Math.floor(price / 5) / 5) / 100;
-    return price < 10 ? price : Math.min(1E7, Math.floor(price));
-}
-
-const TOTAL_GOLD_CURVE = [];
-function calculateTotalAttributePrice (attribute) {
-    var price = 0;
-    if (attribute > 3200) {
-        price += 1E7 * (attribute - 3200);
-        attribute = 3200;
-    }
-
-    if (!TOTAL_GOLD_CURVE.length) {
-        for (var i = 0; i < 3200; i++) {
-            TOTAL_GOLD_CURVE[i] = (TOTAL_GOLD_CURVE[i - 1] || 0) + calculateAttributePrice(i);
-        }
-    }
-
-    return price + (TOTAL_GOLD_CURVE[attribute - 1] || 0);
-}
-
 function toCSSColor (color) {
     let style = new Option().style;
     style.color = color;

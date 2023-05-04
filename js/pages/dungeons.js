@@ -451,7 +451,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         if (dungeon.id === 201) {
             return 0;
         } else {
-            return (boss.level >= 393 ? 1.5E9 : EXPERIENCE_REQUIRED[boss.level]) / (dungeon.id === 203 ? 50 : 5);
+            return Calculations.experienceNextLevel(boss.level) / (dungeon.id === 203 ? 50 : 5);
         }
     }
 

@@ -1622,8 +1622,8 @@ class PlayerModel {
         attribute.Pet =  this.getPetBonus(attribute, pet);
         attribute.PotionIndex = this.getPotionIndex(attribute);
         attribute.PetBonus = pet;
-        attribute.NextCost = calculateAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
-        attribute.TotalCost = calculateTotalAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
+        attribute.NextCost = Calculations.goldAttributeCost(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
+        attribute.TotalCost = Calculations.goldAttributeTotalCost(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.PotionSize = this.getPotionSize(attribute);
 
         if (!attribute.Bonus) {
@@ -1832,7 +1832,7 @@ class PlayerModel {
 
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
 
-        this.XPTotal = this.XP + EXPERIENCE_TOTAL[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
+        this.XPTotal = this.XP + Calculations.experienceTotalLevelCurve(this.Level);
 
         this.BookPercentage = this.Book / PlayerModel.SCRAPBOOK_COUNT;
 

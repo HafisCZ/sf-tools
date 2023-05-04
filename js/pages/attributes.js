@@ -45,22 +45,17 @@ Site.ready(null, function () {
     }
 
     function getAcademyValues (level, academy) {
-        let xp = getExperienceRequired(level);
-        let multiplier = 1.5 + 0.75 * (level - 1);
-        let base = xp / multiplier;
-        let hbase = (base / 30) / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-        let hourly = academy * hbase;
-        let capacity = academy * getAcademyMultiplier(academy) * hbase;
-        let time = capacity / hourly;
+        const hourly = Calculations.experienceAcademyHourly(level, academy);
+        const capacity = Calculations.experienceAcademyCapacity(level, academy);
+        const time = capacity / hourly;
 
         return [hourly, capacity, time * 3600000];
     }
 
     function getGoldPitValues (level, pit) {
-        let num = getGoldCurve(level) * 12 / 1000;
-        let hourly = (num * pit / 75) * (1 + Math.max(0, pit - 15) / 100);
-        let capacity = Math.min(300E6, hourly * pit * Math.max(2, 12 / pit));
-        let time = 3600000 * capacity / hourly;
+        const hourly = Calculations.goldPitHourly(level, pit);
+        const capacity = Calculations.goldPitCapacity(level, pit);
+        const time = 3600000 * capacity / hourly;
 
         return [capacity, hourly, time];
     }
@@ -514,76 +509,6 @@ Site.ready(null, function () {
         return value >= 999 ? formatAsSpacedNumber(value, delimiter) : roundShort(value)
     }
 
-    function getExperienceRequired (value) {
-        if (value >= 393) {
-            return 1500000000;
-        } else {
-            return EXPERIENCE_REQUIRED[value];
-        }
-    }
-
-    function getMineMultiplier(m) {
-        if (m <= 1) {
-            return 1;
-        } else if (m >= 14) {
-            return 24;
-        } else switch (m) {
-            case 2: return 2;
-            case 3: return 3;
-            case 4: return 4;
-            case 5: return 6;
-            case 6: return 8;
-            case 7: return 10;
-            case 8: return 12;
-            case 9: return 14;
-            case 10: return 16;
-            case 11: return 18;
-            case 12: return 20;
-            case 13: return 22;
-        }
-    }
-
-    function getArenaMultiplier (level) {
-        if (level >= 300) {
-            return 10;
-        } else if (level >= 250) {
-            return 15;
-        } else if (level >= 200) {
-            return 20;
-        } else if (level >= 150) {
-            return 24;
-        } else {
-            return 28;
-        }
-    }
-
-    function getAcademyMultiplier(m) {
-        if (m <= 1) {
-            return 1;
-        } else if (m >= 20) {
-            return 12;
-        } else switch (m) {
-            case 2: return 1.1;
-            case 3: return 1.2;
-            case 4: return 1.3;
-            case 5: return 1.4;
-            case 6: return 1.5;
-            case 7: return 1.6;
-            case 8: return 2.0;
-            case 9: return 2.4;
-            case 10: return 3.2;
-            case 11: return 4.0;
-            case 12: return 4.8;
-            case 13: return 6.4;
-            case 14: return 8.0;
-            case 15: return 9.6;
-            case 16: return 10.0;
-            case 17: return 10.4;
-            case 18: return 10.8;
-            case 19: return 11.2;
-        }
-    }
-
     function ceilTo (value, step = 1) {
         return Math.ceil(value / step) * step;
     }
@@ -611,7 +536,7 @@ Site.ready(null, function () {
     $('#priceat-attribute').on('change input', function () {
         if (validate($(this))) {
             const value = getClampedValue(this, 1, Infinity);
-            const cost = calculateAttributePrice(value - 1);
+            const cost = Calculations.goldAttributeCost(value - 1);
 
             $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
         }
@@ -623,15 +548,12 @@ Site.ready(null, function () {
 
     $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
         if (validate($('#misc-level'), $('#misc-gate'), $('#misc-torture'))) {
-            const level = getClampedValue('#misc-level', 1, 800);
-            const gate = getClampedValue('#misc-gate', 0, 15);
-            const torture = getClampedValue('#misc-torture', 0, 15);
-
-            const MAXIMUM_SOULS_MULTIPLIER = 7.5;
-
-            const soulsMultiplier = (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5));
-            const souls = Math.ceil((level < 542 ? (SOULS_CURVE[level] / MAXIMUM_SOULS_MULTIPLIER) : (464075 + (level - 525) * 8663)) * soulsMultiplier);
-
+            const souls = Calculations.souls(
+                getClampedValue('#misc-level', 1, 800),
+                getClampedValue('#misc-gate', 0, 15),
+                getClampedValue('#misc-torture', 0, 15)
+            );
+ 
             $('#misc-souls').val(formatValue(souls));
         }
     });
@@ -641,7 +563,7 @@ Site.ready(null, function () {
             const attStart = getClampedValue('#pricebetween-from', 1, Infinity);
             const attEnd = getClampedValue('#pricebetween-to', attStart, Infinity);
 
-            const cost = calculateTotalAttributePrice(attEnd - 1) - calculateTotalAttributePrice(attStart - 1);
+            const cost = Calculations.goldAttributeTotalCost(attEnd - 1) - Calculations.goldAttributeTotalCost(attStart - 1);
 
             $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
         }
@@ -653,26 +575,23 @@ Site.ready(null, function () {
             const hydra = getClampedValue('#xp-hydra', 0, 20);
             const academy = getClampedValue('#xp-academy', 1, 20);
 
-            const xp = getExperienceRequired(level);
-            const multiplier = 1.5 + 0.75 * (level - 1);
-            const base = xp / multiplier;
-            const daily = (1 + 0.25 * hydra) * base;
-            const arena = base / 10;
-            const hbase = (base / 30) / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-            const hourly = academy * hbase;
-            const capacity = academy * getAcademyMultiplier(academy) * hbase;
-            const time = capacity / hourly;
+            const xp = Calculations.experienceNextLevel(level);
+            const daily = Calculations.experienceSecretMission(level, hydra);
+            const arena = Calculations.experienceArena(level);
 
-            const wheel2 = Math.trunc(base / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99))));
-            const wheel1 = Math.trunc(wheel2 / 2);
+            const [hourly, capacity, time] = getAcademyValues(level, academy);
 
-            const calendar1 = Math.ceil(xp / 15);
-            const calendar2 = Math.ceil(xp / 10);
-            const calendar3 = Math.ceil(xp / 5);
-            const habitat = 6 * hbase * multiplier;
-            const twister = Math.min(xp / 50, 30E6);
+            const wheel2 = Calculations.experienceWheelBooks(level); 
+            const wheel1 = Calculations.experienceWheelBook(level);
 
-            $('#xp-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
+            const calendar1 = Calculations.experienceCalendar(level, 0);
+            const calendar2 = Calculations.experienceCalendar(level, 1);
+            const calendar3 = Calculations.experienceCalendar(level, 2);
+      
+            const habitat = Calculations.experiencePetHabitat(level);
+            const twister = Calculations.experienceTwisterEnemy(level);
+
+            $('#xp-time').val(formatFancyTime(time));
             $('#xp-next').val(formatAsSpacedNumber(xp, ' '));
             $('#xp-arena').val(formatAsSpacedNumber(arena, ' '));
             $('#xp-daily').val(formatAsSpacedNumber(daily, ' '));
@@ -702,14 +621,11 @@ Site.ready(null, function () {
             const rxp = getClampedValue('#quest-rxp', 0, 10);
             const rgold = getClampedValue('#quest-rgold', 0, 50);
 
-            const basexp = getExperienceRequired(level) / (1.5 + 0.75 * (level - 1));
-            const basegold = getGoldCurve(level) * 12 / 1000;
+            const xpmin = Calculations.experienceQuestMin(level, book, gxp, rxp);
+            const xpmax = Calculations.experienceQuestMax(level, book, gxp, rxp);
 
-            const xpmin = (1 + rxp / 100) * (1 + gxp / 100 + book / 100) * basexp / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-            const xpmax = xpmin * 5;
-
-            const goldmin = Math.min(10000000, 1 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
-            const goldmax = Math.min(10000000, 5 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
+            const goldmin = Calculations.goldQuestMin(level, tower, ggold, rgold);
+            const goldmax = Calculations.goldQuestMax(level, tower, ggold, rgold);
 
             $('#quest-goldmin').val(formatValue(goldmin));
             $('#quest-goldmax').val(formatValue(goldmax));
@@ -727,52 +643,39 @@ Site.ready(null, function () {
             const runes = getClampedValue('#gold-runes', 0, 5);
             const pit = getClampedValue('#gold-pit', 1, 100);
 
-            var num = getGoldCurve(level) * 12 / 1000;
+            const guard = Calculations.goldGuardDuty(level, tower, guild);
+            const scroll = Calculations.goldWitchScroll(level);
 
-            var guard = (num / 3) * (1 + guild / 100 + tower / 100);
-            var reward = num;
-            var dice = num / 3;
+            const [capacity, hourly, time] = getGoldPitValues(level, pit);
 
-            var scroll = Math.min(10E6, reward * 12.5 * (1 / 3));
+            const gem1 = Calculations.goldGem(level, mine, 0);
+            const gem2 = Calculations.goldGem(level, mine, 1);
+            const gem3 = Calculations.goldGem(level, mine, 2);
 
-            let [capacity, hourly, time] = getGoldPitValues(level, pit);
+            const pot10 = Calculations.goldPotionCost(level, runes, 0);
+            const pot15 = Calculations.goldPotionCost(level, runes, 1);
+            const pot25 = Calculations.goldPotionCost(level, runes, 2);
 
-            var guard = Math.min(10E6, guard);
+            const pothp = Calculations.goldLifePotionCost(level, runes);
+            const pothp_gold = Calculations.goldLifePotionShroomlessCost(level, runes);
 
-            var gem = num / 6;
-            gem = Math.min(10E6, gem * getMineMultiplier(mine));
+            const reroll = Calculations.goldFortressReroll(level);
+            const potwitch = Calculations.goldWitchPotion(level);
 
-            var gem2 = getGoldCurve(level + 5) / 10;
-            gem2 = Math.min(10E6, gem2 * 2 * getMineMultiplier(mine) / 100);
+            const hourglass1 = Calculations.goldHourglassCost(level, runes); 
+            const hourglass10 = Calculations.goldHourglassPackCost(level, runes);
 
-            var gem3 = getGoldCurve(level + 10) / 10;
-            gem3 = Math.min(10E6, gem3 * 2 * getMineMultiplier(mine) / 100);
+            const dice1 = Calculations.goldDice(level, 0);
+            const dice2 = Calculations.goldDice(level, 1);
+            const dice3 = Calculations.goldDice(level, 2);
 
-            var potion = (1 + Math.min(1, Math.max(0, (90 - level) / 10))) * getGoldCurve(Math.max(1, level - runes)) * 15 / 1000;
+            const goldbar1 = Calculations.goldCalendarBar(level);
+            const goldbar3 = Calculations.goldCalendarBars(level);
 
-            var pot10 = Math.min(5E6, potion / 4);
-            var pot15 = Math.min(5E6, potion / 2);
-            var pot25 = Math.min(5E6, potion / 1);
-
-            var pothp = Math.min(5E6, potion / 3);
-            var pothp_gold = Math.min(10E6, potion / 1);
-
-            var reroll = reward * 5 / 8;
-            var potwitch = reward * 5 / 6;
-
-            var hourglass1 = Math.min(375000, potion / 6);
-            if (hourglass1 > 37500) hourglass1 = 375000;
-            var hourglass10 = Math.min(3750000, 10 * hourglass1);
-
-            var goldbar3 = dice * 25;
-            var goldbar1 = 3 * goldbar3 / 10;
-
-            var towerboss = (9 * getGoldCurve(level + 2 ) / 100);
-            var twisterboss = (2 * getGoldCurve(level) / 100);
-
-            var arenagold = level > 95 ? Math.trunc(twisterboss / getArenaMultiplier(level)) : level;
-
-            reward = Math.min(10E6, reward);
+            const towerboss = Calculations.goldTowerEnemy(level);
+            const twisterboss = Calculations.goldTwisterEnemy(level);
+            const arenagold = Calculations.goldArena(level);
+            const reward = Calculations.goldEnvironmentalReward(level);
 
             $('#gold-bar').val(formatValue(goldbar1));
             $('#gold-bar3').val(formatValue(goldbar3));
@@ -797,11 +700,11 @@ Site.ready(null, function () {
             $('#gold-reward').val(formatValue(reward));
             $('#gold-reroll').val(formatValue(reroll));
 
-            $('#gold-dice').val(formatValue(dice));
-            $('#gold-dice2').val(formatValue(dice * 5));
-            $('#gold-dice3').val(formatValue(dice * 25));
+            $('#gold-dice').val(formatValue(dice1));
+            $('#gold-dice2').val(formatValue(dice2));
+            $('#gold-dice3').val(formatValue(dice3));
 
-            $('#gold-gem').val(formatValue(gem));
+            $('#gold-gem').val(formatValue(gem1));
             $('#gold-gem2').val(formatValue(gem2));
             $('#gold-gem3').val(formatValue(gem3));
 
@@ -815,10 +718,10 @@ Site.ready(null, function () {
         var text = '';
 
         for (var i = 0; i < 3155; i++) {
-            var cost = calculateAttributePrice(i);
+            var cost = Calculations.goldAttributeCost(i);
 
             if (i < 632) {
-                var curve = getGoldCurve(i + 1);
+                var curve = Calculations.gold(i + 1);
 
                 var num = Math.trunc(curve / 10);
                 num = num * 12 / 100;
