@@ -277,9 +277,6 @@ class Constants {
         return Object.keys(this.Values);
     }
 
-    /*
-        Old stuff
-    */
     getValue (tag, key) {
         return tag == '@' ? this.Values[key] : key;
     }
@@ -287,9 +284,12 @@ class Constants {
     isValid (tag, key) {
         return tag == '@' && this.Values.hasOwnProperty(key);
     }
-}
 
-Constants.DEFAULT = new Constants();
+    static get DEFAULT () {
+        delete this.DEFAULT;
+        return (this.DEFAULT = new this());
+    }
+}
 
 function decodeScrapbook (data) {
     if (data) {
