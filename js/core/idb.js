@@ -546,7 +546,7 @@ const DatabaseManager = new (class {
 
     // INTERNAL: Add group
     _addGroup (data) {
-        this._registerModel('Groups', data.identifier, data.timestamp, new SFGroup(data));
+        this._registerModel('Groups', data.identifier, data.timestamp, new GroupModel(data));
     }
 
     // INTERNAL: Add model
