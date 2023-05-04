@@ -799,30 +799,6 @@ class Expression {
         return this.tokens.length == 0 && !this.empty;
     }
 
-    // Stringify the expression
-    toString (node = this.root) {
-        if (typeof(node) == 'object') {
-            if (node.raw) {
-                return `str(${ node.args })`;
-            } else if (node.op) {
-                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => typeof arg == 'undefined' ? 'undefined' : this.toString(arg)).join(', ') })`;
-            } else if (Array.isArray(node)) {
-                return `array(${ node.map(item => this.toString(item)).join(', ') })`;
-            } else {
-                return `item(${ node.key }, ${ node.val })`;
-            }
-        } else {
-            if (typeof(node) == 'string' && /\~\d+/.test(node)) {
-                let index = parseInt(node.slice(1));
-                if (index < this.subexpressions.length) {
-                    return this.toString(this.subexpressions[index]);
-                }
-            }
-
-            return node;
-        }
-    }
-
     checkCacheableNode (node) {
         if (typeof node == 'object') {
             if (node.op == 'var') {
