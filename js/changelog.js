@@ -38,6 +38,11 @@ const SIMULATOR_NOTICES = [
 ];
 
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Statistics': [
+            'Added option to save table as CSV file'
+        ]
+    },
     'v6.3586': {
         'Statistics': [
             'Improved performance of table rendering',
