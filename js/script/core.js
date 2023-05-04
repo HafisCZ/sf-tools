@@ -159,7 +159,7 @@ const Highlighter = new (class {
     }
 
     expression (text, root, extras) {
-        Expression.format(this, text, root, extras);
+        ExpressionRenderer.render(this, text, root, extras);
         return this;
     }
 

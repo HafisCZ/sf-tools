@@ -204,6 +204,88 @@ class ExpressionScope {
 
 ExpressionScope.DEFAULT_SCOPE = new ExpressionScope();
 
+class ExpressionRenderer {
+    static render (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extras) {
+        let tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP);
+        let nextName = false;
+
+        // Go through all tokens
+        for (let i = 0, token, prefix, suffix; i < tokens.length; i++) {
+            token = tokens[i];
+            if (/\S/.test(token)) {
+                // Prepare token
+                [, prefix, token, suffix] = token.match(/(\s*)(.*\S)(\s*)/);
+                token = token.replace(/\u2023/g, '\\\"').replace(/\u2043/g, '\\\'');
+
+                // Format token
+                if (token == undefined) {
+                    continue;
+                }
+
+                highlighter.normal(prefix);
+
+                if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
+                    highlighter.comment(token);
+                } else if (token.length > 1 && token[0] == '`' && token[token.length - 1] == '`') {
+                    highlighter.string('`');
+                    highlighter.join(token.slice(1, token.length - 1).split(/(\{\d+\})/g), (item) => /(\{\d+\})/.test(item) ? 'function' : 'string', '');
+                    highlighter.string('`');
+                } else if (extras && extras.includes(token)) {
+                    highlighter.header(token);
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                    highlighter.function(token);
+                } else if (token === 'true' || token === 'false') {
+                    highlighter.boolean(token, token === 'true');
+                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
+                    highlighter.constant(token);
+                } else if (root.variables.hasOwnProperty(token)) {
+                    if (root.variables[token].tableVariable == 'unfiltered') {
+                        highlighter.global(token, '-unfiltered');
+                    } else if (root.variables[token].tableVariable) {
+                        highlighter.global(token);
+                    } else {
+                        highlighter.constant(token);
+                    }
+                } else if (/^(\.*)this$/.test(token)) {
+                    highlighter.constant(token);
+                } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
+                    highlighter.header(token);
+                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(token)) {
+                    highlighter.header(token, '-protected');
+                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(token)) {
+                    highlighter.header(token, '-private');
+                } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
+                    highlighter.header(token, '-scoped');
+                } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
+                    highlighter.header(token, '-itemizable');
+                } else if (root.constants.exists(token)) {
+                    highlighter.constant(token);
+                } else if (/\~\d+/.test(token)) {
+                    highlighter.enum(token);
+                } else if (ExpressionEnum.has(token)) {
+                    highlighter.enum(token);
+                } else if (token == '$' || token == '$!' || token == '$$') {
+                    highlighter.keyword(token);
+                    nextName = true;
+                } else if (nextName) {
+                    nextName = false;
+                    if (/[a-zA-Z0-9\-\_]+/.test(token)) {
+                        highlighter.constant(token);
+                    } else {
+                        highlighter.normal(token);
+                    }
+                } else {
+                    highlighter.normal(token);
+                }
+
+                highlighter.normal(suffix);
+            } else {
+                highlighter.normal(token);
+            }
+        }
+    }
+}
+
 class Expression {
     constructor (string, settings = null) {
         this.string = string;
@@ -261,87 +343,6 @@ class Expression {
                 }
             } else {
                 this.empty = true;
-            }
-        }
-    }
-
-    // Format
-    static format (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extraIdentifiers) {
-        var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP);
-        let nextName = false;
-
-        // Go through all tokens
-        for (var i = 0, token; i < tokens.length; i++) {
-            token = tokens[i];
-            if (/\S/.test(token)) {
-                // Prepare token
-                var [, prefix, token, suffix] = token.match(/(\s*)(.*\S)(\s*)/);
-                token = token.replace(/\u2023/g, '\\\"').replace(/\u2043/g, '\\\'');
-
-                // Format token
-                if (token == undefined) {
-                    continue;
-                }
-
-                highlighter.normal(prefix);
-
-                if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
-                    highlighter.comment(token);
-                } else if (token.length > 1 && token[0] == '`' && token[token.length - 1] == '`') {
-                    highlighter.string('`');
-                    highlighter.join(token.slice(1, token.length - 1).split(/(\{\d+\})/g), (item) => /(\{\d+\})/.test(item) ? 'function' : 'string', '');
-                    highlighter.string('`');
-                } else if (extraIdentifiers && extraIdentifiers.includes(token)) {
-                    highlighter.header(token);
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
-                    highlighter.function(token);
-                } else if (token === 'true' || token === 'false') {
-                    highlighter.boolean(token, token === 'true');
-                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
-                    highlighter.constant(token);
-                } else if (root.variables.hasOwnProperty(token)) {
-                    if (root.variables[token].tableVariable == 'unfiltered') {
-                        highlighter.global(token, '-unfiltered');
-                    } else if (root.variables[token].tableVariable) {
-                        highlighter.global(token);
-                    } else {
-                        highlighter.constant(token);
-                    }
-                } else if (/^(\.*)this$/.test(token)) {
-                    highlighter.constant(token);
-                } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
-                    highlighter.header(token);
-                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(token)) {
-                    highlighter.header(token, '-protected');
-                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(token)) {
-                    highlighter.header(token, '-private');
-                } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
-                    highlighter.header(token, '-scoped');
-                } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
-                    highlighter.header(token, '-itemizable');
-                } else if (root.constants.exists(token)) {
-                    highlighter.constant(token);
-                } else if (/\~\d+/.test(token)) {
-                    highlighter.enum(token);
-                } else if (ExpressionEnum.has(token)) {
-                    highlighter.enum(token);
-                } else if (token == '$' || token == '$!' || token == '$$') {
-                    highlighter.keyword(token);
-                    nextName = true;
-                } else if (nextName) {
-                    nextName = false;
-                    if (/[a-zA-Z0-9\-\_]+/.test(token)) {
-                        highlighter.constant(token);
-                    } else {
-                        highlighter.normal(token);
-                    }
-                } else {
-                    highlighter.normal(token);
-                }
-
-                highlighter.normal(suffix);
-            } else {
-                highlighter.normal(token);
             }
         }
     }
