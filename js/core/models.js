@@ -521,7 +521,7 @@ class ItemModel {
     }
 }
 
-class SFGroup {
+class GroupModel {
     constructor (data) {
         this.Data = data;
 
