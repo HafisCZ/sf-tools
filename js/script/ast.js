@@ -51,69 +51,61 @@ const ExpressionCache = new (class {
     }
 })();
 
-const ExpressionEnum = new (class {
-    constructor () {
-        this.keys = [
-            'GoldCurve',
-            'AchievementCount',
-            'AchievementNames',
-            'ItemTypes',
-            'GroupRoles',
-            'Classes',
-            'FortressBuildings',
-            'PlayerActions',
-            'PotionTypes',
-            'GemTypes',
-            'AttributeTypes',
-            'RuneTypes',
-            'UnderworldBuildings',
-            'ExperienceCurve',
-            'ExperienceTotal',
-            'SoulsCurve',
-            'ScrapbookSize',
-            'MountSizes'
-        ]
+const ExpressionEnum = class {
+    static keys = [
+        'GoldCurve',
+        'AchievementCount',
+        'AchievementNames',
+        'ItemTypes',
+        'GroupRoles',
+        'Classes',
+        'FortressBuildings',
+        'PlayerActions',
+        'PotionTypes',
+        'GemTypes',
+        'AttributeTypes',
+        'RuneTypes',
+        'UnderworldBuildings',
+        'ExperienceCurve',
+        'ExperienceTotal',
+        'SoulsCurve',
+        'ScrapbookSize',
+        'MountSizes'
+    ]
+
+    static get values () {
+        delete this.values;
+
+        return (this.values = {
+            'GoldCurve': Calculations.goldCurve(),
+            'AchievementCount': PlayerModel.ACHIEVEMENTS_COUNT,
+            'AchievementNames': _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
+            'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
+            'GroupRoles': _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : ''),
+            'Classes': _arrayFromIndexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']),
+            'FortressBuildings': _sequence(12, 1).map(i => intl(`general.buildings.fortress${i}`)),
+            'PlayerActions': _sequence(4).map(i => intl(`general.action${i}`)),
+            'PotionTypes': _sequence(7).map(i => i > 0 ? intl(`general.potion${i}`) : ''),
+            'GemTypes': _sequence(8).map(i => i > 0 ? intl(`general.gem${i}`) : ''),
+            'AttributeTypes': _sequence(6).map(i => i > 0 ? intl(`general.attribute${i}`) : ''),
+            'RuneTypes': _sequence(13).map(i => i > 0 ? intl(`general.rune${i}`) : ''),
+            'UnderworldBuildings': _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)),
+            'ExperienceCurve': Calculations.experienceNextLevelCurve(),
+            'ExperienceTotal': Calculations.experienceTotalLevelCurve(),
+            'SoulsCurve': Calculations.soulsCurve(),
+            'ScrapbookSize': PlayerModel.SCRAPBOOK_COUNT,
+            'MountSizes': ['', 10, 20, 30, 50]
+        })
     }
 
-    _load () {
-        if (typeof this.values === 'undefined') {
-            this.values = {
-                'GoldCurve': Calculations.goldCurve(),
-                'AchievementCount': PlayerModel.ACHIEVEMENTS_COUNT,
-                'AchievementNames': _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
-                'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
-                'GroupRoles': _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : ''),
-                'Classes': _arrayFromIndexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']),
-                'FortressBuildings': _sequence(12, 1).map(i => intl(`general.buildings.fortress${i}`)),
-                'PlayerActions': _sequence(4).map(i => intl(`general.action${i}`)),
-                'PotionTypes': _sequence(7).map(i => i > 0 ? intl(`general.potion${i}`) : ''),
-                'GemTypes': _sequence(8).map(i => i > 0 ? intl(`general.gem${i}`) : ''),
-                'AttributeTypes': _sequence(6).map(i => i > 0 ? intl(`general.attribute${i}`) : ''),
-                'RuneTypes': _sequence(13).map(i => i > 0 ? intl(`general.rune${i}`) : ''),
-                'UnderworldBuildings': _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)),
-                'ExperienceCurve': Calculations.experienceNextLevelCurve(),
-                'ExperienceTotal': Calculations.experienceTotalLevelCurve(),
-                'SoulsCurve': Calculations.soulsCurve(),
-                'ScrapbookSize': PlayerModel.SCRAPBOOK_COUNT,
-                'MountSizes': ['', 10, 20, 30, 50]
-            };
-        }
-
-        return this.values;
+    static get (key) {
+        return this.values[key];
     }
 
-    all () {
-        return this._load();
-    }
-
-    get (key) {
-        return this.all()[key];
-    }
-
-    has (key) {
+    static has (key) {
         return this.keys.includes(key);
     }
-})();
+}
 
 class ExpressionScope {
     clone () {
