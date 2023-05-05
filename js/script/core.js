@@ -2816,11 +2816,13 @@ class Settings {
 
         let content = '';
 
-        ScriptHighlightCache.setCurrent(settings);
+        ScriptHighlightCache.ini(settings);
 
         for (const line of string.split('\n')) {
-            if (ScriptHighlightCache.has(line)) {
-                content += ScriptHighlightCache.get(line);
+            const cachedLine = ScriptHighlightCache.get(line);
+
+            if (typeof cachedLine !== 'undefined') {
+                content += cachedLine;
             } else {
                 let [ commandLine, comment, commentIndex ] = Settings.stripComments(line, false);
                 let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
@@ -2844,7 +2846,7 @@ class Settings {
                     currentContent += Highlighter.comment(comment).text;
                 }
 
-                ScriptHighlightCache.store(line, currentContent);
+                ScriptHighlightCache.set(line, currentContent);
 
                 content += currentContent;
             }
@@ -2856,32 +2858,28 @@ class Settings {
     }
 };
 
-const ScriptHighlightCache = new (class {
-    initialize () {
-        this.hash = null;
-        this.cache = {};
-    }
+const ScriptHighlightCache = class {
+    static #hash = null;
+    static #data = new Map();
 
-    setCurrent (tempSettings) {
-        let newHash = SHA1(JSON.stringify(tempSettings));
-        if (newHash != this.hash) {
-            this.hash = newHash;
-            this.cache = {};
+    static ini (content) {
+        const hash = SHA1(JSON.stringify(content));
+
+        if (this.#hash !== hash) {
+            this.#hash = hash;
+
+            this.#data = new Map();
         }
     }
 
-    has (line) {
-        return line in this.cache;
+    static get (line) {
+        return this.#data.get(line);
     }
 
-    get (line) {
-        return this.cache[line];
+    static set (line, output) {
+        this.#data.set(line, output);
     }
-
-    store (line, output) {
-        this.cache[line] = output;
-    }
-})();
+}
 
 // Script archive
 const ScriptArchive = class {
