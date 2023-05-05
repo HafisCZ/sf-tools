@@ -279,7 +279,7 @@ const SimulatorUtils = new (class {
         }
 
         if (typeof this._onInsert === 'function' && typeof this._insertType === 'string') {
-            fetch('js/sim/debug_data.json').then((response) => response.json()).then((data) => {
+            fetch('js/debug/data.json').then((response) => response.json()).then((data) => {
                 const sampleData = data[this._insertType];
 
                 const $insertButton = $(`
