@@ -24,7 +24,7 @@ class EndpointController {
         }) 
     }
 
-    _promisify (callback) {
+    #promisify (callback) {
         return new Promise((resolve, reject) => {
             this.window.callback = (data) => {
                 if (data.error) {
@@ -43,7 +43,7 @@ class EndpointController {
     login (server, username, password) {
         Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
 
-        return this._promisify(() => {
+        return this.#promisify(() => {
             this.window.login(server, username, password);
         })
     }
@@ -51,7 +51,7 @@ class EndpointController {
     continueLogin (server, username, id) {
         Logger.log('ECLIENT', `Continuing logging in as ${username}@${server}`);
 
-        return this._promisify(() => {
+        return this.#promisify(() => {
             this.window.continue_login(server, username, id);
         })
     }
@@ -59,7 +59,7 @@ class EndpointController {
     query (characterNames) {
         Logger.log('ECLIENT', 'Query many');
 
-        return this._promisify(() => {
+        return this.#promisify(() => {
             this.window.query_many(characterNames.join(','));
         })
     }
@@ -67,7 +67,7 @@ class EndpointController {
     querySelf () {
         Logger.log('ECLIENT', 'Query self');
 
-        return this._promisify(() => {
+        return this.#promisify(() => {
             this.window.query_self();
         })
     }
@@ -75,7 +75,7 @@ class EndpointController {
     queryHOF () {
         Logger.log('ECLIENT', 'Query HOF');
 
-        return this._promisify(() => {
+        return this.#promisify(() => {
             this.window.query_hall_of_fame();
         })
     }
