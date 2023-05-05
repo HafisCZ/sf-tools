@@ -107,7 +107,7 @@ const HellevatorEnemies = new (class {
   async _generateEnemies (theme) {
     this._enemies[theme] = [];
 
-    const themeData = await fetch(`/js/sim/hellevator/theme${theme}.json`).then((data) => data.json());
+    const themeData = await fetch(`/js/playa/hellevator/theme${theme}.json`).then((data) => data.json());
 
     for (const { range: [ rangeStart, rangeEnd ], reset: [ resetMain, resetSide, resetCon, resetLuck, resetHealth, resetMin, resetMax ], delta: [ deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax ] } of HELLEVATOR_ENEMY_DELTA) {
       for (let i = rangeStart; i <= rangeEnd; i++) {
