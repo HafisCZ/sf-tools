@@ -81,7 +81,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
           opacity: 0
       })
 
-      this.keywords = ['Player 1', 'Player 2', 'Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'Last Round'];
+      this.keywords = ['Player 1', 'Player 2', 'Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round'];
   }
 
   _createModal () {
@@ -200,6 +200,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
           'Rage': attackRage,
           'Special': attackSpecial,
           'Type': attackType,
+          'First Round': index === 0,
           'Last Round': index === array.length - 1
       }))).flat();
 
