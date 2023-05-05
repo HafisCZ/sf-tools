@@ -2884,35 +2884,40 @@ const ScriptHighlightCache = new (class {
 })();
 
 // Script archive
-const ScriptArchive = new (class {
-    constructor () {
-        this.dataExpiry = 86400000;
+const ScriptArchive = class {
+    static dataExpiry = 86400000;
+
+    static get data () {
+        delete this.data;
+
         this.data = Store.shared.get('archive', []).filter(({ timestamp }) => timestamp > Date.now() - this.dataExpiry);
-        this._persist();
+        this.#persist();
+
+        return this.data;
     }
 
-    _persist () {
+    static #persist () {
         Store.shared.set('archive', this.data);
     }
 
-    clear () {
+    static clear () {
         this.data = [];
-        this._persist();
+        this.#persist();
     }
 
-    empty () {
+    static empty () {
         return this.data.length === 0;
     }
 
-    all () {
+    static all () {
         return _sortDesc(this.data, ({ timestamp }) => timestamp);
     }
 
-    get (timestamp) {
+    static get (timestamp) {
         return this.data.find(({ timestamp: _timestamp }) => _timestamp == timestamp).content;
     }
 
-    add (type, name, version, content) {
+    static add (type, name, version, content) {
         this.data.push({
             type,
             name,
@@ -2922,25 +2927,23 @@ const ScriptArchive = new (class {
             temporary: Store.isTemporary()
         });
 
-        this._persist();
+        this.#persist();
     }
-})();
+}
 
 // Settings manager
-const ScriptManager = new (class {
-    get scripts () {
-        if (typeof this._internal === 'undefined') {
-            this._internal = Store.get('settings', {});
-        }
+const ScriptManager = class {
+    static get scripts () {
+        delete this.scripts
 
-        return this._internal;
+        return (this.scripts = Store.get('settings', {}));
     }
 
-    _persist () {
+    static #persist () {
         Store.set('settings', this.scripts);
     }
 
-    save (name, content, parent) {
+    static save (name, content, parent) {
         let script = this.scripts[name];
         if (script) {
             ScriptArchive.add('overwrite_script', name, this.scripts[name].version, this.scripts[name].content);
@@ -2965,64 +2968,62 @@ const ScriptManager = new (class {
 
         this.scripts[name] = script;
 
-        this._persist();
+        this.#persist();
     }
 
-    remove (name) {
+    static remove (name) {
         if (this.scripts[name]) {
             ScriptArchive.add('remove_script', name, this.scripts[name].version, this.scripts[name].content);
 
             delete this.scripts[name];
-            this._persist();
+            this.#persist();
         }
     }
 
-    exists (name) {
+    static exists (name) {
         return name in this.scripts;
     }
 
-    all () {
+    static all () {
         return this.scripts;
     }
 
-    list () {
+    static list () {
         return Object.values(this.scripts);
     }
 
-    keys () {
+    static keys () {
         return Object.keys(this.scripts);
     }
 
-    getContent (name, fallback, template) {
+    static getContent (name, fallback, template) {
         const script = this.scripts[name] || this.scripts[fallback];
         return script ? script.content : template;
     }
 
-    get (name, fallback) {
+    static get (name, fallback) {
         return this.scripts[name] || this.scripts[fallback];
     }
-})()
+}
 
 // Templates
-const TemplateManager = new (class {
-    get templates () {
-        if (typeof this._internal === 'undefined') {
-            this._internal = Store.shared.get('templates', {});
-        }
+const TemplateManager = class {
+    static get templates () {
+        delete this.templates;
 
-        return this._internal;
+        return (this.templates = Store.shared.get('templates', {}));
     }
 
-    _persist () {
+    static #persist () {
         Store.shared.set('templates', this.templates);
     }
 
-    toggleFavorite (name) {
+    static toggleFavorite (name) {
         this.templates[name].favorite = !this.templates[name].favorite;
-        this._persist();
+        this.#persist();
     }
 
-    setOnline (name, key, secret, version) {
+    static setOnline (name, key, secret, version) {
         if (this.templates[name]) {
             this.templates[name].online = {
                 timestamp: this.templates[name].timestamp,
@@ -3031,19 +3032,19 @@ const TemplateManager = new (class {
                 version: isNaN(version) ? 1 : version
             };
 
-            this._persist();
+            this.#persist();
         }
     }
 
-    setOffline (name) {
+    static setOffline (name) {
         if (this.templates[name]) {
             this.templates[name].online = false;
 
-            this._persist();
+            this.#persist();
         }
     }
 
-    save (name, content) {
+    static save (name, content) {
         let template = this.templates[name];
         if (template) {
             ScriptArchive.add('overwrite_template', name, template.version, template.content);
@@ -3069,42 +3070,42 @@ const TemplateManager = new (class {
 
         this.templates[name] = template;
 
-        this._persist();
+        this.#persist();
     }
 
-    remove (name) {
+    static remove (name) {
         if (this.templates[name]) {
             ScriptArchive.add('remove_template', name, this.templates[name].version, this.templates[name].content);
 
             delete this.templates[name];
-            this._persist();
+            this.#persist();
         }
     }
 
-    exists (name) {
+    static exists (name) {
         return name in this.templates;
     }
 
-    all () {
+    static all () {
         return this.templates;
     }
 
-    list () {
+    static list () {
         return Object.values(this.templates);
     }
 
-    sortedList () {
+    static sortedList () {
         return _sortDesc(_sortDesc(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
     }
 
-    get (name) {
+    static get (name) {
         return this.templates[name];
     }
 
-    getContent (name) {
+    static getContent (name) {
         return this.templates[name] ? this.templates[name].content : '';
     }
-})();
+}
 
 class ScriptEditor {
     constructor (parent, scriptType, changeCallback) {
