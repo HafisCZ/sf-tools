@@ -615,7 +615,7 @@ class PlayerDetailTab extends Tab {
         // Table instance
         this.table.setSettings(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players')));
 
-        this.array.forEach((e) => DatabaseManager._loadPlayer(e.player));
+        this.array.forEach((e) => DatabaseManager.loadPlayer(e.player));
 
         // Configuration indicator
         this.$configure.settingsButton(ScriptManager.exists(this.identifier));
@@ -959,10 +959,10 @@ class BrowseTab extends Tab {
                         const [timestamp, currentPlayer] = currentEntry;
                         const [reference, comparePlayer] = list.concat().reverse().find((entry) => entry[0] >= this.reference && entry[0] <= timestamp) || currentEntry;
                         
-                        if (terms.every((term) => term.test(term.arg, DatabaseManager._loadPlayer(currentPlayer), this.timestamp, reference))) {
+                        if (terms.every((term) => term.test(term.arg, DatabaseManager.loadPlayer(currentPlayer), this.timestamp, reference))) {
                             entries.add(
-                                DatabaseManager._loadPlayer(currentPlayer),
-                                DatabaseManager._loadPlayer(comparePlayer),
+                                DatabaseManager.loadPlayer(currentPlayer),
+                                DatabaseManager.loadPlayer(comparePlayer),
                                 timestamp == this.timestamp,
                                 hidden
                             )
@@ -1925,7 +1925,7 @@ class FilesTab extends Tab {
         const tags = this.$filter_tags.dropdown('get value');
         const type = parseInt(this.$filter_type.dropdown('get value'));
 
-        const { players, groups } = DatabaseManager._getFile(null, null, (data) => {
+        const { players, groups } = DatabaseManager.getFile(null, null, (data) => {
             const isPlayer = DatabaseManager.isPlayer(data.identifier);
 
             const conditions = [
@@ -2072,7 +2072,7 @@ class FilesTab extends Tab {
             currentFilesAll = currentFilesAll.filter(({ tags: { tagList }, timestamp, version }) => {
                 return this.expressionFilter.eval(new ExpressionScope().addSelf(
                     Object.assign(
-                        DatabaseManager._getFile(null, [ timestamp ]),
+                        DatabaseManager.getFile(null, [ timestamp ]),
                         {
                             timestamp,
                             version,
@@ -2087,7 +2087,7 @@ class FilesTab extends Tab {
         this.$resultsSimple.empty();
 
         const entries = _sortDesc(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, tags: { tagContent } }]) => {
-            const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
+            const hidden = DatabaseManager.isHidden({ timestamp });
 
             return `
                 <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>

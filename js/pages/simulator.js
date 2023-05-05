@@ -128,7 +128,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             try {
                 let pasteData = await event.originalEvent.dataTransfer.files[0].text();
                 let pasteJson = JSON.parse(pasteData);
-                let pasteImpl = contentType == 'text/plain' ? pasteJson : DatabaseManager._import_har(pasteJson).players;
+                let pasteImpl = contentType == 'text/plain' ? pasteJson : PlayaResponse.importData(pasteJson).players;
 
                 handlePaste(pasteImpl);
             } catch (e) {

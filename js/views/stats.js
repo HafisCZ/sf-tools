@@ -687,7 +687,7 @@ const DataManageDialog = new (class extends Dialog {
           }
 
           Loader.toggle(true);
-          DatabaseManager._removeAuto(this.data).then(() => {
+          DatabaseManager.removeAuto(this.data).then(() => {
               Loader.toggle(false);
               this.callback()
           });

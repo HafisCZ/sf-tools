@@ -263,7 +263,7 @@ const Site = new (class {
     async recover (json) {
         let { preferences, data } = json;
 
-        await DatabaseManager._reset();
+        await DatabaseManager.reset();
 
         for (let [key, value] of Object.entries(preferences)) {
             Store.shared.set(key, value, true);
