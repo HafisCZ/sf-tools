@@ -103,7 +103,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     SimulatorUtils.configure({
         params: urlParams,
         onCopy: () => {
-            return players.map((p) => ModelUtils.toSimulatorData(p.player));
+            return players.map((p) => ModelUtils.toSimulatorData(p));
         },
         onLog: (callback) => {
             executeSimulation(1, 50, callback);
