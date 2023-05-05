@@ -113,20 +113,13 @@ const EndpointDialog = new (class extends Dialog {
         return this.intl(`errors.${error}`);
     }
 
-    _showError (error, hard = false) {
+    _showError (error, errorCritical = false) {
+        this.errorCritical = errorCritical;
+
         this.$step5.hide();
         this.$step6.show();
 
         this.$errorText.text(this._localizeError(error));
-        this.$errorButton.one('click', () => {
-            this.$step6.hide();
-
-            if (hard) {
-                this.close(false);
-            } else {
-                this.$step1.show();
-            }
-        });
     }
 
     _termsAccepted () {
@@ -169,6 +162,16 @@ const EndpointDialog = new (class extends Dialog {
 
         this.$errorText = this.$parent.find('[data-op="error-text"]');
         this.$errorButton = this.$parent.find('[data-op="error-button"]');
+
+        this.$errorButton.click(() => {
+            this.$step6.hide();
+
+            if (this.errorCritical) {
+                this.close(false);
+            } else {
+                this.$step1.show();
+            }
+        });
 
         // Endpoint credentials
         this.$username = this.$parent.find('[data-op="username"]');
