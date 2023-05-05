@@ -255,21 +255,19 @@ class Command {
 }
 
 const SettingsCommands = (new class {
-    constructor () {
-        this._commands = [];
-    }
+    #commands = [];
 
     register (name, regexp, parse, format) {
         const command = new Command(regexp, parse, format);
 
         this[name] = command;
-        this._commands.push(command);
+        this.#commands.push(command);
 
         return command;
     }
 
     find (predicate) {
-        return this._commands.find(predicate);
+        return this.#commands.find(predicate);
     }
 })
 
