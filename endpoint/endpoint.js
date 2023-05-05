@@ -114,6 +114,7 @@ const EndpointDialog = new (class extends Dialog {
     }
 
     _showError (error, hard = false) {
+        this.$step5.hide();
         this.$step6.show();
 
         this.$errorText.text(this._localizeError(error));
