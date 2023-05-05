@@ -125,45 +125,79 @@ const FilterTypes = {
     'Players': TableType.Browse
 };
 
-const Highlighter = new (class {
-    constructor () {
-        for (const type of ['keyword', 'constant', 'function', 'value', 'identifier', 'error', 'comment', 'string', 'enum']) {
-            this[type] = function (text) {
-                if (text) {
-                    this._text += `<span class="ta-${type}">${this._escape(text)}</span>`;
-                }
-                return this;
-            }
-        }
+const Highlighter = class {
+    static #text = '';
 
-        this._text = '';
+    static #escape (text) {
+        return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
     }
 
-    _escape (string) {
-        return String(string).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
-    }
-
-    global (text, subtype = '') {
-        this._text += `<span class="ta-global${subtype}">${this._escape(text)}</span>`;
+    static keyword (text) {
+        this.#text += `<span class="ta-keyword">${this.#escape(text)}</span>`;
         return this;
     }
 
-    header (text, subtype = '') {
-        this._text += `<span class="ta-reserved${subtype}">${this._escape(text)}</span>`;
+    static constant (text) {
+        this.#text += `<span class="ta-constant">${this.#escape(text)}</span>`;
         return this;
     }
 
-    asMacro () {
-        this._text = `<span class="ta-macro">${this._text}</span>`;
+    static function (text) {
+        this.#text += `<span class="ta-function">${this.#escape(text)}</span>`;
         return this;
     }
 
-    expression (text, root, extras) {
+    static value (text) {
+        this.#text += `<span class="ta-value">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static identifier (text) {
+        this.#text += `<span class="ta-identifier">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static error (text) {
+        this.#text += `<span class="ta-error">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static comment (text) {
+        this.#text += `<span class="ta-comment">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static string (text) {
+        this.#text += `<span class="ta-string">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static enum (text) {
+        this.#text += `<span class="ta-enum">${this.#escape(text)}</span>`;
+        return this;
+    }
+   
+    static global (text, subtype = '') {
+        this.#text += `<span class="ta-global${subtype}">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static header (text, subtype = '') {
+        this.#text += `<span class="ta-reserved${subtype}">${this.#escape(text)}</span>`;
+        return this;
+    }
+
+    static asMacro () {
+        this.#text = `<span class="ta-macro">${this.#text}</span>`;
+        return this;
+    }
+
+    static expression (text, root, extras) {
         ExpressionRenderer.render(this, text, root, extras);
         return this;
     }
 
-    join (array, method, delimiter = ',') {
+    static join (array, method, delimiter = ',') {
         for (let i = 0; i < array.length; i++) {
             if (typeof method === 'function') {
                 this[method(array[i])](array[i]);
@@ -172,39 +206,39 @@ const Highlighter = new (class {
             }
 
             if (i < array.length - 1) {
-                this._text += delimiter;
+                this.#text += delimiter;
             }
         }
 
         return this;
     }
 
-    color (text, color) {
-        this._text += `<span class="ta-color" style="color: ${color};">${this._escape(text)}</span>`;
+    static color (text, color) {
+        this.#text += `<span class="ta-color" style="color: ${color};">${this.#escape(text)}</span>`;
         return this;
     }
 
-    boolean (text, isTrue) {
-        this._text += `<span class="ta-${isTrue ? 'true' : 'false'}">${this._escape(text)}</span>`;
+    static boolean (text, isTrue) {
+        this.#text += `<span class="ta-${isTrue ? 'true' : 'false'}">${this.#escape(text)}</span>`;
         return this;
     }
 
-    normal (text) {
-        this._text += this._escape(text);
+    static normal (text) {
+        this.#text += this.#escape(text);
         return this;
     }
 
-    space (size = 1) {
-        this._text += ' '.repeat(size);
+    static space (size = 1) {
+        this.#text += ' '.repeat(size);
         return this;
     }
 
-    get text () {
-        const text = this._text;
-        this._text = '';
+    static get text () {
+        const text = this.#text;
+        this.#text = '';
         return text;
     }
-})();
+};
 
 class Command {
     constructor (regexp, parse, format) {
@@ -2833,7 +2867,7 @@ class Settings {
 
                     if (command) {
                         const lineHtml = command.format(settings, trimmed);
-                        currentContent += (typeof lineHtml === 'object' ? lineHtml.text : lineHtml);
+                        currentContent += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
                     } else {
                         currentContent += Highlighter.error(trimmed).text;
                     }
