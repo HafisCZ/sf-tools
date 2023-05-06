@@ -543,44 +543,45 @@ class PlayaResponse {
 };
 
 class ModelRegistry {
+    #data = new Map();
+
     add (major, minor) {
-        if (!this[major]) {
-            this[major] = new Set();
-        }
-        this[major].add(minor);
+        const data = this.#data.get(major) || new Set();
+        data.add(minor);
+
+        this.#data.set(major, data);
     }
 
     remove (major, minor) {
-        if (this[major]) {
-            this[major].delete(minor);
-            if (!this[major].size) {
-                delete this[major];
+        const data = this.#data.get(major);
+        if (data) {
+            data.delete(minor);
+
+            if (data.size === 0) {
+                this.#data.delete(major);
             }
         }
     }
 
-    array (major) {
-        if (this[major]) {
-            return Array.from(this[major]);
-        } else {
-            return [];
-        }
+    values (major) {
+        return this.#data.get(major) || [];
     }
 
     empty (major) {
-        if (this[major]) {
-            return this[major].size == 0;
+        const data = this.#data.get(major);
+        if (data) {
+            return data.size === 0;
         } else {
-            return true;
+            return false;
         }
     }
 
     entries () {
-        return Object.entries(this);
+        return this.#data.entries();
     }
 
     keys () {
-        return Object.keys(this);
+        return this.#data.keys();
     }
 }
 
@@ -753,7 +754,7 @@ const DatabaseManager = new (class {
                     this.Latest = Math.max(this.Latest, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
-                    obj.MembersPresent = this.Timestamps.array(timestamp).filter((id) => obj.Members.includes(id)).length
+                    obj.MembersPresent = Array.from(this.Timestamps.values(timestamp)).filter((id) => obj.Members.includes(id)).length
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
@@ -1102,7 +1103,7 @@ const DatabaseManager = new (class {
     // Remove one or more timestamps
     async removeTimestamps (... timestamps) {
         for (const timestamp of timestamps) {
-            for (const identifier of this.Timestamps.array(timestamp)) {
+            for (const identifier of this.Timestamps.values(timestamp)) {
                 let isPlayer = this.isPlayer(identifier);
                 await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1164,7 +1165,7 @@ const DatabaseManager = new (class {
 
     async removeIdentifiers (... identifiers) {
         for (const identifier of identifiers) {
-            for (const timestamp of this.Identifiers.array(identifier)) {
+            for (const timestamp of this.Identifiers.values(identifier)) {
                 let isPlayer = this.isPlayer(identifier);
                 await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1276,7 +1277,7 @@ const DatabaseManager = new (class {
             const shouldHide = !_every(timestamps, timestamp => _dig(this.#metadata, timestamp, 'hidden'));
 
             for (const timestamp of timestamps) {
-                for (const identifier of this.Timestamps.array(timestamp)) {
+                for (const identifier of this.Timestamps.values(timestamp)) {
                     const model = _dig(this, this.isPlayer(identifier) ? 'Players' : 'Groups', identifier, timestamp, 'Data')
 
                     if (shouldHide) {
@@ -1293,7 +1294,7 @@ const DatabaseManager = new (class {
 
             if (!SiteOptions.hidden) {
                 for (const timestamp of timestamps) {
-                    for (const identifier of this.Timestamps.array(timestamp)) {
+                    for (const identifier of this.Timestamps.values(timestamp)) {
                         this.#unload(identifier, timestamp);
                     }
                 }
@@ -1356,15 +1357,15 @@ const DatabaseManager = new (class {
         let groups = [];
 
         if (!identifiers) {
-            identifiers = this.Identifiers.keys();
+            identifiers = Array.from(this.Identifiers.keys());
         }
 
         if (!timestamps) {
-            timestamps = this.Timestamps.keys();
+            timestamps = Array.from(this.Timestamps.keys());
         }
 
         for (let timestamp of timestamps) {
-            let timestampIdentifiers = this.Timestamps.array(timestamp);
+            let timestampIdentifiers = this.Timestamps.values(timestamp);
 
             if (!timestampIdentifiers || timestampIdentifiers.size == 0) {
                 continue;
@@ -1580,7 +1581,7 @@ const DatabaseManager = new (class {
     }
 
     findDataFieldFor (timestamp, field) {
-        for (const identifier of this.Timestamps.array(timestamp)) {
+        for (const identifier of this.Timestamps.values(timestamp)) {
             const value = _dig(this.Players, identifier, timestamp, 'Data', field);
             if (value) {
                 return value;
