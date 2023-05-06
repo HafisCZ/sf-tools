@@ -2772,15 +2772,15 @@ class SettingsTab extends Tab {
         this.$dropdownTab = this.$parent.find('[data-op="dropdown-tab"]');
         this.$dropdownTab.dropdown();
         this.$dropdownTab.dropdown('set selected', SiteOptions.tab);
-        this.$dropdownTab.dropdown('setting', 'onChange', (value, text) => {
+        this.$dropdownTab.dropdown('setting', 'onChange', (value) => {
             SiteOptions.tab = value;
         });
 
         this.$dropdownPreloadRows = this.$parent.find('[data-op="dropdown-load-rows"]');
         this.$dropdownPreloadRows.dropdown();
         this.$dropdownPreloadRows.dropdown('set selected', SiteOptions.load_rows);
-        this.$dropdownPreloadRows.dropdown('setting', 'onChange', (value, text) => {
-            SiteOptions.load_rows = parseInt(value) || 50;
+        this.$dropdownPreloadRows.dropdown('setting', 'onChange', (value) => {
+            SiteOptions.load_rows = parseInt(value) || SiteOptions.default('load_rows');
         });
 
         this.prepareCheckbox('always_prev', 'alwaysprev');

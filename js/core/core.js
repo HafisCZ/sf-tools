@@ -136,6 +136,10 @@ const OptionsHandler = class {
         }
     }
 
+    default (key) {
+        return this.defaults[key];
+    }
+
     reset (key) {
         this[key] = this.defaults[key];
     }
@@ -184,7 +188,7 @@ const SiteOptions = new OptionsHandler(
         profile: 'default',
         groups_empty: false,
         tab: 'groups',
-        load_rows: 50,
+        load_rows: 100,
         persisted: false,
         locale: 'en',
         export_public_only: false,
