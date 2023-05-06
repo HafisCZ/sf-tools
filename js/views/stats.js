@@ -686,11 +686,7 @@ const DataManageDialog = new (class extends Dialog {
               SiteOptions.unsafe_delete = true;
           }
 
-          Loader.toggle(true);
-          DatabaseManager.removeAuto(this.data).then(() => {
-              Loader.toggle(false);
-              this.callback()
-          });
+          DatabaseManager.safeRemove(this.data, () => this.callback(), true);
       });
 
       this.$content = this.$parent.find('[data-op="content"]');
