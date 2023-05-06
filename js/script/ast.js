@@ -13,26 +13,39 @@ const ExpressionCache = class {
         this.#cache = new Map();
     }
 
-    static set (s, n, v) {
-        if (s.player && s.reference) {
-            this.#cache.set(this.#key(s, n), v);
+    static set (scope, node, value) {
+        if (!scope) {
+            return;
+        }
+
+        const block = this.#cache.get(scope) || new Map();
+        
+        this.#cache.set(scope, block);
+
+        block.set(node, value);
+    }
+
+    static get (scope, node) {
+        const block = this.#cache.get(scope);
+ 
+        if (typeof block !== 'undefined') {
+            return block.get(node);
+        } else {
+            return undefined;
         }
     }
 
-    static get (s, n) {
-        return this.#cache.get(this.#key(s, n));
-    }
+    static has (scope, node) {
+        if (typeof scope === 'undefined') {
+            return false;
+        }
 
-    static has (s, n) {
-        if (s.player && s.reference && this.#cache.has(this.#key(s, n))) {
-            return true;
+        const block = this.#cache.get(scope);
+        if (block) {
+            return block.has(String(node));
         } else {
             return false;
         }
-    }
-
-    static #key (s, n) {
-        return `${ s.env.env_id }.${ s.player.Identifier }.${ s.player.Timestamp }${ s.reference.Timestamp }.${ n }`
     }
 };
 
@@ -126,6 +139,11 @@ class ExpressionScope {
     with (player, reference) {
         this.player = player;
         this.reference = reference;
+
+        if (player && reference) {
+            this.token = `${this.env.env_id}.${player.Identifier}.${player.Timestamp}.${reference.Timestamp}`;
+        }
+        
         return this;
     }
 
@@ -337,11 +355,11 @@ class Expression {
             value = this.root;
         } else if (scope.alwaysEval() || !this.cacheable) {
             value = this.#evalInternal(scope, this.root);
-        } else if (ExpressionCache.has(scope, this.rstr)) {
-            value = ExpressionCache.get(scope, this.rstr);
+        } else if (ExpressionCache.has(scope.token, this.rstr)) {
+            value = ExpressionCache.get(scope.token, this.rstr);
         } else {
             value = this.#evalInternal(scope, this.root);
-            ExpressionCache.set(scope, this.rstr, value);
+            ExpressionCache.set(scope.token, this.rstr, value);
         }
 
         return typeof value == 'number' && isNaN(value) ? undefined : value;
@@ -1133,12 +1151,12 @@ class Expression {
                 let variable = scope.env.variables[node];
                 if (typeof variable.value != 'undefined') {
                     return variable.value;
-                } else if (ExpressionCache.has(scope, node)) {
-                    return ExpressionCache.get(scope, node);
+                } else if (ExpressionCache.has(scope.token, node)) {
+                    return ExpressionCache.get(scope.token, node);
                 } else {
-                    ExpressionCache.set(scope, node, undefined);
+                    ExpressionCache.set(scope.token, node, undefined);
                     let value = variable.ast.eval(new ExpressionScope(scope.env).with(scope.player, scope.reference).via(scope.header));
-                    ExpressionCache.set(scope, node, value);
+                    ExpressionCache.set(scope.token, node, value);
                     return value;
                 }
             } else if (scope.env.lists && scope.env.lists.hasOwnProperty(node)) {
