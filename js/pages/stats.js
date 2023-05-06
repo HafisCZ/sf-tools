@@ -2034,12 +2034,12 @@ class FilesTab extends Tab {
     }
 
     updateFileSearchResults () {
-        let currentFilesAll = (SiteOptions.groups_empty ? _intKeys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps).map((ts) => {
+        let currentFilesAll = (SiteOptions.groups_empty ? _intKeys(Array.from(DatabaseManager.Timestamps.keys())) : DatabaseManager.PlayerTimestamps).map((ts) => {
             return {
                 timestamp: ts,
                 prettyDate: _formatDate(ts),
-                playerCount: _lenWhere(DatabaseManager.Timestamps[ts], id => DatabaseManager.isPlayer(id)),
-                groupCount: _lenWhere(DatabaseManager.Timestamps[ts], id => DatabaseManager.isGroup(id)),
+                playerCount: _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isPlayer(id)),
+                groupCount: _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isGroup(id)),
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
                 tags: (() => {
                     const tagMap = DatabaseManager.findUsedTags([ts]);
