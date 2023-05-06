@@ -1194,7 +1194,7 @@ class TableController {
 
         this.injectorCallback = callback;
         this.injectorEntries = entries;
-        this.injectorBlockSize = Math.trunc((SiteOptions.load_rows || 50) / 2);
+        this.injectorBlockSize = Math.trunc((SiteOptions.load_rows || SiteOptions.default('load_rows')) / 2);
         this.injectorCounter = 0;
 
         this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.75 });
@@ -1311,7 +1311,7 @@ class TableController {
         this.bodyElement.setAttribute('class', `${themeClass} ${klass.join(' ')}`);
         this.bodyElement.innerHTML = content;
 
-        this.injectCount = this.injectCount || SiteOptions.load_rows || 50;
+        this.injectCount = this.injectCount || SiteOptions.load_rows || SiteOptions.default('load_rows');
         this.injectorElement = this.bodyElement.querySelector('[data-entry-injector]');
 
         if (this.injectorElement) {
