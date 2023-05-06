@@ -24,14 +24,12 @@ class Tab {
     }
 }
 
-const UI = new (class {
-    constructor () {
-        this.current = null;
+const UI = class {
+    static current = null;
 
-        this.tabs = {};
-    }
+    static #tabs = Object.create(null);
 
-    register (configs) {
+    static register (configs) {
         for (const [name, config] of Object.entries(configs)) {
             const tab = (this[name] = config.tab);
 
@@ -55,27 +53,27 @@ const UI = new (class {
                 }
             }
 
-            this.tabs[tab._registeredName] = config;
+            this.#tabs[tab._registeredName] = config;
         }
     }
 
-    show (tab, args) {
+    static show (tab, args) {
         const origin = this.current;
         if (origin) origin.hide({ target: tab });
 
-        this._showScreen(tab);
+        this.#showScreen(tab);
         tab.show(Object.assign({ origin }, args));
     }
 
-    returnTo (tab) {
+    static returnTo (tab) {
         const origin = this.current;
         if (origin) origin.hide({ target: tab });
 
-        this._showScreen(tab);
+        this.#showScreen(tab);
         tab.reload();
     }
 
-    _showScreen (tab) {
+    static #showScreen (tab) {
         this.current = tab;
 
         window.scrollTo(0, 0);
@@ -83,14 +81,14 @@ const UI = new (class {
         $('.ui.container').hide();
         tab.$parent.show();
 
-        if (this.tabs[tab._registeredName].buttonElement) {
-            for (const { buttonElement } of Object.values(this.tabs)) {
+        if (this.#tabs[tab._registeredName].buttonElement) {
+            for (const { buttonElement } of Object.values(this.#tabs)) {
                 if (buttonElement) {
                     buttonElement.classList.remove('!text-orange');
                 }
             }
 
-            this.tabs[tab._registeredName].buttonElement.classList.add('!text-orange');
+            this.#tabs[tab._registeredName].buttonElement.classList.add('!text-orange');
         }
     }
-})();
+}
