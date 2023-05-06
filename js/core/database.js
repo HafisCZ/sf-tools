@@ -228,43 +228,6 @@ class IndexedDBWrapper {
     }
 }
 
-class MigrationUtils {
-    static migrateGroup (group) {
-        if (group.id) {
-            group.identifier = group.id;
-            delete group.id;
-        }
-
-        group.prefix = group.prefix.toLowerCase();
-        group.identifier = group.identifier.toLowerCase();
-        group.group = group.identifier.toLowerCase();
-        group.timestamp = parseInt(group.timestamp);
-        group.own = group.own ? 1 : 0;
-        group.names = group.names || group.members;
-
-        return group;
-    }
-
-    static migratePlayer (player) {
-        if (player.id) {
-            player.identifier = player.id;
-            delete player.id;
-        }
-
-        player.prefix = player.prefix.toLowerCase();
-        player.identifier = player.identifier.toLowerCase();
-        player.timestamp = parseInt(player.timestamp);
-        player.own = player.own ? 1 : 0;
-
-        let group = player.save[player.own ? 435 : 161];
-        if (group) {
-            player.group = `${player.prefix}_g${group}`;
-        }
-
-        return player;
-    }
-}
-
 class DatabaseUtils {
     static async createSession(slot) {
         await DatabaseUtils.requestPersistentStorage();
@@ -1431,16 +1394,47 @@ const DatabaseManager = new (class {
         return /_g\d/.test(identifier);
     }
 
+    #normalizeGroup (group) {
+        if (group.id) {
+            group.identifier = group.id;
+            delete group.id;
+        }
+
+        group.prefix = group.prefix.toLowerCase();
+        group.identifier = group.identifier.toLowerCase();
+        group.group = group.identifier.toLowerCase();
+        group.timestamp = parseInt(group.timestamp);
+        group.own = group.own ? 1 : 0;
+        group.names = group.names || group.members;
+    }
+
+    #normalizePlayer (player) {
+        if (player.id) {
+            player.identifier = player.id;
+            delete player.id;
+        }
+
+        player.prefix = player.prefix.toLowerCase();
+        player.identifier = player.identifier.toLowerCase();
+        player.timestamp = parseInt(player.timestamp);
+        player.own = player.own ? 1 : 0;
+
+        let group = player.save[player.own ? 435 : 161];
+        if (group) {
+            player.group = `${player.prefix}_g${group}`;
+        }
+    }
+
     async #addFile (playerEntries, groupEntries, flags = {}) {
         const players = playerEntries || [];
         const groups = groupEntries || [];
 
         for (const group of groups) {
-            MigrationUtils.migrateGroup(group);
+            this.#normalizeGroup(group);
         }
 
         for (const player of players) {
-            MigrationUtils.migratePlayer(player);
+            this.#normalizePlayer(player);
         }
 
         if (flags.skipExisting) {
