@@ -700,12 +700,12 @@ class PlayerModel {
 
     constructor (data) {
         if (data) {
-            this._initShared(data);
+            this.#initShared(data);
 
             if (data.own) {
-                this._initOwn(data);
+                this.#initOwn(data);
             } else {
-                this._initOther(data);
+                this.#initOther(data);
             }
         }
     }
@@ -734,7 +734,7 @@ class PlayerModel {
         }
     }
 
-    _initOwn (data) {
+    #initOwn (data) {
         const legacyDungeons = DungeonHelper.template();
         const resources = PlayerModel.getResources(data.resources);
 
@@ -1284,7 +1284,7 @@ class PlayerModel {
         this.WebshopID = PlayaResponse.unescape(data.webshopid);
     }
 
-    _initOther (data) {
+    #initOther (data) {
         const legacyDungeons = DungeonHelper.template();
 
         let dataType = new ComplexDataType(data.save);
@@ -1446,7 +1446,7 @@ class PlayerModel {
         this.evaluateCommon();
     }
 
-    _initShared (data) {
+    #initShared (data) {
         this.Data = data;
         this.Own = data.own;
         this.Timestamp = data.timestamp;
