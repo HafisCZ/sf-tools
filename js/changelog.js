@@ -51,7 +51,8 @@ const CHANGELOG = {
         ],
         'Endpoint': [
             'Updated to newer Unity version',
-            'Fixed close button not clickable in specific cases'
+            'Fixed close button not clickable in specific cases',
+            'Fixed interruption errors not recognized properly'
         ],
         'All Tools': [
             'Added new link to community-made tools on the main page'
