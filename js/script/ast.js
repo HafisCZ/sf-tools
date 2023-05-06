@@ -1102,7 +1102,7 @@ class Expression {
                 return DatabaseManager;
             } else if (node == 'entries') {
                 if (scope.player) {
-                    return DatabaseManager.getPlayer(scope.player.Identifier).List.map(([ t, e ]) => e);
+                    return DatabaseManager.getPlayer(scope.player.Identifier).List;
                 } else {
                     return undefined;
                 }

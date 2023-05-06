@@ -216,9 +216,9 @@ class GroupDetailTab extends Tab {
                 {
                     currentWithReference: createExport([ this.timestamp, this.reference ]),
                     current: createExport([ this.timestamp ]),
-                    last: createExport([ _dig(this.list, 0, 0) ]),
-                    last5: createExport(this.list.slice(0, 5).map(entry => entry[0])),
-                    all: createExport(this.list.map(entry => entry[0]))
+                    last: createExport([ _dig(this.list, 0, 'Timestamp') ]),
+                    last5: createExport(this.list.slice(0, 5).map(entry => entry.Timestamp)),
+                    all: createExport(this.list.map(entry => entry.Timestamp))
                 },
                 this.identifier
             )
@@ -307,10 +307,10 @@ class GroupDetailTab extends Tab {
         var listTimestamp = [];
         var listReference = [];
 
-        this.list = SiteOptions.groups_empty ? this.group.List : this.group.List.filter(([, g]) => g.MembersPresent);
+        this.list = SiteOptions.groups_empty ? this.group.List : this.group.List.filter((g) => g.MembersPresent);
 
-        this.timestamp = _dig(this.list, 0, 0);
-        this.reference = (SiteOptions.always_prev ? _dig(this.list, 1, 0) : undefined) || this.timestamp;
+        this.timestamp = _dig(this.list, 0, 'Timestamp');
+        this.reference = (SiteOptions.always_prev ? _dig(this.list, 1, 'Timestamp') : undefined) || this.timestamp;
 
         const formatEntry = (group) => {
             if (group.MembersPresent >= group.MembersTotal) {
@@ -320,7 +320,9 @@ class GroupDetailTab extends Tab {
             }
         }
 
-        for (const [ timestamp, group ] of this.list) {
+        for (const group of this.list) {
+            const timestamp = group.Timestamp;
+
             listTimestamp.push({
                 name: formatEntry(group),
                 value: timestamp,
@@ -423,9 +425,9 @@ class GroupDetailTab extends Tab {
                 if (playerReference && playerReference.Group.Identifier == this.identifier) {
                     membersReferences.push(playerReference);
                 } else {
-                    var ts = player.List.concat().reverse().find(p => p[0] >= this.reference && p[0] <= member.Timestamp && p[1].Group.Identifier == this.identifier);
-                    if (ts) {
-                        membersReferences.push(ts[1]);
+                    var p = player.List.concat().reverse().find(p => p.Timestamp >= this.reference && p.Timestamp <= member.Timestamp && p.Group.Identifier == this.identifier);
+                    if (p) {
+                        membersReferences.push(p);
                     }
                 }
             } else {
@@ -534,8 +536,8 @@ class PlayerDetailTab extends Tab {
             DialogController.open(
                 ExportFileDialog,
                 {
-                    last: createExport([ _dig(this.list, 0, 0) ]),
-                    last5: createExport(this.list.slice(0, 5).map(entry => entry[0])),
+                    last: createExport([ _dig(this.list, 0, 'Timestamp') ]),
+                    last5: createExport(this.list.slice(0, 5).map(entry => entry.Timestamp)),
                     all: createExport()
                 },
                 this.identifier
@@ -596,8 +598,8 @@ class PlayerDetailTab extends Tab {
 
         this.array = new PlayerTableArray();
         for (let i = 0; i < list.length; i++) {
-            const p = _dig(list, i, 1);
-            const c = _dig(list, i + 1, 1);
+            const p = list[i];
+            const c = list[i + 1];
 
             this.array.add(p, c || p);
         }
@@ -954,10 +956,12 @@ class BrowseTab extends Tab {
             for (const [identifier, { List: list }] of Object.entries(DatabaseManager.Players)) {
                 const hidden = DatabaseManager.Hidden.has(identifier);
                 if (this.hidden || this.shidden || !hidden) {
-                    const currentEntry = list.find((entry) => entry[0] <= this.timestamp);
-                    if (currentEntry) {
-                        const [timestamp, currentPlayer] = currentEntry;
-                        const [reference, comparePlayer] = list.concat().reverse().find((entry) => entry[0] >= this.reference && entry[0] <= timestamp) || currentEntry;
+                    const currentPlayer = list.find((entry) => entry.Timestamp <= this.timestamp);
+                    if (currentPlayer) {
+                        const timestamp = currentPlayer.Timestamp;
+
+                        const comparePlayer = list.concat().reverse().find((entry) => entry.Timestamp >= this.reference && entry.Timestamp <= timestamp) || currentPlayer;
+                        const reference = comparePlayer.Timestamp;
                         
                         if (terms.every((term) => term.test(term.arg, DatabaseManager.loadPlayer(currentPlayer), this.timestamp, reference))) {
                             entries.add(
@@ -1204,7 +1208,7 @@ class GroupsTab extends Tab {
                     label: intl('stats.share.title_short'),
                     action: (source) => {
                         const group = source.dataset.id;
-                        const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
+                        const members = DatabaseManager.Groups[group].List.reduce((memo, g) => memo.concat(g.Members), []);
 
                         DialogController.open(
                             ExportFileDialog,
@@ -1324,7 +1328,7 @@ class GroupsTab extends Tab {
 
     show () {
         const viewableGroups = Object.entries(DatabaseManager.Groups);
-        if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter(([, g]) => g.MembersPresent).length > 0)) {
+        if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
             UI.show(UI.GroupDetail, { identifier: viewableGroups[0][0] });
         } else {
             this.load();

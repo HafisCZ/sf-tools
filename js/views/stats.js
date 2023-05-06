@@ -1546,8 +1546,8 @@ const PlayerDetailDialog = new (class extends Dialog {
 
   _applyArguments ({ identifier, timestamp, reference }) {
     let playerObject = DatabaseManager.getPlayer(identifier);
-    let timestampsReverse = playerObject.List.map(([ts, ]) => ts).reverse(); // Newest to oldest
-    let timestamps = playerObject.List.map(([ts, ]) => ts); // Oldest to newest
+    let timestampsReverse = playerObject.List.map((p) => p.Timestamp).reverse(); // Newest to oldest
+    let timestamps = playerObject.List.map((p) => p.Timestamp); // Oldest to newest
     let timestampCurrent = timestamps.find(t => t <= timestamp) || playerObject.LatestTimestamp;
     let timestampReference = timestampsReverse.find(t => t >= reference && t <= timestampCurrent);
     if (!timestampReference) {
