@@ -40,7 +40,21 @@ const SIMULATOR_NOTICES = [
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
-            'Added option to save table as CSV file'
+            'Added option to save table as CSV file',
+            'Added many performance improvements'
+        ],
+        'Dungeon Simulator': [
+            'Fixed debug copy'
+        ],
+        'All Simulators': [
+            'Added debug preset with maximum weapon damage ranges'
+        ],
+        'Endpoint': [
+            'Updated to newer Unity version',
+            'Fixed close button not clickable in specific cases'
+        ],
+        'All Tools': [
+            'Added new link to community-made tools on the main page'
         ]
     },
     'v6.3586': {
