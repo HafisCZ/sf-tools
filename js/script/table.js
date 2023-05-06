@@ -1274,12 +1274,8 @@ class TableController {
 
         // Fill entries
         if (this.echanged || this.schanged) {
-            ExpressionCache.start();
-
             this.table.setEntries(this.entries);
             this.table.sort();
-
-            ExpressionCache.stop();
         }
 
         // Reset sorting
