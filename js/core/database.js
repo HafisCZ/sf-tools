@@ -620,8 +620,8 @@ const DatabaseManager = new (class {
         this.#interface = null;
 
         // Models
-        this.Players = {};
-        this.Groups = {};
+        this.Players = Object.create(null);
+        this.Groups = Object.create(null);
         this.#metadata = {};
 
         this.#trackerData = {}; // Metadata
@@ -687,7 +687,7 @@ const DatabaseManager = new (class {
         this.Timestamps.add(timestamp, identifier);
 
         if (!this[type][identifier]) {
-            this[type][identifier] = {};
+            this[type][identifier] = Object.create(null);
         }
 
         this[type][identifier][timestamp] = model;
@@ -698,8 +698,8 @@ const DatabaseManager = new (class {
         this.Latest = 0;
         this.LatestPlayer = 0;
         this.LastChange = Date.now();
-        this.GroupNames = {};
-        this.PlayerNames = {};
+        this.GroupNames = Object.create(null);
+        this.PlayerNames = Object.create(null);
 
         const prefixes = new Set();
         const playerTimestamps = new Set();
@@ -1116,7 +1116,7 @@ const DatabaseManager = new (class {
 
     async purge () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
-            for (const identifier of Array.from(identifiers)) {
+            for (const identifier of identifiers) {
                 let isPlayer = this.isPlayer(identifier);
                 await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1126,8 +1126,8 @@ const DatabaseManager = new (class {
 
         await this.#updateMetadata();
 
-        this.Players = {};
-        this.Groups = {};
+        this.Players = Object.create(null);
+        this.Groups = Object.create(null);
         this.Timestamps = new ModelRegistry();
         this.Identifiers = new ModelRegistry();
 
