@@ -1,17 +1,15 @@
 // Version stuff
 const MODULE_VERSION_MAJOR = '6';
-const MODULE_VERSION = 'v6.3586';
-const TABLE_VERSION = 'v10.1';
-const CORE_VERSION = 'v3.5';
+const MODULE_VERSION_MINOR = '3586';
+const MODULE_VERSION = `v${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}`
 
 const Logger = new (class {
     constructor () {
         this.colors = {
             'STORAGE': 'fcba03',
             'WARNING': 'fc6203',
-            'R_FLAGS': '42adf5',
+            'OPTIONS': '42adf5',
             'TAB_GEN': '3bc922',
-            'VERSION': '90f5da',
             'PERFLOG': 'ffffff',
             'ECLIENT': 'd142f5',
             'TRACKER': 'c8f542',
@@ -20,11 +18,10 @@ const Logger = new (class {
             'APPINFO': 'd29af8',
             'MESSAGE': 'ffffff',
             'APICALL': 'd99ab5',
-            'CHANNEL': 'fccb81',
-            'DEBUGGR': 'ffa8a8'
+            'CHANNEL': 'fccb81'
         };
 
-        this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
+        this.log('APPINFO', `Version ${MODULE_VERSION}`);
     }
 
     log (type, text) {
@@ -131,7 +128,7 @@ const OptionsHandler = class {
                 },
                 set: function (value) {
                     this.options[name] = value;
-                    Logger.log('R_FLAGS', `Set ${this.key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
+                    Logger.log('OPTIONS', `Set ${this.key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
                     Store.shared.set(this.key, this.options);
                     this.changed(name);
                 }
