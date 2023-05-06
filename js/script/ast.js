@@ -284,7 +284,6 @@ class ExpressionRenderer {
 
 class Expression {
     constructor (string, settings = null) {
-        this.string = string;
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP).map(token => token.trim()).filter(token => token.length);
         this.root = false;
 
@@ -308,13 +307,13 @@ class Expression {
 
                 // Get settings variable array
                 let tableVariables = (settings ? settings.variables : undefined) || {};
-                this.evalEmbeddedVariables(tableVariables);
+                this.#evalEmbeddedVariables(tableVariables);
 
                 // Generate tree
-                this.root = this.evalExpression();
+                this.root = this.#evalExpression();
                 while (this.tokens[0] == ';') {
-                    let sub_root = this.postProcess(tableVariables, this.root);
-                    this.cacheable = this.cacheable && this.checkCacheableNode(sub_root);
+                    let sub_root = this.#postProcess(tableVariables, this.root);
+                    this.cacheable = this.cacheable && this.#checkCacheableNode(sub_root);
                     this.subexpressions.push(sub_root);
 
                     this.tokens.shift();
@@ -323,19 +322,19 @@ class Expression {
                         this.tokens.shift();
                     }
 
-                    this.root = this.evalExpression();
+                    this.root = this.#evalExpression();
                 }
 
                 // Clean tree
-                this.root = this.postProcess(tableVariables, this.root);
+                this.root = this.#postProcess(tableVariables, this.root);
 
                 // Check if tree is cacheable or not
-                this.cacheable = this.cacheable && this.checkCacheableNode(this.root);
+                this.cacheable = this.cacheable && this.#checkCacheableNode(this.root);
 
                 // Check if expression was resolved by post process and unwrap string if necessary
                 if (typeof this.root === 'number' || (typeof this.root === 'object' && this.root.op === 'string')) {
                     this.resolved = true;
-                    this.root = this.unwrap(this.root);
+                    this.root = this.#unwrap(this.root);
                 }
             } else {
                 this.empty = true;
@@ -343,8 +342,33 @@ class Expression {
         }
     }
 
+    // Outside eval function (always call this from outside of the Expression class)
+    eval (scope = ExpressionScope.DEFAULT) {
+        this.subexpressions_cache_indexes = [];
+        this.subexpressions_cache = [];
+
+        let value = undefined;
+        if (this.resolved) {
+            value = this.root;
+        } else if (scope.alwaysEval() || !this.cacheable) {
+            value = this.#evalInternal(scope, this.root);
+        } else if (ExpressionCache.has(scope, this.rstr)) {
+            value = ExpressionCache.get(scope, this.rstr);
+        } else {
+            value = this.#evalInternal(scope, this.root);
+            ExpressionCache.set(scope, this.rstr, value);
+        }
+
+        return typeof value == 'number' && isNaN(value) ? undefined : value;
+    }
+
+    // Check if the expression is valid (no tokens left)
+    isValid () {
+        return this.tokens.length == 0 && !this.empty;
+    }
+
     // Eval embedded variables
-    evalEmbeddedVariables (tableVariables) {
+    #evalEmbeddedVariables (tableVariables) {
         // All variables in the token string
         let variables = [];
 
@@ -450,18 +474,18 @@ class Expression {
     }
 
     // Peek at next token
-    peek (i = 0) {
+    #peek (i = 0) {
         return this.tokens[i];
     }
 
     // Get next token
-    get () {
+    #get () {
         var v = this.tokens.shift();
         return isNaN(v) ? v : Number(v);
     }
 
     // Is token a string
-    isString (token) {
+    #isString (token) {
         if (token == undefined) {
             return false;
         } else {
@@ -470,16 +494,16 @@ class Expression {
     }
 
     // Get next token as string
-    getString (cast = false) {
-        var token = this.get();
-        if (this.isString(token)) {
-            return this.wrapString(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
+    #getString (cast = false) {
+        var token = this.#get();
+        if (this.#isString(token)) {
+            return this.#wrapString(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
         } else {
-            return cast ? this.wrapString(token) : token;
+            return cast ? this.#wrapString(token) : token;
         }
     }
 
-    unwrap (obj) {
+    #unwrap (obj) {
         if (typeof obj === 'object' && obj.op === 'string') {
             return obj.args;
         } else {
@@ -487,7 +511,7 @@ class Expression {
         }
     }
 
-    wrapString (str) {
+    #wrapString (str) {
         return {
             op: 'string',
             args: str
@@ -495,37 +519,37 @@ class Expression {
     }
 
     // Is token a unary operation
-    isUnaryOperator (token) {
+    #isUnaryOperator (token) {
         return token == '-' || token == '!';
     }
 
     // Get next token as unary operator
-    getUnaryOperator () {
+    #getUnaryOperator () {
         return {
-            op: SP_OPERATORS[this.get() == '-' ? 'u-' : '!'],
-            args: [ this.getVal() ]
+            op: SP_OPERATORS[this.#get() == '-' ? 'u-' : '!'],
+            args: [ this.#getVal() ]
         }
     }
 
     // Is global function
-    isFunction (token, follow) {
+    #isFunction (token, follow) {
         return /[_a-zA-Z]\w*/.test(token) && follow == '(';
     }
 
-    isTemplate (token, follow) {
+    #isTemplate (token, follow) {
         return /^\`.*\`$/.test(token) && follow == '(';
     }
 
-    evalRepeatedExpression (terminator, separator, generator, emptyGenerator) {
+    #evalRepeatedExpression (terminator, separator, generator, emptyGenerator) {
         const args = [];
 
-        if (this.peek() == terminator) {
-            this.get();
+        if (this.#peek() == terminator) {
+            this.#get();
             return args;
         }
 
         do {
-            const pk = this.peek();
+            const pk = this.#peek();
             if (pk == separator || pk == terminator) {
                 if (emptyGenerator) {
                     args.push(emptyGenerator(args.length));
@@ -533,24 +557,24 @@ class Expression {
             } else {
                 args.push(generator(args.length));
             }
-        } while (this.get() == separator);
+        } while (this.#get() == separator);
         return args;
     }
 
     // Get global function
-    getFunction () {
-        const name = this.get();
-        this.get();
+    #getFunction () {
+        const name = this.#get();
+        this.#get();
 
         return {
             op: name,
-            args: this.evalRepeatedExpression(')', ',', () => this.evalExpression(), () => 'undefined')
+            args: this.#evalRepeatedExpression(')', ',', () => this.#evalExpression(), () => 'undefined')
         };
     }
 
-    getTemplate () {
-        const val = this.get();
-        this.get();
+    #getTemplate () {
+        const val = this.#get();
+        this.#get();
 
         return {
             op: 'format',
@@ -559,26 +583,26 @@ class Expression {
                     op: 'string',
                     args: val.slice(1, val.length - 1)
                 },
-                ... this.evalRepeatedExpression(')', ',', () => this.evalExpression(), () => 'undefined')
+                ... this.#evalRepeatedExpression(')', ',', () => this.#evalExpression(), () => 'undefined')
             ]
         };
     }
 
     // Is array
-    isArray (token) {
+    #isArray (token) {
         return token == '[';
     }
 
     // Get array
-    getArray () {
-        this.get();
+    #getArray () {
+        this.#get();
 
         return {
             op: '[',
-            args: this.evalRepeatedExpression(']', ',', (key) => {
+            args: this.#evalRepeatedExpression(']', ',', (key) => {
                 return {
                     key,
-                    val: this.evalExpression()
+                    val: this.#evalExpression()
                 };
             }, (key) => {
                 return {
@@ -590,59 +614,59 @@ class Expression {
     }
 
     // Is object
-    isObject (token) {
+    #isObject (token) {
         return token == '{';
     }
 
-    getObjectItem () {
-        const key = this.peek(1) == ':' ? this.getString() : this.evalExpression();
-        this.get();
+    #getObjectItem () {
+        const key = this.#peek(1) == ':' ? this.#getString() : this.#evalExpression();
+        this.#get();
 
         return {
             key: key,
-            val: this.evalExpression()
+            val: this.#evalExpression()
         };
     }
 
     // Get array
-    getObject () {
-        this.get();
+    #getObject () {
+        this.#get();
 
         return {
             op: '{',
-            args: this.evalRepeatedExpression('}', ',', () => this.getObjectItem(), false)
+            args: this.#evalRepeatedExpression('}', ',', () => this.#getObjectItem(), false)
         };
     }
 
     // Is object access
-    isObjectAccess () {
-        var token = this.peek();
+    #isObjectAccess () {
+        var token = this.#peek();
         return token == '.' || token == '[';
     }
 
     // Get object access
-    getObjectAccess (node) {
-        var type = this.get();
+    #getObjectAccess (node) {
+        var type = this.#get();
 
         var name = undefined;
         if (type == '.') {
-            name = this.getString(true);
+            name = this.#getString(true);
         } else {
-            name = this.evalExpression();
-            this.get();
+            name = this.#evalExpression();
+            this.#get();
         }
 
-        if (this.peek() == '(') {
-            this.get();
+        if (this.#peek() == '(') {
+            this.#get();
 
             var args = [];
 
-            if (this.peek() == ')') {
-                this.get();
+            if (this.#peek() == ')') {
+                this.#get();
             } else {
                 do {
-                    args.push(this.evalExpression());
-                } while (this.get() == ',');
+                    args.push(this.#evalExpression());
+                } while (this.#get() == ',');
             }
 
             return {
@@ -657,128 +681,128 @@ class Expression {
         }
     }
 
-    getVal () {
+    #getVal () {
         var node = undefined;
 
-        var token = this.peek();
-        var follow = this.peek(1);
+        var token = this.#peek();
+        var follow = this.#peek(1);
 
         if (token == undefined) {
             // Ignore undefined value
         } else if (token == '(') {
-            node = this.getSubExpression();
+            node = this.#getSubExpression();
 
-        } else if (this.isString(token)) {
+        } else if (this.#isString(token)) {
             // Get string
-            node = this.getString();
-        } else if (this.isTemplate(token, follow)) {
+            node = this.#getString();
+        } else if (this.#isTemplate(token, follow)) {
             // Get template
-            node = this.getTemplate();
-        } else if (this.isUnaryOperator(token)) {
+            node = this.#getTemplate();
+        } else if (this.#isUnaryOperator(token)) {
             // Get unary operator
-            node = this.getUnaryOperator();
-        } else if (this.isFunction(token, follow)) {
+            node = this.#getUnaryOperator();
+        } else if (this.#isFunction(token, follow)) {
             // Get function
-            node = this.getFunction();
-        } else if (this.isArray(token)) {
+            node = this.#getFunction();
+        } else if (this.#isArray(token)) {
             // Get array
-            node = this.getArray();
-        } else if (this.isObject(token)) {
+            node = this.#getArray();
+        } else if (this.#isObject(token)) {
             // Get object
-            node = this.getObject();
+            node = this.#getObject();
         } else {
             // Get node
-            node = this.get();
+            node = this.#get();
         }
 
-        while (this.isObjectAccess()) {
+        while (this.#isObjectAccess()) {
             // Get object access
-            node = this.getObjectAccess(node);
+            node = this.#getObjectAccess(node);
         }
 
         return node;
     }
 
-    getHighPriority () {
-        let node = this.getVal();
-        while (this.peek() == '^') {
+    #getHighPriority () {
+        let node = this.#getVal();
+        while (this.#peek() == '^') {
             node = {
-                op: SP_OPERATORS[this.get()],
-                args: [node, this.getVal()]
+                op: SP_OPERATORS[this.#get()],
+                args: [node, this.#getVal()]
             }
         }
 
         return node;
     }
 
-    getMediumPriority () {
-        let node = this.getHighPriority();
-        while (['*', '/', '%'].includes(this.peek())) {
+    #getMediumPriority () {
+        let node = this.#getHighPriority();
+        while (['*', '/', '%'].includes(this.#peek())) {
             node = {
-                op: SP_OPERATORS[this.get()],
-                args: [node, this.getHighPriority()]
+                op: SP_OPERATORS[this.#get()],
+                args: [node, this.#getHighPriority()]
             }
         }
 
         return node;
     }
 
-    getLowPriority () {
-        let node = this.getMediumPriority();
-        while (['+', '-'].includes(this.peek())) {
+    #getLowPriority () {
+        let node = this.#getMediumPriority();
+        while (['+', '-'].includes(this.#peek())) {
             node = {
-                op: SP_OPERATORS[this.get()],
-                args: [node, this.getMediumPriority()]
+                op: SP_OPERATORS[this.#get()],
+                args: [node, this.#getMediumPriority()]
             };
         }
 
         return node;
     }
 
-    getBool () {
-        let node = this.getLowPriority();
-        while (['>', '<', '<=', '>=', '==', '!='].includes(this.peek())) {
+    #getBool () {
+        let node = this.#getLowPriority();
+        while (['>', '<', '<=', '>=', '==', '!='].includes(this.#peek())) {
             node = {
-                op: SP_OPERATORS[this.get()],
-                args: [node, this.getLowPriority()]
+                op: SP_OPERATORS[this.#get()],
+                args: [node, this.#getLowPriority()]
             }
         }
 
         return node;
     }
 
-    getBoolMerge () {
-        let node = this.getBool();
-        while (['||', '&&'].includes(this.peek())) {
-            let operator = this.get();
+    #getBoolMerge () {
+        let node = this.#getBool();
+        while (['||', '&&'].includes(this.#peek())) {
+            let operator = this.#get();
             node = {
                 op: operator,
-                args: [node, this.getBool()]
+                args: [node, this.#getBool()]
             };
         }
 
         return node;
     }
 
-    getSubExpression () {
-        this.get();
-        let node = this.evalExpression();
-        this.get();
+    #getSubExpression () {
+        this.#get();
+        let node = this.#evalExpression();
+        this.#get();
 
         return node;
     }
 
-    evalExpression () {
-        let node = this.getBoolMerge();
-        if (this.peek() == '?') {
-            this.get();
+    #evalExpression () {
+        let node = this.#getBoolMerge();
+        if (this.#peek() == '?') {
+            this.#get();
 
             // First argument
-            let arg1 = this.evalExpression();
-            this.get();
+            let arg1 = this.#evalExpression();
+            this.#get();
 
             // Second argument
-            let arg2 = this.evalExpression();
+            let arg2 = this.#evalExpression();
 
             // Create node
             node = {
@@ -790,12 +814,7 @@ class Expression {
         return node;
     }
 
-    // Check if the expression is valid (no tokens left)
-    isValid () {
-        return this.tokens.length == 0 && !this.empty;
-    }
-
-    checkCacheableNode (node) {
+    #checkCacheableNode (node) {
         if (typeof node == 'object') {
             if (node.op == 'var') {
                 return false;
@@ -806,7 +825,7 @@ class Expression {
             } else {
                 if (node.args && node.op !== 'string') {
                     for (let arg of node.args) {
-                        if (!this.checkCacheableNode(arg)) {
+                        if (!this.#checkCacheableNode(arg)) {
                             return false;
                         }
                     }
@@ -820,17 +839,17 @@ class Expression {
     }
 
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
-    postProcess (tableVariables, node) {
+    #postProcess (tableVariables, node) {
         if (typeof(node) == 'object' && node.op !== 'string') {
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
-                    node.args[i] = this.postProcess(tableVariables, node.args[i]);
+                    node.args[i] = this.#postProcess(tableVariables, node.args[i]);
                 }
             }
 
             if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
                 const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
-                return typeof res === 'string' ? this.wrapString(res) : res;
+                return typeof res === 'string' ? this.#wrapString(res) : res;
             } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.op != 'random' && node.op != 'now' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
                 const res = SP_FUNCTIONS[node.op](... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.wrapString(res) : res;
@@ -852,29 +871,9 @@ class Expression {
         return node;
     }
 
-    // Outside eval function (always call this from outside of the Expression class)
-    eval (scope = ExpressionScope.DEFAULT) {
-        this.subexpressions_cache_indexes = [];
-        this.subexpressions_cache = [];
-
-        let value = undefined;
-        if (this.resolved) {
-            value = this.root;
-        } else if (scope.alwaysEval() || !this.cacheable) {
-            value = this.evalInternal(scope, this.root);
-        } else if (ExpressionCache.has(scope, this.rstr)) {
-            value = ExpressionCache.get(scope, this.rstr);
-        } else {
-            value = this.evalInternal(scope, this.root);
-            ExpressionCache.set(scope, this.rstr, value);
-        }
-
-        return typeof value == 'number' && isNaN(value) ? undefined : value;
-    }
-
     // Evaluate a node into array, used for array functions
-    evalToArray (scope, node) {
-        var generated = this.evalInternal(scope, node);
+    #evalToArray (scope, node) {
+        var generated = this.#evalInternal(scope, node);
         if (!generated || typeof(generated) != 'object') {
             return [];
         } else {
@@ -882,7 +881,7 @@ class Expression {
         }
     }
 
-    evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
+    #evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
                 return mapper.ast.eval(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }));
@@ -891,22 +890,22 @@ class Expression {
             }
         } else {
             if (segmented) {
-                return this.evalInternal(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
+                return this.#evalInternal(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
             } else {
-                return this.evalInternal(scope.clone().addSelf(obj).add({ loop_index, loop_array }), arg);
+                return this.#evalInternal(scope.clone().addSelf(obj).add({ loop_index, loop_array }), arg);
             }
         }
     }
 
-    evalInternal (scope, node) {
+    #evalInternal (scope, node) {
         if (typeof node === 'object') {
             if (typeof node.op === 'string') {
                 if (node.op === 'string') {
                     return node.args;
                 } else if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.evalInternal(scope, node.args[0]);
+                    var str = this.#evalInternal(scope, node.args[0]);
                     if (typeof str === 'string') {
-                        var arg = node.args.slice(1).map(a => this.evalInternal(scope, a));
+                        var arg = node.args.slice(1).map(a => this.#evalInternal(scope, a));
 
                         for (key in arg) {
                             str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
@@ -918,13 +917,13 @@ class Expression {
                     }
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
-                    const array = this.evalToArray(scope, node.args[0]);
+                    const array = this.#evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
                     let values = new Array(array.length);
 
                     for (let i = 0; i < array.length; i++) {
                         values[i] = {
-                            key: this.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
+                            key: this.#evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
                             val: array[i]
                         };
                     }
@@ -935,18 +934,18 @@ class Expression {
                     return values;
                 } else if (['each', 'filter', 'map'].includes(node.op) && (node.args.length == 2 || (node.op == 'each' && node.args.length == 3))) {
                     // Multiple array functions condensed
-                    const array = this.evalToArray(scope, node.args[0]);
+                    const array = this.#evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
                     const values = new Array(array.length);
 
                     for (let i = 0; i < array.length; i++) {
-                        values[i] = this.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+                        values[i] = this.#evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
                     }
 
                     // Return correct result
                     switch (node.op) {
                         case 'each': {
-                            const def = typeof node.args[2] === 'undefined' ? 0 : this.evalInternal(scope, node.args[2]);
+                            const def = typeof node.args[2] === 'undefined' ? 0 : this.#evalInternal(scope, node.args[2]);
                             return values.reduce((a, b) => a + b, def);
                         }
                         case 'filter': return array.filter((a, i) => values[i]);
@@ -954,11 +953,11 @@ class Expression {
                     }
                 } else if (['some', 'all'].includes(node.op) && node.args.length == 2) {
                     const inverted = node.op === 'some';
-                    const array = this.evalToArray(scope, node.args[0]);
+                    const array = this.#evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
 
                     for (let i = 0; i < array.length; i++) {
-                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
+                        if (inverted == this.#evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
                             return inverted;
                         }
                     }
@@ -969,7 +968,7 @@ class Expression {
                     var obj = node.op == '{' ? {} : [];
 
                     for (var { key, val } of node.args) {
-                        obj[this.evalInternal(scope, key)] = this.evalInternal(scope, val);
+                        obj[this.#evalInternal(scope, key)] = this.#evalInternal(scope, val);
                     }
 
                     return obj;
@@ -978,28 +977,28 @@ class Expression {
                     let branch1 = node.args[1];
                     let branch2 = node.args[2];
 
-                    if (this.evalInternal(scope, condition)) {
-                        return this.evalInternal(scope, branch1);
+                    if (this.#evalInternal(scope, condition)) {
+                        return this.#evalInternal(scope, branch1);
                     } else {
-                        return this.evalInternal(scope, branch2);
+                        return this.#evalInternal(scope, branch2);
                     }
                 } else if (node.op == '||') {
                     let branch1 = node.args[0];
                     let branch2 = node.args[1];
 
-                    let resolved1 = this.evalInternal(scope, branch1);
+                    let resolved1 = this.#evalInternal(scope, branch1);
                     if (resolved1) {
                         return resolved1;
                     } else {
-                        return this.evalInternal(scope, branch2);
+                        return this.#evalInternal(scope, branch2);
                     }
                 } else if (node.op == '&&') {
                     let branch1 = node.args[0];
                     let branch2 = node.args[1];
 
-                    let resolved1 = this.evalInternal(scope, branch1);
+                    let resolved1 = this.#evalInternal(scope, branch1);
                     if (resolved1) {
-                        return this.evalInternal(scope, branch2);
+                        return this.#evalInternal(scope, branch2);
                     } else {
                         return false;
                     }
@@ -1007,13 +1006,13 @@ class Expression {
                     var mapper = scope.env.functions[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.args.length; i++) {
-                        scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
+                        scope2[mapper.args[i]] = this.#evalInternal(scope, node.args[i]);
                     }
 
                     return mapper.ast.eval(scope.clone().add(scope2));
                 } else if (node.op == 'difference' && node.args.length == 1) {
-                    var a = this.evalInternal(scope, node.args[0]);
-                    var b = this.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
+                    var a = this.#evalInternal(scope, node.args[0]);
+                    var b = this.#evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
 
                     if (isNaN(a) || isNaN(b)) {
                         return undefined;
@@ -1021,20 +1020,20 @@ class Expression {
                         return a - b;
                     }
                 } else if (node.op == 'array' && node.args.length == 1) {
-                    return this.evalToArray(scope, node.args[0]);
+                    return this.#evalToArray(scope, node.args[0]);
                 } else if (node.op == '[a') {
-                    var object = this.evalInternal(scope, node.args[0]);
+                    var object = this.#evalInternal(scope, node.args[0]);
                     if (object) {
-                        return object[this.evalInternal(scope, node.args[1])];
+                        return object[this.#evalInternal(scope, node.args[1])];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == '(a') {
-                    var object = this.evalInternal(scope, node.args[0]);
-                    var func = this.evalInternal(scope, node.args[1]);
+                    var object = this.#evalInternal(scope, node.args[0]);
+                    var func = this.#evalInternal(scope, node.args[1]);
 
                     if (object != undefined && object[func] && typeof object[func] === 'function') {
-                        return object[func](... node.args[2].map(param => this.evalInternal(scope, param)));
+                        return object[func](... node.args[2].map(param => this.#evalInternal(scope, param)));
                     } else {
                         return undefined;
                     }
@@ -1052,22 +1051,22 @@ class Expression {
                     }
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
-                    var obj = this.evalInternal(scope, node.args[0]);
+                    var obj = this.#evalInternal(scope, node.args[0]);
                     return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
-                    var obj = this.evalInternal(scope, node.args[0]);
+                    var obj = this.#evalInternal(scope, node.args[0]);
                     return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(scope.player, obj) : undefined;
                 } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
                     // Predefined function
                     return SP_FUNCTIONS[node.op](
-                        ... node.args.map(arg => this.evalInternal(scope, arg))
+                        ... node.args.map(arg => this.#evalInternal(scope, arg))
                     );
                 } else if (SP_ARRAY_FUNCTIONS.hasOwnProperty(node.op) && node.args.length > 0) {
                     // Predefined array functions (first argument is array type)
                     return SP_ARRAY_FUNCTIONS[node.op](
-                        this.evalToArray(scope, node.args[0]),
-                        ... node.args.slice(1).map(arg => this.evalInternal(scope, arg))
+                        this.#evalToArray(scope, node.args[0]),
+                        ... node.args.slice(1).map(arg => this.#evalInternal(scope, arg))
                     );
                 } else {
                     // Return undefined
@@ -1075,7 +1074,7 @@ class Expression {
                 }
             } else if (node.op) {
                 // Return processed node
-                var value = node.op(... node.args.map(arg => this.evalInternal(scope, arg)));
+                var value = node.op(... node.args.map(arg => this.#evalInternal(scope, arg)));
                 if (value == NaN) {
                     return undefined;
                 } else {
@@ -1121,7 +1120,7 @@ class Expression {
                 if (sub_index < this.subexpressions.length) {
                     if (!this.subexpressions_cache_indexes.includes(sub_index)) {
                         this.subexpressions_cache_indexes.push(sub_index);
-                        this.subexpressions_cache[sub_index] = this.evalInternal(scope, this.subexpressions[sub_index]);
+                        this.subexpressions_cache[sub_index] = this.#evalInternal(scope, this.subexpressions[sub_index]);
                     }
                     return this.subexpressions_cache[sub_index];
                 } else {
