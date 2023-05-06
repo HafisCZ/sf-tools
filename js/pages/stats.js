@@ -2264,7 +2264,7 @@ class FilesTab extends Tab {
 
     updateEntryLists () {
         this.prefixMap = _arrayToHash(DatabaseManager.Prefixes, (prefix) => [prefix, _formatPrefix(prefix)]);
-        this.timeMap = _arrayToHash(DatabaseManager.Timestamps.keys(), (ts) => [ts, _formatDate(ts)]);
+        this.timeMap = _arrayToHash(Array.from(DatabaseManager.Timestamps.keys()), (ts) => [ts, _formatDate(ts)]);
         this.playerMap = DatabaseManager.PlayerNames;
         this.groupMap = Object.assign({ 0: intl('stats.files.filters.none') }, DatabaseManager.GroupNames);
 
