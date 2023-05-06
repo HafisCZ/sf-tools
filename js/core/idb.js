@@ -745,7 +745,7 @@ const DatabaseManager = new (class {
             player.List = Object.entries(player).reduce((array, [ ts, obj ]) => {
                 if (!isNaN(ts)) {
                     const timestamp = Number(ts);
-                    array.push([ timestamp, obj ]);
+                    array.push(obj);
 
                     this.Latest = Math.max(this.Latest, timestamp);
                     this.LatestPlayer = Math.max(this.LatestPlayer, timestamp);
@@ -761,7 +761,7 @@ const DatabaseManager = new (class {
                 return array;
             }, []);
 
-            _sortDesc(player.List, le => le[0]);
+            _sortDesc(player.List, le => le.Timestamp);
 
             if (this.Profile.block_preload) {
                 player.Latest = player[player.LatestTimestamp];
@@ -769,7 +769,7 @@ const DatabaseManager = new (class {
                 player.Latest = this.loadPlayer(player[player.LatestTimestamp]);
             }
 
-            player.Own = player.List.find(x => x[1].Own) != undefined;
+            player.Own = player.List.find(p => p.Own) != undefined;
 
             this.PlayerNames[player.Latest.Data.identifier] = player.Latest.Data.name;
 
@@ -782,7 +782,7 @@ const DatabaseManager = new (class {
             group.List = Object.entries(group).reduce((array, [ ts, obj ]) => {
                 if (!isNaN(ts)) {
                     const timestamp = Number(ts);
-                    array.push([ timestamp, obj ]);
+                    array.push(obj);
 
                     this.Latest = Math.max(this.Latest, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
@@ -796,9 +796,9 @@ const DatabaseManager = new (class {
                 return array;
             }, []);
 
-            _sortDesc(group.List, le => le[0]);
+            _sortDesc(group.List, le => le.Timestamp);
             group.Latest = group[group.LatestTimestamp];
-            group.Own = group.List.find(x => x[1].Own) != undefined;
+            group.Own = group.List.find(g => g.Own) != undefined;
 
             this.GroupNames[group.Latest.Data.identifier] = group.Latest.Data.name;
 
@@ -821,7 +821,10 @@ const DatabaseManager = new (class {
             let playerObj = this.Players[identifier];
 
             playerObj[timestamp] = player;
-            playerObj.List.find(([ ts, p ]) => ts == timestamp)[1] = player;
+
+            const listIndex = playerObj.List.findIndex((p) => p.Timestamp == timestamp);
+            playerObj.List[listIndex] = player
+
             if (playerObj.LatestTimestamp == timestamp) {
                 playerObj.Latest = player;
             }
@@ -1521,7 +1524,7 @@ const DatabaseManager = new (class {
 
                 const list = this.getPlayer(identifier).List;
                 for (let i = list.length - 1; i >= 0; i--) {
-                    if (await this.#track(identifier, _dig(list, i, 0))) {
+                    if (await this.#track(identifier, _dig(list, i, 'Timestamp'))) {
                         break;
                     }
                 }
