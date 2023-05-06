@@ -21,42 +21,6 @@ function copyNode (node) {
     window.getSelection().removeAllRanges();
 }
 
-// text()
-(function () {
-    File.prototype.text = File.prototype.text || function () {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.onerror = (e) => reject(e);
-            reader.readAsText(this);
-        })
-    };
-
-    if (!Object.entries) {
-        Object.entries = function (obj) {
-            var ownProps = Object.keys(obj);
-            var i = ownProps.length;
-            var resArray = new Array(i);
-
-            while (i--) {
-                resArray[i] = [ownProps[i], obj[ownProps[i]]];
-            }
-
-            return resArray;
-        };
-    }
-
-    if (typeof Array.prototype.findLastIndex !== 'function') {
-        Array.prototype.findLastIndex = function (predicate) {
-            for (let i = this.length - 1; i >= 0; i--) {
-                if (predicate(this[i], i, this)) return i;
-            }
-
-            return -1;
-        }
-    }
-})();
-
 const COLOR_MAP = {
     'aliceblue': '#f0f8ff',
     'antiquewhite': '#faebd7',
