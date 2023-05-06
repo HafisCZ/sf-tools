@@ -622,7 +622,7 @@ class ModelRegistry {
 }
 
 const DatabaseManager = new (class {
-    #database = null;
+    #interface = null;
 
     // Metadata & Settings
     #metadataDelta = [];
@@ -648,11 +648,11 @@ const DatabaseManager = new (class {
     }
 
     async reset () {
-        if (this.#database) {
-            await this.#database.close();
+        if (this.#interface) {
+            await this.#interface.close();
         }
 
-        this.#database = null;
+        this.#interface = null;
         this.Hidden = [];
 
         // Models
@@ -839,7 +839,7 @@ const DatabaseManager = new (class {
     }
 
     async #loadTemporary () {
-        this.#database = DatabaseUtils.createTemporarySession();
+        this.#interface = DatabaseUtils.createTemporarySession();
         this.Hidden = new Set();
 
         this.#updateLists();
@@ -865,8 +865,8 @@ const DatabaseManager = new (class {
     }
 
     async #loadDatabase (profile) {
-        this.#database = await DatabaseUtils.createSession(profile.slot);
-        if (!this.#database) {
+        this.#interface = await DatabaseUtils.createSession(profile.slot);
+        if (!this.#interface) {
             throw 'Database was not opened correctly';
         }
 
@@ -875,9 +875,9 @@ const DatabaseManager = new (class {
         if (!profile.only_players) {
             const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
             const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_notEmpty(groupFilter) ? (
-                await this.#database.all('groups', ... groupFilter)
+                await this.#interface.all('groups', ... groupFilter)
             ) : (
-                await this.#database.all('groups')
+                await this.#interface.all('groups')
             ));
 
             if (profile.secondary_g) {
@@ -895,13 +895,13 @@ const DatabaseManager = new (class {
             }
         }
 
-        this.#metadata = _arrayToHash(await this.#database.all('metadata'), md => [ md.timestamp, md ]);
+        this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
 
         const playerFilter = DatabaseUtils.profileFilter(profile);
         let players = DatabaseUtils.filterArray(profile) || (_notEmpty(playerFilter) ? (
-            await this.#database.where('players', ... playerFilter)
+            await this.#interface.where('players', ... playerFilter)
         ) : (
-            await this.#database.where('players')
+            await this.#interface.where('players')
         ));
 
         if (profile.secondary) {
@@ -919,7 +919,7 @@ const DatabaseManager = new (class {
         }
 
         if (!profile.only_players) {
-            let trackers = await this.#database.all('trackers');
+            let trackers = await this.#interface.all('trackers');
             for (const tracker of trackers) {
                 this.#trackedPlayers[tracker.identifier] = tracker;
             }
@@ -999,7 +999,7 @@ const DatabaseManager = new (class {
         const metadata = Object.assign(this.#metadata[timestamp], { timestamp: parseInt(timestamp), hidden });
 
         this.#metadata[timestamp] = metadata;
-        await this.#database.set('metadata', metadata);
+        await this.#interface.set('metadata', metadata);
     }
 
     #addMetadata (identifier, dirty_timestamp) {
@@ -1027,9 +1027,9 @@ const DatabaseManager = new (class {
             if (_empty(this.#metadata[timestamp].identifiers)) {
                 delete this.#metadata[timestamp];
 
-                await this.#database.remove('metadata', timestamp);
+                await this.#interface.remove('metadata', timestamp);
             } else {
-                await this.#database.set('metadata', this.#metadata[timestamp]);
+                await this.#interface.set('metadata', this.#metadata[timestamp]);
             }
         }
 
@@ -1081,7 +1081,7 @@ const DatabaseManager = new (class {
 
     async remove (instances) {
         for (const { identifier, timestamp } of instances) {
-            await this.#database.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+            await this.#interface.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
             this.#removeMetadata(identifier, timestamp);
             this.#unload(identifier, timestamp);
@@ -1141,7 +1141,7 @@ const DatabaseManager = new (class {
         for (const timestamp of timestamps) {
             for (const identifier of this.Timestamps.array(timestamp)) {
                 let isPlayer = this.isPlayer(identifier);
-                await this.#database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+                await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 this.#removeMetadata(identifier, timestamp);
                 this.#unload(identifier, timestamp);
@@ -1156,7 +1156,7 @@ const DatabaseManager = new (class {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
             for (const identifier of Array.from(identifiers)) {
                 let isPlayer = this.isPlayer(identifier);
-                await this.#database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+                await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 this.#removeMetadata(identifier, timestamp);
             }
@@ -1185,7 +1185,7 @@ const DatabaseManager = new (class {
                     const player = this.Players[id][timestamp].Data;
                     delete player['hidden'];
 
-                    await this.#database.set('players', player);
+                    await this.#interface.set('players', player);
                 }
 
                 for (const groupIdentifier of Array.from(identifiers).filter(identifier => !this.isPlayer(identifier))) {
@@ -1203,7 +1203,7 @@ const DatabaseManager = new (class {
         for (const identifier of identifiers) {
             for (const timestamp of this.Identifiers.array(identifier)) {
                 let isPlayer = this.isPlayer(identifier);
-                await this.#database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+                await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 this.#removeMetadata(identifier, timestamp);
                 this.#unload(identifier, timestamp);
@@ -1226,7 +1226,7 @@ const DatabaseManager = new (class {
         const player = _dig(this.Players, identifier, timestamp, 'Data');
         player.tag = tag;
         
-        await this.#database.set('players', player);
+        await this.#interface.set('players', player);
     }
 
     async setTag (timestamps, tag) {
@@ -1238,7 +1238,7 @@ const DatabaseManager = new (class {
                 player.tag = tag;
             }
 
-            await this.#database.set('players', player);
+            await this.#interface.set('players', player);
         }
 
         this.LastChange = Date.now();
@@ -1298,7 +1298,7 @@ const DatabaseManager = new (class {
                 this.#unload(entry.identifier, entry.timestamp);
             }
 
-            await this.#database.set(this.isPlayer(entry.identifier) ? 'players' : 'groups', entry);
+            await this.#interface.set(this.isPlayer(entry.identifier) ? 'players' : 'groups', entry);
         }
 
         this.#updateLists();
@@ -1465,14 +1465,14 @@ const DatabaseManager = new (class {
                 this.#addGroup(group);
                 this.#addMetadata(group.identifier, group.timestamp);
     
-                await this.#database.set('groups', group);
+                await this.#interface.set('groups', group);
             }
     
             for (const player of players) {
                 this.#addPlayer(player);
                 this.#addMetadata(player.identifier, player.timestamp);
     
-                await this.#database.set('players', player);
+                await this.#interface.set('players', player);
             }
     
             await this.#updateMetadata();
@@ -1555,7 +1555,7 @@ const DatabaseManager = new (class {
 
         if (trackerChanged) {
             this.#trackedPlayers[identifier] = playerTracker;
-            await this.#database.set('trackers', playerTracker);
+            await this.#interface.set('trackers', playerTracker);
 
             Logger.log('TRACKER', `Tracking updated for ${ identifier }`);
         }
@@ -1576,7 +1576,7 @@ const DatabaseManager = new (class {
 
             if (trackerChanged) {
                 this.#trackedPlayers[identifier] = currentTracker;
-                await this.#database.set('trackers', currentTracker);
+                await this.#interface.set('trackers', currentTracker);
             }
         }
     }
