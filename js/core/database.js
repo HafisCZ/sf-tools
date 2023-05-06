@@ -302,21 +302,21 @@ class DatabaseUtils {
     }
 }
 
-const PLAYA_RESPONSE_CHARACTER_ENCODING = Object.entries({
-    'd': '$',
-    'P': '%',
-    'c': ':',
-    'C': ',',
-    'S': ';',
-    'p': '|',
-    's': '/',
-    '+': '&',
-    'q': '"',
-    'r': '#',
-    'b': `\n`
-});
-
 class PlayaResponse {
+    static PLAYA_RESPONSE_CHARACTER_ENCODING = Object.entries({
+        'd': '$',
+        'P': '%',
+        'c': ':',
+        'C': ',',
+        'S': ';',
+        'p': '|',
+        's': '/',
+        '+': '&',
+        'q': '"',
+        'r': '#',
+        'b': `\n`
+    });
+
     static * search (json) {
         for (const entry of _dig(json, 'log', 'entries')) {
             let { text, encoding } = _dig(entry, 'response', 'content');
@@ -350,7 +350,7 @@ class PlayaResponse {
 
     static unescape (string) {
         if (typeof string === 'string') {
-            for (const [encodedCharacter, character] of PLAYA_RESPONSE_CHARACTER_ENCODING) {
+            for (const [encodedCharacter, character] of this.PLAYA_RESPONSE_CHARACTER_ENCODING) {
                 string = string.replace(`$${encodedCharacter}`, character)
             }
         }
