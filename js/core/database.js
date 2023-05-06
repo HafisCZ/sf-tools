@@ -572,7 +572,7 @@ class ModelRegistry {
         if (data) {
             return data.size === 0;
         } else {
-            return false;
+            return true;
         }
     }
 
