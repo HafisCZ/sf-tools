@@ -1833,7 +1833,7 @@ class PlayerModel {
 
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
 
-        this.XPTotal = this.XP + Calculations.experienceTotalLevelCurve(this.Level);
+        this.XPTotal = this.XP + Calculations.experienceTotalLevel(this.Level);
 
         this.BookPercentage = this.Book / PlayerModel.SCRAPBOOK_COUNT;
 
