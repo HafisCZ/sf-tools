@@ -22,14 +22,14 @@ const ExpressionCache = class {
         
         this.#cache.set(scope, block);
 
-        block.set(node, value);
+        block.set(String(node), value);
     }
 
     static get (scope, node) {
         const block = this.#cache.get(scope);
  
         if (typeof block !== 'undefined') {
-            return block.get(node);
+            return block.get(String(node));
         } else {
             return undefined;
         }
