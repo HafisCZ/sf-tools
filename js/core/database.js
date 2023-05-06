@@ -1053,7 +1053,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    async removeAuto (data) {
+    async #removeAuto (data) {
         let { identifiers, timestamps, instances } = Object.assign({ identifiers: [], timestamps: [], instances: [] }, data);
 
         if (identifiers.length > 0) {
@@ -1069,11 +1069,11 @@ const DatabaseManager = new (class {
         }
     }
 
-    safeRemove (data, callback) {
-        if (SiteOptions.unsafe_delete) {
+    safeRemove (data, callback, unsafeOverride = false) {
+        if (unsafeOverride || SiteOptions.unsafe_delete) {
             Loader.toggle(true);
 
-            this.removeAuto(data).then(() => {
+            this.#removeAuto(data).then(() => {
                 Loader.toggle(false);
                 callback();
             });
