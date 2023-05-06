@@ -1057,11 +1057,11 @@ const DatabaseManager = new (class {
         let { identifiers, timestamps, instances } = Object.assign({ identifiers: [], timestamps: [], instances: [] }, data);
 
         if (identifiers.length > 0) {
-            await this.removeIdentifiers(...identifiers);
+            await this.#removeIdentifiers(...identifiers);
         }
 
         if (timestamps.length > 0) {
-            await this.removeTimestamps(...timestamps);
+            await this.#removeTimestamps(...timestamps);
         }
 
         if (instances.length > 0) {
@@ -1099,7 +1099,7 @@ const DatabaseManager = new (class {
     }
 
     // Remove one or more timestamps
-    async removeTimestamps (... timestamps) {
+    async #removeTimestamps (... timestamps) {
         for (const timestamp of timestamps) {
             for (const identifier of this.Timestamps.values(timestamp)) {
                 let isPlayer = this.isPlayer(identifier);
@@ -1161,7 +1161,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    async removeIdentifiers (... identifiers) {
+    async #removeIdentifiers (... identifiers) {
         for (const identifier of identifiers) {
             for (const timestamp of this.Identifiers.values(identifier)) {
                 let isPlayer = this.isPlayer(identifier);
@@ -1223,7 +1223,7 @@ const DatabaseManager = new (class {
             }
 
             await this.#addFile(file.players, file.groups);
-            await this.removeTimestamps(from);
+            await this.#removeTimestamps(from);
         }
     }
 
@@ -1246,7 +1246,7 @@ const DatabaseManager = new (class {
                 await this.#addFile(file.players, file.groups, { skipExisting: true });
             }
 
-            await this.removeTimestamps(... timestamps);
+            await this.#removeTimestamps(... timestamps);
         }
     }
 

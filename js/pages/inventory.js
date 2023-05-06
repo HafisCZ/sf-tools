@@ -21,7 +21,7 @@ class Tab {
 class PlayerSelectTab extends Tab {
     constructor (parent) {
         super(parent);
-        var players = Object.values(DatabaseManager.Players).map(player => player.Latest);
+        var players = DatabaseManager.getLatestPlayers();
 
         if (players.length) {
             var content = '';
