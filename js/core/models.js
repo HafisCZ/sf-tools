@@ -725,6 +725,7 @@ class PlayerModel {
             SecretStone: resourcesData.long(),
             Metal: resourcesData.long(),
             Crystals: resourcesData.long(),
+            Souls: resourcesData.long(),
             ShadowFood: resourcesData.long(),
             LightFood: resourcesData.long(),
             EarthFood: resourcesData.long(),
@@ -1234,7 +1235,7 @@ class PlayerModel {
             this.Underworld.TrollBlock = dataType.long();
             this.Underworld.TimeMachine = dataType.long();
             this.Underworld.Keeper = dataType.long();
-            this.Underworld.Souls = dataType.long();
+            this.Underworld.Souls = dataType.long() || resources.Souls;
             this.Underworld.ExtractorSouls = dataType.long();
             this.Underworld.ExtractorMax = dataType.long();
             this.Underworld.MaxSouls = dataType.long();
