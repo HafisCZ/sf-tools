@@ -593,6 +593,7 @@ const DatabaseManager = new (class {
     #hiddenModels = new Set();
     #sessionObjects = {};
     #hiddenVisible = false;
+    #hiddenIdentifiers = new Set();
 
     // Trackers
     #trackerData = {};
@@ -616,7 +617,6 @@ const DatabaseManager = new (class {
         }
 
         this.#interface = null;
-        this.Hidden = [];
 
         // Models
         this.Players = {};
@@ -638,7 +638,7 @@ const DatabaseManager = new (class {
 
         this.#metadataDelta = [];
         this.#hiddenModels = new Set();
-
+        this.#hiddenIdentifiers = new Set();
         this.#hiddenVisible = SiteOptions.hidden;
     }
 
@@ -803,7 +803,7 @@ const DatabaseManager = new (class {
 
     async #loadTemporary () {
         this.#interface = DatabaseUtils.createTemporarySession();
-        this.Hidden = new Set();
+        this.#hiddenIdentifiers = new Set();
 
         this.#updateLists();
         Logger.log('PERFLOG', 'Skipped load in temporary mode');
@@ -891,7 +891,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
         await this.refreshTrackers();
 
-        this.Hidden = new Set(Store.get('hidden_identifiers', []));
+        this.#hiddenIdentifiers = new Set(Store.get('hidden_identifiers', []));
 
         // Restore session-only objects
         const sessionObjects = Object.values(this.#sessionObjects);
@@ -1177,12 +1177,16 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
+    isIdentifierHidden (identifier) {
+        return this.#hiddenIdentifiers.has(identifier);
+    }
+
     hideIdentifier (identifier) {
-        if (!this.Hidden.delete(identifier)) {
-            this.Hidden.add(identifier);
+        if (!this.#hiddenIdentifiers.delete(identifier)) {
+            this.#hiddenIdentifiers.add(identifier);
         }
 
-        Store.set('hidden_identifiers', Array.from(this.Hidden));
+        Store.set('hidden_identifiers', Array.from(this.#hiddenIdentifiers));
     }
 
     async setTagFor (identifier, timestamp, tag) {
