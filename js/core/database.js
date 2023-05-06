@@ -829,13 +829,18 @@ const DatabaseManager = new (class {
     }
 
     async #loadDatabase (profile) {
+        const beginTimestamp = Date.now();
+
+        // Open interface
         this.#interface = await DatabaseUtils.createSession(profile.slot);
         if (!this.#interface) {
             throw 'Database was not opened correctly';
         }
 
-        const beginTimestamp = Date.now();
+        // Load metadata
+        this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
 
+        // Load groups
         if (!profile.only_players) {
             const groups = DatabaseUtils.filterArray(profile, 'primary_g') || await this.#interface.all('groups', ... DatabaseUtils.profileFilter(profile, 'primary_g'));
 
@@ -855,10 +860,8 @@ const DatabaseManager = new (class {
             }
         }
 
-        this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
-
+        // Load players
         const players = DatabaseUtils.filterArray(profile) || await this.#interface.where('players', ... DatabaseUtils.profileFilter(profile));
-
         if (profile.secondary) {
             const filter = new Expression(profile.secondary);
   
@@ -874,6 +877,7 @@ const DatabaseManager = new (class {
             }
         }
 
+        // Load trackers
         if (!profile.only_players) {
             const trackers = await this.#interface.all('trackers');
 
@@ -882,6 +886,7 @@ const DatabaseManager = new (class {
             }
         }
 
+        // Generate lists
         this.#updateLists();
         await this.refreshTrackers();
 
