@@ -331,19 +331,29 @@ function _rbgaToHex (rgba) {
     return `#${rgba.map((channel) => _padLeft(Number(channel).toString(16), 2, '0')).join('')}`
 }
 
-function _parseColor (text) {
-    const style = new Option().style;
-    style.color = text;
+const PARSE_COLOR_CACHE = new Map();
 
-    const color = style.color;
-    if (color.startsWith('rgba')) {
-        return _rbgaToHex(color.slice(5, -1).split(','));
-    } else if (color.startsWith('rgb')) {
-        return _rbgaToHex(color.slice(4, -1).split(','));
-    } else if (COLOR_MAP.hasOwnProperty(color)) {
-        return COLOR_MAP[color];
+function _parseColor (name) {
+    if (PARSE_COLOR_CACHE.has(name)) {
+        return PARSE_COLOR_CACHE.get(name);
     } else {
-        return '';
+        const style = new Option().style;
+        style.color = name;
+
+        let color = style.color;
+        if (color.startsWith('rgba')) {
+            color = _rbgaToHex(color.slice(5, -1).split(','));
+        } else if (color.startsWith('rgb')) {
+            color = _rbgaToHex(color.slice(4, -1).split(','));
+        } else if (COLOR_MAP.hasOwnProperty(color)) {
+            color = COLOR_MAP[color];
+        } else {
+            color = '';
+        }
+
+        PARSE_COLOR_CACHE.set(name, color);
+
+        return color;
     }
 }
 
