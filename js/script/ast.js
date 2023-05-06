@@ -6,50 +6,50 @@ const EXPRESSION_REGEXP = (function () {
     }
 })();
 
-const ExpressionCache = new (class {
-    constructor () {
-        this.reset();
-        this.start();
+const ExpressionCache = class {
+    static #calls = 0;
+    static #hits = 0;
+    static #cache = new Map();
+    static #time = Date.now();
+
+    static start () {
+        this.#calls = 0;
+        this.#hits = 0;
+        this.#time = Date.now();
     }
 
-    reset () {
-        this.cache = new Map();
+    static reset () {
+        this.#cache = new Map();
     }
 
-    start () {
-        this.calls = 0;
-        this.hits = 0;
-        this.time = Date.now();
+    static stop () {
+        Logger.log('PERFLOG', `${ this.#hits } hits (${ this.#calls - this.#hits } missed) in ${ Date.now() - this.#time } ms.`);
     }
 
-    stop () {
-        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms.`);
-    }
-
-    set (s, n, v) {
+    static set (s, n, v) {
         if (s.player && s.reference) {
-            this.cache.set(this.key(s, n), v);
+            this.#cache.set(this.#key(s, n), v);
         }
     }
 
-    get (s, n) {
-        return this.cache.get(this.key(s, n));
+    static get (s, n) {
+        return this.#cache.get(this.#key(s, n));
     }
 
-    has (s, n) {
-        this.calls++;
-        if (s.player && s.reference && this.cache.has(this.key(s, n))) {
-            this.hits++;
+    static has (s, n) {
+        this.#calls++;
+        if (s.player && s.reference && this.#cache.has(this.#key(s, n))) {
+            this.#hits++;
             return true;
         } else {
             return false;
         }
     }
 
-    key (s, n) {
+    static #key (s, n) {
         return `${ s.env.env_id }.${ s.player.Identifier }.${ s.player.Timestamp }${ s.reference.Timestamp }.${ n }`
     }
-})();
+};
 
 const ExpressionEnum = class {
     static keys = [
