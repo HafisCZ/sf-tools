@@ -837,15 +837,11 @@ const DatabaseManager = new (class {
         const beginTimestamp = Date.now();
 
         if (!profile.only_players) {
-            const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
-            const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_notEmpty(groupFilter) ? (
-                await this.#interface.all('groups', ... groupFilter)
-            ) : (
-                await this.#interface.all('groups')
-            ));
+            const groups = DatabaseUtils.filterArray(profile, 'primary_g') || await this.#interface.all('groups', ... DatabaseUtils.profileFilter(profile, 'primary_g'));
 
             if (profile.secondary_g) {
                 const filter = new Expression(profile.secondary_g);
+
                 for (const group of groups) {
                     ExpressionCache.reset();
                     if (filter.eval(new ExpressionScope().addSelf(group))) {
@@ -861,15 +857,11 @@ const DatabaseManager = new (class {
 
         this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
 
-        const playerFilter = DatabaseUtils.profileFilter(profile);
-        let players = DatabaseUtils.filterArray(profile) || (_notEmpty(playerFilter) ? (
-            await this.#interface.where('players', ... playerFilter)
-        ) : (
-            await this.#interface.where('players')
-        ));
+        const players = DatabaseUtils.filterArray(profile) || await this.#interface.where('players', ... DatabaseUtils.profileFilter(profile));
 
         if (profile.secondary) {
             const filter = new Expression(profile.secondary);
+  
             for (const player of players) {
                 ExpressionCache.reset();
                 if (filter.eval(new ExpressionScope().addSelf(player))) {
@@ -883,7 +875,8 @@ const DatabaseManager = new (class {
         }
 
         if (!profile.only_players) {
-            let trackers = await this.#interface.all('trackers');
+            const trackers = await this.#interface.all('trackers');
+
             for (const tracker of trackers) {
                 this.#trackedPlayers[tracker.identifier] = tracker;
             }
