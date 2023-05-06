@@ -7,14 +7,14 @@ const EXPRESSION_REGEXP = (function () {
 })();
 
 const ExpressionCache = class {
-    static #calls = 0;
-    static #hits = 0;
+    static calls = 0;
+    static hits = 0;
     static #cache = new Map();
     static #time = Date.now();
 
     static start () {
-        this.#calls = 0;
-        this.#hits = 0;
+        this.calls = 0;
+        this.hits = 0;
         this.#time = Date.now();
     }
 
@@ -23,7 +23,7 @@ const ExpressionCache = class {
     }
 
     static stop () {
-        Logger.log('PERFLOG', `${ this.#hits } hits (${ this.#calls - this.#hits } missed) in ${ Date.now() - this.#time } ms.`);
+        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.#time } ms.`);
     }
 
     static set (s, n, v) {
@@ -37,9 +37,9 @@ const ExpressionCache = class {
     }
 
     static has (s, n) {
-        this.#calls++;
+        this.calls++;
         if (s.player && s.reference && this.#cache.has(this.#key(s, n))) {
-            this.#hits++;
+            this.hits++;
             return true;
         } else {
             return false;
