@@ -46,7 +46,404 @@ class ExpressionConfig {
   }
 }
 
-const TABLE_EXPRESSION_CONFIG = new ExpressionConfig();
+const DEFAULT_EXPRESSION_CONFIG = new ExpressionConfig();
+
+/*
+  Scope functions
+*/
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'difference',
+  function (self, scope, node) {
+      if (node.args.length !== 1) return undefined;
+
+      const a = self.evalInternal(scope, node.args[0]);
+      const b = self.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
+
+      if (isNaN(a) || isNaN(b)) {
+          return undefined;
+      } else {
+          return a - b;
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'sort',
+  function (self, scope, node) {
+      if (node.args.length !== 2) return undefined;
+
+      const array = self.evalToArray(scope, node.args[0]);
+      const mapper = scope.env.functions[node.args[1]];
+      let values = new Array(array.length);
+
+      for (let i = 0; i < array.length; i++) {
+          values[i] = {
+              key: self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
+              val: array[i]
+          };
+      }
+
+      values = values.sort((a, b) => b.key - a.key).map((a) => a.val);
+      values.segmented = array.segmented;
+
+      return values;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'some',
+  function (self, scope, node) {
+      if (node.args.length !== 2) return undefined;
+
+      const array = self.evalToArray(scope, node.args[0]);
+      const mapper = scope.env.functions[node.args[1]];
+  
+      for (let i = 0; i < array.length; i++) {
+          if (self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
+              return true;
+          }
+      }
+  
+      return false;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'all',
+  function (self, scope, node) {
+      if (node.args.length !== 2) return undefined;
+
+      const array = self.evalToArray(scope, node.args[0]);
+      const mapper = scope.env.functions[node.args[1]];
+  
+      for (let i = 0; i < array.length; i++) {
+          if (!self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
+              return false;
+          }
+      }
+  
+      return true;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'format',
+  function (self, scope, node) {
+      if (node.args.length === 0) return undefined;
+
+      let str = self.evalInternal(scope, node.args[0]);
+      if (typeof str === 'string') {
+          const arg = node.args.slice(1).map(a => self.evalInternal(scope, a));
+  
+          for (key in arg) {
+              str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
+          }
+  
+          return str;
+      } else {
+          return undefined;
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'array',
+  function (self, scope, node) {
+      if (node.args.length !== 1) return undefined;
+
+      return self.evalToArray(scope, node.args[0]);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'each',
+  function (self, scope, node) {
+      if (node.args.length !== 2 && node.args.length !== 3) return undefined;
+
+      const array = self.evalToArray(scope, node.args[0]);
+      const mapper = scope.env.functions[node.args[1]];
+      const values = new Array(array.length);
+  
+      for (let i = 0; i < array.length; i++) {
+          values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+      }
+
+      const def = typeof node.args[2] === 'undefined' ? 0 : self.evalInternal(scope, node.args[2]);
+      return values.reduce((a, b) => a + b, def);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'filter',
+  function (self, scope, node) {
+      if (node.args.length !== 2) return undefined;
+
+      const array = self.evalToArray(scope, node.args[0]);
+      const mapper = scope.env.functions[node.args[1]];
+      const values = new Array(array.length);
+  
+      for (let i = 0; i < array.length; i++) {
+          values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+      }
+
+      return array.filter((a, i) => values[i]);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'map',
+  function (self, scope, node) {
+      if (node.args.length !== 2) return undefined;
+
+      const array = self.evalToArray(scope, node.args[0]);
+      const mapper = scope.env.functions[node.args[1]];
+      const values = new Array(array.length);
+  
+      for (let i = 0; i < array.length; i++) {
+          values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+      }
+
+      return values;
+  }
+)
+
+/*
+  Array functions
+*/
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'distinct',
+  function (array) {
+      let values = Array.from(new Set(array));
+      values.segmented = array.segmented;
+      return values;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'slice',
+  function (array, from, to) {
+      let values = array.slice(from, to);
+      values.segmented = array.segmented;
+      return values;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'join',
+  function (array, delim) {
+      return array.join(delim);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'at',
+  function (array, index) {
+      if (isNaN(index)) {
+          return undefined;
+      } else {
+          return array[Math.min(array.length, Math.max(0, index))];
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'indexof',
+  function (array, obj) {
+      for (let i = 0; i < array.length; i++) {
+          if (array[i] == obj) {
+              return i;
+          }
+      }
+
+      return -1;
+  }
+)
+
+/*
+  Standard functions
+*/
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'min',
+  function (... values) {
+      return _fastMin(values.reduce((collector, value) => {
+          if (Array.isArray(value)) {
+              collector.push(... value);
+          } else {
+              collector.push(value);
+          }
+
+          return collector;
+      }, []));
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'max',
+  function (... values) {
+      return _fastMax(values.reduce((collector, value) => {
+          if (Array.isArray(value)) {
+              collector.push(... value);
+          } else {
+              collector.push(value);
+          }
+
+          return collector;
+      }, []));
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'sum',
+  function (... values) {
+      return values.reduce((collector, value) => {
+          if (Array.isArray(value)) {
+              collector += value.reduce((a, b) => a + b, 0);
+          } else {
+              collector += value;
+          }
+
+          return collector;
+      }, 0);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'now',
+  function () {
+      return Date.now();
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'random',
+  function () {
+      return Math.random();
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'log',
+  function (value) {
+      console.log(value);
+
+      return value;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'stringify',
+  function (value) {
+      return String(value);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'range',
+  function (min, max, value) {
+      if (isNaN(min) || isNaN(max) || isNaN(value)) {
+          return undefined;
+      } else {
+          return (max - min) * value + min;
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'len',
+  function (value) {
+      if (typeof(value) != 'object') {
+          return undefined;
+      } else {
+          if (Array.isArray(value)) {
+              return value.length;
+          } else {
+              return Object.keys(value).length;
+          }
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'average',
+  function (... values) {
+      let { sum, len } = values.reduce((collector, value) => {
+          if (Array.isArray(value)) {
+              collector.sum += value.reduce((a, b) => a + b, 0);
+              collector.len += value.length;
+          } else {
+              collector.sum += value;
+              collector.len += 1;
+          }
+
+          return collector;
+      }, {
+          sum: 0,
+          len: 0
+      });
+
+      if (len) {
+          return sum / len;
+      } else {
+          return 0;
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'makearray',
+  function (size, def = 0) {
+      if (!isNaN(size)) {
+          return new Array(size).fill(def);
+      } else {
+          return undefined;
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'makesequence',
+  function (from, to) {
+      if (!isNaN(from) && !isNaN(to)) {
+          if (to > from) {
+              let len = to - from + 1;
+              return new Array(len).fill(0).map((x, i) => from + i);
+          } else {
+              let len = from - to + 1;
+              return new Array(len).fill(0).map((x, i) => from - i);
+          }
+      } else {
+          return undefined;
+      }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'number',
+  function (value) {
+      return Number(value);
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'value', 'presence',
+  function (value) {
+      if (value === null) {
+          return false;
+      } else if (Array.isArray(value)) {
+          return value.length > 0
+      } else if (typeof value === 'object') {
+          for (const i in value) {
+              return false;
+          }
+
+          return true;
+      } else {
+          return !!value;
+      }
+  }
+)
+
+const TABLE_EXPRESSION_CONFIG = DEFAULT_EXPRESSION_CONFIG.clone();
 
 /*
   Scope constants
@@ -129,101 +526,6 @@ TABLE_EXPRESSION_CONFIG.register(
   Scope functions
 */
 TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'difference',
-  function (self, scope, node) {
-      if (node.args.length !== 1) return undefined;
-
-      const a = self.evalInternal(scope, node.args[0]);
-      const b = self.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
-
-      if (isNaN(a) || isNaN(b)) {
-          return undefined;
-      } else {
-          return a - b;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'sort',
-  function (self, scope, node) {
-      if (node.args.length !== 2) return undefined;
-
-      const array = self.evalToArray(scope, node.args[0]);
-      const mapper = scope.env.functions[node.args[1]];
-      let values = new Array(array.length);
-
-      for (let i = 0; i < array.length; i++) {
-          values[i] = {
-              key: self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
-              val: array[i]
-          };
-      }
-
-      values = values.sort((a, b) => b.key - a.key).map((a) => a.val);
-      values.segmented = array.segmented;
-
-      return values;
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'some',
-  function (self, scope, node) {
-      if (node.args.length !== 2) return undefined;
-
-      const array = self.evalToArray(scope, node.args[0]);
-      const mapper = scope.env.functions[node.args[1]];
-  
-      for (let i = 0; i < array.length; i++) {
-          if (self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
-              return true;
-          }
-      }
-  
-      return false;
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'all',
-  function (self, scope, node) {
-      if (node.args.length !== 2) return undefined;
-
-      const array = self.evalToArray(scope, node.args[0]);
-      const mapper = scope.env.functions[node.args[1]];
-  
-      for (let i = 0; i < array.length; i++) {
-          if (!self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
-              return false;
-          }
-      }
-  
-      return true;
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'format',
-  function (self, scope, node) {
-      if (node.args.length === 0) return undefined;
-
-      let str = self.evalInternal(scope, node.args[0]);
-      if (typeof str === 'string') {
-          const arg = node.args.slice(1).map(a => self.evalInternal(scope, a));
-  
-          for (key in arg) {
-              str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
-          }
-  
-          return str;
-      } else {
-          return undefined;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
   'function', 'scope', 'var',
   function (self, scope, node) {
       if (node.args.length !== 1) return undefined;
@@ -246,119 +548,6 @@ TABLE_EXPRESSION_CONFIG.register(
       } else {
           return undefined;
       }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'array',
-  function (self, scope, node) {
-      if (node.args.length !== 1) return undefined;
-
-      return self.evalToArray(scope, node.args[0]);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'each',
-  function (self, scope, node) {
-      if (node.args.length !== 2 && node.args.length !== 3) return undefined;
-
-      const array = self.evalToArray(scope, node.args[0]);
-      const mapper = scope.env.functions[node.args[1]];
-      const values = new Array(array.length);
-  
-      for (let i = 0; i < array.length; i++) {
-          values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
-      }
-
-      const def = typeof node.args[2] === 'undefined' ? 0 : self.evalInternal(scope, node.args[2]);
-      return values.reduce((a, b) => a + b, def);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'filter',
-  function (self, scope, node) {
-      if (node.args.length !== 2) return undefined;
-
-      const array = self.evalToArray(scope, node.args[0]);
-      const mapper = scope.env.functions[node.args[1]];
-      const values = new Array(array.length);
-  
-      for (let i = 0; i < array.length; i++) {
-          values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
-      }
-
-      return array.filter((a, i) => values[i]);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'scope', 'map',
-  function (self, scope, node) {
-      if (node.args.length !== 2) return undefined;
-
-      const array = self.evalToArray(scope, node.args[0]);
-      const mapper = scope.env.functions[node.args[1]];
-      const values = new Array(array.length);
-  
-      for (let i = 0; i < array.length; i++) {
-          values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
-      }
-
-      return values;
-  }
-)
-
-/*
-  Array functions
-*/
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'array', 'distinct',
-  function (array) {
-      let values = Array.from(new Set(array));
-      values.segmented = array.segmented;
-      return values;
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'array', 'slice',
-  function (array, from, to) {
-      let values = array.slice(from, to);
-      values.segmented = array.segmented;
-      return values;
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'array', 'join',
-  function (array, delim) {
-      return array.join(delim);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'array', 'at',
-  function (array, index) {
-      if (isNaN(index)) {
-          return undefined;
-      } else {
-          return array[Math.min(array.length, Math.max(0, index))];
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'array', 'indexof',
-  function (array, obj) {
-      for (let i = 0; i < array.length; i++) {
-          if (array[i] == obj) {
-              return i;
-          }
-      }
-
-      return -1;
   }
 )
 
@@ -557,133 +746,6 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'min',
-  function (... values) {
-      return _fastMin(values.reduce((collector, value) => {
-          if (Array.isArray(value)) {
-              collector.push(... value);
-          } else {
-              collector.push(value);
-          }
-
-          return collector;
-      }, []));
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'max',
-  function (... values) {
-      return _fastMax(values.reduce((collector, value) => {
-          if (Array.isArray(value)) {
-              collector.push(... value);
-          } else {
-              collector.push(value);
-          }
-
-          return collector;
-      }, []));
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'sum',
-  function (... values) {
-      return values.reduce((collector, value) => {
-          if (Array.isArray(value)) {
-              collector += value.reduce((a, b) => a + b, 0);
-          } else {
-              collector += value;
-          }
-
-          return collector;
-      }, 0);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'now',
-  function () {
-      return Date.now();
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'random',
-  function () {
-      return Math.random();
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'log',
-  function (value) {
-      console.log(value);
-
-      return value;
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'stringify',
-  function (value) {
-      return String(value);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'range',
-  function (min, max, value) {
-      if (isNaN(min) || isNaN(max) || isNaN(value)) {
-          return undefined;
-      } else {
-          return (max - min) * value + min;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'len',
-  function (value) {
-      if (typeof(value) != 'object') {
-          return undefined;
-      } else {
-          if (Array.isArray(value)) {
-              return value.length;
-          } else {
-              return Object.keys(value).length;
-          }
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'average',
-  function (... values) {
-      let { sum, len } = values.reduce((collector, value) => {
-          if (Array.isArray(value)) {
-              collector.sum += value.reduce((a, b) => a + b, 0);
-              collector.len += value.length;
-          } else {
-              collector.sum += value;
-              collector.len += 1;
-          }
-
-          return collector;
-      }, {
-          sum: 0,
-          len: 0
-      });
-
-      if (len) {
-          return sum / len;
-      } else {
-          return 0;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
   'function', 'value', 'hsl',
   function (h, s, l, a) {
       if (isNaN(h) || isNaN(s) || isNaN(l)) {
@@ -798,60 +860,6 @@ TABLE_EXPRESSION_CONFIG.register(
           return Calculations.experienceTotalLevel(level);
       } else {
           return undefined;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'makearray',
-  function (size, def = 0) {
-      if (!isNaN(size)) {
-          return new Array(size).fill(def);
-      } else {
-          return undefined;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'makesequence',
-  function (from, to) {
-      if (!isNaN(from) && !isNaN(to)) {
-          if (to > from) {
-              let len = to - from + 1;
-              return new Array(len).fill(0).map((x, i) => from + i);
-          } else {
-              let len = from - to + 1;
-              return new Array(len).fill(0).map((x, i) => from - i);
-          }
-      } else {
-          return undefined;
-      }
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'number',
-  function (value) {
-      return Number(value);
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'presence',
-  function (value) {
-      if (value === null) {
-          return false;
-      } else if (Array.isArray(value)) {
-          return value.length > 0
-      } else if (typeof value === 'object') {
-          for (const i in value) {
-              return false;
-          }
-
-          return true;
-      } else {
-          return !!value;
       }
   }
 )
