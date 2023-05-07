@@ -514,10 +514,19 @@ const ProfileManager = new (class {
     }
 })();
 
-const ACTION_PROPS = ['players', 'groups'];
+const Actions = class {
+    static get EXPRESSION_CONFIG () {
+        delete this.EXPRESSION_CONFIG;
 
-const Actions = new (class {
-    init () {
+        const config = TABLE_EXPRESSION_CONFIG.clone();
+        for (const name of ['players', 'groups']) {
+            config.register('constant', 'scope', name, (scope) => scope.get(name));
+        }
+
+        return (this.EXPRESSION_CONFIG = config);
+    }
+
+    static init () {
         this.defaultScript = typeof DefaultScripts === 'object' ? DefaultScripts.getContent('actions') : '';
 
         this._loadScript();
@@ -533,52 +542,52 @@ const Actions = new (class {
         this._executeScript();
     }
 
-    _loadScript () {
+    static _loadScript () {
         this.script = Store.get('actions_script', this.defaultScript);
     }
 
-    _saveScript () {
+    static _saveScript () {
         Store.set('actions_script', this.script);
     }
 
-    _executeScript () {
+    static _executeScript () {
         this.instance = new Settings(this.script || '', null, ScriptType.Action)
 
         this.actions = this.instance.actions;
         this.trackers = this.instance.trackers;
     }
 
-    getScript () {
+    static getScript () {
         return this.script;
     }
 
-    getInstance () {
+    static getInstance () {
         return this.instance;
     }
 
-    getActions () {
+    static getActions () {
         return this.actions;
     }
 
-    getTrackers () {
+    static getTrackers () {
         return this.trackers;
     }
 
-    resetScript () {
+    static resetScript () {
         Store.remove('actions_script');
 
         this._loadScript();
         this._executeScript();
     }
 
-    setScript (script) {
+    static setScript (script) {
         this.script = script;
 
         this._saveScript();
         this._executeScript();
     }
 
-    async apply (playerData, groupData) {
+    static async apply (playerData, groupData) {
         if (_notEmpty(this.actions)) {
             let players = playerData.map(({identifier, timestamp}) => DatabaseManager.getPlayer(identifier, timestamp));
             let groups = groupData.map(({identifier, timestamp}) => DatabaseManager.getGroup(identifier, timestamp));
@@ -590,7 +599,7 @@ const Actions = new (class {
         }
     }
 
-    async _applyAction ({ action, type, args }, players, groups) {
+    static async _applyAction ({ action, type, args }, players, groups) {
         if (action == 'tag') {
             const [tagExpr, conditionExpr] = args;
 
@@ -639,7 +648,7 @@ const Actions = new (class {
             throw 'Invalid action';
         }
     }
-})();
+}
 
 class Broadcast {
     constructor (token = this._randomToken()) {

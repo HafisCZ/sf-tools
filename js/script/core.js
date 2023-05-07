@@ -192,8 +192,8 @@ const Highlighter = class {
         return this;
     }
 
-    static expression (text, root, extras) {
-        ExpressionRenderer.render(this, text, root, extras);
+    static expression (text, root, config) {
+        ExpressionRenderer.render(this, text, root, config);
         return this;
     }
 
@@ -1325,7 +1325,7 @@ SettingsCommands.register(
             root.addActionEntry('tag', type, ast1, ast2);
         }
     },
-    (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, ACTION_PROPS).keyword(' if ').expression(expr, undefined, ACTION_PROPS)
+    (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, Actions.EXPRESSION_CONFIG).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 ).forScriptType(ScriptType.Action)
 
 SettingsCommands.register(
@@ -1337,7 +1337,7 @@ SettingsCommands.register(
             root.addActionEntry('remove', 'player', ast1);
         }
     },
-    (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, ACTION_PROPS)
+    (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 ).forScriptType(ScriptType.Action)
 
 SettingsCommands.register(

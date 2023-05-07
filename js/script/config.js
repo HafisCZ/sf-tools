@@ -4023,47 +4023,47 @@ TABLE_EXPRESSION_CONFIG.register(
 */
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Strength',
-  function (p, i) {
-      return i.Strength.Value;
+  function (object) {
+      return object.Strength.Value;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Dexterity',
-  function (p, i) {
-      return i.Dexterity.Value;
+  function (object) {
+      return object.Dexterity.Value;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Intelligence',
-  function (p, i) {
-      return i.Intelligence.Value;
+  function (object) {
+      return object.Intelligence.Value;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Constitution',
-  function (p, i) {
-      return i.Constitution.Value;
+  function (object) {
+      return object.Constitution.Value;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Luck',
-  function (p, i) {
-      return i.Luck.Value;
+  function (object) {
+      return object.Luck.Value;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Attribute',
-  function (p, i) {
-      if (p) {
-          switch (p.Primary.Type) {
-              case 1: return i.Strength.Value;
-              case 2: return i.Dexterity.Value;
-              case 3: return i.Intelligence.Value;
+  function (object, player) {
+      if (player) {
+          switch (player.Primary.Type) {
+              case 1: return object.Strength.Value;
+              case 2: return object.Dexterity.Value;
+              case 3: return object.Intelligence.Value;
               default: return 0;
           }
       } else {
@@ -4074,112 +4074,112 @@ TABLE_EXPRESSION_CONFIG.register(
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Type',
-  function (p, i) {
-      return i.Type;
+  function (object) {
+      return object.Type;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Name',
-  function (p, i) {
-      return i.Name;
+  function (object) {
+      return object.Name;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Upgrades',
-  function (p, i) {
-      return i.Upgrades;
+  function (object) {
+      return object.Upgrades;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Rune',
-  function (p, i) {
-      return i.RuneType;
+  function (object) {
+      return object.RuneType;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Rune Value',
-  function (p, i) {
-      return i.RuneValue;
+  function (object) {
+      return object.RuneValue;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Gem',
-  function (p, i) {
-      return i.GemType;
+  function (object) {
+      return object.GemType;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Gem Value',
-  function (p, i) {
-      return i.GemValue;
+  function (object) {
+      return object.GemValue;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Gold',
-  function (p, i) {
-      return i.SellPrice.Gold;
+  function (object) {
+      return object.SellPrice.Gold;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Sell Crystal',
-  function (p, i) {
-      return i.SellPrice.Crystal;
+  function (object) {
+      return object.SellPrice.Crystal;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Sell Metal',
-  function (p, i) {
-      return i.SellPrice.Metal;
+  function (object) {
+      return object.SellPrice.Metal;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Dismantle Crystal',
-  function (p, i) {
-      return i.DismantlePrice.Crystal;
+  function (object) {
+      return object.DismantlePrice.Crystal;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Dismantle Metal',
-  function (p, i) {
-      return i.DismantlePrice.Metal;
+  function (object) {
+      return object.DismantlePrice.Metal;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Potion Type',
-  function (p, i) {
-      return i.Type;
+  function (object) {
+      return object.Type;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Potion Size',
-  function (p, i) {
-      return i.Size;
+  function (object) {
+      return object.Size;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Inventory Kind',
-  function (p, i) {
-      return i.SlotType;
+  function (object) {
+      return object.SlotType;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Inventory Slot',
-  function (p, i) {
-      return i.SlotIndex;
+  function (object) {
+      return object.SlotIndex;
   }
 )
