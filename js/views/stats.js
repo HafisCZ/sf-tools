@@ -1923,10 +1923,10 @@ const ScriptManualDialog = new (class extends Dialog {
     _createModal () {
         let content = '';
 
-        const enumDescriptions = {
-            'AchievementCount': ExpressionEnum.get('AchievementCount'),
-            'ScrapbookSize': ExpressionEnum.get('ScrapbookSize')
-        }
+        const enumDescriptions = new Map([
+            ['AchievementCount', ExpressionEnum.get('AchievementCount')],
+            ['ScrapbookSize', ExpressionEnum.get('ScrapbookSize')]
+        ]);
 
         const data = [
             ['ta-reserved-public', 'header', TABLE_EXPRESSION_CONFIG.all('header', 'public')],
@@ -1934,7 +1934,7 @@ const ScriptManualDialog = new (class extends Dialog {
             ['ta-reserved-private', 'header_private', TABLE_EXPRESSION_CONFIG.all('header', 'private')],
             ['ta-reserved-scoped', 'header_scoped', TABLE_EXPRESSION_CONFIG.all('accessor')],
             ['ta-function', 'function', TABLE_EXPRESSION_CONFIG.all('function')],
-            ['ta-enum', 'enum', ExpressionEnum.keys,  enumDescriptions],
+            ['ta-enum', 'enum', ExpressionEnum.keys, enumDescriptions],
             ['ta-constant', 'constant', Constants.DEFAULT.keys(), Constants.DEFAULT.Values]
         ];
 
@@ -1942,7 +1942,7 @@ const ScriptManualDialog = new (class extends Dialog {
             let innerContent = '';
             for (const item of list) {
                 const key = item.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/ /g, '_').replace(/_{2,}/, '_').replace(/^_/, '');
-                const description = (descriptions ? descriptions[item] : false) || (Localization.hasTranslation(`dialog.script_manual.description.${key}`) ? this.intl(`description.${key}`) : false);
+                const description = (descriptions ? descriptions.get(item) : false) || (Localization.hasTranslation(`dialog.script_manual.description.${key}`) ? this.intl(`description.${key}`) : false);
 
                 innerContent += `<div class="column text-center">${item}${description ? `<br><span class="text-gray font-monospace">${description}</span>` : ''}</div>`
             }

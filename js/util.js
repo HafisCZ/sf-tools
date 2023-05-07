@@ -167,40 +167,27 @@ const COLOR_MAP = new Map(Object.entries({
 
 class Constants {
     constructor (values = null) {
-        this.Values = values || Constants.DEFAULT_CONSTANTS_VALUES;
+        this.Values = (values && new Map(values)) || Constants.DEFAULT_CONSTANTS_VALUES;
     }
 
     get (key) {
-        if (typeof key == 'string' && key.length >= 2 && key[0] == '@') {
-            let rkey = key.slice(1);
-            if (this.Values.hasOwnProperty(rkey)) {
-                return this.Values[rkey];
-            } else {
-                return key;
-            }
-        } else {
-            return key;
-        }
+        return this.Values.get(key);
     }
 
-    exists (key) {
-        return typeof key == 'string' && key.length >= 2 && key[0] == '@' && this.Values.hasOwnProperty(key.slice(1));
+    fetch (key) {
+        return this.Values.has(key) ? this.Values.get(key) : key;
     }
 
-    addConstant (key, value) {
-        this.Values[key] = value;
+    has (key) {
+        return this.Values.has(key);
+    }
+
+    add (key, value) {
+        this.Values.set(`@${key}`, value);
     }
 
     keys () {
-        return Object.keys(this.Values);
-    }
-
-    getValue (tag, key) {
-        return tag == '@' ? this.Values[key] : key;
-    }
-
-    isValid (tag, key) {
-        return tag == '@' && this.Values.hasOwnProperty(key);
+        return this.Values.keys();
     }
 
     static get DEFAULT () {
@@ -212,7 +199,7 @@ class Constants {
     static get DEFAULT_CONSTANTS_VALUES () {
         delete this.DEFAULT_CONSTANTS_VALUES;
 
-        return (this.DEFAULT_CONSTANTS_VALUES = Object.fromEntries([
+        return (this.DEFAULT_CONSTANTS_VALUES = new Map([
             ...COLOR_MAP,
             ...Object.entries({
                 'green': '#00c851',
@@ -259,7 +246,11 @@ class Constants {
                 'ring': 9,
                 'talisman': 10
             })
-        ]))
+        ].map((entry) => {
+            entry[0] = `@${entry[0]}`;
+
+            return entry;
+        })))
     }
 }
 
