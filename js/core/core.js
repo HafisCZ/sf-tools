@@ -520,7 +520,7 @@ const Actions = class {
 
         const config = TABLE_EXPRESSION_CONFIG.clone();
         for (const name of ['players', 'groups']) {
-            config.register('constant', 'scope', name, (scope) => scope.get(name));
+            config.register('variable', 'scope', name, (scope) => scope.get(name));
         }
 
         return (this.EXPRESSION_CONFIG = config);

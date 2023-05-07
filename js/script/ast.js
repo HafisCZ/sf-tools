@@ -237,7 +237,7 @@ class ExpressionRenderer {
                             highlighter.function(token);
                             break;
                         }
-                        case 'constant': {
+                        case 'variable': {
                             highlighter.constant(token);
                             break;
                         }
@@ -1063,7 +1063,7 @@ class Expression {
                 const data = this.config.get(node);
 
                 switch (data.type) {
-                    case 'constant': {
+                    case 'variable': {
                         return data.data(scope);
                     }
                     case 'header': {
