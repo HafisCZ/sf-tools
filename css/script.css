@@ -52,6 +52,11 @@
   font-weight: bold;
 }
 
+.ta-reserved-public {
+  color: #f550f5;
+  font-weight: bold;
+}
+
 .ta-reserved-protected {
   color: #ba6bff;
   font-weight: bold;
