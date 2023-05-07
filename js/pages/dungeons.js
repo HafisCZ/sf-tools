@@ -4,6 +4,19 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         $('#cheat-menu-toggle .icon').toggleClass('left right');
     });
     $('#cheat-menu .checkbox').checkbox('set unchecked');
+    
+    // Options modal
+    $('#button-options').click(function () {
+        DialogController.open(
+            SimulatorOptionsDialog,
+            Store.shared.get('dungeon_sim/threshold', 5, true),
+            Store.shared.get('dungeon_sim/threshold_max', 100, true),
+            (min, max) => {
+                Store.shared.set('dungeon_sim/threshold', min, true)
+                Store.shared.set('dungeon_sim/threshold_max', max, true)
+            }
+        );
+    })
 
     for (let dungeon of Object.values(DUNGEON_DATA)) {
         dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
@@ -22,20 +35,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
     $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
-
-    $('#sim-run-next').contextmenu((e) => {
-        e.preventDefault();
-
-        DialogController.open(
-            SimulatorThresholdDialog,
-            Store.shared.get('dungeon_sim/threshold', 5, true),
-            Store.shared.get('dungeon_sim/threshold_max', 100, true),
-            (min, max) => {
-                Store.shared.set('dungeon_sim/threshold', min, true)
-                Store.shared.set('dungeon_sim/threshold_max', max, true)
-            }
-        );
-    });
 
     const HELPER_NAMES = [
         intl('dungeons.player'),
