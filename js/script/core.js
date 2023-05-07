@@ -182,8 +182,8 @@ const Highlighter = class {
         return this;
     }
 
-    static header (text, subtype = '') {
-        this.#text += `<span class="ta-reserved${subtype}">${this.#escape(text)}</span>`;
+    static header (text, subtype = 'public') {
+        this.#text += `<span class="ta-reserved-${subtype}">${this.#escape(text)}</span>`;
         return this;
     }
 
@@ -820,12 +820,9 @@ SettingsCommands.register(
         if (name != undefined) {
             acc.space();
 
-            if (SP_HEADERS_PUBLIC.hasOwnProperty(name)) {
-                acc.header(name, '-public');
-            } else if (SP_HEADERS_PROTECTED.hasOwnProperty(name)) {
-                acc.header(name, '-protected');
-            } else if (SP_HEADERS_PRIVATE.hasOwnProperty(name)) {
-                acc.header(name, '-private');
+            const data = TABLE_EXPRESSION_CONFIG.find(name, 'header');
+            if (data && !data.data.disabled) {
+                acc.header(name, data.meta);
             } else {
                 acc.identifier(name);
             }
@@ -849,12 +846,9 @@ SettingsCommands.register(
         if (name != undefined) {
             acc.space();
 
-            if (SP_HEADERS_PUBLIC.hasOwnProperty(name)) {
-                acc.header(name, '-public');
-            } else if (SP_HEADERS_PROTECTED.hasOwnProperty(name)) {
-                acc.header(name, '-protected');
-            } else if (SP_HEADERS_PRIVATE.hasOwnProperty(name)) {
-                acc.header(name, '-private');
+            const data = TABLE_EXPRESSION_CONFIG.find(name, 'header');
+            if (data && !data.data.disabled) {
+                acc.header(name, data.meta);
             } else {
                 acc.identifier(name);
             }
@@ -1955,7 +1949,8 @@ class Settings {
             const name = obj.name;
 
             // Get mapping if exists
-            const mapping = SP_HEADERS_PUBLIC[name] || SP_HEADERS_PROTECTED[name] || SP_HEADERS_PRIVATE[name];
+            const config = TABLE_EXPRESSION_CONFIG.find(name, 'header');
+            const mapping = config && !config.data.disabled ? config.data : undefined;
 
             // Merge definitions
             for (const definitionName of obj.extensions || []) {

@@ -230,7 +230,7 @@ class ExpressionRenderer {
                     highlighter.join(token.slice(1, token.length - 1).split(/(\{\d+\})/g), (item) => /(\{\d+\})/.test(item) ? 'function' : 'string', '');
                     highlighter.string('`');
                 } else if (extras && extras.includes(token)) {
-                    highlighter.header(token);
+                    highlighter.header(token, 'public');
                 } else if (TABLE_EXPRESSION_CONFIG.has(token)) {
                     const data = TABLE_EXPRESSION_CONFIG.get(token);
 
@@ -244,25 +244,11 @@ class ExpressionRenderer {
                             break;
                         }
                         case 'header': {
-                            switch (data.meta) {
-                                case 'public': {
-                                    highlighter.header(token, '-public');
-                                    break;
-                                }
-                                case 'protected': {
-                                    highlighter.header(token, '-protected');
-                                    break;
-                                }
-                                case 'private': {
-                                    highlighter.header(token, '-private');
-                                    break;
-                                }
-                            }
-
+                            highlighter.header(token, data.meta);
                             break;
                         }
                         case 'accessor': {
-                            highlighter.header(token, '-scoped');
+                            highlighter.header(token, 'scoped');
                             break;
                         }
                     }
@@ -286,14 +272,6 @@ class ExpressionRenderer {
                     }
                 } else if (/^(\.*)this$/.test(token)) {
                     highlighter.constant(token);
-                } else if (SP_HEADERS_PUBLIC.hasOwnProperty(token)) {
-                    highlighter.header(token, '-public');
-                } else if (SP_HEADERS_PROTECTED.hasOwnProperty(token)) {
-                    highlighter.header(token, '-protected');
-                } else if (SP_HEADERS_PRIVATE.hasOwnProperty(token)) {
-                    highlighter.header(token, '-private');
-                } else if (SP_ACCESSORS.hasOwnProperty(token)) {
-                    highlighter.header(token, '-scoped');
                 } else if (root.constants.exists(token)) {
                     highlighter.constant(token);
                 } else if (/\~\d+/.test(token)) {
@@ -1010,22 +988,6 @@ class Expression {
                     } else {
                         return undefined;
                     }
-                } else if (SP_HEADERS_PROTECTED.hasOwnProperty(node.op) && node.args.length == 1) {
-                    // Simple call
-                    const obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_HEADERS_PROTECTED[node.op].expr(obj) : undefined;
-                } else if (SP_HEADERS_PUBLIC.hasOwnProperty(node.op) && node.args.length == 1) {
-                    // Simple call
-                    const obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_HEADERS_PUBLIC[node.op].expr(obj) : undefined;
-                } else if (SP_HEADERS_PRIVATE.hasOwnProperty(node.op) && node.args.length == 1) {
-                    // Simple call
-                    const obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_HEADERS_PRIVATE[node.op].expr(obj) : undefined;
-                } else if (SP_ACCESSORS.hasOwnProperty(node.op) && node.args.length == 1) {
-                    // Simple indirect call
-                    const obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_ACCESSORS[node.op].expr(scope.player, obj) : undefined;
                 } else if (TABLE_EXPRESSION_CONFIG.has(node.op)) {
                     const data = TABLE_EXPRESSION_CONFIG.get(node.op);
 
@@ -1043,6 +1005,18 @@ class Expression {
                                 return data.data(
                                     ... node.args.map(arg => this.evalInternal(scope, arg))
                                 );
+                            }
+                        }
+                        case 'header': {
+                            const obj = this.evalInternal(scope, node.args[0]);
+                            return obj && typeof obj === 'object' ? data.data.expr(obj) : undefined;
+                        }
+                        case 'accessor': {
+                            if (node.args.length == 1) {
+                                const obj = this.evalInternal(scope, node.args[0]);
+                                return obj && typeof obj === 'object' ? data.data(scope.player, obj) : undefined;
+                            } else {
+                                return undefined;
                             }
                         }
                     }
@@ -1093,16 +1067,14 @@ class Expression {
                     case 'constant': {
                         return data.data(scope);
                     }
+                    case 'header': {
+                        return scope.player ? data.data.expr(scope.player) : undefined;
+                    }
+                    case 'accessor': {
+                        const self = scope.getSelf();
+                        return self && typeof self === 'object' ? data.data.expr(scope.player, self) : undefined;
+                    }
                 }
-            } else if (scope.player && SP_HEADERS_PUBLIC.hasOwnProperty(node)) {
-                return SP_HEADERS_PUBLIC[node].expr(scope.player);
-            } else if (scope.player && SP_HEADERS_PRIVATE.hasOwnProperty(node)) {
-                return SP_HEADERS_PRIVATE[node].expr(scope.player);
-            } else if (scope.player && SP_HEADERS_PROTECTED.hasOwnProperty(node)) {
-                return SP_HEADERS_PROTECTED[node].expr(scope.player);
-            } else if (SP_ACCESSORS.hasOwnProperty(node)) {
-                const self = scope.getSelf();
-                return self && typeof self === 'object' ? SP_ACCESSORS[node].expr(scope.player, self) : undefined;
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
             } else if (node in scope.env.variables) {
@@ -1169,14 +1141,23 @@ class ExpressionConfig {
         return this.#data.get(name);
     }
 
+    find (name, type, meta = true) {
+        const data = this.#data.get(name);
+        if (data && data.type === type && (meta === true || data.meta === meta)) {
+            return data;
+        }
+
+        return undefined;
+    }
+
     has (name) {
         return this.#data.has(name);
     }
 
-    all (type) {
+    all (type, meta = true) {
         const keys = [];
         for (const [name, data] of this.#data.entries()) {
-            if (data.type === type) {
+            if (data.type === type && (meta === true || data.meta === meta)) {
                 keys.push(name);
             }
         }
@@ -2009,719 +1990,1471 @@ TABLE_EXPRESSION_CONFIG.register(
     }
 )
 
-const SP_HEADERS_PUBLIC = {
-    'Name': {
+/*
+  Public headers
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Name',
+    {
         expr: p => p.Name,
         difference: false,
         statistics: false
-    },
-    'ID': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'ID',
+    {
         expr: p => p.ID,
         difference: false,
         statistics: false
-    },
-    'Identifier': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Identifier',
+    {
         expr: p => p.Identifier,
         difference: false,
         statistics: false
-    },
-    'Prefix': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Prefix',
+    {
         expr: p => p.Prefix,
         difference: false,
         statistics: false
-    },
-    'Own': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Own',
+    {
         expr: p => p.Own,
         difference: false,
         statistics: false
-    },
-    'Guild ID': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Guild ID',
+    {
         expr: p => _dig(p, 'Group', 'ID'),
         difference: false,
         statistics: false
-    },
-    'Guild Identifier': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Guild Identifier',
+    {
         expr: p => _dig(p, 'Group', 'Identifier'),
         difference: false,
         statistics: false
-    },
-    'Guild Rank': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Guild Rank',
+    {
         expr: p => _dig(p, 'Group', 'Rank'),
         difference: false,
         statistics: false
-    },
-    'Role': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Role',
+    {
         expr: p => (p && p.hasGuild()) ? _dig(p, 'Group', 'Role') : undefined,
         flip: true,
         format: (p, x) => x ? intl(`general.rank${x}`) : '',
         difference: false,
         statistics: false
-    },
-    'Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Level',
+    {
         expr: p => p.Level
-    },
-    'Guild': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Guild',
+    {
         expr: p => _dig(p, 'Group', 'Name'),
         difference: false,
         statistics: false
-    },
-    'Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Items',
+    {
         expr: p => p.Items,
         disabled: true
-    },
-    'Strength': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength',
+    {
         expr: p => p.Strength.Total
-    },
-    'Dexterity': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity',
+    {
         expr: p => p.Dexterity.Total
-    },
-    'Intelligence': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence',
+    {
         expr: p => p.Intelligence.Total
-    },
-    'Constitution': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution',
+    {
         expr: p => p.Constitution.Total
-    },
-    'Luck': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck',
+    {
         expr: p => p.Luck.Total
-    },
-    'Attribute': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute',
+    {
         expr: p => p.Primary.Total
-    },
-    'Strength Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Size',
+    {
         expr: p => p.Strength.PotionSize
-    },
-    'Dexterity Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Size',
+    {
         expr: p => p.Dexterity.PotionSize
-    },
-    'Intelligence Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Size',
+    {
         expr: p => p.Intelligence.PotionSize
-    },
-    'Constitution Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Size',
+    {
         expr: p => p.Constitution.PotionSize
-    },
-    'Luck Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Size',
+    {
         expr: p => p.Luck.PotionSize
-    },
-    'Attribute Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Size',
+    {
         expr: p => p.Primary.PotionSize
-    },
-    'Strength Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Potion Index',
+    {
         expr: p => p.Strength.PotionIndex,
         difference: false,
         statistics: false
-    },
-    'Dexterity Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Potion Index',
+    {
         expr: p => p.Dexterity.PotionIndex,
         difference: false,
         statistics: false
-    },
-    'Intelligence Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Potion Index',
+    {
         expr: p => p.Intelligence.PotionIndex,
         difference: false,
         statistics: false
-    },
-    'Constitution Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Potion Index',
+    {
         expr: p => p.Constitution.PotionIndex,
         difference: false,
         statistics: false
-    },
-    'Luck Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Potion Index',
+    {
         expr: p => p.Luck.PotionIndex,
         difference: false,
         statistics: false
-    },
-    'Attribute Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Potion Index',
+    {
         expr: p => p.Primary.PotionIndex,
         difference: false,
         statistics: false
-    },
-    'Strength Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Pet',
+    {
         expr: p => p.Strength.Pet,
         width: 110
-    },
-    'Dexterity Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Pet',
+    {
         expr: p => p.Dexterity.Pet,
         width: 110
-    },
-    'Intelligence Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Pet',
+    {
         expr: p => p.Intelligence.Pet,
         width: 110
-    },
-    'Constitution Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Pet',
+    {
         expr: p => p.Constitution.Pet,
         width: 110
-    },
-    'Luck Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Pet',
+    {
         expr: p => p.Luck.Pet,
         width: 110
-    },
-    'Base Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Cost',
+    {
         expr: p => p.Primary.NextCost,
         format: 'spaced_number'
-    },
-    'Strength Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Cost',
+    {
         expr: p => p.Strength.NextCost,
         format: 'spaced_number'
-    },
-    'Dexterity Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Cost',
+    {
         expr: p => p.Dexterity.NextCost,
         format: 'spaced_number'
-    },
-    'Intelligence Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Cost',
+    {
         expr: p => p.Intelligence.NextCost,
         format: 'spaced_number'
-    },
-    'Constitution Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Cost',
+    {
         expr: p => p.Constitution.NextCost,
         format: 'spaced_number'
-    },
-    'Luck Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Cost',
+    {
         expr: p => p.Luck.NextCost,
         format: 'spaced_number'
-    },
-    'Base Total Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Total Cost',
+    {
         expr: p => p.Primary.TotalCost,
         format: 'spaced_number'
-    },
-    'Strength Total Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Total Cost',
+    {
         expr: p => p.Strength.TotalCost,
         format: 'spaced_number'
-    },
-    'Dexterity Total Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Total Cost',
+    {
         expr: p => p.Dexterity.TotalCost,
         format: 'spaced_number'
-    },
-    'Intelligence Total Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Total Cost',
+    {
         expr: p => p.Intelligence.TotalCost,
         format: 'spaced_number'
-    },
-    'Constitution Total Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Total Cost',
+    {
         expr: p => p.Constitution.TotalCost,
         format: 'spaced_number'
-    },
-    'Luck Total Cost': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Total Cost',
+    {
         expr: p => p.Luck.TotalCost,
         format: 'spaced_number'
-    },
-    'Attribute Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Pet',
+    {
         expr: p => p.Primary.Pet,
         width: 110
-    },
-    'Strength Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Equipment',
+    {
         expr: p => p.Strength.Equipment,
         width: 110
-    },
-    'Dexterity Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Equipment',
+    {
         expr: p => p.Dexterity.Equipment,
         width: 110
-    },
-    'Intelligence Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Equipment',
+    {
         expr: p => p.Intelligence.Equipment,
         width: 110
-    },
-    'Constitution Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Equipment',
+    {
         expr: p => p.Constitution.Equipment,
         width: 110
-    },
-    'Luck Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Equipment',
+    {
         expr: p => p.Luck.Equipment,
         width: 110
-    },
-    'Attribute Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Equipment',
+    {
         expr: p => p.Primary.Equipment,
         width: 110
-    },
-    'Strength Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Items',
+    {
         expr: p => p.Strength.Items,
         width: 110
-    },
-    'Dexterity Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Items',
+    {
         expr: p => p.Dexterity.Items,
         width: 110
-    },
-    'Intelligence Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Items',
+    {
         expr: p => p.Intelligence.Items,
         width: 110
-    },
-    'Constitution Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Items',
+    {
         expr: p => p.Constitution.Items,
         width: 110
-    },
-    'Luck Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Items',
+    {
         expr: p => p.Luck.Items,
         width: 110
-    },
-    'Attribute Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Items',
+    {
         expr: p => p.Primary.Items,
         width: 110
-    },
-    'Strength Base Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Base Items',
+    {
         expr: p => p.Strength.ItemsBase,
         width: 110
-    },
-    'Dexterity Base Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Base Items',
+    {
         expr: p => p.Dexterity.ItemsBase,
         width: 110
-    },
-    'Intelligence Base Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Base Items',
+    {
         expr: p => p.Intelligence.ItemsBase,
         width: 110
-    },
-    'Constitution Base Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Base Items',
+    {
         expr: p => p.Constitution.ItemsBase,
         width: 110
-    },
-    'Luck Base Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Base Items',
+    {
         expr: p => p.Luck.ItemsBase,
         width: 110
-    },
-    'Attribute Base Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Base Items',
+    {
         expr: p => p.Primary.ItemsBase,
         width: 110
-    },
-    'Strength Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Upgrades',
+    {
         expr: p => p.Strength.Upgrades,
         width: 110
-    },
-    'Dexterity Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Upgrades',
+    {
         expr: p => p.Dexterity.Upgrades,
         width: 110
-    },
-    'Intelligence Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Upgrades',
+    {
         expr: p => p.Intelligence.Upgrades,
         width: 110
-    },
-    'Constitution Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Upgrades',
+    {
         expr: p => p.Constitution.Upgrades,
         width: 110
-    },
-    'Luck Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Upgrades',
+    {
         expr: p => p.Luck.Upgrades,
         width: 110
-    },
-    'Attribute Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Upgrades',
+    {
         expr: p => p.Primary.Upgrades,
         width: 110
-    },
-    'Strength Gems': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Gems',
+    {
         expr: p => p.Strength.Gems,
         width: 110
-    },
-    'Dexterity Gems': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Gems',
+    {
         expr: p => p.Dexterity.Gems,
         width: 110
-    },
-    'Intelligence Gems': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Gems',
+    {
         expr: p => p.Intelligence.Gems,
         width: 110
-    },
-    'Constitution Gems': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Gems',
+    {
         expr: p => p.Constitution.Gems,
         width: 110
-    },
-    'Luck Gems': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Gems',
+    {
         expr: p => p.Luck.Gems,
         width: 110
-    },
-    'Attribute Gems': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Gems',
+    {
         expr: p => p.Primary.Gems,
         width: 110
-    },
-    'Strength Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Potion',
+    {
         expr: p => p.Strength.Potion,
         width: 110
-    },
-    'Dexterity Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Potion',
+    {
         expr: p => p.Dexterity.Potion,
         width: 110
-    },
-    'Intelligence Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Potion',
+    {
         expr: p => p.Intelligence.Potion,
         width: 110
-    },
-    'Constitution Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Potion',
+    {
         expr: p => p.Constitution.Potion,
         width: 110
-    },
-    'Luck Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Potion',
+    {
         expr: p => p.Luck.Potion,
         width: 110
-    },
-    'Attribute Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Potion',
+    {
         expr: p => p.Primary.Potion,
         width: 110
-    },
-    'Strength Pet Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Pet Bonus',
+    {
         expr: p => p.Strength.PetBonus
-    },
-    'Dexterity Pet Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Pet Bonus',
+    {
         expr: p => p.Dexterity.PetBonus
-    },
-    'Intelligence Pet Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Pet Bonus',
+    {
         expr: p => p.Intelligence.PetBonus
-    },
-    'Constitution Pet Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Pet Bonus',
+    {
         expr: p => p.Constitution.PetBonus
-    },
-    'Luck Pet Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Pet Bonus',
+    {
         expr: p => p.Luck.PetBonus
-    },
-    'Attribute Pet Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Pet Bonus',
+    {
         expr: p => p.Primary.PetBonus
-    },
-    'Strength Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Class',
+    {
         expr: p => p.Strength.Class,
         width: 110
-    },
-    'Dexterity Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Class',
+    {
         expr: p => p.Dexterity.Class,
         width: 110
-    },
-    'Intelligence Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Class',
+    {
         expr: p => p.Intelligence.Class,
         width: 110
-    },
-    'Constitution Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Class',
+    {
         expr: p => p.Constitution.Class,
         width: 110
-    },
-    'Luck Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Class',
+    {
         expr: p => p.Luck.Class,
         width: 110
-    },
-    'Attribute Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Attribute Class',
+    {
         expr: p => p.Primary.Class,
         width: 110
-    },
-    'Strength Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Strength Bonus',
+    {
         expr: p => p.Strength.Bonus,
         alias: 'Str Bonus'
-    },
-    'Dexterity Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dexterity Bonus',
+    {
         expr: p => p.Dexterity.Bonus,
         alias: 'Dex Bonus'
-    },
-    'Intelligence Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Intelligence Bonus',
+    {
         expr: p => p.Intelligence.Bonus,
         alias: 'Int Bonus'
-    },
-    'Constitution Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Constitution Bonus',
+    {
         expr: p => p.Constitution.Bonus,
         alias: 'Con Bonus'
-    },
-    'Luck Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Luck Bonus',
+    {
         expr: p => p.Luck.Bonus,
         alias: 'Lck Bonus'
-    },
-    'Bonus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Bonus',
+    {
         expr: p => p.Primary.Bonus
-    },
-    'Base Strength': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Strength',
+    {
         expr: p => p.Strength.Base
-    },
-    'Base Dexterity': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Dexterity',
+    {
         expr: p => p.Dexterity.Base
-    },
-    'Base Intelligence': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Intelligence',
+    {
         expr: p => p.Intelligence.Base
-    },
-    'Base Constitution': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Constitution',
+    {
         expr: p => p.Constitution.Base
-    },
-    'Base Luck': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base Luck',
+    {
         expr: p => p.Luck.Base
-    },
-    'Base': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Base',
+    {
         expr: p => p.Primary.Base
-    },
-    'Honor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Honor',
+    {
         expr: p => p.Honor
-    },
-    'Life Potion': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Life Potion',
+    {
         expr: p => p.Potions.Life == 25,
         format: 'boolean'
-    },
-    'Life Potion Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Life Potion Index',
+    {
         expr: p => p.Potions.LifeIndex,
         difference: false,
         statistics: false
-    },
-    'Runes': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Runes',
+    {
         expr: p => p.Runes.Runes,
-        format: (p, x) => `e${ x }`,
+        format: (p, x) => `e${x}`,
         width: 100
-    },
-    'Action Index': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Action Index',
+    {
         expr: p => p.Action.Index,
         difference: false,
         statistics: false
-    },
-    'Status': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Status',
+    {
         expr: p => p.Action.Status,
         format: (p, x) => intl(`general.action${x}`),
         difference: false,
         statistics: false
-    },
-    'Action Finish': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Action Finish',
+    {
         expr: p => p.Action.Finish,
         format: 'datetime',
         width: 160,
         difference: false,
         statistics: false
-    },
-    'Action Unclaimed': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Action Unclaimed',
+    {
         expr: p => p.OriginalAction.Status < 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Health': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Health',
+    {
         expr: p => p.Health,
         width: 120
-    },
-    'Armor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Armor',
+    {
         expr: p => p.Armor
-    },
-    'Damage Min': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Damage Min',
+    {
         expr: p => p.Damage.Min
-    },
-    'Damage Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Damage Max',
+    {
         expr: p => p.Damage.Max
-    },
-    'Damage Avg': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Damage Avg',
+    {
         expr: p => p.Damage.Avg
-    },
-    'Damage Min 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Damage Min 2',
+    {
         expr: p => p.Damage2.Min
-    },
-    'Damage Max 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Damage Max 2',
+    {
         expr: p => p.Damage2.Max
-    },
-    'Damage Avg 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Damage Avg 2',
+    {
         expr: p => p.Damage2.Avg
-    },
-    'Space': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Space',
+    {
         expr: p => 5 + p.Fortress.Treasury
-    },
-    'Mirror': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Mirror',
+    {
         expr: p => p.Mirror ? 13 : p.MirrorPieces
-    },
-    'Equipment': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Equipment',
+    {
         expr: p => Object.values(p.Items).reduce((c, i) => c + (i.Attributes[0] > 0 ? i.getItemLevel() : 0), 0),
         width: 130
-    },
-    'Tower': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Tower',
+    {
         expr: p => Math.max(0, p.Dungeons.Tower)
-    },
-    'Raids': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Raids',
+    {
         expr: p => p.Dungeons.Raid
-    },
-    'Portal': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Portal',
+    {
         expr: p => Math.max(0, p.Dungeons.Player)
-    },
-    'Guild Portal': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Guild Portal',
+    {
         expr: p => p.Dungeons.Group,
         width: 130
-    },
-    'Dungeon': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dungeon',
+    {
         expr: p => p.Dungeons.Normal.Total
-    },
-    'Shadow Dungeon': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Shadow Dungeon',
+    {
         expr: p => p.Dungeons.Shadow.Total
-    },
-    'Dungeon Unlocked': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Dungeon Unlocked',
+    {
         expr: p => p.Dungeons.Normal.Unlocked
-    },
-    'Shadow Unlocked': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Shadow Unlocked',
+    {
         expr: p => p.Dungeons.Shadow.Unlocked
-    },
-    'Fortress': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fortress',
+    {
         expr: p => p.Fortress.Fortress
-    },
-    'Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Upgrades',
+    {
         expr: p => p.Fortress.Upgrades
-    },
-    'Warriors': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Warriors',
+    {
         expr: p => p.Fortress.Warriors
-    },
-    'Archers': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Archers',
+    {
         expr: p => p.Fortress.Archers
-    },
-    'Mages': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Mages',
+    {
         expr: p => p.Fortress.Mages
-    },
-    'Warrior Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Warrior Count',
+    {
         expr: p => p.Fortress.Barracks * 3
-    },
-    'Archer Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Archer Count',
+    {
         expr: p => p.Fortress.ArcheryGuild * 2
-    },
-    'Mage Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Mage Count',
+    {
         expr: p => p.Fortress.MageTower
-    },
-    'Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Upgrades',
+    {
         expr: p => p.Fortress.Upgrades
-    },
-    'Gem Mine': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Gem Mine',
+    {
         expr: p => p.Fortress.GemMine
-    },
-    'Fortress Honor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fortress Honor',
+    {
         expr: p => p.Fortress.Honor,
         width: 150
-    },
-    'Raid Honor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Raid Honor',
+    {
         expr: p => p.Fortress.RaidHonor,
         width: 120
-    },
-    'Wall': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Wall',
+    {
         expr: p => p.Fortress.Wall
-    },
-    'Fortifications': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fortifications',
+    {
         expr: p => p.Fortress.Fortifications
-    },
-    'Quarters': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Quarters',
+    {
         expr: p => p.Fortress.LaborerQuarters
-    },
-    'Woodcutter': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Woodcutter',
+    {
         expr: p => p.Fortress.WoodcutterGuild
-    },
-    'Quarry': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Quarry',
+    {
         expr: p => p.Fortress.Quarry
-    },
-    'Academy': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Academy',
+    {
         expr: p => p.Fortress.Academy
-    },
-    'Archery Guild': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Archery Guild',
+    {
         expr: p => p.Fortress.ArcheryGuild
-    },
-    'Barracks': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Barracks',
+    {
         expr: p => p.Fortress.Barracks
-    },
-    'Mage Tower': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Mage Tower',
+    {
         expr: p => p.Fortress.MageTower
-    },
-    'Treasury': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Treasury',
+    {
         expr: p => p.Fortress.Treasury
-    },
-    'Smithy': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Smithy',
+    {
         expr: p => p.Fortress.Smithy
-    },
-    'Raid Wood': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Raid Wood',
+    {
         expr: p => p.Fortress.RaidWood
-    },
-    'Raid Stone': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Raid Stone',
+    {
         expr: p => p.Fortress.RaidStone
-    },
-    'Shadow': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Shadow',
+    {
         expr: p => p.Pets.Shadow
-    },
-    'Light': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Light',
+    {
         expr: p => p.Pets.Light
-    },
-    'Earth': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Earth',
+    {
         expr: p => p.Pets.Earth
-    },
-    'Fire': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fire',
+    {
         expr: p => p.Pets.Fire
-    },
-    'Water': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Water',
+    {
         expr: p => p.Pets.Water
-    },
-    'Rune Gold': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Gold',
+    {
         expr: p => p.Runes.Gold
-    },
-    'Rune XP': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune XP',
+    {
         expr: p => p.Runes.XP
-    },
-    'Rune Chance': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Chance',
+    {
         expr: p => p.Runes.Chance,
         width: 130
-    },
-    'Rune Quality': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Quality',
+    {
         expr: p => p.Runes.Quality,
         width: 130
-    },
-    'Rune Health': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Health',
+    {
         expr: p => p.Runes.Health,
         width: 130
-    },
-    'Rune Damage': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Damage',
+    {
         expr: p => p.Runes.Damage,
         width: 130
-    },
-    'Rune Damage 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Damage 2',
+    {
         expr: p => p.Runes.Damage2,
         width: 130
-    },
-    'Rune Resist': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rune Resist',
+    {
         expr: p => p.Runes.Resistance,
         width: 130
-    },
-    'Fire Resist': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fire Resist',
+    {
         expr: p => p.Runes.ResistanceFire,
         width: 130
-    },
-    'Cold Resist': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Cold Resist',
+    {
         expr: p => p.Runes.ResistanceCold,
         width: 130
-    },
-    'Lightning Resist': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Lightning Resist',
+    {
         expr: p => p.Runes.ResistanceLightning,
         width: 160
-    },
-    'Fire Damage': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fire Damage',
+    {
         expr: p => p.Runes.DamageFire,
         width: 130
-    },
-    'Cold Damage': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Cold Damage',
+    {
         expr: p => p.Runes.DamageCold,
         width: 130
-    },
-    'Lightning Damage': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Lightning Damage',
+    {
         expr: p => p.Runes.DamageLightning,
         width: 160
-    },
-    'Fire Damage 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fire Damage 2',
+    {
         expr: p => p.Runes.Damage2Fire,
         width: 130
-    },
-    'Cold Damage 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Cold Damage 2',
+    {
         expr: p => p.Runes.Damage2Cold,
         width: 130
-    },
-    'Lightning Damage 2': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Lightning Damage 2',
+    {
         expr: p => p.Runes.Damage2Lightning,
         width: 160
-    },
-    'Class': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Class',
+    {
         expr: p => p.Class,
         format: (p, x) => intl(`general.class${x}`),
         flip: true,
         difference: false,
         statistics: false
-    },
-    'Race': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Race',
+    {
         expr: p => p.Race,
         format: (p, x) => intl(`general.race${x}`),
         difference: false,
         statistics: false
-    },
-    'Gender': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Gender',
+    {
         expr: p => p.Gender,
         format: (p, x) => intl(`general.gender${x}`),
         difference: false,
         statistics: false
-    },
-    'Rank': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Rank',
+    {
         expr: p => p.Rank,
         flip: true
-    },
-    'Mount': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Mount',
+    {
         expr: p => p.Mount,
         format: (p, x) => x ? `${['', 10, 20, 30, 50][x]}%` : '',
         difference: false
-    },
-    'Awards': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Awards',
+    {
         expr: p => p.Achievements.Owned,
         decorators: [
             {
@@ -2731,8 +3464,12 @@ const SP_HEADERS_PUBLIC = {
                 }
             }
         ]
-    },
-    'Album': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Album',
+    {
         expr: p => Math.ceil(10000 * p.BookPercentage) / 100,
         format: (p, x) => x.toFixed(2) + '%',
         width: 130,
@@ -2745,200 +3482,340 @@ const SP_HEADERS_PUBLIC = {
                 }
             }
         ]
-    },
-    'Album Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Album Items',
+    {
         expr: p => p.Book,
         width: 130
-    },
-    'Fortress Rank': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Fortress Rank',
+    {
         expr: p => p.Fortress.Rank,
         flip: true,
         width: 130
-    },
-    'Building': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Building',
+    {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
         format: (p, x) => x >= 0 ? intl(`general.buildings.fortress${x + 1}`) : '',
         difference: false,
         statistics: false
-    },
-    'Building Finish': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Building Finish',
+    {
         expr: p => p.Fortress.Upgrade.Finish,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Building Start': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Building Start',
+    {
         expr: p => p.Fortress.Upgrade.Start,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Timestamp': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Timestamp',
+    {
         expr: p => p.Timestamp,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Guild Joined': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Guild Joined',
+    {
         expr: p => (p && p.hasGuild()) ? p.Group.Joined : undefined,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Achievements': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Achievements',
+    {
         expr: p => p.Achievements.Owned
-    },
-    'Pets Unlocked': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Pets Unlocked',
+    {
         expr: p => p.Achievements.PetLover,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Grail Unlocked': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Grail Unlocked',
+    {
         expr: p => p.Achievements.Grail,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Hydra Dead': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Hydra Dead',
+    {
         expr: p => p.Achievements.Dehydration,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'XP': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'XP',
+    {
         expr: p => p.XP,
         format: 'spaced_number',
         format_diff: true,
         statistics: false
-    },
-    'XP Required': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'XP Required',
+    {
         expr: p => p.XPNext,
         format: 'spaced_number',
         format_diff: true,
         statistics: false
-    },
-    'XP Total': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'XP Total',
+    {
         expr: p => p.XPTotal,
         format: 'spaced_number',
         format_diff: true,
         statistics: false
-    },
-    'Enchantments': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Enchantments',
+    {
         expr: p => Object.values(p.Items).reduce((col, i) => col + (i.HasEnchantment ? 1 : 0), 0)
-    },
-    'Archeological Aura': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Archeological Aura',
+    {
         expr: p => p.Items.Head.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Marios Beard': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Marios Beard',
+    {
         expr: p => p.Items.Body.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Shadow of the Cowboy': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Shadow of the Cowboy',
+    {
         expr: p => p.Items.Hand.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    '36960 Feet Boots': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', '36960 Feet Boots',
+    {
         expr: p => p.Items.Feet.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Unholy Acquisitiveness': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Unholy Acquisitiveness',
+    {
         expr: p => p.Items.Neck.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Thirsty Wanderer': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Thirsty Wanderer',
+    {
         expr: p => p.Items.Belt.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Grave Robbers Prayer': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Grave Robbers Prayer',
+    {
         expr: p => p.Items.Ring.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Robber Baron Ritual': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Robber Baron Ritual',
+    {
         expr: p => p.Items.Misc.HasEnchantment ? 1 : 0,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Sword of Vengeance': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Sword of Vengeance',
+    {
         expr: p => (p.Items.Wpn1.HasEnchantment ? 1 : 0) + (p.Items.Wpn2.HasEnchantment ? 1 : 0),
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Potion 1 Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potion 1 Size',
+    {
         expr: p => p.Potions[0].Size,
         difference: false,
         statistics: false
-    },
-    'Potion 2 Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potion 2 Size',
+    {
         expr: p => p.Potions[1].Size,
         difference: false,
         statistics: false
-    },
-    'Potion 3 Size': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potion 3 Size',
+    {
         expr: p => p.Potions[2].Size,
         difference: false,
         statistics: false
-    },
-    'Potion 1 Type': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potion 1 Type',
+    {
         expr: p => p.Potions[0].Type,
         format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
-    },
-    'Potion 2 Type': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potion 2 Type',
+    {
         expr: p => p.Potions[1].Type,
         format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
-    },
-    'Potion 3 Type': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potion 3 Type',
+    {
         expr: p => p.Potions[2].Type,
         format: (p, x) => x ? intl(`general.potion${x}`) : '',
         difference: false,
         statistics: false
-    },
-    'Tag': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Tag',
+    {
         expr: p => p.Data.tag,
         difference: false,
         statistics: false
-    },
-    'Gold Frame': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Gold Frame',
+    {
         expr: p => p.Flags.GoldFrame,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'Official Creator': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Official Creator',
+    {
         expr: p => p.Flags.OfficialCreator,
         format: 'boolean',
         difference: false,
         statistics: false
-    },
-    'GT Background': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'GT Background',
+    {
         expr: p => p.Flags.GroupTournamentBackground,
         format: (p, x) => x ? intl(`general.gt_background${x}`) : intl('general.none'),
         difference: false,
         statistics: false
-    },
-    'Potions': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'public', 'Potions',
+    {
         expr: p => p.Potions,
         format: (p, i) => i.Size,
         order: (p) => _fastSum(p.Potions.map((v) => v.Size)),
@@ -2947,751 +3824,1474 @@ const SP_HEADERS_PUBLIC = {
         width: 33,
         grouped: 3
     }
-};
+)
 
-// Protected
-const SP_HEADERS_PROTECTED = {
-    'Last Active': {
+/*
+    Protected headers
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Last Active',
+    {
         expr: p => p.LastOnline,
         format: 'datetime',
         width: 160,
         difference: false,
         statistics: false
-    },
-    'Inactive Time': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Inactive Time',
+    {
         expr: p => p.Timestamp - p.LastOnline,
         format: 'duration',
         flip: true,
         difference: false,
         statistics: false
-    },
-    'Knights': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Knights',
+    {
         expr: p => p.Fortress.Knights,
         decorators: [
             {
                 condition: h => h.maximum,
                 apply: h => {
-                    h.value.format = (p, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
+                    h.value.format = (p, x) => p ? `${p.Fortress.Knights}/${p.Fortress.Fortress}` : x
                 }
             }
         ]
-    },
-    'Treasure': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Treasure',
+    {
         expr: p => p.Group.Treasure
-    },
-    'Instructor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Instructor',
+    {
         expr: p => p.Group.Instructor,
         width: 100
-    },
-    'Pet': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Pet',
+    {
         expr: p => p.Group.Pet
-    },
-    'Guild Portal Floor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Portal Floor',
+    {
         expr: p => _dig(p, 'Group', 'Group', 'PortalFloor')
-    },
-    'Guild Portal Life': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Portal Life',
+    {
         expr: p => _dig(p, 'Group', 'Group', 'PortalLife')
-    },
-    'Guild Portal Percent': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Portal Percent',
+    {
         expr: p => _dig(p, 'Group', 'Group', 'PortalPercent')
-    },
-    'Guild Honor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Honor',
+    {
         expr: p => _dig(p, 'Group', 'Group', 'Honor')
-    },
-    'Guild Knights': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Knights',
+    {
         expr: p => _dig(p, 'Group', 'Group', 'TotalKnights')
-    },
-    'Guild Treasure': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Treasure',
+    {
         expr: p => (_dig(p, 'Group', 'Group', 'TotalTreasure') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
-    },
-    'Guild Instructor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'Guild Instructor',
+    {
         expr: p => (_dig(p, 'Group', 'Group', 'TotalInstructor') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
-    },
-    'GT Tokens': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'GT Tokens',
+    {
         expr: p => _dig(p, 'GroupTournament', 'Tokens')
-    },
-    'GT Floor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'GT Floor',
+    {
         expr: p => _dig(p, 'GroupTournament', 'Floor')
-    },
-    'GT Maximum Floor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'protected', 'GT Maximum Floor',
+    {
         expr: p => _dig(p, 'GroupTournament', 'FloorMax')
     }
-};
+)
 
-// Private
-const SP_HEADERS_PRIVATE = {
-    'Webshop ID': {
+/*
+    Private headers
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Webshop ID',
+    {
         expr: p => p.WebshopID,
         difference: false,
         statistics: false
-    },
-    'Mount Expire': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Mount Expire',
+    {
         expr: p => p.MountExpire,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Wood': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Wood',
+    {
         expr: p => p.Fortress.Wood
-    },
-    'Stone': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Stone',
+    {
         expr: p => p.Fortress.Stone
-    },
-    'Used Beers': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Used Beers',
+    {
         expr: p => p.UsedBeers,
         statistics: false,
         difference: false
-    },
-    'Scrapbook Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Scrapbook Items',
+    {
         expr: p => p.Scrapbook
-    },
-    'Scrapbook Legendaries': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Scrapbook Legendaries',
+    {
         expr: p => p.ScrapbookLegendary
-    },
-    'Aura': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Aura',
+    {
         expr: p => p.Toilet.Aura,
         statistics: false
-    },
-    'Toilet Fill': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Toilet Fill',
+    {
         expr: p => p.Toilet.Fill,
         statistics: false
-    },
-    'Shrooms': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shrooms',
+    {
         expr: p => _dig(p, 'Mushrooms', 'Current'),
         statistics: false
-    },
-    'Coins': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Coins',
+    {
         expr: p => p.Coins,
         statistics: false
-    },
-    'Shrooms Total': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shrooms Total',
+    {
         expr: p => _dig(p, 'Mushrooms', 'Total'),
         statistics: false
-    },
-    'Shrooms Free': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shrooms Free',
+    {
         expr: p => _dig(p, 'Mushrooms', 'Free'),
         statistics: false
-    },
-    'Shrooms Paid': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shrooms Paid',
+    {
         expr: p => _dig(p, 'Mushrooms', 'Paid'),
         statistics: false
-    },
-    'Hourglass': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Hourglass',
+    {
         expr: p => p.Hourglass,
         statistics: false
-    },
-    'Potion Expire': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Potion Expire',
+    {
         expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
         format: (p, x) => x == undefined ? '?' : _formatDate(x),
         width: 160,
         difference: false,
         statistics: false
-    },
-    'Crystals': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Crystals',
+    {
         expr: p => p.Crystals,
         statistics: false
-    },
-    'Metal': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Metal',
+    {
         expr: p => p.Metal,
         statistics: false
-    },
-    'Pet Rank': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Pet Rank',
+    {
         expr: p => p.Pets.Rank <= 0 ? undefined : p.Pets.Rank,
         flip: true
-    },
-    'Pet Honor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Pet Honor',
+    {
         expr: p => p.Pets.Honor
-    },
-    '1 Catacombs': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '1 Catacombs',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[0])
-    },
-    '2 Mines': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '2 Mines',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[1])
-    },
-    '3 Ruins': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '3 Ruins',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[2])
-    },
-    '4 Grotto': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '4 Grotto',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[3])
-    },
-    '5 Altar': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '5 Altar',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[4])
-    },
-    '6 Tree': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '6 Tree',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[5])
-    },
-    '7 Magma': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '7 Magma',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[6])
-    },
-    '8 Temple': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '8 Temple',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[7])
-    },
-    '9 Pyramid': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '9 Pyramid',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[8])
-    },
-    '10 Fortress': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '10 Fortress',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[9])
-    },
-    '11 Circus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '11 Circus',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[10])
-    },
-    '12 Hell': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '12 Hell',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[11])
-    },
-    '13 Floor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '13 Floor',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[12])
-    },
-    '14 Easteros': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '14 Easteros',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[13])
-    },
-    '15 Academy': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '15 Academy',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[14])
-    },
-    '16 Hemorridor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '16 Hemorridor',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[15])
-    },
-    '17 Nordic': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '17 Nordic',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[16])
-    },
-    '18 Greek': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '18 Greek',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[17])
-    },
-    '19 Birthday': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '19 Birthday',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[18])
-    },
-    '20 Dragons': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '20 Dragons',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[19])
-    },
-    '21 Horror': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '21 Horror',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[20])
-    },
-    '22 Superheroes': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '22 Superheroes',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[21])
-    },
-    '23 Anime': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '23 Anime',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[22])
-    },
-    '24 Giant Monsters': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '24 Giant Monsters',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[23])
-    },
-    '25 City': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '25 City',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[24])
-    },
-    '26 Magic Express': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '26 Magic Express',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[25])
-    },
-    '27 Mountain': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '27 Mountain',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[26])
-    },
-    '28 Playa': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', '28 Playa',
+    {
         expr: p => Math.max(0, p.Dungeons.Normal[27])
-    },
-    'S1 Catacombs': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S1 Catacombs',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[0])
-    },
-    'S2 Mines': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S2 Mines',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[1])
-    },
-    'S3 Ruins': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S3 Ruins',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[2])
-    },
-    'S4 Grotto': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S4 Grotto',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[3])
-    },
-    'S5 Altar': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S5 Altar',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[4])
-    },
-    'S6 Tree': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S6 Tree',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[5])
-    },
-    'S7 Magma': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S7 Magma',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[6])
-    },
-    'S8 Temple': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S8 Temple',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[7])
-    },
-    'S9 Pyramid': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S9 Pyramid',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[8])
-    },
-    'S10 Fortress': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S10 Fortress',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[9])
-    },
-    'S11 Circus': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S11 Circus',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[10])
-    },
-    'S12 Hell': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S12 Hell',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[11])
-    },
-    'S13 Floor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S13 Floor',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[12])
-    },
-    'S14 Easteros': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S14 Easteros',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[13])
-    },
-    'S15 Academy': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S15 Academy',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[14])
-    },
-    'S16 Hemorridor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S16 Hemorridor',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[15])
-    },
-    'S17 Nordic': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S17 Nordic',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[16])
-    },
-    'S18 Greek': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S18 Greek',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[17])
-    },
-    'S19 Birthday': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S19 Birthday',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[18])
-    },
-    'S20 Dragons': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S20 Dragons',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[19])
-    },
-    'S21 Horror': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S21 Horror',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[20])
-    },
-    'S22 Superheroes': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S22 Superheroes',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[21])
-    },
-    'S23 Anime': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S23 Anime',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[22])
-    },
-    'S24 Giant Monsters': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S24 Giant Monsters',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[23])
-    },
-    'S25 City': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S25 City',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[24])
-    },
-    'S26 Magic Express': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S26 Magic Express',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[25])
-    },
-    'S27 Mountain': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S27 Mountain',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[26])
-    },
-    'S28 Playa': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'S28 Playa',
+    {
         expr: p => Math.max(0, p.Dungeons.Shadow[27])
-    },
-    'Youtube': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Youtube',
+    {
         expr: p => Math.max(0, p.Dungeons.Youtube),
         statistics: false,
         width: 120
-    },
-    'Twister': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Twister',
+    {
         expr: p => Math.max(0, p.Dungeons.Twister),
         statistics: false
-    },
-    'Scrolls': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Scrolls',
+    {
         expr: p => p.Witch.Stage
-    },
-    'Scroll Finish' : {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Scroll Finish',
+    {
         expr: p => p.Witch.Finish,
         format: 'datetime',
         difference: false,
         statistics: false,
         width: 160
-    },
-    'Witch Item': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Witch Item',
+    {
         expr: p => p.Witch.Item,
         format: (p, x) => x ? intl(`general.item${x}`) : ''
-    },
-    'Witch Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Witch Items',
+    {
         expr: p => p.Witch.Items
-    },
-    'Witch Items Required': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Witch Items Required',
+    {
         expr: p => p.Witch.ItemsNext
-    },
-    'Registered': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Registered',
+    {
         expr: p => p.Registered,
         format: 'datetime',
         width: 160,
         difference: false,
         statistics: false
-    },
-    'Heart of Darkness': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Heart of Darkness',
+    {
         expr: p => p.Underworld ? p.Underworld.Heart : undefined,
         statistics: false
-    },
-    'Underworld Gate': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Underworld Gate',
+    {
         expr: p => p.Underworld ? p.Underworld.Gate : undefined,
         statistics: false
-    },
-    'Gold Pit': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Gold Pit',
+    {
         expr: p => p.Underworld ? p.Underworld.GoldPit : undefined,
         statistics: false
-    },
-    'Extractor': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Extractor',
+    {
         expr: p => p.Underworld ? p.Underworld.Extractor : undefined,
         statistics: false
-    },
-    'Goblin Pit': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Goblin Pit',
+    {
         expr: p => p.Underworld ? p.Underworld.GoblinPit : undefined,
         statistics: false
-    },
-    'Goblin Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Goblin Upgrades',
+    {
         expr: p => p.Underworld ? p.Underworld.GoblinUpgrades : undefined,
         statistics: false
-    },
-    'Torture Chamber': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Torture Chamber',
+    {
         expr: p => p.Underworld ? p.Underworld.Torture : undefined,
         statistics: false
-    },
-    'Gladiator Trainer': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Gladiator Trainer',
+    {
         expr: p => p.Fortress.Gladiator,
         statistics: false
-    },
-    'Gladiator': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Gladiator',
+    {
         expr: p => p.Fortress.Gladiator,
         statistics: false
-    },
-    'Troll Block': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Troll Block',
+    {
         expr: p => p.Underworld ? p.Underworld.TrollBlock : undefined,
         statistics: false
-    },
-    'Troll Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Troll Upgrades',
+    {
         expr: p => p.Underworld ? p.Underworld.TrollUpgrades : undefined,
         statistics: false
-    },
-    'Time Machine': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Time Machine',
+    {
         expr: p => p.Underworld ? p.Underworld.TimeMachine : undefined,
         statistics: false
-    },
-    'Time Machine Shrooms': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Time Machine Shrooms',
+    {
         expr: p => p.Underworld ? p.Underworld.TimeMachineMushrooms : undefined,
         statistics: false
-    },
-    'Keeper': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Keeper',
+    {
         expr: p => p.Underworld ? p.Underworld.Keeper : undefined,
         statistics: false
-    },
-    'Keeper Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Keeper Upgrades',
+    {
         expr: p => p.Underworld ? p.Underworld.KeeperUpgrades : undefined,
         statistics: false
-    },
-    'Souls': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Souls',
+    {
         expr: p => p.Underworld ? p.Underworld.Souls : undefined,
         statistics: false
-    },
-    'Extractor Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Extractor Max',
+    {
         expr: p => p.Underworld ? p.Underworld.ExtractorMax : undefined,
         statistics: false
-    },
-    'Max Souls': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Max Souls',
+    {
         expr: p => p.Underworld ? p.Underworld.MaxSouls : undefined,
         statistics: false
-    },
-    'Extractor Hourly': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Extractor Hourly',
+    {
         expr: p => p.Underworld ? p.Underworld.ExtractorHourly : undefined,
         statistics: false
-    },
-    'Gold Pit Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Gold Pit Max',
+    {
         expr: p => p.Underworld ? p.Underworld.GoldPitMax : undefined,
         format: 'spaced_number',
         statistics: false
-    },
-    'Gold Pit Hourly': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Gold Pit Hourly',
+    {
         expr: p => p.Underworld ? p.Underworld.GoldPitHourly : undefined,
         format: 'spaced_number',
         statistics: false
-    },
-    'Time Machine Thirst': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Time Machine Thirst',
+    {
         expr: p => p.Underworld ? p.Underworld.TimeMachineThirst : undefined,
         statistics: false
-    },
-    'Time Machine Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Time Machine Max',
+    {
         expr: p => p.Underworld ? p.Underworld.TimeMachineMax : undefined,
         statistics: false
-    },
-    'Time Machine Daily': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Time Machine Daily',
+    {
         expr: p => p.Underworld && p.Underworld.TimeMachineDaily ? Math.trunc(p.Underworld.TimeMachineDaily * 0.25) : undefined,
         statistics: false
-    },
-    'Time Machine Daily Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Time Machine Daily Max',
+    {
         expr: p => p.Underworld ? p.Underworld.TimeMachineDaily : undefined,
         statistics: false
-    },
-    'Underworld Building': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Underworld Building',
+    {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Building : undefined,
         width: 180,
         format: (p, x) => x >= 0 ? intl(`general.buildings.underworld${x + 1}`) : '',
         difference: false,
         statistics: false
-    },
-    'Underworld Building Finish': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Underworld Building Finish',
+    {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Finish : -1,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Underworld Building Start': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Underworld Building Start',
+    {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Start : -1,
         format: 'datetime',
         difference: false,
         statistics: false
-    },
-    'Woodcutter Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Woodcutter Max',
+    {
         expr: p => p.Fortress.WoodcutterMax,
         statistics: false
-    },
-    'Quarry Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Quarry Max',
+    {
         expr: p => p.Fortress.QuarryMax,
         statistics: false
-    },
-    'Academy Max': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Academy Max',
+    {
         expr: p => p.Fortress.AcademyMax,
         statistics: false
-    },
-    'Wood Capacity': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Wood Capacity',
+    {
         expr: p => p.Fortress.MaxWood,
         statistics: false
-    },
-    'Stone Capacity': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Stone Capacity',
+    {
         expr: p => p.Fortress.MaxStone,
         statistics: false
-    },
-    'Stashed Wood': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Stashed Wood',
+    {
         expr: p => p.Fortress.SecretWood
-    },
-    'Stashed Stone': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Stashed Stone',
+    {
         expr: p => p.Fortress.SecretStone
-    },
-    'Stashed Wood Capacity': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Stashed Wood Capacity',
+    {
         expr: p => p.Fortress.SecretWoodLimit
-    },
-    'Stashed Stone Capacity': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Stashed Stone Capacity',
+    {
         expr: p => p.Fortress.SecretStoneLimit
-    },
-    'Sacrifices': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Sacrifices',
+    {
         expr: p => p.Idle ? p.Idle.Sacrifices : undefined,
         statistics: false
-    },
-    'Money': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Money',
+    {
         expr: p => p.Idle ? p.Idle.Money : undefined,
         format: 'exponential_number',
         difference: false,
         statistics: false
-    },
-    'Runes Collected': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Runes Collected',
+    {
         expr: p => p.Idle ? p.Idle.Runes : undefined,
         format: 'exponential_number',
         difference: false,
         statistics: false
-    },
-    'Runes Ready': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Runes Ready',
+    {
         expr: p => p.Idle ? p.Idle.ReadyRunes : undefined,
         format: 'exponential_number',
         difference: false,
         statistics: false
-    },
-    'Idle Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Idle Upgrades',
+    {
         expr: p => p.Idle ? p.Idle.Upgrades.Total : undefined,
         statistics: false
-    },
-    'Speed Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Speed Upgrades',
+    {
         expr: p => p.Idle ? p.Idle.Upgrades.Speed : undefined,
         statistics: false
-    },
-    'Money Upgrades': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Money Upgrades',
+    {
         expr: p => p.Idle ? p.Idle.Upgrades.Money : undefined,
         statistics: false
-    },
-    'Shadow Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shadow Count',
+    {
         expr: p => p.Pets.ShadowCount,
         statistics: false
-    },
-    'Light Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Light Count',
+    {
         expr: p => p.Pets.LightCount,
         statistics: false
-    },
-    'Earth Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Earth Count',
+    {
         expr: p => p.Pets.EarthCount,
         statistics: false
-    },
-    'Fire Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Fire Count',
+    {
         expr: p => p.Pets.FireCount,
         statistics: false
-    },
-    'Water Count': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Water Count',
+    {
         expr: p => p.Pets.WaterCount,
         statistics: false
-    },
-    'Shadow Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shadow Level',
+    {
         expr: p => p.Pets.ShadowLevel,
         statistics: false
-    },
-    'Light Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Light Level',
+    {
         expr: p => p.Pets.LightLevel,
         statistics: false
-    },
-    'Earth Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Earth Level',
+    {
         expr: p => p.Pets.EarthLevel,
         statistics: false
-    },
-    'Fire Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Fire Level',
+    {
         expr: p => p.Pets.FireLevel,
         statistics: false
-    },
-    'Water Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Water Level',
+    {
         expr: p => p.Pets.WaterLevel,
         statistics: false
-    },
-    'Total Pet Level': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Total Pet Level',
+    {
         expr: p => p.Pets.TotalLevel,
         statistics: false
-    },
-    'Shadow Food': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Shadow Food',
+    {
         expr: p => p.Pets.ShadowFood,
         statistics: false
-    },
-    'Light Food': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Light Food',
+    {
         expr: p => p.Pets.LightFood,
         statistics: false
-    },
-    'Earth Food': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Earth Food',
+    {
         expr: p => p.Pets.EarthFood,
         statistics: false
-    },
-    'Fire Food': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Fire Food',
+    {
         expr: p => p.Pets.FireFood,
         statistics: false
-    },
-    'Water Food': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Water Food',
+    {
         expr: p => p.Pets.WaterFood,
         statistics: false
-    },
-    'Summer Score': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Summer Score',
+    {
         expr: p => p.Summer.TotalPoints,
         statistics: false
-    },
-    'Dummy': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Dummy',
+    {
         expr: p => p.Inventory ? p.Inventory.Dummy : undefined,
         disabled: true
-    },
-    'Backpack': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Backpack',
+    {
         expr: p => p.Inventory ? p.Inventory.Backpack : undefined,
         disabled: true
-    },
-    'Chest': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Chest',
+    {
         expr: p => p.Inventory ? p.Inventory.Chest : undefined,
         disabled: true
-    },
-    'Bert Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Bert Items',
+    {
         expr: p => p.Inventory ? p.Inventory.Bert : undefined,
         disabled: true
-    },
-    'Kunigunde Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Kunigunde Items',
+    {
         expr: p => p.Inventory ? p.Inventory.Kunigunde : undefined,
         disabled: true
-    },
-    'Mark Items': {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'header', 'private', 'Mark Items',
+    {
         expr: p => p.Inventory ? p.Inventory.Mark : undefined,
         disabled: true
     }
-};
+)
 
-// Itemized
-const SP_ACCESSORS = {
-    'Item Strength': {
-        expr: (p, i) => i.Strength.Value
-    },
-    'Item Dexterity': {
-        expr: (p, i) => i.Dexterity.Value
-    },
-    'Item Intelligence': {
-        expr: (p, i) => i.Intelligence.Value
-    },
-    'Item Constitution': {
-        expr: (p, i) => i.Constitution.Value
-    },
-    'Item Luck': {
-        expr: (p, i) => i.Luck.Value
-    },
-    'Item Attribute': {
-        expr: (p, i) => {
-            if (p) {
-                switch (p.Primary.Type) {
-                    case 1: return i.Strength.Value;
-                    case 2: return i.Dexterity.Value;
-                    case 3: return i.Intelligence.Value;
-                    default: return 0;
-                }
-            } else {
-                return 0;
-            }
-        }
-    },
-    'Item Type': {
-        expr: (p, i) => i.Type,
-        format: (p, x) => x ? intl(`general.item${x}`) : '',
-        difference: false
-    },
-    'Item Name': {
-        expr: (p, i) => i.Name,
-        difference: false
-    },
-    'Item Upgrades': {
-        expr: (p, i) => i.Upgrades
-    },
-    'Item Rune': {
-        expr: (p, i) => i.RuneType,
-        width: 180,
-        format: (p, x) => x ? intl(`general.rune${x}`) : '',
-        difference: false
-    },
-    'Item Rune Value': {
-        expr: (p, i) => i.RuneValue,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Item Gem': {
-        expr: (p, i) => i.GemType,
-        format: (p, x) => x ? intl(`general.gem${x}`) : '',
-        difference: false
-    },
-    'Item Gem Value': {
-        expr: (p, i) => i.GemValue,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Item Gold': {
-        expr: (p, i) => i.SellPrice.Gold,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Item Sell Crystal': {
-        expr: (p, i) => i.SellPrice.Crystal,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Item Sell Metal': {
-        expr: (p, i) => i.SellPrice.Metal,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Item Dismantle Crystal': {
-        expr: (p, i) => i.DismantlePrice.Crystal,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Item Dismantle Metal': {
-        expr: (p, i) => i.DismantlePrice.Metal,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Potion Type': {
-        expr: (p, i) => i.Type,
-        format: (p, x) => x ? intl(`general.potion${x}`) : '',
-        difference: false
-    },
-    'Potion Size': {
-        expr: (p, i) => i.Size,
-        format: (p, x) => x == 0 ? '' : x,
-        difference: false
-    },
-    'Inventory Kind': {
-        expr: (p, i) => i.SlotType,
-        difference: false
-    },
-    'Inventory Slot': {
-        expr: (p, i) => i.SlotIndex,
-        difference: false
+/*
+    Accessors
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Strength',
+    function (p, i) {
+        return i.Strength.Value;
     }
-};
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Dexterity',
+    function (p, i) {
+        return i.Dexterity.Value;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Intelligence',
+    function (p, i) {
+        return i.Intelligence.Value;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Constitution',
+    function (p, i) {
+        return i.Constitution.Value;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Luck',
+    function (p, i) {
+        return i.Luck.Value;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Attribute',
+    function (p, i) {
+        if (p) {
+            switch (p.Primary.Type) {
+                case 1: return i.Strength.Value;
+                case 2: return i.Dexterity.Value;
+                case 3: return i.Intelligence.Value;
+                default: return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Type',
+    function (p, i) {
+        return i.Type;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Name',
+    function (p, i) {
+        return i.Name;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Upgrades',
+    function (p, i) {
+        return i.Upgrades;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Rune',
+    function (p, i) {
+        return i.RuneType;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Rune Value',
+    function (p, i) {
+        return i.RuneValue;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Gem',
+    function (p, i) {
+        return i.GemType;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Gem Value',
+    function (p, i) {
+        return i.GemValue;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Gold',
+    function (p, i) {
+        return i.SellPrice.Gold;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Sell Crystal',
+    function (p, i) {
+        return i.SellPrice.Crystal;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Sell Metal',
+    function (p, i) {
+        return i.SellPrice.Metal;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Dismantle Crystal',
+    function (p, i) {
+        return i.DismantlePrice.Crystal;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Item Dismantle Metal',
+    function (p, i) {
+        return i.DismantlePrice.Metal;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Potion Type',
+    function (p, i) {
+        return i.Type;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Potion Size',
+    function (p, i) {
+        return i.Size;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Inventory Kind',
+    function (p, i) {
+        return i.SlotType;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'accessor', 'none', 'Inventory Slot',
+    function (p, i) {
+        return i.SlotIndex;
+    }
+)

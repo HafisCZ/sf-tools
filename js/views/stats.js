@@ -1929,11 +1929,11 @@ const ScriptManualDialog = new (class extends Dialog {
         }
 
         const data = [
-            ['ta-reserved-public', 'header', Object.keys(SP_HEADERS_PUBLIC)],
-            ['ta-reserved-protected', 'header_protected', Object.keys(SP_HEADERS_PROTECTED)],
-            ['ta-reserved-private', 'header_private', Object.keys(SP_HEADERS_PRIVATE)],
-            ['ta-reserved-scoped', 'header_scoped', Object.keys(SP_ACCESSORS)],
-            ['ta-function', 'function', ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all'].concat(TABLE_EXPRESSION_CONFIG.all('function'))],
+            ['ta-reserved-public', 'header', TABLE_EXPRESSION_CONFIG.all('header', 'public')],
+            ['ta-reserved-protected', 'header_protected', TABLE_EXPRESSION_CONFIG.all('header', 'protected')],
+            ['ta-reserved-private', 'header_private', TABLE_EXPRESSION_CONFIG.all('header', 'private')],
+            ['ta-reserved-scoped', 'header_scoped', TABLE_EXPRESSION_CONFIG.all('accessor')],
+            ['ta-function', 'function', TABLE_EXPRESSION_CONFIG.all('function')],
             ['ta-enum', 'enum', ExpressionEnum.keys,  enumDescriptions],
             ['ta-constant', 'constant', Constants.DEFAULT.keys(), Constants.DEFAULT.Values]
         ];
