@@ -1405,8 +1405,7 @@
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
                 "header_private": "Headers for own characters",
-                "header_scoped": "Subheaders for objects",
-                "header_itemizable": "Subheaders for inventory",
+                "header_scoped": "Accessors for objects",
                 "function": "functions(...)",
                 "enum": "Enumerations",
                 "constant": "@constants"

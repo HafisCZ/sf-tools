@@ -47,11 +47,6 @@
   font-weight: bold;
 }
 
-.ta-reserved {
-  color: #f550f5;
-  font-weight: bold;
-}
-
 .ta-reserved-public {
   color: #f550f5;
   font-weight: bold;
@@ -79,11 +74,6 @@
 
 .ta-reserved-scoped {
   color: #3CB371;
-  font-weight: bold;
-}
-
-.ta-reserved-itemizable {
-  color: #eb4034;
   font-weight: bold;
 }
 
