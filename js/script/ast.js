@@ -204,7 +204,7 @@ class ExpressionScope {
 }
 
 class ExpressionRenderer {
-    static render (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extras) {
+    static render (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, config = TABLE_EXPRESSION_CONFIG) {
         let tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP);
         let nextName = false;
 
@@ -229,10 +229,8 @@ class ExpressionRenderer {
                     highlighter.string('`');
                     highlighter.join(token.slice(1, token.length - 1).split(/(\{\d+\})/g), (item) => /(\{\d+\})/.test(item) ? 'function' : 'string', '');
                     highlighter.string('`');
-                } else if (extras && extras.includes(token)) {
-                    highlighter.header(token, 'public');
-                } else if (TABLE_EXPRESSION_CONFIG.has(token)) {
-                    const data = TABLE_EXPRESSION_CONFIG.get(token);
+                } else if (config.has(token)) {
+                    const data = config.get(token);
 
                     switch (data.type) {
                         case 'function': {
@@ -301,7 +299,8 @@ class ExpressionRenderer {
 }
 
 class Expression {
-    constructor (string, settings = null) {
+    constructor (string, settings = null, config = TABLE_EXPRESSION_CONFIG) {
+        this.config = config;
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP).map(token => token.trim()).filter(token => token.length);
         this.root = false;
 
@@ -868,10 +867,10 @@ class Expression {
             if (node.op && Expression.#OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
                 const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.#wrapString(res) : res;
-            } else if (node.op && TABLE_EXPRESSION_CONFIG.has(node.op)) {
+            } else if (node.op && this.config.has(node.op)) {
                 if (node.op === 'random' && node.op === 'now') return undefined;
 
-                const data = TABLE_EXPRESSION_CONFIG.get(node.op);
+                const data = this.config.get(node.op);
                 if (data && data.type === 'function' && data.meta === 'value' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
                     const res = data.data(... node.args.map(a => a.op === 'string' ? a.args : a));
                     return typeof res === 'string' ? this.#wrapString(res) : res;
@@ -988,8 +987,8 @@ class Expression {
                     } else {
                         return undefined;
                     }
-                } else if (TABLE_EXPRESSION_CONFIG.has(node.op)) {
-                    const data = TABLE_EXPRESSION_CONFIG.get(node.op);
+                } else if (this.config.has(node.op)) {
+                    const data = this.config.get(node.op);
 
                     switch (data.type) {
                         case 'function': {
@@ -1014,7 +1013,7 @@ class Expression {
                         case 'accessor': {
                             if (node.args.length == 1) {
                                 const obj = this.evalInternal(scope, node.args[0]);
-                                return obj && typeof obj === 'object' ? data.data(scope.player, obj) : undefined;
+                                return obj && typeof obj === 'object' ? data.data(obj, scope.player) : undefined;
                             } else {
                                 return undefined;
                             }
@@ -1060,8 +1059,8 @@ class Expression {
                 } else {
                     return undefined;
                 }
-            } else if (TABLE_EXPRESSION_CONFIG.has(node)) {
-                const data = TABLE_EXPRESSION_CONFIG.get(node);
+            } else if (this.config.has(node)) {
+                const data = this.config.get(node);
 
                 switch (data.type) {
                     case 'constant': {
@@ -1072,7 +1071,7 @@ class Expression {
                     }
                     case 'accessor': {
                         const self = scope.getSelf();
-                        return self && typeof self === 'object' ? data.data.expr(scope.player, self) : undefined;
+                        return self && typeof self === 'object' ? data.data(self, scope.player) : undefined;
                     }
                 }
             } else if (scope && scope.has(node)) {

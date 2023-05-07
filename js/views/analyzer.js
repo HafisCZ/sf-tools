@@ -75,13 +75,17 @@ const AnalyzerOptionsDialog = new (class extends Dialog {
 
 const FightStatisticalAnalysisDialog = new (class extends Dialog {
   constructor () {
-      super({
-          key: 'fight_statistical_analysis',
-          dismissable: true,
-          opacity: 0
-      })
+    super({
+        key: 'fight_statistical_analysis',
+        dismissable: true,
+        opacity: 0
+    })
 
-      this.keywords = ['Player 1', 'Player 2', 'Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round'];
+    this.ExpressionConfig = DEFAULT_EXPRESSION_CONFIG.clone();
+
+    for (const name of ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round']) {
+        this.ExpressionConfig.register('accessor', 'none', name, (object) => object[name]);
+    }
   }
 
   _createModal () {
@@ -89,7 +93,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
           <div class="bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
               <div>${this.intl('variables')}</div>
-              <div class="text-gray">${this.keywords.map((keyword) => `<code>${keyword}</code>`).join(',&nbsp; ')}</div>
+              <div class="text-gray">${this.ExpressionConfig.all('accessor').map((keyword) => `<code>${keyword}</code>`).join(',&nbsp; ')}</div>
               <div class="ui inverted form flex flex-col gap-4 pr-4 overflow-y-scroll" data-op="content" style="height: 50vh;"></div>
               <div class="ui two fluid buttons">
                   <button class="ui button !text-black !background-orange" data-op="add">${this.intl('add')}</button>
@@ -158,7 +162,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
       const $count = $group.operator('count');
 
       $selector.on('change input', (event) => {
-          const html = Highlighter.expression(event.currentTarget.value || '', this.environment, this.keywords).text;
+          const html = Highlighter.expression(event.currentTarget.value || '', this.environment, this.ExpressionConfig).text;
           $overlay.html(html);
 
           this._changed();
@@ -174,10 +178,10 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
   }
 
   _changed () {
-      const globalScope = new ExpressionScope(this.environment).add({ 'Player 1': this.fighterA, 'Player 2': this.fighterB });
+      const globalScope = new ExpressionScope(this.environment);
       
       for (const { selector, count } of this.groups) {
-          const expression = new Expression(selector.val() || 'true');
+          const expression = new Expression(selector.val() || 'true', null, this.ExpressionConfig);
 
           count.val(this.rounds.filter((round) => expression.eval(globalScope.clone().addSelf(round))).length);
       }

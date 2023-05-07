@@ -369,14 +369,14 @@ const ProfileCreateDialog = new (class extends Dialog {
       this.$secondaryContent = this.$parent.find('[data-op="secondary-content"]');
 
       this.$secondary.on('change input', (e) => {
-          this.$secondaryContent.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, PROFILES_PROPS).text);
+          this.$secondaryContent.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, ProfilesTab.PLAYER_EXPRESSION_CONFIG).text);
       });
 
       this.$secondaryG = this.$parent.find('[data-op="secondary-g"]');
       this.$secondaryContentG = this.$parent.find('[data-op="secondary-content-g"]');
 
       this.$secondaryG.on('change input', (e) => {
-          this.$secondaryContentG.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, PROFILES_GROUP_PROPS).text);
+          this.$secondaryContentG.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, ProfilesTab.GROUP_EXPRESSION_CONFIG).text);
       });
 
       // Primary filter
@@ -396,7 +396,7 @@ const ProfileCreateDialog = new (class extends Dialog {
       });
 
       this.$primaryIndex.dropdown({
-          values: ['none', ...PROFILES_INDEXES].map(v => {
+          values: ['none', 'own', 'identifier', 'timestamp', 'group', 'prefix', 'tag'].map(v => {
               return {
                   name: v === 'none' ? this.intl('none') : v.charAt(0).toUpperCase() + v.slice(1),
                   value: v,
@@ -454,7 +454,7 @@ const ProfileCreateDialog = new (class extends Dialog {
       });
 
       this.$primaryIndexG.dropdown({
-          values: ['none', ...PROFILES_GROUP_INDEXES].map(v => {
+          values: ['none', 'own', 'identifier', 'timestamp', 'prefix'].map(v => {
               return {
                   name: v === 'none' ? this.intl('none') : v.charAt(0).toUpperCase() + v.slice(1),
                   value: v,

@@ -1830,6 +1830,12 @@ class FilesTab extends Tab {
 
         this.$tagFilter = this.$parent.find('[data-op="simple-tags"]');
         this.tagFilter = undefined;
+
+        this.ExpressionConfig = DEFAULT_EXPRESSION_CONFIG.clone();
+        for (const name of ['timestamp', 'players', 'groups', 'version', 'tags']) {
+            this.ExpressionConfig.register('accessor', 'none', name, (object) => object[name]);
+        }
+
         this.setLayout(SiteOptions.advanced, true);
     }
 
@@ -2247,7 +2253,7 @@ class FilesTab extends Tab {
 
             this.expressionFilter = new Expression(content);
             this.$filters.find('.ta-content').html(
-                Highlighter.expression(content, undefined, ['timestamp', 'players', 'groups', 'version', 'tags']).text
+                Highlighter.expression(content, undefined, this.ExpressionConfig).text
             );
 
             if (this.expressionFilter.empty || this.expressionFilter.isValid()) {
@@ -2866,12 +2872,29 @@ class SettingsTab extends Tab {
     }
 }
 
-const PROFILES_PROPS = ['timestamp', 'identifier', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname', 'save'];
-const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'tag'];
-const PROFILES_GROUP_PROPS = ['timestamp', 'identifier', 'prefix', 'own', 'name', 'identifier', 'save'];
-const PROFILES_GROUP_INDEXES = ['own', 'identifier', 'timestamp', 'prefix'];
-
 class ProfilesTab extends Tab {
+    static get PLAYER_EXPRESSION_CONFIG () {
+        delete this.PLAYER_EXPRESSION_CONFIG;
+ 
+        const config = DEFAULT_EXPRESSION_CONFIG.clone();
+        for (const name of ['timestamp', 'identifier', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname', 'save']) {
+            config.register('accessor', 'none', name, (object) => object[name]);
+        }
+
+        return (this.PLAYER_EXPRESSION_CONFIG = config);
+    }
+
+    static get GROUP_EXPRESSION_CONFIG () {
+        delete this.GROUP_EXPRESSION_CONFIG;
+ 
+        const config = DEFAULT_EXPRESSION_CONFIG.clone();
+        for (const name of ['timestamp', 'identifier', 'prefix', 'own', 'name', 'identifier', 'save']) {
+            config.register('accessor', 'none', name, (object) => object[name]);
+        }
+
+        return (this.GROUP_EXPRESSION_CONFIG = config);
+    }
+
     constructor (parent) {
         super(parent);
 
@@ -2914,8 +2937,8 @@ class ProfilesTab extends Tab {
                             </tr>
                             <tr>
                                 <td>${intl('stats.profiles.secondary')}</td>
-                                <td>${ secondary ? Highlighter.expression(secondary, undefined, PROFILES_PROPS).text : `<b>${intl('stats.profiles.none')}</b>` }</td>
-                                <td>${ secondary_g ? Highlighter.expression(secondary_g, undefined, PROFILES_GROUP_PROPS).text : `<b>${intl('stats.profiles.none')}</b>` }</td>
+                                <td>${ secondary ? Highlighter.expression(secondary, undefined, ProfilesTab.PLAYER_EXPRESSION_CONFIG).text : `<b>${intl('stats.profiles.none')}</b>` }</td>
+                                <td>${ secondary_g ? Highlighter.expression(secondary_g, undefined, ProfilesTab.GROUP_EXPRESSION_CONFIG).text : `<b>${intl('stats.profiles.none')}</b>` }</td>
                             </tr>
                         </table>
                     </div>
@@ -2963,9 +2986,9 @@ class ProfilesTab extends Tab {
         if (rule) {
             const { name, mode, value } = rule;
             if (mode == 'between') {
-                return `<b>${name}</b> ${intl('stats.profiles.between')} ${Highlighter.expression(value[0]).text} ${intl('stats.profiles.and')} ${Highlighter.expression(value[1]).text}`;
+                return `<b>${name}</b> ${intl('stats.profiles.between')} ${Highlighter.expression(value[0], undefined, DEFAULT_EXPRESSION_CONFIG).text} ${intl('stats.profiles.and')} ${Highlighter.expression(value[1], undefined, DEFAULT_EXPRESSION_CONFIG).text}`;
             } else {
-                return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Highlighter.expression(v).text).join('<br/>') : ''}`;
+                return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Highlighter.expression(v, undefined, DEFAULT_EXPRESSION_CONFIG).text).join('<br/>') : ''}`;
             }
         } else {
             return `<b>${intl('stats.profiles.none')}</b>`;
