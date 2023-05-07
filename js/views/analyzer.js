@@ -116,23 +116,10 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
           this._inject();
       })
 
-      const constants = new Constants({
-          // Classes
-          'warrior': 1,
-          'mage': 2,
-          'scout': 3,
-          'assassin': 4,
-          'battlemage': 5,
-          'berserker': 6,
-          'demonhunter': 7,
-          'druid': 8,
-          'bard': 9,
-      });
-
       this.environment = {
           functions: {},
           variables: {},
-          constants
+          constants: new Constants({});
       }
   }
 

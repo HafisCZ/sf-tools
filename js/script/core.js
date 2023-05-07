@@ -354,7 +354,7 @@ SettingsCommands.register(
     'MACRO_FUNCTION',
     /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
-        let ast = new Expression(expression, root);
+        const ast = new Expression(expression, root);
         if (ast.isValid()) {
             root.addFunction(name, ast, args.split(',').map(v => v.trim()));
         }
@@ -366,7 +366,7 @@ SettingsCommands.register(
     'MACRO_VARIABLE',
     /^mset (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression, root);
+        const ast = new Expression(expression, root);
         if (ast.isValid()) {
             root.addVariable(name, ast, false);
         }
@@ -385,7 +385,7 @@ SettingsCommands.register(
     'MACRO_CONSTEXPR',
     /^constexpr (\w+) (.+)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression);
+        const ast = new Expression(expression);
         if (ast.isValid()) {
             root.addConstant(name, ast.eval(new ExpressionScope(root)));
         }
@@ -395,28 +395,32 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_SERVER',
-    /^server ((@?)(\S+))$/,
-    (root, value, a, b) => {
-        let val = root.constants.getValue(a, b);
-        if (val != undefined) {
-            if (isNaN(val)) {
-                val = ARG_MAP_SERVER[val];
-            }
+    /^server (@?\S+)$/,
+    (root, value) => {
+        if (ARG_MAP_SERVER.hasOwnProperty(value)) {
+            root.addGlobal('server', ARG_MAP_SERVER[value]);
+        } else {
+            const val = root.constants.fetch(value);
 
             if (!isNaN(val)) {
                 root.addGlobal('server', Number(val));
             }
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('server ');
 
-        let val = root.constants.getValue(a, b);
         if (ARG_MAP_SERVER.hasOwnProperty(value)) {
             return acc.boolean(value, value === 'on');
-        } else if (root.constants.isValid(a, b) && !isNaN(val)) {
-            return acc.constant(value);
-        } else if (a == '@' || isNaN(val)) {
+        } else if (root.constants.has(value)) {
+            const val = root.constants.get(value);
+
+            if (isNaN(val)) {
+                return acc.error(value);
+            } else {
+                return acc.constant(value);
+            }
+        } else if (isNaN(value)) {
             return acc.error(value);
         } else {
             return acc.value(value);
@@ -426,20 +430,26 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_NAME',
-    /^name ((@?)(\S+))$/,
-    (root, value, a, b) => {
-        let val = root.constants.getValue(a, b);
-        if (val != undefined && !isNaN(val)) {
+    /^name (@?\S+)$/,
+    (root, value) => {
+        const val = root.constants.fetch(value);
+
+        if (!isNaN(val)) {
             root.addGlobal('name', Number(val));
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('name ');
 
-        let val = root.constants.getValue(a, b);
-        if (root.constants.isValid(a, b) && !isNaN(val)) {
-            return acc.constant(value);
-        } else if (a == '@' || isNaN(val)) {
+        if (root.constants.has(value)) {
+            const val = root.constants.get(value);
+
+            if (isNaN(val)) {
+                return acc.error(value);
+            } else {
+                return acc.constant(value);
+            }
+        } else if (isNaN(value)) {
             return acc.error(value);
         } else {
             return acc.value(value);
@@ -449,20 +459,26 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_WIDTH',
-    /^width ((@?)(\S+))$/,
-    (root, value, a, b) => {
-        let val = root.constants.getValue(a, b);
-        if (val != undefined && !isNaN(val)) {
+    /^width (@?\S+)$/,
+    (root, value) => {
+        const val = root.constants.fetch(value);
+
+        if (!isNaN(val)) {
             root.addShared('width', Number(val));
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('width ');
 
-        let val = root.constants.getValue(a, b);
-        if (root.constants.isValid(a, b) && !isNaN(val)) {
-            return acc.constant(value);
-        } else if (a == '@' || isNaN(val)) {
+        if (root.constants.has(value)) {
+            const val = root.constants.get(value);
+
+            if (isNaN(val)) {
+                return acc.error(value);
+            } else {
+                return acc.constant(value);
+            }
+        } else if (isNaN(value)) {
             return acc.error(value);
         } else {
             return acc.value(value);
@@ -474,7 +490,7 @@ SettingsCommands.register(
     'TABLE_COLUMNS',
     /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
     (root, parts) => {
-        let values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
+        const values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
         if (values.length > 0) {
             root.addLocal('columns', values);
         }
@@ -483,11 +499,18 @@ SettingsCommands.register(
         return Highlighter.keyword('columns ').join(
             parts.split(','),
             (part) => {
-                const value = root.constants.get(part.trim());
-                if (isNaN(value)) {
+                const value = part.trim();
+
+                if (root.constants.has(value)) {
+                    const val = root.constants.get(value);
+        
+                    if (isNaN(val)) {
+                        return 'error';
+                    } else {
+                        return 'constant';
+                    }
+                } else if (isNaN(value)) {
                     return 'error';
-                } else if (part.trim()[0] == '@') {
-                    return 'constant';
                 } else {
                     return 'value';
                 }
@@ -498,99 +521,96 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_NOT_DEFINED_VALUE',
-    /^not defined value ((@?)(.+))$/,
-    (root, value, a, b) => {
-        let val = root.constants.getValue(a, b);
-        if (val != undefined) {
+    /^not defined value (@?.+)$/,
+    (root, value) => {
+        const val = root.constants.fetch(value);
+
+        if (!isNaN(val)) {
             root.addShared('ndef', val);
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('not defined value ');
-        
-        if (root.constants.isValid(a, b)) {
+
+        if (root.constants.has(value)) {
             return acc.constant(value);
-        } else if (a == '@') {
-            return acc.error(value);
         } else {
             return acc.value(value);
         }
     }
 )
-    
+
 SettingsCommands.register(
     'TABLE_NOT_DEFINED_COLOR',
-    /^not defined color ((@?)(.+))$/,
-    (root, value, a, b) => {
-        let val = getCSSColor(root.constants.getValue(a, b));
+    /^not defined color (@?.+)$/,
+    (root, value) => {
+        const val = getCSSColor(root.constants.fetch(value));
+
         if (val != undefined && val) {
             root.addShared('ndefc', val);
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('not defined color ');
-        
-        let val = getCSSColor(root.constants.getValue(a, b));
-        if (root.constants.isValid(a, b) && val) {
-            return acc.constant(value);
-        } else if (a == '@' || !val) {
-            return acc.error(value);
+        const val = getCSSColor(root.constants.fetch(value));
+
+        if (val) {
+            if (root.constants.has(value)) {
+                return acc.constant(value);
+            } else {
+                return acc.color(value, val);
+            }
         } else {
-            return acc.color(value, val);
+            return acc.error(value);
         }
     }
 )
-    
+
 SettingsCommands.register(
     'TABLE_VALUE_DEFAULT',
-    /^value default ((@?)(\S+[\S ]*))$/,
-    (root, value, a, b) => {
-        let val = root.constants.getValue(a, b);
+    /^value default (@?\S+[\S ]*)$/,
+    (root, value) => {
+        const val = root.constants.fetch(value);
+
         if (val != undefined) {
             root.addValueRule(ARG_MAP['default'], 0, val);
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('value ').constant('default ');
 
-        if (root.constants.isValid(a, b)) {
+        if (root.constants.has(value)) {
             return acc.constant(value);
-        } else if (a == '@') {
-            return acc.error(value);
         } else {
             return acc.value(value);
         }
     }
 )
-    
+
 SettingsCommands.register(
     'TABLE_VALUE_RULE',
-    /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
-    (root, rule, value, a, b, value2, a2, b2) => {
-        let ref = root.constants.getValue(a, b);
-        let val = root.constants.getValue(a2, b2);
+    /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
+    (root, rule, value, value2) => {
+        const ref = root.constants.fetch(value);
+        const val = root.constants.fetch(value2);
 
         if (val != undefined && ref != undefined) {
             root.addValueRule(ARG_MAP[rule], ref, val);
         }
     },
-    (root, rule, value, a, b, value2, a2, b2) => {
+    (root, rule, value, value2) => {
         const acc = Highlighter.keyword('value ').constant(rule).space();
 
-        if (root.constants.isValid(a, b)) {
+        if (root.constants.has(value)) {
             acc.constant(value);
-        } else if (a == '@') {
-            acc.error(value);
         } else {
             acc.value(value);
         }
 
         acc.space();
 
-        if (root.constants.isValid(a2, b2)) {
+        if (root.constants.has(value2)) {
             acc.constant(value2);
-        } else if (a2 == '@') {
-            acc.error(value2);
         } else {
             acc.value(value2);
         }
@@ -601,58 +621,61 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_COLOR_DEFAULT',
-    /^color default ((@?)(\S+[\S ]*))$/,
-    (root, value, a, b) => {
-        let val = getCSSColor(root.constants.getValue(a, b));
+    /^color default (@?\S+[\S ]*)$/,
+    (root, value) => {
+        const val = getCSSColor(root.constants.fetch(value));
+
         if (val != undefined && val) {
             root.addColorRule(ARG_MAP['default'], 0, val);
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('color ').constant('default ');
+        const val = getCSSColor(root.constants.fetch(value));
         
-        let val = getCSSColor(root.constants.getValue(a, b));
-        if (root.constants.isValid(a, b) && val) {
-            return acc.constant(value);
-        } else if (a == '@' || !val) {
-            return acc.error(value);
+        if (val) {
+            if (root.constants.has(value)) {
+                return acc.constant(value);
+            } else {
+                return acc.color(value, val);
+            }
         } else {
-            return acc.color(value, val);
+            return acc.error(value);
         }
     }
 )
 
 SettingsCommands.register(
     'TABLE_COLOR_RULE',
-    /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
-    (root, rule, value, a, b, value2, a2, b2) => {
-        let ref = root.constants.getValue(a, b);
-        let val = getCSSColor(root.constants.getValue(a2, b2));
+    /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
+    (root, rule, value, value2) => {
+        const ref = root.constants.fetch(value);
+        const val = getCSSColor(root.constants.fetch(value2));
 
         if (val != undefined && ref != undefined && val) {
             root.addColorRule(ARG_MAP[rule], ref, val);
         }
     },
-    (root, rule, value, a, b, value2, a2, b2) => {
+    (root, rule, value, value2) => {
         const acc = Highlighter.keyword('color ').constant(rule).space();
-        
-        let val = getCSSColor(root.constants.getValue(a2, b2));
-        if (root.constants.isValid(a, b)) {
-            value = acc.constant(value);
-        } else if (a == '@') {
-            value = acc.error(value);
+        const val = getCSSColor(root.constants.fetch(value2));
+
+        if (root.constants.has(value)) {
+            acc.constant(value);
         } else {
-            value = acc.value(value);
+            acc.color(value, val);
         }
 
         acc.space();
 
-        if (root.constants.isValid(a2, b2) && val) {
-            value2 = acc.constant(value2);
-        } else if (a2 == '@' || !val) {
-            value2 = acc.error(value2);
+        if (val) {
+            if (root.constants.has(value2)) {
+                acc.constant(value2);
+            } else {
+                acc.color(value2, val);
+            }
         } else {
-            value2 = acc.color(value2, val);
+            acc.error(value2);
         }
 
         return acc;
@@ -661,20 +684,19 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_ALIAS',
-    /^alias ((@?)(.+))$/,
-    (root, value, a, b) => {
-        let val = root.constants.getValue(a, b);
+    /^alias (@?.+)$/,
+    (root, value) => {
+        const val = root.constants.fetch(value);
+
         if (val != undefined) {
             root.addAlias(val);
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('alias ');
         
-        if (root.constants.isValid(a, b)) {
+        if (root.constants.has(value)) {
             return acc.constant(value);
-        } else if (a == '@') {
-            return acc.error(value);
         } else {
             return acc.value(value);
         }
@@ -700,6 +722,7 @@ SettingsCommands.register(
     },
     (root, expression) => {
         const acc = Highlighter.keyword('format statistics ');
+
         if (expression === 'on' || expression == 'off') {
             return acc.boolean(expression, expression === 'on');
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
@@ -729,6 +752,7 @@ SettingsCommands.register(
     },
     (root, expression) => {
         const acc = Highlighter.keyword('format difference ');
+
         if (expression === 'on' || expression == 'off') {
             return acc.boolean(expression, expression === 'on');
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
@@ -741,23 +765,26 @@ SettingsCommands.register(
 
 SettingsCommands.register(
     'TABLE_BACKGROUND',
-    /^background ((@?)(.+))$/,
-    (root, value, a, b) => {
-        let val = getCSSColor(root.constants.getValue(a, b));
+    /^background (@?.+)$/,
+    (root, value) => {
+        const val = getCSSColor(root.constants.fetch(value));
+
         if (val != undefined && val) {
             root.addShared('background', val);
         }
     },
-    (root, value, a, b) => {
+    (root, value) => {
         const acc = Highlighter.keyword('background ');
-        
-        let val = getCSSColor(root.constants.getValue(a, b));
-        if (root.constants.isValid(a, b) && val) {
-            return acc.constant(value);
-        } else if (a == '@' || !val) {
-            return acc.error(value);
+        const val = getCSSColor(root.constants.fetch(value));
+
+        if (val) {
+            if (root.constants.has(value)) {
+                return acc.constant(value);
+            } else {
+                return acc.color(value, val);
+            }
         } else {
-            return acc.color(value, val);
+            return acc.error(value);
         }
     }
 )
@@ -777,6 +804,7 @@ SettingsCommands.register(
     },
     (root, token, expression) => {
         const acc = Highlighter.keyword(token).space();
+
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
             return acc.constant(expression);
         } else {
@@ -796,6 +824,7 @@ SettingsCommands.register(
     },
     (root, extensions, name) => {
         const acc = Highlighter.constant(extensions || '').keyword('category');
+
         if (name) {
             return acc.space().identifier(name);
         } else {
@@ -817,6 +846,7 @@ SettingsCommands.register(
     },
     (root, extensions, name, length) => {
         const acc = Highlighter.constant(extensions || '').keyword('header');
+
         if (name != undefined) {
             acc.space();
 
@@ -843,6 +873,7 @@ SettingsCommands.register(
     },
     (root, extensions, name) => {
         const acc = Highlighter.constant(extensions || '').keyword('header');
+        
         if (name != undefined) {
             acc.space();
 
@@ -1727,13 +1758,13 @@ class Settings {
                     }
                 } else if (SettingsCommands.MACRO_CONST.isValid(line)) {
                     let [name, value] = SettingsCommands.MACRO_CONST.parseAsMacro(line);
-                    settings.constants.addConstant(name, value);
+                    settings.constants.add(name, value);
                 } else if (SettingsCommands.MACRO_CONSTEXPR.isValid(line)) {
                     let [name, expression] = SettingsCommands.MACRO_CONSTEXPR.parseAsMacro(line);
 
                     let ast = new Expression(expression);
                     if (ast.isValid()) {
-                        settings.constants.addConstant(name, ast.eval(new ExpressionScope(settings)));
+                        settings.constants.add(name, ast.eval(new ExpressionScope(settings)));
                     }
                 }
             }
@@ -1752,9 +1783,9 @@ class Settings {
 
         // Special constants for macros
         let constants = new Constants();
-        constants.addConstant('guild', TableType.Group);
-        constants.addConstant('player', TableType.Player);
-        constants.addConstant('players', TableType.Browse);
+        constants.add('guild', TableType.Group);
+        constants.add('player', TableType.Player);
+        constants.add('players', TableType.Browse);
 
         // Generate initial settings
         let settings = Settings.handleMacroVariables(lines, constants);
@@ -2354,7 +2385,7 @@ class Settings {
 
     // Add constant
     addConstant (name, value) {
-        this.constants.addConstant(name, value);
+        this.constants.add(name, value);
     }
 
     // Add local variable

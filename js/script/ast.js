@@ -270,7 +270,7 @@ class ExpressionRenderer {
                     }
                 } else if (/^(\.*)this$/.test(token)) {
                     highlighter.constant(token);
-                } else if (root.constants.exists(token)) {
+                } else if (root.constants.has(token)) {
                     highlighter.constant(token);
                 } else if (/\~\d+/.test(token)) {
                     highlighter.enum(token);
@@ -1090,7 +1090,7 @@ class Expression {
                 }
             } else if (scope.env.lists && scope.env.lists.hasOwnProperty(node)) {
                 return scope.env.lists[node];
-            } else if (scope.env.constants.exists(node)) {
+            } else if (scope.env.constants.has(node)) {
                 // Return constant
                 return scope.env.constants.get(node);
             } else {
