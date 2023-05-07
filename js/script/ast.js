@@ -1228,14 +1228,6 @@ const SP_ARRAY_FUNCTIONS = {
     }
 };
 
-function isEmptyObject (object) {
-    for (const i in object) {
-        return false;
-    }
-
-    return true;
-}
-
 const SP_FUNCTIONS = {
     'flatten': (... values) => {
         return values.flat(Infinity);
@@ -1599,7 +1591,11 @@ const SP_FUNCTIONS = {
         } else if (Array.isArray(value)) {
             return value.length > 0
         } else if (typeof value === 'object') {
-            return !isEmptyObject(value);
+            for (const i in value) {
+                return false;
+            }
+  
+            return true;
         } else {
             return !!value;
         }
