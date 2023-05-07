@@ -1935,7 +1935,7 @@ class Settings {
         obj = this.row;
         if (obj) {
             // Merge definitions
-            for (let definitionName of obj.extensions || []) {
+            for (const definitionName of obj.extensions || []) {
                 this.mergeDefinition(obj, definitionName);
             }
 
@@ -1956,20 +1956,19 @@ class Settings {
         // Push header
         obj = this.header;
         if (obj && (this.embed || this.category)) {
-            let name = obj.name;
+            const name = obj.name;
 
             // Get mapping if exists
-            let mapping = SP_KEYWORD_MAPPING_0[name] || SP_KEYWORD_MAPPING_1[name] || SP_KEYWORD_MAPPING_2[name] || SP_KEYWORD_MAPPING_5_HO[name];
+            const mapping = SP_KEYWORD_MAPPING_0[name] || SP_KEYWORD_MAPPING_1[name] || SP_KEYWORD_MAPPING_2[name] || SP_KEYWORD_MAPPING_5_HO[name];
 
             // Merge definitions
-            for (let definitionName of obj.extensions || []) {
+            for (const definitionName of obj.extensions || []) {
                 this.mergeDefinition(obj, definitionName);
             }
 
-            // Add specials
-            let custom = SP_SPECIAL_CONDITIONS[name];
-            if (custom && obj.clean != 2) {
-                for (let entry of custom) {
+            // Add decorators
+            if (mapping && mapping.decorators && obj.clean != 2) {
+                for (const entry of mapping.decorators) {
                     if (entry.condition(obj)) {
                         entry.apply(obj);
                     }

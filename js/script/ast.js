@@ -2321,13 +2321,29 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false
     },
     'Awards': {
-        expr: p => p.Achievements.Owned
+        expr: p => p.Achievements.Owned,
+        decorators: [
+            {
+                condition: h => h.hydra,
+                apply: h => {
+                    h.value.extra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
+                }
+            }
+        ]
     },
     'Album': {
         expr: p => Math.ceil(10000 * p.BookPercentage) / 100,
         format: (p, x) => x.toFixed(2) + '%',
         width: 130,
-        decimal: true
+        decimal: true,
+        decorators: [
+            {
+                condition: h => h.grail,
+                apply: h => {
+                    h.value.extra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
+                }
+            }
+        ]
     },
     'Album Items': {
         expr: p => p.Book,
@@ -2523,33 +2539,6 @@ const SP_KEYWORD_MAPPING_0 = {
     }
 };
 
-const SP_SPECIAL_CONDITIONS = {
-    'Knights': [
-        {
-            condition: h => h.maximum,
-            apply: h => {
-                h.value.format = (p, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
-            }
-        }
-    ],
-    'Awards': [
-        {
-            condition: h => h.hydra,
-            apply: h => {
-                h.value.extra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
-            }
-        }
-    ],
-    'Album': [
-        {
-            condition: h => h.grail,
-            apply: h => {
-                h.value.extra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
-            }
-        }
-    ]
-};
-
 // Protected
 const SP_KEYWORD_MAPPING_1 = {
     'Last Active': {
@@ -2567,7 +2556,15 @@ const SP_KEYWORD_MAPPING_1 = {
         statistics: false
     },
     'Knights': {
-        expr: p => p.Fortress.Knights
+        expr: p => p.Fortress.Knights,
+        decorators: [
+            {
+                condition: h => h.maximum,
+                apply: h => {
+                    h.value.format = (p, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
+                }
+            }
+        ]
     },
     'Treasure': {
         expr: p => p.Group.Treasure
