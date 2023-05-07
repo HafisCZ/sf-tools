@@ -662,6 +662,9 @@ class BrowseTab extends Tab {
         this.table = this.tableBase;
         this.tableQEnabled = false;
 
+        this.$reference = this.$parent.find('[data-op="reference"]');
+        this.$timestamp = this.$parent.find('[data-op="timestamp"]');
+
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
             this.table.forceInject();
@@ -995,15 +998,9 @@ class BrowseTab extends Tab {
         return this.settingsRepo[code];
     }
 
-    show () {
-        this.tableBase.resetInjector();
-        this.tableQ.resetInjector();
-
-        this.refreshTemplateDropdown();
-
-        // Timestamp selector
-        var timestamps = [];
-        var references = [];
+    updateSelectors () {
+        const timestamps = [];
+        const references = [];
 
         for (const timestamp of DatabaseManager.PlayerTimestamps) {
             timestamps.push({
@@ -1022,11 +1019,9 @@ class BrowseTab extends Tab {
         timestamps.sort((a, b) => b.value - a.value);
         references.sort((a, b) => b.value - a.value);
 
-        this.$reference = this.$parent.find('[data-op="reference"]');
-
-        this.$parent.find('[data-op="timestamp"]').dropdown({
+        this.$timestamp.dropdown({
             values: timestamps
-        }).dropdown('setting', 'onChange', (value, text) => {
+        }).dropdown('setting', 'onChange', (value) => {
             this.timestamp = value;
             this.recalculate = true;
 
@@ -1034,14 +1029,14 @@ class BrowseTab extends Tab {
                 this.reference = value;
             }
 
-            var subref = references.slice(references.findIndex(entry => entry.value == this.timestamp));
-            for (var i = 0; i < subref.length; i++) {
+            const subref = references.slice(references.findIndex(entry => entry.value == this.timestamp));
+            for (let i = 0; i < subref.length; i++) {
                 subref[i].selected = subref[i].value == this.reference;
             }
 
             this.$reference.dropdown({
                 values: subref
-            }).dropdown('setting', 'onChange', (value, text) => {
+            }).dropdown('setting', 'onChange', (value) => {
                 this.reference = value;
                 this.recalculate = true;
                 this.$filter.trigger('change');
@@ -1052,11 +1047,19 @@ class BrowseTab extends Tab {
 
         this.$reference.dropdown({
             values: references
-        }).dropdown('setting', 'onChange', (value, text) => {
+        }).dropdown('setting', 'onChange', (value) => {
             this.reference = value;
             this.recalculate = true;
             this.$filter.trigger('change');
         });
+    }
+
+    show () {
+        this.tableBase.resetInjector();
+        this.tableQ.resetInjector();
+
+        this.refreshTemplateDropdown();
+        this.updateSelectors();
 
         this.timestamp = DatabaseManager.LatestPlayer;
         this.reference = DatabaseManager.LatestPlayer;
