@@ -44,6 +44,7 @@ const CHANGELOG = {
             'Added many performance improvements'
         ],
         'Dungeon Simulator': [
+            'Added new button for simulator threshold settings',
             'Fixed debug copy'
         ],
         'All Simulators': [
