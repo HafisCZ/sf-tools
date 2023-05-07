@@ -345,8 +345,8 @@ function _parseColor (name) {
             color = _rbgaToHex(color.slice(5, -1).split(','));
         } else if (color.startsWith('rgb')) {
             color = _rbgaToHex(color.slice(4, -1).split(','));
-        } else if (COLOR_MAP.hasOwnProperty(color)) {
-            color = COLOR_MAP[color];
+        } else if (COLOR_MAP.has(color)) {
+            color = COLOR_MAP.get(color);
         } else {
             color = '';
         }

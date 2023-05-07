@@ -21,7 +21,7 @@ function copyNode (node) {
     window.getSelection().removeAllRanges();
 }
 
-const COLOR_MAP = {
+const COLOR_MAP = new Map(Object.entries({
     'aliceblue': '#f0f8ff',
     'antiquewhite': '#faebd7',
     'aqua': '#00ffff',
@@ -163,7 +163,7 @@ const COLOR_MAP = {
     'whitesmoke': '#f5f5f5',
     'yellow': '#ffff00',
     'yellowgreen': '#9acd32'
-};
+}));
 
 class Constants {
     constructor (values = null) {
@@ -212,51 +212,54 @@ class Constants {
     static get DEFAULT_CONSTANTS_VALUES () {
         delete this.DEFAULT_CONSTANTS_VALUES;
 
-        return (this.DEFAULT_CONSTANTS_VALUES = Object.assign({}, COLOR_MAP, {
-            'green': '#00c851',
-            'orange': '#ffbb33',
-            'red': '#ff3547',
-            'blue': '#0064b4',
-            '15min': 900000,
-            '1hour': 3600000,
-            '12hours': 43200000,
-            '1day': 86400000,
-            '3days': 259200000,
-            '7days': 604800000,
-            '21days': 1814400000,
-            'mount10': 1,
-            'mount20': 2,
-            'mount30': 3,
-            'mount50': 4,
-            'none': 0,
-            'warrior': 1,
-            'mage': 2,
-            'scout': 3,
-            'assassin': 4,
-            'battlemage': 5,
-            'berserker': 6,
-            'demonhunter': 7,
-            'druid': 8,
-            'bard': 9,
-            'empty': '',
-            'tiny': 40,
-            'small': 60,
-            'normal': 100,
-            'large': 160,
-            'huge': 200,
-            'scrapbook': PlayerModel.SCRAPBOOK_COUNT,
-            'max': -1,
-            'weapon': 1,
-            'shield': 2,
-            'breastplate': 3,
-            'shoes': 4,
-            'gloves': 5,
-            'helmet': 6,
-            'belt': 7,
-            'necklace': 8,
-            'ring': 9,
-            'talisman': 10
-        }))
+        return (this.DEFAULT_CONSTANTS_VALUES = Object.fromEntries([
+            ...COLOR_MAP,
+            ...Object.entries({
+                'green': '#00c851',
+                'orange': '#ffbb33',
+                'red': '#ff3547',
+                'blue': '#0064b4',
+                '15min': 900000,
+                '1hour': 3600000,
+                '12hours': 43200000,
+                '1day': 86400000,
+                '3days': 259200000,
+                '7days': 604800000,
+                '21days': 1814400000,
+                'mount10': 1,
+                'mount20': 2,
+                'mount30': 3,
+                'mount50': 4,
+                'none': 0,
+                'warrior': 1,
+                'mage': 2,
+                'scout': 3,
+                'assassin': 4,
+                'battlemage': 5,
+                'berserker': 6,
+                'demonhunter': 7,
+                'druid': 8,
+                'bard': 9,
+                'empty': '',
+                'tiny': 40,
+                'small': 60,
+                'normal': 100,
+                'large': 160,
+                'huge': 200,
+                'scrapbook': PlayerModel.SCRAPBOOK_COUNT,
+                'max': -1,
+                'weapon': 1,
+                'shield': 2,
+                'breastplate': 3,
+                'shoes': 4,
+                'gloves': 5,
+                'helmet': 6,
+                'belt': 7,
+                'necklace': 8,
+                'ring': 9,
+                'talisman': 10
+            })
+        ]))
     }
 }
 
@@ -549,8 +552,8 @@ function getColorFromRGBA (r, g, b, a) {
 const GET_COLOR_FROM_NAME_CACHE = new Map();
 
 function _getColorFromName (name) {
-    if (name in COLOR_MAP) {
-        return COLOR_MAP[name];
+    if (COLOR_MAP.has(name)) {
+        return COLOR_MAP.get(name);
     } else {
         var css = getCSSColor(name);
         if (css == '') {
@@ -590,8 +593,8 @@ function toCSSColor (color) {
 const GET_CSS_COLOR_CACHE = new Map();
 
 function _getCSSColor (color) {
-    if (COLOR_MAP.hasOwnProperty(color)) {
-        return toCSSColor(COLOR_MAP[color]);
+    if (COLOR_MAP.has(color)) {
+        return toCSSColor(COLOR_MAP.get(color));
     } else if (/^\#([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
         return toCSSColor(color);
     } else if (/^[\\]+?\#([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
