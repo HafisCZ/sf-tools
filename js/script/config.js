@@ -446,7 +446,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
 const TABLE_EXPRESSION_CONFIG = DEFAULT_EXPRESSION_CONFIG.clone();
 
 /*
-  Scope constants
+  Scope variables
 */
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'player',
