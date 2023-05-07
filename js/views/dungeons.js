@@ -1,4 +1,4 @@
-const SimulatorThresholdDialog = new (class extends Dialog {
+const SimulatorOptionsDialog = new (class extends Dialog {
   _createModal () {
       return `
           <div class="small inverted bordered dialog">

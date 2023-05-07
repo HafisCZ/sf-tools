@@ -1095,7 +1095,6 @@
             "keep_original": "Keep original"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Simulation threshold",
             "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
