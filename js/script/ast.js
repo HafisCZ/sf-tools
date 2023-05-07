@@ -529,7 +529,7 @@ class Expression {
     // Get next token as unary operator
     #getUnaryOperator () {
         return {
-            op: SP_OPERATORS[this.#get() == '-' ? 'u-' : '!'],
+            op: Expression.#OPERATORS[this.#get() == '-' ? 'u-' : '!'],
             args: [ this.#getVal() ]
         }
     }
@@ -730,7 +730,7 @@ class Expression {
         let node = this.#getVal();
         while (this.#peek() == '^') {
             node = {
-                op: SP_OPERATORS[this.#get()],
+                op: Expression.#OPERATORS[this.#get()],
                 args: [node, this.#getVal()]
             }
         }
@@ -742,7 +742,7 @@ class Expression {
         let node = this.#getHighPriority();
         while (['*', '/', '%'].includes(this.#peek())) {
             node = {
-                op: SP_OPERATORS[this.#get()],
+                op: Expression.#OPERATORS[this.#get()],
                 args: [node, this.#getHighPriority()]
             }
         }
@@ -754,7 +754,7 @@ class Expression {
         let node = this.#getMediumPriority();
         while (['+', '-'].includes(this.#peek())) {
             node = {
-                op: SP_OPERATORS[this.#get()],
+                op: Expression.#OPERATORS[this.#get()],
                 args: [node, this.#getMediumPriority()]
             };
         }
@@ -766,7 +766,7 @@ class Expression {
         let node = this.#getLowPriority();
         while (['>', '<', '<=', '>=', '==', '!='].includes(this.#peek())) {
             node = {
-                op: SP_OPERATORS[this.#get()],
+                op: Expression.#OPERATORS[this.#get()],
                 args: [node, this.#getLowPriority()]
             }
         }
@@ -850,7 +850,7 @@ class Expression {
                 }
             }
 
-            if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
+            if (node.op && Expression.#OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
                 const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.#wrapString(res) : res;
             } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.op != 'random' && node.op != 'now' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
@@ -1171,6 +1171,28 @@ class Expression {
         } else {
             return node;
         }
+    }
+
+    static #OPERATORS = {
+        '*': (a, b) => a * b,
+        '/': (a, b) => b == 0 ? 0 : (a / b),
+        '+': (a, b) => a + b,
+        '-': (a, b) => a - b,
+        '>': (a, b) => a > b,
+        '<': (a, b) => a < b,
+        '^': (a, b) => Math.pow(a, b),
+        '==': (a, b) => a == b,
+        '===': (a, b) => a === b,
+        '!=': (a, b) => a != b,
+        '>=': (a, b) => a >= b,
+        '<=': (a, b) => a <= b,
+        '||': (a, b) => a || b,
+        '&&': (a, b) => a && b,
+        '%': (a, b) => a % b,
+        '?': (a, b, c) => a ? b : c,
+        'u-': (a) => -a,
+        's': (a) => a,
+        '!': (a) => a ? false : true
     }
 }
 
@@ -1589,28 +1611,6 @@ const SP_FUNCTIONS = {
         return `<img src="${_classImageUrl(klass)}"${typeof width != 'undefined' ? ` width="${width}"` : ''}${typeof height != 'undefined' ? ` height="${height}"` : ''}/>`;
     }
 }
-
-const SP_OPERATORS = {
-    '*': (a, b) => a * b,
-    '/': (a, b) => b == 0 ? 0 : (a / b),
-    '+': (a, b) => a + b,
-    '-': (a, b) => a - b,
-    '>': (a, b) => a > b,
-    '<': (a, b) => a < b,
-    '^': (a, b) => Math.pow(a, b),
-    '==': (a, b) => a == b,
-    '===': (a, b) => a === b,
-    '!=': (a, b) => a != b,
-    '>=': (a, b) => a >= b,
-    '<=': (a, b) => a <= b,
-    '||': (a, b) => a || b,
-    '&&': (a, b) => a && b,
-    '%': (a, b) => a % b,
-    '?': (a, b, c) => a ? b : c,
-    'u-': (a) => -a,
-    's': (a) => a,
-    '!': (a) => a ? false : true
-};
 
 const SP_KEYWORD_MAPPING_0 = {
     'Name': {
