@@ -1228,7 +1228,13 @@ class TableController {
             this.injectorElement.parentElement.insertBefore(fragment, this.injectorElement);
 
             for (const entry of entriesSlice) {
-                this.injectorCallback(entry.node);
+                const node = entry.node;
+
+                if (!node.injectCalled) {
+                    node.injectCalled = true;
+
+                    this.injectorCallback(node);
+                }
             }
 
             this.table.reflowIndexes();
@@ -1325,7 +1331,13 @@ class TableController {
             this.injectorElement.parentElement.insertBefore(fragment, this.injectorElement);
 
             for (const entry of entriesSlice) {
-                onInject(entry.node);
+                const node = entry.node;
+
+                if (!node.injectCalled) {
+                    node.injectCalled = true;
+
+                    onInject(node);
+                }
             }
 
             this.table.reflowIndexes();
