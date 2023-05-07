@@ -1934,7 +1934,7 @@ const ScriptManualDialog = new (class extends Dialog {
             ['ta-reserved-private', 'header_private', Object.keys(SP_KEYWORD_MAPPING_2)],
             ['ta-reserved-itemizable', 'header_itemizable', Object.keys(SP_KEYWORD_MAPPING_5)],
             ['ta-reserved-scoped', 'header_scoped', Object.keys(SP_KEYWORD_MAPPING_4)],
-            ['ta-function', 'function', ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all'].concat(Object.keys(SP_FUNCTIONS))],
+            ['ta-function', 'function', ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all'].concat(TABLE_EXPRESSION_CONFIG.all('function'))],
             ['ta-enum', 'enum', ExpressionEnum.keys,  enumDescriptions],
             ['ta-constant', 'constant', Constants.DEFAULT.keys(), Constants.DEFAULT.Values]
         ];

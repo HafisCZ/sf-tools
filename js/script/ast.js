@@ -231,11 +231,28 @@ class ExpressionRenderer {
                     highlighter.string('`');
                 } else if (extras && extras.includes(token)) {
                     highlighter.header(token);
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                } else if (TABLE_EXPRESSION_CONFIG.has(token)) {
+                    const data = TABLE_EXPRESSION_CONFIG.get(token);
+
+                    switch (data.type) {
+                        case 'function': {
+                            highlighter.function(token);
+                            break;
+                        }
+                        case 'constant': {
+                            highlighter.constant(token);
+                            break;
+                        }
+                    }
+                } else if (root.functions.hasOwnProperty(token)) {
                     highlighter.function(token);
                 } else if (token === 'true' || token === 'false') {
                     highlighter.boolean(token, token === 'true');
-                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
+                } else if (['undefined', 'null', 'loop_index', 'loop_array'].includes(token)) {
+                    // Internal constants
+                    highlighter.constant(token);
+                } else if ([ 'joined', 'kicked', 'index', 'classes' ].includes(token)) {
+                    // List names
                     highlighter.constant(token);
                 } else if (root.variables.hasOwnProperty(token)) {
                     if (root.variables[token].tableVariable == 'unfiltered') {
@@ -354,11 +371,11 @@ class Expression {
         if (this.resolved) {
             value = this.root;
         } else if (scope.alwaysEval() || !this.cacheable) {
-            value = this.#evalInternal(scope, this.root);
+            value = this.evalInternal(scope, this.root);
         } else if (ExpressionCache.has(scope.token, this.rstr)) {
             value = ExpressionCache.get(scope.token, this.rstr);
         } else {
-            value = this.#evalInternal(scope, this.root);
+            value = this.evalInternal(scope, this.root);
             ExpressionCache.set(scope.token, this.rstr, value);
         }
 
@@ -853,9 +870,14 @@ class Expression {
             if (node.op && Expression.#OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
                 const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.#wrapString(res) : res;
-            } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.op != 'random' && node.op != 'now' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
-                const res = SP_FUNCTIONS[node.op](... node.args.map(a => a.op === 'string' ? a.args : a));
-                return typeof res === 'string' ? this.wrapString(res) : res;
+            } else if (node.op && TABLE_EXPRESSION_CONFIG.has(node.op)) {
+                if (node.op === 'random' && node.op === 'now') return undefined;
+
+                const data = TABLE_EXPRESSION_CONFIG.get(node.op);
+                if (data && data.type === 'function' && data.meta === 'value' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
+                    const res = data.data(... node.args.map(a => a.op === 'string' ? a.args : a));
+                    return typeof res === 'string' ? this.#wrapString(res) : res;
+                }
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
             return tableVariables[node].ast.root;
@@ -875,8 +897,8 @@ class Expression {
     }
 
     // Evaluate a node into array, used for array functions
-    #evalToArray (scope, node) {
-        var generated = this.#evalInternal(scope, node);
+    evalToArray (scope, node) {
+        var generated = this.evalInternal(scope, node);
         if (!generated || typeof(generated) != 'object') {
             return [];
         } else {
@@ -884,7 +906,7 @@ class Expression {
         }
     }
 
-    #evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
+    evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
                 return mapper.ast.eval(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }));
@@ -893,191 +915,116 @@ class Expression {
             }
         } else {
             if (segmented) {
-                return this.#evalInternal(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
+                return this.evalInternal(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
             } else {
-                return this.#evalInternal(scope.clone().addSelf(obj).add({ loop_index, loop_array }), arg);
+                return this.evalInternal(scope.clone().addSelf(obj).add({ loop_index, loop_array }), arg);
             }
         }
     }
 
-    #evalInternal (scope, node) {
+    evalInternal (scope, node) {
         if (typeof node === 'object') {
             if (typeof node.op === 'string') {
                 if (node.op === 'string') {
                     return node.args;
-                } else if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.#evalInternal(scope, node.args[0]);
-                    if (typeof str === 'string') {
-                        var arg = node.args.slice(1).map(a => this.#evalInternal(scope, a));
-
-                        for (key in arg) {
-                            str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
-                        }
-
-                        return str;
-                    } else {
-                        return undefined;
-                    }
-                } else if (node.op == 'sort' && node.args.length == 2) {
-                    // Multiple array functions condensed
-                    const array = this.#evalToArray(scope, node.args[0]);
-                    const mapper = scope.env.functions[node.args[1]];
-                    let values = new Array(array.length);
-
-                    for (let i = 0; i < array.length; i++) {
-                        values[i] = {
-                            key: this.#evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
-                            val: array[i]
-                        };
-                    }
-
-                    values = values.sort((a, b) => b.key - a.key).map((a) => a.val);
-                    values.segmented = array.segmented;
-
-                    return values;
-                } else if (['each', 'filter', 'map'].includes(node.op) && (node.args.length == 2 || (node.op == 'each' && node.args.length == 3))) {
-                    // Multiple array functions condensed
-                    const array = this.#evalToArray(scope, node.args[0]);
-                    const mapper = scope.env.functions[node.args[1]];
-                    const values = new Array(array.length);
-
-                    for (let i = 0; i < array.length; i++) {
-                        values[i] = this.#evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
-                    }
-
-                    // Return correct result
-                    switch (node.op) {
-                        case 'each': {
-                            const def = typeof node.args[2] === 'undefined' ? 0 : this.#evalInternal(scope, node.args[2]);
-                            return values.reduce((a, b) => a + b, def);
-                        }
-                        case 'filter': return array.filter((a, i) => values[i]);
-                        case 'map': return values;
-                    }
-                } else if (['some', 'all'].includes(node.op) && node.args.length == 2) {
-                    const inverted = node.op === 'some';
-                    const array = this.#evalToArray(scope, node.args[0]);
-                    const mapper = scope.env.functions[node.args[1]];
-
-                    for (let i = 0; i < array.length; i++) {
-                        if (inverted == this.#evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
-                            return inverted;
-                        }
-                    }
-
-                    return !inverted;
                 } else if (node.op == '{' || node.op == '[') {
                     // Simple object or array constructor
-                    var obj = node.op == '{' ? {} : [];
+                    const obj = node.op == '{' ? {} : [];
 
-                    for (var { key, val } of node.args) {
-                        obj[this.#evalInternal(scope, key)] = this.#evalInternal(scope, val);
+                    for (const { key, val } of node.args) {
+                        obj[this.evalInternal(scope, key)] = this.evalInternal(scope, val);
                     }
 
                     return obj;
                 } else if (node.op == '?:') {
-                    let condition = node.args[0];
-                    let branch1 = node.args[1];
-                    let branch2 = node.args[2];
+                    const condition = node.args[0];
+                    const branch1 = node.args[1];
+                    const branch2 = node.args[2];
 
-                    if (this.#evalInternal(scope, condition)) {
-                        return this.#evalInternal(scope, branch1);
+                    if (this.evalInternal(scope, condition)) {
+                        return this.evalInternal(scope, branch1);
                     } else {
-                        return this.#evalInternal(scope, branch2);
+                        return this.evalInternal(scope, branch2);
                     }
                 } else if (node.op == '||') {
-                    let branch1 = node.args[0];
-                    let branch2 = node.args[1];
+                    const branch1 = node.args[0];
+                    const branch2 = node.args[1];
 
-                    let resolved1 = this.#evalInternal(scope, branch1);
+                    const resolved1 = this.evalInternal(scope, branch1);
                     if (resolved1) {
                         return resolved1;
                     } else {
-                        return this.#evalInternal(scope, branch2);
+                        return this.evalInternal(scope, branch2);
                     }
                 } else if (node.op == '&&') {
-                    let branch1 = node.args[0];
-                    let branch2 = node.args[1];
+                    const branch1 = node.args[0];
+                    const branch2 = node.args[1];
 
-                    let resolved1 = this.#evalInternal(scope, branch1);
+                    const resolved1 = this.evalInternal(scope, branch1);
                     if (resolved1) {
-                        return this.#evalInternal(scope, branch2);
+                        return this.evalInternal(scope, branch2);
                     } else {
                         return false;
                     }
                 } else if (scope.env.functions[node.op]) {
-                    var mapper = scope.env.functions[node.op];
-                    var scope2 = {};
-                    for (var i = 0; i < mapper.args.length; i++) {
-                        scope2[mapper.args[i]] = this.#evalInternal(scope, node.args[i]);
+                    const mapper = scope.env.functions[node.op];
+                    const scope2 = {};
+                    for (let i = 0; i < mapper.args.length; i++) {
+                        scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
                     }
 
                     return mapper.ast.eval(scope.clone().add(scope2));
-                } else if (node.op == 'difference' && node.args.length == 1) {
-                    var a = this.#evalInternal(scope, node.args[0]);
-                    var b = this.#evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
-
-                    if (isNaN(a) || isNaN(b)) {
-                        return undefined;
-                    } else {
-                        return a - b;
-                    }
-                } else if (node.op == 'array' && node.args.length == 1) {
-                    return this.#evalToArray(scope, node.args[0]);
                 } else if (node.op == '[a') {
-                    var object = this.#evalInternal(scope, node.args[0]);
+                    const object = this.evalInternal(scope, node.args[0]);
                     if (object) {
-                        return object[this.#evalInternal(scope, node.args[1])];
+                        return object[this.evalInternal(scope, node.args[1])];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == '(a') {
-                    var object = this.#evalInternal(scope, node.args[0]);
-                    var func = this.#evalInternal(scope, node.args[1]);
+                    const object = this.evalInternal(scope, node.args[0]);
+                    const func = this.evalInternal(scope, node.args[1]);
 
                     if (object != undefined && object[func] && typeof object[func] === 'function') {
-                        return object[func](... node.args[2].map(param => this.#evalInternal(scope, param)));
-                    } else {
-                        return undefined;
-                    }
-                } else if (node.op == 'var' && node.args.length == 1) {
-                    if (scope.header && scope.header.vars) {
-                        return scope.header.vars[node.args[0]];
-                    } else {
-                        return undefined;
-                    }
-                } else if (node.op == 'tracker' && node.args.length == 1) {
-                    if (scope.player) {
-                        return DatabaseManager.getTracker(scope.player.Identifier, node.args[0]);
+                        return object[func](... node.args[2].map(param => this.evalInternal(scope, param)));
                     } else {
                         return undefined;
                     }
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
-                    var obj = this.#evalInternal(scope, node.args[0]);
+                    const obj = this.evalInternal(scope, node.args[0]);
                     return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
-                    var obj = this.#evalInternal(scope, node.args[0]);
+                    const obj = this.evalInternal(scope, node.args[0]);
                     return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(scope.player, obj) : undefined;
-                } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
-                    // Predefined function
-                    return SP_FUNCTIONS[node.op](
-                        ... node.args.map(arg => this.#evalInternal(scope, arg))
-                    );
-                } else if (SP_ARRAY_FUNCTIONS.hasOwnProperty(node.op) && node.args.length > 0) {
-                    // Predefined array functions (first argument is array type)
-                    return SP_ARRAY_FUNCTIONS[node.op](
-                        this.#evalToArray(scope, node.args[0]),
-                        ... node.args.slice(1).map(arg => this.#evalInternal(scope, arg))
-                    );
+                } else if (TABLE_EXPRESSION_CONFIG.has(node.op)) {
+                    const data = TABLE_EXPRESSION_CONFIG.get(node.op);
+
+                    switch (data.type) {
+                        case 'function': {
+                            // Function
+                            if (data.meta === 'scope') {
+                                return data.data(this, scope, node);
+                            } else if (data.meta === 'array') {
+                                return data.data(
+                                    this.evalToArray(scope, node.args[0]),
+                                    ... node.args.slice(1).map(arg => this.evalInternal(scope, arg))
+                                )
+                            } else {
+                                return data.data(
+                                    ... node.args.map(arg => this.evalInternal(scope, arg))
+                                );
+                            }
+                        }
+                    }
                 } else {
                     // Return undefined
                     return undefined;
                 }
             } else if (node.op) {
                 // Return processed node
-                var value = node.op(... node.args.map(arg => this.#evalInternal(scope, arg)));
+                const value = node.op(... node.args.map(arg => this.evalInternal(scope, arg)));
                 if (value == NaN) {
                     return undefined;
                 } else {
@@ -1087,51 +1034,10 @@ class Expression {
                 // Return node in case something does not work :(
                 return node;
             }
-        } else if (typeof(node) == 'string') {
+        } else if (typeof node === 'string') {
             let scopeValue = undefined;
             if (scopeValue = node.match(/(\.*)this/)) {
                 return scope ? scope.getSelf(scopeValue[1].length) : undefined;
-            } else if (node == 'player') {
-                // Return current player
-                return scope.player;
-            } else if (node == 'reference') {
-                // Return reference player
-                return scope.reference;
-            } else if (node == 'database') {
-                // Return database
-                return DatabaseManager;
-            } else if (node == 'entries') {
-                if (scope.player) {
-                    return DatabaseManager.getPlayer(scope.player.Identifier).List;
-                } else {
-                    return undefined;
-                }
-            } else if (node == 'table_array') {
-                return scope.env.array;
-            } else if (node == 'table_array_unfiltered') {
-                return scope.env.array_unfiltered;
-            } else if (node == 'table_timestamp') {
-                return scope.env.timestamp;
-            } else if (node == 'table_reference') {
-                return scope.env.reference;
-            } else if (node == 'header') {
-                // Return current header
-                return scope.header;
-            } else if (typeof node != 'undefined' && node.startsWith('~')) {
-                // Return sub expressions
-                let sub_index = parseInt(node.slice(1));
-                if (sub_index < this.subexpressions.length) {
-                    if (!this.subexpressions_cache_indexes.includes(sub_index)) {
-                        this.subexpressions_cache_indexes.push(sub_index);
-                        this.subexpressions_cache[sub_index] = this.#evalInternal(scope, this.subexpressions[sub_index]);
-                    }
-                    return this.subexpressions_cache[sub_index];
-                } else {
-                    return undefined;
-                }
-            } else if (node == 'row_index') {
-                // Return row index
-                return scope.env.row_indexes && scope.player ? scope.env.row_indexes[`${ scope.player.Identifier }_${ scope.player.Timestamp }`] : undefined;
             } else if (node === 'undefined') {
                 return undefined;
             } else if (node === 'null') {
@@ -1140,6 +1046,26 @@ class Expression {
                 return true;
             } else if (node === 'false') {
                 return false;
+            } else if (node.startsWith('~')) {
+                // Return sub expressions
+                let sub_index = parseInt(node.slice(1));
+                if (sub_index < this.subexpressions.length) {
+                    if (!this.subexpressions_cache_indexes.includes(sub_index)) {
+                        this.subexpressions_cache_indexes.push(sub_index);
+                        this.subexpressions_cache[sub_index] = this.evalInternal(scope, this.subexpressions[sub_index]);
+                    }
+                    return this.subexpressions_cache[sub_index];
+                } else {
+                    return undefined;
+                }
+            } else if (TABLE_EXPRESSION_CONFIG.has(node)) {
+                const data = TABLE_EXPRESSION_CONFIG.get(node);
+
+                switch (data.type) {
+                    case 'constant': {
+                        return data.data(scope);
+                    }
+                }
             } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
                 return SP_KEYWORDS[node].expr(scope.player);
             } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
@@ -1196,28 +1122,343 @@ class Expression {
     }
 }
 
-const SP_ARRAY_FUNCTIONS = {
-    'distinct': (array) => {
+class ExpressionConfig {
+    #data = new Map();
+
+    register (type, meta, name, data) {
+        this.#data.set(name, {
+            type,
+            meta,
+            data
+        })
+    }
+
+    get (name) {
+        return this.#data.get(name);
+    }
+
+    has (name) {
+        return this.#data.has(name);
+    }
+
+    all (type) {
+        const keys = [];
+        for (const [name, data] of this.#data.entries()) {
+            if (data.type === type) {
+                keys.push(name);
+            }
+        }
+
+        return keys;
+    }
+}
+
+const TABLE_EXPRESSION_CONFIG = new ExpressionConfig();
+
+/*
+    Scope constants
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'player',
+    function (scope) {
+        return scope.player;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'reference',
+    function (scope) {
+        return scope.reference;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'database',
+    function (scope) {
+        return DatabaseManager;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'entries',
+    function (scope) {
+        if (scope.player) {
+            return DatabaseManager.getPlayer(scope.player.Identifier).List;
+        } else {
+            return undefined;
+        }
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'table_array',
+    function (scope) {
+        return scope.env.array;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'table_array_unfiltered',
+    function (scope) {
+        return scope.env.array_unfiltered;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'table_timestamp',
+    function (scope) {
+        return scope.env.timestamp;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'table_reference',
+    function (scope) {
+        return scope.env.reference;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'header',
+    function (scope) {
+        return scope.header;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'constant', 'scope', 'row_index',
+    function (scope) {
+        return scope.env.row_indexes && scope.player ? scope.env.row_indexes[`${ scope.player.Identifier }_${ scope.player.Timestamp }`] : undefined;
+    }
+)
+
+/*
+    Scope functions
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'difference',
+    function (self, scope, node) {
+        if (node.args.length !== 1) return undefined;
+
+        const a = self.evalInternal(scope, node.args[0]);
+        const b = self.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
+
+        if (isNaN(a) || isNaN(b)) {
+            return undefined;
+        } else {
+            return a - b;
+        }
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'sort',
+    function (self, scope, node) {
+        if (node.args.length !== 2) return undefined;
+
+        const array = self.evalToArray(scope, node.args[0]);
+        const mapper = scope.env.functions[node.args[1]];
+        let values = new Array(array.length);
+
+        for (let i = 0; i < array.length; i++) {
+            values[i] = {
+                key: self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
+                val: array[i]
+            };
+        }
+
+        values = values.sort((a, b) => b.key - a.key).map((a) => a.val);
+        values.segmented = array.segmented;
+
+        return values;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'some',
+    function (self, scope, node) {
+        if (node.args.length !== 2) return undefined;
+
+        const array = self.evalToArray(scope, node.args[0]);
+        const mapper = scope.env.functions[node.args[1]];
+    
+        for (let i = 0; i < array.length; i++) {
+            if (self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'all',
+    function (self, scope, node) {
+        if (node.args.length !== 2) return undefined;
+
+        const array = self.evalToArray(scope, node.args[0]);
+        const mapper = scope.env.functions[node.args[1]];
+    
+        for (let i = 0; i < array.length; i++) {
+            if (!self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
+                return false;
+            }
+        }
+    
+        return true;
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'format',
+    function (self, scope, node) {
+        if (node.args.length === 0) return undefined;
+
+        let str = self.evalInternal(scope, node.args[0]);
+        if (typeof str === 'string') {
+            const arg = node.args.slice(1).map(a => self.evalInternal(scope, a));
+    
+            for (key in arg) {
+                str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
+            }
+    
+            return str;
+        } else {
+            return undefined;
+        }
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'var',
+    function (self, scope, node) {
+        if (node.args.length !== 1) return undefined;
+
+        if (scope.header && scope.header.vars) {
+            return scope.header.vars[node.args[0]];
+        } else {
+            return undefined;
+        }
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'tracker',
+    function (self, scope, node) {
+        if (node.args.length !== 1) return undefined;
+
+        if (scope.player) {
+            return DatabaseManager.getTracker(scope.player.Identifier, node.args[0]);
+        } else {
+            return undefined;
+        }
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'array',
+    function (self, scope, node) {
+        if (node.args.length !== 1) return undefined;
+
+        return self.evalToArray(scope, node.args[0]);
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'each',
+    function (self, scope, node) {
+        if (node.args.length !== 2 && node.args.length !== 3) return undefined;
+
+        const array = self.evalToArray(scope, node.args[0]);
+        const mapper = scope.env.functions[node.args[1]];
+        const values = new Array(array.length);
+    
+        for (let i = 0; i < array.length; i++) {
+            values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+        }
+
+        const def = typeof node.args[2] === 'undefined' ? 0 : self.evalInternal(scope, node.args[2]);
+        return values.reduce((a, b) => a + b, def);
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'filter',
+    function (self, scope, node) {
+        if (node.args.length !== 2) return undefined;
+
+        const array = self.evalToArray(scope, node.args[0]);
+        const mapper = scope.env.functions[node.args[1]];
+        const values = new Array(array.length);
+    
+        for (let i = 0; i < array.length; i++) {
+            values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+        }
+
+        return array.filter((a, i) => values[i]);
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'scope', 'map',
+    function (self, scope, node) {
+        if (node.args.length !== 2) return undefined;
+
+        const array = self.evalToArray(scope, node.args[0]);
+        const mapper = scope.env.functions[node.args[1]];
+        const values = new Array(array.length);
+    
+        for (let i = 0; i < array.length; i++) {
+            values[i] = self.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
+        }
+
+        return values;
+    }
+)
+
+/*
+    Array functions
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'array', 'distinct',
+    function (array) {
         let values = Array.from(new Set(array));
         values.segmented = array.segmented;
         return values;
-    },
-    'slice': (array, from, to) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'array', 'slice',
+    function (array, from, to) {
         let values = array.slice(from, to);
         values.segmented = array.segmented;
         return values;
-    },
-    'join': (array, delim) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'array', 'join',
+    function (array, delim) {
         return array.join(delim);
-    },
-    'at': (array, index) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'array', 'at',
+    function (array, index) {
         if (isNaN(index)) {
             return undefined;
         } else {
             return array[Math.min(array.length, Math.max(0, index))];
         }
-    },
-    'indexof': (array, obj) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'array', 'indexof',
+    function (array, obj) {
         for (let i = 0; i < array.length; i++) {
             if (array[i] == obj) {
                 return i;
@@ -1226,38 +1467,43 @@ const SP_ARRAY_FUNCTIONS = {
 
         return -1;
     }
-};
+)
 
-const SP_FUNCTIONS = {
-    'flatten': (... values) => {
+/*
+    Standard functions
+*/
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'flatten',
+    function (... values) {
         return values.flat(Infinity);
-    },
-    // Truncate number
-    'trunc': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'trunc',
+    function (value) {
         if (isNaN(value)) {
             return undefined;
         } else {
             return Math.trunc(value);
         }
-    },
-    // Ceiling
-    'ceil': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'trunc',
+    function (value) {
         if (isNaN(value)) {
             return undefined;
         } else {
             return Math.ceil(value);
         }
-    },
-    // Floor
-    'floor': (value) => {
-        if (isNaN(value)) {
-            return undefined;
-        } else {
-            return Math.floor(value);
-        }
-    },
-    // Round default or round to a number
-    'round': (value, div) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'round',
+    function (value, div) {
         if (isNaN(value)) {
             return undefined;
         } else {
@@ -1267,34 +1513,52 @@ const SP_FUNCTIONS = {
                 return Math.round(value / div) * div;
             }
         }
-    },
-    // Abs
-    'abs': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'abs',
+    function (value) {
         if (isNaN(value)) {
             return undefined;
         } else {
             return Math.abs(value);
         }
-    },
-    'pow': (value, exp) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'pow',
+    function (value, exp) {
         if (isNaN(value) || isNaN(exp)) {
             return undefined;
         } else {
             return Math.pow(value, exp);
         }
-    },
-    'exp': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'exp',
+    function (value) {
         return Math.exp(value);
-    },
-    'sqrt': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'sqrt',
+    function (value) {
         if (isNaN(value)) {
             return undefined;
         } else {
             return Math.sqrt(value);
         }
-    },
-    // Fixed format
-    'fixed': (value, decimals) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'fixed',
+    function (value, decimals) {
         if (isNaN(value)) {
             return undefined;
         } else {
@@ -1304,40 +1568,56 @@ const SP_FUNCTIONS = {
 
             return value.toFixed(decimals);
         }
-    },
-    // DateTime string
-    'datetime': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'datetime',
+    function (value) {
         if (isNaN(value) || value < 0) {
             return undefined;
         } else {
             return _formatDate(value);
         }
-    },
-    'time': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'time',
+    function (value) {
         if (isNaN(value) || value < 0) {
             return undefined;
         } else {
             return _formatDate(value, false, true);
         }
-    },
-    // Duration string
-    'duration': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'duration',
+    function (value) {
         if (isNaN(value)) {
             return undefined;
         } else {
             return _formatDurationLegacy(value);
         }
-    },
-    // Date string
-    'date': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'date',
+    function (value) {
         if (isNaN(value) || value < 0) {
             return undefined;
         } else {
             return _formatDate(value, true, false);
         }
-    },
-    // Spaced number
-    'fnumber': (value, delim) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'fnumber',
+    function (value, delim) {
         if (isNaN(value)) {
             return undefined;
         } else {
@@ -1347,9 +1627,12 @@ const SP_FUNCTIONS = {
 
             return formatAsSpacedNumber(value, delim);
         }
-    },
-    // Exponential number
-    'enumber': (value, decimals) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'enumber',
+    function (value, decimals) {
         if (isNaN(value)) {
             return undefined;
         } else {
@@ -1359,21 +1642,30 @@ const SP_FUNCTIONS = {
 
             return value.toExponential(decimals);
         }
-    },
-    // Named number
-    'nnumber': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'nnumber',
+    function (value) {
         if (isNaN(value)) {
             return undefined;
         } else {
             return formatAsNamedNumber(value);
         }
-    },
-    // Small
-    'small': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'small',
+    function (value) {
         return CellGenerator.Small(value);
-    },
-    // Minimum
-    'min': (... values) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'min',
+    function (... values) {
         return _fastMin(values.reduce((collector, value) => {
             if (Array.isArray(value)) {
                 collector.push(... value);
@@ -1383,9 +1675,12 @@ const SP_FUNCTIONS = {
 
             return collector;
         }, []));
-    },
-    // Maximum
-    'max': (... values) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'max',
+    function (... values) {
         return _fastMax(values.reduce((collector, value) => {
             if (Array.isArray(value)) {
                 collector.push(... value);
@@ -1395,9 +1690,12 @@ const SP_FUNCTIONS = {
 
             return collector;
         }, []));
-    },
-    // Sum
-    'sum': (... values) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'sum',
+    function (... values) {
         return values.reduce((collector, value) => {
             if (Array.isArray(value)) {
                 collector += value.reduce((a, b) => a + b, 0);
@@ -1407,35 +1705,53 @@ const SP_FUNCTIONS = {
 
             return collector;
         }, 0);
-    },
-    // Current timestamp
-    'now': () => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'now',
+    function () {
         return Date.now();
-    },
-    // Random
-    'random': () => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'random',
+    function () {
         return Math.random();
-    },
-    // Debug Log
-    'log': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'log',
+    function (value) {
         console.log(value);
 
         return value;
-    },
-    // Strigify
-    'stringify': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'stringify',
+    function (value) {
         return String(value);
-    },
-    // Range
-    'range': (min, max, value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'range',
+    function (min, max, value) {
         if (isNaN(min) || isNaN(max) || isNaN(value)) {
             return undefined;
         } else {
             return (max - min) * value + min;
         }
-    },
-    // Len or Size of array/object
-    'len': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'len',
+    function (value) {
         if (typeof(value) != 'object') {
             return undefined;
         } else {
@@ -1445,8 +1761,12 @@ const SP_FUNCTIONS = {
                 return Object.keys(value).length;
             }
         }
-    },
-    'average': (... values) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'average',
+    function (... values) {
         let { sum, len } = values.reduce((collector, value) => {
             if (Array.isArray(value)) {
                 collector.sum += value.reduce((a, b) => a + b, 0);
@@ -1467,32 +1787,45 @@ const SP_FUNCTIONS = {
         } else {
             return 0;
         }
-    },
-    'hsl': (h, s, l, a) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'hsl',
+    function (h, s, l, a) {
         if (isNaN(h) || isNaN(s) || isNaN(l)) {
             return undefined;
         } else {
             return getColorFromHSLA(h, s, l, a);
         }
-    },
-    // RGB
-    'rgb': (r, g, b) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'rgb',
+    function (r, g, b) {
         if (isNaN(r) || isNaN(g) || isNaN(b)) {
             return undefined;
         } else {
             return getColorFromRGBA(r, g, b);
         }
-    },
-    // RGB
-    'rgba': (r, g, b, a) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'rgba',
+    function (r, g, b, a) {
         if (isNaN(r) || isNaN(g) || isNaN(b) || isNaN(a)) {
             return undefined;
         } else {
             return getColorFromRGBA(r, g, b, a);
         }
-    },
-    // Gradient
-    'gradient': (from, to, value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'gradient',
+    function (from, to, value) {
         if (typeof(from) == 'object' && !isNaN(to)) {
             return getColorFromGradientObj(from, to);
         } else if (from == undefined || to == undefined || isNaN(value)) {
@@ -1500,9 +1833,12 @@ const SP_FUNCTIONS = {
         } else {
             return getColorFromGradient(from, to, value);
         }
-    },
-    // Dual background
-    'dualcolor': (width, color1, color2) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'dualcolor',
+    function (width, color1, color2) {
         if (!isNaN(width) && typeof(color1) == 'string' && typeof(color2) == 'string') {
             width = parseInt(width);
             width = width > 100 ? 100 : (width < 1 ? 1 : width);
@@ -1511,9 +1847,12 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
-    },
-    // Linear css gradient
-    'lingradient': (degrees, ... segments) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'lingradient',
+    function (degrees, ... segments) {
         if (!isNaN(degrees) && segments.length % 2 == 0 && segments.length >= 4) {
             var str = '';
             var colors = [];
@@ -1534,41 +1873,56 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
-    },
-    // Total attribute price
-    'statsum': (attribute) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'statsum',
+    function (attribute) {
         if (!isNaN(attribute)) {
             return Calculations.goldAttributeTotalCost(parseInt(attribute));
         } else {
             return undefined;
         }
-    },
-    // Attribute price
-    'statcost': (attribute) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'statcost',
+    function (attribute) {
         if (!isNaN(attribute)) {
             return Calculations.goldAttributeCost(parseInt(attribute));
         } else {
             return undefined;
         }
-    },
-    // Experience needed
-    'expneeded': (level) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'expneeded',
+    function (level) {
         if (!isNaN(level)) {
             return Calculations.experienceTotalLevel(level);
         } else {
             return undefined;
         }
-    },
-    // Create empty array
-    'makearray': (size, def = 0) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'makearray',
+    function (size, def = 0) {
         if (!isNaN(size)) {
             return new Array(size).fill(def);
         } else {
             return undefined;
         }
-    },
-    // Create array with sequence
-    'makesequence': (from, to) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'makesequence',
+    function (from, to) {
         if (!isNaN(from) && !isNaN(to)) {
             if (to > from) {
                 let len = to - from + 1;
@@ -1580,12 +1934,19 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
-    },
-    // Parse number
-    'number': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'number',
+    function (value) {
         return Number(value);
-    },
-    'presence': (value) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'presence',
+    function (value) {
         if (value === null) {
             return false;
         } else if (Array.isArray(value)) {
@@ -1599,14 +1960,22 @@ const SP_FUNCTIONS = {
         } else {
             return !!value;
         }
-    },
-    'img': (src, width, height) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'img',
+    function (src, width, height) {
         return `<img src="${src}"${typeof width != 'undefined' ? ` width="${width}"` : ''}${typeof height != 'undefined' ? ` height="${height}"` : ''}/>`;
-    },
-    'class_img': (klass, width, height) => {
+    }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+    'function', 'value', 'class_img',
+    function (klass, width, height) {
         return `<img src="${_classImageUrl(klass)}"${typeof width != 'undefined' ? ` width="${width}"` : ''}${typeof height != 'undefined' ? ` height="${height}"` : ''}/>`;
     }
-}
+)
 
 const SP_KEYWORD_MAPPING_0 = {
     'Name': {
