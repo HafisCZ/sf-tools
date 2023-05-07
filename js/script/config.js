@@ -449,28 +449,28 @@ const TABLE_EXPRESSION_CONFIG = DEFAULT_EXPRESSION_CONFIG.clone();
   Scope constants
 */
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'player',
+  'variable', 'scope', 'player',
   function (scope) {
       return scope.player;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'reference',
+  'variable', 'scope', 'reference',
   function (scope) {
       return scope.reference;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'database',
-  function (scope) {
+  'variable', 'scope', 'database',
+  function () {
       return DatabaseManager;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'entries',
+  'variable', 'scope', 'entries',
   function (scope) {
       if (scope.player) {
           return DatabaseManager.getPlayer(scope.player.Identifier).List;
@@ -481,42 +481,42 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'table_array',
+  'variable', 'scope', 'table_array',
   function (scope) {
       return scope.env.array;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'table_array_unfiltered',
+  'variable', 'scope', 'table_array_unfiltered',
   function (scope) {
       return scope.env.array_unfiltered;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'table_timestamp',
+  'variable', 'scope', 'table_timestamp',
   function (scope) {
       return scope.env.timestamp;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'table_reference',
+  'variable', 'scope', 'table_reference',
   function (scope) {
       return scope.env.reference;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'header',
+  'variable', 'scope', 'header',
   function (scope) {
       return scope.header;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'constant', 'scope', 'row_index',
+  'variable', 'scope', 'row_index',
   function (scope) {
       return scope.env.row_indexes && scope.player ? scope.env.row_indexes[`${ scope.player.Identifier }_${ scope.player.Timestamp }`] : undefined;
   }
