@@ -820,14 +820,12 @@ SettingsCommands.register(
         if (name != undefined) {
             acc.space();
 
-            if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
-                acc.header(name);
-            } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
+            if (SP_HEADERS_PUBLIC.hasOwnProperty(name)) {
+                acc.header(name, '-public');
+            } else if (SP_HEADERS_PROTECTED.hasOwnProperty(name)) {
                 acc.header(name, '-protected');
-            } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
+            } else if (SP_HEADERS_PRIVATE.hasOwnProperty(name)) {
                 acc.header(name, '-private');
-            } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
-                acc.header(name, '-itemizable');
             } else {
                 acc.identifier(name);
             }
@@ -851,14 +849,12 @@ SettingsCommands.register(
         if (name != undefined) {
             acc.space();
 
-            if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
-                acc.header(name);
-            } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
+            if (SP_HEADERS_PUBLIC.hasOwnProperty(name)) {
+                acc.header(name, '-public');
+            } else if (SP_HEADERS_PROTECTED.hasOwnProperty(name)) {
                 acc.header(name, '-protected');
-            } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
+            } else if (SP_HEADERS_PRIVATE.hasOwnProperty(name)) {
                 acc.header(name, '-private');
-            } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
-                acc.header(name, '-itemizable');
             } else {
                 acc.identifier(name);
             }
@@ -1959,7 +1955,7 @@ class Settings {
             const name = obj.name;
 
             // Get mapping if exists
-            const mapping = SP_KEYWORD_MAPPING_0[name] || SP_KEYWORD_MAPPING_1[name] || SP_KEYWORD_MAPPING_2[name] || SP_KEYWORD_MAPPING_5_HO[name];
+            const mapping = SP_HEADERS_PUBLIC[name] || SP_HEADERS_PROTECTED[name] || SP_HEADERS_PRIVATE[name];
 
             // Merge definitions
             for (const definitionName of obj.extensions || []) {

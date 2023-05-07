@@ -243,6 +243,28 @@ class ExpressionRenderer {
                             highlighter.constant(token);
                             break;
                         }
+                        case 'header': {
+                            switch (data.meta) {
+                                case 'public': {
+                                    highlighter.header(token, '-public');
+                                    break;
+                                }
+                                case 'protected': {
+                                    highlighter.header(token, '-protected');
+                                    break;
+                                }
+                                case 'private': {
+                                    highlighter.header(token, '-private');
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                        case 'accessor': {
+                            highlighter.header(token, '-scoped');
+                            break;
+                        }
                     }
                 } else if (root.functions.hasOwnProperty(token)) {
                     highlighter.function(token);
@@ -264,16 +286,14 @@ class ExpressionRenderer {
                     }
                 } else if (/^(\.*)this$/.test(token)) {
                     highlighter.constant(token);
-                } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
-                    highlighter.header(token);
-                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(token)) {
+                } else if (SP_HEADERS_PUBLIC.hasOwnProperty(token)) {
+                    highlighter.header(token, '-public');
+                } else if (SP_HEADERS_PROTECTED.hasOwnProperty(token)) {
                     highlighter.header(token, '-protected');
-                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(token)) {
+                } else if (SP_HEADERS_PRIVATE.hasOwnProperty(token)) {
                     highlighter.header(token, '-private');
-                } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
+                } else if (SP_ACCESSORS.hasOwnProperty(token)) {
                     highlighter.header(token, '-scoped');
-                } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
-                    highlighter.header(token, '-itemizable');
                 } else if (root.constants.exists(token)) {
                     highlighter.constant(token);
                 } else if (/\~\d+/.test(token)) {
@@ -990,14 +1010,22 @@ class Expression {
                     } else {
                         return undefined;
                     }
-                } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
+                } else if (SP_HEADERS_PROTECTED.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
                     const obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj) : undefined;
-                } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
+                    return obj && typeof obj === 'object' ? SP_HEADERS_PROTECTED[node.op].expr(obj) : undefined;
+                } else if (SP_HEADERS_PUBLIC.hasOwnProperty(node.op) && node.args.length == 1) {
+                    // Simple call
+                    const obj = this.evalInternal(scope, node.args[0]);
+                    return obj && typeof obj === 'object' ? SP_HEADERS_PUBLIC[node.op].expr(obj) : undefined;
+                } else if (SP_HEADERS_PRIVATE.hasOwnProperty(node.op) && node.args.length == 1) {
+                    // Simple call
+                    const obj = this.evalInternal(scope, node.args[0]);
+                    return obj && typeof obj === 'object' ? SP_HEADERS_PRIVATE[node.op].expr(obj) : undefined;
+                } else if (SP_ACCESSORS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
                     const obj = this.evalInternal(scope, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(scope.player, obj) : undefined;
+                    return obj && typeof obj === 'object' ? SP_ACCESSORS[node.op].expr(scope.player, obj) : undefined;
                 } else if (TABLE_EXPRESSION_CONFIG.has(node.op)) {
                     const data = TABLE_EXPRESSION_CONFIG.get(node.op);
 
@@ -1066,11 +1094,15 @@ class Expression {
                         return data.data(scope);
                     }
                 }
-            } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
-                return SP_KEYWORDS[node].expr(scope.player);
-            } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
+            } else if (scope.player && SP_HEADERS_PUBLIC.hasOwnProperty(node)) {
+                return SP_HEADERS_PUBLIC[node].expr(scope.player);
+            } else if (scope.player && SP_HEADERS_PRIVATE.hasOwnProperty(node)) {
+                return SP_HEADERS_PRIVATE[node].expr(scope.player);
+            } else if (scope.player && SP_HEADERS_PROTECTED.hasOwnProperty(node)) {
+                return SP_HEADERS_PROTECTED[node].expr(scope.player);
+            } else if (SP_ACCESSORS.hasOwnProperty(node)) {
                 const self = scope.getSelf();
-                return self && typeof self === 'object' ? SP_KEYWORDS_INDIRECT[node].expr(scope.player, self) : undefined;
+                return self && typeof self === 'object' ? SP_ACCESSORS[node].expr(scope.player, self) : undefined;
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
             } else if (node in scope.env.variables) {
@@ -1977,7 +2009,7 @@ TABLE_EXPRESSION_CONFIG.register(
     }
 )
 
-const SP_KEYWORD_MAPPING_0 = {
+const SP_HEADERS_PUBLIC = {
     'Name': {
         expr: p => p.Name,
         difference: false,
@@ -2032,6 +2064,10 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => _dig(p, 'Group', 'Name'),
         difference: false,
         statistics: false
+    },
+    'Items': {
+        expr: p => p.Items,
+        disabled: true
     },
     'Strength': {
         expr: p => p.Strength.Total
@@ -2901,11 +2937,20 @@ const SP_KEYWORD_MAPPING_0 = {
         format: (p, x) => x ? intl(`general.gt_background${x}`) : intl('general.none'),
         difference: false,
         statistics: false
+    },
+    'Potions': {
+        expr: p => p.Potions,
+        format: (p, i) => i.Size,
+        order: (p) => _fastSum(p.Potions.map((v) => v.Size)),
+        visible: false,
+        difference: false,
+        width: 33,
+        grouped: 3
     }
 };
 
 // Protected
-const SP_KEYWORD_MAPPING_1 = {
+const SP_HEADERS_PROTECTED = {
     'Last Active': {
         expr: p => p.LastOnline,
         format: 'datetime',
@@ -2974,7 +3019,7 @@ const SP_KEYWORD_MAPPING_1 = {
 };
 
 // Private
-const SP_KEYWORD_MAPPING_2 = {
+const SP_HEADERS_PRIVATE = {
     'Webshop ID': {
         expr: p => p.WebshopID,
         difference: false,
@@ -3515,11 +3560,35 @@ const SP_KEYWORD_MAPPING_2 = {
     'Summer Score': {
         expr: p => p.Summer.TotalPoints,
         statistics: false
+    },
+    'Dummy': {
+        expr: p => p.Inventory ? p.Inventory.Dummy : undefined,
+        disabled: true
+    },
+    'Backpack': {
+        expr: p => p.Inventory ? p.Inventory.Backpack : undefined,
+        disabled: true
+    },
+    'Chest': {
+        expr: p => p.Inventory ? p.Inventory.Chest : undefined,
+        disabled: true
+    },
+    'Bert Items': {
+        expr: p => p.Inventory ? p.Inventory.Bert : undefined,
+        disabled: true
+    },
+    'Kunigunde Items': {
+        expr: p => p.Inventory ? p.Inventory.Kunigunde : undefined,
+        disabled: true
+    },
+    'Mark Items': {
+        expr: p => p.Inventory ? p.Inventory.Mark : undefined,
+        disabled: true
     }
 };
 
 // Itemized
-const SP_KEYWORD_MAPPING_4 = {
+const SP_ACCESSORS = {
     'Item Strength': {
         expr: (p, i) => i.Strength.Value
     },
@@ -3626,54 +3695,3 @@ const SP_KEYWORD_MAPPING_4 = {
         difference: false
     }
 };
-
-// itemizable
-const SP_KEYWORD_MAPPING_5 = {
-    'Items': {
-        expr: p => p.Items
-    },
-    'Potions': {
-        expr: p => p.Potions
-    },
-    'Dummy': {
-        expr: p => p.Inventory ? p.Inventory.Dummy : undefined
-    },
-    'Backpack': {
-        expr: p => p.Inventory ? p.Inventory.Backpack : undefined
-    },
-    'Chest': {
-        expr: p => p.Inventory ? p.Inventory.Chest : undefined
-    },
-    'Bert Items': {
-        expr: p => p.Inventory ? p.Inventory.Bert : undefined
-    },
-    'Kunigunde Items': {
-        expr: p => p.Inventory ? p.Inventory.Kunigunde : undefined
-    },
-    'Mark Items': {
-        expr: p => p.Inventory ? p.Inventory.Mark : undefined
-    }
-};
-
-const SP_KEYWORD_MAPPING_5_HO = {
-    'Potions': {
-        expr: p => p.Potions.map(x => x.Size),
-        visible: false,
-        difference: false,
-        width: 33,
-        grouped: 3
-    }
-}
-
-const SP_KEYWORDS = Object.assign(
-    {},
-    SP_KEYWORD_MAPPING_0,
-    SP_KEYWORD_MAPPING_1,
-    SP_KEYWORD_MAPPING_2,
-    SP_KEYWORD_MAPPING_5
-)
-
-const SP_KEYWORDS_INDIRECT = Object.assign(
-    {},
-    SP_KEYWORD_MAPPING_4
-);
