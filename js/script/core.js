@@ -1418,7 +1418,7 @@ class Settings {
         this.trackers = {};
 
         // Lists
-        this.lists = [];
+        this.lists = {};
         this.row_indexes = {};
 
         // Table
