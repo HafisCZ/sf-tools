@@ -90,19 +90,10 @@ class TableInstance {
         this.settings = new Settings(settings, tableType);
 
         // Handle trackers
-        this._updateTrackers();
+        this.#updateTrackers();
 
         this.config = [];
         this.sorting = [];
-
-        // Table generator
-        const createMethods = {
-            [TableType.Player]: 'createPlayerTable',
-            [TableType.Group]: 'createGroupTable',
-            [TableType.Browse]: 'createBrowseTable'
-        }
-
-        this.createTable = () => Object.assign(this.sharedProperties(), this[createMethods[tableType]]())
 
         // Loop over all categories
         this.settings.categories.forEach((category, categoryIndex, categories) => {
@@ -134,11 +125,11 @@ class TableInstance {
                 }
 
                 if (header.embedded) {
-                    this._addEmbeddedHeader(group, header, showBorder);
+                    this.#addEmbeddedHeader(group, header, showBorder);
                 } else if (header.grouped) {
-                    this._addGroupedHeader(group, header, showBorder);
+                    this.#addGroupedHeader(group, header, showBorder);
                 } else {
-                    this._addHeader(group, header, showBorder);
+                    this.#addHeader(group, header, showBorder);
                 }
             })
 
@@ -187,31 +178,43 @@ class TableInstance {
         this.flatSpan = this.leftFlatSpan + this.rightFlatSpan;
 
         // Caching
-        this._createCache();
-        this._createSorting();
+        this.#createCache();
+        this.#createSorting();
     }
 
-    _addHeader (group, header, showBorder) {
+    createTable () {
+        const props = this.#sharedProperties();
+
+        if (this.tableType === TableType.Player) {
+            return Object.assign(props, this.#createPlayerTable());
+        } else if (this.tableType === TableType.Group) {
+            return Object.assign(props, this.#createGroupTable());
+        } else if (this.tableType === TableType.Browse) {
+            return Object.assign(props, this.#createBrowseTable());
+        }
+    }
+
+    #addHeader (group, header, showBorder) {
         group.add(
             header,
             {
                 cell: (player, compare) => {
-                    const val = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
+                    const val = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                     if (val == undefined) {
-                        return this.getEmptyCell(header, showBorder);
+                        return this.#getEmptyCell(header, showBorder);
                     } else {
-                        const cmp = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
-                        return this.getCell(
+                        const cmp = header.difference ? this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
+                        return this.#getCell(
                             header,
-                            this.getCellDisplayValue(header, val, cmp, player, compare),
-                            this.getCellColor(header, val, player, compare),
+                            this.#getCellDisplayValue(header, val, cmp, player, compare),
+                            this.#getCellColor(header, val, player, compare),
                             showBorder
                         );
                     }
                 },
                 statistics: (players, operation) => {
-                    let val = players.map(({ player, compare }) => this.safeEval(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
+                    let val = players.map(({ player, compare }) => this.#safeEval(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
                     if (val.length) {
                         // Get value and trunc if necessary
                         val = operation(val);
@@ -222,7 +225,7 @@ class TableInstance {
                         // Compare value
                         let cmp = undefined;
                         if (header.difference) {
-                            cmp = players.map(({ compare }) => this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
+                            cmp = players.map(({ compare }) => this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
                             if (cmp.length) {
                                 cmp = operation(cmp);
 
@@ -235,33 +238,33 @@ class TableInstance {
                         }
 
                         return CellGenerator.Cell(
-                            this.getStatisticsDisplayValue(header, val, cmp),
+                            this.#getStatisticsDisplayValue(header, val, cmp),
                             '',
-                            header.statistics_color ? this.getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
+                            header.statistics_color ? this.#getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
                         );
                     } else {
-                        return this.getEmptyCell(header);
+                        return this.#getEmptyCell(header);
                     }
                 }
             },
-            (player, compare) => this.safeEval(header.expr, player, compare, this.settings, undefined, header),
+            (player, compare) => this.#safeEval(header.expr, player, compare, this.settings, undefined, header),
             showBorder
         );
     }
 
-    _addGroupedHeader (group, header, showBorder) {
+    #addGroupedHeader (group, header, showBorder) {
         let callWidth = header.width || 100;
 
         group.add(
             header,
             {
                 cell: (player, compare) => {
-                    const vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
+                    const vals = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                     if (!Array.isArray(vals)) {
-                        return this.getEmptyCell(header, showBorder, header.grouped);
+                        return this.#getEmptyCell(header, showBorder, header.grouped);
                     } else {
-                        const cmps = header.difference ? this.safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
+                        const cmps = header.difference ? this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
 
                         return _join(vals, (val, index) => {
                             const showEndBorder = showBorder && index == header.grouped - 1;
@@ -270,12 +273,12 @@ class TableInstance {
                             };
 
                             if (val == undefined) {
-                                return this.getEmptyCell(header, showEndBorder);
+                                return this.#getEmptyCell(header, showEndBorder);
                             } else {
-                                return this.getCell(
+                                return this.#getCell(
                                     header,
-                                    this.getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
-                                    this.getCellColor(header, val, player, compare, extra),
+                                    this.#getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
+                                    this.#getCellColor(header, val, player, compare, extra),
                                     showEndBorder,
                                     callWidth
                                 );
@@ -285,7 +288,7 @@ class TableInstance {
                 }
             },
             (player, compare) => {
-                const vals = this.safeEval(header.expr, player, compare, this.settings, undefined, header);
+                const vals = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                 if (Array.isArray(vals)) {
                     return _fastSum(vals);
@@ -298,7 +301,7 @@ class TableInstance {
         );
     }
 
-    _addEmbeddedHeader (group, header, showBorder) {
+    #addEmbeddedHeader (group, header, showBorder) {
         if (header.columns && !header.width) {
             header.width = _sum(header.columns);
         }
@@ -328,7 +331,7 @@ class TableInstance {
 
                                 const name = expa_eval || embedHeader.alias || embedHeader.name || '';
 
-                                return this.getCell(
+                                return this.#getCell(
                                     embedHeader,
                                     name,
                                     '',
@@ -337,7 +340,7 @@ class TableInstance {
                                 );
                             },
                             get: (value, i) => {
-                                const val = this.safeEval(
+                                const val = this.#safeEval(
                                     embedHeader.expr,
                                     player,
                                     compare,
@@ -347,9 +350,9 @@ class TableInstance {
                                 );
 
                                 if (val == undefined) {
-                                    return this.getEmptyCell(embedHeader, false, undefined, _dig(header, 'columns', i + 1));
+                                    return this.#getEmptyCell(embedHeader, false, undefined, _dig(header, 'columns', i + 1));
                                 } else {
-                                    const cmp = embedHeader.difference ? this.safeEval(
+                                    const cmp = embedHeader.difference ? this.#safeEval(
                                         embedHeader.expr,
                                         compare,
                                         compare,
@@ -358,10 +361,10 @@ class TableInstance {
                                         embedHeader
                                     ) : undefined;
 
-                                    return this.getCell(
+                                    return this.#getCell(
                                         embedHeader,
-                                        this.getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
-                                        this.getCellColor(embedHeader, val, player, compare, undefined, false, value),
+                                        this.#getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
+                                        this.#getCellColor(embedHeader, val, player, compare, undefined, false, value),
                                         embedHeader.border,
                                         _dig(header, 'columns', i + 1)
                                     );
@@ -375,7 +378,7 @@ class TableInstance {
                         return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                     }).join('');
 
-                    return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare).bg, showBorder, header.font);
+                    return CellGenerator.EmbedTable(entries, this.#getCellColor(header, values, player, compare).bg, showBorder, header.font);
                 }
             },
             null,
@@ -383,7 +386,7 @@ class TableInstance {
         );
     }
 
-    _updateTrackers () {
+    #updateTrackers () {
         let trackers = this.settings.trackers;
 
         if (Object.keys(trackers).length > 0) {
@@ -414,7 +417,7 @@ class TableInstance {
         }
     }
 
-    safeEval (obj, ...args) {
+    #safeEval (obj, ...args) {
         if (obj instanceof Expression) {
             return obj.eval((args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]));
         } else {
@@ -460,37 +463,22 @@ class TableInstance {
 
         if (!array.suppressUpdate) {
             ExpressionCache.reset();
-            this._createCache();
+            this.#createCache();
         }
 
         if (array.externalSort) {
             this.array.sort((a, b) => array.externalSort(b.player, b.compare) - array.externalSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
         }
 
-        this.generateEntries();
+        this.#generateEntries();
     }
 
-    getForegroundColor (backgroundColor, player, compare) {
-        let textColor = '';
-        if (this.settings.shared.text === true) {
-            textColor = _invertColor(_parseColor(backgroundColor), true)
-        } else if (this.settings.shared.text) {
-            textColor = getCSSColor(this.settings.shared.text.eval(new ExpressionScope(this.settings).with(player, compare)))
-        }
-
-        if (textColor) {
-            return `color: ${textColor};`;
-        } else {
-            return '';
-        }
-    }
-
-    _generateSorting (player, compare, index, comparable) {
+    #generateSorting (player, compare, index, comparable) {
         const self = this;
 
         return new Proxy({
             '_index': index,
-            '_order_by': this.settings.globals.order_by ? this.safeEval(this.settings.globals.order_by, player, compare, this.settings) : undefined
+            '_order_by': this.settings.globals.order_by ? this.#safeEval(this.settings.globals.order_by, player, compare, this.settings) : undefined
         }, {
             get: function (target, prop) {
                 if (target[prop]) {
@@ -504,14 +492,14 @@ class TableInstance {
                         if (order) {
                             // Use special order expression if supplied
                             let difference = undefined;
-                            let value = self.safeEval(expr, player, compare, self.settings, undefined, header);
+                            let value = self.#safeEval(expr, player, compare, self.settings, undefined, header);
             
                             if (comparable) {
                                 // Get difference
-                                difference = (flip ? -1 : 1) * (value - self.safeEval(expr, compare, compare, self.settings, undefined, header));
+                                difference = (flip ? -1 : 1) * (value - self.#safeEval(expr, compare, compare, self.settings, undefined, header));
                             }
             
-                            sortValue = self.safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value).add({ difference }));
+                            sortValue = self.#safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value).add({ difference }));
                         } else {
                             // Return native sorting function
                             sortValue = sort ? sort(player, compare) : 0;
@@ -527,9 +515,9 @@ class TableInstance {
     }
 
     // Generate entries
-    generateEntries () {
+    #generateEntries () {
         // Common settings
-        const dividerStyle = this.getCellDividerStyle();
+        const dividerStyle = this.#getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
 
         const comparable = this.tableType === TableType.Player || this.array.reference != this.array.timestamp;
@@ -543,13 +531,13 @@ class TableInstance {
         this.entries = this.array.map((entry) => ({
             index: entry.index,
             player: entry.player,
-            sorting: this._generateSorting(entry.player, entry.compare, entry.index, comparable),
+            sorting: this.#generateSorting(entry.player, entry.compare, entry.index, comparable),
             get node () {
                 delete this.node;
 
                 let html = '';
                 for (const header of self.flat) {
-                    html += self.getCellContent(header, entry.player, entry.compare);
+                    html += self.#getCellContent(header, entry.player, entry.compare);
                 }
 
                 const node = document.createElement('tr');
@@ -622,7 +610,7 @@ class TableInstance {
 
     // Execute sort
     sort () {
-        this.entries.sort((a, b) => this._sortGlobally(a, b) || this._sortDefault(a, b));
+        this.entries.sort((a, b) => this.#sortGlobally(a, b) || this.#sortDefault(a, b));
     }
 
     reflowIndexes () {
@@ -649,7 +637,7 @@ class TableInstance {
         this.sorting = [ ...this.global_sorting ];
     }
 
-    _compareItems (a, b) {
+    #compareItems (a, b) {
         if (typeof(a) == 'string' && typeof(b) == 'string') {
             if (a == '') return 1;
             else if (b == '') return -1;
@@ -663,25 +651,25 @@ class TableInstance {
         }
     }
 
-    _sortGlobally (a, b) {
+    #sortGlobally (a, b) {
         if (this.sorting) {
-            return this.sorting.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? this._compareItems(a.sorting[key], b.sorting[key]) : this._compareItems(b.sorting[key], a.sorting[key])))), undefined);
+            return this.sorting.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? this.#compareItems(a.sorting[key], b.sorting[key]) : this.#compareItems(b.sorting[key], a.sorting[key])))), undefined);
         } else {
             return undefined;
         }
     }
 
-    _sortDefault (a, b) {
+    #sortDefault (a, b) {
         return this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]);
     }
 
-    _createCache () {
+    #createCache () {
         this.cache = new Map();
-        this.cache.set('spacer', this.getSpacer());
-        this.cache.set('divider', this.getDivider());
+        this.cache.set('spacer', this.#getSpacer());
+        this.cache.set('divider', this.#getDivider());
     }
 
-    _createSorting () {
+    #createSorting () {
         this.global_key = '_index';
         this.global_ord = 1;
 
@@ -705,7 +693,7 @@ class TableInstance {
         }
     }
 
-    getCellDividerStyle () {
+    #getCellDividerStyle () {
         let lineType = this.settings.getLinedStyle();
         if (lineType == 2) {
             // Thick
@@ -719,7 +707,7 @@ class TableInstance {
         }
     }
 
-    getCell (header, value, color, border, cellWidth) {
+    #getCell (header, value, color, border, cellWidth) {
         return CellGenerator.Cell(
             value,
             color.bg,
@@ -733,7 +721,7 @@ class TableInstance {
         );
     }
 
-    getEmptyCell (header, border = undefined, span = 0, cellWidth = undefined) {
+    #getEmptyCell (header, border = undefined, span = 0, cellWidth = undefined) {
         if (span) {
             return CellGenerator.PlainSpan(
                 span,
@@ -755,7 +743,7 @@ class TableInstance {
         }
     }
 
-    getRowSpan (width) {
+    #getRowSpan (width) {
         if (width == -1) {
             // Return maximum span when set to -1
             return this.rightFlatSpan;
@@ -778,7 +766,7 @@ class TableInstance {
         }
     }
 
-    getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
+    #getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
         let { difference, ex_difference, flip, value, brackets } = header;
         let displayValue = value.get(player, compare, this.settings, val, extra, header, altSelf);
         if (!difference || isNaN(cmp)) {
@@ -793,7 +781,7 @@ class TableInstance {
         }
     }
 
-    getStatisticsDisplayValue ({ difference, ex_difference, flip, value, brackets }, val, cmp) {
+    #getStatisticsDisplayValue ({ difference, ex_difference, flip, value, brackets }, val, cmp) {
         let displayValue = value.getStatistics(this.settings, val);
         if (!difference || isNaN(cmp)) {
             return displayValue;
@@ -807,19 +795,19 @@ class TableInstance {
         }
     }
 
-    getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
+    #getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
         return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
-    getTable () {
+    #getTable () {
         return `
             <tr class="headers">
-                ${ this.getCategoryBlock(this.configLeft, true) }
-                ${ this.getCategoryBlock() }
+                ${ this.#getCategoryBlock(this.configLeft, true) }
+                ${ this.#getCategoryBlock() }
             </tr>
             <tr class="headers border-bottom-thick">
-                ${ this.getHeaderBlock(this.configLeft, true) }
-                ${ this.getHeaderBlock() }
+                ${ this.#getHeaderBlock(this.configLeft, true) }
+                ${ this.#getHeaderBlock() }
             </tr>
             <tr data-entry-injector>
                 <td colspan="${ this.flatSpan }" style="height: 8px;"></td>
@@ -827,13 +815,13 @@ class TableInstance {
         `
     }
 
-    getDivider () {
+    #getDivider () {
         return `
             <tr class="border-bottom-thick"></tr>
         `;
     }
 
-    getSpacer () {
+    #getSpacer () {
         return `
             <tr>
                 <td colspan="${ this.flatSpan }"></td>
@@ -841,14 +829,14 @@ class TableInstance {
         `;
     }
 
-    getRow (row, val, cmp, player = undefined) {
+    #getRow (row, val, cmp, player = undefined) {
         return `
             <tr>
                 <td class="border-right-thin" colspan="${ this.leftFlatSpan }">${ row.name }</td>
                 ${ CellGenerator.WideCell(
-                    this.getCellDisplayValue(row, val, cmp, player),
-                    this.getCellColor(row, val, player),
-                    this.getRowSpan(row.width),
+                    this.#getCellDisplayValue(row, val, cmp, player),
+                    this.#getCellColor(row, val, player),
+                    this.#getRowSpan(row.width),
                     row.align,
                     row.padding,
                     row.style ? row.style.cssText : undefined
@@ -857,7 +845,7 @@ class TableInstance {
         `;
     }
 
-    sharedProperties () {
+    #sharedProperties () {
         return {
             theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
@@ -866,8 +854,8 @@ class TableInstance {
         };
     }
 
-    getContent () {
-        this.cache.set('table', this.getTable());
+    #getContent () {
+        this.cache.set('table', this.#getTable());
 
         let content = '';
         let layout = this.settings.getLayout(this.cache.get('statistics'), this.cache.get('rows'), this.cache.get('members'));
@@ -886,14 +874,14 @@ class TableInstance {
     }
 
     // Renders statistics rows into cache
-    _renderStatistics () {
+    #renderStatistics () {
         if (this.cache.has('statistics')) {
             return;
         } else if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
             if (this.settings.customStatistics.length) {
-                this.cache.set('statistics', this.getStatistics(this.leftFlatSpan, this.settings.customStatistics));
+                this.cache.set('statistics', this.#getStatistics(this.leftFlatSpan, this.settings.customStatistics));
             } else {
-                this.cache.set('statistics', this.getStatistics(this.leftFlatSpan, [
+                this.cache.set('statistics', this.#getStatistics(this.leftFlatSpan, [
                     {
                         name: 'Minimum',
                         expression: array => _fastMin(array)
@@ -914,7 +902,7 @@ class TableInstance {
     }
 
     // Renders members into cache
-    _renderMembers () {
+    #renderMembers () {
         if (this.cache.has('members')) {
             return;
         } else if (this.settings.globals.members) {
@@ -937,7 +925,7 @@ class TableInstance {
         }
     }
 
-    _renderMissing () {
+    #renderMissing () {
         if (this.cache.has('missing')) {
             return;
         } else if (this.array.missing.length) {
@@ -958,58 +946,58 @@ class TableInstance {
         }
     }
 
-    _renderRows (includePlayer = false) {
+    #renderRows (includePlayer = false) {
         if (this.cache.has('rows')) {
             return;
         } else if (this.settings.customRows.length) {
             if (includePlayer) {
-                this.cache.set('rows', _join(this.settings.customRows, row => this.getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.#getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))));
             } else {
-                this.cache.set('rows', _join(this.settings.customRows, row => this.getRow(row, row.eval.value, row.eval.compare)));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.#getRow(row, row.eval.value, row.eval.compare)));
             }
         } else {
             this.cache.set('rows', '');
         }
     }
 
-    createPlayerTable () {
-        this._renderRows(true);
-        this._renderStatistics();
+    #createPlayerTable () {
+        this.#renderRows(true);
+        this.#renderStatistics();
 
         // Create table Content
         return {
             entries: this.entries,
-            content: this.getContent()
+            content: this.#getContent()
         };
     }
 
     // Create players table
-    createBrowseTable () {
-        this._renderRows();
-        this._renderStatistics();
+    #createBrowseTable () {
+        this.#renderRows();
+        this.#renderStatistics();
 
         let forcedLimit = this.array.entryLimit || this.settings.getEntryLimit();
 
         return {
             entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
-            content: this.getContent()
+            content: this.#getContent()
         };
     }
 
     // Create guilds table
-    createGroupTable () {
-        this._renderRows();
-        this._renderMissing();
-        this._renderStatistics();
-        this._renderMembers();
+    #createGroupTable () {
+        this.#renderRows();
+        this.#renderMissing();
+        this.#renderStatistics();
+        this.#renderMembers();
 
         return {
             entries: this.entries,
-            content: this.getContent()
+            content: this.#getContent()
         };
     }
 
-    getCellContent ({ action, generators: { cell } }, player, compare) {
+    #getCellContent ({ action, generators: { cell } }, player, compare) {
         if (action == 'show') {
             return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }" data-ts="${ player.Timestamp }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
         } else {
@@ -1017,7 +1005,7 @@ class TableInstance {
         }
     }
 
-    getStatistics (leftSpan, entries) {
+    #getStatistics (leftSpan, entries) {
         return `
             <tr>
                 <td class="border-right-thin" colspan="${ leftSpan }"></td>
@@ -1033,7 +1021,7 @@ class TableInstance {
         `;
     }
 
-    getCategoryBlock (config = this.config, alwaysRightBorder = false) {
+    #getCategoryBlock (config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
         return _join(config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
@@ -1042,7 +1030,7 @@ class TableInstance {
                 return _join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.getSortingTag(sortkey) }>${ headerName }</td>`
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortkey) }>${ headerName }</td>`
                 });
             } else {
                 return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
@@ -1050,7 +1038,7 @@ class TableInstance {
         });
     }
 
-    getHeaderBlock (config = this.config, alwaysRightBorder = false) {
+    #getHeaderBlock (config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
         return _join(config, ({ headers, empty }, categoryIndex, categoryArray) => {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
@@ -1061,13 +1049,13 @@ class TableInstance {
                 return _join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.getSortingTag(sortkey) }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortkey) }>${ name }</td>`
                 });
             }
         });
     }
 
-    getSortingTag (key) {
+    #getSortingTag (key) {
         let index = this.sorting.findIndex(s => s.key == key);
         return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index="${ this.sorting.length == 1 ? '' : (index + 1) }"`;
     }
