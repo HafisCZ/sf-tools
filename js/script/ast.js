@@ -204,7 +204,7 @@ class ExpressionScope {
 }
 
 class ExpressionRenderer {
-    static render (highlighter, string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, config = TABLE_EXPRESSION_CONFIG) {
+    static render (highlighter, string, root = { constants: Constants.DEFAULT }, config = TABLE_EXPRESSION_CONFIG) {
         let tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP);
         let nextName = false;
 
@@ -250,17 +250,15 @@ class ExpressionRenderer {
                             break;
                         }
                     }
-                } else if (root.functions.hasOwnProperty(token)) {
+                } else if (root.functions && root.functions.hasOwnProperty(token)) {
                     highlighter.function(token);
                 } else if (token === 'true' || token === 'false') {
                     highlighter.boolean(token, token === 'true');
                 } else if (['undefined', 'null', 'loop_index', 'loop_array'].includes(token)) {
-                    // Internal constants
                     highlighter.constant(token);
-                } else if ([ 'joined', 'kicked', 'index', 'classes' ].includes(token)) {
-                    // List names
+                } else if (root.lists && root.lists.hasOwnProperty(token)) {
                     highlighter.constant(token);
-                } else if (root.variables.hasOwnProperty(token)) {
+                } else if (root.variables && root.variables.hasOwnProperty(token)) {
                     if (root.variables[token].tableVariable == 'unfiltered') {
                         highlighter.global(token, '-unfiltered');
                     } else if (root.variables[token].tableVariable) {
