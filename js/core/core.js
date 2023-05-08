@@ -108,14 +108,16 @@ const Store = (function () {
 
 // Options
 class OptionsHandler {
+    #key;
+    #defaults = {};
+    #listeners = [];
+
     constructor (key, defaults) {
-        this.key = key;
-        this.defaults = defaults;
+        this.#key = key;
+        this.#defaults = defaults;
         this.options = Object.assign({}, defaults);
 
-        this.listeners = [];
-
-        Object.assign(this.options, Store.shared.get(this.key, {}));
+        Object.assign(this.options, Store.shared.get(this.#key, {}));
 
         for (const name of Object.keys(this.options)) {
             Object.defineProperty(this, name, {
@@ -124,38 +126,38 @@ class OptionsHandler {
                 },
                 set: function (value) {
                     this.options[name] = value;
-                    Logger.log('OPTIONS', `Set ${this.key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
-                    Store.shared.set(this.key, this.options);
-                    this.changed(name);
+                    Logger.log('OPTIONS', `Set ${this.#key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
+                    Store.shared.set(this.#key, this.options);
+                    this.#changed(name);
                 }
             });
         }
     }
 
     default (key) {
-        return this.defaults[key];
+        return this.#defaults[key];
     }
 
     reset (key) {
-        this[key] = this.defaults[key];
+        this[key] = this.#defaults[key];
     }
 
     keys () {
-        return Object.keys(this.defaults);
+        return Object.keys(this.#defaults);
     }
 
     toggle (key) {
         this[key] = !this[key];
     }
 
-    changed (option) {
-        for (const { name, callback } of this.listeners) {
+    #changed (option) {
+        for (const { name, callback } of this.#listeners) {
             if (name == option) callback(this.options[option]);
         }
     }
 
     onChange (option, listener) {
-        this.listeners.push({
+        this.#listeners.push({
             name: option,
             callback: listener
         })
