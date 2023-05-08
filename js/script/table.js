@@ -921,15 +921,15 @@ class TableInstance {
             this.cache.set('members', `
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Classes</td>
-                    <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
+                    <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.list_classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Joined</td>
-                    <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
+                    <td colspan="${ this.rightFlatSpan }">${ this.settings.list_joined.join(', ') }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Left</td>
-                    <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
+                    <td colspan="${ this.rightFlatSpan }">${ this.settings.list_kicked.join(', ') }</td>
                 </tr>
             `);
         } else {
