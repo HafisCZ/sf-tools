@@ -511,11 +511,25 @@ const ConfirmDialog = new (class extends Dialog {
     }
 })();
 
-const Localization = new (class {
-    _generateTranslation (base, object, ... path) {
+const Localization = class {
+    static #LOCALES = {
+        'en': 'English',
+        'de': 'Deutsch',
+        'pl': 'Polski',
+        'pt': 'Português',
+        'cs': 'Česky',
+        'fr': 'Français',
+        'it': 'Italiano',
+        'es': 'Español',
+        'hu': 'Magyar',
+        'ch': 'Schwyzerdüütsch',
+        'pg': 'Pig Latin'
+    }
+
+    static generateTranslation (base, object, ... path) {
         for (const key of Object.keys(object)) {
             if (typeof object[key] === 'object') {
-                this._generateTranslation(base, object[key], ... path, key);
+                this.generateTranslation(base, object[key], ... path, key);
             } else {
                 base[`${path.join('.')}.${key}`] = object[key];
             }
@@ -524,53 +538,53 @@ const Localization = new (class {
         return base;
     }
 
-    async _fetchTranslation (locale) {
-        if (Object.keys(this.locales()).includes(locale)) {
+    static async #fetchTranslation (locale) {
+        if (Object.keys(this.#LOCALES).includes(locale)) {
             let start = Date.now();
 
-            let file = await fetch(this._translationUrl(locale));
+            let file = await fetch(this.#translationUrl(locale));
             let data = await file.json();
 
             Logger.log('APPINFO', `Translation ready in ${Date.now() - start} ms`);
 
-            return this._generateTranslation({}, data);
+            return this.generateTranslation({}, data);
         } else {
             return {};
         }
     }
 
-    _translationUrl (locale) {
+    static #translationUrl (locale) {
         const useRemote = window.document.location.protocol === 'file:';
         return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`;
     }
 
-    async translatePage () {
-        const locale = this.getLocale();
+    static async translatePage () {
+        const locale = this.#getLocale();
 
         const $picker = $(`<div class="locale-picker"></div>`);
         const $dropdown = $(`<div class="ui dropdown"><img src="res/flags/${locale}.svg"></div>`).dropdown({
             transition: 'none',
-            values: Object.entries(this.locales()).map(([value, name]) => ({ name: `<div data-inverted="" data-tooltip="${name}" data-position="left center"><img src="res/flags/${value}.svg"></div>`, value })),
-            action: (text, value, element) => this.setLocale(value)
+            values: Object.entries(this.#LOCALES).map(([value, name]) => ({ name: `<div data-inverted="" data-tooltip="${name}" data-position="left center"><img src="res/flags/${value}.svg"></div>`, value })),
+            action: (text, value, element) => this.#setLocale(value)
         });
 
         $picker.append($dropdown);
 
         $('.ui.huge.menu').append($picker);
 
-        this.translation = await this._fetchTranslation(locale);
+        this.translation = await this.#fetchTranslation(locale);
 
-        window.document.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
-        window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.translateTooltip(element));
-        window.document.querySelectorAll('[data-intl-placeholder]').forEach(element => this.translatePlaceholder(element));
-        window.document.querySelectorAll('[data-intl-title]').forEach(element => this.translateTitle(element));
+        window.document.querySelectorAll('[data-intl]').forEach(element => this.#translateElement(element));
+        window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.#translateTooltip(element));
+        window.document.querySelectorAll('[data-intl-placeholder]').forEach(element => this.#translatePlaceholder(element));
+        window.document.querySelectorAll('[data-intl-title]').forEach(element => this.#translateTitle(element));
     }
 
-    hasTranslation (key) {
+    static hasTranslation (key) {
         return key in this.translation;
     }
 
-    findTranslation (key) {
+    static #findTranslation (key) {
         let obj = this.translation[key];
         if (!obj) {
             Logger.log('IN_WARN', `Translation key ${key} not found!`);
@@ -579,33 +593,33 @@ const Localization = new (class {
         return obj;
     }
 
-    translatePlaceholder (node) {
+    static #translatePlaceholder (node) {
         let key = node.getAttribute('data-intl-placeholder');
-        let val = this.findTranslation(key);
+        let val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl-placeholder');
-        node.setAttribute('placeholder', this.sanitize(val || key));
+        node.setAttribute('placeholder', this.#sanitize(val || key));
     }
 
-    translateTooltip (node) {
+    static #translateTooltip (node) {
         let key = node.getAttribute('data-intl-tooltip');
-        let val = this.findTranslation(key);
+        let val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl-tooltip');
-        node.setAttribute('data-tooltip', this.sanitize(val || key));
+        node.setAttribute('data-tooltip', this.#sanitize(val || key));
     }
 
-    translateTitle (node) {
+    static #translateTitle (node) {
         let key = node.getAttribute('data-intl-title');
-        let val = this.findTranslation(key);
+        let val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl-title');
-        node.setAttribute('title', this.sanitize(val || key));
+        node.setAttribute('title', this.#sanitize(val || key));
     }
 
-    translateElement (node) {
+    static #translateElement (node) {
         let key = node.getAttribute('data-intl');
-        let val = this.findTranslation(key);
+        let val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl');
 
@@ -616,51 +630,37 @@ const Localization = new (class {
         }
     }
 
-    locales () {
-        return {
-            'en': 'English',
-            'de': 'Deutsch',
-            'pl': 'Polski',
-            'pt': 'Português',
-            'cs': 'Česky',
-            'fr': 'Français',
-            'it': 'Italiano',
-            'es': 'Español',
-            'hu': 'Magyar',
-            'ch': 'Schwyzerdüütsch',
-            'pg': 'Pig Latin'
-        };
-    }
-
-    getLocale () {
+    static #getLocale () {
         return SiteOptions.locale || 'en';
     }
 
-    setLocale (locale) {
+    static #setLocale (locale) {
         SiteOptions.locale = locale;
 
         window.location.href = window.location.href;
     }
 
-    sanitize (val) {
+    static #sanitize (val) {
         return val.replace(/"/g, '&quot;');
     }
-})();
 
-window.intl = (key, variables = undefined) => {
-    let val = Localization.findTranslation(key);
-    if (val) {
-        if (typeof variables !== 'undefined') {
-            for (const [key, vrl] of Object.entries(variables)) {
-                val = val.replace(`#{${key}}`, vrl);
+    static intl (key, variables = undefined) {
+        let val = this.#findTranslation(key);
+        if (val) {
+            if (typeof variables !== 'undefined') {
+                for (const [key, vrl] of Object.entries(variables)) {
+                    val = val.replace(`#{${key}}`, vrl);
+                }
             }
+    
+            return this.#sanitize(val);
+        } else {
+            return key;
         }
-
-        return Localization.sanitize(val);
-    } else {
-        return key;
     }
-}
+};
+
+window.intl = Localization.intl.bind(Localization);
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('DOMContentLoaded', async function () {
