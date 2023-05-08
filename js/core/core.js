@@ -214,20 +214,20 @@ class Exporter {
 }
 
 class Site {
+    static #metadata;
+    static #resolve;
+
     static #startup = Date.now();
     static #promise = new Promise((resolve) => {
         Logger.log('APPINFO', `Version ${MODULE_VERSION}`);
 
-        this.resolve = resolve;
+        this.#resolve = resolve;
     });
-
-    static #data = null;
-    static #metadata = null;
 
     static run () {
         Logger.log('APPINFO', `Application ready in ${Date.now() - this.#startup} ms`);
 
-        this.resolve();
+        this.#resolve();
     }
 
     static is (type) {
@@ -255,7 +255,7 @@ class Site {
     static ready (metadata, callback) {
         this.#metadata = metadata;
         this.#promise.then(() => {
-            this.#data = callback(new URLSearchParams(window.location.search)) || {};
+            this.data = callback(new URLSearchParams(window.location.search)) || {};
         });
     }
 
