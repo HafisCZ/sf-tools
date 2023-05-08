@@ -334,7 +334,7 @@ Site.ready(null, function (urlParams) {
 
     $buttonCopyGroup.click(() => {
         if (currentGroup) {
-            const generator = ({ editor }) => Localization._generateTranslation({}, editor);
+            const generator = ({ editor }) => Localization.generateTranslation({}, editor);
 
             const playerA = generator(currentGroup.fighterA);
             const playerB = generator(currentGroup.fighterB);
