@@ -128,7 +128,7 @@ class ExpressionScope {
     constructor (env) {
         this.self = [];
         this.indirect = [];
-        this.env = env || { functions: { }, variables: { }, constants: Constants.DEFAULT, lists: { }, env_id: randomSHA1() };
+        this.env = env || { functions: {}, variables: {}, constants: Constants.DEFAULT, env_id: randomSHA1() };
     }
 
     addSelf (obj) {
@@ -255,8 +255,6 @@ class ExpressionRenderer {
                 } else if (token === 'true' || token === 'false') {
                     highlighter.boolean(token, token === 'true');
                 } else if (['undefined', 'null', 'loop_index', 'loop_array'].includes(token)) {
-                    highlighter.constant(token);
-                } else if (root.lists && root.lists.hasOwnProperty(token)) {
                     highlighter.constant(token);
                 } else if (root.variables && root.variables.hasOwnProperty(token)) {
                     if (root.variables[token].tableVariable == 'unfiltered') {
@@ -1086,8 +1084,6 @@ class Expression {
                     ExpressionCache.set(scope.token, node, value);
                     return value;
                 }
-            } else if (scope.env.lists && scope.env.lists.hasOwnProperty(node)) {
-                return scope.env.lists[node];
             } else if (scope.env.constants.has(node)) {
                 // Return constant
                 return scope.env.constants.get(node);

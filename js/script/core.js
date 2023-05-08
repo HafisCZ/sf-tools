@@ -1416,9 +1416,6 @@ class Settings {
         this.variablesReference = {};
 
         this.trackers = {};
-
-        // Lists
-        this.lists = {};
         this.row_indexes = {};
 
         // Table
@@ -2475,7 +2472,6 @@ class Settings {
         return {
             functions: this.functions,
             variables: this.variablesReference,
-            lists: {},
             array: [],
             array_unfiltered: [],
             // Constants have to be propagated through the environment
@@ -2667,12 +2663,10 @@ class Settings {
         let sameTimestamp = array.timestamp == array.reference;
 
         // Set lists
-        this.lists = {
-            classes: array.reduce((c, { player }) => {
-                c[player.Class]++;
-                return c;
-            }, _arrayToDefaultHash(CONFIG.indexes(), 0))
-        }
+        this.list_classes = array.reduce((c, { player }) => {
+            c[player.Class]++;
+            return c;
+        }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
@@ -2737,14 +2731,13 @@ class Settings {
         let sameTimestamp = array.timestamp == array.reference;
 
         // Set lists
-        this.lists = {
-            joined: SiteOptions.obfuscated ? array.joined.map((p, i) => `joined_${ i + 1 }`) : array.joined,
-            kicked: SiteOptions.obfuscated ? array.kicked.map((p, i) => `kicked_${ i + 1 }`) : array.kicked,
-            classes: array.reduce((c, { player }) => {
-                c[player.Class]++;
-                return c;
-            }, _arrayToDefaultHash(CONFIG.indexes(), 0))
-        }
+        this.list_classes = array.reduce((c, { player }) => {
+            c[player.Class]++;
+            return c;
+        }, _arrayToDefaultHash(CONFIG.indexes(), 0));
+
+        this.list_joined = SiteOptions.obfuscated ? array.joined.map((p, i) => `joined_${ i + 1 }`) : array.joined;
+        this.list_kicked = SiteOptions.obfuscated ? array.kicked.map((p, i) => `kicked_${ i + 1 }`) : array.kicked;
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
