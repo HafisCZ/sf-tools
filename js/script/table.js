@@ -660,7 +660,7 @@ class TableInstance {
     }
 
     #sortDefault (a, b) {
-        return this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]);
+        return this.globalSortingOrder * (a.sorting[this.globalSortingKey] - b.sorting[this.globalSortingKey]);
     }
 
     #createCache () {
@@ -670,11 +670,11 @@ class TableInstance {
     }
 
     #createSorting () {
-        this.global_key = '_index';
-        this.global_ord = 1;
+        this.globalSortingKey = '_index';
+        this.globalSortingOrder = 1;
 
         if (this.settings.globals.order_by) {
-            this.global_key = '_order_by';
+            this.globalSortingKey = '_order_by';
         } else if (this.flat.some(x => 'glob_order' in x)) {
             const sorting = [];
 
