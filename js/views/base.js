@@ -76,7 +76,7 @@ class Dialog {
     }
 }
 
-const Toast = class {
+class Toast {
     static info (title, message, requireClick) {
         this.#show(null, title, message, requireClick);
     }
@@ -100,7 +100,7 @@ const Toast = class {
     }
 }
 
-const DialogController = class {
+class DialogController {
     static #promise = Promise.resolve();
 
     static open (popup, ...args) {
@@ -509,7 +509,7 @@ const ConfirmDialog = new (class extends Dialog {
     }
 })();
 
-const Localization = class {
+class Localization {
     static #LOCALES = {
         'en': 'English',
         'de': 'Deutsch',

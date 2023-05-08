@@ -125,7 +125,7 @@ const FilterTypes = {
     'Players': TableType.Browse
 };
 
-const Highlighter = class {
+class Highlighter {
     static #text = '';
 
     static #escape (text) {
@@ -288,7 +288,7 @@ class Command {
     }
 }
 
-const SettingsCommands = class {
+class SettingsCommands {
     static #commands = [];
 
     static register (name, regexp, parse, format) {
@@ -2900,7 +2900,7 @@ class Settings {
     }
 };
 
-const ScriptHighlightCache = class {
+class ScriptHighlightCache {
     static #hash = null;
     static #data = new Map();
 
@@ -2924,7 +2924,7 @@ const ScriptHighlightCache = class {
 }
 
 // Script archive
-const ScriptArchive = class {
+class ScriptArchive {
     static dataExpiry = 86400000;
 
     static get data () {
@@ -2972,7 +2972,7 @@ const ScriptArchive = class {
 }
 
 // Settings manager
-const ScriptManager = class {
+class ScriptManager {
     static get scripts () {
         delete this.scripts
 
@@ -3047,7 +3047,7 @@ const ScriptManager = class {
 }
 
 // Templates
-const TemplateManager = class {
+class TemplateManager {
     static get templates () {
         delete this.templates;
 

@@ -24,7 +24,7 @@ class Tab {
     }
 }
 
-const UI = class {
+class UI {
     static current = null;
 
     static #tabs = Object.create(null);
