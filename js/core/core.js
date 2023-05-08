@@ -3,40 +3,36 @@ const MODULE_VERSION_MAJOR = '6';
 const MODULE_VERSION_MINOR = '3586';
 const MODULE_VERSION = `v${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}`
 
-const Logger = new (class {
-    constructor () {
-        this.colors = {
-            'STORAGE': 'fcba03',
-            'WARNING': 'fc6203',
-            'OPTIONS': '42adf5',
-            'TAB_GEN': '3bc922',
-            'PERFLOG': 'ffffff',
-            'ECLIENT': 'd142f5',
-            'TRACKER': 'c8f542',
-            'ACTIONS': 'eb73c3',
-            'IN_WARN': 'ebd883',
-            'APPINFO': 'd29af8',
-            'MESSAGE': 'ffffff',
-            'APICALL': 'd99ab5',
-            'CHANNEL': 'fccb81'
-        };
+class Logger {
+    static #colors = {
+        'STORAGE': 'fcba03',
+        'WARNING': 'fc6203',
+        'OPTIONS': '42adf5',
+        'TAB_GEN': '3bc922',
+        'PERFLOG': 'ffffff',
+        'ECLIENT': 'd142f5',
+        'TRACKER': 'c8f542',
+        'ACTIONS': 'eb73c3',
+        'IN_WARN': 'ebd883',
+        'APPINFO': 'd29af8',
+        'MESSAGE': 'ffffff',
+        'APICALL': 'd99ab5',
+        'CHANNEL': 'fccb81'
+    };
 
-        this.log('APPINFO', `Version ${MODULE_VERSION}`);
-    }
-
-    log (type, text) {
+    static log (type, text) {
         console.log(
             `%c${ type }%c${ text }`,
-            `background-color: #${ this.colors[type] || 'ffffff' }; padding: 0.5em; font-size: 15px; font-weight: bold; color: black;`,
+            `background-color: #${ this.#colors[type] || 'ffffff' }; padding: 0.5em; font-size: 15px; font-weight: bold; color: black;`,
             'padding: 0.5em; font-size: 15px;'
         );
     }
 
-    error (err, text) {
+    static error (err, text) {
         this.log('WARNING', text);
         console.error(err);
     }
-})();
+};
 
 class StoreWrapper {
     static isAvailable () {
@@ -111,7 +107,7 @@ const Store = (function () {
 })();
 
 // Options
-const OptionsHandler = class {
+class OptionsHandler {
     constructor (key, defaults) {
         this.key = key;
         this.defaults = defaults;
@@ -199,43 +195,46 @@ const SiteOptions = new OptionsHandler(
     }
 )
 
-const Exporter = new (class {
-    get time () {
+class Exporter {
+    static get time () {
         return new Date().toISOString().replace(/[\-\:\.T]/g, '_').replace(/Z$/, '');
     }
 
-    json (content, name = this.time) {
+    static json (content, name = this.time) {
         window.download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
     }
 
-    png (content, name = this.time) {
+    static png (content, name = this.time) {
         window.download(`${ name }.png`, content);
     }
 
-    csv (content, name = this.time) {
+    static csv (content, name = this.time) {
         window.download(`${ name }.csv`, new Blob([ content ], { type: 'text/csv' }));
     }
-})();
+}
 
-const Site = new (class {
-    constructor () {
-        this.startup = Date.now();
-        this.promise = new Promise((resolve) => {
-            this.resolve = resolve;
-        });
-    }
+class Site {
+    static #startup = Date.now();
+    static #promise = new Promise((resolve) => {
+        Logger.log('APPINFO', `Version ${MODULE_VERSION}`);
 
-    run () {
-        Logger.log('APPINFO', `Application ready in ${Date.now() - this.startup} ms`);
+        this.resolve = resolve;
+    });
+
+    static #data = null;
+    static #metadata = null;
+
+    static run () {
+        Logger.log('APPINFO', `Application ready in ${Date.now() - this.#startup} ms`);
 
         this.resolve();
     }
 
-    is (type) {
-        return this.metadata && this.metadata.type === type;
+    static is (type) {
+        return this.#metadata && this.#metadata.type === type;
     }
 
-    isEvent (type) {
+    static isEvent (type) {
         if (Array.isArray(SiteOptions.event_override)) {
             if (SiteOptions.event_override.includes(type)) {
                 return true;
@@ -253,15 +252,14 @@ const Site = new (class {
         }
     }
 
-    ready (metadata, callback) {
-        this.metadata = metadata;
-
-        this.promise.then(() => {
-            this.data = callback(new URLSearchParams(window.location.search)) || {};
+    static ready (metadata, callback) {
+        this.#metadata = metadata;
+        this.#promise.then(() => {
+            this.#data = callback(new URLSearchParams(window.location.search)) || {};
         });
     }
 
-    async recover (json) {
+    static async recover (json) {
         let { preferences, data } = json;
 
         await DatabaseManager.reset();
@@ -296,12 +294,12 @@ const Site = new (class {
         }
     }
 
-    async dump () {
+    static async dump () {
         let prefs = Store.shared.all();
         let slots = _uniq(Object.values(ProfileManager.profiles).map(profile => profile.slot || 0));
         let dumps = {};
 
-        let slotDumps = slots.map(slot => new Promise(async (resolve, reject) => {
+        let slotDumps = slots.map(slot => new Promise(async (resolve) => {
             let db = await DatabaseUtils.createSession(parseInt(slot || '0'));
 
             dumps[slot] = {
@@ -322,20 +320,18 @@ const Site = new (class {
             };
         })
     }
-})();
+}
 
-const SiteAPI = new (class {
-    constructor () {
-        this.baseUrl = 'https://sftools-api.netlify.app/api/'
-    }
+class SiteAPI {
+    static #baseUrl = 'https://sftools-api.netlify.app/api/';
 
-    log (method, url) {
+    static #log (method, url) {
         Logger.log('APICALL', `${method} ${url}`)
     }
 
-    async post (endpoint, data) {
-        const url = `${this.baseUrl}${endpoint}`;
-        this.log('POST', url);
+    static async post (endpoint, data) {
+        const url = `${this.#baseUrl}${endpoint}`;
+        this.#log('POST', url);
 
         return new Promise((resolve, reject) => {
             fetch(url, {
@@ -355,9 +351,9 @@ const SiteAPI = new (class {
         })
     }
 
-    async get (endpoint, params = {}) {
-        const url = `${this.baseUrl}${endpoint}?${new URLSearchParams(params).toString()}`;
-        this.log('GET', url);
+    static async get (endpoint, params = {}) {
+        const url = `${this.#baseUrl}${endpoint}?${new URLSearchParams(params).toString()}`;
+        this.#log('GET', url);
 
         return new Promise((resolve, reject) => {
             fetch(url).then((response) => {
@@ -373,7 +369,7 @@ const SiteAPI = new (class {
             });
         })
     }
-})();
+}
 
 const DEFAULT_PROFILE = {
     name: 'Default',
@@ -445,20 +441,22 @@ const DEFAULT_PROFILE_B = {
     secondary_g: null
 };
 
-const ProfileManager = new (class {
-    constructor () {
-        this.profiles = Object.assign(Store.get('db_profiles', {}), {
+class ProfileManager {
+    static profiles = (function () {
+        const data = Object.assign(Store.get('db_profiles', {}), {
             'default': DEFAULT_PROFILE,
             'own': DEFAULT_PROFILE_A,
             'month_old': DEFAULT_PROFILE_B
         });
 
-        for (const [key, profile] of Object.entries(this.profiles)) {
+        for (const [key, profile] of Object.entries(data)) {
             profile.key = key
         }
-    }
 
-    uiProfile () {
+        return data;
+    })();
+
+    static #uiProfile () {
         if (typeof UI !== 'undefined') {
             return _dig(UI, 'profile', 'key');
         } else {
@@ -466,55 +464,55 @@ const ProfileManager = new (class {
         }
     }
 
-    isEditable (key) {
-        return !this.isDefault(key) && this.uiProfile() != key;
+    static isEditable (key) {
+        return !this.#isDefault(key) && this.#uiProfile() != key;
     }
 
-    getDefaultProfile () {
+    static #getDefaultProfile () {
         return this.profiles['default'];
     }
 
-    getActiveProfile () {
-        return this.profiles[SiteOptions.profile] || this.getDefaultProfile();
+    static getActiveProfile () {
+        return this.profiles[SiteOptions.profile] || this.#getDefaultProfile();
     }
 
-    getProfile (name) {
+    static getProfile (name) {
         return this.profiles[name] || this.getActiveProfile();
     }
 
-    getActiveProfileName () {
-        return this.uiProfile() || SiteOptions.profile || 'default';
+    static getActiveProfileName () {
+        return this.#uiProfile() || SiteOptions.profile || 'default';
     }
 
-    setActiveProfile (name) {
+    static setActiveProfile (name) {
         SiteOptions.profile = name;
     }
 
-    removeProfile (name) {
+    static removeProfile (name) {
         delete this.profiles[name];
         Store.set('db_profiles', this.profiles);
     }
 
-    setProfile (name, profile) {
+    static setProfile (name, profile) {
         this.profiles[name] = Object.assign(profile, { updated: Date.now() });
         Store.set('db_profiles', this.profiles);
     }
 
-    isDefault(name) {
+    static #isDefault (name) {
         return ['default', 'own', 'month_old'].includes(name);
     }
 
-    getProfiles () {
+    static getProfiles () {
         return [
             [ 'default', this.profiles['default'] ],
             [ 'own', this.profiles['own'] ],
             [ 'month_old', this.profiles['month_old'] ],
-            ..._sortDesc(Object.entries(this.profiles).filter(([key, ]) => !this.isDefault(key)), ([, val]) => val.updated || 0)
+            ..._sortDesc(Object.entries(this.profiles).filter(([key, ]) => !this.#isDefault(key)), ([, val]) => val.updated || 0)
         ];
     }
-})();
+}
 
-const Actions = class {
+class Actions {
     static #script;
     static #defaultScript;
 

@@ -1,4 +1,4 @@
-const DefaultScripts = class {
+class DefaultScripts {
   static #internal = {
     players: {
       description: 'Players (dark)',

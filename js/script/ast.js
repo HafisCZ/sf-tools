@@ -6,7 +6,7 @@ const EXPRESSION_REGEXP = (function () {
     }
 })();
 
-const ExpressionCache = class {
+class ExpressionCache {
     static #cache = new Map();
 
     static reset () {
@@ -49,7 +49,7 @@ const ExpressionCache = class {
     }
 };
 
-const ExpressionEnum = class {
+class ExpressionEnum {
     static keys = [
         'GoldCurve',
         'AchievementCount',
