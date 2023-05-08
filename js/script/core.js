@@ -2554,15 +2554,12 @@ class Settings {
         return Math.max(100, this.globals.name == undefined ? 250 : this.globals.name);
     }
 
-    evalRowIndexes (array, embedded = false) {
-        // For every entry
-        array.forEach((entry, index) => {
-            // Get player from object if embedded
-            let player = embedded ? entry.player : entry;
+    evalRowIndexes (array) {
+        for (let i = 0; i < array.length; i++) {
+            const player = array[i].player;
 
-            // Save player index
-            this.row_indexes[`${ player.Identifier }_${ player.Timestamp }`] = index;
-        });
+            this.row_indexes[`${player.Identifier}_${player.Timestamp}`] = i;
+        }
     }
 
     evalRules () {
@@ -2655,7 +2652,7 @@ class Settings {
 
     evalBrowse (array, unfilteredArray) {
         // Evaluate row indexes
-        this.evalRowIndexes(array, true);
+        this.evalRowIndexes(array);
 
         // Variables
         let compareEnvironment = this.getCompareEnvironment();
@@ -2723,7 +2720,7 @@ class Settings {
 
     evalGuild (array, unfilteredArray) {
         // Evaluate row indexes
-        this.evalRowIndexes(array, true);
+        this.evalRowIndexes(array);
 
         // Variables
         let compareEnvironment = this.getCompareEnvironment();
