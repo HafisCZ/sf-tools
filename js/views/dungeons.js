@@ -158,7 +158,7 @@ const SimulatorResultsDialog = new (class extends Dialog {
               }
           }).then((canvas) => {
               canvas.toBlob((blob) => {
-                  window.download(`dungeons_${Date.now()}.png`, blob);
+                Exporter.download(`dungeons_${Date.now()}.png`, blob);
               });
           });
       });

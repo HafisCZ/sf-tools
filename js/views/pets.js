@@ -95,7 +95,7 @@ const SimulatorMapDialog = new (class extends Dialog {
           }
       }).then((canvas) => {
           canvas.toBlob((blob) => {
-              window.download(`${name}.png`, blob);
+              Exporter.download(`${name}.png`, blob);
           });
       });
   }
