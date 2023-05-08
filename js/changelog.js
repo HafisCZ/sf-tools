@@ -56,7 +56,8 @@ const CHANGELOG = {
             'Fixed interruption errors not recognized properly'
         ],
         'All Tools': [
-            'Added new link to community-made tools on the main page'
+            'Added new link to community-made tools on the main page',
+            'Fixed scrollbar not properly visible in dialogs'
         ]
     },
     'v6.3586': {

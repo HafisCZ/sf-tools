@@ -527,7 +527,7 @@ const Actions = class {
     }
 
     static init () {
-        this.defaultScript = typeof DefaultScripts === 'object' ? DefaultScripts.getContent('actions') : '';
+        this.defaultScript = typeof DefaultScripts === 'function' ? DefaultScripts.getContent('actions') : '';
 
         this._loadScript();
 
