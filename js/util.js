@@ -167,7 +167,7 @@ const COLOR_MAP = new Map(Object.entries({
 
 class Constants {
     constructor (values = null) {
-        this.Values = (values && new Map(values)) || Constants.DEFAULT_CONSTANTS_VALUES;
+        this.Values = values || Constants.DEFAULT_CONSTANTS_VALUES;
     }
 
     get (key) {

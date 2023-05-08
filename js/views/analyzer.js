@@ -119,7 +119,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
       this.environment = {
           functions: {},
           variables: {},
-          constants: new Constants({});
+          constants: new Constants(new Map())
       }
   }
 
