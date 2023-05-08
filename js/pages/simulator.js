@@ -71,7 +71,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
         }).then(canvas => {
             canvas.toBlob(blob => {
-                window.download(`simulator_${Date.now()}.png`, blob);
+                Exporter.download(`simulator_${Date.now()}.png`, blob);
             });
         });
     });

@@ -784,19 +784,6 @@ function setObjectAt (obj, path, val) {
     }
 }
 
-// Download
-function download (e, d) {
-    let o = document.createElement("a");
-    o.download = e;
-    o.href = URL.createObjectURL(d);
-    document.body.appendChild(o);
-
-    o.click();
-    URL.revokeObjectURL(o.href);
-
-    document.body.removeChild(o);
-}
-
 function SHA1 (text) {
     function rotate_left (n, s) {
         return (n << s) | (n >>> (32 - s));

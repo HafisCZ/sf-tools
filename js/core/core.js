@@ -200,16 +200,30 @@ class Exporter {
         return new Date().toISOString().replace(/[\-\:\.T]/g, '_').replace(/Z$/, '');
     }
 
+    static download (name, content) {
+        const url = URL.createObjectURL(content);
+
+        const node = document.createElement('a');
+        node.download = name;
+        node.href = url;
+
+        document.body.appendChild(node);
+        node.click();
+        node.remove();
+
+        URL.revokeObjectURL(url);
+    }
+
     static json (content, name = this.time) {
-        window.download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+        this.download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
     }
 
     static png (content, name = this.time) {
-        window.download(`${ name }.png`, content);
+        this.download(`${ name }.png`, content);
     }
 
     static csv (content, name = this.time) {
-        window.download(`${ name }.csv`, new Blob([ content ], { type: 'text/csv' }));
+        this.download(`${ name }.csv`, new Blob([ content ], { type: 'text/csv' }));
     }
 }
 
