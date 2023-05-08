@@ -1722,8 +1722,7 @@ class Settings {
         let settings = {
             functions: { },
             variables: { },
-            constants: constants,
-            lists: { }
+            constants: constants
         };
 
         let is_unsafe = 0;
