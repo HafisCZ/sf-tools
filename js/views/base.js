@@ -76,20 +76,20 @@ class Dialog {
     }
 }
 
-const Toast = new (class {
-    info (title, message, requireClick) {
-        this._show(null, title, message, requireClick);
+const Toast = class {
+    static info (title, message, requireClick) {
+        this.#show(null, title, message, requireClick);
     }
 
-    warn (title, message, requireClick) {
-        this._show('orange exclamation triangle', title, message, requireClick);
+    static warn (title, message, requireClick) {
+        this.#show('orange exclamation triangle', title, message, requireClick);
     }
 
-    error (title, message, requireClick) {
-        this._show('red exclamation circle', title, message, requireClick);
+    static error (title, message, requireClick) {
+        this.#show('red exclamation circle', title, message, requireClick);
     }
 
-    _show (icon, title, message, requireClick) {
+    static #show (icon, title, message, requireClick) {
         $.toast({
             title: icon ? `<i class="ui ${icon} icon"></i> ${title}` : title,
             message,
@@ -98,22 +98,20 @@ const Toast = new (class {
             class: 'custom-toast'
         })
     }
-})();
+}
 
-const DialogController = new (class {
-    constructor () {
-        this.promise = Promise.resolve();
-    }
+const DialogController = class {
+    static #promise = Promise.resolve();
 
-    open (popup, ...args) {
+    static open (popup, ...args) {
         popup.requestOpen();
-        return (this.promise = this.promise.then(() => popup.open(...args)));
+        return (this.#promise = this.#promise.then(() => popup.open(...args)));
     }
 
-    close (popup) {
+    static close (popup) {
         popup.close();
     }
-})();
+}
 
 const TermsAndConditionsDialog = new (class extends Dialog {
     intl (heading, clause = null) {
