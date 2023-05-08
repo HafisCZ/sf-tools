@@ -515,6 +515,13 @@ const ProfileManager = new (class {
 })();
 
 const Actions = class {
+    static #script;
+    static #defaultScript;
+
+    static #instance;
+    static #actions;
+    static #trackers;
+
     static get EXPRESSION_CONFIG () {
         delete this.EXPRESSION_CONFIG;
 
@@ -527,72 +534,72 @@ const Actions = class {
     }
 
     static init () {
-        this.defaultScript = typeof DefaultScripts === 'function' ? DefaultScripts.getContent('actions') : '';
+        this.#defaultScript = typeof DefaultScripts === 'function' ? DefaultScripts.getContent('actions') : '';
 
-        this._loadScript();
+        this.#loadScript();
 
         const legacyTracker = ScriptManager.getContent('tracker', '');
         if (legacyTracker) {
-            this.script = `${this.script || ''}\n${legacyTracker}`;
+            this.#script = `${this.#script || ''}\n${legacyTracker}`;
 
-            Store.set('actions_script', this.script);
+            Store.set('actions_script', this.#script);
             ScriptManager.remove('tracker');
         }
 
-        this._executeScript();
+        this.#executeScript();
     }
 
-    static _loadScript () {
-        this.script = Store.get('actions_script', this.defaultScript);
+    static #loadScript () {
+        this.#script = Store.get('actions_script', this.#defaultScript);
     }
 
-    static _saveScript () {
-        Store.set('actions_script', this.script);
+    static #saveScript () {
+        Store.set('actions_script', this.#script);
     }
 
-    static _executeScript () {
-        this.instance = new Settings(this.script || '', null, ScriptType.Action)
+    static #executeScript () {
+        this.#instance = new Settings(this.#script || '', null, ScriptType.Action)
 
-        this.actions = this.instance.actions;
-        this.trackers = this.instance.trackers;
+        this.#actions = this.#instance.actions;
+        this.#trackers = this.#instance.trackers;
     }
 
     static getScript () {
-        return this.script;
+        return this.#script;
     }
 
     static getInstance () {
-        return this.instance;
+        return this.#instance;
     }
 
     static getActions () {
-        return this.actions;
+        return this.#actions;
     }
 
     static getTrackers () {
-        return this.trackers;
+        return this.#trackers;
     }
 
     static resetScript () {
         Store.remove('actions_script');
 
-        this._loadScript();
-        this._executeScript();
+        this.#loadScript();
+        this.#executeScript();
     }
 
     static setScript (script) {
-        this.script = script;
+        this.#script = script;
 
-        this._saveScript();
-        this._executeScript();
+        this.#saveScript();
+        this.#executeScript();
     }
 
     static async apply (playerData, groupData) {
-        if (_notEmpty(this.actions)) {
+        if (_notEmpty(this.#actions)) {
             let players = playerData.map(({identifier, timestamp}) => DatabaseManager.getPlayer(identifier, timestamp));
             let groups = groupData.map(({identifier, timestamp}) => DatabaseManager.getGroup(identifier, timestamp));
 
-            for (const action of this.actions) {
+            for (const action of this.#actions) {
                 Logger.log('ACTIONS', `Applying action ${action.action}`)
                 await this._applyAction(action, players, groups);
             }
