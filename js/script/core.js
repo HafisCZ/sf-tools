@@ -240,7 +240,7 @@ class Highlighter {
     }
 };
 
-class Command {
+class ScriptCommand {
     constructor (regexp, parse, format) {
         this.regexp = regexp;
         this.internalParse = parse;
@@ -292,7 +292,7 @@ class ScriptCommands {
     static #commands = [];
 
     static register (name, regexp, parse, format) {
-        const command = new Command(regexp, parse, format);
+        const command = new ScriptCommand(regexp, parse, format);
 
         this[name] = command;
         this.#commands.push(command);
