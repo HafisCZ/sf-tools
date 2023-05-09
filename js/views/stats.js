@@ -1922,56 +1922,109 @@ const ScriptManualDialog = new (class extends Dialog {
 
     _createModal () {
         let content = '';
-
-        const enumDescriptions = new Map([
-            ['AchievementCount', ExpressionEnum.get('AchievementCount')],
-            ['ScrapbookSize', ExpressionEnum.get('ScrapbookSize')]
-        ]);
+        let navigation = '';
 
         const data = [
-            ['ta-reserved-public', 'header', TABLE_EXPRESSION_CONFIG.all('header', 'public')],
-            ['ta-reserved-protected', 'header_protected', TABLE_EXPRESSION_CONFIG.all('header', 'protected')],
-            ['ta-reserved-private', 'header_private', TABLE_EXPRESSION_CONFIG.all('header', 'private')],
-            ['ta-reserved-scoped', 'header_scoped', TABLE_EXPRESSION_CONFIG.all('accessor')],
-            ['ta-function', 'function', TABLE_EXPRESSION_CONFIG.all('function')],
-            ['ta-enum', 'enum', ExpressionEnum.keys, enumDescriptions],
-            ['ta-constant', 'constant', Constants.DEFAULT.keys(), Constants.DEFAULT.Values]
+            [
+                'header',
+                'ta-reserved-public',
+                TABLE_EXPRESSION_CONFIG.all('header', 'public')
+            ],
+            [
+                'header_protected',
+                'ta-reserved-protected',
+                TABLE_EXPRESSION_CONFIG.all('header', 'protected')
+            ],
+            [
+                'header_private',
+                'ta-reserved-private',
+                TABLE_EXPRESSION_CONFIG.all('header', 'private')
+            ],
+            [
+                'header_scoped',
+                'ta-reserved-scoped',
+                TABLE_EXPRESSION_CONFIG.all('accessor')
+            ],
+            [
+                'function',
+                'ta-function',
+                TABLE_EXPRESSION_CONFIG.all('function')
+            ],
+            [
+                'enum',
+                'ta-enum',
+                ExpressionEnum.keys, new Map([
+                    ['AchievementCount', ExpressionEnum.get('AchievementCount')],
+                    ['ScrapbookSize', ExpressionEnum.get('ScrapbookSize')]
+                ])
+            ],
+            [
+                'constant',
+                'ta-constant',
+                Constants.DEFAULT.keys(), Constants.DEFAULT.Values
+            ]
         ];
 
-        for (const [klass, type, list, descriptions] of data) {
+        for (const [type, klass, list, descriptions] of data) {
             let innerContent = '';
             for (const item of list) {
                 const key = item.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/ /g, '_').replace(/_{2,}/, '_').replace(/^_/, '');
                 const description = (descriptions ? descriptions.get(item) : false) || (Localization.hasTranslation(`dialog.script_manual.description.${key}`) ? this.intl(`description.${key}`) : false);
 
-                innerContent += `<div class="column text-center">${item}${description ? `<br><span class="text-gray font-monospace">${description}</span>` : ''}</div>`
+                innerContent += `<div>${item}${description ? `<br><span class="text-gray font-monospace">${description}</span>` : ''}</div>`
             }
 
-            content += `
-                <div class="mb-12">
-                    <h3 class="text-center ${klass} mb-4">${this.intl(`heading.${type}`)}</h3>
-                    <div class="ui three columns grid">
-                        ${innerContent}
-                    </div>
+            navigation += `
+                <div data-item="${type}" data-class="${klass}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                    <div>${this.intl(`heading.${type}`)}</div>
                 </div>
-            `
+            `;
+
+            content += `
+                <div data-page="${type}" class="flex flex-col gap-2">${innerContent}</div>
+            `;
         }
 
         return `
-            <div class="inverted bordered dialog">
+            <div class="big inverted bordered dialog">
                 <div class="header flex justify-content-between items-center">
                     <div>${this.intl('title')}</div>
                     <i class="ui small link close icon" data-op="close"></i>
                 </div>
-                <div class="overflow-y-scroll" style="height: 70vh;">${content}</div>
+                <div class="flex w-full" style="height: 70vh;">
+                    <div class="flex flex-col gap-2 pr-2" data-op="navigation" style="width: 33%; border-right: 1px solid #262626;">${navigation}</div>
+                    <div class="overflow-y-scroll p-4" style="width: 67%; border-top: 1px solid #262626;">${content}</div>
+                </div>
             </div>
         `
+    }
+
+    _showPage (name) {
+        this.$pages.hide();
+        this.$pages.filter(`[data-page="${name}"]`).show();
+
+        this.$items.each((i, obj) => {
+            obj.classList[obj.dataset.item === name ? 'add' : 'remove'](obj.dataset.class);
+        })
     }
 
     _createBindings () {
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
             this.close();
-        })
+        });
+
+        this.$pages = this.$parent.find('[data-page]');
+
+        this.$items = this.$parent.find('[data-item]');
+        this.$items.click((event) => {
+            this._showPage(event.currentTarget.dataset.item);
+        });
+    }
+
+    _applyArguments () {
+        this._showPage(this.$items.first().attr('data-item'));
     }
 })()
+
+Site.ready({}, () => DialogController.open(ScriptManualDialog))
