@@ -388,11 +388,11 @@ const ProfileCreateDialog = new (class extends Dialog {
       this.$primaryContent2 = this.$parent.find('[data-op="primary-content-2"]');
 
       this.$primary.on('change input', (e) => {
-          this.$primaryContent.html(Highlighter.expression($(e.currentTarget).val() || '').text);
+          this.$primaryContent.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, DEFAULT_EXPRESSION_CONFIG).text);
       });
 
       this.$primary2.on('change input', (e) => {
-          this.$primaryContent2.html(Highlighter.expression($(e.currentTarget).val() || '').text);
+          this.$primaryContent2.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, DEFAULT_EXPRESSION_CONFIG).text);
       });
 
       this.$primaryIndex.dropdown({
@@ -403,7 +403,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                   selected: v === 'none'
               };
           })
-      }).dropdown('setting', 'onChange', (value, text) => {
+      }).dropdown('setting', 'onChange', (value) => {
           if (value === 'none') {
               this.$primaryOperator.closest('.field').addClass('disabled');
               this.$primary.val('').trigger('change').closest('.field').addClass('disabled');
@@ -417,7 +417,7 @@ const ProfileCreateDialog = new (class extends Dialog {
           }
       }).dropdown('set selected', 'none');
 
-      this.$primaryOperator.dropdown('setting', 'onChange', (value, text) => {
+      this.$primaryOperator.dropdown('setting', 'onChange', (value) => {
           if (value === 'between') {
               this.$primary2.closest('.field').removeClass('disabled');
           } else {
@@ -446,11 +446,11 @@ const ProfileCreateDialog = new (class extends Dialog {
       this.$primaryContent2G = this.$parent.find('[data-op="primary-content-2-g"]');
 
       this.$primaryG.on('change input', (e) => {
-          this.$primaryContentG.html(Highlighter.expression($(e.currentTarget).val() || '').text);
+          this.$primaryContentG.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, DEFAULT_EXPRESSION_CONFIG).text);
       });
 
       this.$primary2G.on('change input', (e) => {
-          this.$primaryContent2G.html(Highlighter.expression($(e.currentTarget).val() || '').text);
+          this.$primaryContent2G.html(Highlighter.expression($(e.currentTarget).val() || '', undefined, DEFAULT_EXPRESSION_CONFIG).text);
       });
 
       this.$primaryIndexG.dropdown({
@@ -461,7 +461,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                   selected: v === 'none'
               };
           })
-      }).dropdown('setting', 'onChange', (value, text) => {
+      }).dropdown('setting', 'onChange', (value) => {
           if (value === 'none') {
               this.$primaryOperatorG.closest('.field').addClass('disabled');
               this.$primaryG.val('').trigger('change').closest('.field').addClass('disabled');
@@ -475,7 +475,7 @@ const ProfileCreateDialog = new (class extends Dialog {
           }
       }).dropdown('set selected', 'none');
 
-      this.$primaryOperatorG.dropdown('setting', 'onChange', (value, text) => {
+      this.$primaryOperatorG.dropdown('setting', 'onChange', (value) => {
           if (value === 'between') {
               this.$primary2G.closest('.field').removeClass('disabled');
           } else {
