@@ -1974,7 +1974,7 @@ const ScriptManualDialog = new (class extends Dialog {
             let innerContent = '';
             for (const item of list) {
                 const key = item.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/ /g, '_').replace(/_{2,}/, '_').replace(/^_/, '');
-                const description = (descriptions ? descriptions.get(item) : false) || (Localization.hasTranslation(`dialog.script_manual.description.${key}`) ? this.intl(`description.${key}`) : false);
+                const description = (descriptions ? descriptions.get(item) : false) || (Localization.hasTranslation(`dialog.script_manual.description.${type}.${key}`) ? this.intl(`description.${type}.${key}`) : false);
 
                 innerContent += `<div>${item}${description ? `<br><span class="text-gray font-monospace">${description}</span>` : ''}</div>`
             }
@@ -1986,7 +1986,7 @@ const ScriptManualDialog = new (class extends Dialog {
             `;
 
             content += `
-                <div data-page="${type}" class="flex flex-col gap-2">${innerContent}</div>
+                <div data-page="${type}" class="flex flex-col gap-4">${innerContent}</div>
             `;
         }
 
