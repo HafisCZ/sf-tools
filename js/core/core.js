@@ -572,7 +572,7 @@ class Actions {
     }
 
     static #executeScript () {
-        this.#instance = new Settings(this.#script || '', null, ScriptType.Action)
+        this.#instance = new Settings(this.#script || '', ScriptType.Action, null)
 
         this.#actions = this.#instance.actions;
         this.#trackers = this.#instance.trackers;

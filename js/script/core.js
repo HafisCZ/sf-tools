@@ -1398,10 +1398,11 @@ SettingsCommands.register(
 
 class Settings {
     // Contructor
-    constructor (string, tableType = null, scriptType = ScriptType.Table) {
+    constructor (string, scriptType, tableType) {
         this.code = string;
-        this.tableType = tableType;
         this.scriptType = scriptType;
+        this.tableType = tableType;
+        
         this.env_id = randomSHA1();
 
         // Constants
@@ -2845,7 +2846,7 @@ class Settings {
 
     // Format code
     static format (string, scriptType = ScriptType.Table) {
-        const settings = new Settings('');
+        const settings = new Settings('', scriptType, null);
 
         for (const line of Settings.handleMacros(string)) {
             const trimmed = Settings.stripComments(line)[0].trim();
