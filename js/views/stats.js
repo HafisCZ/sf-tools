@@ -1951,6 +1951,11 @@ const ScriptManualDialog = new (class extends Dialog {
                 TABLE_EXPRESSION_CONFIG.all('function')
             ],
             [
+                'variable',
+                'ta-constant',
+                TABLE_EXPRESSION_CONFIG.all('variable')
+            ],
+            [
                 'enum',
                 'ta-enum',
                 ExpressionEnum.keys, new Map([
@@ -2026,5 +2031,3 @@ const ScriptManualDialog = new (class extends Dialog {
         this._showPage(this.$items.first().attr('data-item'));
     }
 })()
-
-Site.ready({}, () => DialogController.open(ScriptManualDialog))

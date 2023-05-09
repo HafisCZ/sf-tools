@@ -1408,9 +1408,10 @@
                 "header_protected": "Headers for own guild members",
                 "header_private": "Headers for own characters",
                 "header_scoped": "Accessors for objects",
-                "function": "functions(...)",
+                "function": "Functions",
                 "enum": "Enumerations",
-                "constant": "@constants"
+                "constant": "Default constants",
+                "variable": "Variables"
             },
             "description": {
                 
