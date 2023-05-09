@@ -288,7 +288,7 @@ class Command {
     }
 }
 
-class SettingsCommands {
+class ScriptCommands {
     static #commands = [];
 
     static register (name, regexp, parse, format) {
@@ -308,49 +308,49 @@ class SettingsCommands {
 /*
     Command registrations
 */
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_IFNOT',
     /^if not (.+)$/,
     null,
     (root, arg) => Highlighter.keyword('if not ').value(arg).asMacro()
 ).parseNever()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_IF',
     /^if (.+)$/,
     null,
     (root, arg) => Highlighter.keyword('if ').value(arg).asMacro()
 ).parseNever()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_ELSEIF',
     /^else if (.+)$/,
     null,
     (root, arg) => Highlighter.keyword('else if ').value(arg).asMacro()
 ).parseNever()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_ELSE',
     /^else$/,
     null,
     (root) => Highlighter.keyword('else').asMacro()
 ).parseNever()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_LOOP',
     /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
     null,
     (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro()
 ).parseNever()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_END',
     /^end$/,
     null,
     (root) => Highlighter.keyword('end').asMacro()
 ).parseNever()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_FUNCTION',
     /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
@@ -362,7 +362,7 @@ SettingsCommands.register(
     (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_VARIABLE',
     /^mset (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
@@ -374,14 +374,14 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_CONST',
     /^const (\w+) (.+)$/,
     (root, name, value) => root.addConstant(name, value),
     (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'MACRO_CONSTEXPR',
     /^constexpr (\w+) (.+)$/,
     (root, name, expression) => {
@@ -393,7 +393,7 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_SERVER',
     /^server (@?\S+)$/,
     (root, value) => {
@@ -428,7 +428,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_NAME',
     /^name (@?\S+)$/,
     (root, value) => {
@@ -457,7 +457,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_WIDTH',
     /^width (@?\S+)$/,
     (root, value) => {
@@ -486,7 +486,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_COLUMNS',
     /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
     (root, parts) => {
@@ -519,7 +519,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_NOT_DEFINED_VALUE',
     /^not defined value (@?.+)$/,
     (root, value) => {
@@ -540,7 +540,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_NOT_DEFINED_COLOR',
     /^not defined color (@?.+)$/,
     (root, value) => {
@@ -566,7 +566,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VALUE_DEFAULT',
     /^value default (@?\S+[\S ]*)$/,
     (root, value) => {
@@ -587,7 +587,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VALUE_RULE',
     /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
     (root, rule, value, value2) => {
@@ -619,7 +619,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_COLOR_DEFAULT',
     /^color default (@?\S+[\S ]*)$/,
     (root, value) => {
@@ -645,7 +645,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_COLOR_RULE',
     /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
     (root, rule, value, value2) => {
@@ -682,7 +682,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ALIAS',
     /^alias (@?.+)$/,
     (root, value) => {
@@ -703,7 +703,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_FORMAT_STATISTICS',
     /^format statistics (.+)$/,
     (root, expression) => {
@@ -733,7 +733,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_FORMAT_DIFFERENCE',
     /^format difference (.+)$/,
     (root, expression) => {
@@ -763,7 +763,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_BACKGROUND',
     /^background (@?.+)$/,
     (root, value) => {
@@ -789,7 +789,7 @@ SettingsCommands.register(
     }
 )
     
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_FORMAT',
     /^(format|expf) (.+)$/,
     (root, token, expression) => {
@@ -813,7 +813,7 @@ SettingsCommands.register(
     }
 )
       
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_CATEGORY',
     /^((?:\w+)(?:\,\w+)*:|)category(?: (.+))?$/,
     (root, extensions, name) => {
@@ -833,7 +833,7 @@ SettingsCommands.register(
     }
 )
       
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_GROUPED_HEADER',
     /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
     (root, extensions, name, length) => {
@@ -862,7 +862,7 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_HEADER',
     /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))?$/,
     (root, extensions, name) => {
@@ -889,7 +889,7 @@ SettingsCommands.register(
     }
 )
     
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ROW',
     /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, extensions, name, expression) => {
@@ -904,21 +904,21 @@ SettingsCommands.register(
     (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
 )
       
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VAR',
     /^var (\w+) (.+)$/,
     (root, name, value) => root.addHeaderVariable(name, value),
     (root, name, value) => Highlighter.keyword('var ').constant(name).space().value(value)
 )
     
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_EMBED_END',
     /^embed end$/,
     (root) => root.pushEmbed(),
     (root) => Highlighter.keyword('embed end')
 )
       
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_EMBED',
     /^((?:\w+)(?:\,\w+)*:|)embed(?: (.+))?$/,
     (root, extensions, name) => {
@@ -937,14 +937,14 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_LAYOUT',
     /^layout ((\||\_|table|missing|statistics|rows|members)(\s+(\||\_|table|missing|statistics|rows|members))*)$/,
     (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
     (root, layout) => Highlighter.keyword('layout ').constant(layout)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL_LONG',
     /^set (\w+[\w ]*) with all as (.+)$/,
     (root, name, expression) => {
@@ -956,7 +956,7 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL',
     /^set \$(\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
@@ -968,7 +968,7 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root)
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VARIABLE_UNFILTERED',
     /^set \$\$(\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
@@ -980,7 +980,7 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_FUNCTION',
     /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
@@ -992,7 +992,7 @@ SettingsCommands.register(
     (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_VARIABLE',
     /^set (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
@@ -1004,28 +1004,28 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root)
 ).parseAsConstant()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_LINED',
     /^lined$/,
     (root, value) => root.addGlobal('lined', 1),
     (root, value) => Highlighter.keyword('lined')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_LINED_LONG',
     /^lined (on|off|thin|thick)$/,
     (root, value) => root.addGlobal('lined', ARG_MAP[value]),
     (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_THEME',
     /^theme (light|dark)$/,
     (root, value) => root.addGlobal('theme', value),
     (root, value) => Highlighter.keyword('theme ').boolean(value, true)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_THEME_LONG',
     /^theme text:(\S+) background:(\S+)$/,
     (root, textColor, backgroundColor) => {
@@ -1037,7 +1037,7 @@ SettingsCommands.register(
     (root, textColor, backgroundColor) => Highlighter.keyword('theme ').constant('text:').color(textColor, getCSSColor(textColor)).constant(' background:').color(backgroundColor, getCSSColor(backgroundColor))
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_PERFORMANCE',
     /^performance (\d+)$/,
     (root, value) => {
@@ -1048,7 +1048,7 @@ SettingsCommands.register(
     (root, value) => Highlighter.keyword('performance ')[value > 0 ? 'value' : 'error'](value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_SCALE',
     /^scale (\d+)$/,
     (root, value) => {
@@ -1059,7 +1059,7 @@ SettingsCommands.register(
     (root, value) => Highlighter.keyword('scale ')[value > 0 ? 'value' : 'error'](value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ROW_HEIGHT',
     /^row height (\d+)$/,
     (root, value) => {
@@ -1070,7 +1070,7 @@ SettingsCommands.register(
     (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_FONT',
     /^font (.+)$/,
     (root, font) => {
@@ -1082,63 +1082,63 @@ SettingsCommands.register(
     (root, font) => Highlighter.keyword('font ')[getCSSFont(font) ? 'value' : 'error'](font)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_OPTIONS',
     /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
     (root, key, value) => root.addShared(key, ARG_MAP[value]),
     (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_CLEAN',
     /^clean$/,
     (root) => root.addLocal('clean', 1),
     (root) => Highlighter.keyword('clean')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_CLEAN_HARD',
     /^clean hard$/,
     (root) => root.addLocal('clean', 2),
     (root) => Highlighter.keyword('clean ').constant('hard')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ACTION',
     /^action (none|show)$/,
     (root, value) => root.addAction(value),
     (root, value) => Highlighter.keyword('action ').constant(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_INDEXED',
     /^indexed$/,
     (root, value) => root.addGlobal('indexed', 1),
     (root, value) => Highlighter.keyword('indexed')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_INDEXED_LONG',
     /^indexed (on|off|static)$/,
     (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
     (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_OPTIONS_GLOBAL',
     /^(members|outdated|opaque|large rows|align title)$/,
     (root, key) => root.addGlobal(key, true),
     (root, key) => Highlighter.keyword(key)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_OPTIONS_GLOBAL_LONG',
     /^(members|outdated|opaque|large rows|align title) (on|off)$/,
     (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
     (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_LEFT_CATEGORY',
     /^((?:\w+)(?:\,\w+)*:|)left category$/,
     (root, extensions) => {
@@ -1151,7 +1151,7 @@ SettingsCommands.register(
     (root, extensions) => Highlighter.constant(extensions || '').keyword('left category')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_STATISTICS',
     /^statistics (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, name, expression) => {
@@ -1163,35 +1163,35 @@ SettingsCommands.register(
     (root, name, expression) => Highlighter.keyword('statistics ').constant(name).keyword(' as ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_EXTRA',
     /^extra (.+)$/,
     (root, value) => root.addFormatExtraExpression(a => value),
     (root, value) => Highlighter.keyword('extra ').value(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_STYLE',
     /^style ([a-zA-Z\-]+) (.*)$/,
     (root, style, value) => root.addStyle(style, value),
     (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABBLE_OPTIONS_SHARED',
     /^(visible|breakline|statistics color) (on|off)$/,
     (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
     (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_BORDER',
     /^border (none|left|right|both|top|bottom)$/,
     (root, value) => root.addShared('border', ARG_MAP[value]),
     (root, value) => Highlighter.keyword('border ').constant(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ORDER',
     /^order by (.+)$/,
     (root, expression) => {
@@ -1203,21 +1203,21 @@ SettingsCommands.register(
     (root, expression) => Highlighter.keyword('order by ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_GLOBAL_ORDER',
     /^glob order (asc|des)$/,
     (root, value) => root.addGlobOrder(undefined, value == 'asc'),
     (root, value) => Highlighter.keyword('glob order ').constant(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_GLOBAL_ORDER_INDEXED',
     /^glob order (asc|des) (\d+)$/,
     (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
     (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_EXPRESSION',
     /^expr (.+)$/,
     (root, expression) => {
@@ -1229,7 +1229,7 @@ SettingsCommands.register(
     (root, expression) => Highlighter.keyword('expr ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ALIAS_EXPRESSION',
     /^expa (.+)$/,
     (root, expression) => {
@@ -1241,14 +1241,14 @@ SettingsCommands.register(
     (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ALIGN',
     /^align (left|right|center)$/,
     (root, value) => root.addShared('align', value),
     (root, value) => Highlighter.keyword('align ').constant(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ALIGN_LONG',
     /^align (left|right|center) (left|right|center)$/,
     (root, value, value2) => {
@@ -1258,7 +1258,7 @@ SettingsCommands.register(
     (root, value, value2) => Highlighter.keyword('align ').constant(value).space().constant(value2)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_DISCARD',
     /^discard (.+)$/,
     (root, expression) => {
@@ -1270,7 +1270,7 @@ SettingsCommands.register(
     (root, expression) => Highlighter.keyword('discard ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_ORDER_ALL',
     /^order all by (.+)$/,
     (root, expression) => {
@@ -1282,7 +1282,7 @@ SettingsCommands.register(
     (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_COLOR_EXPRESSION',
     /^expc (.+)$/,
     (root, expression) => {
@@ -1294,7 +1294,7 @@ SettingsCommands.register(
     (root, expression) => Highlighter.keyword('expc ').expression(expression, root)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_TEXT',
     /^text (auto|(?:.+))$/,
     (root, value) => {
@@ -1317,14 +1317,14 @@ SettingsCommands.register(
     }
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_PADDING',
     /^padding (.+)$/,
     (root, value) => root.addLocal('padding', value),
     (root, value) => Highlighter.keyword('padding ').value(value)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_DEFINE',
     /^define (\w+)$/,
     (root, name) => root.addDefinition(name),
@@ -1332,21 +1332,21 @@ SettingsCommands.register(
     true
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_EXTEND',
     /^extend (\w+)$/,
     (root, name) => root.addExtension(name),
     (root, name) => Highlighter.keyword('extend ').constant(name)
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'TABLE_PUSH',
     /^push$/,
     (root) => root.push(),
     (root) => Highlighter.keyword('push')
 )
 
-SettingsCommands.register(
+ScriptCommands.register(
     'ACTION_TAG',
     /^tag (player|file) as (.+) if (.+)$/,
     (root, type, tag, expr) => {
@@ -1359,7 +1359,7 @@ SettingsCommands.register(
     (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, Actions.EXPRESSION_CONFIG).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 ).forScriptType(ScriptType.Action)
 
-SettingsCommands.register(
+ScriptCommands.register(
     'ACTION_REMOVE_PLAYER',
     /^remove player if (.+)$/,
     (root, expr) => {
@@ -1371,7 +1371,7 @@ SettingsCommands.register(
     (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 ).forScriptType(ScriptType.Action)
 
-SettingsCommands.register(
+ScriptCommands.register(
     'ACTION_TRACK_MAPPED',
     /^(track (\w+(?:[ \w]*\w)?) as (.+) when (.+))$/,
     (root, str, name, arg, arg2) => {
@@ -1384,7 +1384,7 @@ SettingsCommands.register(
     (root, str, name, arg, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg).keyword(' when ').expression(arg2)
 ).anyType()
 
-SettingsCommands.register(
+ScriptCommands.register(
     'ACTION_TRACK',
     /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
     (root, str, name, arg) => {
@@ -1396,13 +1396,12 @@ SettingsCommands.register(
     (root, str, name, arg) => Highlighter.keyword('track ').constant(name).keyword(' when ').expression(arg)
 ).anyType()
 
-class Settings {
-    // Contructor
+class Script {
     constructor (string, scriptType, tableType) {
         this.code = string;
         this.scriptType = scriptType;
         this.tableType = tableType;
-        
+
         this.env_id = randomSHA1();
 
         // Constants
@@ -1448,8 +1447,8 @@ class Settings {
         this.embed = null;
 
         // Parse settings
-        for (const line of Settings.handleMacros(string, tableType)) {
-            const command = SettingsCommands.find(command => command.canParse && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(line));
+        for (const line of Script.handleMacros(string, tableType)) {
+            const command = ScriptCommands.find(command => command.canParse && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(line));
   
             if (command) {
                 command.parse(this, line);
@@ -1562,15 +1561,15 @@ class Settings {
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
 
-            if (SettingsCommands.MACRO_IF.isValid(line)) {
+            if (ScriptCommands.MACRO_IF.isValid(line)) {
                 let rule = null;
                 let ruleMustBeTrue = false;
 
-                if (SettingsCommands.MACRO_IFNOT.isValid(line)) {
-                    rule = SettingsCommands.MACRO_IFNOT;
+                if (ScriptCommands.MACRO_IFNOT.isValid(line)) {
+                    rule = ScriptCommands.MACRO_IFNOT;
                     ruleMustBeTrue = true;
                 } else {
-                    rule = SettingsCommands.MACRO_IF;
+                    rule = ScriptCommands.MACRO_IF;
                 }
 
                 let cond = rule.parseAsMacro(line)[0].trim();
@@ -1585,10 +1584,10 @@ class Settings {
                         condition = true;
                     }
                 }
-            } else if (SettingsCommands.MACRO_ELSEIF.isValid(line)) {
+            } else if (ScriptCommands.MACRO_ELSEIF.isValid(line)) {
                 if (condition) {
                     if (shouldDiscard) {
-                        let cond = SettingsCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
+                        let cond = ScriptCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
                         if (cond in FilterTypes) {
                             shouldDiscard = FilterTypes[cond] != tableType;
                         } else {
@@ -1602,11 +1601,11 @@ class Settings {
                         shouldDiscard = true;
                     }
                 }
-            } else if (SettingsCommands.MACRO_ELSE.isValid(line)) {
+            } else if (ScriptCommands.MACRO_ELSE.isValid(line)) {
                 if (condition) {
                     shouldDiscard = !shouldDiscard;
                 }
-            } else if (SettingsCommands.MACRO_LOOP.isValid(line)) {
+            } else if (ScriptCommands.MACRO_LOOP.isValid(line)) {
                 let endsRequired = 1;
                 if (!shouldDiscard) {
                     output.push(line);
@@ -1615,12 +1614,12 @@ class Settings {
                 while (++i < lines.length) {
                     line = lines[i];
 
-                    if (SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line)) {
+                    if (ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line)) {
                         endsRequired++;
                         if (!shouldDiscard) {
                             output.push(line);
                         }
-                    } else if (SettingsCommands.MACRO_END.isValid(line)) {
+                    } else if (ScriptCommands.MACRO_END.isValid(line)) {
                         if (!shouldDiscard) {
                             output.push(line);
                         }
@@ -1630,7 +1629,7 @@ class Settings {
                         output.push(line);
                     }
                 }
-            } else if (SettingsCommands.MACRO_END.isValid(line)) {
+            } else if (ScriptCommands.MACRO_END.isValid(line)) {
                 shouldDiscard = false;
                 condition = false;
             } else if (!shouldDiscard) {
@@ -1647,8 +1646,8 @@ class Settings {
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
 
-            if (SettingsCommands.MACRO_LOOP.isValid(line)) {
-                let [ names, values ] = SettingsCommands.MACRO_LOOP.parseAsMacro(line);
+            if (ScriptCommands.MACRO_LOOP.isValid(line)) {
+                let [ names, values ] = ScriptCommands.MACRO_LOOP.parseAsMacro(line);
 
                 let variableNames = names.split(',').map(name => name.trim());
                 let variableValues = [];
@@ -1673,9 +1672,9 @@ class Settings {
                 while (++i < lines.length) {
                     line = lines[i];
 
-                    if (SettingsCommands.MACRO_END.isValid(line)) {
+                    if (ScriptCommands.MACRO_END.isValid(line)) {
                         if (--endsRequired == 0) break;
-                    } else if (SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line)) {
+                    } else if (ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line)) {
                         endsRequired++;
                     }
 
@@ -1728,15 +1727,15 @@ class Settings {
 
         let is_unsafe = 0;
         for (let line of lines) {
-            if (SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line)) {
+            if (ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line)) {
                 is_unsafe++;
-            } else if (SettingsCommands.MACRO_END.isValid(line)) {
+            } else if (ScriptCommands.MACRO_END.isValid(line)) {
                 if (is_unsafe > 0) {
                     is_unsafe--;
                 }
             } else if (is_unsafe == 0) {
-                if (SettingsCommands.MACRO_FUNCTION.isValid(line)) {
-                    let [name, variables, expression] = SettingsCommands.MACRO_FUNCTION.parseAsMacro(line);
+                if (ScriptCommands.MACRO_FUNCTION.isValid(line)) {
+                    let [name, variables, expression] = ScriptCommands.MACRO_FUNCTION.parseAsMacro(line);
                     let ast = new Expression(expression);
                     if (ast.isValid()) {
                         settings.functions[name] = {
@@ -1744,8 +1743,8 @@ class Settings {
                             args: variables.split(',').map(v => v.trim())
                         };
                     }
-                } else if (SettingsCommands.MACRO_VARIABLE.isValid(line)) {
-                    let [name, expression] = SettingsCommands.MACRO_VARIABLE.parseAsMacro(line);
+                } else if (ScriptCommands.MACRO_VARIABLE.isValid(line)) {
+                    let [name, expression] = ScriptCommands.MACRO_VARIABLE.parseAsMacro(line);
                     let ast = new Expression(expression);
                     if (ast.isValid()) {
                         settings.variables[name] = {
@@ -1753,11 +1752,11 @@ class Settings {
                             tableVariable: false
                         };
                     }
-                } else if (SettingsCommands.MACRO_CONST.isValid(line)) {
-                    let [name, value] = SettingsCommands.MACRO_CONST.parseAsMacro(line);
+                } else if (ScriptCommands.MACRO_CONST.isValid(line)) {
+                    let [name, value] = ScriptCommands.MACRO_CONST.parseAsMacro(line);
                     settings.constants.add(name, value);
-                } else if (SettingsCommands.MACRO_CONSTEXPR.isValid(line)) {
-                    let [name, expression] = SettingsCommands.MACRO_CONSTEXPR.parseAsMacro(line);
+                } else if (ScriptCommands.MACRO_CONSTEXPR.isValid(line)) {
+                    let [name, expression] = ScriptCommands.MACRO_CONSTEXPR.parseAsMacro(line);
 
                     let ast = new Expression(expression);
                     if (ast.isValid()) {
@@ -1771,7 +1770,7 @@ class Settings {
     }
 
     static handleMacros (string, tableType) {
-        let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
+        let lines = string.split('\n').map(line => Script.stripComments(line)[0].trim()).filter(line => line.length);
 
         // Scope for macros
         let scope = new ExpressionScope().add({
@@ -1785,12 +1784,12 @@ class Settings {
         constants.add('players', TableType.Browse);
 
         // Generate initial settings
-        let settings = Settings.handleMacroVariables(lines, constants);
-        while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
-            lines = Settings.handleConditionals(lines, tableType, scope.environment(settings));
-            settings = Settings.handleMacroVariables(lines, constants);
-            lines = Settings.handleLoops(lines, scope.environment(settings));
-            settings = Settings.handleMacroVariables(lines, constants);
+        let settings = Script.handleMacroVariables(lines, constants);
+        while (lines.some(line => ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line))) {
+            lines = Script.handleConditionals(lines, tableType, scope.environment(settings));
+            settings = Script.handleMacroVariables(lines, constants);
+            lines = Script.handleLoops(lines, scope.environment(settings));
+            settings = Script.handleMacroVariables(lines, constants);
         }
 
         return lines;
@@ -2821,7 +2820,7 @@ class Settings {
                 else {
                     ignored = ignored ? false : line[i];
                 }
-            } else if (!Settings.checkEscapeTrail(line, i) && line[i] == '#' && !ignored) {
+            } else if (!Script.checkEscapeTrail(line, i) && line[i] == '#' && !ignored) {
                 commentIndex = i;
                 break;
             }
@@ -2846,11 +2845,11 @@ class Settings {
 
     // Format code
     static format (string, scriptType = ScriptType.Table) {
-        const settings = new Settings('', scriptType, null);
+        const settings = new Script('', scriptType, null);
 
-        for (const line of Settings.handleMacros(string)) {
-            const trimmed = Settings.stripComments(line)[0].trim();
-            const command = SettingsCommands.find(command => command.canParse && command.canParseAsConstant && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed))
+        for (const line of Script.handleMacros(string)) {
+            const trimmed = Script.stripComments(line)[0].trim();
+            const command = ScriptCommands.find(command => command.canParse && command.canParseAsConstant && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed))
 
             if (command) {
                 command.parse(settings, trimmed);
@@ -2867,14 +2866,14 @@ class Settings {
             if (typeof cachedLine !== 'undefined') {
                 content += cachedLine;
             } else {
-                let [ commandLine, comment, commentIndex ] = Settings.stripComments(line, false);
+                let [ commandLine, comment, commentIndex ] = Script.stripComments(line, false);
                 let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
 
                 let currentContent = '';
                 currentContent += prefix.replace(/ /g, '&nbsp;');
 
                 if (trimmed) {
-                    const command = SettingsCommands.find(command => (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed));
+                    const command = ScriptCommands.find(command => (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed));
 
                     if (command) {
                         const lineHtml = command.format(settings, trimmed);
@@ -3192,7 +3191,7 @@ class ScriptEditor {
 
             this.mask.remove();
             this.mask = maskClone.cloneNode(true);
-            this.mask.innerHTML = Settings.format(value, this.scriptType);
+            this.mask.innerHTML = Script.format(value, this.scriptType);
             this.mask.style.transform = scrollTransform;
 
             this.wrapper.insertAdjacentElement('beforeend', this.mask);
