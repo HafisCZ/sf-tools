@@ -5,8 +5,8 @@ const TableType = {
 }
 
 const ScriptType = {
-    Table: 0,
-    Action: 1
+    Table: 0x1,
+    Action: 0x2
 }
 
 const ARG_MAP = {
@@ -241,14 +241,17 @@ class Highlighter {
 };
 
 class ScriptCommand {
-    constructor (regexp, parse, format) {
+    #internalParse;
+    #internalFormat;
+
+    constructor (type, regexp, parse, format) {
+        this.type = type;
         this.regexp = regexp;
-        this.internalParse = parse;
-        this.internalFormat = format;
+        this.#internalParse = parse;
+        this.#internalFormat = format;
 
         this.canParseAsConstant = false;
         this.canParse = true;
-        this.scriptType = ScriptType.Table;
     }
 
     isValid (string) {
@@ -256,7 +259,7 @@ class ScriptCommand {
     }
 
     parse (root, string) {
-        return this.internalParse(root, ... string.match(this.regexp).slice(1));
+        return this.#internalParse(root, ... string.match(this.regexp).slice(1));
     }
 
     parseAsMacro (string) {
@@ -264,7 +267,7 @@ class ScriptCommand {
     }
 
     format (root, string) {
-        return this.internalFormat(root, ... string.match(this.regexp).slice(1));
+        return this.#internalFormat(root, ... string.match(this.regexp).slice(1));
     }
 
     parseAsConstant () {
@@ -276,23 +279,13 @@ class ScriptCommand {
         this.canParse = false;
         return this;
     }
-
-    forScriptType (scriptType) {
-        this.scriptType = scriptType;
-        return this;
-    }
-
-    anyType () {
-        this.scriptType = true;
-        return this;
-    }
 }
 
 class ScriptCommands {
     static #commands = [];
 
-    static register (name, regexp, parse, format) {
-        const command = new ScriptCommand(regexp, parse, format);
+    static register (name, type, regexp, parse, format) {
+        const command = new ScriptCommand(type, regexp, parse, format);
 
         this[name] = command;
         this.#commands.push(command);
@@ -310,6 +303,7 @@ class ScriptCommands {
 */
 ScriptCommands.register(
     'MACRO_IFNOT',
+    ScriptType.Table,
     /^if not (.+)$/,
     null,
     (root, arg) => Highlighter.keyword('if not ').value(arg).asMacro()
@@ -317,6 +311,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_IF',
+    ScriptType.Table,
     /^if (.+)$/,
     null,
     (root, arg) => Highlighter.keyword('if ').value(arg).asMacro()
@@ -324,6 +319,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_ELSEIF',
+    ScriptType.Table,
     /^else if (.+)$/,
     null,
     (root, arg) => Highlighter.keyword('else if ').value(arg).asMacro()
@@ -331,6 +327,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_ELSE',
+    ScriptType.Table,
     /^else$/,
     null,
     (root) => Highlighter.keyword('else').asMacro()
@@ -338,6 +335,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_LOOP',
+    ScriptType.Table,
     /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
     null,
     (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro()
@@ -345,6 +343,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_END',
+    ScriptType.Table,
     /^end$/,
     null,
     (root) => Highlighter.keyword('end').asMacro()
@@ -352,6 +351,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_FUNCTION',
+    ScriptType.Table,
     /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
         const ast = new Expression(expression, root);
@@ -364,6 +364,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_VARIABLE',
+    ScriptType.Table,
     /^mset (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
         const ast = new Expression(expression, root);
@@ -376,6 +377,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_CONST',
+    ScriptType.Table,
     /^const (\w+) (.+)$/,
     (root, name, value) => root.addConstant(name, value),
     (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
@@ -383,6 +385,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'MACRO_CONSTEXPR',
+    ScriptType.Table,
     /^constexpr (\w+) (.+)$/,
     (root, name, expression) => {
         const ast = new Expression(expression);
@@ -395,6 +398,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_SERVER',
+    ScriptType.Table,
     /^server (@?\S+)$/,
     (root, value) => {
         if (ARG_MAP_SERVER.hasOwnProperty(value)) {
@@ -430,6 +434,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_NAME',
+    ScriptType.Table,
     /^name (@?\S+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
@@ -459,6 +464,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_WIDTH',
+    ScriptType.Table,
     /^width (@?\S+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
@@ -488,6 +494,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_COLUMNS',
+    ScriptType.Table,
     /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
     (root, parts) => {
         const values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
@@ -521,6 +528,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_NOT_DEFINED_VALUE',
+    ScriptType.Table,
     /^not defined value (@?.+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
@@ -542,6 +550,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_NOT_DEFINED_COLOR',
+    ScriptType.Table,
     /^not defined color (@?.+)$/,
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
@@ -568,6 +577,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_VALUE_DEFAULT',
+    ScriptType.Table,
     /^value default (@?\S+[\S ]*)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
@@ -589,6 +599,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_VALUE_RULE',
+    ScriptType.Table,
     /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
     (root, rule, value, value2) => {
         const ref = root.constants.fetch(value);
@@ -621,6 +632,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_COLOR_DEFAULT',
+    ScriptType.Table,
     /^color default (@?\S+[\S ]*)$/,
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
@@ -647,6 +659,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_COLOR_RULE',
+    ScriptType.Table,
     /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
     (root, rule, value, value2) => {
         const ref = root.constants.fetch(value);
@@ -684,6 +697,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ALIAS',
+    ScriptType.Table,
     /^alias (@?.+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
@@ -705,6 +719,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_FORMAT_STATISTICS',
+    ScriptType.Table,
     /^format statistics (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
@@ -735,6 +750,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_FORMAT_DIFFERENCE',
+    ScriptType.Table,
     /^format difference (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
@@ -765,6 +781,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_BACKGROUND',
+    ScriptType.Table,
     /^background (@?.+)$/,
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
@@ -791,6 +808,7 @@ ScriptCommands.register(
     
 ScriptCommands.register(
     'TABLE_FORMAT',
+    ScriptType.Table,
     /^(format|expf) (.+)$/,
     (root, token, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
@@ -815,6 +833,7 @@ ScriptCommands.register(
       
 ScriptCommands.register(
     'TABLE_CATEGORY',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)category(?: (.+))?$/,
     (root, extensions, name) => {
         root.addCategory(name || '', name == undefined);
@@ -835,6 +854,7 @@ ScriptCommands.register(
       
 ScriptCommands.register(
     'TABLE_GROUPED_HEADER',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
     (root, extensions, name, length) => {
         if (length > 0) {
@@ -864,6 +884,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_HEADER',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))?$/,
     (root, extensions, name) => {
         root.addHeader(name || '');
@@ -891,6 +912,7 @@ ScriptCommands.register(
     
 ScriptCommands.register(
     'TABLE_ROW',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, extensions, name, expression) => {
         let ast = new Expression(expression, root);
@@ -906,6 +928,7 @@ ScriptCommands.register(
       
 ScriptCommands.register(
     'TABLE_VAR',
+    ScriptType.Table,
     /^var (\w+) (.+)$/,
     (root, name, value) => root.addHeaderVariable(name, value),
     (root, name, value) => Highlighter.keyword('var ').constant(name).space().value(value)
@@ -913,6 +936,7 @@ ScriptCommands.register(
     
 ScriptCommands.register(
     'TABLE_EMBED_END',
+    ScriptType.Table,
     /^embed end$/,
     (root) => root.pushEmbed(),
     (root) => Highlighter.keyword('embed end')
@@ -920,6 +944,7 @@ ScriptCommands.register(
       
 ScriptCommands.register(
     'TABLE_EMBED',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)embed(?: (.+))?$/,
     (root, extensions, name) => {
         root.embedBlock(name || '');
@@ -939,6 +964,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_LAYOUT',
+    ScriptType.Table,
     /^layout ((\||\_|table|missing|statistics|rows|members)(\s+(\||\_|table|missing|statistics|rows|members))*)$/,
     (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
     (root, layout) => Highlighter.keyword('layout ').constant(layout)
@@ -946,6 +972,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL_LONG',
+    ScriptType.Table,
     /^set (\w+[\w ]*) with all as (.+)$/,
     (root, name, expression) => {
         let ast = new Expression(expression, root);
@@ -958,6 +985,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL',
+    ScriptType.Table,
     /^set \$(\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
         let ast = new Expression(expression, root);
@@ -970,6 +998,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_VARIABLE_UNFILTERED',
+    ScriptType.Table,
     /^set \$\$(\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
         let ast = new Expression(expression, root);
@@ -982,6 +1011,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_FUNCTION',
+    ScriptType.Table,
     /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
         let ast = new Expression(expression, root);
@@ -994,6 +1024,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_VARIABLE',
+    ScriptType.Table,
     /^set (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
         let ast = new Expression(expression, root);
@@ -1006,6 +1037,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_LINED',
+    ScriptType.Table,
     /^lined$/,
     (root, value) => root.addGlobal('lined', 1),
     (root, value) => Highlighter.keyword('lined')
@@ -1013,6 +1045,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_LINED_LONG',
+    ScriptType.Table,
     /^lined (on|off|thin|thick)$/,
     (root, value) => root.addGlobal('lined', ARG_MAP[value]),
     (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
@@ -1020,6 +1053,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_THEME',
+    ScriptType.Table,
     /^theme (light|dark)$/,
     (root, value) => root.addGlobal('theme', value),
     (root, value) => Highlighter.keyword('theme ').boolean(value, true)
@@ -1027,6 +1061,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_THEME_LONG',
+    ScriptType.Table,
     /^theme text:(\S+) background:(\S+)$/,
     (root, textColor, backgroundColor) => {
         root.addGlobal('theme', {
@@ -1039,6 +1074,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_PERFORMANCE',
+    ScriptType.Table,
     /^performance (\d+)$/,
     (root, value) => {
         if (value > 0) {
@@ -1050,6 +1086,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_SCALE',
+    ScriptType.Table,
     /^scale (\d+)$/,
     (root, value) => {
         if (value > 0) {
@@ -1061,6 +1098,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ROW_HEIGHT',
+    ScriptType.Table,
     /^row height (\d+)$/,
     (root, value) => {
         if (value > 0) {
@@ -1072,6 +1110,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_FONT',
+    ScriptType.Table,
     /^font (.+)$/,
     (root, font) => {
         let value = getCSSFont(font);
@@ -1084,6 +1123,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_OPTIONS',
+    ScriptType.Table,
     /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
     (root, key, value) => root.addShared(key, ARG_MAP[value]),
     (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
@@ -1091,6 +1131,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_CLEAN',
+    ScriptType.Table,
     /^clean$/,
     (root) => root.addLocal('clean', 1),
     (root) => Highlighter.keyword('clean')
@@ -1098,6 +1139,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_CLEAN_HARD',
+    ScriptType.Table,
     /^clean hard$/,
     (root) => root.addLocal('clean', 2),
     (root) => Highlighter.keyword('clean ').constant('hard')
@@ -1105,6 +1147,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ACTION',
+    ScriptType.Table,
     /^action (none|show)$/,
     (root, value) => root.addAction(value),
     (root, value) => Highlighter.keyword('action ').constant(value)
@@ -1112,6 +1155,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_INDEXED',
+    ScriptType.Table,
     /^indexed$/,
     (root, value) => root.addGlobal('indexed', 1),
     (root, value) => Highlighter.keyword('indexed')
@@ -1119,6 +1163,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_INDEXED_LONG',
+    ScriptType.Table,
     /^indexed (on|off|static)$/,
     (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
     (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
@@ -1126,6 +1171,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_OPTIONS_GLOBAL',
+    ScriptType.Table,
     /^(members|outdated|opaque|large rows|align title)$/,
     (root, key) => root.addGlobal(key, true),
     (root, key) => Highlighter.keyword(key)
@@ -1133,6 +1179,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_OPTIONS_GLOBAL_LONG',
+    ScriptType.Table,
     /^(members|outdated|opaque|large rows|align title) (on|off)$/,
     (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
     (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
@@ -1140,6 +1187,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_LEFT_CATEGORY',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)left category$/,
     (root, extensions) => {
         root.addGlobal('custom left', true);
@@ -1153,6 +1201,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_STATISTICS',
+    ScriptType.Table,
     /^statistics (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, name, expression) => {
         let ast = new Expression(expression, root);
@@ -1165,6 +1214,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_EXTRA',
+    ScriptType.Table,
     /^extra (.+)$/,
     (root, value) => root.addFormatExtraExpression(a => value),
     (root, value) => Highlighter.keyword('extra ').value(value)
@@ -1172,6 +1222,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_STYLE',
+    ScriptType.Table,
     /^style ([a-zA-Z\-]+) (.*)$/,
     (root, style, value) => root.addStyle(style, value),
     (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
@@ -1179,6 +1230,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABBLE_OPTIONS_SHARED',
+    ScriptType.Table,
     /^(visible|breakline|statistics color) (on|off)$/,
     (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
     (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
@@ -1186,6 +1238,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_BORDER',
+    ScriptType.Table,
     /^border (none|left|right|both|top|bottom)$/,
     (root, value) => root.addShared('border', ARG_MAP[value]),
     (root, value) => Highlighter.keyword('border ').constant(value)
@@ -1193,6 +1246,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ORDER',
+    ScriptType.Table,
     /^order by (.+)$/,
     (root, expression) => {
         let ast = new Expression(expression, root);
@@ -1205,6 +1259,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_GLOBAL_ORDER',
+    ScriptType.Table,
     /^glob order (asc|des)$/,
     (root, value) => root.addGlobOrder(undefined, value == 'asc'),
     (root, value) => Highlighter.keyword('glob order ').constant(value)
@@ -1212,6 +1267,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_GLOBAL_ORDER_INDEXED',
+    ScriptType.Table,
     /^glob order (asc|des) (\d+)$/,
     (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
     (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
@@ -1219,6 +1275,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_EXPRESSION',
+    ScriptType.Table,
     /^expr (.+)$/,
     (root, expression) => {
         let ast = new Expression(expression, root);
@@ -1231,6 +1288,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ALIAS_EXPRESSION',
+    ScriptType.Table,
     /^expa (.+)$/,
     (root, expression) => {
         let ast = new Expression(expression, root);
@@ -1243,6 +1301,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ALIGN',
+    ScriptType.Table,
     /^align (left|right|center)$/,
     (root, value) => root.addShared('align', value),
     (root, value) => Highlighter.keyword('align ').constant(value)
@@ -1250,6 +1309,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ALIGN_LONG',
+    ScriptType.Table,
     /^align (left|right|center) (left|right|center)$/,
     (root, value, value2) => {
         root.addShared('align', value);
@@ -1260,6 +1320,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_DISCARD',
+    ScriptType.Table,
     /^discard (.+)$/,
     (root, expression) => {
         let ast = new Expression(expression, root);
@@ -1272,6 +1333,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_ORDER_ALL',
+    ScriptType.Table,
     /^order all by (.+)$/,
     (root, expression) => {
         let ast = new Expression(expression, root);
@@ -1284,6 +1346,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_COLOR_EXPRESSION',
+    ScriptType.Table,
     /^expc (.+)$/,
     (root, expression) => {
         let ast = new Expression(expression, root);
@@ -1296,6 +1359,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_TEXT',
+    ScriptType.Table,
     /^text (auto|(?:.+))$/,
     (root, value) => {
         if (value === 'auto') {
@@ -1319,6 +1383,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_PADDING',
+    ScriptType.Table,
     /^padding (.+)$/,
     (root, value) => root.addLocal('padding', value),
     (root, value) => Highlighter.keyword('padding ').value(value)
@@ -1326,6 +1391,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_DEFINE',
+    ScriptType.Table,
     /^define (\w+)$/,
     (root, name) => root.addDefinition(name),
     (root, name) => Highlighter.keyword('define ').identifier(name),
@@ -1334,6 +1400,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_EXTEND',
+    ScriptType.Table,
     /^extend (\w+)$/,
     (root, name) => root.addExtension(name),
     (root, name) => Highlighter.keyword('extend ').constant(name)
@@ -1341,6 +1408,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'TABLE_PUSH',
+    ScriptType.Table,
     /^push$/,
     (root) => root.push(),
     (root) => Highlighter.keyword('push')
@@ -1348,6 +1416,7 @@ ScriptCommands.register(
 
 ScriptCommands.register(
     'ACTION_TAG',
+    ScriptType.Action,
     /^tag (player|file) as (.+) if (.+)$/,
     (root, type, tag, expr) => {
         let ast1 = new Expression(tag);
@@ -1357,10 +1426,11 @@ ScriptCommands.register(
         }
     },
     (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, Actions.EXPRESSION_CONFIG).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
-).forScriptType(ScriptType.Action)
+)
 
 ScriptCommands.register(
     'ACTION_REMOVE_PLAYER',
+    ScriptType.Action,
     /^remove player if (.+)$/,
     (root, expr) => {
         let ast1 = new Expression(expr);
@@ -1369,10 +1439,11 @@ ScriptCommands.register(
         }
     },
     (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
-).forScriptType(ScriptType.Action)
+)
 
 ScriptCommands.register(
     'ACTION_TRACK_MAPPED',
+    ScriptType.Table | ScriptType.Action,
     /^(track (\w+(?:[ \w]*\w)?) as (.+) when (.+))$/,
     (root, str, name, arg, arg2) => {
         let ast = new Expression(arg);
@@ -1382,10 +1453,11 @@ ScriptCommands.register(
         }
     },
     (root, str, name, arg, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg).keyword(' when ').expression(arg2)
-).anyType()
+)
 
 ScriptCommands.register(
     'ACTION_TRACK',
+    ScriptType.Table | ScriptType.Action,
     /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
     (root, str, name, arg) => {
         let ast = new Expression(arg);
@@ -1394,7 +1466,7 @@ ScriptCommands.register(
         }
     },
     (root, str, name, arg) => Highlighter.keyword('track ').constant(name).keyword(' when ').expression(arg)
-).anyType()
+)
 
 class Script {
     constructor (string, scriptType, tableType) {
@@ -1448,7 +1520,7 @@ class Script {
 
         // Parse settings
         for (const line of Script.handleMacros(string, tableType)) {
-            const command = ScriptCommands.find(command => command.canParse && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(line));
+            const command = ScriptCommands.find((command) => command.canParse && (command.type & scriptType) && command.isValid(line));
   
             if (command) {
                 command.parse(this, line);
@@ -2849,7 +2921,7 @@ class Script {
 
         for (const line of Script.handleMacros(string)) {
             const trimmed = Script.stripComments(line)[0].trim();
-            const command = ScriptCommands.find(command => command.canParse && command.canParseAsConstant && (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed))
+            const command = ScriptCommands.find((command) => command.canParse && command.canParseAsConstant && (command.type & scriptType) && command.isValid(trimmed))
 
             if (command) {
                 command.parse(settings, trimmed);
@@ -2873,7 +2945,7 @@ class Script {
                 currentContent += prefix.replace(/ /g, '&nbsp;');
 
                 if (trimmed) {
-                    const command = ScriptCommands.find(command => (command.scriptType === true || command.scriptType == scriptType) && command.isValid(trimmed));
+                    const command = ScriptCommands.find((command) => (command.type & scriptType) && command.isValid(trimmed));
 
                     if (command) {
                         const lineHtml = command.format(settings, trimmed);
