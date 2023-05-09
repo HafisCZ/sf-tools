@@ -87,7 +87,7 @@ class TableInstance {
     constructor (settings, tableType, filteredCategories = null) {
         // Parameters
         this.tableType = tableType;
-        this.settings = new Settings(settings, ScriptType.Table, tableType);
+        this.settings = new Script(settings, ScriptType.Table, tableType);
 
         // Handle trackers
         this.#updateTrackers();
