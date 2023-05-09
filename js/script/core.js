@@ -282,12 +282,15 @@ class ScriptCommand {
 }
 
 class ScriptCommands {
+    static #keys = [];
     static #commands = [];
 
-    static register (name, type, regexp, parse, format) {
+    static register (key, type, regexp, parse, format) {
         const command = new ScriptCommand(type, regexp, parse, format);
 
-        this[name] = command;
+        this[key] = command;
+
+        this.#keys.push(key);
         this.#commands.push(command);
 
         return command;
@@ -295,6 +298,10 @@ class ScriptCommands {
 
     static find (predicate) {
         return this.#commands.find(predicate);
+    }
+
+    static keys () {
+        return this.#keys;
     }
 }
 
