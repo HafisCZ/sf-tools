@@ -150,29 +150,38 @@ const SimulatorDebugDialog = new (class extends Dialog {
     }
 })();
 
-const SimulatorUtils = new (class {
-    configure ({ params, onCopy, onChange, onInsert, onLog, insertType }) {
+const SimulatorUtils = class {
+    static #currentConfig;
+    static #defaultConfig;
+
+    static #insertType;
+    static #display;
+    static #debug;
+
+    static #callbacks = new Map();
+
+    static configure ({ params, onCopy, onChange, onInsert, onLog, insertType }) {
         // Updated config
-        this.currentConfig = null;
-        this.defaultConfig = mergeDeep({}, CONFIG);
+        this.#currentConfig = null;
+        this.#defaultConfig = mergeDeep({}, CONFIG);
 
         // Callbacks
-        this._onCopy = onCopy;
-        this._onChange = onChange;
-        this._onInsert = onInsert;
-        this._onLog = onLog;
+        if (onCopy) this.#callbacks.set('copy', onCopy);
+        if (onChange) this.#callbacks.set('change', onChange);
+        if (onInsert) this.#callbacks.set('insert', onInsert);
+        if (onLog) this.#callbacks.set('log', onLog);
 
         // Data
-        this._insertType = insertType;
+        this.#insertType = insertType;
 
         // Debug elements
-        this.debug = params.has('debug');
-        if (this.debug) {
-            this._insertDebugElements();
+        this.#debug = params.has('debug');
+        if (this.#debug) {
+            this.#insertDebugElements();
         }
     }
 
-    _insertDebugElements () {
+    static #insertDebugElements () {
         const $dialogButton = $(`
             <div class="item !p-0">
                 <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.configure')}" data-inverted="">
@@ -184,14 +193,16 @@ const SimulatorUtils = new (class {
         $dialogButton.click(() => {
             DialogController.open(
                 SimulatorDebugDialog,
-                this.currentConfig,
-                this.defaultConfig,
+                this.#currentConfig,
+                this.#defaultConfig,
                 (config) => {
-                    this.currentConfig = config;
-                    this._renderConfig();
+                    this.#currentConfig = config;
+                    this.#renderConfig();
 
-                    if (typeof this._onChange === 'function') {
-                        this._onChange(this.currentConfig);
+                    if (this.#callbacks.has('change')) {
+                        const method = this.#callbacks.get('change');
+                        
+                        method(this.#currentConfig);
                     }
                 }
             );
@@ -199,7 +210,7 @@ const SimulatorUtils = new (class {
 
         $dialogButton.insertAfter($('.ui.huge.menu .header.item'))
 
-        if (typeof this._onCopy === 'function') {
+        if (this.#callbacks.has('copy')) {
             // Display copy only if callback is enabled
             const $copyButton = $(`
                 <div class="item !p-0">
@@ -210,9 +221,11 @@ const SimulatorUtils = new (class {
             `);
 
             $copyButton.click(() => {
+                const method = this.#callbacks.get('copy');
+
                 copyJSON({
-                    config: this.currentConfig,
-                    data: this._onCopy(),
+                    config: this.#currentConfig,
+                    data: method(),
                     type: 'custom'
                 });
             });
@@ -220,7 +233,7 @@ const SimulatorUtils = new (class {
             $copyButton.insertAfter($dialogButton);
         }
 
-        if (typeof this._onLog === 'function') {
+        if (this.#callbacks.has('log')) {
             // Display log button if enabled
             const $logButton = $(`
                 <div class="ui dropdown inverted item !p-0">
@@ -256,7 +269,9 @@ const SimulatorUtils = new (class {
                     show: 0
                 }
             }).dropdown('setting', 'onChange', (value) => {
-                this._onLog((json) => {
+                const method = this.#callbacks.get('log');
+                
+                method((json) => {
                     if (value === 'file') {
                         Exporter.json(
                             json,
@@ -278,9 +293,9 @@ const SimulatorUtils = new (class {
             $logButton.insertAfter($dialogButton);
         }
 
-        if (typeof this._onInsert === 'function' && typeof this._insertType === 'string') {
+        if (this.#callbacks.has('insert') && typeof this.#insertType === 'string') {
             fetch('js/debug/data.json').then((response) => response.json()).then((data) => {
-                const sampleData = data[this._insertType];
+                const sampleData = data[this.#insertType];
 
                 const $insertButton = $(`
                     <div class="ui mini dropdown inverted item !p-0">
@@ -308,8 +323,9 @@ const SimulatorUtils = new (class {
                     }
                 }).dropdown('setting', 'onChange', (value) => {
                     const { data } = sampleData[parseInt(value)];
+                    const method = this.#callbacks.get('insert');
 
-                    this._onInsert(data);
+                    method(data);
                 });
 
                 $insertButton.insertAfter($dialogButton);
@@ -317,17 +333,21 @@ const SimulatorUtils = new (class {
         }
     }
 
-    _renderConfig () {
-        if (typeof this.$display === 'undefined') {
-            this.$display = $('<div class="text-white position-fixed left-8 bottom-8" style="font-size: 90%;"></div>').appendTo($(document.body));
+    static #renderConfig () {
+        if (typeof this.#display === 'undefined') {
+            this.#display = document.createElement('div');
+            this.#display.setAttribute('class', 'text-white position-fixed left-8 bottom-8');
+            this.#display.setAttribute('style', 'font-size: 90%;');
+
+            document.body.appendChild(this.#display);
         }
 
         let content = '';
-        if (this.currentConfig) {
-            for (const [type, value] of Object.entries(this.defaultConfig)) {
+        if (this.#currentConfig) {
+            for (const [type, value] of Object.entries(this.#defaultConfig)) {
                 const differences = [];
                 for (const [subtype, subvalue] of Object.entries(value)) {
-                    const customValue = _dig(this.currentConfig, type, subtype);
+                    const customValue = _dig(this.#currentConfig, type, subtype);
 
                     if (typeof customValue !== 'undefined' && (Array.isArray(subvalue) ? customValue.some((v, i) => v != subvalue[i]) : customValue != subvalue)) {
                         differences.push(`<div>${subtype}: <span class="text-red">${subvalue}</span> -&gt; <span class="text-greenyellow">${customValue}</span></div>`)
@@ -339,21 +359,22 @@ const SimulatorUtils = new (class {
                         <div>
                             <h4 class="!mt-2 !mb-0">${type}</h4>
                             ${differences.join('')}
-                        </div>`;
+                        </div>
+                    `;
                 }
             }
         }
 
-        this.$display.html(content);
+        this.#display.innerHTML = content;
     }
 
-    handlePaste (json) {
+    static handlePaste (json) {
         if (typeof json === 'object' && json.type === 'custom') {
             const { data, config } = json;
 
-            if (this.debug) {
-                this.currentConfig = config;
-                this._renderConfig();
+            if (this.#debug) {
+                this.#currentConfig = config;
+                this.#renderConfig();
             }
 
             return data;
@@ -362,12 +383,12 @@ const SimulatorUtils = new (class {
         }
     }
 
-    get config () {
-        return this.currentConfig;
+    static get config () {
+        return this.#currentConfig;
     }
 
-    set config (data) {
-        this.currentConfig = data;
-        this._renderConfig();
+    static set config (data) {
+        this.#currentConfig = data;
+        this.#renderConfig();
     }
-})();
+}
