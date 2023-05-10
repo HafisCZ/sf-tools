@@ -103,27 +103,27 @@
         "attack2": "Katapult",
         "attack3": "Blokovaný",
         "attack4": "Uhnout",
-        "attack5": "Swoop",
-        "attack6": "Swoop Blocked",
-        "attack7": "Swoop Evaded",
-        "attack8": "Critical Blocked",
-        "attack9": "Critical Evaded",
+        "attack5": "Střemhlavý útok",
+        "attack6": "Střemhlavý útok zablokován",
+        "attack7": "Střemhlavý útok vyhnut",
+        "attack8": "Kritický zásah zablokován",
+        "attack9": "Kritický zásah vyhnut",
         "attack10": "Běžný",
-        "attack11": "Critical",
+        "attack11": "Kritický zásah",
         "attack13": "Blokovaný",
-        "attack14": "Evaded",
-        "attack18": "Critical Blocked",
-        "attack19": "Critical Evaded",
-        "attack15": "Fireball",
-        "attack16": "Fireball blocked",
-        "attack20": "Normal",
+        "attack14": "Zásah vyhnut",
+        "attack18": "Kritický zásah zablokován",
+        "attack19": "Kritický zásah vyhnut",
+        "attack15": "Tajemná kometa",
+        "attack16": "Tajemná kometa odražena",
+        "attack20": "Zásah",
         "attack21": "Kritický",
         "attack23": "Blokovaný",
-        "attack24": "Evaded",
+        "attack24": "Zásah vyhnut",
         "attack28": "Kritický zásah zablokován",
-        "attack29": "Critical Evaded",
+        "attack29": "Kritický zásah vyhnut",
         "attack100": "Oživit",
-        "attack200": "Bard Song",
+        "attack200": "Melodie",
         "gt_background1": "Zlato",
         "gt_background2": "Stříbrný",
         "gt_background3": "Bronz",
@@ -178,26 +178,26 @@
     },
     "achievements": {
         "0": "Světoběžník",
-        "1": "The Count",
-        "2": "The King",
-        "3": "Raider",
+        "1": "Hrabě",
+        "2": "Král",
+        "3": "Nájezdník",
         "4": "Vypravěč příběhů",
-        "5": "Boss of Easteros",
-        "6": "Dark Wanderer",
+        "5": "Boss z Východeros",
+        "6": "Termný poutník",
         "7": "Stínový hráč",
-        "8": "Twister Tamer",
+        "8": "Tornádo Lou",
         "9": "Houbičkář",
-        "10": "Lucky Fellow",
-        "11": "Rip-off Rip-off",
+        "10": "Štastlivec",
+        "11": "Šejdíř šejdírů",
         "12": "Epic Purist",
-        "13": "Invincible",
-        "14": "Jeweler",
-        "15": "Mule",
+        "13": "Neporazitelný",
+        "14": "Kletnotník",
+        "15": "Naložený oslík",
         "16": "Dračí Jezdec",
         "17": "Kryptozoolog",
-        "18": "Animal Trainer",
-        "19": "Pet Fattening",
-        "20": "Heavy Spinner",
+        "18": "Milovník zvířat",
+        "19": "Velkovýkrmna",
+        "20": "Bába Tutovka",
         "21": "Hrdina",
         "22": "Elita",
         "23": "Špička ledovce",
@@ -210,7 +210,7 @@
         "30": "King of Kings",
         "31": "Elitní cech",
         "32": "Petshop Boy",
-        "33": "Song of the Blacksmith",
+        "33": "Píseň kováře",
         "34": "Nebe je limit",
         "35": "Výročí",
         "36": "Milovník mazlíčků",
@@ -218,12 +218,12 @@
         "38": "Plavba přes Stínovou Zem",
         "39": "Urgentní potřeba",
         "40": "Egoista",
-        "41": "Naturism",
-        "42": "Epic Companions",
-        "43": "Square Eyes",
-        "44": "Miner",
+        "41": "Nudista",
+        "42": "Epičtí společníci",
+        "43": "Hranaté oči",
+        "44": "Těžař",
         "45": "Fashion-conscious",
-        "46": "Black Gold",
+        "46": "Černé zlato",
         "47": "Witchcraft",
         "48": "Reliable",
         "49": "Collect 'Em All",
@@ -268,18 +268,18 @@
         "88": "A Thousand Points Plan",
         "89": "Ten Grand",
         "90": "Tavern Brawler",
-        "91": "Closing Time",
-        "92": "Rune Emperor",
-        "93": "Dragon Adept",
-        "94": "Chaser of Dragons",
-        "95": "Bright Ghost Hunter",
-        "96": "Dark Ghost Hunter",
-        "97": "League of Incompetence",
-        "98": "League of Vindictiveness",
-        "99": "Ying Dojo Master",
-        "100": "Yang Dojo Master",
-        "101": "Understander of Giants",
-        "102": "Tamer of Giants"
+        "91": "Zavíračka",
+        "92": "Runový císař",
+        "93": "Znalec draků",
+        "94": "Naháněč draků",
+        "95": "Bystrý lovec duchů",
+        "96": "Temný lovec duchů",
+        "97": "Liga nekompetentnosti",
+        "98": "Liga pomstychtivosti",
+        "99": "Mistr Jin Dojo",
+        "100": "Mistr Jang Dojo",
+        "101": "Pochopitel obrů",
+        "102": "Krotitel obrů"
     },
     "index": {
         "toggle": "Zobrazit autory",
@@ -342,8 +342,8 @@
             "desc": "Zjisti jakou máš šanci na poražení hráčů ve svém podsvětí"
         },
         "analyzer": {
-            "title": "Fight Analyzer",
-            "desc": "Display all fights within a file for detailed analysis"
+            "title": "Analyzér soubojů",
+            "desc": "Pro detailní analýzu soubojů"
         },
         "fights": {
             "title": "Prohlížeč soubojů",
@@ -384,7 +384,7 @@
     },
     "terms": {
         "title": "Obchodních podmínkách",
-        "title2": "Usage",
+        "title2": "Použití",
         "button": {
             "accept_full": "Rozumím a přijímám tyto podmínky",
             "accept": "Přijmout",
@@ -445,7 +445,7 @@
             "settings": "Nastavení",
             "temporary": "Dočasná relace",
             "changelog": "Seznam změn",
-            "profile": "Profiles"
+            "profile": "Profily"
         },
         "files": {
             "titles": {
@@ -530,6 +530,7 @@
         },
         "copy": {
             "image": "Uložit jako obrázek",
+            "csv": "Save as CSV",
             "basic": "Kopírovat tabulku",
             "fight": "Kopírovat tabulku pro simulátory",
             "player": "Kopírovat",
@@ -628,14 +629,14 @@
             "format": "Format",
             "get": "Export",
             "ok": "Ok",
-            "public": "Export only public data (regardless of your current global setting)",
+            "public": "Exportovat pouze veřejná data (bez ohledu na aktuální globální nastavení)",
             "expire": "Kód automaticky expiruje za 2 dny.",
             "single_use": "Jedno použití",
             "single_use_notice": "Zanechejte tuto možnost aktivní pokud sdílíte soubory pouze s jednou osobou.",
             "files": {
-                "all": "All",
-                "last": "Latest",
-                "last5": "Latest 5",
+                "all": "Vše",
+                "last": "Poslední",
+                "last5": "Posledních 5",
                 "current": "Selected",
                 "currentWithReference": "Selected & Reference"
             },
@@ -1059,12 +1060,12 @@
             "4": "Greed"
         },
         "win": {
-            "all": "All #{count} floors were defeated with 100% chance",
-            "none": "All #{count} floors are impossible to defeat",
-            "first": "First #{count} floors were defeated with 100% chance",
-            "last": "Last #{count} floors are impossible to defeat"
+            "all": "Všech #{count} pater bylo poraženo se 100% šancí",
+            "none": "Žádné z #{count} pater lze porazit",
+            "first": "Prvních #{count} pater bylo poraženo se 100% šancí",
+            "last": "Posledních #{count} pater nelze porazit"
         },
-        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+        "footer#": "Podle <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> od ÐonMuErte."
     },
     "dungeons": {
         "simulate_one": "Simulovat",
@@ -1094,7 +1095,6 @@
             "keep_original": "Ponechat originální"
         },
         "simulate_next_settings": {
-            "tooltip": "Right click to adjust the acceptable win % range against a dungeon",
             "title": "Simulation threshold",
             "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
         },
@@ -1127,14 +1127,14 @@
             "import": "Import",
             "clear": "Clear",
             "export": "Export",
-            "options": "Options"
+            "options": "Nastavení"
         },
         "form": {
-            "fight_group": "Select group",
-            "fight_list": "Select fight",
+            "fight_group": "Vybrat skupinu",
+            "fight_list": "Vybrat boj",
             "editable_data": "Editable data"
         },
-        "players": "Players",
+        "players": "Hráči",
         "preview": "Fight preview",
         "export": "Export fights",
         "autofill": "Fill editable data in from predefined list",
@@ -1269,11 +1269,11 @@
         }
     },
     "integration": {
-        "file": "File",
+        "file": "Soubor",
         "game": "Endpoint",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "Načíst uložené postavy",
+            "guilds": "Načíst uložené cechy"
         }
     },
     "simulator": {
@@ -1285,13 +1285,13 @@
         "simulate": "Simulovat",
         "configure": "Konfigurace simulátoru",
         "configure_copy": "Kopírovat všechno včetně aktuální konfigurace",
-        "configure_insert": "Insert sample data",
-        "configure_log": "Run simulation with logging enabled",
-        "configure_log_file": "Save to file",
-        "configure_log_broadcast": "Open with analyzer",
+        "configure_insert": "Vložit testovací data",
+        "configure_log": "Spustit simulaci se zapnutým logováním",
+        "configure_log_file": "Uložit do souboru",
+        "configure_log_broadcast": "Otevřít pomocí analyzátoru",
         "clipboard": {
             "copy_all": "Kopírovat vše",
-            "paste_mode": "Toggle Add/Replace insertion mode"
+            "paste_mode": "Přepnout režim vložení přidání/nahrazení"
         },
         "win_chance": "Výhra %",
         "min_chance": "Min. %",
@@ -1354,22 +1354,26 @@
             "message": "Stahuji data"
         },
         "step7": {
-            "title": "Select your character"
+            "title": "Vybrat postavu"
         },
         "user_error": {
             "title": "Tvoje jméno nebo heslo není platné",
             "message": "Prosím zkontroluj zda je ve vyžadovaném formátu (username@url)"
         },
         "errors": {
-            "error_unreachable": "Server cannot be reached",
-            "error_malformed_url": "Server URL is not valid",
-            "error_wrong_pass": "Incorrect password",
-            "error_player_not_found": "Character was not found on the server",
-            "error_sessionid_invalid": "Session expired or interrupted by another device",
-            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
-            "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
-            "playa_account_not_active": "Your account is not active",
-            "playa_account_empty": "Your account has no characters"
+            "error_unreachable": "Server není dostupný",
+            "error_malformed_url": "Adresa serveru není platná",
+            "error_wrong_pass": "Špatné heslo",
+            "error_player_not_found": "Postava nebyla nalezena na tomto serveru",
+            "error_sessionid_invalid": "Spojení vypršelo nebo bylo přerušeno jiným zařízením",
+            "error_login_only_with_sf_account_allowed": "Tato postava je dostupná pouze skrze S&F účet",
+            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
+            "playa_account_login_unknown_or_wrong_credentials": "Špatné heslo nebo jméno",
+            "playa_account_not_active": "Tvůj účet není aktivní",
+            "playa_account_empty": "Tvůj účet neobsahuje zádné postavy",
+            "playa_account_blocked": "Your account has been permanently locked",
+            "playa_account_blocked_temporary": "Your account has been temporarily locked",
+            "an_error_occurred": "Server is not available, please try again later"
         }
     },
     "database": {
@@ -1387,14 +1391,14 @@
     "dialog": {
         "shared": {
             "cancel": "Zrušit",
-            "continue": "Continue",
+            "continue": "Pokračovat",
             "save": "Uložit",
-            "close": "Close",
+            "close": "Zavřít",
             "ok": "Ok",
-            "apply": "Apply"
+            "apply": "Použít"
         },
         "analyzer_autofill": {
-            "title": "Available data",
+            "title": "Dostupná data",
             "search": "Search by dungeon or boss name ..."
         },
         "script_manual": {
@@ -1403,11 +1407,11 @@
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
                 "header_private": "Headers for own characters",
-                "header_scoped": "Subheaders for objects",
-                "header_itemizable": "Subheaders for inventory",
-                "function": "functions(...)",
+                "header_scoped": "Accessors for objects",
+                "function": "Functions",
                 "enum": "Enumerations",
-                "constant": "@constants"
+                "constant": "Default constants",
+                "variable": "Variables"
             },
             "description": {}
         },

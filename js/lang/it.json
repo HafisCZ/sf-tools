@@ -530,6 +530,7 @@
         },
         "copy": {
             "image": "Salva come immagine",
+            "csv": "Save as CSV",
             "basic": "Copia tabella",
             "fight": "Copia tabella per simulatore scontri",
             "player": "Copia",
@@ -1094,7 +1095,6 @@
             "keep_original": "Mantieni l'originale"
         },
         "simulate_next_settings": {
-            "tooltip": "Clic con il tasto destro per regolare l'intervallo di vincita accettabile per il dungeon",
             "title": "Soglia di simulaizone",
             "label": "% Soglia - Ogni boss al di fuori della soglia verrà saltato"
         },
@@ -1367,9 +1367,13 @@
             "error_player_not_found": "Il personaggio non è stato trovato sul server",
             "error_sessionid_invalid": "Sessione scaduta o interrotta da un altro dispositivo",
             "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
             "playa_account_not_active": "Your account is not active",
-            "playa_account_empty": "Your account has no characters"
+            "playa_account_empty": "Your account has no characters",
+            "playa_account_blocked": "Your account has been permanently locked",
+            "playa_account_blocked_temporary": "Your account has been temporarily locked",
+            "an_error_occurred": "Server is not available, please try again later"
         }
     },
     "database": {
@@ -1403,11 +1407,11 @@
                 "header": "Intestazioni per tutti i personaggi",
                 "header_protected": "Intestazioni per i membri della gilda",
                 "header_private": "Intestazioni per i propri personaggi",
-                "header_scoped": "Sotto-intestazioni per oggetti",
-                "header_itemizable": "Sotto-intestazioni per l'inventario",
-                "function": "funzioni(...)",
+                "header_scoped": "Accessors for objects",
+                "function": "Functions",
                 "enum": "Enumerazioni",
-                "constant": "@costanti"
+                "constant": "Default constants",
+                "variable": "Variables"
             },
             "description": {}
         },

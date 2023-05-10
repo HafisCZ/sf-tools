@@ -129,22 +129,22 @@
         "gt_background3": "Bronze",
         "item1": "Weapon",
         "item2": "Shield",
-        "item3": "Armor",
-        "item4": "Shoes",
-        "item5": "Gloves",
-        "item6": "Helmet",
-        "item7": "Belt",
+        "item3": "Rüstung",
+        "item4": "Stiefel",
+        "item5": "Handschuhe",
+        "item6": "Helm",
+        "item7": "Gürtel",
         "item8": "Necklace",
         "item9": "Ring",
         "item10": "Talisman",
-        "item11": "Key",
-        "item12": "Potion",
-        "item13": "Scrapbook",
+        "item11": "Schlüssel",
+        "item12": "Trank",
+        "item13": "Sammelalbum",
         "item14": "Scroll",
-        "item15": "Gem",
-        "item16": "Egg",
+        "item15": "Edelstein",
+        "item16": "Ei",
         "item17": "Hourglass",
-        "item18": "Heart",
+        "item18": "Herz",
         "item19": "Wheel",
         "rune1": "Gold",
         "rune2": "Epic chance",
@@ -530,6 +530,7 @@
         },
         "copy": {
             "image": "Als Bild speichern",
+            "csv": "Save as CSV",
             "basic": "Tabelle kopieren",
             "fight": "Tabelle für Kampfsimulation kopieren",
             "player": "Kopieren",
@@ -1094,7 +1095,6 @@
             "keep_original": "Behalte das Original"
         },
         "simulate_next_settings": {
-            "tooltip": "Rechtsklick, um die niedrigste akzeptable Winchance gegen einen Dungeon einzustellen",
             "title": "Schwellenwert für die Simulation",
             "label": "Grenzwert % - Jeder Gegner außerhalb dieser Schwelle wird übersprungen"
         },
@@ -1269,7 +1269,7 @@
         }
     },
     "integration": {
-        "file": "File",
+        "file": "Datei",
         "game": "Endpoint",
         "poll": {
             "players": "Poll saved players",
@@ -1367,9 +1367,13 @@
             "error_player_not_found": "Charakter wurde nicht auf dem Server gefunden",
             "error_sessionid_invalid": "Session expired or interrupted by another device",
             "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Falscher Account Name oder Passwort",
             "playa_account_not_active": "Dein Account ist nicht aktiv",
-            "playa_account_empty": "Your account has no characters"
+            "playa_account_empty": "Your account has no characters",
+            "playa_account_blocked": "Your account has been permanently locked",
+            "playa_account_blocked_temporary": "Your account has been temporarily locked",
+            "an_error_occurred": "Server is not available, please try again later"
         }
     },
     "database": {
@@ -1403,11 +1407,11 @@
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
                 "header_private": "Headers for own characters",
-                "header_scoped": "Subheaders for objects",
-                "header_itemizable": "Subheaders for inventory",
-                "function": "functions(...)",
+                "header_scoped": "Accessors for objects",
+                "function": "Functions",
                 "enum": "Enumerations",
-                "constant": "@Konstanten"
+                "constant": "Default constants",
+                "variable": "Variables"
             },
             "description": {}
         },
@@ -1417,9 +1421,9 @@
                 "rage_display_mode": {
                     "title": "Rage display mode",
                     "value": {
-                        "decimal": "Decimal",
+                        "decimal": "Dezimal",
                         "percentage": "Percentage",
-                        "fraction": "Fractional"
+                        "fraction": "Bruchzahl"
                     }
                 },
                 "type_display_mode": {
@@ -1495,8 +1499,8 @@
                 "placeholder": "Enter your private code..."
             },
             "list": {
-                "about": "Added by #{author}",
-                "about_with_date": "Added by #{author} on #{date}"
+                "about": "Hinzugefügt von #{author}",
+                "about_with_date": "Hinzugefügt von #{author} am #{date}"
             }
         },
         "statistics_integration_options": {
