@@ -167,7 +167,6 @@ class OptionsHandler {
 const SiteOptions = new OptionsHandler(
     'options',
     {
-        insecure: false,
         obfuscated: false,
         advanced: false,
         hidden: false,
@@ -192,8 +191,7 @@ const SiteOptions = new OptionsHandler(
         export_public_only: false,
         export_bundle_groups: true,
         unsafe_delete: false,
-        event_override: [],
-        legacy_battlemage_icon: false
+        event_override: []
     }
 )
 

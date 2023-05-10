@@ -2794,9 +2794,7 @@ class SettingsTab extends Tab {
 
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
-        this.prepareCheckbox('insecure', 'insecure');
         this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
-        this.prepareCheckbox('legacy_battlemage_icon', 'legacy-battlemage-icon');
         this.prepareCheckbox('terms_accepted', 'terms');
 
         SiteOptions.onChange('terms_accepted', enabled => {
