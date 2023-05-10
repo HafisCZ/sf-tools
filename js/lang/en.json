@@ -1091,10 +1091,6 @@
             "class": "Change class",
             "keep_original": "Keep original"
         },
-        "simulate_next_settings": {
-            "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
-        },
         "simulate_next_info": {
             "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use <b>All</b> function to simulate all open dungeons"
@@ -1393,6 +1389,13 @@
             "close": "Close",
             "ok": "Ok",
             "apply": "Apply"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Available data",

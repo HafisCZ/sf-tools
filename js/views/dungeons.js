@@ -1,22 +1,29 @@
 const SimulatorOptionsDialog = new (class extends Dialog {
+  constructor () {
+    super({
+      key: 'dungeons_options'
+    })
+  }
+
   _createModal () {
       return `
           <div class="small inverted bordered dialog">
-              <div class="header">${intl(`dungeons.simulate_next_settings.title`)}</div>
+              <div class="header">${this.intl('title')}</div>
               <div class="ui inverted form">
+                  <h2 class="ui inverted header">${this.intl('threshold.title')}</h2>
                   <div class="field">
-                      <label>${intl(`dungeons.simulate_next_settings.label`)}</label>
+                      <label>${this.intl('threshold.label')}</label>
                       <div class="ui range small inverted slider" data-op="slider"></div>
                   </div>
                   <div class="two fields">
                       <div class="field">
-                          <label>${intl(`general.min`)}</label>
+                          <label>${intl('general.min')}</label>
                           <div class="ui inverted input">
                               <input type="text" data-op="min">
                           </div>
                       </div>
                       <div class="field">
-                          <label>${intl(`general.max`)}</label>
+                          <label>${intl('general.max')}</label>
                           <div class="ui inverted input">
                               <input type="text" data-op="max">
                           </div>
@@ -84,12 +91,10 @@ const SimulatorOptionsDialog = new (class extends Dialog {
 
       this.$okButton = this.$parent.find('[data-op="ok"');
       this.$okButton.click(() => {
-          this.callback(
-              this.currentMin,
-              this.currentMax
-          );
+        this.options.threshold_min = this.currentMin;
+        this.options.threshold_max = this.currentMax;
 
-          this.close();
+        this.close();
       });
 
       this.$cancelButton = this.$parent.find('[data-op="cancel"]');
@@ -98,12 +103,14 @@ const SimulatorOptionsDialog = new (class extends Dialog {
       });
   }
 
-  _applyArguments (currentMin, currentMax, callback) {
-      this.currentMin = currentMin;
-      this.currentMax = currentMax;
-      this.callback = callback;
+  _applyArguments (options, callback) {
+    this.callback = callback;
+    
+    this.options = options;
+    this.currentMin = this.options.threshold_min;
+    this.currentMax = this.options.threshold_max;
 
-      this._update(true);
+    this._update(true);
   }
 })()
 
