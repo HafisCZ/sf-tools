@@ -594,12 +594,23 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'function', 'value', 'trunc',
+  'function', 'value', 'ceil',
   function (value) {
     if (isNaN(value)) {
       return undefined;
     } else {
       return Math.ceil(value);
+    }
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'function', 'value', 'floor',
+  function (value) {
+    if (isNaN(value)) {
+      return undefined;
+    } else {
+      return Math.floor(value);
     }
   }
 )
