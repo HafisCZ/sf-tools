@@ -4,17 +4,20 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         $('#cheat-menu-toggle .icon').toggleClass('left right');
     });
     $('#cheat-menu .checkbox').checkbox('set unchecked');
-    
+
+    const dungeonOptions = new OptionsHandler(
+        'dungeons',
+        {
+            threshold_min: 5,
+            threshold_max: 100
+        }
+    );
+
     // Options modal
     $('#button-options').click(function () {
         DialogController.open(
             SimulatorOptionsDialog,
-            Store.shared.get('dungeon_sim/threshold', 5, true),
-            Store.shared.get('dungeon_sim/threshold_max', 100, true),
-            (min, max) => {
-                Store.shared.set('dungeon_sim/threshold', min, true)
-                Store.shared.set('dungeon_sim/threshold_max', max, true)
-            }
+            dungeonOptions
         );
     })
 
@@ -567,8 +570,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
         const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
         
-        const threshold_min = _clamp(Number(Store.shared.get('dungeon_sim/threshold', 5, true)), 0, 100);
-        const threshold_max = _clamp(Number(Store.shared.get('dungeon_sim/threshold_max', 5, true)), threshold_min, 100);
+        const threshold_min = _clamp(dungeonOptions.threshold_min, 0, 100);
+        const threshold_max = _clamp(dungeonOptions.threshold_max, threshold_min, 100);
         
         if (availableBosses && availableBosses.length > 0 && editor.valid()) {
             const results = [];
