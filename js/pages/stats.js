@@ -2241,7 +2241,7 @@ class FilesTab extends Tab {
                 <label>${intl('stats.files.filters.expression')}</label>
                 <div class="ta-wrapper">
                     <div class="ui inverted input">
-                        <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
+                        <input class="ta-area" style="padding-left: 1em !important;" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
                     </div>
                     <div class="ta-content" style="width: 100%; margin-top: calc(-1em - 16px); margin-left: 1em;"></div>
                 </div>
