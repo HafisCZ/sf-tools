@@ -3358,15 +3358,37 @@ class ScriptEditor {
         });
     }
 
+    focus () {
+        this.area.focus();
+    }
+
+    get selection () {
+        return {
+            start: this.area.selectionStart,
+            end: this.area.selectionEnd
+        };
+    }
+
+    set selection ({ start, end }) {
+        this.area.selectionStart = start;
+        this.area.selectionEnd = end;
+    }
+
     get content () {
         return this.area.value;
     }
 
-    set content (value) {
-        this.area.value = value;
+    set content (text) {
+        const previousText = this.area.value;
+        const previousSelection = this.selection;
+
+        this.area.value = text;
         this.area.dispatchEvent(new Event('input'));
 
         this.scrollTop();
+        this.focus();
+
+        this.selection = previousText === text ? previousSelection : { start: 0, end: 0 };
     }
 
     scrollTop () {
