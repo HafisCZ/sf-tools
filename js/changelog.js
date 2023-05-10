@@ -41,7 +41,10 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added option to save table as CSV file',
-            'Added many performance improvements'
+            'Added many performance improvements',
+            'Added line numbers to script editor',
+            'Fixed script editor losing focus when switching tabs',
+            'Removed insecure table check'
         ],
         'Dungeon Simulator': [
             'Added new button for simulator threshold settings',
