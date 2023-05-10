@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator' }, function () {
+    SimulatorUtils.configure({});
+    
     $('#sim-threads').captiveInputField('hydra_sim/threads', 4, v => !isNaN(v) && v >= 1);
     $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
     
