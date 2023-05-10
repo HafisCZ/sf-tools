@@ -1,0 +1,86 @@
+# frozen_string_literal: true
+
+require 'zip'
+require 'httparty'
+
+class Download
+  include HTTParty
+
+  URL_REQUEST_BUILD = 'https://crowdin.com/api/v2/projects/555523/translations/builds'
+  URL_CHECK_BUILD = 'https://crowdin.com/api/v2/projects/555523/translations/builds/%<build_id>s'
+  URL_DOWNLOAD_BUILD = 'https://crowdin.com/api/v2/projects/555523/translations/builds/%<build_id>s/download'
+
+  def initialize(argv:)
+    @token = argv[0]
+  end
+
+  def run
+    build_id = request_build
+    puts "Build #{build_id} scheduled"
+
+    loop do
+      sleep(10)
+      break if build_finished?(build_id)
+
+      puts 'Build not ready, waiting 10 seconds'
+    end
+
+    puts 'Downloading build'
+    file = download_build(build_id)
+
+    puts 'Unpacking files'
+    unpack_and_replace_files(file)
+  end
+
+  private
+
+  def download_build(build_id)
+    url = get(format(URL_DOWNLOAD_BUILD, build_id: build_id)).dig('data', 'url')
+
+    self.class.get(url).body
+  end
+
+  def build_finished?(build_id)
+    get(format(URL_CHECK_BUILD, build_id: build_id)).dig('data', 'status') == 'finished'
+  end
+
+  def request_build
+    post(URL_REQUEST_BUILD, {}).dig('data', 'id')
+  end
+
+  def unpack_and_replace_files(content)
+    buffer = StringIO.new(content)
+
+    Zip::InputStream.open(buffer) do |io|
+      while (entry = io.get_next_entry)
+        next unless entry.name.end_with?('.json')
+
+        File.binwrite(
+          entry.name.split('/').last,
+          entry.get_input_stream.read
+        )
+      end
+    end
+  end
+
+  def get(url)
+    JSON.parse(
+      self.class.get(url, headers: headers).body
+    )
+  end
+
+  def post(url, body)
+    JSON.parse(
+      self.class.post(url, headers: headers, body: body.to_json).body
+    )
+  end
+
+  def headers
+    {
+      'Authorization' => "Bearer #{@token}",
+      'Content-Type' => 'application/json'
+    }
+  end
+end
+
+Download.new(argv: ARGV).run if __FILE__ == $0
