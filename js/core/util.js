@@ -446,9 +446,5 @@ function _invertColor (color, mono = false) {
 }
 
 function _classImageUrl (klass) {
-    if (klass == BATTLEMAGE && SiteOptions.legacy_battlemage_icon) {
-        return 'res/class5_legacy.png'
-    } else {
-        return `res/class${klass}.png`
-    }
+    return `res/class${klass}.png`
 }
