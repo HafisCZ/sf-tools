@@ -131,7 +131,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
               <div class="twelve wide field">
                   <label>${this.intl('selector')}</label>
                   <div class="ta-wrapper" style="height: initial;">
-                      <input data-op="selector" class="ta-area" data-op="primary" type="text" placeholder="${this.intl('selector')}">
+                      <input data-op="selector" class="ta-area" style="padding-left: 1em !important;" data-op="primary" type="text" placeholder="${this.intl('selector')}">
                       <div data-op="overlay" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                   </div>
               </div>
