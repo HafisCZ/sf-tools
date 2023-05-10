@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator' }, function () {
+    SimulatorUtils.configure({});
+    
     function validateLists () {
         return playerList[0].length > 0 && playerList[1].length > 0;
     }

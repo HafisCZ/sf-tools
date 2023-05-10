@@ -1277,6 +1277,7 @@
         "save": "Save",
         "simulate": "Simulate",
         "configure": "Configure simulator",
+        "information": "Important notice!",
         "configure_copy": "Copy everyone including current configuration",
         "configure_insert": "Insert sample data",
         "configure_log": "Run simulation with logging enabled",

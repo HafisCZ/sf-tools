@@ -193,7 +193,8 @@ const SiteOptions = new OptionsHandler(
         export_public_only: false,
         export_bundle_groups: true,
         unsafe_delete: false,
-        event_override: []
+        event_override: [],
+        simulator_info_id: 0
     }
 )
 

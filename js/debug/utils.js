@@ -150,6 +150,70 @@ const SimulatorDebugDialog = new (class extends Dialog {
     }
 })();
 
+const SimulatorInformationDialog = new (class extends Dialog {
+    #entries = [
+        {
+            id: '6c957d9e97c0836a',
+            title: 'DRUID - Critical chance while in bear form',
+            text: 'This bug is not replicated within the simulator, therefore you can expect slightly higher odds in the simulator compared to the game.',
+            resolved: false
+        }
+    ];
+
+    constructor () {
+        super({
+            dismissable: true
+        })
+    }
+
+    get #unresolvedEntries () {
+        return this.#entries.filter((entry) => !entry.resolved);
+    }
+
+    hasInformation () {
+        return this.#unresolvedEntries.length > 0;
+    }
+
+    hasUnread () {
+        return this.#unresolvedEntries[0].id !== SiteOptions.simulator_info_id;
+    }
+
+    _createModal () {
+        let html = '';
+
+        for (const { title, text } of this.#unresolvedEntries) {
+            html += `
+                <div>
+                    <h2 class="ui orange centered header">${title}</h2>
+                    <p class="text-center">${text}</p>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="small bordered inverted dialog">
+                <div class="header">${intl('simulator.information')}</div>
+                <div class="overflow-y-auto flex flex-col justify-content-center" style="height: 30vh; gap: 5em;">
+                    ${html}
+                </div>
+                <button class="ui black fluid button" data-op="close">${intl('dialog.shared.close')}</button>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$closeButton = this.$parent.find('[data-op="close"]');
+        this.$closeButton.click(() => {
+            this.close();
+        });
+    }
+
+    _applyArguments () {
+        // Mark as viewed
+        SiteOptions.simulator_info_id = this.#unresolvedEntries[0].id;
+    }
+})
+
 const SimulatorUtils = class {
     static #currentConfig;
     static #defaultConfig;
@@ -175,10 +239,32 @@ const SimulatorUtils = class {
         this.#insertType = insertType;
 
         // Debug elements
-        this.#debug = params.has('debug');
+        this.#debug = params && params.has('debug');
         if (this.#debug) {
             this.#insertDebugElements();
         }
+
+        if (SimulatorInformationDialog.hasInformation()) {
+            this.#insertInfoElement();
+        }
+    }
+
+    static #insertInfoElement () {
+        const $infoButton = $(`
+            <div class="item !p-0">
+                <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.information')}" data-inverted="">
+                    <i class="${SimulatorInformationDialog.hasUnread() ? 'text-orange ' : ''}exclamation triangle icon"></i>
+                </button>
+            </div>
+        `);
+
+        $infoButton.click(() => {
+            DialogController.open(SimulatorInformationDialog);
+
+            $infoButton.find('i').removeClass('text-orange');
+        });
+
+        $infoButton.insertAfter($('.ui.huge.menu .header.item'));
     }
 
     static #insertDebugElements () {

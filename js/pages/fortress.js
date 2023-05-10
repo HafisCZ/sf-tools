@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator' }, function () {
+    SimulatorUtils.configure({});
+
     // Handle simulate button validation
     const $simulateButton = $('#simulate');
     const $addButton = $('#add');
