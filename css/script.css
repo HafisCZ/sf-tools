@@ -12,6 +12,25 @@
   height: 100%;
 }
 
+.ta-block {
+  list-style-type: none;
+  counter-reset: item;
+}
+
+.ta-line::before {
+  font-size: 12px;
+  color: grey;
+
+  margin-left: -40px;
+
+  content: counter(item);
+  counter-increment: item;
+
+  position: absolute;
+  text-align: right;
+  width: 30px;
+}
+
 .ta-content {
   position: absolute;
   border: 1px solid transparent;
@@ -36,6 +55,8 @@
 
   font-size: 14px !important;
   font-family: Consolas, "Courier New", monospace !important;
+
+  padding-left: 40px !important;
 }
 
 .ta-area::selection {

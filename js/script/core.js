@@ -2967,7 +2967,7 @@ class Script {
                     currentContent += Highlighter.comment(comment).text;
                 }
 
-                currentContent = `<div>${currentContent || '&nbsp;'}</div>`;
+                currentContent = `<div class="ta-line">${currentContent || '&nbsp;'}</div>`;
 
                 ScriptHighlightCache.set(line, currentContent);
 
@@ -2975,7 +2975,7 @@ class Script {
             }
         }
 
-        return content;
+        return `<div class="ta-block">${content}</div>`;
     }
 };
 
