@@ -530,6 +530,7 @@
         },
         "copy": {
             "image": "Zapisz jako obraz",
+            "csv": "Save as CSV",
             "basic": "Kopiuj tabele",
             "fight": "Kopiuj tabele do symulatora",
             "player": "Kopiuj",
@@ -1094,7 +1095,6 @@
             "keep_original": "Zachowaj pierwotną"
         },
         "simulate_next_settings": {
-            "tooltip": "Kliknij prawym aby dostosować % na wygraną",
             "title": "Próg symulacji",
             "label": "Próg % - Przeciwnik poniżej progu zostanie pominięty"
         },
@@ -1367,9 +1367,13 @@
             "error_player_not_found": "Nie znaleziono postaci na serwerze",
             "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie",
             "error_login_only_with_sf_account_allowed": "Musisz zalogować się swoim kontem, aby uzyskać dostęp do tej postaci",
+            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkownika lub hasło",
             "playa_account_not_active": "Twoje konto jest nieaktywne",
-            "playa_account_empty": "Twoje konto nie ma postaci"
+            "playa_account_empty": "Twoje konto nie ma postaci",
+            "playa_account_blocked": "Your account has been permanently locked",
+            "playa_account_blocked_temporary": "Your account has been temporarily locked",
+            "an_error_occurred": "Server is not available, please try again later"
         }
     },
     "database": {
@@ -1403,11 +1407,11 @@
                 "header": "Nagłówki dla wszystkich postaci",
                 "header_protected": "Nagrody dla własnych członków gildii",
                 "header_private": "Nagłówki dla własnych postaci",
-                "header_scoped": "Podnagłówki obiektów",
-                "header_itemizable": "Podnagłówki do ekwipunku",
-                "function": "funkcje(...)",
+                "header_scoped": "Accessors for objects",
+                "function": "Functions",
                 "enum": "Wyliczenia",
-                "constant": "@stałe"
+                "constant": "Default constants",
+                "variable": "Variables"
             },
             "description": {}
         },

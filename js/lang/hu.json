@@ -530,6 +530,7 @@
         },
         "copy": {
             "image": "Mentés képként",
+            "csv": "Save as CSV",
             "basic": "Tábla másolása",
             "fight": "Tábla másolása harc szimulátorba",
             "player": "Másolás",
@@ -1094,7 +1095,6 @@
             "keep_original": "Eredeti megtartása"
         },
         "simulate_next_settings": {
-            "tooltip": "Kattintson a jobb gombbal az elfogadható győzelem százalékos tartományának beállításához egy kazamata ellen",
             "title": "Szimulációs küszöb",
             "label": "Küszöb % – A küszöbön kívül eső kazamatában lévő ellenségek kimaradnak"
         },
@@ -1367,9 +1367,13 @@
             "error_player_not_found": "Character was not found on the server",
             "error_sessionid_invalid": "Session expired or interrupted by another device",
             "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
             "playa_account_not_active": "Your account is not active",
-            "playa_account_empty": "Your account has no characters"
+            "playa_account_empty": "Your account has no characters",
+            "playa_account_blocked": "Your account has been permanently locked",
+            "playa_account_blocked_temporary": "Your account has been temporarily locked",
+            "an_error_occurred": "Server is not available, please try again later"
         }
     },
     "database": {
@@ -1403,11 +1407,11 @@
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
                 "header_private": "Headers for own characters",
-                "header_scoped": "Subheaders for objects",
-                "header_itemizable": "Subheaders for inventory",
-                "function": "functions(...)",
+                "header_scoped": "Accessors for objects",
+                "function": "Functions",
                 "enum": "Enumerations",
-                "constant": "@constants"
+                "constant": "Default constants",
+                "variable": "Variables"
             },
             "description": {}
         },
