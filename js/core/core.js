@@ -125,10 +125,13 @@ class OptionsHandler {
                     return this.options[name];
                 },
                 set: function (value) {
-                    this.options[name] = value;
-                    Logger.log('OPTIONS', `Set ${this.#key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
-                    Store.shared.set(this.#key, this.options);
-                    this.#changed(name);
+                    if (this.options[name] === value) return;
+                    else {
+                        this.options[name] = value;
+                        Logger.log('OPTIONS', `Set ${this.#key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
+                        Store.shared.set(this.#key, this.options);
+                        this.#changed(name);
+                    }
                 }
             });
         }
