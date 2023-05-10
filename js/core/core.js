@@ -175,7 +175,6 @@ const SiteOptions = new OptionsHandler(
         hidden: false,
         terms_accepted: false,
         endpoint_terms_accepted: false,
-        simulator_notice_accepted: false,
         version_accepted: false,
         groups_hidden: false,
         players_hidden: false,

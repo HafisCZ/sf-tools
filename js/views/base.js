@@ -168,28 +168,6 @@ const TermsAndConditionsDialog = new (class extends Dialog {
     }
 })();
 
-const SimulatorNoticeDialog = new (class extends Dialog {
-    _createModal () {
-        const { title, content, timestamp } = SIMULATOR_NOTICES[0];
-        const date = new Date(timestamp);
-
-        return `
-            <div class="small inverted dialog position-relative">
-                <div class="header text-orange">${_formatDate(date, true, false)}${title ? ` - ${title}` : ''}</div>
-                <div>${content}</div>
-                <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
-            </div>
-        `;
-    }
-
-    _createBindings () {
-        this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.simulator_notice_accepted = SIMULATOR_NOTICES[0].timestamp;
-            this.close();
-        });
-    }
-})();
-
 const SimulatorShopDialog = new (class extends Dialog {
     _createModal () {
         const packs = [
@@ -674,10 +652,6 @@ window.addEventListener('DOMContentLoaded', async function () {
         }
 
         if (Site.is('simulator')) {
-            if (SiteOptions.simulator_notice_accepted != SIMULATOR_NOTICES[0].timestamp) {
-                DialogController.open(SimulatorNoticeDialog);
-            }
-
             if (Site.isEvent('april_fools_day')) {
                 DialogController.open(SimulatorShopDialog);
             }
