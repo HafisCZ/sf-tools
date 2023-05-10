@@ -2967,12 +2967,12 @@ class Script {
                     currentContent += Highlighter.comment(comment).text;
                 }
 
+                currentContent = `<div>${currentContent || '&nbsp;'}</div>`;
+
                 ScriptHighlightCache.set(line, currentContent);
 
                 content += currentContent;
             }
-
-            content += '</br>';
         }
 
         return content;
