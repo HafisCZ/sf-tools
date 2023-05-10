@@ -1331,23 +1331,14 @@ class TableController {
             this.table.reflowIndexes();
         }
 
-        // Check table content for unwanted tags
-        if (!SiteOptions.insecure && this.bodyElement.querySelector('script, iframe, img[onerror]')) {
-            // Show insecure error
-            this.element.style.width = '50vw';
-            this.element.style.left = '25vw';
+        this.element.style.width = `${width}px`;
+        this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
 
-            this.bodyElement.innerHTML = `<div>${intl('stats.settings.insecure_error#')}</div>`;
-        } else {
-            this.element.style.width = `${width}px`;
-            this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
-
-            if (this.injectorElement) {
-                if (entries.length > 0) {
-                    this.prepareInjector(entries, onInject);
-                } else {
-                    this.injectorElement.remove();
-                }
+        if (this.injectorElement) {
+            if (entries.length > 0) {
+                this.prepareInjector(entries, onInject);
+            } else {
+                this.injectorElement.remove();
             }
         }
 
