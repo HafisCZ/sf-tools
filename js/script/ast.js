@@ -295,6 +295,16 @@ class ExpressionRenderer {
 }
 
 class Expression {
+    static create (string, settings = null, config = TABLE_EXPRESSION_CONFIG) {
+        const expression = new Expression(string, settings, config);
+
+        if (expression.isValid()) {
+            return expression;
+        } else {
+            return null;
+        }
+    }
+
     constructor (string, settings = null, config = TABLE_EXPRESSION_CONFIG) {
         this.config = config;
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP).map(token => token.trim()).filter(token => token.length);
