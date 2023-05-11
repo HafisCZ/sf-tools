@@ -361,8 +361,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
-        const ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        const ast = Expression.create(expression, root);
+        if (ast) {
             root.addFunction(name, ast, args.split(',').map(v => v.trim()));
         }
     },
@@ -374,8 +374,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^mset (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
-        const ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        const ast = Expression.create(expression, root);
+        if (ast) {
             root.addVariable(name, ast, false);
         }
     },
@@ -395,8 +395,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^constexpr (\w+) (.+)$/,
     (root, name, expression) => {
-        const ast = new Expression(expression);
-        if (ast.isValid()) {
+        const ast = Expression.create(expression);
+        if (ast) {
             root.addConstant(name, ast.eval(new ExpressionScope(root)));
         }
     },
@@ -736,8 +736,8 @@ ScriptCommands.register(
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
             root.addFormatStatisticsExpression(ARG_FORMATTERS[expression])
         } else {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
+            let ast = Expression.create(expression, root);
+            if (ast) {
                 root.addFormatStatisticsExpression(ast);
             }
         }
@@ -767,8 +767,8 @@ ScriptCommands.register(
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
             root.addFormatDifferenceExpression(ARG_FORMATTERS[expression])
         } else {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
+            let ast = Expression.create(expression, root);
+            if (ast) {
                 root.addFormatDifferenceExpression(ast);
             }
         }
@@ -821,8 +821,8 @@ ScriptCommands.register(
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
             root.addFormatExpression(ARG_FORMATTERS[expression])
         } else {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
+            let ast = Expression.create(expression, root);
+            if (ast) {
                 root.addFormatExpression(ast);
             }
         }
@@ -918,13 +918,10 @@ ScriptCommands.register(
 )
     
 ScriptCommands.register(
-    'TABLE_ROW',
     'TABLE_ROW_OLD',
     ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, extensions, name, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
         const ast = Expression.create(expression, root);
         if (ast) {
             root.addRow(name, ast);
@@ -1006,8 +1003,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^set (\w+[\w ]*) with all as (.+)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addVariable(name, ast, true);
         }
     },
@@ -1019,8 +1016,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^set \$(\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addVariable(name, ast, true);
         }
     },
@@ -1032,8 +1029,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^set \$\$(\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addVariable(name, ast, 'unfiltered');
         }
     },
@@ -1045,8 +1042,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
     (root, name, args, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addFunction(name, ast, args.split(',').map(v => v.trim()));
         }
     },
@@ -1058,8 +1055,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^set (\w+[\w ]*) as (.+)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addVariable(name, ast, false);
         }
     },
@@ -1235,8 +1232,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^statistics (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, name, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addStatistics(name, ast);
         }
     },
@@ -1280,8 +1277,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^order by (.+)$/,
     (root, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addLocal('order', ast);
         }
     },
@@ -1309,8 +1306,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^expr (.+)$/,
     (root, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addLocal('expr', ast);
         }
     },
@@ -1322,8 +1319,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^expa (.+)$/,
     (root, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addAliasExpression((a, b) => ast.eval(new ExpressionScope(a)));
         }
     },
@@ -1354,8 +1351,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^discard (.+)$/,
     (root, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addDiscardRule(ast);
         }
     },
@@ -1367,8 +1364,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^order all by (.+)$/,
     (root, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addDefaultOrder(ast);
         }
     },
@@ -1380,8 +1377,8 @@ ScriptCommands.register(
     ScriptType.Table,
     /^expc (.+)$/,
     (root, expression) => {
-        let ast = new Expression(expression, root);
-        if (ast.isValid()) {
+        let ast = Expression.create(expression, root);
+        if (ast) {
             root.addColorExpression(ast);
         }
     },
@@ -1396,8 +1393,8 @@ ScriptCommands.register(
         if (value === 'auto') {
             root.addTextColorExpression(true);
         } else {
-            const ast = new Expression(value, root);
-            if (ast.isValid()) {
+            const ast = Expression.create(value, root);
+            if (ast) {
                 root.addTextColorExpression(ast);
             }
         }
@@ -1450,9 +1447,9 @@ ScriptCommands.register(
     ScriptType.Action,
     /^tag (player|file) as (.+) if (.+)$/,
     (root, type, tag, expr) => {
-        let ast1 = new Expression(tag);
-        let ast2 = new Expression(expr);
-        if (ast1.isValid() && ast2.isValid()) {
+        let ast1 = Expression.create(tag);
+        let ast2 = Expression.create(expr);
+        if (ast1 && ast2) {
             root.addActionEntry('tag', type, ast1, ast2);
         }
     },
@@ -1464,8 +1461,8 @@ ScriptCommands.register(
     ScriptType.Action,
     /^remove player if (.+)$/,
     (root, expr) => {
-        let ast1 = new Expression(expr);
-        if (ast1.isValid()) {
+        let ast1 = Expression.create(expr);
+        if (ast1) {
             root.addActionEntry('remove', 'player', ast1);
         }
     },
@@ -1476,14 +1473,14 @@ ScriptCommands.register(
     'ACTION_TRACK_MAPPED',
     ScriptType.Table | ScriptType.Action,
     /^(track (\w+(?:[ \w]*\w)?) as (.+) when (.+))$/,
-    (root, str, name, arg, arg2) => {
-        let ast = new Expression(arg);
-        let ast2 = new Expression(arg2);
-        if (ast.isValid() && ast2.isValid()) {
-            root.addTracker(name, str, ast2, ast);
+    (root, str, name, arg1, arg2) => {
+        let ast1 = Expression.create(arg1);
+        let ast2 = Expression.create(arg2);
+        if (ast1 && ast2) {
+            root.addTracker(name, str, ast2, ast1);
         }
     },
-    (root, str, name, arg, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg).keyword(' when ').expression(arg2)
+    (root, str, name, arg1, arg2) => Highlighter.keyword('track ').constant(name).keyword(' as ').expression(arg1).keyword(' when ').expression(arg2)
 )
 
 ScriptCommands.register(
@@ -1491,8 +1488,8 @@ ScriptCommands.register(
     ScriptType.Table | ScriptType.Action,
     /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
     (root, str, name, arg) => {
-        let ast = new Expression(arg);
-        if (ast.isValid()) {
+        let ast = Expression.create(arg);
+        if (ast) {
             root.addTracker(name, str, ast);
         }
     },
@@ -1680,8 +1677,8 @@ class Script {
                     shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == tableType) : (FilterTypes[cond] != tableType);
                     condition = true;
                 } else {
-                    let condExpression = new Expression(cond);
-                    if (condExpression.isValid()) {
+                    let condExpression = Expression.create(cond);
+                    if (condExpression) {
                         let result = condExpression.eval(scope);
                         shouldDiscard = ruleMustBeTrue ? result : !result;
                         condition = true;
@@ -1694,8 +1691,8 @@ class Script {
                         if (cond in FilterTypes) {
                             shouldDiscard = FilterTypes[cond] != tableType;
                         } else {
-                            let condExpression = new Expression(cond);
-                            if (condExpression.isValid()) {
+                            let condExpression = Expression.create(cond);
+                            if (condExpression) {
                                 let result = condExpression.eval(scope);
                                 shouldDiscard = !result;
                             }
@@ -1755,8 +1752,8 @@ class Script {
                 let variableNames = names.split(',').map(name => name.trim());
                 let variableValues = [];
 
-                let valuesExpression = new Expression(values);
-                if (valuesExpression.isValid()) {
+                let valuesExpression = Expression.create(values);
+                if (valuesExpression) {
                     variableValues = valuesExpression.eval(scope);
                     if (!variableValues) {
                         variableValues = [];
@@ -1839,8 +1836,8 @@ class Script {
             } else if (is_unsafe == 0) {
                 if (ScriptCommands.MACRO_FUNCTION.isValid(line)) {
                     let [name, variables, expression] = ScriptCommands.MACRO_FUNCTION.parseAsMacro(line);
-                    let ast = new Expression(expression);
-                    if (ast.isValid()) {
+                    let ast = Expression.create(expression);
+                    if (ast) {
                         settings.functions[name] = {
                             ast: ast,
                             args: variables.split(',').map(v => v.trim())
@@ -1848,8 +1845,8 @@ class Script {
                     }
                 } else if (ScriptCommands.MACRO_VARIABLE.isValid(line)) {
                     let [name, expression] = ScriptCommands.MACRO_VARIABLE.parseAsMacro(line);
-                    let ast = new Expression(expression);
-                    if (ast.isValid()) {
+                    let ast = Expression.create(expression);
+                    if (ast) {
                         settings.variables[name] = {
                             ast: ast,
                             tableVariable: false
@@ -1861,8 +1858,8 @@ class Script {
                 } else if (ScriptCommands.MACRO_CONSTEXPR.isValid(line)) {
                     let [name, expression] = ScriptCommands.MACRO_CONSTEXPR.parseAsMacro(line);
 
-                    let ast = new Expression(expression);
-                    if (ast.isValid()) {
+                    let ast = Expression.create(expression);
+                    if (ast) {
                         settings.constants.add(name, ast.eval(new ExpressionScope(settings)));
                     }
                 }
@@ -2069,7 +2066,6 @@ class Script {
             this.mergeTextColor(obj, obj);
 
             // Push
-            this.customRows.push(obj);
             if (obj.expr) {
                 this.customRows.push(obj);
             }
@@ -2307,12 +2303,10 @@ class Script {
     }
 
     // Create row
-    addRow (name, expression) {
     addRow (name, expression = null) {
         this.push();
 
         this.row = this.createHeader(name);
-        this.row.ast = expression;
         if (expression) {
             this.row.expr = expression;
         }
@@ -2750,7 +2744,6 @@ class Script {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(new ExpressionScope(this).with(array[0]).addSelf(array));
             let currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(array));
 
             row.eval = {
@@ -2817,8 +2810,6 @@ class Script {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(new ExpressionScope(this).addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(new ExpressionScope(compareEnvironment).addSelf(arrayCompare));
             let currentValue = row.expr.eval(new ExpressionScope(this).addSelf(arrayCurrent));
             let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(arrayCompare));
 
@@ -2898,8 +2889,6 @@ class Script {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare));
             let currentValue = row.expr.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent));
             let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare));
 

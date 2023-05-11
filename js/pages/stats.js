@@ -894,16 +894,16 @@ class BrowseTab extends Tab {
                     });
                     this.recalculate = true;
                 } else if (key == 'e') {
-                    var ast = new Expression(arg);
-                    if (ast.isValid()) {
+                    var ast = Expression.create(arg);
+                    if (ast) {
                         terms.push({
                             test: (arg, player, timestamp, compare) => arg.eval(new ExpressionScope().with(player, compare)),
                             arg: ast
                         });
                     }
                 } else if (key == 'sr') {
-                    var ast = new Expression(arg);
-                    if (ast.isValid()) {
+                    var ast = Expression.create(arg);
+                    if (ast) {
                         this.autosort = (player, compare) => ast.eval(new ExpressionScope().with(player, compare));
                     }
                 } else if (key == 'f') {
@@ -1546,8 +1546,8 @@ class PlayersTab extends Tab {
                         arg: arg.toLowerCase()
                     });
                 } else if (key == 'e') {
-                    var ast = new Expression(arg);
-                    if (ast.isValid()) {
+                    var ast = Expression.create(arg);
+                    if (ast) {
                         terms.push({
                             test: (arg, player) => arg.eval(new ExpressionScope().with(player, player).addSelf(player)),
                             arg: ast
@@ -2254,12 +2254,12 @@ class FilesTab extends Tab {
         $field.on('input change', (event) => {
             let content = event.currentTarget.value;
 
-            this.expressionFilter = new Expression(content);
+            this.expressionFilter = Expression.create(content);
             this.$filters.find('.ta-content').html(
                 Highlighter.expression(content, undefined, this.ExpressionConfig).text
             );
 
-            if (this.expressionFilter.empty || this.expressionFilter.isValid()) {
+            if (this.expressionFilter) {
                 $parent.removeClass('error');
             } else {
                 $parent.addClass('error');

@@ -268,7 +268,7 @@ class DatabaseUtils {
         if (filter) {
             let { name, mode, value } = filter;
             if (value) {
-                value = value.map(v => new Expression(v).eval());
+                value = value.map((v) => Expression.create(v).eval());
             }
 
             let range = null;
@@ -845,11 +845,11 @@ const DatabaseManager = new (class {
             const groups = DatabaseUtils.filterArray(profile, 'primary_g') || await this.#interface.all('groups', ... DatabaseUtils.profileFilter(profile, 'primary_g'));
 
             if (profile.secondary_g) {
-                const filter = new Expression(profile.secondary_g);
+                const filter = Expression.create(profile.secondary_g);
 
                 for (const group of groups) {
                     ExpressionCache.reset();
-                    if (filter.eval(new ExpressionScope().addSelf(group))) {
+                    if (filter && filter.eval(new ExpressionScope().addSelf(group))) {
                         this.#initModel('Group', group);
                     }
                 }
@@ -863,11 +863,11 @@ const DatabaseManager = new (class {
         // Load players
         const players = DatabaseUtils.filterArray(profile) || await this.#interface.where('players', ... DatabaseUtils.profileFilter(profile));
         if (profile.secondary) {
-            const filter = new Expression(profile.secondary);
+            const filter = Expression.create(profile.secondary);
   
             for (const player of players) {
                 ExpressionCache.reset();
-                if (filter.eval(new ExpressionScope().addSelf(player))) {
+                if (filter && filter.eval(new ExpressionScope().addSelf(player))) {
                     this.#initModel('Player', player);
                 }
             }
