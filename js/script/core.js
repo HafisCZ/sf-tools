@@ -919,11 +919,14 @@ ScriptCommands.register(
     
 ScriptCommands.register(
     'TABLE_ROW',
+    'TABLE_ROW_OLD',
     ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, extensions, name, expression) => {
         let ast = new Expression(expression, root);
         if (ast.isValid()) {
+        const ast = Expression.create(expression, root);
+        if (ast) {
             root.addRow(name, ast);
             if (extensions) {
                 root.addExtension(... extensions.slice(0, -1).split(','));
@@ -931,6 +934,27 @@ ScriptCommands.register(
         }
     },
     (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
+)
+
+ScriptCommands.register(
+    'TABLE_ROW',
+    ScriptType.Table,
+    /^((?:\w+)(?:\,\w+)*:|)row(?: (.+))?$/,
+    (root, extensions, name) => {
+        root.addRow(name || '');
+        if (extensions) {
+            root.addExtension(... extensions.slice(0, -1).split(','));
+        }
+    },
+    (root, extensions, name) => {
+        const acc = Highlighter.constant(extensions || '').keyword('row')
+        
+        if (name != undefined) {
+            return acc.space().identifier(name);
+        } else {
+            return acc;
+        }
+    }
 )
       
 ScriptCommands.register(
@@ -2046,6 +2070,10 @@ class Script {
 
             // Push
             this.customRows.push(obj);
+            if (obj.expr) {
+                this.customRows.push(obj);
+            }
+
             this.row = null;
         }
 
@@ -2280,10 +2308,14 @@ class Script {
 
     // Create row
     addRow (name, expression) {
+    addRow (name, expression = null) {
         this.push();
 
         this.row = this.createHeader(name);
         this.row.ast = expression;
+        if (expression) {
+            this.row.expr = expression;
+        }
     }
 
     // Create definition
@@ -2719,6 +2751,7 @@ class Script {
         // Evaluate custom rows
         for (let row of this.customRows) {
             let currentValue = row.ast.eval(new ExpressionScope(this).with(array[0]).addSelf(array));
+            let currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(array));
 
             row.eval = {
                 value: currentValue
@@ -2786,6 +2819,8 @@ class Script {
         for (let row of this.customRows) {
             let currentValue = row.ast.eval(new ExpressionScope(this).addSelf(arrayCurrent));
             let compareValue = sameTimestamp ? currentValue : row.ast.eval(new ExpressionScope(compareEnvironment).addSelf(arrayCompare));
+            let currentValue = row.expr.eval(new ExpressionScope(this).addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,
@@ -2865,6 +2900,8 @@ class Script {
         for (let row of this.customRows) {
             let currentValue = row.ast.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent));
             let compareValue = sameTimestamp ? currentValue : row.ast.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare));
+            let currentValue = row.expr.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,
