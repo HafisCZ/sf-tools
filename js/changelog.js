@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v6.3736': {
         'Statistics': [
             'Added option to save table as CSV file',
             'Added many performance improvements',
@@ -13,7 +13,8 @@ const CHANGELOG = {
             'Fixed debug copy'
         ],
         'All Simulators': [
-            'Added debug preset with maximum weapon damage ranges'
+            'Added debug preset with maximum weapon damage ranges',
+            'Added new notice system'
         ],
         'Endpoint': [
             'Updated to newer Unity version',
