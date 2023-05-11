@@ -729,10 +729,7 @@
             "always_prev": "Comparar anterior (gremios)",
             "empty_groups": "Mostrar grupos vacíos",
             "obfuscated": "Oculta nombre de los jugadores",
-            "insecure": "Permitir etiquetas html no seguras",
-            "insecure_error#": "Esta tabla no se mostró porque contiene etiquetas HTML que están prohibidas.<br/>Por favor, elimínalas de tu configuración e inténtalo de nuevo.",
             "unsafe_delete": "Omitir confirmación al eliminar archivos",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Aceptar los términos del servicio",
             "tab": "Pestaña por defecto",
             "preload": "Precargar filas",
@@ -1094,10 +1091,6 @@
             "class": "Cambiar clase",
             "keep_original": "Mantener original"
         },
-        "simulate_next_settings": {
-            "title": "Umbral de simulación",
-            "label": "Umbral % - Cualquier enemigo de mazmorra por debajo de este umbral se omitirá"
-        },
         "simulate_next_info": {
             "title": "No hay mazmorras posibles en el umbral (#{threshold_min} - #{threshold_max}%)",
             "message#": "Usa <b>Todos</b> para simular todas las mazmorras abiertas"
@@ -1284,6 +1277,7 @@
         "save": "Guardar",
         "simulate": "Simular",
         "configure": "Configurar simulador",
+        "information": "Important notice!",
         "configure_copy": "Copiar a todos incluyendo la configuración actual",
         "configure_insert": "Insertar datos de muestra",
         "configure_log": "Run simulation with logging enabled",
@@ -1396,6 +1390,13 @@
             "close": "Cerrar",
             "ok": "Aceptar",
             "apply": "Apply"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Available data",

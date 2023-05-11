@@ -729,10 +729,7 @@
             "always_prev": "Vorherige vergleichen (Gilden)",
             "empty_groups": "Leere Gruppen anzeigen",
             "obfuscated": "Spielernamen ausblenden",
-            "insecure": "Unsichere html-Tags zulassen",
-            "insecure_error#": "Diese Tabelle konnte nicht angezeigt werden, da sie HTML-Tags enthält, die nicht zulässig sind.<br/>Bitte entfernen Sie diese aus Ihren Einstellungen und versuchen Sie es erneut.",
             "unsafe_delete": "Bestätigung beim Löschen von Dateien überspringen",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Nutzungsbedingungen akzeptieren",
             "tab": "Standard-Tab",
             "preload": "Zeilen vorladen",
@@ -1094,10 +1091,6 @@
             "class": "Ändere deine Klasse",
             "keep_original": "Behalte das Original"
         },
-        "simulate_next_settings": {
-            "title": "Schwellenwert für die Simulation",
-            "label": "Grenzwert % - Jeder Gegner außerhalb dieser Schwelle wird übersprungen"
-        },
         "simulate_next_info": {
             "title": "Keine Dungeons innerhalb des Grenzwerts besiegbar (#{threshold_min} - #{threshold_max} %)",
             "message#": "Benutze <b>All</b> um alle offenen Dungeons zu simulieren"
@@ -1284,6 +1277,7 @@
         "save": "Speichern",
         "simulate": "Simulieren",
         "configure": "Simulator konfigurieren",
+        "information": "Important notice!",
         "configure_copy": "Kopiere alle inklusive der aktuellen Einstellungen",
         "configure_insert": "Insert sample data",
         "configure_log": "Run simulation with logging enabled",
@@ -1396,6 +1390,13 @@
             "close": "Schließen",
             "ok": "Ok",
             "apply": "Anwenden"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Vorhandene Daten",

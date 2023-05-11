@@ -384,7 +384,7 @@
     },
     "terms": {
         "title": "Termini e Condizioni",
-        "title2": "Usage",
+        "title2": "Utilizzo",
         "button": {
             "accept_full": "Comprendo e accetto questi termini",
             "accept": "Accetta",
@@ -424,8 +424,8 @@
             "clause1": "Tutti i dati inseriti vengono inviati direttamente al server di gioco senza alcun coinvolgimento di terze parti.",
             "clause2": "Non è possibile catturare altri giocatori se non quelli esplicitamente indicati nell'applicazione.",
             "clause3": "Tutta la raccolta di dati viene effettuata con mezzi normali, senza alcun uso di azioni proibite.",
-            "clause4": "You can access your S&F Account using your username and password.",
-            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
+            "clause4": "Puoi accedere al tuo account S&F utilizzando il tuo nome utente e password.",
+            "clause5": "Puoi accedere al tuo personaggio scollegato usando il nome del personaggio e l'url del server nel seguente formato: <code>nomepg@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {
@@ -530,7 +530,7 @@
         },
         "copy": {
             "image": "Salva come immagine",
-            "csv": "Save as CSV",
+            "csv": "Salva come CSV",
             "basic": "Copia tabella",
             "fight": "Copia tabella per simulatore scontri",
             "player": "Copia",
@@ -729,10 +729,7 @@
             "always_prev": "Confronta con i precedenti (gilde)",
             "empty_groups": "Mostra gruppi vuoti",
             "obfuscated": "Nascondi i nomi dei giocatori",
-            "insecure": "Consenti tag html non sicuri",
-            "insecure_error#": "Questa tabella non è stata mostrata perchè contiene tag html non consentiti.<br/>Per favore, rimuovi i tag dalle opzioni e riprova.",
             "unsafe_delete": "Non chiedere conferma per cancellare i file",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Accetta i Termini di Servizio",
             "tab": "Tab iniziale",
             "preload": "Pre-carica righe",
@@ -1094,10 +1091,6 @@
             "class": "Cambia classe",
             "keep_original": "Mantieni l'originale"
         },
-        "simulate_next_settings": {
-            "title": "Soglia di simulaizone",
-            "label": "% Soglia - Ogni boss al di fuori della soglia verrà saltato"
-        },
         "simulate_next_info": {
             "title": "Nessun boss all'interno della soglia selezionata (#{threshold_min} - #{threshold_max} %)",
             "message#": "Usa <b>Tutti</b> per simulate tutti i dungeons aperti"
@@ -1137,7 +1130,7 @@
         "players": "Giocatori",
         "preview": "Anteprima scontro",
         "export": "Esporta scontri",
-        "autofill": "Fill editable data in from predefined list",
+        "autofill": "Riempi i dati modificabili dall'elenco predefinito",
         "analyze": "Analisi statistica",
         "gladiator": "Gladiatore non ridotto",
         "clear_changes": "Ripristina allo stato iniziale",
@@ -1272,8 +1265,8 @@
         "file": "File",
         "game": "Endpoint",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "Importa personaggi salvati",
+            "guilds": "Importa gilde salvate"
         }
     },
     "simulator": {
@@ -1284,6 +1277,7 @@
         "save": "Salva",
         "simulate": "Simula",
         "configure": "Configura simulatore",
+        "information": "Avviso importante!",
         "configure_copy": "Copia tutto, inclusa la configurazione attuale",
         "configure_insert": "Inserire dati di esempio",
         "configure_log": "Esegui la simulazione con la registrazione abilitata",
@@ -1354,26 +1348,26 @@
             "message": "Raccogliendo i dati"
         },
         "step7": {
-            "title": "Select your character"
+            "title": "Seleziona il tuo personaggio"
         },
         "user_error": {
             "title": "Username o password non validi!",
             "message": "Assicurati che il formato sia corretto (username@url)"
         },
         "errors": {
-            "error_unreachable": "Server cannot be reached",
-            "error_malformed_url": "Server URL is not valid",
+            "error_unreachable": "Impossibile raggiungere il server",
+            "error_malformed_url": "Il nome del server non è valido",
             "error_wrong_pass": "Password errata",
             "error_player_not_found": "Il personaggio non è stato trovato sul server",
             "error_sessionid_invalid": "Sessione scaduta o interrotta da un altro dispositivo",
-            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
-            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
-            "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
-            "playa_account_not_active": "Your account is not active",
-            "playa_account_empty": "Your account has no characters",
-            "playa_account_blocked": "Your account has been permanently locked",
-            "playa_account_blocked_temporary": "Your account has been temporarily locked",
-            "an_error_occurred": "Server is not available, please try again later"
+            "error_login_only_with_sf_account_allowed": "Devi effettuare il login con il tuo account SF per accedere a questo personaggio",
+            "playa_account_login_no_credentials_set": "Devi aggiungere un indirizzo email al tuo account per accedere su altre piattaforme",
+            "playa_account_login_unknown_or_wrong_credentials": "Nome utente o password errati",
+            "playa_account_not_active": "Il tuo account non è attivo",
+            "playa_account_empty": "Il tuo account non ha personaggi",
+            "playa_account_blocked": "Il tuo account è stato bloccato permanentemente",
+            "playa_account_blocked_temporary": "Il tuo account è stato temporaneamente bloccato",
+            "an_error_occurred": "Server non disponibile, per favore riprova più tardi"
         }
     },
     "database": {
@@ -1395,11 +1389,18 @@
             "save": "Salva",
             "close": "Chiudi",
             "ok": "Ok",
-            "apply": "Apply"
+            "apply": "Applica"
+        },
+        "dungeons_options": {
+            "title": "Opzioni del Simulatore",
+            "threshold": {
+                "title": "Soglia di simulazione",
+                "label": "% Soglia - Ogni boss al di fuori della soglia verrà saltato"
+            }
         },
         "analyzer_autofill": {
-            "title": "Available data",
-            "search": "Search by dungeon or boss name ..."
+            "title": "Dati disponibili",
+            "search": "Ricerca per dungeon o nome del boss ..."
         },
         "script_manual": {
             "title": "Guida di riferimento",
@@ -1407,11 +1408,11 @@
                 "header": "Intestazioni per tutti i personaggi",
                 "header_protected": "Intestazioni per i membri della gilda",
                 "header_private": "Intestazioni per i propri personaggi",
-                "header_scoped": "Accessors for objects",
-                "function": "Functions",
+                "header_scoped": "Accessori per oggetti",
+                "function": "Funzioni",
                 "enum": "Enumerazioni",
-                "constant": "Default constants",
-                "variable": "Variables"
+                "constant": "Costanti predefinite",
+                "variable": "Variabili"
             },
             "description": {}
         },

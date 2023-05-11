@@ -729,10 +729,7 @@
             "always_prev": "Porównaj poprzednie (gildie)",
             "empty_groups": "Pokaż puste grupy",
             "obfuscated": "Ukryj nazwy graczy",
-            "insecure": "Zezwalaj na niezabezpieczone tagi html",
-            "insecure_error#": "Ta tabela nie została wyświetlona, ponieważ zawiera znaczniki HTML, które są zabronione.<br/>Proszę usunąć je ze swoich ustawień i spróbować ponownie.",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
-            "legacy_battlemage_icon": "Użyj poprzedniej ikony paladyna",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
@@ -1094,10 +1091,6 @@
             "class": "Zmiana klasy",
             "keep_original": "Zachowaj pierwotną"
         },
-        "simulate_next_settings": {
-            "title": "Próg symulacji",
-            "label": "Próg % - Przeciwnik poniżej progu zostanie pominięty"
-        },
         "simulate_next_info": {
             "title": "Żaden loch nie jest do pokonania przy progu (#{threshold_min} - #{threshold_max} %)",
             "message#": "Użyj przycisku <b>Wszystkie</b> aby zasymulować wszystkie otwarte lochy"
@@ -1284,6 +1277,7 @@
         "save": "Zapisz",
         "simulate": "Symuluj",
         "configure": "Skonfiguruj symulator",
+        "information": "Important notice!",
         "configure_copy": "Skopiuj wszystkich z bieżącą konfiguracją",
         "configure_insert": "Załaduj przykładowe dane",
         "configure_log": "Uruchom symulację z włączonym rejestrowaniem",
@@ -1396,6 +1390,13 @@
             "close": "Zamknij",
             "ok": "Ok",
             "apply": "Zastosuj"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Dostępne dane",
