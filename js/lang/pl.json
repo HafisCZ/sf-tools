@@ -384,7 +384,7 @@
     },
     "terms": {
         "title": "Zasady i warunki użytkowania",
-        "title2": "Usage",
+        "title2": "Użycie",
         "button": {
             "accept_full": "Rozumiem i akceptuję te warunki",
             "accept": "Akceptuj",
@@ -424,8 +424,8 @@
             "clause1": "Wszystkie wprowadzone dane są wysyłane bezpośrednio do serwera gry bez udziału osób trzecich.",
             "clause2": "Nie jest możliwe uchwycenie innych graczy niż wyraźnie określone w aplikacji.",
             "clause3": "Wszystkie dane zbierane są przy użyciu zwykłych środków, bez jakiegokolwiek stosowania zakazanych działań.",
-            "clause4": "You can access your S&F Account using your username and password.",
-            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
+            "clause4": "Możesz uzyskać dostęp do swojego konta S&F używając nazwy użytkownika i hasła.",
+            "clause5": "Możesz uzyskać dostęp do swojej niepowiązanej postaci używając nazwy postaci i adresu Url serwera w następującym formacie: <code>charname@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {
@@ -530,7 +530,7 @@
         },
         "copy": {
             "image": "Zapisz jako obraz",
-            "csv": "Save as CSV",
+            "csv": "Zapisz jako CSV",
             "basic": "Kopiuj tabele",
             "fight": "Kopiuj tabele do symulatora",
             "player": "Kopiuj",
@@ -1277,7 +1277,7 @@
         "save": "Zapisz",
         "simulate": "Symuluj",
         "configure": "Skonfiguruj symulator",
-        "information": "Important notice!",
+        "information": "Ważna informacja!",
         "configure_copy": "Skopiuj wszystkich z bieżącą konfiguracją",
         "configure_insert": "Załaduj przykładowe dane",
         "configure_log": "Uruchom symulację z włączonym rejestrowaniem",
@@ -1361,13 +1361,13 @@
             "error_player_not_found": "Nie znaleziono postaci na serwerze",
             "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie",
             "error_login_only_with_sf_account_allowed": "Musisz zalogować się swoim kontem, aby uzyskać dostęp do tej postaci",
-            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
+            "playa_account_login_no_credentials_set": "Musisz dodać adres e-mail do swojego konta, aby zalogować się na innych platformach",
             "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkownika lub hasło",
             "playa_account_not_active": "Twoje konto jest nieaktywne",
             "playa_account_empty": "Twoje konto nie ma postaci",
-            "playa_account_blocked": "Your account has been permanently locked",
-            "playa_account_blocked_temporary": "Your account has been temporarily locked",
-            "an_error_occurred": "Server is not available, please try again later"
+            "playa_account_blocked": "Twoje konto zostało trwale zablokowane",
+            "playa_account_blocked_temporary": "Twoje konto zostało tymczasowo zablokowane",
+            "an_error_occurred": "Serwer jest niedostępny, spróbuj później"
         }
     },
     "database": {
@@ -1392,10 +1392,10 @@
             "apply": "Zastosuj"
         },
         "dungeons_options": {
-            "title": "Simulator options",
+            "title": "Opcje symulatora",
             "threshold": {
-                "title": "Simulation threshold",
-                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+                "title": "Próg symulacji",
+                "label": "Próg % - Przeciwnik poniżej progu zostanie pominięty"
             }
         },
         "analyzer_autofill": {
@@ -1408,11 +1408,11 @@
                 "header": "Nagłówki dla wszystkich postaci",
                 "header_protected": "Nagrody dla własnych członków gildii",
                 "header_private": "Nagłówki dla własnych postaci",
-                "header_scoped": "Accessors for objects",
-                "function": "Functions",
+                "header_scoped": "Akcesoria dla obiektów",
+                "function": "Funkcje",
                 "enum": "Wyliczenia",
-                "constant": "Default constants",
-                "variable": "Variables"
+                "constant": "Standardowe stałe",
+                "variable": "Zmienne"
             },
             "description": {}
         },
