@@ -2043,7 +2043,7 @@ class FilesTab extends Tab {
     }
 
     updateFileSearchResults () {
-        let currentFilesAll = (SiteOptions.groups_empty ? _intKeys(Array.from(DatabaseManager.Timestamps.keys())) : DatabaseManager.PlayerTimestamps).map((ts) => {
+        let currentFilesAll = (SiteOptions.groups_empty ? Array.from(DatabaseManager.Timestamps.keys()) : DatabaseManager.PlayerTimestamps).map((ts) => {
             return {
                 timestamp: ts,
                 prettyDate: _formatDate(ts),
