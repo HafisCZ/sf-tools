@@ -4,6 +4,7 @@ const CHANGELOG = {
             'Added option to save table as CSV file',
             'Added many performance improvements',
             'Added line numbers to script editor',
+            'Added alternative <code>row</code> keyword for <code>show</code>',
             'Fixed script editor losing focus when switching tabs',
             'Removed insecure table check'
         ],
@@ -20,7 +21,7 @@ const CHANGELOG = {
             'Fixed interruption errors not recognized properly'
         ],
         'All Tools': [
-            'Added new link to community-made tools on the main page',
+            'Added new link to community-made tool on the main page',
             'Fixed scrollbar not properly visible in dialogs'
         ]
     },
