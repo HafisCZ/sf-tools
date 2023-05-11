@@ -1,6 +1,6 @@
 // Version stuff
 const MODULE_VERSION_MAJOR = '6';
-const MODULE_VERSION_MINOR = '3586';
+const MODULE_VERSION_MINOR = '3736';
 const MODULE_VERSION = `v${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}`
 
 class Logger {
