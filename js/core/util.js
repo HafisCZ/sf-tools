@@ -309,6 +309,10 @@ function _join (array, mapper, c,d) {
     return text;
 }
 
+function _hashToMap (hash) {
+    return new Map(Object.entries(hash));
+}
+
 function _formatDuration(ms, limit = 4) {
     let mil = ms % 1000;
     let sec = ((ms -= mil) / 1000) % 60;

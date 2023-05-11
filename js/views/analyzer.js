@@ -119,7 +119,35 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
       this.environment = {
           functions: {},
           variables: {},
-          constants: new Constants(new Map())
+          constants: new Constants(
+            _hashToMap({
+                '@attack_normal': 0,
+                '@attack_critical': 1,
+                '@attack_blocked': 3,
+                '@attack_evaded': 4,
+                '@attack_critical_blocked': 8,
+                '@attack_critical_evaded': 9,
+                '@attack_secondary_normal': 10,
+                '@attack_secondary_critical': 11,
+                '@attack_secondary_blocked': 13,
+                '@attack_secondary_evaded': 14,
+                '@attack_secondary_critical_blocked': 18,
+                '@attack_secondary_critical_evaded': 19,
+                '@attack_chain_normal': 20,
+                '@attack_chain_critical': 21,
+                '@attack_chain_blocked': 23,
+                '@attack_chain_evaded': 24,
+                '@attack_chain_critical_blocked': 28,
+                '@attack_chain_critical_evaded': 29,
+                '@attack_catapult': 2,
+                '@attack_fireball': 15,
+                '@attack_fireball_blocked': 16,
+                '@attack_swoop': 5,
+                '@attack_swoop_blocked': 6,
+                '@attack_swoop_evaded': 7,
+                '@attack_revive': 100
+            })
+          )
       }
   }
 
