@@ -2259,7 +2259,7 @@ class FilesTab extends Tab {
                 Highlighter.expression(content, undefined, this.ExpressionConfig).text
             );
 
-            if (this.expressionFilter) {
+            if (!content || this.expressionFilter) {
                 $parent.removeClass('error');
             } else {
                 $parent.addClass('error');
