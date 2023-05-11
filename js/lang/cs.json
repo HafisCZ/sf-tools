@@ -729,10 +729,7 @@
             "always_prev": "Automaticky porovnat s předchozím souborem (cech)",
             "empty_groups": "Zobrazit prázné cechy",
             "obfuscated": "Anonymizovat názvy postav",
-            "insecure": "Povolit nebezpečné html tagy",
-            "insecure_error#": "Tabulka nebyla zobrazena protože obsahuje potenciálně nebezpečné html tagy.<br>Odstraňtě je a zkuste to znovu!",
             "unsafe_delete": "Nevyžadovat potvrzení při mazání dat",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Příjmout podmínky použití",
             "tab": "Výchozí okno",
             "preload": "Načíst řádky",
@@ -1094,10 +1091,6 @@
             "class": "Zmenit třídu",
             "keep_original": "Ponechat originální"
         },
-        "simulate_next_settings": {
-            "title": "Simulation threshold",
-            "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
-        },
         "simulate_next_info": {
             "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use <b>All</b> function to simulate all open dungeons"
@@ -1284,6 +1277,7 @@
         "save": "Uložit",
         "simulate": "Simulovat",
         "configure": "Konfigurace simulátoru",
+        "information": "Important notice!",
         "configure_copy": "Kopírovat všechno včetně aktuální konfigurace",
         "configure_insert": "Vložit testovací data",
         "configure_log": "Spustit simulaci se zapnutým logováním",
@@ -1396,6 +1390,13 @@
             "close": "Zavřít",
             "ok": "Ok",
             "apply": "Použít"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Dostupná data",

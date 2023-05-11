@@ -729,10 +729,7 @@
             "always_prev": "Összehasonlítás az előzővel (céhek)",
             "empty_groups": "Üres csoportok megjelenítése",
             "obfuscated": "Játékosnevek eltakarása",
-            "insecure": "Nem biztonságos HTML címkék engedélyezése",
-            "insecure_error#": "Ez az oldal nem jelenik meg, mivel olyan HTML címkéket tartalmaz, amelyek tiltottak.<br/>Kérlek távolítsd el őket a beállításaidban és próbálkozz újra.",
             "unsafe_delete": "Törölt fájlok esetén a megerősítés átugrása",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "ÁSZF elfogadása",
             "tab": "Alapértelmezett fül",
             "preload": "Sorelőtöltés",
@@ -1094,10 +1091,6 @@
             "class": "Osztály változtatás",
             "keep_original": "Eredeti megtartása"
         },
-        "simulate_next_settings": {
-            "title": "Szimulációs küszöb",
-            "label": "Küszöb % – A küszöbön kívül eső kazamatában lévő ellenségek kimaradnak"
-        },
         "simulate_next_info": {
             "title": "A küszöbön belül nincs legyőzhető kazamata (#{threshold_min} - #{threshold_max} %)",
             "message#": "Használja az <b>Összes</b> funkciót az összes nyitott kazamata szimulálásához"
@@ -1284,6 +1277,7 @@
         "save": "Save",
         "simulate": "Simulate",
         "configure": "Szimulátor konfigurálása",
+        "information": "Important notice!",
         "configure_copy": "Mindenki másolása, beleértve az aktuális konfigurációt is",
         "configure_insert": "Insert sample data",
         "configure_log": "Run simulation with logging enabled",
@@ -1396,6 +1390,13 @@
             "close": "Close",
             "ok": "Ok",
             "apply": "Apply"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Available data",

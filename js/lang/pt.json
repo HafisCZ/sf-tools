@@ -729,10 +729,7 @@
             "always_prev": "Comparar anteriores (clãs)",
             "empty_groups": "Mostrar grupos vazios",
             "obfuscated": "Ocultar nomes dos jogadores",
-            "insecure": "Permitir tags html inseguras",
-            "insecure_error#": "Esta tabela não foi exibida porque contém tags HTML que são proibidas.<br/>Por favor, remova-as das suas configurações e tente novamente.",
             "unsafe_delete": "Saltar confirmação quando excluir ficheiros",
-            "legacy_battlemage_icon": "Use battlemage icon from previous versions",
             "terms": "Aceitar os termos de serviço",
             "tab": "Separador padrão",
             "preload": "Pré-Carregar linhas da tabela",
@@ -1094,10 +1091,6 @@
             "class": "Mudar classe",
             "keep_original": "Manter original"
         },
-        "simulate_next_settings": {
-            "title": "Limite de simulação",
-            "label": "Limite % - Qualquer inimigo da masmorra fora deste limite será ignorado"
-        },
         "simulate_next_info": {
             "title": "Nenhuma masmorra superável dentro do limite (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use a função <b>All</b> para simular todas as masmorras disponíveis"
@@ -1284,6 +1277,7 @@
         "save": "Salvar",
         "simulate": "Simular",
         "configure": "Configure o simulador",
+        "information": "Important notice!",
         "configure_copy": "Copie todos, incluindo a configuração atual",
         "configure_insert": "Insert sample data",
         "configure_log": "Run simulation with logging enabled",
@@ -1396,6 +1390,13 @@
             "close": "Close",
             "ok": "Ok",
             "apply": "Apply"
+        },
+        "dungeons_options": {
+            "title": "Simulator options",
+            "threshold": {
+                "title": "Simulation threshold",
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+            }
         },
         "analyzer_autofill": {
             "title": "Available data",
