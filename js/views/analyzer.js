@@ -196,9 +196,11 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
       const globalScope = new ExpressionScope(this.environment);
       
       for (const { selector, count } of this.groups) {
-          const expression = new Expression(selector.val() || 'true', null, this.ExpressionConfig);
-
-          count.val(this.rounds.filter((round) => expression.eval(globalScope.clone().addSelf(round))).length);
+          const expression = Expression.create(selector.val() || 'true', null, this.ExpressionConfig);
+          
+          if (expression) {
+            count.val(this.rounds.filter((round) => expression.eval(globalScope.clone().addSelf(round))).length);
+          }
       }
   }
 
