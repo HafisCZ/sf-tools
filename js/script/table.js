@@ -801,6 +801,7 @@ class TableInstance {
 
     #getTable () {
         return `
+            ${ this.#getSizerBlock() }
             <tr class="headers">
                 ${ this.#getCategoryBlock(this.configLeft, true) }
                 ${ this.#getCategoryBlock() }
@@ -1053,6 +1054,14 @@ class TableInstance {
                 });
             }
         });
+    }
+
+    #getSizerBlock () {
+        const content = _join(this.flat, ({ span, width }) => {
+            return `<td colspan="${span}" style="width: ${width}px; max-width: ${width}px;"></td>`
+        })
+
+        return `<tr class="headers" style="visibility: collapse;">${content}</tr>`
     }
 
     #getSortingTag (key) {

@@ -9,6 +9,8 @@ table.sftools-table {
   font-size: 1.35em !important;
 
   text-align: center;
+
+  table-layout: fixed;
 }
 
 table.sftools-table tbody {
