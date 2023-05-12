@@ -228,6 +228,10 @@ class Exporter {
     static csv (content, name = this.time) {
         this.download(`${ name }.csv`, new Blob([ content ], { type: 'text/csv' }));
     }
+
+    static txt (content, name = this.time) {
+        this.download(`${ name }.txt`, new Blob([ content ], { type: 'text/plain' }));
+    }
 }
 
 class Site {

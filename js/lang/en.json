@@ -590,6 +590,8 @@
                 "remove": "Remove",
                 "reset": "Discard changes",
                 "save_template": "Save as template",
+                "export": "Export",
+                "import": "Import",
                 "header": {
                     "actions": "Actions",
                     "modify": "Script",

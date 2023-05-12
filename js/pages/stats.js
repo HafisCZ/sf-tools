@@ -2470,6 +2470,18 @@ class ScriptsTab extends Tab {
             copyText(this.editor.content);
         });
 
+        this.$export = this.$parent.operator('export');
+        this.$export.click(() => {
+            Exporter.txt(this.editor.content, `script_${Exporter.time}`);
+        });
+
+        this.$import = this.$parent.operator('import');
+        this.$import.change(async (event) => {
+            const text = await _dig(event, 'currentTarget', 'files', 0).text();
+ 
+            this.editor.content = text;
+        })
+
         // Archive
         this.$libraryArchive = this.$parent.operator('library-archive');
         this.$libraryArchive.click(() => {
