@@ -89,7 +89,7 @@ const SCOPES = {
       Fire: true,
       Water: true,
       Dungeons: true
-    },
+    }
   },
   'items': {
     Potions: true,
@@ -107,7 +107,7 @@ const SCOPES = {
       Misc: ITEM_SCOPE,
       Wpn1: ITEM_SCOPE,
       Wpn2: ITEM_SCOPE,
-    },
+    }
   }
 }
 
