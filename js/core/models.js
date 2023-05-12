@@ -698,6 +698,22 @@ class PlayerModel {
     static ACHIEVEMENTS_COUNT = 103;
     static SCRAPBOOK_COUNT = 2283;
 
+    static SCROLL_MAP = {
+        11: 0,
+        31: 1,
+        41: 2,
+        51: 3,
+        61: 4,
+        71: 5,
+        81: 6,
+        91: 7,
+        101: 8
+    };
+
+    static MOUNT_MAP = [
+        '', 10, 20, 30, 50
+    ];
+
     constructor (data) {
         if (data) {
             this.#initShared(data);
@@ -1913,27 +1929,11 @@ class PlayerModel {
     }
 
     static getScroll (value) {
-        const scrollMap = {
-            11: 0,
-            31: 1,
-            41: 2,
-            51: 3,
-            61: 4,
-            71: 5,
-            81: 6,
-            91: 7,
-            101: 8
-        };
-
-        return scrollMap[value];
+        return this.SCROLL_MAP[value];
     }
 
     static getMount (value) {
-        const mountMap = [
-            '', 10, 20, 30, 50
-        ]
-
-        return mountMap[value];
+        return this.MOUNT_MAP[value];
     }
 
     static getFlags (value) {
