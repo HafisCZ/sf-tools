@@ -31,11 +31,6 @@ const ARG_MAP = {
     'bottom': 5
 };
 
-const ARG_MAP_SERVER = {
-    'off': 0,
-    'on': 100
-}
-
 const ARG_FORMATTERS = {
     'number': (p, x) => isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)),
     'fnumber': (p, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
@@ -408,8 +403,10 @@ ScriptCommands.register(
     ScriptType.Table,
     /^server (@?\S+)$/,
     (root, value) => {
-        if (ARG_MAP_SERVER.hasOwnProperty(value)) {
-            root.addGlobal('server', ARG_MAP_SERVER[value]);
+        if (value === 'on') {
+            root.addGlobal('server', 100);
+        } else if (value === 'off') {
+            root.addGlobal('server', 0);
         } else {
             const val = root.constants.fetch(value);
 
@@ -421,8 +418,10 @@ ScriptCommands.register(
     (root, value) => {
         const acc = Highlighter.keyword('server ');
 
-        if (ARG_MAP_SERVER.hasOwnProperty(value)) {
-            return acc.boolean(value, value === 'on');
+        if (value === 'on') {
+            return acc.boolean(value, true);
+        } else if (value === 'off') {
+            return acc.boolean(value, false);
         } else if (root.constants.has(value)) {
             const val = root.constants.get(value);
 
