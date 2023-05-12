@@ -953,7 +953,7 @@ const DatabaseManager = new (class {
     }
 
     isHidden (entry) {
-        return _dig(entry, 'hidden') || _dig(this.#metadata, entry.timestamp, 'hidden');
+        return entry.hidden || this.#metadata[entry.timestamp]?.hidden;
     }
 
     async #markHidden (timestamp, hidden) {
