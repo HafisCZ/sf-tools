@@ -1,0 +1,9 @@
+@import url('../global.css');
+
+[data-player] i.icon {
+  display: none;
+}
+
+[data-player]:hover i.icon {
+  display: block;
+}
