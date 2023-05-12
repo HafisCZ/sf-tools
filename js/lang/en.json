@@ -1384,6 +1384,10 @@
             "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
         }
     },
+    "request": {
+        "title": "is requesting your character data",
+        "notice#": "Select your character that you wish to share with the website.<br>No personal data will be shared!"
+    },
     "dialog": {
         "shared": {
             "cancel": "Cancel",

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="css/pages/request.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/util.js"></script>
+        <script src="js/playa/calculations.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/core/util.js"></script>
+        <script src="js/core/models.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/core/database.js"></script>
+        <script src="js/script/config.js"></script>
+        <script src="js/script/ast.js"></script>
+        <script src="js/script/core.js"></script>
+        <script src="js/changelog.js"></script>
+        <script src="js/views/base.js"></script>
+        <script src="js/editor.js"></script>
+        <script src="endpoint/endpoint.js"></script>
+        <script src="js/sim/base.js"></script>
+        <script src="js/pages/request.js"></script>
+    </head>
+    <body class="inverted !m-0 h-full">
+      <div class="ui fixed inverted borderless huge menu">
+          <div class="header item"><a href="index.html">SFTools</a></div>
+      </div>
+
+      <div class="dialog container" style="z-index: 0; background-color: rgba(0, 0, 0, 0.85);">
+        <div class="inverted small bordered dialog">
+          <div class="header"><span id="origin" class="text-orange"></span> <span data-intl="request.title"></span></div>
+          <div class="text-center" data-intl="request.notice#"></div>
+          <div class="ui inverted form flex flex-col gap-4 pr-4 overflow-y-scroll" id="content" style="height: 45vh;"></div>
+          <div class="ui three fluid buttons">
+            <button class="ui !background-orange !text-black button" id="close" data-intl="dialog.shared.close"></button>
+            <button class="ui basic inverted button" id="import-endpoint">Endpoint</button>
+            <input type="file" multiple id="import-file" accept=".har,.json" class="ui invisible file input">
+            <label class="ui basic inverted button" for="import-file" data-intl="integration.file"></label>
+          </div>
+        </div>
+      </div>
+    </body>
+</html>
