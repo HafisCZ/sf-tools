@@ -258,8 +258,8 @@ Site.ready(null, function (urlParams) {
   }
 
   // Execute
-  if (origin && redirect && scope.length > 0) {
-    $origin.text(origin);
+  if (redirect && scope.length > 0) {
+    $origin.text(origin || new URL(redirect).hostname);
 
     render();
   } else {
