@@ -9,12 +9,28 @@ const ScriptType = {
     Action: 0x2
 }
 
-const ARG_MAP = {
+const ARGUMENT_MAP_ON_OFF = {
+    'off': 0,
+    'on': 1
+}
+
+const ARGUMENT_MAP_BORDER = {
+    'none': 0,
+    'left': 1,
+    'right': 2,
+    'both': 3,
+    'top': 4,
+    'bottom': 5
+}
+
+const ARGUMENT_MAP_LINED = {
     'off': 0,
     'on': 1,
     'thick': 2,
-    'thin': 1,
-    'static': 2,
+    'thin': 1
+}
+
+const ARGUMENT_MAP_RULE = {
     'above or equal': 'ae',
     'below or equal': 'be',
     'equal or above': 'ae',
@@ -22,13 +38,7 @@ const ARG_MAP = {
     'above': 'a',
     'below': 'b',
     'equal': 'e',
-    'default': 'd',
-    'none': 0,
-    'left': 1,
-    'right': 2,
-    'both': 3,
-    'top': 4,
-    'bottom': 5
+    'default': 'd'
 };
 
 const ARG_FORMATTERS = {
@@ -589,7 +599,7 @@ ScriptCommands.register(
         const val = root.constants.fetch(value);
 
         if (val != undefined) {
-            root.addValueRule(ARG_MAP['default'], 0, val);
+            root.addValueRule('d', 0, val);
         }
     },
     (root, value) => {
@@ -612,7 +622,7 @@ ScriptCommands.register(
         const val = root.constants.fetch(value2);
 
         if (val != undefined && ref != undefined) {
-            root.addValueRule(ARG_MAP[rule], ref, val);
+            root.addValueRule(ARGUMENT_MAP_RULE[rule], ref, val);
         }
     },
     (root, rule, value, value2) => {
@@ -644,7 +654,7 @@ ScriptCommands.register(
         const val = getCSSColor(root.constants.fetch(value));
 
         if (val != undefined && val) {
-            root.addColorRule(ARG_MAP['default'], 0, val);
+            root.addColorRule('d', 0, val);
         }
     },
     (root, value) => {
@@ -672,7 +682,7 @@ ScriptCommands.register(
         const val = getCSSColor(root.constants.fetch(value2));
 
         if (val != undefined && ref != undefined && val) {
-            root.addColorRule(ARG_MAP[rule], ref, val);
+            root.addColorRule(ARGUMENT_MAP_RULE[rule], ref, val);
         }
     },
     (root, rule, value, value2) => {
@@ -1074,7 +1084,7 @@ ScriptCommands.register(
     'TABLE_LINED_LONG',
     ScriptType.Table,
     /^lined (on|off|thin|thick)$/,
-    (root, value) => root.addGlobal('lined', ARG_MAP[value]),
+    (root, value) => root.addGlobal('lined', ARGUMENT_MAP_LINED[value]),
     (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
 )
 
@@ -1152,7 +1162,7 @@ ScriptCommands.register(
     'TABLE_OPTIONS',
     ScriptType.Table,
     /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
-    (root, key, value) => root.addShared(key, ARG_MAP[value]),
+    (root, key, value) => root.addShared(key, ARGUMENT_MAP_ON_OFF[value]),
     (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
 )
 
@@ -1192,7 +1202,13 @@ ScriptCommands.register(
     'TABLE_INDEXED_LONG',
     ScriptType.Table,
     /^indexed (on|off|static)$/,
-    (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
+    (root, value) => {
+        if (value === 'static') {
+            root.addGlobal('indexed', 2);
+        } else {
+            root.addGlobal('indexed', ARGUMENT_MAP_ON_OFF[value])
+        }
+    },
     (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
 )
 
@@ -1208,7 +1224,7 @@ ScriptCommands.register(
     'TABLE_OPTIONS_GLOBAL_LONG',
     ScriptType.Table,
     /^(members|outdated|opaque|large rows|align title) (on|off)$/,
-    (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
+    (root, key, value) => root.addGlobal(key, ARGUMENT_MAP_ON_OFF[value]),
     (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
 )
 
@@ -1259,7 +1275,7 @@ ScriptCommands.register(
     'TABBLE_OPTIONS_SHARED',
     ScriptType.Table,
     /^(visible|breakline|statistics color) (on|off)$/,
-    (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARG_MAP[value]),
+    (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARGUMENT_MAP_ON_OFF[value]),
     (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
 )
 
@@ -1267,7 +1283,7 @@ ScriptCommands.register(
     'TABLE_BORDER',
     ScriptType.Table,
     /^border (none|left|right|both|top|bottom)$/,
-    (root, value) => root.addShared('border', ARG_MAP[value]),
+    (root, value) => root.addShared('border', ARGUMENT_MAP_BORDER[value]),
     (root, value) => Highlighter.keyword('border ').constant(value)
 )
 
