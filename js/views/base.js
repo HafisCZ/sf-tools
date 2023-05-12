@@ -4,7 +4,8 @@ class Dialog {
             opacity: 0.85,
             dismissable: false,
             key: '',
-            containerClass: ''
+            containerClass: '',
+            containerStyle: ''
         }, options || {});
     }
 
@@ -19,7 +20,7 @@ class Dialog {
 
                 if (!this._hasParent()) {
                     const $dialog = $(this._createModal());
-                    const $container = $(`<div class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity})"></div>`);
+                    const $container = $(`<div class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}"></div>`);
 
                     $container.append($dialog);
                     $(document.body).append($container);
