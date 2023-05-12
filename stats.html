@@ -209,7 +209,7 @@
                     </div>
                 </div>
                 <div class="two wide column">
-                    <div class="ui spaced fluid vertical buttons">
+                    <div class="ui spaced fluid small vertical buttons">
                         <button class="ui basic inverted button" data-op="close"><i class="ui reply icon"></i> <span data-intl="stats.scripts.sidebar.close"></span></button>
                         <button class="ui basic inverted button" data-op="reset"><i class="ui recycle format icon"></i> <span data-intl="stats.scripts.sidebar.reset"></span></button>
                         <h3 class="ui inverted header" data-intl="stats.scripts.sidebar.header.modify"></h3>
@@ -225,6 +225,11 @@
                         <button class="ui basic inverted button" data-op="library-archive"><i class="ui archive icon"></i> <span data-intl="stats.scripts.sidebar.archive"></span></button>
                         <h3 class="ui inverted header" data-intl="stats.scripts.sidebar.header.actions"></h3>
                         <button class="ui basic inverted button" data-op="copy"><i class="ui copy outline icon"></i> <span data-intl="stats.scripts.sidebar.copy"></span></button>
+                        <label for="button-script-import" class="ui basic inverted button">
+                            <i class="file icon"></i> <span data-intl="stats.scripts.sidebar.import"></span>
+                        </label>
+                        <input type="file" multiple data-op="import" accept="text/plain" class="ui invisible file input" id="button-script-import">
+                        <button class="ui basic inverted button" data-op="export"><i class="ui download icon"></i> <span data-intl="stats.scripts.sidebar.export"></span></button>
                     </div>
                 </div>
             </div>
