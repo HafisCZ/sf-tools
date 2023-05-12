@@ -889,7 +889,7 @@ class DruidModel extends SimulatorModel {
                 damage,
                 target,
                 skipped,
-                critical,
+                getRandom(this.State.CriticalChance),
                 type
             );
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
