@@ -1,4 +1,14 @@
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Statistics': [
+            'Added button to import & export a script as a file',
+            'Added strict sizing to tables (<code>width</code> will now lock the column to specified width)',
+            'Fixed grouped headers ignoring maximum count'
+        ],
+        'All Tools': [
+            'Added support for other websites to request character data from SFTools'
+        ]
+    },
     'v6.3736': {
         'Statistics': [
             'Added option to save table as CSV file',
