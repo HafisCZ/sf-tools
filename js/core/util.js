@@ -256,6 +256,15 @@ function _binaryToString(bin) {
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 }
 
+function _strictSlice (array, length, def) {
+    const arr = Array.from({ length }).fill(def);
+    for (let i = 0; i < Math.min(length, array.length); i++) {
+        arr[i] = array[i];
+    }
+    
+    return arr;
+}
+
 function * _eachBlock(arr, size) {
     for (let i = 0; i < arr.length / size; i++) {
         yield arr.slice(i * size, i * size + size);
