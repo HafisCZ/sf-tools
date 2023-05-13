@@ -2698,7 +2698,7 @@ class ScriptsTab extends Tab {
             <div>
                 <i class="ui ${icon} icon"></i>
                 <span>${name}</span>
-                ${script.version ? `<span class="script-version text-gray">v${script.version}</span>` : ''}
+                ${isNaN(script.version) ? '' : `<span class="script-version text-gray">v${script.version}</span>`}
             </div>
         `;
     }
