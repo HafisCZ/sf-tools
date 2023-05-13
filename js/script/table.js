@@ -803,11 +803,11 @@ class TableInstance {
         return `
             ${ this.#getSizerBlock() }
             <tr class="headers">
-                ${ this.#getCategoryBlock(this.configLeft, true) }
+                ${ this.#getCategoryBlock(this.configLeft, this.config.length > 0) }
                 ${ this.#getCategoryBlock() }
             </tr>
             <tr class="headers border-bottom-thick">
-                ${ this.#getHeaderBlock(this.configLeft, true) }
+                ${ this.#getHeaderBlock(this.configLeft, this.config.length > 0) }
                 ${ this.#getHeaderBlock() }
             </tr>
             <tr data-entry-injector>
