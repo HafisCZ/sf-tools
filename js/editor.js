@@ -245,43 +245,43 @@ class Editor extends EditorBase {
 
     static getEditorFields (selector) {
         return {
-            name: new Field(`${selector} [data-path="Name"`, ''),
-            prefix: new Field(`${selector} [data-path="Prefix"`, ''),
+            name: new Field(`${selector} [data-path="Name"]`, ''),
+            prefix: new Field(`${selector} [data-path="Prefix"]`, ''),
 
-            class: new Field(`${selector} [data-path="Class"`, '1'),
-            level: new Field(`${selector} [data-path="Level"`, '', Field.isPlayerLevel),
-            armor: new Field(`${selector} [data-path="Armor"`, '', Field.isNumber),
+            class: new Field(`${selector} [data-path="Class"]`, '1'),
+            level: new Field(`${selector} [data-path="Level"]`, '', Field.isPlayerLevel),
+            armor: new Field(`${selector} [data-path="Armor"]`, '', Field.isNumber),
 
-            resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"`, '', Field.isResistanceRune),
-            resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"`, '', Field.isResistanceRune),
-            resistance_lightning: new Field(`${selector} [data-path="Runes.ResistanceLightning"`, '', Field.isResistanceRune),
+            resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"]`, '', Field.isResistanceRune),
+            resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"]`, '', Field.isResistanceRune),
+            resistance_lightning: new Field(`${selector} [data-path="Runes.ResistanceLightning"]`, '', Field.isResistanceRune),
 
-            portal_hp: new Field(`${selector} [data-path="Dungeons.Player"`, '', Field.isDungeon),
-            portal_damage: new Field(`${selector} [data-path="Dungeons.Group"`, '', Field.isDungeon),
+            portal_hp: new Field(`${selector} [data-path="Dungeons.Player"]`, '', Field.isDungeon),
+            portal_damage: new Field(`${selector} [data-path="Dungeons.Group"]`, '', Field.isDungeon),
 
-            runes_health: new Field(`${selector} [data-path="Runes.Health"`, '', Field.isHealthRune),
-            gladiator: new Field(`${selector} [data-path="Fortress.Gladiator"`, '', Field.isUnderworldBuilding),
-            potion_life: new Field(`${selector} [data-path="Potions.Life"`, '0'),
-            enchantment: new Field(`${selector} [data-path="Items.Hand.HasEnchantment"`, 'false'),
-            shield: new Field(`${selector} [data-path="BlockChance"`, '25'),
+            runes_health: new Field(`${selector} [data-path="Runes.Health"]`, '', Field.isHealthRune),
+            gladiator: new Field(`${selector} [data-path="Fortress.Gladiator"]`, '', Field.isUnderworldBuilding),
+            potion_life: new Field(`${selector} [data-path="Potions.Life"]`, '0'),
+            enchantment: new Field(`${selector} [data-path="Items.Hand.HasEnchantment"]`, 'false'),
+            shield: new Field(`${selector} [data-path="BlockChance"]`, '25'),
 
-            str: new Field(`${selector} [data-path="Strength.Total"`, '', Field.isNonZero),
-            dex: new Field(`${selector} [data-path="Dexterity.Total"`, '', Field.isNonZero),
-            int: new Field(`${selector} [data-path="Intelligence.Total"`, '', Field.isNonZero),
-            con: new Field(`${selector} [data-path="Constitution.Total"`, '', Field.isNonZero),
-            lck: new Field(`${selector} [data-path="Luck.Total"`, '', Field.isNumber),
+            str: new Field(`${selector} [data-path="Strength.Total"]`, '', Field.isNonZero),
+            dex: new Field(`${selector} [data-path="Dexterity.Total"]`, '', Field.isNonZero),
+            int: new Field(`${selector} [data-path="Intelligence.Total"]`, '', Field.isNonZero),
+            con: new Field(`${selector} [data-path="Constitution.Total"]`, '', Field.isNonZero),
+            lck: new Field(`${selector} [data-path="Luck.Total"]`, '', Field.isNumber),
 
-            weapon1_min: new Field(`${selector} [data-path="Items.Wpn1.DamageMin"`, '', Field.isNumber),
-            weapon1_max: new Field(`${selector} [data-path="Items.Wpn1.DamageMax"`, '', Field.isNumber),
-            weapon1_enchantment: new Field(`${selector} [data-path="Items.Wpn1.HasEnchantment"`, 'false'),
-            weapon1_rune: new Field(`${selector} [data-path="Items.Wpn1.AttributeTypes.2"`, '0'),
-            weapon1_value: new Field(`${selector} [data-path="Items.Wpn1.Attributes.2"`, '', Field.isDamageRune),
+            weapon1_min: new Field(`${selector} [data-path="Items.Wpn1.DamageMin"]`, '', Field.isNumber),
+            weapon1_max: new Field(`${selector} [data-path="Items.Wpn1.DamageMax"]`, '', Field.isNumber),
+            weapon1_enchantment: new Field(`${selector} [data-path="Items.Wpn1.HasEnchantment"]`, 'false'),
+            weapon1_rune: new Field(`${selector} [data-path="Items.Wpn1.AttributeTypes.2"]`, '0'),
+            weapon1_value: new Field(`${selector} [data-path="Items.Wpn1.Attributes.2"]`, '', Field.isDamageRune),
 
-            weapon2_min: new Field(`${selector} [data-path="Items.Wpn2.DamageMin"`, '', Field.isNumber),
-            weapon2_max: new Field(`${selector} [data-path="Items.Wpn2.DamageMax"`, '', Field.isNumber),
-            weapon2_enchantment: new Field(`${selector} [data-path="Items.Wpn2.HasEnchantment"`, 'false'),
-            weapon2_rune: new Field(`${selector} [data-path="Items.Wpn2.AttributeTypes.2"`, '0'),
-            weapon2_value: new Field(`${selector} [data-path="Items.Wpn2.Attributes.2"`, '', Field.isDamageRune)
+            weapon2_min: new Field(`${selector} [data-path="Items.Wpn2.DamageMin"]`, '', Field.isNumber),
+            weapon2_max: new Field(`${selector} [data-path="Items.Wpn2.DamageMax"]`, '', Field.isNumber),
+            weapon2_enchantment: new Field(`${selector} [data-path="Items.Wpn2.HasEnchantment"]`, 'false'),
+            weapon2_rune: new Field(`${selector} [data-path="Items.Wpn2.AttributeTypes.2"]`, '0'),
+            weapon2_value: new Field(`${selector} [data-path="Items.Wpn2.Attributes.2"]`, '', Field.isDamageRune)
         }
     }
 
