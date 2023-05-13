@@ -3077,6 +3077,14 @@ class ScriptArchive {
         return this.data.find(({ timestamp: _timestamp }) => _timestamp == timestamp).content;
     }
 
+    static find (type, name, version) {
+        return this.data.find(({ type: _type, name: _name, version: _version }) => _type === type && _name === name && _version === version);
+    }
+
+    static has (type, name, version) {
+        return this.data.findIndex(({ type: _type, name: _name, version: _version }) => _type === type && _name === name && _version === version) !== -1;
+    }
+
     static add (type, name, version, content) {
         this.data.push({
             type,
@@ -3129,6 +3137,8 @@ class ScriptManager {
         this.scripts[name] = script;
 
         this.#persist();
+
+        return script.version;
     }
 
     static remove (name) {

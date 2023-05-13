@@ -2483,14 +2483,20 @@ class ScriptsTab extends Tab {
 
         // Archive
         this.$libraryArchive = this.$parent.operator('library-archive');
-        this.$libraryArchive.click(() => {
-            DialogController.open(ScriptArchiveDialog, (content) => {
-                if (content === true) {
-                    this._updateSidebars();
-                } else {
-                    this.editor.content = content;
-                }
-            });
+        this.$libraryArchive.click((event) => {
+            if (event.ctrlKey && this._hasArchivedPreviousVersion()) {
+                this.editor.content = ScriptArchive.find('overwrite_script', this.script.name, this.script.version - 1).content;
+
+                this._updateSidebars();
+            } else {
+                DialogController.open(ScriptArchiveDialog, (content) => {
+                    if (content === true) {
+                        this._updateSidebars();
+                    } else {
+                        this.editor.content = content;
+                    }
+                });
+            }
         });
 
         // Button handling
@@ -2588,6 +2594,20 @@ class ScriptsTab extends Tab {
             this.$save.find('i').removeClass('reply').addClass('save')
             this.$saveTemplate.find('i').removeClass('reply').addClass('save')
         }
+
+        if (this.ctrlDown && this._hasArchivedPreviousVersion()) {
+            this.$libraryArchive.find('i').removeClass('archive').addClass('box open');
+
+            const version = this.script.version - 1;
+            this.$libraryArchive.find('span').text(intl('stats.scripts.sidebar.recover', { version }));
+        } else {
+            this.$libraryArchive.find('i').addClass('archive').removeClass('box open');
+            this.$libraryArchive.find('span').text(intl('stats.scripts.sidebar.archive'));
+        }
+    }
+
+    _hasArchivedPreviousVersion () {
+        return this.script && !isNaN(this.script.version) && this.script.version > 1 && ScriptArchive.find('overwrite_script', this.script.name, this.script.version - 1);
     }
 
     // Returns default key for specified key
@@ -2641,7 +2661,7 @@ class ScriptsTab extends Tab {
 
     save () {
         this.script.content = this.editor.content;
-        ScriptManager.save(this.script.name, this.script.content, this.script.parent);
+        this.script.version = ScriptManager.save(this.script.name, this.script.content, this.script.parent);
 
         this._updateSidebars();
         this._contentChanged(false);
