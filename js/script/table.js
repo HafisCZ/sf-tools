@@ -1057,8 +1057,14 @@ class TableInstance {
     }
 
     #getSizerBlock () {
-        const content = _join(this.flat, ({ span, width }) => {
-            return `<td colspan="${span}" style="width: ${width}px; max-width: ${width}px;"></td>`
+        const content = _join(this.flat, ({ span, width, grouped }) => {
+            if (grouped) {
+                const sliceWidth = Math.trunc(width / grouped);
+
+                return `<td style="width: ${sliceWidth}px; max-width: ${sliceWidth}px;"></td>`.repeat(grouped);
+            } else {
+                return `<td colspan="${span}" style="width: ${width}px; max-width: ${width}px;"></td>`
+            }
         })
 
         return `<tr class="headers" style="visibility: collapse;">${content}</tr>`
