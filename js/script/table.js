@@ -266,7 +266,7 @@ class TableInstance {
                     } else {
                         const cmps = header.difference ? this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
 
-                        return _join(vals, (val, index) => {
+                        return _join(_strictSlice(vals, header.grouped, undefined), (val, index) => {
                             const showEndBorder = showBorder && index == header.grouped - 1;
                             const extra = {
                                 index: index
@@ -291,7 +291,7 @@ class TableInstance {
                 const vals = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
 
                 if (Array.isArray(vals)) {
-                    return _fastSum(vals);
+                    return _fastSum(_strictSlice(vals, header.grouped, undefined));
                 } else {
                     return vals;
                 }
