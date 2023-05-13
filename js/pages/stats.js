@@ -2441,7 +2441,6 @@ class ScriptsTab extends Tab {
         this.$list = this.$parent.operator('list');
 
         this.$selectorDropdown = this.$parent.operator('selector-dropdown');
-        this.$selectorInput = this.$parent.operator('selector-input');
 
         // Right sidebar
         this.$helpWiki = this.$parent.operator('help-wiki');
@@ -2718,18 +2717,23 @@ class ScriptsTab extends Tab {
             }
         });
 
-        // Script list
         if (this.returnTo) {
             this.$close.show();
-            this.$selectorInput.show();
-            this.$selectorDropdown.hide();
 
-            this.$selectorInput.find('input').val(this._getScriptName(this.script.name));
-            this.$selectorInput.find('i').removeClass('database user archive').addClass(this._getScriptIcon(this.script.name));
+            this.$selectorDropdown.dropdown({
+                values: [
+                    {
+                        name: this._getScriptName(this.script.name),
+                        icon: this._getScriptIcon(this.script.name),
+                        value: this.script.name
+                    }
+                ]
+            });
+
+            this.$selectorDropdown.addClass('pointer-events-none');
+            this.$selectorDropdown.find('i.dropdown.icon').hide();
         } else {
             this.$close.hide();
-            this.$selectorInput.hide();
-            this.$selectorDropdown.show();
 
             this.$selectorDropdown.dropdown({
                 values: [
@@ -2745,12 +2749,15 @@ class ScriptsTab extends Tab {
                     }))
                 ]
             });
-    
-            this.$selectorDropdown.dropdown('set selected', this.script.name);
-            this.$selectorDropdown.dropdown('setting', 'onChange', (value) => {
-                this._setScript(value);
-            })
+
+            this.$selectorDropdown.removeClass('pointer-events-none');
+            this.$selectorDropdown.find('i.dropdown.icon').show();
         }
+
+        this.$selectorDropdown.dropdown('set selected', this.script.name);
+        this.$selectorDropdown.dropdown('setting', 'onChange', (value) => {
+            this._setScript(value);
+        })
 
         if (ScriptManager.exists(this.script.name)) {
             this.$remove.removeClass('disabled');
