@@ -801,7 +801,6 @@ class TableInstance {
 
     #getTable () {
         return `
-            ${ this.#getSizerBlock() }
             <tr class="headers">
                 ${ this.#getCategoryBlock(this.configLeft, this.config.length > 0) }
                 ${ this.#getCategoryBlock() }
@@ -858,7 +857,7 @@ class TableInstance {
     #getContent () {
         this.cache.set('table', this.#getTable());
 
-        let content = '';
+        let content = this.#getSizer();
         let layout = this.settings.getLayout(this.cache.get('statistics'), this.cache.get('rows'), this.cache.get('members'));
 
         for (const block of layout) {
@@ -1056,7 +1055,7 @@ class TableInstance {
         });
     }
 
-    #getSizerBlock () {
+    #getSizer () {
         const content = _join(this.flat, ({ span, width, grouped }) => {
             if (grouped) {
                 const sliceWidth = Math.trunc(width / grouped);
