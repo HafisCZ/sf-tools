@@ -3,6 +3,8 @@ const CHANGELOG = {
         'Statistics': [
             'Added button to import & export a script as a file',
             'Added strict sizing to tables (<code>width</code> will now lock the column to specified width)',
+            'Added visible script version next to script name',
+            'Added ctrl click action to script archive to recover previous script version if present',
             'Fixed grouped headers ignoring maximum count'
         ],
         'All Tools': [
