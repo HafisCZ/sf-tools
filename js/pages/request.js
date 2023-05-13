@@ -112,9 +112,11 @@ const SCOPES = {
 }
 
 Site.ready(null, function (urlParams) {
-  const origin = urlParams.get('origin');
   const redirect = urlParams.get('redirect');
+
   const scope = (urlParams.get('scope') || 'default').split(/\s|\+/).filter((field) => SCOPES[field]);
+  const origin = urlParams.get('origin');
+  const state = urlParams.get('state');
 
   // Buttons
   const $importFile = $('#import-file');
@@ -238,20 +240,27 @@ Site.ready(null, function (urlParams) {
     }
   }
 
+  function addFormInput (form, name, value) {
+    const input = document.createElement("input"); 
+    input.value = value;
+    input.name = name;
+
+    form.appendChild(input);  
+  }
+
   function redirectToOrigin (player) {
     const data = Object.create(null);
     copyWithWhitelist(player, data, scope.reduce((memo, name) => Object.assign(memo, SCOPES[name]), Object.create(null)));
 
     const form = document.createElement("form");
     form.method = 'POST';
-    form.action = redirect;   
-    
-    const input = document.createElement("input"); 
-    input.value = JSON.stringify(data);
-    input.name = 'data';
-    
-    form.appendChild(input);  
+    form.action = redirect;
 
+    addFormInput(form, 'data', JSON.stringify(data));
+    if (state) {
+      addFormInput(form, 'state', state);
+    }
+    
     document.body.appendChild(form);
 
     form.submit();
