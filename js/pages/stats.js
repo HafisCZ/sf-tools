@@ -2691,6 +2691,26 @@ class ScriptsTab extends Tab {
         }
     }
 
+    _getFormattedScriptName (script) {
+        const name = this._getScriptName(script.name);
+        const icon = this._getScriptIcon(script.name);
+        return `
+            <div>
+                <i class="ui ${icon} icon"></i>
+                <span>${name}</span>
+                ${script.version ? `<span class="script-version text-gray">v${script.version}</span>` : ''}
+            </div>
+        `;
+    }
+
+    _getScriptName (value) {
+        if (this.reservedScripts.includes(value)) {
+            return intl(`stats.scripts.types.${value}`);
+        } else {
+            return DatabaseManager.PlayerNames[value] || DatabaseManager.GroupNames[value] || value;
+        }
+    }
+
     _updateSidebars () {
         // Template list
         let content = '';
@@ -2719,43 +2739,46 @@ class ScriptsTab extends Tab {
 
         if (this.returnTo) {
             this.$close.show();
-
-            this.$selectorDropdown.dropdown({
-                values: [
-                    {
-                        name: this._getScriptName(this.script.name),
-                        icon: this._getScriptIcon(this.script.name),
-                        value: this.script.name
-                    }
-                ]
-            });
-
-            this.$selectorDropdown.addClass('pointer-events-none');
-            this.$selectorDropdown.find('i.dropdown.icon').hide();
         } else {
             this.$close.hide();
-
-            this.$selectorDropdown.dropdown({
-                values: [
-                    ...this.reservedScripts.map((value) => ({
-                        name: intl(`stats.scripts.types.${value}`),
-                        icon: this._getScriptIcon(value),
-                        value
-                    })),
-                    ...ScriptManager.keys().filter((value) => !this.reservedScripts.includes(value)).map((value) => ({
-                        name: this._getScriptName(value),
-                        icon: this._getScriptIcon(value),
-                        value
-                    }))
-                ]
-            });
-
-            this.$selectorDropdown.removeClass('pointer-events-none');
-            this.$selectorDropdown.find('i.dropdown.icon').show();
         }
 
+        const values = [
+            ...this.reservedScripts.map((name) => {
+                const script = Object.assign({ name }, ScriptManager.get(name, this._defaultKey(name)) || {});
+
+                return {
+                    name: this._getFormattedScriptName(script),
+                    value: name
+                }
+            }),
+            ...ScriptManager.list().filter((script) => !this.reservedScripts.includes(script.name)).map((script) => ({
+                name: this._getFormattedScriptName(script),
+                value: script.name
+            }))
+        ]
+
+        if (values.every(({ value }) => this.script.name !== value)) {
+            // if there is no script for current, add it
+            values.push({
+                name: this._getFormattedScriptName(this.script),
+                value: this.script.name
+            })
+        }
+
+        this.$selectorDropdown.dropdown({ values })
         this.$selectorDropdown.dropdown('set selected', this.script.name);
         this.$selectorDropdown.dropdown('setting', 'onChange', (value) => {
+            if (this.script.name === value) {
+                // Ignore if identical
+                return;
+            }
+
+            if (this.returnTo) {
+                this.returnTo = null;
+                this._updateSidebars();
+            }
+
             this._setScript(value);
         })
 
@@ -2772,14 +2795,6 @@ class ScriptsTab extends Tab {
         }
 
         this._updateButtons();
-    }
-
-    _getScriptName (value) {
-        if (this.reservedScripts.includes(value)) {
-            return intl(`stats.scripts.types.${value}`);
-        } else {
-            return DatabaseManager.PlayerNames[value] || DatabaseManager.GroupNames[value] || value;
-        }
     }
 
     _getScriptIcon (value) {
