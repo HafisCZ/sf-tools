@@ -199,3 +199,11 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   top: 1.25em !important;
   z-index: -1 !important;
 }
+
+.script-dropdown .script-version {
+  float: right; 
+}
+
+.script-dropdown .menu .script-version {
+  margin-right: 2em;
+}
