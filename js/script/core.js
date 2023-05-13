@@ -411,7 +411,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SERVER',
     ScriptType.Table,
-    /^server (@?\S+)$/,
+    /^server (\S+)$/,
     (root, value) => {
         if (value === 'on') {
             root.addGlobal('server', 100);
@@ -451,7 +451,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_NAME',
     ScriptType.Table,
-    /^name (@?\S+)$/,
+    /^name (\S+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
 
@@ -481,7 +481,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_WIDTH',
     ScriptType.Table,
-    /^width (@?\S+)$/,
+    /^width (\S+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
 
@@ -511,7 +511,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_COLUMNS',
     ScriptType.Table,
-    /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
+    /^columns (\w+[\w ]*(?:,\s*\w+[\w ]*)*)$/,
     (root, parts) => {
         const values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
         if (values.length > 0) {
@@ -545,7 +545,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_NOT_DEFINED_VALUE',
     ScriptType.Table,
-    /^not defined value (@?.+)$/,
+    /^not defined value (.+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
 
@@ -567,7 +567,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_NOT_DEFINED_COLOR',
     ScriptType.Table,
-    /^not defined color (@?.+)$/,
+    /^not defined color (.+)$/,
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
 
@@ -594,7 +594,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_VALUE_DEFAULT',
     ScriptType.Table,
-    /^value default (@?\S+[\S ]*)$/,
+    /^value default (\S+[\S ]*)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
 
@@ -616,7 +616,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_VALUE_RULE',
     ScriptType.Table,
-    /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
+    /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) (.+) (\S+[\S ]*)$/,
     (root, rule, value, value2) => {
         const ref = root.constants.fetch(value);
         const val = root.constants.fetch(value2);
@@ -649,7 +649,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_COLOR_DEFAULT',
     ScriptType.Table,
-    /^color default (@?\S+[\S ]*)$/,
+    /^color default (\S+[\S ]*)$/,
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
 
@@ -676,7 +676,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_COLOR_RULE',
     ScriptType.Table,
-    /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?.+) (@?\S+[\S ]*)$/,
+    /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) (.+) (\S+[\S ]*)$/,
     (root, rule, value, value2) => {
         const ref = root.constants.fetch(value);
         const val = getCSSColor(root.constants.fetch(value2));
@@ -714,7 +714,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_ALIAS',
     ScriptType.Table,
-    /^alias (@?.+)$/,
+    /^alias (.+)$/,
     (root, value) => {
         const val = root.constants.fetch(value);
 
@@ -798,7 +798,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_BACKGROUND',
     ScriptType.Table,
-    /^background (@?.+)$/,
+    /^background (.+)$/,
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
 
@@ -1403,7 +1403,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_TEXT',
     ScriptType.Table,
-    /^text (auto|(?:.+))$/,
+    /^text (.+)$/,
     (root, value) => {
         if (value === 'auto') {
             root.addTextColorExpression(true);
