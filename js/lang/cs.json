@@ -189,7 +189,7 @@
         "9": "Houbičkář",
         "10": "Štastlivec",
         "11": "Šejdíř šejdírů",
-        "12": "Epic Purist",
+        "12": "Militantní epik",
         "13": "Neporazitelný",
         "14": "Kletnotník",
         "15": "Naložený oslík",
@@ -204,10 +204,10 @@
         "24": "Superhrdina",
         "25": "Epický superhrdina",
         "26": "Collecting Mania",
-        "27": "Big Spender",
+        "27": "Štědrý dárce",
         "28": "Celý týden",
         "29": "Always On",
-        "30": "King of Kings",
+        "30": "Král králů",
         "31": "Elitní cech",
         "32": "Petshop Boy",
         "33": "Píseň kováře",
@@ -222,52 +222,52 @@
         "42": "Epičtí společníci",
         "43": "Hranaté oči",
         "44": "Těžař",
-        "45": "Fashion-conscious",
+        "45": "Metrosexuál",
         "46": "Černé zlato",
-        "47": "Witchcraft",
-        "48": "Reliable",
-        "49": "Collect 'Em All",
-        "50": "Metropolis",
-        "51": "Big City",
-        "52": "Small City",
-        "53": "Gold Storage",
-        "54": "Soul Storage",
-        "55": "Slaughterer of the Best",
-        "56": "Top 100 Topper",
-        "57": "Top 1,000 Topper",
-        "58": "Horror of Heroes",
-        "59": "Outsourcing",
-        "60": "Academic Orders",
-        "61": "Good vs. Evil",
-        "62": "Commentary Cracker",
-        "63": "Dehydration",
-        "64": "Deep Mining Master",
-        "65": "Special Agent",
-        "66": "St. Nicholas",
-        "67": "Reinvent the Wheel",
-        "68": "Second Screen",
-        "69": "Day X",
-        "70": "Rune Millionaire",
-        "71": "Runes, runes, runes",
-        "72": "Capitalist",
-        "73": "Stinking rich",
-        "74": "Rune Master",
-        "75": "Arena Manager",
+        "47": "Čarodějův učeň",
+        "48": "Spolehlivost",
+        "49": "Shrábni je všechny",
+        "50": "Metropole",
+        "51": "Velké město",
+        "52": "Malé město",
+        "53": "Zásoby zlata",
+        "54": "Zásoby duší",
+        "55": "Pokořitel nejlepších",
+        "56": "Top 100 jím k snídani",
+        "57": "Top 1000 jím k snídani",
+        "58": "Postrach hrdinů",
+        "59": "Časová díra",
+        "60": "Akademické vysvěcení",
+        "61": "Dobro proti zlu",
+        "62": "Drtič komentářů",
+        "63": "Dehydratace",
+        "64": "Důlní mistr",
+        "65": "Speciální agent",
+        "66": "Sv. Mikuláš",
+        "67": "Znovuobjevení kola",
+        "68": "Druhá obrazovka",
+        "69": "Den X",
+        "70": "Runový milionář",
+        "71": "Runy, runy, runy",
+        "72": "Kapitalista",
+        "73": "Nechutně bohatý",
+        "74": "Rune-Master",
+        "75": "Správce arény",
         "76": "Lancelot",
-        "77": "Door Opener",
-        "78": "Odin",
+        "77": "Otevírač oken",
+        "78": "Ódin",
         "79": "Loki",
         "80": "Zeus",
-        "81": "Hades",
-        "82": "Five of a Kind",
-        "83": "Capacious Pockets",
-        "84": "Birth of a Legend",
-        "85": "Living Legend",
-        "86": "Second Wardrobe",
-        "87": "100-Timer",
-        "88": "A Thousand Points Plan",
-        "89": "Ten Grand",
-        "90": "Tavern Brawler",
+        "81": "Hádes",
+        "82": "Řada pěti",
+        "83": "Kapsy velké jako krtek",
+        "84": "Zrození legendy",
+        "85": "Živoucí legendy",
+        "86": "Druhý šatník",
+        "87": "Stovečka",
+        "88": "Plán o tisíci bodech",
+        "89": "Meganášup",
+        "90": "Hospodská mlátička",
         "91": "Zavíračka",
         "92": "Runový císař",
         "93": "Znalec draků",
@@ -530,7 +530,7 @@
         },
         "copy": {
             "image": "Uložit jako obrázek",
-            "csv": "Save as CSV",
+            "csv": "Uložit jako CSV",
             "basic": "Kopírovat tabulku",
             "fight": "Kopírovat tabulku pro simulátory",
             "player": "Kopírovat",
@@ -577,7 +577,7 @@
             "settings": "Skripty",
             "templates": "Šablony",
             "name": "Currently edited script",
-            "list": "Available templates",
+            "list": "Dostupné šablony",
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manuál",
@@ -586,15 +586,18 @@
                 "save": "Uložit",
                 "copy": "Kopírovat",
                 "archive": "Script archive",
-                "close": "Return back",
+                "recover": "Load version v#{version}",
+                "close": "Vrátit zpět",
                 "remove": "Smazat",
-                "reset": "Discard changes",
-                "save_template": "Save as template",
+                "reset": "Zahodit změny",
+                "save_template": "Uložit jako šablonu",
+                "export": "Export",
+                "import": "Import",
                 "header": {
-                    "actions": "Actions",
-                    "modify": "Script",
-                    "library": "Libraries",
-                    "help": "Help"
+                    "actions": "Akce",
+                    "modify": "Skript",
+                    "library": "Knihovny",
+                    "help": "Pomoc"
                 }
             },
             "types": {
@@ -614,19 +617,19 @@
         "guilds": {
             "other": "Zobrazit ostatní",
             "hidden": "Zobrazit skrýté",
-            "empty": "Show empty groups",
+            "empty": "Zobrazit prázné cechy",
             "missing": "Data nebyla nalezena pro následující postavy:"
         },
         "browse": {
             "hidden": "Zobrazit skryté"
         },
         "share": {
-            "title": "File export",
+            "title": "Export souboru",
             "title_short": "Export",
             "options": "Možnosti",
             "code": "Tvůj kód",
-            "file": "Selection",
-            "format": "Format",
+            "file": "Výběr",
+            "format": "Formát",
             "get": "Export",
             "ok": "Ok",
             "public": "Exportovat pouze veřejná data (bez ohledu na aktuální globální nastavení)",
@@ -637,11 +640,11 @@
                 "all": "Vše",
                 "last": "Poslední",
                 "last5": "Posledních 5",
-                "current": "Selected",
-                "currentWithReference": "Selected & Reference"
+                "current": "Vybrané",
+                "currentWithReference": "Vybrané & porovnání"
             },
             "formats": {
-                "json": "JSON file",
+                "json": "Soubor JSON",
                 "code": "Online code (1 use or 2 days)",
                 "code_reusable": "Online code (2 days)"
             }
@@ -699,7 +702,7 @@
                 "title": "Extra",
                 "registered": "Datum registrace",
                 "webshopid": "Webshop ID",
-                "webshopid_placeholder": "Hover to display"
+                "webshopid_placeholder": "Najeďte pro zobrazení"
             },
             "runes": {
                 "title": "Runy"
@@ -796,10 +799,10 @@
             "18": "Stumble Steppe",
             "19": "Sunburn Desert",
             "20": "Tusk Mountain",
-            "201": "Gem Mine",
+            "201": "Důl na drahokamy",
             "202": "Zbrojírna",
-            "203": "Magic Shop",
-            "204": "Arcane Toilet"
+            "203": "Čaroobchod",
+            "204": "Tajemný záchod"
         },
         "names": {
             "0": "Žabloid",
@@ -1016,7 +1019,7 @@
             "none": "Žádný",
             "type": "Typ",
             "pet": "Mazlíček",
-            "habitat": "Habitat",
+            "habitat": "Stádo",
             "health": "Život",
             "attribute": "Atribut",
             "defense": "Obraný atribut",
@@ -1382,6 +1385,10 @@
             "message": "Prosím nechejte toto okno otevřené dokud aktualizace neskončí. Tato akce může trvat delší dobu v závislosti na množství vašich dat."
         }
     },
+    "request": {
+        "title": "is requesting your character data",
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
+    },
     "dialog": {
         "shared": {
             "cancel": "Zrušit",
@@ -1392,7 +1399,7 @@
             "apply": "Použít"
         },
         "dungeons_options": {
-            "title": "Simulator options",
+            "title": "Nastavení simulátoru",
             "threshold": {
                 "title": "Simulation threshold",
                 "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
@@ -1400,10 +1407,10 @@
         },
         "analyzer_autofill": {
             "title": "Dostupná data",
-            "search": "Search by dungeon or boss name ..."
+            "search": "Hledat podle názvu podzemí nebo nepřítele ..."
         },
         "script_manual": {
-            "title": "Reference manual",
+            "title": "Manuál",
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
@@ -1450,9 +1457,9 @@
         "fight_statistical_analysis": {
             "title": "Statistical analysis",
             "selector": "Filter expression",
-            "count": "Count",
-            "add": "Add new counter",
-            "variables": "Available variables:"
+            "count": "Počet",
+            "add": "Přidat počítadlo",
+            "variables": "Dostupné proměnné:"
         },
         "template_manage": {
             "title": "Šablony",
@@ -1482,7 +1489,7 @@
                 "overwrite_script": "Skript přepsán novou verzí",
                 "save_script": "Script uložen",
                 "remove_script": "Script odstraněn",
-                "discard_script": "Script changes were discarded",
+                "discard_script": "Změny byly zahozeny",
                 "create_template": "Šablona vytvořena",
                 "overwrite_template": "Šablona přepsána novou verzí",
                 "save_template": "Šablona uložena",
@@ -1496,19 +1503,19 @@
         "script_repository": {
             "title": "Script Repository",
             "private_code": {
-                "label": "Private code",
-                "placeholder": "Enter your private code..."
+                "label": "Soukromý kód",
+                "placeholder": "Zadejte svůj soukromý kód..."
             },
             "list": {
-                "about": "Added by #{author}",
-                "about_with_date": "Added by #{author} on #{date}"
+                "about": "Přidáno uživatelem #{author}",
+                "about_with_date": "Přidáno uživatelem #{author} dne #{date}"
             }
         },
         "statistics_integration_options": {
             "title": "Statistics Integration Options",
-            "slot": "Database slot",
+            "slot": "Slot",
             "limit": {
-                "title": "Maximum amount of entries to be displayed",
+                "title": "Maximální počet zobrazených položek",
                 "placeholder": "Use 0 to disable"
             },
             "ignored_duration": {

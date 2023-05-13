@@ -586,10 +586,13 @@
                 "save": "Save",
                 "copy": "Copy",
                 "archive": "Script archive",
+                "recover": "Load version v#{version}",
                 "close": "Return back",
                 "remove": "Remove",
                 "reset": "Discard changes",
                 "save_template": "Save as template",
+                "export": "Export",
+                "import": "Import",
                 "header": {
                     "actions": "Actions",
                     "modify": "Script",
@@ -1381,6 +1384,10 @@
             "title": "A database update is in progress",
             "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
         }
+    },
+    "request": {
+        "title": "is requesting your character data",
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
     },
     "dialog": {
         "shared": {

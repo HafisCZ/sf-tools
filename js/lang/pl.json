@@ -586,10 +586,13 @@
                 "save": "Zapisz",
                 "copy": "Kopiuj",
                 "archive": "Archiwum skryptów",
+                "recover": "Load version v#{version}",
                 "close": "Powrót",
                 "remove": "Usuń",
                 "reset": "Odrzuć zmiany",
                 "save_template": "Zapisz jako szablon",
+                "export": "Export",
+                "import": "Import",
                 "header": {
                     "actions": "Działania",
                     "modify": "Skrypt",
@@ -1381,6 +1384,10 @@
             "title": "Trwa aktualizacja bazy danych",
             "message": "Proszę nie opuszczać strony do czasu zakończenia ładowania. Może to zająć chwilę, w zależności od wielkości bazy danych."
         }
+    },
+    "request": {
+        "title": "is requesting your character data",
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
     },
     "dialog": {
         "shared": {
