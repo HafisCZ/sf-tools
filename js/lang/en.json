@@ -586,6 +586,7 @@
                 "save": "Save",
                 "copy": "Copy",
                 "archive": "Script archive",
+                "recover": "Load version v#{version}",
                 "close": "Return back",
                 "remove": "Remove",
                 "reset": "Discard changes",
