@@ -7,3 +7,22 @@
 [data-player]:hover i.icon {
   display: block;
 }
+
+body {
+  overflow-y: hidden !important;
+
+  background: rgba(0, 0, 0, .65) url('../../res/backgrounds/request.webp');
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position: center;
+}
+
+div.ui.huge.menu {
+  background: none !important;
+}
+
+div.dialog.container.request-dialog-container {
+  z-index: 0 !important;
+
+  overflow-y: hidden !important;
+}
