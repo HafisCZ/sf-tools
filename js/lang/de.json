@@ -586,10 +586,13 @@
                 "save": "Speichern",
                 "copy": "Kopieren",
                 "archive": "Skript Archiv",
+                "recover": "Load version v#{version}",
                 "close": "Zurück",
                 "remove": "Entfernen",
                 "reset": "Änderungen verwerfen",
                 "save_template": "Als Vorlage speichern",
+                "export": "Export",
+                "import": "Import",
                 "header": {
                     "actions": "Aktionen",
                     "modify": "Skript",
@@ -1381,6 +1384,10 @@
             "title": "Eine Aktualisierung der Datenbank ist im Gange",
             "message": "Bitte verlassen Sie die Seite erst, wenn der Ladevorgang beendet ist. Dies kann je nach Größe Ihrer Datenbank eine Weile dauern."
         }
+    },
+    "request": {
+        "title": "is requesting your character data",
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
     },
     "dialog": {
         "shared": {

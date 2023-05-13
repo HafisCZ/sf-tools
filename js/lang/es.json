@@ -586,10 +586,13 @@
                 "save": "Guardar",
                 "copy": "Copiar",
                 "archive": "Archivo de scripts",
+                "recover": "Load version v#{version}",
                 "close": "Volver",
                 "remove": "Eliminar",
                 "reset": "Descartar cambios",
                 "save_template": "Guardar como plantilla",
+                "export": "Export",
+                "import": "Import",
                 "header": {
                     "actions": "Acciones",
                     "modify": "Script",
@@ -1381,6 +1384,10 @@
             "title": "Actualización de base de datos en curso",
             "message": "Por favor, no salga de la página hasta que se detenga la carga. Esto puede tomar un tiempo dependiendo del tamaño de su base de datos."
         }
+    },
+    "request": {
+        "title": "is requesting your character data",
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
     },
     "dialog": {
         "shared": {
