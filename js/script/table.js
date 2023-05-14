@@ -850,7 +850,8 @@ class TableInstance {
             theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
             class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
-            width: this.flatWidth
+            width: this.flatWidth,
+            widthFixed: this.settings.isStrictWidthPolicy()
         };
     }
 
@@ -1302,7 +1303,7 @@ class TableController {
         this.echanged = this.schanged = false;
 
         // Get table content
-        let { content, entries, style, class: klass, theme, width } = this.table.createTable();
+        let { content, entries, style, class: klass, theme, width, widthFixed } = this.table.createTable();
 
         entries = [].concat(entries);
 
@@ -1313,6 +1314,12 @@ class TableController {
         } else if (typeof theme === 'object') {
             const { text, background } = theme;
             themeStyle = `--table-foreground: ${text}; --table-background: ${background}`;
+        }
+
+        if (widthFixed) {
+            this.element.classList.add('sftools-table-fixed');
+        } else {
+            this.element.classList.remove('sftools-table-fixed');
         }
 
         this.bodyElement.setAttribute('style', `${themeStyle} ${style.join(' ')}`);
