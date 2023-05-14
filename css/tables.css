@@ -9,7 +9,9 @@ table.sftools-table {
   font-size: 1.35em !important;
 
   text-align: center;
+}
 
+table.sftools-table.sftools-table-fixed {
   table-layout: fixed;
 }
 
