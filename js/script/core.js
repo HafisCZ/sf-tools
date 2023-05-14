@@ -1272,7 +1272,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABBLE_OPTIONS_SHARED',
+    'TABLE_OPTIONS_SHARED',
     ScriptType.Table,
     /^(visible|breakline|statistics color) (on|off)$/,
     (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARGUMENT_MAP_ON_OFF[value]),
