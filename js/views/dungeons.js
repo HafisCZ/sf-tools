@@ -1,7 +1,8 @@
 const SimulatorOptionsDialog = new (class extends Dialog {
   constructor () {
     super({
-      key: 'dungeons_options'
+      key: 'dungeons_options',
+      dismissable: true
     })
   }
 
