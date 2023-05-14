@@ -44,9 +44,6 @@
             <div class="header item"><a href="index.html">SFTools</a></div>
             <a class="item" id="button-options"><i class="cog icon"></i> <span data-intl="analyzer.topbar.options"></span></a>
             <a class="item" href="https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator" target="_blank"><i class="ui icon book"></i> Wiki - How to use</a>
-            <div class="right menu" id="show-right-menu">
-                <a class="item" id="cheat-menu-toggle"><i class="ui angle double left icon"></i></a>
-            </div>
         </div>
 
         <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
@@ -135,88 +132,6 @@
                                 <canvas id="winchart" style="width: 100%; height: 17.75em;"></canvas>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="cheat-menu" style="position: fixed; right: 0; top: 0; height: 100vh; width: 300px; background: #313131; z-index: 2; display: none; padding-top: 4.5em;">
-            <h3 class="ui header inverted centered" data-intl="dungeons.cheats.title"></h3>
-            <p style="font-size: 85%; color: white; text-align: center;" data-intl="dungeons.cheats.subtitle"></p>
-            <div class="ui small inverted form" style="padding-left: 15px; padding-top: 1em; border-top: 1px white solid;">
-                <div class="field">
-                    <div class="ui checkbox">
-                        <input type="checkbox" class="hidden" id="cheats-enabled">
-                        <label data-intl="dungeons.cheats.enable"></label>
-                    </div>
-                </div>
-                <div class="field"><h3 class="ui inverted header" data-intl="dungeons.cheats.general"></h3></div>
-                <div class="field">
-                    <div class="ui checkbox">
-                        <input type="checkbox" class="hidden" data-cheat="enchantments">
-                        <label data-intl="dungeons.cheats.enchantments"></label>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui checkbox">
-                        <input type="checkbox" class="hidden" data-cheat="runes">
-                        <label data-intl="dungeons.cheats.runes"></label>
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui checkbox">
-                        <input type="checkbox" class="hidden" data-cheat="pets">
-                        <label data-intl="dungeons.cheats.pets"></label>
-                    </div>
-                </div>
-                <div class="field"><h3 class="ui inverted header" data-intl="dungeons.cheats.potions"></h3></div>
-                <div class="two fields">
-                    <div class="field">
-                        <div class="ui checkbox !mt-0">
-                            <input type="checkbox" class="hidden" data-cheat="strength">
-                            <label data-intl="general.attribute1"></label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui checkbox !mt-0">
-                            <input type="checkbox" class="hidden" data-cheat="dexterity">
-                            <label data-intl="general.attribute2"></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="two fields">
-                    <div class="field">
-                        <div class="ui checkbox !mt-0">
-                            <input type="checkbox" class="hidden" data-cheat="intelligence">
-                            <label data-intl="general.attribute3"></label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui checkbox !mt-0">
-                            <input type="checkbox" class="hidden" data-cheat="constitution">
-                            <label data-intl="general.attribute4"></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="two fields">
-                    <div class="field">
-                        <div class="ui checkbox !mt-0">
-                            <input type="checkbox" class="hidden" data-cheat="luck">
-                            <label data-intl="general.attribute5"></label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui checkbox !mt-0">
-                            <input type="checkbox" class="hidden" data-cheat="life">
-                            <label data-intl="general.life_potion"></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="field"><h3 class="ui inverted header" data-intl="dungeons.cheats.class"></h3></div>
-                <div class="field" style="margin-right: 1em;">
-                    <div class="ui selection inverted dropdown" data-cheat="class">
-                        <div class="text"></div>
-                        <i class="dropdown icon"></i>
                     </div>
                 </div>
             </div>

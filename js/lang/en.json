@@ -1270,6 +1270,10 @@
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
+        },
+        "tooltip": {
+            "cheats": "Apply modifications to characters",
+            "options": "Configure integration"
         }
     },
     "simulator": {

@@ -1,10 +1,4 @@
 Site.ready({ type: 'simulator' }, function (urlParams) {
-    $('#cheat-menu-toggle').click(() => {
-        $('#cheat-menu').transition('fade left');
-        $('#cheat-menu-toggle .icon').toggleClass('left right');
-    });
-    $('#cheat-menu .checkbox').checkbox('set unchecked');
-
     const dungeonOptions = new OptionsHandler(
         'dungeons',
         {
@@ -377,24 +371,14 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
     }
 
-    let cheatsEnabled = false;
-
-    $('#cheats-enabled').closest('.checkbox').change((el) => {
-        cheatsEnabled = el.target.checked;
-    });
-
     StatisticsIntegration.configure({
         profile: SELF_PROFILE,
         type: 'players',
+        cheats: true,
         scope: (dm) => dm.getLatestPlayers(true),
         callback: (player) => {
             dungeon = DUNGEON_DATA[dungeon_current];
             boss = boss_current;
-
-            if (cheatsEnabled) {
-                player = new PlayerModel(player.Data);
-                applyCheats(player);
-            }
 
             showData(ModelUtils.toSimulatorData(player, true));
 
@@ -777,146 +761,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         graph.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
         graph.data.labels = healths.map((a, b) => b);
         graph.update(0);
-    }
-
-    $('[data-cheat="class"]').dropdown({
-        values: [
-            {
-                name: intl('dungeons.cheats.keep_original'),
-                value: 0
-            },
-            ... CONFIG.indexes().map((e) => {
-                return {
-                    name: `<img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(e)}">${intl(`general.class${e}`)}`,
-                    value: e
-                };
-            })
-        ]
-    }).dropdown('set selected', '0');
-
-    function applyCheat (player, callback) {
-        const models = [player];
-        if (player.Companions) {
-            models.push(...Object.values(player.Companions));
-        }
-
-        models.forEach(callback);
-    }
-
-    function applyCheats (player) {
-        let cheats = _arrayToHash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
-
-        if (cheats.pets) {
-            applyCheat(player, (model) => {
-                model.Pets = {
-                    Water: 40,
-                    Light: 40,
-                    Earth: 40,
-                    Shadow: 40,
-                    Fire: 40
-                };
-            });
-        }
-
-        if (cheats.enchantments) {
-            applyCheat(player, (model) => {
-                for (let item of Object.values(model.Items)) {
-                    item.HasEnchantment = true;
-                };
-            });
-        }
-
-        // Set potions to player
-        const potions = _compact(['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'].map((type, i) => cheats[type] ? (i + 1) : null))
-        if (potions.length) {
-            applyCheat(player, (model) => {
-                const potionGroup = potions.slice(0, 3);
-
-                model.Potions = potionGroup.map(type => ({ Type: type, Size: 25 }));
-                model.Potions.Life = potionGroup.includes(6) ? 25 : 0;
-            });
-        }
-
-        if (cheats.class) {
-            const oldDefinition = CONFIG.fromIndex(player.Class);
-            const newDefinition = CONFIG.fromIndex(cheats.class);
-
-            const getAttributeList = function (attribute) {
-                return {
-                    'Strength': ['Strength', 'Dexterity', 'Intelligence'],
-                    'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
-                    'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
-                }[attribute]
-            }
-
-            const swapAttributes = function (obj) {
-                const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
-                const newAttributes = getAttributeList(newDefinition.Attribute);
-
-                for (let i = 0; i < 3; i++) {
-                    for (const type of ['Base', 'Total']) {
-                        obj[newAttributes[i]][type] = oldattributes[i][type];
-                    }
-                }
-            }
-
-            const scaleValue = function (value, oldValue, newValue) {
-                return Math.ceil(value / oldValue * newValue);
-            }
-
-            // Morph all items to desired class
-            const getAttributeID = (attribute) => {
-                return {
-                    'Strength': 1,
-                    'Dexterity': 2,
-                    'Intelligence': 3
-                }[attribute]
-            }
-
-            for (const [type, item] of Object.entries(player.Items)) {
-                player.Items[type] = item.morph(getAttributeID(oldDefinition.Attribute), getAttributeID(newDefinition.Attribute), true);
-            }
-
-            // Swap attributes
-            swapAttributes(player);
-
-            // Scale damage & armor
-            player.Armor = scaleValue(player.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
-            player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
-            player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
-
-            // Set per-class data
-            if (cheats.class == WARRIOR) {
-                player.Items.Wpn2.DamageMin = 25;
-            } else if (cheats.class == ASSASSIN) {
-                player.Items.Wpn2 = player.Items.Wpn1;
-            }
-
-            player.Class = cheats.class;
-        }
-
-        if (potions.length > 0 || cheats.pets || cheats.class) {
-            applyCheat(player, (model) => {
-                // Remove pre-calculated bonus
-                for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
-                    model[type].Bonus = undefined;
-                }
-
-                // Evaluate commons
-                model.evaluateCommon(player);
-            });
-        }
-
-        if (cheats.runes) {
-            applyCheat(player, (model) => {
-                model.Runes.Health = 15;
-                model.Runes.ResistanceFire = 75;
-                model.Runes.ResistanceCold = 75;
-                model.Runes.ResistanceLightning = 75;
-                model.Items.Wpn1.Attributes[2] = 60;
-                model.Items.Wpn2.Attributes[2] = 60;
-            });
-        }
     }
 
     function convertBossToSimulatorFormat (rawData, rawDungeon) {
