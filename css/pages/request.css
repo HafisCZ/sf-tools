@@ -15,6 +15,7 @@ body {
   background-blend-mode: overlay;
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
 }
 
 div.ui.huge.menu {
