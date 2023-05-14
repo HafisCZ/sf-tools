@@ -9,8 +9,6 @@
 }
 
 body {
-  overflow-y: hidden !important;
-
   background: rgba(0, 0, 0, .65) url('../../res/backgrounds/request.webp');
   background-blend-mode: overlay;
   background-size: cover;
@@ -24,6 +22,4 @@ div.ui.huge.menu {
 
 div.dialog.container.request-dialog-container {
   z-index: 0 !important;
-
-  overflow-y: hidden !important;
 }

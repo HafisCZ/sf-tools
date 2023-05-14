@@ -175,3 +175,19 @@
 img.drvcs {
     z-index: -1;
 }
+
+body {
+    background: rgba(0, 0, 0, .65) url('../../res/backgrounds/request.webp');
+    background-blend-mode: overlay;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+* {
+    text-shadow: #000000 0 0 10px;
+}
+
+div.ui.huge.menu {
+    background: none !important;
+}
