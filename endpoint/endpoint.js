@@ -708,7 +708,8 @@ const StatisticsIntegrationCheatsDialog = new (class extends Dialog {
             key: 'statistics_integration_cheats',
             dismissable: true,
             opacity: 0,
-            containerStyle: 'z-index: 1;'
+            containerStyle: 'z-index: 1;',
+            draggable: true
         })
     }
 
