@@ -254,6 +254,8 @@ Site.ready(null, function (urlParams) {
 
     const form = document.createElement("form");
     form.method = 'POST';
+    form.acceptCharset = 'UTF-8';
+    form.enctype = 'multipart/form-data';
     form.action = redirect;
 
     addFormInput(form, 'data', JSON.stringify(data));
