@@ -857,7 +857,7 @@ class TableInstance {
     #getContent () {
         this.cache.set('table', this.#getTable());
 
-        let content = this.#getSizer();
+        let content = this.settings.isStrictWidthPolicy() ? this.#getSizer() : '';
         let layout = this.settings.getLayout(this.cache.get('statistics'), this.cache.get('rows'), this.cache.get('members'));
 
         for (const block of layout) {

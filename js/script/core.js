@@ -479,6 +479,14 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
+    'TABLE_SIZE_POLICY',
+    ScriptType.Table,
+    /^width policy (strict|relaxed)$/,
+    (root, value) => root.addGlobal('width_policy', value),
+    (root, value) => Highlighter.keyword('width policy').space(1).boolean(value, value === 'strict')
+)
+
+ScriptCommands.register(
     'TABLE_WIDTH',
     ScriptType.Table,
     /^width (\S+)$/,
@@ -2672,6 +2680,10 @@ class Script {
 
     getNameStyle () {
         return Math.max(100, this.globals.name == undefined ? 250 : this.globals.name);
+    }
+
+    isStrictWidthPolicy () {
+        return (this.globals['width_policy'] || 'strict') === 'strict';
     }
 
     evalRowIndexes (array) {
