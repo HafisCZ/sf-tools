@@ -94,6 +94,14 @@ div.dialog.container > .dialog > .header {
   font-weight: 700;
 }
 
+div.dialog.container > .dialog.draggable > .header {
+  cursor: grab;
+}
+
+div.dialog.container > .dialog.draggable.dragging > .header {
+  cursor: grabbing;
+}
+
 div.dialog.container > .dialog > .left.header {
   text-align: left;
 }

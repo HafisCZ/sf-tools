@@ -5,7 +5,8 @@ class Dialog {
             dismissable: false,
             key: '',
             containerClass: '',
-            containerStyle: ''
+            containerStyle: '',
+            draggable: false
         }, options || {});
     }
 
@@ -19,15 +20,17 @@ class Dialog {
                 this.resolve = resolve;
 
                 if (!this._hasParent()) {
-                    const $dialog = $(this._createModal());
-                    const $container = $(`<div class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}"></div>`);
+                    this.$dialog = $(this._createModal());
+                    this.$parent = $(`<div class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}"></div>`);
 
-                    $container.append($dialog);
-                    $(document.body).append($container);
-
-                    this.$parent = $container;
+                    this.$dialog.appendTo(this.$parent);
+                    this.$parent.appendTo(document.body);
 
                     this._createBindings();
+
+                    if (this.options.draggable) {
+                        this._applyDraggable();
+                    }
                 }
 
                 if (this.options.dismissable) {
@@ -74,6 +77,57 @@ class Dialog {
 
     _createBindings () {
 
+    }
+
+    _applyDraggable () {
+        let pos1 = 0;
+        let pos2 = 0;
+        let pos3 = 0;
+        let pos4 = 0;
+
+        const dialog = this.$parent.find('> .dialog').get(0);
+        const handle = this.$parent.find('> .dialog > .header').get(0);
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            dialog.classList.add('dragging');
+
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+        
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            const newY = (dialog.offsetTop - pos2);
+            const newX = (dialog.offsetLeft - pos1);
+
+            dialog.style.position = 'absolute';
+            dialog.style.left = `${newX}px`;
+            dialog.style.top = `${newY}px`;
+        }
+    
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+
+            dialog.classList.remove('dragging');
+        }
+
+        handle.onmousedown = dragMouseDown;
+
+        dialog.classList.add('draggable');
     }
 }
 
