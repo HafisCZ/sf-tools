@@ -104,6 +104,7 @@ Site.ready({ type: 'simulator' }, function () {
     StatisticsIntegration.configure({
         profile: SELF_PROFILE,
         type: 'players',
+        cheats: true,
         scope: (dm) => dm.getLatestPlayers(true),
         callback: (player) => {
             editor.fill(player);

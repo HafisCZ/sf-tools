@@ -1876,7 +1876,7 @@ class PlayerModel {
         }
 
         if (this.Class === WARRIOR) {
-            this.BlockChance = this.Items.Wpn2.Armor;
+            this.BlockChance = this.Items.Wpn2.DamageMin;
         }
     }
 

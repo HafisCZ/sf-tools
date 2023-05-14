@@ -702,13 +702,157 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
     }
 })();
 
+const StatisticsIntegrationCheatsDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            key: 'statistics_integration_cheats',
+            dismissable: true,
+            opacity: 0,
+            containerStyle: 'z-index: 1;'
+        })
+    }
+
+    _createModal () {
+        return `
+            <div class="very small inverted bordered dialog">
+                <div class="header">${intl('dungeons.cheats.title')}</div>
+                <div class="ui small inverted form">
+                    <div class="field"><h3 class="ui inverted header">${intl('dungeons.cheats.general')}</h3></div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" class="hidden" data-cheat="enchantments">
+                            <label>${intl('dungeons.cheats.enchantments')}</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" class="hidden" data-cheat="runes">
+                            <label>${intl('dungeons.cheats.runes')}</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" class="hidden" data-cheat="pets">
+                            <label>${intl('dungeons.cheats.pets')}</label>
+                        </div>
+                    </div>
+                    <div class="field"><br/></div>
+                    <div class="field"><h3 class="ui inverted header">${intl('dungeons.cheats.potions')}</h3></div>
+                    <div class="two fields">
+                        <div class="field">
+                            <div class="ui checkbox !mt-0">
+                                <input type="checkbox" class="hidden" data-cheat="strength">
+                                <label>${intl('general.attribute1')}</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox !mt-0">
+                                <input type="checkbox" class="hidden" data-cheat="dexterity">
+                                <label>${intl('general.attribute2')}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <div class="ui checkbox !mt-0">
+                                <input type="checkbox" class="hidden" data-cheat="intelligence">
+                                <label>${intl('general.attribute3')}</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox !mt-0">
+                                <input type="checkbox" class="hidden" data-cheat="constitution">
+                                <label>${intl('general.attribute4')}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <div class="ui checkbox !mt-0">
+                                <input type="checkbox" class="hidden" data-cheat="luck">
+                                <label>${intl('general.attribute5')}</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox !mt-0">
+                                <input type="checkbox" class="hidden" data-cheat="life">
+                                <label>${intl('general.life_potion')}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field"><br/></div>
+                    <div class="field"><h3 class="ui inverted header">${intl('dungeons.cheats.class')}</h3></div>
+                    <div class="field">
+                        <div class="ui selection inverted dropdown" data-cheat="class">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui black fluid button" data-op="close">${intl('dialog.shared.close')}</div>
+            </div>
+        `
+    }
+
+    _setCheat (name, value) {
+        this.cheats[name] = value;
+    }
+
+    _createBindings () {
+        this.$checkboxes = this.$parent.find('.checkbox');
+        this.$checkboxes.each((index, checkbox) => {
+            const name = checkbox.children[0].dataset.cheat;
+
+            $(checkbox).checkbox({
+                onChecked: () => {
+                    this._setCheat(name, true);
+                },
+                onUnchecked: () => {
+                    this._setCheat(name, false);
+                }
+            });
+        })
+
+        this.$classDropdown = this.$parent.find('[data-cheat="class"]').dropdown({
+            values: [
+                {
+                    name: intl('dungeons.cheats.keep_original'),
+                    value: 0
+                },
+                ... CONFIG.indexes().map((e) => {
+                    return {
+                        name: `<img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(e)}">${intl(`general.class${e}`)}`,
+                        value: e
+                    };
+                })
+            ],
+            onChange: (value) => {
+                this._setCheat('class', parseInt(value));
+            }
+        })
+
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        })
+    }
+
+    _applyArguments (cheats) {
+        this.cheats = cheats;
+
+        this.$checkboxes.checkbox('set unchecked');
+        this.$classDropdown.dropdown('set selected', '0');
+    }
+})
+
 const StatisticsIntegration = new (class {
-    configure ({ profile, type, callback, scope, generator }) {
+    configure ({ profile, type, callback, scope, generator, cheats }) {
         this.type = type;
         this.profile = profile;
         this.callback = callback;
         this.scope = scope;
         this.generator = generator;
+        this.cheats = null;
 
         // Parent
         this.$parent = $(this._html()).appendTo($(document.body));
@@ -730,6 +874,10 @@ const StatisticsIntegration = new (class {
         this.$showOptions = this.$parent.operator('show-options');
         this.$showOptions.toggle(typeof this.generator === 'undefined');
         this.$showOptions.click(() => this._showOptions());
+        
+        this.$showCheats = this.$parent.operator('show-cheats');
+        this.$showCheats.toggle(!!cheats);
+        this.$showCheats.click(() => this._showCheats());
 
         // Integration options
         this.options = new OptionsHandler(
@@ -754,12 +902,166 @@ const StatisticsIntegration = new (class {
                             <div class="ui button" data-op="import-endpoint">${intl('integration.game')}</div>
                             <label class="ui button" for="endpoint-button-upload">${intl('integration.file')}</label>
                             <input type="file" multiple data-op="import-file" accept=".har,.json" class="ui invisible file input" id="endpoint-button-upload">
-                            <div class="ui icon button" style="display: none; max-width: 3em;" data-op="show-options"><i class="ui cog icon"></i></div>
+                            <div class="ui icon button" style="display: none; max-width: 3em;" data-op="show-cheats" data-inverted="" data-position="bottom center" data-tooltip="${intl('integration.tooltip.cheats')}"><i class="ui fire alternate icon"></i></div>
+                            <div class="ui icon button" style="display: none; max-width: 3em;" data-op="show-options" data-inverted="" data-position="bottom center" data-tooltip="${intl('integration.tooltip.options')}"><i class="ui cog icon"></i></div>
                         </div>
                     </div>
                 </div>
             </div>
         `;
+    }
+
+    _hideCheats () {
+        this.cheats = null;
+        this.$showCheats.removeClass('!text-orangered');
+    }
+
+    _showCheats () {
+        if (this.cheats) {
+            StatisticsIntegrationCheatsDialog.openRequested = false
+            StatisticsIntegrationCheatsDialog.close();
+        } else {
+            this.cheats = Object.create(null);
+            this.$showCheats.addClass('!text-orangered');
+    
+            StatisticsIntegrationCheatsDialog.openRequested = true;
+            StatisticsIntegrationCheatsDialog.open(this.cheats).then(() => this._hideCheats());
+        }
+    }
+
+    _callback (item) {
+        if (this.cheats) {
+            const copy = new PlayerModel(item.Data);
+            this._applyCheats(copy);
+
+            this.callback(copy);
+        } else {
+            this.callback(item);
+        }
+    }
+
+    _applyCheat (player, callback) {
+        const models = [player];
+        if (player.Companions) {
+            models.push(...Object.values(player.Companions));
+        }
+
+        models.forEach(callback);
+    }
+
+    _applyCheats (player) {
+        if (this.cheats.pets) {
+            this._applyCheat(player, (model) => {
+                model.Pets = {
+                    Water: 40,
+                    Light: 40,
+                    Earth: 40,
+                    Shadow: 40,
+                    Fire: 40
+                };
+            });
+        }
+
+        if (this.cheats.enchantments) {
+            this._applyCheat(player, (model) => {
+                for (let item of Object.values(model.Items)) {
+                    item.HasEnchantment = true;
+                };
+            });
+        }
+
+        // Set potions to player
+        const potions = _compact(['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'].map((type, i) => this.cheats[type] ? (i + 1) : null))
+        if (potions.length) {
+            this._applyCheat(player, (model) => {
+                const potionGroup = potions.slice(0, 3);
+
+                model.Potions = potionGroup.map(type => ({ Type: type, Size: 25 }));
+                model.Potions.Life = potionGroup.includes(6) ? 25 : 0;
+            });
+        }
+
+        if (this.cheats.class) {
+            const oldDefinition = CONFIG.fromIndex(player.Class);
+            const newDefinition = CONFIG.fromIndex(this.cheats.class);
+
+            const getAttributeList = function (attribute) {
+                return {
+                    'Strength': ['Strength', 'Dexterity', 'Intelligence'],
+                    'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
+                    'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
+                }[attribute]
+            }
+
+            const swapAttributes = function (obj) {
+                const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
+                const newAttributes = getAttributeList(newDefinition.Attribute);
+
+                for (let i = 0; i < 3; i++) {
+                    for (const type of ['Base', 'Total']) {
+                        obj[newAttributes[i]][type] = oldattributes[i][type];
+                    }
+                }
+            }
+
+            const scaleValue = function (value, oldValue, newValue) {
+                return Math.ceil(value / oldValue * newValue);
+            }
+
+            // Morph all items to desired class
+            const getAttributeID = (attribute) => {
+                return {
+                    'Strength': 1,
+                    'Dexterity': 2,
+                    'Intelligence': 3
+                }[attribute]
+            }
+
+            for (const [type, item] of Object.entries(player.Items)) {
+                player.Items[type] = item.morph(getAttributeID(oldDefinition.Attribute), getAttributeID(newDefinition.Attribute), true);
+            }
+
+            // Swap attributes
+            swapAttributes(player);
+
+            // Scale damage & armor
+            player.Armor = scaleValue(player.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+            player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
+            player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, oldDefinition.WeaponDamageMultiplier, newDefinition.WeaponDamageMultiplier);
+
+            // Set per-class data
+            if (this.cheats.class == WARRIOR) {
+                player.Items.Wpn2.DamageMin = 25;
+                player.BlockChance = 25;
+            } else if (this.cheats.class == ASSASSIN) {
+                player.Items.Wpn2 = player.Items.Wpn1;
+            }
+
+            player.Class = this.cheats.class;
+        }
+
+        if (potions.length > 0 || this.cheats.pets || this.cheats.class) {
+            this._applyCheat(player, (model) => {
+                // Remove pre-calculated bonus
+                for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
+                    model[type].Bonus = undefined;
+                }
+
+                // Evaluate commons
+                model.evaluateCommon(player);
+            });
+        }
+
+        if (this.cheats.runes) {
+            this._applyCheat(player, (model) => {
+                model.Runes.Health = 15;
+                model.Runes.ResistanceFire = 75;
+                model.Runes.ResistanceCold = 75;
+                model.Runes.ResistanceLightning = 75;
+                model.Items.Wpn1.Attributes[2] = 60;
+                model.Items.Wpn2.Attributes[2] = 60;
+            });
+        }
     }
 
     _showOptions () {
@@ -866,8 +1168,8 @@ const StatisticsIntegration = new (class {
                             </div>
                         </div>
                     </div>
-                `).click(() => this.callback(item));
-                
+                `).click(() => this._callback(item));
+
                 const $hide = $button.operator('hide');
                 $hide.click((event) => {
                     event.preventDefault();

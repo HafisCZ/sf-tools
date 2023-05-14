@@ -451,6 +451,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     StatisticsIntegration.configure({
         profile: FIGHT_SIMULATOR_PROFILE,
         type: 'players',
+        cheats: true,
         generator: function (dm, $list) {
             for (let [prefix, players] of Object.entries(_groupBy(dm.getLatestPlayers(), p => p.Prefix))) {
                 $list.append($(`
@@ -476,10 +477,13 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     match: 'text',
                     fullTextSearch: true,
                     action: function (_, identifier) {
-                        insertPlayer(dm.getPlayer(identifier).Latest);
+                        StatisticsIntegration._callback(dm.getPlayer(identifier).Latest);
                     }
                 }));
             }
+        },
+        callback: (item) => {
+            insertPlayer(preparePlayerData(item))
         }
     });
 });
