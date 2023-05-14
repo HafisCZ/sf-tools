@@ -592,7 +592,8 @@ const EndpointDialog = new (class extends Dialog {
 const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
     constructor () {
         super({
-            key: 'statistics_integration_options'
+            key: 'statistics_integration_options',
+            dismissable: true
         });
     }
 
