@@ -206,7 +206,7 @@
         "26": "Collecting Mania",
         "27": "Štědrý dárce",
         "28": "Celý týden",
-        "29": "Always On",
+        "29": "Vždy ve hře",
         "30": "Král králů",
         "31": "Elitní cech",
         "32": "Petshop Boy",
@@ -608,6 +608,15 @@
             },
             "online": {
                 "not_available": "Žádné skripty nalezeny"
+            },
+            "info": {
+                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+            },
+            "commands": {
+                "TABLE_GLOBAL_PERFORMANCE": "performance",
+                "TABLE_GLOBAL_LIMIT": "limit",
+                "TABLE_FORMAT_LONG": "format",
+                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -1270,6 +1279,10 @@
         "poll": {
             "players": "Načíst uložené postavy",
             "guilds": "Načíst uložené cechy"
+        },
+        "tooltip": {
+            "cheats": "Apply modifications to characters",
+            "options": "Configure integration"
         }
     },
     "simulator": {
@@ -1368,9 +1381,9 @@
             "playa_account_login_unknown_or_wrong_credentials": "Špatné heslo nebo jméno",
             "playa_account_not_active": "Tvůj účet není aktivní",
             "playa_account_empty": "Tvůj účet neobsahuje zádné postavy",
-            "playa_account_blocked": "Your account has been permanently locked",
-            "playa_account_blocked_temporary": "Your account has been temporarily locked",
-            "an_error_occurred": "Server is not available, please try again later"
+            "playa_account_blocked": "Váš účet byl trvale zablokován",
+            "playa_account_blocked_temporary": "Váš účet byl dočasně zablokován",
+            "an_error_occurred": "Server není dostupný, zkuste to prosím později"
         }
     },
     "database": {
@@ -1386,8 +1399,12 @@
         }
     },
     "request": {
-        "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
+        "title": "žádá o přístup k údajům vaší postavy",
+        "notice#": "Prosím vyberte postavu kterou chcete s webovou stránkou sdílet.<br>Osobní data jako jsou hesla nebo email nejsou sdílena!",
+        "error": {
+            "title": "Chyba při zpracování požadavku",
+            "notice#": "Webová stránka požádala o přístup k datům vaší postavy, ale nespecifikovala požadované parametry"
+        }
     },
     "dialog": {
         "shared": {
@@ -1638,17 +1655,17 @@
             }
         },
         "simulator_debug": {
-            "cancel": "Cancel",
-            "ok": "Apply",
-            "reset": "Reset",
-            "title": "Simulator Configuration"
+            "cancel": "Zrušit",
+            "ok": "Použít",
+            "reset": "Obnovit",
+            "title": "Nastavení simulátoru"
         }
     },
     "attributes": {
         "tabs": {
             "gold_exp": "Zlato & Zkušenosti",
             "fortress": "Pevnost",
-            "underworld": "Underworld",
+            "underworld": "Podsvětí",
             "gold_table": "Gold Table"
         },
         "float": {
@@ -1711,7 +1728,7 @@
         "quests": {
             "title": "Quests (Experimental)",
             "notice": "* Final values represent smallest quest segment with no enchantments applied.",
-            "album": "Scrapbook %",
+            "album": "Album %",
             "group_exp": "Guild XP %",
             "group_gold": "Guild Gold %",
             "tower": "Věž",
@@ -1724,30 +1741,30 @@
         },
         "misc": {
             "title": "Miscellaneous",
-            "gate": "Underworld Gate",
-            "torture": "Torture Chamber",
-            "souls": "Souls (Level is enemy level)"
+            "gate": "Brána do podsvětí",
+            "torture": "Mučírna",
+            "souls": "Duše (úroveň nepřítele)"
         },
         "calc": {
             "title_at": "Calculate attribute price at",
             "title_between": "Calculate attribute price between",
-            "attribute": "Attribute",
+            "attribute": "Atribut",
             "cost": "Cena",
             "from": "Od",
             "to": "Do"
         },
         "gold_table": {
-            "copy": "Copy table",
-            "copy_comma": "Copy table (use comma as decimal separator)",
+            "copy": "Kopírovat tabulku",
+            "copy_comma": "Kopírovat tabulku (použít čárku jako desetinný oddělovač)",
             "level": "Attribute / Level",
             "price": "Attribute Price",
             "curve": "Gold Curve",
-            "mount": "Griffin",
+            "mount": "Griffinodrak",
             "guard": "Guard Duty / Dice (3)"
         }
     },
     "idle": {
-        "title": "Arena Manager",
+        "title": "Správce arény",
         "topbar": {
             "suggest": {
                 "0": "Next 1 + BP",
@@ -1760,12 +1777,12 @@
             }
         },
         "table": {
-            "building": "Building",
-            "upgrades": "Upgrades",
-            "level": "Level",
-            "level_next": "Next Level",
-            "cycle_duration": "Cycle",
-            "cycle_money": "Money per Cycle",
+            "building": "Budova",
+            "upgrades": "Vylepšení",
+            "level": "Úroveň",
+            "level_next": "Následující úroveň",
+            "cycle_duration": "Cyklus",
+            "cycle_money": "Výnos za cyklus",
             "money_share": "Podíl",
             "upgrade_money": "Cena",
             "upgrade_estimation": "Odhad",
@@ -1789,7 +1806,7 @@
             "toilet": "Záchod"
         },
         "upgrades": {
-            "0": "None",
+            "0": "Žádný",
             "1": "Speed",
             "2": "Gold",
             "3": "Both",
@@ -1798,20 +1815,20 @@
     },
     "blacksmith": {
         "item": {
-            "type": "Type",
-            "value": "Attribute",
-            "double": "Mage or Scout weapon?",
+            "type": "Typ",
+            "value": "Atribut",
+            "double": "Jedná se o zbraň pro mága nebo lučišníka?",
             "types": {
-                "normal_1": "Normal (1 attribute)",
-                "normal_2": "Normal (2 attributes)",
-                "epic_3": "Epic (3 attributes)",
-                "epic_5": "Epic (5 attributes)"
+                "normal_1": "Normální (1 atribut)",
+                "normal_2": "Normální (2 atributy)",
+                "epic_3": "Epický (3 atributy)",
+                "epic_5": "Epický (5 atributů)"
             }
         },
         "table": {
-            "total": "Total",
+            "total": "Celkem",
             "bonus": "Bonus",
-            "lost": "Lost",
+            "lost": "Ztráta",
             "reclaimable": "Reclaimable",
             "required": "Required",
             "invalid": "Please insert valid attribute value"

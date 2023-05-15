@@ -608,6 +608,15 @@
             },
             "online": {
                 "not_available": "Nincsenek elérhető szkriptek"
+            },
+            "info": {
+                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+            },
+            "commands": {
+                "TABLE_GLOBAL_PERFORMANCE": "performance",
+                "TABLE_GLOBAL_LIMIT": "limit",
+                "TABLE_FORMAT_LONG": "format",
+                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -1270,6 +1279,10 @@
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
+        },
+        "tooltip": {
+            "cheats": "Apply modifications to characters",
+            "options": "Configure integration"
         }
     },
     "simulator": {
@@ -1387,7 +1400,11 @@
     },
     "request": {
         "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
+        "error": {
+            "title": "Request error",
+            "notice#": "A website has requested your character data but did not specify required parameters"
+        }
     },
     "dialog": {
         "shared": {

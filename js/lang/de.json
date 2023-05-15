@@ -608,6 +608,15 @@
             },
             "online": {
                 "not_available": "Keine Skripte verfügbar"
+            },
+            "info": {
+                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+            },
+            "commands": {
+                "TABLE_GLOBAL_PERFORMANCE": "performance",
+                "TABLE_GLOBAL_LIMIT": "limit",
+                "TABLE_FORMAT_LONG": "format",
+                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -1060,10 +1069,10 @@
             "4": "Greed"
         },
         "win": {
-            "all": "All #{count} floors were defeated with 100% chance",
-            "none": "All #{count} floors are impossible to defeat",
-            "first": "First #{count} floors were defeated with 100% chance",
-            "last": "Last #{count} floors are impossible to defeat"
+            "all": "Alle #{count} Etagen wurden mit 100% iger Chance besiegt",
+            "none": "Alle #{count} Etagen sind unmöglich zu besiegen",
+            "first": "Die ersten #{count} Etagen wurden mit 100% Chance besiegt",
+            "last": "Die letzten #{count} Etagen sind unmöglich zu besiegen"
         },
         "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
     },
@@ -1131,10 +1140,10 @@
             "editable_data": "Editierbare Daten"
         },
         "players": "Spieler",
-        "preview": "Fight preview",
-        "export": "Export fights",
+        "preview": "Kampfvorschau",
+        "export": "Kämpfe exportieren",
         "autofill": "Fill editable data in from predefined list",
-        "analyze": "Statistical analysis",
+        "analyze": "Statistische Analyse",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
         "table": {
@@ -1158,13 +1167,13 @@
         },
         "sidebar": {
             "toggles": {
-                "damages": "Show damage ranges"
+                "damages": "Schadensbereiche anzeigen"
             },
             "damages": {
-                "weapon1_range_base": "Input range",
-                "weapon2_range_base": "Input range (secondary)",
-                "weapon1_range": "Normal range",
-                "weapon2_range": "Normal range (secondary)",
+                "weapon1_range_base": "Input Bereich",
+                "weapon2_range_base": "Input Bereich (sekundär)",
+                "weapon1_range": "Normaler Bereich",
+                "weapon2_range": "Normaler Bereich (sekundär)",
                 "weapon1_range_critical": "Critical range",
                 "weapon2_range_critical": "Critical range (secondary)",
                 "weapon1_range_swoop": "Swoop range"
@@ -1270,6 +1279,10 @@
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
+        },
+        "tooltip": {
+            "cheats": "Apply modifications to characters",
+            "options": "Configure integration"
         }
     },
     "simulator": {
@@ -1280,10 +1293,10 @@
         "save": "Speichern",
         "simulate": "Simulieren",
         "configure": "Simulator konfigurieren",
-        "information": "Important notice!",
+        "information": "Wichtiger Hinweis!",
         "configure_copy": "Kopiere alle inklusive der aktuellen Einstellungen",
-        "configure_insert": "Insert sample data",
-        "configure_log": "Run simulation with logging enabled",
+        "configure_insert": "Beispieldaten einfügen",
+        "configure_log": "Simulation mit aktiviertem Logging ausführen",
         "configure_log_file": "Als Datei speichern",
         "configure_log_broadcast": "Open with analyzer",
         "clipboard": {
@@ -1387,7 +1400,11 @@
     },
     "request": {
         "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
+        "error": {
+            "title": "Request error",
+            "notice#": "A website has requested your character data but did not specify required parameters"
+        }
     },
     "dialog": {
         "shared": {
