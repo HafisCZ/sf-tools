@@ -17,6 +17,26 @@
   counter-reset: item;
 }
 
+.ta-info-wrapper {
+  position: absolute;
+
+  right: 17px;
+  top: 0;
+
+  pointer-events: none;
+
+  padding: 10px 15px;
+  font-size: 12px;
+  color: rgb(204, 204, 204);
+}
+
+.ta-info-deprecated-line::before {
+  content: '\f071';
+  font-family: icons;
+  color: rgba(255, 166, 0, 0.75);
+  margin-right: 5px;
+}
+
 .ta-line::before {
   font-size: 12px;
   color: grey;

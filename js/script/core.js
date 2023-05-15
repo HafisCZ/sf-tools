@@ -3159,6 +3159,7 @@ class Script {
 
     static render (string, scriptType = ScriptType.Table) {
         const settings = new Script('', scriptType, null);
+        const deprecatedKeys = new Set();
 
         for (const line of Script.handleMacros(string)) {
             const trimmed = Script.stripComments(line)[0].trim();
@@ -3190,6 +3191,10 @@ class Script {
                     if (command) {
                         const lineHtml = command.format(settings, trimmed);
                         currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
+
+                        if (command.deprecatedBy) {
+                            deprecatedKeys.add(command.key);
+                        }
                     } else {
                         currentLine += Highlighter.error(trimmed).text;
                     }
@@ -3208,7 +3213,22 @@ class Script {
             }
         }
 
-        return `<div class="ta-block">${content}</div>`;
+        let info = '';
+        if (deprecatedKeys.size > 0) {
+            for (const key of deprecatedKeys) {
+                const name1 = intl(`stats.scripts.commands.${key}`);
+                const name2 = intl(`stats.scripts.commands.${ScriptCommands[key].deprecatedBy}`);
+
+                info += `
+                    <div class="ta-info-deprecated-line">${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>
+                `;
+            }
+        }
+
+        return {
+            html: `<div class="ta-block">${content}</div>`,
+            info
+        }
     }
 };
 
@@ -3480,6 +3500,12 @@ class ScriptEditor {
         this.wrapper = this.parent.querySelector('.ta-wrapper');
         this.mask = this.parent.querySelector('.ta-content');
 
+        this.info = document.createElement('div');
+        this.info.classList.add('ta-info-wrapper');
+        this.info.style.display = 'none';
+
+        this.wrapper.appendChild(this.info);
+
         const baseStyle = getComputedStyle(this.area);
         this.mask.style.top = baseStyle.paddingTop;
         this.mask.style.left = baseStyle.paddingLeft;
@@ -3513,10 +3539,21 @@ class ScriptEditor {
 
             this.mask.remove();
             this.mask = maskClone.cloneNode(true);
-            this.mask.innerHTML = Script.render(value, this.scriptType);
+
+            const data = Script.render(value, this.scriptType);
+
+            this.mask.innerHTML = data.html;
             this.mask.style.transform = scrollTransform;
 
             this.wrapper.insertAdjacentElement('beforeend', this.mask);
+
+            // Display info if needed
+            if (data.info) {
+                this.info.innerHTML = data.info;
+                this.info.style.display = 'block';
+            } else {
+                this.info.style.display = 'none';
+            }
 
             if (typeof this.changeCallback === 'function') {
                 this.changeCallback(value);
