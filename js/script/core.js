@@ -268,7 +268,7 @@ class ScriptCommand {
         return new ScriptCommand(this.type, regexp, this.#internalParse, format);
     }
 
-    isValid (string) {
+    is (string) {
         return this.regexp.test(string);
     }
 
@@ -276,7 +276,7 @@ class ScriptCommand {
         return this.#internalParse(root, ... string.match(this.regexp).slice(1));
     }
 
-    parseAsMacro (string) {
+    parseParams (string) {
         return string.match(this.regexp).slice(1);
     }
 
@@ -1724,7 +1724,7 @@ class Script {
 
         // Parse settings
         for (const line of Script.handleMacros(string, tableType)) {
-            const command = ScriptCommands.find((command) => command.canParse && (command.type & scriptType) && command.isValid(line));
+            const command = ScriptCommands.find((command) => command.canParse && (command.type & scriptType) && command.is(line));
   
             if (command) {
                 command.parse(this, line);
@@ -1837,18 +1837,18 @@ class Script {
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
 
-            if (ScriptCommands.MACRO_IF.isValid(line)) {
+            if (ScriptCommands.MACRO_IF.is(line)) {
                 let rule = null;
                 let ruleMustBeTrue = false;
 
-                if (ScriptCommands.MACRO_IFNOT.isValid(line)) {
+                if (ScriptCommands.MACRO_IFNOT.is(line)) {
                     rule = ScriptCommands.MACRO_IFNOT;
                     ruleMustBeTrue = true;
                 } else {
                     rule = ScriptCommands.MACRO_IF;
                 }
 
-                let cond = rule.parseAsMacro(line)[0].trim();
+                let cond = rule.parseParams(line)[0].trim();
                 if (cond in FilterTypes) {
                     shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == tableType) : (FilterTypes[cond] != tableType);
                     condition = true;
@@ -1860,10 +1860,10 @@ class Script {
                         condition = true;
                     }
                 }
-            } else if (ScriptCommands.MACRO_ELSEIF.isValid(line)) {
+            } else if (ScriptCommands.MACRO_ELSEIF.is(line)) {
                 if (condition) {
                     if (shouldDiscard) {
-                        let cond = ScriptCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
+                        let cond = ScriptCommands.MACRO_ELSEIF.parseParams(line)[0].trim();
                         if (cond in FilterTypes) {
                             shouldDiscard = FilterTypes[cond] != tableType;
                         } else {
@@ -1877,11 +1877,11 @@ class Script {
                         shouldDiscard = true;
                     }
                 }
-            } else if (ScriptCommands.MACRO_ELSE.isValid(line)) {
+            } else if (ScriptCommands.MACRO_ELSE.is(line)) {
                 if (condition) {
                     shouldDiscard = !shouldDiscard;
                 }
-            } else if (ScriptCommands.MACRO_LOOP.isValid(line)) {
+            } else if (ScriptCommands.MACRO_LOOP.is(line)) {
                 let endsRequired = 1;
                 if (!shouldDiscard) {
                     output.push(line);
@@ -1890,12 +1890,12 @@ class Script {
                 while (++i < lines.length) {
                     line = lines[i];
 
-                    if (ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line)) {
+                    if (ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line)) {
                         endsRequired++;
                         if (!shouldDiscard) {
                             output.push(line);
                         }
-                    } else if (ScriptCommands.MACRO_END.isValid(line)) {
+                    } else if (ScriptCommands.MACRO_END.is(line)) {
                         if (!shouldDiscard) {
                             output.push(line);
                         }
@@ -1905,7 +1905,7 @@ class Script {
                         output.push(line);
                     }
                 }
-            } else if (ScriptCommands.MACRO_END.isValid(line)) {
+            } else if (ScriptCommands.MACRO_END.is(line)) {
                 shouldDiscard = false;
                 condition = false;
             } else if (!shouldDiscard) {
@@ -1922,8 +1922,8 @@ class Script {
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i];
 
-            if (ScriptCommands.MACRO_LOOP.isValid(line)) {
-                let [ names, values ] = ScriptCommands.MACRO_LOOP.parseAsMacro(line);
+            if (ScriptCommands.MACRO_LOOP.is(line)) {
+                let [ names, values ] = ScriptCommands.MACRO_LOOP.parseParams(line);
 
                 let variableNames = names.split(',').map(name => name.trim());
                 let variableValues = [];
@@ -1948,9 +1948,9 @@ class Script {
                 while (++i < lines.length) {
                     line = lines[i];
 
-                    if (ScriptCommands.MACRO_END.isValid(line)) {
+                    if (ScriptCommands.MACRO_END.is(line)) {
                         if (--endsRequired == 0) break;
-                    } else if (ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line)) {
+                    } else if (ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line)) {
                         endsRequired++;
                     }
 
@@ -2003,15 +2003,15 @@ class Script {
 
         let is_unsafe = 0;
         for (let line of lines) {
-            if (ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line)) {
+            if (ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line)) {
                 is_unsafe++;
-            } else if (ScriptCommands.MACRO_END.isValid(line)) {
+            } else if (ScriptCommands.MACRO_END.is(line)) {
                 if (is_unsafe > 0) {
                     is_unsafe--;
                 }
             } else if (is_unsafe == 0) {
-                if (ScriptCommands.MACRO_FUNCTION.isValid(line)) {
-                    let [name, variables, expression] = ScriptCommands.MACRO_FUNCTION.parseAsMacro(line);
+                if (ScriptCommands.MACRO_FUNCTION.is(line)) {
+                    let [name, variables, expression] = ScriptCommands.MACRO_FUNCTION.parseParams(line);
                     let ast = Expression.create(expression);
                     if (ast) {
                         settings.functions[name] = {
@@ -2019,8 +2019,8 @@ class Script {
                             args: variables.split(',').map(v => v.trim())
                         };
                     }
-                } else if (ScriptCommands.MACRO_VARIABLE.isValid(line)) {
-                    let [name, expression] = ScriptCommands.MACRO_VARIABLE.parseAsMacro(line);
+                } else if (ScriptCommands.MACRO_VARIABLE.is(line)) {
+                    let [name, expression] = ScriptCommands.MACRO_VARIABLE.parseParams(line);
                     let ast = Expression.create(expression);
                     if (ast) {
                         settings.variables[name] = {
@@ -2028,11 +2028,11 @@ class Script {
                             tableVariable: false
                         };
                     }
-                } else if (ScriptCommands.MACRO_CONST.isValid(line)) {
-                    let [name, value] = ScriptCommands.MACRO_CONST.parseAsMacro(line);
+                } else if (ScriptCommands.MACRO_CONST.is(line)) {
+                    let [name, value] = ScriptCommands.MACRO_CONST.parseParams(line);
                     settings.constants.add(name, value);
-                } else if (ScriptCommands.MACRO_CONSTEXPR.isValid(line)) {
-                    let [name, expression] = ScriptCommands.MACRO_CONSTEXPR.parseAsMacro(line);
+                } else if (ScriptCommands.MACRO_CONSTEXPR.is(line)) {
+                    let [name, expression] = ScriptCommands.MACRO_CONSTEXPR.parseParams(line);
 
                     let ast = Expression.create(expression);
                     if (ast) {
@@ -2061,7 +2061,7 @@ class Script {
 
         // Generate initial settings
         let settings = Script.handleMacroVariables(lines, constants);
-        while (lines.some(line => ScriptCommands.MACRO_IF.isValid(line) || ScriptCommands.MACRO_LOOP.isValid(line))) {
+        while (lines.some(line => ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line))) {
             lines = Script.handleConditionals(lines, tableType, scope.environment(settings));
             settings = Script.handleMacroVariables(lines, constants);
             lines = Script.handleLoops(lines, scope.environment(settings));
@@ -3134,7 +3134,7 @@ class Script {
 
         for (const line of Script.handleMacros(string)) {
             const trimmed = Script.stripComments(line)[0].trim();
-            const command = ScriptCommands.find((command) => command.canParse && command.canParseAsConstant && (command.type & scriptType) && command.isValid(trimmed))
+            const command = ScriptCommands.find((command) => command.canParse && command.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
 
             if (command) {
                 command.parse(settings, trimmed);
@@ -3157,7 +3157,7 @@ class Script {
                 let currentLine = prefix.replace(/ /g, '&nbsp;');
 
                 if (trimmed) {
-                    const command = ScriptCommands.find((command) => (command.type & scriptType) && command.isValid(trimmed));
+                    const command = ScriptCommands.find((command) => (command.type & scriptType) && command.is(trimmed));
 
                     if (command) {
                         const lineHtml = command.format(settings, trimmed);
