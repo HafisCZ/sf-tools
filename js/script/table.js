@@ -965,9 +965,11 @@ class TableInstance {
         this.#renderRows(true);
         this.#renderStatistics();
 
+        const forcedLimit = this.settings.getEntryLimit();
+
         // Create table Content
         return {
-            entries: this.entries,
+            entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
             content: this.#getContent()
         };
     }
@@ -977,7 +979,7 @@ class TableInstance {
         this.#renderRows();
         this.#renderStatistics();
 
-        let forcedLimit = this.array.entryLimit || this.settings.getEntryLimit();
+        const forcedLimit = this.array.entryLimit || this.settings.getEntryLimit();
 
         return {
             entries: forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries,
