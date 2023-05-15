@@ -1079,6 +1079,10 @@ class Expression {
                         const self = scope.getSelf();
                         return self && typeof self === 'object' ? data.data(self, scope.player) : undefined;
                     }
+                    case 'function': {
+                        const self = scope.getSelf();
+                        return data.data(self);
+                    }
                 }
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
