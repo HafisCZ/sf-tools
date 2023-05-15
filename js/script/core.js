@@ -264,6 +264,10 @@ class ScriptCommand {
         this.canParse = true;
     }
 
+    clone (regexp, parse, format) {
+        return new ScriptCommand(this.type, regexp, this.#internalParse, format);
+    }
+
     isValid (string) {
         return this.regexp.test(string);
     }
@@ -301,6 +305,14 @@ class ScriptCommands {
         this[key] = command;
 
         this.#keys.push(key);
+        this.#commands.push(command);
+
+        return command;
+    }
+
+    static registerAlias (key, regexp, format) {
+        const command = this[key].clone(regexp, format);
+
         this.#commands.push(command);
 
         return command;
@@ -1122,18 +1134,6 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_GLOBAL_PERFORMANCE',
-    ScriptType.Table,
-    /^performance (\d+)$/,
-    (root, value) => {
-        if (value > 0) {
-            root.addGlobal('limit', Number(value));
-        }
-    },
-    (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
-)
-
-ScriptCommands.register(
     'TABLE_GLOBAL_LIMIT',
     ScriptType.Table,
     /^limit (\d+)$/,
@@ -1143,6 +1143,12 @@ ScriptCommands.register(
         }
     },
     (root, value) => Highlighter.keyword('limit ')[value > 0 ? 'value' : 'error'](value)
+)
+
+ScriptCommands.registerAlias(
+    'TABLE_GLOBAL_LIMIT',
+    /^performance (\d+)$/,
+    (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
 )
 
 ScriptCommands.register(
