@@ -1,20 +1,21 @@
-// WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, config, players, boss, index, hpcap, iterations, log } }) {
-    FLAGS.set(flags);
-    CONFIG.set(config);
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { flags, config, players, boss, index, hpcap, iterations, log } }) {
+        FLAGS.set(flags);
+        CONFIG.set(config);
 
-    if (log) {
-        FIGHT_LOG_ENABLED = true;
-    }
+        if (log) {
+            FIGHT_LOG_ENABLED = true;
+        }
 
-    self.postMessage({
-        results: new DungeonSimulator().simulate(players, boss, iterations || 100000, hpcap || 5000),
-        logs: FIGHT_LOG.dump(),
-        index
+        self.postMessage({
+            results: new DungeonSimulator().simulate(players, boss, iterations || 100000, hpcap || 5000),
+            logs: FIGHT_LOG.dump(),
+            index
+        });
+
+        self.close();
     });
-
-    self.close();
-});
+}
 
 class DungeonSimulator extends SimulatorBase {
     simulate (players, boss, iterations, hpcap) {

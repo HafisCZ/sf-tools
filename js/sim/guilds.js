@@ -1,15 +1,17 @@
-self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
-    FLAGS.set(flags);
-    FLAGS.set({
-        NoGladiatorReduction: true
-    });
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
+        FLAGS.set(flags);
+        FLAGS.set({
+            NoGladiatorReduction: true
+        });
 
-    self.postMessage({
-        results: new GuildSimulator().simulate(guildA, guildB, iterations)
-    });
+        self.postMessage({
+            results: new GuildSimulator().simulate(guildA, guildB, iterations)
+        });
 
-    self.close();
-});
+        self.close();
+    });
+}
 
 class GuildSimulator extends SimulatorBase {
     simulate (guildA, guildB, iterations) {
