@@ -151,7 +151,12 @@ Site.ready(null, function (urlParams) {
 
   // Methods
   function returnBack () {
-    window.location.href = '/index.html';
+    if (window.parent === window || !window.parent) {
+      // Return to index page if not inside IFRAME
+      window.location.href = '/index.html';
+    } else {
+      window.parent.postMessage({ event: 'sftools-close' }, '*');
+    }
   }
 
   function importFile (event) {
