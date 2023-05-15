@@ -1400,7 +1400,11 @@
     },
     "request": {
         "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!"
+        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
+        "error": {
+            "title": "Request error",
+            "notice#": "A website has requested your character data but did not specify required parameters"
+        }
     },
     "dialog": {
         "shared": {
