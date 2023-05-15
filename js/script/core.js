@@ -1238,19 +1238,78 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_OPTIONS_GLOBAL',
+    'TABLE_GLOBAL_MEMBERS',
     ScriptType.Table,
-    /^(members|outdated|opaque|large rows|align title)$/,
-    (root, key) => root.addGlobal(key, true),
-    (root, key) => Highlighter.keyword(key)
+    /^members( (on|off))?$/,
+    (root, params, value) => root.addGlobal('members', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('members');
+        if (params) {
+            return acc.space(1).boolean(value, value == 'on')
+        } else {
+            return acc;
+        }
+    }
 )
 
 ScriptCommands.register(
-    'TABLE_OPTIONS_GLOBAL_LONG',
+    'TABLE_GLOBAL_OUTDATED',
     ScriptType.Table,
-    /^(members|outdated|opaque|large rows|align title) (on|off)$/,
-    (root, key, value) => root.addGlobal(key, ARGUMENT_MAP_ON_OFF[value]),
-    (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
+    /^outdated( (on|off))?$/,
+    (root, params, value) => root.addGlobal('outdated', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('outdated');
+        if (params) {
+            return acc.space(1).boolean(value, value == 'on')
+        } else {
+            return acc;
+        }
+    }
+)
+
+ScriptCommands.register(
+    'TABLE_GLOBAL_OPAQUE',
+    ScriptType.Table,
+    /^opaque( (on|off))?$/,
+    (root, params, value) => root.addGlobal('opaque', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('opaque');
+        if (params) {
+            return acc.space(1).boolean(value, value == 'on')
+        } else {
+            return acc;
+        }
+    }
+)
+
+ScriptCommands.register(
+    'TABLE_GLOBAL_LARGE_ROWS',
+    ScriptType.Table,
+    /^large rows( (on|off))?$/,
+    (root, params, value) => root.addGlobal('large rows', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('large rows');
+        if (params) {
+            return acc.space(1).boolean(value, value == 'on')
+        } else {
+            return acc;
+        }
+    }
+)
+
+ScriptCommands.register(
+    'TABLE_GLOBAL_ALIGN_TITLE',
+    ScriptType.Table,
+    /^align title( (on|off))?$/,
+    (root, params, value) => root.addGlobal('align title', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('align title');
+        if (params) {
+            return acc.space(1).boolean(value, value == 'on')
+        } else {
+            return acc;
+        }
+    }
 )
 
 ScriptCommands.register(
