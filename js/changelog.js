@@ -5,10 +5,12 @@ const CHANGELOG = {
             'Added strict sizing to tables (<code>width</code> will now lock the column to specified width)',
             'Added visible script version next to script name',
             'Added ctrl click action to script archive to recover previous script version if present',
+            'Added option to disable strict sizing with <code>width policy relaxed</code>',
             'Fixed grouped headers ignoring maximum count'
         ],
         'All Tools': [
-            'Added support for other websites to request character data from SFTools'
+            'Added support for other websites to request character data from SFTools',
+            'Added new link to community-made tool on the main page'
         ]
     },
     'v6.3736': {
