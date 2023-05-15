@@ -608,6 +608,15 @@
             },
             "online": {
                 "not_available": "No scripts available"
+            },
+            "info": {
+                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+            },
+            "commands": {
+                "TABLE_GLOBAL_PERFORMANCE": "performance",
+                "TABLE_GLOBAL_LIMIT": "limit",
+                "TABLE_FORMAT_LONG": "format",
+                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
