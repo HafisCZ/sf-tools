@@ -1751,18 +1751,12 @@ class Script {
         this.row = null;
         this.embed = null;
 
-        this.deprecatedCommands = new Set();
-
         // Parse settings
         for (const line of Script.handleMacros(string, tableType)) {
             const command = ScriptCommands.find((command) => command.canParse && (command.type & scriptType) && command.is(line));
   
             if (command) {
                 command.parse(this, line);
-
-                if (command.deprecatedBy) {
-                    this.deprecatedCommands.add(command.key);
-                }
             }
         }
 
