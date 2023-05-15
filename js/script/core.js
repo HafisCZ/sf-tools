@@ -254,7 +254,8 @@ class ScriptCommand {
     #internalParse;
     #internalFormat;
 
-    constructor (type, regexp, parse, format) {
+    constructor (key, type, regexp, parse, format) {
+        this.key = key;
         this.type = type;
         this.regexp = regexp;
         this.#internalParse = parse;
@@ -296,7 +297,7 @@ class ScriptCommands {
     static #commands = [];
 
     static register (key, type, regexp, parse, format) {
-        const command = new ScriptCommand(type, regexp, parse, format);
+        const command = new ScriptCommand(key, type, regexp, parse, format);
 
         this[key] = command;
 
@@ -306,10 +307,10 @@ class ScriptCommands {
         return command;
     }
 
-    static registerDeprecatedVariant (deprecatedBy, regexp, parse, format) {
+    static registerDeprecatedVariant (deprecatedBy, key, regexp, parse, format) {
         const deprecatedByCommand = this[deprecatedBy];
 
-        const command = this.register(`_DEPRECATED_${deprecatedBy}`, deprecatedByCommand.type, regexp, parse, format);
+        const command = this.register(key, deprecatedByCommand.type, regexp, parse, format);
         command.deprecatedBy = deprecatedBy;
 
         return command;
@@ -871,6 +872,7 @@ ScriptCommands.register(
 
 ScriptCommands.registerDeprecatedVariant(
     'TABLE_FORMAT',
+    'TABLE_FORMAT_LONG',
     /^format (.+)$/,
     (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
@@ -1168,6 +1170,7 @@ ScriptCommands.register(
 
 ScriptCommands.registerDeprecatedVariant(
     'TABLE_GLOBAL_LIMIT',
+    'TABLE_GLOBAL_PERFORMANCE',
     /^performance (\d+)$/,
     (root, value) => {
         if (value > 0) {
@@ -1748,12 +1751,18 @@ class Script {
         this.row = null;
         this.embed = null;
 
+        this.deprecatedCommands = new Set();
+
         // Parse settings
         for (const line of Script.handleMacros(string, tableType)) {
             const command = ScriptCommands.find((command) => command.canParse && (command.type & scriptType) && command.is(line));
   
             if (command) {
                 command.parse(this, line);
+
+                if (command.deprecatedBy) {
+                    this.deprecatedCommands.add(command.key);
+                }
             }
         }
 
