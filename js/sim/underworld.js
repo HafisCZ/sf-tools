@@ -1,19 +1,21 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { log, config, flags, units, player, iterations } }) {
-    FLAGS.set(flags);
-    CONFIG.set(config);
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { log, config, flags, units, player, iterations } }) {
+        FLAGS.set(flags);
+        CONFIG.set(config);
 
-    if (log) {
-        FIGHT_LOG_ENABLED = true;
-    }
+        if (log) {
+            FIGHT_LOG_ENABLED = true;
+        }
 
-    self.postMessage({
-        results: new UnderworldSimulator().simulate(units, player, iterations),
-        logs: FIGHT_LOG.dump()
-    })
+        self.postMessage({
+            results: new UnderworldSimulator().simulate(units, player, iterations),
+            logs: FIGHT_LOG.dump()
+        })
 
-    self.close();
-});
+        self.close();
+    });
+}
 
 class UnderworldSimulator extends SimulatorBase {
     simulate (units, player, iterations) {

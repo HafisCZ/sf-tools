@@ -1,14 +1,15 @@
-// WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, iterations, player, target, index } }) {
-    FLAGS.set(flags);
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { flags, iterations, player, target, index } }) {
+        FLAGS.set(flags);
 
-    self.postMessage({
-        score: new FortressSimulator().simulate(player, target, iterations),
-        index
+        self.postMessage({
+            score: new FortressSimulator().simulate(player, target, iterations),
+            index
+        });
+
+        self.close();
     });
-
-    self.close();
-});
+}
 
 class FortressSimulator extends SimulatorBase {
     simulate (player, target, iterations) {

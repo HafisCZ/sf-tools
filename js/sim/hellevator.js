@@ -1,15 +1,16 @@
-// WebWorker hooks
-self.addEventListener('message', function ({ data: { player, enemy, iterations } }) {
-  FLAGS.set({
-    /* Simulator Flags */
-  });
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+  self.addEventListener('message', function ({ data: { player, enemy, iterations } }) {
+    FLAGS.set({
+      /* Simulator Flags */
+    });
 
-  self.postMessage({
-    score: new HellevatorSimulator().simulate(player, enemy, iterations)
-  });
+    self.postMessage({
+      score: new HellevatorSimulator().simulate(player, enemy, iterations)
+    });
 
-  self.close();
-});
+    self.close();
+  });
+}
 
 class HellevatorSimulator extends SimulatorBase {
   simulate (player, enemy, iterations) {

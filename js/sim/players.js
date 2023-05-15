@@ -1,37 +1,39 @@
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, config, player, target, mode, iterations, log } }) {
-    FLAGS.set(flags);
-    CONFIG.set(config);
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { flags, config, player, target, mode, iterations, log } }) {
+        FLAGS.set(flags);
+        CONFIG.set(config);
 
-    if (log) {
-        FIGHT_LOG_ENABLED = true;
-    }
+        if (log) {
+            FIGHT_LOG_ENABLED = true;
+        }
 
-    // Sim type decision
-    if (mode == 'all') {
-        self.postMessage({
-            results: new FightSimulator().simulateMultiple(player, target, iterations),
-            logs: FIGHT_LOG.dump()
-        });
-    } else if (mode == 'attack') {
-        self.postMessage({
-            results: new FightSimulator().simulateSingle(player, target, iterations, false),
-            logs: FIGHT_LOG.dump()
-        });
-    } else if (mode == 'defend') {
-        self.postMessage({
-            results: new FightSimulator().simulateSingle(player, target, iterations, true),
-            logs: FIGHT_LOG.dump()
-        });
-    } else if (mode == 'tournament') {
-        self.postMessage({
-            results: new FightSimulator().simulateTournament(player, target, iterations),
-            logs: FIGHT_LOG.dump()
-        });
-    }
+        // Sim type decision
+        if (mode == 'all') {
+            self.postMessage({
+                results: new FightSimulator().simulateMultiple(player, target, iterations),
+                logs: FIGHT_LOG.dump()
+            });
+        } else if (mode == 'attack') {
+            self.postMessage({
+                results: new FightSimulator().simulateSingle(player, target, iterations, false),
+                logs: FIGHT_LOG.dump()
+            });
+        } else if (mode == 'defend') {
+            self.postMessage({
+                results: new FightSimulator().simulateSingle(player, target, iterations, true),
+                logs: FIGHT_LOG.dump()
+            });
+        } else if (mode == 'tournament') {
+            self.postMessage({
+                results: new FightSimulator().simulateTournament(player, target, iterations),
+                logs: FIGHT_LOG.dump()
+            });
+        }
 
-    self.close();
-});
+        self.close();
+    });
+}
 
 class FightSimulator extends SimulatorBase {
     // Fight 1vAl only

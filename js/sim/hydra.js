@@ -9,15 +9,17 @@ SimulatorModel.prototype.getBaseDamage = function () {
 }
 
 // WebWorker hooks
-self.addEventListener('message', function ({ data: { flags, iterations, hydra, pet } }) {
-    FLAGS.set(flags);
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { flags, iterations, hydra, pet } }) {
+        FLAGS.set(flags);
 
-    self.postMessage({
-        results: new HydraSimulator().simulate(pet, hydra, iterations)
+        self.postMessage({
+            results: new HydraSimulator().simulate(pet, hydra, iterations)
+        });
+
+        self.close();
     });
-
-    self.close();
-});
+}
 
 class HydraSimulator extends SimulatorBase {
     simulate (pet, hydra, iterations) {

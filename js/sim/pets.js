@@ -1,91 +1,93 @@
-self.addEventListener('message', function ({ data: { config, players, mode, iterations, log } }) {
-    CONFIG.set(config);
-    FLAGS.set({
-        NoGladiatorReduction: true
-    });
-
-    if (log) {
-        FIGHT_LOG_ENABLED = true;
-    }
-
-    if (mode == 'pet') {
-        const simulator = new PetSimulator();
-
-        const p1 = PetModel.getModel(players[0], 0);
-        const p2 = PetModel.getModel(players[1], 1);
-
-        self.postMessage({
-            results: simulator.simulate(p1, p2, iterations),
-            logs: FIGHT_LOG.dump()
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+    self.addEventListener('message', function ({ data: { config, players, mode, iterations, log } }) {
+        CONFIG.set(config);
+        FLAGS.set({
+            NoGladiatorReduction: true
         });
-    } else if (mode == 'map') {
-        const simulator = new PetSimulator();
 
-        const p1 = PetModel.getModel(players[0], 0);
-        const p2 = PetModel.getModel(players[1], 1);
+        if (log) {
+            FIGHT_LOG_ENABLED = true;
+        }
 
-        let r = [];
-        let obj = players[0];
+        if (mode == 'pet') {
+            const simulator = new PetSimulator();
 
-        let orig = obj.Level;
-        let p100 = obj.At100 + 1;
+            const p1 = PetModel.getModel(players[0], 0);
+            const p2 = PetModel.getModel(players[1], 1);
 
-        let origGladiator = obj.Gladiator;
+            self.postMessage({
+                results: simulator.simulate(p1, p2, iterations),
+                logs: FIGHT_LOG.dump()
+            });
+        } else if (mode == 'map') {
+            const simulator = new PetSimulator();
 
-        for (let level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
-            obj.Level = level + 1;
+            const p1 = PetModel.getModel(players[0], 0);
+            const p2 = PetModel.getModel(players[1], 1);
 
-            if (obj.Level == 100 && orig != 100) {
-                obj.At100 = p100;
-            }
+            let r = [];
+            let obj = players[0];
 
-            if (typeof r[level] === 'undefined') {
-                r[level] = [];
-            }
+            let orig = obj.Level;
+            let p100 = obj.At100 + 1;
 
-            obj.Gladiator = 15;
+            let origGladiator = obj.Gladiator;
 
-            r[level][15] = simulator.simulate(PetModel.upgrade(p1, obj), p2, iterations);
+            for (let level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
+                obj.Level = level + 1;
 
-            if (typeof r[level - 1] !== 'undefined') {
-                if (r[level - 1][15] > r[level][15]) {
-                    r[level][15] = r[level - 1][15];
+                if (obj.Level == 100 && orig != 100) {
+                    obj.At100 = p100;
                 }
-            }
 
-            if (r[level][15] == 0) {
-                for (let i = origGladiator; i < 15; i++) {
-                    r[level][i] = 0;
+                if (typeof r[level] === 'undefined') {
+                    r[level] = [];
                 }
-            } else {
-                for (let glad = 14; glad >= origGladiator; glad--) {
-                    obj.Gladiator = glad;
 
-                    r[level][glad] = simulator.simulate(PetModel.upgrade(p1, obj), p2, iterations);
-                    if (r[level][glad] > r[level][glad + 1]) {
-                        r[level][glad] = r[level][glad + 1];
+                obj.Gladiator = 15;
+
+                r[level][15] = simulator.simulate(PetModel.upgrade(p1, obj), p2, iterations);
+
+                if (typeof r[level - 1] !== 'undefined') {
+                    if (r[level - 1][15] > r[level][15]) {
+                        r[level][15] = r[level - 1][15];
                     }
+                }
 
-                    if (typeof r[level - 1] !== 'undefined') {
-                        if (r[level - 1][glad] > r[level][glad]) {
-                            r[level][glad] = r[level - 1][glad];
+                if (r[level][15] == 0) {
+                    for (let i = origGladiator; i < 15; i++) {
+                        r[level][i] = 0;
+                    }
+                } else {
+                    for (let glad = 14; glad >= origGladiator; glad--) {
+                        obj.Gladiator = glad;
+
+                        r[level][glad] = simulator.simulate(PetModel.upgrade(p1, obj), p2, iterations);
+                        if (r[level][glad] > r[level][glad + 1]) {
+                            r[level][glad] = r[level][glad + 1];
+                        }
+
+                        if (typeof r[level - 1] !== 'undefined') {
+                            if (r[level - 1][glad] > r[level][glad]) {
+                                r[level][glad] = r[level - 1][glad];
+                            }
                         }
                     }
                 }
+
+                if (r[level][origGladiator] >= 50) {
+                    break;
+                }
             }
 
-            if (r[level][origGladiator] >= 50) {
-                break;
-            }
+            self.postMessage({
+                results: r
+            });
         }
 
-        self.postMessage({
-            results: r
-        });
-    }
-
-    self.close();
-});
+        self.close();
+    });
+}
 
 const HABITAT_SHADOW = 0;
 const HABITAT_LIGHT = 1;
