@@ -3157,8 +3157,7 @@ class Script {
         return [ line, comment, commentIndex ];
     }
 
-    // Format code
-    static format (string, scriptType = ScriptType.Table) {
+    static render (string, scriptType = ScriptType.Table) {
         const settings = new Script('', scriptType, null);
 
         for (const line of Script.handleMacros(string)) {
@@ -3514,7 +3513,7 @@ class ScriptEditor {
 
             this.mask.remove();
             this.mask = maskClone.cloneNode(true);
-            this.mask.innerHTML = Script.format(value, this.scriptType);
+            this.mask.innerHTML = Script.render(value, this.scriptType);
             this.mask.style.transform = scrollTransform;
 
             this.wrapper.insertAdjacentElement('beforeend', this.mask);
