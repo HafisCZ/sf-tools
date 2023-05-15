@@ -274,6 +274,8 @@ Site.ready(null, function (urlParams) {
     form.enctype = 'multipart/form-data';
     form.action = redirect;
 
+    form.style.display = 'none';
+
     addFormInput(form, 'data', JSON.stringify(data));
     if (state) {
       addFormInput(form, 'state', state);
