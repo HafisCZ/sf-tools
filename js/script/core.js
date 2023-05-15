@@ -264,7 +264,7 @@ class ScriptCommand {
         this.canParse = true;
     }
 
-    clone (regexp, parse, format) {
+    clone (regexp, format) {
         return new ScriptCommand(this.type, regexp, this.#internalParse, format);
     }
 
