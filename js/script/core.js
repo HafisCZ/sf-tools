@@ -846,12 +846,12 @@ ScriptCommands.register(
         }
     }
 )
-    
+
 ScriptCommands.register(
     'TABLE_FORMAT',
     ScriptType.Table,
-    /^(format|expf) (.+)$/,
-    (root, token, expression) => {
+    /^expf (.+)$/,
+    (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
             root.addFormatExpression(ARG_FORMATTERS[expression])
         } else {
@@ -861,8 +861,8 @@ ScriptCommands.register(
             }
         }
     },
-    (root, token, expression) => {
-        const acc = Highlighter.keyword(token).space();
+    (root, expression) => {
+        const acc = Highlighter.keyword('expf').space();
 
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
             return acc.constant(expression);
@@ -871,7 +871,21 @@ ScriptCommands.register(
         }
     }
 )
-      
+
+ScriptCommands.registerAlias(
+    'TABLE_FORMAT',
+    /^format (.+)$/,
+    (root, expression) => {
+        const acc = Highlighter.deprecatedKeyword('format').space();
+
+        if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            return acc.constant(expression);
+        } else {
+            return acc.expression(expression, root);
+        }
+    }
+)
+
 ScriptCommands.register(
     'TABLE_CATEGORY',
     ScriptType.Table,
