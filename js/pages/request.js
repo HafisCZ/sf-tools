@@ -123,16 +123,20 @@ const SCOPES = {
 }
 
 Site.ready(null, function (urlParams) {
-  const redirect = urlParams.get('redirect');
+  const redirect = parseURL(urlParams.get('redirect'));
 
   const scope = (urlParams.get('scope') || 'default').split(/\s|\+/).filter((field) => SCOPES[field]);
   const origin = urlParams.get('origin');
   const state = urlParams.get('state');
 
+  // Modals
+  const $containerNormal = $('#container-normal');
+  const $containerError = $('#container-error');
+
   // Buttons
   const $importFile = $('#import-file');
   const $importEndpoint = $('#import-endpoint');
-  const $close = $('#close');
+  const $close = $('[data-op="close"]');
   const $origin = $('#origin'); 
   const $content = $('#content');
 
@@ -222,7 +226,7 @@ Site.ready(null, function (urlParams) {
       `);
   
       $element.click(() => {
-        redirectToOrigin(player);
+        sendData(player);
       })
   
       $element.appendTo($content);
@@ -256,6 +260,14 @@ Site.ready(null, function (urlParams) {
     }
   }
 
+  function parseURL (url) {
+    try {
+      return new URL(url);
+    } catch (e) {
+      return null;
+    }
+  }
+
   function addFormInput (form, name, value) {
     const input = document.createElement("input"); 
     input.value = value;
@@ -264,7 +276,7 @@ Site.ready(null, function (urlParams) {
     form.appendChild(input);  
   }
 
-  function redirectToOrigin (player) {
+  function sendData (player) {
     const data = Object.create(null);
     copyWithWhitelist(player, data, scope.reduce((memo, name) => Object.assign(memo, SCOPES[name]), Object.create(null)));
 
@@ -272,7 +284,7 @@ Site.ready(null, function (urlParams) {
     form.method = 'POST';
     form.acceptCharset = 'UTF-8';
     form.enctype = 'multipart/form-data';
-    form.action = redirect;
+    form.action = redirect.href;
 
     form.style.display = 'none';
 
@@ -280,7 +292,7 @@ Site.ready(null, function (urlParams) {
     if (state) {
       addFormInput(form, 'state', state);
     }
-    
+
     document.body.appendChild(form);
 
     form.submit();
@@ -288,10 +300,12 @@ Site.ready(null, function (urlParams) {
 
   // Execute
   if (redirect && scope.length > 0) {
-    $origin.text(origin || new URL(redirect).hostname);
+    $containerNormal.show();
 
     render();
+    
+    $origin.text(origin || redirect.hostname);
   } else {
-    returnBack();
+    $containerError.show();
   }
 })
