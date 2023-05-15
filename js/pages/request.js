@@ -38,6 +38,7 @@ const ITEM_SCOPE = {
 const SCOPES = {
   'default': {
     ID: true,
+    Name: true,
     Class: true,
     XP: true,
     XPNext: true,
@@ -92,6 +93,11 @@ const SCOPES = {
     }
   },
   'items': {
+    Strength: true,
+    Dexterity: true,
+    Intelligence: true,
+    Constitution: true,
+    Luck: true,
     Potions: true,
     Damage: true,
     Damage2: true,
