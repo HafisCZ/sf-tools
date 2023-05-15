@@ -487,7 +487,7 @@ ScriptCommands.register(
     'TABLE_WIDTH_POLICY',
     ScriptType.Table,
     /^width policy (strict|relaxed)$/,
-    (root, value) => root.addGlobal('width policy', value),
+    (root, value) => root.addGlobal('width_policy', value),
     (root, value) => Highlighter.keyword('width policy').space(1).boolean(value, value === 'strict')
 )
 
@@ -1086,23 +1086,22 @@ ScriptCommands.register(
 ).parseAsConstant()
 
 ScriptCommands.register(
-    'TABLE_LINED',
+    'TABLE_GLOBAL_LINED',
     ScriptType.Table,
-    /^lined$/,
-    (root, value) => root.addGlobal('lined', 1),
-    (root, value) => Highlighter.keyword('lined')
+    /^lined( (on|off|thin|thick))?$/,
+    (root, params, value) => root.addGlobal('lined', params ? ARGUMENT_MAP_LINED[value] : 1),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('lined');
+        if (params) {
+            return acc.space(1).boolean(value, value !== 'off')
+        } else {
+            return acc;
+        }
+    }
 )
 
 ScriptCommands.register(
-    'TABLE_LINED_LONG',
-    ScriptType.Table,
-    /^lined (on|off|thin|thick)$/,
-    (root, value) => root.addGlobal('lined', ARGUMENT_MAP_LINED[value]),
-    (root, value) => Highlighter.keyword('lined ').boolean(value, value !== 'off')
-)
-
-ScriptCommands.register(
-    'TABLE_THEME',
+    'TABLE_GLOBAL_THEME',
     ScriptType.Table,
     /^theme (light|dark)$/,
     (root, value) => root.addGlobal('theme', value),
@@ -1110,7 +1109,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_THEME_LONG',
+    'TABLE_GLOBAL_THEME_CUSTOM',
     ScriptType.Table,
     /^theme text:(\S+) background:(\S+)$/,
     (root, textColor, backgroundColor) => {
@@ -1123,7 +1122,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_PERFORMANCE',
+    'TABLE_GLOBAL_PERFORMANCE',
     ScriptType.Table,
     /^performance (\d+)$/,
     (root, value) => {
@@ -1135,7 +1134,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_LIMIT',
+    'TABLE_GLOBAL_LIMIT',
     ScriptType.Table,
     /^limit (\d+)$/,
     (root, value) => {
@@ -1147,7 +1146,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_SCALE',
+    'TABLE_GLOBAL_SCALE',
     ScriptType.Table,
     /^scale (\d+)$/,
     (root, value) => {
@@ -1184,27 +1183,107 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_OPTIONS',
+    'TABLE_SHARED_STATISTICS_COLOR',
     ScriptType.Table,
-    /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
-    (root, key, value) => root.addShared(key, ARGUMENT_MAP_ON_OFF[value]),
-    (root, key, value) => Highlighter.keyword(key).space().boolean(value, value == 'on')
+    /^statistics color (on|off)$/,
+    (root, value) => root.addShared('statistics_color', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('statistics color').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_BREAKLINE',
+    ScriptType.Table,
+    /^breakline (on|off)$/,
+    (root, value) => root.addShared('breakline', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('breakline').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_VISIBLE',
+    ScriptType.Table,
+    /^visible (on|off)$/,
+    (root, value) => root.addShared('visible', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('visible').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_DECIMAL',
+    ScriptType.Table,
+    /^decimal (on|off)$/,
+    (root, value) => root.addShared('decimal', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('decimal').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_GRAIL',
+    ScriptType.Table,
+    /^grail (on|off)$/,
+    (root, value) => root.addShared('grail', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('grail').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_MAXIMUM',
+    ScriptType.Table,
+    /^maximum (on|off)$/,
+    (root, value) => root.addShared('maximum', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('maximum').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_STATISTICS',
+    ScriptType.Table,
+    /^statistics (on|off)$/,
+    (root, value) => root.addShared('statistics', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('statistics').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_BRACKETS',
+    ScriptType.Table,
+    /^brackets (on|off)$/,
+    (root, value) => root.addShared('brackets', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_FLIP',
+    ScriptType.Table,
+    /^flip (on|off)$/,
+    (root, value) => root.addShared('flip', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('flip').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_HYDRA',
+    ScriptType.Table,
+    /^hydra (on|off)$/,
+    (root, value) => root.addShared('hydra', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('hydra').space().boolean(value, value == 'on')
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_DIFFERENCE',
+    ScriptType.Table,
+    /^difference (on|off)$/,
+    (root, value) => root.addShared('difference', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => Highlighter.keyword('difference').space().boolean(value, value == 'on')
 )
 
 ScriptCommands.register(
     'TABLE_CLEAN',
     ScriptType.Table,
-    /^clean$/,
-    (root) => root.addLocal('clean', 1),
-    (root) => Highlighter.keyword('clean')
-)
+    /^clean( hard)?$/,
+    (root, params) => root.addLocal('clean', params ? 2 : 1),
+    (root, params) => {
+        const acc = Highlighter.keyword('clean');
 
-ScriptCommands.register(
-    'TABLE_CLEAN_HARD',
-    ScriptType.Table,
-    /^clean hard$/,
-    (root) => root.addLocal('clean', 2),
-    (root) => Highlighter.keyword('clean ').constant('hard')
+        if (params) {
+            return acc.space().constant('hard');
+        } else {
+            return acc
+        }
+    }
 )
 
 ScriptCommands.register(
@@ -1218,23 +1297,23 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_INDEXED',
     ScriptType.Table,
-    /^indexed$/,
-    (root, value) => root.addGlobal('indexed', 1),
-    (root, value) => Highlighter.keyword('indexed')
-)
-
-ScriptCommands.register(
-    'TABLE_INDEXED_LONG',
-    ScriptType.Table,
-    /^indexed (on|off|static)$/,
-    (root, value) => {
+    /^indexed( (on|off|static))?$/,
+    (root, params, value) => {
         if (value === 'static') {
             root.addGlobal('indexed', 2);
         } else {
-            root.addGlobal('indexed', ARGUMENT_MAP_ON_OFF[value])
+            root.addGlobal('indexed', params ? ARGUMENT_MAP_ON_OFF[value] : 1)
         }
     },
-    (root, value) => Highlighter.keyword('indexed ').boolean(value, value != 'off')
+    (root, params, value) => {
+        const acc = Highlighter.keyword('indexed');
+
+        if (params) {
+            return acc.space().boolean(value, value != 'off');
+        } else {
+            return acc;
+        }
+    }
 )
 
 ScriptCommands.register(
@@ -1286,7 +1365,7 @@ ScriptCommands.register(
     'TABLE_GLOBAL_LARGE_ROWS',
     ScriptType.Table,
     /^large rows( (on|off))?$/,
-    (root, params, value) => root.addGlobal('large rows', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => root.addGlobal('large_rows', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
         const acc = Highlighter.keyword('large rows');
         if (params) {
@@ -1301,7 +1380,7 @@ ScriptCommands.register(
     'TABLE_GLOBAL_ALIGN_TITLE',
     ScriptType.Table,
     /^align title( (on|off))?$/,
-    (root, params, value) => root.addGlobal('align title', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => root.addGlobal('align_title', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
         const acc = Highlighter.keyword('align title');
         if (params) {
@@ -1317,7 +1396,7 @@ ScriptCommands.register(
     ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)left category$/,
     (root, extensions) => {
-        root.addGlobal('custom left', true);
+        root.addGlobal('custom_left', true);
         root.addCategory('', true);
         if (extensions) {
             root.addExtension(... extensions.slice(0, -1).split(','));
@@ -1353,14 +1432,6 @@ ScriptCommands.register(
     /^style ([a-zA-Z\-]+) (.*)$/,
     (root, style, value) => root.addStyle(style, value),
     (root, style, value) => Highlighter.keyword('style ').constant(style).space().value(value)
-)
-
-ScriptCommands.register(
-    'TABLE_OPTIONS_SHARED',
-    ScriptType.Table,
-    /^(visible|breakline|statistics color) (on|off)$/,
-    (root, type, value) => root.addShared(type.replace(/ /g, '_'), ARGUMENT_MAP_ON_OFF[value]),
-    (root, type, value) => Highlighter.keyword(type).space(1).boolean(value, value == 'on')
 )
 
 ScriptCommands.register(
@@ -1664,7 +1735,7 @@ class Script {
     }
 
     _prepareLeftCategory () {
-        if (this.globals['custom left']) {
+        if (this.globals.custom_left) {
             // Can skip as category should already exist
         } else {
             const headers = [];
@@ -2739,11 +2810,11 @@ class Script {
     }
 
     getRowStyle () {
-        return this.globals['large rows'] ? 'css-maxi-row' : '';
+        return this.globals.large_rows ? 'css-maxi-row' : '';
     }
 
     getRowHeight () {
-        return this.globals['row_height'] || 0;
+        return this.globals.row_height || 0;
     }
 
     getFontStyle () {
@@ -2751,7 +2822,7 @@ class Script {
     }
 
     getTitleAlign () {
-        return this.globals['align title'];
+        return this.globals.align_title;
     }
 
     getNameStyle () {
@@ -2759,7 +2830,7 @@ class Script {
     }
 
     isStrictWidthPolicy () {
-        return (this.globals['width policy'] || 'strict') === 'strict';
+        return (this.globals.width_policy || 'strict') === 'strict';
     }
 
     evalRowIndexes (array) {
