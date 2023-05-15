@@ -264,10 +264,6 @@ class ScriptCommand {
         this.canParse = true;
     }
 
-    clone (regexp, format) {
-        return new ScriptCommand(this.type, regexp, this.#internalParse, format);
-    }
-
     is (string) {
         return this.regexp.test(string);
     }
@@ -310,10 +306,11 @@ class ScriptCommands {
         return command;
     }
 
-    static registerAlias (key, regexp, format) {
-        const command = this[key].clone(regexp, format);
+    static registerDeprecatedVariant (deprecatedBy, regexp, parse, format) {
+        const deprecatedByCommand = this[deprecatedBy];
 
-        this.#commands.push(command);
+        const command = this.register(`_DEPRECATED_${deprecatedBy}`, deprecatedByCommand.type, regexp, parse, format);
+        command.deprecatedBy = deprecatedBy;
 
         return command;
     }
@@ -872,9 +869,19 @@ ScriptCommands.register(
     }
 )
 
-ScriptCommands.registerAlias(
+ScriptCommands.registerDeprecatedVariant(
     'TABLE_FORMAT',
     /^format (.+)$/,
+    (root, expression) => {
+        if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+            root.addFormatExpression(ARG_FORMATTERS[expression])
+        } else {
+            let ast = Expression.create(expression, root);
+            if (ast) {
+                root.addFormatExpression(ast);
+            }
+        }
+    },
     (root, expression) => {
         const acc = Highlighter.deprecatedKeyword('format').space();
 
@@ -1159,9 +1166,14 @@ ScriptCommands.register(
     (root, value) => Highlighter.keyword('limit ')[value > 0 ? 'value' : 'error'](value)
 )
 
-ScriptCommands.registerAlias(
+ScriptCommands.registerDeprecatedVariant(
     'TABLE_GLOBAL_LIMIT',
     /^performance (\d+)$/,
+    (root, value) => {
+        if (value > 0) {
+            root.addGlobal('limit', Number(value));
+        }
+    },
     (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
 )
 
