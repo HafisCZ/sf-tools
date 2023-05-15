@@ -140,6 +140,10 @@ Site.ready(null, function (urlParams) {
   const $origin = $('#origin'); 
   const $content = $('#content');
 
+  // Modes
+  const canRedirect = urlParams.has('redirect') && redirect;
+  const canMessage = !urlParams.has('redirect') && origin && window.parent && window.parent !== window;
+
   // Callbacks
   $importFile.change((event) => {
     importFile(event);
@@ -276,10 +280,7 @@ Site.ready(null, function (urlParams) {
     form.appendChild(input);  
   }
 
-  function sendData (player) {
-    const data = Object.create(null);
-    copyWithWhitelist(player, data, scope.reduce((memo, name) => Object.assign(memo, SCOPES[name]), Object.create(null)));
-
+  function sendDataViaForm (data) {
     const form = document.createElement("form");
     form.method = 'POST';
     form.acceptCharset = 'UTF-8';
@@ -298,8 +299,32 @@ Site.ready(null, function (urlParams) {
     form.submit();
   }
 
+  function sendDataViaMessage (data) {
+    const package = {
+      event: 'sftools-data',
+      data
+    }
+
+    if (state) {
+      package.state = state;
+    }
+
+    window.parent.postMessage(package, '*');
+  }
+
+  function sendData (player) {
+    const data = Object.create(null);
+    copyWithWhitelist(player, data, scope.reduce((memo, name) => Object.assign(memo, SCOPES[name]), Object.create(null)));
+
+    if (canRedirect) {
+      sendDataViaForm(data);
+    } else if (canMessage) {
+      sendDataViaMessage(data);
+    }
+  }
+
   // Execute
-  if (redirect && scope.length > 0) {
+  if ((canRedirect || canMessage) && scope.length > 0) {
     $containerNormal.show();
 
     render();
