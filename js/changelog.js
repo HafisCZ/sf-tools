@@ -6,6 +6,8 @@ const CHANGELOG = {
             'Added visible script version next to script name',
             'Added ctrl click action to script archive to recover previous script version if present',
             'Added option to disable strict sizing with <code>width policy relaxed</code>',
+            'Added new <code>limit</code> keyword to replace <code>performance</code>',
+            'Added deprecated status to <code>performance</code> and <code>format</code> keywords',
             'Fixed grouped headers ignoring maximum count'
         ],
         'All Tools': [
