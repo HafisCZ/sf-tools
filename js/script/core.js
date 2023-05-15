@@ -1120,13 +1120,13 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_PERFORMANCE',
     ScriptType.Table,
-    /^performance (\d+)$/,
-    (root, value) => {
+    /^(performance|limit) (\d+)$/,
+    (root, key, value) => {
         if (value > 0) {
-            root.addGlobal('performance', Number(value));
+            root.addGlobal('limit', Number(value));
         }
     },
-    (root, value) => Highlighter.keyword('performance ')[value > 0 ? 'value' : 'error'](value)
+    (root, key, value) => Highlighter.keyword(key).space(1)[value > 0 ? 'value' : 'error'](value)
 )
 
 ScriptCommands.register(
@@ -2651,7 +2651,7 @@ class Script {
     }
 
     getEntryLimit () {
-        return this.globals.performance;
+        return this.globals.limit;
     }
 
     getOpaqueStyle () {
