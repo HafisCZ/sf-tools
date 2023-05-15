@@ -142,6 +142,11 @@ class Highlighter {
         return this;
     }
 
+    static deprecatedKeyword (text) {
+        this.#text += `<span class="ta-keyword ta-deprecated">${this.#escape(text)}</span>`;
+        return this;
+    }
+
     static constant (text) {
         this.#text += `<span class="ta-constant">${this.#escape(text)}</span>`;
         return this;
@@ -1120,13 +1125,25 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_PERFORMANCE',
     ScriptType.Table,
-    /^(performance|limit) (\d+)$/,
-    (root, key, value) => {
+    /^performance (\d+)$/,
+    (root, value) => {
         if (value > 0) {
             root.addGlobal('limit', Number(value));
         }
     },
-    (root, key, value) => Highlighter.keyword(key).space(1)[value > 0 ? 'value' : 'error'](value)
+    (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
+)
+
+ScriptCommands.register(
+    'TABLE_LIMIT',
+    ScriptType.Table,
+    /^limit (\d+)$/,
+    (root, value) => {
+        if (value > 0) {
+            root.addGlobal('limit', Number(value));
+        }
+    },
+    (root, value) => Highlighter.keyword('limit ')[value > 0 ? 'value' : 'error'](value)
 )
 
 ScriptCommands.register(
@@ -3001,30 +3018,29 @@ class Script {
                 let [ commandLine, comment, commentIndex ] = Script.stripComments(line, false);
                 let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
 
-                let currentContent = '';
-                currentContent += prefix.replace(/ /g, '&nbsp;');
+                let currentLine = prefix.replace(/ /g, '&nbsp;');
 
                 if (trimmed) {
                     const command = ScriptCommands.find((command) => (command.type & scriptType) && command.isValid(trimmed));
 
                     if (command) {
                         const lineHtml = command.format(settings, trimmed);
-                        currentContent += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
+                        currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
                     } else {
-                        currentContent += Highlighter.error(trimmed).text;
+                        currentLine += Highlighter.error(trimmed).text;
                     }
                 }
 
-                currentContent += suffix.replace(/ /g, '&nbsp;');
+                currentLine += suffix.replace(/ /g, '&nbsp;');
                 if (commentIndex != -1) {
-                    currentContent += Highlighter.comment(comment).text;
+                    currentLine += Highlighter.comment(comment).text;
                 }
 
-                currentContent = `<div class="ta-line">${currentContent || '&nbsp;'}</div>`;
+                currentLine = `<div class="ta-line">${currentLine || '&nbsp;'}</div>`;
 
-                ScriptHighlightCache.set(line, currentContent);
+                ScriptHighlightCache.set(line, currentLine);
 
-                content += currentContent;
+                content += currentLine;
             }
         }
 

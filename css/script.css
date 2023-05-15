@@ -31,6 +31,10 @@
   width: 30px;
 }
 
+.ta-deprecated {
+  text-decoration: line-through;
+}
+
 .ta-content {
   position: absolute;
   border: 1px solid transparent;
