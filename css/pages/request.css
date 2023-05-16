@@ -23,3 +23,11 @@ div.ui.huge.menu {
 div.dialog.container.request-dialog-container {
   z-index: 0 !important;
 }
+
+body.within-iframe {
+  overflow: hidden !important;
+}
+
+body.within-iframe > div.request-dialog-container {
+  overflow: hidden !important;
+}
