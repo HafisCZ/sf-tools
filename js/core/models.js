@@ -1004,7 +1004,7 @@ class PlayerModel {
         legacyDungeons.Normal[16] = dataType.byte();
         legacyDungeons.Shadow[16] = dataType.byte();
 
-        dataType.short();
+        this.CalendarDay = dataType.short();
         dataType.skip(5);
 
         legacyDungeons.Normal[17] = dataType.short();

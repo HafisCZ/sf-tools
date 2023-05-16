@@ -3832,6 +3832,15 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Calendar Day',
+  {
+    expr: p => p.CalendarDay,
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Runes Collected',
   {
     expr: p => p.Idle ? p.Idle.Runes : undefined,
