@@ -67,7 +67,9 @@ const SCOPES = {
     Runes: true,
     XPTotal: true,
     Toilet: true,
-    Witch: true
+    Witch: true,
+    CalendarDay: true,
+    CalendarType: true
   },
   'pets': {
     Pets: {
