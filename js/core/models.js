@@ -539,7 +539,7 @@ class GroupModel {
         this.Pet = data.save[378];
         this.Hydra = data.save[379];
 
-        let dataType = new ComplexDataType(data.save.slice(4, 8));
+        let dataType = new ComplexDataType(data.save.slice(4, 9));
         dataType.short();
         this.PortalLife = dataType.short();
         dataType.short();
@@ -548,6 +548,7 @@ class GroupModel {
         this.PortalPercent = dataType.short();
         dataType.short();
         this.PortalFloor = dataType.short();
+        this.Raid = dataType.long()
 
         this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_p' + mid));
         this.States = data.save.slice(64, 114).map(level => Math.trunc(level / 1000));
