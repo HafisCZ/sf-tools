@@ -1012,7 +1012,7 @@ class PlayerModel {
 
         dataType.skip(2);
         // Normalize calendar type in order to align it with S&F Tavern's calendar indexing
-        this.CalendarType = 1 + (dataType.long() - 1 + 10) % 11;
+        this.CalendarType = 1 + (dataType.long() + 10) % 12;
         this.Underworld = {
             TimeMachineMushrooms: dataType.long(),
             Upgrade: {
