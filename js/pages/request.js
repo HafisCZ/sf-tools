@@ -119,6 +119,20 @@ const SCOPES = {
       Misc: ITEM_SCOPE,
       Wpn1: ITEM_SCOPE,
       Wpn2: ITEM_SCOPE,
+    },
+    Inventory: {
+      Dummy: {
+        Head: ITEM_SCOPE,
+        Body: ITEM_SCOPE,
+        Hand: ITEM_SCOPE,
+        Feet: ITEM_SCOPE,
+        Neck: ITEM_SCOPE,
+        Belt: ITEM_SCOPE,
+        Ring: ITEM_SCOPE,
+        Misc: ITEM_SCOPE,
+        Wpn1: ITEM_SCOPE,
+        Wpn2: ITEM_SCOPE
+      }
     }
   }
 }
