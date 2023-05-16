@@ -189,6 +189,7 @@ const SiteOptions = new OptionsHandler(
         tab: 'groups',
         load_rows: 100,
         persisted: false,
+        has_storage_access: false,
         locale: 'en',
         export_public_only: false,
         export_bundle_groups: true,
