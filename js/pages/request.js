@@ -49,6 +49,7 @@ const SCOPES = {
       Instructor: true,
       Treasure: true,
       Group: {
+        Raid: true,
         Hydra: true,
         TotalInstructor: true,
         TotalTreasure: true
