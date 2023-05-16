@@ -214,7 +214,33 @@ Site.ready(null, function (urlParams) {
     })
   }
 
-  function renderCharacterList (players) {
+  async function hasFullAccess () {
+    if (window.parent === window) {
+      return true;
+    } else if (!SiteOptions.has_storage_access && window.document.hasStorageAccess && window.document.requestStorageAccess) {
+      return window.document.hasStorageAccess() || false;
+    } else {
+      return false;
+    }
+  }
+
+  async function requestFullAccess () {
+    const hasAccess = await window.document.hasStorageAccess()
+
+    if (hasAccess) {
+      SiteOptions.has_storage_access = true;
+
+      return true;
+    } else if (window.document.requestStorageAccess) {
+      SiteOptions.has_storage_access = await window.document.requestStorageAccess();
+
+      return SiteOptions.has_storage_access;
+    } else {
+      return SiteOptions.has_storage_access;
+    }
+  }
+
+  async function renderCharacterList (players) {
     for (const player of _sortDesc(players, (player) => player.Timestamp)) {
       const $element = $(`
         <div data-player class="!border-radius-1 border-gray p-2 background-dark:hover cursor-pointer flex gap-4 items-center">
@@ -233,6 +259,27 @@ Site.ready(null, function (urlParams) {
         sendData(player);
       })
   
+      $element.appendTo($content);
+    }
+
+    const hasAccess = await hasFullAccess();
+
+    if (hasAccess === false) {
+      const $element = $(`
+        <div class="!border-radius-1 border-gray p-2 background-dark:hover cursor-pointer flex gap-4 items-center">
+          <div class="flex justify-content-center items-center" style="width: 3em; height: 3em;">
+            <i class="ui large user lock icon"></i>
+          </div>
+          <div>${intl('request.access')}</div>
+        </div>
+      `);
+
+      $element.click(async () => {
+        if (await requestFullAccess()) {
+          render();
+        }
+      })
+
       $element.appendTo($content);
     }
   }
