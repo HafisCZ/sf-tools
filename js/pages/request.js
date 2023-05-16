@@ -267,10 +267,13 @@ Site.ready(null, function (urlParams) {
     if (hasAccess === false) {
       const $element = $(`
         <div class="!border-radius-1 border-gray p-2 background-dark:hover cursor-pointer flex gap-4 items-center">
-          <div class="flex justify-content-center items-center" style="width: 3em; height: 3em;">
-            <i class="ui large user lock icon"></i>
+          <div class="flex justify-content-center items-center" style="width: 42px; height: 42px; min-width: 42px;">
+            <i class="ui large user lock icon" style="margin: 0;"></i>
           </div>
-          <div>${intl('request.access')}</div>
+          <div>
+            <div>${intl('request.access')}</div>
+            <div class="text-gray">${intl('request.access_hint')}</div>
+          </div>
         </div>
       `);
 
