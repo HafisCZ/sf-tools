@@ -214,13 +214,13 @@ Site.ready(null, function (urlParams) {
     })
   }
 
-  async function hasFullAccess () {
-    if (window.parent === window) {
+  async function checkFullAccess () {
+    if (window.parent === window || SiteOptions.has_storage_access) {
       return true;
-    } else if (!SiteOptions.has_storage_access && window.document.hasStorageAccess && window.document.requestStorageAccess) {
-      return window.document.hasStorageAccess() || false;
+    } else if (typeof window.document.hasStorageAccess === 'function' && typeof window.document.requestStorageAccess === 'function') {
+      return await window.document.hasStorageAccess() || false;
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -232,7 +232,7 @@ Site.ready(null, function (urlParams) {
 
       return true;
     } else if (window.document.requestStorageAccess) {
-      SiteOptions.has_storage_access = await window.document.requestStorageAccess();
+      SiteOptions.has_storage_access = await window.document.requestStorageAccess() || false;
 
       return SiteOptions.has_storage_access;
     } else {
@@ -262,7 +262,7 @@ Site.ready(null, function (urlParams) {
       $element.appendTo($content);
     }
 
-    const hasAccess = await hasFullAccess();
+    const hasAccess = await checkFullAccess();
 
     if (hasAccess === false) {
       const $element = $(`
@@ -275,9 +275,9 @@ Site.ready(null, function (urlParams) {
       `);
 
       $element.click(async () => {
-        if (await requestFullAccess()) {
-          render();
-        }
+        await requestFullAccess();
+
+        render();
       })
 
       $element.appendTo($content);
@@ -375,7 +375,7 @@ Site.ready(null, function (urlParams) {
     $containerNormal.show();
 
     render();
-    
+
     $origin.text(origin || redirect.hostname);
   } else {
     $containerError.show();
