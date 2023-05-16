@@ -59,7 +59,8 @@ const SCOPES = {
     Fortress: true,
     Underworld: true,
     Dungeons: {
-      Tower: true
+      Tower: true,
+      Raid: true
     },
     Prefix: true,
     Runes: true,
