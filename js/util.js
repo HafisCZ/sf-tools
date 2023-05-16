@@ -254,23 +254,6 @@ class Constants {
     }
 }
 
-function decodeScrapbook (data) {
-    if (data) {
-        let base_string = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
-        let output = new Array(base_string.length * 8);
-        for (let i = 0; i < base_string.length; i++) {
-            let char = base_string.charCodeAt(i);
-            for (let j = 0; j < 8; j++) {
-                output[i * 8 + j] = (char & (1 << (7 - j))) > 0;
-            }
-        }
-
-        return output;
-    } else {
-        return [];
-    }
-}
-
 const Workers = new (class {
     constructor () {
         this.fetchCache = {};
