@@ -1011,7 +1011,8 @@ class PlayerModel {
         legacyDungeons.Shadow[17] = dataType.short();
 
         dataType.skip(2);
-        this.CalendarType = dataType.long();
+        // Normalize calendar type in order to align it with S&F Tavern's calendar indexing
+        this.CalendarType = 1 + (dataType.long() - 1 + 10) % 11;
         this.Underworld = {
             TimeMachineMushrooms: dataType.long(),
             Upgrade: {
