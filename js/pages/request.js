@@ -122,6 +122,12 @@ const SCOPES = {
   }
 }
 
+if (window.parent && window.parent !== window) {
+  setTimeout(() => {
+    window.document.body.classList.add('within-iframe');
+  }, 0)
+}
+
 Site.ready(null, function (urlParams) {
   const redirect = parseURL(urlParams.get('redirect'));
 
