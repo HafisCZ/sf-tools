@@ -293,9 +293,6 @@ class DatabaseUtils {
             return window.navigator.storage.persist().then((persistent) => {
                 if (persistent) {
                     SiteOptions.persisted = true;
-                    Toast.info('Storage', 'Persistent mode');
-                } else {
-                    Toast.warn('Storage', 'Default mode');
                 }
             });
         }
