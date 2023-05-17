@@ -426,7 +426,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             'Shadow', 'Light', 'Earth', 'Fire', 'Water'
         ][currentType];
 
-        let gladiator = _try(player.Fortress, 'Gladiator') || 0;
+        let gladiator = player.Fortress?.Gladiator || 0;
         let pack = player.Pets[`${currentName}Count`];
         let petLevels = player.Pets[`${currentName}Levels`];
         let at100 = _lenWhere(petLevels, l => _between(l, 100 - 1, 150));

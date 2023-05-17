@@ -581,7 +581,7 @@ Site.ready(null, function (urlParams) {
                         own: true,
                         save: r.ownplayersave.numbers,
                         name: r.ownplayername.string,
-                        tower: _try(r.owntower, 'numbers')
+                        tower: r.owntower?.numbers
                     })
                 } else if (r.ownplayersave) {
                     // Capture save
@@ -591,7 +591,7 @@ Site.ready(null, function (urlParams) {
                             own: true,
                             save: r.ownplayersave.numbers,
                             name: lastPlayer.name,
-                            tower: _try(r.owntower, 'numbers') || lastPlayer.tower
+                            tower: r.owntower?.numbers || lastPlayer.tower
                         })
                     }
                 } else if (r['#ownplayersave']) {
@@ -608,7 +608,7 @@ Site.ready(null, function (urlParams) {
                             own: true,
                             save,
                             name: lastPlayer.name,
-                            tower: _try(r.owntower, 'numbers') || lastPlayer.tower
+                            tower: r.owntower?.numbers || lastPlayer.tower
                         })
                     }
                 } else if (r.otherplayer && r.otherplayername) {
