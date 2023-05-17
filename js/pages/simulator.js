@@ -199,8 +199,19 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
     }
 
-    $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
-    $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+    DOM.input({
+        element: DOM.byID('sim-threads'),
+        key: 'player_sim/threads',
+        def: 4,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
+
+    DOM.input({
+        element: DOM.byID('sim-iterations'),
+        key: 'player_sim/iterations',
+        def: 2500,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
 
     function executeSimulation (instances, iterations, logCallback) {
         const canSimulate = players.length > 0 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));

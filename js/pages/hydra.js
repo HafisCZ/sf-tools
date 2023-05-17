@@ -1,8 +1,19 @@
 Site.ready({ type: 'simulator' }, function () {
     SimulatorUtils.configure({});
     
-    $('#sim-threads').captiveInputField('hydra_sim/threads', 4, v => !isNaN(v) && v >= 1);
-    $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
+    DOM.input({
+        element: DOM.byID('sim-threads'),
+        key: 'hydra_sim/threads',
+        def: 4,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
+
+    DOM.input({
+        element: DOM.byID('sim-iterations'),
+        key: 'hydra_sim/iterations',
+        def: 10000,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
     
     const getAttributeList = function (attribute) {
         return {

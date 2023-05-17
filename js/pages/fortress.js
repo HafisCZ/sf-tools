@@ -93,8 +93,19 @@ Site.ready({ type: 'simulator' }, function () {
     editor.onChangeLister();
 
     // Captive inputs
-    $('#sim-threads').captiveInputField('fortress_sim/threads', 4, v => !isNaN(v) && v >= 1);
-    $('#sim-iterations').captiveInputField('fortress_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+    DOM.input({
+        element: DOM.byID('sim-threads'),
+        key: 'fortress_sim/threads',
+        def: 4,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
+
+    DOM.input({
+        element: DOM.byID('sim-iterations'),
+        key: 'fortress_sim/iterations',
+        def: 2500,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
 
     function formatUnit (data, type) {
         const count = data[`${type}Count`];

@@ -30,8 +30,19 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         ignoreChanges = false;
     }
 
-    $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
-    $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
+    DOM.input({
+        element: DOM.byID('sim-threads'),
+        key: 'dungeon_sim/threads',
+        def: 4,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
+
+    DOM.input({
+        element: DOM.byID('sim-iterations'),
+        key: 'dungeon_sim/iterations',
+        def: 5000,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
 
     const HELPER_NAMES = [
         intl('dungeons.player'),

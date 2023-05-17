@@ -48,8 +48,19 @@ Site.ready({ type: 'simulator' }, function () {
     }).first().click();
 
     // Captive inputs
-    $('#sim-threads').captiveInputField('guild_sim/threads', 4, v => !isNaN(v) && v >= 1);
-    $('#sim-iterations').captiveInputField('guild_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+    DOM.input({
+        element: DOM.byID('sim-threads'),
+        key: 'guild_sim/threads',
+        def: 4,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
+
+    DOM.input({
+        element: DOM.byID('sim-iterations'),
+        key: 'guild_sim/iterations',
+        def: 2500,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
 
     // Prevent paste inside inputs from trying to load data
     $('#player-editor input').on('paste', function (event) {
