@@ -1023,38 +1023,43 @@ class BrowseTab extends Tab {
         timestamps.sort((a, b) => b.value - a.value);
         references.sort((a, b) => b.value - a.value);
 
+        DOM.dropdown(this.$timestamp.get(0), timestamps);
+        DOM.dropdown(this.$reference.get(0), references);
+
         this.$timestamp.dropdown({
-            values: timestamps
-        }).dropdown('setting', 'onChange', (value) => {
-            this.timestamp = value;
-            this.recalculate = true;
+            onChange: (value) => {
+                this.timestamp = value;
+                this.recalculate = true;
+    
+                if (this.reference > this.timestamp) {
+                    this.reference = value;
+                }
 
-            if (this.reference > this.timestamp) {
-                this.reference = value;
+                const subref = references.slice(references.findIndex(entry => entry.value == this.timestamp));
+                for (let i = 0; i < subref.length; i++) {
+                    subref[i].selected = subref[i].value == this.reference;
+                }
+
+                DOM.dropdown(this.$reference.get(0), subref);
+
+                this.$reference.dropdown({
+                    onChange: (value) => {
+                        this.reference = value;
+                        this.recalculate = true;
+                        this.$filter.trigger('change');
+                    }
+                });
+    
+                this.$filter.trigger('change');
             }
+        })
 
-            const subref = references.slice(references.findIndex(entry => entry.value == this.timestamp));
-            for (let i = 0; i < subref.length; i++) {
-                subref[i].selected = subref[i].value == this.reference;
-            }
-
-            this.$reference.dropdown({
-                values: subref
-            }).dropdown('setting', 'onChange', (value) => {
+        this.$reference.dropdown({
+            onChange: (value) => {
                 this.reference = value;
                 this.recalculate = true;
                 this.$filter.trigger('change');
-            });
-
-            this.$filter.trigger('change');
-        });
-
-        this.$reference.dropdown({
-            values: references
-        }).dropdown('setting', 'onChange', (value) => {
-            this.reference = value;
-            this.recalculate = true;
-            this.$filter.trigger('change');
+            }
         });
     }
 
