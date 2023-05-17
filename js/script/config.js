@@ -2802,6 +2802,14 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Guild Raids',
+  {
+    expr: p => p.Group.Raid
+  }
+)
+
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'protected', 'Pet',
   {
     expr: p => p.Group.Pet
