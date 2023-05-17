@@ -8,6 +8,8 @@ const CHANGELOG = {
             'Added option to disable strict sizing with <code>width policy relaxed</code>',
             'Added new <code>limit</code> keyword to replace <code>performance</code>',
             'Added deprecated status to <code>performance</code> and <code>format</code> keywords',
+            'Added <code>Calendar Type</code> and <code>Calendar Day</code> headers',
+            'Added <code>Guild Raids</code> header as header <code>Raids</code> returns only raid you participated in',
             'Fixed grouped headers ignoring maximum count'
         ],
         'All Tools': [
