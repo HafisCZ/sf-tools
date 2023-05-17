@@ -24,11 +24,24 @@ class DungeonSimulator extends SimulatorBase {
         let score = 0;
         let healths = [];
 
-        for (let i = 0; i < iterations; i++) {
-            let { win, health } = this.battle();
+        if (players.length === 1) {
+            // Single-player battle
+            SimulatorModel.initializeFighters(this.cache_players[0], this.cache_boss);
 
-            score += win;
-            healths.push(health);
+            for (let i = 0; i < iterations; i++) {
+                let { win, health } = this.battleSingle();
+    
+                score += win;
+                healths.push(health);
+            }
+        } else {
+            // Multi-player battle
+            for (let i = 0; i < iterations; i++) {
+                let { win, health } = this.battleMulti();
+    
+                score += win;
+                healths.push(health);
+            }
         }
 
         let healthsLength = healths.length;
@@ -74,7 +87,22 @@ class DungeonSimulator extends SimulatorBase {
         this.cache_boss = SimulatorModel.create(1, boss);
     }
 
-    battle () {
+    battleSingle () {
+        this.a = this.cache_players[0];
+        this.b = this.cache_boss;
+
+        this.a.reset();
+        this.b.reset();
+
+        const win = super.fight();
+
+        return {
+            win,
+            health: win ? 0 : this.cache_boss.Health / this.cache_boss.getHealth()
+        }
+    }
+
+    battleMulti () {
         this.la = [ ... this.cache_players ];
         this.lb = [ this.cache_boss ];
 
