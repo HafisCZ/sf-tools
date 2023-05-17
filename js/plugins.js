@@ -165,23 +165,17 @@
             return $this;
         });
     };
-
-    $.fn.captiveInputField = function (storageKey, defaultValue, validator = () => true) {
-        return this.each(function () {
-            let $this = $(this);
-            $this.val(Store.shared.get(storageKey, defaultValue, true));
-            $this.on('input change', () => {
-                if (validator($this.val())) {
-                    Store.shared.set(storageKey, $this.val(), true);
-                }
-            });
-        });
-    }
 }(jQuery));
 
 class DOM {
     static byID (id) {
         return document.getElementById(id)
+    }
+
+    static listen (element, events, callback) {
+        for (let i = 0; i < events.length; i++) {
+            element.addEventListener(events[i], callback);
+        }
     }
 
     static settingsButton (element, enabled) {
@@ -192,6 +186,28 @@ class DOM {
         } else {
             style.setProperty('background', '');
         }
+    }
+
+    static input ({ element, key, def, validator }) {
+        const field = element.closest('.field');
+
+        const value = Store.shared.get(key, def, true);
+        element.value = value;
+
+        const listener = function () {
+            const value = element.value
+            const valid = typeof validator !== 'undefined' ? validator(value) : true
+
+            if (valid) {
+                field.classList.remove('error');
+
+                Store.shared.set(key, value, true);
+            } else {
+                field.classList.add('error');
+            }
+        }
+
+        this.listen(element, ['input', 'change'], listener);
     }
 
     static toggle ({ element, key, callback, value }) {

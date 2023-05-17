@@ -1,9 +1,19 @@
 Site.ready({ type: 'simulator' }, function () {
     SimulatorUtils.configure({});
     
-    // Iteration fields
-    $('#sim-threads').captiveInputField('hellevator_sim/threads', 4, v => !isNaN(v) && v >= 1);
-    $('#sim-iterations').captiveInputField('hellevator_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
+    DOM.input({
+        element: DOM.byID('sim-threads'),
+        key: 'hellevator_sim/threads',
+        def: 4,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
+
+    DOM.input({
+        element: DOM.byID('sim-iterations'),
+        key: 'hellevator_sim/iterations',
+        def: 5000,
+        validator: (value)=> !isNaN(value) && value >= 1
+    })
 
     // Validation
     const $simulateButton = $('#simulate');
