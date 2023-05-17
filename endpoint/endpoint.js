@@ -1,6 +1,6 @@
 class EndpointController {
-    constructor ($iframe, progressCallback) {
-        this.$iframe = $iframe;
+    constructor (iframe, progressCallback) {
+        this.iframe = iframe;
         this.progressCallback = progressCallback;
     }
 
@@ -8,19 +8,20 @@ class EndpointController {
         await this.window.destroy();
 
         Logger.log('ECLIENT', 'Client stopped');
-        this.$iframe.attr('src', '');
+
+        this.iframe.src = '';
     }
 
     load () {
         return new Promise((resolve) => {
-            this.$iframe.attr('src', '/endpoint/index.html');
-            this.$iframe.one('load', async () => {
-                this.window = this.$iframe.get(0).contentWindow;
+            this.iframe.src = '/endpoint/index.html';
+            this.iframe.addEventListener('load', async () => {
+                this.window = this.iframe.contentWindow;
                 await this.window.load();
 
                 Logger.log('ECLIENT', 'Client started');
                 resolve(this);
-            });
+            }, { once: true });
         }) 
     }
 
@@ -231,7 +232,7 @@ const EndpointDialog = new (class extends Dialog {
 
                 if (typeof this.endpoint === 'undefined') {
                     this.endpoint = new EndpointController(
-                        this.$iframe,
+                        this.$iframe.get(0),
                         (percent) => {
                             this.$step4.hide();
                             this.$step5.show();
