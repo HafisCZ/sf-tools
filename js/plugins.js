@@ -166,62 +166,6 @@
         });
     };
 
-    $.fn.toggleButton = function (callback, state = false) {
-        return this.each(function () {
-            this.isActive = state;
-            this.callback = callback;
-
-            this.updateStyle = () => {
-                if (this.isActive) {
-                    this.style.setProperty('background', 'var(--button-color-active)', 'important');
-                } else {
-                    this.style.setProperty('background', '');
-                }
-            }
-
-            this.updateStyle();
-            this.addEventListener('click', () => {
-                this.isActive = !this.isActive;
-                this.callback(this.isActive);
-                this.updateStyle();
-            });
-        });
-    }
-
-    $.fn.captiveToggleButton = function (storageKey, callback) {
-        return this.each(function () {
-            this.isActive = false;
-
-            this.addEventListener('click', () => {
-                this.isActive = !this.isActive;
-
-                Store.shared.set(storageKey, this.isActive, true);
-
-                callback(this.isActive);
-
-                if (this.isActive) {
-                    this.style.setProperty('background', 'var(--button-color-active)', 'important');
-                } else {
-                    this.style.setProperty('background', '');
-                }
-            });
-
-            if (Store.shared.get(storageKey, 'false', true) == 'true') {
-                this.click();
-            }
-        });
-    }
-
-    $.fn.settingsButton = function (enabled) {
-        return this.each(function () {
-            if (enabled) {
-                this.style.setProperty('background', 'var(--button-color-active)', 'important');
-            } else {
-                this.style.setProperty('background', '');
-            }
-        });
-    }
-
     $.fn.captiveInputField = function (storageKey, defaultValue, validator = () => true) {
         return this.each(function () {
             let $this = $(this);
@@ -234,3 +178,45 @@
         });
     }
 }(jQuery));
+
+class DOM {
+    static byID (id) {
+        return document.getElementById(id)
+    }
+
+    static settingsButton (element, enabled) {
+        const style = element.style;
+
+        if (enabled) {
+            style.setProperty('background', 'var(--button-color-active)', 'important');
+        } else {
+            style.setProperty('background', '');
+        }
+    }
+
+    static toggle ({ element, key, callback, value }) {
+        let active = typeof value === 'undefined' ? (typeof key === 'undefined' ? false : (Store.shared.get(key, 'false', true) == 'true')) : value;
+
+        const style = element.style;
+        const apply = function () {
+            if (active) {
+                style.setProperty('background', 'var(--button-color-active)', 'important');
+            } else {
+                style.setProperty('background', '');
+            }
+        }
+
+        element.addEventListener('click', function () {
+            active = !active;
+
+            if (typeof key !== 'undefined') {
+                Store.shared.set(key, active, true);
+            }
+
+            callback(active);
+            apply();
+        })
+
+        apply();
+    }
+}

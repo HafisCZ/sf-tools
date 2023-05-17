@@ -82,15 +82,29 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     // Paste mode toggle button
     let pasteMode = false;
-    $('#paste-mode').toggleButton(active => pasteMode = active);
+    DOM.toggle({
+        element: DOM.byID('paste-mode'),
+        callback: (active) => {
+            pasteMode = active;
+        }
+    })
 
     // Shield mode toggle button
     let shieldMode = false;
-    $('#shield-mode').toggleButton(active => shieldMode = active);
+    DOM.toggle({
+        element: DOM.byID('shield-mode'),
+        callback: (active) => {
+            shieldMode = active;
+        }
+    })
 
     let gladiatorMode = false;
-    $('#gladiator-mode').captiveToggleButton('underworld_sim/gladiator', (active) => {
-        gladiatorMode = active;
+    DOM.toggle({
+        element: DOM.byID('gladiator-mode'),
+        key: 'underworld_sim/gladiator',
+        callback: (active) => {
+            gladiatorMode = active;
+        }
     })
 
     function getSimulatorFlags () {

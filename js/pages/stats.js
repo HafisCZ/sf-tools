@@ -374,7 +374,7 @@ class GroupDetailTab extends Tab {
     }
 
     load () {
-        this.$configure.settingsButton(ScriptManager.exists(this.identifier));
+        DOM.settingsButton(this.$configure.get(0), ScriptManager.exists(this.identifier));
 
         if (this.templateOverride) {
             this.table.clearSorting();
@@ -620,7 +620,7 @@ class PlayerDetailTab extends Tab {
         this.array.forEach((e) => DatabaseManager.loadPlayer(e.player));
 
         // Configuration indicator
-        this.$configure.settingsButton(ScriptManager.exists(this.identifier));
+        DOM.settingsButton(this.$configure.get(0), ScriptManager.exists(this.identifier));
         
         this.refresh();
     }
@@ -782,12 +782,16 @@ class BrowseTab extends Tab {
         // Hidden toggle
         this.hidden = SiteOptions.browse_hidden;
 
-        this.$parent.find('[data-op="show-hidden"]').toggleButton(state => {
-            SiteOptions.browse_hidden = (this.hidden = state);
+        DOM.toggle({
+            element: this.$parent.operator('show-hidden').get(0),
+            value: SiteOptions.browse_hidden,
+            callback: (active) => {
+                SiteOptions.browse_hidden = (this.hidden = active);
 
-            this.recalculate = true;
-            this.$filter.trigger('change');
-        }, SiteOptions.browse_hidden);
+                this.recalculate = true;
+                this.$filter.trigger('change');
+            }
+        })
 
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
@@ -1070,7 +1074,7 @@ class BrowseTab extends Tab {
     load () {
         // Configuration indicator
         this.$configure.find('.item').removeClass('active');
-        this.$configure.settingsButton(ScriptManager.exists('players'));
+        DOM.settingsButton(this.$configure.get(0), ScriptManager.exists('players'));
 
         this.table.setSettings(ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse')));
 
@@ -1162,10 +1166,14 @@ class BrowseTab extends Tab {
 // Groups View
 class GroupsTab extends Tab {
     _prepareOption (operator, key, storeKey) {
-        this.$parent.operator(operator).toggleButton((state) => {
-            SiteOptions[storeKey] = (this[key] = state);
-            this.show();
-        }, SiteOptions[storeKey]);
+        DOM.toggle({
+            element: this.$parent.operator(operator).get(0),
+            value: SiteOptions[storeKey],
+            callback: (active) => {
+                SiteOptions[storeKey] = (this[key] = active);
+                this.show();
+            }
+        })
 
         return SiteOptions[storeKey];
     }
@@ -1390,10 +1398,14 @@ class GroupsTab extends Tab {
 // Players View
 class PlayersTab extends Tab {
     _prepareOption (operator, key, storeKey) {
-        this.$parent.operator(operator).toggleButton((state) => {
-            SiteOptions[storeKey] = (this[key] = state);
-            this.show();
-        }, SiteOptions[storeKey]);
+        DOM.toggle({
+            element: this.$parent.operator(operator).get(0),
+            value: SiteOptions[storeKey],
+            callback: (active) => {
+                SiteOptions[storeKey] = (this[key] = active);
+                this.show();
+            }
+        })
 
         return SiteOptions[storeKey];
     }
