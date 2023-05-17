@@ -235,4 +235,33 @@ class DOM {
 
         apply();
     }
+
+    static dropdown (element, items) {
+        let html = '';
+
+        for (let i = 0, item; i < items.length; i++) {
+            item = items[i];
+            html += `<div class="item${item.selected ? ' active selected' : ''}" data-value="${item.value}">${item.name}</div>`
+
+            if (item.selected) {
+                const text = element.querySelector('div.text')
+                
+                text.classList.remove('default');
+                text.innerText = item.name;
+            }
+        }
+
+        let menu = element.querySelector('div.menu');
+        if (menu) {
+            // Do nothing as menu already exists
+        } else {
+            menu = document.createElement('div');
+            menu.setAttribute('tabindex', '-1');
+            menu.setAttribute('class', 'menu transition hidden');
+
+            element.insertAdjacentElement('beforeend', menu);
+        }
+
+        menu.innerHTML = html;
+    }
 }
