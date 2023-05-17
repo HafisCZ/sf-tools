@@ -11,19 +11,30 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     var iterator = 0;
 
     let ihofMode = false;
-    $('#ihof-mode').captiveToggleButton('player_sim/ihof', active => {
-        ihofMode = active;
-        showPlayers();
-    })
+    DOM.toggle({
+        element: DOM.byID('ihof-mode'),
+        key: 'player_sim/ihof',
+        callback: (active) => {
+            ihofMode = active;
+            showPlayers();
+        }
+    });
 
     let gladiatorMode = false;
-    $('#gladiator-mode').captiveToggleButton('player_sim/gladiator', active => {
-        gladiatorMode = active;
-    })
+    DOM.toggle({
+        element: DOM.byID('gladiator-mode'),
+        key: 'player_sim/gladiator',
+        callback: (active) => {
+            gladiatorMode = active;
+        }
+    });
 
     let noAttributeReductionMode = false;
-    $('#no-attribute-reduction-mode').toggleButton(active => {
-        noAttributeReductionMode = active;
+    DOM.toggle({
+        element: DOM.byID('no-attribute-reduction-mode'),
+        callback: (active) => {
+            noAttributeReductionMode = active;
+        }
     })
 
     function getSimulatorFlags () {
@@ -49,7 +60,12 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     });
 
     let pasteMode = false;
-    $('#paste-mode').toggleButton(active => pasteMode = active);
+    DOM.toggle({
+        element: DOM.byID('paste-mode'),
+        callback: (active) => {
+            pasteMode = active;
+        }
+    })
 
     $('#save-screenshot').click(function () {
         let $target = $('.screenshot-target');

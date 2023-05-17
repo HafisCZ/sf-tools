@@ -58,13 +58,22 @@ Site.ready({ type: 'simulator' }, function () {
 
     // Paste mode toggle button
     let pasteMode = false;
-    $('#paste-mode').toggleButton(active => pasteMode = active);
+    DOM.toggle({
+        element: DOM.byID('paste-mode'),
+        callback: (active) => {
+            pasteMode = active;
+        }
+    })
 
     // Gladiator mode toggle button
     let gladiatorMode = false;
-    $('#gladiator-mode').captiveToggleButton('guild_sim/gladiator', active => {
-        gladiatorMode = active;
-    })
+    DOM.toggle({
+        element: DOM.byID('gladiator-mode'),
+        key: 'guild_sim/gladiator',
+        callback: (active) => {
+            gladiatorMode = active;
+        }
+    });
 
     function getSimulatorFlags () {
         return {
