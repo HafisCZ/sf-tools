@@ -1358,30 +1358,24 @@ const DatabaseManager = new (class {
             timestamps = Array.from(this.Timestamps.keys());
         }
 
-        for (let timestamp of timestamps) {
-            let timestampIdentifiers = this.Timestamps.values(timestamp);
+        identifiers = new Set(identifiers);
 
-            if (!timestampIdentifiers || timestampIdentifiers.size == 0) {
-                continue;
-            }
+        for (const timestamp of timestamps) {
+            for (const identifier of this.Timestamps.values(timestamp)) {
+                if (identifiers.has(identifier)) {
+                    const isPlayer = this.isPlayer(identifier);
+                    const data = this[isPlayer ? 'Players' : 'Groups'][identifier]?.[timestamp]?.Data;
 
-            for (let identifier of timestampIdentifiers) {
-                if (!identifiers.includes(identifier)) {
-                    continue;
-                }
-
-                let isPlayer = this.isPlayer(identifier);
-                let data = _dig(this, isPlayer ? 'Players' : 'Groups', identifier, timestamp, 'Data');
-
-                if (!constraint || constraint(data)) {
-                    (isPlayer ? players : groups).push(data);
+                    if (!constraint || constraint(data)) {
+                        (isPlayer ? players : groups).push(data);
+                    }
                 }
             }
         }
 
         return {
-            players: players,
-            groups: groups
+            players,
+            groups
         };
     }
 
