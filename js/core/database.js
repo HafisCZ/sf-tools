@@ -405,7 +405,7 @@ class PlayaResponse {
                     data.names = r.othergroupmember.strings;
                 }
 
-                data.identifier = data.prefix + '_g' + data.save[0]
+                data.identifier = `${data.prefix}_g${data.save[0]}`;
 
                 if (!groups.find(g => g.identifier === data.identifier)) {
                     groups.push(data);
@@ -423,24 +423,24 @@ class PlayaResponse {
                     data.own = true;
                     data.name = r.ownplayername.string;
                     data.save = r.ownplayersave.numbers;
-                    data.identifier = data.prefix + '_p' + data.save[1];
+                    data.identifier = `${data.prefix}_p${data.save[1]}`;
                     data.class = data.save[29] % 65536;
 
                     // Optionals
-                    data.groupname = _try(r.owngroupname, 'string');
-                    data.units = _try(r.unitlevel, 'numbers');
-                    data.achievements = _try(r.achievement, 'numbers');
-                    data.pets = _try(r.ownpets, 'numbers');
-                    data.tower = _try(r.owntower, 'numbers');
-                    data.chest = _try(r.fortresschest, 'numbers');
-                    data.dummy = _try(r.dummies, 'numbers');
-                    data.scrapbook = _try(r.scrapbook, 'string');
-                    data.scrapbook_legendary = _try(r.legendaries, 'string');
-                    data.witch = _try(r.witch, 'numbers');
-                    data.idle = _try(r.idle, 'numbers');
-                    data.calendar = _try(r.calenderinfo, 'numbers');
-                    data.webshopid = _try(r.webshopid, 'string');
-                    data.resources = _try(r.resources, 'numbers');
+                    data.groupname = r.owngroupname?.string;
+                    data.units = r.unitlevel?.numbers;
+                    data.achievements = r.achievement?.numbers;
+                    data.pets = r.ownpets?.numbers;
+                    data.tower = r.owntower?.numbers;
+                    data.chest = r.fortresschest?.numbers;
+                    data.dummy = r.dummies?.numbers;
+                    data.scrapbook = r.scrapbook?.string;
+                    data.scrapbook_legendary = r.legendaries?.string;
+                    data.witch = r.witch?.numbers;
+                    data.idle = r.idle?.numbers;
+                    data.calendar = r.calenderinfo?.numbers;
+                    data.webshopid = r.webshopid?.string;
+                    data.resources = r.resources?.numbers;
 
                     // Post-process
                     if (data.save[435]) {
@@ -452,8 +452,8 @@ class PlayaResponse {
                     }
 
                     data.dungeons = {
-                        light: _try(r.dungeonprogresslight, 'numbers'),
-                        shadow: _try(r.dungeonprogressshadow, 'numbers')
+                        light: r.dungeonprogresslight?.numbers,
+                        shadow: r.dungeonprogressshadow?.numbers
                     }
 
                     // Save version
@@ -462,15 +462,15 @@ class PlayaResponse {
                     data.own = false;
                     data.name = r.otherplayername.string;
                     data.save = r.otherplayer.numbers;
-                    data.identifier = data.prefix + '_p' + data.save[0];
+                    data.identifier = `${data.prefix}_p${data.save[0]}`;
                     data.class = data.save[20] % 65536;
 
                     // Optionals
-                    data.groupname = _try(r.otherplayergroupname, 'string');
-                    data.units = _try(r.otherplayerunitlevel, 'numbers');
-                    data.achievements = _try(r.otherplayerachievement, 'numbers') || _try(r.achievement, 'numbers');
-                    data.fortressrank = _try(r.otherplayerfortressrank, 'number');
-                    data.pets = _try(r.otherplayerpetbonus, 'numbers');
+                    data.groupname = r.otherplayergroupname?.string;
+                    data.units = r.otherplayerunitlevel?.numbers;
+                    data.achievements = r.otherplayerachievement?.numbers || r.achievement?.number;
+                    data.fortressrank = r.otherplayerfortressrank?.number;
+                    data.pets = r.otherplayerpetbonus?.numbers;
 
                     // Post-process
                     if (data.save[161]) {

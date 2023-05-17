@@ -3,18 +3,6 @@ function _dig (obj, ... path) {
     return obj;
 }
 
-function _try (obj, method, ... args) {
-    if (typeof obj !== 'undefined') {
-        if (typeof obj[method] === 'function') {
-            return obj[method](... args);
-        } else {
-            return obj[method];
-        }
-    } else {
-        return undefined;
-    }
-}
-
 function _has (arr, obj) {
     return arr.indexOf(obj) > -1;
 }
