@@ -1668,7 +1668,7 @@ class FilesTab extends Tab {
     // Export selected to cloud
     exportSelected () {
         if (this.simple) {
-            if (this.selectedFiles.length === 0) return;
+            if (this.selectedFiles.size === 0) return;
 
             DialogController.open(
                 ExportFileDialog,
@@ -1676,11 +1676,11 @@ class FilesTab extends Tab {
                 'files'
             );
         } else {
-            if (this.selectedEntries.length === 0) return;
+            if (this.selectedEntries.size === 0) return;
 
             const players = [];
             const groups = [];
-            for (const entry of Object.values(this.selectedEntries)) {
+            for (const entry of this.selectedEntries.values()) {
                 if (DatabaseManager.isPlayer(entry.identifier)) {
                     players.push(entry);
                 } else {
@@ -1697,7 +1697,7 @@ class FilesTab extends Tab {
     }
 
     tagSelected () {
-        if (this.simple && _notEmpty(this.selectedFiles)) {
+        if (this.simple && this.selectedFiles.size > 0) {
             DialogController.open(EditFileTagDialog, this.selectedFiles, () => this.show());
         }
     }
@@ -1713,23 +1713,23 @@ class FilesTab extends Tab {
     // Delete selected
     deleteSelected () {
         if (this.simple) {
-            if (this.selectedFiles.length > 0) {
-                DatabaseManager.safeRemove({ timestamps: this.selectedFiles }, () => this.show());
+            if (this.selectedFiles.size > 0) {
+                DatabaseManager.safeRemove({ timestamps: Array.from(this.selectedFiles) }, () => this.show());
             }
-        } else if (Object.keys(this.selectedEntries).length > 0) {
-            DatabaseManager.safeRemove({ instances: Object.values(this.selectedEntries) }, () => this.show());
+        } else if (this.selectedEntries.size > 0) {
+            DatabaseManager.safeRemove({ instances: Array.from(this.selectedEntries.values()) }, () => this.show());
         }
     }
 
     // Merge selected
     mergeSelected () {
         if (this.simple) {
-            if (this.selectedFiles.length > 1) {
+            if (this.selectedFiles.size > 1) {
                 Loader.toggle(true);
-                DatabaseManager.merge(this.selectedFiles).then(() => this.show());
+                DatabaseManager.merge(Array.from(this.selectedFiles)).then(() => this.show());
             }
         } else {
-            const timestamps = _uniq(Object.values(this.selectedEntries).map(entry => entry.timestamp));
+            const timestamps = _uniq(Array.from(this.selectedEntries.values()).map(entry => entry.timestamp));
             if (timestamps.length > 1) {
                 Loader.toggle(true);
                 DatabaseManager.merge(timestamps).then(() => this.show());
@@ -1741,9 +1741,9 @@ class FilesTab extends Tab {
     hideSelected () {
         Loader.toggle(true);
         if (this.simple) {
-            DatabaseManager.hideTimestamps(... this.selectedFiles).then(() => this.show());
+            DatabaseManager.hideTimestamps(... Array.from(this.selectedFiles)).then(() => this.show());
         } else {
-            DatabaseManager.hide(Object.values(this.selectedEntries)).then(() => this.show());
+            DatabaseManager.hide(Array.from(this.selectedEntries.values())).then(() => this.show());
         }
     }
 
@@ -1869,7 +1869,7 @@ class FilesTab extends Tab {
             let filesToIgnore = [];
 
             for (const timestamp of _intKeys(this.currentFiles)) {
-                if (this.selectedFiles.includes(timestamp)) {
+                if (this.selectedFiles.has(timestamp)) {
                     filesToIgnore.push(timestamp);
                 } else {
                     filesToMark.push(timestamp);
@@ -1881,14 +1881,16 @@ class FilesTab extends Tab {
             let noneToMark = _empty(filesToMark);
             if (noneToMark && !_empty(filesToIgnore)) {
                 for (let timestamp of filesToIgnore) {
-                    _remove(this.selectedFiles, timestamp);
+                    this.selectedFiles.delete(timestamp);
+
                     if (visibleEntries[timestamp]) {
                         visibleEntries[timestamp].classList.add('outline');
                     }
                 }
             } else if (!noneToMark) {
                 for (let timestamp of filesToMark) {
-                    this.selectedFiles.push(timestamp);
+                    this.selectedFiles.add(timestamp);
+
                     if (visibleEntries[timestamp]) {
                         visibleEntries[timestamp].classList.remove('outline');
                     }
@@ -1899,7 +1901,7 @@ class FilesTab extends Tab {
             let entriesToIgnore = [];
 
             for (let uuid of Object.keys(this.currentEntries)) {
-                if (uuid in this.selectedEntries) {
+                if (this.selectedEntries.has(uuid)) {
                     entriesToIgnore.push(uuid);
                 } else {
                     entriesToMark.push(uuid);
@@ -1911,14 +1913,16 @@ class FilesTab extends Tab {
             let noneToMark = _empty(entriesToMark);
             if (noneToMark && !_empty(entriesToIgnore)) {
                 for (let uuid of entriesToIgnore) {
-                    delete this.selectedEntries[uuid];
+                    this.selectedEntries.delete(uuid);
+
                     if (visibleEntries[uuid]) {
                         visibleEntries[uuid].classList.add('outline');
                     }
                 }
             } else if (!noneToMark) {
                 for (let uuid of entriesToMark) {
-                    this.selectedEntries[uuid] = this.currentEntries[uuid];
+                    this.selectedEntries.set(uuid, this.currentEntries[uuid]);
+
                     if (visibleEntries[uuid]) {
                         visibleEntries[uuid].classList.remove('outline');
                     }
@@ -1931,9 +1935,9 @@ class FilesTab extends Tab {
 
     updateSelectedCounter () {
         if (this.simple) {
-            this.$fileCounter.html(_empty(this.selectedFiles) ? intl('stats.files.selected.no') : Object.keys(this.selectedFiles).length);
+            this.$fileCounter.html(this.selectedFiles.size === 0 ? intl('stats.files.selected.no') : this.selectedFiles.size);
         } else {
-            this.$fileCounter.html(_empty(this.selectedEntries) ? intl('stats.files.selected.no') : Object.keys(this.selectedEntries).length);
+            this.$fileCounter.html(this.selectedEntries.size === 0 ? intl('stats.files.selected.no') : this.selectedEntries.size);
         }
     }
 
@@ -2021,29 +2025,29 @@ class FilesTab extends Tab {
                     }
 
                     // Change all timestamps
-                    if (uuid in this.selectedEntries) {
+                    if (this.selectedEntries.has(uuid)) {
                         for (const mark of toChange) {
                             $(`[data-mark="${mark}"] > i`).addClass('outline');
-                            delete this.selectedEntries[mark];
+                            this.selectedEntries.delete(mark);
                         }
                     } else {
                         for (const mark of toChange) {
                             $(`[data-mark="${mark}"] > i`).removeClass('outline');
-                            this.selectedEntries[mark] = this.currentEntries[mark];
+                            this.selectedEntries.set(mark, this.currentEntries[mark]);
                         }
                     }
                 } else {
                     if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
-                        delete this.selectedEntries[uuid];
+                        this.selectedEntries.delete(uuid);
                     } else {
-                        this.selectedEntries[uuid] = this.currentEntries[uuid];
+                        this.selectedEntries.set(uuid, this.currentEntries[uuid]);
                     }
                 }
 
                 this.lastSelectedEntry = uuid;
                 this.updateSelectedCounter();
             }).each((index, element) => {
-                if (this.selectedEntries[element.dataset.mark]) {
+                if (this.selectedEntries.has(element.dataset.mark)) {
                     element.children[0].classList.remove('outline');
                 }
             });
@@ -2150,29 +2154,29 @@ class FilesTab extends Tab {
                     }
 
                     // Change all timestamps
-                    if (_has(this.selectedFiles, timestamp)) {
+                    if (this.selectedFiles.has(timestamp)) {
                         for (const ts of toChange) {
                             $(`[data-timestamp="${ts}"] > i`).addClass('outline');
-                            _remove(this.selectedFiles, ts);
+                            this.selectedFiles.delete(ts);
                         }
                     } else {
                         for (const ts of toChange) {
                             $(`[data-timestamp="${ts}"] > i`).removeClass('outline');
-                            _pushUnlessIncludes(this.selectedFiles, ts);
+                            this.selectedFiles.add(ts);
                         }
                     }
                 } else {
                     if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
-                        _remove(this.selectedFiles, timestamp);
+                        this.selectedFiles.delete(timestamp);
                     } else {
-                        this.selectedFiles.push(timestamp);
+                        this.selectedFiles.add(timestamp);
                     }
                 }
 
                 this.lastSelectedTimestamp = timestamp;
                 this.updateSelectedCounter();
             }).each((index, element) => {
-                if (this.selectedFiles.includes(parseInt(element.dataset.timestamp))) {
+                if (this.selectedFiles.has(parseInt(element.dataset.timestamp))) {
                     element.children[0].classList.remove('outline');
                 }
             });
@@ -2415,8 +2419,8 @@ class FilesTab extends Tab {
     }
 
     show (params) {
-        this.selectedEntries = {};
-        this.selectedFiles = [];
+        this.selectedEntries = new Map();
+        this.selectedFiles = new Set();
 
         this.lastSelectedTimestamp = null;
         this.lastSelectedEntry = null;

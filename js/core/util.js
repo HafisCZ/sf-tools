@@ -3,10 +3,6 @@ function _dig (obj, ... path) {
     return obj;
 }
 
-function _has (arr, obj) {
-    return arr.indexOf(obj) > -1;
-}
-
 function _every (arr, m) {
     for (const a of arr) {
         if (!m(a)) {
@@ -18,7 +14,7 @@ function _every (arr, m) {
 }
 
 function _pushUnlessIncludes(arr, obj) {
-    if (!_has(arr, obj)) {
+    if (arr.indexOf(obj) === -1) {
         arr.push(obj);
     }
 }
