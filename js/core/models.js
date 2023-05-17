@@ -1904,6 +1904,7 @@ class PlayerModel {
                 this.Group.Pet = group.Pets[gi];
                 this.Group.Treasure = group.Treasures[gi];
                 this.Group.Instructor = group.Instructors[gi];
+                this.Group.Raid = group.Raid;
 
                 if (!this.Fortress.Knights && group.Knights) {
                     this.Fortress.Knights = group.Knights[gi];
