@@ -991,6 +991,18 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
+    'TABLE_ROW_HEIGHT',
+    ScriptType.Table,
+    /^row height (\d+)$/,
+    (root, value) => {
+        if (value > 0) {
+            root.addGlobalEmbedable('row_height', Number(value));
+        }
+    },
+    (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
+)
+
+ScriptCommands.register(
     'TABLE_ROW',
     ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)row(?: (.+))?$/,
@@ -1190,18 +1202,6 @@ ScriptCommands.register(
         }
     },
     (root, value) => Highlighter.keyword('scale ')[value > 0 ? 'value' : 'error'](value)
-)
-
-ScriptCommands.register(
-    'TABLE_ROW_HEIGHT',
-    ScriptType.Table,
-    /^row height (\d+)$/,
-    (root, value) => {
-        if (value > 0) {
-            root.addGlobalEmbedable('row_height', Number(value));
-        }
-    },
-    (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
 )
 
 ScriptCommands.register(
