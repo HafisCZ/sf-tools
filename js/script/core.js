@@ -3625,7 +3625,8 @@ class ScriptEditor {
         });
 
         this.area.addEventListener('drop', (event) => {
-            if (_dig(event, 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+            const contentType = _dig(event, 'dataTransfer', 'files', 0, 'type')
+            if (!contentType || contentType === 'text/plain') {
                 event.preventDefault();
                 event.stopPropagation();
 
