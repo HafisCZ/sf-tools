@@ -676,19 +676,16 @@ class SimulatorModel {
 
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
-        const source = this;
-
-        // Random damage for current round
-        const damage = source.attack(
+        const damage = this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
             getRandom(target.State.SkipChance),
-            getRandom(source.State.CriticalChance),
+            getRandom(this.State.CriticalChance),
             attackType
         );
 
         if (target.DamageTaken) {
-            return target.onDamageTaken(source, damage) != STATE_DEAD;
+            return target.onDamageTaken(this, damage) != STATE_DEAD;
         } else {
             return (target.Health -= damage) > 0;
         }
