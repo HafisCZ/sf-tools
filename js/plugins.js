@@ -233,6 +233,10 @@ class DOM {
             apply();
         })
 
+        if (typeof key !== 'undefined') {
+            callback(active);
+        }
+
         apply();
     }
 
