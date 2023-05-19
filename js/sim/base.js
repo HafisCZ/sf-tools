@@ -700,10 +700,6 @@ class SimulatorModel {
             attackType
         );
 
-        if (this.Player.Class === BERSERKER) {
-            this.Enraged = false;
-        }
-
         if (target.DamageTaken) {
             return target.onDamageTaken(source, damage) != STATE_DEAD;
         } else {
@@ -797,6 +793,7 @@ class BerserkerModel extends SimulatorModel {
         super.reset(resetHealth);
 
         this.Enraged = false;
+        this.DamageTaken = true;
     }
 
     control (instance, target) {
@@ -811,6 +808,12 @@ class BerserkerModel extends SimulatorModel {
         } else {
             return false;
         }
+    }
+
+    onDamageTaken (source, damage) {
+        this.Enraged = false;
+
+        return super.onDamageTaken(source, damage);
     }
 }
 
