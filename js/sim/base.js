@@ -977,7 +977,7 @@ class BardModel extends SimulatorModel {
         return roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
     }
 
-    rollEffect (target) {
+    rollEffect () {
         let level = this.rollEffectLevel();
 
         this.EffectLevel = level + 1;
@@ -1011,7 +1011,7 @@ class BardModel extends SimulatorModel {
             this.EffectRound += 1;
 
             if (this.EffectRound >= this.Config.EffectRounds) {
-                this.rollEffect(target);
+                this.rollEffect();
             }
         }
     }
