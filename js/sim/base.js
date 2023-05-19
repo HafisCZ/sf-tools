@@ -688,9 +688,6 @@ class SimulatorModel {
     controlAttack (instance, target, weapon, attackType) {
         const source = this;
 
-        if (source.BeforeAttack) source.onBeforeAttack(target);
-        if (target.BeforeAttack) target.onBeforeAttack(target);
-
         // Random damage for current round
         const damage = source.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
@@ -1008,15 +1005,14 @@ class BardModel extends SimulatorModel {
         }
     }
 
-    onBeforeAttack (target) {
-        // When this player attacks
-        if (this != target) {
-            this.EffectRound += 1;
+    controlAttack (instance, target, weapon, attackType) {
+        this.EffectRound += 1;
 
-            if (this.EffectRound >= this.Config.EffectRounds) {
-                this.rollEffect();
-            }
+        if (this.EffectRound >= this.Config.EffectRounds) {
+            this.rollEffect();
         }
+
+        return super.controlAttack(instance, target, weapon, attackType);
     }
 
     attack (damage, target, skipped, critical, type) {
