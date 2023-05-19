@@ -484,7 +484,7 @@ class SimulatorModel {
     }
 
     // Damage Reduction
-    getDamageReduction (source, maximumReduction = this.getMaximumDamageReduction()) {
+    getDamageReduction (source, maximumReduction = this.Config.MaximumDamageReduction) {
         if (source.Player.Class == MAGE) {
             return 0;
         } else {
@@ -503,19 +503,9 @@ class SimulatorModel {
         }
     }
 
-    // Maximum Damage Reduction
-    getMaximumDamageReduction () {
-        return this.Config.MaximumDamageReduction;
-    }
-            
-    // Health multiplier
-    getHealthMultiplier () {
-        return this.Config.HealthMultiplier;
-    }
-
     // Critical Chance
-    getCriticalChance (target, maximumChance = 50) {
-        return Math.min(maximumChance, this.Player.Luck.Total * 2.5 / target.Player.Level);
+    getCriticalChance (target, maximumChance = 50, bonusChance = 0) {
+        return Math.min(maximumChance, bonusChance + this.Player.Luck.Total * 2.5 / target.Player.Level);
     }
 
     // Critical Multiplier
@@ -548,7 +538,7 @@ class SimulatorModel {
             return this.Player.Health;
         } else {
             let health = this.Player.Constitution.Total;
-            health *= this.getHealthMultiplier();
+            health *= this.Config.HealthMultiplier;
             health *= this.Player.Level + 1;
 
             health = Math.ceil(health * (1 + this.Player.Potions.Life / 100));
@@ -871,7 +861,7 @@ class DruidModel extends SimulatorModel {
         this.RageState = {
             SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
             CriticalMultiplier: this.CriticalMultiplier + this.Config.RageCriticalBonus,
-            CriticalChance: Math.min(this.Config.RageCriticalChance, 10 + this.Player.Luck.Total * 2.5 / target.Player.Level)
+            CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 10)
         }
     }
 
