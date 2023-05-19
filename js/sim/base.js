@@ -1006,10 +1006,12 @@ class BardModel extends SimulatorModel {
     }
 
     controlAttack (instance, target, weapon, attackType) {
-        this.EffectRound += 1;
+        if (this.BeforeAttack) {
+            this.EffectRound += 1;
 
-        if (this.EffectRound >= this.Config.EffectRounds) {
-            this.rollEffect();
+            if (this.EffectRound >= this.Config.EffectRounds) {
+                this.rollEffect();
+            }
         }
 
         return super.controlAttack(instance, target, weapon, attackType);
