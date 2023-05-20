@@ -472,11 +472,18 @@ class SimulatorModel {
     constructor (index, player) {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
+        this.Hash = String(Math.random())
+
+        // Configuration
         this.Config = Object.assign(
             {},
             CONFIG[this.constructor.name.slice(0, -5)],
             CONFIG.General
         );
+
+        // Random modifiers
+        this.AttackFirst = this.Player.Items.Hand.HasEnchantment || false;
+        this.TotalHealth = this.getHealth();
     }
 
     getAttribute (source) {
@@ -599,10 +606,6 @@ class SimulatorModel {
 
     // Initialize model
     initialize (target) {
-        // Random modifiers
-        this.AttackFirst = this.Player.Items.Hand.HasEnchantment || false;
-        this.TotalHealth = this.getHealth();
-
         // Damage reduction
         target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
 
@@ -624,7 +627,7 @@ class SimulatorModel {
 
         // Reset health if required (never for guild fights or dungeon fights)
         if (resetHealth) {
-            this.Health = this.TotalHealth || this.getHealth();
+            this.Health = this.TotalHealth;
         }
     }
 
