@@ -684,11 +684,7 @@ class SimulatorModel {
             attackType
         );
 
-        if (target.DamageTaken) {
-            return target.onDamageTaken(this, damage) != STATE_DEAD;
-        } else {
-            return (target.Health -= damage) > 0;
-        }
+        return target.onDamageTaken(this, damage) != STATE_DEAD;
     }
 
     // Before anyone takes control
@@ -764,10 +760,8 @@ class BattlemageModel extends SimulatorModel {
 
         if (damage === 0) {
             // Do nothing
-        } else if (target.DamageTaken) {
-            target.onDamageTaken(this, damage);
         } else {
-            target.Health -= damage;
+            target.onDamageTaken(this, damage);
         }
     }
 }
@@ -777,7 +771,6 @@ class BerserkerModel extends SimulatorModel {
         super.reset(resetHealth);
 
         this.Enraged = false;
-        this.DamageTaken = true;
     }
 
     control (instance, target) {
@@ -804,8 +797,6 @@ class BerserkerModel extends SimulatorModel {
 class DemonHunterModel extends SimulatorModel {
     constructor (i, p) {
         super(i, p);
-
-        this.DamageTaken = true;
     }
 
     reset (resetHealth = true) {
@@ -839,8 +830,6 @@ class DemonHunterModel extends SimulatorModel {
 class DruidModel extends SimulatorModel {
     constructor (i, p) {
         super(i, p);
-
-        this.DamageTaken = true;
 
         this.SwoopMultiplier = (this.Config.DamageMultiplier + this.Config.SwoopBonus) / this.Config.DamageMultiplier;
     }
