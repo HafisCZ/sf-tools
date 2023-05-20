@@ -472,7 +472,9 @@ class SimulatorModel {
     constructor (index, player) {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
-        this.Hash = String(Math.random())
+
+        this.DataHash = String(Math.random());
+        this.DataCache = new Map();
 
         // Configuration
         this.Config = Object.assign(
@@ -585,7 +587,7 @@ class SimulatorModel {
         let aa = this.getAttribute(this);
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
 
-        let base = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
+        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml);
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 
@@ -606,9 +608,6 @@ class SimulatorModel {
 
     // Initialize model
     initialize (target) {
-        // Damage reduction
-        target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
-
         // Weapon
         const weapon1 = this.Player.Items.Wpn1;
         const weapon2 = this.Player.Items.Wpn2;
