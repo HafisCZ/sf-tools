@@ -903,39 +903,12 @@ class BardModel extends SimulatorModel {
     constructor (i, p) {
         super(i, p);
 
-        this.resetEffects();
-        this.resetTimers();
-
+        // Brackets
         this.Bracket0 = this.Config.EffectBaseChance[0];
         this.Bracket1 = this.Bracket0 + this.Config.EffectBaseChance[1];
         this.Bracket2 = this.Bracket1 + this.Config.EffectBaseChance[2];
-    }
 
-    resetEffects () {
-        this.EffectCurrent = 0;
-    }
-
-    resetTimers () {
-        // How many notes were casted
-        this.EffectReset = 0;
-        // How many notes were consumed
-        this.EffectCounter = this.Config.EffectRounds;
-        // How many rounds passed since cast
-        this.EffectRound = this.Config.EffectRounds;
-    }
-
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
-        this.resetEffects();
-        this.resetTimers();
-    }
-
-    initialize (target) {
-        super.initialize(target);
-
-        this.BeforeAttack = target.Player.Class != MAGE;
-
+        // Bonus round
         this.BonusRounds = 0;
 
         const mainAttribute = this.getAttribute(this);
@@ -947,14 +920,28 @@ class BardModel extends SimulatorModel {
         }
     }
 
-    rollEffectLevel () {
-        const roll = Math.random() * this.Bracket2;
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
 
-        return roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
+        this.EffectCurrent = 0;
+
+        // How many notes were casted
+        this.EffectReset = 0;
+        // How many notes were consumed
+        this.EffectCounter = this.Config.EffectRounds;
+        // How many rounds passed since cast
+        this.EffectRound = this.Config.EffectRounds;
+    }
+
+    initialize (target) {
+        super.initialize(target);
+
+        this.BeforeAttack = target.Player.Class != MAGE;
     }
 
     rollEffect () {
-        let level = this.rollEffectLevel();
+        const roll = Math.random() * this.Bracket2;
+        const level = roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
 
         this.EffectLevel = level + 1;
         this.EffectReset = this.Config.EffectBaseDuration[level] + this.BonusRounds;
@@ -977,7 +964,7 @@ class BardModel extends SimulatorModel {
         }
 
         if (this.EffectCounter >= this.EffectReset) {
-            this.resetEffects();
+            this.EffectCurrent = 0;
         }
     }
 
