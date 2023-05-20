@@ -152,12 +152,7 @@ const SimulatorDebugDialog = new (class extends Dialog {
 
 const SimulatorInformationDialog = new (class extends Dialog {
     #entries = [
-        {
-            id: '6c957d9e97c0836a',
-            title: 'DRUID - Critical chance while in bear form',
-            text: 'This bug is not replicated within the simulator, therefore you can expect slightly higher odds in the simulator compared to the game.',
-            resolved: false
-        }
+        // EMPTY
     ];
 
     constructor () {
