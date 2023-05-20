@@ -1049,10 +1049,10 @@ Site.ready(null, function (urlParams) {
                 continue;
             } else if (round.hasBase) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.RageState : model;
+                const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.Data.RageState : model.Data;
 
                 // Scaled down weapon damage
-                let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? model.Weapon2.Base : model.Weapon1.Base);
+                let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? state.Weapon2.Base : state.Weapon1.Base);
 
                 // Special cases
                 if (round.attackCrit) {

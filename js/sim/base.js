@@ -473,12 +473,13 @@ class SimulatorModel {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
 
+        this.Data = null;
         this.DataHash = String(Math.random());
         this.DataCache = new Map();
 
         // Configuration
         this.Config = Object.assign(
-            {},
+            Object.create(null),
             CONFIG[this.constructor.name.slice(0, -5)],
             CONFIG.General
         );
@@ -609,35 +610,30 @@ class SimulatorModel {
     // Initialize model
     initialize (target) {
         if (this.DataCache.has(target.DataHash)) {
-            const data = this.DataCache.get(target.DataHash);
-
-            Object.assign(this, data);
+            this.State = this.Data = this.DataCache.get(target.DataHash);
         } else {
-            const data = [];
+            this.State = this.Data = Object.create(null);
+            this.initializeData(target);
 
-            this.initializeData(data, target);
-
-            this.DataCache.set(target.DataHash, data);
-
-            Object.assign(this, data);
+            this.DataCache.set(target.DataHash, this.Data);
         }
     }
 
-    initializeData (data, target) {
+    initializeData (target) {
         const weapon1 = this.Player.Items.Wpn1;
         const weapon2 = this.Player.Items.Wpn2;
 
-        data.Weapon1 = this.getDamageRange(weapon1, target);
+        this.Data.Weapon1 = this.getDamageRange(weapon1, target);
 
         // Default state
-        data.SkipChance = this.getSkipChance(target);
-        data.CriticalChance = this.getCriticalChance(target);
-        data.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
+        this.Data.SkipChance = this.getSkipChance(target);
+        this.Data.CriticalChance = this.getCriticalChance(target);
+        this.Data.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     reset (resetHealth = true) {
         // Reset state to default
-        this.State = this;
+        this.State = this.Data;
 
         // Reset health if required (never for guild fights or dungeon fights)
         if (resetHealth) {
@@ -652,11 +648,11 @@ class SimulatorModel {
 
     // Returns true when model is in special state
     specialState () {
-        return this.State !== this;
+        return this.State !== this.Data;
     }
 
     // Enters special or default state if no state given
-    enterState (state = this) {
+    enterState (state = this.Data) {
         this.State = state;
     }
 
@@ -711,7 +707,7 @@ class SimulatorModel {
 
     // Take control
     control (instance, target) {
-        this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL);
+        this.controlAttack(instance, target, this.Data.Weapon1, ATTACK_NORMAL);
     }
 
     controlSkip (instance, source) {
@@ -740,18 +736,18 @@ class ScoutModel extends SimulatorModel {
 }
 
 class AssassinModel extends SimulatorModel {
-    initializeData (data, target) {
-        super.initializeData(data, target);
+    initializeData (target) {
+        super.initializeData(target);
 
-        data.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
+        this.Data.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
     }
 
     control (instance, target) {
-        if (this.controlAttack(instance, target, this.Weapon1, ATTACK_NORMAL) == false) {
+        if (this.controlAttack(instance, target, this.Data.Weapon1, ATTACK_NORMAL) == false) {
             return;
         }
 
-        this.controlAttack(instance, target, this.Weapon2, ATTACK_SECONDARY_NORMAL);
+        this.controlAttack(instance, target, this.Data.Weapon2, ATTACK_SECONDARY_NORMAL);
     }
 }
 
@@ -791,7 +787,7 @@ class BerserkerModel extends SimulatorModel {
     }
 
     control (instance, target) {
-        this.controlAttack(instance, target, this.Weapon1, this.Enraged ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
+        this.controlAttack(instance, target, this.Data.Weapon1, this.Enraged ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
     }
 
     controlSkip (instance, source) {
@@ -858,21 +854,25 @@ class DruidModel extends SimulatorModel {
         this.RequestState = false;
     }
 
-    initializeData (data, target) {
-        super.initializeData(data, target);
+    initializeData (target) {
+        super.initializeData(target);
 
-        data.RageState = {
-            SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
-            CriticalMultiplier: data.CriticalMultiplier + this.Config.RageCriticalBonus,
-            CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 10)
-        }
+        this.Data.RageState = Object.assign(
+            Object.create(null),
+            this.Data,
+            {
+                SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
+                CriticalMultiplier: this.Data.CriticalMultiplier + this.Config.RageCriticalBonus,
+                CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 10)
+            }
+        )
     }
 
     attack (damage, target, skipped, critical, type) {
         if (this.RequestState) {
             this.RequestState = false;
 
-            this.enterState(this.RageState);
+            this.enterState(this.Data.RageState);
         } else if (this.specialState()) {
             this.enterState();
         }
@@ -950,10 +950,10 @@ class BardModel extends SimulatorModel {
         this.EffectRound = this.Config.EffectRounds;
     }
 
-    initializeData (data, target) {
-        super.initializeData(data, target);
+    initializeData (target) {
+        super.initializeData(target);
 
-        data.BeforeAttack = target.Player.Class != MAGE;
+        this.Data.BeforeAttack = target.Player.Class != MAGE;
     }
 
     rollEffect () {
@@ -986,7 +986,7 @@ class BardModel extends SimulatorModel {
     }
 
     controlAttack (instance, target, weapon, attackType) {
-        if (this.BeforeAttack) {
+        if (this.Data.BeforeAttack) {
             this.EffectRound += 1;
 
             if (this.EffectRound >= this.Config.EffectRounds) {
