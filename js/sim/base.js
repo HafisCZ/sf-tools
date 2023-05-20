@@ -608,16 +608,31 @@ class SimulatorModel {
 
     // Initialize model
     initialize (target) {
-        // Weapon
+        if (this.DataCache.has(target.DataHash)) {
+            const data = this.DataCache.get(target.DataHash);
+
+            Object.assign(this, data);
+        } else {
+            const data = [];
+
+            this.initializeData(data, target);
+
+            this.DataCache.set(target.DataHash, data);
+
+            Object.assign(this, data);
+        }
+    }
+
+    initializeData (data, target) {
         const weapon1 = this.Player.Items.Wpn1;
         const weapon2 = this.Player.Items.Wpn2;
 
-        this.Weapon1 = this.getDamageRange(weapon1, target);
+        data.Weapon1 = this.getDamageRange(weapon1, target);
 
         // Default state
-        this.SkipChance = this.getSkipChance(target);
-        this.CriticalChance = this.getCriticalChance(target);
-        this.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
+        data.SkipChance = this.getSkipChance(target);
+        data.CriticalChance = this.getCriticalChance(target);
+        data.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     reset (resetHealth = true) {
@@ -725,10 +740,10 @@ class ScoutModel extends SimulatorModel {
 }
 
 class AssassinModel extends SimulatorModel {
-    initialize (target) {
-        super.initialize(target);
+    initializeData (data, target) {
+        super.initializeData(data, target);
 
-        this.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
+        data.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
     }
 
     control (instance, target) {
@@ -843,12 +858,12 @@ class DruidModel extends SimulatorModel {
         this.RequestState = false;
     }
 
-    initialize (target) {
-        super.initialize(target);
+    initializeData (data, target) {
+        super.initializeData(data, target);
 
-        this.RageState = {
+        data.RageState = {
             SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
-            CriticalMultiplier: this.CriticalMultiplier + this.Config.RageCriticalBonus,
+            CriticalMultiplier: data.CriticalMultiplier + this.Config.RageCriticalBonus,
             CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 10)
         }
     }
@@ -935,10 +950,10 @@ class BardModel extends SimulatorModel {
         this.EffectRound = this.Config.EffectRounds;
     }
 
-    initialize (target) {
-        super.initialize(target);
+    initializeData (data, target) {
+        super.initializeData(data, target);
 
-        this.BeforeAttack = target.Player.Class != MAGE;
+        data.BeforeAttack = target.Player.Class != MAGE;
     }
 
     rollEffect () {
