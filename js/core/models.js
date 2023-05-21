@@ -611,7 +611,7 @@ class DungeonHelper {
     static fromData (legacyDungeons, dungeonData) {
         const dungeons = DungeonHelper.template();
 
-        if (_dig(dungeonData, 'light')) {
+        if (dungeonData?.light) {
             // Standard dungeons
             const normal = dungeonData.light;
             const shadow = dungeonData.shadow;
