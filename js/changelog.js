@@ -2,7 +2,7 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added button to import & export a script as a file',
-            'Added strict sizing to tables (<code>width</code> will now lock the column to specified width)',
+            'Added strict sizing to tables (<code>width</code> will now lock the column to specified width).<br>You can use <code>width policy relaxed</code> to return back to old behavior',
             'Added visible script version next to script name',
             'Added ctrl click action to script archive to recover previous script version if present',
             'Added option to disable strict sizing with <code>width policy relaxed</code>',
@@ -10,11 +10,29 @@ const CHANGELOG = {
             'Added deprecated status to <code>performance</code> and <code>format</code> keywords',
             'Added <code>Calendar Type</code> and <code>Calendar Day</code> headers',
             'Added <code>Guild Raids</code> header as header <code>Raids</code> returns only raid you participated in',
-            'Fixed grouped headers ignoring maximum count'
+            'Added new optimized implementation of timestamp dropdowns',
+            'Fixed grouped headers ignoring maximum count',
+            'Fixed resolving of <code>now</code> and <code>random</code> functions',
+            'Fixed <code>row height</code> keyword'
+        ],
+        'Fight Analyzer': [
+            'Added counter for evades in a row'
+        ],
+        'Hellevator Simulator': [
+            'Added new hellevator theme'
+        ],
+        'Endpoint': [
+            'Added EU4 to whitelist'
+        ],
+        'All Simulators': [
+            'Added many performance improvements',
+            'Added proper berserker implementation using hidden evades',
+            'Added new implementation for toggle buttons',
+            'Replaced percentage configuration values with decimals'
         ],
         'All Tools': [
             'Added support for other websites to request character data from SFTools',
-            'Added new link to community-made tool on the main page'
+            'Added new link to community-made tool on the main page',
         ]
     },
     'v6.3736': {
