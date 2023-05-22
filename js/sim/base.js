@@ -19,6 +19,7 @@ const FIGHT_LOG = new (class {
             attackSecondary: ATTACKS_SECONDARY.includes(type),
             attackCrit: critical,
             attackMissed: skip,
+            attackMissedCount: target.SkipCount,
             attackSpecial: type >= ATTACK_REVIVE
         }
 
@@ -637,6 +638,7 @@ class SimulatorModel {
     reset (resetHealth = true) {
         // Reset state to default
         this.State = this.Data;
+        this.SkipCount = 0;
 
         // Reset health if required (never for guild fights or dungeon fights)
         if (resetHealth) {
@@ -646,7 +648,17 @@ class SimulatorModel {
 
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
     onDamageTaken (source, damage) {
-        return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
+        if (damage === 0) {
+            // Advance skip count
+            this.SkipCount++;
+
+            return STATE_ALIVE;
+        } else {
+            // Reset skip count
+            this.SkipCount = 0;
+
+            return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
+        }
     }
 
     // Returns true when model is in special state
