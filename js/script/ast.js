@@ -874,7 +874,7 @@ class Expression {
                 const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
                 return typeof res === 'string' ? this.#wrapString(res) : res;
             } else if (node.op && this.config.has(node.op)) {
-                if (node.op === 'random' && node.op === 'now') return undefined;
+                if (node.op === 'random' || node.op === 'now') return node;
 
                 const data = this.config.get(node.op);
                 if (data && data.type === 'function' && data.meta === 'value' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
