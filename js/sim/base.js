@@ -89,17 +89,16 @@ const FIGHT_LOG = new (class {
     }
 
     logAttack (source, target, damage, baseType, skip, critical) {
-        if (source.canLog(source, target, damage, skip, critical) && target.canLog(source, target, damage, skip, critical)) {
-            const type = this._calculateType(target, baseType, skip, critical);
-            this._logRound(
-                source,
-                target,
-                damage,
-                type,
-                skip,
-                critical
-            )
-        }
+        const type = this._calculateType(target, baseType, skip, critical);
+
+        this._logRound(
+            source,
+            target,
+            damage,
+            type,
+            skip,
+            critical
+        )
     }
 
     logFireball (source, target, damage) {
@@ -213,8 +212,7 @@ const CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 1.25,
-            SkipChance: 0.50,
+            DamageMultiplier: 1.25
         },
         DemonHunter: {
             Attribute: 'Dexterity',
@@ -729,9 +727,8 @@ class SimulatorModel {
         this.controlAttack(instance, target, this.Data.Weapon1, ATTACK_NORMAL);
     }
 
-    // Allow model to specify whether attack should be logged. Called for each attack for source and target.
-    canLog (source, target, damage, skip, critical) {
-        return true;
+    controlSkip (instance, source) {
+        return false;
     }
 }
 
@@ -740,7 +737,15 @@ class WarriorModel extends SimulatorModel {
 }
 
 class MageModel extends SimulatorModel {
+    getDamageMultiplier (target) {
+        const multiplier = super.getDamageMultiplier(target);
 
+        if (target.Player.Class == BERSERKER) {
+            return multiplier * 2;
+        } else {
+            return multiplier;
+        }
+    }
 }
 
 class ScoutModel extends SimulatorModel {
@@ -756,10 +761,6 @@ class AssassinModel extends SimulatorModel {
 
     control (instance, target) {
         if (this.controlAttack(instance, target, this.Data.Weapon1, ATTACK_NORMAL) == false) {
-            return;
-        }
-
-        if (target.Player.Class === BERSERKER && target.Enraged) {
             return;
         }
 
@@ -806,23 +807,20 @@ class BerserkerModel extends SimulatorModel {
         this.controlAttack(instance, target, this.Data.Weapon1, this.Enraged ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
     }
 
-    onDamageTaken (source, damage) {
-        this.Enraged = damage === 0;
-
-        return super.onDamageTaken(source, damage);
-    }
-
-    getSkip (attackType) {
-        if (attackType === ATTACK_SECONDARY_NORMAL) {
-            // Cannot dodge second attack if did not first
-            return this.Enraged;
+    controlSkip (instance, source) {
+        if (source.Player.Class === MAGE && instance.turn === 0 && source.AttackFirst > this.AttackFirst) {
+            return false;
+        } else if (getRandom(0.50)) {
+            return (this.Enraged = true);
         } else {
-            return getRandom(this.State.SkipChance);
+            return false;
         }
     }
 
-    canLog (source, target, damage, skip, critical) {
-        return target !== this || !skip;
+    onDamageTaken (source, damage) {
+        this.Enraged = false;
+
+        return super.onDamageTaken(source, damage);
     }
 }
 
@@ -1065,7 +1063,11 @@ class SimulatorBase {
         this.b.before(this, this.a);
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            this.a.control(this, this.b);
+            if (this.b.controlSkip(this, this.a)) {
+                this.getRage();
+            } else {
+                this.a.control(this, this.b);
+            }
 
             // Swap
             const swap = this.a; this.a = this.b; this.b = swap;

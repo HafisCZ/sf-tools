@@ -26,7 +26,6 @@ const CHANGELOG = {
         ],
         'All Simulators': [
             'Added many performance improvements',
-            'Added proper berserker implementation using hidden evades',
             'Added new implementation for toggle buttons',
             'Replaced percentage configuration values with decimals'
         ],
