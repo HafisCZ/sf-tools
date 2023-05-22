@@ -759,6 +759,10 @@ class AssassinModel extends SimulatorModel {
             return;
         }
 
+        if (target.Player.Class === BERSERKER && target.Enraged) {
+            return;
+        }
+
         this.controlAttack(instance, target, this.Data.Weapon2, ATTACK_SECONDARY_NORMAL);
     }
 }
