@@ -192,10 +192,10 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             this.fields['luck'].set(formatAsSpacedNumber(model.Player.Luck.Total, ' '));
 
             if (initialized) {
-                this.fields['skip'].set(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : intl('pets.editor.none'));
-                this.fields['damage'].set(formatAsSpacedNumber(model.Weapon1.Min, ' '));
-                this.fields['chance'].set(model.CriticalChance > 0 ? `${ model.CriticalChance.toFixed(2) }%` : intl('pets.editor.none'));
-                this.fields['critical'].set(`${ Math.round(100 * model.CriticalMultiplier) }%`);
+                this.fields['skip'].set(model.Data.SkipChance > 0 ? `${ (100 * model.Data.SkipChance).toFixed(2) }%` : intl('pets.editor.none'));
+                this.fields['damage'].set(formatAsSpacedNumber(model.Data.Weapon1.Min, ' '));
+                this.fields['chance'].set(model.Data.CriticalChance > 0 ? `${ (100 * model.Data.CriticalChance).toFixed(2) }%` : intl('pets.editor.none'));
+                this.fields['critical'].set(`${ Math.round(100 * model.Data.CriticalMultiplier) }%`);
             } else {
                 for (let name of ['skip', 'damage', 'chance', 'critical']) {
                     this.fields[name].clear();
