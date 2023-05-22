@@ -1221,7 +1221,7 @@ Site.ready(null, function (urlParams) {
     ];
 
     const ROUND_WHITELIST = [
-        'attackChained', 'attackCrit', 'attackDamage', 'attackMissed',
+        'attackChained', 'attackCrit', 'attackDamage', 'attackMissed', 'attackMissedCount',
         'attackRage', 'attackSecondary', 'attackSpecial', 'attackType',
         'targetHealthLeft', 'attackerSpecialState', 'targetSpecialState'
     ];
