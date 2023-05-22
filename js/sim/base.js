@@ -702,12 +702,16 @@ class SimulatorModel {
         return this.Config.DamageMultiplier || 1;
     }
 
+    getSkip () {
+        return getRandom(this.State.SkipChance);
+    }
+
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
         const damage = this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
-            getRandom(target.State.SkipChance),
+            target.getSkip(attackType),
             getRandom(this.State.CriticalChance),
             attackType
         );
@@ -802,6 +806,15 @@ class BerserkerModel extends SimulatorModel {
         this.Enraged = damage === 0;
 
         return super.onDamageTaken(source, damage);
+    }
+
+    getSkip (attackType) {
+        if (attackType === ATTACK_SECONDARY_NORMAL) {
+            // Cannot dodge second attack if did not first
+            return this.Enraged;
+        } else {
+            return getRandom(this.State.SkipChance);
+        }
     }
 
     canLog (source, target, damage, skip, critical) {
