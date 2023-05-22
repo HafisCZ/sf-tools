@@ -479,7 +479,7 @@ class SimulatorModel {
 
         this.Data = null;
         this.DataHash = String(Math.random());
-        this.DataCache = new Map();
+        this.DataCache = Object.create(null);
 
         // Configuration
         this.Config = Object.assign(
@@ -613,13 +613,13 @@ class SimulatorModel {
 
     // Initialize model
     initialize (target) {
-        if (this.DataCache.has(target.DataHash)) {
-            this.State = this.Data = this.DataCache.get(target.DataHash);
+        if (this.DataCache[target.DataHash]) {
+            this.State = this.Data = this.DataCache[target.DataHash];
         } else {
             this.State = this.Data = Object.create(null);
             this.initializeData(target);
 
-            this.DataCache.set(target.DataHash, this.Data);
+            this.DataCache[target.DataHash] = this.Data;
         }
     }
 
