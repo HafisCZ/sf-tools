@@ -170,7 +170,7 @@ const CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 50,
 
-            SkipChance: 25
+            SkipChance: 0.25
         },
         Mage: {
             Attribute: 'Intelligence',
@@ -186,7 +186,7 @@ const CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2.5,
             MaximumDamageReduction: 25,
 
-            SkipChance: 50
+            SkipChance: 0.50
         },
         Assassin: {
             Attribute: 'Dexterity',
@@ -196,7 +196,7 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 25,
 
             DamageMultiplier: 0.625,
-            SkipChance: 50
+            SkipChance: 0.50
         },
         Battlemage: {
             Attribute: 'Strength',
@@ -214,7 +214,7 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 25,
 
             DamageMultiplier: 1.25,
-            SkipChance: 50
+            SkipChance: 0.50,
         },
         DemonHunter: {
             Attribute: 'Dexterity',
@@ -223,8 +223,8 @@ const CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2.5,
             MaximumDamageReduction: 50,
 
-            ReviveChance: 44,
-            ReviveChanceDecay: 2,
+            ReviveChance: 0.44,
+            ReviveChanceDecay: 0.02,
             ReviveHealth: 0.9,
             ReviveHealthMin: 0.1,
             ReviveHealthDecay: 0.1
@@ -239,16 +239,16 @@ const CONFIG = Object.defineProperties(
 
             DamageMultiplier: 1 / 3,
 
-            SwoopChance: 25,
+            SwoopChance: 0.25,
             SwoopChanceMin: 0,
-            SwoopChanceMax: 50,
-            SwoopChanceDecay: -5,
+            SwoopChanceMax: 0.50,
+            SwoopChanceDecay: -0.05,
             SwoopBonus: 0.775,
 
-            SkipChance: 35,
+            SkipChance: 0.35,
             RageSkipChance: 0,
 
-            RageCriticalChance: 75,
+            RageCriticalChance: 0.75,
             RageCriticalBonus: 3.6
         },
         Bard: {
@@ -295,7 +295,7 @@ const CONFIG = Object.defineProperties(
 
 // Returns true if random chance occured
 function getRandom (success) {
-    return success > 0 && (Math.random() * 100 < success);
+    return success && (Math.random() < success);
 }
 
 function isObject (item) {
@@ -511,15 +511,15 @@ class SimulatorModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Class == WARRIOR) {
-            return typeof this.Player.BlockChance !== 'undefined' ? this.Player.BlockChance : this.Config.SkipChance;
+            return typeof this.Player.BlockChance !== 'undefined' ? (this.Player.BlockChance / 100) : this.Config.SkipChance;
         } else {
             return this.Config.SkipChance || 0;
         }
     }
 
     // Critical Chance
-    getCriticalChance (target, maximumChance = 50, bonusChance = 0) {
-        return Math.min(maximumChance, bonusChance + this.Player.Luck.Total * 2.5 / target.Player.Level);
+    getCriticalChance (target, maximumChance = 0.50, bonusChance = 0) {
+        return Math.min(maximumChance, bonusChance + this.Player.Luck.Total * 2.5 / target.Player.Level / 100);
     }
 
     // Critical Multiplier
@@ -837,7 +837,7 @@ class DemonHunterModel extends SimulatorModel {
         let state = super.onDamageTaken(source, damage);
 
         if (state == STATE_DEAD) {
-            let reviveChance = this.Config.ReviveChance - this.Config.ReviveChanceDecay * this.DeathTriggers;
+            const reviveChance = this.Config.ReviveChance - this.Config.ReviveChanceDecay * this.DeathTriggers;
 
             if (source.Player.Class != MAGE && getRandom(reviveChance)) {
                 this.Health = this.TotalHealth * Math.max(this.Config.ReviveHealthMin, this.Config.ReviveHealth - this.DeathTriggers * this.Config.ReviveHealthDecay);
@@ -878,7 +878,7 @@ class DruidModel extends SimulatorModel {
             {
                 SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
                 CriticalMultiplier: this.Data.CriticalMultiplier + this.Config.RageCriticalBonus,
-                CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 10)
+                CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 0.10)
             }
         )
     }
@@ -1053,7 +1053,7 @@ class SimulatorBase {
         }
 
         // Shuffle
-        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
+        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(0.50) : this.b.AttackFirst) {
             const swap = this.a; this.a = this.b; this.b = swap;
         }
 
