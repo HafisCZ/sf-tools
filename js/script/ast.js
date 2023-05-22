@@ -1126,7 +1126,6 @@ class Expression {
         '||': (a, b) => a || b,
         '&&': (a, b) => a && b,
         '%': (a, b) => a % b,
-        '?': (a, b, c) => a ? b : c,
         'u-': (a) => -a,
         's': (a) => a,
         '!': (a) => a ? false : true
