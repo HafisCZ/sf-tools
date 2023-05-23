@@ -96,10 +96,6 @@ function _between (val, min, max) {
     return val > min && val < max;
 }
 
-function _within (val, min, max) {
-    return val >= min && val <= max;
-}
-
 function _uuid (data) {
     return `${ data.identifier }-${ data.timestamp }`;
 }

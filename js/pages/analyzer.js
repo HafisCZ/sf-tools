@@ -988,6 +988,10 @@ Site.ready(null, function (urlParams) {
     let currentGroup = null;
     let currentFight = null;
 
+    function compareWithin (val, min, max) {
+        return val >= min ? (val <= max ? 0 : 2) : 1;
+    }
+
     function processGroup (group) {
         const variance = parseInt(analyzerOptions.base_damage_error_margin);
 
@@ -1073,7 +1077,7 @@ Site.ready(null, function (urlParams) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
                 const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
 
-                round.hasError = !_within(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
+                round.hasError = compareWithin(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
             }
         }
 
@@ -1109,7 +1113,7 @@ Site.ready(null, function (urlParams) {
                         container.damages[key] = {
                             min: +Infinity,
                             max: -Infinity,
-                            err: false
+                            err: 0
                         };
                     }
 
@@ -1117,7 +1121,7 @@ Site.ready(null, function (urlParams) {
 
                     range.min = Math.min(range.min, attackBase);
                     range.max = Math.max(range.max, attackBase);
-                    range.err = range.err || hasError
+                    range.err = range.err | hasError
                 }
             }
         }
@@ -1166,7 +1170,7 @@ Site.ready(null, function (urlParams) {
 
                     content += `
                         <div class="field">
-                            <label class="${err ? '!text-orangered' : ''}">${intl(`analyzer.sidebar.damages.${type}`)}${err ? ' !' : ''}</label>
+                            <label class="${err ? '!text-orangered' : ''}">${intl(`analyzer.sidebar.damages.${type}`)}${err ? ' !' : ''}${err & 1 ? ' < min' : ''}${err & 2 ? ' > max' : ''}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" class="${err ? '!text-orangered' : ''}" disabled value="${min} - ${max}">
                             </div>
