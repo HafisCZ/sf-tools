@@ -646,17 +646,7 @@ class SimulatorModel {
 
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
     onDamageTaken (source, damage) {
-        if (damage === 0) {
-            // Advance skip count
-            this.SkipCount++;
-
-            return STATE_ALIVE;
-        } else {
-            // Reset skip count
-            this.SkipCount = 0;
-
-            return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
-        }
+        return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
     // Returns true when model is in special state
@@ -673,12 +663,18 @@ class SimulatorModel {
     attack (damage, target, skipped, critical, type) {
         if (skipped) {
             damage = 0;
+
+            // Advance skip count
+            target.SkipCount++;
         } else {
             if (critical) {
                 damage *= this.State.CriticalMultiplier;
             }
 
             damage = Math.trunc(damage);
+
+            // Reset skip count
+            target.SkipCount = 0;
         }
 
         if (FIGHT_LOG_ENABLED) {
