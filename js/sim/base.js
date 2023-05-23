@@ -696,17 +696,6 @@ class SimulatorModel {
         return this.Config.DamageMultiplier || 1;
     }
 
-    // Control wrapper around attack
-    controlAttack (instance, target, weapon, attackType) {
-        return this.attack(
-            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
-            target,
-            getRandom(target.State.SkipChance),
-            getRandom(this.State.CriticalChance),
-            attackType
-        );
-    }
-
     // Before anyone takes control
     before (instance, target) {
 
@@ -714,7 +703,15 @@ class SimulatorModel {
 
     // Take control
     control (instance, target) {
-        this.controlAttack(instance, target, this.Data.Weapon1, ATTACK_NORMAL);
+        const weapon = this.Data.Weapon1;
+
+        this.attack(
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            getRandom(target.State.SkipChance),
+            getRandom(this.State.CriticalChance),
+            ATTACK_NORMAL
+        )
     }
 
     controlSkip (instance, source) {
@@ -742,11 +739,25 @@ class AssassinModel extends SimulatorModel {
     }
 
     control (instance, target) {
-        if (this.controlAttack(instance, target, this.Data.Weapon1, ATTACK_NORMAL) == false) {
-            return;
-        }
+        const weapon1 = this.Data.Weapon1;
+        const state = this.attack(
+            instance.getRage() * (Math.random() * (1 + weapon1.Max - weapon1.Min) + weapon1.Min),
+            target,
+            getRandom(target.State.SkipChance),
+            getRandom(this.State.CriticalChance),
+            ATTACK_NORMAL
+        )
 
-        this.controlAttack(instance, target, this.Data.Weapon2, ATTACK_SECONDARY_NORMAL);
+        if (state) {
+            const weapon2 = this.Data.Weapon2;
+            this.attack(
+                instance.getRage() * (Math.random() * (1 + weapon2.Max - weapon2.Min) + weapon2.Min),
+                target,
+                getRandom(target.State.SkipChance),
+                getRandom(this.State.CriticalChance),
+                ATTACK_SECONDARY_NORMAL
+            )
+        }
     }
 }
 
@@ -780,7 +791,15 @@ class BattlemageModel extends SimulatorModel {
 
 class BerserkerModel extends SimulatorModel {
     control (instance, target) {
-        this.controlAttack(instance, target, this.Data.Weapon1, this.SkipCount > 0 ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
+        const weapon = this.Data.Weapon1;
+
+        this.attack(
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            getRandom(target.State.SkipChance),
+            getRandom(this.State.CriticalChance),
+            this.SkipCount > 0 ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL
+        )
     }
 
     controlSkip (instance, source) {
@@ -974,7 +993,7 @@ class BardModel extends SimulatorModel {
         }
     }
 
-    controlAttack (instance, target, weapon, attackType) {
+    control (instance, target) {
         if (this.Data.BeforeAttack) {
             this.EffectRound += 1;
 
@@ -983,7 +1002,7 @@ class BardModel extends SimulatorModel {
             }
         }
 
-        return super.controlAttack(instance, target, weapon, attackType);
+        return super.control(instance, target);
     }
 
     attack (damage, target, skipped, critical, type) {
