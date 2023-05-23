@@ -19,7 +19,6 @@ const FIGHT_LOG = new (class {
             attackSecondary: ATTACKS_SECONDARY.includes(type),
             attackCrit: critical,
             attackMissed: skip,
-            attackMissedCount: target.SkipCount,
             attackSpecial: type >= ATTACK_REVIVE
         }
 
