@@ -1459,7 +1459,8 @@
                     "title": "Attack type display mode",
                     "value": {
                         "text": "Name",
-                        "text_with_id": "Name with ID"
+                        "text_with_id": "Name with ID",
+                        "id": "ID"
                     }
                 },
                 "base_damage_error_margin": {

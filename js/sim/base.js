@@ -12,6 +12,7 @@ const FIGHT_LOG = new (class {
             targetId: target.Player.ID || target.Index,
             targetSpecialState: target.specialState(),
             targetHealthLeft: Math.max(0, target.Health - damage),
+            targetSkipCount: target.SkipCount,
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
@@ -740,15 +741,13 @@ class AssassinModel extends SimulatorModel {
 
     control (instance, target) {
         const weapon1 = this.Data.Weapon1;
-        const state = this.attack(
+        if (this.attack(
             instance.getRage() * (Math.random() * (1 + weapon1.Max - weapon1.Min) + weapon1.Min),
             target,
             getRandom(target.State.SkipChance),
             getRandom(this.State.CriticalChance),
             ATTACK_NORMAL
-        )
-
-        if (state) {
+        )) {
             const weapon2 = this.Data.Weapon2;
             this.attack(
                 instance.getRage() * (Math.random() * (1 + weapon2.Max - weapon2.Min) + weapon2.Min),
