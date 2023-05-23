@@ -696,16 +696,12 @@ class SimulatorModel {
         return this.Config.DamageMultiplier || 1;
     }
 
-    getSkip () {
-        return getRandom(this.State.SkipChance);
-    }
-
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
         return this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
-            target.getSkip(attackType),
+            getRandom(target.State.SkipChance),
             getRandom(this.State.CriticalChance),
             attackType
         );
