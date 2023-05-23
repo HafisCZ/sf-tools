@@ -924,20 +924,24 @@ const ExportFileDialog = new (class extends Dialog {
 
     async _exportFile () {
         const fileGetter = typeof this.files === 'function' ? this.files : this.files[this.$file.dropdown('get value')];
+        const file = await fileGetter();
+
         const filePublic = this.$public.checkbox('is checked');
+        if (filePublic) {
+            for (const [index, group] of Object.entries(file.groups)) {
+                if (group.own) {
+                    file.groups[index] = ModelUtils.toOtherGroup(group);
+                }
+            }
 
-        const exportPublic = SiteOptions.export_public_only;
-        if (exportPublic || !filePublic) {
-            return await fileGetter();
-        } else if (filePublic) {
-            SiteOptions.export_public_only = true;
-
-            const file = await fileGetter();
-
-            SiteOptions.export_public_only = false;
-
-            return file;
+            for (const [index, player] of Object.entries(file.players)) {
+                if (player.own) {
+                    file.players[index] = ModelUtils.toOtherPlayer(player);
+                }
+            }
         }
+
+        return file;
     }
 
     _exportOrClose () {
@@ -979,10 +983,9 @@ const ExportFileDialog = new (class extends Dialog {
             })
         }
 
-        this.$codeContainer.hide();
-
+        this.$public.checkbox(SiteOptions.export_public_only ? 'set checked' : 'set unchecked');
         this.$ok.text(intl('stats.share.get'))
-
+        this.$codeContainer.hide();
         this.$form.show();
     }
 

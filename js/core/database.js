@@ -1309,23 +1309,7 @@ const DatabaseManager = new (class {
     }
 
     async export (identifiers, timestamps, constraint) {
-        const data = this.getFile(identifiers, timestamps, constraint);
-
-        if (SiteOptions.export_public_only) {
-            for (const [index, group] of Object.entries(data.groups)) {
-                if (group.own) {
-                    data.groups[index] = ModelUtils.toOtherGroup(group);
-                }
-            }
-
-            for (const [index, player] of Object.entries(data.players)) {
-                if (player.own) {
-                    data.players[index] = ModelUtils.toOtherPlayer(player);
-                }
-            }
-        }
-
-        return data;
+        return this.getFile(identifiers, timestamps, constraint);
     }
 
     relatedGroupData (players, groups, bundleGroups = true) {
