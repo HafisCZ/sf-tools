@@ -15,9 +15,6 @@ const CHANGELOG = {
             'Fixed resolving of <code>now</code> and <code>random</code> functions',
             'Fixed <code>row height</code> keyword'
         ],
-        'Fight Analyzer': [
-            'Added counter for evades in a row'
-        ],
         'Hellevator Simulator': [
             'Added new hellevator theme'
         ],
