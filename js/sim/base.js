@@ -212,7 +212,8 @@ const CONFIG = Object.defineProperties(
             WeaponDamageMultiplier: 2,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 1.25
+            DamageMultiplier: 1.25,
+            SkipLimit: 14
         },
         DemonHunter: {
             Attribute: 'Dexterity',
@@ -737,15 +738,7 @@ class WarriorModel extends SimulatorModel {
 }
 
 class MageModel extends SimulatorModel {
-    getDamageMultiplier (target) {
-        const multiplier = super.getDamageMultiplier(target);
 
-        if (target.Player.Class == BERSERKER) {
-            return multiplier * 2;
-        } else {
-            return multiplier;
-        }
-    }
 }
 
 class ScoutModel extends SimulatorModel {
@@ -797,30 +790,20 @@ class BattlemageModel extends SimulatorModel {
 }
 
 class BerserkerModel extends SimulatorModel {
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
-        this.Enraged = false;
-    }
-
     control (instance, target) {
-        this.controlAttack(instance, target, this.Data.Weapon1, this.Enraged ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
+        this.controlAttack(instance, target, this.Data.Weapon1, this.SkipCount > 0 ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL);
     }
 
     controlSkip (instance, source) {
-        if (source.Player.Class === MAGE && instance.turn === 0 && source.AttackFirst > this.AttackFirst) {
+        if (source.Player.Class === MAGE) {
             return false;
-        } else if (getRandom(0.50)) {
-            return (this.Enraged = true);
+        } else if (getRandom(0.50) && this.SkipCount < this.Config.SkipLimit) {
+            this.SkipCount++;
+
+            return true;
         } else {
             return false;
         }
-    }
-
-    onDamageTaken (source, damage) {
-        this.Enraged = false;
-
-        return super.onDamageTaken(source, damage);
     }
 }
 
