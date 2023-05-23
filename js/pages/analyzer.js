@@ -862,7 +862,8 @@ Site.ready(null, function (urlParams) {
 
     const ATTACK_TYPE_FORMATS = {
         'text': (type) => intl(`general.attack${type}`),
-        'text_with_id': (type) => `${intl(`general.attack${type}`)} #${type}`
+        'text_with_id': (type) => `${intl(`general.attack${type}`)} #${type}`,
+        'id': (type) => type
     }
 
     const BARD_NOTE_COLORS = ['c4c4c4', '5e7fc4', 'd1a130'];
@@ -890,7 +891,7 @@ Site.ready(null, function (urlParams) {
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
-                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
+                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay, targetSkipCount,
                 hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
 
