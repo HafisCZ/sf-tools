@@ -692,7 +692,7 @@ class SimulatorModel {
             )
         }
 
-        return damage;
+        return target.onDamageTaken(this, damage) != STATE_DEAD;
     }
 
     // Returns extra damage multiplier, default is 1 for no extra damage
@@ -706,15 +706,13 @@ class SimulatorModel {
 
     // Control wrapper around attack
     controlAttack (instance, target, weapon, attackType) {
-        const damage = this.attack(
+        return this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
             target.getSkip(attackType),
             getRandom(this.State.CriticalChance),
             attackType
         );
-
-        return target.onDamageTaken(this, damage) != STATE_DEAD;
     }
 
     // Before anyone takes control
@@ -1001,7 +999,7 @@ class BardModel extends SimulatorModel {
             damage *= this.EffectCurrent;
         }
 
-        damage = super.attack(
+        const state = super.attack(
             damage,
             target,
             skipped,
@@ -1013,7 +1011,7 @@ class BardModel extends SimulatorModel {
             this.consumeMultiplier(target);
         }
 
-        return damage;
+        return state;
     }
 }
 
