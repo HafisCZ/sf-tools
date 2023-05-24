@@ -2865,7 +2865,7 @@ class Script {
     }
 
     isStrictWidthPolicy () {
-        return (this.globals.width_policy || 'strict') === 'strict';
+        return (this.globals.width_policy || 'relaxed') === 'strict';
     }
 
     evalRowIndexes (array) {
