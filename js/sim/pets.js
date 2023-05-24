@@ -335,13 +335,13 @@ class PetSimulator extends SimulatorBase {
         while (this.a.Health > 0 && this.b.Health > 0) {
             let rage = 1 + this.turn++ / 6;
 
-            this.b.Health -= rage * this.a.Weapon1.Min * (enemyStarts ? 1 : this.a.CriticalMultiplier);
+            this.b.Health -= rage * this.a.Data.Weapon1.Min * (enemyStarts ? 1 : this.a.Data.CriticalMultiplier);
             if (this.b.Health <= 0) {
                 return !enemyStarts;
             }
 
             rage = 1 + this.turn++ / 6;
-            this.a.Health -= rage * this.b.Weapon1.Min * (enemyStarts ? this.b.CriticalMultiplier : 1);
+            this.a.Health -= rage * this.b.Data.Weapon1.Min * (enemyStarts ? this.b.Data.CriticalMultiplier : 1);
             if (this.a.Health <= 0) {
                 return enemyStarts;
             }
