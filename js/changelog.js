@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v6.3785': {
+    'v6.3875': {
         'Statistics': [
             'Added button to import & export a script as a file',
             'Added <code>width policy strict</code> to lock columns to exact <code>width</code>',
