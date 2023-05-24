@@ -586,13 +586,13 @@
                 "save": "Zapisz",
                 "copy": "Kopiuj",
                 "archive": "Archiwum skryptów",
-                "recover": "Load version v#{version}",
+                "recover": "Wczytaj wersję v#{version}",
                 "close": "Powrót",
                 "remove": "Usuń",
                 "reset": "Odrzuć zmiany",
                 "save_template": "Zapisz jako szablon",
-                "export": "Export",
-                "import": "Import",
+                "export": "Eksportuj",
+                "import": "Importuj",
                 "header": {
                     "actions": "Działania",
                     "modify": "Skrypt",
@@ -610,10 +610,10 @@
                 "not_available": "Brak dostępnych skryptów"
             },
             "info": {
-                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+                "deprecated": "Użycie <b>#{name1}</b> jest przestarzałe; zamiast tego użyj <b>#{name2}</b>"
             },
             "commands": {
-                "TABLE_GLOBAL_PERFORMANCE": "performance",
+                "TABLE_GLOBAL_PERFORMANCE": "wydajność",
                 "TABLE_GLOBAL_LIMIT": "limit",
                 "TABLE_FORMAT_LONG": "format",
                 "TABLE_FORMAT": "expf"
@@ -1066,7 +1066,8 @@
             "1": "Zdrada",
             "2": "Oszustwo",
             "3": "Obżarstwo",
-            "4": "Chciwość"
+            "4": "Chciwość",
+            "5": "Heresy"
         },
         "win": {
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
@@ -1281,12 +1282,12 @@
             "guilds": "Załaduj zapisane gildie"
         },
         "tooltip": {
-            "cheats": "Apply modifications to characters",
-            "options": "Configure integration"
+            "cheats": "Zastosuj modyfikacje do postaci",
+            "options": "Konfiguruj integrację"
         }
     },
     "simulator": {
-        "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
+        "paste_target#": "Kliknij tutaj i wciśnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
         "threads": "Wątki symulacji. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
         "iterations": "Liczba iteracji na wątek.",
         "add": "Dodaj",
@@ -1399,11 +1400,13 @@
         }
     },
     "request": {
-        "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
+        "title": "prosi o dane twojej postaci",
+        "notice#": "Wybierz postać, którą chcesz udostępnić na stronie.<br>Żadne dane osobowe nie zostaną udostępnione!",
+        "access": "Click here to grant this domain access to your characters",
+        "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
         "error": {
-            "title": "Request error",
-            "notice#": "A website has requested your character data but did not specify required parameters"
+            "title": "Błąd zapytania",
+            "notice#": "Strona wysłała żądanie dot. danych postaci, lecz nie określiła wymaganych parametrów"
         }
     },
     "dialog": {
@@ -1455,7 +1458,8 @@
                     "title": "Tryb wyświetlania typu ataku",
                     "value": {
                         "text": "Nazwa",
-                        "text_with_id": "Nazwa z ID"
+                        "text_with_id": "Nazwa z ID",
+                        "id": "ID"
                     }
                 },
                 "base_damage_error_margin": {
@@ -2122,7 +2126,7 @@
             "10": "Kapitan Poniedziałek"
         },
         "25": {
-            "name": "Dojo Bohateró z Dzieciństwa",
+            "name": "Dojo Bohaterów z Dzieciństwa",
             "1": "Magiczna uczennica",
             "2": "Mistrz sobowtórów",
             "3": "Przyjacielski pomocnik z sąsiedztwa",
