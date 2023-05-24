@@ -1066,7 +1066,8 @@
             "1": "Treachery",
             "2": "Fraud",
             "3": "Gluttony",
-            "4": "Greed"
+            "4": "Greed",
+            "5": "Heresy"
         },
         "win": {
             "all": "Všech #{count} pater bylo poraženo se 100% šancí",
@@ -1401,6 +1402,8 @@
     "request": {
         "title": "žádá o přístup k údajům vaší postavy",
         "notice#": "Prosím vyberte postavu kterou chcete s webovou stránkou sdílet.<br>Osobní data jako jsou hesla nebo email nejsou sdílena!",
+        "access": "Click here to grant this domain access to your characters",
+        "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
         "error": {
             "title": "Chyba při zpracování požadavku",
             "notice#": "Webová stránka požádala o přístup k datům vaší postavy, ale nespecifikovala požadované parametry"
@@ -1455,7 +1458,8 @@
                     "title": "Attack type display mode",
                     "value": {
                         "text": "Name",
-                        "text_with_id": "Name with ID"
+                        "text_with_id": "Name with ID",
+                        "id": "ID"
                     }
                 },
                 "base_damage_error_margin": {

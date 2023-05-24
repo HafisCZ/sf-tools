@@ -1066,7 +1066,8 @@
             "1": "Tradimento",
             "2": "Frode",
             "3": "Golosità",
-            "4": "Avidità"
+            "4": "Avidità",
+            "5": "Heresy"
         },
         "win": {
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
@@ -1401,6 +1402,8 @@
     "request": {
         "title": "is requesting your character data",
         "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
+        "access": "Click here to grant this domain access to your characters",
+        "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
         "error": {
             "title": "Request error",
             "notice#": "A website has requested your character data but did not specify required parameters"
@@ -1455,7 +1458,8 @@
                     "title": "Modalità visualizzazione tipo di attacco",
                     "value": {
                         "text": "Nome",
-                        "text_with_id": "Nome con ID"
+                        "text_with_id": "Nome con ID",
+                        "id": "ID"
                     }
                 },
                 "base_damage_error_margin": {
