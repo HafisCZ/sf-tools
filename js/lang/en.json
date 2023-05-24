@@ -1066,7 +1066,8 @@
             "1": "Treachery",
             "2": "Fraud",
             "3": "Gluttony",
-            "4": "Greed"
+            "4": "Greed",
+            "5": "Heresy"
         },
         "win": {
             "all": "All #{count} floors were defeated with 100% chance",

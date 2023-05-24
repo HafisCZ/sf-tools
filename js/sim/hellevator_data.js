@@ -1,7 +1,7 @@
 // Shamelessly stolen with permission from https://hellevatorrewards.12hp.de/
 
 const HELLEVATOR_THEMES = [
-  4, 3, 2, 1, 0
+  5, 4, 3, 2, 1, 0
 ]
 
 const HELLEVATOR_ENEMY_DELTA = [
