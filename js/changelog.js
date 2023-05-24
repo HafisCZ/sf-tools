@@ -2,7 +2,7 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added button to import & export a script as a file',
-            'Added strict sizing to tables (<code>width</code> will now lock the column to specified width).<br>You can use <code>width policy relaxed</code> to return back to old behavior',
+            'Added <code>width policy strict</code> to lock columns to exact <code>width</code>',
             'Added visible script version next to script name',
             'Added ctrl click action to script archive to recover previous script version if present',
             'Added option to disable strict sizing with <code>width policy relaxed</code>',
