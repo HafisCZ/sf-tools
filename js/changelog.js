@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v6.3785': {
         'Statistics': [
             'Added button to import & export a script as a file',
             'Added <code>width policy strict</code> to lock columns to exact <code>width</code>',
@@ -15,16 +15,16 @@ const CHANGELOG = {
             'Fixed resolving of <code>now</code> and <code>random</code> functions',
             'Fixed <code>row height</code> keyword'
         ],
+        'All Simulators': [
+            'Added many performance improvements',
+            'Added new implementation for toggle buttons',
+            'Replaced percentage configuration values with decimals'
+        ],
         'Hellevator Simulator': [
             'Added new hellevator theme'
         ],
         'Endpoint': [
             'Added EU4 to whitelist'
-        ],
-        'All Simulators': [
-            'Added many performance improvements',
-            'Added new implementation for toggle buttons',
-            'Replaced percentage configuration values with decimals'
         ],
         'All Tools': [
             'Added support for other websites to request character data from SFTools',
