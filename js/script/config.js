@@ -2724,6 +2724,16 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Official Discord',
+  {
+    expr: p => p.Flags.OfficialDiscord,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'GT Background',
   {
     expr: p => p.Flags.GroupTournamentBackground,

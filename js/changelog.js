@@ -1,4 +1,9 @@
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Statistics': [
+            'Added <code>Official Discord</code> header'
+        ]
+    },
     'v6.3875': {
         'Statistics': [
             'Added button to import & export a script as a file',

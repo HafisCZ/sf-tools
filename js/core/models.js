@@ -1969,7 +1969,8 @@ class PlayerModel {
         return {
             GroupTournamentBackground: background,
             GoldFrame: (value & (1 << 5)) != 0,
-            OfficialCreator: (value & (1 << 9)) != 0
+            OfficialCreator: (value & (1 << 9)) != 0,
+            OfficialDiscord: (value & (1 << 10)) != 0,
         }
     }
 
