@@ -98,7 +98,7 @@ const HellevatorEnemies = new (class {
     }
 
     for (const [index, name] of Object.entries(attributes[klass])) {
-      obj[name] = { Total: index === 0 ? main : side }
+      obj[name] = { Total: index == 0 ? main : side }
     }
 
     return obj;
