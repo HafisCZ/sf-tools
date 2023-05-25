@@ -1,63 +1,67 @@
 // Shamelessly stolen with permission from https://hellevatorrewards.12hp.de/
 
-const HELLEVATOR_THEMES = [
-  5, 4, 3, 2, 1, 0
-]
+class HellevatorEnemies {
+  static #enemies = {}
 
-const HELLEVATOR_ENEMY_DELTA = [
-	{
-    range: [0, 94],
-		reset: [100, 50, 100, 50, 2000, 50, 75],
-		delta: [40, 20, 40, 20, 4000, 4, 4]
-	},
-	{
-    range: [95, 194],
-		reset: [5000, 2500, 5500, 2500, 1000000, 500, 750],
-		delta: [240, 120, 1000, 120, 3000000, 8, 8]
-	},
-	{
-    range: [195, 254],
-		reset: [30000, 15000, 110000, 15000, 300000000, 1500, 1750],
-		delta: [900, 500, 1600, 500, 6000000, 10, 10]
-	},
-	{
-    range: [245, 294],
-		reset: [80000, 40000, 190000, 40000, 600000000, 2000, 2250],
-		delta: [1000, 500, 1600, 500, 6000000, 10, 10]
-	},
-	{
-    range: [295, 344],
-		reset: [140000, 70000, 270000, 65000, 900000000, 2500, 2750],
-		delta: [1100, 550, 1600, 500, 6000000, 10, 10]
-	},
-	{
-    range: [345, 394],
-		reset: [210000, 105000, 350000, 90000, 1200000000, 3000, 3250],
-		delta: [1200, 600, 1600, 500, 6000000, 10, 10]
-	},
-	{
-    range: [395, 444],
-		reset: [280000, 140000, 430000, 115000, 1500000000, 3500, 3750],
-		delta: [2000, 1000, 1600, 500, 14000000, 50, 50]
-	},
-	{
-    range: [445, 494],
-		reset: [400000, 200000, 510000, 140000, 2200000000, 6000, 6250],
-		delta: [2400, 1200, 1600, 500, 14000000, 50, 50]
-	},
-  {
-    range: [495, 499],
-    reset: [540000, 280000, 590000, 165000, 2900000000, 8500, 8750],
-    delta: [2600, 1400, 1600, 500, 14000000, 50, 50]
-  }
-];
+  static HELLEVATOR_ATTRIBUTE_MAP = [
+    ['Strength', 'Dexterity', 'Intelligence'],
+    ['Intelligence', 'Strength', 'Dexterity'],
+    ['Dexterity', 'Strength', 'Intelligence']
+  ]
 
-const HellevatorEnemies = new (class {
-  constructor () {
-    this._enemies = {}
-  }
+  static HELLEVATOR_THEMES = [
+    5, 4, 3, 2, 1, 0
+  ]
 
-  _generateEnemy({ floor, level, main, side, con, luck, health, element, klass, min, max }) {
+  static HELLEVATOR_ENEMY_DELTA = [
+    {
+      range: [0, 94],
+      reset: [100, 50, 100, 50, 2000, 50, 75],
+      delta: [40, 20, 40, 20, 4000, 4, 4]
+    },
+    {
+      range: [95, 194],
+      reset: [5000, 2500, 5500, 2500, 1000000, 500, 750],
+      delta: [240, 120, 1000, 120, 3000000, 8, 8]
+    },
+    {
+      range: [195, 254],
+      reset: [30000, 15000, 110000, 15000, 300000000, 1500, 1750],
+      delta: [900, 500, 1600, 500, 6000000, 10, 10]
+    },
+    {
+      range: [245, 294],
+      reset: [80000, 40000, 190000, 40000, 600000000, 2000, 2250],
+      delta: [1000, 500, 1600, 500, 6000000, 10, 10]
+    },
+    {
+      range: [295, 344],
+      reset: [140000, 70000, 270000, 65000, 900000000, 2500, 2750],
+      delta: [1100, 550, 1600, 500, 6000000, 10, 10]
+    },
+    {
+      range: [345, 394],
+      reset: [210000, 105000, 350000, 90000, 1200000000, 3000, 3250],
+      delta: [1200, 600, 1600, 500, 6000000, 10, 10]
+    },
+    {
+      range: [395, 444],
+      reset: [280000, 140000, 430000, 115000, 1500000000, 3500, 3750],
+      delta: [2000, 1000, 1600, 500, 14000000, 50, 50]
+    },
+    {
+      range: [445, 494],
+      reset: [400000, 200000, 510000, 140000, 2200000000, 6000, 6250],
+      delta: [2400, 1200, 1600, 500, 14000000, 50, 50]
+    },
+    {
+      range: [495, 499],
+      reset: [540000, 280000, 590000, 165000, 2900000000, 8500, 8750],
+      delta: [2600, 1400, 1600, 500, 14000000, 50, 50]
+    }
+  ]
+
+  static #generateEnemy({ floor, level, main, side, con, luck, health, element, klass, min, max }) {
     const obj = {
       Floor: floor,
       Level: level,
@@ -91,29 +95,27 @@ const HellevatorEnemies = new (class {
       }
     };
 
-    const attributes = {
-      1: ['Strength', 'Dexterity', 'Intelligence'],
-      2: ['Intelligence', 'Strength', 'Dexterity'],
-      3: ['Dexterity', 'Strength', 'Intelligence']
-    }
+    for (let i = 0; i < 3; i++) {
+      const name = this.HELLEVATOR_ATTRIBUTE_MAP[klass - 1][i];
 
-    for (const [index, name] of Object.entries(attributes[klass])) {
-      obj[name] = { Total: index == 0 ? main : side }
+      obj[name] = {
+        Total: i === 0 ? main : side
+      }
     }
 
     return obj;
   }
 
-  async _generateEnemies (theme) {
-    this._enemies[theme] = [];
+  static async #generateEnemies (theme) {
+    this.#enemies[theme] = [];
 
     const themeData = await fetch(`/js/playa/hellevator/theme${theme}.json`).then((data) => data.json());
 
-    for (const { range: [ rangeStart, rangeEnd ], reset: [ resetMain, resetSide, resetCon, resetLuck, resetHealth, resetMin, resetMax ], delta: [ deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax ] } of HELLEVATOR_ENEMY_DELTA) {
+    for (const { range: [ rangeStart, rangeEnd ], reset: [ resetMain, resetSide, resetCon, resetLuck, resetHealth, resetMin, resetMax ], delta: [ deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax ] } of this.HELLEVATOR_ENEMY_DELTA) {
       for (let i = rangeStart; i <= rangeEnd; i++) {
         const delta = i - rangeStart;
 
-        this._enemies[theme][i] = this._generateEnemy({
+        this.#enemies[theme][i] = this.#generateEnemy({
           floor: i + 1,
           level: 10 + i * 2,
           klass: _dig(themeData, i, 1) || 1,
@@ -130,11 +132,11 @@ const HellevatorEnemies = new (class {
     }
   }
 
-  async floorRange (start, end = start, theme = HELLEVATOR_THEMES[0]) {
-    if (typeof this._enemies[theme] === 'undefined') {
-      await this._generateEnemies(theme);
+  static async floorRange (start, end = start, theme = this.HELLEVATOR_THEMES[0]) {
+    if (typeof this.#enemies[theme] === 'undefined') {
+      await this.#generateEnemies(theme);
     }
 
-    return this._enemies[theme].slice(start - 1, end);
+    return this.#enemies[theme].slice(start - 1, end);
   }
-})()
+}

@@ -37,11 +37,11 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             this.fields['name'].editable(false);
 
             this.fields['range_theme'].initialize({
-                values: HELLEVATOR_THEMES.map((value) => ({
+                values: HellevatorEnemies.HELLEVATOR_THEMES.map((value) => ({
                     name: intl(`hellevator.theme.${value}`),
                     value
                 })),
-                value: HELLEVATOR_THEMES[0]
+                value: HellevatorEnemies.HELLEVATOR_THEMES[0]
             });
 
             for (const field of this.fieldsArray) {
