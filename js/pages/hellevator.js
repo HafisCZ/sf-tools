@@ -1,5 +1,10 @@
-Site.ready({ type: 'simulator' }, function () {
-    SimulatorUtils.configure({});
+Site.ready({ type: 'simulator' }, function (urlParams) {
+    SimulatorUtils.configure({
+        params: urlParams,
+        onLog: (callback) => {
+            executeSimulation(1, 50, callback);
+        }
+    });
     
     DOM.input({
         element: DOM.byID('sim-threads'),
@@ -196,12 +201,8 @@ Site.ready({ type: 'simulator' }, function () {
 
         $enemyList.html(content);
     }
-    
-    // Buttons
-    $('#simulate').click(async function () {
-        const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
-        const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
 
+    async function executeSimulation (instances, iterations, logCallback) {
         if (editor.valid()) {
             $enemyList.empty();
 
@@ -209,15 +210,26 @@ Site.ready({ type: 'simulator' }, function () {
 
             const enemies = await HellevatorEnemies.floorRange(player.RangeStart, Math.max(player.RangeStart, player.RangeEnd), player.RangeTheme);
             const scores = [];
+            let logs = [];
 
             const batch = new WorkerBatch('hellevator');
 
             for (const [index, enemy] of Object.entries(enemies)) {
                 batch.add(
-                    ({ score }) => {
+                    ({ score, logs: _logs }) => {
                         scores[index] = score;
+
+                        if (logCallback) {
+                            logs = logs.concat(_logs);
+                        }
                     },
-                    { player, iterations, enemy }
+                    {
+                        player,
+                        iterations,
+                        enemy,
+                        log: !!logCallback,
+                        config: SimulatorUtils.config,
+                    }
                 );
             }
 
@@ -225,7 +237,23 @@ Site.ready({ type: 'simulator' }, function () {
                 Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
 
                 renderEnemies(enemies, scores);
+
+                if (logs.length > 0) {
+                    logCallback({
+                        fights: logs,
+                        players: [player].concat(enemies),
+                        config: SimulatorUtils.config
+                    });
+                }
             });
         }
+    }
+    
+    // Buttons
+    $('#simulate').click(function () {
+        const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
+        const iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
+        executeSimulation(instances, iterations);
     });
 });

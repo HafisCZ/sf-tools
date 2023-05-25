@@ -1,11 +1,18 @@
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-  self.addEventListener('message', function ({ data: { player, enemy, iterations } }) {
+  self.addEventListener('message', function ({ data: { config, player, enemy, iterations, log } }) {
+    CONFIG.set(config);
+
     FLAGS.set({
       /* Simulator Flags */
     });
 
+    if (log) {
+      FIGHT_LOG_ENABLED = true;
+    }
+
     self.postMessage({
-      score: new HellevatorSimulator().simulate(player, enemy, iterations)
+      score: new HellevatorSimulator().simulate(player, enemy, iterations),
+      logs: FIGHT_LOG.dump()
     });
 
     self.close();
