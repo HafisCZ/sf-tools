@@ -1,12 +1,10 @@
 let FIGHT_LOG_ENABLED = false;
 
-const FIGHT_LOG = new (class {
-    constructor () {
-        this.allLogs = [];
-    }
+class FIGHT_LOG {
+    static #allLogs = [];
 
-    _logRound (attacker, target, damage, type, skip, critical) {
-        const round = {
+    static #logRound (attacker, target, damage, type, skip, critical) {
+        this.lastLog.rounds.push({
             attackerId: attacker.Player.ID || attacker.Index,
             attackerSpecialState: attacker.specialState(),
             targetId: target.Player.ID || target.Index,
@@ -21,20 +19,14 @@ const FIGHT_LOG = new (class {
             attackCrit: critical,
             attackMissed: skip,
             attackSpecial: type >= ATTACK_REVIVE
-        }
-
-        this.lastLog.rounds.push(round);
+        });
     }
 
-    dump () {
-        return this.allLogs;
+    static dump () {
+        return this.#allLogs;
     }
 
-    clear () {
-        this.allLogs = [];
-    }
-
-    logInit (playerA, playerB) {
+    static logInit (playerA, playerB) {
         this.lastLog = {
             fighterA: {
                 ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
@@ -55,14 +47,14 @@ const FIGHT_LOG = new (class {
             rounds: []
         }
 
-        this.allLogs.push(this.lastLog)
+        this.#allLogs.push(this.lastLog)
     }
 
-    logRage (currentRage) {
+    static logRage (currentRage) {
         this.currentRage = currentRage;
     }
 
-    _calculateType (target, type, skip, critical) {
+    static #calculateType (target, type, skip, critical) {
         const targetWarrior = target.Player.Class === WARRIOR;
 
         if (type == ATTACK_SWOOP) {
@@ -88,10 +80,10 @@ const FIGHT_LOG = new (class {
         }
     }
 
-    logAttack (source, target, damage, baseType, skip, critical) {
-        const type = this._calculateType(target, baseType, skip, critical);
+    static logAttack (source, target, damage, baseType, skip, critical) {
+        const type = this.#calculateType(target, baseType, skip, critical);
 
-        this._logRound(
+        this.#logRound(
             source,
             target,
             damage,
@@ -101,8 +93,8 @@ const FIGHT_LOG = new (class {
         )
     }
 
-    logFireball (source, target, damage) {
-        this._logRound(
+    static logFireball (source, target, damage) {
+        this.#logRound(
             source,
             target,
             damage,
@@ -112,8 +104,8 @@ const FIGHT_LOG = new (class {
         )
     }
 
-    logRevive (source) {
-        this._logRound(
+    static logRevive (source) {
+        this.#logRound(
             source,
             source,
             0,
@@ -123,8 +115,8 @@ const FIGHT_LOG = new (class {
         )
     }
 
-    logSpell (source, target, level, notes) {
-        this._logRound(
+    static logSpell (source, target, level, notes) {
+        this.#logRound(
             source,
             target,
             0,
@@ -133,10 +125,10 @@ const FIGHT_LOG = new (class {
             false
         )
     }
-})();
+}
 
 // Flags
-const FLAGS = Object.defineProperty(
+const FLAGS = Object.defineProperties(
     {
         // Values
         Gladiator15: false,
@@ -144,11 +136,17 @@ const FLAGS = Object.defineProperty(
         NoGladiatorReduction: false,
         NoAttributeReduction: false
     },
-    'set',
     {
-        value: function (flags) {
-            for (const [key, val] of Object.entries(flags || {})) {
-                this[key] = !!val;
+        set: {
+            value: function (flags) {
+                for (const [key, val] of Object.entries(flags || {})) {
+                    this[key] = !!val;
+                }
+            }
+        },
+        log: {
+            value: function (state) {
+                FIGHT_LOG_ENABLED = state;
             }
         }
     }

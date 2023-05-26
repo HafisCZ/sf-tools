@@ -1,12 +1,10 @@
 // WebWorker hooks
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
     self.addEventListener('message', function ({ data: { log, config, flags, units, player, iterations } }) {
-        FLAGS.set(flags);
         CONFIG.set(config);
-
-        if (log) {
-            FIGHT_LOG_ENABLED = true;
-        }
+        
+        FLAGS.log(!!log);
+        FLAGS.set(flags);
 
         self.postMessage({
             results: new UnderworldSimulator().simulate(units, player, iterations),

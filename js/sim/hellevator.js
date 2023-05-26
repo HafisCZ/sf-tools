@@ -2,13 +2,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
   self.addEventListener('message', function ({ data: { config, player, enemy, iterations, log } }) {
     CONFIG.set(config);
 
-    FLAGS.set({
-      /* Simulator Flags */
-    });
-
-    if (log) {
-      FIGHT_LOG_ENABLED = true;
-    }
+    FLAGS.log(!!log);
 
     self.postMessage({
       score: new HellevatorSimulator().simulate(player, enemy, iterations),
