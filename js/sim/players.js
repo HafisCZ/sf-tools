@@ -1,12 +1,10 @@
 // WebWorker hooks
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
     self.addEventListener('message', function ({ data: { flags, config, player, target, mode, iterations, log } }) {
-        FLAGS.set(flags);
         CONFIG.set(config);
 
-        if (log) {
-            FIGHT_LOG_ENABLED = true;
-        }
+        FLAGS.log(!!log);
+        FLAGS.set(flags);
 
         // Sim type decision
         if (mode == 'all') {

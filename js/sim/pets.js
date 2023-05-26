@@ -1,13 +1,11 @@
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
     self.addEventListener('message', function ({ data: { config, players, mode, iterations, log } }) {
         CONFIG.set(config);
+
+        FLAGS.log(!!log);
         FLAGS.set({
             NoGladiatorReduction: true
         });
-
-        if (log) {
-            FIGHT_LOG_ENABLED = true;
-        }
 
         if (mode == 'pet') {
             const simulator = new PetSimulator();
