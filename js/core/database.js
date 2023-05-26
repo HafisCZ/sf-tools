@@ -456,6 +456,15 @@ class PlayaResponse {
                         shadow: r.dungeonprogressshadow?.numbers
                     }
 
+                    if (r.gtsave) {
+                        const v = r.gtsave.numbers;
+                        data.gtsave = {
+                            tokens: v[4],
+                            floor_max: v[7],
+                            floor: v[3]
+                        }
+                    }
+
                     // Save version
                     currentVersion = r.serverversion.number;
                 } else {
