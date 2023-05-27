@@ -208,7 +208,10 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
             const player = editor.read();
 
-            const enemies = await HellevatorEnemies.floorRange(player.RangeStart, Math.max(player.RangeStart, player.RangeEnd), player.RangeTheme);
+            const start = player.GroupTournament.Floor;
+            const end = player.RangeEnd;
+
+            const enemies = await HellevatorEnemies.floorRange(start, Math.max(start, end), player.RangeTheme);
             const scores = [];
             let logs = [];
 
