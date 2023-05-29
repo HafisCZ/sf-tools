@@ -300,10 +300,18 @@ class PetSimulator extends SimulatorBase {
     }
 
     cache (source, target) {
+        this.cacheReset(source);
         this.ca = source;
+
+        this.cacheReset(target);
         this.cb = target;
 
         SimulatorModel.initializeFighters(this.ca, this.cb);
+    }
+
+    cacheReset (model) {
+        model.Data = null;
+        model.DataCache = Object.create(null);
     }
 
     fight () {

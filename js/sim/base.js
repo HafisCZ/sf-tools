@@ -474,6 +474,7 @@ class SimulatorModel {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
 
+        // Caching
         this.Data = null;
         this.DataHash = String(Math.random());
         this.DataCache = Object.create(null);
