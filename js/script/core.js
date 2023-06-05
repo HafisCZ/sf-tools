@@ -1352,6 +1352,14 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
+    'TABLE_INDEXED_CUSTOM',
+    ScriptType.Table,
+    /^indexed custom header$/,
+    (root) => root.addGlobal('indexed_custom', true),
+    (root) => Highlighter.keyword('indexed custom header')
+)
+
+ScriptCommands.register(
     'TABLE_GLOBAL_MEMBERS',
     ScriptType.Table,
     /^members( (on|off))?$/,
@@ -1830,7 +1838,7 @@ class Script {
             });
         }
 
-        if (this.globals.indexed) {
+        if (this.globals.indexed && !(this.globals.custom_left && this.globals.indexed_custom)) {
             const indexHeader = this.createHeader('#');
             
             this.mergeMapping(indexHeader, {
