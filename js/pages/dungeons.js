@@ -148,6 +148,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             Level: data.level,
             Health: data.health,
             NoBaseDamage: true,
+            BlockChance: typeof data.block !== 'undefined' ? data.block : undefined,
             Identifier: 999,
             Strength: { Total: data.str },
             Dexterity: { Total: data.dex },
@@ -788,7 +789,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             data.Armor = definition.MaximumDamageReduction * level * (rawDungeon.armor_multiplier || 1.0);
         }
 
-        if (data.Class === WARRIOR) {
+        if (data.Class === WARRIOR && typeof data.BlockChance === 'undefined') {
             data.BlockChance = 25;
         }
 
