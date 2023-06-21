@@ -184,6 +184,10 @@ body {
     background-attachment: fixed;
 }
 
+html {
+    overscroll-behavior: none;
+}
+
 * {
     text-shadow: #000000 0 0 10px;
 }
