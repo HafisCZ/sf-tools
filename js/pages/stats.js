@@ -354,7 +354,7 @@ class GroupDetailTab extends Tab {
 
             this.$reference.dropdown({
                 values: subref
-            }).dropdown('setting', 'onChange', (value, text) => {
+            }).dropdown('setting', 'onChange', (value) => {
                 this.reference = value;
                 this.load();
             });
@@ -364,7 +364,7 @@ class GroupDetailTab extends Tab {
 
         this.$reference.dropdown({
             values: listReference
-        }).dropdown('setting', 'onChange', (value, text) => {
+        }).dropdown('setting', 'onChange', (value) => {
             this.reference = value;
             this.load();
         });
@@ -1023,6 +1023,9 @@ class BrowseTab extends Tab {
         timestamps.sort((a, b) => b.value - a.value);
         references.sort((a, b) => b.value - a.value);
 
+        this.$timestamp.dropdown('clear', true);
+        this.$reference.dropdown('clear', true);
+
         DOM.dropdown(this.$timestamp.get(0), timestamps);
         DOM.dropdown(this.$reference.get(0), references);
 
@@ -1030,7 +1033,7 @@ class BrowseTab extends Tab {
             onChange: (value) => {
                 this.timestamp = value;
                 this.recalculate = true;
-    
+
                 if (this.reference > this.timestamp) {
                     this.reference = value;
                 }
@@ -1039,6 +1042,8 @@ class BrowseTab extends Tab {
                 for (let i = 0; i < subref.length; i++) {
                     subref[i].selected = subref[i].value == this.reference;
                 }
+
+                this.$reference.dropdown('clear', true);
 
                 DOM.dropdown(this.$reference.get(0), subref);
 
@@ -1067,11 +1072,11 @@ class BrowseTab extends Tab {
         this.tableBase.resetInjector();
         this.tableQ.resetInjector();
 
-        this.refreshTemplateDropdown();
-        this.updateSelectors();
-
         this.timestamp = DatabaseManager.LatestPlayer;
         this.reference = DatabaseManager.LatestPlayer;
+
+        this.refreshTemplateDropdown();
+        this.updateSelectors();
 
         this.load();
     }
