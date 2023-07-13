@@ -536,7 +536,15 @@ ScriptCommands.register(
     ScriptType.Table,
     /^columns (\w+[\w ]*(?:,\s*\w+[\w ]*)*)$/,
     (root, parts) => {
-        const values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
+        const values = parts.split(',').map((p) => {
+            const pt = p.trim();
+            if (root.constants.has(pt)) {
+                return root.constants.get(pt);
+            } else {
+                return pt;
+            }
+        }).map(v => isNaN(v) ? 0 : parseInt(v));
+
         if (values.length > 0) {
             root.addLocal('columns', values);
         }
