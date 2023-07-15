@@ -1010,13 +1010,13 @@ class BrowseTab extends Tab {
             timestamps.push({
                 name: _formatDate(timestamp),
                 value: timestamp,
-                selected: timestamp == DatabaseManager.LatestPlayer
+                selected: timestamp == this.timestamp
             });
 
             references.push({
                 name: _formatDate(timestamp),
                 value: timestamp,
-                selected: timestamp == DatabaseManager.LatestPlayer
+                selected: timestamp == this.reference
             });
         }
 
@@ -1068,17 +1068,27 @@ class BrowseTab extends Tab {
         });
     }
 
-    show () {
-        this.tableBase.resetInjector();
-        this.tableQ.resetInjector();
+    show (params) {
+        const nonBrowseOrigin = params && params.origin !== UI.Browse;
+        const nonUpdated = this.lastChange === DatabaseManager.LastChange;
 
-        this.timestamp = DatabaseManager.LatestPlayer;
-        this.reference = DatabaseManager.LatestPlayer;
+        if (nonBrowseOrigin && nonUpdated) {
+            // If no update has happened, just do nothing and display previously rendered table
+            return;
+        } else {
+            this.lastChange = DatabaseManager.LastChange;
 
-        this.refreshTemplateDropdown();
-        this.updateSelectors();
+            this.timestamp = DatabaseManager.LatestPlayer;
+            this.reference = DatabaseManager.LatestPlayer;
 
-        this.load();
+            this.tableBase.resetInjector();
+            this.tableQ.resetInjector();
+    
+            this.refreshTemplateDropdown();
+            this.updateSelectors();
+    
+            this.load();
+        }
     }
 
     load () {
