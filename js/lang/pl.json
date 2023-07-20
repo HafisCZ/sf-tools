@@ -279,7 +279,8 @@
         "99": "Mistrz dojo jin",
         "100": "Mistrz dojo jang",
         "101": "Stronnik olbrzymów",
-        "102": "Poskramiacz olbrzymów"
+        "102": "Poskramiacz olbrzymów",
+        "103": "Lucky Drop"
     },
     "index": {
         "toggle": "Pokaż/ukryj kontrybutorów",
@@ -1067,7 +1068,8 @@
             "2": "Oszustwo",
             "3": "Obżarstwo",
             "4": "Chciwość",
-            "5": "Heresy"
+            "5": "Herezja",
+            "6": "Limbo Plain"
         },
         "win": {
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
@@ -1402,8 +1404,8 @@
     "request": {
         "title": "prosi o dane twojej postaci",
         "notice#": "Wybierz postać, którą chcesz udostępnić na stronie.<br>Żadne dane osobowe nie zostaną udostępnione!",
-        "access": "Click here to grant this domain access to your characters",
-        "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
+        "access": "Kliknij tutaj, aby przyznać dostęp do twoich postaci tej witrynie",
+        "access_hint": "Pamiętaj, że używanie blokowania reklam lub trackerów może uniemożliwić wczytywanie wszystkich przechowywanych postaci",
         "error": {
             "title": "Błąd zapytania",
             "notice#": "Strona wysłała żądanie dot. danych postaci, lecz nie określiła wymaganych parametrów"

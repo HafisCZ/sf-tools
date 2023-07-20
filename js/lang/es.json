@@ -279,7 +279,8 @@
         "99": "Maestro del dojo Ying",
         "100": "Maestro del dojo Yang",
         "101": "Conocedor de gigantes",
-        "102": "Domador de gigantes"
+        "102": "Domador de gigantes",
+        "103": "Lucky Drop"
     },
     "index": {
         "toggle": "Alternar créditos",
@@ -1067,7 +1068,8 @@
             "2": "Fraud",
             "3": "Gluttony",
             "4": "Greed",
-            "5": "Heresy"
+            "5": "Heresy",
+            "6": "Limbo Plain"
         },
         "win": {
             "all": "Todos los #{count} pisos fueron derrotados con 100% de probabilidad",

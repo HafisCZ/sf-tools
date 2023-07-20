@@ -279,7 +279,8 @@
         "99": "Maestro del dojo Ying",
         "100": "Maestro del dojo Yang",
         "101": "Empatia con i giganti",
-        "102": "Domatore di giganti"
+        "102": "Domatore di giganti",
+        "103": "Lucky Drop"
     },
     "index": {
         "toggle": "Crediti",
@@ -1067,7 +1068,8 @@
             "2": "Frode",
             "3": "Golosità",
             "4": "Avidità",
-            "5": "Heresy"
+            "5": "Heresy",
+            "6": "Limbo Plain"
         },
         "win": {
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",

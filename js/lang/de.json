@@ -125,10 +125,10 @@
         "attack100": "Revive",
         "attack200": "Bard Song",
         "gt_background1": "Gold",
-        "gt_background2": "Silver",
+        "gt_background2": "Silber",
         "gt_background3": "Bronze",
-        "item1": "Weapon",
-        "item2": "Shield",
+        "item1": "Waffe",
+        "item2": "Schild",
         "item3": "Rüstung",
         "item4": "Stiefel",
         "item5": "Handschuhe",
@@ -279,7 +279,8 @@
         "99": "Ying Dojo-Master",
         "100": "Yang Dojo-Master",
         "101": "Riesenversteher",
-        "102": "Riesenbändiger"
+        "102": "Riesenbändiger",
+        "103": "Lucky Drop"
     },
     "index": {
         "toggle": "Credits umschalten",
@@ -403,7 +404,7 @@
             "heading1": {
                 "title": "Endpunkt",
                 "clause0": "Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.",
-                "clause1": "It is not possible to capture any other players than those listed above.",
+                "clause1": "Es ist nicht möglich andere als die oben gelisteten Spieler zu erfassen.",
                 "clause2": "Everything happens locally in a identical way to playing the game through browser."
             },
             "heading2": {
@@ -412,10 +413,10 @@
                 "clause1": "The shared data might be deleted at any point of time, up to full 2 days."
             },
             "heading3": {
-                "title": "Sentry",
+                "title": "Wache",
                 "clause0": "All errors raised during use of this tool will be reported via Sentry.io tool.",
                 "clause1": "These reports are anonymous so that it's not possible to track their origin.",
-                "clause2": "Please note that certain ad-blockers might prevent Sentry from working.",
+                "clause2": "Bitte beachte, dass bestimme Werbeblocker Sentry möglicherweise verhindern zu funktionieren.",
                 "clause3": "If you want to contribute to this project I recommend disabling ad-blockers for this site."
             }
         },
@@ -492,7 +493,7 @@
                 "advanced_title": "Manage players and groups individually",
                 "hidden": "Versteckte Einträge anzeigen",
                 "export_public_only": "Nur publike Daten exportieren",
-                "export_public_only_title": "All exports from this site will contain only public data (no private data will be included)",
+                "export_public_only_title": "Alle Exports von dieser Seite enthalten nur öffentliche Daten (keine privaten Daten werden enthalten sein)",
                 "export_bundle_groups": "Bündle Gruppen an Spielern",
                 "export_bundle_groups_title": "Includes groups for every player selected when exporting via advanced file list"
             },
@@ -591,8 +592,8 @@
                 "remove": "Entfernen",
                 "reset": "Änderungen verwerfen",
                 "save_template": "Als Vorlage speichern",
-                "export": "Export",
-                "import": "Import",
+                "export": "Exportieren",
+                "import": "Importieren",
                 "header": {
                     "actions": "Aktionen",
                     "modify": "Skript",
@@ -633,15 +634,15 @@
             "hidden": "Versteckte anzeigen"
         },
         "share": {
-            "title": "File export",
-            "title_short": "Export",
+            "title": "Datei exportieren",
+            "title_short": "Exportieren",
             "options": "Optionen",
             "code": "Dein Code",
-            "file": "Selection",
+            "file": "Auswahl",
             "format": "Format",
-            "get": "Export",
+            "get": "Exportieren",
             "ok": "Ok",
-            "public": "Export only public data (regardless of your current global setting)",
+            "public": "Exportiere nur globale Daten (unabhängig von deinen globalen Einstellungen)",
             "expire": "Der Code wird nach 2 Tagen automatisch ungültig.",
             "single_use": "Nur zur einmaligen Verwendung",
             "single_use_notice": "Bitte diese Option aktiviert lassen, es sei denn, die Datei solll mit mehreren Personen geteilt werden.",
@@ -772,7 +773,7 @@
         "simulate_dungeons": "Alle verbleibenden Dungeons simulieren",
         "results": "Resultate",
         "calendar": {
-            "collected": "Collected",
+            "collected": "Gesammelt",
             "available": "Verfügbar",
             "locked": "Gesperrt"
         },
@@ -787,7 +788,7 @@
             "4": "Wasser"
         },
         "locations": {
-            "0": "Black Forest",
+            "0": "Schwarzwald",
             "1": "Black Water Swamp",
             "2": "Busted Lands",
             "3": "Erogenion",
@@ -808,9 +809,9 @@
             "18": "Stumble Steppe",
             "19": "Sunburn Desert",
             "20": "Tusk Mountain",
-            "201": "Gem Mine",
-            "202": "Weapon Shop",
-            "203": "Magic Shop",
+            "201": "Edelsteinmine",
+            "202": "Waffenladen",
+            "203": "Zauberladen",
             "204": "Arcane Toilet"
         },
         "names": {
@@ -1067,7 +1068,8 @@
             "2": "Fraud",
             "3": "Gluttony",
             "4": "Greed",
-            "5": "Heresy"
+            "5": "Heresy",
+            "6": "Limbo Plain"
         },
         "win": {
             "all": "Alle #{count} Etagen wurden mit 100% iger Chance besiegt",
@@ -1130,7 +1132,7 @@
     },
     "analyzer": {
         "topbar": {
-            "import": "Importiere",
+            "import": "Importieren",
             "clear": "Leeren",
             "export": "Exportieren",
             "options": "Optionen"
@@ -1145,10 +1147,10 @@
         "export": "Kämpfe exportieren",
         "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistische Analyse",
-        "gladiator": "Gladiator not reduced",
+        "gladiator": "Gladiator nicht reduziert",
         "clear_changes": "Reset to original state",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
+            "select": "#{index} - #{rounds} Runden - #{nameA} - #{nameB} - Gewinner: #{winner}",
             "rage": "Kampfrausch",
             "attacker": "Angreifer",
             "target": "Ziel",
@@ -1158,8 +1160,8 @@
             "damage_base": "Basisschaden"
         },
         "toast_import_error": {
-            "title": "Import fehlgeschlagen",
-            "message": "Ensure that you are importing a valid HAR or fight JSON"
+            "title": "Importieren fehlgeschlagen",
+            "message": "Stelle sicher, dass du eine gültige HAR oder Kampf JSON importierst"
         },
         "special_state": {
             "druid_rage": "Druid is enraged",
@@ -1276,10 +1278,10 @@
     },
     "integration": {
         "file": "Datei",
-        "game": "Endpoint",
+        "game": "Endpunkt",
         "poll": {
-            "players": "Poll saved players",
-            "guilds": "Poll saved guilds"
+            "players": "Gespeicherte Spieler abrufen",
+            "guilds": "Gespeicherte Gilden abrufen"
         },
         "tooltip": {
             "cheats": "Apply modifications to characters",
@@ -1365,26 +1367,26 @@
             "message": "Abrufen von Daten"
         },
         "step7": {
-            "title": "Select your character"
+            "title": "Wähle deinen Charakter aus"
         },
         "user_error": {
             "title": "Ihr Benutzername oder Passwort ist ungültig",
             "message": "Bitte achten Sie auf das richtige Format (Benutzername@url)"
         },
         "errors": {
-            "error_unreachable": "Server cannot be reached",
-            "error_malformed_url": "Server URL is not valid",
+            "error_unreachable": "Der Server kann nicht erreicht werden",
+            "error_malformed_url": "Die Server URL ist ungültig",
             "error_wrong_pass": "Falsches Passwort",
             "error_player_not_found": "Charakter wurde nicht auf dem Server gefunden",
-            "error_sessionid_invalid": "Session expired or interrupted by another device",
+            "error_sessionid_invalid": "Sitzung ist abgelaufen oder durch ein anderes Gerät unterbrochen",
             "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
             "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Falscher Account Name oder Passwort",
             "playa_account_not_active": "Dein Account ist nicht aktiv",
-            "playa_account_empty": "Your account has no characters",
+            "playa_account_empty": "Dein Account hat keine Charaktere",
             "playa_account_blocked": "Your account has been permanently locked",
             "playa_account_blocked_temporary": "Your account has been temporarily locked",
-            "an_error_occurred": "Server is not available, please try again later"
+            "an_error_occurred": "Server ist nicht verfügbar, bitte versuche es später erneut"
         }
     },
     "database": {
@@ -1400,7 +1402,7 @@
         }
     },
     "request": {
-        "title": "is requesting your character data",
+        "title": "fordert deine Charakterdaten an",
         "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
         "access": "Click here to grant this domain access to your characters",
         "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
@@ -1701,8 +1703,8 @@
             "pot_pm": "Pilz TdEL",
             "pot_pg": "Gold TdEL",
             "scroll": "Hexen Verzauberung",
-            "glass": "Treibsanduhr",
-            "glass_10": "10 Treibsanduhren",
+            "glass": "Treibsanduhr der Ungeduld",
+            "glass_10": "10 Treibsanduhren der Ungeduld",
             "calendar_1": "Kalender ein Barren",
             "calendar_3": "Kalender 3 Barren / Verschlossen",
             "arena": "Arena Max",

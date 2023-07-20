@@ -279,7 +279,8 @@
         "99": "Ying Dojo Master",
         "100": "Yang Dojo Master",
         "101": "Understander of Giants",
-        "102": "Tamer of Giants"
+        "102": "Tamer of Giants",
+        "103": "Lucky Drop"
     },
     "index": {
         "toggle": "Alternar Créditos",
@@ -1067,7 +1068,8 @@
             "2": "Fraud",
             "3": "Gluttony",
             "4": "Greed",
-            "5": "Heresy"
+            "5": "Heresy",
+            "6": "Limbo Plain"
         },
         "win": {
             "all": "All #{count} floors were defeated with 100% chance",
