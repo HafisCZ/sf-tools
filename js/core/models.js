@@ -773,7 +773,7 @@ class PlayerModel {
         this.DevilPercent = dataType.short();
         dataType.skip(1); // skip
         this.Mushrooms = {
-            Current: dataType.long(),
+            Current: dataType.long() || resources.Mushrooms,
             Total: dataType.long()
         }
         dataType.skip(1);
@@ -1300,6 +1300,8 @@ class PlayerModel {
         this.ScrapbookLegendary = PlayerModel.decodeScrapbook(data.scrapbook_legendary);
 
         this.WebshopID = PlayaResponse.unescape(data.webshopid);
+
+        this.Gold = (resources.Gold || 0) / 100;
     }
 
     #initOther (data) {

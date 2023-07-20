@@ -2991,6 +2991,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Gold',
   {
     expr: p => p.Gold,
+    format: 'fnumber',
     statistics: false
   }
 )
