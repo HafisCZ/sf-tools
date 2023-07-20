@@ -2988,6 +2988,14 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Gold',
+  {
+    expr: p => p.Gold,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Shrooms Total',
   {
     expr: p => _dig(p, 'Mushrooms', 'Total'),
