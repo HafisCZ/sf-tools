@@ -571,10 +571,10 @@ class Localization {
 
     static async #fetchTranslation (locale) {
         if (Object.keys(this.#LOCALES).includes(locale)) {
-            let start = Date.now();
+            const start = Date.now();
 
-            let file = await fetch(this.#translationUrl(locale));
-            let data = await file.json();
+            const file = await fetch(this.#translationUrl(locale));
+            const data = await file.json();
 
             Logger.log('APPINFO', `Translation ready in ${Date.now() - start} ms`);
 
@@ -586,6 +586,7 @@ class Localization {
 
     static #translationUrl (locale) {
         const useRemote = window.document.location.protocol === 'file:';
+
         return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`;
     }
 
@@ -616,7 +617,7 @@ class Localization {
     }
 
     static #findTranslation (key) {
-        let obj = this.translation[key];
+        const obj = this.translation[key];
         if (!obj) {
             Logger.log('IN_WARN', `Translation key ${key} not found!`);
         }
@@ -625,32 +626,32 @@ class Localization {
     }
 
     static #translatePlaceholder (node) {
-        let key = node.getAttribute('data-intl-placeholder');
-        let val = this.#findTranslation(key);
+        const key = node.getAttribute('data-intl-placeholder');
+        const val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl-placeholder');
         node.setAttribute('placeholder', this.#sanitize(val || key));
     }
 
     static #translateTooltip (node) {
-        let key = node.getAttribute('data-intl-tooltip');
-        let val = this.#findTranslation(key);
+        const key = node.getAttribute('data-intl-tooltip');
+        const val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl-tooltip');
         node.setAttribute('data-tooltip', this.#sanitize(val || key));
     }
 
     static #translateTitle (node) {
-        let key = node.getAttribute('data-intl-title');
-        let val = this.#findTranslation(key);
+        const key = node.getAttribute('data-intl-title');
+        const val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl-title');
         node.setAttribute('title', this.#sanitize(val || key));
     }
 
     static #translateElement (node) {
-        let key = node.getAttribute('data-intl');
-        let val = this.#findTranslation(key);
+        const key = node.getAttribute('data-intl');
+        const val = this.#findTranslation(key);
 
         node.removeAttribute('data-intl');
 
