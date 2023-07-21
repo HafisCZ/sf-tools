@@ -297,7 +297,7 @@ const SimulatorShopDialog = new (class extends Dialog {
     }
 })
 
-const ChangeLogDialog = new (class extends Dialog {
+const ChangelogDialog = new (class extends Dialog {
     constructor () {
         super({
             key: 'changelog'
@@ -456,7 +456,7 @@ const ErrorDialog = new (class extends Dialog {
     }
 })();
 
-const ConfirmDialog = new (class extends Dialog {
+const ConfirmationDialog = new (class extends Dialog {
     constructor () {
         super({
             key: 'confirm'
@@ -703,7 +703,7 @@ window.addEventListener('DOMContentLoaded', async function () {
         }
 
         if (SiteOptions.version_accepted != MODULE_VERSION) {
-            DialogController.open(ChangeLogDialog);
+            DialogController.open(ChangelogDialog);
         }
 
         if (Site.is('simulator')) {

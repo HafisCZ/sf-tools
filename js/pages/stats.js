@@ -1724,7 +1724,7 @@ class FilesTab extends Tab {
 
     // Delete all
     deleteAll () {
-        DialogController.open(ConfirmDialog, intl('dialog.delete_all.title'), intl('dialog.delete_all.notice'), () => {
+        DialogController.open(ConfirmationDialog, intl('dialog.delete_all.title'), intl('dialog.delete_all.notice'), () => {
             Loader.toggle(true);
             DatabaseManager.purge().then(() => this.show());
         }, () => {}, true, 2)
@@ -2558,7 +2558,7 @@ class ScriptsTab extends Tab {
         this.$remove = this.$parent.operator('remove');
         this.$remove.click(() => {
             DialogController.open(
-                ConfirmDialog,
+                ConfirmationDialog,
                 intl('dialog.delete_script.title'),
                 intl('dialog.delete_script.notice'),
                 () => this.remove(),
@@ -2938,7 +2938,7 @@ class SettingsTab extends Tab {
     }
 
     importDumpFile (fileEvent) {
-        DialogController.open(ConfirmDialog, intl('stats.settings.recovery.title'), intl('stats.settings.recovery.notice'), async function () {
+        DialogController.open(ConfirmationDialog, intl('stats.settings.recovery.title'), intl('stats.settings.recovery.notice'), async function () {
             Loader.toggle(true);
 
             Toast.info(intl('stats.settings.recovery.title'), intl('stats.settings.recovery.toast'));
