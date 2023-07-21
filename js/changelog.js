@@ -1,7 +1,19 @@
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
-            'Added <code>Official Discord</code> header'
+            'Added <code>Official Discord</code> and <code>Gold</code> header',
+            'Added <code>indexed custom header</code> to use first column as custom index column',
+            'Fixed dropdowns not updating on browse tab'
+        ],
+        'Hellevator Simulator': [
+            'Added support for logging'
+        ],
+        'All Simulators': [
+            'Fixed shield value when morphing into warrior'
+        ],
+        'All Tools': [
+            'Added <code>SFTOOLS</code> content creator code to the main page',
+            'Added new link to community-made tool on the main page'
         ]
     },
     'v6.3875': {
