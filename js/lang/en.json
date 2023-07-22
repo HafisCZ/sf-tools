@@ -624,7 +624,9 @@
                 "TABLE_GLOBAL_PERFORMANCE": "performance",
                 "TABLE_GLOBAL_LIMIT": "limit",
                 "TABLE_FORMAT_LONG": "format",
-                "TABLE_FORMAT": "expf"
+                "TABLE_FORMAT": "expf",
+                "TABLE_ROW_COMPACT": "show as",
+                "TABLE_ROW": "row"
             }
         },
         "players": {

@@ -973,22 +973,6 @@ ScriptCommands.register(
         return acc;
     }
 )
-    
-ScriptCommands.register(
-    'TABLE_ROW_OLD',
-    ScriptType.Table,
-    /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
-    (root, extensions, name, expression) => {
-        const ast = Expression.create(expression, root);
-        if (ast) {
-            root.addRow(name, ast);
-            if (extensions) {
-                root.addExtension(... extensions.slice(0, -1).split(','));
-            }
-        }
-    },
-    (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
-)
 
 ScriptCommands.register(
     'TABLE_ROW_HEIGHT',
@@ -1021,6 +1005,22 @@ ScriptCommands.register(
             return acc;
         }
     }
+)
+
+ScriptCommands.registerDeprecatedVariant(
+    'TABLE_ROW',
+    'TABLE_ROW_COMPACT',
+    /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
+    (root, extensions, name, expression) => {
+        const ast = Expression.create(expression, root);
+        if (ast) {
+            root.addRow(name, ast);
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
+            }
+        }
+    },
+    (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
 )
       
 ScriptCommands.register(
