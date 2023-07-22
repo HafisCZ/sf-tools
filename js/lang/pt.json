@@ -293,6 +293,13 @@
             "translator": "Tradutores",
             "mention": "Outras Menções"
         },
+        "footer": {
+            "beta": "Check out public beta",
+            "kofi": "Give mar some shrooms",
+            "crowdin": "Help with translations",
+            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
+            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+        },
         "stats": {
             "title": "Estatísticas",
             "desc": "Acompanha o teu progresso e o da tua guilda"

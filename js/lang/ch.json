@@ -293,6 +293,13 @@
             "translator": "Übersetzr",
             "mention": "witeri Erwähnige"
         },
+        "footer": {
+            "beta": "Check out public beta",
+            "kofi": "Give mar some shrooms",
+            "crowdin": "Help with translations",
+            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
+            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+        },
         "stats": {
             "title": "Statistik",
             "desc": "Vrvoug dr Fortschritt vo dir u dinere Giude"
