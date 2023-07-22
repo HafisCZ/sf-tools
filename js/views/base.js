@@ -297,6 +297,35 @@ const SimulatorShopDialog = new (class extends Dialog {
     }
 })
 
+const AnnouncementDialog = new (class extends Dialog {
+    constructor () {
+        super({
+            key: 'announcement'
+        })
+    }
+
+    _createModal () {
+        const { title, content } = ANNOUNCEMENTS.at(-1)
+
+        return `
+            <div class="small inverted dialog">
+                <div class="header">${title}</div>
+                <div class="text-center mb-4 mt-4" style="max-height: 50vh;">
+                    ${content}
+                </div>
+                <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$parent.find('[data-op="accept"]').click(() => {
+            SiteOptions.announcement_accepted = ANNOUNCEMENTS.length;
+            this.close();
+        });
+    }
+})
+
 const ChangelogDialog = new (class extends Dialog {
     constructor () {
         super({
@@ -705,6 +734,10 @@ window.addEventListener('DOMContentLoaded', async function () {
 
         if (SiteOptions.version_accepted != MODULE_VERSION) {
             DialogController.open(ChangelogDialog);
+        }
+
+        if (ANNOUNCEMENTS.length > 0 && SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
+            DialogController.open(AnnouncementDialog);
         }
 
         if (Site.is('simulator')) {
