@@ -1,3 +1,12 @@
+const ANNOUNCEMENTS = [
+    {
+        title: 'WebShop Code',
+        content: `
+            I am happy to announce that SF Tools was granted its very own WebShop code.<br><br>If you want to support the website development via your normal shroom purchases, simply introduce the code <code class="text-orange">SFTOOLS</code> at checkout.
+        `
+    }
+]
+
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
