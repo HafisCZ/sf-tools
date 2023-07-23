@@ -207,6 +207,21 @@ DEFAULT_EXPRESSION_CONFIG.register(
   }
 )
 
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', 'this',
+  function (self, scope, node) {
+    if (scope) {
+      if (node.args.length !== 1) {
+        return scope.getSelf(0);
+      } else {
+        return scope.getSelf(self.evalInternal(scope, node.args[0]));
+      }
+    } else {
+      return undefined;
+    }
+  }
+)
+
 /*
   Array functions
 */
