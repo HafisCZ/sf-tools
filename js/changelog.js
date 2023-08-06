@@ -12,10 +12,14 @@ const CHANGELOG = {
         'Statistics': [
             'Added <code>Official Discord</code> and <code>Gold</code> header',
             'Added <code>indexed custom header</code> to use first column as custom index column',
-            'Fixed dropdowns not updating on browse tab'
+            'Added new berserker icon',
+            'Added <code>this</code> as a function',
+            'Fixed dropdowns not updating on browse tab',
+            'Fixed <code>show as</code> not appearing as deprecated'
         ],
         'Hellevator Simulator': [
-            'Added support for logging'
+            'Added support for logging',
+            'Added new hellevator theme'
         ],
         'All Simulators': [
             'Fixed shield value when morphing into warrior'
