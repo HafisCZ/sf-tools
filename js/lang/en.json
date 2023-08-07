@@ -1349,6 +1349,7 @@
         "hand_enchant": "Shadow of the Cowboy",
         "smart_change": "Smart class change",
         "copy": "Copy",
+        "optimal": "Optimal",
         "none": "None"
     },
     "endpoint": {
