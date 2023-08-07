@@ -165,8 +165,10 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
+            DamageMultiplier: 1.0,
             MaximumDamageReduction: 50,
 
+            Bool_OverwriteShieldBlockChance: false,
             SkipChance: 0.25
         },
         Mage: {
@@ -174,13 +176,19 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 2,
             WeaponDamageMultiplier: 4.5,
-            MaximumDamageReduction: 10
+            DamageMultiplier: 1.0,
+            MaximumDamageReduction: 10,
+
+// The idea is to have a dodge chance as mage instead of armor
+            SkipChance: 0.0,
+            Bool_SkipMage: false
         },
         Scout: {
             Attribute: 'Dexterity',
 
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2.5,
+            DamageMultiplier: 1.0,
             MaximumDamageReduction: 25,
 
             SkipChance: 0.50
@@ -190,9 +198,10 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2,
+            DamageMultiplier: 0.625,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 0.625,
+									
             SkipChance: 0.50
         },
         Battlemage: {
@@ -200,6 +209,9 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 2,
+            DamageMultiplier: 1.0,
+            Bool_DynamicFireballDmgScaling: false,
+            Bool_NoFireballDmgCap: false,
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 5
         },
@@ -208,9 +220,10 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2,
+            DamageMultiplier: 1.25,
             MaximumDamageReduction: 25,
 
-            DamageMultiplier: 1.25,
+            RageChance: 0.5,
             SkipLimit: 14
         },
         DemonHunter: {
@@ -218,23 +231,26 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 4,
             WeaponDamageMultiplier: 2.5,
+            DamageMultiplier: 1.0,
             MaximumDamageReduction: 50,
 
             ReviveChance: 0.44,
             ReviveChanceDecay: 0.02,
             ReviveHealth: 0.9,
-            ReviveHealthMin: 0.1,
-            ReviveHealthDecay: 0.1
+            ReviveHealthMin: 0.0,
+            ReviveHealthDecay: 0.1,
+            ReviveDamageDecay: 0
         },
         Druid: {
             Attribute: 'Intelligence',
 
             HealthMultiplier: 5,
             WeaponDamageMultiplier: 4.5,
+            DamageMultiplier: 1 / 3,
             MaximumDamageReduction: 20,
             MaximumDamageReductionMultiplier: 2,
 
-            DamageMultiplier: 1 / 3,
+									
 
             SwoopChance: 0.25,
             SwoopChanceMin: 0,
@@ -253,10 +269,11 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 2,
             WeaponDamageMultiplier: 4.5,
+            DamageMultiplier: 1.125,
             MaximumDamageReduction: 25,
             MaximumDamageReductionMultiplier: 2,
 
-            DamageMultiplier: 1.125,
+									
 
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
@@ -342,6 +359,7 @@ const BARD = 9;
 const RUNE_FIRE_DAMAGE = 40;
 const RUNE_COLD_DAMAGE = 41;
 const RUNE_LIGHTNING_DAMAGE = 42;
+const RUNE_BEST_DAMAGE = 187;
 
 // States
 const STATE_DEAD = 0;
@@ -508,7 +526,7 @@ class SimulatorModel {
     getSkipChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
-        } else if (this.Player.Class == WARRIOR) {
+        } else if (this.Player.Class == WARRIOR && !CONFIG.Warrior.Bool_OverwriteShieldBlockChance) {
             return typeof this.Player.BlockChance !== 'undefined' ? (this.Player.BlockChance / 100) : this.Config.SkipChance;
         } else {
             return this.Config.SkipChance || 0;
@@ -586,11 +604,12 @@ class SimulatorModel {
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
+        let mb = (1 - Math.min(target.Player.Runes.ResistanceFire, target.Player.Runes.ResistanceCold, target.Player.Runes.ResistanceLightning) / 100) * (getRuneValue(weapon, RUNE_BEST_DAMAGE) / 100);
 
         let aa = this.getAttribute(this);
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
 
-        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml);
+        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml + mb);
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 
@@ -724,7 +743,21 @@ class WarriorModel extends SimulatorModel {
 }
 
 class MageModel extends SimulatorModel {
+    controlSkip (instance, source) {
+        if (this.Config.SkipChance > 0) {
+            const skip = getRandom(this.Config.SkipChance);
 
+            if (skip && source.Player.Class === MAGE && !this.Config.Bool_SkipMage) {
+                return false;
+            } else if (skip) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }
 
 class ScoutModel extends SimulatorModel {
@@ -763,10 +796,24 @@ class BattlemageModel extends SimulatorModel {
     getFireballDamage (target) {
         if (target.Player.Class == MAGE) {
             return 0;
+        } else if (this.Config.Bool_DynamicFireballDmgScaling) {
+            let multiplierF = (1 - 0.375 / ( 1 - (this.Config.MaximumDamageReduction * this.Config.MaximumDamageReductionMultiplier)/100));
+
+            const multiplier = multiplierF / this.Config.HealthMultiplier * target.Config.HealthMultiplier;
+
+            if (!this.Config.Bool_NoFireballDmgCap) {
+                return Math.min(Math.ceil(target.TotalHealth * (1/(1-multiplierF)-1)), Math.ceil(this.TotalHealth * multiplier));
+            } else {
+                return Math.ceil(this.TotalHealth * multiplier);
+            }
         } else {
             const multiplier = 0.05 * target.Config.HealthMultiplier;
 
-            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth * multiplier));
+            if (!this.Config.Bool_NoFireballDmgCap) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth * multiplier));
+            } else {
+                return Math.ceil(this.TotalHealth * multiplier);
+            }
         }
     }
 
@@ -803,7 +850,7 @@ class BerserkerModel extends SimulatorModel {
     controlSkip (instance, source) {
         if (source.Player.Class === MAGE) {
             return false;
-        } else if (getRandom(0.50) && this.SkipCount < this.Config.SkipLimit) {
+        } else if (getRandom(this.Config.RageChance) && this.SkipCount < this.Config.SkipLimit) {
             this.SkipCount++;
 
             return true;
@@ -843,6 +890,18 @@ class DemonHunterModel extends SimulatorModel {
         }
 
         return state;
+    }
+
+    attack (damage, target, skipped, critical, type) {
+        let multiplierM = this.Config.ReviveDamageDecay * this.DeathTriggers;
+
+        return super.attack(
+            damage * (1 - multiplierM),
+            target,
+            skipped,
+            critical,
+            type
+        );
     }
 }
 
