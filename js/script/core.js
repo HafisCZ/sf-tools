@@ -2133,12 +2133,12 @@ class Script {
             }
 
             // Merge difference format expression
-            if (!obj.value.format) {
+            if (!obj.value.formatDifference) {
                 obj.value.formatDifference = definition.value.formatDifference;
             }
 
             // Merge statistics format expression
-            if (!obj.value.format) {
+            if (!obj.value.formatStatistics) {
                 obj.value.formatStatistics = definition.value.formatStatistics;
             }
 
