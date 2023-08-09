@@ -1229,7 +1229,7 @@ ScriptCommands.register(
     'TABLE_SHARED_BREAKLINE',
     ScriptType.Table,
     /^breakline (on|off)$/,
-    (root, value) => root.addShared('breakline', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => root.addBreaklineRule(ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('breakline').space().boolean(value, value == 'on')
 )
 
@@ -2142,6 +2142,11 @@ class Script {
                 obj.value.formatStatistics = definition.value.formatStatistics;
             }
 
+            // Merge breakline
+            if (typeof obj.value.breakline === 'undefined') {
+                obj.value.breakline = definition.value.breakline;
+            }
+
             // Merge value extra
             if (!obj.value.extra) {
                 obj.value.extra = definition.value.extra;
@@ -2399,7 +2404,7 @@ class Script {
         return {
             extra: undefined,
             format: undefined,
-            breakline: true,
+            breakline: undefined,
             formatDifference: undefined,
             formatStatistics: undefined,
             rules: new RuleEvaluator(),
@@ -2433,7 +2438,7 @@ class Script {
                 }
 
                 // Replace spaces with unbreakable ones
-                if (this.breakline == 0) {
+                if (typeof this.breakline !== 'undefined' && !this.breakline) {
                     output = output.replace(/\ /g, '&nbsp;')
                 }
 
