@@ -427,6 +427,8 @@ class TableInstance {
 
     // Set players
     setEntries (array) {
+        this.settings.evalBefore(array)
+
         if (this.tableType === TableType.Group) {
             this.array = array;
         } else {

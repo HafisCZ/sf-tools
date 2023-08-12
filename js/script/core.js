@@ -2928,6 +2928,11 @@ class Script {
         return segmentedArray;
     }
 
+    evalBefore (array) {
+        this.timestamp = array.timestamp;
+        this.reference = array.reference;
+    }
+
     evalPlayer (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array);
@@ -2993,8 +2998,6 @@ class Script {
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
-        this.timestamp = array.timestamp;
-        this.reference = array.reference;
 
         // Get segmented lists
         let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
@@ -3064,8 +3067,6 @@ class Script {
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
-        this.timestamp = array.timestamp;
-        this.reference = array.reference;
 
         array = [].concat(array);
         unfilteredArray = [].concat(unfilteredArray);
