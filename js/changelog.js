@@ -15,7 +15,8 @@ const CHANGELOG = {
             'Added new berserker icon',
             'Added <code>this</code> as a function',
             'Fixed dropdowns not updating on browse tab',
-            'Fixed <code>show as</code> not appearing as deprecated'
+            'Fixed <code>show as</code> not appearing as deprecated',
+            'Fixed table timestamps not working in <code>discard</code>'
         ],
         'Hellevator Simulator': [
             'Added support for logging',
