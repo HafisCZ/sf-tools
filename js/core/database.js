@@ -591,34 +591,28 @@ class ModelRegistry {
     }
 }
 
-const DatabaseManager = new (class {
-    #interface = null;
+class DatabaseManager {
+    static #interface = null;
 
     // Metadata & Settings
-    #metadataDelta = [];
-    #metadata = {};
-    #hiddenModels = new Set();
-    #sessionObjects = {};
-    #hiddenVisible = false;
-    #hiddenIdentifiers = new Set();
+    static #metadataDelta = [];
+    static #metadata = {};
+    static #hiddenModels = new Set();
+    static #sessionObjects = {};
+    static #hiddenVisible = false;
+    static #hiddenIdentifiers = new Set();
 
     // Trackers
-    #trackerData = {};
-    #trackedPlayers = {};
-    #trackerConfig = {};
-    #trackerConfigEntries = [];
+    static #trackerData = {};
+    static #trackedPlayers = {};
+    static #trackerConfig = {};
+    static #trackerConfigEntries = [];
 
-    constructor () {
-        this.#sessionObjects = {};
-
-        this.reset();
-    }
-
-    #addToSession (object) {
+    static #addToSession (object) {
         this.#sessionObjects[_uuid(object)] = object;
     }
 
-    async reset () {
+    static async reset () {
         if (this.#interface) {
             await this.#interface.close();
         }
@@ -650,7 +644,7 @@ const DatabaseManager = new (class {
     }
 
     // INTERNAL: Add player
-    #addPlayer (data) {
+    static #addPlayer (data) {
         let player = new Proxy({
             Data: data,
             Identifier: data.identifier,
@@ -683,12 +677,12 @@ const DatabaseManager = new (class {
     }
 
     // INTERNAL: Add group
-    #addGroup (data) {
+    static #addGroup (data) {
         this.#registerModel('Groups', data.identifier, data.timestamp, new GroupModel(data));
     }
 
     // INTERNAL: Add model
-    #registerModel (type, identifier, timestamp, model) {
+    static #registerModel (type, identifier, timestamp, model) {
         this.Identifiers.add(identifier, timestamp);
         this.Timestamps.add(timestamp, identifier);
 
@@ -700,7 +694,7 @@ const DatabaseManager = new (class {
     }
 
     // INTERNAL: Update internal player/group lists
-    #updateLists () {
+    static #updateLists () {
         this.Latest = 0;
         this.LatestPlayer = 0;
         this.LastChange = Date.now();
@@ -783,7 +777,7 @@ const DatabaseManager = new (class {
     }
 
     // INTERNAL: Load player from proxy
-    loadPlayer (lazyPlayer) {
+    static loadPlayer (lazyPlayer) {
         if (lazyPlayer && lazyPlayer.IsProxy) {
             const { Identifier: identifier, Timestamp: timestamp, Data: data } = lazyPlayer;
 
@@ -808,7 +802,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async #loadTemporary () {
+    static async #loadTemporary () {
         this.#interface = DatabaseUtils.createTemporarySession();
         this.#hiddenIdentifiers = new Set();
 
@@ -816,7 +810,7 @@ const DatabaseManager = new (class {
         Logger.log('PERFLOG', 'Skipped load in temporary mode');
     }
 
-    #initModel (type, model) {
+    static #initModel (type, model) {
         if (this.isHidden(model)) {
             this.#hiddenModels.add(model);
 
@@ -834,7 +828,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async #loadDatabase (profile) {
+    static async #loadDatabase (profile) {
         const beginTimestamp = Date.now();
 
         // Open interface
@@ -914,7 +908,7 @@ const DatabaseManager = new (class {
         Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
     }
 
-    async reloadHidden () {
+    static async reloadHidden () {
         if (this.#hiddenVisible != SiteOptions.hidden) {
             this.#hiddenVisible = SiteOptions.hidden;
             
@@ -944,7 +938,7 @@ const DatabaseManager = new (class {
     }
 
     // Load database
-    async load (profile = DEFAULT_PROFILE) {
+    static async load (profile = DEFAULT_PROFILE) {
         await this.reset();
 
         Actions.init();
@@ -958,18 +952,18 @@ const DatabaseManager = new (class {
         }
     }
 
-    isHidden (entry) {
+    static isHidden (entry) {
         return entry.hidden || this.#metadata[entry.timestamp]?.hidden;
     }
 
-    async #markHidden (timestamp, hidden) {
+    static async #markHidden (timestamp, hidden) {
         const metadata = Object.assign(this.#metadata[timestamp], { timestamp: parseInt(timestamp), hidden });
 
         this.#metadata[timestamp] = metadata;
         await this.#interface.set('metadata', metadata);
     }
 
-    #addMetadata (identifier, dirty_timestamp) {
+    static #addMetadata (identifier, dirty_timestamp) {
         const timestamp = parseInt(dirty_timestamp);
 
         if (!this.#metadata[timestamp]) {
@@ -980,7 +974,7 @@ const DatabaseManager = new (class {
         this.#metadataDelta.push(timestamp);
     }
 
-    #removeMetadata (identifier, dirty_timestamp) {
+    static #removeMetadata (identifier, dirty_timestamp) {
         const timestamp = parseInt(dirty_timestamp);
 
         if (this.#metadata[timestamp]) {
@@ -989,7 +983,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async #updateMetadata () {
+    static async #updateMetadata () {
         for (const timestamp of _uniq(this.#metadataDelta)) {
             if (_empty(this.#metadata[timestamp].identifiers)) {
                 delete this.#metadata[timestamp];
@@ -1004,17 +998,17 @@ const DatabaseManager = new (class {
     }
 
     // Check if player exists
-    hasPlayer (id, timestamp) {
+    static hasPlayer (id, timestamp) {
         return this.Players[id] && (timestamp ? this.Players[id][timestamp] : true) ? true : false;
     }
 
     // Check if group exists
-    hasGroup (id, timestamp) {
+    static hasGroup (id, timestamp) {
         return this.Groups[id] && (timestamp ? this.Groups[id][timestamp] : true) ? true : false;
     }
 
     // Get player
-    getPlayer (identifier, timestamp) {
+    static getPlayer (identifier, timestamp) {
         let player = this.Players[identifier];
         if (player && timestamp) {
             return this.loadPlayer(player[timestamp]);
@@ -1023,7 +1017,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    getLatestPlayers (onlyOwn = false) {
+    static getLatestPlayers (onlyOwn = false) {
         const array = Object.values(this.Players).map(player => player.Latest);
 
         if (onlyOwn) {
@@ -1034,7 +1028,7 @@ const DatabaseManager = new (class {
     }
 
     // Get group
-    getGroup (identifier, timestamp) {
+    static getGroup (identifier, timestamp) {
         if (timestamp && this.Groups[identifier]) {
             return this.Groups[identifier][timestamp];
         } else {
@@ -1042,11 +1036,11 @@ const DatabaseManager = new (class {
         }
     }
 
-    getAny (identifier) {
+    static getAny (identifier) {
         return this[this.isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
     }
 
-    async remove (instances) {
+    static async remove (instances) {
         for (const { identifier, timestamp } of instances) {
             await this.#interface.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1058,7 +1052,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    async #removeAuto (data) {
+    static async #removeAuto (data) {
         let { identifiers, timestamps, instances } = Object.assign({ identifiers: [], timestamps: [], instances: [] }, data);
 
         if (identifiers.length > 0) {
@@ -1074,7 +1068,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    safeRemove (data, callback, unsafeOverride = false) {
+    static safeRemove (data, callback, unsafeOverride = false) {
         if (unsafeOverride || SiteOptions.unsafe_delete) {
             Loader.toggle(true);
 
@@ -1087,7 +1081,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    #unload (identifier, timestamp) {
+    static #unload (identifier, timestamp) {
         this.#removeFromPool(identifier, timestamp);
 
         if (this.isPlayer(identifier)) {
@@ -1104,7 +1098,7 @@ const DatabaseManager = new (class {
     }
 
     // Remove one or more timestamps
-    async #removeTimestamps (... timestamps) {
+    static async #removeTimestamps (... timestamps) {
         for (const timestamp of timestamps) {
             for (const identifier of this.Timestamps.values(timestamp)) {
                 let isPlayer = this.isPlayer(identifier);
@@ -1119,7 +1113,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    async purge () {
+    static async purge () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
             for (const identifier of identifiers) {
                 let isPlayer = this.isPlayer(identifier);
@@ -1139,12 +1133,12 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    #removeFromPool (identifier, timestamp) {
+    static #removeFromPool (identifier, timestamp) {
         this.Timestamps.remove(timestamp, identifier);
         this.Identifiers.remove(identifier, timestamp);
     }
 
-    async migrateHiddenFiles () {
+    static async migrateHiddenFiles () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
             const players = Array.from(identifiers).filter(identifier => this.isPlayer(identifier));
             if (_every(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
@@ -1166,7 +1160,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    async #removeIdentifiers (... identifiers) {
+    static async #removeIdentifiers (... identifiers) {
         for (const identifier of identifiers) {
             for (const timestamp of this.Identifiers.values(identifier)) {
                 let isPlayer = this.isPlayer(identifier);
@@ -1181,11 +1175,11 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    isIdentifierHidden (identifier) {
+    static isIdentifierHidden (identifier) {
         return this.#hiddenIdentifiers.has(identifier);
     }
 
-    hideIdentifier (identifier) {
+    static hideIdentifier (identifier) {
         if (!this.#hiddenIdentifiers.delete(identifier)) {
             this.#hiddenIdentifiers.add(identifier);
         }
@@ -1193,14 +1187,14 @@ const DatabaseManager = new (class {
         Store.set('hidden_identifiers', Array.from(this.#hiddenIdentifiers));
     }
 
-    async setTagFor (identifier, timestamp, tag) {
+    static async setTagFor (identifier, timestamp, tag) {
         const player = _dig(this.Players, identifier, timestamp, 'Data');
         player.tag = tag;
         
         await this.#interface.set('players', player);
     }
 
-    async setTag (timestamps, tag) {
+    static async setTag (timestamps, tag) {
         const { players } = this.getFile(null, timestamps);
         for (const player of players) {
             if (!tag || _empty(tag)) {
@@ -1215,7 +1209,7 @@ const DatabaseManager = new (class {
         this.LastChange = Date.now();
     }
 
-    async rebase (from, to) {
+    static async rebase (from, to) {
         if (from && to) {
             const file = this.getFile(null, [ from ]);
 
@@ -1232,7 +1226,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async merge (timestamps) {
+    static async merge (timestamps) {
         if (timestamps.length > 1) {
             timestamps.sort((b, a) => a - b);
 
@@ -1255,7 +1249,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async hide (entries) {
+    static async hide (entries) {
         for (const entry of entries) {
             entry.hidden = !entry.hidden;
 
@@ -1275,7 +1269,7 @@ const DatabaseManager = new (class {
         this.#updateLists();
     }
 
-    async hideTimestamps (... timestamps) {
+    static async hideTimestamps (... timestamps) {
         if (_notEmpty(timestamps)) {
             const shouldHide = !_every(timestamps, timestamp => _dig(this.#metadata, timestamp, 'hidden'));
 
@@ -1311,17 +1305,17 @@ const DatabaseManager = new (class {
     // Endpoint - string
     // Share - object
     // Archive - string
-    async import (text, timestamp, timestampOffset, flags) {
+    static async import (text, timestamp, timestampOffset, flags) {
         const data = typeof text === 'string' ? JSON.parse(text) : text;
 
         await this.#import(data, timestamp, timestampOffset, flags);
     }
 
-    async export (identifiers, timestamps, constraint) {
+    static async export (identifiers, timestamps, constraint) {
         return this.getFile(identifiers, timestamps, constraint);
     }
 
-    relatedGroupData (players, groups, bundleGroups = true) {
+    static relatedGroupData (players, groups, bundleGroups = true) {
         const entries = {};
         for (const group of groups) {
             entries[_uuid(group)] = group;
@@ -1339,7 +1333,7 @@ const DatabaseManager = new (class {
         return Object.values(entries);
     }
 
-    getFile (identifiers, timestamps, constraint = null) {
+    static getFile (identifiers, timestamps, constraint = null) {
         let players = [];
         let groups = [];
 
@@ -1372,15 +1366,15 @@ const DatabaseManager = new (class {
         };
     }
 
-    isPlayer (identifier) {
+    static isPlayer (identifier) {
         return /_p\d/.test(identifier);
     }
 
-    isGroup (identifier) {
+    static isGroup (identifier) {
         return /_g\d/.test(identifier);
     }
 
-    #normalizeGroup (group) {
+    static #normalizeGroup (group) {
         if (group.id) {
             group.identifier = group.id;
             delete group.id;
@@ -1394,7 +1388,7 @@ const DatabaseManager = new (class {
         group.names = group.names || group.members;
     }
 
-    #normalizePlayer (player) {
+    static #normalizePlayer (player) {
         if (player.id) {
             player.identifier = player.id;
             delete player.id;
@@ -1411,7 +1405,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async #addFile (playerEntries, groupEntries, flags = {}) {
+    static async #addFile (playerEntries, groupEntries, flags = {}) {
         const players = playerEntries || [];
         const groups = groupEntries || [];
 
@@ -1466,11 +1460,11 @@ const DatabaseManager = new (class {
         }
     }
 
-    getTracker (identifier, tracker) {
+    static getTracker (identifier, tracker) {
         return _dig(this.#trackedPlayers, identifier, tracker, 'out');
     }
 
-    async refreshTrackers () {
+    static async refreshTrackers () {
         this.#trackerConfig = Actions.getTrackers();
         this.#trackerConfigEntries = Object.entries(this.#trackerConfig);
         this.#trackerData = Store.get('tracker_data', {});
@@ -1515,7 +1509,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    async #track (identifier, timestamp) {
+    static async #track (identifier, timestamp) {
         const player = this.getPlayer(identifier, timestamp);
         const playerTracker = this.#trackedPlayers[identifier] || {
             identifier: identifier
@@ -1543,7 +1537,7 @@ const DatabaseManager = new (class {
         return trackerChanged;
     }
 
-    async #untrack (identifier, removedTrackers) {
+    static async #untrack (identifier, removedTrackers) {
         const currentTracker = this.#trackedPlayers[identifier];
         if (currentTracker) {
             let trackerChanged = false;
@@ -1561,7 +1555,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    findDataFieldFor (timestamp, field) {
+    static findDataFieldFor (timestamp, field) {
         for (const identifier of this.Timestamps.values(timestamp)) {
             const value = _dig(this.Players, identifier, timestamp, 'Data', field);
             if (value) {
@@ -1572,7 +1566,7 @@ const DatabaseManager = new (class {
         return undefined;
     }
 
-    findUsedTags (timestamps) {
+    static findUsedTags (timestamps) {
         const tags = {};
         const { players } = this.getFile(null, timestamps);
         for (const player of players) {
@@ -1586,7 +1580,7 @@ const DatabaseManager = new (class {
         return tags;
     }
 
-    async #import (json, timestamp, timestampOffset = -3600000, flags = {}) {
+    static async #import (json, timestamp, timestampOffset = -3600000, flags = {}) {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
@@ -1615,4 +1609,6 @@ const DatabaseManager = new (class {
             await this.#addFile(players, groups, flags);
         }
     }
-})();
+}
+
+DatabaseManager.reset()
