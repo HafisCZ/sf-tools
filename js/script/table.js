@@ -1359,6 +1359,18 @@ class TableController {
         this.element.style.width = `${width}px`;
         this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
 
+        if (SiteOptions.table_sticky_header) {
+            let offset = 50
+
+            for (const header of this.element.querySelectorAll('tr.headers')) {
+                header.style.position = 'sticky';
+                header.style.top = `${offset}px`;
+                header.style.background = 'var(--table-background)';
+
+                offset += header.getBoundingClientRect().height;
+            }
+        }
+
         if (this.injectorElement) {
             if (entries.length > 0) {
                 this.prepareInjector(entries, onInject);

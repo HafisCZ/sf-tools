@@ -196,7 +196,8 @@ const SiteOptions = new OptionsHandler(
         export_bundle_groups: true,
         unsafe_delete: false,
         event_override: [],
-        simulator_info_id: 0
+        simulator_info_id: 0,
+        table_sticky_header: false
     }
 )
 

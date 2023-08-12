@@ -2887,6 +2887,7 @@ class SettingsTab extends Tab {
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
         this.prepareCheckbox('terms_accepted', 'terms');
+        this.prepareCheckbox('table_sticky_header', 'table-sticky-header')
 
         SiteOptions.onChange('terms_accepted', enabled => {
             if (enabled) {
