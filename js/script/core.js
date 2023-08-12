@@ -3326,6 +3326,8 @@ class ScriptArchive {
 
 // Settings manager
 class ScriptManager {
+    static LastChange = Date.now()
+
     static get scripts () {
         delete this.scripts
 
@@ -3334,6 +3336,8 @@ class ScriptManager {
 
     static #persist () {
         Store.set('settings', this.scripts);
+
+        this.LastChange = Date.now();
     }
 
     static save (name, content, parent) {

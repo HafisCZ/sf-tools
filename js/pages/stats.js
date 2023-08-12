@@ -1070,13 +1070,14 @@ class BrowseTab extends Tab {
 
     show (params) {
         const nonBrowseOrigin = params && params.origin !== UI.Browse;
-        const nonUpdated = this.lastChange === DatabaseManager.LastChange;
+        const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === ScriptManager.LastChange;
 
         if (nonBrowseOrigin && nonUpdated) {
             // If no update has happened, just do nothing and display previously rendered table
             return;
         } else {
-            this.lastChange = DatabaseManager.LastChange;
+            this.lastDatabaseChange = DatabaseManager.LastChange;
+            this.lastScriptChange = ScriptManager.LastChange
 
             this.timestamp = DatabaseManager.LatestPlayer;
             this.reference = DatabaseManager.LatestPlayer;
