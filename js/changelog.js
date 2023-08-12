@@ -10,7 +10,7 @@ const ANNOUNCEMENTS = [
 const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
-            'Added <code>Official Discord</code> and <code>Gold</code> header',
+            'Added <code>Official Discord</code>, <code>Twitch Frame</code> and <code>Gold</code> header',
             'Added <code>indexed custom header</code> to use first column as custom index column',
             'Added new berserker icon',
             'Added <code>this</code> as a function',

@@ -2729,6 +2729,16 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Twitch Frame',
+  {
+    expr: p => p.Flags.TwitchFrame,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Official Creator',
   {
     expr: p => p.Flags.OfficialCreator,
