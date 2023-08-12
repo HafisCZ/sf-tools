@@ -2,7 +2,7 @@
     "general": {
         "no": "Nein",
         "yes": "Ja",
-        "none": "None",
+        "none": "Nichts",
         "min": "Min",
         "max": "Max",
         "class1": "Krieger",
@@ -99,31 +99,31 @@
         "gender1": "Mann",
         "gender2": "Frau",
         "attack0": "Normal",
-        "attack1": "Critical",
-        "attack2": "Catapult",
-        "attack3": "Blocked",
-        "attack4": "Evaded",
-        "attack5": "Swoop",
-        "attack6": "Swoop Blocked",
-        "attack7": "Swoop Evaded",
-        "attack8": "Critical Blocked",
-        "attack9": "Critical Evaded",
+        "attack1": "Kritisch",
+        "attack2": "Katapult",
+        "attack3": "Blockiert",
+        "attack4": "Ausgewichen",
+        "attack5": "Sturzflug",
+        "attack6": "Sturzflug geblockt",
+        "attack7": "Sturzflug ausgewichen",
+        "attack8": "Kritisch geblockt",
+        "attack9": "Kritisch ausgewichen",
         "attack10": "Normal",
-        "attack11": "Critical",
-        "attack13": "Blocked",
-        "attack14": "Evaded",
-        "attack18": "Critical Blocked",
-        "attack19": "Critical Evaded",
-        "attack15": "Fireball",
-        "attack16": "Fireball blocked",
+        "attack11": "Kritisch",
+        "attack13": "Blockiert",
+        "attack14": "Ausgewichen",
+        "attack18": "Kritisch geblockt",
+        "attack19": "Kritisch ausgewichen",
+        "attack15": "Arkaner Komet",
+        "attack16": "Arkaner Komet geblockt",
         "attack20": "Normal",
-        "attack21": "Critical",
-        "attack23": "Blocked",
-        "attack24": "Evaded",
-        "attack28": "Critical Blocked",
-        "attack29": "Critical Evaded",
-        "attack100": "Revive",
-        "attack200": "Bard Song",
+        "attack21": "Kritisch",
+        "attack23": "Blockiert",
+        "attack24": "Ausgewichen",
+        "attack28": "Kritisch geblockt",
+        "attack29": "Kritisch ausgewichen",
+        "attack100": "Wiederbeleben",
+        "attack200": "Melodie",
         "gt_background1": "Gold",
         "gt_background2": "Silber",
         "gt_background3": "Bronze",
@@ -134,30 +134,30 @@
         "item5": "Handschuhe",
         "item6": "Helm",
         "item7": "Gürtel",
-        "item8": "Necklace",
+        "item8": "Halskette",
         "item9": "Ring",
         "item10": "Talisman",
         "item11": "Schlüssel",
         "item12": "Trank",
         "item13": "Sammelalbum",
-        "item14": "Scroll",
+        "item14": "Verzauberung",
         "item15": "Edelstein",
         "item16": "Ei",
-        "item17": "Hourglass",
+        "item17": "Treibsanduhr der Ungeduld",
         "item18": "Herz",
-        "item19": "Wheel",
+        "item19": "Glücksrad",
         "rune1": "Gold",
-        "rune2": "Epic chance",
+        "rune2": "Epische Chance",
         "rune3": "Item Qualität",
         "rune4": "XP",
         "rune5": "Leben",
-        "rune6": "Wiederstand gegen Feuer",
-        "rune7": "Wiederstand gegen Eis",
-        "rune8": "Wiederstand gegen Blitz",
-        "rune9": "Gesamt Widerstand",
-        "rune10": "Feuer Schaden",
-        "rune11": "Eis Schaden",
-        "rune12": "Blitz Schaden",
+        "rune6": "Widerstand gegen Feuer",
+        "rune7": "Widerstand gegen Eis",
+        "rune8": "Widerstand gegen Blitz",
+        "rune9": "Gesamtwiderstand",
+        "rune10": "Feuerschaden",
+        "rune11": "Eisschaden",
+        "rune12": "Blitzschaden",
         "action0": "Inaktiv",
         "action1": "Arbeitend",
         "action2": "Questend",
@@ -168,7 +168,7 @@
         "gem4": "Ausdauer",
         "gem5": "Glück",
         "gem6": "Schwarz",
-        "gem7": "Legendary",
+        "gem7": "Legendär",
         "companion1": "Bertram",
         "companion2": "Markwart",
         "companion3": "Kunigunde",
@@ -294,11 +294,11 @@
             "mention": "weitere Erwähnungen"
         },
         "footer": {
-            "beta": "Check out public beta",
-            "kofi": "Give mar some shrooms",
-            "crowdin": "Help with translations",
-            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
-            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+            "beta": "Schau Dir die offene Beta an",
+            "kofi": "Spendiere Mar ein paar Pilze",
+            "crowdin": "Hilf beim Übersetzen",
+            "webshop#": "Verwende den Code <b class=\"text-white\">SFTOOLS</b> im Webshop",
+            "notice#": "Verteilt <b>WIE ES IST</b>. Diese Seite steht in keiner Weise in Verbindung mit <b>Playa Games</b>."
         },
         "stats": {
             "title": "Statistik",
@@ -350,8 +350,8 @@
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Unterweltkampfes"
         },
         "analyzer": {
-            "title": "Fight Analyzer",
-            "desc": "Display all fights within a file for detailed analysis"
+            "title": "Kampfanalyse",
+            "desc": "Zeige alle Kämpfe innerhalb einer Datei zur detaillierten Analyse an"
         },
         "fights": {
             "title": "Kampf Betrachter",
@@ -392,7 +392,7 @@
     },
     "terms": {
         "title": "Nutzungsbedingungen",
-        "title2": "Usage",
+        "title2": "Verwendung",
         "button": {
             "accept_full": "Ich verstehe und akzeptiere diese Bedingungen",
             "accept": "Akzeptieren",
@@ -402,43 +402,43 @@
             "heading0": {
                 "title": "Allgemeine Nutzung",
                 "clause0": "Es ist ratsam niemals HAR Dateien zu teilen, da diese private Informationen, wie zum Beispiel IP Adressen und cookies, enthalten können.",
-                "clause1": "The site is distributed <b>AS IS</b> without any warranties. You are fully responsible for use of this site.",
-                "clause2": "You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.",
+                "clause1": "Die Seite wird verteilt <b>WIE SIE IST</b>, ohne jegliche Garantien. Du trägst die volle Verantwortung für die Nutzung dieser Seite.",
+                "clause2": "Du bist frei, die Seite zu teilen, zu kopieren und zu bearbeiten, aber du darfst sie oder Teile davon nicht ohne ausdrückliche Genehmigung verteilen.",
                 "clause3": "Sie erklären sich damit einverstanden, die Datenerhebung aus dem Spiel auf ein angemessene Maß zu beschränken.",
                 "clause4": "Du erklärst dich damit einverstanden, die AGB von Shakes & Fidget <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">zu befolgen</a>",
                 "clause5": "Sie dürfen keinen Teil dieses Tools automatisiert benutzen."
             },
             "heading1": {
                 "title": "Endpunkt",
-                "clause0": "Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.",
+                "clause0": "\"Endpunkt\" ist eine Unity-Anwendung, die mit dem Tool gebündelt ist und es dir ermöglicht, dich in das Spiel einzuloggen und begrenzte Daten über dich und deine Gildenmitglieder zu sammeln, ohne den langwierigen Prozess, eine HAR-Datei zu erstellen.",
                 "clause1": "Es ist nicht möglich andere als die oben gelisteten Spieler zu erfassen.",
-                "clause2": "Everything happens locally in a identical way to playing the game through browser."
+                "clause2": "Alles geschieht lokal auf identische Weise wie beim Spielen des Spiels über den Browser."
             },
             "heading2": {
-                "title": "Integrated share service",
-                "clause0": "All data shared via the integrated share function is not protected in any other way other than the share key.",
-                "clause1": "The shared data might be deleted at any point of time, up to full 2 days."
+                "title": "Integrierter Freigabe-Dienst",
+                "clause0": "Alle über die integrierte Freigabefunktion geteilten Daten sind nicht auf andere Weise geschützt, außer durch den Freigabeschlüssel.",
+                "clause1": "Die geteilten Daten können jederzeit gelöscht werden, bis zu vollen 2 Tagen."
             },
             "heading3": {
                 "title": "Wache",
-                "clause0": "All errors raised during use of this tool will be reported via Sentry.io tool.",
-                "clause1": "These reports are anonymous so that it's not possible to track their origin.",
+                "clause0": "Alle während der Nutzung dieses Tools auftretenden Fehler werden über das Sentry.io-Tool gemeldet.",
+                "clause1": "Diese Berichte sind anonym, sodass es nicht möglich ist, ihre Herkunft zurückzuverfolgen.",
                 "clause2": "Bitte beachte, dass bestimme Werbeblocker Sentry möglicherweise verhindern zu funktionieren.",
-                "clause3": "If you want to contribute to this project I recommend disabling ad-blockers for this site."
+                "clause3": "Wenn du zu diesem Projekt beitragen möchtest, empfehle ich, Ad-Blocker für diese Seite zu deaktivieren."
             }
         },
         "endpoint": {
-            "clause0": "Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.",
-            "clause1": "All data entered is sent directly to the game server without involvement of any 3rd party.",
-            "clause2": "It is not possible to capture any other players than those explicitly stated within the application.",
-            "clause3": "All data collection is done using normal means, without any use of forbidden actions.",
-            "clause4": "You can access your S&F Account using your username and password.",
-            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
+            "clause0": "Endpoint ist eine kleine Unity-Anwendung, die mit dem Tool gebündelt ist und es dir ermöglicht, dich in das Spiel einzuloggen und begrenzte Spieldaten zu sammeln, ohne den langwierigen Prozess, eine HAR-Datei zu erstellen.",
+            "clause1": "Alle eingegebenen Daten werden direkt an den Spiele-Server gesendet, ohne Beteiligung Dritter.",
+            "clause2": "Es ist nicht möglich, andere Spieler zu erfassen, es sei denn, sie werden explizit in der Anwendung angegeben.",
+            "clause3": "Die Datensammlung erfolgt auf normale Weise, ohne Verwendung verbotener Aktionen.",
+            "clause4": "Du kannst auf dein S&F-Konto mit deinem Benutzernamen und Passwort zugreifen.",
+            "clause5": "Du kannst auf deinen ungebundenen Charakter zugreifen, indem du deinen Charakternamen und die Server-Url im folgenden Format verwendest: <code>charname@s1.sfgame.de</code>."
         },
         "toast": {
             "rejected": {
-                "title": "Terms not accepted",
-                "message": "You must accept the terms in order to continue"
+                "title": "Bedingungen nicht akzeptiert",
+                "message": "Du musst die Bedingungen akzeptieren, um fortzufahren"
             }
         }
     },
@@ -453,7 +453,7 @@
             "settings": "Einstellungen",
             "temporary": "Temporäre Session",
             "changelog": "Änderungsprotokoll",
-            "profile": "Profiles"
+            "profile": "Profile"
         },
         "files": {
             "titles": {
@@ -497,12 +497,12 @@
             "options": {
                 "title": "Datei Optionen",
                 "advanced": "Erweiterte Dateiliste anzeigen",
-                "advanced_title": "Manage players and groups individually",
+                "advanced_title": "Verwalte Spieler und Gruppen individuell",
                 "hidden": "Versteckte Einträge anzeigen",
                 "export_public_only": "Nur publike Daten exportieren",
                 "export_public_only_title": "Alle Exports von dieser Seite enthalten nur öffentliche Daten (keine privaten Daten werden enthalten sein)",
                 "export_bundle_groups": "Bündle Gruppen an Spielern",
-                "export_bundle_groups_title": "Includes groups for every player selected when exporting via advanced file list"
+                "export_bundle_groups_title": "Beinhaltet Gruppen für jeden ausgewählten Spieler beim Exportieren über die erweiterte Dateiliste"
             },
             "tags": {
                 "single": "Tag",
@@ -538,7 +538,7 @@
         },
         "copy": {
             "image": "Als Bild speichern",
-            "csv": "Save as CSV",
+            "csv": "Als CSV speichern",
             "basic": "Tabelle kopieren",
             "fight": "Tabelle für Kampfsimulation kopieren",
             "player": "Kopieren",
@@ -594,7 +594,7 @@
                 "save": "Speichern",
                 "copy": "Kopieren",
                 "archive": "Skript Archiv",
-                "recover": "Load version v#{version}",
+                "recover": "Version #{version} laden",
                 "close": "Zurück",
                 "remove": "Entfernen",
                 "reset": "Änderungen verwerfen",
@@ -618,7 +618,7 @@
                 "not_available": "Keine Skripte verfügbar"
             },
             "info": {
-                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+                "deprecated": "Die Verwendung von <b>#{name1}</b> ist veraltet; verwende stattdessen <b>#{name2}</b>"
             },
             "commands": {
                 "TABLE_GLOBAL_PERFORMANCE": "performance",
@@ -658,12 +658,12 @@
                 "last": "Letztes",
                 "last5": "Letzten 5",
                 "current": "Ausgewählt",
-                "currentWithReference": "Selected & Reference"
+                "currentWithReference": "Ausgewählt & Referenz"
             },
             "formats": {
-                "json": "JSON file",
-                "code": "Online code (1 use or 2 days)",
-                "code_reusable": "Online code (2 days)"
+                "json": "JSON Datei",
+                "code": "Online-Code (1 Verwendung oder 2 Tage)",
+                "code_reusable": "Online-Code (2 Tage)"
             }
         },
         "online_templates": {
@@ -719,7 +719,7 @@
                 "title": "Extras",
                 "registered": "Erstellt am",
                 "webshopid": "Webshop ID",
-                "webshopid_placeholder": "Hover to display"
+                "webshopid_placeholder": "Mauszeiger über das Element bewegen, um anzuzeigen"
             },
             "runes": {
                 "title": "Runen"
@@ -796,30 +796,30 @@
         },
         "locations": {
             "0": "Schwarzwald",
-            "1": "Black Water Swamp",
-            "2": "Busted Lands",
+            "1": "Schwarzwassersümpfe",
+            "2": "Schweinöde",
             "3": "Erogenion",
-            "4": "Evernight Forest",
-            "5": "Flooded Caldwell",
+            "4": "Immernachtwald",
+            "5": "Insel Scarpa",
             "6": "Gnarogrim",
             "7": "Maerwyn",
             "8": "Magmaron",
-            "9": "Moldy Forest",
+            "9": "Gammelforst",
             "10": "Nevermoor",
-            "11": "Northrunt",
-            "12": "Plains Of Ozkorr",
-            "13": "Rotten Lands",
-            "14": "Shadowrock Mountain",
-            "15": "Skull Island",
-            "16": "Split Canyon",
-            "17": "Sprawling Jungle",
-            "18": "Stumble Steppe",
-            "19": "Sunburn Desert",
-            "20": "Tusk Mountain",
+            "11": "Nordingen",
+            "12": "Ebenen von Oz'Korr",
+            "13": "Rottende Lande",
+            "14": "Schattenfelsgebirge",
+            "15": "Totenkopfinsel",
+            "16": "Spalta-Canyon",
+            "17": "Wucherdschungel",
+            "18": "Stolpersteppe",
+            "19": "Sonnenbrandwüste",
+            "20": "Fangzahngebirge",
             "201": "Edelsteinmine",
             "202": "Waffenladen",
             "203": "Zauberladen",
-            "204": "Arcane Toilet"
+            "204": "Arkane Toilette"
         },
         "names": {
             "0": "Schlorps",
@@ -927,14 +927,14 @@
             "0": "Kann Dir tagsüber in der Region Nevermoor begegnen.",
             "1": "Kann Dir nachts in der Region Maerwynn begegnen.",
             "2": "Kann Dir nachts im Wucherdschungel begegnen.",
-            "3": "Can be found in Split Canyon at night.",
-            "4": "Can be found in Black Forest on Monday night.",
-            "5": "Can be found in Black Water Swamp during witching hour. (00:00 - 01:00 a.m.)",
-            "6": "Can be found in Evernight Forest on summer days.",
-            "7": "Can be found on Skull Island on winter days.",
-            "8": "Can be found on Shadowrock Mountain on Friday night.",
-            "9": "Can be found in Moldy Forest on fall days.",
-            "10": "Can be found in Flooded Caldwell on Monday night.",
+            "3": "Kann nachts im Spalta-Canyon gefunden werden.",
+            "4": "Kann Dir Montag nachts im Schwarzwald begegnen.",
+            "5": "Kann Dir zur Geisterstunde in den Schwarzwassersümpfen begegnen.",
+            "6": "Kann Dir an Sommertagen im Immernachtwald begegnen.",
+            "7": "Kann Dir an Wintertagen bei der Totenkopfinsel begegnen.",
+            "8": "Kann Dir montags nachts im Schattenfelsgebirge begegnen.",
+            "9": "Kann Dir an Herbstagen im Gammelforst begegnen.",
+            "10": "Kann Dir Montag nachts in Scarpa begegnen.",
             "11": "Can be found on Tusk Mountain on Tuesday night.",
             "12": "Can be found in Erogenion on Wednesday night.",
             "13": "Can be found in Stumble Steppe on Thursday during the day.",
@@ -967,7 +967,7 @@
             "40": "Can be found in Stumble Steppe during the day.",
             "41": "Can be found in Gnarogrim at night.",
             "42": "Can be found in Erogenion during the day.",
-            "43": "Can be found in Black Forest during the day.",
+            "43": "Kann Dir tagsüber in der Region Schwarzwald begegnen.",
             "44": "Can be found in Northrunt at night.",
             "45": "Can be found on Tusk Mountain on summer days.",
             "46": "Can be found in Black Water Swamp on fall days.",
@@ -1002,7 +1002,7 @@
             "75": "Can be found in Maerwynn during Forest Rarities Event.",
             "76": "Can be found in Flooded Caldwell on Valentine's Day.",
             "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
-            "78": "Is a reward for clearing the single-player Demon Portal. Location: Skull Island.",
+            "78": "Ist eine Belohnung für das Säubern des Einzelspieler-Dämonenportals. Standort: Totenkopfinsel.",
             "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
             "80": "Can be found in Magmaron during the day.",
             "81": "Can be found on Skull Island during the day.",
@@ -1084,7 +1084,7 @@
             "first": "Die ersten #{count} Etagen wurden mit 100% Chance besiegt",
             "last": "Die letzten #{count} Etagen sind unmöglich zu besiegen"
         },
-        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+        "footer#": "Basierend auf <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards & Monster Stats</a> von ÐonMuErte."
     },
     "dungeons": {
         "simulate_one": "Simulieren",
@@ -1152,17 +1152,17 @@
         "players": "Spieler",
         "preview": "Kampfvorschau",
         "export": "Kämpfe exportieren",
-        "autofill": "Fill editable data in from predefined list",
+        "autofill": "Füllen Sie editierbare Daten aus einer vordefinierten Liste aus",
         "analyze": "Statistische Analyse",
         "gladiator": "Gladiator nicht reduziert",
-        "clear_changes": "Reset to original state",
+        "clear_changes": "Auf den ursprünglichen Zustand zurücksetzen",
         "table": {
             "select": "#{index} - #{rounds} Runden - #{nameA} - #{nameB} - Gewinner: #{winner}",
             "rage": "Kampfrausch",
             "attacker": "Angreifer",
             "target": "Ziel",
             "type": "Typ",
-            "health": "Verbleibende Gesundheit",
+            "health": "Verbleibende Lebenspunkte",
             "damage": "Schaden",
             "damage_base": "Basisschaden"
         },
@@ -1173,7 +1173,7 @@
         "special_state": {
             "druid_rage": "Druid is enraged",
             "berserker_rage": "Berserker is enraged",
-            "bard_song": "Bard has played a song"
+            "bard_song": "Bard hat eine Melodie gespielt"
         },
         "sidebar": {
             "toggles": {
@@ -1184,9 +1184,9 @@
                 "weapon2_range_base": "Input Bereich (sekundär)",
                 "weapon1_range": "Normaler Bereich",
                 "weapon2_range": "Normaler Bereich (sekundär)",
-                "weapon1_range_critical": "Critical range",
-                "weapon2_range_critical": "Critical range (secondary)",
-                "weapon1_range_swoop": "Swoop range"
+                "weapon1_range_critical": "Kritischer Bereich",
+                "weapon2_range_critical": "Kritischer Bereich (sekundär)",
+                "weapon1_range_swoop": "Sturzflug Bereich"
             }
         }
     },
@@ -1291,7 +1291,7 @@
             "guilds": "Gespeicherte Gilden abrufen"
         },
         "tooltip": {
-            "cheats": "Apply modifications to characters",
+            "cheats": "Änderungen auf Charaktere anwenden",
             "options": "Configure integration"
         }
     },
@@ -1392,7 +1392,7 @@
             "playa_account_not_active": "Dein Account ist nicht aktiv",
             "playa_account_empty": "Dein Account hat keine Charaktere",
             "playa_account_blocked": "Your account has been permanently locked",
-            "playa_account_blocked_temporary": "Your account has been temporarily locked",
+            "playa_account_blocked_temporary": "Dein Konto wurde vorübergehend gesperrt",
             "an_error_occurred": "Server ist nicht verfügbar, bitte versuche es später erneut"
         }
     },
@@ -1410,12 +1410,12 @@
     },
     "request": {
         "title": "fordert deine Charakterdaten an",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
-        "access": "Click here to grant this domain access to your characters",
-        "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
+        "notice#": "Bitte wähle einen Charakter aus, den du mit der Website teilen möchtest.<br>Es werden keine persönlichen Daten geteilt!",
+        "access": "Klicke hier, um dieser Domain Zugriff auf deine Charaktere zu gewähren",
+        "access_hint": "Bitte beachte, dass die Verwendung von Anzeigen- oder Tracker-Blockern dazu führen kann, dass nicht alle deiner gespeicherten Charaktere geladen werden können",
         "error": {
-            "title": "Request error",
-            "notice#": "A website has requested your character data but did not specify required parameters"
+            "title": "Anfragefehler",
+            "notice#": "Eine Website hat deine Charakterdaten angefordert, aber keine erforderlichen Parameter angegeben"
         }
     },
     "dialog": {
@@ -1428,10 +1428,10 @@
             "apply": "Anwenden"
         },
         "dungeons_options": {
-            "title": "Simulator options",
+            "title": "Simulator-Optionen",
             "threshold": {
-                "title": "Simulation threshold",
-                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+                "title": "Schwellenwert für Simulationen",
+                "label": "Schwellenwert % - Jeder Dungeon-Gegner außerhalb dieses Schwellenwerts wird übersprungen"
             }
         },
         "analyzer_autofill": {
@@ -1439,32 +1439,32 @@
             "search": "Suche nach Dungeon oder Boss Namen ..."
         },
         "script_manual": {
-            "title": "Reference manual",
+            "title": "Referenzhandbuch",
             "heading": {
-                "header": "Headers for all characters",
-                "header_protected": "Headers for own guild members",
-                "header_private": "Headers for own characters",
-                "header_scoped": "Accessors for objects",
-                "function": "Functions",
-                "enum": "Enumerations",
-                "constant": "Default constants",
-                "variable": "Variables"
+                "header": "Überschriften für alle Charaktere",
+                "header_protected": "Überschriften für eigene Gildenmitglieder",
+                "header_private": "Überschriften für eigene Charaktere",
+                "header_scoped": "Zugriffsmethoden für Objekte",
+                "function": "Funktionen",
+                "enum": "Aufzählungen",
+                "constant": "Standardkonstanten",
+                "variable": "Variablen"
             },
             "description": {}
         },
         "analyzer_options": {
-            "title": "Analyzer Options",
+            "title": "Analyseoptionen",
             "option": {
                 "rage_display_mode": {
-                    "title": "Rage display mode",
+                    "title": "Wut-Anzeigemodus",
                     "value": {
                         "decimal": "Dezimal",
-                        "percentage": "Percentage",
+                        "percentage": "Prozent",
                         "fraction": "Bruchzahl"
                     }
                 },
                 "type_display_mode": {
-                    "title": "Attack type display mode",
+                    "title": "Anzeigemodus für Angriffstypen",
                     "value": {
                         "text": "Name",
                         "text_with_id": "Name mit ID",
@@ -1472,7 +1472,7 @@
                     }
                 },
                 "base_damage_error_margin": {
-                    "title": "Acceptable base error"
+                    "title": "Akzeptierbarer Basisfehler"
                 },
                 "group_sort": {
                     "title": "Gruppen sortieren nach",
@@ -1497,7 +1497,7 @@
             "online": "Veröffentlichen",
             "script": {
                 "name": "Name",
-                "version": "Aktuelle Version",
+                "version": "Lokale Version",
                 "updated": "Aktualisiert am",
                 "published": "Veröffentlicht am",
                 "published_version": "Veröffentlichte Version",
@@ -1506,7 +1506,7 @@
             "action": {
                 "publish": "Vorlage veröffentlichen",
                 "republish": "Neue Version veröffentlichen",
-                "unpublish": "Unpublish template",
+                "unpublish": "Vorlage nicht veröffentlichen",
                 "remove": "Dauerhaft entfernen"
             },
             "error": "Die Aktion war nicht erfolgreich"
@@ -1519,22 +1519,22 @@
                 "overwrite_script": "Skript von neuer Version überschrieben",
                 "save_script": "Skript gespeichert",
                 "remove_script": "Skript entfernt",
-                "discard_script": "Script changes were discarded",
+                "discard_script": "Skriptänderungen wurden verworfen",
                 "create_template": "Vorlage erstellt",
                 "overwrite_template": "Vorlage von neuer Version überschrieben",
                 "save_template": "Vorlage gespeichert",
                 "remove_template": "Vorlage entfernt"
             },
             "item": {
-                "description": "Archived: #{change}. Expires: #{expire}",
-                "temporary": "in temporary mode"
+                "description": "Archiviert: #{change}. Läuft ab: #{expire}",
+                "temporary": "im temporären Modus"
             }
         },
         "script_repository": {
-            "title": "Script Repository",
+            "title": "Skript-Repository",
             "private_code": {
-                "label": "Private code",
-                "placeholder": "Enter your private code..."
+                "label": "Privater Code",
+                "placeholder": "Privaten Code eingeben..."
             },
             "list": {
                 "about": "Hinzugefügt von #{author}",
@@ -1566,7 +1566,7 @@
         },
         "delete_script": {
             "title": "Skript entfernen",
-            "notice": "Are you sure you want to permanently remove selected script?"
+            "notice": "Bist du sicher, dass du das ausgewählte Skript dauerhaft entfernen möchtest?"
         },
         "warning": {
             "title": "Es ist ein Problem aufgetreten!",
