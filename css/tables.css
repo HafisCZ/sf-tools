@@ -2,7 +2,7 @@ table.sftools-table {
   position: absolute;
   margin-top: 1em;
   border-spacing: 0;
-  border-collapse: collapse;
+  border-collapse: separate;
 
   font-family: 'Roboto' !important;
   font-weight: 300 !important;
@@ -61,19 +61,15 @@ table.sftools-table .headers td {
   border-right: 1px solid var(--table-foreground) !important;
 }
 
-.border-top-thin {
+.border-top-thin, .border-top-thin > td {
   border-top: 1px solid var(--table-foreground) !important;
 }
 
-.border-bottom-thin {
+.border-bottom-thin, .border-bottom-thin > td {
   border-bottom: 1px solid var(--table-foreground) !important;
 }
 
-.border-right-false {
-  border-right: 1px solid transparent !important;
-}
-
-.border-bottom-thick {
+.border-bottom-thick, .border-bottom-thick > td {
   border-bottom: 2px solid var(--table-foreground) !important;
   padding: 0 !important;
 }

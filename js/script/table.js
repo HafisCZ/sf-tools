@@ -807,7 +807,7 @@ class TableInstance {
                 ${ this.#getCategoryBlock(this.configLeft, this.config.length > 0) }
                 ${ this.#getCategoryBlock() }
             </tr>
-            <tr class="headers border-bottom-thick">
+            <tr class="headers">
                 ${ this.#getHeaderBlock(this.configLeft, this.config.length > 0) }
                 ${ this.#getHeaderBlock() }
             </tr>
@@ -1054,7 +1054,7 @@ class TableInstance {
                 return _join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortkey) }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortkey) }>${ name }</td>`
                 });
             }
         });
@@ -1105,18 +1105,8 @@ class TableController {
                 allowTaint: true,
                 useCORS: true,
                 onclone: (document) => {
-                    const $document = $(document);
-    
-                    const $tableBody = $document.find('table.sftools-table tbody').first();
-                    if ($tableBody.find('tr.css-entry.border-bottom-thick, tr.css-entry.border-bottom-thin').length && $tableBody.hasClass('css-entry-opaque')) {
-                        $tableBody.removeClass('css-entry-opaque').addClass('css-entry-opaque-image');
-                    }
-    
-                    $('<tr class="border-bottom-thick"></tr>').insertAfter($document.find('tr.css-entry.border-bottom-thick'));
-                    $('<tr class="border-bottom-thin"></tr>').insertAfter($document.find('tr.css-entry.border-bottom-thin'));
-        
                     if (cloneCallback) {
-                        cloneCallback($document);
+                        cloneCallback($(document));
                     }
                 }
             });
