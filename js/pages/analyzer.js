@@ -891,7 +891,7 @@ Site.ready(null, function (urlParams) {
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
-                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay, targetSkipCount,
+                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
                 hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
 
