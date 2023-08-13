@@ -154,7 +154,7 @@ SimulatorModel.prototype.hasAdvantage = function (target) {
 }
 
 SimulatorModel.prototype.getDamageMultiplier = function (target) {
-    const multiplier = this.Config.DamageMultiplier || 1;
+    const multiplier = this.Config.DamageMultiplier;
 
     if (this.hasAdvantage(target)) {
         return multiplier * 1.25;
@@ -176,7 +176,7 @@ class PetModel {
             return type === model.Config.Attribute ? main : Math.trunc(main / 2);
         }
 
-        const damage = Math.trunc((obj.Level + 1) * model.Config.WeaponDamageMultiplier);
+        const damage = Math.trunc((obj.Level + 1) * model.Config.WeaponMultiplier);
 
         // Update level + stats
         Object.assign(model.Player, {
@@ -219,7 +219,7 @@ class PetModel {
         const luck =  Math.trunc(PET_FACTOR_MAP_LUCK[pet] * multiplier);
 
         const config = CONFIG.fromIndex(klass);
-        const damage = Math.trunc((level + 1) * config.WeaponDamageMultiplier);
+        const damage = Math.trunc((level + 1) * config.WeaponMultiplier);
 
         const getAttribute = (type) => {
             return type === config.Attribute ? main : Math.trunc(main / 2);

@@ -1,6 +1,6 @@
 // Override some methods
 SimulatorModel.prototype.getBaseDamage = function () {
-    const damage = Math.trunc((this.Player.Level + 1) * this.getWeaponDamageMultiplier());
+    const damage = Math.trunc((this.Player.Level + 1) * this.getWeaponMultiplier());
 
     return {
         Min: damage,

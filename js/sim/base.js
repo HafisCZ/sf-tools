@@ -164,8 +164,10 @@ const CONFIG = Object.defineProperties(
             Attribute: 'Strength',
 
             HealthMultiplier: 5,
-            WeaponDamageMultiplier: 2,
+            WeaponMultiplier: 2,
+            DamageMultiplier: 1,
             MaximumDamageReduction: 50,
+            MaximumDamageReductionMultiplier: 1,
 
             SkipChance: 0.25
         },
@@ -173,15 +175,19 @@ const CONFIG = Object.defineProperties(
             Attribute: 'Intelligence',
 
             HealthMultiplier: 2,
-            WeaponDamageMultiplier: 4.5,
-            MaximumDamageReduction: 10
+            WeaponMultiplier: 4.5,
+            DamageMultiplier: 1,
+            MaximumDamageReduction: 10,
+            MaximumDamageReductionMultiplier: 1
         },
         Scout: {
             Attribute: 'Dexterity',
 
             HealthMultiplier: 4,
-            WeaponDamageMultiplier: 2.5,
+            WeaponMultiplier: 2.5,
+            DamageMultiplier: 1,
             MaximumDamageReduction: 25,
+            MaximumDamageReductionMultiplier: 1,
 
             SkipChance: 0.50
         },
@@ -189,17 +195,19 @@ const CONFIG = Object.defineProperties(
             Attribute: 'Dexterity',
 
             HealthMultiplier: 4,
-            WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 25,
-
+            WeaponMultiplier: 2,
             DamageMultiplier: 0.625,
+            MaximumDamageReduction: 25,
+            MaximumDamageReductionMultiplier: 1,
+
             SkipChance: 0.50
         },
         Battlemage: {
             Attribute: 'Strength',
 
             HealthMultiplier: 5,
-            WeaponDamageMultiplier: 2,
+            WeaponMultiplier: 2,
+            DamageMultiplier: 1,
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 5
         },
@@ -207,18 +215,21 @@ const CONFIG = Object.defineProperties(
             Attribute: 'Strength',
 
             HealthMultiplier: 4,
-            WeaponDamageMultiplier: 2,
-            MaximumDamageReduction: 25,
-
+            WeaponMultiplier: 2,
             DamageMultiplier: 1.25,
+            MaximumDamageReduction: 25,
+            MaximumDamageReductionMultiplier: 1,
+
             SkipLimit: 14
         },
         DemonHunter: {
             Attribute: 'Dexterity',
 
             HealthMultiplier: 4,
-            WeaponDamageMultiplier: 2.5,
+            WeaponMultiplier: 2.5,
+            DamageMultiplier: 1,
             MaximumDamageReduction: 50,
+            MaximumDamageReductionMultiplier: 1,
 
             ReviveChance: 0.44,
             ReviveChanceDecay: 0.02,
@@ -230,11 +241,10 @@ const CONFIG = Object.defineProperties(
             Attribute: 'Intelligence',
 
             HealthMultiplier: 5,
-            WeaponDamageMultiplier: 4.5,
+            WeaponMultiplier: 4.5,
+            DamageMultiplier: 1 / 3,
             MaximumDamageReduction: 20,
             MaximumDamageReductionMultiplier: 2,
-
-            DamageMultiplier: 1 / 3,
 
             SwoopChance: 0.25,
             SwoopChanceMin: 0,
@@ -252,11 +262,10 @@ const CONFIG = Object.defineProperties(
             Attribute: 'Intelligence',
 
             HealthMultiplier: 2,
-            WeaponDamageMultiplier: 4.5,
+            WeaponMultiplier: 4.5,
+            DamageMultiplier: 1.125,
             MaximumDamageReduction: 25,
             MaximumDamageReductionMultiplier: 2,
-
-            DamageMultiplier: 1.125,
 
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
@@ -500,7 +509,7 @@ class SimulatorModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else {
-            return (this.Config.MaximumDamageReductionMultiplier || 1) * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
+            return (this.Config.MaximumDamageReductionMultiplier) * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
         }
     }
     
@@ -562,13 +571,13 @@ class SimulatorModel {
         }
     }
 
-    getWeaponDamageMultiplier () {
-        return this.Config.WeaponDamageMultiplier;
+    getWeaponMultiplier () {
+        return this.Config.WeaponMultiplier;
     }
 
     getBaseDamage (secondary = false) {
         if (this.Player.Level > 10 && !this.Player.NoBaseDamage) {
-            const num = (secondary ? 0.1 : 0.7) * (this.Player.Level - 9) * this.getWeaponDamageMultiplier();
+            const num = (secondary ? 0.1 : 0.7) * (this.Player.Level - 9) * this.getWeaponMultiplier();
 
             return {
                 Min: Math.max(1, Math.ceil(num * 2 / 3)),
@@ -693,7 +702,7 @@ class SimulatorModel {
 
     // Returns extra damage multiplier, default is 1 for no extra damage
     getDamageMultiplier (target) {
-        return this.Config.DamageMultiplier || 1;
+        return this.Config.DamageMultiplier;
     }
 
     // Before anyone takes control
