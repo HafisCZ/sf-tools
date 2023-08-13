@@ -1360,12 +1360,11 @@ class TableController {
         this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
 
         if (SiteOptions.table_sticky_header) {
-            let offset = 50
+            let offset = 0
 
             for (const header of this.element.querySelectorAll('tr.headers')) {
-                header.style.position = 'sticky';
-                header.style.top = `${offset}px`;
-                header.style.background = 'var(--table-background)';
+                header.classList.add('sticky')
+                header.style.setProperty('--top-offset', `${offset}px`);
 
                 offset += header.getBoundingClientRect().height;
             }

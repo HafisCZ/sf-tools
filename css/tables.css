@@ -93,3 +93,10 @@ table.sftools-table .headers td {
 .css-maxi-row tr.css-entry {
   height: 3em !important;
 }
+
+.sftools-table tr.headers.sticky td {
+  position: sticky;
+  z-index: 1;
+  top: calc(50px + var(--top-offset, 0px));
+  background: var(--table-background);
+}
