@@ -152,6 +152,9 @@ const FLAGS = Object.defineProperties(
     }
 );
 
+const SKIP_TYPE_DEFAULT = 0;
+const SKIP_TYPE_CONTROL = 1;
+
 // Configuration
 const CONFIG = Object.defineProperties(
     {
@@ -169,7 +172,9 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 50,
             MaximumDamageReductionMultiplier: 1,
 
-            SkipChance: 0.25
+            SkipChance: 0.25,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT
         },
         Mage: {
             Attribute: 'Intelligence',
@@ -178,7 +183,11 @@ const CONFIG = Object.defineProperties(
             WeaponMultiplier: 4.5,
             DamageMultiplier: 1,
             MaximumDamageReduction: 10,
-            MaximumDamageReductionMultiplier: 1
+            MaximumDamageReductionMultiplier: 1,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT
         },
         Scout: {
             Attribute: 'Dexterity',
@@ -189,7 +198,9 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 25,
             MaximumDamageReductionMultiplier: 1,
 
-            SkipChance: 0.50
+            SkipChance: 0.50,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT
         },
         Assassin: {
             Attribute: 'Dexterity',
@@ -200,7 +211,9 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 25,
             MaximumDamageReductionMultiplier: 1,
 
-            SkipChance: 0.50
+            SkipChance: 0.50,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT
         },
         Battlemage: {
             Attribute: 'Strength',
@@ -209,7 +222,11 @@ const CONFIG = Object.defineProperties(
             WeaponMultiplier: 2,
             DamageMultiplier: 1,
             MaximumDamageReduction: 10,
-            MaximumDamageReductionMultiplier: 5
+            MaximumDamageReductionMultiplier: 5,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT
         },
         Berserker: {
             Attribute: 'Strength',
@@ -220,7 +237,9 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 25,
             MaximumDamageReductionMultiplier: 1,
 
-            SkipLimit: 14
+            SkipChance: 0.5,
+            SkipLimit: 14,
+            SkipType: SKIP_TYPE_CONTROL
         },
         DemonHunter: {
             Attribute: 'Dexterity',
@@ -230,6 +249,10 @@ const CONFIG = Object.defineProperties(
             DamageMultiplier: 1,
             MaximumDamageReduction: 50,
             MaximumDamageReductionMultiplier: 1,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
 
             ReviveChance: 0.44,
             ReviveChanceDecay: 0.02,
@@ -246,17 +269,21 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 20,
             MaximumDamageReductionMultiplier: 2,
 
+            SkipChance: 0.35,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
+
             SwoopChance: 0.25,
             SwoopChanceMin: 0,
             SwoopChanceMax: 0.50,
             SwoopChanceDecay: -0.05,
             SwoopBonus: 0.775,
 
-            SkipChance: 0.35,
-            RageSkipChance: 0,
-
-            RageCriticalChance: 0.75,
-            RageCriticalBonus: 3.6
+            Rage: {
+                SkipChance: 0,
+                CriticalChance: 0.75,
+                CriticalBonus: 3.6
+            }
         },
         Bard: {
             Attribute: 'Intelligence',
@@ -266,6 +293,10 @@ const CONFIG = Object.defineProperties(
             DamageMultiplier: 1.125,
             MaximumDamageReduction: 25,
             MaximumDamageReductionMultiplier: 2,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
 
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
@@ -520,7 +551,7 @@ class SimulatorModel {
         } else if (this.Player.Class == WARRIOR) {
             return typeof this.Player.BlockChance !== 'undefined' ? (this.Player.BlockChance / 100) : this.Config.SkipChance;
         } else {
-            return this.Config.SkipChance || 0;
+            return this.Config.SkipChance;
         }
     }
 
@@ -717,14 +748,20 @@ class SimulatorModel {
         this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
-            getRandom(target.State.SkipChance),
+            target.skip(SKIP_TYPE_DEFAULT),
             getRandom(this.State.CriticalChance),
             ATTACK_NORMAL
         )
     }
 
-    controlSkip (instance, source) {
-        return false;
+    skip (type) {
+        if (this.Config.SkipType === type && getRandom(this.State.SkipChance) && this.SkipCount < this.Config.SkipLimit) {
+            this.SkipCount++;
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
@@ -752,7 +789,7 @@ class AssassinModel extends SimulatorModel {
         if (this.attack(
             instance.getRage() * (Math.random() * (1 + weapon1.Max - weapon1.Min) + weapon1.Min),
             target,
-            getRandom(target.State.SkipChance),
+            getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
             getRandom(this.State.CriticalChance),
             ATTACK_NORMAL
         )) {
@@ -760,7 +797,7 @@ class AssassinModel extends SimulatorModel {
             this.attack(
                 instance.getRage() * (Math.random() * (1 + weapon2.Max - weapon2.Min) + weapon2.Min),
                 target,
-                getRandom(target.State.SkipChance),
+                getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
                 getRandom(this.State.CriticalChance),
                 ATTACK_SECONDARY_NORMAL
             )
@@ -803,22 +840,10 @@ class BerserkerModel extends SimulatorModel {
         this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
-            getRandom(target.State.SkipChance),
+            getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
             getRandom(this.State.CriticalChance),
             this.SkipCount > 0 ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL
         )
-    }
-
-    controlSkip (instance, source) {
-        if (source.Player.Class === MAGE) {
-            return false;
-        } else if (getRandom(0.50) && this.SkipCount < this.Config.SkipLimit) {
-            this.SkipCount++;
-
-            return true;
-        } else {
-            return false;
-        }
     }
 }
 
@@ -876,9 +901,9 @@ class DruidModel extends SimulatorModel {
             Object.create(null),
             this.Data,
             {
-                SkipChance: target.Player.Class === MAGE ? 0 : this.Config.RageSkipChance,
-                CriticalMultiplier: this.Data.CriticalMultiplier + this.Config.RageCriticalBonus,
-                CriticalChance: this.getCriticalChance(target, this.Config.RageCriticalChance, 0.10)
+                SkipChance: target.Player.Class === MAGE ? 0 : this.Config.Rage.SkipChance,
+                CriticalMultiplier: this.Data.CriticalMultiplier + this.Config.Rage.CriticalBonus,
+                CriticalChance: this.getCriticalChance(target, this.Config.Rage.CriticalChance, 0.10)
             }
         )
     }
@@ -1061,7 +1086,7 @@ class SimulatorBase {
         this.b.before(this, this.a);
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.b.controlSkip(this, this.a)) {
+            if (this.b.skip(SKIP_TYPE_CONTROL)) {
                 this.getRage();
             } else {
                 this.a.control(this, this.b);

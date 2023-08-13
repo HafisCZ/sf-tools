@@ -63,30 +63,69 @@ const SimulatorDebugDialog = new (class extends Dialog {
         }
     }
 
+    _readGroup (value, path) {
+        if (Array.isArray(value)) {
+            const arr = [];
+            for (let i = 0; i < value.length; i++) {
+                arr[i] = this._getValue(`${path.join('.')}.${i}`, value[i]);
+            }
+
+            return arr;
+        } else if (typeof value === 'object') {
+            const obj = {};
+            for (const [k, v] of Object.entries(value)) {
+                obj[k] = this._readGroup(v, [...path, k]);
+            }
+
+            return obj;
+        } else {
+            return this._getValue(path.join('.'), value);
+        }
+    }
+
     _readData () {
-        const data = {};
+        return this._readGroup(this.defaultConfig, []);
+    }
 
-        for (const [group, groupItems] of Object.entries(this.defaultConfig)) {
-            data[group] = {}
+    _formatKey (path) {
+        return path.slice(1).map((key) => key.replace(/([A-Z])/g, ' $1').trim()).join(' - ')
+    }
 
-            for (const [key, value] of Object.entries(groupItems)) {
-                if (Array.isArray(value)) {
-                    data[group][key] = [];
+    _renderGroup (group, path) {
+        let content = ''
 
-                    for (let i = 0; i < value.length; i++) {
-                        data[group][key][i] = this._getValue(`${group}.${key}.${i}`, value[i]);
-                    }
-                } else {
-                    data[group][key] = this._getValue(`${group}.${key}`, value);
+        for (const [key, value] of Object.entries(group)) {
+            const prettyKey = this._formatKey([...path, key]);
+
+            if (Array.isArray(value)) {
+                content += '<div class="equal width fields">';
+                for (let i = 0; i < value.length; i++) {
+                    content += `
+                        <div class="field">
+                            <label>${prettyKey} - ${i + 1}</label>
+                            <div class="ui inverted input">
+                                <input type="${typeof value[i] === 'string' ? 'text' : 'number'}" data-path="${[...path, key, i].join('.')}" value="${this._convertValue(value[i])}">
+                            </div>
+                        </div>
+                    `;
                 }
+
+                content += '</div>';
+            } else if (typeof value === 'object') {
+                content += this._renderGroup(value, [...path, key]);
+            } else {
+                content += `
+                    <div class="field">
+                        <label>${prettyKey}</label>
+                        <div class="ui inverted input">
+                            <input type="${typeof value === 'string' ? 'text' : 'number'}" data-path="${[...path, key].join('.')}" value="${this._convertValue(value)}">
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        return data;
-    }
-
-    _formatKey (key) {
-        return key.replace(/([A-Z])/g, ' $1').trim();
+        return content
     }
 
     _setData (currentConfig) {
@@ -100,38 +139,7 @@ const SimulatorDebugDialog = new (class extends Dialog {
                         <h2 class="ui dividing inverted header text-orange:hover">${group}</h2>
                     </summary>
                     <div class="content mb-4">
-            `;
-
-            for (const [key, value] of Object.entries(groupItems)) {
-                const prettyKey = this._formatKey(key);
-
-                if (Array.isArray(value)) {
-                    content += '<div class="equal width fields">';
-                    for (let i = 0; i < value.length; i++) {
-                        content += `
-                            <div class="field">
-                                <label>${prettyKey} - ${i + 1}</label>
-                                <div class="ui inverted input">
-                                    <input type="${typeof value[i] === 'string' ? 'text' : 'number'}" data-path="${group}.${key}.${i}" value="${this._convertValue(value[i])}">
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    content += '</div>';
-                } else {
-                    content += `
-                        <div class="field">
-                            <label>${prettyKey}</label>
-                            <div class="ui inverted input">
-                                <input type="${typeof value === 'string' ? 'text' : 'number'}" data-path="${group}.${key}" value="${this._convertValue(value)}">
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            content += `
+                        ${this._renderGroup(groupItems, [group])}
                     </div>
                 </details>
             `;
@@ -414,6 +422,27 @@ const SimulatorUtils = class {
         }
     }
 
+    static #computeConfigDiff(differences, path) {
+        const defaultValue = _dig(this.#defaultConfig, ...path);
+        if (Array.isArray(defaultValue)) {
+            // Array value
+            const customValue = _dig(this.#currentConfig, ...path);
+            if (typeof customValue !== 'undefined' && customValue.some((v, i) => v != defaultValue[i])) {
+                differences.push(`<div>${SimulatorDebugDialog._formatKey(path)}: <span class="text-red">${defaultValue.join(', ')}</span> -&gt; <span class="text-greenyellow">${customValue.join(', ')}</span></div>`)
+            }
+        } else if (typeof defaultValue === 'object') {
+            for (const key of Object.keys(defaultValue)) {
+                this.#computeConfigDiff(differences, [...path, key]);
+            }
+        } else {
+            // Value
+            const customValue = _dig(this.#currentConfig, ...path);
+            if (typeof customValue !== 'undefined' && customValue != defaultValue) {
+                differences.push(`<div>${SimulatorDebugDialog._formatKey(path)}: <span class="text-red">${defaultValue}</span> -&gt; <span class="text-greenyellow">${customValue}</span></div>`)
+            }
+        }
+    }
+
     static #renderConfig () {
         if (typeof this.#display === 'undefined') {
             this.#display = document.createElement('div');
@@ -425,20 +454,15 @@ const SimulatorUtils = class {
 
         let content = '';
         if (this.#currentConfig) {
-            for (const [type, value] of Object.entries(this.#defaultConfig)) {
+            for (const klass of Object.keys(this.#defaultConfig)) {
                 const differences = [];
-                for (const [subtype, subvalue] of Object.entries(value)) {
-                    const customValue = _dig(this.#currentConfig, type, subtype);
 
-                    if (typeof customValue !== 'undefined' && (Array.isArray(subvalue) ? customValue.some((v, i) => v != subvalue[i]) : customValue != subvalue)) {
-                        differences.push(`<div>${subtype}: <span class="text-red">${subvalue}</span> -&gt; <span class="text-greenyellow">${customValue}</span></div>`)
-                    }
-                }
+                this.#computeConfigDiff(differences, [klass]);
 
                 if (differences.length > 0) {
                     content += `
                         <div>
-                            <h4 class="!mt-2 !mb-0">${type}</h4>
+                            <h4 class="!mt-2 !mb-0">${klass}</h4>
                             ${differences.join('')}
                         </div>
                     `;
