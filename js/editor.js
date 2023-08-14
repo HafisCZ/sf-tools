@@ -396,6 +396,10 @@ class Editor extends EditorBase {
                 {
                     name: this.intl('lightning'),
                     value: 42
+                },
+                {
+                    name: this.intl('optimal'),
+                    value: 187
                 }
             ],
             value: '0'
@@ -418,6 +422,10 @@ class Editor extends EditorBase {
                 {
                     name: this.intl('lightning'),
                     value: 42
+                },
+                {
+                    name: this.intl('optimal'),
+                    value: 187
                 }
             ],
             value: '0'
