@@ -172,6 +172,7 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 50,
             MaximumDamageReductionMultiplier: 1,
 
+            Bool_OverwritePlayerShieldBlockChance: false,
             SkipChance: 0.25,
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT
@@ -221,6 +222,8 @@ const CONFIG = Object.defineProperties(
             HealthMultiplier: 5,
             WeaponMultiplier: 2,
             DamageMultiplier: 1,
+            Bool_DynamicFireballDmgScaling: false,
+            Bool_NoFireballDmgCap: false,
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 5,
 
@@ -258,7 +261,8 @@ const CONFIG = Object.defineProperties(
             ReviveChanceDecay: 0.02,
             ReviveHealth: 0.9,
             ReviveHealthMin: 0.1,
-            ReviveHealthDecay: 0.1
+            ReviveHealthDecay: 0.1,
+            ReviveDamageDecay: 0
         },
         Druid: {
             Attribute: 'Intelligence',
@@ -382,6 +386,7 @@ const BARD = 9;
 const RUNE_FIRE_DAMAGE = 40;
 const RUNE_COLD_DAMAGE = 41;
 const RUNE_LIGHTNING_DAMAGE = 42;
+const RUNE_BEST_DAMAGE = 187;
 
 // States
 const STATE_DEAD = 0;
@@ -548,7 +553,7 @@ class SimulatorModel {
     getSkipChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
-        } else if (this.Player.Class == WARRIOR) {
+        } else if (this.Player.Class == WARRIOR && !CONFIG.Warrior.Bool_OverwritePlayerShieldBlockChance) {
             return typeof this.Player.BlockChance !== 'undefined' ? (this.Player.BlockChance / 100) : this.Config.SkipChance;
         } else {
             return this.Config.SkipChance;
@@ -626,11 +631,12 @@ class SimulatorModel {
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
+        let mb = (1 - Math.min(target.Player.Runes.ResistanceFire, target.Player.Runes.ResistanceCold, target.Player.Runes.ResistanceLightning) / 100) * (getRuneValue(weapon, RUNE_BEST_DAMAGE) / 100);
 
         let aa = this.getAttribute(this);
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
 
-        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml);
+        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml + mb);
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 
@@ -810,9 +816,22 @@ class BattlemageModel extends SimulatorModel {
         if (target.Player.Class == MAGE) {
             return 0;
         } else {
-            const multiplier = 0.05 * target.Config.HealthMultiplier;
+            let multiplierF;
+            let multiplier;
+            if (this.Config.Bool_DynamicFireballDmgScaling) {
+                multiplierF = (1 - 0.375 / ( 1 - (this.Config.MaximumDamageReduction * this.Config.MaximumDamageReductionMultiplier)/100));
+                multiplier = multiplierF / this.Config.HealthMultiplier * target.Config.HealthMultiplier;
+            } else {
+                multiplier = 0.05 * target.Config.HealthMultiplier;
+            }
 
-            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth * multiplier));
+            if (!this.Config.Bool_NoFireballDmgCap && this.Config.Bool_DynamicFireballDmgScaling) {
+                return Math.min(Math.ceil(target.TotalHealth * (1/(1-multiplierF)-1)), Math.ceil(this.TotalHealth * multiplier));
+            } else if (!this.Config.Bool_NoFireballDmgCap) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth * multiplier));
+            } else {
+                return Math.ceil(this.TotalHealth * multiplier);
+            }
         }
     }
 
@@ -877,6 +896,18 @@ class DemonHunterModel extends SimulatorModel {
         }
 
         return state;
+    }
+
+    attack (damage, target, skipped, critical, type) {
+        let multiplierM = this.Config.ReviveDamageDecay * this.DeathTriggers;
+
+        return super.attack(
+            damage * (1 - multiplierM),
+            target,
+            skipped,
+            critical,
+            type
+        );
     }
 }
 
