@@ -90,6 +90,10 @@ class PlayerEditor extends EditorBase {
                 {
                     name: intl('editor.lightning'),
                     value: 42
+                },
+                {
+                    name: intl('editor.optimal'),
+                    value: 187
                 }
             ],
             value: '0'
@@ -112,6 +116,10 @@ class PlayerEditor extends EditorBase {
                 {
                     name: intl('editor.lightning'),
                     value: 42
+                },
+                {
+                    name: intl('editor.optimal'),
+                    value: 187
                 }
             ],
             value: '0'
