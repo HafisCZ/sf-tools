@@ -312,6 +312,7 @@ class PetSimulator extends SimulatorBase {
     cacheReset (model) {
         model.Data = null;
         model.DataCache = Object.create(null);
+        model.TotalHealth = model.getHealth();
     }
 
     fight () {
