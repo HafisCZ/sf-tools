@@ -254,46 +254,49 @@ class Constants {
     }
 }
 
-const Workers = new (class {
-    constructor () {
-        this.fetchCache = {};
-        this.objectCache = {};
-    }
+class Workers {
+    static #fetchCache = new Map();
+    static #objectCache = new Map();
 
-    _local () {
+    static get local () {
         return document.location.protocol == 'file:';
     }
 
-    async _fetchContent (location) {
-        if (typeof this.fetchCache[location] === 'undefined') {
-            let url = `${this._local() ? 'https://sftools.mar21.eu' : ''}/${location}`;
+    static async #fetchContent (location) {
+        if (!this.#fetchCache.has(location)) {
+            let url = `${this.local ? 'https://sftools.mar21.eu' : ''}/${location}`;
 
-            this.fetchCache[location] = await fetch(url).then(data => data.text());
+            this.#fetchCache.set(location, await fetch(url).then(data => data.text()));
         }
 
-        return this.fetchCache[location];
+        return this.#fetchCache.get(location);
     }
 
-    async _fetchObject (type) {
-        if (typeof this.objectCache[type] === 'undefined') {
+    static async #fetchObject (type) {
+        if (!this.#objectCache.has(type)) {
             let blob = new Blob([
-                (await this._fetchContent('js/sim/base.js')) + (await this._fetchContent(`js/sim/${type}.js`))
+                (await this.#fetchContent('js/sim/base.js')) + (await this.#fetchContent(`js/sim/${type}.js`))
             ], { type: 'text/javascript' });
 
-            this.objectCache[type] = URL.createObjectURL(blob);
+            this.#objectCache.set(type, URL.createObjectURL(blob));
         }
 
-        return this.objectCache[type];
+        return this.#objectCache.get(type);
     }
 
-    async _prefetch (type) {
-        await this._fetchObject(type);
+    static async prefetch (type) {
+        await this.#fetchObject(type);
     }
 
-    async createWorker (type) {
-        return new Worker(await this._fetchObject(type));
+    static async createWorker (type) {
+        return new Worker(await this.#fetchObject(type));
     }
-})();
+
+    static invalidate () {
+        this.#fetchCache.clear();
+        this.#objectCache.clear();
+    }
+}
 
 class WorkerBatch {
     constructor (type) {
@@ -301,7 +304,7 @@ class WorkerBatch {
         this.workers = [];
     }
 
-    async _nextWorker () {
+    async #nextWorker () {
         if (this.workers.length > 0) {
             const index = this.workers.findIndex(([, params]) => this.activeParams.every((_params) => this.instanceCondition(params, _params)));
 
@@ -323,7 +326,7 @@ class WorkerBatch {
                     if (this.workersDone === this.workersTotal) {
                         this._resolve();
                     } else {
-                        this._nextWorker();
+                        this.#nextWorker();
                     }
                 })
     
@@ -380,11 +383,11 @@ class WorkerBatch {
             if (this.workersTotal === 0) {
                 this._resolve();
             } else {
-                await Workers._prefetch(this.type);
+                await Workers.prefetch(this.type);
 
                 const instancesInitial = Math.min(instances, this.workersTotal);
                 for (let i = 0; i < instancesInitial; i++) {
-                    this._nextWorker();
+                    this.#nextWorker();
                 }
             }
         })
