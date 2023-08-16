@@ -824,6 +824,7 @@ class BattlemageModel extends SimulatorModel {
             if (this.Config.Bool_DynamicFireballDmgScaling) {
                 multiplierF = (1 - 0.375 / ( 1 - (this.Config.MaximumDamageReduction * this.Config.MaximumDamageReductionMultiplier)/100));
                 multiplier = multiplierF / this.Config.HealthMultiplier * target.Config.HealthMultiplier;
+                fbcap = Math.ceil(1/(1-multiplierF)-1);
             }
 
             if (this.Bool_FBDmgScalesWithCurrentHp) {
@@ -832,8 +833,6 @@ class BattlemageModel extends SimulatorModel {
 
             if (this.Config.Bool_NoFireballDmgCap) {
                 fbcap = 1;
-            } else if (this.Config.Bool_DynamicFireballDmgScaling) {
-                fbcap = Math.ceil(1/(1-multiplierF)-1);
             }
 
             return Math.min(Math.ceil(target.TotalHealth * fbcap), Math.ceil( bmhp * multiplier));
