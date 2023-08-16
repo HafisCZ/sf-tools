@@ -258,7 +258,10 @@ const CONFIG = Object.defineProperties(
             ReviveChanceDecay: 0.02,
             ReviveHealth: 0.9,
             ReviveHealthMin: 0.1,
-            ReviveHealthDecay: 0.1
+            ReviveHealthDecay: 0.1,
+            ReviveDamage: 1,
+            ReviveDamageMin: 1,
+            ReviveDamageDecay: 0
         },
         Druid: {
             Attribute: 'Intelligence',
@@ -879,6 +882,18 @@ class DemonHunterModel extends SimulatorModel {
         }
 
         return state;
+    }
+
+    attack (damage, target, skipped, critical, type) {
+        const multiplier = Math.max(this.Config.ReviveDamageMin, this.Config.ReviveDamage - this.DeathTriggers * this.Config.ReviveDamageDecay);
+
+        return super.attack(
+            damage * multiplier,
+            target,
+            skipped,
+            critical,
+            type
+        )
     }
 }
 

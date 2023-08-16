@@ -1014,6 +1014,32 @@ Site.ready(null, function (urlParams) {
         // Initialize models
         SimulatorModel.initializeFighters(model1, model2);
 
+        // Recalculate death counts
+        for (const fight of group.fights) {
+            let deaths1 = 0;
+            let deaths2 = 0;
+
+            for (const round of fight.rounds) {
+                const isFighterA = round.attackerId === group.fighterA.ID;
+
+                if (round.attackType === ATTACK_REVIVE) {
+                    if (isFighterA) {
+                        deaths1++;
+                    } else {
+                        deaths2++;
+                    }
+                }
+
+                if (isFighterA) {
+                    round.attackerDeaths = deaths1;
+                    round.targetDeaths = deaths2;
+                } else {
+                    round.attackerDeaths = deaths2;
+                    round.targetDeaths = deaths1;
+                }
+            }
+        }
+
         const flatRounds = group.fights.map((fight) => fight.rounds).flat();
 
         // Decorate each round
@@ -1074,6 +1100,10 @@ Site.ready(null, function (urlParams) {
 
                 if (round.attacker.Class === DRUID && round.attackType === ATTACK_SWOOP) {
                     damage /= model.SwoopMultiplier;
+                }
+
+                if (round.attacker.Class === DEMONHUNTER) {
+                    damage /= Math.max(model.Config.ReviveDamageMin, model.Config.ReviveDamage - round.attackerDeaths * model.Config.ReviveDamageDecay);
                 }
 
                 round.attackBase = Math.trunc(damage);
