@@ -23,7 +23,12 @@ const CHANGELOG = {
             'Added support for logging',
             'Added new hellevator theme'
         ],
+        'Pet Simulator': [
+            'Fixed pet health not increasing properly when using generate'
+        ],
         'All Simulators': [
+            'Added option to select best rune automatically based on the current enemy',
+            'Added more debugging variables',
             'Fixed shield value when morphing into warrior'
         ],
         'All Tools': [
