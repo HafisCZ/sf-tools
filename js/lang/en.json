@@ -1345,6 +1345,7 @@
         "fire": "Fire",
         "cold": "Cold",
         "lightning": "Lightning",
+        "auto": "Auto",
         "gladiator": "Gladiator (0 - 15)",
         "life_potion": "Life Potion",
         "hand_enchant": "Shadow of the Cowboy",

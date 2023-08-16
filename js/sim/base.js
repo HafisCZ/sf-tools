@@ -382,6 +382,7 @@ const BARD = 9;
 const RUNE_FIRE_DAMAGE = 40;
 const RUNE_COLD_DAMAGE = 41;
 const RUNE_LIGHTNING_DAMAGE = 42;
+const RUNE_AUTO_DAMAGE = 999;
 
 // States
 const STATE_DEAD = 0;
@@ -626,11 +627,12 @@ class SimulatorModel {
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
+        let ma = (1 - Math.min(target.Player.Runes.ResistanceFire, target.Player.Runes.ResistanceCold, target.Player.Runes.ResistanceLightning) / 100) * (getRuneValue(weapon, RUNE_AUTO_DAMAGE) / 100);
 
         let aa = this.getAttribute(this);
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
 
-        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml);
+        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml + ma);
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 

@@ -387,15 +387,19 @@ class Editor extends EditorBase {
                 },
                 {
                     name: this.intl('fire'),
-                    value: 40
+                    value: RUNE_FIRE_DAMAGE
                 },
                 {
                     name: this.intl('cold'),
-                    value: 41
+                    value: RUNE_COLD_DAMAGE
                 },
                 {
                     name: this.intl('lightning'),
-                    value: 42
+                    value: RUNE_LIGHTNING_DAMAGE
+                },
+                {
+                    name: this.intl('auto'),
+                    value: RUNE_AUTO_DAMAGE
                 }
             ],
             value: '0'
@@ -409,15 +413,19 @@ class Editor extends EditorBase {
                 },
                 {
                     name: this.intl('fire'),
-                    value: 40
+                    value: RUNE_FIRE_DAMAGE
                 },
                 {
                     name: this.intl('cold'),
-                    value: 41
+                    value: RUNE_COLD_DAMAGE
                 },
                 {
                     name: this.intl('lightning'),
-                    value: 42
+                    value: RUNE_LIGHTNING_DAMAGE
+                },
+                {
+                    name: this.intl('auto'),
+                    value: RUNE_AUTO_DAMAGE
                 }
             ],
             value: '0'

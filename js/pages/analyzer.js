@@ -81,15 +81,19 @@ class PlayerEditor extends EditorBase {
                 },
                 {
                     name: intl('editor.fire'),
-                    value: 40
+                    value: RUNE_FIRE_DAMAGE
                 },
                 {
                     name: intl('editor.cold'),
-                    value: 41
+                    value: RUNE_COLD_DAMAGE
                 },
                 {
                     name: intl('editor.lightning'),
-                    value: 42
+                    value: RUNE_LIGHTNING_DAMAGE
+                },
+                {
+                    name: intl('editor.auto'),
+                    value: RUNE_AUTO_DAMAGE
                 }
             ],
             value: '0'
@@ -103,15 +107,19 @@ class PlayerEditor extends EditorBase {
                 },
                 {
                     name: intl('editor.fire'),
-                    value: 40
+                    value: RUNE_FIRE_DAMAGE
                 },
                 {
                     name: intl('editor.cold'),
-                    value: 41
+                    value: RUNE_COLD_DAMAGE
                 },
                 {
                     name: intl('editor.lightning'),
-                    value: 42
+                    value: RUNE_LIGHTNING_DAMAGE
+                },
+                {
+                    name: intl('editor.auto'),
+                    value: RUNE_AUTO_DAMAGE
                 }
             ],
             value: '0'
