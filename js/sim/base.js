@@ -223,6 +223,7 @@ const CONFIG = Object.defineProperties(
             WeaponMultiplier: 2,
             DamageMultiplier: 1,
             Bool_DynamicFireballDmgScaling: false,
+            Bool_FBDmgScalesWithCurrentHp : false,
             Bool_NoFireballDmgCap: false,
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 5,
@@ -817,21 +818,25 @@ class BattlemageModel extends SimulatorModel {
             return 0;
         } else {
             let multiplierF;
-            let multiplier;
+            let multiplier = 0.05 * target.Config.HealthMultiplier;
+            let bmhp = this.TotalHealth;
+            let fbcap = (1/3);
             if (this.Config.Bool_DynamicFireballDmgScaling) {
                 multiplierF = (1 - 0.375 / ( 1 - (this.Config.MaximumDamageReduction * this.Config.MaximumDamageReductionMultiplier)/100));
                 multiplier = multiplierF / this.Config.HealthMultiplier * target.Config.HealthMultiplier;
-            } else {
-                multiplier = 0.05 * target.Config.HealthMultiplier;
             }
 
-            if (!this.Config.Bool_NoFireballDmgCap && this.Config.Bool_DynamicFireballDmgScaling) {
-                return Math.min(Math.ceil(target.TotalHealth * (1/(1-multiplierF)-1)), Math.ceil(this.TotalHealth * multiplier));
-            } else if (!this.Config.Bool_NoFireballDmgCap) {
-                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth * multiplier));
-            } else {
-                return Math.ceil(this.TotalHealth * multiplier);
+            if (this.Bool_FBDmgScalesWithCurrentHp) {
+                bmhp = this.Health;
             }
+
+            if (this.Config.Bool_NoFireballDmgCap) {
+                fbcap = 1;
+            } else if (this.Config.Bool_DynamicFireballDmgScaling) {
+                fbcap = Math.ceil(1/(1-multiplierF)-1);
+            }
+
+            return Math.min(Math.ceil(target.TotalHealth * fbcap), Math.ceil( bmhp * multiplier));
         }
     }
 
