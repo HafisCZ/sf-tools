@@ -174,7 +174,9 @@ const CONFIG = Object.defineProperties(
 
             SkipChance: 0.25,
             SkipLimit: 999,
-            SkipType: SKIP_TYPE_DEFAULT
+            SkipType: SKIP_TYPE_DEFAULT,
+
+            UseBlockChance: true
         },
         Mage: {
             Attribute: 'Intelligence',
@@ -552,8 +554,8 @@ class SimulatorModel {
     getSkipChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
-        } else if (this.Player.Class == WARRIOR) {
-            return typeof this.Player.BlockChance !== 'undefined' ? (this.Player.BlockChance / 100) : this.Config.SkipChance;
+        } else if (this.Config.UseBlockChance && typeof this.Player.BlockChance !== 'undefined') {
+            return this.Player.BlockChance / 100;
         } else {
             return this.Config.SkipChance;
         }
