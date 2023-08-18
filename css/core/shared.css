@@ -106,3 +106,28 @@ input:disabled {
 .hover-to-display:hover > div.to-hover {
   opacity: 0;
 }
+
+/* Footers */
+.footer {
+  color: white;
+  opacity: 70%;
+  font-size: 12.6px;
+  pointer-events: none;
+  display: flex;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.footer-item {
+  width: 33.3%;
+  margin: 1em;
+}
+
+.footer-item:nth-child(2) {
+  text-align: right;
+}

@@ -1,8 +1,2 @@
 @import url('../global.css');
 @import url('../editor.css');
-
-.footer {
-    position: fixed;
-    left: 1em;
-    bottom: 1em;
-}

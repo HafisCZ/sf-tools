@@ -1087,7 +1087,7 @@
             "first": "First #{count} floors were defeated with 100% chance",
             "last": "Last #{count} floors are impossible to defeat"
         },
-        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+        "footer#": "Based on <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
     },
     "dungeons": {
         "simulate_one": "Simulate",
@@ -1248,7 +1248,7 @@
         }
     },
     "hydra": {
-        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "footer#": "Based on <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
         "player_count": "Player Count",
         "main": "Main",
         "side1": "Side 1",
