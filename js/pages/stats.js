@@ -1378,34 +1378,28 @@ class GroupsTab extends Tab {
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override) && (this.empty || group.LatestDisplayTimestamp);
         });
 
-        const rows = [];
-        for (let i = 0; i < filteredEntries.length; i += 5) {
-            rows.push(`
-                <div class="row">
-                    ${
-                        filteredEntries.slice(i, i + 5).map((group) => `
-                            <div class="column">
-                                <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
-                                    <span class="text-85% my-2">${ _formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
-                                    <img class="ui image" src="res/group.png" width="173" height="173">
-                                    <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
-                                    <h3 class="ui inverted header !mt-0 !mb-1">${ group.Latest.Name }</h3>
-                                </div>
-                            </div>
-                        `).join('')
-                    }
+        const items = [];
+        for (const group of filteredEntries) {
+            items.push(`
+                <div class="column">
+                    <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
+                        <span class="text-85% my-2">${ _formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
+                        <img class="ui image" src="res/group.png" width="173" height="173">
+                        <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
+                        <h3 class="ui inverted header !mt-0 !mb-1">${ group.Latest.Name }</h3>
+                    </div>
                 </div>
-            `);
+            `)
         }
 
         this.loader.start(() => {
-            const blockClickable = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]').click(function () {
+            const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
                 UI.show(UI.GroupDetail, { identifier: this.dataset.id });
             })
 
             this.contextMenu.attach(blockClickable.get());
 
-            if (rows.length == 0) {
+            if (items.length == 0) {
                 this.loader.stop();
             }
         });
@@ -1637,34 +1631,28 @@ class PlayersTab extends Tab {
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override);
         })
         
-        const rows = [];
-        for (let i = 0; i < filteredEntries.length; i += 5) {
-            rows.push(`
-                <div class="row">
-                    ${
-                        filteredEntries.slice(i, i + 5).map((player) => `
-                            <div class="column">
-                                <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
-                                    <span class="text-85% my-2">${ _formatDate(player.LatestTimestamp) }</span>
-                                    <img class="ui image" src="${_classImageUrl(player.Latest.Class)}" width="173" height="173">
-                                    <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
-                                    <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
-                                </div>
-                            </div>
-                        `).join('')
-                    }
+        const items = [];
+        for (const player of filteredEntries) {
+            items.push(`
+                <div class="column">
+                    <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
+                        <span class="text-85% my-2">${ _formatDate(player.LatestTimestamp) }</span>
+                        <img class="ui image" src="${_classImageUrl(player.Latest.Class)}" width="173" height="173">
+                        <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
+                        <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
+                    </div>
                 </div>
             `);
         }
 
         this.loader.start(() => {
-            const blockClickable = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]').click(function () {
+            const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
                 UI.show(UI.PlayerDetail, { identifier: this.dataset.id });
             })
 
             this.contextMenu.attach(blockClickable.get());
 
-            if (rows.length == 0) {
+            if (items.length == 0) {
                 this.loader.stop();
             }
         });
