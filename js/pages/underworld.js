@@ -28,6 +28,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     // Editor configuration
     Editor.createPlayerEditor('#player-editor');
+    Editor.createPasteTarget();
+
     const playerEditor = new Editor('#player-editor');
 
     const underworldEditor = new (class extends EditorBase {

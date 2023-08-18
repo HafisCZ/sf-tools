@@ -232,6 +232,10 @@ class EditorBase {
 }
 
 class Editor extends EditorBase {
+    static createPasteTarget () {
+        document.body.insertAdjacentHTML('beforeend', `<div class="paste-target">${intl('simulator.paste_target#')}</div>`);
+    }
+
     static createPlayerEditor (selector) {
         document.querySelector(selector).innerHTML = Editor.getPlayerEditorHTML();
     }

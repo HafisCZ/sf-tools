@@ -52,6 +52,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     ]
 
     Editor.createPlayerEditor('#sim-editor');
+    Editor.createPasteTarget();
 
     function editorUpdate () {
         saveEditor();

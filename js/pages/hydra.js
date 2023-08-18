@@ -25,6 +25,8 @@ Site.ready({ type: 'simulator' }, function () {
 
     const ATTRIBUTE_MAP = CONFIG.classes().map((data) => getAttributeList(data.Attribute));
 
+    Editor.createPasteTarget();
+
     const editor = new (class extends EditorBase {
         constructor () {
             super({

@@ -31,6 +31,8 @@ Site.ready({ type: 'simulator' }, function () {
 
     // Editor configuration
     Editor.createPlayerEditor('#player-editor');
+    Editor.createPasteTarget();
+
     const editor = new Editor('#player-editor');
 
     let currentList = 0;

@@ -2,6 +2,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     let simulatorMode = 'players_all';
 
     Editor.createPlayerEditor('#sim-editor');
+    Editor.createPasteTarget();
+
     const editor = new Editor('#sim-editor');
 
     var selected = -1;

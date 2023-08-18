@@ -32,6 +32,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     // Editor
     Editor.createPlayerEditor('#sim-editor');
+    Editor.createPasteTarget();
+
     const editor = new (class extends Editor {
         _bind () {
             this.fields['name'].editable(false);
