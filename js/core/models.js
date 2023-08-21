@@ -1517,16 +1517,8 @@ class PlayerModel {
         return this[this.Config.Attribute];
     }
 
-    getHealthMultiplier () {
-        return this.Config.HealthMultiplier;
-    }
-
-    getMaximumDamageReduction () {
-        return this.Config.MaximumDamageReduction;
-    }
-
     getHealth () {
-        let ma = this.getHealthMultiplier();
+        let ma = this.Config.HealthMultiplier;
         let mb = (100 + this.Dungeons.Player) / 100;
         let mc = this.Potions.Life ? 1.25 : 1;
         let md = (100 + this.Runes.Health) / 100;
