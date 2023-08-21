@@ -942,7 +942,7 @@ ScriptCommands.registerDeprecatedVariant(
         }
     },
     (root, extensions, name, length) => {
-        const acc = Highlighter.constant(extensions || '').keyword('header');
+        const acc = Highlighter.constant(extensions || '').deprecatedKeyword('header');
 
         if (name != undefined) {
             acc.space();
@@ -955,7 +955,7 @@ ScriptCommands.registerDeprecatedVariant(
             }
         }
         
-        return acc.keyword(' as group of ').value(length);
+        return acc.space(1).deprecatedKeyword('as group of').space(1).value(length);
     }
 )
 
@@ -1033,7 +1033,7 @@ ScriptCommands.registerDeprecatedVariant(
             }
         }
     },
-    (root, extensions, name, expression) => Highlighter.constant(extensions || '').keyword('show ').identifier(name).keyword(' as ').expression(expression, root)
+    (root, extensions, name, expression) => Highlighter.constant(extensions || '').deprecatedKeyword('show').space(1).identifier(name).space(1).deprecatedKeyword('as').space(1).expression(expression, root)
 )
       
 ScriptCommands.register(
