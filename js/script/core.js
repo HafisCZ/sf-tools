@@ -915,14 +915,27 @@ ScriptCommands.register(
         }
     }
 )
-      
+
 ScriptCommands.register(
-    'TABLE_GROUPED_HEADER',
+    'TABLE_HEADER_REPEAT',
     ScriptType.Table,
+    /^repeat (\d+)$/,
+    (root, count) => {
+        if (count > 0) {
+            root.addHeaderLocal('grouped', Number(count));
+        }
+    },
+    (root, count) => Highlighter.keyword('repeat ').identifier(count)
+)
+
+ScriptCommands.registerDeprecatedVariant(
+    'TABLE_HEADER_REPEAT',
+    'TABLE_GROUPED_HEADER',
     /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
     (root, extensions, name, length) => {
         if (length > 0) {
-            root.addHeader(name || '', Number(length));
+            root.addHeader(name || '');
+            root.addHeaderLocal('grouped', Number(length))
             if (extensions) {
                 root.addExtension(... extensions.slice(0, -1).split(','));
             }
@@ -2495,13 +2508,15 @@ class Script {
     }
 
     // Create new header
-    addHeader (name, grouped = 0) {
+    addHeader (name) {
         this.push();
-
-        // Header
         this.header = this.createHeader(name);
-        if (grouped) {
-            this.header.grouped = grouped;
+    }
+
+    addHeaderLocal (name, value) {
+        let object = this.header;
+        if (object) {
+            object[name] = value;
         }
     }
 

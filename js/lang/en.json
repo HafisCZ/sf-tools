@@ -626,7 +626,9 @@
                 "TABLE_FORMAT_LONG": "format",
                 "TABLE_FORMAT": "expf",
                 "TABLE_ROW_COMPACT": "show as",
-                "TABLE_ROW": "row"
+                "TABLE_ROW": "row",
+                "TABLE_HEADER_REPEAT": "repeat",
+                "TABLE_GROUPED_HEADER": "headed as group of"
             }
         },
         "players": {
