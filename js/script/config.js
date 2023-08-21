@@ -1792,6 +1792,27 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Health Multiplier',
+  {
+    expr: p => p.Config.HealthMultiplier
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Weapon Damage Multiplier',
+  {
+    expr: p => p.Config.WeaponMultiplier
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Maximum Damage Reduction',
+  {
+    expr: p => p.Config.MaximumDamageReduction
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Life Potion',
   {
     expr: p => p.Potions.Life == 25,
