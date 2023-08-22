@@ -1648,8 +1648,7 @@ ScriptCommands.register(
     ScriptType.Table,
     /^define (\w+)$/,
     (root, name) => root.addDefinition(name),
-    (root, name) => Highlighter.keyword('define ').identifier(name),
-    true
+    (root, name) => Highlighter.keyword('define ').identifier(name)
 )
 
 ScriptCommands.register(
