@@ -275,25 +275,23 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             const batch = new WorkerBatch('pets');
 
             for (let type = 0; type < 5; type++) {
-                for (let klass = 1; klass <= 3; klass++) {
-                    const [pet1, pet2] = getPetsFor(player, type, klass);
-                    if (pet1 && pet2) {
-                        batch.add(
-                            ({ results: _results }) => {
-                                results.push({
-                                    chance: _results,
-                                    player: pet1,
-                                    boss: pet2
-                                })
-                            },
-                            {
-                                mode: 'pet',
-                                players: [pet1, pet2],
-                                iterations,
-                                config: SimulatorUtils.config
-                            }
-                        )
-                    }
+                const [pet1, pet2] = getPetsFor(player, type);
+                if (pet1 && pet2) {
+                    batch.add(
+                        ({ results: _results }) => {
+                            results.push({
+                                chance: _results,
+                                player: pet1,
+                                boss: pet2
+                            })
+                        },
+                        {
+                            mode: 'pet',
+                            players: [pet1, pet2],
+                            iterations,
+                            config: SimulatorUtils.config
+                        }
+                    )
                 }
             }
 
@@ -302,11 +300,9 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             batch.run(instances).then(() => {
                 _sortDesc(results, i => i.chance);
 
-                const resultClasses = [0, 0, 0, 0, 0];
-
                 DialogController.open(
                     SimulatorResultsDialog,
-                    results.filter(({ player }) => ++resultClasses[player.Type] == 1)
+                    results
                 )
             })
         }
@@ -412,7 +408,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         callback: (player) => {
             updateDungeonButton(player);
 
-            const [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
+            const [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get());
             petA.fill(playerPet);
             petB.fill(bossPet);
 
@@ -420,7 +416,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
     });
 
-    function getPetsFor (player, type, petClass) {
+    function getPetsFor (player, type) {
         let currentType = type;
         let currentName = [
             'Shadow', 'Light', 'Earth', 'Fire', 'Water'
@@ -466,17 +462,12 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             };
         }
 
-        let petModels = _sortDesc(pets.filter((data) => data.Level).map((data) => {
+        const bestPet = _sortDesc(pets.filter((data) => data.Level).map((data) => {
             const model = PetModel.getModel(data);
-            
-            model.initialize(model);
+            model.Score = ModelUtils.estimatePower(model.Player);
 
             return model;
-        }), model => model.TotalHealth);
-        let bestPet = petModels.find(model => model.Player.Class == petClass);
-        if (petClass == null && !bestPet) {
-            bestPet = petModels[0];
-        }
+        }), model => model.Score)[0];
 
         if (bestPet) {
             pet1 = pets[bestPet.Player.Pet];

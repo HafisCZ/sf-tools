@@ -11,7 +11,7 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added new setting to make table headers sticky',
-            'Added <code>Official Discord</code>, <code>Twitch Frame</code>, <code>Health Multiplier</code>, <code>Weapon Damage Multiplier</code>, <code>Maximum Damage Resistance</code> and <code>Gold</code> header',
+            'Added <code>Official Discord</code>, <code>Twitch Frame</code>, <code>Health Multiplier</code>, <code>Weapon Damage Multiplier</code>, <code>Maximum Damage Resistance</code>, <code>Power</code> and <code>Gold</code> header',
             'Added <code>indexed custom header</code> to use first column as custom index column',
             'Added new berserker icon',
             'Added <code>this</code> as a function',
@@ -26,7 +26,8 @@ const CHANGELOG = {
             'Added new hellevator theme'
         ],
         'Pet Simulator': [
-            'Fixed pet health not increasing properly when using generate'
+            'Fixed pet health not increasing properly when using generate',
+            'Fixed pet selection'
         ],
         'All Simulators': [
             'Added option to select best rune automatically based on the current enemy',
