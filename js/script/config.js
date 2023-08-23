@@ -2864,6 +2864,13 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Power',
+  {
+    expr: p => ModelUtils.estimatePower(p),
+    format: (p, x) => x.toExponential(3)
+  }
+)
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'protected', 'Pet',
