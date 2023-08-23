@@ -2212,7 +2212,7 @@ class CompanionModel extends PlayerModel {
 class ModelUtils {
     static estimatePower (model) {
         const config = CONFIG.fromIndex(model.Class);
-        const base = model.Primary.Total * model.Constitution.Total * model.Level / config.WeaponMultiplier;
+        const base = model[config.Attribute].Total * model.Constitution.Total * model.Level / config.WeaponMultiplier;
 
         if (model.Class === ASSASSIN) {
             return base * (model.Items.Wpn1.DamageMin + model.Items.Wpn1.DamageMax + model.Items.Wpn2.DamageMin + model.Items.Wpn2.DamageMax) / 4;
