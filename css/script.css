@@ -30,11 +30,14 @@
   color: rgb(204, 204, 204);
 }
 
-.ta-info-deprecated-line::before {
-  content: '\f071';
-  font-family: icons;
-  color: rgba(255, 166, 0, 0.75);
+.ta-info::before {
   margin-right: 5px;
+  font-family: icons;
+}
+
+.ta-info-deprecated::before {
+  content: '\f071';
+  color: rgba(255, 166, 0, 0.75);
 }
 
 .ta-line::before {

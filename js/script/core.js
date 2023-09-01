@@ -1736,7 +1736,7 @@ class ScriptValidator {
         const name1 = intl(`stats.scripts.commands.${deprecatedKey}`);
         const name2 = intl(`stats.scripts.commands.${deprecatedBy}`);
 
-        this.#entries.add(`<div class="ta-info-deprecated-line">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
+        this.#entries.add(`<div class="ta-info ta-info-deprecated">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
     }
 
     string () {
