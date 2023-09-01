@@ -253,6 +253,7 @@ class Highlighter {
 class ScriptCommand {
     #internalParse;
     #internalFormat;
+    #internalValidator = null;
 
     constructor (key, type, regexp, parse, format) {
         this.key = key;
@@ -281,6 +282,10 @@ class ScriptCommand {
         return this.#internalFormat(root, ... string.match(this.regexp).slice(1));
     }
 
+    validate (root, string, validator) {
+        this.#internalValidator?.(validator, root, ... string.match(this.regexp).slice(1))
+    }
+
     parseAsConstant () {
         this.canParseAsConstant = true;
         return this;
@@ -289,6 +294,10 @@ class ScriptCommand {
     parseNever () {
         this.canParse = false;
         return this;
+    }
+
+    withValidation (validator) {
+        this.#internalValidator = validator;
     }
 }
 
@@ -303,15 +312,6 @@ class ScriptCommands {
 
         this.#keys.push(key);
         this.#commands.push(command);
-
-        return command;
-    }
-
-    static registerDeprecatedVariant (deprecatedBy, key, regexp, parse, format) {
-        const deprecatedByCommand = this[deprecatedBy];
-
-        const command = this.register(key, deprecatedByCommand.type, regexp, parse, format);
-        command.deprecatedBy = deprecatedBy;
 
         return command;
     }
@@ -870,9 +870,9 @@ ScriptCommands.register(
     }
 )
 
-ScriptCommands.registerDeprecatedVariant(
-    'TABLE_FORMAT',
+ScriptCommands.register(
     'TABLE_FORMAT_LONG',
+    ScriptType.Table,
     /^format (.+)$/,
     (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
@@ -893,7 +893,9 @@ ScriptCommands.registerDeprecatedVariant(
             return acc.expression(expression, root);
         }
     }
-)
+).withValidation((validator) => {
+    validator.deprecateCommand('TABLE_FORMAT_LONG', 'TABLE_FORMAT')
+})
 
 ScriptCommands.register(
     'TABLE_CATEGORY',
@@ -928,9 +930,9 @@ ScriptCommands.register(
     (root, count) => Highlighter.keyword('repeat ').identifier(count)
 )
 
-ScriptCommands.registerDeprecatedVariant(
-    'TABLE_HEADER_REPEAT',
+ScriptCommands.register(
     'TABLE_GROUPED_HEADER',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
     (root, extensions, name, length) => {
         if (length > 0) {
@@ -957,7 +959,9 @@ ScriptCommands.registerDeprecatedVariant(
         
         return acc.space(1).deprecatedKeyword('as group of').space(1).value(length);
     }
-)
+).withValidation((validator) => {
+    validator.deprecateCommand('TABLE_GROUPED_HEADER', 'TABLE_HEADER_REPEAT')
+})
 
 ScriptCommands.register(
     'TABLE_HEADER',
@@ -1020,9 +1024,9 @@ ScriptCommands.register(
     }
 )
 
-ScriptCommands.registerDeprecatedVariant(
-    'TABLE_ROW',
+ScriptCommands.register(
     'TABLE_ROW_COMPACT',
+    ScriptType.Table,
     /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
     (root, extensions, name, expression) => {
         const ast = Expression.create(expression, root);
@@ -1034,7 +1038,9 @@ ScriptCommands.registerDeprecatedVariant(
         }
     },
     (root, extensions, name, expression) => Highlighter.constant(extensions || '').deprecatedKeyword('show').space(1).identifier(name).space(1).deprecatedKeyword('as').space(1).expression(expression, root)
-)
+).withValidation((validator) => {
+    validator.deprecateCommand('TABLE_ROW_COMPACT', 'TABLE_ROW');
+})
       
 ScriptCommands.register(
     'TABLE_VAR',
@@ -1193,9 +1199,9 @@ ScriptCommands.register(
     (root, value) => Highlighter.keyword('limit ')[value > 0 ? 'value' : 'error'](value)
 )
 
-ScriptCommands.registerDeprecatedVariant(
+ScriptCommands.register(
     'TABLE_GLOBAL_LIMIT',
-    'TABLE_GLOBAL_PERFORMANCE',
+    ScriptType.Table,
     /^performance (\d+)$/,
     (root, value) => {
         if (value > 0) {
@@ -1203,7 +1209,9 @@ ScriptCommands.registerDeprecatedVariant(
         }
     },
     (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
-)
+).withValidation((validator) => {
+    validator.deprecateCommand('TABLE_GLOBAL_PERFORMANCE', 'TABLE_GLOBAL_LIMIT');
+})
 
 ScriptCommands.register(
     'TABLE_GLOBAL_SCALE',
@@ -1720,6 +1728,21 @@ ScriptCommands.register(
     },
     (root, str, name, arg) => Highlighter.keyword('track ').constant(name).keyword(' when ').expression(arg)
 )
+
+class ScriptValidator {
+    #entries = new Set();
+
+    deprecateCommand (deprecatedKey, deprecatedBy) {
+        const name1 = intl(`stats.scripts.commands.${deprecatedKey}`);
+        const name2 = intl(`stats.scripts.commands.${deprecatedBy}`);
+
+        this.#entries.add(`<div class="ta-info-deprecated-line">${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
+    }
+
+    string () {
+        return Array.from(this.#entries).join('')
+    }
+}
 
 class Script {
     constructor (string, scriptType, tableType) {
@@ -3187,7 +3210,7 @@ class Script {
 
     static render (string, scriptType = ScriptType.Table) {
         const settings = new Script('', scriptType, null);
-        const deprecatedKeys = new Set();
+        const validator = new ScriptValidator();
 
         for (const line of Script.handleMacros(string)) {
             const trimmed = Script.stripComments(line)[0].trim();
@@ -3220,9 +3243,7 @@ class Script {
                         const lineHtml = command.format(settings, trimmed);
                         currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
 
-                        if (command.deprecatedBy) {
-                            deprecatedKeys.add(command.key);
-                        }
+                        command.validate(settings, trimmed, validator);
                     } else {
                         currentLine += Highlighter.error(trimmed).text;
                     }
@@ -3241,21 +3262,9 @@ class Script {
             }
         }
 
-        let info = '';
-        if (deprecatedKeys.size > 0) {
-            for (const key of deprecatedKeys) {
-                const name1 = intl(`stats.scripts.commands.${key}`);
-                const name2 = intl(`stats.scripts.commands.${ScriptCommands[key].deprecatedBy}`);
-
-                info += `
-                    <div class="ta-info-deprecated-line">${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>
-                `;
-            }
-        }
-
         return {
             html: `<div class="ta-block">${content}</div>`,
-            info
+            info: validator.string()
         }
     }
 };
