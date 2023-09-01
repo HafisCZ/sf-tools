@@ -3223,45 +3223,34 @@ class Script {
 
         let content = '';
 
-        ScriptHighlightCache.ini(settings);
-
         const lines = string.split('\n');
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            const cachedLine = ScriptHighlightCache.get(line);
 
-            if (typeof cachedLine !== 'undefined') {
-                content += cachedLine;
-            } else {
-                let [ commandLine, comment, commentIndex ] = Script.stripComments(line, false);
-                let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
+            let [ commandLine, comment, commentIndex ] = Script.stripComments(line, false);
+            let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
 
-                let currentLine = prefix.replace(/ /g, '&nbsp;');
+            let currentLine = prefix.replace(/ /g, '&nbsp;');
 
-                if (trimmed) {
-                    const command = ScriptCommands.find((command) => (command.type & scriptType) && command.is(trimmed));
+            if (trimmed) {
+                const command = ScriptCommands.find((command) => (command.type & scriptType) && command.is(trimmed));
 
-                    if (command) {
-                        const lineHtml = command.format(settings, trimmed);
-                        currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
+                if (command) {
+                    const lineHtml = command.format(settings, trimmed);
+                    currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
 
-                        command.validate(validator, settings, i + 1, trimmed);
-                    } else {
-                        currentLine += Highlighter.error(trimmed).text;
-                    }
+                    command.validate(validator, settings, i + 1, trimmed);
+                } else {
+                    currentLine += Highlighter.error(trimmed).text;
                 }
-
-                currentLine += suffix.replace(/ /g, '&nbsp;');
-                if (commentIndex != -1) {
-                    currentLine += Highlighter.comment(comment).text;
-                }
-
-                currentLine = `<div class="ta-line">${currentLine || '&nbsp;'}</div>`;
-
-                ScriptHighlightCache.set(line, currentLine);
-
-                content += currentLine;
             }
+
+            currentLine += suffix.replace(/ /g, '&nbsp;');
+            if (commentIndex != -1) {
+                currentLine += Highlighter.comment(comment).text;
+            }
+
+            content += `<div class="ta-line">${currentLine || '&nbsp;'}</div>`;
         }
 
         return {
@@ -3270,29 +3259,6 @@ class Script {
         }
     }
 };
-
-class ScriptHighlightCache {
-    static #hash = null;
-    static #data = new Map();
-
-    static ini (content) {
-        const hash = SHA1(JSON.stringify(content));
-
-        if (this.#hash !== hash) {
-            this.#hash = hash;
-
-            this.#data = new Map();
-        }
-    }
-
-    static get (line) {
-        return this.#data.get(line);
-    }
-
-    static set (line, output) {
-        this.#data.set(line, output);
-    }
-}
 
 // Script archive
 class ScriptArchive {
