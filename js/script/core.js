@@ -282,8 +282,8 @@ class ScriptCommand {
         return this.#internalFormat(root, ... string.match(this.regexp).slice(1));
     }
 
-    validate (root, string, validator) {
-        this.#internalValidator?.(validator, root, ... string.match(this.regexp).slice(1))
+    validate (validator, root, line, string) {
+        this.#internalValidator?.(validator, line, root, ... string.match(this.regexp).slice(1))
     }
 
     parseAsConstant () {
@@ -893,8 +893,8 @@ ScriptCommands.register(
             return acc.expression(expression, root);
         }
     }
-).withValidation((validator) => {
-    validator.deprecateCommand('TABLE_FORMAT_LONG', 'TABLE_FORMAT')
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_FORMAT_LONG', 'TABLE_FORMAT')
 })
 
 ScriptCommands.register(
@@ -959,8 +959,8 @@ ScriptCommands.register(
         
         return acc.space(1).deprecatedKeyword('as group of').space(1).value(length);
     }
-).withValidation((validator) => {
-    validator.deprecateCommand('TABLE_GROUPED_HEADER', 'TABLE_HEADER_REPEAT')
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_GROUPED_HEADER', 'TABLE_HEADER_REPEAT')
 })
 
 ScriptCommands.register(
@@ -1038,8 +1038,8 @@ ScriptCommands.register(
         }
     },
     (root, extensions, name, expression) => Highlighter.constant(extensions || '').deprecatedKeyword('show').space(1).identifier(name).space(1).deprecatedKeyword('as').space(1).expression(expression, root)
-).withValidation((validator) => {
-    validator.deprecateCommand('TABLE_ROW_COMPACT', 'TABLE_ROW');
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_ROW_COMPACT', 'TABLE_ROW');
 })
       
 ScriptCommands.register(
@@ -1209,8 +1209,8 @@ ScriptCommands.register(
         }
     },
     (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
-).withValidation((validator) => {
-    validator.deprecateCommand('TABLE_GLOBAL_PERFORMANCE', 'TABLE_GLOBAL_LIMIT');
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_GLOBAL_PERFORMANCE', 'TABLE_GLOBAL_LIMIT');
 })
 
 ScriptCommands.register(
@@ -1732,11 +1732,11 @@ ScriptCommands.register(
 class ScriptValidator {
     #entries = new Set();
 
-    deprecateCommand (deprecatedKey, deprecatedBy) {
+    deprecateCommand (line, deprecatedKey, deprecatedBy) {
         const name1 = intl(`stats.scripts.commands.${deprecatedKey}`);
         const name2 = intl(`stats.scripts.commands.${deprecatedBy}`);
 
-        this.#entries.add(`<div class="ta-info-deprecated-line">${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
+        this.#entries.add(`<div class="ta-info-deprecated-line">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
     }
 
     string () {
@@ -3225,7 +3225,9 @@ class Script {
 
         ScriptHighlightCache.ini(settings);
 
-        for (const line of string.split('\n')) {
+        const lines = string.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
             const cachedLine = ScriptHighlightCache.get(line);
 
             if (typeof cachedLine !== 'undefined') {
@@ -3243,7 +3245,7 @@ class Script {
                         const lineHtml = command.format(settings, trimmed);
                         currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
 
-                        command.validate(settings, trimmed, validator);
+                        command.validate(validator, settings, i + 1, trimmed);
                     } else {
                         currentLine += Highlighter.error(trimmed).text;
                     }
