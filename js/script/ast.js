@@ -250,6 +250,8 @@ class ExpressionRenderer {
                             break;
                         }
                     }
+                } else if (Expression.TOKENS[token]) {
+                    highlighter.normal(token)
                 } else if (root.functions && root.functions[token]) {
                     highlighter.function(token);
                 } else if (token === 'true' || token === 'false') {
@@ -1055,4 +1057,14 @@ class Expression {
         '&&': '__and',
         '||': '__or'
     }
+
+    static TOKENS = Object.assign(
+        Object.create(null),
+        Object.keys(this.#TOKEN_UNARY),
+        Object.keys(this.#TOKEN_HIGH_PRIORITY),
+        Object.keys(this.#TOKEN_MEDIUM_PRIORITY),
+        Object.keys(this.#TOKEN_LOW_PRIORITY),
+        Object.keys(this.#TOKEN_BOOL),
+        Object.keys(this.#TOKEN_BOOL_MERGE)
+    )
 }
