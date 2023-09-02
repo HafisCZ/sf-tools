@@ -536,11 +536,6 @@ class Expression {
         }
     }
 
-    static #TOKEN_UNARY = {
-        '-': '__negate',
-        '!': '__invert'
-    }
-
     // Get next token as unary operator
     #getUnaryOperator () {
         return {
@@ -1025,6 +1020,11 @@ class Expression {
         '(': ')',
         '[': ']',
         '{': '}'
+    }
+
+    static #TOKEN_UNARY = {
+        '-': '__negate',
+        '!': '__invert'
     }
 
     static #TOKEN_HIGH_PRIORITY = {
