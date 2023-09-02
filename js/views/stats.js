@@ -1951,7 +1951,7 @@ const ScriptManualDialog = new (class extends Dialog {
             [
                 'function',
                 'ta-function',
-                TABLE_EXPRESSION_CONFIG.all('function')
+                TABLE_EXPRESSION_CONFIG.all('function').filter((name) => !name.startsWith('__'))
             ],
             [
                 'variable',

@@ -47,8 +47,164 @@ class ExpressionConfig {
 const DEFAULT_EXPRESSION_CONFIG = new ExpressionConfig();
 
 /*
+  Math functions
+*/
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__multiply', function (a, b) { return a * b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__divide', function (a, b) { return b == 0 ? 0 : (a / b) }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__add', function (a, b) { return a + b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__subtract', function (a, b) { return a - b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__greater', function (a, b) { return a > b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__greater_equal', function (a, b) { return a >= b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__lower', function (a, b) { return a < b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__lower_equal', function (a, b) { return a <= b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__power', function (a, b) { return Math.pow(a, b) }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__equal', function (a, b) { return a == b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__not_equal', function (a, b) { return a != b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__modulo', function (a, b) { return a % b }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__negate', function (a) { return -a }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__invert', function (a) { return !a }
+)
+
+/*
   Scope functions
 */
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__array',
+  function (self, scope, node) {
+    const obj = [];
+
+    for (const { key, val } of node.args) {
+        obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);
+    }
+
+    return obj;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__object',
+  function (self, scope, node) {
+    const obj = {};
+
+    for (const { key, val } of node.args) {
+        obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);
+    }
+
+    return obj;
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__condition',
+  function  (self, scope, node) {
+    const condition = node.args[0];
+    const branch1 = node.args[1];
+    const branch2 = node.args[2];
+  
+    if (self.evalInternal(scope, condition)) {
+        return self.evalInternal(scope, branch1);
+    } else {
+        return self.evalInternal(scope, branch2);
+    }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__or',
+  function  (self, scope, node) {
+    const branch1 = node.args[0];
+    const branch2 = node.args[1];
+  
+    const resolved1 = self.evalInternal(scope, branch1);
+    if (resolved1) {
+        return resolved1;
+    } else {
+        return self.evalInternal(scope, branch2);
+    }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__and',
+  function  (self, scope, node) {
+    const branch1 = node.args[0];
+    const branch2 = node.args[1];
+  
+    const resolved1 = self.evalInternal(scope, branch1);
+    if (resolved1) {
+        return self.evalInternal(scope, branch2);
+    } else {
+        return false;
+    }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__at',
+  function  (self, scope, node) {
+    const object = self.evalInternal(scope, node.args[0]);
+    if (object) {
+        return object[self.evalInternal(scope, node.args[1])];
+    } else {
+        return undefined;
+    }
+  }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'scope', '__call',
+  function  (self, scope, node) {
+    const object = self.evalInternal(scope, node.args[0]);
+    const func = self.evalInternal(scope, node.args[1]);
+  
+    if (object != undefined && object[func] && typeof object[func] === 'function') {
+        return object[func](... node.args[2].map(param => self.evalInternal(scope, param)));
+    } else {
+        return undefined;
+    }
+  }
+)
+
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', 'difference',
   function (self, scope, node) {

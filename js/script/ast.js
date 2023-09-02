@@ -384,7 +384,7 @@ class Expression {
             ExpressionCache.set(scope.token, this.rstr, value);
         }
 
-        return typeof value == 'number' && isNaN(value) ? undefined : value;
+        return typeof value === 'number' && isNaN(value) ? undefined : value;
     }
 
     // Check if the expression is valid (no tokens left)
@@ -838,6 +838,14 @@ class Expression {
                     }
                 }
             }
+        } else if (typeof node === 'string') {
+            if (this.config.has(node.op)) {
+                const data = this.config.get(node.op);
+
+                if (data.noCache) {
+                    return false;
+                }
+            }
         }
 
         return true;
@@ -845,34 +853,36 @@ class Expression {
 
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
     #postProcess (tableVariables, node) {
-        if (typeof(node) == 'object' && node.op !== '__value') {
+        if (typeof node === 'object') {
+            if (node.op === '__value') return node;
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
                     node.args[i] = this.#postProcess(tableVariables, node.args[i]);
                 }
             }
 
-            if (Expression.#MATH_OPERATIONS[node.op] && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === '__value')).length == node.args.length) {
-                const res = Expression.#MATH_OPERATIONS[node.op](... node.args.map(a => a.op === '__value' ? a.args : a));
-                return typeof res === 'string' ? this.#wrapValue(res) : res;
-            } else if (node.op && this.config.has(node.op)) {
+            if (this.config.has(node.op)) {
                 const data = this.config.get(node.op);
-                if (data.noCache) return node;
-                if (data && data.type === 'function' && data.meta === 'value' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === '__value')).length == node.args.length) {
+
+                if (data.noCache) {
+                    return node;
+                } else if (data.type === 'function' && (data.meta === 'math' || data.meta === 'value') && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === '__value')).length == node.args.length) {
                     const res = data.data(... node.args.map(a => a.op === '__value' ? a.args : a));
                     return typeof res === 'string' ? this.#wrapValue(res) : res;
                 }
             }
-        } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
-            return tableVariables[node].ast.root;
-        } else if (typeof node == 'string' && /\~\d+/.test(node)) {
-            let index = parseInt(node.slice(1));
-            if (index < this.subexpressions.length) {
-                let subnode = this.subexpressions[index];
-                if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.op === '__value')) {
-                    return subnode;
-                } else if (typeof subnode == 'string' && subnode in tableVariables && !isNaN(tableVariables[subnode].ast.root)) {
-                    return tableVariables[subnode].ast.root;
+        } else if (typeof node === 'string') {
+            if (node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
+                return tableVariables[node].ast.root;
+            } else if (/\~\d+/.test(node)) {
+                let index = parseInt(node.slice(1));
+                if (index < this.subexpressions.length) {
+                    let subnode = this.subexpressions[index];
+                    if (typeof subnode === 'number' || (typeof subnode === 'object' && subnode.op === '__value')) {
+                        return subnode;
+                    } else if (typeof subnode === 'string' && subnode in tableVariables && !isNaN(tableVariables[subnode].ast.root)) {
+                        return tableVariables[subnode].ast.root;
+                    }
                 }
             }
         }
@@ -911,52 +921,6 @@ class Expression {
             if (typeof node.op === 'string') {
                 if (node.op === '__value') {
                     return node.args;
-                } else if (node.op == '__array') {
-                    const obj = [];
-
-                    for (const { key, val } of node.args) {
-                        obj[this.evalInternal(scope, key)] = this.evalInternal(scope, val);
-                    }
-
-                    return obj;
-                } else if (node.op === '__object') {
-                    const obj = {};
-
-                    for (const { key, val } of node.args) {
-                        obj[this.evalInternal(scope, key)] = this.evalInternal(scope, val);
-                    }
-
-                    return obj;
-                } else if (node.op === '__condition') {
-                    const condition = node.args[0];
-                    const branch1 = node.args[1];
-                    const branch2 = node.args[2];
-
-                    if (this.evalInternal(scope, condition)) {
-                        return this.evalInternal(scope, branch1);
-                    } else {
-                        return this.evalInternal(scope, branch2);
-                    }
-                } else if (node.op === '__or') {
-                    const branch1 = node.args[0];
-                    const branch2 = node.args[1];
-
-                    const resolved1 = this.evalInternal(scope, branch1);
-                    if (resolved1) {
-                        return resolved1;
-                    } else {
-                        return this.evalInternal(scope, branch2);
-                    }
-                } else if (node.op === '__and') {
-                    const branch1 = node.args[0];
-                    const branch2 = node.args[1];
-
-                    const resolved1 = this.evalInternal(scope, branch1);
-                    if (resolved1) {
-                        return this.evalInternal(scope, branch2);
-                    } else {
-                        return false;
-                    }
                 } else if (scope.env.functions[node.op]) {
                     const mapper = scope.env.functions[node.op];
                     const scope2 = {};
@@ -965,30 +929,6 @@ class Expression {
                     }
 
                     return mapper.ast.eval(scope.clone().add(scope2));
-                } else if (node.op === '__at') {
-                    const object = this.evalInternal(scope, node.args[0]);
-                    if (object) {
-                        return object[this.evalInternal(scope, node.args[1])];
-                    } else {
-                        return undefined;
-                    }
-                } else if (node.op === '__call') {
-                    const object = this.evalInternal(scope, node.args[0]);
-                    const func = this.evalInternal(scope, node.args[1]);
-
-                    if (object != undefined && object[func] && typeof object[func] === 'function') {
-                        return object[func](... node.args[2].map(param => this.evalInternal(scope, param)));
-                    } else {
-                        return undefined;
-                    }
-                } else if (Expression.#MATH_OPERATIONS[node.op]) {
-                    // Return processed node
-                    const value = Expression.#MATH_OPERATIONS[node.op](... node.args.map(arg => this.evalInternal(scope, arg)));
-                    if (value == NaN) {
-                        return undefined;
-                    } else {
-                        return value;
-                    }
                 } else if (this.config.has(node.op)) {
                     const data = this.config.get(node.op);
 
@@ -1002,6 +942,16 @@ class Expression {
                                     this.evalToArray(scope, node.args[0]),
                                     ... node.args.slice(1).map(arg => this.evalInternal(scope, arg))
                                 )
+                            } else if (data.meta === 'math') {
+                                const value = data.data(
+                                    ... node.args.map(arg => this.evalInternal(scope, arg))
+                                )
+
+                                if (value == NaN) {
+                                    return undefined;
+                                } else {
+                                    return value;
+                                }
                             } else {
                                 return data.data(
                                     ... node.args.map(arg => this.evalInternal(scope, arg))
@@ -1102,22 +1052,5 @@ class Expression {
         '(': ')',
         '[': ']',
         '{': '}'
-    }
-
-    static #MATH_OPERATIONS = {
-        '__multiply': (a, b) => a * b,
-        '__divide': (a, b) => b == 0 ? 0 : (a / b),
-        '__add': (a, b) => a + b,
-        '__subtract': (a, b) => a - b,
-        '__greater': (a, b) => a > b,
-        '__greater_equal': (a, b) => a >= b,
-        '__lower': (a, b) => a < b,
-        '__lower_equal': (a, b) => a <= b,
-        '__power': (a, b) => Math.pow(a, b),
-        '__equal': (a, b) => a == b,
-        '__not_equal': (a, b) => a != b,
-        '__modulo': (a, b) => a % b,
-        '__negate': (a) => -a,
-        '__invert': (a) => !a
     }
 }
