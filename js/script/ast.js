@@ -577,7 +577,7 @@ class Expression {
     #getFunction () {
         return {
             op: this.#get(),
-            args: this.#getExpressionGroup(() => this.#getExpression(), () => 'undefined')
+            args: this.#getExpressionGroup(() => this.#getExpression(), () => this.#wrapValue(undefined))
         };
     }
 
@@ -588,7 +588,7 @@ class Expression {
             op: 'format',
             args: [
                 this.#wrapValue(val.slice(1, val.length - 1)),
-                ... this.#getExpressionGroup(() => this.#getExpression(), () => 'undefined')
+                ... this.#getExpressionGroup(() => this.#getExpression(), () => this.#wrapValue(undefined))
             ]
         };
     }
@@ -605,7 +605,7 @@ class Expression {
             }, (key) => {
                 return {
                     key,
-                    val: 'undefined'
+                    val: this.#wrapValue(undefined)
                 };
             })
         };
