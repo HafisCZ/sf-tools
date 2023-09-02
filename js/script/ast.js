@@ -505,7 +505,7 @@ class Expression {
 
     // Get next token
     #get () {
-        var v = this.tokens.shift();
+        const v = this.tokens.shift();
         return isNaN(v) ? v : Number(v);
     }
 
@@ -514,13 +514,14 @@ class Expression {
         if (token == undefined) {
             return false;
         } else {
-            return (token[0] == '\'' && token[token.length - 1] == '\'') || (token[0] == '\"' && token[token.length - 1] == '\"');
+            return (token[0] === '\'' && token[token.length - 1] === '\'') || (token[0] === '\"' && token[token.length - 1] === '\"');
         }
     }
 
     // Get next token as string
     #getString (cast = false) {
-        var token = this.#get();
+        const token = this.#get();
+
         if (this.#isString(token)) {
             return this.#wrapValue(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
         } else {
@@ -560,24 +561,22 @@ class Expression {
 
         do {
             const pk = this.#peek();
-            if (pk == ',' || pk == terminator) {
+            if (pk === ',' || pk === terminator) {
                 if (evalBlank) {
                     args.push(evalBlank(args.length));
                 }
             } else {
                 args.push(evalToken(args.length));
             }
-        } while (this.#get() == ',');
+        } while (this.#get() === ',');
 
         return args;
     }
 
     // Get global function
     #getFunction () {
-        const name = this.#get();
-
         return {
-            op: name,
+            op: this.#get(),
             args: this.#getExpressionGroup(() => this.#getExpression(), () => 'undefined')
         };
     }
@@ -613,7 +612,7 @@ class Expression {
     }
 
     #getObjectItem () {
-        const key = this.#peek(1) == ':' ? this.#getString() : this.#getExpression();
+        const key = this.#peek(1) === ':' ? this.#getString() : this.#getExpression();
         this.#get();
 
         return {
@@ -634,24 +633,24 @@ class Expression {
     #getObjectAccess (node) {
         let name = undefined;
 
-        if (this.#get() == '.') {
+        if (this.#get() === '.') {
             name = this.#getString(true);
         } else {
             name = this.#getExpression();
             this.#get();
         }
 
-        if (this.#peek() == '(') {
+        if (this.#peek() === '(') {
             this.#get();
 
             const args = [];
 
-            if (this.#peek() == ')') {
+            if (this.#peek() === ')') {
                 this.#get();
             } else {
                 do {
                     args.push(this.#getExpression());
-                } while (this.#get() == ',');
+                } while (this.#get() === ',');
             }
 
             return {
@@ -674,7 +673,7 @@ class Expression {
 
         if (token == undefined) {
             // Ignore undefined value
-        } else if (token == '(') {
+        } else if (token === '(') {
             // Get bracket
             this.#get();
             node = this.#getExpression();
@@ -805,11 +804,11 @@ class Expression {
             this.#get();
 
             // First argument
-            let arg1 = this.#getExpression();
+            const arg1 = this.#getExpression();
             this.#get();
 
             // Second argument
-            let arg2 = this.#getExpression();
+            const arg2 = this.#getExpression();
 
             // Create node
             node = {
@@ -892,7 +891,8 @@ class Expression {
 
     // Evaluate a node into array, used for array functions
     evalToArray (scope, node) {
-        var generated = this.evalInternal(scope, node);
+        const generated = this.evalInternal(scope, node);
+
         if (!generated || typeof(generated) != 'object') {
             return [];
         } else {
@@ -991,7 +991,7 @@ class Expression {
                 return true;
             } else if (node === 'false') {
                 return false;
-            } else if (node.startsWith('~')) {
+            } else if (/\~\d+/.test(node)) {
                 // Return sub expressions
                 let sub_index = parseInt(node.slice(1));
                 if (sub_index < this.subexpressions.length) {
