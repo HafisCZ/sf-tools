@@ -313,8 +313,8 @@ class Expression {
         if (this.tokens.length == 0) {
             this.empty = true;
         } else {
-            var count = 0;
-            for (var token of this.tokens) {
+            let count = 0;
+            for (let token of this.tokens) {
                 if (token == '(') {
                     count++;
                 } else if (token == ')') {
@@ -666,10 +666,10 @@ class Expression {
     }
 
     #getVal () {
-        var node = undefined;
+        let node = undefined;
 
-        var token = this.#peek();
-        var follow = this.#peek(1);
+        let token = this.#peek();
+        let follow = this.#peek(1);
 
         if (token == undefined) {
             // Ignore undefined value
@@ -865,7 +865,7 @@ class Expression {
         if (typeof node === 'object') {
             if (node.op === '__value') return node;
             if (node.args) {
-                for (var i = 0; i < node.args.length; i++) {
+                for (let i = 0; i < node.args.length; i++) {
                     node.args[i] = this.#postProcess(tableVariables, node.args[i]);
                 }
             }
