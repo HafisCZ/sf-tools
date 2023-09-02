@@ -9,12 +9,10 @@ class ExpressionConfig {
     return new ExpressionConfig(this.#data);
   }
 
-  register(type, meta, name, data) {
-    this.#data.set(name, {
-      type,
-      meta,
-      data
-    })
+  register(type, meta, name, data, flags = {}) {
+    this.#data.set(name, Object.assign(flags, {
+      type, meta, data
+    }))
   }
 
   get(name) {
@@ -326,14 +324,16 @@ DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'value', 'now',
   function () {
     return Date.now();
-  }
+  },
+  { noCache: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'value', 'random',
   function () {
     return Math.random();
-  }
+  },
+  { noCache: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -527,7 +527,8 @@ TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'header',
   function (scope) {
     return scope.header;
-  }
+  },
+  { noCache: true }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
@@ -571,7 +572,8 @@ TABLE_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { noCache: true }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
