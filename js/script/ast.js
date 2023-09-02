@@ -529,10 +529,10 @@ class Expression {
         }
     }
 
-    #wrapValue (str) {
+    #wrapValue (value) {
         return {
             op: '__value',
-            args: str
+            args: value
         }
     }
 
@@ -699,6 +699,16 @@ class Expression {
         } else {
             // Get node
             node = this.#get();
+
+            if (node === 'undefined') {
+                node = this.#wrapValue(undefined);
+            } else if (node === 'null') {
+                node = this.#wrapValue(null);
+            } else if (node === 'true') {
+                node = this.#wrapValue(true);
+            } else if (node === 'false') {
+                node = this.#wrapValue(false);
+            }
         }
 
         while (this.#peek() === '.' || this.#peek() === '[') {
@@ -983,14 +993,6 @@ class Expression {
             let scopeValue = undefined;
             if (scopeValue = node.match(/(\.*)this/)) {
                 return scope ? scope.getSelf(scopeValue[1].length) : undefined;
-            } else if (node === 'undefined') {
-                return undefined;
-            } else if (node === 'null') {
-                return null;
-            } else if (node === 'true') {
-                return true;
-            } else if (node === 'false') {
-                return false;
             } else if (/\~\d+/.test(node)) {
                 // Return sub expressions
                 let sub_index = parseInt(node.slice(1));
