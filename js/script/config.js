@@ -124,7 +124,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', '__object',
   function (self, scope, node) {
-    const obj = {};
+    const obj = Object.create(null);
 
     for (const { key, val } of node.args) {
         obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);

@@ -1759,9 +1759,9 @@ class Script {
         this.discardRules = [];
 
         // Variables and functions
-        this.functions = {};
-        this.variables = {};
-        this.variablesReference = {};
+        this.functions = Object.create(null);
+        this.variables = Object.create(null);
+        this.variablesReference = Object.create(null);
 
         this.trackers = {};
         this.row_indexes = {};

@@ -128,7 +128,7 @@ class ExpressionScope {
     constructor (env) {
         this.self = [];
         this.indirect = [];
-        this.env = env || { functions: {}, variables: {}, constants: Constants.DEFAULT, env_id: randomSHA1() };
+        this.env = env || { functions: Object.create(null), variables: Object.create(null), constants: Constants.DEFAULT, env_id: randomSHA1() };
     }
 
     addSelf (obj) {
@@ -250,13 +250,13 @@ class ExpressionRenderer {
                             break;
                         }
                     }
-                } else if (root.functions && root.functions.hasOwnProperty(token)) {
+                } else if (root.functions && root.functions[token]) {
                     highlighter.function(token);
                 } else if (token === 'true' || token === 'false') {
                     highlighter.boolean(token, token === 'true');
                 } else if (['undefined', 'null', 'loop_index', 'loop_array'].includes(token)) {
                     highlighter.constant(token);
-                } else if (root.variables && root.variables.hasOwnProperty(token)) {
+                } else if (root.variables && root.variables[token]) {
                     if (root.variables[token].tableVariable == 'unfiltered') {
                         highlighter.global(token, '-unfiltered');
                     } else if (root.variables[token].tableVariable) {
@@ -329,7 +329,7 @@ class Expression {
                 this.subexpressions = [];
 
                 // Get settings variable array
-                let tableVariables = (settings ? settings.variables : undefined) || {};
+                let tableVariables = (settings ? settings.variables : undefined) || Object.create(null);
                 this.#parseEmbeddedVariables(tableVariables);
 
                 // Generate tree
@@ -913,9 +913,9 @@ class Expression {
     evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
-                return mapper.ast.eval(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }));
+                return mapper.ast.eval(scope.clone().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, Object.create(null))).add({ loop_index, loop_array }));
             } else {
-                return mapper.ast.eval(scope.clone().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index, loop_array }));
+                return mapper.ast.eval(scope.clone().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, Object.create(null))).add({ loop_index, loop_array }));
             }
         } else {
             if (segmented) {
@@ -933,7 +933,7 @@ class Expression {
                     return node.args;
                 } else if (scope.env.functions[node.op]) {
                     const mapper = scope.env.functions[node.op];
-                    const scope2 = {};
+                    const scope2 = Object.create(null);
                     for (let i = 0; i < mapper.args.length; i++) {
                         scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
                     }
