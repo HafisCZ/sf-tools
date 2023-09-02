@@ -719,10 +719,6 @@ class Expression {
         return node;
     }
 
-    static #TOKEN_HIGH_PRIORITY = {
-        '^': '__power'
-    }
-
     #getHighPriority () {
         let node = this.#getVal();
         while (Expression.#TOKEN_HIGH_PRIORITY[this.#peek()]) {
@@ -733,12 +729,6 @@ class Expression {
         }
 
         return node;
-    }
-
-    static #TOKEN_MEDIUM_PRIORITY = {
-        '*': '__multiply',
-        '/': '__divide',
-        '%': '__modulo'
     }
 
     #getMediumPriority () {
@@ -753,11 +743,6 @@ class Expression {
         return node;
     }
 
-    static #TOKEN_LOW_PRIORITY = {
-        '+': '__add',
-        '-': '__subtract'
-    }
-
     #getLowPriority () {
         let node = this.#getMediumPriority();
         while (Expression.#TOKEN_LOW_PRIORITY[this.#peek()]) {
@@ -770,15 +755,6 @@ class Expression {
         return node;
     }
 
-    static #TOKEN_BOOL = {
-        '>': '__greater',
-        '>=': '__greater_equal',
-        '<': '__lower',
-        '<=': '__lower_equal',
-        '==': '__equal',
-        '!=': '__not_equal'
-    }
-
     #getBool () {
         let node = this.#getLowPriority();
         while (Expression.#TOKEN_BOOL[this.#peek()]) {
@@ -789,11 +765,6 @@ class Expression {
         }
 
         return node;
-    }
-
-    static #TOKEN_BOOL_MERGE = {
-        '&&': '__and',
-        '||': '__or'
     }
 
     #getBoolMerge () {
@@ -1054,5 +1025,34 @@ class Expression {
         '(': ')',
         '[': ']',
         '{': '}'
+    }
+
+    static #TOKEN_HIGH_PRIORITY = {
+        '^': '__power'
+    }
+
+    static #TOKEN_MEDIUM_PRIORITY = {
+        '*': '__multiply',
+        '/': '__divide',
+        '%': '__modulo'
+    }
+
+    static #TOKEN_LOW_PRIORITY = {
+        '+': '__add',
+        '-': '__subtract'
+    }
+
+    static #TOKEN_BOOL = {
+        '>': '__greater',
+        '>=': '__greater_equal',
+        '<': '__lower',
+        '<=': '__lower_equal',
+        '==': '__equal',
+        '!=': '__not_equal'
+    }
+
+    static #TOKEN_BOOL_MERGE = {
+        '&&': '__and',
+        '||': '__or'
     }
 }
