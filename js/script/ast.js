@@ -355,9 +355,11 @@ class Expression {
                 this.cacheable = this.cacheable && this.#checkCacheableNode(this.root);
 
                 // Check if expression was resolved by post process and unwrap string if necessary
-                if (typeof this.root === 'number' || (typeof this.root === 'object' && this.root.op === 'string')) {
+                if (typeof this.root === 'number') {
                     this.resolved = true;
-                    this.root = this.#unwrap(this.root);
+                } else if (typeof this.root === 'object' && this.root.op === '__value') {
+                    this.resolved = true;
+                    this.root = this.root.args;
                 }
             } else {
                 this.empty = true;
@@ -520,23 +522,15 @@ class Expression {
     #getString (cast = false) {
         var token = this.#get();
         if (this.#isString(token)) {
-            return this.#wrapString(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
+            return this.#wrapValue(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
         } else {
-            return cast ? this.#wrapString(token) : token;
+            return cast ? this.#wrapValue(token) : token;
         }
     }
 
-    #unwrap (obj) {
-        if (typeof obj === 'object' && obj.op === 'string') {
-            return obj.args;
-        } else {
-            return obj;
-        }
-    }
-
-    #wrapString (str) {
+    #wrapValue (str) {
         return {
-            op: 'string',
+            op: '__value',
             args: str
         }
     }
@@ -563,8 +557,10 @@ class Expression {
         return /^\`.*\`$/.test(token) && follow == '(';
     }
 
-    #evalRepeatedExpression (terminator, separator, generator, emptyGenerator) {
+    #evalRepeatedExpression (evalToken, evalBlank) {
         const args = [];
+
+        const terminator = Expression.#TERMINATORS[this.#get()];
 
         if (this.#peek() == terminator) {
             this.#get();
@@ -573,40 +569,36 @@ class Expression {
 
         do {
             const pk = this.#peek();
-            if (pk == separator || pk == terminator) {
-                if (emptyGenerator) {
-                    args.push(emptyGenerator(args.length));
+            if (pk == ',' || pk == terminator) {
+                if (evalBlank) {
+                    args.push(evalBlank(args.length));
                 }
             } else {
-                args.push(generator(args.length));
+                args.push(evalToken(args.length));
             }
-        } while (this.#get() == separator);
+        } while (this.#get() == ',');
+
         return args;
     }
 
     // Get global function
     #getFunction () {
         const name = this.#get();
-        this.#get();
 
         return {
             op: name,
-            args: this.#evalRepeatedExpression(')', ',', () => this.#evalExpression(), () => 'undefined')
+            args: this.#evalRepeatedExpression(() => this.#evalExpression(), () => 'undefined')
         };
     }
 
     #getTemplate () {
         const val = this.#get();
-        this.#get();
 
         return {
             op: 'format',
             args: [
-                {
-                    op: 'string',
-                    args: val.slice(1, val.length - 1)
-                },
-                ... this.#evalRepeatedExpression(')', ',', () => this.#evalExpression(), () => 'undefined')
+                this.#wrapValue(val.slice(1, val.length - 1)),
+                ... this.#evalRepeatedExpression(() => this.#evalExpression(), () => 'undefined')
             ]
         };
     }
@@ -618,11 +610,9 @@ class Expression {
 
     // Get array
     #getArray () {
-        this.#get();
-
         return {
             op: '[',
-            args: this.#evalRepeatedExpression(']', ',', (key) => {
+            args: this.#evalRepeatedExpression((key) => {
                 return {
                     key,
                     val: this.#evalExpression()
@@ -653,11 +643,9 @@ class Expression {
 
     // Get array
     #getObject () {
-        this.#get();
-
         return {
             op: '{',
-            args: this.#evalRepeatedExpression('}', ',', () => this.#getObjectItem(), false)
+            args: this.#evalRepeatedExpression(() => this.#getObjectItem(), false)
         };
     }
 
@@ -693,12 +681,12 @@ class Expression {
             }
 
             return {
-                op: '(a',
+                op: '__call',
                 args: [ node, name, args ]
             }
         } else {
             return {
-                op: '[a',
+                op: '__at',
                 args: [ node, name ]
             }
         }
@@ -841,12 +829,12 @@ class Expression {
         if (typeof node == 'object') {
             if (node.op == 'var') {
                 return false;
-            } else if (node.op == '[a' && node.args && node.args[0] == 'header') {
+            } else if (node.op == '__at' && node.args && node.args[0] == 'header') {
                 return false;
             } else if (node.op == 'random' || node.op == 'now') {
                 return false;
             } else {
-                if (node.args && node.op !== 'string') {
+                if (node.args && node.op !== '__value') {
                     for (let arg of node.args) {
                         if (!this.#checkCacheableNode(arg)) {
                             return false;
@@ -863,23 +851,23 @@ class Expression {
 
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
     #postProcess (tableVariables, node) {
-        if (typeof(node) == 'object' && node.op !== 'string') {
+        if (typeof(node) == 'object' && node.op !== '__value') {
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
                     node.args[i] = this.#postProcess(tableVariables, node.args[i]);
                 }
             }
 
-            if (node.op && Expression.#OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
-                const res = node.op(... node.args.map(a => a.op === 'string' ? a.args : a));
-                return typeof res === 'string' ? this.#wrapString(res) : res;
+            if (node.op && Expression.#OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === '__value')).length == node.args.length) {
+                const res = node.op(... node.args.map(a => a.op === '__value' ? a.args : a));
+                return typeof res === 'string' ? this.#wrapValue(res) : res;
             } else if (node.op && this.config.has(node.op)) {
                 if (node.op === 'random' || node.op === 'now') return node;
 
                 const data = this.config.get(node.op);
-                if (data && data.type === 'function' && data.meta === 'value' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === 'string')).length == node.args.length) {
-                    const res = data.data(... node.args.map(a => a.op === 'string' ? a.args : a));
-                    return typeof res === 'string' ? this.#wrapString(res) : res;
+                if (data && data.type === 'function' && data.meta === 'value' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.op === '__value')).length == node.args.length) {
+                    const res = data.data(... node.args.map(a => a.op === '__value' ? a.args : a));
+                    return typeof res === 'string' ? this.#wrapValue(res) : res;
                 }
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
@@ -888,7 +876,7 @@ class Expression {
             let index = parseInt(node.slice(1));
             if (index < this.subexpressions.length) {
                 let subnode = this.subexpressions[index];
-                if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.op === 'string')) {
+                if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.op === '__value')) {
                     return subnode;
                 } else if (typeof subnode == 'string' && subnode in tableVariables && !isNaN(tableVariables[subnode].ast.root)) {
                     return tableVariables[subnode].ast.root;
@@ -928,7 +916,7 @@ class Expression {
     evalInternal (scope, node) {
         if (typeof node === 'object') {
             if (typeof node.op === 'string') {
-                if (node.op === 'string') {
+                if (node.op === '__value') {
                     return node.args;
                 } else if (node.op == '{' || node.op == '[') {
                     // Simple object or array constructor
@@ -977,14 +965,14 @@ class Expression {
                     }
 
                     return mapper.ast.eval(scope.clone().add(scope2));
-                } else if (node.op == '[a') {
+                } else if (node.op == '__at') {
                     const object = this.evalInternal(scope, node.args[0]);
                     if (object) {
                         return object[this.evalInternal(scope, node.args[1])];
                     } else {
                         return undefined;
                     }
-                } else if (node.op == '(a') {
+                } else if (node.op == '__call') {
                     const object = this.evalInternal(scope, node.args[0]);
                     const func = this.evalInternal(scope, node.args[1]);
 
@@ -1108,6 +1096,12 @@ class Expression {
         } else {
             return node;
         }
+    }
+
+    static #TERMINATORS = {
+        '(': ')',
+        '[': ']',
+        '{': '}'
     }
 
     static #OPERATORS = {
