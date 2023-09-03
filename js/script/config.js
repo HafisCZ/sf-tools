@@ -58,6 +58,10 @@ DEFAULT_EXPRESSION_CONFIG.register(
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__divide_integer', function (a, b) { return Math.trunc(b == 0 ? 0 : (a / b)) }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'math', '__add', function (a, b) { return a + b }
 )
 
