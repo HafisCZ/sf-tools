@@ -118,7 +118,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
     const obj = [];
 
     for (const { key, val } of node.args) {
-        obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);
+      obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);
     }
 
     return obj;
@@ -131,7 +131,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
     const obj = Object.create(null);
 
     for (const { key, val } of node.args) {
-        obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);
+      obj[self.evalInternal(scope, key)] = self.evalInternal(scope, val);
     }
 
     return obj;
@@ -140,71 +140,71 @@ DEFAULT_EXPRESSION_CONFIG.register(
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', '__condition',
-  function  (self, scope, node) {
+  function (self, scope, node) {
     const condition = node.args[0];
     const branch1 = node.args[1];
     const branch2 = node.args[2];
-  
+
     if (self.evalInternal(scope, condition)) {
-        return self.evalInternal(scope, branch1);
+      return self.evalInternal(scope, branch1);
     } else {
-        return self.evalInternal(scope, branch2);
+      return self.evalInternal(scope, branch2);
     }
   }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', '__or',
-  function  (self, scope, node) {
+  function (self, scope, node) {
     const branch1 = node.args[0];
     const branch2 = node.args[1];
-  
+
     const resolved1 = self.evalInternal(scope, branch1);
     if (resolved1) {
-        return resolved1;
+      return resolved1;
     } else {
-        return self.evalInternal(scope, branch2);
+      return self.evalInternal(scope, branch2);
     }
   }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', '__and',
-  function  (self, scope, node) {
+  function (self, scope, node) {
     const branch1 = node.args[0];
     const branch2 = node.args[1];
-  
+
     const resolved1 = self.evalInternal(scope, branch1);
     if (resolved1) {
-        return self.evalInternal(scope, branch2);
+      return self.evalInternal(scope, branch2);
     } else {
-        return false;
+      return false;
     }
   }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', '__at',
-  function  (self, scope, node) {
+  function (self, scope, node) {
     const object = self.evalInternal(scope, node.args[0]);
     if (object) {
-        return object[self.evalInternal(scope, node.args[1])];
+      return object[self.evalInternal(scope, node.args[1])];
     } else {
-        return undefined;
+      return undefined;
     }
   }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'scope', '__call',
-  function  (self, scope, node) {
+  function (self, scope, node) {
     const object = self.evalInternal(scope, node.args[0]);
     const func = self.evalInternal(scope, node.args[1]);
-  
+
     if (object != undefined && object[func] && typeof object[func] === 'function') {
-        return object[func](... node.args[2].map(param => self.evalInternal(scope, param)));
+      return object[func](...node.args[2].map(param => self.evalInternal(scope, param)));
     } else {
-        return undefined;
+      return undefined;
     }
   }
 )
