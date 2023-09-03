@@ -1144,7 +1144,7 @@ class TableController {
         })
     }
 
-    setSettings (code) {
+    setScript (code) {
         // If settings have changed
         if (this.settings != code) {
             this.settings = code;
@@ -1153,10 +1153,6 @@ class TableController {
             // Clear sorting when settings have changed
             this.clearSorting();
         }
-    }
-
-    getSettings () {
-        return this.settings;
     }
 
     getEntryLimit () {

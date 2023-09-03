@@ -380,7 +380,7 @@ class GroupDetailTab extends Tab {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? TemplateManager.getContent(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.getContent('groups')));
+        this.table.setScript(this.templateOverride ? TemplateManager.getContent(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.getContent('groups')));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -567,7 +567,7 @@ class PlayerDetailTab extends Tab {
                     settings = TemplateManager.getContent(value);
                 }
 
-                this.table.setSettings(settings);
+                this.table.setScript(settings);
                 this.refresh();
 
                 this.$configure.dropdown('hide');
@@ -615,7 +615,7 @@ class PlayerDetailTab extends Tab {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setSettings(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players')));
+        this.table.setScript(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players')));
 
         this.array.forEach((e) => DatabaseManager.loadPlayer(e.player));
 
@@ -930,7 +930,7 @@ class BrowseTab extends Tab {
                     this.table.clearSorting();
 
                     this.table = this.tableQ;
-                    this.table.setSettings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
+                    this.table.setScript(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
                 } else if (key == 'qc' && typeof(arg) == 'string' && arg.length) {
                     this.table.selectCategories(arg.split(',').map(x => x.trim()));
                 } else if (key == 't' && typeof(arg) == 'string' && arg.length) {
@@ -943,7 +943,7 @@ class BrowseTab extends Tab {
                         this.table.clearSorting();
 
                         this.table = this.tableQ;
-                        this.table.setSettings(script);
+                        this.table.setScript(script);
                     }
                 }
             }
@@ -1097,7 +1097,7 @@ class BrowseTab extends Tab {
         this.$configure.find('.item').removeClass('active');
         DOM.settingsButton(this.$configure.get(0), ScriptManager.exists('players'));
 
-        this.table.setSettings(ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse')));
+        this.table.setScript(ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse')));
 
         this.templateOverride = '';
         this.recalculate = true;
@@ -1123,7 +1123,7 @@ class BrowseTab extends Tab {
                     settings = TemplateManager.getContent(value);
                 }
 
-                this.table.setSettings(settings);
+                this.table.setScript(settings);
 
                 this.recalculate = true;
                 this.$filter.trigger('change');
