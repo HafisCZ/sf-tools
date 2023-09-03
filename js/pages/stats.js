@@ -3145,13 +3145,15 @@ Site.ready(null, function (urlParams) {
 
         Loader.toggle(false);
 
-        UI.show({
+        const defaultTab = urlParams.has('temp') ? UI.Files : ({
             'players': UI.Players,
             'groups': UI.Groups,
             'browse': UI.Browse,
             'scripts': UI.Scripts,
             'files': UI.Files
-        }[urlParams.get('tab') || SiteOptions.tab] || UI.Groups);
+        }[urlParams.get('tab') || SiteOptions.tab] || UI.Groups)
+
+        UI.show(defaultTab);
 
         if (urlParams.has('template')) {
             DialogController.open(SaveOnlineScriptDialog, urlParams.get('template'));
