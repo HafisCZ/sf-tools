@@ -17,6 +17,7 @@ const CHANGELOG = {
             'Added <code>this</code> as a function',
             'Added new <code>repeat</code> keyword to mark header as repeated',
             'Added deprecated status to <code>header as group of</code> keyword',
+            'Added deprecated status to <code>set with all</code> keyword',
             'Fixed dropdowns not updating on browse tab',
             'Fixed <code>show as</code> not appearing as deprecated',
             'Fixed table timestamps not working in <code>discard</code>'

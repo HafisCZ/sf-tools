@@ -630,7 +630,11 @@
                 "TABLE_HEADER_REPEAT": "repeat",
                 "TABLE_GROUPED_HEADER": "headed as group of",
                 "TABLE_VARIABLE_GLOBAL_LONG": "set with all",
-                "TABLE_VARIABLE_GLOBAL": "set $"
+                "TABLE_VARIABLE_GLOBAL": "set $",
+                "TABLE_VARIABLE": "set",
+                "TABLE_FUNCTION": "set with",
+                "MACRO_VARIABLE": "mset",
+                "MACRO_FUNCTION": "mset with"
             }
         },
         "players": {

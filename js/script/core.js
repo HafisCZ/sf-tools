@@ -387,7 +387,9 @@ ScriptCommands.register(
         }
     },
     (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
-).parseAsConstant()
+).parseAsConstant().withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'MACRO_FUNCTION', 'TABLE_FUNCTION');
+})
 
 ScriptCommands.register(
     'MACRO_VARIABLE',
@@ -400,7 +402,9 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
-).parseAsConstant()
+).parseAsConstant().withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'MACRO_VARIABLE', 'TABLE_VARIABLE');
+})
 
 ScriptCommands.register(
     'MACRO_CONST',
@@ -1102,6 +1106,19 @@ ScriptCommands.register(
 })
 
 ScriptCommands.register(
+    'TABLE_FUNCTION',
+    ScriptType.Table,
+    /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
+    (root, name, args, expression) => {
+        let ast = Expression.create(expression, root);
+        if (ast) {
+            root.addFunction(name, ast, args.split(',').map(v => v.trim()));
+        }
+    },
+    (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
+).parseAsConstant()
+
+ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL',
     ScriptType.Table,
     /^set \$(\w+[\w ]*) as (.+)$/,
@@ -1125,19 +1142,6 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
-).parseAsConstant()
-
-ScriptCommands.register(
-    'TABLE_FUNCTION',
-    ScriptType.Table,
-    /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
-    (root, name, args, expression) => {
-        let ast = Expression.create(expression, root);
-        if (ast) {
-            root.addFunction(name, ast, args.split(',').map(v => v.trim()));
-        }
-    },
-    (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
 ).parseAsConstant()
 
 ScriptCommands.register(
