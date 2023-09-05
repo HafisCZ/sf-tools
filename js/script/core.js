@@ -323,6 +323,10 @@ class ScriptCommands {
     static keys () {
         return this.#keys;
     }
+
+    static pick (text, keys) {
+        return keys.map((key) => this[key]).find((command) => command && command.is(text));
+    }
 }
 
 /*
@@ -2088,8 +2092,9 @@ class Script {
                     is_unsafe--;
                 }
             } else if (is_unsafe == 0) {
-                if (ScriptCommands.MACRO_FUNCTION.is(line)) {
-                    let [name, variables, expression] = ScriptCommands.MACRO_FUNCTION.parseParams(line);
+                let command = null;
+                if (command = ScriptCommands.pick(line, ['MACRO_FUNCTION', 'TABLE_FUNCTION'])) {
+                    let [name, variables, expression] = command.parseParams(line);
                     let ast = Expression.create(expression);
                     if (ast) {
                         settings.functions[name] = {
@@ -2097,8 +2102,8 @@ class Script {
                             args: variables.split(',').map(v => v.trim())
                         };
                     }
-                } else if (ScriptCommands.MACRO_VARIABLE.is(line)) {
-                    let [name, expression] = ScriptCommands.MACRO_VARIABLE.parseParams(line);
+                } else if (command = ScriptCommands.pick(line, ['MACRO_VARIABLE', 'TABLE_VARIABLE', 'TABLE_VARIABLE_GLOBAL', 'TABLE_VARIABLE_GLOBAL_LONG', 'TABLE_VARIABLE_UNFILTERED'])) {
+                    let [name, expression] = command.parseParams(line);
                     let ast = Expression.create(expression);
                     if (ast) {
                         settings.variables[name] = {
