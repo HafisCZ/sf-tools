@@ -628,7 +628,9 @@
                 "TABLE_ROW_COMPACT": "show as",
                 "TABLE_ROW": "row",
                 "TABLE_HEADER_REPEAT": "repeat",
-                "TABLE_GROUPED_HEADER": "headed as group of"
+                "TABLE_GROUPED_HEADER": "headed as group of",
+                "TABLE_VARIABLE_GLOBAL_LONG": "set with all",
+                "TABLE_VARIABLE_GLOBAL": "set $"
             }
         },
         "players": {

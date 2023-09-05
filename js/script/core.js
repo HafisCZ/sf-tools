@@ -1097,7 +1097,9 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
-).parseAsConstant()
+).parseAsConstant().withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_VARIABLE_GLOBAL_LONG', 'TABLE_VARIABLE_GLOBAL');
+})
 
 ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL',
