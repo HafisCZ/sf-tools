@@ -670,6 +670,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'variable', 'scope', 'theme',
+  function (scope) {
+    return scope.env.theme;
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'table_timestamp',
   function (scope) {
     return scope.env.timestamp;

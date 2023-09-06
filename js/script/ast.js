@@ -128,7 +128,7 @@ class ExpressionScope {
     constructor (env) {
         this.self = [];
         this.indirect = [];
-        this.env = env || { functions: Object.create(null), variables: Object.create(null), constants: Constants.DEFAULT, env_id: randomSHA1() };
+        this.env = env || { theme: 'light', functions: Object.create(null), variables: Object.create(null), constants: Constants.DEFAULT, env_id: randomSHA1() };
     }
 
     addSelf (obj) {

@@ -2080,6 +2080,7 @@ class Script {
 
     static handleMacroVariables (lines, constants) {
         let settings = {
+            theme: 'light',
             functions: { },
             variables: { },
             constants: constants
@@ -2113,6 +2114,9 @@ class Script {
                             tableVariable: false
                         };
                     }
+                } else if (ScriptCommands.TABLE_GLOBAL_THEME.is(line)) {
+                    let [value] = ScriptCommands.TABLE_GLOBAL_THEME.parseParams(line);
+                    settings.theme = value;
                 } else if (ScriptCommands.MACRO_CONST.is(line)) {
                     let [name, value] = ScriptCommands.MACRO_CONST.parseParams(line);
                     settings.constants.add(name, value);
@@ -2135,7 +2139,7 @@ class Script {
 
         // Scope for macros
         let scope = new ExpressionScope().add({
-            table: tableType,
+            table: tableType
         }).add(SiteOptions.options);
 
         // Special constants for macros
@@ -2842,6 +2846,7 @@ class Script {
     // Get compare environment
     getCompareEnvironment () {
         return {
+            theme: this.theme,
             functions: this.functions,
             variables: this.variablesReference,
             array: [],
