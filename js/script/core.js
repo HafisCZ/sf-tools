@@ -1180,7 +1180,7 @@ ScriptCommands.register(
     'TABLE_GLOBAL_THEME',
     ScriptType.Table,
     /^theme (light|dark)$/,
-    (root, value) => root.addGlobal('theme', value),
+    (root, value) => root.setTheme(value),
     (root, value) => Highlighter.keyword('theme ').boolean(value, true)
 )
 
@@ -1189,7 +1189,7 @@ ScriptCommands.register(
     ScriptType.Table,
     /^theme text:(\S+) background:(\S+)$/,
     (root, textColor, backgroundColor) => {
-        root.addGlobal('theme', {
+        root.setTheme({
             text: getCSSColor(textColor),
             background: getCSSBackground(backgroundColor)
         });
@@ -1803,6 +1803,8 @@ class Script {
         this.definition = null;
         this.row = null;
         this.embed = null;
+
+        this.theme = 'light';
 
         // Parse settings
         for (const line of Script.handleMacros(string, tableType)) {
@@ -2858,7 +2860,11 @@ class Script {
     }
 
     getTheme () {
-        return this.globals.theme;
+        return this.theme;
+    }
+
+    setTheme (theme) {
+        this.theme = theme;
     }
 
     getOutdatedStyle () {

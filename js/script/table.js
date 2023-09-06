@@ -1297,7 +1297,7 @@ class TableController {
 
         entries = [].concat(entries);
 
-        let themeClass = 'theme-light';
+        let themeClass = '';
         let themeStyle = '';
         if (typeof theme === 'string') {
             themeClass = `theme-${theme}`;
