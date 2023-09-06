@@ -337,7 +337,15 @@ ScriptCommands.register(
     ScriptType.Table,
     /^if not (.+)$/,
     null,
-    (root, arg) => Highlighter.keyword('if not ').value(arg).asMacro()
+    (root, arg) => {
+        const acc = Highlighter.keyword('if not ');
+
+        if (arg in FilterTypes) {
+            return acc.value(arg).asMacro();
+        } else {
+            return acc.expression(arg, root).asMacro()
+        }
+    }
 ).parseNever()
 
 ScriptCommands.register(
@@ -345,7 +353,15 @@ ScriptCommands.register(
     ScriptType.Table,
     /^if (.+)$/,
     null,
-    (root, arg) => Highlighter.keyword('if ').value(arg).asMacro()
+    (root, arg) => {
+        const acc = Highlighter.keyword('if ');
+
+        if (arg in FilterTypes) {
+            return acc.value(arg).asMacro();
+        } else {
+            return acc.expression(arg, root).asMacro()
+        }
+    }
 ).parseNever()
 
 ScriptCommands.register(
@@ -353,7 +369,15 @@ ScriptCommands.register(
     ScriptType.Table,
     /^else if (.+)$/,
     null,
-    (root, arg) => Highlighter.keyword('else if ').value(arg).asMacro()
+    (root, arg) => {
+        const acc = Highlighter.keyword('else if ');
+
+        if (arg in FilterTypes) {
+            return acc.value(arg).asMacro();
+        } else {
+            return acc.expression(arg, root).asMacro()
+        }
+    }
 ).parseNever()
 
 ScriptCommands.register(
