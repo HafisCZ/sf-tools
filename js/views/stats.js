@@ -1,4 +1,4 @@
-const FileEditDialog = new (class extends Dialog {
+const FileEditDialog = new (class FileEditDialog extends Dialog {
   constructor () {
       super({
           key: 'file_edit',
@@ -53,7 +53,7 @@ const FileEditDialog = new (class extends Dialog {
   }
 })();
 
-const SaveOnlineScriptDialog = new (class extends Dialog {
+const SaveOnlineScriptDialog = new (class SaveOnlineScriptDialog extends Dialog {
   constructor () {
       super({
           key: 'save_online_script'
@@ -160,7 +160,7 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
   }
 })();
 
-const EditFileTagDialog = new (class extends Dialog {
+const EditFileTagDialog = new (class EditFileTagDialog extends Dialog {
   constructor () {
       super({
           key: 'edit_file_tag',
@@ -230,7 +230,7 @@ const EditFileTagDialog = new (class extends Dialog {
   }
 })();
 
-const ProfileCreateDialog = new (class extends Dialog {
+const ProfileCreateDialog = new (class ProfileCreateDialog extends Dialog {
   constructor () {
       super({
           key: 'profile_create',
@@ -580,7 +580,7 @@ const ProfileCreateDialog = new (class extends Dialog {
   }
 })();
 
-const TemplateSaveDialog = new (class extends Dialog {
+const TemplateSaveDialog = new (class TemplateSaveDialog extends Dialog {
   constructor () {
       super({
           key: 'template_save',
@@ -645,7 +645,7 @@ const TemplateSaveDialog = new (class extends Dialog {
   }
 })();
 
-const DataManageDialog = new (class extends Dialog {
+const DataManageDialog = new (class DataManageDialog extends Dialog {
   constructor () {
       super({
           key: 'data_manage',
@@ -762,7 +762,7 @@ const DataManageDialog = new (class extends Dialog {
   }
 })();
 
-const ImportFileDialog = new (class extends Dialog {
+const ImportFileDialog = new (class ImportFileDialog extends Dialog {
   _createModal () {
       return `
           <div class="very small inverted dialog">
@@ -848,7 +848,7 @@ const ImportFileDialog = new (class extends Dialog {
   }
 })();
 
-const ExportFileDialog = new (class extends Dialog {
+const ExportFileDialog = new (class ExportFileDialog extends Dialog {
     _createModal () {
         return `
             <div class="small bordered inverted dialog">
@@ -1024,7 +1024,7 @@ const ExportFileDialog = new (class extends Dialog {
     }
 })();
 
-const ScriptRepositoryDialog = new (class extends Dialog {
+const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog {
   constructor () {
       super({
           key: 'script_repository',
@@ -1166,7 +1166,7 @@ const ScriptRepositoryDialog = new (class extends Dialog {
   }
 })();
 
-const ScriptArchiveDialog = new (class extends Dialog {
+const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
   constructor () {
       super({
           key: 'script_archive',
@@ -1248,7 +1248,7 @@ const ScriptArchiveDialog = new (class extends Dialog {
   }
 })();
 
-const TemplateManageDialog = new (class extends Dialog {
+const TemplateManageDialog = new (class TemplateManageDialog extends Dialog {
   constructor () {
       super({
           key: 'template_manage',
@@ -1515,7 +1515,7 @@ const TemplateManageDialog = new (class extends Dialog {
   }
 })();
 
-const PlayerDetailDialog = new (class extends Dialog {
+const PlayerDetailDialog = new (class PlayerDetailDialog extends Dialog {
   constructor () {
     super({
       dismissable: true,
@@ -1914,7 +1914,7 @@ const PlayerDetailDialog = new (class extends Dialog {
   }
 })()
 
-const ScriptManualDialog = new (class extends Dialog {
+const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
     constructor () {
         super({
             dismissable: true,

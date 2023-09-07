@@ -1,4 +1,4 @@
-const SimulatorResultsDialog = new (class extends Dialog {
+const SimulatorResultsDialog = new (class SimulatorResultsDialog extends Dialog {
   constructor () {
       super({
           dismissable: true
@@ -44,7 +44,7 @@ const SimulatorResultsDialog = new (class extends Dialog {
   }
 })();
 
-const SimulatorMapDialog = new (class extends Dialog {
+const SimulatorMapDialog = new (class SimulatorMapDialog extends Dialog {
   constructor () {
       super({
           dismissable: true

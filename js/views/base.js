@@ -168,7 +168,7 @@ class DialogController {
     }
 }
 
-const TermsAndConditionsDialog = new (class extends Dialog {
+const TermsAndConditionsDialog = new (class TermsAndConditionsDialog extends Dialog {
     intl (heading, clause = null) {
         if (clause === null) {
             return intl(`terms.general.heading${heading}.title`);
@@ -223,7 +223,7 @@ const TermsAndConditionsDialog = new (class extends Dialog {
     }
 })();
 
-const SimulatorShopDialog = new (class extends Dialog {
+const SimulatorShopDialog = new (class SimulatorShopDialog extends Dialog {
     _createModal () {
         const packs = [
             {
@@ -297,7 +297,7 @@ const SimulatorShopDialog = new (class extends Dialog {
     }
 })
 
-const AnnouncementDialog = new (class extends Dialog {
+const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
     constructor () {
         super({
             key: 'announcement'
@@ -326,7 +326,7 @@ const AnnouncementDialog = new (class extends Dialog {
     }
 })
 
-const ChangelogDialog = new (class extends Dialog {
+const ChangelogDialog = new (class ChangelogDialog extends Dialog {
     constructor () {
         super({
             key: 'changelog'
@@ -375,7 +375,7 @@ const ChangelogDialog = new (class extends Dialog {
     }
 })();
 
-const Loader = new (class extends Dialog {
+const Loader = new (class Loader extends Dialog {
     constructor () {
         super({
             opacity: 0
@@ -413,12 +413,12 @@ const Loader = new (class extends Dialog {
     }
 
     toggle (open, options = null) {
-        DialogController[open ? 'open' : 'close'](Loader, options);
+        DialogController[open ? 'open' : 'close'](this, options);
     }
 })();
 
 // Non-blocking popup about an exception that occured
-const WarningDialog = new (class extends Dialog {
+const WarningDialog = new (class WarningDialog extends Dialog {
     constructor () {
         super({
             key: 'warning',
@@ -447,7 +447,7 @@ const WarningDialog = new (class extends Dialog {
 })();
 
 // Blocking popup about an exception that occured and is blocking execution
-const ErrorDialog = new (class extends Dialog {
+const ErrorDialog = new (class ErrorDialog extends Dialog {
     constructor () {
         super({
             key: 'error'
@@ -485,7 +485,7 @@ const ErrorDialog = new (class extends Dialog {
     }
 })();
 
-const ConfirmationDialog = new (class extends Dialog {
+const ConfirmationDialog = new (class ConfirmationDialog extends Dialog {
     constructor () {
         super({
             key: 'confirm'

@@ -82,7 +82,7 @@ class EndpointController {
     }
 }
 
-const EndpointDialog = new (class extends Dialog {
+const EndpointDialog = new (class EndpointDialog extends Dialog {
     intl (key) {
         return intl(`endpoint.${key}`);
     }
@@ -590,7 +590,7 @@ const EndpointDialog = new (class extends Dialog {
     }
 })();
 
-const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
+const StatisticsIntegrationOptionsDialog = new (class StatisticsIntegrationOptionsDialog extends Dialog {
     constructor () {
         super({
             key: 'statistics_integration_options',
@@ -703,7 +703,7 @@ const StatisticsIntegrationOptionsDialog = new (class extends Dialog {
     }
 })();
 
-const StatisticsIntegrationCheatsDialog = new (class extends Dialog {
+const StatisticsIntegrationCheatsDialog = new (class StatisticsIntegrationCheatsDialog extends Dialog {
     constructor () {
         super({
             key: 'statistics_integration_cheats',

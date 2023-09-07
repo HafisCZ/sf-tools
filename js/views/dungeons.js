@@ -1,4 +1,4 @@
-const SimulatorOptionsDialog = new (class extends Dialog {
+const SimulatorOptionsDialog = new (class SimulatorOptionsDialog extends Dialog {
   constructor () {
     super({
       key: 'dungeons_options',
@@ -115,7 +115,7 @@ const SimulatorOptionsDialog = new (class extends Dialog {
   }
 })()
 
-const SimulatorResultsDialog = new (class extends Dialog {
+const SimulatorResultsDialog = new (class SimulatorResultsDialog extends Dialog {
   constructor () {
       super({
           dismissable: true

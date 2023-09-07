@@ -1,4 +1,4 @@
-const AnalyzerOptionsDialog = new (class extends Dialog {
+const AnalyzerOptionsDialog = new (class AnalyzerOptionsDialog extends Dialog {
   constructor () {
       super({
           key: 'analyzer_options',
@@ -73,7 +73,7 @@ const AnalyzerOptionsDialog = new (class extends Dialog {
   }
 })();
 
-const FightStatisticalAnalysisDialog = new (class extends Dialog {
+const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog extends Dialog {
   constructor () {
     super({
         key: 'fight_statistical_analysis',
@@ -233,7 +233,7 @@ const FightStatisticalAnalysisDialog = new (class extends Dialog {
   }
 })();
 
-const AnalyzerAutofillDialog = new (class extends Dialog {
+const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog {
     constructor () {
         super({
             key: 'analyzer_autofill',

@@ -1,4 +1,4 @@
-const SimulatorDebugDialog = new (class extends Dialog {
+const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
     constructor () {
         super({
             key: 'simulator_debug',
@@ -158,7 +158,7 @@ const SimulatorDebugDialog = new (class extends Dialog {
     }
 })();
 
-const SimulatorInformationDialog = new (class extends Dialog {
+const SimulatorInformationDialog = new (class SimulatorInformationDialog extends Dialog {
     #entries = [
         // EMPTY
     ];
