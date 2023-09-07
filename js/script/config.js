@@ -826,6 +826,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'function', 'value', 'sign',
+  function (value) {
+    return value >= 0 ? '+' : '-'
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'function', 'value', 'pow',
   function (value, exp) {
     if (isNaN(value) || isNaN(exp)) {
