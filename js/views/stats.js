@@ -1929,6 +1929,11 @@ const ScriptManualDialog = new (class extends Dialog {
 
         const data = [
             [
+                'command',
+                'ta-keyword',
+                ScriptCommands.keys().map((key) => ScriptCommands[key].syntax.replace(/(&lt;[a-z]+&gt;)/g, '<span class="ta-constant">$1</span>'))
+            ],
+            [
                 'header',
                 'ta-reserved-public',
                 TABLE_EXPRESSION_CONFIG.all('header', 'public')
@@ -1961,7 +1966,8 @@ const ScriptManualDialog = new (class extends Dialog {
             [
                 'enum',
                 'ta-enum',
-                ExpressionEnum.keys, new Map([
+                ExpressionEnum.keys,
+                new Map([
                     ['AchievementCount', ExpressionEnum.get('AchievementCount')],
                     ['ScrapbookSize', ExpressionEnum.get('ScrapbookSize')]
                 ])

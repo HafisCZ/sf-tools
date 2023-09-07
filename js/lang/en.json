@@ -619,22 +619,6 @@
             },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
-            },
-            "commands": {
-                "TABLE_GLOBAL_PERFORMANCE": "performance",
-                "TABLE_GLOBAL_LIMIT": "limit",
-                "TABLE_FORMAT_LONG": "format",
-                "TABLE_FORMAT": "expf",
-                "TABLE_ROW_COMPACT": "show as",
-                "TABLE_ROW": "row",
-                "TABLE_HEADER_REPEAT": "repeat",
-                "TABLE_GROUPED_HEADER": "headed as group of",
-                "TABLE_VARIABLE_GLOBAL_LONG": "set with all",
-                "TABLE_VARIABLE_GLOBAL": "set $",
-                "TABLE_VARIABLE": "set",
-                "TABLE_FUNCTION": "set with",
-                "MACRO_VARIABLE": "mset",
-                "MACRO_FUNCTION": "mset with"
             }
         },
         "players": {
@@ -1460,7 +1444,8 @@
                 "function": "Functions",
                 "enum": "Enumerations",
                 "constant": "Default constants",
-                "variable": "Variables"
+                "variable": "Variables",
+                "command": "Commands"
             },
             "description": {
                 
