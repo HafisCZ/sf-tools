@@ -777,7 +777,8 @@
         "calendar": {
             "collected": "Collected",
             "available": "Available",
-            "locked": "Locked"
+            "locked": "Locked",
+            "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
             "gladiator": "Glad"
