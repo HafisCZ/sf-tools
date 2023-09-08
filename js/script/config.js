@@ -526,7 +526,9 @@ DEFAULT_EXPRESSION_CONFIG.register(
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'value', 'len',
   function (value) {
-    if (typeof (value) != 'object') {
+    if (typeof value === 'string') {
+      return value.length;
+    } else if (typeof value !== 'object') {
       return undefined;
     } else {
       if (Array.isArray(value)) {
