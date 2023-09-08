@@ -123,6 +123,10 @@ input:disabled {
   align-items: flex-end;
 }
 
+.footer * {
+  text-shadow: #000000 0 0 10px;
+}
+
 .footer-item {
   width: 33.3%;
   margin: 1em;
