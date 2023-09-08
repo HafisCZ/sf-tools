@@ -1384,6 +1384,7 @@
             "error_player_not_found": "Character was not found on the server",
             "error_sessionid_invalid": "Session expired or interrupted by another device",
             "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
             "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
             "playa_account_not_active": "Your account is not active",
