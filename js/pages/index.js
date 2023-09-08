@@ -2,6 +2,8 @@ Site.ready(null, function () {
     const $drvcs = $('.drvcs');
     if (Site.isEvent('winter')) {
         $drvcs.attr('src', 'res/drvcs_winter.png');
+    } else if (Site.isEvent('halloween')) {
+        $drvcs.attr('src', 'res/drvcs_halloween.png');
     }
 
     function formatDate (date) {

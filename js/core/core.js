@@ -271,6 +271,8 @@ class Site {
             return date.getMonth() === 3 && date.getDate() === 1;
         } else if (type === 'winter') {
             return [0, 1, 11].includes(date.getMonth());
+        } else if (type === 'halloween') {
+            return date.getMonth() === 9;
         } else {
             return false;
         }
