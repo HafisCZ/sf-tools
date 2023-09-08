@@ -818,15 +818,15 @@ ScriptCommands.register(
     /^format statistics (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
-            root.addFormatStatisticsExpression(true);
+            root.addDisplayValue('formatStatistics', true);
         } else if (expression == 'off') {
-            root.addFormatStatisticsExpression(false);
+            root.addDisplayValue('formatStatistics', false);
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addFormatStatisticsExpression(ARG_FORMATTERS[expression])
+            root.addDisplayValue('formatStatistics', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addFormatStatisticsExpression(ast);
+                root.addDisplayValue('formatStatistics', ast);
             }
         }
     },
@@ -850,15 +850,15 @@ ScriptCommands.register(
     /^format difference (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
-            root.addFormatDifferenceExpression(true);
+            root.addDisplayValue('formatDifference', true);
         } else if (expression == 'off') {
-            root.addFormatDifferenceExpression(false);
+            root.addDisplayValue('formatDifference', false);
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addFormatDifferenceExpression(ARG_FORMATTERS[expression])
+            root.addDisplayValue('formatDifference', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addFormatDifferenceExpression(ast);
+                root.addDisplayValue('formatDifference', ast);
             }
         }
     },
@@ -910,11 +910,11 @@ ScriptCommands.register(
     /^expf (.+)$/,
     (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addFormatExpression(ARG_FORMATTERS[expression])
+            root.addDisplayValue('format', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addFormatExpression(ast);
+                root.addDisplayValue('format', ast);
             }
         }
     },
@@ -936,11 +936,11 @@ ScriptCommands.register(
     /^format (.+)$/,
     (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addFormatExpression(ARG_FORMATTERS[expression])
+            root.addDisplayValue('format', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addFormatExpression(ast);
+                root.addDisplayValue('format', ast);
             }
         }
     },
@@ -1337,7 +1337,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'breakline <value>',
     /^breakline (on|off)$/,
-    (root, value) => root.addBreaklineRule(ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => root.addDisplayValue('breakline', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('breakline').space().boolean(value, value == 'on')
 )
 
@@ -1594,8 +1594,36 @@ ScriptCommands.register(
     ScriptType.Table,
     'extra <expression>',
     /^extra (.+)$/,
-    (root, value) => root.addFormatExtraExpression(a => value),
+    (root, value) => root.addDisplayValue('extra', () => value),
     (root, value) => Highlighter.keyword('extra ').value(value)
+)
+
+ScriptCommands.register(
+    'TABLE_DISPLAY_BEFORE',
+    ScriptType.Table,
+    'display before <expression>',
+    /^display before (.+)$/,
+    (root, expression) => {
+        let ast = Expression.create(expression, root);
+        if (ast) {
+            root.addDisplayValue('displayBefore', ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('display before ').expression(expression, root)
+)
+
+ScriptCommands.register(
+    'TABLE_DISPLAY_AFTER',
+    ScriptType.Table,
+    'display after <expression>',
+    /^display after (.+)$/,
+    (root, expression) => {
+        let ast = Expression.create(expression, root);
+        if (ast) {
+            root.addDisplayValue('displayAfter', ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('display after ').expression(expression, root)
 )
 
 ScriptCommands.register(
@@ -2323,6 +2351,14 @@ class Script {
                 obj.value.extra = definition.value.extra;
             }
 
+            if (!obj.value.displayBefore) {
+                obj.value.displayBefore = definition.value.displayBefore;
+            }
+
+            if (!obj.value.displayAfter) {
+                obj.value.displayAfter = definition.value.displayAfter;
+            }
+
             // Merge value rules
             if (!obj.value.rules.rules.length) {
                 obj.value.rules.rules = definition.value.rules.rules;
@@ -2370,6 +2406,14 @@ class Script {
         // Merge value extra
         if (!obj.value.extra) {
             obj.value.extra = mapping.extra;
+        }
+  
+        if (!obj.value.displayBefore) {
+            obj.value.displayBefore = mapping.displayBefore;
+        }
+  
+        if (!obj.value.displayAfter) {
+            obj.value.displayAfter = mapping.displayAfter;
         }
 
         this.mergeStyles(obj, mapping.style);
@@ -2574,6 +2618,8 @@ class Script {
     getValueBlock () {
         return {
             extra: undefined,
+            displayBefore: undefined,
+            displayAfter: undefined,
             format: undefined,
             breakline: undefined,
             formatDifference: undefined,
@@ -2599,9 +2645,25 @@ class Script {
                     output = value;
                 }
 
-                // Add extra
-                if (typeof output != 'undefined' && this.extra) {
-                    output = `${ output }${ this.extra(player) }`;
+                // Add extras
+                if (typeof output != 'undefined' && (this.extra || this.displayBefore || this.displayAfter)) {
+                    const before = (
+                        this.displayBefore ? (
+                            this.displayBefore.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
+                        ) : (
+                            ''
+                        )
+                    );
+
+                    const after = (
+                        this.displayAfter ? (
+                            this.displayAfter.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
+                        ) : (
+                            this.extra ? this.extra(player) : ''
+                        )
+                    );
+
+                    output = `${ before }${ output }${ after }`;
                 }
 
                 if (typeof output == 'undefined') {
@@ -2775,40 +2837,10 @@ class Script {
         }
     }
 
-    // Add format expression to the header
-    addFormatExpression (expression) {
+    addDisplayValue (field, value) {
         let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
-            object.value.format = expression;
-        }
-    }
-
-    addBreaklineRule (value) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object.value.breakline = value;
-        }
-    }
-
-    // Add format extra expression to the header
-    addFormatExtraExpression (expression) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object.value.extra = expression;
-        }
-    }
-
-    addFormatStatisticsExpression (expression) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object.value.formatStatistics = expression;
-        }
-    }
-
-    addFormatDifferenceExpression (expression) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object.value.formatDifference = expression;
+            object.value[field] = value
         }
     }
 
