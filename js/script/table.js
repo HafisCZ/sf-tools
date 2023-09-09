@@ -300,8 +300,17 @@ class TableInstance {
         }
     }
 
-    setScript (script) {
-        this.settings = new Script(script, ScriptType.Table, this.tableType);
+    setScript (script, entries) {
+        this.settings = new Script(
+            script,
+            ScriptType.Table,
+            {
+                table: this.tableType,
+                timestamp: entries.timestamp,
+                reference: entries.reference,
+                entries: Script.createSegmentedArray(entries, entry => [entry.compare, entry.compare])
+            }
+        );
 
         // Handle trackers
         Actions.updateFromScript(this.settings.trackers);
@@ -1219,16 +1228,14 @@ class TableController extends SignalSource {
         const sorting = this.resetSorting ? null : this.table.sorting;
 
         // Create table
-        if (this.scriptChanged) {
-            this.table.setScript(this.script);
+        if (this.entriesChanged || this.scriptChanged) {
+            this.entries.suppressUpdate = false;
+
+            this.table.setScript(this.script, this.entries);
 
             this.resetSorting = false;
-
             this.resetInjector();
-        }
 
-        // Fill entries
-        if (this.entriesChanged || this.scriptChanged) {
             this.table.setEntries(this.entries);
             this.table.sort();
         }

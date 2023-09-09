@@ -1940,33 +1940,33 @@ class ScriptValidator {
 }
 
 class ScriptParser {
-    static handleMacros (string, tableType) {
-        let lines = string.split('\n').map(line => this.stripComments(line)[0].trim()).filter(line => line.length);
+    static handleMacros (string, scriptScope) {
+        let lines = string.split('\n').map((line) => this.stripComments(line)[0].trim()).filter(line => line.length);
 
         // Scope for macros
-        let scope = new ExpressionScope().add({
-            table: tableType
+        const scope = new ExpressionScope().addSelf(scriptScope.entries).add({
+            table: scriptScope.table
         }).add(SiteOptions.options);
 
         // Special constants for macros
-        let constants = new Constants();
+        const constants = new Constants();
         constants.add('guild', TableType.Group);
         constants.add('player', TableType.Player);
         constants.add('players', TableType.Browse);
 
         // Generate initial settings
-        let settings = this.handleMacroVariables(lines, constants);
+        let settings = this.handleMacroEnvironment(lines, scriptScope, constants);
         while (lines.some(line => ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line))) {
-            lines = this.handleConditionals(lines, tableType, scope.environment(settings));
-            settings = this.handleMacroVariables(lines, constants);
+            lines = this.handleConditionals(lines, scriptScope, scope.environment(settings));
+            settings = this.handleMacroEnvironment(lines, scriptScope, constants);
             lines = this.handleLoops(lines, scope.environment(settings));
-            settings = this.handleMacroVariables(lines, constants);
+            settings = this.handleMacroEnvironment(lines, scriptScope, constants);
         }
 
         return lines;
     }
 
-    static handleConditionals (lines, tableType, scope) {
+    static handleConditionals (lines, scriptScope, scope) {
         let output = [];
 
         let condition = false;
@@ -1988,7 +1988,7 @@ class ScriptParser {
 
                 let cond = rule.parseParams(line)[0].trim();
                 if (cond in FilterTypes) {
-                    shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == tableType) : (FilterTypes[cond] != tableType);
+                    shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == scriptScope.table) : (FilterTypes[cond] != scriptScope.table);
                     condition = true;
                 } else {
                     let condExpression = Expression.create(cond);
@@ -2003,7 +2003,7 @@ class ScriptParser {
                     if (shouldDiscard) {
                         let cond = ScriptCommands.MACRO_ELSEIF.parseParams(line)[0].trim();
                         if (cond in FilterTypes) {
-                            shouldDiscard = FilterTypes[cond] != tableType;
+                            shouldDiscard = FilterTypes[cond] != scriptScope.table;
                         } else {
                             let condExpression = Expression.create(cond);
                             if (condExpression) {
@@ -2132,12 +2132,14 @@ class ScriptParser {
         return output;
     }
 
-    static handleMacroVariables (lines, constants) {
+    static handleMacroEnvironment (lines, scriptScope, constants) {
         let settings = {
             theme: 'light',
             functions: { },
             variables: { },
-            constants: constants
+            constants,
+            timestamp: scriptScope.timestamp,
+            reference: scriptScope.reference
         };
 
         let is_unsafe = 0;
@@ -2238,10 +2240,10 @@ class ScriptParser {
 
 class ScriptRenderer {
     static render (string, scriptType = ScriptType.Table) {
-        const settings = new Script('', scriptType, null);
+        const settings = new Script('', scriptType);
         const validator = new ScriptValidator();
 
-        for (const line of ScriptParser.handleMacros(string)) {
+        for (const line of ScriptParser.handleMacros(string, {})) {
             const trimmed = ScriptParser.stripComments(line)[0].trim();
             const command = ScriptCommands.find((command) => !command.metadata.skipParse && command.metadata.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
 
@@ -2294,10 +2296,10 @@ class ScriptRenderer {
 }
 
 class Script {
-    constructor (string, scriptType, tableType) {
+    constructor (string, scriptType, scriptScope = {}) {
         this.code = string;
         this.scriptType = scriptType;
-        this.tableType = tableType;
+        this.scriptScope = scriptScope;
 
         this.env_id = randomSHA1();
 
@@ -2346,7 +2348,7 @@ class Script {
         this.theme = 'light';
 
         // Parse settings
-        for (const line of ScriptParser.handleMacros(string, tableType)) {
+        for (const line of ScriptParser.handleMacros(string, this.scriptScope)) {
             const command = ScriptCommands.find((command) => !command.metadata.skipParse && (command.type & scriptType) && command.is(line));
   
             if (command) {
@@ -2358,7 +2360,7 @@ class Script {
         this.pushEmbed();
         this.pushCategory();
 
-        if (this.tableType !== null) {
+        if (this.scriptScope.table !== null) {
             this._prepareLeftCategory();            
         }
     }
@@ -2367,8 +2369,9 @@ class Script {
         if (this.globals.custom_left) {
             // Can skip as category should already exist
         } else {
+            const type = this.scriptScope.table;
             const headers = [];
-            if (this.tableType === TableType.Player) {
+            if (type === TableType.Player) {
                 const dateHeader = this.#createContainer('Date');
 
                 this.mergeMapping(dateHeader, {
@@ -2379,7 +2382,7 @@ class Script {
                 });
 
                 headers.push(dateHeader);
-            } else if (this.tableType === TableType.Group) {
+            } else if (type === TableType.Group) {
                 const nameHeader = this.#createContainer('Name');
 
                 this.mergeMapping(nameHeader, {
@@ -2389,7 +2392,7 @@ class Script {
                 });
 
                 headers.push(nameHeader);
-            } else if (this.tableType === TableType.Browse) {
+            } else if (type === TableType.Browse) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
                     const serverHeader = this.#createContainer('Server');
@@ -3119,13 +3122,13 @@ class Script {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.tableType == TableType.Browse) {
+            if (this.scriptScope.table == TableType.Browse) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),
                     'table'
                 ];
-            } else if (this.tableType == TableType.Group) {
+            } else if (this.scriptScope.table == TableType.Group) {
                 return [
                     'table',
                     'missing',
@@ -3210,7 +3213,7 @@ class Script {
         }
     }
 
-    createSegmentedArray (array, mapper) {
+    static createSegmentedArray (array, mapper) {
         let segmentedArray = array.map((entry, index, arr) => {
             let obj = mapper(entry, index, arr);
             obj.segmented = true;
@@ -3235,8 +3238,8 @@ class Script {
         array = [].concat(array);
 
         // Get shared scope
-        let scope = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
-        let unfilteredScope = this.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
+        let scope = Script.createSegmentedArray(array, entry => [entry.player, entry.compare]);
+        let unfilteredScope = Script.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
@@ -3294,10 +3297,10 @@ class Script {
         this.array_unfiltered = unfilteredArray;
 
         // Get segmented lists
-        let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
-        let arrayCompare = this.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
-        let unfilteredArrayCurrent = this.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
-        let unfilteredArrayCompare = this.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
+        let arrayCurrent = Script.createSegmentedArray(array, entry => [entry.player, entry.compare]);
+        let arrayCompare = Script.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
+        let unfilteredArrayCurrent = Script.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
+        let unfilteredArrayCompare = Script.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
 
         // Evaluate variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -3367,10 +3370,10 @@ class Script {
         unfilteredArray = [].concat(unfilteredArray);
 
         // Get segmented lists
-        let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
-        let arrayCompare = this.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
-        let unfilteredArrayCurrent = this.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
-        let unfilteredArrayCompare = this.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
+        let arrayCurrent = Script.createSegmentedArray(array, entry => [entry.player, entry.compare]);
+        let arrayCompare = Script.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
+        let unfilteredArrayCurrent = Script.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
+        let unfilteredArrayCompare = Script.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
 
         // Get own player
         let ownEntry = array.find(entry => entry.player.Own) || array[0];
