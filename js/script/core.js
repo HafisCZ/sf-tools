@@ -1257,7 +1257,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_THEME_CUSTOM',
     ScriptType.Table,
-    'theme text:<value> backgroubd:<value>',
+    'theme text:<value> background:<value>',
     /^theme text:(\S+) background:(\S+)$/,
     (root, textColor, backgroundColor) => {
         root.setTheme({
