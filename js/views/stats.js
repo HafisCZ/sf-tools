@@ -1931,7 +1931,12 @@ const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
             [
                 'command',
                 'ta-keyword',
-                ScriptCommands.keys().map((key) => ScriptCommands[key].syntax.replace(/(&lt;[a-z\|]+&gt;)/g, '<span class="ta-constant">$1</span>').replace(/(\([a-z\|]+\))/g, '<span class="ta-value">$1</span>'))
+                _sortDesc(ScriptCommands.keys().map((key) => ScriptCommands[key]), (command) => command.metadata.isDeprecated ? 0 : 1).map((command) => {
+                    return `
+                        ${command.syntax.replace(/(&lt;[a-z\|]+&gt;)/g, '<span class="ta-constant">$1</span>').replace(/(\([a-z\|]+\))/g, '<span class="ta-value">$1</span>')}
+                        ${command.metadata.isDeprecated ? ` <sup class="text-gray">(${this.intl('deprecated')})</sup>` : ''}
+                    `
+                })
             ],
             [
                 'header',
@@ -1975,7 +1980,8 @@ const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
             [
                 'constant',
                 'ta-constant',
-                Constants.DEFAULT.keys(), Constants.DEFAULT.Values
+                Constants.DEFAULT.keys(),
+                Constants.DEFAULT.Values
             ]
         ];
 
