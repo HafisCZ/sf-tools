@@ -1797,9 +1797,11 @@ ScriptCommands.register(
     ScriptType.Table,
     'padding <value>',
     /^padding (.+)$/,
-    (root, value) => root.addLocal('padding', value),
-    (root, value) => Highlighter.keyword('padding ').value(value)
-)
+    (root, value) => root.addStyle('padding-left', value),
+    (root, value) => Highlighter.deprecatedKeyword('padding ').value(value)
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_PADDING', 'TABLE_STYLE');
+})
 
 ScriptCommands.register(
     'TABLE_DEFINE',

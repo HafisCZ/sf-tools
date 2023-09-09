@@ -716,7 +716,6 @@ class TableInstance {
             header.visible ? color.fg : false,
             border,
             header.align,
-            header.padding,
             header.style ? header.style.cssText : undefined,
             cellWidth,
             header.action
@@ -840,7 +839,6 @@ class TableInstance {
                     this.#getCellColor(row, val, player),
                     this.flatWidth,
                     row.align,
-                    row.padding,
                     row.style ? row.style.cssText : undefined
                 ) }
             </tr>
@@ -1436,21 +1434,19 @@ function getCSSBorderClass (border) {
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, color, bo, al, pad, style, cellWidth, hasAction) {
+    Cell: function (c, b, color, bo, al, style, cellWidth, hasAction) {
         let border = getCSSBorderClass(bo);
         if (color === false) {
             color = getCSSColorFromBackground(b);
         }
 
-        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
+        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
-    WideCell: function (text, color, colSpan, alignClass, paddingLeft, style) {
+    WideCell: function (text, color, colSpan, alignClass, style) {
         let { fg, bg } = typeof color === 'object' ? color : {};
         return `
-            <td class="${ alignClass || '' }" colspan="${ colSpan }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ bg };` : '' }${ paddingLeft ? `padding-left: ${ paddingLeft } !important;` : '' }${ style || '' }">
-                <div>${ text }</div>
-            </td>
+            <td class="${ alignClass || '' }" colspan="${ colSpan }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ bg };` : '' }${ style || '' }">${ text }</td>
         `;
     },
     // Plain cell
