@@ -2872,7 +2872,6 @@ class SettingsTab extends Tab {
         });
 
         this.prepareCheckbox('always_prev', 'alwaysprev');
-        this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
         this.prepareCheckbox('terms_accepted', 'terms');
         this.prepareCheckbox('table_sticky_header', 'table-sticky-header')

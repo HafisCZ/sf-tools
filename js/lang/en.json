@@ -742,7 +742,6 @@
             "title": "Global configuration",
             "always_prev": "Compare previous (guilds)",
             "empty_groups": "Show empty groups",
-            "obfuscated": "Hide player names",
             "unsafe_delete": "Skip confirmation when deleting files",
             "table_sticky_header": "Enable sticky table headers",
             "terms": "Accept Terms of Service",

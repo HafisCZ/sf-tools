@@ -170,7 +170,6 @@ class OptionsHandler {
 const SiteOptions = new OptionsHandler(
     'options',
     {
-        obfuscated: false,
         advanced: false,
         hidden: false,
         terms_accepted: false,
