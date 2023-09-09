@@ -991,9 +991,7 @@ class Expression {
                     }
                     case 'function': {
                         const self = scope.getSelf();
-                        if (data.meta === 'value') {
-                            return data.data(self);
-                        }
+                        return data.meta === 'value' ? data.data(self) : undefined;
                     }
                 }
             } else if (node in scope.env.variables) {

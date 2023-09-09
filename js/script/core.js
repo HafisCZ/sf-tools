@@ -258,7 +258,7 @@ class ScriptCommand {
     constructor (key, type, syntax, regexp, parse, format) {
         this.key = key;
         this.type = type;
-        this.syntax = syntax.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
+        this.syntax = syntax.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         this.regexp = regexp;
         this.#internalParse = parse;
         this.#internalFormat = format;

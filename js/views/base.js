@@ -710,7 +710,7 @@ class Localization {
         if (val) {
             if (typeof variables !== 'undefined') {
                 for (const [key, vrl] of Object.entries(variables)) {
-                    val = val.replace(`#{${key}}`, vrl);
+                    val = val.replace(`#{${key}}`, String(vrl).replace(/\$/g, '$$$$'));
                 }
             }
     
