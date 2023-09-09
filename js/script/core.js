@@ -2402,7 +2402,7 @@ class Script {
 
         // Merge diff value expression
         if (!obj.value.formatDifference) {
-            obj.value.formatDifference = mapping.format_diff;
+            obj.value.formatDifference = mapping.formatDifference;
         }
 
         // Merge value extra

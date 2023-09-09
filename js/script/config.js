@@ -2736,7 +2736,7 @@ TABLE_EXPRESSION_CONFIG.register(
   {
     expr: p => p.XP,
     format: 'spaced_number',
-    format_diff: true,
+    formatDifference: true,
     statistics: false
   }
 )
@@ -2746,7 +2746,7 @@ TABLE_EXPRESSION_CONFIG.register(
   {
     expr: p => p.XPNext,
     format: 'spaced_number',
-    format_diff: true,
+    formatDifference: true,
     statistics: false
   }
 )
@@ -2756,7 +2756,7 @@ TABLE_EXPRESSION_CONFIG.register(
   {
     expr: p => p.XPTotal,
     format: 'spaced_number',
-    format_diff: true,
+    formatDifference: true,
     statistics: false
   }
 )
