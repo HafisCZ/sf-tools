@@ -254,6 +254,22 @@ class Constants {
     }
 }
 
+class SignalSource {
+    #listeners = []
+
+    emit (event, ...args) {
+        for (const { event: _event, listener } of this.#listeners) {
+            if (event === _event) {
+                listener(...args);
+            }
+        }
+    }
+
+    subscribe (event, listener) {
+        this.#listeners.push({ event, listener });
+    }
+}
+
 class Workers {
     static #fetchCache = new Map();
     static #objectCache = new Map();
