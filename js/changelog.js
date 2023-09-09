@@ -23,6 +23,7 @@ const CHANGELOG = {
             'Added list of keywords to the manual',
             'Added limit of 200 entries to script archive',
             'Added missing legendary item names and images',
+            'Added support for Ctrl + S and Ctrl + Shift + S in the editor',
             'Fixed dropdowns not updating on browse tab',
             'Fixed scoped functions breaking editor when called without arguments',
             'Fixed <code>show as</code> not appearing as deprecated',

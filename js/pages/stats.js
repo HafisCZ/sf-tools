@@ -2577,11 +2577,18 @@ class ScriptsTab extends Tab {
             }
         })
 
-        this.editor = new ScriptEditor(
-            this.$parent,
-            ScriptType.Table,
-            (value) => this._contentChanged(this.script && value !== this.script.content, 'content')
-        )
+        this.editor = new ScriptEditor(this.$parent, ScriptType.Table);
+        this.editor.subscribe('change', (val) => {
+            this._contentChanged(this.script && val !== this.script.content, 'content')
+        })
+        
+        this.editor.subscribe('ctrl+s', () => {
+            if (!this.$save.hasClass('disabled')) this.$save.click();
+        })
+
+        this.editor.subscribe('ctrl+shift+s', () => {
+            if (!this.$saveTemplate.hasClass('disabled')) this.$saveTemplate.click();
+        })
 
         // React to CTRL presses
         this.ctrlDown = false;
@@ -2895,7 +2902,8 @@ class SettingsTab extends Tab {
             this.editor.content = Actions.getScript();
         });
 
-        this.editor = new ScriptEditor(this.$parent, ScriptType.Action, val => {
+        this.editor = new ScriptEditor(this.$parent, ScriptType.Action);
+        this.editor.subscribe('change', (val) => {
             if (val === Actions.getScript()) {
                 this.$save.addClass('disabled');
                 this.$reset.addClass('disabled');
@@ -2903,7 +2911,7 @@ class SettingsTab extends Tab {
                 this.$save.removeClass('disabled');
                 this.$reset.removeClass('disabled');
             }
-        });
+        })
 
         // recovery
         this.$recoveryExport = this.$parent.find('[data-op="export"]');

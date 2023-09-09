@@ -3709,11 +3709,12 @@ class TemplateManager {
     }
 }
 
-class ScriptEditor {
-    constructor (parent, scriptType, changeCallback) {
+class ScriptEditor extends SignalSource {
+    constructor (parent, scriptType) {
+        super();
+
         this.parent = parent.get(0);
-        
-        this.changeCallback = changeCallback;
+
         this.scriptType = scriptType;
 
         this.area = this.parent.querySelector('textarea');
@@ -3775,9 +3776,7 @@ class ScriptEditor {
                 this.info.style.display = 'none';
             }
 
-            if (typeof this.changeCallback === 'function') {
-                this.changeCallback(value);
-            }
+            this.emit('change', value);
         });
 
         this.area.dispatchEvent(new Event('input'));
@@ -3789,7 +3788,15 @@ class ScriptEditor {
         });
 
         this.area.addEventListener('keydown', (event) => {
-            if (event.key == 'Tab') {
+            if (event.ctrlKey && event.key === 's') {
+                event.preventDefault();
+
+                this.emit('ctrl+s');
+            } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
+                event.preventDefault();
+
+                this.emit('ctrl+shift+s');
+            } else if (event.key === 'Tab') {
                 event.preventDefault();
 
                 let a = this.area;
