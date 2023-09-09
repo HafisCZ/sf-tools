@@ -3263,7 +3263,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Potion Expire',
   {
     expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
-    format: (p, x) => x == undefined ? '?' : _formatDate(x),
+    format: (p, x) => x == undefined ? undefined : _formatDate(x),
     width: 160,
     difference: false,
     statistics: false

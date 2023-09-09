@@ -727,7 +727,7 @@ class TableInstance {
         if (span) {
             return CellGenerator.PlainSpan(
                 span,
-                header.ndef == undefined ? '?' : header.ndef,
+                header.ndef == undefined ? '' : header.ndef,
                 border,
                 undefined,
                 header.ndefc,
@@ -735,7 +735,7 @@ class TableInstance {
             );
         } else {
             return CellGenerator.Plain(
-                header.ndef == undefined ? '?' : header.ndef,
+                header.ndef == undefined ? '' : header.ndef,
                 border,
                 undefined,
                 header.ndefc,
