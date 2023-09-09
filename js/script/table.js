@@ -1080,8 +1080,10 @@ class TableInstance {
     }
 }
 
-class TableController {
-    constructor ($table, tableType) {        
+class TableController extends SignalSource {
+    constructor ($table, tableType) {
+        super();
+
         this.headElement = document.createElement('thead');
         this.bodyElement = document.createElement('tbody');
         
@@ -1177,12 +1179,11 @@ class TableController {
         this.resetSorting = true;
     }
 
-    prepareInjector (entries, callback) {
+    prepareInjector (entries) {
         if (this.injectorObserver) {
             this.injectorObserver.disconnect();
         }
 
-        this.injectorCallback = callback;
         this.injectorEntries = entries;
         this.injectorBlockSize = Math.trunc((SiteOptions.load_rows || SiteOptions.default('load_rows')) / 2);
         this.injectorCounter = 0;
@@ -1223,7 +1224,7 @@ class TableController {
                 if (!node.injectCalled) {
                     node.injectCalled = true;
 
-                    this.injectorCallback(node);
+                    this.emit('inject', node);
                 }
             }
 
@@ -1237,7 +1238,7 @@ class TableController {
         }
     }
 
-    refresh (onChange = () => { /* Do nothing */ }, onInject = () => { /* Do nothing */ }) {
+    refresh () {
         // Log some console stuff for fun
         const scriptChanged = this.scriptChanged || false;
         const entriesChanged = this.entriesChanged || false;
@@ -1322,7 +1323,7 @@ class TableController {
                 if (!node.injectCalled) {
                     node.injectCalled = true;
 
-                    onInject(node);
+                    this.emit('inject', node);
                 }
             }
 
@@ -1345,7 +1346,7 @@ class TableController {
 
         if (this.injectorElement) {
             if (entries.length > 0) {
-                this.prepareInjector(entries, onInject);
+                this.prepareInjector(entries);
             } else {
                 this.injectorElement.remove();
             }
@@ -1365,7 +1366,7 @@ class TableController {
                 this.table.setSorting(sortKey);
     
                 // Redraw table
-                this.refresh(onChange, onInject);
+                this.refresh();
             })
 
             sortable.addEventListener('contextmenu', (event) => {
@@ -1382,10 +1383,10 @@ class TableController {
                     }
     
                     // Redraw table
-                    this.refresh(onChange, onInject);
+                    this.refresh();
                 } else if (this.table.global_sorting) {
                     this.table.setDefaultSorting();
-                    this.refresh(onChange, onInject);
+                    this.refresh();
                 }
             })
 
@@ -1402,7 +1403,7 @@ class TableController {
         }
 
         // Call callback when finished
-        onChange();
+        this.emit('change');
     }
 }
 

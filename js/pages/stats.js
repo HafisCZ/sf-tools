@@ -161,7 +161,21 @@ class GroupDetailTab extends Tab {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
+
         this.table = new TableController(this.$table, TableType.Group);
+        this.table.subscribe('change', () => {
+            this.table.bodyElement.insertAdjacentHTML('beforeend', '<tr style="height: 2em;"></tr>');
+        })
+        this.table.subscribe('inject', (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
+                })
+            }
+
+            this.contextMenu.attach(clickableElements);
+        })
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -453,18 +467,7 @@ class GroupDetailTab extends Tab {
     }
 
     refresh () {
-        this.table.refresh(() => {
-            this.table.bodyElement.insertAdjacentHTML('beforeend', '<tr style="height: 2em;"></tr>');
-        }, (element) => {
-            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
-            for (const clickableElement of clickableElements) {
-                clickableElement.addEventListener('click', (event) => {
-                    DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
-                })
-            }
-
-            this.contextMenu.attach(clickableElements);
-        });
+        this.table.refresh();
     }
 
     reload () {
@@ -479,7 +482,19 @@ class PlayerDetailTab extends Tab {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
+
         this.table = new TableController(this.$table, TableType.Player);
+        this.table.subscribe('inject', (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    const dataset = event.currentTarget.dataset;
+                    DialogController.open(PlayerDetailDialog, { identifier: dataset.id, timestamp: dataset.ts, reference: dataset.ts })
+                });
+            }
+
+            this.contextMenu.attach(clickableElements);
+        })
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -627,17 +642,7 @@ class PlayerDetailTab extends Tab {
 
     refresh () {
         this.table.setEntries(this.array);
-        this.table.refresh(undefined, (element) => {
-            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
-            for (const clickableElement of clickableElements) {
-                clickableElement.addEventListener('click', (event) => {
-                    const dataset = event.currentTarget.dataset;
-                    DialogController.open(PlayerDetailDialog, { identifier: dataset.id, timestamp: dataset.ts, reference: dataset.ts })
-                });
-            }
-
-            this.contextMenu.attach(clickableElements);
-        });
+        this.table.refresh();
     }
 
     reload () {
@@ -656,7 +661,10 @@ class BrowseTab extends Tab {
 
         // Tables
         this.tableBase = new TableController(this.$table1, TableType.Browse);
+        this.tableSubscribe(this.tableBase);
+
         this.tableQ = new TableController(this.$table2, TableType.Browse);
+        this.tableSubscribe(this.tableQ);
 
         // Keep track of what table is displayed and swap if necessary later
         this.table = this.tableBase;
@@ -988,6 +996,27 @@ class BrowseTab extends Tab {
         });
     }
 
+    tableSubscribe (table) {
+        table.subscribe('inject', (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    if (event.ctrlKey) {
+                        event.currentTarget.classList.toggle('css-op-select');
+                    } else {
+                        DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
+                    }
+                });
+
+                clickableElement.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                })
+            }
+
+            this.contextMenu.attach(clickableElements);
+        });
+    }
+
     async tryGetSettings (code) {
         if (typeof this.settingsRepo == 'undefined') {
             this.settingsRepo = {};
@@ -1147,7 +1176,6 @@ class BrowseTab extends Tab {
         if (table === this.table) {
             table.element.style.display = '';
         } else {
-            
             table.element.style.display = 'none';
         }
     }
@@ -1156,24 +1184,7 @@ class BrowseTab extends Tab {
         this._toggleTable(this.tableBase);
         this._toggleTable(this.tableQ);
 
-        this.table.refresh(undefined, (element) => {
-            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
-            for (const clickableElement of clickableElements) {
-                clickableElement.addEventListener('click', (event) => {
-                    if (event.ctrlKey) {
-                        event.currentTarget.classList.toggle('css-op-select');
-                    } else {
-                        DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
-                    }
-                });
-
-                clickableElement.addEventListener('mousedown', (event) => {
-                    event.preventDefault();
-                })
-            }
-
-            this.contextMenu.attach(clickableElements);
-        });
+        this.table.refresh();
     }
 
     reload () {
