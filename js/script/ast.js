@@ -989,6 +989,12 @@ class Expression {
                         const self = scope.getSelf();
                         return self && typeof self === 'object' ? data.data(self, scope.player) : undefined;
                     }
+                    case 'function': {
+                        const self = scope.getSelf();
+                        if (data.meta === 'value') {
+                            return data.data(self);
+                        }
+                    }
                 }
             } else if (node in scope.env.variables) {
                 let variable = scope.env.variables[node];
