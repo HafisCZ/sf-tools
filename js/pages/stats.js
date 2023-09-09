@@ -2587,7 +2587,16 @@ class ScriptsTab extends Tab {
         })
 
         this.editor.subscribe('ctrl+shift+s', () => {
-            if (!this.$saveTemplate.hasClass('disabled')) this.$saveTemplate.click();
+            if (!this.$saveTemplate.hasClass('disabled')) {
+                if (this.script.parent) {
+                    TemplateManager.save(this.script.parent, this.editor.content);
+    
+                    this._contentChanged(true, 'parent');
+                    this._updateSidebars();
+                } else {
+                    this.$saveTemplate.click();
+                }
+            }
         })
 
         // React to CTRL presses
