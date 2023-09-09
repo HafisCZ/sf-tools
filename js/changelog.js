@@ -16,13 +16,19 @@ const CHANGELOG = {
             'Added new berserker icon',
             'Added <code>this</code> as a function',
             'Added new <code>repeat</code> keyword to mark header as repeated',
-            'Added deprecated status to <code>header as group of</code>, <code>set with all</code> and <code>mset</code> keywords',
+            'Added deprecated status to <code>header as group of</code>, <code>padding</code>, <code>set with all</code> and <code>mset</code> keywords',
             'Added <code>display before</code> and <code>display after</code> keywords to display additional text in cell',
             'Added list of keywords to the manual',
+            'Added limit of 200 entries to script archive',
+            'Added missing legendary item names and images',
             'Fixed dropdowns not updating on browse tab',
+            'Fixed scoped functions breaking editor when called without arguments',
             'Fixed <code>show as</code> not appearing as deprecated',
             'Fixed table timestamps not working in <code>discard</code>',
-            'Fixed expressions not highlighting inside conditions'
+            'Fixed expressions not highlighting inside conditions',
+            'Fixed localization with arguments',
+            'Removed obfuscation setting',
+            'Removed undefined values displaying as question marks'
         ],
         'Hellevator Simulator': [
             'Added support for logging',
