@@ -1095,8 +1095,8 @@ class TableController {
         this.table = new TableInstance(this.tableType);
 
         // Changed by default
-        this.schanged = true;
-        this.echanged = true;
+        this.scriptChanged = true;
+        this.entriesChanged = true;
     }
 
     async toImage (cloneCallback) {
@@ -1147,9 +1147,9 @@ class TableController {
 
     setScript (code) {
         // If settings have changed
-        if (this.settings != code) {
-            this.settings = code;
-            this.schanged = true;
+        if (this.script != code) {
+            this.script = code;
+            this.scriptChanged = true;
 
             // Clear sorting when settings have changed
             this.clearSorting();
@@ -1162,7 +1162,7 @@ class TableController {
 
     setEntries (entries) {
         this.entries = entries;
-        this.echanged = true;
+        this.entriesChanged = true;
     }
 
     getArray () {
@@ -1174,7 +1174,7 @@ class TableController {
     }
 
     clearSorting () {
-        this.ignore = true;
+        this.resetSorting = true;
     }
 
     prepareInjector (entries, callback) {
@@ -1239,25 +1239,26 @@ class TableController {
 
     refresh (onChange = () => { /* Do nothing */ }, onInject = () => { /* Do nothing */ }) {
         // Log some console stuff for fun
-        let schanged = this.schanged || false;
-        let echanged = this.echanged || false;
-        let ignore = this.ignore || false;
-        let timestamp = Date.now();
+        const scriptChanged = this.scriptChanged || false;
+        const entriesChanged = this.entriesChanged || false;
+        const resetSorting = this.resetSorting || false;
+
+        const timestamp = Date.now();
 
         // Save sorting if needed
-        let sorting = !this.ignore && this.table ? this.table.sorting : null;
+        const sorting = this.resetSorting ? null : this.table.sorting;
 
         // Create table
-        if (this.schanged) {
-            this.table.setScript(this.settings);
+        if (this.scriptChanged) {
+            this.table.setScript(this.script);
 
-            this.ignore = false;
+            this.resetSorting = false;
 
             this.resetInjector();
         }
 
         // Fill entries
-        if (this.echanged || this.schanged) {
+        if (this.entriesChanged || this.scriptChanged) {
             this.table.setEntries(this.entries);
             this.table.sort();
         }
@@ -1269,13 +1270,14 @@ class TableController {
         }
 
         // Reset sorting if ignored
-        if (this.ignore) {
+        if (this.resetSorting) {
             this.table.clearSorting();
         }
 
         // Clear flag
-        this.ignore = false;
-        this.echanged = this.schanged = false;
+        this.resetSorting = false;
+        this.scriptChanged = false;
+        this.entriesChanged = false;
 
         // Get table content
         let { content, entries, style, class: klass, theme, width, widthFixed } = this.table.createTable();
@@ -1393,8 +1395,8 @@ class TableController {
         }
 
         // Log stuff to console
-        if (schanged || echanged || ignore) {
-            Logger.log('TAB_GEN', `Table generated in ${ Date.now() - timestamp }ms! Instance: ${ schanged }, Entries: ${ echanged }, Unsorted: ${ ignore }`);
+        if (scriptChanged || entriesChanged || resetSorting) {
+            Logger.log('TAB_GEN', `Table generated in ${ Date.now() - timestamp }ms! Instance: ${ scriptChanged }, Entries: ${ entriesChanged }, Unsorted: ${ resetSorting }`);
         } else {
             Logger.log('TAB_GEN', `Table generated in ${ Date.now() - timestamp }ms!`);
         }
