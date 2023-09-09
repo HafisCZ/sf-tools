@@ -1282,7 +1282,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_GLOBAL_LIMIT',
+    'TABLE_GLOBAL_PERFORMANCE',
     ScriptType.Table,
     'performance <value>',
     /^performance (\d+)$/,
