@@ -797,11 +797,11 @@ class BrowseTab extends Tab {
         this.$filter = this.$parent.operator('filter').searchfield(
             'create',
             _arrayToHash(
-                ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 'qc', 't'],
+                ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 't'],
                 k => [k, intl(`stats.filters.${k}`)]
             )
         ).change(async (event) => {
-            var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|h|o|sr|q|qc|t|#):/);
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|h|o|sr|q|t|#):/);
 
             var terms = [
                 {
@@ -931,8 +931,6 @@ class BrowseTab extends Tab {
 
                     this.table = this.tableQ;
                     this.table.setScript(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
-                } else if (key == 'qc' && typeof(arg) == 'string' && arg.length) {
-                    this.table.selectCategories(arg.split(',').map(x => x.trim()));
                 } else if (key == 't' && typeof(arg) == 'string' && arg.length) {
                     let script = await this.tryGetSettings(arg.trim());
                     if (script) {

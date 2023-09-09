@@ -84,7 +84,7 @@ class GroupTableArray extends TableArray {
 
 // Table instance
 class TableInstance {
-    constructor (settings, tableType, filteredCategories = null) {
+    constructor (settings, tableType) {
         // Parameters
         this.tableType = tableType;
         this.settings = new Script(settings, ScriptType.Table, tableType);
@@ -133,7 +133,7 @@ class TableInstance {
                 }
             })
 
-            if (filteredCategories ? (filteredCategories.includes(group.name) || filteredCategories.find(filterKey => filterKey == `$${ categoryIndex + 1 }`)) : group.length) {
+            if (group.length) {
                 this.config.push(group);
             }
         })
@@ -1174,10 +1174,6 @@ class TableController {
         this.ignore = true;
     }
 
-    selectCategories (categories) {
-        this.categories = categories;
-    }
-
     prepareInjector (entries, callback) {
         if (this.injectorObserver) {
             this.injectorObserver.disconnect();
@@ -1239,11 +1235,6 @@ class TableController {
     }
 
     refresh (onChange = () => { /* Do nothing */ }, onInject = () => { /* Do nothing */ }) {
-        if (this.categories) {
-            this.schanged = true;
-            this.echanged = true;
-        }
-
         // Log some console stuff for fun
         let schanged = this.schanged || false;
         let echanged = this.echanged || false;
@@ -1255,16 +1246,8 @@ class TableController {
 
         // Create table
         if (this.schanged) {
-            if (this.categories == -1) {
-                this.categories = undefined;
-            }
-
-            this.table = new TableInstance(this.settings, this.tableType, this.categories);
+            this.table = new TableInstance(this.settings, this.tableType);
             this.ignore = false;
-
-            if (this.categories) {
-                this.categories = -1;
-            }
 
             this.resetInjector();
         }

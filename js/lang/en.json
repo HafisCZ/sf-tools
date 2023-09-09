@@ -578,8 +578,7 @@
             "d": "Show other",
             "q": "Custom settings (separate header names with comma)",
             "t": "Show online template directly",
-            "sr": "Sort by custom expression",
-            "qc": "Show only selected categories"
+            "sr": "Sort by custom expression"
         },
         "scripts": {
             "settings": "Settings",
