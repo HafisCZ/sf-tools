@@ -838,7 +838,7 @@ class TableInstance {
                 ${ CellGenerator.WideCell(
                     this.#getCellDisplayValue(row, val, cmp, player),
                     this.#getCellColor(row, val, player),
-                    this.#getRowSpan(row.width),
+                    this.flatWidth,
                     row.align,
                     row.padding,
                     row.style ? row.style.cssText : undefined
@@ -938,7 +938,7 @@ class TableInstance {
                         CellGenerator.WideCell(
                             CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.array.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
                             undefined,
-                            this.flatSpan,
+                            this.flatWidth,
                             'center'
                         )
                     }
@@ -1445,9 +1445,13 @@ const CellGenerator = {
         return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
-    WideCell: function (c, b, w, al, pad, style) {
-        let { fg, bg } = typeof b === 'object' ? b : {};
-        return `<td class="${ al ? al : '' }" colspan="${ w }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ bg };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+    WideCell: function (text, color, colSpan, alignClass, paddingLeft, style) {
+        let { fg, bg } = typeof color === 'object' ? color : {};
+        return `
+            <td class="${ alignClass || '' }" colspan="${ colSpan }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ bg };` : '' }${ paddingLeft ? `padding-left: ${ paddingLeft } !important;` : '' }${ style || '' }">
+                <div>${ text }</div>
+            </td>
+        `;
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style, cellWidth) {
