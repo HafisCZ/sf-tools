@@ -440,7 +440,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'const <name> <value>',
     /^const (\w+) (.+)$/,
-    (root, name, value) => root.addConstant(name, value),
+    (root, name, value) => root.constants.add(name, value),
     (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value),
     { canParseAsConstant: true }
 )
@@ -453,7 +453,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         const ast = Expression.create(expression);
         if (ast) {
-            root.addConstant(name, ast.eval(new ExpressionScope(root)));
+            root.constants.add(name, ast.eval(new ExpressionScope(root)));
         }
     },
     (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root),
@@ -1147,7 +1147,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'layout <value>',
     /^layout ((\||\_|table|missing|statistics|rows|members)(\s+(\||\_|table|missing|statistics|rows|members))*)$/,
-    (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
+    (root, layout) => root.addGlobal('layout', layout.split(/\s+/).map(v => v.trim())),
     (root, layout) => Highlighter.keyword('layout ').constant(layout)
 )
 
@@ -1784,7 +1784,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addDefaultOrder(ast);
+            root.addGlobal('order_by', ast);
         }
     },
     (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
@@ -2060,7 +2060,7 @@ class Script {
             }
 
             for (const header of headers) {
-                this._injectLeftHeaderStyling(header);
+                this.#injectLeftHeaderStyling(header);
             }
 
             this.categories.unshift({
@@ -2078,13 +2078,13 @@ class Script {
                 width: 50
             });
 
-            this._injectLeftHeaderStyling(indexHeader);
+            this.#injectLeftHeaderStyling(indexHeader);
 
             this.categories[0].headers.unshift(indexHeader);
         }
     }
 
-    _injectLeftHeaderStyling (header) {
+    #injectLeftHeaderStyling (header) {
         header.visible = true;
 
         header.color.text = this.shared.text;
@@ -2345,58 +2345,41 @@ class Script {
         return lines;
     }
 
+    mergeRules (target, source) {
+        for (const type of ['color', 'value']) {
+            if (!target[type].rules.rules.length) {
+                target[type].rules.rules = source[type].rules.rules;
+            }
+        }
+    }
+
+    mergeValueSettings (target, source) {
+        for (const type of ['format', 'formatDifference', 'formatStatistics', 'extra', 'displayBefore', 'displayAfter']) {
+            if (!target.value[type]) {
+                target.value[type] = source.value[type];
+            }
+        }
+    }
+
+    mergeColorSettings (target, source) {
+        for (const type of ['expr']) {
+            if (!target.color[type]) {
+                target.color[type] = source.color[type];
+            }
+        }
+    }
+
     // Merge definition to object
     mergeDefinition (obj, name) {
         let definition = this.customDefinitions[name];
         if (definition) {
-            // Merge commons
             for (const key of Object.keys(definition)) {
                 if (!obj.hasOwnProperty(key)) obj[key] = definition[key];
             }
 
-            // Merge color expression
-            if (!obj.color.expr) {
-                obj.color.expr = definition.color.expr;
-            }
-
-            // Merge color rules
-            if (!obj.color.rules.rules.length) {
-                obj.color.rules.rules = definition.color.rules.rules;
-            }
-
-            // Merge value expression
-            if (!obj.value.format) {
-                obj.value.format = definition.value.format;
-            }
-
-            // Merge difference format expression
-            if (!obj.value.formatDifference) {
-                obj.value.formatDifference = definition.value.formatDifference;
-            }
-
-            // Merge statistics format expression
-            if (!obj.value.formatStatistics) {
-                obj.value.formatStatistics = definition.value.formatStatistics;
-            }
-
-            // Merge value extra
-            if (!obj.value.extra) {
-                obj.value.extra = definition.value.extra;
-            }
-
-            if (!obj.value.displayBefore) {
-                obj.value.displayBefore = definition.value.displayBefore;
-            }
-
-            if (!obj.value.displayAfter) {
-                obj.value.displayAfter = definition.value.displayAfter;
-            }
-
-            // Merge value rules
-            if (!obj.value.rules.rules.length) {
-                obj.value.rules.rules = definition.value.rules.rules;
-            }
-
+            this.mergeRules(obj, definition);
+            this.mergeColorSettings(obj, definition);
+            this.mergeValueSettings(obj, definition);
             this.mergeStyles(obj, definition.style);
             this.mergeVariables(obj, definition.vars);
         }
@@ -2924,11 +2907,6 @@ class Script {
         }
     }
 
-    // Add constant
-    addConstant (name, value) {
-        this.constants.add(name, value);
-    }
-
     // Add local variable
     addLocal (name, value) {
         let object = (this.row || this.definition || this.header || this.embed);
@@ -2993,17 +2971,9 @@ class Script {
         }
     }
 
-    addLayout (layout) {
-        this.globals.layout = layout;
-    }
-
     // Add discard rule
     addDiscardRule (rule) {
         this.discardRules.push(rule);
-    }
-
-    addDefaultOrder (order) {
-        this.globals.order_by = order;
     }
 
     // Get compare environment
