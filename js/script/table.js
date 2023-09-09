@@ -870,6 +870,10 @@ class TableInstance {
                 content += this.cache.get('spacer');
             } else {
                 content += this.cache.get(block) || '';
+
+                if (block === 'table' && this.tableType === TableType.Group) {
+                    content += this.cache.get('missing') || '';
+                }
             }
         }
 
