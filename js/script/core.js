@@ -1939,162 +1939,31 @@ class ScriptValidator {
     }
 }
 
-class Script {
-    constructor (string, scriptType, tableType) {
-        this.code = string;
-        this.scriptType = scriptType;
-        this.tableType = tableType;
+class ScriptParser {
+    static handleMacros (string, tableType) {
+        let lines = string.split('\n').map(line => this.stripComments(line)[0].trim()).filter(line => line.length);
 
-        this.env_id = randomSHA1();
+        // Scope for macros
+        let scope = new ExpressionScope().add({
+            table: tableType
+        }).add(SiteOptions.options);
 
-        // Constants
-        this.constants = new Constants();
+        // Special constants for macros
+        let constants = new Constants();
+        constants.add('guild', TableType.Group);
+        constants.add('player', TableType.Player);
+        constants.add('players', TableType.Browse);
 
-        // Discard rules
-        this.discardRules = [];
-
-        // Variables and functions
-        this.functions = Object.create(null);
-        this.variables = Object.create(null);
-        this.variablesReference = Object.create(null);
-
-        this.trackers = {};
-        this.row_indexes = {};
-
-        // Table
-        this.categories = [];
-        this.customStatistics = [];
-        this.customRows = [];
-
-        // Other things
-        this.customDefinitions = {};
-        this.actions = [];
-
-        // Settings
-        this.globals = {};
-
-        // Shared globals
-        this.shared = {
-            statisticsColor: true,
-            visible: true
-        };
-
-        // Shared category
-        this.sharedCategory = null;
-
-        // Temporary objects
-        this.category = null;
-        this.header = null;
-        this.definition = null;
-        this.row = null;
-        this.embed = null;
-
-        this.theme = 'light';
-
-        // Parse settings
-        for (const line of Script.handleMacros(string, tableType)) {
-            const command = ScriptCommands.find((command) => !command.metadata.skipParse && (command.type & scriptType) && command.is(line));
-  
-            if (command) {
-                command.parse(this, line);
-            }
+        // Generate initial settings
+        let settings = this.handleMacroVariables(lines, constants);
+        while (lines.some(line => ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line))) {
+            lines = this.handleConditionals(lines, tableType, scope.environment(settings));
+            settings = this.handleMacroVariables(lines, constants);
+            lines = this.handleLoops(lines, scope.environment(settings));
+            settings = this.handleMacroVariables(lines, constants);
         }
 
-        // Push last embed && category
-        this.pushEmbed();
-        this.pushCategory();
-
-        if (this.tableType !== null) {
-            this._prepareLeftCategory();            
-        }
-    }
-
-    _prepareLeftCategory () {
-        if (this.globals.custom_left) {
-            // Can skip as category should already exist
-        } else {
-            const headers = [];
-            if (this.tableType === TableType.Player) {
-                const dateHeader = this.#createContainer('Date');
-
-                this.mergeMapping(dateHeader, {
-                    expr: (p) => p.Timestamp,
-                    format: (p, x) => _formatDate(x),
-                    width: 200,
-                    action: 'show'
-                });
-
-                headers.push(dateHeader);
-            } else if (this.tableType === TableType.Group) {
-                const nameHeader = this.#createContainer('Name');
-
-                this.mergeMapping(nameHeader, {
-                    expr: (p) => p.Name,
-                    width: this.getNameStyle(),
-                    action: 'show'
-                });
-
-                headers.push(nameHeader);
-            } else if (this.tableType === TableType.Browse) {
-                const serverWidth = this.getServerStyle();
-                if (serverWidth) {
-                    const serverHeader = this.#createContainer('Server');
-
-                    this.mergeMapping(serverHeader, {
-                        expr: (p) => p.Prefix,
-                        width: serverWidth
-                    });
-
-                    headers.push(serverHeader);
-                }
-
-                const nameHeader = this.#createContainer('Name');
-
-                this.mergeMapping(nameHeader, {
-                    expr: (p) => p.Name,
-                    width: this.getNameStyle(),
-                    action: 'show'
-                });
-
-                headers.push(nameHeader);
-            }
-
-            for (const header of headers) {
-                this.#injectLeftHeaderStyling(header);
-            }
-
-            this.categories.unshift({
-                name: '',
-                empty: true,
-                headers
-            });
-        }
-
-        if (this.globals.indexed && !(this.globals.custom_left && this.globals.indexed_custom)) {
-            const indexHeader = this.#createContainer('#');
-            
-            this.mergeMapping(indexHeader, {
-                expr: (p) => 0,
-                width: 50
-            });
-
-            this.#injectLeftHeaderStyling(indexHeader);
-
-            this.categories[0].headers.unshift(indexHeader);
-        }
-    }
-
-    #injectLeftHeaderStyling (header) {
-        header.visible = true;
-
-        header.color.text = this.shared.text;
-        header.color.background = this.shared.background;
-
-        if (header.color.background) {
-            header.color.rules.addRule('db', 0, header.color.background);
-        }
-
-        this.mergeTextColor(header, header);
+        return lines;
     }
 
     static handleConditionals (lines, tableType, scope) {
@@ -2319,30 +2188,267 @@ class Script {
         return settings;
     }
 
-    static handleMacros (string, tableType) {
-        let lines = string.split('\n').map(line => Script.stripComments(line)[0].trim()).filter(line => line.length);
+    static checkEscapeTrail (line, index) {
+        if (line[index - 1] != '\\') {
+            return false;
+        } else {
+            let escape = true;
+            for (let i = index - 2; i >= 0 && line[i] == '\\'; i--) {
+                escape = !escape;
+            }
 
-        // Scope for macros
-        let scope = new ExpressionScope().add({
-            table: tableType
-        }).add(SiteOptions.options);
+            return escape;
+        }
+    }
 
-        // Special constants for macros
-        let constants = new Constants();
-        constants.add('guild', TableType.Group);
-        constants.add('player', TableType.Player);
-        constants.add('players', TableType.Browse);
+    static stripComments (line, escape = true) {
+        let comment;
+        let commentIndex = -1;
 
-        // Generate initial settings
-        let settings = Script.handleMacroVariables(lines, constants);
-        while (lines.some(line => ScriptCommands.MACRO_IF.is(line) || ScriptCommands.MACRO_LOOP.is(line))) {
-            lines = Script.handleConditionals(lines, tableType, scope.environment(settings));
-            settings = Script.handleMacroVariables(lines, constants);
-            lines = Script.handleLoops(lines, scope.environment(settings));
-            settings = Script.handleMacroVariables(lines, constants);
+        let ignored = false;
+        for (var i = 0; i < line.length; i++) {
+            if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
+                if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                else {
+                    ignored = ignored ? false : line[i];
+                }
+            } else if (!this.checkEscapeTrail(line, i) && line[i] == '#' && !ignored) {
+                commentIndex = i;
+                break;
+            }
         }
 
-        return lines;
+        if (commentIndex != -1) {
+            comment = line.slice(commentIndex);
+            line = line.slice(0, commentIndex);
+
+            if (escape) {
+                line = line.replaceAll(/\\(\\|#)/g, (_, capture) => {
+                    commentIndex -= 1;
+                    return capture;
+                });
+            }
+        } else if (escape) {
+            line = line.replaceAll(/\\(\\|#)/g, (_, capture) => capture);
+        }
+
+        return [ line, comment, commentIndex ];
+    }
+}
+
+class ScriptRenderer {
+    static render (string, scriptType = ScriptType.Table) {
+        const settings = new Script('', scriptType, null);
+        const validator = new ScriptValidator();
+
+        for (const line of ScriptParser.handleMacros(string)) {
+            const trimmed = ScriptParser.stripComments(line)[0].trim();
+            const command = ScriptCommands.find((command) => !command.metadata.skipParse && command.metadata.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
+
+            if (command) {
+                command.parse(settings, trimmed);
+            }
+        }
+
+        let content = '';
+
+        const lines = string.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            let [ commandLine, comment, commentIndex ] = ScriptParser.stripComments(line, false);
+            let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
+
+            let currentLine = prefix.replace(/ /g, '&nbsp;');
+
+            if (trimmed) {
+                const command = ScriptCommands.find((command) => (command.type & scriptType) && command.is(trimmed));
+
+                if (command) {
+                    const lineHtml = command.format(settings, trimmed);
+                    currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
+
+                    if (command.metadata.isDeprecated) {
+                        validator.deprecateCommand(i + 1, command.key, command.metadata.isDeprecated);
+                    }
+
+                    command.validate(validator, settings, i + 1, trimmed);
+                } else {
+                    currentLine += Highlighter.error(trimmed).text;
+                }
+            }
+
+            currentLine += suffix.replace(/ /g, '&nbsp;');
+            if (commentIndex != -1) {
+                currentLine += Highlighter.comment(comment).text;
+            }
+
+            content += `<div class="ta-line">${currentLine || '&nbsp;'}</div>`;
+        }
+
+        return {
+            html: `<div class="ta-block">${content}</div>`,
+            info: validator.string()
+        }
+    }
+}
+
+class Script {
+    constructor (string, scriptType, tableType) {
+        this.code = string;
+        this.scriptType = scriptType;
+        this.tableType = tableType;
+
+        this.env_id = randomSHA1();
+
+        // Constants
+        this.constants = new Constants();
+
+        // Discard rules
+        this.discardRules = [];
+
+        // Variables and functions
+        this.functions = Object.create(null);
+        this.variables = Object.create(null);
+        this.variablesReference = Object.create(null);
+
+        this.trackers = {};
+        this.row_indexes = {};
+
+        // Table
+        this.categories = [];
+        this.customStatistics = [];
+        this.customRows = [];
+
+        // Other things
+        this.customDefinitions = {};
+        this.actions = [];
+
+        // Settings
+        this.globals = {};
+
+        // Shared globals
+        this.shared = {
+            statisticsColor: true,
+            visible: true
+        };
+
+        // Shared category
+        this.sharedCategory = null;
+
+        // Temporary objects
+        this.category = null;
+        this.header = null;
+        this.definition = null;
+        this.row = null;
+        this.embed = null;
+
+        this.theme = 'light';
+
+        // Parse settings
+        for (const line of ScriptParser.handleMacros(string, tableType)) {
+            const command = ScriptCommands.find((command) => !command.metadata.skipParse && (command.type & scriptType) && command.is(line));
+  
+            if (command) {
+                command.parse(this, line);
+            }
+        }
+
+        // Push last embed && category
+        this.pushEmbed();
+        this.pushCategory();
+
+        if (this.tableType !== null) {
+            this._prepareLeftCategory();            
+        }
+    }
+
+    _prepareLeftCategory () {
+        if (this.globals.custom_left) {
+            // Can skip as category should already exist
+        } else {
+            const headers = [];
+            if (this.tableType === TableType.Player) {
+                const dateHeader = this.#createContainer('Date');
+
+                this.mergeMapping(dateHeader, {
+                    expr: (p) => p.Timestamp,
+                    format: (p, x) => _formatDate(x),
+                    width: 200,
+                    action: 'show'
+                });
+
+                headers.push(dateHeader);
+            } else if (this.tableType === TableType.Group) {
+                const nameHeader = this.#createContainer('Name');
+
+                this.mergeMapping(nameHeader, {
+                    expr: (p) => p.Name,
+                    width: this.getNameStyle(),
+                    action: 'show'
+                });
+
+                headers.push(nameHeader);
+            } else if (this.tableType === TableType.Browse) {
+                const serverWidth = this.getServerStyle();
+                if (serverWidth) {
+                    const serverHeader = this.#createContainer('Server');
+
+                    this.mergeMapping(serverHeader, {
+                        expr: (p) => p.Prefix,
+                        width: serverWidth
+                    });
+
+                    headers.push(serverHeader);
+                }
+
+                const nameHeader = this.#createContainer('Name');
+
+                this.mergeMapping(nameHeader, {
+                    expr: (p) => p.Name,
+                    width: this.getNameStyle(),
+                    action: 'show'
+                });
+
+                headers.push(nameHeader);
+            }
+
+            for (const header of headers) {
+                this.#injectLeftHeaderStyling(header);
+            }
+
+            this.categories.unshift({
+                name: '',
+                empty: true,
+                headers
+            });
+        }
+
+        if (this.globals.indexed && !(this.globals.custom_left && this.globals.indexed_custom)) {
+            const indexHeader = this.#createContainer('#');
+            
+            this.mergeMapping(indexHeader, {
+                expr: (p) => 0,
+                width: 50
+            });
+
+            this.#injectLeftHeaderStyling(indexHeader);
+
+            this.categories[0].headers.unshift(indexHeader);
+        }
+    }
+
+    #injectLeftHeaderStyling (header) {
+        header.visible = true;
+
+        header.color.text = this.shared.text;
+        header.color.background = this.shared.background;
+
+        if (header.color.background) {
+            header.color.rules.addRule('db', 0, header.color.background);
+        }
+
+        this.mergeTextColor(header, header);
     }
 
     mergeRules (target, source) {
@@ -3312,108 +3418,6 @@ class Script {
 
         this.evalRules();
     }
-
-    static checkEscapeTrail (line, index) {
-        if (line[index - 1] != '\\') {
-            return false;
-        } else {
-            let escape = true;
-            for (let i = index - 2; i >= 0 && line[i] == '\\'; i--) {
-                escape = !escape;
-            }
-
-            return escape;
-        }
-    }
-
-    static stripComments (line, escape = true) {
-        let comment;
-        let commentIndex = -1;
-
-        let ignored = false;
-        for (var i = 0; i < line.length; i++) {
-            if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
-                if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                else {
-                    ignored = ignored ? false : line[i];
-                }
-            } else if (!Script.checkEscapeTrail(line, i) && line[i] == '#' && !ignored) {
-                commentIndex = i;
-                break;
-            }
-        }
-
-        if (commentIndex != -1) {
-            comment = line.slice(commentIndex);
-            line = line.slice(0, commentIndex);
-
-            if (escape) {
-                line = line.replaceAll(/\\(\\|#)/g, (_, capture) => {
-                    commentIndex -= 1;
-                    return capture;
-                });
-            }
-        } else if (escape) {
-            line = line.replaceAll(/\\(\\|#)/g, (_, capture) => capture);
-        }
-
-        return [ line, comment, commentIndex ];
-    }
-
-    static render (string, scriptType = ScriptType.Table) {
-        const settings = new Script('', scriptType, null);
-        const validator = new ScriptValidator();
-
-        for (const line of Script.handleMacros(string)) {
-            const trimmed = Script.stripComments(line)[0].trim();
-            const command = ScriptCommands.find((command) => !command.metadata.skipParse && command.metadata.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
-
-            if (command) {
-                command.parse(settings, trimmed);
-            }
-        }
-
-        let content = '';
-
-        const lines = string.split('\n');
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-
-            let [ commandLine, comment, commentIndex ] = Script.stripComments(line, false);
-            let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
-
-            let currentLine = prefix.replace(/ /g, '&nbsp;');
-
-            if (trimmed) {
-                const command = ScriptCommands.find((command) => (command.type & scriptType) && command.is(trimmed));
-
-                if (command) {
-                    const lineHtml = command.format(settings, trimmed);
-                    currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
-
-                    if (command.metadata.isDeprecated) {
-                        validator.deprecateCommand(i + 1, command.key, command.metadata.isDeprecated);
-                    }
-
-                    command.validate(validator, settings, i + 1, trimmed);
-                } else {
-                    currentLine += Highlighter.error(trimmed).text;
-                }
-            }
-
-            currentLine += suffix.replace(/ /g, '&nbsp;');
-            if (commentIndex != -1) {
-                currentLine += Highlighter.comment(comment).text;
-            }
-
-            content += `<div class="ta-line">${currentLine || '&nbsp;'}</div>`;
-        }
-
-        return {
-            html: `<div class="ta-block">${content}</div>`,
-            info: validator.string()
-        }
-    }
 };
 
 // Script archive
@@ -3710,7 +3714,7 @@ class ScriptEditor extends SignalSource {
             this.mask.remove();
             this.mask = maskClone.cloneNode(true);
 
-            const data = Script.render(value, this.scriptType);
+            const data = ScriptRenderer.render(value, this.scriptType);
 
             this.mask.innerHTML = data.html;
             this.mask.style.transform = scrollTransform;
