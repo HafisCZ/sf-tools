@@ -240,7 +240,7 @@ class TableInstance {
                         return CellGenerator.Cell(
                             this.#getStatisticsDisplayValue(header, val, cmp),
                             '',
-                            header.statistics_color ? this.#getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
+                            header.statisticsColor ? this.#getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
                         );
                     } else {
                         return this.#getEmptyCell(header);

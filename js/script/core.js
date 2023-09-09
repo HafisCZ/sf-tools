@@ -1328,7 +1328,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'statistics color <value>',
     /^statistics color (on|off)$/,
-    (root, value) => root.addShared('statistics_color', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => root.addShared('statisticsColor', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('statistics color').space().boolean(value, value == 'on')
 )
 
@@ -1939,7 +1939,7 @@ class Script {
 
         // Shared globals
         this.shared = {
-            statistics_color: true,
+            statisticsColor: true,
             visible: true
         };
 
@@ -2553,7 +2553,7 @@ class Script {
                 } else {
                     this.merge(obj, {
                         visible: true,
-                        statistics_color: true
+                        statisticsColor: true
                     });
                 }
 
@@ -2968,7 +2968,7 @@ class Script {
             } else {
                 this.merge(obj, {
                     visible: true,
-                    statistics_color: true
+                    statisticsColor: true
                 });
             }
 
