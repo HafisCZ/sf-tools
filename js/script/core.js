@@ -417,10 +417,8 @@ ScriptCommands.register(
         }
     },
     (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro(),
-    { skipParse: true, canParseAsConstant: true, isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'MACRO_FUNCTION', 'TABLE_FUNCTION');
-})
+    { skipParse: true, canParseAsConstant: true, isDeprecated: 'TABLE_FUNCTION' }
+)
 
 ScriptCommands.register(
     'MACRO_VARIABLE',
@@ -434,10 +432,8 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro(),
-    { canParseAsConstant: true, isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'MACRO_VARIABLE', 'TABLE_VARIABLE');
-})
+    { canParseAsConstant: true, isDeprecated: 'TABLE_VARIABLE' }
+)
 
 ScriptCommands.register(
     'MACRO_CONST',
@@ -951,10 +947,8 @@ ScriptCommands.register(
             return acc.expression(expression, root);
         }
     },
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_FORMAT_LONG', 'TABLE_FORMAT')
-})
+    { isDeprecated: 'TABLE_FORMAT' }
+)
 
 ScriptCommands.register(
     'TABLE_CATEGORY',
@@ -1021,10 +1015,8 @@ ScriptCommands.register(
         
         return acc.space(1).deprecatedKeyword('as group of').space(1).value(length);
     },
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_GROUPED_HEADER', 'TABLE_HEADER_REPEAT')
-})
+    { isDeprecated: 'TABLE_HEADER_REPEAT' }
+)
 
 ScriptCommands.register(
     'TABLE_HEADER',
@@ -1105,10 +1097,8 @@ ScriptCommands.register(
         }
     },
     (root, extensions, name, expression) => Highlighter.constant(extensions || '').deprecatedKeyword('show').space(1).identifier(name).space(1).deprecatedKeyword('as').space(1).expression(expression, root),
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_ROW_COMPACT', 'TABLE_ROW');
-})
+    { isDeprecated: 'TABLE_ROW' }
+)
       
 ScriptCommands.register(
     'TABLE_VAR',
@@ -1170,10 +1160,8 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
-    { canParseAsConstant: true, isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_VARIABLE_GLOBAL_LONG', 'TABLE_VARIABLE_GLOBAL');
-})
+    { canParseAsConstant: true, isDeprecated: 'TABLE_VARIABLE_GLOBAL' }
+)
 
 ScriptCommands.register(
     'TABLE_FUNCTION',
@@ -1298,10 +1286,8 @@ ScriptCommands.register(
         }
     },
     (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value),
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_GLOBAL_PERFORMANCE', 'TABLE_GLOBAL_LIMIT');
-})
+    { isDeprecated: 'TABLE_GLOBAL_LIMIT' }
+)
 
 ScriptCommands.register(
     'TABLE_GLOBAL_SCALE',
@@ -1400,10 +1386,8 @@ ScriptCommands.register(
     /^brackets (on|off)$/,
     (root, value) => root.addShared('differenceBrackets', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on'),
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_SHARED_BRACKETS', 'TABLE_SHARED_DIFFERENCE_BRACKETS');
-})
+    { isDeprecated: 'TABLE_SHARED_DIFFERENCE_BRACKETS' }
+)
 
 ScriptCommands.register(
     'TABLE_SHARED_DIFFERENCE_BRACKETS',
@@ -1590,10 +1574,8 @@ ScriptCommands.register(
             return acc;
         }
     },
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_GLOBAL_LARGE_ROWS', 'TABLE_ROW_HEIGHT');
-})
+    { isDeprecated: 'TABLE_ROW_HEIGHT' }
+)
 
 ScriptCommands.register(
     'TABLE_GLOBAL_ALIGN_TITLE',
@@ -1850,10 +1832,8 @@ ScriptCommands.register(
     /^padding (.+)$/,
     (root, value) => root.addStyle('padding-left', value),
     (root, value) => Highlighter.deprecatedKeyword('padding ').value(value),
-    { isDeprecated: true }
-).withValidation((validator, line) => {
-    validator.deprecateCommand(line, 'TABLE_PADDING', 'TABLE_STYLE');
-})
+    { isDeprecated: 'TABLE_STYLE' }
+)
 
 ScriptCommands.register(
     'TABLE_DEFINE',
@@ -3462,6 +3442,10 @@ class Script {
                 if (command) {
                     const lineHtml = command.format(settings, trimmed);
                     currentLine += (typeof lineHtml === 'function' ? lineHtml.text : lineHtml);
+
+                    if (command.metadata.isDeprecated) {
+                        validator.deprecateCommand(i + 1, command.key, command.metadata.isDeprecated);
+                    }
 
                     command.validate(validator, settings, i + 1, trimmed);
                 } else {
