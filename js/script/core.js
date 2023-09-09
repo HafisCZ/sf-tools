@@ -1067,6 +1067,7 @@ ScriptCommands.register(
     /^((?:\w+)(?:\,\w+)*:|)row(?: (.+))?$/,
     (root, extensions, name) => {
         root.addRow(name || '');
+
         if (extensions) {
             root.addExtension(... extensions.slice(0, -1).split(','));
         }
@@ -1090,7 +1091,9 @@ ScriptCommands.register(
     (root, extensions, name, expression) => {
         const ast = Expression.create(expression, root);
         if (ast) {
-            root.addRow(name, ast);
+            root.addRow(name);
+            root.addLocal(ast);
+
             if (extensions) {
                 root.addExtension(... extensions.slice(0, -1).split(','));
             }
@@ -1330,8 +1333,9 @@ ScriptCommands.register(
     ScriptType.Table,
     'breakline <value>',
     /^breakline (on|off)$/,
-    (root, value) => root.addDisplayValue('breakline', ARGUMENT_MAP_ON_OFF[value]),
-    (root, value) => Highlighter.keyword('breakline').space().boolean(value, value == 'on')
+    (root, value) => root.addStyle('white-space', value === 'on' ? 'normal' : 'nowrap'),
+    (root, value) => Highlighter.deprecatedKeyword('breakline').space().boolean(value, value == 'on'),
+    { isDeprecated: 'TABLE_STYLE' }
 )
 
 ScriptCommands.register(
@@ -1831,7 +1835,7 @@ ScriptCommands.register(
     'padding <value>',
     /^padding (.+)$/,
     (root, value) => root.addStyle('padding-left', value),
-    (root, value) => Highlighter.deprecatedKeyword('padding ').value(value),
+    (root, value) => Highlighter.deprecatedKeyword('padding').space().value(value),
     { isDeprecated: 'TABLE_STYLE' }
 )
 
@@ -1841,7 +1845,7 @@ ScriptCommands.register(
     'define <name>',
     /^define (\w+)$/,
     (root, name) => root.addDefinition(name),
-    (root, name) => Highlighter.keyword('define ').identifier(name)
+    (root, name) => Highlighter.keyword('define').space().identifier(name)
 )
 
 ScriptCommands.register(
@@ -1850,7 +1854,7 @@ ScriptCommands.register(
     'extend <value>',
     /^extend (\w+)$/,
     (root, name) => root.addExtension(name),
-    (root, name) => Highlighter.keyword('extend ').constant(name)
+    (root, name) => Highlighter.keyword('extend').space().constant(name)
 )
 
 ScriptCommands.register(
@@ -2011,7 +2015,7 @@ class Script {
         } else {
             const headers = [];
             if (this.tableType === TableType.Player) {
-                const dateHeader = this.createHeader('Date');
+                const dateHeader = this.#createContainer('Date');
 
                 this.mergeMapping(dateHeader, {
                     expr: (p) => p.Timestamp,
@@ -2022,7 +2026,7 @@ class Script {
 
                 headers.push(dateHeader);
             } else if (this.tableType === TableType.Group) {
-                const nameHeader = this.createHeader('Name');
+                const nameHeader = this.#createContainer('Name');
 
                 this.mergeMapping(nameHeader, {
                     expr: (p) => p.Name,
@@ -2034,7 +2038,7 @@ class Script {
             } else if (this.tableType === TableType.Browse) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
-                    const serverHeader = this.createHeader('Server');
+                    const serverHeader = this.#createContainer('Server');
 
                     this.mergeMapping(serverHeader, {
                         expr: (p) => p.Prefix,
@@ -2044,7 +2048,7 @@ class Script {
                     headers.push(serverHeader);
                 }
 
-                const nameHeader = this.createHeader('Name');
+                const nameHeader = this.#createContainer('Name');
 
                 this.mergeMapping(nameHeader, {
                     expr: (p) => p.Name,
@@ -2067,7 +2071,7 @@ class Script {
         }
 
         if (this.globals.indexed && !(this.globals.custom_left && this.globals.indexed_custom)) {
-            const indexHeader = this.createHeader('#');
+            const indexHeader = this.#createContainer('#');
             
             this.mergeMapping(indexHeader, {
                 expr: (p) => 0,
@@ -2375,11 +2379,6 @@ class Script {
                 obj.value.formatStatistics = definition.value.formatStatistics;
             }
 
-            // Merge breakline
-            if (typeof obj.value.breakline === 'undefined') {
-                obj.value.breakline = definition.value.breakline;
-            }
-
             // Merge value extra
             if (!obj.value.extra) {
                 obj.value.extra = definition.value.extra;
@@ -2655,7 +2654,6 @@ class Script {
             displayBefore: undefined,
             displayAfter: undefined,
             format: undefined,
-            breakline: undefined,
             formatDifference: undefined,
             formatStatistics: undefined,
             rules: new RuleEvaluator(),
@@ -2704,11 +2702,6 @@ class Script {
                     output = '';
                 }
 
-                // Replace spaces with unbreakable ones
-                if (typeof this.breakline !== 'undefined' && !this.breakline) {
-                    output = output.replace(/\ /g, '&nbsp;')
-                }
-
                 // Return value
                 return output;
             },
@@ -2753,7 +2746,7 @@ class Script {
         }
     }
 
-    createHeader (name) {
+    #createContainer (name) {
         return {
             name,
             value: this.getValueBlock(),
@@ -2764,7 +2757,7 @@ class Script {
     // Create new header
     addHeader (name) {
         this.push();
-        this.header = this.createHeader(name);
+        this.header = this.#createContainer(name);
     }
 
     addHeaderLocal (name, value) {
@@ -2790,25 +2783,15 @@ class Script {
     }
 
     // Create row
-    addRow (name, expression = null) {
+    addRow (name) {
         this.push();
-
-        this.row = this.createHeader(name);
-        if (expression) {
-            this.row.expr = expression;
-        }
+        this.row = this.#createContainer(name);
     }
 
     // Create definition
     addDefinition (name) {
         this.push();
-
-        // Definition
-        this.definition = {
-            name: name,
-            value: this.getValueBlock(),
-            color: this.getColorBlock()
-        }
+        this.definition = this.#createContainer(name);
     }
 
     // Create statistic
@@ -2975,14 +2958,9 @@ class Script {
 
     embedBlock (name) {
         this.push();
-
-        this.embed = {
-            name,
-            embedded: true,
-            headers: [],
-            value: this.getValueBlock(),
-            color: this.getColorBlock()
-        }
+        this.embed = this.#createContainer(name);
+        this.embed.embedded = true;
+        this.embed.headers = [];
     }
 
     pushEmbed () {

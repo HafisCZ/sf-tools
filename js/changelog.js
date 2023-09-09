@@ -16,7 +16,7 @@ const CHANGELOG = {
             'Added new berserker icon',
             'Added <code>this</code> as a function',
             'Added new <code>repeat</code> keyword to mark header as repeated',
-            'Added deprecated status to <code>header as group of</code>, <code>padding</code>, <code>brackets</code>, <code>set with all</code> and <code>mset</code> keywords',
+            'Added deprecated status to <code>header as group of</code>, <code>padding</code>, <code>brackets</code>, <code>set with all</code>, <code>breakline</code>, and <code>mset</code> keywords',
             'Added <code>display before</code> and <code>display after</code> keywords to display additional text in cell',
             'Added <code>difference brackets</code> command to wrap difference in brackets',
             'Added <code>difference position</code> command to place difference below the value',
