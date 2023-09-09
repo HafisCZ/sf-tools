@@ -255,16 +255,14 @@ class ScriptCommand {
     #internalFormat;
     #internalValidator = null;
 
-    constructor (key, type, syntax, regexp, parse, format) {
+    constructor (key, type, syntax, regexp, parse, format, metadata = {}) {
         this.key = key;
         this.type = type;
         this.syntax = syntax.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         this.regexp = regexp;
         this.#internalParse = parse;
         this.#internalFormat = format;
-
-        this.canParseAsConstant = false;
-        this.canParse = true;
+        this.metadata = metadata;
     }
 
     is (string) {
@@ -287,16 +285,6 @@ class ScriptCommand {
         this.#internalValidator?.(validator, line, root, ... string.match(this.regexp).slice(1))
     }
 
-    parseAsConstant () {
-        this.canParseAsConstant = true;
-        return this;
-    }
-
-    parseNever () {
-        this.canParse = false;
-        return this;
-    }
-
     withValidation (validator) {
         this.#internalValidator = validator;
     }
@@ -306,8 +294,8 @@ class ScriptCommands {
     static #keys = [];
     static #commands = [];
 
-    static register (key, type, syntax, regexp, parse, format) {
-        const command = new ScriptCommand(key, type, syntax, regexp, parse, format);
+    static register (key, type, syntax, regexp, parse, format, metadata) {
+        const command = new ScriptCommand(key, type, syntax, regexp, parse, format, metadata);
 
         this[key] = command;
 
@@ -347,8 +335,9 @@ ScriptCommands.register(
         } else {
             return acc.expression(arg, root).asMacro()
         }
-    }
-).parseNever()
+    },
+    { skipParse: true }
+)
 
 ScriptCommands.register(
     'MACRO_IF',
@@ -364,8 +353,9 @@ ScriptCommands.register(
         } else {
             return acc.expression(arg, root).asMacro()
         }
-    }
-).parseNever()
+    },
+    { skipParse: true }
+)
 
 ScriptCommands.register(
     'MACRO_ELSEIF',
@@ -381,8 +371,9 @@ ScriptCommands.register(
         } else {
             return acc.expression(arg, root).asMacro()
         }
-    }
-).parseNever()
+    },
+    { skipParse: true }
+)
 
 ScriptCommands.register(
     'MACRO_ELSE',
@@ -390,8 +381,9 @@ ScriptCommands.register(
     'else',
     /^else$/,
     null,
-    (root) => Highlighter.keyword('else').asMacro()
-).parseNever()
+    (root) => Highlighter.keyword('else').asMacro(),
+    { skipParse: true }
+)
 
 ScriptCommands.register(
     'MACRO_LOOP',
@@ -399,8 +391,9 @@ ScriptCommands.register(
     'loop <params> for <expression>',
     /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
     null,
-    (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro()
-).parseNever()
+    (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro(),
+    { skipParse: true }
+)
 
 ScriptCommands.register(
     'MACRO_END',
@@ -408,8 +401,9 @@ ScriptCommands.register(
     'end',
     /^end$/,
     null,
-    (root) => Highlighter.keyword('end').asMacro()
-).parseNever()
+    (root) => Highlighter.keyword('end').asMacro(),
+    { skipParse: true }
+)
 
 ScriptCommands.register(
     'MACRO_FUNCTION',
@@ -422,8 +416,9 @@ ScriptCommands.register(
             root.addFunction(name, ast, args.split(',').map(v => v.trim()));
         }
     },
-    (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro()
-).parseAsConstant().withValidation((validator, line) => {
+    (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro(),
+    { skipParse: true, canParseAsConstant: true, isDeprecated: true }
+).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'MACRO_FUNCTION', 'TABLE_FUNCTION');
 })
 
@@ -438,8 +433,9 @@ ScriptCommands.register(
             root.addVariable(name, ast, false);
         }
     },
-    (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro()
-).parseAsConstant().withValidation((validator, line) => {
+    (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro(),
+    { canParseAsConstant: true, isDeprecated: true }
+).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'MACRO_VARIABLE', 'TABLE_VARIABLE');
 })
 
@@ -449,8 +445,9 @@ ScriptCommands.register(
     'const <name> <value>',
     /^const (\w+) (.+)$/,
     (root, name, value) => root.addConstant(name, value),
-    (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value)
-).parseAsConstant()
+    (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value),
+    { canParseAsConstant: true }
+)
 
 ScriptCommands.register(
     'MACRO_CONSTEXPR',
@@ -463,8 +460,9 @@ ScriptCommands.register(
             root.addConstant(name, ast.eval(new ExpressionScope(root)));
         }
     },
-    (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root)
-).parseAsConstant()
+    (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root),
+    { canParseAsConstant: true }
+)
 
 ScriptCommands.register(
     'TABLE_SERVER',
@@ -952,7 +950,8 @@ ScriptCommands.register(
         } else {
             return acc.expression(expression, root);
         }
-    }
+    },
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_FORMAT_LONG', 'TABLE_FORMAT')
 })
@@ -1021,7 +1020,8 @@ ScriptCommands.register(
         }
         
         return acc.space(1).deprecatedKeyword('as group of').space(1).value(length);
-    }
+    },
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_GROUPED_HEADER', 'TABLE_HEADER_REPEAT')
 })
@@ -1104,7 +1104,8 @@ ScriptCommands.register(
             }
         }
     },
-    (root, extensions, name, expression) => Highlighter.constant(extensions || '').deprecatedKeyword('show').space(1).identifier(name).space(1).deprecatedKeyword('as').space(1).expression(expression, root)
+    (root, extensions, name, expression) => Highlighter.constant(extensions || '').deprecatedKeyword('show').space(1).identifier(name).space(1).deprecatedKeyword('as').space(1).expression(expression, root),
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_ROW_COMPACT', 'TABLE_ROW');
 })
@@ -1169,7 +1170,8 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
-).parseAsConstant().withValidation((validator, line) => {
+    { canParseAsConstant: true, isDeprecated: true }
+).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_VARIABLE_GLOBAL_LONG', 'TABLE_VARIABLE_GLOBAL');
 })
 
@@ -1184,8 +1186,9 @@ ScriptCommands.register(
             root.addFunction(name, ast, args.split(',').map(v => v.trim()));
         }
     },
-    (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root)
-).parseAsConstant()
+    (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root),
+    { canParseAsConstant: true }
+)
 
 ScriptCommands.register(
     'TABLE_VARIABLE_GLOBAL',
@@ -1198,8 +1201,9 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root)
-).parseAsConstant()
+    (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root),
+    { canParseAsConstant: true }
+)
 
 ScriptCommands.register(
     'TABLE_VARIABLE_UNFILTERED',
@@ -1212,8 +1216,9 @@ ScriptCommands.register(
             root.addVariable(name, ast, 'unfiltered');
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root)
-).parseAsConstant()
+    (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
+    { canParseAsConstant: true }
+)
 
 ScriptCommands.register(
     'TABLE_VARIABLE',
@@ -1226,8 +1231,9 @@ ScriptCommands.register(
             root.addVariable(name, ast, false);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root)
-).parseAsConstant()
+    (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root),
+    { canParseAsConstant: true }
+)
 
 ScriptCommands.register(
     'TABLE_GLOBAL_LINED',
@@ -1291,7 +1297,8 @@ ScriptCommands.register(
             root.addGlobal('limit', Number(value));
         }
     },
-    (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value)
+    (root, value) => Highlighter.deprecatedKeyword('performance').space(1)[value > 0 ? 'value' : 'error'](value),
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_GLOBAL_PERFORMANCE', 'TABLE_GLOBAL_LIMIT');
 })
@@ -1392,7 +1399,8 @@ ScriptCommands.register(
     'brackets <value>',
     /^brackets (on|off)$/,
     (root, value) => root.addShared('differenceBrackets', ARGUMENT_MAP_ON_OFF[value]),
-    (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on')
+    (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on'),
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_SHARED_BRACKETS', 'TABLE_SHARED_DIFFERENCE_BRACKETS');
 })
@@ -1581,7 +1589,8 @@ ScriptCommands.register(
         } else {
             return acc;
         }
-    }
+    },
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_GLOBAL_LARGE_ROWS', 'TABLE_ROW_HEIGHT');
 })
@@ -1840,7 +1849,8 @@ ScriptCommands.register(
     'padding <value>',
     /^padding (.+)$/,
     (root, value) => root.addStyle('padding-left', value),
-    (root, value) => Highlighter.deprecatedKeyword('padding ').value(value)
+    (root, value) => Highlighter.deprecatedKeyword('padding ').value(value),
+    { isDeprecated: true }
 ).withValidation((validator, line) => {
     validator.deprecateCommand(line, 'TABLE_PADDING', 'TABLE_STYLE');
 })
@@ -1999,7 +2009,7 @@ class Script {
 
         // Parse settings
         for (const line of Script.handleMacros(string, tableType)) {
-            const command = ScriptCommands.find((command) => command.canParse && (command.type & scriptType) && command.is(line));
+            const command = ScriptCommands.find((command) => !command.metadata.skipParse && (command.type & scriptType) && command.is(line));
   
             if (command) {
                 command.parse(this, line);
@@ -3428,7 +3438,7 @@ class Script {
 
         for (const line of Script.handleMacros(string)) {
             const trimmed = Script.stripComments(line)[0].trim();
-            const command = ScriptCommands.find((command) => command.canParse && command.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
+            const command = ScriptCommands.find((command) => !command.metadata.skipParse && command.metadata.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
 
             if (command) {
                 command.parse(settings, trimmed);
