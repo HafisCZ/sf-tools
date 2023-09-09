@@ -3447,6 +3447,7 @@ class ScriptArchive {
     }
 
     static #persist () {
+        this.data = this.all().slice(0, 200);
         Store.shared.set('archive', this.data);
     }
 
