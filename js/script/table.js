@@ -768,7 +768,7 @@ class TableInstance {
     }
 
     #getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
-        let { difference, ex_difference, flip, value, brackets } = header;
+        let { difference, ex_difference, flip, value, differenceBrackets, differencePosition } = header;
         let displayValue = value.get(player, compare, this.settings, val, extra, header, altSelf);
         if (!difference || isNaN(cmp)) {
             return displayValue;
@@ -777,12 +777,12 @@ class TableInstance {
             if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
-                return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
+                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, value.getDifference(player, compare, this.settings, diff, extra));
             }
         }
     }
 
-    #getStatisticsDisplayValue ({ difference, ex_difference, flip, value, brackets }, val, cmp) {
+    #getStatisticsDisplayValue ({ difference, ex_difference, flip, value, differenceBrackets, differencePosition }, val, cmp) {
         let displayValue = value.getStatistics(this.settings, val);
         if (!difference || isNaN(cmp)) {
             return displayValue;
@@ -791,7 +791,7 @@ class TableInstance {
             if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
-                return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(undefined, undefined, this.settings, diff));
+                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, value.getDifference(undefined, undefined, this.settings, diff));
             }
         }
     }
@@ -1462,8 +1462,8 @@ const CellGenerator = {
         return `<td class="${ border } ${ al ? al : '' }" colspan="${ s }"  style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Difference
-    Difference: function (d, b, c) {
-        return ` <span data-difference>${ b ? '(' : '' }${ d > 0 ? '+' : '' }${ c == null ? d : c }${ b ? ')' : '' }</span>`;
+    Difference: function (d, showBrackets, position, c) {
+        return `${position === 'below' ? '<br>' : ' '}<span data-difference>${ showBrackets ? showBrackets[0] : '' }${ d > 0 ? '+' : '' }${ c == null ? d : c }${ showBrackets ? showBrackets[1] : '' }</span>`;
     },
     // Empty cell
     Empty: function (b) {

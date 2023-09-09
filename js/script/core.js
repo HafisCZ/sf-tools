@@ -1391,8 +1391,42 @@ ScriptCommands.register(
     ScriptType.Table,
     'brackets <value>',
     /^brackets (on|off)$/,
-    (root, value) => root.addShared('brackets', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => root.addShared('differenceBrackets', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on')
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_SHARED_BRACKETS', 'TABLE_SHARED_DIFFERENCE_BRACKETS');
+})
+
+ScriptCommands.register(
+    'TABLE_SHARED_DIFFERENCE_BRACKETS',
+    ScriptType.Table,
+    'difference brackets <value>',
+    /^difference brackets (on|off|\S\S)$/,
+    (root, value) => {
+        if (value === 'on' || value === 'off') {
+            root.addShared('differenceBrackets', value === 'on' ? '()' : false);
+        } else {
+            root.addShared('differenceBrackets', value);
+        }
+    },
+    (root, value) => {
+        const acc = Highlighter.keyword('difference brackets').space();
+        
+        if (value === 'on' || value === 'off') {
+            return acc.boolean(value, value === 'on');
+        } else {
+            return acc.value(value);
+        }
+    }
+)
+
+ScriptCommands.register(
+    'TABLE_SHARED_DIFFERENCE_POSITION',
+    ScriptType.Table,
+    'difference position <below>',
+    /^difference position (below)$/,
+    (root, value) => root.addShared('differencePosition', 'below'),
+    (root, value) => Highlighter.keyword('difference position').space().value(value)
 )
 
 ScriptCommands.register(
