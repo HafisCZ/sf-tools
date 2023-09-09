@@ -84,102 +84,8 @@ class GroupTableArray extends TableArray {
 
 // Table instance
 class TableInstance {
-    constructor (settings, tableType) {
-        // Parameters
+    constructor (tableType) {
         this.tableType = tableType;
-        this.settings = new Script(settings, ScriptType.Table, tableType);
-
-        // Handle trackers
-        this.#updateTrackers();
-
-        this.config = [];
-        this.sorting = [];
-
-        // Loop over all categories
-        this.settings.categories.forEach((category, categoryIndex, categories) => {
-            // Add expression alias
-            if (category.expa) {
-                category.expa_eval = category.expa(this.settings, category);
-                if (category.expa_eval != undefined) {
-                    category.expa_eval = String(category.expa_eval);
-                }
-            }
-
-            // Create header group
-            let group = new HeaderGroup(category, this.config.length);
-            let lastCategory = categoryIndex == categories.length - 1;
-
-            // Loop over all headers
-            category.headers.forEach((header, headerIndex, headers) => {
-                let lastHeader = headerIndex == headers.length - 1;
-                let nextHeader = headers[headerIndex + 1];
-
-                let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
-
-                // Add expression alias
-                if (header.expa) {
-                    header.expa_eval = header.expa(this.settings, header);
-                    if (header.expa_eval != undefined) {
-                        header.expa_eval = String(header.expa_eval);
-                    }
-                }
-
-                if (header.embedded) {
-                    this.#addEmbeddedHeader(group, header, showBorder);
-                } else if (header.grouped) {
-                    this.#addGroupedHeader(group, header, showBorder);
-                } else {
-                    this.#addHeader(group, header, showBorder);
-                }
-            })
-
-            if (group.length) {
-                this.config.push(group);
-            }
-        })
-
-        // Scale everything
-        if (this.settings.globals.scale) {
-            const factor = this.settings.globals.scale / 100;
-
-            for (const category of this.config) {
-                category.width = Math.ceil(category.width * factor);
-                for (const header of category.headers) {
-                    header.width = Math.ceil(header.width * factor);
-                }
-            }
-        }
-
-        this.flat = this.config.reduce((array, group) => {
-            array.push(... group.headers);
-            return array;
-        }, []);
-
-        this.sortMap = new Map();
-        for (const header of this.flat) {
-            this.sortMap.set(header.sortkey, header);
-        }
-
-        this.configLeft = this.config.splice(0, 1);
-        this.leftFlat = this.configLeft[0].headers;
-        this.leftFlatSpan = this.leftFlat.reduce((a, b) => a + b.span, 0);
-        this.leftFlatWidth = this.leftFlat.reduce((a, b) => a + b.width, 0);
-
-        // Generate flat list
-        this.rightFlat = this.config.reduce((array, group) => {
-            array.push(... group.headers);
-            return array;
-        }, []);
-
-        this.rightFlatWidth = this.config.reduce((a, b) => a + b.width, 0);
-        this.rightFlatSpan = this.rightFlat.reduce((t, h) => t + h.span, 0);
-
-        this.flatWidth = this.leftFlatWidth + this.rightFlatWidth;
-        this.flatSpan = this.leftFlatSpan + this.rightFlatSpan;
-
-        // Caching
-        this.#createCache();
-        this.#createSorting();
     }
 
     createTable () {
@@ -423,6 +329,102 @@ class TableInstance {
         } else {
             return obj(args[0]);
         }
+    }
+
+    setScript (script) {
+        this.settings = new Script(script, ScriptType.Table, this.tableType);
+
+        // Handle trackers
+        this.#updateTrackers();
+
+        this.config = [];
+        this.sorting = [];
+
+        // Loop over all categories
+        this.settings.categories.forEach((category, categoryIndex, categories) => {
+            // Add expression alias
+            if (category.expa) {
+                category.expa_eval = category.expa(this.settings, category);
+                if (category.expa_eval != undefined) {
+                    category.expa_eval = String(category.expa_eval);
+                }
+            }
+
+            // Create header group
+            let group = new HeaderGroup(category, this.config.length);
+            let lastCategory = categoryIndex == categories.length - 1;
+
+            // Loop over all headers
+            category.headers.forEach((header, headerIndex, headers) => {
+                let lastHeader = headerIndex == headers.length - 1;
+                let nextHeader = headers[headerIndex + 1];
+
+                let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
+
+                // Add expression alias
+                if (header.expa) {
+                    header.expa_eval = header.expa(this.settings, header);
+                    if (header.expa_eval != undefined) {
+                        header.expa_eval = String(header.expa_eval);
+                    }
+                }
+
+                if (header.embedded) {
+                    this.#addEmbeddedHeader(group, header, showBorder);
+                } else if (header.grouped) {
+                    this.#addGroupedHeader(group, header, showBorder);
+                } else {
+                    this.#addHeader(group, header, showBorder);
+                }
+            })
+
+            if (group.length) {
+                this.config.push(group);
+            }
+        })
+
+        // Scale everything
+        if (this.settings.globals.scale) {
+            const factor = this.settings.globals.scale / 100;
+
+            for (const category of this.config) {
+                category.width = Math.ceil(category.width * factor);
+                for (const header of category.headers) {
+                    header.width = Math.ceil(header.width * factor);
+                }
+            }
+        }
+
+        this.flat = this.config.reduce((array, group) => {
+            array.push(... group.headers);
+            return array;
+        }, []);
+
+        this.sortMap = new Map();
+        for (const header of this.flat) {
+            this.sortMap.set(header.sortkey, header);
+        }
+
+        this.configLeft = this.config.splice(0, 1);
+        this.leftFlat = this.configLeft[0].headers;
+        this.leftFlatSpan = this.leftFlat.reduce((a, b) => a + b.span, 0);
+        this.leftFlatWidth = this.leftFlat.reduce((a, b) => a + b.width, 0);
+
+        // Generate flat list
+        this.rightFlat = this.config.reduce((array, group) => {
+            array.push(... group.headers);
+            return array;
+        }, []);
+
+        this.rightFlatWidth = this.config.reduce((a, b) => a + b.width, 0);
+        this.rightFlatSpan = this.rightFlat.reduce((t, h) => t + h.span, 0);
+
+        this.flatWidth = this.leftFlatWidth + this.rightFlatWidth;
+        this.flatSpan = this.leftFlatSpan + this.rightFlatSpan;
+
+        // Caching
+        this.#createCache();
+        this.#createSorting();
     }
 
     // Set players
@@ -1090,6 +1092,7 @@ class TableController {
         )
 
         this.tableType = tableType;
+        this.table = new TableInstance(this.tableType);
 
         // Changed by default
         this.schanged = true;
@@ -1246,7 +1249,8 @@ class TableController {
 
         // Create table
         if (this.schanged) {
-            this.table = new TableInstance(this.settings, this.tableType);
+            this.table.setScript(this.settings);
+
             this.ignore = false;
 
             this.resetInjector();
