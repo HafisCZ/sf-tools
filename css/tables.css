@@ -86,10 +86,6 @@ table.sftools-table .headers td {
   background-color: #7d7d7d3f;
 }
 
-.css-maxi-row tr.css-entry {
-  height: 3em !important;
-}
-
 .sftools-table tr.headers.sticky td {
   position: sticky;
   z-index: 1;

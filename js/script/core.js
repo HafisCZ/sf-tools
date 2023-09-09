@@ -1062,7 +1062,7 @@ ScriptCommands.register(
     /^row height (\d+)$/,
     (root, value) => {
         if (value > 0) {
-            root.addGlobalEmbedable('row_height', Number(value));
+            root.addGlobalEmbedable('rowHeight', Number(value));
         }
     },
     (root, value) => Highlighter.keyword('row height ')[value > 0 ? 'value' : 'error'](value)
@@ -1432,7 +1432,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_FLIP',
     ScriptType.Table,
-    'flip <value>',
+    'flip <on|off>',
     /^flip (on|off)$/,
     (root, value) => root.addShared('flip', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('flip').space().boolean(value, value == 'on')
@@ -1441,7 +1441,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_HYDRA',
     ScriptType.Table,
-    'hydra <value>',
+    'hydra <on|off>',
     /^hydra (on|off)$/,
     (root, value) => root.addShared('hydra', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('hydra').space().boolean(value, value == 'on')
@@ -1450,7 +1450,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_DIFFERENCE',
     ScriptType.Table,
-    'difference <value>',
+    'difference <on|off>',
     /^difference (on|off)$/,
     (root, value) => root.addShared('difference', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('difference').space().boolean(value, value == 'on')
@@ -1459,7 +1459,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_CLEAN',
     ScriptType.Table,
-    'clean',
+    'clean (hard)',
     /^clean( hard)?$/,
     (root, params) => root.addLocal('clean', params ? 2 : 1),
     (root, params) => {
@@ -1476,7 +1476,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_ACTION',
     ScriptType.Table,
-    'action <value>',
+    'action <none|show>',
     /^action (none|show)$/,
     (root, value) => root.addAction(value),
     (root, value) => Highlighter.keyword('action ').constant(value)
@@ -1485,7 +1485,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_INDEXED',
     ScriptType.Table,
-    'indexed <value>',
+    'indexed (on|off|static)',
     /^indexed( (on|off|static))?$/,
     (root, params, value) => {
         if (value === 'static') {
@@ -1517,7 +1517,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_MEMBERS',
     ScriptType.Table,
-    'members <value>',
+    'members (on|off)',
     /^members( (on|off))?$/,
     (root, params, value) => root.addGlobal('members', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
@@ -1533,7 +1533,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_OUTDATED',
     ScriptType.Table,
-    'outdated <value>',
+    'outdated (on|off)',
     /^outdated( (on|off))?$/,
     (root, params, value) => root.addGlobal('outdated', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
@@ -1549,7 +1549,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_OPAQUE',
     ScriptType.Table,
-    'opaque <value>',
+    'opaque (on|off)',
     /^opaque( (on|off))?$/,
     (root, params, value) => root.addGlobal('opaque', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
@@ -1565,9 +1565,15 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_LARGE_ROWS',
     ScriptType.Table,
-    'large rows <value>',
+    'large rows (on|off)',
     /^large rows( (on|off))?$/,
-    (root, params, value) => root.addGlobal('large_rows', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        if (params) {
+            root.addGlobalEmbedable('rowHeight', value === 'on' ? 56.7 : 0);
+        } else {
+            root.addGlobalEmbedable('rowHeight', 56.7);
+        }
+    },
     (root, params, value) => {
         const acc = Highlighter.keyword('large rows');
         if (params) {
@@ -1576,12 +1582,14 @@ ScriptCommands.register(
             return acc;
         }
     }
-)
+).withValidation((validator, line) => {
+    validator.deprecateCommand(line, 'TABLE_GLOBAL_LARGE_ROWS', 'TABLE_ROW_HEIGHT');
+})
 
 ScriptCommands.register(
     'TABLE_GLOBAL_ALIGN_TITLE',
     ScriptType.Table,
-    'align title <value>',
+    'align title (on|off)',
     /^align title( (on|off))?$/,
     (root, params, value) => root.addGlobal('align_title', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
@@ -3103,12 +3111,8 @@ class Script {
         return this.globals.lined || 0;
     }
 
-    getRowStyle () {
-        return this.globals.large_rows ? 'css-maxi-row' : '';
-    }
-
     getRowHeight () {
-        return this.globals.row_height || 0;
+        return this.globals.rowHeight || 0;
     }
 
     getFontStyle () {

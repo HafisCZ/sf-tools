@@ -373,7 +373,7 @@ class TableInstance {
                         };
                     });
 
-                    const rowHeight = header.row_height ? ` style="height: ${header.row_height}px;"` : '';
+                    const rowHeight = header.rowHeight ? ` style="height: ${header.rowHeight}px;"` : '';
                     const entries = generators.map(({ name, get }) => {
                         return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                     }).join('');
@@ -849,7 +849,7 @@ class TableInstance {
         return {
             theme: this.settings.getTheme(),
             style: [ this.settings.getFontStyle() ],
-            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
+            class: [ this.settings.getOpaqueStyle() ],
             width: this.flatWidth,
             widthFixed: this.settings.isStrictWidthPolicy()
         };
