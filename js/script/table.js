@@ -292,37 +292,6 @@ class TableInstance {
         );
     }
 
-    #updateTrackers () {
-        let trackers = this.settings.trackers;
-
-        if (Object.keys(trackers).length > 0) {
-            // Get current tracker settings
-            let trackerSettings = Actions.getInstance();
-            let trackerCode = trackerSettings.code;
-
-            // Go through all required trackers
-            let isset = false;
-            for (let [ trackerName, tracker ] of Object.entries(trackers)) {
-                if (trackerName in trackerSettings.trackers) {
-                    if (tracker.hash != trackerSettings.trackers[trackerName].hash) {
-                        Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } found but overwritten by ${ trackerSettings.trackers[trackerName].hash }!`);
-                    }
-                } else {
-                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ _formatDate(Date.now()) }`;
-                    isset |= true;
-
-                    Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } added automatically!`);
-                }
-            }
-
-            // Save settings
-            if (isset) {
-                Actions.setScript(trackerCode);
-                DatabaseManager.refreshTrackers();
-            }
-        }
-    }
-
     #safeEval (obj, ...args) {
         if (obj instanceof Expression) {
             return obj.eval((args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]));
@@ -335,7 +304,7 @@ class TableInstance {
         this.settings = new Script(script, ScriptType.Table, this.tableType);
 
         // Handle trackers
-        this.#updateTrackers();
+        Actions.updateFromScript(this.settings.trackers);
 
         this.config = [];
         this.sorting = [];

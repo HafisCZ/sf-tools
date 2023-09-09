@@ -624,12 +624,12 @@ class Actions {
 
             for (const action of this.#actions) {
                 Logger.log('ACTIONS', `Applying action ${action.action}`)
-                await this._applyAction(action, players, groups);
+                await this.#applyAction(action, players, groups);
             }
         }
     }
 
-    static async _applyAction ({ action, type, args }, players, groups) {
+    static async #applyAction ({ action, type, args }, players, groups) {
         if (action == 'tag') {
             const [tagExpr, conditionExpr] = args;
 
@@ -676,6 +676,35 @@ class Actions {
             }
         } else {
             throw 'Invalid action';
+        }
+    }
+
+    static updateFromScript (trackers) {
+        if (Object.keys(trackers).length > 0) {
+            // Get current tracker settings
+            let trackerSettings = Actions.getInstance();
+            let trackerCode = trackerSettings.code;
+
+            // Go through all required trackers
+            let isset = false;
+            for (let [ trackerName, tracker ] of Object.entries(trackers)) {
+                if (trackerName in trackerSettings.trackers) {
+                    if (tracker.hash != trackerSettings.trackers[trackerName].hash) {
+                        Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } found but overwritten by ${ trackerSettings.trackers[trackerName].hash }!`);
+                    }
+                } else {
+                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ _formatDate(Date.now()) }`;
+                    isset |= true;
+
+                    Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } added automatically!`);
+                }
+            }
+
+            // Save settings
+            if (isset) {
+                Actions.setScript(trackerCode);
+                DatabaseManager.refreshTrackers();
+            }
         }
     }
 }
