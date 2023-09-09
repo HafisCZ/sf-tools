@@ -973,6 +973,8 @@ class Expression {
                 } else {
                     return undefined;
                 }
+            } else if (scope && scope.has(node)) {
+                return scope.get(node);
             } else if (this.config.has(node)) {
                 const data = this.config.get(node);
 
@@ -992,8 +994,6 @@ class Expression {
                         return data.data(self);
                     }
                 }
-            } else if (scope && scope.has(node)) {
-                return scope.get(node);
             } else if (node in scope.env.variables) {
                 let variable = scope.env.variables[node];
                 if (typeof variable.value != 'undefined') {
