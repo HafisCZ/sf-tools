@@ -3648,7 +3648,10 @@ class TemplateManager {
 
     static save (name, content) {
         let template = this.templates[name];
-        if (template) {
+        if (template && template.content === content) {
+            // No need to save as content did not change
+            return;
+        } else if (template) {
             ScriptArchive.add('overwrite_template', name, template.version, template.content);
 
             // Overwrite needed parts
