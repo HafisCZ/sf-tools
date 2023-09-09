@@ -929,12 +929,12 @@ class TableInstance {
     #renderMissing () {
         if (this.cache.has('missing')) {
             return;
-        } else if (this.array.missing.length) {
+        } else if (this.settings.list_missing.length) {
             this.cache.set('missing', `
                 <tr class="font-weight: bold;">
                     ${
                         CellGenerator.WideCell(
-                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.array.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
+                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.settings.list_missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
                             undefined,
                             this.flatWidth,
                             'center'

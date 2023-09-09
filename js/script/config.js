@@ -715,6 +715,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'variable', 'scope', 'missing',
+  function (scope) {
+    return scope.env.list_missing;
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'kicked',
   function (scope) {
     return scope.env.list_kicked;

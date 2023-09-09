@@ -3276,6 +3276,7 @@ class Script {
 
         this.list_joined = SiteOptions.obfuscated ? array.joined.map((p, i) => `joined_${ i + 1 }`) : array.joined;
         this.list_kicked = SiteOptions.obfuscated ? array.kicked.map((p, i) => `kicked_${ i + 1 }`) : array.kicked;
+        this.list_missing = SiteOptions.obfuscated ? array.missing.map((p, i) => `missing_${ i + 1 }`) : array.missing;
 
         this.array = array;
         this.array_unfiltered = unfilteredArray;
