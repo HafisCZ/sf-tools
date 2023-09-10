@@ -1327,9 +1327,26 @@ ScriptCommands.register(
     'TABLE_SHARED_STATISTICS_COLOR',
     ScriptType.Table,
     'statistics color <value>',
-    /^statistics color (on|off)$/,
-    (root, value) => root.addShared('statisticsColor', ARGUMENT_MAP_ON_OFF[value]),
-    (root, value) => Highlighter.keyword('statistics color').space().boolean(value, value == 'on')
+    /^statistics color (.+)$/,
+    (root, value) => {
+        if (value === 'on' || value === 'off') {
+            root.addShared('statisticsColor', value === 'on');
+        } else {
+            const expression = Expression.create(value, root);
+            if (expression) {
+                root.addShared('statisticsColor', expression);
+            }
+        }
+    },
+    (root, value) => {
+        const acc = Highlighter.keyword('statistics color').space();
+        
+        if (value === 'on' || value === 'off') {
+            return acc.boolean(value, value === 'on');
+        } else {
+            return acc.expression(value, root);
+        }
+    }
 )
 
 ScriptCommands.register(
@@ -2329,6 +2346,22 @@ class ScriptContainer {
             bg: backgroundColor,
             fg: textColor
         };
+    }
+
+    getStatisticsColor (settings, value) {
+        if (this.statisticsColor === true) {
+            return this.getColor(undefined, undefined, settings, value, undefined, true, this, undefined).bg;
+        } else if (this.statisticsColor) {
+            const colorValue = this.statisticsColor.eval(new ExpressionScope(settings).addSelf(value).via(this));
+
+            if (typeof colorValue === 'undefined') {
+                return '';
+            } else {
+                return getCSSColor(colorValue);
+            }
+        } else {
+            return '';
+        }
     }
 
     getValue (player, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {

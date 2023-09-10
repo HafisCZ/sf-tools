@@ -146,7 +146,7 @@ class TableInstance {
                         return CellGenerator.Cell(
                             this.#getStatisticsDisplayValue(header, val, cmp),
                             '',
-                            header.statisticsColor ? this.#getCellColor(header, val, undefined, undefined, undefined, true).bg : ''
+                            this.#getStatisticsColor(header, val)
                         );
                     } else {
                         return this.#getEmptyCell(header);
@@ -777,6 +777,10 @@ class TableInstance {
                 return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, header.getDifferenceValue(undefined, undefined, this.settings, diff));
             }
         }
+    }
+
+    #getStatisticsColor (header, value) {
+        return header.getStatisticsColor(this.settings, value);
     }
 
     #getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
