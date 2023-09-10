@@ -2601,7 +2601,7 @@ TABLE_EXPRESSION_CONFIG.register(
       {
         condition: h => h.hydra,
         apply: h => {
-          h.value.extra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
+          h.displayExtra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
         }
       }
     ]
@@ -2619,7 +2619,7 @@ TABLE_EXPRESSION_CONFIG.register(
       {
         condition: h => h.grail,
         apply: h => {
-          h.value.extra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
+          h.displayExtra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
         }
       }
     ]
@@ -2736,7 +2736,7 @@ TABLE_EXPRESSION_CONFIG.register(
   {
     expr: p => p.XP,
     format: 'spaced_number',
-    formatDifference: true,
+    differenceFormat: true,
     statistics: false
   }
 )
@@ -2746,7 +2746,7 @@ TABLE_EXPRESSION_CONFIG.register(
   {
     expr: p => p.XPNext,
     format: 'spaced_number',
-    formatDifference: true,
+    differenceFormat: true,
     statistics: false
   }
 )
@@ -2756,7 +2756,7 @@ TABLE_EXPRESSION_CONFIG.register(
   {
     expr: p => p.XPTotal,
     format: 'spaced_number',
-    formatDifference: true,
+    differenceFormat: true,
     statistics: false
   }
 )

@@ -815,16 +815,14 @@ ScriptCommands.register(
     'format statistics <expression>',
     /^format statistics (.+)$/,
     (root, expression) => {
-        if (expression == 'on') {
-            root.addDirectValue('formatStatistics', true);
-        } else if (expression == 'off') {
-            root.addDirectValue('formatStatistics', false);
+        if (expression === 'on' || expression === 'off') {
+            root.addDirectValue('statisticsFormat', expression === 'on');
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addDirectValue('formatStatistics', ARG_FORMATTERS[expression])
+            root.addDirectValue('statisticsFormat', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addDirectValue('formatStatistics', ast);
+                root.addDirectValue('statisticsFormat', ast);
             }
         }
     },
@@ -848,15 +846,15 @@ ScriptCommands.register(
     /^format difference (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
-            root.addDirectValue('formatDifference', true);
+            root.addDirectValue('differenceFormat', true);
         } else if (expression == 'off') {
-            root.addDirectValue('formatDifference', false);
+            root.addDirectValue('differenceFormat', false);
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addDirectValue('formatDifference', ARG_FORMATTERS[expression])
+            root.addDirectValue('differenceFormat', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addDirectValue('formatDifference', ast);
+                root.addDirectValue('differenceFormat', ast);
             }
         }
     },
@@ -1652,7 +1650,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'extra <expression>',
     /^extra (.+)$/,
-    (root, value) => root.addDirectValue('extra', () => value),
+    (root, value) => root.addDirectValue('displayExtra', () => value),
     (root, value) => Highlighter.keyword('extra ').value(value)
 )
 
@@ -2385,7 +2383,7 @@ class ScriptContainer {
         }
 
         // Add extras
-        if (typeof output != 'undefined' && (this.extra || this.displayBefore || this.displayAfter)) {
+        if (typeof output != 'undefined' && (this.displayExtra || this.displayBefore || this.displayAfter)) {
             const before = (
                 this.displayBefore ? (
                     this.displayBefore.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
@@ -2398,7 +2396,7 @@ class ScriptContainer {
                 this.displayAfter ? (
                     this.displayAfter.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
                 ) : (
-                    this.extra ? this.extra(player) : ''
+                    this.displayExtra ? this.displayExtra(player) : ''
                 )
             );
 
@@ -2416,7 +2414,7 @@ class ScriptContainer {
     getDifferenceValue (player, compare, settings, value, extra = undefined) {
         let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
 
-        if (this.formatDifference === true) {
+        if (this.differenceFormat === true) {
             if (this.format instanceof Expression) {
                 return this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
             } else if (typeof this.format === 'function') {
@@ -2426,10 +2424,10 @@ class ScriptContainer {
             } else {
                 return nativeDifference;
             }
-        } else if (this.formatDifference instanceof Expression) {
-            return this.formatDifference.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
-        } else if (typeof this.formatDifference == 'function') {
-            return this.formatDifference(settings, value);
+        } else if (this.differenceFormat instanceof Expression) {
+            return this.differenceFormat.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
+        } else if (typeof this.differenceFormat == 'function') {
+            return this.differenceFormat(settings, value);
         } else {
             return nativeDifference;
         }
@@ -2438,10 +2436,10 @@ class ScriptContainer {
     getStatisticsValue (settings, value) {
         let nativeFormat = Number.isInteger(value) ? value : value.toFixed(2);
 
-        if (this.formatStatistics === false) {
+        if (this.statisticsFormat === false) {
             return nativeFormat;
-        } else if (this.formatStatistics) {
-            return this.formatStatistics.eval(new ExpressionScope(settings).addSelf(value));
+        } else if (this.statisticsFormat) {
+            return this.statisticsFormat.eval(new ExpressionScope(settings).addSelf(value));
         } else if (this.format instanceof Expression) {
             return this.format.eval(new ExpressionScope(settings).addSelf(value));
         } else if (typeof this.format == 'function') {
@@ -2622,7 +2620,7 @@ class Script {
     }
 
     mergeSettings (target, source) {
-        for (const type of ['colorExpr', 'format', 'formatDifference', 'formatStatistics', 'extra', 'displayBefore', 'displayAfter']) {
+        for (const type of ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayExtra', 'displayBefore', 'displayAfter']) {
             if (!target[type]) {
                 target[type] = source[type];
             }
