@@ -619,9 +619,7 @@ ScriptCommands.register(
     (root, value) => {
         const val = root.constants.fetch(value);
 
-        if (!isNaN(val)) {
-            root.addShared('formatUndefined', val);
-        }
+        root.addShared('formatUndefined', val);
     },
     (root, value) => {
         const acc = Highlighter.keyword('not defined value ');
@@ -642,7 +640,7 @@ ScriptCommands.register(
     (root, value) => {
         const val = getCSSColor(root.constants.fetch(value));
 
-        if (val != undefined && val) {
+        if (val) {
             root.addShared('colorUndefined', val);
         }
     },
