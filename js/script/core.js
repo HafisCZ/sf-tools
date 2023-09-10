@@ -2608,7 +2608,7 @@ class Script {
             header.colorRules.addRule('db', 0, header.colorBackground);
         }
 
-        this.mergeTextColor(header, header);
+        this.mergeColorSettings(header, header);
     }
 
     mergeRules (target, source) {
@@ -2671,10 +2671,12 @@ class Script {
         this.mergeVariables(obj, mapping.vars);
     }
 
-    mergeTextColor (obj, mapping) {
+    mergeColorSettings (obj, mapping) {
         if (typeof obj.colorForeground === 'undefined') {
             obj.colorForeground = mapping.colorForeground;
-            obj.colorBackground = mapping.colorUndefined;
+        }
+        if (typeof obj.colorBackground ==='undefined') {
+            obj.colorBackground = mapping.colorBackground;
         }
     }
 
@@ -2686,7 +2688,7 @@ class Script {
 
         this.mergeStyles(obj, mapping.style);
         this.mergeVariables(obj, mapping.vars);
-        this.mergeTextColor(obj, mapping);
+        this.mergeColorSettings(obj, mapping);
     }
 
     mergeStyles (obj, sourceStyle) {
@@ -2747,7 +2749,7 @@ class Script {
                 obj.colorRules.addRule('db', 0, obj.colorBackground);
             }
 
-            this.mergeTextColor(obj, obj);
+            this.mergeColorSettings(obj, obj);
 
             // Push
             if (obj.expr) {
@@ -2789,7 +2791,7 @@ class Script {
                 }
             }
 
-            this.mergeTextColor(obj, obj);
+            this.mergeColorSettings(obj, obj);
 
             // Push header if possible
             if (obj.expr) {
