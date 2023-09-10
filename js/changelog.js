@@ -20,6 +20,7 @@ const CHANGELOG = {
             'Added <code>display before</code> and <code>display after</code> keywords to display additional text in cell',
             'Added <code>difference brackets</code> command to wrap difference in brackets',
             'Added <code>difference position</code> command to place difference below the value',
+            'Added expression as a value to <code>statistics color</code>',
             'Added list of keywords to the manual',
             'Added limit of 200 entries to script archive',
             'Added missing legendary item names and images',
