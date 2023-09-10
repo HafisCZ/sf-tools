@@ -880,7 +880,7 @@ ScriptCommands.register(
         const val = getCSSColor(root.constants.fetch(value));
 
         if (val != undefined && val) {
-            root.addShared('background', val);
+            root.addShared('colorBackground', val);
         }
     },
     (root, value) => {
@@ -2333,10 +2333,10 @@ class ScriptContainer {
 
         // Get color for text
         let textColor = undefined;
-        if (this.text === true) {
-            textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.background), true);
-        } else if (this.text) {
-            textColor = getCSSColor(this.text.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
+        if (this.colorForeground === true) {
+            textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.colorBackground), true);
+        } else if (this.colorForeground) {
+            textColor = getCSSColor(this.colorForeground.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
         }
 
         // Return color or empty string
@@ -2601,11 +2601,11 @@ class Script {
     #injectLeftHeaderStyling (header) {
         header.visible = true;
 
-        header.text = this.shared.text;
-        header.background = this.shared.background;
+        header.colorForeground = this.shared.colorForeground;
+        header.colorBackground = this.shared.colorBackground;
 
-        if (header.background) {
-            header.colorRules.addRule('db', 0, header.background);
+        if (header.colorBackground) {
+            header.colorRules.addRule('db', 0, header.colorBackground);
         }
 
         this.mergeTextColor(header, header);
@@ -2672,9 +2672,9 @@ class Script {
     }
 
     mergeTextColor (obj, mapping) {
-        if (typeof obj.text === 'undefined') {
-            obj.text = mapping.text;
-            obj.background = mapping.ndefc;
+        if (typeof obj.colorForeground === 'undefined') {
+            obj.colorForeground = mapping.colorForeground;
+            obj.colorBackground = mapping.ndefc;
         }
     }
 
@@ -2743,8 +2743,8 @@ class Script {
             // Merge shared
             this.merge(obj, this.shared);
 
-            if (obj.background) {
-                obj.colorRules.addRule('db', 0, obj.background);
+            if (obj.colorBackground) {
+                obj.colorRules.addRule('db', 0, obj.colorBackground);
             }
 
             this.mergeTextColor(obj, obj);
@@ -2806,8 +2806,8 @@ class Script {
                     });
                 }
 
-                if (obj.background) {
-                    obj.colorRules.addRule('db', 0, obj.background);
+                if (obj.colorBackground) {
+                    obj.colorRules.addRule('db', 0, obj.colorBackground);
                 }
 
                 // Push
@@ -2903,7 +2903,7 @@ class Script {
     addTextColorExpression (expression) {
         let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
-            object.text = expression;
+            object.colorForeground = expression;
         }
     }
 
@@ -3038,8 +3038,8 @@ class Script {
                 });
             }
 
-            if (obj.background) {
-                obj.colorRules.addRule('db', 0, obj.background);
+            if (obj.colorBackground) {
+                obj.colorRules.addRule('db', 0, obj.colorBackground);
             }
 
             if (this.category) {
