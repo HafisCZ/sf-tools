@@ -2488,6 +2488,7 @@ class Script {
 
         // Shared globals
         this.shared = {
+            formatUndefined: '?',
             statisticsColor: true,
             visible: true
         };
@@ -2804,6 +2805,7 @@ class Script {
                 } else {
                     this.merge(obj, {
                         visible: true,
+                        formatUndefined: '?',
                         statisticsColor: true
                     });
                 }
@@ -3036,6 +3038,7 @@ class Script {
             } else {
                 this.merge(obj, {
                     visible: true,
+                    formatUndefined: '?',
                     statisticsColor: true
                 });
             }

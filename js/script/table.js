@@ -706,7 +706,7 @@ class TableInstance {
         if (span) {
             return CellGenerator.PlainSpan(
                 span,
-                header.formatUndefined || '',
+                header.formatUndefined,
                 border,
                 undefined,
                 header.colorUndefined,
@@ -714,7 +714,7 @@ class TableInstance {
             );
         } else {
             return CellGenerator.Plain(
-                header.formatUndefined || '',
+                header.formatUndefined,
                 border,
                 undefined,
                 header.colorUndefined,
