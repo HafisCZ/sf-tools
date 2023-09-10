@@ -620,7 +620,7 @@ ScriptCommands.register(
         const val = root.constants.fetch(value);
 
         if (!isNaN(val)) {
-            root.addShared('ndef', val);
+            root.addShared('formatUndefined', val);
         }
     },
     (root, value) => {
@@ -643,7 +643,7 @@ ScriptCommands.register(
         const val = getCSSColor(root.constants.fetch(value));
 
         if (val != undefined && val) {
-            root.addShared('ndefc', val);
+            root.addShared('colorUndefined', val);
         }
     },
     (root, value) => {
@@ -2674,7 +2674,7 @@ class Script {
     mergeTextColor (obj, mapping) {
         if (typeof obj.colorForeground === 'undefined') {
             obj.colorForeground = mapping.colorForeground;
-            obj.colorBackground = mapping.ndefc;
+            obj.colorBackground = mapping.colorUndefined;
         }
     }
 

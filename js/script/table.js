@@ -706,18 +706,18 @@ class TableInstance {
         if (span) {
             return CellGenerator.PlainSpan(
                 span,
-                header.ndef == undefined ? '' : header.ndef,
+                header.formatUndefined || '',
                 border,
                 undefined,
-                header.ndefc,
+                header.colorUndefined,
                 header.style ? header.style.cssText : undefined
             );
         } else {
             return CellGenerator.Plain(
-                header.ndef == undefined ? '' : header.ndef,
+                header.formatUndefined || '',
                 border,
                 undefined,
-                header.ndefc,
+                header.colorUndefined,
                 header.style ? header.style.cssText : undefined,
                 header.cellWidth
             );
