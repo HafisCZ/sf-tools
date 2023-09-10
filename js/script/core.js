@@ -2316,7 +2316,7 @@ class ScriptRenderer {
 
 class ScriptContainer {
     colorRules = new RuleEvaluator();
-    valueRules = new RuleEvaluator();
+    formatRules = new RuleEvaluator();
 
     constructor (name) {
         this.name = name;
@@ -2364,7 +2364,7 @@ class ScriptContainer {
 
     getValue (player, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {
         // Get value from value block
-        let output = this.valueRules.get(value);
+        let output = this.formatRules.get(value);
 
         // Get value from format expression
         if (typeof output == 'undefined') {
@@ -2612,7 +2612,7 @@ class Script {
     }
 
     mergeRules (target, source) {
-        for (const type of ['colorRules', 'valueRules']) {
+        for (const type of ['colorRules', 'formatRules']) {
             if (target[type].empty()) {
                 target[type].rules = source[type].rules
             }
@@ -2942,7 +2942,7 @@ class Script {
     addValueRule (condition, referenceValue, value) {
         let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
-            object.valueRules.addRule(condition, referenceValue, value);
+            object.formatRules.addRule(condition, referenceValue, value);
         }
     }
 
@@ -3161,7 +3161,7 @@ class Script {
             // For each header
             for (let header of category.headers) {
                 // For each rule block
-                for (let rules of [ header.colorRules.rules, header.valueRules.rules ]) {
+                for (let rules of [ header.colorRules.rules, header.formatRules.rules ]) {
                     // For each entry
                     for (let i = 0, rule; rule = rules[i]; i++) {
                         let key = rule[3];
