@@ -724,29 +724,6 @@ class TableInstance {
         }
     }
 
-    #getRowSpan (width) {
-        if (width == -1) {
-            // Return maximum span when set to -1
-            return this.rightFlatSpan;
-        } else if (width) {
-            // Calculate span from requested width
-            let span = 0;
-            for (let { width: headerWidth, span: headerSpan } of this.rightFlat) {
-                width -= headerWidth;
-                span += headerSpan;
-
-                if (width <= 0) {
-                    break;
-                }
-            }
-
-            return Math.max(1, Math.min(span, this.rightFlatSpan));
-        } else {
-            // Return 1 by default
-            return 1;
-        }
-    }
-
     #getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
         const { difference, ex_difference, flip, differenceBrackets, differencePosition } = header;
         const displayValue = header.getValue(player, compare, this.settings, val, extra, header, altSelf);
