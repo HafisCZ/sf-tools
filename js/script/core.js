@@ -56,7 +56,7 @@ const ARG_FORMATTERS = {
     'default': (p, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
-class CellStyle {
+class ScriptStyle {
     constructor () {
         this.styles = {};
         this.content = '';
@@ -71,6 +71,10 @@ class CellStyle {
         }
 
         this.content = Object.values(this.styles).join(';');
+    }
+
+    has (name) {
+        return this.styles[name] !== 'undefined'
     }
 
     get cssText () {
@@ -2530,22 +2534,22 @@ class Script {
             if (type === TableType.Player) {
                 const dateHeader = new ScriptContainer('Date');
 
-                this.mergeMapping(dateHeader, {
+                this.merge(dateHeader, {
                     expr: (p) => p.Timestamp,
                     format: (p, x) => _formatDate(x),
                     width: 200,
                     action: 'show'
-                });
+                }, true);
 
                 headers.push(dateHeader);
             } else if (type === TableType.Group) {
                 const nameHeader = new ScriptContainer('Name');
 
-                this.mergeMapping(nameHeader, {
+                this.merge(nameHeader, {
                     expr: (p) => p.Name,
                     width: this.getNameStyle(),
                     action: 'show'
-                });
+                }, true);
 
                 headers.push(nameHeader);
             } else if (type === TableType.Browse) {
@@ -2553,21 +2557,21 @@ class Script {
                 if (serverWidth) {
                     const serverHeader = new ScriptContainer('Server');
 
-                    this.mergeMapping(serverHeader, {
+                    this.merge(serverHeader, {
                         expr: (p) => p.Prefix,
                         width: serverWidth
-                    });
+                    }, true);
 
                     headers.push(serverHeader);
                 }
 
                 const nameHeader = new ScriptContainer('Name');
 
-                this.mergeMapping(nameHeader, {
+                this.merge(nameHeader, {
                     expr: (p) => p.Name,
                     width: this.getNameStyle(),
                     action: 'show'
-                });
+                }, true);
 
                 headers.push(nameHeader);
             }
@@ -2586,10 +2590,10 @@ class Script {
         if (this.globals.indexed && !(this.globals.customLeftCategory && this.globals.customIndex)) {
             const indexHeader = new ScriptContainer('#');
             
-            this.mergeMapping(indexHeader, {
+            this.merge(indexHeader, {
                 expr: (p) => 0,
                 width: 50
-            });
+            }, true);
 
             this.#injectLeftHeaderStyling(indexHeader);
 
@@ -2606,8 +2610,6 @@ class Script {
         if (header.colorBackground) {
             header.colorRules.addRule('db', 0, header.colorBackground);
         }
-
-        this.mergeColorSettings(header, header);
     }
 
     mergeRules (target, source) {
@@ -2618,8 +2620,11 @@ class Script {
         }
     }
 
-    mergeSettings (target, source) {
-        for (const type of ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayExtra', 'displayBefore', 'displayAfter', 'formatUndefined', 'colorUndefined']) {
+    static MERGEABLE_PROPERTIES_COLOR = ['colorForeground', 'colorBackground'];
+    static MERGEABLE_PROPERTIES_BASE = ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayExtra', 'displayBefore', 'displayAfter', 'formatUndefined', 'colorUndefined'];
+
+    mergeProperties (target, source, list) {
+        for (const type of list) {
             if (typeof target[type] === 'undefined' && typeof source[type] !== 'undefined') {
                 target[type] = source[type];
             }
@@ -2627,19 +2632,14 @@ class Script {
     }
 
     // Merge definition to object
-    mergeDefinition (obj, name) {
-        let definition = this.customDefinitions[name];
-        if (definition) {
-            for (const key of Object.keys(definition)) {
-                if (typeof obj[key] === 'undefined' && typeof definition[key] !== 'undefined') {
-                    obj[key] = definition[key];
-                }
-            }
-
-            this.mergeRules(obj, definition);
-            this.mergeSettings(obj, definition);
-            this.mergeStyles(obj, definition.style);
-            this.mergeVariables(obj, definition.vars);
+    mergeDefinition (target, name) {
+        const source = this.customDefinitions[name];
+        if (source) {
+            this.mergeProperties(target, source, Object.keys(source));
+            this.mergeProperties(target, source, Script.MERGEABLE_PROPERTIES_BASE);
+            this.mergeRules(target, source);
+            this.mergeStyles(target, source);
+            this.mergeVariables(target, source);
         }
     }
 
@@ -2660,70 +2660,47 @@ class Script {
         });
     }
 
-    // Merge mapping to object
-    mergeMapping (obj, mapping) {
-        // Merge commons
-        for (const key of Object.keys(mapping)) {
-            if (typeof obj[key] === 'undefined' && typeof mapping[key] !== 'undefined') {
-                obj[key] = mapping[key];
-            }
-        }
-
-        this.mergeSettings(obj, mapping);
-        this.mergeStyles(obj, mapping.style);
-        this.mergeVariables(obj, mapping.vars);
-    }
-
-    mergeColorSettings (obj, mapping) {
-        if (typeof obj.colorForeground === 'undefined') {
-            obj.colorForeground = mapping.colorForeground;
-        }
-        if (typeof obj.colorBackground ==='undefined') {
-            obj.colorBackground = mapping.colorBackground;
-        }
-    }
-
-    merge (obj, mapping) {
+    merge (target, source, permitObjects = false) {
         // Merge all non-objects
-        for (const key of Object.keys(mapping)) {
-            if (typeof obj[key] === 'undefined' && typeof mapping[key] !== 'object' && typeof mapping[key] !== 'undefined') {
-                obj[key] = mapping[key];
+        for (const key of Object.keys(source)) {
+            if (typeof target[key] === 'undefined' && (permitObjects || typeof source[key] !== 'object') && typeof source[key] !== 'undefined') {
+                target[key] = source[key];
             }
         }
 
-        this.mergeStyles(obj, mapping.style);
-        this.mergeVariables(obj, mapping.vars);
-        this.mergeColorSettings(obj, mapping);
+        this.mergeStyles(target, source);
+        this.mergeVariables(target, source);
+        this.mergeProperties(target, source, Script.MERGEABLE_PROPERTIES_COLOR)
     }
 
-    mergeStyles (obj, sourceStyle) {
-        if (sourceStyle) {
-            if (obj.style) {
+    mergeStyles (target, source) {
+        if (source.style) {
+            if (target.style) {
                 // Rewrite styles
-                for (let [ name, value ] of Object.entries(sourceStyle.styles)) {
-                    if (!obj.style.styles.hasOwnProperty(name)) {
-                        obj.style.add(name, value);
+                for (const [ name, value ] of Object.entries(source.style.styles)) {
+                    if (target.style.has(name) == false) {
+                        target.style.add(name, value);
                     }
                 }
             } else {
                 // Add whole style class
-                obj.style = sourceStyle;
+                target.style = source.style;
             }
         }
     }
 
-    mergeVariables (obj, sourceVars) {
-        if (sourceVars) {
-            if (obj.vars) {
+    mergeVariables (target, source) {
+        if (source.vars) {
+            if (target.vars) {
                 // Add vars
-                for (const name of Object.keys(sourceVars)) {
-                    if (!obj.vars.hasOwnProperty(name)) {
-                        obj.vars[name] = sourceVars[name];
+                for (const name of Object.keys(source.vars)) {
+                    if (typeof target[name] === 'undefined') {
+                        target.vars[name] = source.vars[name];
                     }
                 }
             } else {
                 // Add whole list
-                obj.vars = sourceVars;
+                target.vars = source.vars;
             }
         }
     }
@@ -2753,8 +2730,6 @@ class Script {
             if (obj.colorBackground) {
                 obj.colorRules.addRule('db', 0, obj.colorBackground);
             }
-
-            this.mergeColorSettings(obj, obj);
 
             // Push
             if (obj.expr) {
@@ -2792,11 +2767,9 @@ class Script {
                 if (obj.clean == 2) {
                     obj.expr = mapping.expr;
                 } else {
-                    this.mergeMapping(obj, mapping);
+                    this.merge(obj, mapping, true);
                 }
             }
-
-            this.mergeColorSettings(obj, obj);
 
             // Push header if possible
             if (obj.expr) {
@@ -2901,7 +2874,7 @@ class Script {
         let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
             if (!object.style) {
-                object.style = new CellStyle();
+                object.style = new ScriptStyle();
             }
 
             object.style.add(name, value);
