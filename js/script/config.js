@@ -3020,7 +3020,7 @@ TABLE_EXPRESSION_CONFIG.register(
       {
         condition: h => h.maximum,
         apply: h => {
-          h.format = (p, x) => p ? `${p.Fortress.Knights}/${p.Fortress.Fortress}` : x
+          h.displayExtra = (p) => p ? `/${p.Fortress.Fortress}` : ''
         }
       }
     ]
