@@ -54,11 +54,11 @@ DEFAULT_EXPRESSION_CONFIG.register(
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__divide', function (a, b) { return b == 0 ? 0 : (a / b) }
+  'function', 'math', '__divide', function (a, b) { return b == 0 ? undefined : (a / b) }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__divide_integer', function (a, b) { return Math.trunc(b == 0 ? 0 : (a / b)) }
+  'function', 'math', '__divide_integer', function (a, b) { return b == 0 ? undefined : Math.trunc(a / b) }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
