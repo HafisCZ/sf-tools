@@ -157,7 +157,8 @@ const DUNGEON_DATA = {
             '6': { pos: 6, id: 0, class: 1, level: 174, str: 3320, dex: 1165, int: 1140, con: 3040, lck: 860, health: 2660000, min: 189, max: 247 },
             '7': { pos: 7, id: 0, class: 3, level: 176, str: 850, dex: 3360, int: 840, con: 3080, lck: 1245, health: 2180640, min: 212, max: 340 },
             '8': { pos: 8, id: 0, class: 3, level: 178, str: 860, dex: 3400, int: 850, con: 3120, lck: 1260, health: 2233920, min: 214, max: 343 },
-            '9': { pos: 9, id: 0, class: 2, level: 190, str: 900, dex: 920, int: 3720, con: 3280, lck: 1340, health: 1252960, min: 439, max: 621 }
+            '9': { pos: 9, id: 0, class: 2, level: 190, str: 900, dex: 920, int: 3720, con: 3280, lck: 1340, health: 1252960, min: 439, max: 621 },
+            '10': { pos: 10, id: 0, level: 195 }
         }
     },
     '10': {
@@ -817,7 +818,8 @@ const DUNGEON_DATA = {
             '6': { pos: 6, id: 0, class: 1, level: 342, str: 6525, dex: 2289, int: 2240, con: 32862, lck: 1690, health: 56358328, min: 3659, max: 7313, armor: 8711 },
             '7': { pos: 7, id: 0, class: 3, level: 344, str: 1661, dex: 6567, int: 1641, con: 33110, lck: 2433, health: 45691800, min: 4600, max: 9187, armor: 4427 },
             '8': { pos: 8, id: 0, class: 3, level: 346, str: 1671, dex: 6608, int: 1652, con: 33352, lck: 2449, health: 46292576, min: 4636, max: 9250, armor: 4462 },
-            '9': { pos: 9, id: 0, class: 2, level: 348, str: 1648, dex: 1685, int: 6813, con: 33038, lck: 2454, health: 23060524, min: 8377, max: 16743, armor: 1932 }
+            '9': { pos: 9, id: 0, class: 2, level: 348, str: 1648, dex: 1685, int: 6813, con: 33038, lck: 2454, health: 23060524, min: 8377, max: 16743, armor: 1932 },
+            '10': { pos: 10, id: 0, level: 350 }
         }
     },
     '110': {

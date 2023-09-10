@@ -42,6 +42,9 @@ const CHANGELOG = {
             'Fixed pet health not increasing properly when using generate',
             'Fixed pet selection'
         ],
+        'Dungeon Simulator': [
+            'Added 10th enemy of The Pyramids of Madness'
+        ],
         'All Simulators': [
             'Added option to select best rune automatically based on the current enemy',
             'Added more debugging variables',

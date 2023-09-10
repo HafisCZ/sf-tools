@@ -141,7 +141,31 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
     }
 
+    function getMirrorPlayerData (data, dungeon) {
+        const player = _clone(players[0]);
+        const config = CONFIG.fromIndex(player.Class);
+
+        player.Health = Math.trunc(
+            Math.floor(
+                Math.floor(
+                    player.Constitution.Total * config.HealthMultiplier * (player.Level + 1) * ((100 + player.Dungeons.Player) / 100)
+                ) * (player.Potions.Life ? 1.25 : 1)
+            ) * ((100 + player.Runes.Health) / 100)
+        );
+
+        player.Level = data.level;
+        player.Name = data.name;
+    
+        delete player.Prefix;
+
+        return player;
+    }
+
     function getBossData (data, dungeon) {
+        if (typeof data.class === 'undefined') {
+            return getMirrorPlayerData(data, dungeon);
+        }
+
         return {
             Armor: data.armor || ((dungeon.armor_multiplier || 1) * (data.level * CONFIG.fromIndex(data.class).MaximumDamageReduction)),
             Class: data.class,
@@ -214,11 +238,13 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         $('#boss-list').dropdown({
             values: Object.entries(dungeon.floors).map(([ id, _boss ]) => {
                 return {
-                    name: `<span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }"">
-                                <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">
-                                ${ _boss.pos }. ${ _boss.name }
-                                ${ getDisplayRunes(_boss.runes) }
-                            <span>`,
+                    name: `
+                        <span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }"">
+                            ${ _boss.class ? `<img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">` : '' }
+                            ${ _boss.pos }. ${ _boss.name }
+                            ${ getDisplayRunes(_boss.runes) }
+                        <span>
+                    `,
                     value: id
                 };
             })
@@ -415,12 +441,14 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 $('#available-list').dropdown({
                     values: _sortAsc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
                         return {
-                            name: `<span class="${_dungeon.shadow ? 'dungeon-shadow' : ''}">
-                                        <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">&nbsp;
-                                            <span class="boss-dungeon-name">${ _dungeon.name }</span>
-                                            <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>
-                                            ${ getDisplayRunes(_boss.runes) }
-                                    <span>`,
+                            name: `
+                                <span class="${_dungeon.shadow ? 'dungeon-shadow' : ''}">
+                                    ${ _boss.class ? `<img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">&nbsp;` : '' }
+                                    <span class="boss-dungeon-name">${ _dungeon.name }</span>
+                                    <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>
+                                    ${ getDisplayRunes(_boss.runes) }
+                                <span>
+                            `,
                             value: index
                         };
                     })
@@ -503,7 +531,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     }
 
     function preparePlayerInstances (dungeon) {
-        let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
+        let playerInstances = players.map(p => _clone(p));
 
         if (dungeon.shadow) {
             let bert = playerInstances[1];

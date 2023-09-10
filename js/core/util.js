@@ -350,6 +350,10 @@ function _parseColor (name) {
     }
 }
 
+function _clone (object) {
+    return JSON.parse(JSON.stringify(object));
+}
+
 function _padLeft (text, length, char) {
     text = String(text)
     return char.repeat(Math.max(0, length - text.length)) + text;
