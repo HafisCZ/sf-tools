@@ -1525,7 +1525,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'indexed custom header',
     /^indexed custom header$/,
-    (root) => root.addGlobal('indexed_custom', true),
+    (root) => root.addGlobal('customIndex', true),
     (root) => Highlighter.keyword('indexed custom header')
 )
 
@@ -1622,7 +1622,7 @@ ScriptCommands.register(
     'left category',
     /^((?:\w+)(?:\,\w+)*:|)left category$/,
     (root, extensions) => {
-        root.addGlobal('custom_left', true);
+        root.addGlobal('customLeftCategory', true);
         root.addCategory('', true);
         if (extensions) {
             root.addExtension(... extensions.slice(0, -1).split(','));
@@ -2523,7 +2523,7 @@ class Script {
     }
 
     _prepareLeftCategory () {
-        if (this.globals.custom_left) {
+        if (this.globals.customLeftCategory) {
             // Can skip as category should already exist
         } else {
             const type = this.scriptScope.table;
@@ -2584,7 +2584,7 @@ class Script {
             });
         }
 
-        if (this.globals.indexed && !(this.globals.custom_left && this.globals.indexed_custom)) {
+        if (this.globals.indexed && !(this.globals.customLeftCategory && this.globals.customIndex)) {
             const indexHeader = new ScriptContainer('#');
             
             this.mergeMapping(indexHeader, {
