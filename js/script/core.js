@@ -2619,8 +2619,8 @@ class Script {
     }
 
     mergeSettings (target, source) {
-        for (const type of ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayExtra', 'displayBefore', 'displayAfter']) {
-            if (!target[type]) {
+        for (const type of ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayExtra', 'displayBefore', 'displayAfter', 'formatUndefined', 'colorUndefined']) {
+            if (typeof target[type] === 'undefined' && typeof source[type] !== 'undefined') {
                 target[type] = source[type];
             }
         }
@@ -2631,7 +2631,9 @@ class Script {
         let definition = this.customDefinitions[name];
         if (definition) {
             for (const key of Object.keys(definition)) {
-                if (!obj.hasOwnProperty(key)) obj[key] = definition[key];
+                if (typeof obj[key] === 'undefined' && typeof definition[key] !== 'undefined') {
+                    obj[key] = definition[key];
+                }
             }
 
             this.mergeRules(obj, definition);
@@ -2662,7 +2664,9 @@ class Script {
     mergeMapping (obj, mapping) {
         // Merge commons
         for (const key of Object.keys(mapping)) {
-            if (!obj.hasOwnProperty(key)) obj[key] = mapping[key];
+            if (typeof obj[key] === 'undefined' && typeof mapping[key] !== 'undefined') {
+                obj[key] = mapping[key];
+            }
         }
 
         this.mergeSettings(obj, mapping);
@@ -2682,7 +2686,9 @@ class Script {
     merge (obj, mapping) {
         // Merge all non-objects
         for (const key of Object.keys(mapping)) {
-            if (!obj.hasOwnProperty(key) && typeof mapping[key] != 'object') obj[key] = mapping[key];
+            if (typeof obj[key] === 'undefined' && typeof mapping[key] !== 'object' && typeof mapping[key] !== 'undefined') {
+                obj[key] = mapping[key];
+            }
         }
 
         this.mergeStyles(obj, mapping.style);
