@@ -122,6 +122,10 @@ class RuleEvaluator {
 
         return undefined;
     }
+
+    empty () {
+        return this.rules.length === 0;
+    }
 }
 
 const FilterTypes = {
@@ -580,7 +584,7 @@ ScriptCommands.register(
     (root, parts) => {
         const values = parts.split(',').map((p) => root.constants.fetch(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
         if (values.length > 0) {
-            root.addLocal('columns', values);
+            root.addDirectValue('columns', values);
         }
     },
     (root, parts) => {
@@ -812,15 +816,15 @@ ScriptCommands.register(
     /^format statistics (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
-            root.addDisplayValue('formatStatistics', true);
+            root.addDirectValue('formatStatistics', true);
         } else if (expression == 'off') {
-            root.addDisplayValue('formatStatistics', false);
+            root.addDirectValue('formatStatistics', false);
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addDisplayValue('formatStatistics', ARG_FORMATTERS[expression])
+            root.addDirectValue('formatStatistics', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addDisplayValue('formatStatistics', ast);
+                root.addDirectValue('formatStatistics', ast);
             }
         }
     },
@@ -844,15 +848,15 @@ ScriptCommands.register(
     /^format difference (.+)$/,
     (root, expression) => {
         if (expression == 'on') {
-            root.addDisplayValue('formatDifference', true);
+            root.addDirectValue('formatDifference', true);
         } else if (expression == 'off') {
-            root.addDisplayValue('formatDifference', false);
+            root.addDirectValue('formatDifference', false);
         } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addDisplayValue('formatDifference', ARG_FORMATTERS[expression])
+            root.addDirectValue('formatDifference', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addDisplayValue('formatDifference', ast);
+                root.addDirectValue('formatDifference', ast);
             }
         }
     },
@@ -904,11 +908,11 @@ ScriptCommands.register(
     /^expf (.+)$/,
     (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addDisplayValue('format', ARG_FORMATTERS[expression])
+            root.addDirectValue('format', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addDisplayValue('format', ast);
+                root.addDirectValue('format', ast);
             }
         }
     },
@@ -930,11 +934,11 @@ ScriptCommands.register(
     /^format (.+)$/,
     (root, expression) => {
         if (ARG_FORMATTERS.hasOwnProperty(expression)) {
-            root.addDisplayValue('format', ARG_FORMATTERS[expression])
+            root.addDirectValue('format', ARG_FORMATTERS[expression])
         } else {
             let ast = Expression.create(expression, root);
             if (ast) {
-                root.addDisplayValue('format', ast);
+                root.addDirectValue('format', ast);
             }
         }
     },
@@ -1092,7 +1096,7 @@ ScriptCommands.register(
         const ast = Expression.create(expression, root);
         if (ast) {
             root.addRow(name);
-            root.addLocal(ast);
+            root.addDirectValue(ast);
 
             if (extensions) {
                 root.addExtension(... extensions.slice(0, -1).split(','));
@@ -1457,7 +1461,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'clean (hard)',
     /^clean( hard)?$/,
-    (root, params) => root.addLocal('clean', params ? 2 : 1),
+    (root, params) => root.addDirectValue('clean', params ? 2 : 1),
     (root, params) => {
         const acc = Highlighter.keyword('clean');
 
@@ -1631,7 +1635,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'extra <expression>',
     /^extra (.+)$/,
-    (root, value) => root.addDisplayValue('extra', () => value),
+    (root, value) => root.addDirectValue('extra', () => value),
     (root, value) => Highlighter.keyword('extra ').value(value)
 )
 
@@ -1643,7 +1647,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addDisplayValue('displayBefore', ast);
+            root.addDirectValue('displayBefore', ast);
         }
     },
     (root, expression) => Highlighter.keyword('display before ').expression(expression, root)
@@ -1657,7 +1661,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addDisplayValue('displayAfter', ast);
+            root.addDirectValue('displayAfter', ast);
         }
     },
     (root, expression) => Highlighter.keyword('display after ').expression(expression, root)
@@ -1689,7 +1693,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addLocal('order', ast);
+            root.addDirectValue('order', ast);
         }
     },
     (root, expression) => Highlighter.keyword('order by ').expression(expression, root)
@@ -1721,7 +1725,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addLocal('expr', ast);
+            root.addDirectValue('expr', ast);
         }
     },
     (root, expression) => Highlighter.keyword('expr ').expression(expression, root)
@@ -1798,7 +1802,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addColorExpression(ast);
+            root.addDirectValue('colorExpr', ast);
         }
     },
     (root, expression) => Highlighter.keyword('expc ').expression(expression, root)
@@ -2295,6 +2299,128 @@ class ScriptRenderer {
     }
 }
 
+class ScriptContainer {
+    colorRules = new RuleEvaluator();
+    valueRules = new RuleEvaluator();
+
+    constructor (name) {
+        this.name = name;
+    }
+
+    getColor (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
+        // Get color from expression
+        const expressionColor = this.colorExpr ? this.colorExpr.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)) : undefined;
+        // Get color from color block
+        const blockColor = this.colorRules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
+
+        // Final background color
+        const backgroundColor = (typeof blockColor === 'undefined' ? getCSSBackground(expressionColor) : blockColor) || '';
+
+        // Get color for text
+        let textColor = undefined;
+        if (this.text === true) {
+            textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.background), true);
+        } else if (this.text) {
+            textColor = getCSSColor(this.text.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
+        }
+
+        // Return color or empty string
+        return {
+            bg: backgroundColor,
+            fg: textColor
+        };
+    }
+
+    getValue (player, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {
+        // Get value from value block
+        let output = this.valueRules.get(value);
+
+        // Get value from format expression
+        if (typeof output == 'undefined') {
+            if (this.format instanceof Expression) {
+                output = this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header));
+            } else if (typeof this.format === 'function') {
+                output = this.format(player, value);
+            } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
+                output = ARG_FORMATTERS[this.format](player, value);
+            }
+        }
+
+        // Get value from value itself
+        if (typeof output == 'undefined') {
+            output = value;
+        }
+
+        // Add extras
+        if (typeof output != 'undefined' && (this.extra || this.displayBefore || this.displayAfter)) {
+            const before = (
+                this.displayBefore ? (
+                    this.displayBefore.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
+                ) : (
+                    ''
+                )
+            );
+
+            const after = (
+                this.displayAfter ? (
+                    this.displayAfter.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
+                ) : (
+                    this.extra ? this.extra(player) : ''
+                )
+            );
+
+            output = `${ before }${ output }${ after }`;
+        }
+
+        if (typeof output == 'undefined') {
+            output = '';
+        }
+
+        // Return value
+        return output;
+    }
+
+    getDifferenceValue (player, compare, settings, value, extra = undefined) {
+        let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
+
+        if (this.formatDifference === true) {
+            if (this.format instanceof Expression) {
+                return this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
+            } else if (typeof this.format === 'function') {
+                return this.format(player, value);
+            } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
+                return ARG_FORMATTERS[this.format](player, value);
+            } else {
+                return nativeDifference;
+            }
+        } else if (this.formatDifference instanceof Expression) {
+            return this.formatDifference.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
+        } else if (typeof this.formatDifference == 'function') {
+            return this.formatDifference(settings, value);
+        } else {
+            return nativeDifference;
+        }
+    }
+
+    getStatisticsValue (settings, value) {
+        let nativeFormat = Number.isInteger(value) ? value : value.toFixed(2);
+
+        if (this.formatStatistics === false) {
+            return nativeFormat;
+        } else if (this.formatStatistics) {
+            return this.formatStatistics.eval(new ExpressionScope(settings).addSelf(value));
+        } else if (this.format instanceof Expression) {
+            return this.format.eval(new ExpressionScope(settings).addSelf(value));
+        } else if (typeof this.format == 'function') {
+            return this.format(undefined, value);
+        } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
+            return ARG_FORMATTERS[this.format](undefined, value);
+        } else {
+            return nativeFormat;
+        }
+    }
+}
+
 class Script {
     constructor (string, scriptType, scriptScope = {}) {
         this.code = string;
@@ -2372,7 +2498,7 @@ class Script {
             const type = this.scriptScope.table;
             const headers = [];
             if (type === TableType.Player) {
-                const dateHeader = this.#createContainer('Date');
+                const dateHeader = new ScriptContainer('Date');
 
                 this.mergeMapping(dateHeader, {
                     expr: (p) => p.Timestamp,
@@ -2383,7 +2509,7 @@ class Script {
 
                 headers.push(dateHeader);
             } else if (type === TableType.Group) {
-                const nameHeader = this.#createContainer('Name');
+                const nameHeader = new ScriptContainer('Name');
 
                 this.mergeMapping(nameHeader, {
                     expr: (p) => p.Name,
@@ -2395,7 +2521,7 @@ class Script {
             } else if (type === TableType.Browse) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
-                    const serverHeader = this.#createContainer('Server');
+                    const serverHeader = new ScriptContainer('Server');
 
                     this.mergeMapping(serverHeader, {
                         expr: (p) => p.Prefix,
@@ -2405,7 +2531,7 @@ class Script {
                     headers.push(serverHeader);
                 }
 
-                const nameHeader = this.#createContainer('Name');
+                const nameHeader = new ScriptContainer('Name');
 
                 this.mergeMapping(nameHeader, {
                     expr: (p) => p.Name,
@@ -2428,7 +2554,7 @@ class Script {
         }
 
         if (this.globals.indexed && !(this.globals.custom_left && this.globals.indexed_custom)) {
-            const indexHeader = this.#createContainer('#');
+            const indexHeader = new ScriptContainer('#');
             
             this.mergeMapping(indexHeader, {
                 expr: (p) => 0,
@@ -2444,36 +2570,28 @@ class Script {
     #injectLeftHeaderStyling (header) {
         header.visible = true;
 
-        header.color.text = this.shared.text;
-        header.color.background = this.shared.background;
+        header.text = this.shared.text;
+        header.background = this.shared.background;
 
-        if (header.color.background) {
-            header.color.rules.addRule('db', 0, header.color.background);
+        if (header.background) {
+            header.colorRules.addRule('db', 0, header.background);
         }
 
         this.mergeTextColor(header, header);
     }
 
     mergeRules (target, source) {
-        for (const type of ['color', 'value']) {
-            if (!target[type].rules.rules.length) {
-                target[type].rules.rules = source[type].rules.rules;
+        for (const type of ['colorRules', 'valueRules']) {
+            if (target[type].empty()) {
+                target[type].rules = source[type].rules
             }
         }
     }
 
-    mergeValueSettings (target, source) {
-        for (const type of ['format', 'formatDifference', 'formatStatistics', 'extra', 'displayBefore', 'displayAfter']) {
-            if (!target.value[type]) {
-                target.value[type] = source.value[type];
-            }
-        }
-    }
-
-    mergeColorSettings (target, source) {
-        for (const type of ['expr']) {
-            if (!target.color[type]) {
-                target.color[type] = source.color[type];
+    mergeSettings (target, source) {
+        for (const type of ['colorExpr', 'format', 'formatDifference', 'formatStatistics', 'extra', 'displayBefore', 'displayAfter']) {
+            if (!target[type]) {
+                target[type] = source[type];
             }
         }
     }
@@ -2487,8 +2605,7 @@ class Script {
             }
 
             this.mergeRules(obj, definition);
-            this.mergeColorSettings(obj, definition);
-            this.mergeValueSettings(obj, definition);
+            this.mergeSettings(obj, definition);
             this.mergeStyles(obj, definition.style);
             this.mergeVariables(obj, definition.vars);
         }
@@ -2518,37 +2635,15 @@ class Script {
             if (!obj.hasOwnProperty(key)) obj[key] = mapping[key];
         }
 
-        // Merge value expression
-        if (!obj.value.format) {
-            obj.value.format = mapping.format;
-        }
-
-        // Merge diff value expression
-        if (!obj.value.formatDifference) {
-            obj.value.formatDifference = mapping.formatDifference;
-        }
-
-        // Merge value extra
-        if (!obj.value.extra) {
-            obj.value.extra = mapping.extra;
-        }
-  
-        if (!obj.value.displayBefore) {
-            obj.value.displayBefore = mapping.displayBefore;
-        }
-  
-        if (!obj.value.displayAfter) {
-            obj.value.displayAfter = mapping.displayAfter;
-        }
-
+        this.mergeSettings(obj, mapping);
         this.mergeStyles(obj, mapping.style);
         this.mergeVariables(obj, mapping.vars);
     }
 
     mergeTextColor (obj, mapping) {
-        if (obj.color && typeof obj.color.text === 'undefined') {
-            obj.color.text = mapping.text;
-            obj.color.background = mapping.ndefc;
+        if (typeof obj.text === 'undefined') {
+            obj.text = mapping.text;
+            obj.background = mapping.ndefc;
         }
     }
 
@@ -2618,7 +2713,7 @@ class Script {
             this.merge(obj, this.shared);
 
             if (obj.background) {
-                obj.color.rules.addRule('db', 0, obj.background);
+                obj.colorRules.addRule('db', 0, obj.background);
             }
 
             this.mergeTextColor(obj, obj);
@@ -2681,7 +2776,7 @@ class Script {
                 }
 
                 if (obj.background) {
-                    obj.color.rules.addRule('db', 0, obj.background);
+                    obj.colorRules.addRule('db', 0, obj.background);
                 }
 
                 // Push
@@ -2706,150 +2801,10 @@ class Script {
         }
     }
 
-    // Create color block
-    getColorBlock () {
-        return {
-            expr: undefined,
-            text: undefined,
-            background: undefined,
-            rules: new RuleEvaluator(),
-            get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
-                // Get color from expression
-                const expressionColor = this.expr ? this.expr.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)) : undefined;
-                // Get color from color block
-                const blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
-
-                // Final background color
-                const backgroundColor = (typeof blockColor === 'undefined' ? getCSSBackground(expressionColor) : blockColor) || '';
-
-                // Get color for text
-                let textColor = undefined;
-                if (this.text === true) {
-                    textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.background), true);
-                } else if (this.text) {
-                    textColor = getCSSColor(this.text.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
-                }
-
-                // Return color or empty string
-                return {
-                    bg: backgroundColor,
-                    fg: textColor
-                };
-            }
-        }
-    }
-
-    // Create value block
-    getValueBlock () {
-        return {
-            extra: undefined,
-            displayBefore: undefined,
-            displayAfter: undefined,
-            format: undefined,
-            formatDifference: undefined,
-            formatStatistics: undefined,
-            rules: new RuleEvaluator(),
-            get: function (player, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {
-                // Get value from value block
-                let output = this.rules.get(value);
-
-                // Get value from format expression
-                if (typeof output == 'undefined') {
-                    if (this.format instanceof Expression) {
-                        output = this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header));
-                    } else if (typeof this.format === 'function') {
-                        output = this.format(player, value);
-                    } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
-                        output = ARG_FORMATTERS[this.format](player, value);
-                    }
-                }
-
-                // Get value from value itself
-                if (typeof output == 'undefined') {
-                    output = value;
-                }
-
-                // Add extras
-                if (typeof output != 'undefined' && (this.extra || this.displayBefore || this.displayAfter)) {
-                    const before = (
-                        this.displayBefore ? (
-                            this.displayBefore.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
-                        ) : (
-                            ''
-                        )
-                    );
-
-                    const after = (
-                        this.displayAfter ? (
-                            this.displayAfter.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
-                        ) : (
-                            this.extra ? this.extra(player) : ''
-                        )
-                    );
-
-                    output = `${ before }${ output }${ after }`;
-                }
-
-                if (typeof output == 'undefined') {
-                    output = '';
-                }
-
-                // Return value
-                return output;
-            },
-            getDifference: function (player, compare, settings, value, extra = undefined) {
-                let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
-
-                if (this.formatDifference === true) {
-                    if (this.format instanceof Expression) {
-                        return this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
-                    } else if (typeof this.format === 'function') {
-                        return this.format(player, value);
-                    } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
-                        return ARG_FORMATTERS[this.format](player, value);
-                    } else {
-                        return nativeDifference;
-                    }
-                } else if (this.formatDifference instanceof Expression) {
-                    return this.formatDifference.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
-                } else if (typeof this.formatDifference == 'function') {
-                    return this.formatDifference(settings, value);
-                } else {
-                    return nativeDifference;
-                }
-            },
-            getStatistics: function (settings, value) {
-                let nativeFormat = Number.isInteger(value) ? value : value.toFixed(2);
-
-                if (this.formatStatistics === false) {
-                    return nativeFormat;
-                } else if (this.formatStatistics) {
-                    return this.formatStatistics.eval(new ExpressionScope(settings).addSelf(value));
-                } else if (this.format instanceof Expression) {
-                    return this.format.eval(new ExpressionScope(settings).addSelf(value));
-                } else if (typeof this.format == 'function') {
-                    return this.format(undefined, value);
-                } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
-                    return ARG_FORMATTERS[this.format](undefined, value);
-                } else {
-                    return nativeFormat;
-                }
-            }
-        }
-    }
-
-    #createContainer (name) {
-        return {
-            name,
-            value: this.getValueBlock(),
-            color: this.getColorBlock()
-        };
-    }
-
     // Create new header
     addHeader (name) {
         this.push();
-        this.header = this.#createContainer(name);
+        this.header = new ScriptContainer(name);
     }
 
     addHeaderLocal (name, value) {
@@ -2877,13 +2832,13 @@ class Script {
     // Create row
     addRow (name) {
         this.push();
-        this.row = this.#createContainer(name);
+        this.row = new ScriptContainer(name);
     }
 
     // Create definition
     addDefinition (name) {
         this.push();
-        this.definition = this.#createContainer(name);
+        this.definition = new ScriptContainer(name);
     }
 
     // Create statistic
@@ -2914,14 +2869,6 @@ class Script {
         }
     }
 
-    // Add color expression to the header
-    addColorExpression (expression) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object.color.expr = expression;
-        }
-    }
-
     addTextColorExpression (expression) {
         let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
@@ -2932,32 +2879,31 @@ class Script {
     addAliasExpression (expression) {
         let object = (this.row || this.definition || this.header || this.embed || this.category);
         if (object) {
-            object['expa'] = expression;
+            object.expa = expression;
         }
     }
 
     addGlobOrder (index, order) {
         let object = (this.header || this.embed);
         if (object) {
-            object['glob_order'] = {
+            object.glob_order = {
                 ord: order,
                 index: index
             }
         }
     }
 
-    addDisplayValue (field, value) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object.value[field] = value
-        }
+    // Can be added only to row, definition, header or embed
+    addDirectValue (field, value) {
+        const target = (this.row || this.definition || this.header || this.embed);
+        if (target) target[field] = value;
     }
 
     // Add color rule to the header
     addColorRule (condition, referenceValue, value) {
         let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
-            object.color.rules.addRule(condition, referenceValue, value);
+            object.colorRules.addRule(condition, referenceValue, value);
         }
     }
 
@@ -2965,7 +2911,7 @@ class Script {
     addValueRule (condition, referenceValue, value) {
         let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
-            object.value.rules.addRule(condition, referenceValue, value);
+            object.valueRules.addRule(condition, referenceValue, value);
         }
     }
 
@@ -3001,7 +2947,7 @@ class Script {
             object[name] = value;
         }
 
-        this.addLocal(`ex_${ name }`, value);
+        this.addDirectValue(`ex_${ name }`, value);
     }
 
     // Add extension
@@ -3013,14 +2959,6 @@ class Script {
             }
 
             object.extensions.push(... names);
-        }
-    }
-
-    // Add local variable
-    addLocal (name, value) {
-        let object = (this.row || this.definition || this.header || this.embed);
-        if (object) {
-            object[name] = value;
         }
     }
 
@@ -3045,7 +2983,7 @@ class Script {
 
     embedBlock (name) {
         this.push();
-        this.embed = this.#createContainer(name);
+        this.embed = new ScriptContainer(name);
         this.embed.embedded = true;
         this.embed.headers = [];
     }
@@ -3070,7 +3008,7 @@ class Script {
             }
 
             if (obj.background) {
-                obj.color.rules.addRule('db', 0, obj.background);
+                obj.colorRules.addRule('db', 0, obj.background);
             }
 
             if (this.category) {
@@ -3192,7 +3130,7 @@ class Script {
             // For each header
             for (let header of category.headers) {
                 // For each rule block
-                for (let rules of [ header.color.rules.rules, header.value.rules.rules ]) {
+                for (let rules of [ header.colorRules.rules, header.valueRules.rules ]) {
                     // For each entry
                     for (let i = 0, rule; rule = rules[i]; i++) {
                         let key = rule[3];

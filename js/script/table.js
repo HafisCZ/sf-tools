@@ -748,36 +748,39 @@ class TableInstance {
     }
 
     #getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
-        let { difference, ex_difference, flip, value, differenceBrackets, differencePosition } = header;
-        let displayValue = value.get(player, compare, this.settings, val, extra, header, altSelf);
+        const { difference, ex_difference, flip, differenceBrackets, differencePosition } = header;
+        const displayValue = header.getValue(player, compare, this.settings, val, extra, header, altSelf);
+
         if (!difference || isNaN(cmp)) {
             return displayValue;
         } else {
-            let diff = (flip ? -1 : 1) * (val - cmp);
+            const diff = (flip ? -1 : 1) * (val - cmp);
             if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
-                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, value.getDifference(player, compare, this.settings, diff, extra));
+                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, header.getDifferenceValue(player, compare, this.settings, diff, extra));
             }
         }
     }
 
-    #getStatisticsDisplayValue ({ difference, ex_difference, flip, value, differenceBrackets, differencePosition }, val, cmp) {
-        let displayValue = value.getStatistics(this.settings, val);
+    #getStatisticsDisplayValue (header, val, cmp) {
+        const { difference, ex_difference, flip, differenceBrackets, differencePosition } = header;
+        const displayValue = header.getStatisticsValue(this.settings, val);
+
         if (!difference || isNaN(cmp)) {
             return displayValue;
         } else {
-            let diff = (flip ? -1 : 1) * (val - cmp);
+            const diff = (flip ? -1 : 1) * (val - cmp);
             if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
-                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, value.getDifference(undefined, undefined, this.settings, diff));
+                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, header.getDifferenceValue(undefined, undefined, this.settings, diff));
             }
         }
     }
 
     #getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
-        return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
+        return header.getColor(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
     #getTable () {
