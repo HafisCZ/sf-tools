@@ -1388,7 +1388,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'brackets <value>',
     /^brackets (on|off)$/,
-    (root, value) => root.addShared('differenceBrackets', ARGUMENT_MAP_ON_OFF[value]),
+    (root, value) => root.addShared('differenceBrackets', value === 'on' ? '()' : false),
     (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on'),
     { isDeprecated: 'TABLE_SHARED_DIFFERENCE_BRACKETS' }
 )
