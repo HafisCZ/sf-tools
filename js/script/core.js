@@ -349,7 +349,7 @@ ScriptCommands.register(
             return acc.expression(arg, root).asMacro()
         }
     },
-    { skipParse: true }
+    { evalNever: true }
 )
 
 ScriptCommands.register(
@@ -367,7 +367,7 @@ ScriptCommands.register(
             return acc.expression(arg, root).asMacro()
         }
     },
-    { skipParse: true }
+    { evalNever: true }
 )
 
 ScriptCommands.register(
@@ -385,7 +385,7 @@ ScriptCommands.register(
             return acc.expression(arg, root).asMacro()
         }
     },
-    { skipParse: true }
+    { evalNever: true }
 )
 
 ScriptCommands.register(
@@ -395,7 +395,7 @@ ScriptCommands.register(
     /^else$/,
     null,
     (root) => Highlighter.keyword('else').asMacro(),
-    { skipParse: true }
+    { evalNever: true }
 )
 
 ScriptCommands.register(
@@ -405,7 +405,7 @@ ScriptCommands.register(
     /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
     null,
     (root, name, array) => Highlighter.keyword('loop ').value(name).keyword(' for ').expression(array, root).asMacro(),
-    { skipParse: true }
+    { evalNever: true }
 )
 
 ScriptCommands.register(
@@ -415,7 +415,7 @@ ScriptCommands.register(
     /^end$/,
     null,
     (root) => Highlighter.keyword('end').asMacro(),
-    { skipParse: true }
+    { evalNever: true }
 )
 
 ScriptCommands.register(
@@ -430,7 +430,7 @@ ScriptCommands.register(
         }
     },
     (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro(),
-    { skipParse: true, canParseAsConstant: true, isDeprecated: 'TABLE_FUNCTION' }
+    { evalNever: true, evalOnRender: true, isDeprecated: 'TABLE_FUNCTION' }
 )
 
 ScriptCommands.register(
@@ -445,7 +445,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro(),
-    { canParseAsConstant: true, isDeprecated: 'VARIABLE_GLOBAL' }
+    { evalOnRender: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 
 ScriptCommands.register(
@@ -455,7 +455,7 @@ ScriptCommands.register(
     /^const (\w+) (.+)$/,
     (root, name, value) => root.constants.add(name, value),
     (root, name, value) => Highlighter.keyword('const ').constant(name).space(1).value(value),
-    { canParseAsConstant: true }
+    { evalOnRender: true }
 )
 
 ScriptCommands.register(
@@ -470,7 +470,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('constexpr ').constant(name).space().expression(expression, root),
-    { canParseAsConstant: true }
+    { evalOnRender: true }
 )
 
 ScriptCommands.register(
@@ -1172,7 +1172,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(name, 'table').space().deprecatedKeyword('with all as').space().expression(expression, root),
-    { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
+    { evalOnRender: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
 ScriptCommands.register(
@@ -1187,7 +1187,7 @@ ScriptCommands.register(
         }
     },
     (root, name, args, expression) => Highlighter.keyword('set ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root),
-    { canParseAsConstant: true }
+    { evalOnRender: true }
 )
 
 ScriptCommands.register(
@@ -1202,7 +1202,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('table set ').variable(`${name}`, 'table').keyword(' as ').expression(expression, root),
-    { canParseAsConstant: true }
+    { evalOnRender: true }
 )
 
 ScriptCommands.register(
@@ -1217,7 +1217,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('global set ').variable(`${name}`, 'global').keyword(' as ').expression(expression, root),
-    { canParseAsConstant: true }
+    { evalOnRender: true }
 )
 
 ScriptCommands.register(
@@ -1232,7 +1232,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(`$${name}`, 'table').space().deprecatedKeyword('as').space().expression(expression, root),
-    { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
+    { evalOnRender: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
 ScriptCommands.register(
@@ -1247,7 +1247,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(`$$${name}`, 'global').space().deprecatedKeyword('as').space().expression(expression, root),
-    { canParseAsConstant: true, isDeprecated: 'VARIABLE_GLOBAL' }
+    { evalOnRender: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 
 ScriptCommands.register(
@@ -1262,7 +1262,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').variable(name, 'local').keyword(' as ').expression(expression, root),
-    { canParseAsConstant: true }
+    { evalOnRender: true }
 )
 
 ScriptCommands.register(
@@ -2303,7 +2303,7 @@ class ScriptRenderer {
 
         for (const line of ScriptParser.handleMacros(string, {})) {
             const trimmed = ScriptParser.stripComments(line)[0].trim();
-            const command = ScriptCommands.find((command) => !command.metadata.skipParse && command.metadata.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
+            const command = ScriptCommands.find((command) => !command.metadata.evalNever && command.metadata.evalOnRender && (command.type & scriptType) && command.is(trimmed))
 
             if (command) {
                 command.eval(settings, trimmed);
@@ -2546,7 +2546,7 @@ class Script {
 
         // Parse settings
         for (const line of ScriptParser.handleMacros(string, this.scriptScope)) {
-            const command = ScriptCommands.find((command) => !command.metadata.skipParse && (command.type & scriptType) && command.is(line));
+            const command = ScriptCommands.find((command) => !command.metadata.evalNever && (command.type & scriptType) && command.is(line));
   
             if (command) {
                 command.eval(this, line);
