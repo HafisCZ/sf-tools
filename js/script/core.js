@@ -264,16 +264,16 @@ class Highlighter {
 };
 
 class ScriptCommand {
-    #internalParse;
+    #internalEvaluate;
     #internalFormat;
     #internalValidator = null;
 
-    constructor (key, type, syntax, regexp, parse, format, metadata = {}) {
+    constructor (key, type, syntax, regexp, evaluate, format, metadata = {}) {
         this.key = key;
         this.type = type;
         this.syntax = syntax.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         this.regexp = regexp;
-        this.#internalParse = parse;
+        this.#internalEvaluate = evaluate;
         this.#internalFormat = format;
         this.metadata = metadata;
     }
@@ -282,8 +282,8 @@ class ScriptCommand {
         return this.regexp.test(string);
     }
 
-    parse (root, string) {
-        return this.#internalParse(root, ... string.match(this.regexp).slice(1));
+    eval (root, string) {
+        return this.#internalEvaluate(root, ... string.match(this.regexp).slice(1));
     }
 
     parseParams (string) {
@@ -2306,7 +2306,7 @@ class ScriptRenderer {
             const command = ScriptCommands.find((command) => !command.metadata.skipParse && command.metadata.canParseAsConstant && (command.type & scriptType) && command.is(trimmed))
 
             if (command) {
-                command.parse(settings, trimmed);
+                command.eval(settings, trimmed);
             }
         }
 
@@ -2549,7 +2549,7 @@ class Script {
             const command = ScriptCommands.find((command) => !command.metadata.skipParse && (command.type & scriptType) && command.is(line));
   
             if (command) {
-                command.parse(this, line);
+                command.eval(this, line);
             }
         }
 
