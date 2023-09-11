@@ -578,8 +578,7 @@
             "d": "Más mutatása",
             "q": "Egyedi beállítások( különböző fejlécek vesszővel)",
             "t": "Online sablon közvetlen megjelenítése",
-            "sr": "Rendezés egyedi kifejezés alapján",
-            "qc": "Csak a kiválasztott kategóriák megjelenítése"
+            "sr": "Rendezés egyedi kifejezés alapján"
         },
         "scripts": {
             "settings": "Beállítások",
@@ -619,12 +618,6 @@
             },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
-            },
-            "commands": {
-                "TABLE_GLOBAL_PERFORMANCE": "performance",
-                "TABLE_GLOBAL_LIMIT": "limit",
-                "TABLE_FORMAT_LONG": "format",
-                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -748,8 +741,8 @@
             "title": "Globális beállítások",
             "always_prev": "Összehasonlítás az előzővel (céhek)",
             "empty_groups": "Üres csoportok megjelenítése",
-            "obfuscated": "Játékosnevek eltakarása",
             "unsafe_delete": "Törölt fájlok esetén a megerősítés átugrása",
+            "table_sticky_header": "Enable sticky table headers",
             "terms": "ÁSZF elfogadása",
             "tab": "Alapértelmezett fül",
             "preload": "Sorelőtöltés",
@@ -782,7 +775,8 @@
         "calendar": {
             "collected": "Collected",
             "available": "Available",
-            "locked": "Locked"
+            "locked": "Locked",
+            "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
             "gladiator": "Glad"
@@ -1084,7 +1078,7 @@
             "first": "First #{count} floors were defeated with 100% chance",
             "last": "Last #{count} floors are impossible to defeat"
         },
-        "footer#": "Based on <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+        "footer#": "Based on <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
     },
     "dungeons": {
         "simulate_one": "Simulate",
@@ -1245,7 +1239,7 @@
         }
     },
     "hydra": {
-        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "footer#": "Based on <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
         "player_count": "Player Count",
         "main": "Main",
         "side1": "Side 1",
@@ -1342,6 +1336,7 @@
         "fire": "Tűz",
         "cold": "Hideg",
         "lightning": "Villám",
+        "auto": "Auto",
         "gladiator": "Gladiátor (0 - 15)",
         "life_potion": "Életerő bájital",
         "hand_enchant": "Shadow of the Cowboy",
@@ -1387,6 +1382,7 @@
             "error_player_not_found": "Character was not found on the server",
             "error_sessionid_invalid": "Session expired or interrupted by another device",
             "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
+            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
             "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
             "playa_account_not_active": "Your account is not active",
@@ -1440,6 +1436,7 @@
         },
         "script_manual": {
             "title": "Reference manual",
+            "deprecated": "deprecated",
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
@@ -1448,7 +1445,8 @@
                 "function": "Functions",
                 "enum": "Enumerations",
                 "constant": "Default constants",
-                "variable": "Variables"
+                "variable": "Variables",
+                "command": "Commands"
             },
             "description": {}
         },
@@ -1963,7 +1961,8 @@
             "6": "Don Capisce",
             "7": "Rettenetes démon",
             "8": "Rózsaszín nyúlszörny",
-            "9": "Szirén"
+            "9": "Szirén",
+            "10": "Yourself"
         },
         "10": {
             "name": "A Fekete Koponya Erőd",

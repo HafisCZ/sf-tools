@@ -578,8 +578,7 @@
             "d": "Zobrazit ostatní",
             "q": "Vlastní sloupce (názvy oddělte čárkami)",
             "t": "Zobrazit sdílený skript",
-            "sr": "Seřadit pomocí vlastního AST výrazu",
-            "qc": "Zobrazit pouze vybrané kategorie"
+            "sr": "Seřadit pomocí vlastního AST výrazu"
         },
         "scripts": {
             "settings": "Skripty",
@@ -619,12 +618,6 @@
             },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
-            },
-            "commands": {
-                "TABLE_GLOBAL_PERFORMANCE": "performance",
-                "TABLE_GLOBAL_LIMIT": "limit",
-                "TABLE_FORMAT_LONG": "format",
-                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -748,8 +741,8 @@
             "title": "Globání nastavení",
             "always_prev": "Automaticky porovnat s předchozím souborem (cech)",
             "empty_groups": "Zobrazit prázné cechy",
-            "obfuscated": "Anonymizovat názvy postav",
             "unsafe_delete": "Nevyžadovat potvrzení při mazání dat",
+            "table_sticky_header": "Enable sticky table headers",
             "terms": "Příjmout podmínky použití",
             "tab": "Výchozí okno",
             "preload": "Načíst řádky",
@@ -782,7 +775,8 @@
         "calendar": {
             "collected": "Collected",
             "available": "Available",
-            "locked": "Locked"
+            "locked": "Locked",
+            "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
             "gladiator": "Gladiátor"
@@ -1342,6 +1336,7 @@
         "fire": "Oheň",
         "cold": "Chlad",
         "lightning": "Blesk",
+        "auto": "Auto",
         "gladiator": "Gladiátor (0 - 15)",
         "life_potion": "Lektvar nesmrtelnosti",
         "hand_enchant": "Kovbojův stín",
@@ -1387,6 +1382,7 @@
             "error_player_not_found": "Postava nebyla nalezena na tomto serveru",
             "error_sessionid_invalid": "Spojení vypršelo nebo bylo přerušeno jiným zařízením",
             "error_login_only_with_sf_account_allowed": "Tato postava je dostupná pouze skrze S&F účet",
+            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
             "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
             "playa_account_login_unknown_or_wrong_credentials": "Špatné heslo nebo jméno",
             "playa_account_not_active": "Tvůj účet není aktivní",
@@ -1440,6 +1436,7 @@
         },
         "script_manual": {
             "title": "Manuál",
+            "deprecated": "deprecated",
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
@@ -1448,7 +1445,8 @@
                 "function": "Functions",
                 "enum": "Enumerations",
                 "constant": "Default constants",
-                "variable": "Variables"
+                "variable": "Variables",
+                "command": "Commands"
             },
             "description": {}
         },
@@ -1963,7 +1961,8 @@
             "6": "Don Kapišto",
             "7": "Demoralizující démon",
             "8": "Růžový hrůzokrálíček",
-            "9": "Smrtka"
+            "9": "Smrtka",
+            "10": "Yourself"
         },
         "10": {
             "name": "Pevnost Černých lebek",

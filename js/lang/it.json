@@ -578,8 +578,7 @@
             "d": "Mostra gli altri giocatori",
             "q": "Impostazioni personalizzate (separa i nomi degli header con una virgola)",
             "t": "Mostra direttamente i template online",
-            "sr": "Ordina secondo un'espressione personalizzata",
-            "qc": "Mostra solo le categorie selezionate"
+            "sr": "Ordina secondo un'espressione personalizzata"
         },
         "scripts": {
             "settings": "Opzioni",
@@ -619,12 +618,6 @@
             },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
-            },
-            "commands": {
-                "TABLE_GLOBAL_PERFORMANCE": "performance",
-                "TABLE_GLOBAL_LIMIT": "limit",
-                "TABLE_FORMAT_LONG": "format",
-                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -748,8 +741,8 @@
             "title": "Impostazioni globali",
             "always_prev": "Confronta con i precedenti (gilde)",
             "empty_groups": "Mostra gruppi vuoti",
-            "obfuscated": "Nascondi i nomi dei giocatori",
             "unsafe_delete": "Non chiedere conferma per cancellare i file",
+            "table_sticky_header": "Enable sticky table headers",
             "terms": "Accetta i Termini di Servizio",
             "tab": "Tab iniziale",
             "preload": "Pre-carica righe",
@@ -782,7 +775,8 @@
         "calendar": {
             "collected": "Raccolti",
             "available": "Disponibili",
-            "locked": "Bloccati"
+            "locked": "Bloccati",
+            "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
             "gladiator": "Gladiatore"
@@ -1342,6 +1336,7 @@
         "fire": "Fuoco",
         "cold": "Freddo",
         "lightning": "Fulmine",
+        "auto": "Auto",
         "gladiator": "Gladiatore (0 - 15)",
         "life_potion": "Pozione della Vita",
         "hand_enchant": "Ombra del Cowboy",
@@ -1387,6 +1382,7 @@
             "error_player_not_found": "Il personaggio non è stato trovato sul server",
             "error_sessionid_invalid": "Sessione scaduta o interrotta da un altro dispositivo",
             "error_login_only_with_sf_account_allowed": "Devi effettuare il login con il tuo account SF per accedere a questo personaggio",
+            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
             "playa_account_login_no_credentials_set": "Devi aggiungere un indirizzo email al tuo account per accedere su altre piattaforme",
             "playa_account_login_unknown_or_wrong_credentials": "Nome utente o password errati",
             "playa_account_not_active": "Il tuo account non è attivo",
@@ -1440,6 +1436,7 @@
         },
         "script_manual": {
             "title": "Guida di riferimento",
+            "deprecated": "deprecated",
             "heading": {
                 "header": "Intestazioni per tutti i personaggi",
                 "header_protected": "Intestazioni per i membri della gilda",
@@ -1448,7 +1445,8 @@
                 "function": "Funzioni",
                 "enum": "Enumerazioni",
                 "constant": "Costanti predefinite",
-                "variable": "Variabili"
+                "variable": "Variabili",
+                "command": "Commands"
             },
             "description": {}
         },
@@ -1963,7 +1961,8 @@
             "6": "Don Calogero",
             "7": "Demone Demoralizzante",
             "8": "Coniglio Mostruoso Rosa",
-            "9": "Banshee"
+            "9": "Banshee",
+            "10": "Yourself"
         },
         "10": {
             "name": "La Fortezza del Teschio Nero",

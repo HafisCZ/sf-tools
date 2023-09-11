@@ -578,8 +578,7 @@
             "d": "Pokaż inne",
             "q": "Ustawienia własne (nazwy nagłówków oddziel przecinkami)",
             "t": "Pokaż bezpośrednio szablon online",
-            "sr": "Sortuj po własnych wyrażeniach",
-            "qc": "Pokaż tylko wybrane kategorie"
+            "sr": "Sortuj po własnych wyrażeniach"
         },
         "scripts": {
             "settings": "Ustawienia",
@@ -619,12 +618,6 @@
             },
             "info": {
                 "deprecated": "Użycie <b>#{name1}</b> jest przestarzałe; zamiast tego użyj <b>#{name2}</b>"
-            },
-            "commands": {
-                "TABLE_GLOBAL_PERFORMANCE": "wydajność",
-                "TABLE_GLOBAL_LIMIT": "limit",
-                "TABLE_FORMAT_LONG": "format",
-                "TABLE_FORMAT": "expf"
             }
         },
         "players": {
@@ -748,8 +741,8 @@
             "title": "Konfiguracja ogólna",
             "always_prev": "Porównaj poprzednie (gildie)",
             "empty_groups": "Pokaż puste grupy",
-            "obfuscated": "Ukryj nazwy graczy",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
+            "table_sticky_header": "Enable sticky table headers",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
@@ -782,7 +775,8 @@
         "calendar": {
             "collected": "Zebrane",
             "available": "Dostępne",
-            "locked": "Zablokowane"
+            "locked": "Zablokowane",
+            "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
             "gladiator": "Trener"
@@ -1342,6 +1336,7 @@
         "fire": "Ogień",
         "cold": "Zimno",
         "lightning": "Błyskawice",
+        "auto": "Auto",
         "gladiator": "Gladiator (0 - 15)",
         "life_potion": "Eliksir żywotności",
         "hand_enchant": "Cień Kowboja",
@@ -1387,6 +1382,7 @@
             "error_player_not_found": "Nie znaleziono postaci na serwerze",
             "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie",
             "error_login_only_with_sf_account_allowed": "Musisz zalogować się swoim kontem, aby uzyskać dostęp do tej postaci",
+            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
             "playa_account_login_no_credentials_set": "Musisz dodać adres e-mail do swojego konta, aby zalogować się na innych platformach",
             "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkownika lub hasło",
             "playa_account_not_active": "Twoje konto jest nieaktywne",
@@ -1440,6 +1436,7 @@
         },
         "script_manual": {
             "title": "Instrukcja obsługi",
+            "deprecated": "deprecated",
             "heading": {
                 "header": "Nagłówki dla wszystkich postaci",
                 "header_protected": "Nagrody dla własnych członków gildii",
@@ -1448,7 +1445,8 @@
                 "function": "Funkcje",
                 "enum": "Wyliczenia",
                 "constant": "Standardowe stałe",
-                "variable": "Zmienne"
+                "variable": "Zmienne",
+                "command": "Commands"
             },
             "description": {}
         },
@@ -1963,7 +1961,8 @@
             "6": "Don Kapiszi",
             "7": "Szkaradny demon",
             "8": "Potwornie różowy zajączek",
-            "9": "Banshee"
+            "9": "Banshee",
+            "10": "Yourself"
         },
         "10": {
             "name": "Twierdza Posępnego Czerepu",
