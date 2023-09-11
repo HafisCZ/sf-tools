@@ -3725,12 +3725,6 @@ class ScriptEditor extends SignalSource {
 
         this.area.dispatchEvent(new Event('input'));
 
-        this.area.addEventListener('scroll', (event) => {
-            const sy = event.currentTarget.scrollTop;
-            const sx = event.currentTarget.scrollLeft;
-            this.mask.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
-        });
-
         this.area.addEventListener('keydown', (event) => {
             if (event.ctrlKey && event.key === 's') {
                 event.preventDefault();
@@ -3777,7 +3771,6 @@ class ScriptEditor extends SignalSource {
                 }
 
                 this.area.dispatchEvent(new Event('input'));
-                this.area.dispatchEvent(new Event('scroll'));
             }
         });
 
@@ -3808,6 +3801,16 @@ class ScriptEditor extends SignalSource {
                 }
             }
         });
+
+        const updateMaskPosition = () => {
+            const sy = this.area.scrollTop;
+            const sx = this.area.scrollLeft;
+            this.mask.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
+
+            window.requestAnimationFrame(updateMaskPosition);
+        }
+
+        window.requestAnimationFrame(updateMaskPosition);
     }
 
     focus () {
@@ -3845,6 +3848,5 @@ class ScriptEditor extends SignalSource {
 
     scrollTop () {
         this.area.scrollTo(0, 0);
-        this.area.dispatchEvent(new Event('scroll'));
     }
 }
