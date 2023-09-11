@@ -769,7 +769,7 @@ ScriptCommands.register(
         if (root.constants.has(value)) {
             acc.constant(value);
         } else {
-            acc.color(value, val);
+            acc.value(value);
         }
 
         acc.space();
