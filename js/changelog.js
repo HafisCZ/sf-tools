@@ -11,7 +11,7 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added new setting to make table headers sticky',
-            'Added <code>Official Discord</code>, <code>Twitch Frame</code>, <code>Health Multiplier</code>, <code>Weapon Damage Multiplier</code>, <code>Maximum Damage Resistance</code>, <code>Power</code> and <code>Gold</code> header',
+            'Added <code>Official Discord</code>, <code>Twitch Frame</code>, <code>Health Multiplier</code>, <code>Weapon Damage Multiplier</code>, <code>Maximum Damage Resistance</code>, <code>Power</code> and <code>Gold</code> headers',
             'Added <code>indexed custom header</code> to use first column as custom index column',
             'Added new berserker icon',
             'Added <code>this</code> as a function',
@@ -20,6 +20,7 @@ const CHANGELOG = {
             'Added <code>display before</code> and <code>display after</code> keywords to display additional text in cell',
             'Added <code>difference brackets</code> command to wrap difference in brackets',
             'Added <code>difference position</code> command to place difference below the value',
+            'Added <code>table set</code> and <code>global set</code> variable commands',
             'Added expression as a value to <code>statistics color</code>',
             'Added list of keywords to the manual',
             'Added limit of 200 entries to script archive',
