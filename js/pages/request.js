@@ -61,7 +61,12 @@ const SCOPES = {
     Underworld: true,
     Dungeons: {
       Tower: true,
-      Raid: true
+      Raid: true,
+      Normal: true,
+      Shadow: true,
+      Twister: true,
+      Group: true,
+      Youtube: true
     },
     Prefix: true,
     Runes: true,
