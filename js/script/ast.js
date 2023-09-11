@@ -438,7 +438,11 @@ class Expression {
                     type = 'global';
                 }
             } else if (token == '$!') {
-                if (this.tokens[i + 2] == '{') {
+                if (this.tokens[i + 1] == '{') {
+                    index = i++;
+                    brackets++;
+                    type = 'local';
+                } else if (this.tokens[i + 2] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
