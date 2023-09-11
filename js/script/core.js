@@ -440,7 +440,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro(),
-    { canParseAsConstant: true, isDeprecated: 'TABLE_VARIABLE' }
+    { canParseAsConstant: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 
 ScriptCommands.register(
@@ -1156,7 +1156,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_VARIABLE_GLOBAL_LONG',
+    'VARIABLE_TABLE_LONG',
     ScriptType.Table,
     'set <name> with all as <expression>',
     /^set (\w+[\w ]*) with all as (.+)$/,
@@ -1167,7 +1167,7 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
-    { canParseAsConstant: true, isDeprecated: 'TABLE_VARIABLE_GLOBAL' }
+    { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
 ScriptCommands.register(
@@ -1186,7 +1186,37 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'TABLE_VARIABLE_GLOBAL',
+    'VARIABLE_TABLE',
+    ScriptType.Table,
+    'table set <name> as <expression>',
+    /^table set (\w+[\w ]*) as (.+)$/,
+    (root, name, expression) => {
+        let ast = Expression.create(expression, root);
+        if (ast) {
+            root.addVariable(name, ast, true);
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('table set ').global(`${name}`).keyword(' as ').expression(expression, root),
+    { canParseAsConstant: true }
+)
+
+ScriptCommands.register(
+    'VARIABLE_GLOBAL',
+    ScriptType.Table,
+    'global set <name> as <expression>',
+    /^global set (\w+[\w ]*) as (.+)$/,
+    (root, name, expression) => {
+        let ast = Expression.create(expression, root);
+        if (ast) {
+            root.addVariable(name, ast, true);
+        }
+    },
+    (root, name, expression) => Highlighter.keyword('global set ').global(`${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
+    { canParseAsConstant: true }
+)
+
+ScriptCommands.register(
+    'VARIABLE_TABLE_SHORT',
     ScriptType.Table,
     'set $<name> as <expression>',
     /^set \$(\w+[\w ]*) as (.+)$/,
@@ -1197,11 +1227,11 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root),
-    { canParseAsConstant: true }
+    { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
 ScriptCommands.register(
-    'TABLE_VARIABLE_UNFILTERED',
+    'VARIABLE_GLOBAL_SHORT',
     ScriptType.Table,
     'set $$<name> as <expression>',
     /^set \$\$(\w+[\w ]*) as (.+)$/,
@@ -1212,11 +1242,11 @@ ScriptCommands.register(
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
-    { canParseAsConstant: true }
+    { canParseAsConstant: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 
 ScriptCommands.register(
-    'TABLE_VARIABLE',
+    'VARIABLE',
     ScriptType.Table,
     'set <name> as <expression>',
     /^set (\w+[\w ]*) as (.+)$/,
@@ -2182,7 +2212,7 @@ class ScriptParser {
                             args: variables.split(',').map(v => v.trim())
                         };
                     }
-                } else if (command = ScriptCommands.pick(line, ['MACRO_VARIABLE', 'TABLE_VARIABLE', 'TABLE_VARIABLE_GLOBAL', 'TABLE_VARIABLE_GLOBAL_LONG', 'TABLE_VARIABLE_UNFILTERED'])) {
+                } else if (command = ScriptCommands.pick(line, ['MACRO_VARIABLE', 'VARIABLE', 'VARIABLE_TABLE', 'VARIABLE_TABLE_SHORT', 'VARIABLE_TABLE_LONG', 'VARIABLE_GLOBAL', 'VARIABLE_GLOBAL_SHORT'])) {
                     let [name, expression] = command.parseParams(line);
                     let ast = Expression.create(expression);
                     if (ast) {
