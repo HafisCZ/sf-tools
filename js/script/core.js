@@ -195,7 +195,7 @@ class Highlighter {
         return this;
     }
    
-    static global (text, subtype = '') {
+    static variable (text, subtype = '') {
         this.#text += `<span class="ta-global${subtype}">${this.#escape(text)}</span>`;
         return this;
     }
@@ -1166,7 +1166,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').global(name).keyword(' with all as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('set ').variable(name).keyword(' with all as ').expression(expression, root),
     { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
@@ -1196,7 +1196,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('table set ').global(`${name}`).keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('table set ').variable(`${name}`).keyword(' as ').expression(expression, root),
     { canParseAsConstant: true }
 )
 
@@ -1211,7 +1211,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('global set ').global(`${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('global set ').variable(`${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
     { canParseAsConstant: true }
 )
 
@@ -1226,7 +1226,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').global(`$${name}`).keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('set ').variable(`$${name}`).keyword(' as ').expression(expression, root),
     { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
@@ -1241,7 +1241,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, 'unfiltered');
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').global(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('set ').variable(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
     { canParseAsConstant: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 

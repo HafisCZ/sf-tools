@@ -260,9 +260,9 @@ class ExpressionRenderer {
                     highlighter.constant(token);
                 } else if (root.variables && root.variables[token]) {
                     if (root.variables[token].tableVariable == 'unfiltered') {
-                        highlighter.global(token, '-unfiltered');
+                        highlighter.variable(token, '-unfiltered');
                     } else if (root.variables[token].tableVariable) {
-                        highlighter.global(token);
+                        highlighter.variable(token);
                     } else {
                         highlighter.constant(token);
                     }
