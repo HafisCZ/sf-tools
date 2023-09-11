@@ -165,6 +165,11 @@ class Highlighter {
         return this;
     }
 
+    static operator (text) {
+        this.#text += `<span class="ta-operator">${this.#escape(text)}</span>`;
+        return this;
+    }
+
     static value (text) {
         this.#text += `<span class="ta-value">${this.#escape(text)}</span>`;
         return this;

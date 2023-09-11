@@ -110,6 +110,10 @@
   font-weight: bold;
 }
 
+.ta-operator {
+  color: #ffffff;
+}
+
 .ta-enum {
   color: #a80032;
   font-weight: bold;
