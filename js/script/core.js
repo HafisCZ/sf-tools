@@ -436,7 +436,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         const ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, false);
+            root.addVariable(name, ast, 'global');
         }
     },
     (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro(),
@@ -1163,7 +1163,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, true);
+            root.addVariable(name, ast, 'table');
         }
     },
     (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(name, 'table').space().deprecatedKeyword('with all as').space().expression(expression, root),
@@ -1193,7 +1193,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, true);
+            root.addVariable(name, ast, 'table');
         }
     },
     (root, name, expression) => Highlighter.keyword('table set ').variable(`${name}`, 'table').keyword(' as ').expression(expression, root),
@@ -1208,7 +1208,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, 'unfiltered');
+            root.addVariable(name, ast, 'global');
         }
     },
     (root, name, expression) => Highlighter.keyword('global set ').variable(`${name}`, 'global').keyword(' as ').expression(expression, root),
@@ -1223,7 +1223,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, true);
+            root.addVariable(name, ast, 'table');
         }
     },
     (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(`$${name}`, 'table').space().deprecatedKeyword('as').space().expression(expression, root),
@@ -1238,7 +1238,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, 'unfiltered');
+            root.addVariable(name, ast, 'global');
         }
     },
     (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(`$$${name}`, 'global').space().deprecatedKeyword('as').space().expression(expression, root),
@@ -1253,7 +1253,7 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, false);
+            root.addVariable(name, ast, 'local');
         }
     },
     (root, name, expression) => Highlighter.keyword('set ').variable(name, 'local').keyword(' as ').expression(expression, root),
@@ -2218,7 +2218,9 @@ class ScriptParser {
                     if (ast) {
                         settings.variables[name] = {
                             ast: ast,
-                            tableVariable: false
+                            type: command.key === 'VARIABLE_LOCAL' ? 'local' : (
+                                ['VARIABLE_TABLE', 'VARIABLE_TABLE_SHORT', 'VARIABLE_TABLE_LONG'].includes(command.key) ? 'table' : 'global'
+                            )
                         };
                     }
                 } else if (ScriptCommands.TABLE_GLOBAL_THEME.is(line)) {
@@ -2958,10 +2960,10 @@ class Script {
     }
 
     // Add new variable
-    addVariable (name, expression, isTableVariable = false) {
+    addVariable (name, expression, type) {
         this.variables[name] = {
             ast: expression,
-            tableVariable: isTableVariable
+            type
         }
     }
 
@@ -3230,13 +3232,13 @@ class Script {
             // Copy over to reference variables
             this.variablesReference[name] = {
                 ast: variable.ast,
-                tableVariable: variable.tableVariable
+                type: variable.type
             }
 
             // Run only if it is a table variable
-            if (variable.tableVariable) {
+            if (variable.type !== 'local') {
                 // Get value
-                let value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredScope : scope));
+                let value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type == 'global' ? unfilteredScope : scope));
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -3288,13 +3290,13 @@ class Script {
             // Copy over to reference variables
             this.variablesReference[name] = {
                 ast: variable.ast,
-                tableVariable: variable.tableVariable
+                type: variable.type
             }
 
-            if (variable.tableVariable) {
+            if (variable.type !== 'local') {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare));
+                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCurrent : arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCompare : arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3366,13 +3368,13 @@ class Script {
             // Copy over to reference variables
             this.variablesReference[name] = {
                 ast: variable.ast,
-                tableVariable: variable.tableVariable
+                type: variable.type
             }
 
-            if (variable.tableVariable) {
+            if (variable.type !== 'local') {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare));
+                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCurrent : arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCompare : arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {

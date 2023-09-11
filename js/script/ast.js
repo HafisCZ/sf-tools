@@ -259,9 +259,9 @@ class ExpressionRenderer {
                 } else if (['undefined', 'null', 'loop_index', 'loop_array'].includes(token)) {
                     highlighter.constant(token);
                 } else if (root.variables && root.variables[token]) {
-                    if (root.variables[token].tableVariable === 'unfiltered') {
+                    if (root.variables[token].type === 'global') {
                         highlighter.variable(token, 'global');
-                    } else if (root.variables[token].tableVariable) {
+                    } else if (root.variables[token].type === 'table') {
                         highlighter.variable(token, 'table');
                     } else {
                         highlighter.variable(token, 'local');
@@ -331,13 +331,13 @@ class Expression {
                 this.subexpressions = [];
 
                 // Get settings variable array
-                let tableVariables = (settings ? settings.variables : undefined) || Object.create(null);
-                this.#parseEmbeddedVariables(tableVariables);
+                let variables = (settings ? settings.variables : undefined) || Object.create(null);
+                this.#parseEmbeddedVariables(variables);
 
                 // Generate tree
                 this.root = this.#getExpression();
                 while (this.tokens[0] == ';') {
-                    let sub_root = this.#postProcess(tableVariables, this.root);
+                    let sub_root = this.#postProcess(variables, this.root);
                     this.cacheable = this.cacheable && this.#checkCacheableNode(sub_root);
                     this.subexpressions.push(sub_root);
 
@@ -351,7 +351,7 @@ class Expression {
                 }
 
                 // Clean tree
-                this.root = this.#postProcess(tableVariables, this.root);
+                this.root = this.#postProcess(variables, this.root);
 
                 // Check if tree is cacheable or not
                 this.cacheable = this.cacheable && this.#checkCacheableNode(this.root);
@@ -395,15 +395,15 @@ class Expression {
     }
 
     // Eval embedded variables
-    #parseEmbeddedVariables (tableVariables) {
+    #parseEmbeddedVariables (variables) {
         // All variables in the token string
-        let variables = [];
+        let embeddedVariables = [];
 
         // Current variable
         let brackets = 0;
         let index = null;
         let manualName = null;
-        let table = true;
+        let type = 'table';
 
         // Iterate over all tokens
         for (let i = 0; i < this.tokens.length; i++) {
@@ -416,26 +416,26 @@ class Expression {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
-                    table = true;
+                    type = 'table';
                 } else if (this.tokens[i + 2] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
                     manualName = this.tokens[i++];
-                    table = true;
+                    type = 'table';
                 }
             } else if (token == '$$') {
                 if (this.tokens[i + 1] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
-                    table = 'unfiltered';
+                    type = 'global';
                 } else if (this.tokens[i + 2] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
                     manualName = this.tokens[i++];
-                    table = 'unfiltered';
+                    type = 'global';
                 }
             } else if (token == '$!') {
                 if (this.tokens[i + 2] == '{') {
@@ -443,7 +443,7 @@ class Expression {
                     index = i++;
                     brackets++;
                     manualName = this.tokens[i++];
-                    table = false;
+                    type = 'local';
                 }
             } else if (index != null) {
                 // If there is a variable
@@ -455,26 +455,26 @@ class Expression {
                     brackets--;
                     if (brackets == 0) {
                         // Push new variable if brackets are 0
-                        variables.push({
+                        embeddedVariables.push({
                             start: index,
                             length: i - index + 1,
                             name: manualName,
-                            table: table
+                            type: type
                         });
 
                         // Reset temporary vars
                         index = null;
                         manualName = null;
                         brackets = 0;
-                        table = true;
+                        type = 'table';
                     }
                 }
             }
         }
 
         // Replace variables with placeholders and save expression
-        for (let i = variables.length - 1; i >= 0; i--) {
-            let variable = variables[i];
+        for (let i = embeddedVariables.length - 1; i >= 0; i--) {
+            let variable = embeddedVariables[i];
 
             // Get tokens and strip first 2 and last 1 token (control characters)
             let tokens = this.tokens.splice(variable.start, variable.length);
@@ -493,9 +493,9 @@ class Expression {
             this.tokens.splice(variable.start, 0, isNaN(expression.root) ? name : expression.root);
 
             // Add variable to settings
-            tableVariables[name] = {
+            variables[name] = {
                 ast: expression,
-                tableVariable: variable.table
+                type: variable.type
             };
         }
     }
@@ -829,12 +829,12 @@ class Expression {
     }
 
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
-    #postProcess (tableVariables, node) {
+    #postProcess (variables, node) {
         if (typeof node === 'object') {
             if (node.op === '__value') return node;
             if (node.args) {
                 for (let i = 0; i < node.args.length; i++) {
-                    node.args[i] = this.#postProcess(tableVariables, node.args[i]);
+                    node.args[i] = this.#postProcess(variables, node.args[i]);
                 }
             }
 
@@ -849,16 +849,16 @@ class Expression {
                 }
             }
         } else if (typeof node === 'string') {
-            if (node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
-                return tableVariables[node].ast.root;
+            if (node in variables && !isNaN(variables[node].ast.root)) {
+                return variables[node].ast.root;
             } else if (/\~\d+/.test(node)) {
                 let index = parseInt(node.slice(1));
                 if (index < this.subexpressions.length) {
                     let subnode = this.subexpressions[index];
                     if (typeof subnode === 'number' || (typeof subnode === 'object' && subnode.op === '__value')) {
                         return subnode;
-                    } else if (typeof subnode === 'string' && subnode in tableVariables && !isNaN(tableVariables[subnode].ast.root)) {
-                        return tableVariables[subnode].ast.root;
+                    } else if (typeof subnode === 'string' && subnode in variables && !isNaN(variables[subnode].ast.root)) {
+                        return variables[subnode].ast.root;
                     }
                 }
             }
