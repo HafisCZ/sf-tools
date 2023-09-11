@@ -196,7 +196,7 @@ class Highlighter {
     }
    
     static variable (text, subtype = '') {
-        this.#text += `<span class="ta-global${subtype}">${this.#escape(text)}</span>`;
+        this.#text += `<span class="ta-variable-${subtype}">${this.#escape(text)}</span>`;
         return this;
     }
 
@@ -1166,7 +1166,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').variable(name).keyword(' with all as ').expression(expression, root),
+    (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(name, 'table').space().deprecatedKeyword('with all as').space().expression(expression, root),
     { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
@@ -1196,7 +1196,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('table set ').variable(`${name}`).keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('table set ').variable(`${name}`, 'table').keyword(' as ').expression(expression, root),
     { canParseAsConstant: true }
 )
 
@@ -1208,10 +1208,10 @@ ScriptCommands.register(
     (root, name, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addVariable(name, ast, true);
+            root.addVariable(name, ast, 'unfiltered');
         }
     },
-    (root, name, expression) => Highlighter.keyword('global set ').variable(`${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('global set ').variable(`${name}`, 'global').keyword(' as ').expression(expression, root),
     { canParseAsConstant: true }
 )
 
@@ -1226,7 +1226,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, true);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').variable(`$${name}`).keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(`$${name}`, 'table').space().deprecatedKeyword('as').space().expression(expression, root),
     { canParseAsConstant: true, isDeprecated: 'VARIABLE_TABLE' }
 )
 
@@ -1241,12 +1241,12 @@ ScriptCommands.register(
             root.addVariable(name, ast, 'unfiltered');
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').variable(`$$${name}`, '-unfiltered').keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.deprecatedKeyword('set').space().variable(`$$${name}`, 'global').space().deprecatedKeyword('as').space().expression(expression, root),
     { canParseAsConstant: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 
 ScriptCommands.register(
-    'VARIABLE',
+    'VARIABLE_LOCAL',
     ScriptType.Table,
     'set <name> as <expression>',
     /^set (\w+[\w ]*) as (.+)$/,
@@ -1256,7 +1256,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, false);
         }
     },
-    (root, name, expression) => Highlighter.keyword('set ').constant(name).keyword(' as ').expression(expression, root),
+    (root, name, expression) => Highlighter.keyword('set ').variable(name, 'local').keyword(' as ').expression(expression, root),
     { canParseAsConstant: true }
 )
 
@@ -2212,7 +2212,7 @@ class ScriptParser {
                             args: variables.split(',').map(v => v.trim())
                         };
                     }
-                } else if (command = ScriptCommands.pick(line, ['MACRO_VARIABLE', 'VARIABLE', 'VARIABLE_TABLE', 'VARIABLE_TABLE_SHORT', 'VARIABLE_TABLE_LONG', 'VARIABLE_GLOBAL', 'VARIABLE_GLOBAL_SHORT'])) {
+                } else if (command = ScriptCommands.pick(line, ['MACRO_VARIABLE', 'VARIABLE_LOCAL', 'VARIABLE_TABLE', 'VARIABLE_TABLE_SHORT', 'VARIABLE_TABLE_LONG', 'VARIABLE_GLOBAL', 'VARIABLE_GLOBAL_SHORT'])) {
                     let [name, expression] = command.parseParams(line);
                     let ast = Expression.create(expression);
                     if (ast) {

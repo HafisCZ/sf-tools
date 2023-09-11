@@ -259,12 +259,12 @@ class ExpressionRenderer {
                 } else if (['undefined', 'null', 'loop_index', 'loop_array'].includes(token)) {
                     highlighter.constant(token);
                 } else if (root.variables && root.variables[token]) {
-                    if (root.variables[token].tableVariable == 'unfiltered') {
-                        highlighter.variable(token, '-unfiltered');
+                    if (root.variables[token].tableVariable === 'unfiltered') {
+                        highlighter.variable(token, 'global');
                     } else if (root.variables[token].tableVariable) {
-                        highlighter.variable(token);
+                        highlighter.variable(token, 'table');
                     } else {
-                        highlighter.constant(token);
+                        highlighter.variable(token, 'local');
                     }
                 } else if (/^(\.*)this$/.test(token)) {
                     highlighter.constant(token);

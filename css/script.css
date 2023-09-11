@@ -133,8 +133,16 @@
   color: #46bbb5;
 }
 
-.ta-global {
+.ta-variable-local {
+  color: #46bbb5;
+}
+
+.ta-variable-table {
   color: #1f58cc;
+}
+
+.ta-variable-global {
+  color: #6d1fcc;
 }
 
 .ta-value {
@@ -144,10 +152,6 @@
 .ta-identifier {
   color: #8ba1c4;
   font-weight: bold;
-}
-
-.ta-global-unfiltered {
-  color: #6d1fcc;
 }
 
 .ta-function {
