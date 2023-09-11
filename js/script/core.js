@@ -3074,8 +3074,8 @@ class Script {
             theme: this.theme,
             functions: this.functions,
             variables: this.variablesReference,
-            array: [],
-            array_unfiltered: [],
+            arrayTable: [],
+            arrayGlobal: [],
             // Constants have to be propagated through the environment
             constants: this.constants,
             row_indexes: this.row_indexes,
@@ -3213,19 +3213,19 @@ class Script {
         this.reference = array.reference;
     }
 
-    evalPlayer (array, unfilteredArray) {
+    evalPlayer (tableArray, globalTable) {
         // Evaluate row indexes
-        this.evalRowIndexes(array);
+        this.evalRowIndexes(tableArray);
 
         // Purify array
-        array = [].concat(array);
+        tableArray = [].concat(tableArray);
 
         // Get shared scope
-        let scope = Script.createSegmentedArray(array, entry => [entry.player, entry.compare]);
-        let unfilteredScope = Script.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
+        let tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        let globalArrayCurrent = Script.createSegmentedArray(globalTable, entry => [entry.compare, entry.compare]);
 
-        this.array = array;
-        this.array_unfiltered = unfilteredArray;
+        this.arrayTable = tableArray;
+        this.arrayGlobal = globalTable;
 
         // Iterate over all variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -3238,7 +3238,7 @@ class Script {
             // Run only if it is a table variable
             if (variable.type !== 'local') {
                 // Get value
-                let value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type == 'global' ? unfilteredScope : scope));
+                let value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type == 'global' ? globalArrayCurrent : tableArrayCurrent));
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -3251,7 +3251,7 @@ class Script {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(array));
+            let currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(tableArray));
 
             row.eval = {
                 value: currentValue
@@ -3262,28 +3262,28 @@ class Script {
         this.evalRules();
     }
 
-    evalBrowse (array, unfilteredArray) {
+    evalBrowse (tableArray, globalArray) {
         // Evaluate row indexes
-        this.evalRowIndexes(array);
+        this.evalRowIndexes(tableArray);
 
         // Variables
         let compareEnvironment = this.getCompareEnvironment();
-        let sameTimestamp = array.timestamp == array.reference;
+        let sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
-        this.list_classes = array.reduce((c, { player }) => {
+        this.list_classes = tableArray.reduce((c, { player }) => {
             c[player.Class]++;
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
-        this.array = array;
-        this.array_unfiltered = unfilteredArray;
+        this.arrayTable = tableArray;
+        this.arrayGlobal = globalArray;
 
         // Get segmented lists
-        let arrayCurrent = Script.createSegmentedArray(array, entry => [entry.player, entry.compare]);
-        let arrayCompare = Script.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
-        let unfilteredArrayCurrent = Script.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
-        let unfilteredArrayCompare = Script.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
+        let tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        let tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
+        let globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        let globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
 
         // Evaluate variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -3295,8 +3295,8 @@ class Script {
 
             if (variable.type !== 'local') {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCurrent : arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCompare : arrayCompare));
+                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCurrent : tableArrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCompare : tableArrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3315,8 +3315,8 @@ class Script {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.expr.eval(new ExpressionScope(this).addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(arrayCompare));
+            let currentValue = row.expr.eval(new ExpressionScope(this).addSelf(tableArrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(tableArrayCompare));
 
             row.eval = {
                 value: currentValue,
@@ -3328,38 +3328,38 @@ class Script {
         this.evalRules();
     }
 
-    evalGuild (array, unfilteredArray) {
+    evalGuild (tableArray, globalArray) {
         // Evaluate row indexes
-        this.evalRowIndexes(array);
+        this.evalRowIndexes(tableArray);
 
         // Variables
         let compareEnvironment = this.getCompareEnvironment();
-        let sameTimestamp = array.timestamp == array.reference;
+        let sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
-        this.list_classes = array.reduce((c, { player }) => {
+        this.list_classes = tableArray.reduce((c, { player }) => {
             c[player.Class]++;
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
-        this.list_joined = array.joined;
-        this.list_kicked = array.kicked;
-        this.list_missing = array.missing;
+        this.list_joined = tableArray.joined;
+        this.list_kicked = tableArray.kicked;
+        this.list_missing = tableArray.missing;
 
-        this.array = array;
-        this.array_unfiltered = unfilteredArray;
+        this.arrayTable = tableArray;
+        this.arrayGlobal = globalArray;
 
-        array = [].concat(array);
-        unfilteredArray = [].concat(unfilteredArray);
+        tableArray = [].concat(tableArray);
+        globalArray = [].concat(globalArray);
 
         // Get segmented lists
-        let arrayCurrent = Script.createSegmentedArray(array, entry => [entry.player, entry.compare]);
-        let arrayCompare = Script.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
-        let unfilteredArrayCurrent = Script.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
-        let unfilteredArrayCompare = Script.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
+        let tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        let tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
+        let globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        let globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
 
         // Get own player
-        let ownEntry = array.find(entry => entry.player.Own) || array[0];
+        let ownEntry = tableArray.find(entry => entry.player.Own) || tableArray[0];
         let ownPlayer = _dig(ownEntry, 'player');
         let ownCompare = _dig(ownEntry, 'compare');
 
@@ -3373,8 +3373,8 @@ class Script {
 
             if (variable.type !== 'local') {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCurrent : arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? unfilteredArrayCompare : arrayCompare));
+                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCurrent : tableArrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCompare : tableArrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3393,8 +3393,8 @@ class Script {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.expr.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(arrayCompare));
+            let currentValue = row.expr.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(tableArrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(tableArrayCompare));
 
             row.eval = {
                 value: currentValue,

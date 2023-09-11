@@ -660,14 +660,14 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'table_array',
   function (scope) {
-    return scope.env.array;
+    return scope.env.arrayTable;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'table_array_unfiltered',
   function (scope) {
-    return scope.env.array_unfiltered;
+    return scope.env.arrayGlobal;
   }
 )
 
