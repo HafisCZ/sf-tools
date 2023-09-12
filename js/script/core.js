@@ -326,6 +326,10 @@ class ScriptCommands {
         return this.#keys;
     }
 
+    static commands () {
+        return this.#commands;
+    }
+
     static pick (text, keys) {
         return keys.map((key) => this[key]).find((command) => command && command.is(text));
     }
@@ -3668,7 +3672,7 @@ class ScriptEditor extends SignalSource {
         this.info = document.createElement('div');
         this.info.classList.add('ta-info-wrapper');
         this.info.style.display = 'none';
-
+        
         this.wrapper.appendChild(this.info);
 
         const baseStyle = getComputedStyle(this.area);
@@ -3678,7 +3682,64 @@ class ScriptEditor extends SignalSource {
         this.mask.style.fontFamily = baseStyle.fontFamily;
         this.mask.style.lineHeight = baseStyle.lineHeight;
 
+        this.context = document.createElement('div');
+        this.context.classList.add('ta-context');
+        this.context.style.left = `calc(var(--context-left, 0px) + ${baseStyle.paddingLeft})`;
+        this.context.style.top = `calc(var(--context-top, 0px) + ${baseStyle.paddingTop})`;
+        this.context.style.font = baseStyle.font;
+        this.context.style.fontFamily = baseStyle.fontFamily;
+        this.context.style.lineHeight = baseStyle.lineHeight;
+        this.context.style.display = 'none';
+
+        this.wrapper.appendChild(this.context);
+
         const maskClone = this.mask.cloneNode(true);
+
+        const handleContextClick = (el) => {
+            const frag = el.innerText;
+
+            const sel = this.selection;
+            const v = this.area.value;
+
+            this.area.value = v.slice(0, sel.end) + frag + v.slice(sel.end);
+
+            this.selection = {
+                start: sel.start + frag.length,
+                end: sel.end + frag.length
+            };
+
+            this.context.style.display = 'none';
+
+            this.area.dispatchEvent(new Event('input'));
+            this.area.focus();
+        }
+
+        this.context.addEventListener('click', (event) => {
+            const el = event.target.closest('.ta-context-item');
+            if (el) {
+                handleContextClick(el);
+            }
+        });
+
+        this.context.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                this.context.style.display = 'none';
+
+                this.area.focus();
+            } else if (event.key === 'Enter') {
+                const el = event.target.closest('.ta-context-item');
+                if (el) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    handleContextClick(el);
+                }
+            }
+        });
+
+        this.area.addEventListener('focusin', () => {
+            this.context.style.display = 'none';
+        })
 
         this.area.addEventListener('input', (event) => {
             let value = event.currentTarget.value;
@@ -3734,16 +3795,41 @@ class ScriptEditor extends SignalSource {
                 event.preventDefault();
 
                 this.emit('ctrl+shift+s');
+            } else if (event.ctrlKey && event.key === ' ') {
+                event.preventDefault();
+
+                const a = this.area;
+                const d = a.selectionEnd;
+
+                let v = a.value;
+
+                const ls = _lastIndexOfInSlice(v, '\n', 0, d - 1) + 1;
+                const le = d;
+
+                const l = v.substring(ls, le).trimStart();
+                const cs = ScriptCommands.commands().filter((c) => c.type === scriptType && c.syntax.startsWith(l)).map((c) => c.syntax.replaceAll('&gt;', '>').replaceAll('&lt;', '<').slice(l.length));
+
+                const pTop = 18 * _countInSlice(v, '\n', 0, d);
+                const pLeft = 8 * (d - ls);
+
+                if (cs.length > 0) {
+                    this.context.innerHTML = cs.map((line) => `<div class="ta-context-item" tabindex="0">${line.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`).join('');
+                    this.context.style.setProperty('--context-top', `${pTop}px`);
+                    this.context.style.setProperty('--context-left', `${pLeft}px`);
+                    this.context.style.display = 'block';
+                    this.context.querySelector('.ta-context-item').focus();
+                }
             } else if (event.key === 'Tab') {
                 event.preventDefault();
 
-                let a = this.area;
-                let v = this.area.value;
-                let s = a.selectionStart;
-                let d = a.selectionEnd;
+                const a = this.area;
+                const s = a.selectionStart;
+                const d = a.selectionEnd;
+
+                let v = a.value;
 
                 if (s == d) {
-                    this.area.value = v.substring(0, s) + '  ' + v.substring(s);
+                    a.value = v.substring(0, s) + '  ' + v.substring(s);
                     a.selectionStart = s + 2;
                     a.selectionEnd = d + 2;
                 } else {
@@ -3765,12 +3851,12 @@ class ScriptEditor extends SignalSource {
                         }
                     }
 
-                    this.area.value = v;
+                    a.value = v;
                     a.selectionStart = s + o * 2;
                     a.selectionEnd = d + (oo + o) * 2;
                 }
 
-                this.area.dispatchEvent(new Event('input'));
+                a.dispatchEvent(new Event('input'));
             }
         });
 
@@ -3806,6 +3892,7 @@ class ScriptEditor extends SignalSource {
             const sy = this.area.scrollTop;
             const sx = this.area.scrollLeft;
             this.mask.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
+            this.context.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
 
             window.requestAnimationFrame(updateMaskPosition);
         }

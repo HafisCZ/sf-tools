@@ -283,6 +283,23 @@ function _fastSum(arr) {
     return m;
 }
 
+function _countInSlice (string, character, boundaryStart, boundaryEnd) {
+    let count = 0;
+    for (let i = boundaryStart; i < boundaryEnd; i++) {
+        if (string[i] === character) count++;
+    }
+
+    return count;
+}
+
+function _lastIndexOfInSlice (string, character, boundaryStart, boundaryEnd) {
+    for (let i = boundaryEnd; i >= boundaryStart; i--) {
+        if (string[i] === character) return i;
+    }
+
+    return -1;
+}
+
 function _joinSentence (array) {
     let last = array.length > 1 ? ` and ${array.pop()}` : ''
     return array.join(', ') + last;
