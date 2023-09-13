@@ -3869,13 +3869,23 @@ class ScriptEditor extends SignalSource {
                 } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                     _stopAndPrevent(event);
 
+                    const directionDown = event.key === 'ArrowDown';
+
                     const line = this.autocomplete.querySelector('[data-selected]');
                     line.removeAttribute('data-selected');
 
-                    const adjacentLine = line?.[event.key === 'ArrowDown' ? 'nextElementSibling' : 'previousElementSibling'] || (
-                        event.key === 'ArrowDown' ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild
+                    const adjacentLine = line?.[directionDown ? 'nextElementSibling' : 'previousElementSibling'] || (
+                        directionDown ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild
                     );
                     adjacentLine.setAttribute('data-selected', '');
+
+                    const currentScroll = this.autocomplete.scrollTop;
+                    const isAbove = adjacentLine.offsetTop < currentScroll;
+                    const isBelow = adjacentLine.offsetTop > currentScroll + this.autocomplete.offsetHeight - 20;
+
+                    if (isAbove || isBelow) {
+                        this.autocomplete.scroll({ top: adjacentLine.offsetTop + (isBelow ? 20 - this.autocomplete.offsetHeight : 0), behavior: 'instant' });
+                    }
                 }
             } else {
                 if (event.key === 'Tab') {
@@ -3953,6 +3963,7 @@ class ScriptEditor extends SignalSource {
             }
         });
 
+        this.textarea.addEventListener('click', () => {
             this.#hideAutocomplete();
         })
 
