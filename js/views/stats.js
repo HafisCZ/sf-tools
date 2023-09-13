@@ -286,25 +286,25 @@ const ProfileCreateDialog = new (class ProfileCreateDialog extends Dialog {
                   <div class="two fields">
                       <div class="field">
                           <label>${this.intl('value')} 1:</label>
-                          <div class="ta-wrapper" style="height: initial;">
-                              <input class="ta-area" style="padding-left: 1em !important;" data-op="primary" type="text" placeholder="${this.intl('ast.primary')}">
-                              <div data-op="primary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                          <div class="ta-editor" style="height: initial;">
+                              <input class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="primary" type="text" placeholder="${this.intl('ast.primary')}">
+                              <div data-op="primary-content" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                           </div>
                       </div>
                       <div class="field">
                           <label>${this.intl('value')} 2:</label>
-                          <div class="ta-wrapper" style="height: initial;">
-                              <input class="ta-area" style="padding-left: 1em !important;" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary')}">
-                              <div data-op="primary-content-2" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                          <div class="ta-editor" style="height: initial;">
+                              <input class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary')}">
+                              <div data-op="primary-content-2" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                           </div>
                       </div>
                   </div>
                   <h3 class="header mb-0">${this.intl('player.secondary')}</h3>
                   <div class="field">
                       <label>${this.intl('secondary')}:</label>
-                      <div class="ta-wrapper">
-                          <input class="ta-area" style="padding-left: 1em !important;" data-op="secondary" type="text" placeholder="${this.intl('ast.secondary')}">
-                          <div data-op="secondary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                      <div class="ta-editor">
+                          <input class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="secondary" type="text" placeholder="${this.intl('ast.secondary')}">
+                          <div data-op="secondary-content" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                       </div>
                   </div>
                   <h3 class="header mb-0">${this.intl('group.primary')}</h3>
@@ -329,25 +329,25 @@ const ProfileCreateDialog = new (class ProfileCreateDialog extends Dialog {
                   <div class="two fields">
                       <div class="field">
                           <label>${this.intl('value')} 1:</label>
-                          <div class="ta-wrapper" style="height: initial;">
-                              <input class="ta-area" style="padding-left: 1em !important;" data-op="primary-g" type="text" placeholder="${this.intl('ast.primary')}">
-                              <div data-op="primary-content-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                          <div class="ta-editor" style="height: initial;">
+                              <input class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="primary-g" type="text" placeholder="${this.intl('ast.primary')}">
+                              <div data-op="primary-content-g" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                           </div>
                       </div>
                       <div class="field">
                           <label>${this.intl('value')} 2:</label>
-                          <div class="ta-wrapper" style="height: initial;">
-                              <input class="ta-area" style="padding-left: 1em !important;" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary')}">
-                              <div data-op="primary-content-2-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                          <div class="ta-editor" style="height: initial;">
+                              <input class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary')}">
+                              <div data-op="primary-content-2-g" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                           </div>
                       </div>
                   </div>
                   <h3 class="header mb-0">${this.intl('group.secondary')}</h3>
                   <div class="field">
                       <label>${this.intl('secondary')}:</label>
-                      <div class="ta-wrapper">
-                          <input class="ta-area" style="padding-left: 1em !important;" data-op="secondary-g" type="text" placeholder="${this.intl('ast.secondary')}">
-                          <div data-op="secondary-content-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                      <div class="ta-editor">
+                          <input class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="secondary-g" type="text" placeholder="${this.intl('ast.secondary')}">
+                          <div data-op="secondary-content-g" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                       </div>
                   </div>
               </div>

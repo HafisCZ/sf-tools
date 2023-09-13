@@ -2273,23 +2273,23 @@ class FilesTab extends Tab {
         this.$filters.html(`
             <div class="field">
                 <label>${intl('stats.files.filters.expression')}</label>
-                <div class="ta-wrapper">
+                <div class="ta-editor">
                     <div class="ui inverted input">
-                        <input class="ta-area" style="padding-left: 1em !important;" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
+                        <input class="ta-editor-textarea" style="padding-left: 1em !important;" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
                     </div>
-                    <div class="ta-content" style="width: 100%; margin-top: calc(-1em - 16px); margin-left: 1em;"></div>
+                    <div class="ta-editor-overlay" style="width: 100%; margin-top: calc(-1em - 16px); margin-left: 1em;"></div>
                 </div>
             </div>
         `);
 
-        let $field = this.$filters.find('.ta-area');
+        let $field = this.$filters.find('.ta-editor-textarea');
         let $parent = $field.closest('.field');
 
         $field.on('input change', (event) => {
             let content = event.currentTarget.value;
 
             this.expressionFilter = Expression.create(content);
-            this.$filters.find('.ta-content').html(
+            this.$filters.find('.ta-editor-overlay').html(
                 Highlighter.expression(content, undefined, this.ExpressionConfig).text
             );
 
@@ -2588,7 +2588,7 @@ class ScriptsTab extends Tab {
             }
         })
 
-        this.editor = new ScriptEditor(this.$parent, ScriptType.Table);
+        this.editor = new ScriptEditor(this.$parent.operator('editor').get(0), ScriptType.Table);
         this.editor.subscribe('change', (val) => {
             this._contentChanged(this.script && val !== this.script.content, 'content')
         })
@@ -2922,7 +2922,7 @@ class SettingsTab extends Tab {
             this.editor.content = Actions.getScript();
         });
 
-        this.editor = new ScriptEditor(this.$parent, ScriptType.Action);
+        this.editor = new ScriptEditor(this.$parent.operator('editor').get(0), ScriptType.Action);
         this.editor.subscribe('change', (val) => {
             if (val === Actions.getScript()) {
                 this.$save.addClass('disabled');

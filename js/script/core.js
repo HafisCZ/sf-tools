@@ -1991,7 +1991,7 @@ class ScriptValidator {
         const name1 = ScriptCommands[deprecatedKey].syntax;
         const name2 = ScriptCommands[deprecatedBy].syntax;
 
-        this.#entries.add(`<div class="ta-info ta-info-deprecated">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
+        this.#entries.add(`<div class="ta-editor-info-line ta-editor-info-line-deprecated">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
     }
 
     string () {
@@ -2347,11 +2347,11 @@ class ScriptRenderer {
                 currentLine += Highlighter.comment(comment).text;
             }
 
-            content += `<div class="ta-line">${currentLine || '&nbsp;'}</div>`;
+            content += `<div class="ta-editor-overlay-line">${currentLine || '&nbsp;'}</div>`;
         }
 
         return {
-            html: `<div class="ta-block">${content}</div>`,
+            html: `<div class="ta-editor-overlay-page">${content}</div>`,
             info: validator.string()
         }
     }
@@ -3658,147 +3658,148 @@ class TemplateManager {
 }
 
 class ScriptEditor extends SignalSource {
-    constructor (parent, scriptType) {
+    constructor (element, scriptType) {
         super();
 
-        this.parent = parent.get(0);
-
+        this.editor = element;
         this.scriptType = scriptType;
 
-        this.area = this.parent.querySelector('textarea');
-        this.wrapper = this.parent.querySelector('.ta-wrapper');
-        this.mask = this.parent.querySelector('.ta-content');
+        this.#createEditor();
+    }
 
+    #applyStyles (sourceStyle, targetStyle) {
+        targetStyle.setProperty('--offset-left', sourceStyle.paddingLeft);
+        targetStyle.setProperty('--offset-top', sourceStyle.paddingTop);
+
+        for (const style of ['font', 'fontFamily', 'lineHeight']) {
+            targetStyle[style] = sourceStyle[style];
+        }
+    }
+
+    #update () {
+        const value = this.textarea.value;
+
+        this.overlay.remove();
+        this.overlay = this.overlayClone.cloneNode(true);
+
+        const { html, info } = ScriptRenderer.render(value, this.scriptType);
+
+        this.overlay.innerHTML = html;
+
+        this.editor.insertAdjacentElement('beforeend', this.overlay);
+
+        // Display info if needed
+        if (info) {
+            this.info.innerHTML = info;
+            this.info.classList.add('visible');
+        } else {
+            this.info.classList.remove('visible');
+        }
+
+        this.emit('change', value);
+    }
+
+    #createEditor () {
+        // Prepare editor
+        this.editor.classList.add('ta-editor');
+
+        // Create text area
+        this.textarea = document.createElement('textarea');
+        this.textarea.setAttribute('class', 'ta-editor-textarea');
+        this.textarea.setAttribute('wrap', 'off');
+        this.textarea.setAttribute('spellcheck', 'false');
+
+        this.editor.insertAdjacentElement('beforeend', this.textarea);
+
+        // Create overlay element
+        this.overlay = document.createElement('div');
+        this.overlay.setAttribute('class', 'ta-editor-overlay');
+
+        this.editor.insertAdjacentElement('beforeend', this.overlay);
+
+        // Create info element
         this.info = document.createElement('div');
-        this.info.classList.add('ta-info-wrapper');
-        this.info.style.display = 'none';
-        
-        this.wrapper.appendChild(this.info);
+        this.info.setAttribute('class', 'ta-editor-info');
 
-        const baseStyle = getComputedStyle(this.area);
-        this.mask.style.top = baseStyle.paddingTop;
-        this.mask.style.left = baseStyle.paddingLeft;
-        this.mask.style.font = baseStyle.font;
-        this.mask.style.fontFamily = baseStyle.fontFamily;
-        this.mask.style.lineHeight = baseStyle.lineHeight;
+        this.editor.insertAdjacentElement('beforeend', this.info);
+                
+        // Create context element
+        this.autocomplete = document.createElement('div');
+        this.autocomplete.setAttribute('class', 'ta-editor-autocomplete');
 
-        this.context = document.createElement('div');
-        this.context.classList.add('ta-context');
-        this.context.style.left = `calc(var(--context-left, 0px) + ${baseStyle.paddingLeft})`;
-        this.context.style.top = `calc(var(--context-top, 0px) + ${baseStyle.paddingTop})`;
-        this.context.style.font = baseStyle.font;
-        this.context.style.fontFamily = baseStyle.fontFamily;
-        this.context.style.lineHeight = baseStyle.lineHeight;
-        this.context.style.display = 'none';
+        this.editor.insertAdjacentElement('beforeend', this.autocomplete);
 
-        this.wrapper.appendChild(this.context);
+        // Compute styles
+        const sourceStyle = getComputedStyle(this.textarea);
+        this.#applyStyles(sourceStyle, this.overlay.style);
+        this.#applyStyles(sourceStyle, this.autocomplete.style);
 
-        const maskClone = this.mask.cloneNode(true);
+        // Overlay clone for faster render
+        this.overlayClone = this.overlay.cloneNode(true);
 
         const handleContextClick = (el) => {
             const frag = el.innerText;
 
             const sel = this.selection;
-            const v = this.area.value;
+            const v = this.textarea.value;
 
-            this.area.value = v.slice(0, sel.end) + frag + v.slice(sel.end);
+            this.textarea.value = v.slice(0, sel.end) + frag + v.slice(sel.end);
 
             this.selection = {
                 start: sel.start + frag.length,
-                end: sel.end + frag.length
+                end: sel.end + frag.length,
+                direction: sel.direction
             };
 
-            this.context.style.display = 'none';
+            this.autocomplete.classList.remove('visible');
 
-            this.area.dispatchEvent(new Event('input'));
-            this.area.focus();
+            this.#update();
+            this.textarea.focus();
         }
 
-        this.context.addEventListener('click', (event) => {
-            const el = event.target.closest('.ta-context-item');
-            if (el) {
-                handleContextClick(el);
+        this.autocomplete.addEventListener('click', (event) => {
+            const line = event.target.closest('.ta-editor-autocomplete-line');
+            if (line) {
+                handleContextClick(line);
             }
         });
 
-        this.context.addEventListener('keydown', (event) => {
+        this.autocomplete.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
-                this.context.style.display = 'none';
+                this.autocomplete.classList.remove('visible');
 
-                this.area.focus();
+                this.textarea.focus();
             } else if (event.key === 'Enter') {
-                const el = event.target.closest('.ta-context-item');
-                if (el) {
-                    event.preventDefault();
-                    event.stopPropagation();
+                const line = event.target.closest('.ta-editor-autocomplete-line');
+                if (line) {
+                    _stopAndPrevent(event)
 
-                    handleContextClick(el);
+                    handleContextClick(line);
                 }
             }
         });
 
-        this.area.addEventListener('focusin', () => {
-            this.context.style.display = 'none';
+        this.textarea.addEventListener('focusin', () => {
+            this.autocomplete.classList.remove('visible');
         })
 
-        this.area.addEventListener('input', (event) => {
-            let value = event.currentTarget.value;
-            if (this.pasted) {
-                value = value.replace(/\t/g, ' ');
-
-                const ob = this.area;
-
-                const ob1 = ob.selectionStart;
-                const ob2 = ob.selectionEnd;
-                const ob3 = ob.selectionDirection;
-
-                ob.value = value;
-
-                ob.selectionStart = ob1;
-                ob.selectionEnd = ob2;
-                ob.selectionDirection = ob3;
-
-                this.pasted = false;
-            }
-
-            const scrollTransform = getComputedStyle(this.mask).transform;
-
-            this.mask.remove();
-            this.mask = maskClone.cloneNode(true);
-
-            const data = ScriptRenderer.render(value, this.scriptType);
-
-            this.mask.innerHTML = data.html;
-            this.mask.style.transform = scrollTransform;
-
-            this.wrapper.insertAdjacentElement('beforeend', this.mask);
-
-            // Display info if needed
-            if (data.info) {
-                this.info.innerHTML = data.info;
-                this.info.style.display = 'block';
-            } else {
-                this.info.style.display = 'none';
-            }
-
-            this.emit('change', value);
+        this.textarea.addEventListener('input', () => {
+            this.#update();
         });
 
-        this.area.dispatchEvent(new Event('input'));
-
-        this.area.addEventListener('keydown', (event) => {
+        this.textarea.addEventListener('keydown', (event) => {
             if (event.ctrlKey && event.key === 's') {
-                event.preventDefault();
+                _stopAndPrevent(event);
 
                 this.emit('ctrl+s');
             } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
-                event.preventDefault();
+                _stopAndPrevent(event);
 
                 this.emit('ctrl+shift+s');
             } else if (event.ctrlKey && event.key === ' ') {
-                event.preventDefault();
+                _stopAndPrevent(event);
 
-                const a = this.area;
+                const a = this.textarea;
                 const d = a.selectionEnd;
 
                 let v = a.value;
@@ -3807,22 +3808,23 @@ class ScriptEditor extends SignalSource {
                 const le = d;
 
                 const l = v.substring(ls, le).trimStart();
-                const cs = ScriptCommands.commands().filter((c) => c.type === scriptType && c.syntax.startsWith(l)).map((c) => c.syntax.replaceAll('&gt;', '>').replaceAll('&lt;', '<').slice(l.length));
+                const cs = ScriptCommands.commands().filter((c) => c.type === this.scriptType && c.syntax.startsWith(l)).map((c) => c.syntax.replaceAll('&gt;', '>').replaceAll('&lt;', '<').slice(l.length));
 
                 const pTop = 18 * _countInSlice(v, '\n', 0, d);
                 const pLeft = 8 * (d - ls);
 
                 if (cs.length > 0) {
-                    this.context.innerHTML = cs.map((line) => `<div class="ta-context-item" tabindex="0">${line.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`).join('');
-                    this.context.style.setProperty('--context-top', `${pTop}px`);
-                    this.context.style.setProperty('--context-left', `${pLeft}px`);
-                    this.context.style.display = 'block';
-                    this.context.querySelector('.ta-context-item').focus();
+                    this.autocomplete.innerHTML = cs.map((line) => `<div class="ta-editor-autocomplete-line" tabindex="0">${line.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`).join('');
+                    this.autocomplete.style.setProperty('--position-top', `${pTop}px`);
+                    this.autocomplete.style.setProperty('--position-left', `${pLeft}px`);
+                    this.autocomplete.classList.add('visible');
+
+                    this.autocomplete.querySelector('.ta-editor-autocomplete-line').focus();
                 }
             } else if (event.key === 'Tab') {
-                event.preventDefault();
+                _stopAndPrevent(event);
 
-                const a = this.area;
+                const a = this.textarea;
                 const s = a.selectionStart;
                 const d = a.selectionEnd;
 
@@ -3856,29 +3858,34 @@ class ScriptEditor extends SignalSource {
                     a.selectionEnd = d + (oo + o) * 2;
                 }
 
-                a.dispatchEvent(new Event('input'));
+                this.#update();
             }
         });
 
-        this.area.addEventListener('paste', () => {
-            this.pasted = true;
+        this.textarea.addEventListener('paste', (event) => {
+            _stopAndPrevent(event);
+
+            const selection = this.selection;
+            const content = this.textarea.value;
+            const fragment = event.clipboardData.getData('text').replace(/\t/g, ' ')
+    
+            this.textarea.value = content.slice(0, selection.start) + fragment + content.slice(selection.end);
+    
+            this.selection = {
+                start: selection.start + fragment.length,
+                end: selection.start + fragment.length,
+                direction: selection.direction
+            };
+    
+            this.#update();
         });
 
-        this.area.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-        });
-
-        this.area.addEventListener('dragenter', (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-        });
-
-        this.area.addEventListener('drop', (event) => {
+        this.textarea.addEventListener('dragover', (event) => _stopAndPrevent(event));
+        this.textarea.addEventListener('dragenter', (event) => _stopAndPrevent(event));
+        this.textarea.addEventListener('drop', (event) => {
             const contentType = _dig(event, 'dataTransfer', 'files', 0, 'type')
             if (!contentType || contentType === 'text/plain') {
-                event.preventDefault();
-                event.stopPropagation();
+                _stopAndPrevent(event)
 
                 const reader = new FileReader();
                 reader.readAsText(event.dataTransfer.files[0], 'UTF-8');
@@ -3888,11 +3895,11 @@ class ScriptEditor extends SignalSource {
             }
         });
 
+        this.#update();
+
         const updateMaskPosition = () => {
-            const sy = this.area.scrollTop;
-            const sx = this.area.scrollLeft;
-            this.mask.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
-            this.context.style.transform = `translate(${ -sx }px, ${ -sy }px)`;
+            this.editor.style.setProperty('--scroll-top', `-${this.textarea.scrollTop}px`);
+            this.editor.style.setProperty('--scroll-left', `-${this.textarea.scrollLeft}px`);
 
             window.requestAnimationFrame(updateMaskPosition);
         }
@@ -3900,40 +3907,38 @@ class ScriptEditor extends SignalSource {
         window.requestAnimationFrame(updateMaskPosition);
     }
 
-    focus () {
-        this.area.focus();
-    }
-
     get selection () {
         return {
-            start: this.area.selectionStart,
-            end: this.area.selectionEnd
+            start: this.textarea.selectionStart,
+            end: this.textarea.selectionEnd,
+            direction: this.textarea.selectionDirection
         };
     }
 
-    set selection ({ start, end }) {
-        this.area.selectionStart = start;
-        this.area.selectionEnd = end;
+    set selection ({ start, end, direction }) {
+        this.textarea.selectionStart = start;
+        this.textarea.selectionEnd = end;
+        this.textarea.selectionDirection = direction;
     }
 
     get content () {
-        return this.area.value;
+        return this.textarea.value;
     }
 
     set content (text) {
-        const previousText = this.area.value;
+        const previousText = this.textarea.value;
         const previousSelection = this.selection;
 
-        this.area.value = text;
-        this.area.dispatchEvent(new Event('input'));
+        this.textarea.value = text;
+        this.#update();
 
         this.scrollTop();
-        this.focus();
+        this.textarea.focus();
 
         this.selection = previousText === text ? previousSelection : { start: 0, end: 0 };
     }
 
     scrollTop () {
-        this.area.scrollTo(0, 0);
+        this.textarea.scrollTo(0, 0);
     }
 }

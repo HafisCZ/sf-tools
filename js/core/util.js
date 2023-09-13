@@ -283,6 +283,11 @@ function _fastSum(arr) {
     return m;
 }
 
+function _stopAndPrevent (event) {
+    event.stopPropagation();
+    event.preventDefault();
+}
+
 function _countInSlice (string, character, boundaryStart, boundaryEnd) {
     let count = 0;
     for (let i = boundaryStart; i < boundaryEnd; i++) {

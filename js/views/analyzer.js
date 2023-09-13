@@ -158,9 +158,9 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
           <div class="fields !mb-0">
               <div class="twelve wide field">
                   <label>${this.intl('selector')}</label>
-                  <div class="ta-wrapper" style="height: initial;">
-                      <input data-op="selector" class="ta-area" style="padding-left: 1em !important;" data-op="primary" type="text" placeholder="${this.intl('selector')}">
-                      <div data-op="overlay" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                  <div class="ta-editor" style="height: initial;">
+                      <input data-op="selector" class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="primary" type="text" placeholder="${this.intl('selector')}">
+                      <div data-op="overlay" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                   </div>
               </div>
               <div class="four wide field">
