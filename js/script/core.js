@@ -3673,16 +3673,28 @@ class ScriptEditor extends SignalSource {
     }
 
     #createRepository () {
-        // TODO: Expand to use static config
-        // const config = this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG;
+        const constants = Constants.DEFAULT_CONSTANTS_VALUES;
+        const constantsSuggestions = Array.from(constants).map((entry) => ({
+            value: entry[0],
+            text: entry[0].slice(1),
+            type: 'constant'
+        }))
+
+        const config = this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG;
+        const configSuggestions = Array.from(config.entries()).map((entry) => ({
+            value: entry[0],
+            text: entry[0],
+            type: entry[1].type
+        }))
 
         const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType);
-
-        this.#autocompleteRepository = commands.map((command) => ({
+        const commandsSuggestions = commands.map((command) => ({
             value: command.autocompleteSyntax,
             text: command.encodedSyntax,
             type: 'command'
         }))
+
+        this.#autocompleteRepository = [].concat(commandsSuggestions).concat(constantsSuggestions).concat(configSuggestions)
     }
 
     #applyStyles (sourceStyle, targetStyle) {

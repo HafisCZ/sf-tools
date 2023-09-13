@@ -42,6 +42,10 @@ class ExpressionConfig {
 
     return keys;
   }
+
+  entries () {
+    return this.#data.entries();
+  }
 }
 
 const DEFAULT_EXPRESSION_CONFIG = new ExpressionConfig();

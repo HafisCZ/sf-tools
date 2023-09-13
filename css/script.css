@@ -108,13 +108,36 @@
 
 [data-autocomplete-type]::before {
   margin-right: 5px;
+  width: 15px;
   font-family: icons;
+  font-size: 80%;
+  color: rgba(136, 136, 136, 0.75);
+  display: inline-block;
+  text-align: center;
 }
 
 [data-autocomplete-type="command"]::before {
   content: '\f121';
-  font-size: 80%;
-  color: rgba(136, 136, 136, 0.75);
+}
+
+[data-autocomplete-type="constant"]::before {
+  content: '\f1fa';
+}
+
+[data-autocomplete-type="variable"]::before {
+  content: '\f292';
+}
+
+[data-autocomplete-type="function"]::before {
+  content: '\f013';
+}
+
+[data-autocomplete-type="header"]::before {
+  content: '\f1dc';
+}
+
+[data-autocomplete-type="accessor"]::before {
+  content: '\f031';
 }
 
 .ta-editor-textarea {
