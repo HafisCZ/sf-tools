@@ -3799,8 +3799,12 @@ class ScriptEditor extends SignalSource {
             this.#update();
         });
 
-        this.textarea.addEventListener('focusout', () => {
-            this.#hideAutocomplete();
+        this.textarea.addEventListener('focusout', (event) => {
+            if (event.explicitOriginalTarget.closest('[data-autocomplete]')) {
+                // Do nothing
+            } else {
+                this.#hideAutocomplete();
+            }
         });
 
         this.textarea.addEventListener('keydown', (event) => {
