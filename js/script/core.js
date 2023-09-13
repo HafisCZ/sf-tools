@@ -271,7 +271,9 @@ class ScriptCommand {
     constructor (key, type, syntax, regexp, evaluate, format, metadata = {}) {
         this.key = key;
         this.type = type;
-        this.syntax = syntax.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        this.syntax = syntax;
+        this.autocompleteSyntax = syntax.replace(/<[a-z\|]+>|\([a-z\|]+\)/g, '_');
+        this.encodedSyntax = syntax.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         this.regexp = regexp;
         this.#internalEvaluate = evaluate;
         this.#internalFormat = format;
@@ -1988,8 +1990,8 @@ class ScriptValidator {
     #entries = new Set();
 
     deprecateCommand (line, deprecatedKey, deprecatedBy) {
-        const name1 = ScriptCommands[deprecatedKey].syntax;
-        const name2 = ScriptCommands[deprecatedBy].syntax;
+        const name1 = ScriptCommands[deprecatedKey].encodedSyntax;
+        const name2 = ScriptCommands[deprecatedBy].encodedSyntax;
 
         this.#entries.add(`<div class="ta-editor-info-line ta-editor-info-line-deprecated">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
     }
@@ -3699,6 +3701,51 @@ class ScriptEditor extends SignalSource {
         this.emit('change', value);
     }
 
+    #hideAutocomplete () {
+        this.autocomplete.classList.remove('visible');
+        this.autocompleteActive = false;
+    }
+
+    #applyAutocomplete (fragment) {
+        const selection = this.selection;
+        const value = this.textarea.value;
+
+        this.textarea.value = value.slice(0, selection.end) + fragment + value.slice(selection.end);
+
+        this.selection = {
+            start: selection.start + fragment.length,
+            end: selection.end + fragment.length,
+            direction: selection.direction
+        };
+
+        this.#hideAutocomplete();
+        this.#update();
+        this.textarea.focus();
+    }
+
+    #showAutocomplete () {
+        const value = this.textarea.value;
+
+        const { end } = this.selection;
+        const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
+
+        const line = value.substring(start, end).trimStart();
+        const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType && command.autocompleteSyntax.startsWith(line));
+
+        if (commands.length > 0) {
+            this.autocomplete.innerHTML = commands.map((command) => {
+                return `<div data-autocomplete="${command.autocompleteSyntax.slice(line.length)}">${command.encodedSyntax}</div>`
+            }).join('');
+
+            this.autocomplete.style.setProperty('--position-top', `${18 * _countInSlice(value, '\n', 0, end) + 18}px`);
+            this.autocomplete.style.setProperty('--position-left', `${8 * (end - start)}px`);
+            this.autocomplete.classList.add('visible');
+            this.autocomplete.firstChild.setAttribute('data-selected', '');
+
+            this.autocompleteActive = true;
+        }
+    }
+
     #createEditor () {
         // Prepare editor
         this.editor.classList.add('ta-editor');
@@ -3737,54 +3784,23 @@ class ScriptEditor extends SignalSource {
         // Overlay clone for faster render
         this.overlayClone = this.overlay.cloneNode(true);
 
-        const handleContextClick = (el) => {
-            const frag = el.innerText;
-
-            const sel = this.selection;
-            const v = this.textarea.value;
-
-            this.textarea.value = v.slice(0, sel.end) + frag + v.slice(sel.end);
-
-            this.selection = {
-                start: sel.start + frag.length,
-                end: sel.end + frag.length,
-                direction: sel.direction
-            };
-
-            this.autocomplete.classList.remove('visible');
-
-            this.#update();
-            this.textarea.focus();
-        }
-
         this.autocomplete.addEventListener('click', (event) => {
-            const line = event.target.closest('.ta-editor-autocomplete-line');
+            const line = event.target.closest('[data-autocomplete]');
             if (line) {
-                handleContextClick(line);
+                this.#applyAutocomplete(line.getAttribute('data-autocomplete'));
             }
         });
-
-        this.autocomplete.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                this.autocomplete.classList.remove('visible');
-
-                this.textarea.focus();
-            } else if (event.key === 'Enter') {
-                const line = event.target.closest('.ta-editor-autocomplete-line');
-                if (line) {
-                    _stopAndPrevent(event)
-
-                    handleContextClick(line);
-                }
-            }
-        });
-
-        this.textarea.addEventListener('focusin', () => {
-            this.autocomplete.classList.remove('visible');
-        })
 
         this.textarea.addEventListener('input', () => {
+            if (this.autocompleteActive) {
+                this.#showAutocomplete();
+            }
+
             this.#update();
+        });
+
+        this.textarea.addEventListener('focusout', () => {
+            this.#hideAutocomplete();
         });
 
         this.textarea.addEventListener('keydown', (event) => {
@@ -3799,66 +3815,74 @@ class ScriptEditor extends SignalSource {
             } else if (event.ctrlKey && event.key === ' ') {
                 _stopAndPrevent(event);
 
-                const a = this.textarea;
-                const d = a.selectionEnd;
+                this.#showAutocomplete();
+            } else if (this.autocompleteActive) {
+                if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1] === '\n') {
+                    _stopAndPrevent(event);
 
-                let v = a.value;
+                    this.#hideAutocomplete();
+                } else if (event.key === 'Escape' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                    _stopAndPrevent(event);
+        
+                    this.#hideAutocomplete();
+                } else if (event.key === 'Enter' || event.key === 'Tab') {
+                    _stopAndPrevent(event);
 
-                const ls = _lastIndexOfInSlice(v, '\n', 0, d - 1) + 1;
-                const le = d;
+                    const line = this.autocomplete.querySelector('[data-selected]');
+                    if (line) {
+                        this.#applyAutocomplete(line.getAttribute('data-autocomplete'));
+                    }
+                } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                    _stopAndPrevent(event);
 
-                const l = v.substring(ls, le).trimStart();
-                const cs = ScriptCommands.commands().filter((c) => c.type === this.scriptType && c.syntax.startsWith(l)).map((c) => c.syntax.replaceAll('&gt;', '>').replaceAll('&lt;', '<').slice(l.length));
+                    const line = this.autocomplete.querySelector('[data-selected]');
+                    const adjacentLine = line?.[event.key === 'ArrowDown' ? 'nextElementSibling' : 'previousElementSibling'];
 
-                const pTop = 18 * _countInSlice(v, '\n', 0, d);
-                const pLeft = 8 * (d - ls);
-
-                if (cs.length > 0) {
-                    this.autocomplete.innerHTML = cs.map((line) => `<div class="ta-editor-autocomplete-line" tabindex="0">${line.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`).join('');
-                    this.autocomplete.style.setProperty('--position-top', `${pTop}px`);
-                    this.autocomplete.style.setProperty('--position-left', `${pLeft}px`);
-                    this.autocomplete.classList.add('visible');
-
-                    this.autocomplete.querySelector('.ta-editor-autocomplete-line').focus();
+                    if (line && adjacentLine) {
+                        line.removeAttribute('data-selected');
+                        adjacentLine.setAttribute('data-selected', '');
+                    }
                 }
-            } else if (event.key === 'Tab') {
-                _stopAndPrevent(event);
+            } else {
+                if (event.key === 'Tab') {
+                    _stopAndPrevent(event);
 
-                const a = this.textarea;
-                const s = a.selectionStart;
-                const d = a.selectionEnd;
+                    const a = this.textarea;
+                    const s = a.selectionStart;
+                    const d = a.selectionEnd;
 
-                let v = a.value;
+                    let v = a.value;
 
-                if (s == d) {
-                    a.value = v.substring(0, s) + '  ' + v.substring(s);
-                    a.selectionStart = s + 2;
-                    a.selectionEnd = d + 2;
-                } else {
-                    let o = 0, oo = 0, i;
-                    for (i = d - 1; i > s; i--) {
-                        if (v[i] == '\n') {
-                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-                            oo++;
+                    if (s == d) {
+                        a.value = v.substring(0, s) + '  ' + v.substring(s);
+                        a.selectionStart = s + 2;
+                        a.selectionEnd = d + 2;
+                    } else {
+                        let o = 0, oo = 0, i;
+                        for (i = d - 1; i > s; i--) {
+                            if (v[i] == '\n') {
+                                v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                                oo++;
+                            }
                         }
+
+                        while (i >= 0) {
+                            if (v[i] == '\n') {
+                                v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                                o++;
+                                break;
+                            } else {
+                                i--;
+                            }
+                        }
+
+                        a.value = v;
+                        a.selectionStart = s + o * 2;
+                        a.selectionEnd = d + (oo + o) * 2;
                     }
 
-                    while (i >= 0) {
-                        if (v[i] == '\n') {
-                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-                            o++;
-                            break;
-                        } else {
-                            i--;
-                        }
-                    }
-
-                    a.value = v;
-                    a.selectionStart = s + o * 2;
-                    a.selectionEnd = d + (oo + o) * 2;
+                    this.#update();
                 }
-
-                this.#update();
             }
         });
 

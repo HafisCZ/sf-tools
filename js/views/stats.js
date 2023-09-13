@@ -1933,7 +1933,7 @@ const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
                 'ta-keyword',
                 _sortDesc(ScriptCommands.keys().map((key) => ScriptCommands[key]), (command) => command.metadata.isDeprecated ? 0 : 1).map((command) => {
                     return `
-                        ${command.syntax.replace(/(&lt;[a-z\|]+&gt;)/g, '<span class="ta-constant">$1</span>').replace(/(\([a-z\|]+\))/g, '<span class="ta-value">$1</span>')}
+                        ${command.encodedSyntax.replace(/(&lt;[a-z\|]+&gt;)/g, '<span class="ta-constant">$1</span>').replace(/(\([a-z\|]+\))/g, '<span class="ta-value">$1</span>')}
                         ${command.metadata.isDeprecated ? ` <sup class="text-gray">(${this.intl('deprecated')})</sup>` : ''}
                     `
                 })

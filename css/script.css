@@ -95,13 +95,13 @@
   display: block;
 }
 
-.ta-editor-autocomplete-line {
+.ta-editor-autocomplete > [data-autocomplete] {
   padding-left: 4px;
   cursor: pointer;
   white-space: pre;
 }
 
-.ta-editor-autocomplete-line:hover, .ta-editor-autocomplete-line:focus {
+.ta-editor-autocomplete > [data-autocomplete]:hover, .ta-editor-autocomplete > [data-autocomplete][data-selected] {
   background: #3c3c3c;
   outline: none;
 }
