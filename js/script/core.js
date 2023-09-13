@@ -3730,8 +3730,10 @@ class ScriptEditor extends SignalSource {
     }
 
     #hideAutocomplete () {
-        this.autocomplete.classList.remove('visible');
-        this.autocompleteActive = false;
+        if (this.autocompleteActive) {
+            this.autocomplete.classList.remove('visible');
+            this.autocompleteActive = false;
+        }
     }
 
     #applyAutocomplete (fragment) {
@@ -3828,7 +3830,7 @@ class ScriptEditor extends SignalSource {
         });
 
         this.textarea.addEventListener('focusout', (event) => {
-            if (event.explicitOriginalTarget.closest('[data-autocomplete]')) {
+            if (event.explicitOriginalTarget?.closest('[data-autocomplete]')) {
                 // Do nothing
             } else {
                 this.#hideAutocomplete();
@@ -3868,12 +3870,12 @@ class ScriptEditor extends SignalSource {
                     _stopAndPrevent(event);
 
                     const line = this.autocomplete.querySelector('[data-selected]');
-                    const adjacentLine = line?.[event.key === 'ArrowDown' ? 'nextElementSibling' : 'previousElementSibling'];
+                    line.removeAttribute('data-selected');
 
-                    if (line && adjacentLine) {
-                        line.removeAttribute('data-selected');
-                        adjacentLine.setAttribute('data-selected', '');
-                    }
+                    const adjacentLine = line?.[event.key === 'ArrowDown' ? 'nextElementSibling' : 'previousElementSibling'] || (
+                        event.key === 'ArrowDown' ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild
+                    );
+                    adjacentLine.setAttribute('data-selected', '');
                 }
             } else {
                 if (event.key === 'Tab') {
@@ -3950,6 +3952,9 @@ class ScriptEditor extends SignalSource {
                 }
             }
         });
+
+            this.#hideAutocomplete();
+        })
 
         this.#update();
 
