@@ -3734,7 +3734,7 @@ class ScriptEditor extends SignalSource {
 
         if (commands.length > 0) {
             this.autocomplete.innerHTML = commands.map((command) => {
-                return `<div data-autocomplete="${command.autocompleteSyntax.slice(line.length)}">${command.encodedSyntax}</div>`
+                return `<div data-autocomplete-type="command" data-autocomplete="${command.autocompleteSyntax.slice(line.length)}">${command.encodedSyntax}</div>`
             }).join('');
 
             this.autocomplete.style.setProperty('--position-top', `${18 * _countInSlice(value, '\n', 0, end) + 18}px`);

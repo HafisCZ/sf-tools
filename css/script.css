@@ -106,6 +106,17 @@
   outline: none;
 }
 
+[data-autocomplete-type]::before {
+  margin-right: 5px;
+  font-family: icons;
+}
+
+[data-autocomplete-type="command"]::before {
+  content: '\f121';
+  font-size: 80%;
+  color: rgba(136, 136, 136, 0.75);
+}
+
 .ta-editor-textarea {
   color: transparent !important;
   background-color: #1b1c1d !important;
