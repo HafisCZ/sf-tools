@@ -11,6 +11,7 @@ const CHANGELOG = {
     'v6.XXXX': {
         'Statistics': [
             'Added new setting to make table headers sticky',
+            'Added autocompletion to script editor (<code>Ctrl + Space</code>)',
             'Added <code>Official Discord</code>, <code>Twitch Frame</code>, <code>Health Multiplier</code>, <code>Weapon Damage Multiplier</code>, <code>Maximum Damage Resistance</code>, <code>Power</code> and <code>Gold</code> headers',
             'Added <code>indexed custom header</code> to use first column as custom index column',
             'Added new berserker icon',
@@ -25,7 +26,7 @@ const CHANGELOG = {
             'Added list of keywords to the manual',
             'Added limit of 200 entries to script archive',
             'Added missing legendary item names and images',
-            'Added support for Ctrl + S and Ctrl + Shift + S in the editor',
+            'Added support for <code>Ctrl + S</code> and <code>Ctrl + Shift + S</code> in the editor',
             'Fixed dropdowns not updating on browse tab',
             'Fixed scoped functions breaking editor when called without arguments',
             'Fixed <code>show as</code> not appearing as deprecated',
