@@ -3660,13 +3660,29 @@ class TemplateManager {
 }
 
 class ScriptEditor extends SignalSource {
+    #autocompleteRepository = [];
+
     constructor (element, scriptType) {
         super();
 
         this.editor = element;
         this.scriptType = scriptType;
 
+        this.#createRepository();
         this.#createEditor();
+    }
+
+    #createRepository () {
+        // TODO: Expand to use static config
+        // const config = this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG;
+
+        const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType);
+
+        this.#autocompleteRepository = commands.map((command) => ({
+            value: command.autocompleteSyntax,
+            text: command.encodedSyntax,
+            type: 'command'
+        }))
     }
 
     #applyStyles (sourceStyle, targetStyle) {
@@ -3730,11 +3746,11 @@ class ScriptEditor extends SignalSource {
         const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
 
         const line = value.substring(start, end).trimStart();
-        const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType && command.autocompleteSyntax.startsWith(line));
+        const suggestions = this.#autocompleteRepository.filter((item) => item.value.startsWith(line));
 
-        if (commands.length > 0) {
-            this.autocomplete.innerHTML = commands.map((command) => {
-                return `<div data-autocomplete-type="command" data-autocomplete="${command.autocompleteSyntax.slice(line.length)}">${command.encodedSyntax}</div>`
+        if (suggestions.length > 0) {
+            this.autocomplete.innerHTML = suggestions.map((suggestion) => {
+                return `<div data-autocomplete-type="${suggestion.type}" data-autocomplete="${suggestion.value.slice(line.length)}">${suggestion.text}</div>`
             }).join('');
 
             this.autocomplete.style.setProperty('--position-top', `${18 * _countInSlice(value, '\n', 0, end) + 18}px`);
