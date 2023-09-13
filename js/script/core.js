@@ -3760,11 +3760,15 @@ class ScriptEditor extends SignalSource {
         const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
 
         const line = value.substring(start, end).trimStart();
-        const suggestions = this.#autocompleteRepository.filter((item) => item.value.startsWith(line));
+        const word = line.slice(line.lastIndexOf(' ') + 1);
+
+        const suggestions = this.#autocompleteRepository.filter((suggestion) => {
+            return suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word);
+        });
 
         if (suggestions.length > 0) {
             this.autocomplete.innerHTML = suggestions.map((suggestion) => {
-                return `<div data-autocomplete-type="${suggestion.type}" data-autocomplete="${suggestion.value.slice(line.length)}">${suggestion.text}</div>`
+                return `<div data-autocomplete-type="${suggestion.type}" data-autocomplete="${suggestion.value.slice(suggestion.type === 'command' ? line.length : word.length)}">${suggestion.text}</div>`
             }).join('');
 
             this.autocomplete.style.setProperty('--position-top', `${18 * _countInSlice(value, '\n', 0, end) + 18}px`);
@@ -3773,6 +3777,8 @@ class ScriptEditor extends SignalSource {
             this.autocomplete.firstChild.setAttribute('data-selected', '');
 
             this.autocompleteActive = true;
+        } else {
+            this.#hideAutocomplete();
         }
     }
 
