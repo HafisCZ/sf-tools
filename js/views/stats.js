@@ -1971,11 +1971,7 @@ const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
             [
                 'enum',
                 'ta-enum',
-                ExpressionEnum.keys,
-                new Map([
-                    ['AchievementCount', ExpressionEnum.get('AchievementCount')],
-                    ['ScrapbookSize', ExpressionEnum.get('ScrapbookSize')]
-                ])
+                TABLE_EXPRESSION_CONFIG.all('enumeration')
             ],
             [
                 'constant',

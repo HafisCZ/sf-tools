@@ -140,6 +140,10 @@
   content: '\f031';
 }
 
+[data-autocomplete-type="enumeration"]::before {
+  content: '\f02d';
+}
+
 .ta-editor-textarea {
   color: transparent !important;
   background-color: #1b1c1d !important;

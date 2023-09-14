@@ -10,9 +10,22 @@ class ExpressionConfig {
   }
 
   register(type, meta, name, data, flags = {}) {
-    this.#data.set(name, Object.assign(flags, {
-      type, meta, data
-    }))
+    this.#data.set(name, new Proxy(
+      Object.assign(flags, { type, meta, data }),
+      {
+        get: function (target, prop) {
+          if (prop === 'data' && flags.isComputed) {
+            if ('_value' in target) {
+              return target._value;
+            } else {
+              return (target._value = target.data());
+            }
+          } else {
+            return target[prop];
+          }
+        }
+      }
+    ));
   }
 
   get(name) {
@@ -622,6 +635,117 @@ DEFAULT_EXPRESSION_CONFIG.register(
       return !!value;
     }
   }
+)
+
+/*
+  Enumerations
+*/
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'GoldCurve',
+  function () { return Calculations.goldCurve() },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'AchievementCount',
+  function () { return PlayerModel.ACHIEVEMENTS_COUNT },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'AchievementNames',
+  function () { return _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)) },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'ItemTypes',
+  function () { return _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : '') },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'GroupRoles',
+  function () { return _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : '') },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'Classes',
+  function () { return _arrayFromIndexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']) },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'FortressBuildings',
+  function () { return _sequence(12, 1).map(i => intl(`general.buildings.fortress${i}`)) },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'PlayerActions',
+  function () { return _sequence(4).map(i => intl(`general.action${i}`)) },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'PotionTypes',
+  function () { return _sequence(7).map(i => i > 0 ? intl(`general.potion${i}`) : '') },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'GemTypes',
+  function () { return _sequence(8).map(i => i > 0 ? intl(`general.gem${i}`) : '') },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'AttributeTypes',
+  function () { return _sequence(6).map(i => i > 0 ? intl(`general.attribute${i}`) : '') },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'RuneTypes',
+  function () { return _sequence(13).map(i => i > 0 ? intl(`general.rune${i}`) : '') },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'UnderworldBuildings',
+  function () { return _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)) },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'ExperienceCurve',
+  function () { return Calculations.experienceNextLevelCurve() },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'ExperienceTotal',
+  function () { return Calculations.experienceTotalLevelCurve() },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'SoulsCurve',
+  function () { return Calculations.soulsCurve() },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'ScrapbookSize',
+  function () { return PlayerModel.SCRAPBOOK_COUNT },
+  { isComputed: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'enumeration', 'array', 'MountSizes',
+  function () { return ['', 10, 20, 30, 50] },
+  { isComputed: true }
 )
 
 const TABLE_EXPRESSION_CONFIG = DEFAULT_EXPRESSION_CONFIG.clone();

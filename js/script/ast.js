@@ -49,62 +49,6 @@ class ExpressionCache {
     }
 };
 
-class ExpressionEnum {
-    static keys = [
-        'GoldCurve',
-        'AchievementCount',
-        'AchievementNames',
-        'ItemTypes',
-        'GroupRoles',
-        'Classes',
-        'FortressBuildings',
-        'PlayerActions',
-        'PotionTypes',
-        'GemTypes',
-        'AttributeTypes',
-        'RuneTypes',
-        'UnderworldBuildings',
-        'ExperienceCurve',
-        'ExperienceTotal',
-        'SoulsCurve',
-        'ScrapbookSize',
-        'MountSizes'
-    ]
-
-    static get values () {
-        delete this.values;
-
-        return (this.values = {
-            'GoldCurve': Calculations.goldCurve(),
-            'AchievementCount': PlayerModel.ACHIEVEMENTS_COUNT,
-            'AchievementNames': _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)),
-            'ItemTypes': _sequence(20).map(i => i > 0 ? intl(`general.item${i}`) : ''),
-            'GroupRoles': _sequence(5).map(i => i > 0 ? intl(`general.rank${i}`) : ''),
-            'Classes': _arrayFromIndexes(CONFIG.indexes(), (i) => intl(`general.class${i}`), ['']),
-            'FortressBuildings': _sequence(12, 1).map(i => intl(`general.buildings.fortress${i}`)),
-            'PlayerActions': _sequence(4).map(i => intl(`general.action${i}`)),
-            'PotionTypes': _sequence(7).map(i => i > 0 ? intl(`general.potion${i}`) : ''),
-            'GemTypes': _sequence(8).map(i => i > 0 ? intl(`general.gem${i}`) : ''),
-            'AttributeTypes': _sequence(6).map(i => i > 0 ? intl(`general.attribute${i}`) : ''),
-            'RuneTypes': _sequence(13).map(i => i > 0 ? intl(`general.rune${i}`) : ''),
-            'UnderworldBuildings': _sequence(10, 1).map(i => intl(`general.buildings.underworld${i}`)),
-            'ExperienceCurve': Calculations.experienceNextLevelCurve(),
-            'ExperienceTotal': Calculations.experienceTotalLevelCurve(),
-            'SoulsCurve': Calculations.soulsCurve(),
-            'ScrapbookSize': PlayerModel.SCRAPBOOK_COUNT,
-            'MountSizes': ['', 10, 20, 30, 50]
-        })
-    }
-
-    static get (key) {
-        return this.values[key];
-    }
-
-    static has (key) {
-        return this.keys.includes(key);
-    }
-}
-
 class ExpressionScope {
     clone () {
         let _copy = new ExpressionScope(this.env);
@@ -249,6 +193,10 @@ class ExpressionRenderer {
                             highlighter.header(token, 'scoped');
                             break;
                         }
+                        case 'enumeration': {
+                            highlighter.enum(token);
+                            break;
+                        }
                     }
                 } else if (Expression.TOKENS[token]) {
                     highlighter.operator(token);
@@ -271,8 +219,6 @@ class ExpressionRenderer {
                 } else if (root.constants.has(token)) {
                     highlighter.constant(token);
                 } else if (/\~\d+/.test(token)) {
-                    highlighter.enum(token);
-                } else if (ExpressionEnum.has(token)) {
                     highlighter.enum(token);
                 } else if (token == '$' || token == '$!' || token == '$$') {
                     highlighter.keyword(token);
@@ -995,6 +941,9 @@ class Expression {
                         const self = scope.getSelf();
                         return data.meta === 'value' ? data.data(self) : undefined;
                     }
+                    case 'enumeration': {
+                        return data.data;
+                    }
                 }
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
@@ -1014,8 +963,7 @@ class Expression {
                 // Return constant
                 return scope.env.constants.get(node);
             } else {
-                // Return enum or undefined if everything fails
-                return ExpressionEnum.get(node);
+                return undefined;
             }
         } else {
             return node;
