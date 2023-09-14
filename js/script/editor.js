@@ -89,7 +89,39 @@ class ScriptEditor extends SignalSource {
 
     this.#hideAutocomplete();
     this.#update();
+
     this.textarea.focus();
+
+    this.#focusPlaceholders();
+  }
+
+  #focusPlaceholders () {
+    const value = this.textarea.value;
+
+    const indexes = [];
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === '\u200b') {
+        indexes.push(i);
+        if (indexes.length >= 2) {
+          break;
+        }
+      }
+    }
+
+    if (indexes.length === 2) {
+      this.selection = {
+        start: indexes[0],
+        end: indexes[1] + 1,
+        direction: 'forward'
+      }
+
+      return true;
+    } else if (indexes.length > 0) {
+      // Placeholders were broken, delete them all from the text area
+      this.textarea.value = value.replace('\u200b', '');
+
+      return false;
+    }
   }
 
   get #cursor() {
@@ -241,6 +273,8 @@ class ScriptEditor extends SignalSource {
             this.autocomplete.scroll({ top: adjacentLine.offsetTop + (isBelow ? 20 - this.autocomplete.offsetHeight : 0), behavior: 'instant' });
           }
         }
+      } else if (event.key === 'Tab' && this.#focusPlaceholders()) {
+        _stopAndPrevent(event);
       } else {
         if (event.key === 'Tab') {
           _stopAndPrevent(event);

@@ -272,7 +272,7 @@ class ScriptCommand {
         this.key = key;
         this.type = type;
         this.syntax = syntax;
-        this.autocompleteSyntax = syntax.replace(/<[a-z\|]+>|\([a-z\|]+\)/g, '_');
+        this.autocompleteSyntax = syntax.replace(/(<[a-z\|]+>|\([a-z\|]+\))/g, '\u200b$1\u200b');
         this.encodedSyntax = syntax.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         this.regexp = regexp;
         this.#internalEvaluate = evaluate;
