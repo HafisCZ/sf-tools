@@ -175,7 +175,7 @@ class ScriptEditor extends SignalSource {
       });
 
       this.textarea.addEventListener('focusout', (event) => {
-          if (event.explicitOriginalTarget?.closest('[data-autocomplete]')) {
+          if (event.explicitOriginalTarget?.closest?.('[data-autocomplete]')) {
               // Do nothing
           } else {
               this.#hideAutocomplete();
