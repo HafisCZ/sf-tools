@@ -3687,7 +3687,7 @@ class ScriptEditor extends SignalSource {
             type: entry[1].type
         }))
 
-        const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType);
+        const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined');
         const commandsSuggestions = commands.map((command) => ({
             value: command.autocompleteSyntax,
             text: command.encodedSyntax,
