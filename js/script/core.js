@@ -3743,7 +3743,7 @@ class ScriptEditor extends SignalSource {
         this.textarea.value = value.slice(0, selection.end) + fragment + value.slice(selection.end);
 
         this.selection = {
-            start: selection.start + fragment.length,
+            start: selection.end + fragment.length,
             end: selection.end + fragment.length,
             direction: selection.direction
         };
