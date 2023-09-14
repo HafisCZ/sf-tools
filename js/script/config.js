@@ -15,11 +15,7 @@ class ExpressionConfig {
       {
         get: function (target, prop) {
           if (prop === 'data' && flags.isComputed) {
-            if ('_value' in target) {
-              return target._value;
-            } else {
-              return (target._value = target.data());
-            }
+            return (target._value ||= target.data());
           } else {
             return target[prop];
           }
