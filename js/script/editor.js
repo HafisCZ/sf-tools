@@ -92,14 +92,25 @@ class ScriptEditor extends SignalSource {
       this.textarea.focus();
   }
 
+  get #cursor () {
+    const value = this.textarea.value;
+
+    const end = this.textarea.selectionEnd;
+    const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
+
+    const line = value.substring(start, end).trimStart();
+    const word = line.slice(line.lastIndexOf(' ') + 1);
+
+    return {
+      line,
+      word,
+      ln: _countInSlice(value, '\n', 0, end),
+      ch: end - start
+    }
+  }
+
   #showAutocomplete () {
-      const value = this.textarea.value;
-
-      const { end } = this.selection;
-      const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
-
-      const line = value.substring(start, end).trimStart();
-      const word = line.slice(line.lastIndexOf(' ') + 1);
+      const { line, word, ln, ch } = this.#cursor;
 
       const suggestions = this.#autocompleteRepository.filter((suggestion) => {
           return suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word);
@@ -110,8 +121,8 @@ class ScriptEditor extends SignalSource {
               return `<div data-autocomplete-type="${suggestion.type}" data-autocomplete="${suggestion.value.slice(suggestion.type === 'command' ? line.length : word.length)}">${suggestion.text}</div>`
           }).join('');
 
-          this.autocomplete.style.setProperty('--position-top', `${18 * _countInSlice(value, '\n', 0, end) + 18}px`);
-          this.autocomplete.style.setProperty('--position-left', `${8 * (end - start)}px`);
+          this.autocomplete.style.setProperty('--position-top', `${18 * (ln + 1)}px`);
+          this.autocomplete.style.setProperty('--position-left', `${8 * (ch)}px`);
           this.autocomplete.classList.add('visible');
           this.autocomplete.firstChild.setAttribute('data-selected', '');
 
