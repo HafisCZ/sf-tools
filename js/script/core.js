@@ -3861,9 +3861,7 @@ class ScriptEditor extends SignalSource {
                     _stopAndPrevent(event);
 
                     this.#hideAutocomplete();
-                } else if (event.key === 'Escape' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                    _stopAndPrevent(event);
-        
+                } else if (event.key === 'Escape' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {        
                     this.#hideAutocomplete();
                 } else if (event.key === 'Enter' || event.key === 'Tab') {
                     _stopAndPrevent(event);
