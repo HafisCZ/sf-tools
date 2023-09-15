@@ -288,6 +288,10 @@ function _stopAndPrevent (event) {
     event.preventDefault();
 }
 
+function _emplaceSlice (string, slice, boundaryStart, boundaryEnd) {
+    return string.substring(0, boundaryStart) + slice + string.substring(boundaryEnd);
+}
+
 function _countInSlice (string, character, boundaryStart, boundaryEnd) {
     let count = 0;
     for (let i = boundaryStart; i < boundaryEnd; i++) {

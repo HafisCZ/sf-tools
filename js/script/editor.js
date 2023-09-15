@@ -96,7 +96,7 @@ class ScriptEditor extends SignalSource {
       selectionOffset -= selection.end - selection.start;
     }
 
-    this.textarea.value = value.slice(0, isField ? selection.start : selection.end) + fragment + value.slice(selection.end);
+    this.textarea.value = _emplaceSlice(value, fragment, isField ? selection.start : selection.end, selection.end);
 
     this.selection = {
       start: selection.end + fragment.length + selectionOffset,
@@ -164,21 +164,22 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  get #cursor() {
+  #getCursor () {
     const value = this.textarea.value;
 
-    const end = this.textarea.selectionEnd;
-    const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
+    const selectionStart = this.textarea.selectionStart;
+    const selectionEnd = this.textarea.selectionEnd;
 
-    const line = value.substring(start, end).trimStart();
-    const word = line.slice(line.lastIndexOf(line.match(/\W/g)?.pop() || ' ') + 1);
+    const lineFirstStart = _lastIndexOfInSlice(value, '\n', 0, selectionStart - 1);
+    const lineLastStart = _lastIndexOfInSlice(value, '\n', 0, selectionEnd - 1) + 1;
 
     return {
-      line,
-      word,
-      lineNumber: _countInSlice(value, '\n', 0, end),
-      lineStart: start,
-      characterNumber: end - start
+      selectionStart,
+      selectionEnd,
+      lineFirstStart,
+      lineLastStart,
+      lineLastNumber: _countInSlice(value, '\n', 0, selectionEnd),
+      characterNumber: selectionEnd - lineLastStart
     }
   }
 
@@ -191,7 +192,11 @@ class ScriptEditor extends SignalSource {
   }
 
   #getSuggestions () {
-    let { line, lineStart, word, lineNumber, characterNumber } = this.#cursor;
+    const { lineLastStart, selectionEnd, lineLastNumber, characterNumber } = this.#getCursor();
+  
+    const value = this.textarea.value;
+    const line = value.substring(lineLastStart, selectionEnd).trimStart();
+    const word = line.slice(line.lastIndexOf(line.match(/[^\w@]/g)?.pop() || ' ') + 1);
 
     if (this.#isFieldSelected()) {
       const suggestions = this.#autocompleteRepository.filter((suggestion) => {
@@ -202,8 +207,8 @@ class ScriptEditor extends SignalSource {
         suggestions,
         line: '',
         word: '',
-        lineNumber,
-        characterNumber: this.textarea.selectionStart - lineStart
+        lineNumber: lineLastNumber,
+        characterNumber: this.textarea.selectionStart - lineLastStart
       }
     } else {
       const suggestions = this.#autocompleteRepository.filter((suggestion) => {
@@ -214,7 +219,7 @@ class ScriptEditor extends SignalSource {
         suggestions,
         line,
         word,
-        lineNumber,
+        lineNumber: lineEndNumber,
         characterNumber
       }
     }
@@ -259,40 +264,66 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #handleTab () {
-    const a = this.textarea;
-    const s = a.selectionStart;
-    const d = a.selectionEnd;
+  #handleTab (subtractMode = false) {
+    let content = this.textarea.value;
+    let start = this.textarea.selectionStart;
+    let end = this.textarea.selectionEnd;
 
-    let v = a.value;
+    if (subtractMode) {
+      const { lineFirstStart, selectionEnd } = this.#getCursor();
 
-    if (s == d) {
-      a.value = v.substring(0, s) + '  ' + v.substring(s);
-      a.selectionStart = s + 2;
-      a.selectionEnd = d + 2;
+      let lineHandled = false;
+      for (let i = lineFirstStart; i < selectionEnd - 1; i++) {
+        if (!lineHandled && content[i] === ' ' && content[i + 1] === ' ') {
+          lineHandled = true;
+
+          content = _emplaceSlice(content, '', i, i + 2);
+          i -= 1;
+
+          if (i < start) {
+            start -= 2;
+          }
+
+          end -= 2;
+        } else if (content[i] === '\n') {
+          lineHandled = false;
+        }
+      }
+
+    } else if (start === end) {
+      content = _emplaceSlice(content, '  ', start, start);
+
+      start += 2;
+      end += 2;
     } else {
-      let o = 0, oo = 0, i;
-      for (i = d - 1; i > s; i--) {
-        if (v[i] == '\n') {
-          v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-          oo++;
+      let tabCount = 0;
+      let tabCountBeforeStart = 0;
+
+      let i = 0;
+      for (i = end - 1; i >= start; i--) {
+        if (content[i] === '\n') {
+          content = _emplaceSlice(content, '  ', i + 1, i + 1);
+          tabCount++;
         }
       }
 
       while (i >= 0) {
-        if (v[i] == '\n') {
-          v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-          o++;
+        if (content[i] === '\n') {
+          content = _emplaceSlice(content, '  ', i + 1, i + 1);
+          tabCountBeforeStart++;
           break;
         } else {
           i--;
         }
       }
 
-      a.value = v;
-      a.selectionStart = s + o * 2;
-      a.selectionEnd = d + (oo + o) * 2;
+      start += (tabCountBeforeStart) * 2;
+      end += (tabCount + tabCountBeforeStart) * 2;
     }
+
+    this.textarea.value = content;
+    this.textarea.selectionStart = start;
+    this.textarea.selectionEnd = end;
 
     this.#destroyPlaceholders();
     this.#update();
@@ -397,7 +428,7 @@ class ScriptEditor extends SignalSource {
         if (event.key === 'Tab') {
           _stopAndPrevent(event);
 
-          this.#handleTab();
+          this.#handleTab(event.shiftKey);
         }
       }
     });
@@ -409,7 +440,7 @@ class ScriptEditor extends SignalSource {
       const content = this.textarea.value;
       const fragment = event.clipboardData.getData('text').replace(/\t/g, ' ')
 
-      this.textarea.value = content.slice(0, selection.start) + fragment + content.slice(selection.end);
+      this.textarea.value = _emplaceSlice(content, fragment, selection.start, selection.end);
 
       this.selection = {
         start: selection.start + fragment.length,
