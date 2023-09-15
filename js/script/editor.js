@@ -219,7 +219,7 @@ class ScriptEditor extends SignalSource {
         suggestions,
         line,
         word,
-        lineNumber: lineEndNumber,
+        lineNumber: lineLastNumber,
         characterNumber
       }
     }
