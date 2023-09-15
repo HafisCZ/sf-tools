@@ -43,10 +43,6 @@ class ScriptEditor extends SignalSource {
   #applyStyles(sourceStyle, targetStyle) {
     targetStyle.setProperty('--offset-left', sourceStyle.paddingLeft);
     targetStyle.setProperty('--offset-top', sourceStyle.paddingTop);
-
-    for (const style of ['font', 'fontFamily', 'lineHeight']) {
-      targetStyle[style] = sourceStyle[style];
-    }
   }
 
   #update() {

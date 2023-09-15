@@ -42,6 +42,7 @@
 
   font-size: 14px !important;
   font-family: Consolas, "Courier New", monospace !important;
+  line-height: 1.2857;
 
   left: var(--offset-left, 0px);
   top: var(--offset-top, 0px);
@@ -70,11 +71,12 @@
 
 .ta-editor-autocomplete {
   position: absolute;
-  border: 1px solid orange;
+  border: 1px solid rgba(255, 255, 255, .15);
   white-space: nowrap;
 
   font-size: 14px !important;
   font-family: Consolas, "Courier New", monospace !important;
+  line-height: 1.2857;
 
   background: #2c2c2c;
   z-index: 1;
@@ -156,6 +158,7 @@
 
   font-size: 14px !important;
   font-family: Consolas, "Courier New", monospace !important;
+  line-height: 1.2857;
 
   padding-left: 40px !important;
 }
