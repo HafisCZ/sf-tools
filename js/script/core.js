@@ -3087,9 +3087,8 @@ class Script {
             theme: this.theme,
             functions: this.functions,
             variables: this.variablesReference,
-            arrayTable: [],
-            arrayGlobal: [],
-            // Constants have to be propagated through the environment
+            tableArrayCurrent: this.tableArrayCompare,
+            globalArrayCurrent: this.globalArrayCompare,
             constants: this.constants,
             row_indexes: this.row_indexes,
             timestamp: this.reference,
@@ -3226,22 +3225,22 @@ class Script {
         this.reference = array.reference;
     }
 
-    evalPlayer (tableArray, globalTable) {
+    evalPlayer (tableArray, globalArray) {
         // Evaluate row indexes
         this.evalRowIndexes(tableArray);
 
         // Purify array
         tableArray = [].concat(tableArray);
+        globalArray = [].concat(globalArray);
 
         // Get shared scope
-        let tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
-        let globalArrayCurrent = Script.createSegmentedArray(globalTable, entry => [entry.compare, entry.compare]);
-
-        this.arrayTable = tableArray;
-        this.arrayGlobal = globalTable;
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
 
         // Iterate over all variables
-        for (let [ name, variable ] of Object.entries(this.variables)) {
+        for (const [ name, variable ] of Object.entries(this.variables)) {
             // Copy over to reference variables
             this.variablesReference[name] = {
                 ast: variable.ast,
@@ -3251,10 +3250,10 @@ class Script {
             // Run only if it is a table variable
             if (variable.type !== 'local') {
                 // Get value
-                let value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type == 'global' ? globalArrayCurrent : tableArrayCurrent));
+                const value = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type == 'global' ? this.globalArrayCurrent : this.tableArrayCurrent));
 
                 // Set value if valid
-                if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
+                if (!isNaN(value) || typeof value === 'object' || typeof value === 'string') {
                     variable.value = value;
                 } else {
                     delete variable.value;
@@ -3263,8 +3262,8 @@ class Script {
         }
 
         // Evaluate custom rows
-        for (let row of this.customRows) {
-            let currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(tableArray));
+        for (const row of this.customRows) {
+            const currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(tableArray));
 
             row.eval = {
                 value: currentValue
@@ -3280,8 +3279,7 @@ class Script {
         this.evalRowIndexes(tableArray);
 
         // Variables
-        let compareEnvironment = this.getCompareEnvironment();
-        let sameTimestamp = tableArray.timestamp == tableArray.reference;
+        const sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
         this.list_classes = tableArray.reduce((c, { player }) => {
@@ -3289,17 +3287,21 @@ class Script {
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
-        this.arrayTable = tableArray;
-        this.arrayGlobal = globalArray;
+        // Purify array
+        tableArray = [].concat(tableArray);
+        globalArray = [].concat(globalArray);
 
         // Get segmented lists
-        let tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
-        let tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
-        let globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
-        let globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
+
+        // Get compare env
+        const compareEnvironment = this.getCompareEnvironment();
 
         // Evaluate variables
-        for (let [ name, variable ] of Object.entries(this.variables)) {
+        for (const [ name, variable ] of Object.entries(this.variables)) {
             // Copy over to reference variables
             this.variablesReference[name] = {
                 ast: variable.ast,
@@ -3308,8 +3310,8 @@ class Script {
 
             if (variable.type !== 'local') {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCurrent : tableArrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCompare : tableArrayCompare));
+                const currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? this.globalArrayCurrent : this.tableArrayCurrent));
+                const compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? this.globalArrayCompare : this.tableArrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3327,9 +3329,9 @@ class Script {
         }
 
         // Evaluate custom rows
-        for (let row of this.customRows) {
-            let currentValue = row.expr.eval(new ExpressionScope(this).addSelf(tableArrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(tableArrayCompare));
+        for (const row of this.customRows) {
+            const currentValue = row.expr.eval(new ExpressionScope(this).addSelf(this.tableArrayCurrent));
+            const compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(this.tableArrayCompare));
 
             row.eval = {
                 value: currentValue,
@@ -3341,13 +3343,12 @@ class Script {
         this.evalRules();
     }
 
-    evalGuild (tableArray, globalArray) {
+    evalGroup (tableArray, globalArray) {
         // Evaluate row indexes
         this.evalRowIndexes(tableArray);
 
         // Variables
-        let compareEnvironment = this.getCompareEnvironment();
-        let sameTimestamp = tableArray.timestamp == tableArray.reference;
+        const sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
         this.list_classes = tableArray.reduce((c, { player }) => {
@@ -3359,25 +3360,26 @@ class Script {
         this.list_kicked = tableArray.kicked;
         this.list_missing = tableArray.missing;
 
-        this.arrayTable = tableArray;
-        this.arrayGlobal = globalArray;
-
+        // Purify array
         tableArray = [].concat(tableArray);
         globalArray = [].concat(globalArray);
 
         // Get segmented lists
-        let tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
-        let tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
-        let globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
-        let globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
+
+        // Get compare env
+        const compareEnvironment = this.getCompareEnvironment();
 
         // Get own player
-        let ownEntry = tableArray.find(entry => entry.player.Own) || tableArray[0];
-        let ownPlayer = _dig(ownEntry, 'player');
-        let ownCompare = _dig(ownEntry, 'compare');
+        const ownEntry = tableArray.find(entry => entry.player.Own) || tableArray[0];
+        const ownPlayer = _dig(ownEntry, 'player');
+        const ownCompare = _dig(ownEntry, 'compare');
 
         // Evaluate variables
-        for (let [ name, variable ] of Object.entries(this.variables)) {
+        for (const [ name, variable ] of Object.entries(this.variables)) {
             // Copy over to reference variables
             this.variablesReference[name] = {
                 ast: variable.ast,
@@ -3386,8 +3388,8 @@ class Script {
 
             if (variable.type !== 'local') {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCurrent : tableArrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? globalArrayCompare : tableArrayCompare));
+                const currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? this.globalArrayCurrent : this.tableArrayCurrent));
+                const compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? this.globalArrayCompare : this.tableArrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3405,9 +3407,9 @@ class Script {
         }
 
         // Evaluate custom rows
-        for (let row of this.customRows) {
-            let currentValue = row.expr.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(tableArrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(tableArrayCompare));
+        for (const row of this.customRows) {
+            const currentValue = row.expr.eval(new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(this.tableArrayCurrent));
+            const compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).with(ownCompare, ownCompare).addSelf(this.tableArrayCompare));
 
             row.eval = {
                 value: currentValue,

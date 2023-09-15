@@ -409,27 +409,29 @@ class TableInstance {
     setEntries (array) {
         this.settings.evalBefore(array)
 
-        if (this.tableType === TableType.Group) {
-            this.array = array;
-        } else {
-            this.array = array.map(obj => {
-                let { player, compare } = obj;
+        this.array = array.map(obj => {
+            let { player, compare } = obj;
 
-                let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
-                let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
+            let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
+            let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
 
-                let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
-                ExpressionCache.reset();
+            let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
+            ExpressionCache.reset();
 
-                return disc ? null : obj;
-            }).filter(e => e);
+            return disc ? null : obj;
+        }).filter(e => e);
 
-            // Copy over lost properties
-            if (this.tableType == TableType.Browse) {
-                this.array.entryLimit = array.entryLimit;
-                this.array.timestamp = array.timestamp;
-                this.array.reference = array.reference;
-            }
+        // Copy over lost properties
+        if (this.tableType === TableType.Browse) {
+            this.array.entryLimit = array.entryLimit;
+            this.array.timestamp = array.timestamp;
+            this.array.reference = array.reference;
+        } else if (this.tableType === TableType.Group) {
+            this.array.joined = array.joined;
+            this.array.kicked = array.kicked;
+            this.array.missing = array.missing;
+            this.array.timestamp = array.timestamp;
+            this.array.reference = array.reference;
         }
 
         // Evaluate variables
@@ -439,7 +441,7 @@ class TableInstance {
             if (this.tableType == TableType.Browse) {
                 this.settings.evalBrowse(this.array, array);
             } else {
-                this.settings.evalGuild(this.array, array);
+                this.settings.evalGroup(this.array, array);
             }
         }
 

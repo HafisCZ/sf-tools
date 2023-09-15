@@ -784,14 +784,14 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'table_array',
   function (scope) {
-    return scope.env.arrayTable;
+    return scope.env.tableArrayCurrent;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'table_array_unfiltered',
   function (scope) {
-    return scope.env.arrayGlobal;
+    return scope.env.globalArrayCurrent;
   }
 )
 
