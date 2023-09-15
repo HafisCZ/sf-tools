@@ -2505,7 +2505,7 @@ class Script {
         this.scriptType = scriptType;
         this.scriptScope = scriptScope;
 
-        this.env_id = randomSHA1();
+        this.identifier = randomSHA1();
 
         // Constants
         this.constants = new Constants();
@@ -3093,7 +3093,7 @@ class Script {
             row_indexes: this.row_indexes,
             timestamp: this.reference,
             reference: this.reference,
-            env_id: this.env_id
+            identifier: this.identifier
         }
     }
 

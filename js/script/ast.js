@@ -72,7 +72,7 @@ class ExpressionScope {
     constructor (env) {
         this.self = [];
         this.indirect = [];
-        this.env = env || { theme: 'light', functions: Object.create(null), variables: Object.create(null), constants: Constants.DEFAULT, env_id: randomSHA1() };
+        this.env = env || { theme: 'light', functions: Object.create(null), variables: Object.create(null), constants: Constants.DEFAULT, identifier: randomSHA1() };
     }
 
     addSelf (obj) {
@@ -85,7 +85,7 @@ class ExpressionScope {
         this.reference = reference;
 
         if (player && reference) {
-            this.token = `${this.env.env_id}.${player.Identifier}.${player.Timestamp}.${reference.Timestamp}`;
+            this.token = `${this.env.identifier}.${player.Identifier}.${player.Timestamp}.${reference.Timestamp}`;
         }
         
         return this;
