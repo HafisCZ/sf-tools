@@ -404,63 +404,51 @@ class ScriptEditor extends SignalSource {
   }
 
   #handleTab (subtractMode = false) {
-    let content = this.textarea.value;
-    let start = this.textarea.selectionStart;
-    let end = this.textarea.selectionEnd;
+    let originalContent = this.textarea.value;
+    let currentContent = this.textarea.value;
+    let currentOffset = 0;
+
+    const { lineFirstStart, selectionStart, selectionEnd } = this.#getCursor();
+
+    let start = selectionStart;
+    let end = selectionEnd;
 
     if (subtractMode) {
-      const { lineFirstStart, selectionEnd } = this.#getCursor();
-
       let lineHandled = false;
       for (let i = lineFirstStart; i < selectionEnd - 1; i++) {
-        if (!lineHandled && content[i] === ' ' && content[i + 1] === ' ') {
+        if (!lineHandled && originalContent[i] === ' ' && originalContent[i + 1] === ' ') {
           lineHandled = true;
 
-          content = _emplaceSlice(content, '', i, i + 2);
-          i -= 1;
+          currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 2);
+          currentOffset -= 2;
 
-          if (i < start) {
+          if (i < selectionStart) {
             start -= 2;
           }
 
           end -= 2;
-        } else if (content[i] === '\n') {
+        } else if (originalContent[i] === '\n') {
           lineHandled = false;
         }
       }
-
     } else if (start === end) {
-      content = _emplaceSlice(content, '  ', start, start);
+      currentContent = _emplaceSlice(currentContent, '  ', start, start);
 
       start += 2;
       end += 2;
     } else {
-      let tabCount = 0;
-      let tabCountBeforeStart = 0;
+      for (let i = lineFirstStart; i < selectionEnd; i++) {
+        if (i === 0 || originalContent[i] === '\n') {
+          currentContent = _emplaceSlice(currentContent, '  ', i + 1 + currentOffset, i + 1 + currentOffset);
+          currentOffset += 2;
 
-      let i = 0;
-      for (i = end - 1; i >= start; i--) {
-        if (content[i] === '\n') {
-          content = _emplaceSlice(content, '  ', i + 1, i + 1);
-          tabCount++;
+          if (i < selectionStart) start += 2;
+          end += 2;
         }
       }
-
-      while (i >= 0) {
-        if (content[i] === '\n') {
-          content = _emplaceSlice(content, '  ', i + 1, i + 1);
-          tabCountBeforeStart++;
-          break;
-        } else {
-          i--;
-        }
-      }
-
-      start += (tabCountBeforeStart) * 2;
-      end += (tabCount + tabCountBeforeStart) * 2;
     }
 
-    this.textarea.value = content;
+    this.textarea.value = currentContent;
     this.textarea.selectionStart = start;
     this.textarea.selectionEnd = end;
 
