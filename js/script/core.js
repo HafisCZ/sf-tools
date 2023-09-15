@@ -1992,8 +1992,8 @@ class ScriptValidator {
     #entries = new Set();
 
     deprecateCommand (line, deprecatedKey, deprecatedBy) {
-        const name1 = ScriptCommands[deprecatedKey].encodedSyntax;
-        const name2 = ScriptCommands[deprecatedBy].encodedSyntax;
+        const name1 = ScriptCommands[deprecatedKey].syntax.encodedText;
+        const name2 = ScriptCommands[deprecatedBy].syntax.encodedText;
 
         this.#entries.add(`<div class="ta-editor-info-line ta-editor-info-line-deprecated">${line}: ${intl('stats.scripts.info.deprecated', { name1, name2 })}</div>`);
     }
