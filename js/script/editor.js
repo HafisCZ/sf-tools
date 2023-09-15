@@ -239,6 +239,65 @@ class ScriptEditor extends SignalSource {
     }
   }
 
+  #handleAutocompleteNavigation (event) {
+    const directionDown = event.key === 'ArrowDown';
+
+    const line = this.autocomplete.querySelector('[data-selected]');
+    line.removeAttribute('data-selected');
+
+    const adjacentLine = line?.[directionDown ? 'nextElementSibling' : 'previousElementSibling'] || (
+      directionDown ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild
+    );
+    adjacentLine.setAttribute('data-selected', '');
+
+    const currentScroll = this.autocomplete.scrollTop;
+    const isAbove = adjacentLine.offsetTop < currentScroll;
+    const isBelow = adjacentLine.offsetTop > currentScroll + this.autocomplete.offsetHeight - 20;
+
+    if (isAbove || isBelow) {
+      this.autocomplete.scroll({ top: adjacentLine.offsetTop + (isBelow ? 20 - this.autocomplete.offsetHeight : 0), behavior: 'instant' });
+    }
+  }
+
+  #handleTab () {
+    const a = this.textarea;
+    const s = a.selectionStart;
+    const d = a.selectionEnd;
+
+    let v = a.value;
+
+    if (s == d) {
+      a.value = v.substring(0, s) + '  ' + v.substring(s);
+      a.selectionStart = s + 2;
+      a.selectionEnd = d + 2;
+    } else {
+      let o = 0, oo = 0, i;
+      for (i = d - 1; i > s; i--) {
+        if (v[i] == '\n') {
+          v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+          oo++;
+        }
+      }
+
+      while (i >= 0) {
+        if (v[i] == '\n') {
+          v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+          o++;
+          break;
+        } else {
+          i--;
+        }
+      }
+
+      a.value = v;
+      a.selectionStart = s + o * 2;
+      a.selectionEnd = d + (oo + o) * 2;
+    }
+
+    this.#destroyPlaceholders();
+    this.#update();
+  }
+
   #createEditor() {
     // Prepare editor
     this.editor.classList.add('ta-editor');
@@ -330,66 +389,15 @@ class ScriptEditor extends SignalSource {
         } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
           _stopAndPrevent(event);
 
-          const directionDown = event.key === 'ArrowDown';
-
-          const line = this.autocomplete.querySelector('[data-selected]');
-          line.removeAttribute('data-selected');
-
-          const adjacentLine = line?.[directionDown ? 'nextElementSibling' : 'previousElementSibling'] || (
-            directionDown ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild
-          );
-          adjacentLine.setAttribute('data-selected', '');
-
-          const currentScroll = this.autocomplete.scrollTop;
-          const isAbove = adjacentLine.offsetTop < currentScroll;
-          const isBelow = adjacentLine.offsetTop > currentScroll + this.autocomplete.offsetHeight - 20;
-
-          if (isAbove || isBelow) {
-            this.autocomplete.scroll({ top: adjacentLine.offsetTop + (isBelow ? 20 - this.autocomplete.offsetHeight : 0), behavior: 'instant' });
-          }
+          this.#handleAutocompleteNavigation(event);
         }
       } else if (event.key === 'Tab' && this.#focusPlaceholders()) {
         _stopAndPrevent(event);
       } else {
         if (event.key === 'Tab') {
           _stopAndPrevent(event);
- 
-          const a = this.textarea;
-          const s = a.selectionStart;
-          const d = a.selectionEnd;
 
-          let v = a.value;
-
-          if (s == d) {
-            a.value = v.substring(0, s) + '  ' + v.substring(s);
-            a.selectionStart = s + 2;
-            a.selectionEnd = d + 2;
-          } else {
-            let o = 0, oo = 0, i;
-            for (i = d - 1; i > s; i--) {
-              if (v[i] == '\n') {
-                v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-                oo++;
-              }
-            }
-
-            while (i >= 0) {
-              if (v[i] == '\n') {
-                v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-                o++;
-                break;
-              } else {
-                i--;
-              }
-            }
-
-            a.value = v;
-            a.selectionStart = s + o * 2;
-            a.selectionEnd = d + (oo + o) * 2;
-          }
-
-          this.#destroyPlaceholders();
-          this.#update();
+          this.#handleTab();
         }
       }
     });
