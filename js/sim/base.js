@@ -262,7 +262,7 @@ const CONFIG = Object.defineProperties(
             ReviveHealthMin: 0.1,
             ReviveHealthDecay: 0.1,
             ReviveDamage: 1,
-            ReviveDamageMin: 1,
+            ReviveDamageMin: 0,
             ReviveDamageDecay: 0
         },
         Druid: {
