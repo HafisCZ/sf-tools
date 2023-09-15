@@ -151,6 +151,7 @@ class ExpressionRenderer {
     static render (highlighter, string, root = { constants: Constants.DEFAULT }, config = TABLE_EXPRESSION_CONFIG) {
         let tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(EXPRESSION_REGEXP);
         let nextName = false;
+        let bracketStack = [];
 
         // Go through all tokens
         for (let i = 0, token, prefix, suffix; i < tokens.length; i++) {
@@ -230,6 +231,18 @@ class ExpressionRenderer {
                     } else {
                         highlighter.normal(token);
                     }
+                } else if (Expression.TERMINATORS[token]) {
+                    bracketStack.unshift(Expression.TERMINATORS[token]);
+
+                    highlighter.normal(token);
+                } else if (Expression.TERMINATORS_INVERTED[token]) {
+                    if (bracketStack[0] === token) {
+                        bracketStack.shift();
+
+                        highlighter.normal(token);
+                    } else {
+                        highlighter.error(token, true);
+                    }
                 } else {
                     highlighter.normal(token);
                 }
@@ -238,6 +251,10 @@ class ExpressionRenderer {
             } else {
                 highlighter.normal(token);
             }
+        }
+
+        if (bracketStack.length > 0) {
+            highlighter.error(' '.repeat(bracketStack.length));
         }
     }
 }
@@ -499,7 +516,7 @@ class Expression {
     #getExpressionGroup (evalToken, evalBlank) {
         const args = [];
 
-        const terminator = Expression.#TERMINATORS[this.#get()];
+        const terminator = Expression.TERMINATORS[this.#get()];
 
         if (this.#peek() == terminator) {
             this.#get();
@@ -970,11 +987,13 @@ class Expression {
         }
     }
 
-    static #TERMINATORS = {
+    static TERMINATORS = {
         '(': ')',
         '[': ']',
         '{': '}'
     }
+
+    static TERMINATORS_INVERTED = _invert(this.TERMINATORS);
 
     static #TOKEN_UNARY = {
         '-': '__negate',
