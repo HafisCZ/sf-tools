@@ -28,12 +28,16 @@ class ScriptEditor extends SignalSource {
 
     const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined');
     const commandsSuggestions = commands.map((command) => ({
-      value: command.autocompleteSyntax,
-      text: command.encodedSyntax,
+      value: command.syntax.fieldText,
+      text: command.syntax.encodedText,
       type: 'command'
     }))
 
     this.#autocompleteRepository = [].concat(commandsSuggestions).concat(constantsSuggestions).concat(configSuggestions)
+
+    for (let i = 0; i < this.#autocompleteRepository.length; i++) {
+      this.#autocompleteRepository[i].index = `${i}`;
+    }
   }
 
   #applyStyles(sourceStyle, targetStyle) {
@@ -75,15 +79,28 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #applyAutocomplete(fragment) {
+  #applyAutocomplete(index, fragment) {
     const selection = this.selection;
     const value = this.textarea.value;
 
-    this.textarea.value = value.slice(0, selection.end) + fragment + value.slice(selection.end);
+    let selectionOffset = 0;
+
+    const { type } = this.#autocompleteRepository[index];
+    if (type === 'function') {
+      fragment = fragment + '()';
+      selectionOffset = -1;
+    }
+
+    const isField = this.#isFieldSelected()
+    if (isField) {
+      selectionOffset -= selection.end - selection.start;
+    }
+
+    this.textarea.value = value.slice(0, isField ? selection.start : selection.end) + fragment + value.slice(selection.end);
 
     this.selection = {
-      start: selection.end + fragment.length,
-      end: selection.end + fragment.length,
+      start: selection.end + fragment.length + selectionOffset,
+      end: selection.end + fragment.length + selectionOffset,
       direction: selection.direction
     };
 
@@ -95,20 +112,48 @@ class ScriptEditor extends SignalSource {
     this.#focusPlaceholders();
   }
 
+  #destroyPlaceholders () {
+    const value = this.textarea.value;
+
+    if (value.includes('\u200b')) {
+      let start = this.textarea.selectionStart;
+      let end = this.textarea.selectionEnd;
+  
+      for (let i = 0; i < value.length; i++) {
+        if (value[i] === '\u200b') {
+          if (i <= start) start--;
+          if (i <= end) end--;
+        }
+      }
+  
+      this.textarea.value = value.replace(/\u200b/g, '');
+  
+      this.textarea.selectionStart = start;
+      this.textarea.selectionEnd = end;
+    }
+  }
+
   #focusPlaceholders () {
     const value = this.textarea.value;
 
     const indexes = [];
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] === '\u200b') {
-        indexes.push(i);
-        if (indexes.length >= 2) {
-          break;
+    for (let i = 0, ln = 0, lastIndexLn = -1; i < value.length; i++) {
+      if (value[i] === '\n') ln++;
+      else if (value[i] === '\u200b') {
+        if (lastIndexLn === -1) {
+          lastIndexLn = ln;
+          indexes.push(i);
+        } else if (ln === lastIndexLn) {
+          indexes.push(i);
+          lastIndexLn = -1;
+        } else {
+          this.#destroyPlaceholders();
+          return false;
         }
       }
     }
 
-    if (indexes.length === 2) {
+    if (indexes.length > 0 && indexes.length % 2 === 0) {
       this.selection = {
         start: indexes[0],
         end: indexes[1] + 1,
@@ -116,11 +161,6 @@ class ScriptEditor extends SignalSource {
       }
 
       return true;
-    } else if (indexes.length > 0) {
-      // Placeholders were broken, delete them all from the text area
-      this.textarea.value = value.replace('\u200b', '');
-
-      return false;
     }
   }
 
@@ -136,25 +176,60 @@ class ScriptEditor extends SignalSource {
     return {
       line,
       word,
-      ln: _countInSlice(value, '\n', 0, end),
-      ch: end - start
+      lineNumber: _countInSlice(value, '\n', 0, end),
+      lineStart: start,
+      characterNumber: end - start
+    }
+  }
+
+  #isFieldSelected () {
+    const value = this.textarea.value;
+    const start = this.textarea.selectionStart;
+    const end = this.textarea.selectionEnd;
+
+    return value[start] === '\u200b' && value[end - 1] === '\u200b';
+  }
+
+  #getSuggestions () {
+    let { line, lineStart, word, lineNumber, characterNumber } = this.#cursor;
+
+    if (this.#isFieldSelected()) {
+      const suggestions = this.#autocompleteRepository.filter((suggestion) => {
+        return suggestion.type !== 'command';
+      });
+
+      return {
+        suggestions,
+        line: '',
+        word: '',
+        lineNumber,
+        characterNumber: this.textarea.selectionStart - lineStart
+      }
+    } else {
+      const suggestions = this.#autocompleteRepository.filter((suggestion) => {
+        return suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word);
+      });
+
+      return {
+        suggestions,
+        line,
+        word,
+        lineNumber,
+        characterNumber
+      }
     }
   }
 
   #showAutocomplete() {
-    const { line, word, ln, ch } = this.#cursor;
-
-    const suggestions = this.#autocompleteRepository.filter((suggestion) => {
-      return suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word);
-    });
+    const { suggestions, lineNumber, characterNumber, line, word } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
       this.autocomplete.innerHTML = suggestions.map((suggestion) => {
-        return `<div data-autocomplete-type="${suggestion.type}" data-autocomplete="${suggestion.value.slice(suggestion.type === 'command' ? line.length : word.length)}">${suggestion.text}</div>`
+        return `<div data-autocomplete-id="${suggestion.index}" data-autocomplete="${suggestion.value.slice(suggestion.type === 'command' ? line.length : word.length)}">${suggestion.text}</div>`
       }).join('');
 
-      this.autocomplete.style.setProperty('--position-top', `${18 * (ln + 1)}px`);
-      this.autocomplete.style.setProperty('--position-left', `${8 * (ch)}px`);
+      this.autocomplete.style.setProperty('--position-top', `${18 * (lineNumber + 1)}px`);
+      this.autocomplete.style.setProperty('--position-left', `${8 * (characterNumber)}px`);
       this.autocomplete.classList.add('visible');
       this.autocomplete.firstChild.setAttribute('data-selected', '');
 
@@ -205,7 +280,7 @@ class ScriptEditor extends SignalSource {
     this.autocomplete.addEventListener('click', (event) => {
       const line = event.target.closest('[data-autocomplete]');
       if (line) {
-        this.#applyAutocomplete(line.getAttribute('data-autocomplete'));
+        this.#applyAutocomplete(line.getAttribute('data-autocomplete-id'), line.getAttribute('data-autocomplete'));
       }
     });
 
@@ -250,7 +325,7 @@ class ScriptEditor extends SignalSource {
 
           const line = this.autocomplete.querySelector('[data-selected]');
           if (line) {
-            this.#applyAutocomplete(line.getAttribute('data-autocomplete'));
+            this.#applyAutocomplete(line.getAttribute('data-autocomplete-id'), line.getAttribute('data-autocomplete'));
           }
         } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
           _stopAndPrevent(event);
@@ -278,7 +353,7 @@ class ScriptEditor extends SignalSource {
       } else {
         if (event.key === 'Tab') {
           _stopAndPrevent(event);
-
+ 
           const a = this.textarea;
           const s = a.selectionStart;
           const d = a.selectionEnd;
@@ -313,6 +388,7 @@ class ScriptEditor extends SignalSource {
             a.selectionEnd = d + (oo + o) * 2;
           }
 
+          this.#destroyPlaceholders();
           this.#update();
         }
       }
@@ -333,6 +409,7 @@ class ScriptEditor extends SignalSource {
         direction: selection.direction
       };
 
+      this.#destroyPlaceholders();
       this.#update();
     });
 
@@ -390,6 +467,8 @@ class ScriptEditor extends SignalSource {
     const previousSelection = this.selection;
 
     this.textarea.value = text;
+
+    this.#destroyPlaceholders();
     this.#update();
 
     this.scrollTop();
