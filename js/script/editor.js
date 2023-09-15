@@ -7,11 +7,129 @@ class ScriptEditor extends SignalSource {
     this.editor = element;
     this.scriptType = scriptType;
 
-    this.#createRepository();
     this.#createEditor();
+    this.#createAutocomplete();
+    this.#createBindings();
   }
 
-  #createRepository() {
+  #createBindings () {
+    this.autocomplete.addEventListener('click', (event) => {
+      const line = event.target.closest('[data-autocomplete]');
+      if (line) {
+        this.#applyAutocomplete(line);
+      }
+    });
+
+    this.textarea.addEventListener('input', () => {
+      if (this.autocompleteActive) {
+        this.#showAutocomplete();
+      }
+
+      this.#update();
+    });
+
+    this.textarea.addEventListener('focusout', (event) => {
+      if (event.explicitOriginalTarget?.closest?.('[data-autocomplete]')) {
+        // Do nothing
+      } else {
+        this.#hideAutocomplete();
+      }
+    });
+
+    this.textarea.addEventListener('keydown', (event) => {
+      if (event.ctrlKey && event.key === 's') {
+        _stopAndPrevent(event);
+
+        this.emit('ctrl+s');
+      } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
+        _stopAndPrevent(event);
+
+        this.emit('ctrl+shift+s');
+      } else if (event.ctrlKey && event.key === ' ') {
+        _stopAndPrevent(event);
+
+        this.#showAutocomplete();
+      } else if (this.autocompleteActive) {
+        if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
+          _stopAndPrevent(event);
+
+          this.#hideAutocomplete();
+        } else if (event.key === 'Escape' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+          this.#hideAutocomplete();
+        } else if (event.key === 'Enter' || event.key === 'Tab') {
+          _stopAndPrevent(event);
+
+          const line = this.autocomplete.querySelector('[data-selected]');
+          if (line) {
+            this.#applyAutocomplete(line);
+          }
+        } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+          _stopAndPrevent(event);
+
+          this.#handleAutocompleteNavigation(event);
+        }
+      } else if (event.key === 'Tab' && this.#focusPlaceholders()) {
+        _stopAndPrevent(event);
+      } else {
+        if (event.key === 'Tab') {
+          _stopAndPrevent(event);
+
+          this.#handleTab(event.shiftKey);
+        }
+      }
+    });
+
+    this.textarea.addEventListener('paste', (event) => {
+      _stopAndPrevent(event);
+
+      const selection = this.selection;
+      const content = this.textarea.value;
+      const fragment = event.clipboardData.getData('text').replace(/\t/g, ' ')
+
+      this.textarea.value = _emplaceSlice(content, fragment, selection.start, selection.end);
+
+      this.selection = {
+        start: selection.start + fragment.length,
+        end: selection.start + fragment.length,
+        direction: selection.direction
+      };
+
+      this.#destroyPlaceholders();
+      this.#update();
+    });
+
+    this.textarea.addEventListener('dragover', (event) => _stopAndPrevent(event));
+    this.textarea.addEventListener('dragenter', (event) => _stopAndPrevent(event));
+    this.textarea.addEventListener('drop', (event) => {
+      const contentType = _dig(event, 'dataTransfer', 'files', 0, 'type')
+      if (!contentType || contentType === 'text/plain') {
+        _stopAndPrevent(event)
+
+        const reader = new FileReader();
+        reader.readAsText(event.dataTransfer.files[0], 'UTF-8');
+        reader.onload = (file) => {
+          this.content = file.target.result;
+        }
+      }
+    });
+
+    this.textarea.addEventListener('click', () => {
+      this.#hideAutocomplete();
+    })
+
+    this.#update();
+
+    const updateMaskPosition = () => {
+      this.editor.style.setProperty('--scroll-top', `-${this.textarea.scrollTop}px`);
+      this.editor.style.setProperty('--scroll-left', `-${this.textarea.scrollLeft}px`);
+
+      window.requestAnimationFrame(updateMaskPosition);
+    }
+
+    window.requestAnimationFrame(updateMaskPosition);
+  }
+
+  #createAutocomplete() {
     const constants = Constants.DEFAULT_CONSTANTS_VALUES;
     const constantsSuggestions = Array.from(constants).map((entry) => ({
       value: entry[0],
@@ -29,14 +147,24 @@ class ScriptEditor extends SignalSource {
     const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined');
     const commandsSuggestions = commands.map((command) => ({
       value: command.syntax.fieldText,
-      text: command.syntax.encodedText,
+      text: command.syntax.text,
       type: 'command'
     }))
 
     this.#autocompleteRepository = [].concat(commandsSuggestions).concat(constantsSuggestions).concat(configSuggestions)
 
     for (let i = 0; i < this.#autocompleteRepository.length; i++) {
-      this.#autocompleteRepository[i].index = `${i}`;
+      const suggestion = this.#autocompleteRepository[i];
+
+      const element = document.createElement('div');
+      element.setAttribute('data-autocomplete', i);
+      element.setAttribute('data-autocomplete-type', suggestion.type);
+      element.innerText = suggestion.text;
+
+      this.autocomplete.appendChild(element);
+
+      suggestion.id = `${i}`;
+      suggestion.element = element;
     }
   }
 
@@ -75,13 +203,18 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #applyAutocomplete(index, fragment) {
+  #applyAutocomplete(element) {
+    const { value: suggestionValue, type } = this.#autocompleteRepository[element.getAttribute('data-autocomplete')];
+    const offsetCommand = parseInt(this.autocomplete.getAttribute('data-command-offset'));
+    const offsetGeneric = parseInt(this.autocomplete.getAttribute('data-generic-offset'));
+
+    const fragment = suggestionValue.slice(type === 'command' ? offsetCommand : offsetGeneric);
+
     const selection = this.selection;
     const value = this.textarea.value;
 
     let selectionOffset = 0;
 
-    const { type } = this.#autocompleteRepository[index];
     if (type === 'function') {
       fragment = fragment + '()';
       selectionOffset = -1;
@@ -175,7 +308,7 @@ class ScriptEditor extends SignalSource {
       lineFirstStart,
       lineLastStart,
       lineLastNumber: _countInSlice(value, '\n', 0, selectionEnd),
-      characterNumber: selectionEnd - lineLastStart
+      lineLastCharacterNumber: selectionEnd - lineLastStart
     }
   }
 
@@ -188,51 +321,58 @@ class ScriptEditor extends SignalSource {
   }
 
   #getSuggestions () {
-    const { lineLastStart, selectionEnd, lineLastNumber, characterNumber } = this.#getCursor();
+    const { lineLastStart, selectionEnd, lineLastNumber, lineLastCharacterNumber } = this.#getCursor();
   
     const value = this.textarea.value;
-    const line = value.substring(lineLastStart, selectionEnd).trimStart();
-    const word = line.slice(line.lastIndexOf(line.match(/[^\w@]/g)?.pop() || ' ') + 1);
+    const lineLast = value.substring(lineLastStart, selectionEnd).trimStart();
+    const lineLastWord = lineLast.slice(lineLast.lastIndexOf(lineLast.match(/[^\w@]/g)?.pop() || ' ') + 1);
 
     if (this.#isFieldSelected()) {
-      const suggestions = this.#autocompleteRepository.filter((suggestion) => {
-        return suggestion.type !== 'command';
-      });
-
       return {
-        suggestions,
-        line: '',
-        word: '',
-        lineNumber: lineLastNumber,
-        characterNumber: this.textarea.selectionStart - lineLastStart
+        suggestions: this.#autocompleteRepository
+          .filter((suggestion) => suggestion.type !== 'command')
+          .map((suggestion) => suggestion.id),
+        lineLast: '',
+        lineLastWord: '',
+        lineLastNumber,
+        lineLastCharacterNumber: this.textarea.selectionStart - lineLastStart
       }
     } else {
-      const suggestions = this.#autocompleteRepository.filter((suggestion) => {
-        return suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word);
-      });
-
       return {
-        suggestions,
-        line,
-        word,
-        lineNumber: lineLastNumber,
-        characterNumber
+        suggestions: this.#autocompleteRepository
+          .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(lineLast) : suggestion.value.startsWith(lineLastWord))
+          .map((suggestion) => suggestion.id),
+        lineLast,
+        lineLastWord,
+        lineLastNumber,
+        lineLastCharacterNumber
       }
     }
   }
 
   #showAutocomplete() {
-    const { suggestions, lineNumber, characterNumber, line, word } = this.#getSuggestions();
+    const { suggestions, lineLastNumber, lineLastCharacterNumber, lineLast, lineLastWord } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
-      this.autocomplete.innerHTML = suggestions.map((suggestion) => {
-        return `<div data-autocomplete-id="${suggestion.index}" data-autocomplete="${suggestion.value.slice(suggestion.type === 'command' ? line.length : word.length)}">${suggestion.text}</div>`
-      }).join('');
+      for (const { element, id } of this.#autocompleteRepository) {
+        if (suggestions.includes(id)) {
+          element.classList.add('visible');
+        } else {
+          element.classList.remove('visible');
+        }
+      }
 
-      this.autocomplete.style.setProperty('--position-top', `${18 * (lineNumber + 1)}px`);
-      this.autocomplete.style.setProperty('--position-left', `${8 * (characterNumber)}px`);
+      this.autocomplete.setAttribute('data-command-offset', lineLast.length);
+      this.autocomplete.setAttribute('data-generic-offset', lineLastWord.length);
+      this.autocomplete.style.setProperty('--position-top', `${18 * (lineLastNumber + 1)}px`);
+      this.autocomplete.style.setProperty('--position-left', `${8 * (lineLastCharacterNumber)}px`);
       this.autocomplete.classList.add('visible');
-      this.autocomplete.firstChild.setAttribute('data-selected', '');
+
+      for (const element of this.autocomplete.querySelectorAll('[data-selected]')) {
+        element.removeAttribute('data-selected');
+      }
+
+      this.autocomplete.querySelector('[data-autocomplete].visible').setAttribute('data-selected', '');
 
       this.autocompleteActive = true;
     } else {
@@ -246,9 +386,12 @@ class ScriptEditor extends SignalSource {
     const line = this.autocomplete.querySelector('[data-selected]');
     line.removeAttribute('data-selected');
 
-    const adjacentLine = line?.[directionDown ? 'nextElementSibling' : 'previousElementSibling'] || (
-      directionDown ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild
-    );
+    let adjacentLine = line;
+    do {
+      adjacentLine = adjacentLine[directionDown ? 'nextElementSibling' : 'previousElementSibling'];
+    } while (adjacentLine && !adjacentLine.classList.contains('visible'));
+
+    adjacentLine ||= (directionDown ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild);
     adjacentLine.setAttribute('data-selected', '');
 
     const currentScroll = this.autocomplete.scrollTop;
@@ -362,121 +505,6 @@ class ScriptEditor extends SignalSource {
 
     // Overlay clone for faster render
     this.overlayClone = this.overlay.cloneNode(true);
-
-    this.autocomplete.addEventListener('click', (event) => {
-      const line = event.target.closest('[data-autocomplete]');
-      if (line) {
-        this.#applyAutocomplete(line.getAttribute('data-autocomplete-id'), line.getAttribute('data-autocomplete'));
-      }
-    });
-
-    this.textarea.addEventListener('input', () => {
-      if (this.autocompleteActive) {
-        this.#showAutocomplete();
-      }
-
-      this.#update();
-    });
-
-    this.textarea.addEventListener('focusout', (event) => {
-      if (event.explicitOriginalTarget?.closest?.('[data-autocomplete]')) {
-        // Do nothing
-      } else {
-        this.#hideAutocomplete();
-      }
-    });
-
-    this.textarea.addEventListener('keydown', (event) => {
-      if (event.ctrlKey && event.key === 's') {
-        _stopAndPrevent(event);
-
-        this.emit('ctrl+s');
-      } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
-        _stopAndPrevent(event);
-
-        this.emit('ctrl+shift+s');
-      } else if (event.ctrlKey && event.key === ' ') {
-        _stopAndPrevent(event);
-
-        this.#showAutocomplete();
-      } else if (this.autocompleteActive) {
-        if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
-          _stopAndPrevent(event);
-
-          this.#hideAutocomplete();
-        } else if (event.key === 'Escape' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-          this.#hideAutocomplete();
-        } else if (event.key === 'Enter' || event.key === 'Tab') {
-          _stopAndPrevent(event);
-
-          const line = this.autocomplete.querySelector('[data-selected]');
-          if (line) {
-            this.#applyAutocomplete(line.getAttribute('data-autocomplete-id'), line.getAttribute('data-autocomplete'));
-          }
-        } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-          _stopAndPrevent(event);
-
-          this.#handleAutocompleteNavigation(event);
-        }
-      } else if (event.key === 'Tab' && this.#focusPlaceholders()) {
-        _stopAndPrevent(event);
-      } else {
-        if (event.key === 'Tab') {
-          _stopAndPrevent(event);
-
-          this.#handleTab(event.shiftKey);
-        }
-      }
-    });
-
-    this.textarea.addEventListener('paste', (event) => {
-      _stopAndPrevent(event);
-
-      const selection = this.selection;
-      const content = this.textarea.value;
-      const fragment = event.clipboardData.getData('text').replace(/\t/g, ' ')
-
-      this.textarea.value = _emplaceSlice(content, fragment, selection.start, selection.end);
-
-      this.selection = {
-        start: selection.start + fragment.length,
-        end: selection.start + fragment.length,
-        direction: selection.direction
-      };
-
-      this.#destroyPlaceholders();
-      this.#update();
-    });
-
-    this.textarea.addEventListener('dragover', (event) => _stopAndPrevent(event));
-    this.textarea.addEventListener('dragenter', (event) => _stopAndPrevent(event));
-    this.textarea.addEventListener('drop', (event) => {
-      const contentType = _dig(event, 'dataTransfer', 'files', 0, 'type')
-      if (!contentType || contentType === 'text/plain') {
-        _stopAndPrevent(event)
-
-        const reader = new FileReader();
-        reader.readAsText(event.dataTransfer.files[0], 'UTF-8');
-        reader.onload = (file) => {
-          this.content = file.target.result;
-        }
-      }
-    });
-
-    this.textarea.addEventListener('click', () => {
-      this.#hideAutocomplete();
-    })
-
-    this.#update();
-
-    const updateMaskPosition = () => {
-      this.editor.style.setProperty('--scroll-top', `-${this.textarea.scrollTop}px`);
-      this.editor.style.setProperty('--scroll-left', `-${this.textarea.scrollLeft}px`);
-
-      window.requestAnimationFrame(updateMaskPosition);
-    }
-
-    window.requestAnimationFrame(updateMaskPosition);
   }
 
   get selection() {

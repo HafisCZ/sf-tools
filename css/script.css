@@ -101,6 +101,11 @@
   padding-left: 4px;
   cursor: pointer;
   white-space: pre;
+  display: none;
+}
+
+.ta-editor-autocomplete > [data-autocomplete].visible {
+  display: block;
 }
 
 .ta-editor-autocomplete > [data-autocomplete]:hover, .ta-editor-autocomplete > [data-autocomplete][data-selected] {
