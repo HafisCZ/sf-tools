@@ -5,7 +5,7 @@ class HeaderGroup {
         this.empty =  expa_eval != undefined ? expa_eval.length == 0 : empty;
         this.index = i;
 
-        this.sortkey = `${ name }.${ i }`;
+        this.sortKey = `${ name }.${ i }`;
 
         this.width = 0;
         this.length = 0;
@@ -18,7 +18,7 @@ class HeaderGroup {
             name: expa_eval != undefined ? expa_eval : (alias != undefined ? alias : name),
             generators,
             sort,
-            sortkey: SHA1(`${ this.sortkey }.${ name }.${ this.headers.length }`),
+            sortKey: SHA1(`${ this.sortKey }.${ name }.${ this.headers.length }`),
             span,
             bordered
         });
@@ -380,7 +380,7 @@ class TableInstance {
 
         this.sortMap = new Map();
         for (const header of this.flat) {
-            this.sortMap.set(header.sortkey, header);
+            this.sortMap.set(header.sortKey, header);
         }
 
         this.configLeft = this.config.splice(0, 1);
@@ -462,7 +462,7 @@ class TableInstance {
 
         return new Proxy({
             '_index': index,
-            '_order_by': this.settings.globals.order_by ? this.#safeEval(this.settings.globals.order_by, player, compare, this.settings) : undefined
+            '_order_by': this.settings.globals.orderBy ? this.#safeEval(this.settings.globals.orderBy, player, compare, this.settings) : undefined
         }, {
             get: function (target, prop) {
                 if (target[prop]) {
@@ -572,7 +572,7 @@ class TableInstance {
         const index = this.sorting.findIndex(sort => sort.key == key);
 
         if (index == -1) {
-            const obj = this.flat.find(header => header.sortkey == key);
+            const obj = this.flat.find(header => header.sortKey == key);
 
             this.sorting.push({
                 key: key,
@@ -618,7 +618,7 @@ class TableInstance {
     }
 
     setDefaultSorting () {
-        this.sorting = [ ...this.global_sorting ];
+        this.sorting = [ ...this.globalSorting ];
     }
 
     #compareItems (a, b) {
@@ -657,22 +657,22 @@ class TableInstance {
         this.globalSortingKey = '_index';
         this.globalSortingOrder = 1;
 
-        if (this.settings.globals.order_by) {
+        if (this.settings.globals.orderBy) {
             this.globalSortingKey = '_order_by';
-        } else if (this.flat.some(x => 'glob_order' in x)) {
+        } else if (this.flat.some(x => 'globOrder' in x)) {
             const sorting = [];
 
-            for (const { sortkey, glob_order } of this.flat) {
-                if (typeof glob_order != 'undefined') {
-                    sorting.splice(typeof glob_order.index === 'undefined' ? sorting.length : glob_order.index, 0, {
-                        key: sortkey,
+            for (const { sortKey, globOrder } of this.flat) {
+                if (typeof globOrder != 'undefined') {
+                    sorting.splice(typeof globOrder.index === 'undefined' ? sorting.length : globOrder.index, 0, {
+                        key: sortKey,
                         flip: undefined,
-                        order: glob_order.ord ? 2 : 1
+                        order: globOrder.ord ? 2 : 1
                     });
                 }
             }
 
-            this.global_sorting = sorting;
+            this.globalSorting = sorting;
             this.setDefaultSorting();
         }
     }
@@ -876,15 +876,15 @@ class TableInstance {
             this.cache.set('members', `
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Classes</td>
-                    <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.list_classes).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
+                    <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.listClasses).map(([ key, count ]) => intl(`general.class${key}`) + ': ' + count).join(', ') }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Joined</td>
-                    <td colspan="${ this.rightFlatSpan }">${ this.settings.list_joined.join(', ') }</td>
+                    <td colspan="${ this.rightFlatSpan }">${ this.settings.listJoined.join(', ') }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" colspan=${ this.leftFlatSpan }>Left</td>
-                    <td colspan="${ this.rightFlatSpan }">${ this.settings.list_kicked.join(', ') }</td>
+                    <td colspan="${ this.rightFlatSpan }">${ this.settings.listKicked.join(', ') }</td>
                 </tr>
             `);
         } else {
@@ -895,12 +895,12 @@ class TableInstance {
     #renderMissing () {
         if (this.cache.has('missing')) {
             return;
-        } else if (this.settings.list_missing.length) {
+        } else if (this.settings.listMissing.length) {
             this.cache.set('missing', `
                 <tr class="font-weight: bold;">
                     ${
                         CellGenerator.WideCell(
-                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.settings.list_missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
+                            CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.settings.listMissing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`),
                             undefined,
                             this.flatWidth,
                             'center'
@@ -996,10 +996,10 @@ class TableInstance {
             let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
 
             if (empty && !aligned) {
-                return _join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
+                return _join(headers, ({ width, span, sortKey, name: headerName, alignTitle }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortkey) }>${ headerName }</td>`
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ alignTitle ? alignTitle : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortKey) }>${ headerName }</td>`
                 });
             } else {
                 return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
@@ -1015,10 +1015,10 @@ class TableInstance {
             if (empty && !aligned) {
                 return '';
             } else {
-                return _join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
+                return _join(headers, ({ width, span, name, sortKey, alignTitle }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortkey) }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ alignTitle ? alignTitle : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortKey) }>${ name }</td>`
                 });
             }
         });
@@ -1346,7 +1346,7 @@ class TableController extends SignalSource {
     
                     // Redraw table
                     this.refresh();
-                } else if (this.table.global_sorting) {
+                } else if (this.table.globalSorting) {
                     this.table.setDefaultSorting();
                     this.refresh();
                 }

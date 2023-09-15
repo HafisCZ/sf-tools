@@ -558,7 +558,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'width policy <value>',
     /^width policy (strict|relaxed)$/,
-    (root, value) => root.addGlobal('width_policy', value),
+    (root, value) => root.addGlobal('widthPolicy', value),
     (root, value) => Highlighter.keyword('width policy').space(1).boolean(value, value === 'strict')
 )
 
@@ -1650,7 +1650,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'align title (on|off)',
     /^align title( (on|off))?$/,
-    (root, params, value) => root.addGlobal('align_title', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => root.addGlobal('alignTitle', params ? ARGUMENT_MAP_ON_OFF[value] : true),
     (root, params, value) => {
         const acc = Highlighter.keyword('align title');
         if (params) {
@@ -1821,7 +1821,7 @@ ScriptCommands.register(
     /^align (left|right|center) (left|right|center)$/,
     (root, value, value2) => {
         root.addShared('align', value);
-        root.addShared('align_title', value2);
+        root.addShared('alignTitle', value2);
     },
     (root, value, value2) => Highlighter.keyword('align ').constant(value).space().constant(value2)
 )
@@ -1848,7 +1848,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addGlobal('order_by', ast);
+            root.addGlobal('orderBy', ast);
         }
     },
     (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
@@ -2519,7 +2519,7 @@ class Script {
         this.variablesReference = Object.create(null);
 
         this.trackers = {};
-        this.row_indexes = {};
+        this.playerRowIndexes = {};
 
         // Table
         this.categories = [];
@@ -2943,7 +2943,7 @@ class Script {
     addGlobOrder (index, order) {
         let object = (this.header || this.embed);
         if (object) {
-            object.glob_order = {
+            object.globOrder = {
                 ord: order,
                 index: index
             }
@@ -3090,7 +3090,7 @@ class Script {
             tableArrayCurrent: this.tableArrayCompare,
             globalArrayCurrent: this.globalArrayCompare,
             constants: this.constants,
-            row_indexes: this.row_indexes,
+            playerRowIndexes: this.playerRowIndexes,
             timestamp: this.reference,
             reference: this.reference,
             identifier: this.identifier
@@ -3162,7 +3162,7 @@ class Script {
     }
 
     getTitleAlign () {
-        return this.globals.align_title;
+        return this.globals.alignTitle;
     }
 
     getNameStyle () {
@@ -3170,14 +3170,14 @@ class Script {
     }
 
     isStrictWidthPolicy () {
-        return (this.globals.width_policy || 'relaxed') === 'strict';
+        return (this.globals.widthPolicy || 'relaxed') === 'strict';
     }
 
     evalRowIndexes (array) {
         for (let i = 0; i < array.length; i++) {
             const player = array[i].player;
 
-            this.row_indexes[`${player.Identifier}_${player.Timestamp}`] = i;
+            this.playerRowIndexes[`${player.Identifier}_${player.Timestamp}`] = i;
         }
     }
 
@@ -3282,7 +3282,7 @@ class Script {
         const sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
-        this.list_classes = tableArray.reduce((c, { player }) => {
+        this.listClasses = tableArray.reduce((c, { player }) => {
             c[player.Class]++;
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
@@ -3351,14 +3351,14 @@ class Script {
         const sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
-        this.list_classes = tableArray.reduce((c, { player }) => {
+        this.listClasses = tableArray.reduce((c, { player }) => {
             c[player.Class]++;
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
-        this.list_joined = tableArray.joined;
-        this.list_kicked = tableArray.kicked;
-        this.list_missing = tableArray.missing;
+        this.listJoined = tableArray.joined;
+        this.listKicked = tableArray.kicked;
+        this.listMissing = tableArray.missing;
 
         // Purify array
         tableArray = [].concat(tableArray);

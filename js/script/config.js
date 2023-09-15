@@ -827,35 +827,35 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'row_index',
   function (scope) {
-    return scope.env.row_indexes && scope.player ? scope.env.row_indexes[`${scope.player.Identifier}_${scope.player.Timestamp}`] : undefined;
+    return scope.env.playerRowIndexes && scope.player ? scope.env.playerRowIndexes[`${scope.player.Identifier}_${scope.player.Timestamp}`] : undefined;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'joined',
   function (scope) {
-    return scope.env.list_joined;
+    return scope.env.listJoined;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'missing',
   function (scope) {
-    return scope.env.list_missing;
+    return scope.env.listMissing;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'kicked',
   function (scope) {
-    return scope.env.list_kicked;
+    return scope.env.listKicked;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'classes',
   function (scope) {
-    return scope.env.list_classes;
+    return scope.env.listClasses;
   }
 )
 
