@@ -171,7 +171,7 @@ class ScriptEditor extends SignalSource {
     const start = _lastIndexOfInSlice(value, '\n', 0, end - 1) + 1;
 
     const line = value.substring(start, end).trimStart();
-    const word = line.slice(line.lastIndexOf(' ') + 1);
+    const word = line.slice(line.lastIndexOf(line.match(/\W/g)?.pop() || ' ') + 1);
 
     return {
       line,
@@ -314,7 +314,7 @@ class ScriptEditor extends SignalSource {
 
         this.#showAutocomplete();
       } else if (this.autocompleteActive) {
-        if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1] === '\n') {
+        if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
           _stopAndPrevent(event);
 
           this.#hideAutocomplete();
