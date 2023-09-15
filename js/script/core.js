@@ -180,8 +180,8 @@ class Highlighter {
         return this;
     }
 
-    static error (text) {
-        this.#text += `<span class="ta-error">${this.#escape(text)}</span>`;
+    static error (text, colorText = false) {
+        this.#text += `<span class="${colorText ? 'ta-error-color' : 'ta-error'}">${this.#escape(text)}</span>`;
         return this;
     }
 
