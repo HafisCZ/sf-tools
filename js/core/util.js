@@ -292,6 +292,14 @@ function _emplaceSlice (string, slice, boundaryStart, boundaryEnd) {
     return string.substring(0, boundaryStart) + slice + string.substring(boundaryEnd);
 }
 
+function _includesInSlice (string, character, boundaryStart, boundaryEnd) {
+    for (let i = boundaryStart; i < boundaryEnd; i++) {
+        if (string[i] === character) return true;
+    }
+
+    return false;
+}
+
 function _countInSlice (string, character, boundaryStart, boundaryEnd) {
     let count = 0;
     for (let i = boundaryStart; i < boundaryEnd; i++) {

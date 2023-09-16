@@ -49,6 +49,10 @@ class ScriptEditor extends SignalSource {
         _stopAndPrevent(event);
 
         this.#showAutocomplete();
+      } else if (event.ctrlKey && event.shiftKey && event.key === 'X') {
+        _stopAndPrevent(event);
+
+        this.#handleComment();
       } else if (this.autocompleteActive) {
         if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
           _stopAndPrevent(event);
@@ -299,7 +303,7 @@ class ScriptEditor extends SignalSource {
     const selectionStart = this.textarea.selectionStart;
     const selectionEnd = this.textarea.selectionEnd;
 
-    const lineFirstStart = _lastIndexOfInSlice(value, '\n', 0, selectionStart - 1);
+    const lineFirstStart = Math.max(0, _lastIndexOfInSlice(value, '\n', 0, selectionStart - 1));
     const lineLastStart = _lastIndexOfInSlice(value, '\n', 0, selectionEnd - 1) + 1;
 
     return {
@@ -307,6 +311,7 @@ class ScriptEditor extends SignalSource {
       selectionEnd,
       lineFirstStart,
       lineLastStart,
+      lineLastEnd: value.indexOf('\n', selectionEnd) - 1,
       lineLastNumber: _countInSlice(value, '\n', 0, selectionEnd),
       lineLastCharacterNumber: selectionEnd - lineLastStart
     }
@@ -403,43 +408,51 @@ class ScriptEditor extends SignalSource {
     }
   }
 
+  #handleComment () {
+    console.warn('not implemented')
+  }
+
   #handleTab (subtractMode = false) {
     let originalContent = this.textarea.value;
     let currentContent = this.textarea.value;
     let currentOffset = 0;
 
-    const { lineFirstStart, selectionStart, selectionEnd } = this.#getCursor();
+    const { lineFirstStart, lineLastEnd, selectionStart, selectionEnd } = this.#getCursor();
 
     let start = selectionStart;
     let end = selectionEnd;
 
     if (subtractMode) {
-      let lineHandled = false;
-      for (let i = lineFirstStart; i < selectionEnd - 1; i++) {
-        if (!lineHandled && originalContent[i] === ' ' && originalContent[i + 1] === ' ') {
-          lineHandled = true;
-
+      for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
+        if (i !== lineFirstStart && originalContent[i - 1] !== '\n') {
+          // If we encounter new line, save it
+          continue;
+        } else if (originalContent[i] === ' ' && originalContent[i + 1] === ' ') {
+          // If current like starts with two spaces
           currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 2);
           currentOffset -= 2;
 
-          if (i < selectionStart) {
-            start -= 2;
-          }
+          if (i < selectionStart) start -= 2;
+          if (i < selectionEnd) end -= 2;
+        } else if (originalContent[i] === ' ') {
+          // If current line starts with one space
+          currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 1);
+          currentOffset -= 1;
 
-          end -= 2;
-        } else if (originalContent[i] === '\n') {
-          lineHandled = false;
+          if (i < selectionStart) start -= 1;
+          if (i < selectionEnd) end -= 1;
         }
       }
-    } else if (start === end) {
-      currentContent = _emplaceSlice(currentContent, '  ', start, start);
+    } else if (selectionStart === selectionEnd) {
+      // If selection is 0 characters long, just insert two spaces at current selection
+      currentContent = _emplaceSlice(currentContent, '  ', selectionStart, selectionStart);
 
       start += 2;
       end += 2;
     } else {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || originalContent[i] === '\n') {
-          currentContent = _emplaceSlice(currentContent, '  ', i + 1 + currentOffset, i + 1 + currentOffset);
+        if (i === lineFirstStart || originalContent[i - 1] === '\n') {
+          currentContent = _emplaceSlice(currentContent, '  ', i + currentOffset, i + currentOffset);
           currentOffset += 2;
 
           if (i < selectionStart) start += 2;
@@ -449,8 +462,8 @@ class ScriptEditor extends SignalSource {
     }
 
     this.textarea.value = currentContent;
-    this.textarea.selectionStart = start;
-    this.textarea.selectionEnd = end;
+    this.textarea.selectionStart = Math.max(0, start);
+    this.textarea.selectionEnd = Math.max(Math.max(0, start), end);
 
     this.#destroyPlaceholders();
     this.#update();
