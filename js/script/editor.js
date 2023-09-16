@@ -418,7 +418,25 @@ class ScriptEditor extends SignalSource {
     let start = selectionStart;
     let end = selectionEnd;
 
-    if (_lineStartsWith(originalContent, '#', lineFirstStart, lineLastEnd)) {
+    if (_lineSome(originalContent, lineFirstStart, lineLastEnd, (char) => char !== '#' && char !== '\n')) {
+      for (let i = lineFirstStart; i < selectionEnd; i++) {
+        if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
+          if (originalContent[i] === '#') {
+            // If line already starts with a comment, leave it be
+            continue;
+          } else if (originalContent[i] === '\n') {
+            // Ignore also empty lines
+            continue;
+          }
+
+          currentContent = _emplaceSlice(currentContent, '#', i + currentOffset, i + currentOffset);
+          currentOffset += 1;
+
+          if (i < selectionStart) start += 1;
+          end += 1;
+        }
+      }
+    } else {
       for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
         if (i !== lineFirstStart && originalContent[i - 1] !== '\n') {
           // If we encounter new line, save it
@@ -430,16 +448,6 @@ class ScriptEditor extends SignalSource {
 
           if (i < selectionStart) start -= 1;
           if (i < selectionEnd) end -= 1;
-        }
-      }
-    } else {
-      for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
-          currentContent = _emplaceSlice(currentContent, '#', i + currentOffset, i + currentOffset);
-          currentOffset += 1;
-
-          if (i < selectionStart) start += 1;
-          end += 1;
         }
       }
     }
@@ -492,6 +500,11 @@ class ScriptEditor extends SignalSource {
     } else {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
         if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
+          if (originalContent[i] === '\n') {
+            // Ignore empty lines
+            continue;
+          }
+
           currentContent = _emplaceSlice(currentContent, '  ', i + currentOffset, i + currentOffset);
           currentOffset += 2;
 

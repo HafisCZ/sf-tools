@@ -309,9 +309,9 @@ function _countInSlice (string, character, boundaryStart, boundaryEnd) {
     return count;
 }
 
-function _lineStartsWith (string, character, boundaryStart, boundaryEnd) {
+function _lineSome (string, boundaryStart, boundaryEnd, callback) {
     for (let i = boundaryStart; i < boundaryEnd; i++) {
-        if ((i === boundaryStart || string[i - 1] === '\n') && string[i] === character) {
+        if ((i === 0 || string[i - 1] === '\n') && callback(string[i])) {
             return true;
         }
     }
