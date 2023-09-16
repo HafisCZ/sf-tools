@@ -210,7 +210,6 @@ class ScriptEditor extends SignalSource {
     let fragment = suggestionValue.slice(type === 'command' ? offsetCommand : offsetGeneric);
 
     const selection = this.selection;
-    const value = this.textarea.value;
 
     let selectionOffset = 0;
 
@@ -341,26 +340,6 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #getCursor () {
-    const value = this.textarea.value;
-
-    const selectionStart = this.textarea.selectionStart;
-    const selectionEnd = this.textarea.selectionEnd;
-
-    const lineFirstStart = Math.max(0, _lastIndexOfInSlice(value, '\n', 0, selectionStart - 1));
-    const lineLastStart = _lastIndexOfInSlice(value, '\n', 0, selectionEnd - 1) + 1;
-
-    return {
-      selectionStart,
-      selectionEnd,
-      lineFirstStart,
-      lineLastStart,
-      lineLastEnd: value.indexOf('\n', selectionEnd) - 1,
-      lineLastNumber: _countInSlice(value, '\n', 0, selectionEnd),
-      lineLastCharacterNumber: selectionEnd - lineLastStart
-    }
-  }
-
   #isFieldSelected () {
     const value = this.textarea.value;
     const start = this.textarea.selectionStart;
@@ -458,31 +437,19 @@ class ScriptEditor extends SignalSource {
     let content = this.textarea.value;
     let offset = 0;
 
-    const { lineFirstStart, lineLastEnd, selectionEnd } = this.#getCursor();
+    const { lines } = this.#getSelectedLines();
 
-    if (_lineSome(content, lineFirstStart, lineLastEnd, (char) => char !== '#' && char !== '\n')) {
-      for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || (i !== lineFirstStart && content[i - 1] === '\n')) {
-          if (content[i] === '#') {
-            // If line already starts with a comment, leave it be
-            continue;
-          } else if (content[i] === '\n') {
-            // Ignore also empty lines
-            continue;
-          }
-
-          this.textarea.setRangeText('#', i + offset, i + offset);
+    if (lines.some(({ start, end }) => start !== end && content[start] !== '#')) {
+      for (const { start, end } of lines) {
+        if (start !== end && content[start] !== '#') {
+          this.textarea.setRangeText('#', start + offset, start + offset);
           offset += 1;
         }
       }
     } else {
-      for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
-        if (i !== lineFirstStart && content[i - 1] !== '\n') {
-          // If we encounter new line, save it
-          continue;
-        } else if (content[i] === '#') {
-          // If current line starts with one space
-          this.textarea.setRangeText('', i + offset, i + offset + 1);
+      for (const { start } of lines) {
+        if (content[start] === '#') {
+          this.textarea.setRangeText('', start + offset, start + offset + 1);
           offset -= 1;
         }
       }
@@ -496,35 +463,25 @@ class ScriptEditor extends SignalSource {
     let content = this.textarea.value;
     let offset = 0;
 
-    const { lineFirstStart, lineLastEnd, selectionStart, selectionEnd } = this.#getCursor();
+    const { start, end, lines } = this.#getSelectedLines();
 
     if (subtractMode) {
-      for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
-        if (i !== lineFirstStart && content[i - 1] !== '\n') {
-          // If we encounter new line, save it
-          continue;
-        } else if (content[i] === ' ' && content[i + 1] === ' ') {
-          // If current like starts with two spaces
-          this.textarea.setRangeText('', i + offset, i + offset + 2);
+      for (const { start, end } of lines) {
+        if (start + 1 < end && content[start] === ' ' && content[start + 1] === ' ') {
+          this.textarea.setRangeText('', start + offset, start + offset + 2);
           offset -= 2;
-        } else if (content[i] === ' ') {
-          // If current line starts with one space
-          this.textarea.setRangeText('', i + offset, i + offset + 1);
+        } else if (start < end && content[start] === ' ') {
+          this.textarea.setRangeText('', start + offset, start + offset + 1);
           offset -= 1;
         }
       }
-    } else if (selectionStart === selectionEnd) {
+    } else if (start === end) {
       // If selection is 0 characters long, just insert two spaces at current selection
-      this.textarea.setRangeText('  ', selectionStart, selectionStart, 'end');
+      this.textarea.setRangeText('  ', start, start, 'end');
     } else {
-      for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || (i !== lineFirstStart && content[i - 1] === '\n')) {
-          if (content[i] === '\n') {
-            // Ignore empty lines
-            continue;
-          }
-
-          this.textarea.setRangeText('  ', i + offset, i + offset);
+      for (const { start, end } of lines) {
+        if (start !== end) {
+          this.textarea.setRangeText('  ', start + offset, start + offset);
           offset += 2;
         }
       }
