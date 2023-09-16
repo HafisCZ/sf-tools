@@ -27,6 +27,7 @@ const CHANGELOG = {
             'Added limit of 200 entries to script archive',
             'Added missing legendary item names and images',
             'Added support for <code>Ctrl + S</code> and <code>Ctrl + Shift + S</code> in the editor',
+            'Added support for <code>Ctrl + Shift + X</code> to comment/uncomment content in the editor',
             'Fixed dropdowns not updating on browse tab',
             'Fixed scoped functions breaking editor when called without arguments',
             'Fixed <code>show as</code> not appearing as deprecated',
