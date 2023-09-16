@@ -37,7 +37,6 @@
   border: 1px solid transparent;
   pointer-events: none;
   color: white;
-  width: 1000%;
   white-space: nowrap;
 
   font-size: 14px !important;
@@ -53,6 +52,10 @@
 .ta-editor-overlay-page {
   list-style-type: none;
   counter-reset: item;
+}
+
+.ta-editor-overlay-line {
+  width: fit-content;
 }
 
 .ta-editor-overlay-line::before {
