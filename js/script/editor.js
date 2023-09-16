@@ -292,6 +292,55 @@ class ScriptEditor extends SignalSource {
     }
   }
 
+  #getSelectedLines () {
+    const value = this.textarea.value;
+
+    const start = this.textarea.selectionStart;
+    const end = this.textarea.selectionEnd;
+
+    // Find start of current selection
+    const startBlock = Math.max(0, _lastIndexOfInSlice(value, '\n', 0, start - 1) + 1);
+
+    const lines = [];
+    let line = null;
+    let lineIndex = 0;
+    
+    for (let i = 0; i < startBlock; i++) {
+      if (value[i] === '\n') lineIndex++;
+    }
+
+    for (let i = startBlock; i <= value.length; i++) {
+      if (line === null) {
+        // Create line if null (either initial iteration or after encountering a new line)
+        lines.push(line = { start: i, end: null, index: lineIndex++ });
+      }
+
+      if (value[i] === '\n') {
+        // End line when encountering new line
+        line.end = i;
+        line = null;
+
+        if (i >= end) {
+          break;
+        }
+      }
+    }
+
+    // Set end of last line to value length if it was not terminated by new line
+    if (line) line.end = value.length;
+
+    // Get last line for end character index
+    const lastLine = lines[lines.length - 1];
+
+    return {
+      start,
+      startCharacter: start - startBlock,
+      end,
+      endCharacter: end - lastLine.start,
+      lines
+    }
+  }
+
   #getCursor () {
     const value = this.textarea.value;
 
@@ -321,37 +370,39 @@ class ScriptEditor extends SignalSource {
   }
 
   #getSuggestions () {
-    const { lineLastStart, selectionEnd, lineLastNumber, lineLastCharacterNumber } = this.#getCursor();
-  
+    const { start, end, endCharacter, lines } = this.#getSelectedLines();
+    const { start: lineStart, index } = lines[lines.length - 1];
+
     const value = this.textarea.value;
-    const lineLast = value.substring(lineLastStart, selectionEnd).trimStart();
-    const lineLastWord = lineLast.slice(lineLast.lastIndexOf(lineLast.match(/[^\w@]/g)?.pop() || ' ') + 1);
+
+    const line = value.substring(lineStart, end).trimStart();
+    const word = line.slice(line.lastIndexOf(line.match(/[^\w@]/g)?.pop() || ' ') + 1);
 
     if (this.#isFieldSelected()) {
       return {
         suggestions: this.#autocompleteRepository
           .filter((suggestion) => suggestion.type !== 'command')
           .map((suggestion) => suggestion.id),
-        lineLast: '',
-        lineLastWord: '',
-        lineLastNumber,
-        lineLastCharacterNumber: this.textarea.selectionStart - lineLastStart
+        line: '',
+        word: '',
+        charIndex: start - lineStart,
+        lineIndex: index
       }
     } else {
       return {
         suggestions: this.#autocompleteRepository
-          .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(lineLast) : suggestion.value.startsWith(lineLastWord))
+          .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word))
           .map((suggestion) => suggestion.id),
-        lineLast,
-        lineLastWord,
-        lineLastNumber,
-        lineLastCharacterNumber
+        line,
+        word,
+        charIndex: endCharacter,
+        lineIndex: index
       }
     }
   }
 
   #showAutocomplete() {
-    const { suggestions, lineLastNumber, lineLastCharacterNumber, lineLast, lineLastWord } = this.#getSuggestions();
+    const { suggestions, line, word, charIndex, lineIndex } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
       for (const { element, id } of this.#autocompleteRepository) {
@@ -362,10 +413,10 @@ class ScriptEditor extends SignalSource {
         }
       }
 
-      this.autocomplete.setAttribute('data-command-offset', lineLast.length);
-      this.autocomplete.setAttribute('data-generic-offset', lineLastWord.length);
-      this.autocomplete.style.setProperty('--position-top', `${18 * (lineLastNumber + 1)}px`);
-      this.autocomplete.style.setProperty('--position-left', `${8 * (lineLastCharacterNumber)}px`);
+      this.autocomplete.setAttribute('data-command-offset', line.length);
+      this.autocomplete.setAttribute('data-generic-offset', word.length);
+      this.autocomplete.style.setProperty('--position-top', `${18 * (lineIndex + 1)}px`);
+      this.autocomplete.style.setProperty('--position-left', `${8 * (charIndex)}px`);
       this.autocomplete.classList.add('visible');
 
       for (const element of this.autocomplete.querySelectorAll('[data-selected]')) {
