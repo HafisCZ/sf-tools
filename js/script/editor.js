@@ -1,5 +1,7 @@
 class ScriptEditor extends SignalSource {
   #autocompleteRepository = [];
+  #editorVisible = false;
+  #updateOverlays = null;
 
   constructor(element, scriptType) {
     super();
@@ -118,17 +120,35 @@ class ScriptEditor extends SignalSource {
 
     this.#update();
 
-    const updateMaskPosition = () => {
+    this.observer = new IntersectionObserver((entries) => {
+      if (entries[0].intersectionRatio > 0) {
+        this.#handleEditorVisibility(true);
+      } else {
+        this.#handleEditorVisibility(false);
+      }
+    })
+
+    this.observer.observe(this.textarea, { threshold: 1.0 });
+
+    this.#updateOverlays = (function () {
       this.editor.style.setProperty('--scroll-top', `-${this.textarea.scrollTop}px`);
       this.editor.style.setProperty('--scroll-left', `-${this.textarea.scrollLeft}px`);
 
-      window.requestAnimationFrame(updateMaskPosition);
-    }
-
-    window.requestAnimationFrame(updateMaskPosition);
+      if (this.#editorVisible) {
+        window.requestAnimationFrame(this.#updateOverlays);
+      }
+    }).bind(this)
   }
 
-  #createAutocomplete() {
+  #handleEditorVisibility (visible) {
+    this.#editorVisible = visible;
+
+    if (this.#editorVisible) {
+      window.requestAnimationFrame(this.#updateOverlays);
+    }
+  }
+
+  #createAutocomplete () {
     const constants = Constants.DEFAULT_CONSTANTS_VALUES;
     const constantsSuggestions = Array.from(constants).map((entry) => ({
       value: entry[0],
