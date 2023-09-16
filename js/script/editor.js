@@ -86,17 +86,12 @@ class ScriptEditor extends SignalSource {
     this.textarea.addEventListener('paste', (event) => {
       _stopAndPrevent(event);
 
-      const selection = this.selection;
-      const content = this.textarea.value;
-      const fragment = event.clipboardData.getData('text').replace(/\t/g, ' ')
-
-      this.textarea.value = _emplaceSlice(content, fragment, selection.start, selection.end);
-
-      this.selection = {
-        start: selection.start + fragment.length,
-        end: selection.start + fragment.length,
-        direction: selection.direction
-      };
+      this.textarea.setRangeText(
+        event.clipboardData.getData('text').replace(/\t/g, ' '),
+        this.textarea.selectionStart,
+        this.textarea.selectionEnd,
+        'end'
+      );
 
       this.#destroyPlaceholders();
       this.#update();
@@ -229,7 +224,7 @@ class ScriptEditor extends SignalSource {
       selectionOffset -= selection.end - selection.start;
     }
 
-    this.textarea.value = _emplaceSlice(value, fragment, isField ? selection.start : selection.end, selection.end);
+    this.textarea.setRangeText(fragment, isField ? selection.start : selection.end, selection.end);
 
     this.selection = {
       start: selection.end + fragment.length + selectionOffset,
@@ -409,114 +404,80 @@ class ScriptEditor extends SignalSource {
   }
 
   #handleComment () {
-    let originalContent = this.textarea.value;
-    let currentContent = this.textarea.value;
-    let currentOffset = 0;
+    let content = this.textarea.value;
+    let offset = 0;
 
-    const { lineFirstStart, lineLastEnd, selectionStart, selectionEnd } = this.#getCursor();
+    const { lineFirstStart, lineLastEnd, selectionEnd } = this.#getCursor();
 
-    let start = selectionStart;
-    let end = selectionEnd;
-
-    if (_lineSome(originalContent, lineFirstStart, lineLastEnd, (char) => char !== '#' && char !== '\n')) {
+    if (_lineSome(content, lineFirstStart, lineLastEnd, (char) => char !== '#' && char !== '\n')) {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
-          if (originalContent[i] === '#') {
+        if (i === 0 || (i !== lineFirstStart && content[i - 1] === '\n')) {
+          if (content[i] === '#') {
             // If line already starts with a comment, leave it be
             continue;
-          } else if (originalContent[i] === '\n') {
+          } else if (content[i] === '\n') {
             // Ignore also empty lines
             continue;
           }
 
-          currentContent = _emplaceSlice(currentContent, '#', i + currentOffset, i + currentOffset);
-          currentOffset += 1;
-
-          if (i < selectionStart) start += 1;
-          end += 1;
+          this.textarea.setRangeText('#', i + offset, i + offset);
+          offset += 1;
         }
       }
     } else {
       for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
-        if (i !== lineFirstStart && originalContent[i - 1] !== '\n') {
+        if (i !== lineFirstStart && content[i - 1] !== '\n') {
           // If we encounter new line, save it
           continue;
-        } else if (originalContent[i] === '#') {
+        } else if (content[i] === '#') {
           // If current line starts with one space
-          currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 1);
-          currentOffset -= 1;
-
-          if (i < selectionStart) start -= 1;
-          if (i < selectionEnd) end -= 1;
+          this.textarea.setRangeText('', i + offset, i + offset + 1);
+          offset -= 1;
         }
       }
     }
-
-    this.textarea.value = currentContent;
-    this.textarea.selectionStart = Math.max(0, start);
-    this.textarea.selectionEnd = Math.max(Math.max(0, start), end);
 
     this.#destroyPlaceholders();
     this.#update();
   }
 
   #handleTab (subtractMode = false) {
-    let originalContent = this.textarea.value;
-    let currentContent = this.textarea.value;
-    let currentOffset = 0;
+    let content = this.textarea.value;
+    let offset = 0;
 
     const { lineFirstStart, lineLastEnd, selectionStart, selectionEnd } = this.#getCursor();
 
-    let start = selectionStart;
-    let end = selectionEnd;
-
     if (subtractMode) {
       for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
-        if (i !== lineFirstStart && originalContent[i - 1] !== '\n') {
+        if (i !== lineFirstStart && content[i - 1] !== '\n') {
           // If we encounter new line, save it
           continue;
-        } else if (originalContent[i] === ' ' && originalContent[i + 1] === ' ') {
+        } else if (content[i] === ' ' && content[i + 1] === ' ') {
           // If current like starts with two spaces
-          currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 2);
-          currentOffset -= 2;
-
-          if (i < selectionStart) start -= 2;
-          if (i < selectionEnd) end -= 2;
-        } else if (originalContent[i] === ' ') {
+          this.textarea.setRangeText('', i + offset, i + offset + 2);
+          offset -= 2;
+        } else if (content[i] === ' ') {
           // If current line starts with one space
-          currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 1);
-          currentOffset -= 1;
-
-          if (i < selectionStart) start -= 1;
-          if (i < selectionEnd) end -= 1;
+          this.textarea.setRangeText('', i + offset, i + offset + 1);
+          offset -= 1;
         }
       }
     } else if (selectionStart === selectionEnd) {
       // If selection is 0 characters long, just insert two spaces at current selection
-      currentContent = _emplaceSlice(currentContent, '  ', selectionStart, selectionStart);
-
-      start += 2;
-      end += 2;
+      this.textarea.setRangeText('  ', selectionStart, selectionStart, 'end');
     } else {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
-          if (originalContent[i] === '\n') {
+        if (i === 0 || (i !== lineFirstStart && content[i - 1] === '\n')) {
+          if (content[i] === '\n') {
             // Ignore empty lines
             continue;
           }
 
-          currentContent = _emplaceSlice(currentContent, '  ', i + currentOffset, i + currentOffset);
-          currentOffset += 2;
-
-          if (i < selectionStart) start += 2;
-          end += 2;
+          this.textarea.setRangeText('  ', i + offset, i + offset);
+          offset += 2;
         }
       }
     }
-
-    this.textarea.value = currentContent;
-    this.textarea.selectionStart = Math.max(0, start);
-    this.textarea.selectionEnd = Math.max(Math.max(0, start), end);
 
     this.#destroyPlaceholders();
     this.#update();
