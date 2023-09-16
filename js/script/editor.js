@@ -434,7 +434,7 @@ class ScriptEditor extends SignalSource {
       }
     } else {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || originalContent[i - 1] === '\n') {
+        if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
           currentContent = _emplaceSlice(currentContent, '#', i + currentOffset, i + currentOffset);
           currentOffset += 1;
 
@@ -491,7 +491,7 @@ class ScriptEditor extends SignalSource {
       end += 2;
     } else {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === 0 || originalContent[i - 1] === '\n') {
+        if (i === 0 || (i !== lineFirstStart && originalContent[i - 1] === '\n')) {
           currentContent = _emplaceSlice(currentContent, '  ', i + currentOffset, i + currentOffset);
           currentOffset += 2;
 
