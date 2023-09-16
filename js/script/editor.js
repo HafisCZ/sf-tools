@@ -1,5 +1,5 @@
 class ScriptEditor extends SignalSource {
-  #autocompleteRepository = [];
+  #suggestions = [];
   #editorVisible = false;
   #updateOverlays = null;
 
@@ -149,31 +149,26 @@ class ScriptEditor extends SignalSource {
   }
 
   #createAutocomplete () {
-    const constants = Constants.DEFAULT_CONSTANTS_VALUES;
-    const constantsSuggestions = Array.from(constants).map((entry) => ({
-      value: entry[0],
-      text: entry[0].slice(1),
-      type: 'constant'
-    }))
+    this.#suggestions = [
+      ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined').map((command) => ({
+        value: command.syntax.fieldText,
+        text: command.syntax.text,
+        type: 'command'
+      })),
+      Array.from((this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG).entries()).filter((entry) => !entry[0].startsWith('__')).map((entry) => ({
+        value: entry[0],
+        text: entry[0],
+        type: entry[1].type
+      })),
+      Array.from(Constants.DEFAULT_CONSTANTS_VALUES).map((entry) => ({
+        value: entry[0],
+        text: entry[0].slice(1),
+        type: 'constant'
+      }))
+    ].flat()
 
-    const config = this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG;
-    const configSuggestions = Array.from(config.entries()).map((entry) => ({
-      value: entry[0],
-      text: entry[0],
-      type: entry[1].type
-    }))
-
-    const commands = ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined');
-    const commandsSuggestions = commands.map((command) => ({
-      value: command.syntax.fieldText,
-      text: command.syntax.text,
-      type: 'command'
-    }))
-
-    this.#autocompleteRepository = [].concat(commandsSuggestions).concat(constantsSuggestions).concat(configSuggestions)
-
-    for (let i = 0; i < this.#autocompleteRepository.length; i++) {
-      const suggestion = this.#autocompleteRepository[i];
+    for (let i = 0; i < this.#suggestions.length; i++) {
+      const suggestion = this.#suggestions[i];
 
       const element = document.createElement('div');
       element.setAttribute('data-autocomplete', i);
@@ -223,7 +218,7 @@ class ScriptEditor extends SignalSource {
   }
 
   #applyAutocomplete(element) {
-    const { value: suggestionValue, type } = this.#autocompleteRepository[element.getAttribute('data-autocomplete')];
+    const { value: suggestionValue, type } = this.#suggestions[element.getAttribute('data-autocomplete')];
     const offsetCommand = parseInt(this.autocomplete.getAttribute('data-command-offset'));
     const offsetGeneric = parseInt(this.autocomplete.getAttribute('data-generic-offset'));
 
@@ -379,7 +374,7 @@ class ScriptEditor extends SignalSource {
 
     if (this.#isFieldSelected()) {
       return {
-        suggestions: this.#autocompleteRepository
+        suggestions: this.#suggestions
           .filter((suggestion) => suggestion.type !== 'command')
           .map((suggestion) => suggestion.id),
         line: '',
@@ -389,7 +384,7 @@ class ScriptEditor extends SignalSource {
       }
     } else {
       return {
-        suggestions: this.#autocompleteRepository
+        suggestions: this.#suggestions
           .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word))
           .map((suggestion) => suggestion.id),
         line,
@@ -404,7 +399,7 @@ class ScriptEditor extends SignalSource {
     const { suggestions, line, word, charIndex, lineIndex } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
-      for (const { element, id } of this.#autocompleteRepository) {
+      for (const { element, id } of this.#suggestions) {
         if (suggestions.includes(id)) {
           element.classList.add('visible');
         } else {
