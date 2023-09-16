@@ -409,7 +409,47 @@ class ScriptEditor extends SignalSource {
   }
 
   #handleComment () {
-    console.warn('not implemented')
+    let originalContent = this.textarea.value;
+    let currentContent = this.textarea.value;
+    let currentOffset = 0;
+
+    const { lineFirstStart, lineLastEnd, selectionStart, selectionEnd } = this.#getCursor();
+
+    let start = selectionStart;
+    let end = selectionEnd;
+
+    if (_lineStartsWith(originalContent, '#', lineFirstStart, lineLastEnd)) {
+      for (let i = lineFirstStart; i < lineLastEnd + 1; i++) {
+        if (i !== lineFirstStart && originalContent[i - 1] !== '\n') {
+          // If we encounter new line, save it
+          continue;
+        } else if (originalContent[i] === '#') {
+          // If current line starts with one space
+          currentContent = _emplaceSlice(currentContent, '', i + currentOffset, i + currentOffset + 1);
+          currentOffset -= 1;
+
+          if (i < selectionStart) start -= 1;
+          if (i < selectionEnd) end -= 1;
+        }
+      }
+    } else {
+      for (let i = lineFirstStart; i < selectionEnd; i++) {
+        if (i === 0 || originalContent[i - 1] === '\n') {
+          currentContent = _emplaceSlice(currentContent, '#', i + currentOffset, i + currentOffset);
+          currentOffset += 1;
+
+          if (i < selectionStart) start += 1;
+          end += 1;
+        }
+      }
+    }
+
+    this.textarea.value = currentContent;
+    this.textarea.selectionStart = Math.max(0, start);
+    this.textarea.selectionEnd = Math.max(Math.max(0, start), end);
+
+    this.#destroyPlaceholders();
+    this.#update();
   }
 
   #handleTab (subtractMode = false) {
@@ -451,7 +491,7 @@ class ScriptEditor extends SignalSource {
       end += 2;
     } else {
       for (let i = lineFirstStart; i < selectionEnd; i++) {
-        if (i === lineFirstStart || originalContent[i - 1] === '\n') {
+        if (i === 0 || originalContent[i - 1] === '\n') {
           currentContent = _emplaceSlice(currentContent, '  ', i + currentOffset, i + currentOffset);
           currentOffset += 2;
 

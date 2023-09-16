@@ -309,6 +309,16 @@ function _countInSlice (string, character, boundaryStart, boundaryEnd) {
     return count;
 }
 
+function _lineStartsWith (string, character, boundaryStart, boundaryEnd) {
+    for (let i = boundaryStart; i < boundaryEnd; i++) {
+        if ((i === boundaryStart || string[i - 1] === '\n') && string[i] === character) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function _lastIndexOfInSlice (string, character, boundaryStart, boundaryEnd) {
     for (let i = boundaryEnd; i >= boundaryStart; i--) {
         if (string[i] === character) return i;
