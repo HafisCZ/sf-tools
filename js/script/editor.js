@@ -212,7 +212,7 @@ class ScriptEditor extends SignalSource {
     const offsetCommand = parseInt(this.autocomplete.getAttribute('data-command-offset'));
     const offsetGeneric = parseInt(this.autocomplete.getAttribute('data-generic-offset'));
 
-    const fragment = suggestionValue.slice(type === 'command' ? offsetCommand : offsetGeneric);
+    let fragment = suggestionValue.slice(type === 'command' ? offsetCommand : offsetGeneric);
 
     const selection = this.selection;
     const value = this.textarea.value;
