@@ -263,7 +263,8 @@ const CONFIG = Object.defineProperties(
             ReviveHealthDecay: 0.1,
             ReviveDamage: 1,
             ReviveDamageMin: 0,
-            ReviveDamageDecay: 0
+            ReviveDamageDecay: 0,
+            ReviveMax: 999
         },
         Druid: {
             Attribute: 'Intelligence',
@@ -871,7 +872,7 @@ class DemonHunterModel extends SimulatorModel {
         if (state == STATE_DEAD) {
             const reviveChance = this.Config.ReviveChance - this.Config.ReviveChanceDecay * this.DeathTriggers;
 
-            if (source.Player.Class != MAGE && getRandom(reviveChance)) {
+            if (source.Player.Class != MAGE && this.DeathTriggers < this.Config.ReviveMax && getRandom(reviveChance)) {
                 this.Health = this.TotalHealth * Math.max(this.Config.ReviveHealthMin, this.Config.ReviveHealth - this.DeathTriggers * this.Config.ReviveHealthDecay);
                 this.DeathTriggers += 1;
 
