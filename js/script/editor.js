@@ -12,6 +12,7 @@ class ScriptEditor extends SignalSource {
     this.#createEditor();
     this.#createAutocomplete();
     this.#createBindings();
+    this.#update();
   }
 
   #createBindings () {
@@ -42,10 +43,12 @@ class ScriptEditor extends SignalSource {
       if (event.ctrlKey && event.key === 's') {
         _stopAndPrevent(event);
 
+        this.#destroyPlaceholders();
         this.emit('ctrl+s');
       } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
         _stopAndPrevent(event);
 
+        this.#destroyPlaceholders();
         this.emit('ctrl+shift+s');
       } else if (event.ctrlKey && event.key === ' ') {
         _stopAndPrevent(event);
@@ -54,6 +57,7 @@ class ScriptEditor extends SignalSource {
       } else if (event.ctrlKey && event.shiftKey && event.key === 'X') {
         _stopAndPrevent(event);
 
+        this.#destroyPlaceholders();
         this.#handleComment();
       } else if (this.autocompleteActive) {
         if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
@@ -80,6 +84,7 @@ class ScriptEditor extends SignalSource {
         if (event.key === 'Tab') {
           _stopAndPrevent(event);
 
+          this.#destroyPlaceholders();
           this.#handleTab(event.shiftKey);
         }
       }
@@ -117,8 +122,6 @@ class ScriptEditor extends SignalSource {
     this.textarea.addEventListener('click', () => {
       this.#hideAutocomplete();
     })
-
-    this.#update();
 
     this.observer = new IntersectionObserver((entries) => {
       if (entries[0].intersectionRatio > 0) {
@@ -224,27 +227,27 @@ class ScriptEditor extends SignalSource {
 
     let fragment = suggestionValue.slice(type === 'command' ? offsetCommand : offsetGeneric);
 
-    const selection = this.selection;
+    const start = this.textarea.selectionStart;
+    const end = this.textarea.selectionEnd;
 
-    let selectionOffset = 0;
+    let offset = 0;
 
     if (type === 'function') {
       fragment = fragment + '()';
-      selectionOffset = -1;
+      offset = -1;
     }
 
     const isField = this.#isFieldSelected()
     if (isField) {
-      selectionOffset -= selection.end - selection.start;
+      offset -= end - start;
     }
 
-    this.textarea.setRangeText(fragment, isField ? selection.start : selection.end, selection.end);
-
-    this.selection = {
-      start: selection.end + fragment.length + selectionOffset,
-      end: selection.end + fragment.length + selectionOffset,
-      direction: selection.direction
-    };
+    this.textarea.setRangeText(fragment, isField ? start : end, end);
+    this.textarea.setSelectionRange(
+      end + fragment.length + offset,
+      end + fragment.length + offset,
+      'forward'
+    );
 
     this.#hideAutocomplete();
     this.#update();
@@ -258,20 +261,14 @@ class ScriptEditor extends SignalSource {
     const value = this.textarea.value;
 
     if (value.includes('\u200b')) {
-      let start = this.textarea.selectionStart;
-      let end = this.textarea.selectionEnd;
-  
+      let offset = 0;
+
       for (let i = 0; i < value.length; i++) {
         if (value[i] === '\u200b') {
-          if (i <= start) start--;
-          if (i <= end) end--;
+          this.textarea.setRangeText('', i + offset, i + offset + 1);
+          offset -= 1;
         }
       }
-  
-      this.textarea.value = value.replace(/\u200b/g, '');
-  
-      this.textarea.selectionStart = start;
-      this.textarea.selectionEnd = end;
     }
   }
 
@@ -290,17 +287,14 @@ class ScriptEditor extends SignalSource {
           lastIndexLn = -1;
         } else {
           this.#destroyPlaceholders();
+
           return false;
         }
       }
     }
 
     if (indexes.length > 0 && indexes.length % 2 === 0) {
-      this.selection = {
-        start: indexes[0],
-        end: indexes[1] + 1,
-        direction: 'forward'
-      }
+      this.textarea.setSelectionRange(indexes[0], indexes[1] + 1, 'forward');
 
       return true;
     }
@@ -470,7 +464,6 @@ class ScriptEditor extends SignalSource {
       }
     }
 
-    this.#destroyPlaceholders();
     this.#update();
   }
 
@@ -502,7 +495,6 @@ class ScriptEditor extends SignalSource {
       }
     }
 
-    this.#destroyPlaceholders();
     this.#update();
   }
 
@@ -545,37 +537,27 @@ class ScriptEditor extends SignalSource {
     this.overlayClone = this.overlay.cloneNode(true);
   }
 
-  get selection() {
-    return {
-      start: this.textarea.selectionStart,
-      end: this.textarea.selectionEnd,
-      direction: this.textarea.selectionDirection
-    };
-  }
-
-  set selection({ start, end, direction }) {
-    this.textarea.selectionStart = start;
-    this.textarea.selectionEnd = end;
-    this.textarea.selectionDirection = direction;
-  }
-
   get content() {
-    return this.textarea.value;
+    return this.textarea.value.replace(/\u200b/g, '');
   }
 
   set content(text) {
     const previousText = this.textarea.value;
-    const previousSelection = this.selection;
+    const start = this.textarea.selectionStart;
+    const end = this.textarea.selectionEnd;
 
-    this.textarea.value = text;
+    this.textarea.value = text.replace(/\u200b/g, '');
 
-    this.#destroyPlaceholders();
     this.#update();
 
     this.scrollTop();
     this.textarea.focus();
 
-    this.selection = previousText === text ? previousSelection : { start: 0, end: 0 };
+    if (previousText === text) {
+      this.textarea.setSelectionRange(start, end, 'forward')
+    } else {
+      this.textarea.setSelectionRange(0, 0, 'forward')
+    }
   }
 
   scrollTop() {
