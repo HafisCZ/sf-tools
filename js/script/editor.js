@@ -442,7 +442,7 @@ class ScriptEditor extends SignalSource {
       adjacentLine = adjacentLine[directionDown ? 'nextElementSibling' : 'previousElementSibling'];
     } while (adjacentLine && !adjacentLine.classList.contains('visible'));
 
-    adjacentLine ||= (directionDown ? this.autocomplete.firstElementChild : this.autocomplete.lastElementChild);
+    adjacentLine ||= (directionDown ? this.autocomplete.querySelector('[data-autocomplete].visible') : this.autocomplete.querySelector('[data-autocomplete].visible:last-child'));
     adjacentLine.setAttribute('data-selected', '');
 
     const currentScroll = this.autocomplete.scrollTop;
