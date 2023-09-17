@@ -595,6 +595,7 @@
                 "archive": "Skript Archiv",
                 "recover": "Version #{version} laden",
                 "close": "Zurück",
+                "shortcuts": "Shortcuts",
                 "remove": "Entfernen",
                 "reset": "Änderungen verwerfen",
                 "save_template": "Als Vorlage speichern",
@@ -1433,6 +1434,47 @@
         "analyzer_autofill": {
             "title": "Vorhandene Daten",
             "search": "Suche nach Dungeon oder Boss Namen ..."
+        },
+        "editor_shortcuts": {
+            "title": "Editor shortcuts",
+            "shortcuts": {
+                "ctrl_s": {
+                    "key": "Ctrl + S",
+                    "description": "Save script"
+                },
+                "ctrl_shift_s": {
+                    "key": "Ctrl + Shift + S",
+                    "description": "Save template"
+                },
+                "tab": {
+                    "key": "Tab",
+                    "description": "Add indent to selected lines<br>Move to next field"
+                },
+                "shift_tab": {
+                    "key": "Shift + Tab",
+                    "description": "Remove indent from selected lines<br>Move to previous field"
+                },
+                "ctrl_shift_x": {
+                    "key": "Ctrl + Shift + X",
+                    "description": "Comment or uncomment selected lines"
+                },
+                "ctrl_space": {
+                    "key": "Ctrl + Space",
+                    "description": "Show suggestions"
+                },
+                "ctrl_c": {
+                    "key": "Ctrl + C",
+                    "description": "Copy selection"
+                },
+                "ctrl_v": {
+                    "key": "Ctrl + V",
+                    "description": "Paste"
+                },
+                "ctrl_x": {
+                    "key": "Ctrl + X",
+                    "description": "Cut selection"
+                }
+            }
         },
         "script_manual": {
             "title": "Referenzhandbuch",

@@ -294,11 +294,11 @@
             "mention": "Inne"
         },
         "footer": {
-            "beta": "Check out public beta",
-            "kofi": "Give mar some shrooms",
-            "crowdin": "Help with translations",
-            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
-            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+            "beta": "Sprawdź publiczną wersję beta",
+            "kofi": "Daj Maro'owi kilka grzybów",
+            "crowdin": "Pomoc przy tłumaczeniach",
+            "webshop#": "Użyj kodu <b class=\"text-white\">SFTOOLS</b> w sklepie internetowym",
+            "notice#": "Rozpowszechniono <b>TAK A NIE INACZEJ</b>. Ta strona nie jest w żaden sposób powiązana z <b>Playa Games</b>."
         },
         "stats": {
             "title": "Statystyki",
@@ -595,6 +595,7 @@
                 "archive": "Archiwum skryptów",
                 "recover": "Wczytaj wersję v#{version}",
                 "close": "Powrót",
+                "shortcuts": "Shortcuts",
                 "remove": "Usuń",
                 "reset": "Odrzuć zmiany",
                 "save_template": "Zapisz jako szablon",
@@ -742,7 +743,7 @@
             "always_prev": "Porównaj poprzednie (gildie)",
             "empty_groups": "Pokaż puste grupy",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
-            "table_sticky_header": "Enable sticky table headers",
+            "table_sticky_header": "Włącz przyklejone nagłówki tabeli",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
@@ -776,7 +777,7 @@
             "collected": "Zebrane",
             "available": "Dostępne",
             "locked": "Zablokowane",
-            "footer#": "Event times might not be accurate. Please verify within the game."
+            "footer#": "Czas eventów może nie być dokładny. Proszę, zweryfikuj w grze."
         },
         "map": {
             "gladiator": "Trener"
@@ -1070,7 +1071,7 @@
             "3": "Obżarstwo",
             "4": "Chciwość",
             "5": "Herezja",
-            "6": "Limbo Plain"
+            "6": "Limbo"
         },
         "win": {
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
@@ -1239,7 +1240,7 @@
         }
     },
     "hydra": {
-        "footer#": "Bazowane na  <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "footer#": "Oparte na projekcie <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a>.",
         "player_count": "Liczba Graczy",
         "main": "Główna",
         "side1": "Poboczna 1",
@@ -1382,7 +1383,7 @@
             "error_player_not_found": "Nie znaleziono postaci na serwerze",
             "error_sessionid_invalid": "Sesja wygasła lub została przerwana przez inne urządzenie",
             "error_login_only_with_sf_account_allowed": "Musisz zalogować się swoim kontem, aby uzyskać dostęp do tej postaci",
-            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
+            "error_server_has_been_merged": "Musisz zalogować się do odpowiedniego serwera fuzji ponieważ ten serwer został połączony i nie jest już dostępny",
             "playa_account_login_no_credentials_set": "Musisz dodać adres e-mail do swojego konta, aby zalogować się na innych platformach",
             "playa_account_login_unknown_or_wrong_credentials": "Nieprawidłowa nazwa użytkownika lub hasło",
             "playa_account_not_active": "Twoje konto jest nieaktywne",
@@ -1434,9 +1435,50 @@
             "title": "Dostępne dane",
             "search": "Szukaj według nazwy lochu lub bossa ..."
         },
+        "editor_shortcuts": {
+            "title": "Editor shortcuts",
+            "shortcuts": {
+                "ctrl_s": {
+                    "key": "Ctrl + S",
+                    "description": "Save script"
+                },
+                "ctrl_shift_s": {
+                    "key": "Ctrl + Shift + S",
+                    "description": "Save template"
+                },
+                "tab": {
+                    "key": "Tab",
+                    "description": "Add indent to selected lines<br>Move to next field"
+                },
+                "shift_tab": {
+                    "key": "Shift + Tab",
+                    "description": "Remove indent from selected lines<br>Move to previous field"
+                },
+                "ctrl_shift_x": {
+                    "key": "Ctrl + Shift + X",
+                    "description": "Comment or uncomment selected lines"
+                },
+                "ctrl_space": {
+                    "key": "Ctrl + Space",
+                    "description": "Show suggestions"
+                },
+                "ctrl_c": {
+                    "key": "Ctrl + C",
+                    "description": "Copy selection"
+                },
+                "ctrl_v": {
+                    "key": "Ctrl + V",
+                    "description": "Paste"
+                },
+                "ctrl_x": {
+                    "key": "Ctrl + X",
+                    "description": "Cut selection"
+                }
+            }
+        },
         "script_manual": {
             "title": "Instrukcja obsługi",
-            "deprecated": "deprecated",
+            "deprecated": "przestarzałe",
             "heading": {
                 "header": "Nagłówki dla wszystkich postaci",
                 "header_protected": "Nagrody dla własnych członków gildii",
@@ -1446,7 +1488,7 @@
                 "enum": "Wyliczenia",
                 "constant": "Standardowe stałe",
                 "variable": "Zmienne",
-                "command": "Commands"
+                "command": "Polecenia"
             },
             "description": {}
         },
@@ -1962,7 +2004,7 @@
             "7": "Szkaradny demon",
             "8": "Potwornie różowy zajączek",
             "9": "Banshee",
-            "10": "Yourself"
+            "10": "Lustrzane odbicie"
         },
         "10": {
             "name": "Twierdza Posępnego Czerepu",
