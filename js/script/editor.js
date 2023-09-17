@@ -153,12 +153,12 @@ class ScriptEditor extends SignalSource {
 
   #setupSuggestions () {
     this.#suggestions = [
-      ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined').map((command) => ({
+      ScriptCommands.commands().filter((command) => command.type & this.scriptType && typeof command.metadata.isDeprecated === 'undefined').map((command) => ({
         value: command.syntax.fieldText,
         text: command.syntax.text,
         type: 'command'
       })),
-      Array.from((this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG).entries()).filter((entry) => !entry[1].isInternal).map((entry) => ({
+      Array.from(TABLE_EXPRESSION_CONFIG.entries()).filter((entry) => !entry[1].isInternal).map((entry) => ({
         value: entry[1].syntax.fieldText,
         text: entry[0],
         type: entry[1].type
