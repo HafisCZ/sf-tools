@@ -16,15 +16,15 @@ class ScriptEditor extends SignalSource {
   }
 
   #createBindings () {
-    this.autocomplete.addEventListener('click', (event) => {
-      const line = event.target.closest('[data-autocomplete]');
+    this.suggestions.addEventListener('click', (event) => {
+      const line = event.target.closest('[data-suggestion]');
       if (line) {
-        this.#applyAutocomplete(line);
+        this.#applySuggestion(line);
       }
     });
 
     this.textarea.addEventListener('input', () => {
-      if (this.autocompleteActive) {
+      if (this.suggestionsActive) {
         this.#showAutocomplete();
       }
 
@@ -32,10 +32,10 @@ class ScriptEditor extends SignalSource {
     });
 
     this.textarea.addEventListener('focusout', (event) => {
-      if (event.explicitOriginalTarget?.closest?.('[data-autocomplete]')) {
+      if (event.explicitOriginalTarget?.closest?.('[data-suggestion]')) {
         // Do nothing
       } else {
-        this.#hideAutocomplete();
+        this.#hideSuggestions();
       }
     });
 
@@ -43,12 +43,12 @@ class ScriptEditor extends SignalSource {
       if (event.ctrlKey && event.key === 's') {
         _stopAndPrevent(event);
 
-        this.#destroyPlaceholders();
+        this.#removeFields();
         this.emit('ctrl+s');
       } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
         _stopAndPrevent(event);
 
-        this.#destroyPlaceholders();
+        this.#removeFields();
         this.emit('ctrl+shift+s');
       } else if (event.ctrlKey && event.key === ' ') {
         _stopAndPrevent(event);
@@ -57,34 +57,34 @@ class ScriptEditor extends SignalSource {
       } else if (event.ctrlKey && event.shiftKey && event.key === 'X') {
         _stopAndPrevent(event);
 
-        this.#destroyPlaceholders();
+        this.#removeFields();
         this.#handleComment();
-      } else if (this.autocompleteActive) {
+      } else if (this.suggestionsActive) {
         if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
           _stopAndPrevent(event);
 
-          this.#hideAutocomplete();
+          this.#hideSuggestions();
         } else if (event.key === 'Escape' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-          this.#hideAutocomplete();
+          this.#hideSuggestions();
         } else if (event.key === 'Enter' || event.key === 'Tab') {
           _stopAndPrevent(event);
 
-          const line = this.autocomplete.querySelector('[data-selected]');
+          const line = this.suggestions.querySelector('[data-selected]');
           if (line) {
-            this.#applyAutocomplete(line);
+            this.#applySuggestion(line);
           }
         } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
           _stopAndPrevent(event);
 
           this.#handleAutocompleteNavigation(event);
         }
-      } else if (event.key === 'Tab' && this.#focusPlaceholders()) {
+      } else if (event.key === 'Tab' && this.#focusFields()) {
         _stopAndPrevent(event);
       } else {
         if (event.key === 'Tab') {
           _stopAndPrevent(event);
 
-          this.#destroyPlaceholders();
+          this.#removeFields();
           this.#handleTab(event.shiftKey);
         }
       }
@@ -100,7 +100,7 @@ class ScriptEditor extends SignalSource {
         'end'
       );
 
-      this.#destroyPlaceholders();
+      this.#removeFields();
       this.#update();
     });
 
@@ -120,7 +120,7 @@ class ScriptEditor extends SignalSource {
     });
 
     this.textarea.addEventListener('click', () => {
-      this.#hideAutocomplete();
+      this.#hideSuggestions();
     })
 
     this.observer = new IntersectionObserver((entries) => {
@@ -158,8 +158,8 @@ class ScriptEditor extends SignalSource {
         text: command.syntax.text,
         type: 'command'
       })),
-      Array.from((this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG).entries()).filter((entry) => !entry[0].startsWith('__')).map((entry) => ({
-        value: entry[0],
+      Array.from((this.scriptType === ScriptType.Table ? TABLE_EXPRESSION_CONFIG : DEFAULT_EXPRESSION_CONFIG).entries()).filter((entry) => !entry[1].isInternal).map((entry) => ({
+        value: entry[1].syntax.fieldText,
         text: entry[0],
         type: entry[1].type
       })),
@@ -174,11 +174,11 @@ class ScriptEditor extends SignalSource {
       const suggestion = this.#suggestions[i];
 
       const element = document.createElement('div');
-      element.setAttribute('data-autocomplete', i);
-      element.setAttribute('data-autocomplete-type', suggestion.type);
+      element.setAttribute('data-suggestion', i);
+      element.setAttribute('data-suggestion-type', suggestion.type);
       element.innerText = suggestion.text;
 
-      this.autocomplete.appendChild(element);
+      this.suggestions.appendChild(element);
 
       suggestion.id = `${i}`;
       suggestion.element = element;
@@ -213,31 +213,22 @@ class ScriptEditor extends SignalSource {
     this.emit('change', value);
   }
 
-  #hideAutocomplete() {
-    if (this.autocompleteActive) {
-      this.autocomplete.classList.remove('visible');
-      this.autocompleteActive = false;
+  #hideSuggestions() {
+    if (this.suggestionsActive) {
+      this.suggestions.classList.remove('visible');
+      this.suggestionsActive = false;
     }
   }
 
-  #applyAutocomplete(element) {
-    const { value: suggestionValue, type } = this.#suggestions[element.getAttribute('data-autocomplete')];
-    const offsetCommand = parseInt(this.autocomplete.getAttribute('data-command-offset'));
-    const offsetGeneric = parseInt(this.autocomplete.getAttribute('data-generic-offset'));
-
-    let fragment = suggestionValue.slice(type === 'command' ? offsetCommand : offsetGeneric);
-
-    const start = this.textarea.selectionStart;
-    const end = this.textarea.selectionEnd;
+  #applySuggestion(element) {
+    const { value, type } = this.#suggestions[element.getAttribute('data-suggestion')];
+    const { start, end, lines } = this.#getSelectedLines();
+    const { line, word } = this.#getSuggestionContent(lines[lines.length - 1].start, end);
 
     let offset = 0;
+    let fragment = value.slice(type === 'command' ? line.length : word.length);
 
-    if (type === 'function') {
-      fragment = fragment + '()';
-      offset = -1;
-    }
-
-    const isField = this.#isFieldSelected()
+    const isField = this.#isField(this.textarea.value, start, end);
     if (isField) {
       offset -= end - start;
     }
@@ -249,22 +240,22 @@ class ScriptEditor extends SignalSource {
       'forward'
     );
 
-    this.#hideAutocomplete();
+    this.#hideSuggestions();
     this.#update();
 
     this.textarea.focus();
 
-    this.#focusPlaceholders();
+    this.#focusFields();
   }
 
-  #destroyPlaceholders () {
+  #removeFields () {
     const value = this.textarea.value;
 
-    if (value.includes('\u200b')) {
+    if (value.includes(ZWS)) {
       let offset = 0;
 
       for (let i = 0; i < value.length; i++) {
-        if (value[i] === '\u200b') {
+        if (value[i] === ZWS) {
           this.textarea.setRangeText('', i + offset, i + offset + 1);
           offset -= 1;
         }
@@ -272,13 +263,13 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #focusPlaceholders () {
+  #focusFields () {
     const value = this.textarea.value;
 
     const indexes = [];
     for (let i = 0, ln = 0, lastIndexLn = -1; i < value.length; i++) {
       if (value[i] === '\n') ln++;
-      else if (value[i] === '\u200b') {
+      else if (value[i] === ZWS) {
         if (lastIndexLn === -1) {
           lastIndexLn = ln;
           indexes.push(i);
@@ -286,7 +277,7 @@ class ScriptEditor extends SignalSource {
           indexes.push(i);
           lastIndexLn = -1;
         } else {
-          this.#destroyPlaceholders();
+          this.#removeFields();
 
           return false;
         }
@@ -343,54 +334,56 @@ class ScriptEditor extends SignalSource {
     return {
       start,
       startCharacter: start - startBlock,
+      startLine: lines[0].index,
       end,
       endCharacter: end - lastLine.start,
+      endLine: lastLine.index,
       lines
     }
   }
 
-  #isFieldSelected () {
-    const value = this.textarea.value;
-    const start = this.textarea.selectionStart;
-    const end = this.textarea.selectionEnd;
+  #isField (content, start, end) {
+    return content[start] === ZWS && content[end - 1] === ZWS;
+  }
 
-    return value[start] === '\u200b' && value[end - 1] === '\u200b';
+  #getSuggestionContent (start, end) {
+    const value = this.textarea.value;
+
+    const line = value.substring(start, end).trimStart();
+    const word = line.slice(line.lastIndexOf(line.match(/[^\w@]/g)?.pop() || ' ') + 1);
+
+    return {
+      line,
+      word
+    }
   }
 
   #getSuggestions () {
-    const { start, end, endCharacter, lines } = this.#getSelectedLines();
-    const { start: lineStart, index } = lines[lines.length - 1];
+    const { start, end, startCharacter, endCharacter, lines, endLine } = this.#getSelectedLines();
 
-    const value = this.textarea.value;
-
-    const line = value.substring(lineStart, end).trimStart();
-    const word = line.slice(line.lastIndexOf(line.match(/[^\w@]/g)?.pop() || ' ') + 1);
-
-    if (this.#isFieldSelected()) {
+    if (this.#isField(this.textarea.value, start, end)) {
       return {
         suggestions: this.#suggestions
           .filter((suggestion) => suggestion.type !== 'command')
           .map((suggestion) => suggestion.id),
-        line: '',
-        word: '',
-        charIndex: start - lineStart,
-        lineIndex: index
+        charIndex: startCharacter,
+        lineIndex: endLine
       }
     } else {
+      const { line, word } = this.#getSuggestionContent(lines[lines.length - 1].start, end);
+
       return {
         suggestions: this.#suggestions
           .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word))
           .map((suggestion) => suggestion.id),
-        line,
-        word,
         charIndex: endCharacter,
-        lineIndex: index
+        lineIndex: endLine
       }
     }
   }
 
   #showAutocomplete() {
-    const { suggestions, line, word, charIndex, lineIndex } = this.#getSuggestions();
+    const { suggestions, charIndex, lineIndex } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
       for (const { element, id } of this.#suggestions) {
@@ -401,28 +394,26 @@ class ScriptEditor extends SignalSource {
         }
       }
 
-      this.autocomplete.setAttribute('data-command-offset', line.length);
-      this.autocomplete.setAttribute('data-generic-offset', word.length);
-      this.autocomplete.style.setProperty('--position-top', `${18 * (lineIndex + 1)}px`);
-      this.autocomplete.style.setProperty('--position-left', `${8 * (charIndex)}px`);
-      this.autocomplete.classList.add('visible');
+      this.suggestions.style.setProperty('--position-top', `${18 * (lineIndex + 1)}px`);
+      this.suggestions.style.setProperty('--position-left', `${8 * (charIndex)}px`);
+      this.suggestions.classList.add('visible');
 
-      for (const element of this.autocomplete.querySelectorAll('[data-selected]')) {
+      for (const element of this.suggestions.querySelectorAll('[data-selected]')) {
         element.removeAttribute('data-selected');
       }
 
-      this.autocomplete.querySelector('[data-autocomplete].visible').setAttribute('data-selected', '');
+      this.suggestions.querySelector('[data-suggestion].visible').setAttribute('data-selected', '');
 
-      this.autocompleteActive = true;
+      this.suggestionsActive = true;
     } else {
-      this.#hideAutocomplete();
+      this.#hideSuggestions();
     }
   }
 
   #handleAutocompleteNavigation (event) {
     const directionDown = event.key === 'ArrowDown';
 
-    const line = this.autocomplete.querySelector('[data-selected]');
+    const line = this.suggestions.querySelector('[data-selected]');
     line.removeAttribute('data-selected');
 
     let adjacentLine = line;
@@ -430,15 +421,15 @@ class ScriptEditor extends SignalSource {
       adjacentLine = adjacentLine[directionDown ? 'nextElementSibling' : 'previousElementSibling'];
     } while (adjacentLine && !adjacentLine.classList.contains('visible'));
 
-    adjacentLine ||= (directionDown ? this.autocomplete.querySelector('[data-autocomplete].visible') : this.autocomplete.querySelector('[data-autocomplete].visible:last-child'));
+    adjacentLine ||= (directionDown ? this.suggestions.querySelector('[data-suggestion].visible') : this.suggestions.querySelector('[data-suggestion].visible:last-child'));
     adjacentLine.setAttribute('data-selected', '');
 
-    const currentScroll = this.autocomplete.scrollTop;
+    const currentScroll = this.suggestions.scrollTop;
     const isAbove = adjacentLine.offsetTop < currentScroll;
-    const isBelow = adjacentLine.offsetTop > currentScroll + this.autocomplete.offsetHeight - 20;
+    const isBelow = adjacentLine.offsetTop > currentScroll + this.suggestions.offsetHeight - 20;
 
     if (isAbove || isBelow) {
-      this.autocomplete.scroll({ top: adjacentLine.offsetTop + (isBelow ? 20 - this.autocomplete.offsetHeight : 0), behavior: 'instant' });
+      this.suggestions.scroll({ top: adjacentLine.offsetTop + (isBelow ? 20 - this.suggestions.offsetHeight : 0), behavior: 'instant' });
     }
   }
 
@@ -523,22 +514,22 @@ class ScriptEditor extends SignalSource {
     this.editor.insertAdjacentElement('beforeend', this.info);
 
     // Create context element
-    this.autocomplete = document.createElement('div');
-    this.autocomplete.setAttribute('class', 'ta-editor-autocomplete');
+    this.suggestions = document.createElement('div');
+    this.suggestions.setAttribute('class', 'ta-editor-suggestions');
 
-    this.editor.insertAdjacentElement('beforeend', this.autocomplete);
+    this.editor.insertAdjacentElement('beforeend', this.suggestions);
 
     // Compute styles
     const sourceStyle = getComputedStyle(this.textarea);
     this.#applyStyles(sourceStyle, this.overlay.style);
-    this.#applyStyles(sourceStyle, this.autocomplete.style);
+    this.#applyStyles(sourceStyle, this.suggestions.style);
 
     // Overlay clone for faster render
     this.overlayClone = this.overlay.cloneNode(true);
   }
 
   get content() {
-    return this.textarea.value.replace(/\u200b/g, '');
+    return this.textarea.value.replaceAll(ZWS, '');
   }
 
   set content(text) {
@@ -546,7 +537,7 @@ class ScriptEditor extends SignalSource {
     const start = this.textarea.selectionStart;
     const end = this.textarea.selectionEnd;
 
-    this.textarea.value = text.replace(/\u200b/g, '');
+    this.textarea.value = text.replaceAll(ZWS, '');
 
     this.#update();
 

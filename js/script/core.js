@@ -274,7 +274,7 @@ class ScriptCommand {
         this.syntax = {
             text: syntax,
             encodedText: syntax.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'),
-            fieldText: syntax.replace(/(<[a-z\|]+>|\([a-z\|]+\))/g, '\u200b$1\u200b')
+            fieldText: wrapFields(syntax, true)
         };
         this.regexp = regexp;
         this.#internalEvaluate = evaluate;

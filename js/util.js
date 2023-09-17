@@ -21,6 +21,16 @@ function copyNode (node) {
     window.getSelection().removeAllRanges();
 }
 
+const ZWS = '\u200b';
+
+function wrapFields (content, all = false) {
+    if (all) {
+        return content.replace(/(<[a-z\|]+>|\([a-z\|]+\))/g, `${ZWS}$1${ZWS}`);
+    } else {
+        return content.replace(/(<[a-z\|]+>)/g, `${ZWS}$1${ZWS}`);
+    }
+}
+
 const COLOR_MAP = new Map(Object.entries({
     'aliceblue': '#f0f8ff',
     'antiquewhite': '#faebd7',

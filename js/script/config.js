@@ -10,6 +10,12 @@ class ExpressionConfig {
   }
 
   register(type, meta, name, data, flags = {}) {
+    const syntax = flags.syntax || name;
+    flags.syntax = {
+      text: syntax,
+      fieldText: wrapFields(syntax)
+    };
+
     this.#data.set(name, new Proxy(
       Object.assign(flags, { type, meta, data }),
       {
@@ -257,7 +263,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return a - b;
     }
-  }
+  },
+  { syntax: 'difference(<context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -280,7 +287,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     values.segmented = array.segmented;
 
     return values;
-  }
+  },
+  { syntax: 'sort(<array>, <context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -298,7 +306,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return false;
-  }
+  },
+  { syntax: 'some(<array>, <context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -316,7 +325,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return true;
-  }
+  },
+  { syntax: 'all(<array>, <context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -336,7 +346,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { syntax: 'format(<string>, <arguments>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -345,7 +356,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     if (node.args.length !== 1) return undefined;
 
     return self.evalToArray(scope, node.args[0]);
-  }
+  },
+  { syntax: 'array(<context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -363,7 +375,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
 
     const def = typeof node.args[2] === 'undefined' ? 0 : self.evalInternal(scope, node.args[2]);
     return values.reduce((a, b) => a + b, def);
-  }
+  },
+  { syntax: 'each(<array>, <context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -380,7 +393,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return array.filter((a, i) => values[i]);
-  }
+  },
+  { syntax: 'filter(<array>, <context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -397,7 +411,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return values;
-  }
+  },
+  { syntax: 'map(<array>, <context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -412,7 +427,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { syntax: 'this()' }
 )
 
 /*
@@ -424,7 +440,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     let values = Array.from(new Set(array));
     values.segmented = array.segmented;
     return values;
-  }
+  },
+  { syntax: 'distinct(<array>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -433,14 +450,16 @@ DEFAULT_EXPRESSION_CONFIG.register(
     let values = array.slice(from, to);
     values.segmented = array.segmented;
     return values;
-  }
+  },
+  { syntax: 'slice(<array>, <from>, <to>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'array', 'join',
   function (array, delim) {
     return array.join(delim);
-  }
+  },
+  { syntax: 'join(<array>, <delimiter>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -451,7 +470,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return array[Math.min(array.length, Math.max(0, index))];
     }
-  }
+  },
+  { syntax: 'at(<array>, <index>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -464,7 +484,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return -1;
-  }
+  },
+  { syntax: 'indexof(<array>, <item>)' }
 )
 
 /*
@@ -482,7 +503,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
 
       return collector;
     }, []));
-  }
+  },
+  { syntax: 'min(<values>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -497,7 +519,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
 
       return collector;
     }, []));
-  }
+  },
+  { syntax: 'max(<values>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -512,7 +535,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
 
       return collector;
     }, 0);
-  }
+  },
+  { syntax: 'sum(<values>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -520,7 +544,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
   function () {
     return Date.now();
   },
-  { noCache: true }
+  { noCache: true, syntax: 'now()' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -528,7 +552,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
   function () {
     return Math.random();
   },
-  { noCache: true }
+  { noCache: true, syntax: 'random()' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -537,14 +561,16 @@ DEFAULT_EXPRESSION_CONFIG.register(
     console.log(value);
 
     return value;
-  }
+  },
+  { syntax: 'log(<context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'value', 'stringify',
   function (value) {
     return String(value);
-  }
+  },
+  { syntax: 'stringify(<context>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -555,7 +581,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return (max - min) * value + min;
     }
-  }
+  },
+  { syntax: 'range(<min>, <max>, <value>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -572,7 +599,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
         return Object.keys(value).length;
       }
     }
-  }
+  },
+  { syntax: 'len(<value>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -598,7 +626,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return 0;
     }
-  }
+  },
+  { syntax: 'average(<values>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -609,7 +638,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { syntax: 'makearray(<length>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -626,14 +656,16 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { syntax: 'makesequence(<from>, <to>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'value', 'number',
   function (value) {
     return Number(value);
-  }
+  },
+  { syntax: 'number(<value>)' }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -652,7 +684,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return !!value;
     }
-  }
+  },
+  { syntax: 'presence(<value>)' }
 )
 
 /*
