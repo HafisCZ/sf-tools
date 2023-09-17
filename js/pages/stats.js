@@ -2487,6 +2487,11 @@ class ScriptsTab extends Tab {
             DialogController.open(ScriptManualDialog);
         });
 
+        this.$helpShortcuts = this.$parent.operator('help-shortcuts');
+        this.$helpShortcuts.click(() => {
+            DialogController.open(EditorShortcutsDialog);
+        });
+
         this.$libraryScripts = this.$parent.operator('library-scripts');
         this.$libraryScripts.click(() => {
             DialogController.open(ScriptRepositoryDialog, (content) => this.editor.content = content);

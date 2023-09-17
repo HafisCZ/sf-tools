@@ -1914,6 +1914,58 @@ const PlayerDetailDialog = new (class PlayerDetailDialog extends Dialog {
   }
 })()
 
+const EditorShortcutsDialog = new (class EditorShortcutsDialog extends Dialog {
+    constructor () {
+        super({
+            dismissable: true,
+            opacity: 0,
+            key: 'editor_shortcuts'
+        })
+    }
+
+    _createModal () {
+        const SHORTCUTS = [
+            'ctrl_space',
+            'ctrl_s',
+            'ctrl_shift_s',
+            'tab',
+            'shift_tab',
+            'ctrl_shift_x',
+            'ctrl_c',
+            'ctrl_v',
+            'ctrl_x'
+        ];
+
+        return `
+            <div class="small inverted bordered dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="flex w-full overflow-y-scroll flex-col gap-4" style="height: 50vh">
+                    ${
+                        SHORTCUTS.map((shortcut) => {
+                            return `
+                                <div>
+                                    <div class="font-bold">${this.intl(`shortcuts.${shortcut}.key`)}</div>
+                                    <div class="text-gray">&bullet; ${this.intl(`shortcuts.${shortcut}.description`).replaceAll('>', '>&bullet; ')}</div>
+                                </div>
+                            `;
+                        }).join('')
+                    }
+                </div>
+            </div>
+        `;
+    }
+    
+    _createBindings () {
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        });
+    }
+})
+
 const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
     constructor () {
         super({
