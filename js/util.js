@@ -21,13 +21,16 @@ function copyNode (node) {
     window.getSelection().removeAllRanges();
 }
 
-const ZWS = '\u200b';
+const FIELD_L = '\u2039';
+const FIELD_R = '\u203A';
+
+const FIELD_REGEXP = /\u2039|\u203A/g;
 
 function wrapFields (content, all = false) {
     if (all) {
-        return content.replace(/(<[a-z\|]+>|\([a-z\|]+\))/g, `${ZWS}$1${ZWS}`);
+        return content.replace(/<([a-z\|]+)>|\(([a-z\|]+)\)/g, `${FIELD_L}$1$2${FIELD_R}`);
     } else {
-        return content.replace(/(<[a-z\|]+>)/g, `${ZWS}$1${ZWS}`);
+        return content.replace(/<([a-z\|]+)>/g, `${FIELD_L}$1${FIELD_R}`);
     }
 }
 

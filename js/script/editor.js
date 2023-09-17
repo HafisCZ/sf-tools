@@ -43,12 +43,10 @@ class ScriptEditor extends SignalSource {
       if (event.ctrlKey && event.key === 's') {
         _stopAndPrevent(event);
 
-        this.#removeFields();
         this.emit('ctrl+s');
       } else if (event.ctrlKey && event.shiftKey && event.key === 'S') {
         _stopAndPrevent(event);
 
-        this.#removeFields();
         this.emit('ctrl+shift+s');
       } else if (event.ctrlKey && event.key === ' ') {
         _stopAndPrevent(event);
@@ -57,7 +55,6 @@ class ScriptEditor extends SignalSource {
       } else if (event.ctrlKey && event.shiftKey && event.key === 'X') {
         _stopAndPrevent(event);
 
-        this.#removeFields();
         this.#handleComment();
       } else if (this.suggestionsActive) {
         if (event.key === 'Backspace' && this.textarea.value[this.textarea.selectionEnd - 1].match(/[\n\W]/)) {
@@ -78,15 +75,12 @@ class ScriptEditor extends SignalSource {
 
           this.#handleSuggestionsNavigation(event);
         }
-      } else if (event.key === 'Tab' && this.#focusFields()) {
+      } else if (event.key === 'Tab' && (event.shiftKey ? this.#focusPreviousField() : this.#focusNextField())) {
         _stopAndPrevent(event);
-      } else {
-        if (event.key === 'Tab') {
-          _stopAndPrevent(event);
+      } else if (event.key === 'Tab') {
+        _stopAndPrevent(event);
 
-          this.#removeFields();
-          this.#handleTab(event.shiftKey);
-        }
+        this.#handleTab(event.shiftKey);
       }
     });
 
@@ -100,7 +94,6 @@ class ScriptEditor extends SignalSource {
         'end'
       );
 
-      this.#removeFields();
       this.#update();
     });
 
@@ -234,28 +227,37 @@ class ScriptEditor extends SignalSource {
     }
 
     this.textarea.setRangeText(fragment, isField ? start : end, end);
-    this.textarea.setSelectionRange(
-      end + fragment.length + offset,
-      end + fragment.length + offset,
-      'forward'
-    );
+
+    if (value.includes(FIELD_L)) {
+      this.textarea.setSelectionRange(
+        start,
+        start,
+        'forward'
+      );
+    } else {
+      this.textarea.setSelectionRange(
+        end + fragment.length + offset,
+        end + fragment.length + offset,
+        'forward'
+      );
+    }
 
     this.#hideSuggestions();
     this.#update();
 
     this.textarea.focus();
 
-    this.#focusFields();
+    this.#focusNextField();
   }
 
   #removeFields () {
     const value = this.textarea.value;
 
-    if (value.includes(ZWS)) {
+    if (value.includes(FIELD_L) || value.includes(FIELD_R)) {
       let offset = 0;
 
       for (let i = 0; i < value.length; i++) {
-        if (value[i] === ZWS) {
+        if (value[i] === FIELD_L || value[i] === FIELD_R) {
           this.textarea.setRangeText('', i + offset, i + offset + 1);
           offset -= 1;
         }
@@ -263,32 +265,58 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #focusFields () {
+  #focusPreviousField () {
     const value = this.textarea.value;
+    const start = this.textarea.selectionStart;
+    
+    for (let i = start - 1, fieldEnd = null; i >= 0; i--) {
+      if (value[i] === '\n') fieldEnd = null;
+      else if (value[i] === FIELD_R) fieldEnd = i + 1;
+      else if (value[i] === FIELD_L && fieldEnd !== null) {
+        this.textarea.setSelectionRange(i, fieldEnd, 'forward');
 
-    const indexes = [];
-    for (let i = 0, ln = 0, lastIndexLn = -1; i < value.length; i++) {
-      if (value[i] === '\n') ln++;
-      else if (value[i] === ZWS) {
-        if (lastIndexLn === -1) {
-          lastIndexLn = ln;
-          indexes.push(i);
-        } else if (ln === lastIndexLn) {
-          indexes.push(i);
-          lastIndexLn = -1;
-        } else {
-          this.#removeFields();
-
-          return false;
-        }
+        return true;
       }
     }
 
-    if (indexes.length > 0 && indexes.length % 2 === 0) {
-      this.textarea.setSelectionRange(indexes[0], indexes[1] + 1, 'forward');
+    for (let i = value.length - 1, fieldEnd = null; i > start; i--) {
+      if (value[i] === '\n') fieldEnd = null;
+      else if (value[i] === FIELD_R) fieldEnd = i + 1;
+      else if (value[i] === FIELD_L && fieldEnd !== null) {
+        this.textarea.setSelectionRange(i, fieldEnd, 'forward');
 
-      return true;
+        return true;
+      }
     }
+
+    return false;
+  }
+
+  #focusNextField () {
+    const value = this.textarea.value;
+    const end = this.textarea.selectionEnd;
+    
+    for (let i = end, fieldStart = null; i < value.length; i++) {
+      if (value[i] === '\n') fieldStart = null;
+      else if (value[i] === FIELD_L) fieldStart = i;
+      else if (value[i] === FIELD_R && fieldStart !== null) {
+        this.textarea.setSelectionRange(fieldStart, i + 1, 'forward');
+
+        return true;
+      }
+    }
+
+    for (let i = 0, fieldStart = null; i < end; i++) {
+      if (value[i] === '\n') fieldStart = null;
+      else if (value[i] === FIELD_L) fieldStart = i;
+      else if (value[i] === FIELD_R && fieldStart !== null) {
+        this.textarea.setSelectionRange(fieldStart, i + 1, 'forward');
+
+        return true;
+      }
+    }
+
+    return false;
   }
 
   #getSelectedLines () {
@@ -343,7 +371,7 @@ class ScriptEditor extends SignalSource {
   }
 
   #isField (content, start, end) {
-    return content[start] === ZWS && content[end - 1] === ZWS;
+    return content[start] === FIELD_L && content[end - 1] === FIELD_R;
   }
 
   #getSuggestionContent (start, end) {
@@ -529,7 +557,7 @@ class ScriptEditor extends SignalSource {
   }
 
   get content() {
-    return this.textarea.value.replaceAll(ZWS, '');
+    return this.textarea.value.replaceAll(FIELD_REGEXP, '');
   }
 
   set content(text) {
@@ -537,7 +565,7 @@ class ScriptEditor extends SignalSource {
     const start = this.textarea.selectionStart;
     const end = this.textarea.selectionEnd;
 
-    this.textarea.value = text.replaceAll(ZWS, '');
+    this.textarea.value = text.replaceAll(FIELD_REGEXP, '');
 
     this.#update();
 
