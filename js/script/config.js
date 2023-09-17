@@ -44,7 +44,7 @@ class ExpressionConfig {
   all(type, meta = true) {
     const keys = [];
     for (const [name, data] of this.#data.entries()) {
-      if (data.type === type && (meta === true || data.meta === meta)) {
+      if (data.type === type && (meta === true || data.meta === meta) && !data.isInternal) {
         keys.push(name);
       }
     }
@@ -63,63 +63,78 @@ const DEFAULT_EXPRESSION_CONFIG = new ExpressionConfig();
   Math functions
 */
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__multiply', function (a, b) { return a * b }
+  'function', 'math', '__multiply', function (a, b) { return a * b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__divide', function (a, b) { return b == 0 ? undefined : (a / b) }
+  'function', 'math', '__divide', function (a, b) { return b == 0 ? undefined : (a / b) },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__divide_integer', function (a, b) { return b == 0 ? undefined : Math.trunc(a / b) }
+  'function', 'math', '__divide_integer', function (a, b) { return b == 0 ? undefined : Math.trunc(a / b) },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__add', function (a, b) { return a + b }
+  'function', 'math', '__add', function (a, b) { return a + b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__subtract', function (a, b) { return a - b }
+  'function', 'math', '__subtract', function (a, b) { return a - b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__greater', function (a, b) { return a > b }
+  'function', 'math', '__greater', function (a, b) { return a > b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__greater_equal', function (a, b) { return a >= b }
+  'function', 'math', '__greater_equal', function (a, b) { return a >= b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__lower', function (a, b) { return a < b }
+  'function', 'math', '__lower', function (a, b) { return a < b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__lower_equal', function (a, b) { return a <= b }
+  'function', 'math', '__lower_equal', function (a, b) { return a <= b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__power', function (a, b) { return Math.pow(a, b) }
+  'function', 'math', '__power', function (a, b) { return Math.pow(a, b) },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__equal', function (a, b) { return a == b }
+  'function', 'math', '__equal', function (a, b) { return a == b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__not_equal', function (a, b) { return a != b }
+  'function', 'math', '__not_equal', function (a, b) { return a != b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__modulo', function (a, b) { return a % b }
+  'function', 'math', '__modulo', function (a, b) { return a % b },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__negate', function (a) { return -a }
+  'function', 'math', '__negate', function (a) { return -a },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
-  'function', 'math', '__invert', function (a) { return !a }
+  'function', 'math', '__invert', function (a) { return !a },
+  { isInternal: true }
 )
 
 /*
@@ -135,7 +150,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return obj;
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -148,7 +164,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
 
     return obj;
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -163,7 +180,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return self.evalInternal(scope, branch2);
     }
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -178,7 +196,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return self.evalInternal(scope, branch2);
     }
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -193,7 +212,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return false;
     }
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -205,7 +225,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
@@ -219,7 +240,8 @@ DEFAULT_EXPRESSION_CONFIG.register(
     } else {
       return undefined;
     }
-  }
+  },
+  { isInternal: true }
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
