@@ -457,7 +457,7 @@ class TableInstance {
         this.#generateEntries();
     }
 
-    #generateSorting (player, compare, index, comparable) {
+    #generateSorting (player, compare, index) {
         const self = this;
 
         return new Proxy({
@@ -470,20 +470,12 @@ class TableInstance {
                 } else {
                     const header = self.sortMap.get(prop);
                     if (header) {
-                        const { order, flip, expr, sort } = header;
+                        const { order, expr, sort } = header;
 
                         let sortValue = undefined;
                         if (order) {
-                            // Use special order expression if supplied
-                            let difference = undefined;
                             let value = self.#safeEval(expr, player, compare, self.settings, undefined, header);
-            
-                            if (comparable) {
-                                // Get difference
-                                difference = (flip ? -1 : 1) * (value - self.#safeEval(expr, compare, compare, self.settings, undefined, header));
-                            }
-            
-                            sortValue = self.#safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value).add({ difference }));
+                            sortValue = self.#safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value));
                         } else {
                             // Return native sorting function
                             sortValue = sort ? sort(player, compare) : 0;
@@ -504,7 +496,6 @@ class TableInstance {
         const dividerStyle = this.#getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
 
-        const comparable = this.tableType === TableType.Player || this.array.reference != this.array.timestamp;
         const outdated = this.tableType === TableType.Browse && this.settings.getOutdatedStyle();
         const hidden = this.tableType === TableType.Browse;
 
@@ -515,7 +506,7 @@ class TableInstance {
         this.entries = this.array.map((entry) => ({
             index: entry.index,
             player: entry.player,
-            sorting: this.#generateSorting(entry.player, entry.compare, entry.index, comparable),
+            sorting: this.#generateSorting(entry.player, entry.compare, entry.index),
             get node () {
                 delete this.node;
 
