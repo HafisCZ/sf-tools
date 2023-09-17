@@ -9,13 +9,13 @@ class ScriptEditor extends SignalSource {
     this.editor = element;
     this.scriptType = scriptType;
 
-    this.#createEditor();
-    this.#createAutocomplete();
-    this.#createBindings();
+    this.#setupEditor();
+    this.#setupSuggestions();
+    this.#setupBindings();
     this.#update();
   }
 
-  #createBindings () {
+  #setupBindings () {
     this.suggestions.addEventListener('click', (event) => {
       const line = event.target.closest('[data-suggestion]');
       if (line) {
@@ -25,7 +25,7 @@ class ScriptEditor extends SignalSource {
 
     this.textarea.addEventListener('input', () => {
       if (this.suggestionsActive) {
-        this.#showAutocomplete();
+        this.#updateSuggestions();
       }
 
       this.#update();
@@ -53,7 +53,7 @@ class ScriptEditor extends SignalSource {
       } else if (event.ctrlKey && event.key === ' ') {
         _stopAndPrevent(event);
 
-        this.#showAutocomplete();
+        this.#updateSuggestions();
       } else if (event.ctrlKey && event.shiftKey && event.key === 'X') {
         _stopAndPrevent(event);
 
@@ -76,7 +76,7 @@ class ScriptEditor extends SignalSource {
         } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
           _stopAndPrevent(event);
 
-          this.#handleAutocompleteNavigation(event);
+          this.#handleSuggestionsNavigation(event);
         }
       } else if (event.key === 'Tab' && this.#focusFields()) {
         _stopAndPrevent(event);
@@ -151,7 +151,7 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #createAutocomplete () {
+  #setupSuggestions () {
     this.#suggestions = [
       ScriptCommands.commands().filter((command) => command.type === this.scriptType && typeof command.metadata.isDeprecated === 'undefined').map((command) => ({
         value: command.syntax.fieldText,
@@ -382,7 +382,7 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #showAutocomplete() {
+  #updateSuggestions () {
     const { suggestions, charIndex, lineIndex } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
@@ -410,7 +410,7 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #handleAutocompleteNavigation (event) {
+  #handleSuggestionsNavigation (event) {
     const directionDown = event.key === 'ArrowDown';
 
     const line = this.suggestions.querySelector('[data-selected]');
@@ -489,7 +489,7 @@ class ScriptEditor extends SignalSource {
     this.#update();
   }
 
-  #createEditor() {
+  #setupEditor() {
     // Prepare editor
     this.editor.classList.add('ta-editor');
 
