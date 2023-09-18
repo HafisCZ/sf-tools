@@ -10,6 +10,7 @@ class ScriptEditor extends SignalSource {
     this.scriptType = scriptType;
 
     this.#setupEditor();
+    this.#setupMeasurements();
     this.#setupSuggestions();
     this.#setupBindings();
     this.#update();
@@ -222,8 +223,8 @@ class ScriptEditor extends SignalSource {
     const element = document.createElement('div');
     element.innerHTML = '&nbsp;';
     element.setAttribute('class', 'ta-editor-highlight');
-    element.style.setProperty('--position-top', `${18 * line}px`);
-    element.style.setProperty('--position-left', `${8 * character}px`);
+    element.style.setProperty('--position-top', `${this.characterHeight * line}px`);
+    element.style.setProperty('--position-left', `${this.characterWidth * character}px`);
 
     this.editor.appendChild(element);
 
@@ -511,8 +512,8 @@ class ScriptEditor extends SignalSource {
         }
       }
 
-      this.suggestions.style.setProperty('--position-top', `${18 * (lineIndex + 1)}px`);
-      this.suggestions.style.setProperty('--position-left', `${8 * (charIndex)}px`);
+      this.suggestions.style.setProperty('--position-top', `${this.characterHeight * (lineIndex + 1)}px`);
+      this.suggestions.style.setProperty('--position-left', `${this.characterWidth * (charIndex)}px`);
       this.suggestions.classList.add('visible');
 
       for (const element of this.suggestions.querySelectorAll('[data-selected]')) {
@@ -604,6 +605,19 @@ class ScriptEditor extends SignalSource {
     }
 
     this.#update();
+  }
+
+  #setupMeasurements () {
+    const measure = document.createElement('div');
+    measure.setAttribute('class', 'ta-editor-measure');
+    measure.innerHTML = '&nbsp;';
+
+    document.body.appendChild(measure);
+
+    this.characterHeight = measure.clientHeight;
+    this.characterWidth = measure.clientWidth;
+
+    measure.remove();
   }
 
   #setupEditor() {
