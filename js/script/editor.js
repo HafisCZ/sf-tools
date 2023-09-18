@@ -150,26 +150,26 @@ class ScriptEditor extends SignalSource {
     }).bind(this)
   }
 
-  #updateCursor (start, end, lines) {
+  #updateCursor (selectionStart, selectionEnd, lines) {
     const value = this.textarea.value;
 
-    if (start === end) {
+    if (selectionStart === selectionEnd) {
       let character = null;
       let positionLeft = null;
       let positionRight = null;
 
-      if (Expression.TERMINATORS[value[start]]) {
-        character = Expression.TERMINATORS[value[start]];
-        positionLeft = start;
-      } else if (Expression.TERMINATORS_INVERTED[value[start]]) {
-        character = Expression.TERMINATORS_INVERTED[value[start]];
-        positionRight = start;
-      } else if (Expression.TERMINATORS[value[start - 1]]) {
-        character = Expression.TERMINATORS[value[start - 1]];
-        positionLeft = start - 1;
-      } else if (Expression.TERMINATORS_INVERTED[value[start - 1]]) {
-        character = Expression.TERMINATORS_INVERTED[value[start - 1]];
-        positionRight = start - 1;
+      if (Expression.TERMINATORS[value[selectionStart]]) {
+        character = Expression.TERMINATORS[value[selectionStart]];
+        positionLeft = selectionStart;
+      } else if (Expression.TERMINATORS_INVERTED[value[selectionStart]]) {
+        character = Expression.TERMINATORS_INVERTED[value[selectionStart]];
+        positionRight = selectionStart;
+      } else if (Expression.TERMINATORS[value[selectionStart - 1]]) {
+        character = Expression.TERMINATORS[value[selectionStart - 1]];
+        positionLeft = selectionStart - 1;
+      } else if (Expression.TERMINATORS_INVERTED[value[selectionStart - 1]]) {
+        character = Expression.TERMINATORS_INVERTED[value[selectionStart - 1]];
+        positionRight = selectionStart - 1;
       }
 
       if (character) {
