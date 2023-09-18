@@ -610,14 +610,14 @@ class ScriptEditor extends SignalSource {
   }
 
   #setupMeasurements () {
-    const measure = document.createElement('div');
+    const measure = document.createElement('span');
     measure.setAttribute('class', 'ta-editor-measure');
     measure.innerHTML = '&nbsp;';
 
     document.body.appendChild(measure);
 
-    this.characterHeight = measure.clientHeight;
-    this.characterWidth = measure.clientWidth;
+    this.characterHeight = measure.offsetHeight;
+    this.characterWidth = measure.offsetWidth;
 
     measure.remove();
   }
