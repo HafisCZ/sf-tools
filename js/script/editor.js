@@ -120,7 +120,7 @@ class ScriptEditor extends SignalSource {
       if (this.bar && event.target === this.textarea) {
         const { start, end, endLine, endCharacter } = this.#getSelectedLines();
 
-        this.bar.innerHTML = `Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}`
+        this.bar.innerHTML = `<span>Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}</span>`
       }
     })
 
