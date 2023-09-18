@@ -118,9 +118,12 @@ class ScriptEditor extends SignalSource {
 
     window.addEventListener('selectionchange', (event) => {
       if (this.bar && event.target === this.textarea) {
-        const { start, end, endLine, endCharacter } = this.#getSelectedLines();
+        const { start, end, endLine, endCharacter, lines } = this.#getSelectedLines();
 
-        this.bar.innerHTML = `<span>Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}</span>`
+        this.bar.innerHTML = `<span>Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}</span>`;
+
+        this.#removeHighlights();
+        this.#updateCursor(start, end, lines);
       }
     })
 
@@ -142,6 +145,89 @@ class ScriptEditor extends SignalSource {
         window.requestAnimationFrame(this.#updateOverlays);
       }
     }).bind(this)
+  }
+
+  #updateCursor (start, end, lines) {
+    const value = this.textarea.value;
+
+    if (start === end) {
+      let character = null;
+      let positionLeft = null;
+      let positionRight = null;
+
+      if (Expression.TERMINATORS[value[start]]) {
+        character = Expression.TERMINATORS[value[start]];
+        positionLeft = start;
+      } else if (Expression.TERMINATORS_INVERTED[value[start]]) {
+        character = Expression.TERMINATORS_INVERTED[value[start]];
+        positionRight = start;
+      } else if (Expression.TERMINATORS[value[start - 1]]) {
+        character = Expression.TERMINATORS[value[start - 1]];
+        positionLeft = start - 1;
+      } else if (Expression.TERMINATORS_INVERTED[value[start - 1]]) {
+        character = Expression.TERMINATORS_INVERTED[value[start - 1]];
+        positionRight = start - 1;
+      }
+
+      if (character) {
+        const { start, end, index } = lines[0];
+        const stack = [character];
+
+        if (positionLeft === null) {
+          for (let i = positionRight - 1; i >= start; i--) {
+            if (value[i] === stack[0]) {
+              stack.shift();
+
+              if (stack.length === 0) {
+                positionLeft = i;
+                break;
+              }
+            } else if (Expression.TERMINATORS_ALL[value[i]]) {
+              stack.unshift(Expression.TERMINATORS_ALL[value[i]]);
+            }
+          }
+        } else if (positionRight === null) {
+          for (let i = positionLeft + 1; i <= end; i++) {
+            if (value[i] === stack[0]) {
+              stack.shift();
+
+              if (stack.length === 0) {
+                positionRight = i;
+                break;
+              }
+            } else if (Expression.TERMINATORS_ALL[value[i]]) {
+              stack.unshift(Expression.TERMINATORS_ALL[value[i]]);
+            }
+          }
+        }
+
+        if (positionLeft !== null) {
+          this.#highlight(index, positionLeft - start);
+        }
+
+        if (positionRight !== null) {
+          this.#highlight(index, positionRight - start);
+        }
+      }
+    }
+  }
+
+  #removeHighlights () {
+    for (const element of this.highlights) {
+      element.remove();
+    }
+  }
+
+  #highlight (line, character) {
+    const element = document.createElement('div');
+    element.innerHTML = '&nbsp;';
+    element.setAttribute('class', 'ta-editor-highlight');
+    element.style.setProperty('--position-top', `${18 * line}px`);
+    element.style.setProperty('--position-left', `${8 * character}px`);
+
+    this.editor.appendChild(element);
+
+    this.highlights.push(element);
   }
 
   #handleEditorVisibility (visible) {
@@ -184,11 +270,6 @@ class ScriptEditor extends SignalSource {
       suggestion.id = `${i}`;
       suggestion.element = element;
     }
-  }
-
-  #applyStyles(sourceStyle, targetStyle) {
-    targetStyle.setProperty('--offset-left', sourceStyle.paddingLeft);
-    targetStyle.setProperty('--offset-top', sourceStyle.paddingTop);
   }
 
   #update() {
@@ -564,10 +645,12 @@ class ScriptEditor extends SignalSource {
 
     this.editor.insertAdjacentElement('beforeend', this.suggestions);
 
+    this.highlights = [];
+
     // Compute styles
     const sourceStyle = getComputedStyle(this.textarea);
-    this.#applyStyles(sourceStyle, this.overlay.style);
-    this.#applyStyles(sourceStyle, this.suggestions.style);
+    this.editor.style.setProperty('--offset-left', sourceStyle.paddingLeft);
+    this.editor.style.setProperty('--offset-top', sourceStyle.paddingTop);
 
     // Overlay clone for faster render
     this.overlayClone = this.overlay.cloneNode(true);

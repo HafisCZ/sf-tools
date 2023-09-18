@@ -995,6 +995,12 @@ class Expression {
 
     static TERMINATORS_INVERTED = _invert(this.TERMINATORS);
 
+    static TERMINATORS_ALL = Object.assign(
+        {},
+        this.TERMINATORS,
+        this.TERMINATORS_INVERTED
+    )
+
     static #TOKEN_UNARY = {
         '-': '__negate',
         '!': '__invert'
