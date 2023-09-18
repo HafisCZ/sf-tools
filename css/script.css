@@ -32,6 +32,21 @@
   color: rgba(255, 166, 0, 0.75);
 }
 
+.ta-editor-bar {
+  height: 17px;
+  max-height: 17px;
+  background-color: rgb(46, 46, 46);
+  color: #cccccc;
+  z-index: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 25px;
+  align-items: center;
+  font-size: 13px;
+  line-height: 13px;
+}
+
 .ta-editor-overlay {
   position: absolute;
   border: 1px solid transparent;
@@ -169,6 +184,14 @@
   line-height: 1.2857;
 
   padding-left: 40px !important;
+}
+
+.ta-editor.with-ta-editor-bar .ta-editor-textarea {
+  max-height: calc(100% - 17px) !important;
+  height: calc(100% - 17px) !important;
+
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 .ta-editor-textarea::selection {

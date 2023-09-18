@@ -116,6 +116,14 @@ class ScriptEditor extends SignalSource {
       this.#hideSuggestions();
     })
 
+    window.addEventListener('selectionchange', (event) => {
+      if (this.bar && event.target === this.textarea) {
+        const { start, end, endLine, endCharacter } = this.#getSelectedLines();
+
+        this.bar.innerHTML = `Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}`
+      }
+    })
+
     this.observer = new IntersectionObserver((entries) => {
       if (entries[0].intersectionRatio > 0) {
         this.#handleEditorVisibility(true);
@@ -528,6 +536,15 @@ class ScriptEditor extends SignalSource {
     this.textarea.setAttribute('spellcheck', 'false');
 
     this.editor.insertAdjacentElement('beforeend', this.textarea);
+
+    if (this.scriptType === ScriptType.Table) {
+      // Create bar element
+      this.bar = document.createElement('div');
+      this.bar.setAttribute('class', 'ta-editor-bar');
+  
+      this.editor.insertAdjacentElement('beforeend', this.bar);
+      this.editor.classList.add('with-ta-editor-bar');
+    }
 
     // Create overlay element
     this.overlay = document.createElement('div');
