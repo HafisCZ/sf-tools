@@ -374,21 +374,6 @@ class ScriptEditor extends SignalSource {
     this.#focusNextField();
   }
 
-  #removeFields () {
-    const value = this.textarea.value;
-
-    if (value.includes(FIELD_L) || value.includes(FIELD_R)) {
-      let offset = 0;
-
-      for (let i = 0; i < value.length; i++) {
-        if (value[i] === FIELD_L || value[i] === FIELD_R) {
-          this.textarea.setRangeText('', i + offset, i + offset + 1);
-          offset -= 1;
-        }
-      }
-    }
-  }
-
   #focusPreviousField () {
     const value = this.textarea.value;
     const start = this.textarea.selectionStart;
