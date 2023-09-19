@@ -236,6 +236,10 @@
   margin-left: -1em;
 }
 
+.\!ml-auto {
+  margin-left: auto !important;
+}
+
 .\!mr-2 {
   margin-right: 0.5em !important;
 }

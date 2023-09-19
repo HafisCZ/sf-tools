@@ -1227,6 +1227,7 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
                   <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${name}</div>
                   <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
               </div>
+              <i class="ui large !ml-auto copy outline text-gray text-white:hover icon" title="${intl('editor.copy')}" data-archive-copy="${timestamp}"></i>
           </div>
       `;
   }
@@ -1245,6 +1246,13 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
 
           this.close();
       });
+      this.$list.find('[data-archive-copy]').on('click', (event) => {
+        _stopAndPrevent(event);
+
+        copyText(ScriptArchive.get(event.currentTarget.dataset.archiveCopy));
+
+        Toast.info(this.intl('title'), this.intl('copy_toast'))``
+      })
   }
 })();
 
