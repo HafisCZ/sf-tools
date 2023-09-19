@@ -182,10 +182,15 @@ class ScriptEditor extends SignalSource {
       }
 
       if (character) {
-        const { start, end, index } = lines[0];
+        const { start, end, commentStart, index } = lines[0];
         const stack = [character];
+        const contentEnd = typeof commentStart === 'undefined' ? end : (commentStart - 1);
 
-        if (positionLeft === null) {
+        if (positionLeft !== null && positionLeft > commentStart) {
+          positionLeft = null;
+        } else if (positionRight !== null && positionRight > commentStart) {
+          positionRight = null;
+        } else if (positionLeft === null) {
           for (let i = positionRight - 1; i >= start; i--) {
             if (value[i] === stack[0]) {
               stack.shift();
@@ -199,7 +204,7 @@ class ScriptEditor extends SignalSource {
             }
           }
         } else if (positionRight === null) {
-          for (let i = positionLeft + 1; i <= end; i++) {
+          for (let i = positionLeft + 1; i <= contentEnd; i++) {
             if (value[i] === stack[0]) {
               stack.shift();
 
@@ -438,6 +443,20 @@ class ScriptEditor extends SignalSource {
     return false;
   }
 
+  #isCharacterEscaped (content, index, start) {
+    if (content[index- 1] != '\\') {
+      return false;
+    } else {
+      let escaped = true;
+
+      for (let i = index - 2; i >= start && content[i] === '\\'; i--) {
+        escaped = !escaped;
+      }
+
+      return escaped;
+    }
+  }
+
   #getSelectedLines () {
     const value = this.textarea.value;
 
@@ -450,7 +469,8 @@ class ScriptEditor extends SignalSource {
     const lines = [];
     let line = null;
     let lineIndex = 0;
-    
+    let lineSupressComments = false;
+
     for (let i = 0; i < startBlock; i++) {
       if (value[i] === '\n') lineIndex++;
     }
@@ -459,6 +479,8 @@ class ScriptEditor extends SignalSource {
       if (line === null) {
         // Create line if null (either initial iteration or after encountering a new line)
         lines.push(line = { start: i, end: null, index: lineIndex++ });
+
+        lineSupressComments = false;
       }
 
       if (value[i] === '\n') {
@@ -469,6 +491,13 @@ class ScriptEditor extends SignalSource {
         if (i >= end) {
           break;
         }
+      } else if (value[i] === '\'' || value[i] === '\"' || value[i] === '\`') {
+        if (value[i - 1] === '\\' || (lineSupressComments && value[i] !== lineSupressComments)) continue;
+        else {
+          lineSupressComments = lineSupressComments ? false : value[i];
+        }
+      } else if (!this.#isCharacterEscaped(value, i, line.start) && value[i] === '#' && !lineSupressComments) {
+        line.commentStart = i;
       }
     }
 
