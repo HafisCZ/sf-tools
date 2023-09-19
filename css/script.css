@@ -74,6 +74,8 @@
   top: var(--offset-top, 0px);
 
   transform: translate(var(--scroll-left), var(--scroll-top));
+
+  white-space: pre;
 }
 
 .ta-editor-highlight {
@@ -91,6 +93,8 @@
   top: calc(var(--position-top, 0px) + var(--offset-top, 0px));
 
   transform: translate(var(--scroll-left), var(--scroll-top));
+
+  white-space: pre;
 }
 
 .ta-editor-overlay-page {
