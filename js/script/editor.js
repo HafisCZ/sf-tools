@@ -85,6 +85,10 @@ class ScriptEditor extends SignalSource {
       }
     });
 
+    this.textarea.addEventListener('keyup', () => {
+      this.#updateHighlights();
+    })
+
     this.textarea.addEventListener('paste', (event) => {
       _stopAndPrevent(event);
 
@@ -115,14 +119,15 @@ class ScriptEditor extends SignalSource {
 
     this.textarea.addEventListener('click', () => {
       this.#hideSuggestions();
+      this.#updateHighlights();
     })
-
+/*
     window.addEventListener('selectionchange', (event) => {
       if (event.target === this.textarea) {
-        this.updateHighlights();
+        this.#updateHighlights();
       }
     })
-
+*/
     this.observer = new IntersectionObserver((entries) => {
       if (entries[0].intersectionRatio > 0) {
         this.#handleEditorVisibility(true);
@@ -143,7 +148,7 @@ class ScriptEditor extends SignalSource {
     }).bind(this)
   }
 
-  updateHighlights () {
+  #updateHighlights () {
     const { start, end, endLine, endCharacter, lines } = this.#getSelectedLines();
 
     if (this.bar) {
