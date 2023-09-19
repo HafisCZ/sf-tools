@@ -119,14 +119,7 @@ class ScriptEditor extends SignalSource {
 
     window.addEventListener('selectionchange', (event) => {
       if (event.target === this.textarea) {
-        const { start, end, endLine, endCharacter, lines } = this.#getSelectedLines();
-
-        if (this.bar) {
-          this.bar.innerHTML = `<span>Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}</span>`;
-        }
-
-        this.#removeHighlights();
-        this.#updateCursor(start, end, lines);
+        this.updateHighlights();
       }
     })
 
@@ -148,6 +141,17 @@ class ScriptEditor extends SignalSource {
         window.requestAnimationFrame(this.#updateOverlays);
       }
     }).bind(this)
+  }
+
+  updateHighlights () {
+    const { start, end, endLine, endCharacter, lines } = this.#getSelectedLines();
+
+    if (this.bar) {
+      this.bar.innerHTML = `<span>Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}</span>`;
+    }
+
+    this.#removeHighlights();
+    this.#updateCursor(start, end, lines);
   }
 
   #updateCursor (selectionStart, selectionEnd, lines) {
@@ -205,11 +209,15 @@ class ScriptEditor extends SignalSource {
         }
 
         if (positionLeft !== null) {
-          this.#highlight(index, positionLeft - start);
+          const { width, height } = this.#measure(value.slice(start, positionLeft));
+
+          this.#highlight(height * index, width);
         }
 
         if (positionRight !== null) {
-          this.#highlight(index, positionRight - start);
+          const { width, height } = this.#measure(value.slice(start, positionRight));
+
+          this.#highlight(height * index, width);
         }
       }
     }
@@ -221,12 +229,13 @@ class ScriptEditor extends SignalSource {
     }
   }
 
-  #highlight (line, character) {
+  #highlight (positionTop, positionLeft) {
     const element = document.createElement('div');
     element.innerHTML = '&nbsp;';
     element.setAttribute('class', 'ta-editor-highlight');
-    element.style.setProperty('--position-top', `${this.characterHeight * line}px`);
-    element.style.setProperty('--position-left', `${this.characterWidth * character}px`);
+
+    element.style.setProperty('--position-top', `${positionTop}px`);
+    element.style.setProperty('--position-left', `${positionLeft}px`);
 
     this.editor.appendChild(element);
 
@@ -479,31 +488,35 @@ class ScriptEditor extends SignalSource {
   }
 
   #getSuggestions () {
-    const { start, end, startCharacter, endCharacter, lines, endLine } = this.#getSelectedLines();
+    const { start, end, lines, endLine } = this.#getSelectedLines();
+    const value = this.textarea.value;
 
-    if (this.#isField(this.textarea.value, start, end)) {
+    if (this.#isField(value, start, end)) {
+      const { width, height } = this.#measure(value.slice(lines[0].start, start));
+
       return {
         suggestions: this.#suggestions
           .filter((suggestion) => suggestion.type !== 'command')
           .map((suggestion) => suggestion.id),
-        charIndex: startCharacter,
-        lineIndex: endLine
+        positionLeft: width,
+        positionTop: height * (1 + endLine)
       }
     } else {
       const { line, word } = this.#getSuggestionContent(lines[lines.length - 1].start, end);
+      const { width, height } = this.#measure(value.slice(lines[lines.length - 1].start, end));
 
       return {
         suggestions: this.#suggestions
           .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word))
           .map((suggestion) => suggestion.id),
-        charIndex: endCharacter,
-        lineIndex: endLine
+        positionLeft: width,
+        positionTop: height * (1 + endLine)
       }
     }
   }
 
   #updateSuggestions () {
-    const { suggestions, charIndex, lineIndex } = this.#getSuggestions();
+    const { suggestions, positionTop, positionLeft } = this.#getSuggestions();
 
     if (suggestions.length > 0) {
       for (const { element, id } of this.#suggestions) {
@@ -514,8 +527,8 @@ class ScriptEditor extends SignalSource {
         }
       }
 
-      this.suggestions.style.setProperty('--position-top', `${this.characterHeight * (lineIndex + 1)}px`);
-      this.suggestions.style.setProperty('--position-left', `${this.characterWidth * (charIndex)}px`);
+      this.suggestions.style.setProperty('--position-top', `${positionTop}px`);
+      this.suggestions.style.setProperty('--position-left', `${positionLeft}px`);
       this.suggestions.classList.add('visible');
 
       for (const element of this.suggestions.querySelectorAll('[data-selected]')) {
@@ -610,16 +623,19 @@ class ScriptEditor extends SignalSource {
   }
 
   #setupMeasurements () {
-    const measure = document.createElement('span');
-    measure.setAttribute('class', 'ta-editor-measure');
-    measure.innerHTML = '&nbsp;'.repeat(20);
+    this.measure = document.createElement('div');
+    this.measure.setAttribute('class', 'ta-editor-measure');
 
-    document.body.appendChild(measure);
+    this.editor.appendChild(this.measure);
+  }
 
-    this.characterHeight = measure.offsetHeight;
-    this.characterWidth = measure.offsetWidth / 20;
+  #measure (content) {
+    this.measure.innerText = content || '\u200b';
 
-    measure.remove();
+    return {
+      height: this.measure.offsetHeight,
+      width: this.measure.offsetWidth
+    }
   }
 
   #setupEditor() {
