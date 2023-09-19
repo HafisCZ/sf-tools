@@ -155,17 +155,17 @@ class ScriptEditor extends SignalSource {
       this.bar.innerHTML = `<span>Ln ${endLine + 1}, Col ${endCharacter + 1}${start === end ? '' : ` (${end - start} selected)`}</span>`;
     }
 
-    this.#removeHighlights();
     this.#updateCursor(start, end, lines);
   }
 
   #updateCursor (selectionStart, selectionEnd, lines) {
     const value = this.textarea.value;
 
+    let positionLeft = null;
+    let positionRight = null;
+
     if (selectionStart === selectionEnd) {
       let character = null;
-      let positionLeft = null;
-      let positionRight = null;
 
       if (Expression.TERMINATORS[value[selectionStart]]) {
         character = Expression.TERMINATORS[value[selectionStart]];
@@ -215,36 +215,49 @@ class ScriptEditor extends SignalSource {
 
         if (positionLeft !== null) {
           const { width, height } = this.#measure(value.slice(start, positionLeft));
-
-          this.#highlight(height * index, width);
+    
+          this.#highlight('hl', height * index, width);
         }
-
+    
         if (positionRight !== null) {
           const { width, height } = this.#measure(value.slice(start, positionRight));
-
-          this.#highlight(height * index, width);
+    
+          this.#highlight('hr', height * index, width);
         }
       }
     }
-  }
 
-  #removeHighlights () {
-    for (const element of this.highlights) {
-      element.remove();
+    if (positionLeft === null) {
+      this.#highlight('hl', -1, -1);
+    }
+
+    if (positionRight === null) {
+      this.#highlight('hr', -1, -1);
     }
   }
 
-  #highlight (positionTop, positionLeft) {
-    const element = document.createElement('div');
-    element.innerHTML = '&nbsp;';
-    element.setAttribute('class', 'ta-editor-highlight');
+  #highlight (key, positionTop, positionLeft) {
+    let element = this.highlights[key];
+    if (element) {
+      // Do nothing, element exists
+    } else {
+      element = document.createElement('div');
 
-    element.style.setProperty('--position-top', `${positionTop}px`);
-    element.style.setProperty('--position-left', `${positionLeft}px`);
+      element.innerHTML = '&nbsp;';
+      element.setAttribute('class', 'ta-editor-highlight');
 
-    this.editor.appendChild(element);
+      this.editor.appendChild(element);
 
-    this.highlights.push(element);
+      this.highlights[key] = element;
+    }
+
+    if (positionTop === -1) {
+      element.style.display = 'none';
+    } else {
+      element.style.display = 'block';
+      element.style.setProperty('--position-top', `${positionTop}px`);
+      element.style.setProperty('--position-left', `${positionLeft}px`);
+    }
   }
 
   #handleEditorVisibility (visible) {
@@ -682,7 +695,7 @@ class ScriptEditor extends SignalSource {
 
     this.editor.insertAdjacentElement('beforeend', this.suggestions);
 
-    this.highlights = [];
+    this.highlights = {};
 
     // Compute styles
     const sourceStyle = getComputedStyle(this.textarea);
