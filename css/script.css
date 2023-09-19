@@ -324,6 +324,22 @@
   color: red;
 }
 
+.ta-error-float {
+  position: relative;
+}
+
+.ta-error-float::after {
+  position: absolute;
+
+  content: attr(data-content);
+
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-style: wavy;
+
+  color: red;
+}
+
 .ta-true {
   color: #51e859;
   font-weight: bold;

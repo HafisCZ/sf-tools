@@ -254,7 +254,7 @@ class ExpressionRenderer {
         }
 
         if (bracketStack.length > 0) {
-            highlighter.error(' '.repeat(bracketStack.length));
+            highlighter.floatError(' '.repeat(bracketStack.length));
         }
     }
 }

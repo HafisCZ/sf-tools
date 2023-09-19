@@ -185,6 +185,11 @@ class Highlighter {
         return this;
     }
 
+    static floatError (text) {
+        this.#text += `<span class="ta-error-float" data-content="${this.#escape(text)}"></span>`;
+        return this;
+    }
+
     static comment (text) {
         this.#text += `<span class="ta-comment">${this.#escape(text)}</span>`;
         return this;
