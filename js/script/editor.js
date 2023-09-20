@@ -87,7 +87,20 @@ class ScriptEditor extends SignalSource {
 
         this.#handleTab(event.shiftKey);
       } else if (Expression.TERMINATORS[event.key]) {
-        this.textarea.setRangeText(Expression.TERMINATORS[event.key], this.textarea.selectionEnd, this.textarea.selectionEnd);
+        const start = this.textarea.selectionStart;
+        const end = this.textarea.selectionEnd;
+
+        if (start === end) {
+          this.textarea.setRangeText(Expression.TERMINATORS[event.key], this.textarea.selectionEnd, this.textarea.selectionEnd);
+        } else {
+          _stopAndPrevent(event);
+
+          this.textarea.setRangeText(event.key, this.textarea.selectionStart, this.textarea.selectionStart);
+          this.textarea.setRangeText(Expression.TERMINATORS[event.key], this.textarea.selectionEnd, this.textarea.selectionEnd);
+          this.textarea.selectionStart += 1;
+
+          this.#update();
+        }
       } else if (event.key === 'Backspace') {
         const value = this.textarea.value;
 
