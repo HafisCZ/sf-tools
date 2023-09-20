@@ -160,7 +160,7 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
                   <label>${this.intl('selector')}</label>
                   <div class="ta-editor" style="height: initial;">
                       <input data-op="selector" class="ta-editor-textarea" style="padding-left: 1em !important;" data-op="primary" type="text" placeholder="${this.intl('selector')}">
-                      <div data-op="overlay" class="ta-editor-overlay" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                      <div data-op="overlay" class="ta-editor-overlay" style="width: 100%; margin-top: 0.66em; margin-left: 1em;"></div>
                   </div>
               </div>
               <div class="four wide field">
