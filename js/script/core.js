@@ -561,7 +561,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_WIDTH_POLICY',
     ScriptType.Table,
-    'width policy <value>',
+    'width policy <strict|relaxed>',
     /^width policy (strict|relaxed)$/,
     (root, value) => root.addGlobal('widthPolicy', value),
     (root, value) => Highlighter.keyword('width policy').space(1).boolean(value, value === 'strict')
@@ -1281,7 +1281,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_LINED',
     ScriptType.Table,
-    'lined <value>',
+    'lined <on|off|thin|thick>',
     /^lined( (on|off|thin|thick))?$/,
     (root, params, value) => root.addGlobal('lined', params ? ARGUMENT_MAP_LINED[value] : 1),
     (root, params, value) => {
@@ -1400,7 +1400,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_BREAKLINE',
     ScriptType.Table,
-    'breakline <value>',
+    'breakline <on|off>',
     /^breakline (on|off)$/,
     (root, value) => root.addStyle('white-space', value === 'on' ? 'normal' : 'nowrap'),
     (root, value) => Highlighter.deprecatedKeyword('breakline').space().boolean(value, value == 'on'),
@@ -1410,7 +1410,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_VISIBLE',
     ScriptType.Table,
-    'visible <value>',
+    'visible <on|off>',
     /^visible (on|off)$/,
     (root, value) => root.addShared('visible', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('visible').space().boolean(value, value == 'on')
@@ -1419,7 +1419,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_DECIMAL',
     ScriptType.Table,
-    'decimal <value>',
+    'decimal <on|off>',
     /^decimal (on|off)$/,
     (root, value) => root.addShared('decimal', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('decimal').space().boolean(value, value == 'on')
@@ -1428,7 +1428,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_GRAIL',
     ScriptType.Table,
-    'grail <value>',
+    'grail <on|off>',
     /^grail (on|off)$/,
     (root, value) => root.addShared('grail', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('grail').space().boolean(value, value == 'on')
@@ -1437,7 +1437,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_MAXIMUM',
     ScriptType.Table,
-    'maximum <value>',
+    'maximum <on|off>',
     /^maximum (on|off)$/,
     (root, value) => root.addShared('maximum', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('maximum').space().boolean(value, value == 'on')
@@ -1446,7 +1446,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_STATISTICS',
     ScriptType.Table,
-    'statistics <value>',
+    'statistics <on|off>',
     /^statistics (on|off)$/,
     (root, value) => root.addShared('statistics', ARGUMENT_MAP_ON_OFF[value]),
     (root, value) => Highlighter.keyword('statistics').space().boolean(value, value == 'on')
@@ -1455,7 +1455,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_BRACKETS',
     ScriptType.Table,
-    'brackets <value>',
+    'brackets <on|off>',
     /^brackets (on|off)$/,
     (root, value) => root.addShared('differenceBrackets', value === 'on' ? '()' : false),
     (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on'),
@@ -1465,7 +1465,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_SHARED_DIFFERENCE_BRACKETS',
     ScriptType.Table,
-    'difference brackets <value>',
+    'difference brackets <on|off>',
     /^difference brackets (on|off|\S\S)$/,
     (root, value) => {
         if (value === 'on' || value === 'off') {
@@ -1744,7 +1744,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_BORDER',
     ScriptType.Table,
-    'border <value>',
+    'border <none|left|right|both>',
     /^border (none|left|right|both|top|bottom)$/,
     (root, value) => root.addShared('border', ARGUMENT_MAP_BORDER[value]),
     (root, value) => Highlighter.keyword('border ').constant(value)
@@ -1767,7 +1767,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_ORDER',
     ScriptType.Table,
-    'glob order <value>',
+    'glob order <asc|des>',
     /^glob order (asc|des)$/,
     (root, value) => root.addGlobOrder(undefined, value == 'asc'),
     (root, value) => Highlighter.keyword('glob order ').constant(value)
@@ -1776,7 +1776,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_ORDER_INDEXED',
     ScriptType.Table,
-    'glob order <value> <value>',
+    'glob order <asc|des> <value>',
     /^glob order (asc|des) (\d+)$/,
     (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
     (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
@@ -1813,7 +1813,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_ALIGN',
     ScriptType.Table,
-    'align <value>',
+    'align <left|right|center>',
     /^align (left|right|center)$/,
     (root, value) => root.addShared('align', value),
     (root, value) => Highlighter.keyword('align ').constant(value)
@@ -1822,7 +1822,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_ALIGN_LONG',
     ScriptType.Table,
-    'align <value> <value>',
+    'align <left|right|center> <left|right|center>',
     /^align (left|right|center) (left|right|center)$/,
     (root, value, value2) => {
         root.addShared('align', value);
@@ -1938,7 +1938,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'ACTION_TAG',
     ScriptType.Action,
-    'tag <scope> as <expression> if <expression>',
+    'tag <player|file> as <expression> if <expression>',
     /^tag (player|file) as (.+) if (.+)$/,
     (root, type, tag, expr) => {
         let ast1 = Expression.create(tag);

@@ -28,9 +28,9 @@ const FIELD_REGEXP = /\u2039|\u203A/g;
 
 function wrapFields (content, all = false) {
     if (all) {
-        return content.replace(/<([a-z\|]+)>|\(([a-z\|]+)\)/g, `${FIELD_L}$1$2${FIELD_R}`);
+        return content.replace(/<([a-z \|]+)>|\(([a-z \|]+)\)/g, `${FIELD_L}$1$2${FIELD_R}`);
     } else {
-        return content.replace(/<([a-z\|]+)>/g, `${FIELD_L}$1${FIELD_R}`);
+        return content.replace(/<([a-z \|]+)>/g, `${FIELD_L}$1${FIELD_R}`);
     }
 }
 
