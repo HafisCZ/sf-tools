@@ -75,6 +75,10 @@ class ScriptEditor extends SignalSource {
           _stopAndPrevent(event);
 
           this.#handleSuggestionsNavigation(event);
+        } else if (this.suggestionsInstant) {
+          this.suggestionsInstant = false;
+
+          this.#hideSuggestions();
         }
       } else if (event.key === 'Tab' && (event.shiftKey ? this.#focusPreviousField() : this.#focusNextField())) {
         _stopAndPrevent(event);
@@ -307,6 +311,31 @@ class ScriptEditor extends SignalSource {
     }
   }
 
+  #addInstantSuggestions (options) {
+    for (const option of options) {
+      if (this.#suggestions.find((suggestion) => suggestion.value === option)) {
+        continue;
+      } else {
+        const element = document.createElement('div');
+        element.setAttribute('data-suggestion', this.#suggestions.length);
+        element.setAttribute('data-suggestion-type', 'instant');
+        element.innerText = option;
+
+        this.suggestions.appendChild(element);
+
+        this.#suggestions.push({
+          value: option,
+          text: option,
+          id: `${this.#suggestions.length}`,
+          type: 'instant',
+          element
+        });
+      }
+    }
+
+    return this.#suggestions.filter((suggestion) => options.includes(suggestion.value));
+  }
+
   #update() {
     const value = this.textarea.value;
 
@@ -384,6 +413,10 @@ class ScriptEditor extends SignalSource {
       else if (value[i] === FIELD_L && fieldEnd !== null) {
         this.textarea.setSelectionRange(i, fieldEnd, 'forward');
 
+        if (_countInSlice(value, '|', i, fieldEnd) > 0) {
+          this.#updateSuggestions();
+        }
+
         return true;
       }
     }
@@ -393,6 +426,10 @@ class ScriptEditor extends SignalSource {
       else if (value[i] === FIELD_R) fieldEnd = i + 1;
       else if (value[i] === FIELD_L && fieldEnd !== null) {
         this.textarea.setSelectionRange(i, fieldEnd, 'forward');
+
+        if (_countInSlice(value, '|', i, fieldEnd) > 0) {
+          this.#updateSuggestions();
+        }
 
         return true;
       }
@@ -411,6 +448,10 @@ class ScriptEditor extends SignalSource {
       else if (value[i] === FIELD_R && fieldStart !== null) {
         this.textarea.setSelectionRange(fieldStart, i + 1, 'forward');
 
+        if (_countInSlice(value, '|', fieldStart, i + 1) > 0) {
+          this.#updateSuggestions();
+        }
+
         return true;
       }
     }
@@ -420,6 +461,10 @@ class ScriptEditor extends SignalSource {
       else if (value[i] === FIELD_L) fieldStart = i;
       else if (value[i] === FIELD_R && fieldStart !== null) {
         this.textarea.setSelectionRange(fieldStart, i + 1, 'forward');
+
+        if (_countInSlice(value, '|', fieldStart, i + 1) > 0) {
+          this.#updateSuggestions();
+        }
 
         return true;
       }
@@ -526,12 +571,25 @@ class ScriptEditor extends SignalSource {
     if (this.#isField(value, start, end)) {
       const { width, height } = this.#measure(value.slice(lines[0].start, start));
 
-      return {
-        suggestions: this.#suggestions
-          .filter((suggestion) => suggestion.type !== 'command')
-          .map((suggestion) => suggestion.id),
-        positionLeft: width,
-        positionTop: height * (1 + endLine)
+      const fieldText = value.slice(start + 1, end - 1);
+      if (fieldText.includes('|')) {
+        const instantSuggestions = this.#addInstantSuggestions(fieldText.split('|')).map((suggestion) => suggestion.id);
+
+        this.suggestionsInstant = true;
+
+        return {
+          suggestions: instantSuggestions,
+          positionLeft: width,
+          positionTop: height * (1 + endLine)
+        }
+      } else {
+        return {
+          suggestions: this.#suggestions
+            .filter((suggestion) => suggestion.type !== 'instant' && suggestion.type !== 'command')
+            .map((suggestion) => suggestion.id),
+          positionLeft: width,
+          positionTop: height * (1 + endLine)
+        }
       }
     } else {
       const { line, word } = this.#getSuggestionContent(lines[lines.length - 1].start, end);
@@ -539,7 +597,7 @@ class ScriptEditor extends SignalSource {
 
       return {
         suggestions: this.#suggestions
-          .filter((suggestion) => suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word))
+          .filter((suggestion) => suggestion.type !== 'instant' && (suggestion.type === 'command' ? suggestion.value.startsWith(line) : suggestion.value.startsWith(word)))
           .map((suggestion) => suggestion.id),
         positionLeft: width,
         positionTop: height * (1 + endLine)

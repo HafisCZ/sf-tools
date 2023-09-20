@@ -1297,7 +1297,7 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_GLOBAL_THEME',
     ScriptType.Table,
-    'theme <value>',
+    'theme <light|dark>',
     /^theme (light|dark)$/,
     (root, value) => root.setTheme(value),
     (root, value) => Highlighter.keyword('theme ').boolean(value, true)
