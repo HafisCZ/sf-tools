@@ -43,23 +43,17 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         this.$content = this.$parent.find('[data-op="content"]');
     }
 
-    _getValue (path, def) {
-        const value = this.$parent.find(`[data-path="${path}"]`).val()
+    _getValue (path, defaultValue) {
+        const field = this.$parent.find(`[data-path="${path}"]`).get(0);
 
-        if (typeof def === 'string') {
-            return value;
-        } else if (typeof def === 'boolean') {
-            return value !== '0'
+        if (field.type === 'checkbox') {
+            return field.checked;
+        } else if (field.type === 'text') {
+            return field.value;
+        } else if (field.type === 'number') {
+            return parseFloat(field.value || defaultValue);
         } else {
-            return parseFloat(value || def);
-        }
-    }
-
-    _convertValue (val) {
-        if (typeof val === 'boolean') {
-            return val ? '1' : '0';
-        } else {
-            return val;
+            return defaultValue;
         }
     }
 
@@ -91,6 +85,24 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         return path.slice(1).map((key) => key.replace(/([A-Z])/g, ' $1').trim()).join(' - ')
     }
 
+    _inputType (value) {
+        if (typeof value === 'string') {
+            return 'text';
+        } else if (typeof value === 'boolean') {
+            return 'checkbox';
+        } else {
+            return 'number';
+        }
+    }
+
+    _inputValue (value) {
+        if (typeof value === 'boolean') {
+            return `style="margin-top: 0.5em; flex: 0;" ${value ? 'checked' : ''}`;
+        } else {
+            return `value="${value}"`;
+        }
+    }
+
     _renderGroup (group, path) {
         let content = ''
 
@@ -104,7 +116,7 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
                         <div class="field">
                             <label>${prettyKey} - ${i + 1}</label>
                             <div class="ui inverted input">
-                                <input type="${typeof value[i] === 'string' ? 'text' : 'number'}" data-path="${[...path, key, i].join('.')}" value="${this._convertValue(value[i])}">
+                                <input type="${this._inputType(value[i])}" data-path="${[...path, key, i].join('.')}" ${this._inputValue(value[i])}>
                             </div>
                         </div>
                     `;
@@ -118,7 +130,7 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
                     <div class="field">
                         <label>${prettyKey}</label>
                         <div class="ui inverted input">
-                            <input type="${typeof value === 'string' ? 'text' : 'number'}" data-path="${[...path, key].join('.')}" value="${this._convertValue(value)}">
+                            <input type="${this._inputType(value)}" data-path="${[...path, key].join('.')}" ${this._inputValue(value)}>
                         </div>
                     </div>
                 `;
