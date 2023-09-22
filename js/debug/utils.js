@@ -64,7 +64,7 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
     }
 
     _readGroup (value, path) {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && typeof value[0] !== 'object') {
             const arr = [];
             for (let i = 0; i < value.length; i++) {
                 arr[i] = this._getValue(`${path.join('.')}.${i}`, value[i]);
@@ -97,7 +97,7 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         for (const [key, value] of Object.entries(group)) {
             const prettyKey = this._formatKey([...path, key]);
 
-            if (Array.isArray(value)) {
+            if (Array.isArray(value) && typeof value[0] !== 'object') {
                 content += '<div class="equal width fields">';
                 for (let i = 0; i < value.length; i++) {
                     content += `
@@ -424,7 +424,7 @@ const SimulatorUtils = class {
 
     static #computeConfigDiff(differences, path) {
         const defaultValue = _dig(this.#defaultConfig, ...path);
-        if (Array.isArray(defaultValue)) {
+        if (Array.isArray(defaultValue) && typeof defaultValue[0] !== 'object') {
             // Array value
             const customValue = _dig(this.#currentConfig, ...path);
             if (typeof customValue !== 'undefined' && customValue.some((v, i) => v != defaultValue[i])) {
