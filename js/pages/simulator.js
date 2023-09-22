@@ -57,7 +57,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             handlePaste(data);
         },
         onLog: (callback) => {
-            executeSimulation(1, 50, callback);
+            executeSimulation(1, 500, callback);
         }
     });
 
