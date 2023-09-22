@@ -58,10 +58,15 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
     }
 
     _readGroup (value, path) {
-        if (Array.isArray(value) && typeof value[0] !== 'object') {
+        if (Array.isArray(value)) {
             const arr = [];
+
             for (let i = 0; i < value.length; i++) {
-                arr[i] = this._getValue(`${path.join('.')}.${i}`, value[i]);
+                if (typeof value[i] === 'object') {
+                    arr[i] = this._readGroup(value[i], [...path, i]);
+                } else {
+                    arr[i] = this._getValue(`${path.join('.')}.${i}`, value[i]);
+                }
             }
 
             return arr;
