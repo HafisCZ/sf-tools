@@ -515,4 +515,28 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             insertPlayer(preparePlayerData(item))
         }
     });
+
+    // Listener
+    if (urlParams.has('broadcast')) {
+        const token = urlParams.get('broadcast');
+        const broadcast = new Broadcast(token);
+
+        broadcast.on('data', (data) => {
+            Loader.toggle(true);
+
+            handlePaste(data);
+
+            Loader.toggle(false);
+
+            broadcast.close();
+        })
+
+        // When ready send message to channel
+        broadcast.send('token', token);
+
+        // Remove broadcast param
+        urlParams.delete('broadcast');
+
+        window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${urlParams.toString().replace(/=&/g, '&').replace(/=$/, '')}`)
+    }
 });
