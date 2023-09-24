@@ -396,8 +396,8 @@ class FighterModel {
       this.ID = dataType.long();
       this.Name = dataType.string();
       this.Level = dataType.long();
-      this.MaximumLife = dataType.long();
-      this.Life = dataType.long();
+      this.TotalHealth = dataType.long();
+      this.Health = dataType.long();
 
       this.Strength = {
           Total: dataType.long()

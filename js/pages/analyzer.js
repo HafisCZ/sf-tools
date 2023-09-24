@@ -29,7 +29,7 @@ class PlayerEditor extends EditorBase {
             class: new Field(`${parent} [data-path="Class"]`, '1'),
             level: new Field(`${parent} [data-path="Level"]`, '0', Field.isPlayerLevel),
             armor: new Field(`${parent} [data-path="Armor"]`, '0', Field.isNumber),
-            maximum_life: new Field(`${parent} [data-path="MaximumLife"]`, '0', null, { set: (value) => formatAsSpacedNumber(value, ' '), get: (value) => Number(String(value).replace(/ /g, '')) }),
+            maximum_life: new Field(`${parent} [data-path="TotalHealth"]`, '0', null, { set: (value) => formatAsSpacedNumber(value, ' '), get: (value) => Number(String(value).replace(/ /g, '')) }),
 
             resistance_fire: new Field(`${parent} [data-path="Runes.ResistanceFire"]`, '0', Field.isResistanceRune),
             resistance_cold: new Field(`${parent} [data-path="Runes.ResistanceCold"]`, '0', Field.isResistanceRune),
@@ -702,7 +702,7 @@ Site.ready(null, function (urlParams) {
                         }
                     }
 
-                    return currentRound.target.Life;
+                    return currentRound.target.Health;
                 }
 
                 // Finalize each round
@@ -959,7 +959,7 @@ Site.ready(null, function (urlParams) {
                         <td class="!text-center"></th>
                         <td class="!text-center text-violet">${formatAttackType(attackType)}</th>
                         <td class="!text-center"></th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Health).toFixed(1)}%</th>
                         <td class="!text-center"></th>
                     </tr>
                 `;
@@ -979,7 +979,7 @@ Site.ready(null, function (urlParams) {
                         <td class="!text-center">${targetState}</th>
                         <td class="!text-center${attackClass}">${formatAttackType(attackType)}</th>
                         <td class="!text-center${attackClass}">${displayDamage}</th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Life).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Health).toFixed(1)}%</th>
                         <td class="!text-center">${displayBase}${hasError ? ' <span class="text-orangered">!</span>' : ''}</th>
                     </tr>
                 `;
@@ -995,8 +995,8 @@ Site.ready(null, function (urlParams) {
 
     function getFighterStatus (fighter) {
         let text = getFighterName(fighter);
-        if (fighter.Life !== fighter.MaximumLife) {
-            text += ` (${formatAsSpacedNumber(fighter.Life)})`
+        if (fighter.Health !== fighter.TotalHealth) {
+            text += ` (${formatAsSpacedNumber(fighter.Health)})`
         }
 
         return text;
@@ -1285,6 +1285,20 @@ Site.ready(null, function (urlParams) {
         }
     }
 
+    function replaceLifeWithHealth (fighter) {
+        if (typeof fighter.Life !== 'undefined') {
+            fighter.Health = fighter.Life;
+
+            delete fighter.Life;
+        }
+
+        if (typeof fighter.MaximumLife !== 'undefined') {
+            fighter.TotalHealth = fighter.MaximumLife;
+
+            delete fighter.MaximumLife;
+        }
+    }
+
     function importFights ({ players, fights, config }) {
         // Set and render simulator configuration
         CONFIG.set(config);
@@ -1295,6 +1309,9 @@ Site.ready(null, function (urlParams) {
         currentPlayers.push(...players);
         
         for (const fight of fights) {
+            replaceLifeWithHealth(fight.fighterA);
+            replaceLifeWithHealth(fight.fighterB);
+
             const mapping = {
                 [fight.fighterA.ID]: fight.fighterA,
                 [fight.fighterB.ID]: fight.fighterB
@@ -1311,7 +1328,7 @@ Site.ready(null, function (urlParams) {
     }
 
     const FIGHTER_WHITELIST = [
-        'ID', 'Name', 'Level', 'MaximumLife', 'Life',
+        'ID', 'Name', 'Level', 'TotalHealth', 'Health',
         'Strength', 'Dexterity', 'Intelligence', 'Constitution',
         'Luck', 'Class', 'Items'
     ];
