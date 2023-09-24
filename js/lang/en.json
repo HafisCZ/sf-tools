@@ -1162,6 +1162,7 @@
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
+        "simulate": "Open simulator with current data",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
             "rage": "Rage",

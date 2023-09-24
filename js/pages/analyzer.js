@@ -220,6 +220,7 @@ Site.ready(null, function (urlParams) {
     const $buttonResetGroup = $('#button-reset-group');
     const $buttonCopyGroup = $('#button-copy-group');
     const $buttonAnalyzeGroup = $('#button-analyze-group');
+    const $buttonSimulateGroup = $('#button-simulate-group');
 
     const $groupList = $('#group-list');
     const $fightList = $('#fight-list');
@@ -380,6 +381,36 @@ Site.ready(null, function (urlParams) {
             DialogController.open(AnalyzerAutofillDialog, (data) => playerEditorB.autofill(data));
         }
     })
+
+    function fighterToSimulatorModel (fighter) {
+        return mergeDeep(
+            mergeDeep(
+                {
+                    Health: fighter.Health
+                },
+                ModelUtils.toSimulatorData(fighter.player)
+            ),
+            fighter.editor
+        );
+    }
+
+    $buttonSimulateGroup.click(() => {
+        if (currentGroup) {
+            const models = [
+                fighterToSimulatorModel(currentGroup.fighterA),
+                fighterToSimulatorModel(currentGroup.fighterB)
+            ];
+
+            const broadcast = new Broadcast();
+
+            broadcast.on('token', () => {
+                broadcast.send('data', { data: models, config: SimulatorUtils.config, type: 'custom' });
+                broadcast.close();
+            });
+
+            window.open(`${window.location.origin}/simulator.html?debug&broadcast=${broadcast.token}`, '_blank');
+        }
+    });
 
     // Listener
     if (urlParams.has('broadcast')) {
@@ -792,7 +823,7 @@ Site.ready(null, function (urlParams) {
         const buttonsEnabled = currentFights.length > 0;
         const buttonsMethod = buttonsEnabled ? 'removeClass' : 'addClass';
 
-        for (const $button of [$buttonExport, $buttonClear, $buttonAnalyzeGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup]) {
+        for (const $button of [$buttonExport, $buttonClear, $buttonAnalyzeGroup, $buttonExportGroup, $buttonResetGroup, $buttonCopyGroup, $buttonSimulateGroup]) {
             $button[buttonsMethod]('disabled');
         }
     }
