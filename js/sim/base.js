@@ -63,7 +63,7 @@ class FIGHT_LOG {
             } else {
                 return ATTACK_SWOOP;
             }
-        } else if (type === ATTACK_NORMAL || type === ATTACK_SECONDARY_NORMAL || type === ATTACK_CHAIN_NORMAL) {
+        } else if (type === ATTACK_NORMAL || type === ATTACK_SUMMON || type === ATTACK_SECONDARY_NORMAL || type === ATTACK_CHAIN_NORMAL) {
             if (critical) {
                 if (skip) {
                     return type + (targetWarrior ? ATTACK_CRITICAL_BLOCKED : ATTACK_CRITICAL_EVADED);
@@ -120,7 +120,18 @@ class FIGHT_LOG {
             source,
             target,
             0,
-            ATTACK_BARD_SONG + 10 * notes + level,
+            ATTACK_SPECIAL_SONG + 10 * notes + level,
+            false,
+            false
+        )
+    }
+
+    static logSummon (source, target, type, duration) {
+        this.#logRound(
+            source,
+            target,
+            0,
+            ATTACK_SPECIAL_SUMMON + 10 * duration + type,
             false,
             false
         )
@@ -186,6 +197,10 @@ const CONFIG = Object.defineProperties(
             DamageMultiplier: 1,
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 1,
+
+            BypassDamageReduction: true,
+            BypassSkipChance: true,
+            BypassSpecial: true,
 
             SkipChance: 0,
             SkipLimit: 999,
@@ -288,6 +303,7 @@ const CONFIG = Object.defineProperties(
             Rage: {
                 SkipChance: 0,
                 CriticalChance: 0.75,
+                CriticalChanceBonus: 0.1,
                 CriticalBonus: 3.6
             }
         },
@@ -309,6 +325,52 @@ const CONFIG = Object.defineProperties(
             EffectBaseChance: [25, 50, 25],
             EffectValues: [ 20, 40, 60 ]
         },
+        Necromancer: {
+            Attribute: 'Intelligence',
+
+            HealthMultiplier: 2,
+            WeaponMultiplier: 4.5,
+            DamageMultiplier: 1,
+            MaximumDamageReduction: 10,
+            MaximumDamageReductionMultiplier: 1,
+
+            BypassDamageReduction: true,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
+
+            SummonChance: 0.5,
+            Summons: [
+                {
+                    Duration: 2,
+                    DamageMultiplier: 1,
+                    SkipChance: 0,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    ReviveCount: 2,
+                    ReviveDuration: 1,
+                    ReviveChance: 0.5
+                },
+                {
+                    Duration: 1,
+                    DamageMultiplier: 1.75,
+                    SkipChance: 0,
+                    CriticalBonus: 0.5,
+                    CriticalChance: 0.6,
+                    CriticalChanceBonus: 0.1
+                },
+                {
+                    Duration: 3,
+                    DamageMultiplier: 0.75,
+                    SkipChance: 0.25,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0
+                }
+            ]
+        }
     },
     {
         set: {
@@ -383,6 +445,7 @@ const BERSERKER = 6;
 const DEMONHUNTER = 7;
 const DRUID = 8;
 const BARD = 9;
+const NECROMANCER = 10;
 
 // Rune values
 const RUNE_FIRE_DAMAGE = 40;
@@ -443,8 +506,21 @@ const ATTACK_SWOOP = 5;
 const ATTACK_SWOOP_BLOCKED = 6;
 const ATTACK_SWOOP_EVADED = 7;
 
+const ATTACK_SUMMON = 30;
+const ATTACK_SUMMON_CRITICAL = 31;
+const ATTACK_SUMMON_BLOCKED = 33;
+const ATTACK_SUMMON_EVADED = 34;
+
+const ATTACKS_SUMMON = [
+    ATTACK_SUMMON,
+    ATTACK_SUMMON_CRITICAL,
+    ATTACK_SUMMON_BLOCKED,
+    ATTACK_SUMMON_EVADED
+]
+
 const ATTACK_REVIVE = 100;
-const ATTACK_BARD_SONG = 200;
+const ATTACK_SPECIAL_SONG = 200;
+const ATTACK_SPECIAL_SUMMON = 300;
 
 // Fighter models
 class SimulatorModel {
@@ -463,7 +539,8 @@ class SimulatorModel {
             [BERSERKER]: BerserkerModel,
             [DEMONHUNTER]: DemonHunterModel,
             [DRUID]: DruidModel,
-            [BARD]: BardModel
+            [BARD]: BardModel,
+            [NECROMANCER]: NecromancerModel
         };
 
         return new MODELS[player.Class](index, player);
@@ -544,7 +621,7 @@ class SimulatorModel {
 
     // Damage Reduction
     getDamageReduction (source, maximumReduction = this.Config.MaximumDamageReduction) {
-        if (source.Player.Class == MAGE) {
+        if (source.Config.BypassDamageReduction) {
             return 0;
         } else {
             return (this.Config.MaximumDamageReductionMultiplier) * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
@@ -553,7 +630,7 @@ class SimulatorModel {
     
     // Block Chance
     getSkipChance (source) {
-        if (source.Player.Class == MAGE) {
+        if (source.Config.BypassSkipChance) {
             return 0;
         } else if (this.Config.UseBlockChance && typeof this.Player.BlockChance !== 'undefined') {
             return this.Player.BlockChance / 100;
@@ -771,6 +848,26 @@ class SimulatorModel {
             return false;
         }
     }
+
+    createState (target, config) {
+        const state = {
+            Config: config,
+            SkipChance: target.Config.BypassSkipChance ? 0 : config.SkipChance,
+            CriticalMultiplier: this.Data.CriticalMultiplier + config.CriticalBonus,
+            CriticalChance: this.getCriticalChance(target, config.CriticalChance, config.CriticalChanceBonus),
+            Weapon1: this.Data.Weapon1
+        }
+    
+        if (typeof config.DamageMultiplier !== 'undefined') {
+            state.Weapon1 = {
+                Base: config.DamageMultiplier * this.Data.Weapon1.Base,
+                Max: config.DamageMultiplier * this.Data.Weapon1.Max,
+                Min: config.DamageMultiplier * this.Data.Weapon1.Min
+            }
+        }
+    
+        return state;
+    }
 }
 
 class WarriorModel extends SimulatorModel {
@@ -815,7 +912,7 @@ class AssassinModel extends SimulatorModel {
 
 class BattlemageModel extends SimulatorModel {
     getFireballDamage (target) {
-        if (target.Player.Class == MAGE) {
+        if (target.Config.BypassSpecial) {
             return 0;
         } else {
             const multiplier = 0.05 * target.Config.HealthMultiplier;
@@ -872,7 +969,7 @@ class DemonHunterModel extends SimulatorModel {
         if (state == STATE_DEAD) {
             const reviveChance = this.Config.ReviveChance - this.Config.ReviveChanceDecay * this.DeathTriggers;
 
-            if (source.Player.Class != MAGE && this.DeathTriggers < this.Config.ReviveMax && getRandom(reviveChance)) {
+            if (!source.Config.BypassSpecial && this.DeathTriggers < this.Config.ReviveMax && getRandom(reviveChance)) {
                 this.Health = this.TotalHealth * Math.max(this.Config.ReviveHealthMin, this.Config.ReviveHealth - this.DeathTriggers * this.Config.ReviveHealthDecay);
                 this.DeathTriggers += 1;
 
@@ -917,15 +1014,7 @@ class DruidModel extends SimulatorModel {
     initializeData (target) {
         super.initializeData(target);
 
-        this.Data.RageState = Object.assign(
-            Object.create(null),
-            this.Data,
-            {
-                SkipChance: target.Player.Class === MAGE ? 0 : this.Config.Rage.SkipChance,
-                CriticalMultiplier: this.Data.CriticalMultiplier + this.Config.Rage.CriticalBonus,
-                CriticalChance: this.getCriticalChance(target, this.Config.Rage.CriticalChance, 0.10)
-            }
-        )
+        this.Data.RageState = this.createState(target, this.Config.Rage);
     }
 
     attack (damage, target, skipped, critical, type) {
@@ -954,7 +1043,7 @@ class DruidModel extends SimulatorModel {
                 target,
                 skipped,
                 false,
-                5
+                ATTACK_SWOOP
             );
         } else {
             return super.attack(
@@ -1013,7 +1102,7 @@ class BardModel extends SimulatorModel {
     initializeData (target) {
         super.initializeData(target);
 
-        this.Data.BeforeAttack = target.Player.Class != MAGE;
+        this.Data.BeforeAttack = !target.Config.BypassSpecial;
     }
 
     rollEffect () {
@@ -1075,6 +1164,107 @@ class BardModel extends SimulatorModel {
         }
 
         return state;
+    }
+}
+
+class NecromancerModel extends SimulatorModel {
+    initializeData (target) {
+        super.initializeData(target);
+
+        this.Data.Minions = this.Config.Summons.map((summon) => this.createState(target, summon));
+    }
+
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
+
+        this.Minion = null;
+    }
+
+    summonMinion (target) {
+        const type = Math.trunc(Math.random() * 3);
+        const minion = this.Data.Minions[type];
+
+        this.Minion = minion;
+        this.MinionType = type + 1;
+        this.MinionDuration = minion.Config.Duration;
+        this.MinionRevives = minion.Config.ReviveCount;
+
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logSummon(
+                this,
+                target,
+                this.MinionType,
+                this.MinionDuration
+            )
+        }
+
+        // Enter summon state
+        this.enterState(this.Minion);
+    }
+
+    expireMinion (target) {
+        this.MinionDuration--;
+
+        // Remove minion if expired
+        if (this.MinionDuration <= 0) {
+            // Check if minion can be revived
+            if (getRandom(this.MinionRevives)) {
+                this.MinionDuration = this.Minion.Config.ReviveDuration;
+                this.MinionRevives--;
+
+                // Log resurrection like another summoning
+                if (FIGHT_LOG_ENABLED) {
+                    FIGHT_LOG.logSummon(
+                        this,
+                        target,
+                        this.MinionType,
+                        this.MinionDuration
+                    )
+                }
+            } else {
+                // Remove minion and leave state
+                this.Minion = null;
+
+                this.enterState();
+            }
+        }
+    }
+
+    attackMinion (instance, target) {
+        const weapon = this.State.Weapon1;
+
+        this.attack(
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            target.skip(SKIP_TYPE_DEFAULT),
+            getRandom(this.State.CriticalChance),
+            ATTACK_SUMMON
+        )
+    }
+
+    control (instance, target) {
+        if (target.Config.BypassSpecial) {
+            // Necromancer cannot summon against mages
+            super.control(instance, target);
+        } else if (this.Minion) {
+            // Take control as player
+            this.enterState();
+            super.control(instance, target);
+
+            // Take control as minion
+            this.enterState(this.Minion);
+            this.attackMinion(instance, target);
+
+            this.expireMinion(target);
+        } else if (getRandom(this.Config.SummonChance)) {
+            // Increment range to 'waste' a turn
+            instance.getRage();
+
+            this.summonMinion(target);
+        } else {
+            // Attack as usual
+            super.control(instance, target);
+        }
     }
 }
 

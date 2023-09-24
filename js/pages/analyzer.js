@@ -465,7 +465,8 @@ Site.ready(null, function (urlParams) {
                 attackSecondary: false,
                 attackCrit: false,
                 attackMissed: false,
-                attackSpecial: true
+                attackSpecial: true,
+                attackHasRage: attackType >= ATTACK_SPECIAL_SUMMON && attackType != 311 // Summon revival
             }
         } else {
             const attackSecondary = ATTACKS_SECONDARY.includes(attackType);
@@ -487,7 +488,9 @@ Site.ready(null, function (urlParams) {
             const attackMissedSpecial = [
                 ATTACK_SWOOP_BLOCKED,
                 ATTACK_SWOOP_EVADED,
-                ATTACK_FIREBALL_BLOCKED
+                ATTACK_FIREBALL_BLOCKED,
+                ATTACK_SUMMON_BLOCKED,
+                ATTACK_SUMMON_EVADED
             ].includes(attackType);
 
             const attackMissed = attackMissedDefault || attackMissedSpecial;
@@ -497,7 +500,8 @@ Site.ready(null, function (urlParams) {
                 attackCrit,
                 attackMissed,
                 attackChained,
-                attackSpecial: false
+                attackSpecial: false,
+                attackHasRage: true
             }
         }
     }
@@ -546,6 +550,36 @@ Site.ready(null, function (urlParams) {
         ];
 
         return SHA1(JSON.stringify(json));
+    }
+
+    function toInternalAttackType (attacker, rawType) {
+        if (attacker.Class === BATTLEMAGE) {
+            switch (rawType) {
+                case ATTACK_SWOOP: return ATTACK_FIREBALL;
+                case ATTACK_SWOOP_EVADED: return ATTACK_FIREBALL_BLOCKED;
+                case ATTACK_SWOOP_BLOCKED: return ATTACK_FIREBALL_BLOCKED;
+                default: {
+                    return rawType;
+                }
+            }
+        } else if (attacker.Class === NECROMANCER) {
+            switch (rawType) {
+                case ATTACK_SWOOP: return ATTACK_SUMMON;
+                case ATTACK_SWOOP_BLOCKED: return ATTACK_SUMMON_BLOCKED;
+                case ATTACK_SWOOP_EVADED: return ATTACK_SUMMON_EVADED;
+                // TODO: Add proper type
+                case 25: return ATTACK_SUMMON_CRITICAL;
+                default: {
+                    if (rawType >= ATTACK_SPECIAL_SONG && rawType <= ATTACK_SPECIAL_SUMMON) {
+                        return rawType + (ATTACK_SPECIAL_SUMMON - ATTACK_SPECIAL_SONG);
+                    } else {
+                        return rawType;
+                    }
+                }
+            }
+        } else {
+            return rawType;
+        }
     }
 
     // Extract individual fights from raw data array
@@ -636,7 +670,7 @@ Site.ready(null, function (urlParams) {
             // Proceed only if type of fight is known to the system
             if (Object.values(FIGHT_TYPES).includes(fightType)) {
                 // Parse fighters
-                const fighterA = new FighterModel(header.slice(05, 52), fightType);
+                const fighterA = new FighterModel(header.slice(5, 52), fightType);
                 const fighterB = new FighterModel(header.slice(52, 99), fightType);
 
                 // Parse individual rounds (group of 3 numbers)
@@ -649,14 +683,15 @@ Site.ready(null, function (urlParams) {
                 const processedRounds = [];
                 for (const [attackerId, attackType, targetHealthLeft] of rawRounds) {
                     const [attacker, target] = attackerId == fighterA.ID ? [fighterA, fighterB] : [fighterB, fighterA];
+                    const internalAttackType = toInternalAttackType(attacker, attackType)
 
                     processedRounds.push(Object.assign({
                         attacker,
                         target,
-                        attackType,
+                        attackType: internalAttackType,
                         attackDamage: 0,
                         targetHealthLeft,
-                    }, decodeAttackType(attackType)));
+                    }, decodeAttackType(internalAttackType)));
                 }
 
                 const findHealth = (i) => {
@@ -674,13 +709,15 @@ Site.ready(null, function (urlParams) {
                 let attackRageOffset = 0;
                 for (let i = 0, round; round = processedRounds[i]; i++) {
                     // Calculate attack damage
-                    if (round.attackSpecial) {
-                        round.attackDamage = round.targetHealthLeft;
-                    } else {
+                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
+                        round.targetHealthLeft = findHealth(i);
+                    } else if (round.attackHasRage) {
                         round.attackDamage = findHealth(i) - round.targetHealthLeft;
+                    } else {
+                        round.attackDamage = round.targetHealthLeft;
                     }
-                    
-                    if (round.attackSpecial) {
+
+                    if (round.attackSpecial && !round.attackHasRage) {
                         // Decrease rage if it's a special attack (revive, note)
                         attackRageOffset--;
                     } else if (round.attackChained) {
@@ -900,7 +937,7 @@ Site.ready(null, function (urlParams) {
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
                 targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
-                hasDamage, hasBase, hasError, hasIgnore
+                hasDamage, hasBase, hasError, hasIgnore,attackerMinion
             } = fight.rounds[i];
 
             const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"';
@@ -1015,27 +1052,44 @@ Site.ready(null, function (urlParams) {
         SimulatorModel.initializeFighters(model1, model2);
 
         // Recalculate death counts
-        for (const fight of group.fights) {
-            let deaths1 = 0;
-            let deaths2 = 0;
+        for (const { rounds } of group.fights) {
+            let deathsA = 0;
+            let deathsB = 0;
 
-            for (const round of fight.rounds) {
+            for (let i = 0; i < rounds.length; i++) {
+                const round = rounds[i];
+
                 const isFighterA = round.attackerId === group.fighterA.ID;
 
                 if (round.attackType === ATTACK_REVIVE) {
                     if (isFighterA) {
-                        deaths1++;
+                        deathsA++;
                     } else {
-                        deaths2++;
+                        deathsB++;
                     }
                 }
 
                 if (isFighterA) {
-                    round.attackerDeaths = deaths1;
-                    round.targetDeaths = deaths2;
+                    round.attackerDeaths = deathsA;
+                    round.targetDeaths = deathsB;
                 } else {
-                    round.attackerDeaths = deaths2;
-                    round.targetDeaths = deaths1;
+                    round.attackerDeaths = deathsB;
+                    round.targetDeaths = deathsA;
+                }
+
+                // Add flags to minion attacks for necromancer class
+                if (round.attacker.Class === NECROMANCER) {
+                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
+                        const summonType = round.attackType % 10 - 1;
+
+                        for (let j = i + 1, durationLeft = Math.trunc((round.attackType % 100) / 10); j < rounds.length && durationLeft > 0; j++) {
+                            // Add attackerMinion flag to attacks dealt by minions
+                            if (rounds[j].attacker === round.attacker && ATTACKS_SUMMON.includes(rounds[j].attackType)) {
+                                rounds[j].attackerMinion = summonType;
+                                durationLeft--;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1044,11 +1098,6 @@ Site.ready(null, function (urlParams) {
 
         // Decorate each round
         for (const round of flatRounds) {
-            // Swap type to fireball if BM swoops
-            if (round.attacker.Class == BATTLEMAGE && [ATTACK_SWOOP, ATTACK_SWOOP_EVADED, ATTACK_SWOOP_BLOCKED].includes(round.attackType)) {
-                round.attackType = round.attackType === ATTACK_SWOOP ? ATTACK_FIREBALL : ATTACK_FIREBALL_BLOCKED;
-            }
-
             // Set display special state
             if (round.attackerSpecialState && round.attacker.Class === DRUID) {
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
@@ -1074,7 +1123,9 @@ Site.ready(null, function (urlParams) {
         // Calculate base damage of each round
         for (const [index, round] of Object.entries(flatRounds)) {
             // We are assuming that lute round always follows after bard attack
-            if (round.attackType >= ATTACK_BARD_SONG && index > 0) {
+            if (round.attackType >= ATTACK_SPECIAL_SUMMON && round.attacker.Class === NECROMANCER) {
+                continue;
+            } else if (round.attackType >= ATTACK_SPECIAL_SONG && round.attacker.Class === BARD && index > 0) {
                 const spellLevel = round.attackType % 10 - 1;
                 const spellNotes = Math.trunc((round.attackType % 100) / 10);
                 const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
@@ -1088,7 +1139,9 @@ Site.ready(null, function (urlParams) {
                 continue;
             } else if (round.hasBase) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.Data.RageState : model.Data;
+                const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.Data.RageState : (
+                    round.attacker.Class === NECROMANCER && typeof round.attackerMinion !== 'undefined' ? model.Data.Minions[round.attackerMinion] : model.Data
+                );
 
                 // Scaled down weapon damage
                 let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? state.Weapon2.Base : state.Weapon1.Base);
