@@ -30,7 +30,7 @@ class FIGHT_LOG {
         this.lastLog = {
             fighterA: {
                 ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
-                MaximumLife: playerA.TotalHealth, Life: playerA.Health, Strength: { Total: playerA.Player.Strength.Total },
+                TotalHealth: playerA.TotalHealth, Health: playerA.Health, Strength: { Total: playerA.Player.Strength.Total },
                 Dexterity: { Total: playerA.Player.Dexterity.Total }, Intelligence: { Total: playerA.Player.Intelligence.Total },
                 Constitution: { Total: playerA.Player.Constitution.Total }, Luck: { Total: playerA.Player.Luck.Total }, Face: playerA.Player.Face,
                 Race: playerA.Player.Race, Gender: playerA.Player.Gender, Class: playerA.Player.Class,
@@ -38,7 +38,7 @@ class FIGHT_LOG {
             },
             fighterB: {
                 ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name, Level: playerB.Player.Level,
-                MaximumLife: playerB.TotalHealth, Life: playerB.Health, Strength: { Total: playerB.Player.Strength.Total },
+                TotalHealth: playerB.TotalHealth, Health: playerB.Health, Strength: { Total: playerB.Player.Strength.Total },
                 Dexterity: { Total: playerB.Player.Dexterity.Total }, Intelligence: { Total: playerB.Player.Intelligence.Total },
                 Constitution: { Total: playerB.Player.Constitution.Total }, Luck: { Total: playerB.Player.Luck.Total }, Face: playerB.Player.Face,
                 Race: playerB.Player.Race, Gender: playerB.Player.Gender, Class: playerB.Player.Class,
