@@ -1179,7 +1179,10 @@
         "special_state": {
             "druid_rage": "Druid is enraged",
             "berserker_rage": "Berserker is enraged",
-            "bard_song": "Bard has played a song"
+            "bard_song": "Bard has played a song",
+            "necromancer_minion_1": "Skeleton attack",
+            "necromancer_minion_2": "Hound attack",
+            "necromancer_minion_3": "Golem attack"
         },
         "sidebar": {
             "toggles": {

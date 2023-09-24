@@ -921,6 +921,8 @@ Site.ready(null, function (urlParams) {
                 return copyMode ? `bard_song_${state.level}` : `<span title="${intl('analyzer.special_state.bard_song')}" style="color: #${BARD_NOTE_COLORS[state.level]};">${state.notes} <i class="ui itunes note icon"></i></span>`;
             } else if (state.type === 'berserker_rage') {
                 return copyMode ? 'berserker_rage' : `<i class="ui bolt icon text-orangered" title="${intl('analyzer.special_state.berserker_rage')}"></i>`;
+            } else if (state.type === 'necromancer_minion') {
+                return copyMode ? `necromancer_minion_${state.minion}`: `<i class="ui skull crossbones icon text-orangered" title="${intl(`analyzer.special_state.necromancer_minion_${state.minion}`)}"></i>`;
             }
         }
 
@@ -937,7 +939,7 @@ Site.ready(null, function (urlParams) {
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
                 targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
-                hasDamage, hasBase, hasError, hasIgnore,attackerMinion
+                hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
 
             const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"';
@@ -1080,12 +1082,12 @@ Site.ready(null, function (urlParams) {
                 // Add flags to minion attacks for necromancer class
                 if (round.attacker.Class === NECROMANCER) {
                     if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
-                        const summonType = round.attackType % 10 - 1;
+                        const summonType = round.attackType % 10;
 
                         for (let j = i + 1, durationLeft = Math.trunc((round.attackType % 100) / 10); j < rounds.length && durationLeft > 0; j++) {
                             // Add attackerMinion flag to attacks dealt by minions
                             if (rounds[j].attacker === round.attacker && ATTACKS_SUMMON.includes(rounds[j].attackType)) {
-                                rounds[j].attackerMinion = summonType;
+                                rounds[j].attackerSpecialState = summonType;
                                 durationLeft--;
                             }
                         }
@@ -1109,6 +1111,10 @@ Site.ready(null, function (urlParams) {
 
             if (round.attackChained) {
                 round.attackerSpecialDisplay = { type: 'berserker_rage' }
+            }
+
+            if (round.attackerSpecialState && round.attacker.Class === NECROMANCER) {
+                round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerSpecialState }
             }
 
             // Skip if missed or special
@@ -1140,7 +1146,7 @@ Site.ready(null, function (urlParams) {
             } else if (round.hasBase) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
                 const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.Data.RageState : (
-                    round.attacker.Class === NECROMANCER && typeof round.attackerMinion !== 'undefined' ? model.Data.Minions[round.attackerMinion] : model.Data
+                    round.attacker.Class === NECROMANCER && round.attackerSpecialState ? model.Data.Minions[round.attackerSpecialState - 1] : model.Data
                 );
 
                 // Scaled down weapon damage
