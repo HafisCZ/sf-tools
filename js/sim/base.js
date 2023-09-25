@@ -334,8 +334,6 @@ const CONFIG = Object.defineProperties(
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 1,
 
-            BypassDamageReduction: true,
-
             SkipChance: 0,
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
