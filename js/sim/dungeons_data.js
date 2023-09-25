@@ -846,16 +846,16 @@ const DUNGEON_DATA = {
         pos: 111,
         shadow: true,
         floors: {
-            '1': { pos: 1, id: 173, class: 1, level: 372, str: 7206, dex: 2531, int: 2494, con: 37389, lck: 1736, health: 69730488, min: 3980, max: 7945 },
-            '2': { pos: 2, id: 174, class: 3, level: 374, str: 1826, dex: 7249, int: 1812, con: 37658, lck: 2639, health: 56487000, min: 5024, max: 9980 },
-            '3': { pos: 3, id: 175, class: 1, level: 376, str: 7292, dex: 2561, int: 2525, con: 37922, lck: 1745, health: 71482968, min: 4082, max: 7966 },
-            '4': { pos: 4, id: 176, class: 1, level: 378, str: 7336, dex: 2576, int: 2541, con: 38192, lck: 1750, health: 72373840, min: 4055, max: 8051 },
-            '5': { pos: 5, id: 177, class: 2, level: 380, str: 1830, dex: 1858, int: 7489, con: 37846, lck: 2673, health: 28838652, min: 9157, max: 17530 },
-            '6': { pos: 6, id: 178, class: 3, level: 382, str: 1869, dex: 7421, int: 1855, con: 38714, lck: 2694, health: 59309848, min: 5163, max: 9965 },
-            '7': { pos: 7, id: 179, class: 1, level: 384, str: 7464, dex: 2620, int: 2586, con: 38978, lck: 1765, health: 75032648, min: 4115, max: 8191 },
-            '8': { pos: 8, id: 180, class: 3, level: 386, str: 1890, dex: 7507, int: 1876, con: 39237, lck: 2721, health: 60738876, min: 5162, max: 10319 },
-            '9': { pos: 9, id: 181, class: 2, level: 388, str: 1874, dex: 1900, int: 7654, con: 38918, lck: 2729, health: 30278204, min: 9868, max: 18597 },
-            '10': { pos: 10, id: 182, class: 1, level: 390, str: 7592, dex: 2665, int: 2632, con: 39754, lck: 1781, health: 77719072, min: 4180, max: 8336 }
+            '1': { pos: 1, id: 173, class: 1, level: 372, str: 7206, dex: 2531, int: 2494, con: 37389, lck: 1736, health: 69730488, min: 3980, max: 7945, armor: 12750 },
+            '2': { pos: 2, id: 174, class: 3, level: 374, str: 1826, dex: 7249, int: 1812, con: 37658, lck: 2639, health: 56487000, min: 5024, max: 9980, armor: 6500 },
+            '3': { pos: 3, id: 175, class: 1, level: 376, str: 7292, dex: 2561, int: 2525, con: 37922, lck: 1745, health: 71482968, min: 4082, max: 8000, armor: 13250 },
+            '4': { pos: 4, id: 176, class: 1, level: 378, str: 7336, dex: 2576, int: 2541, con: 38192, lck: 1750, health: 72373840, min: 4055, max: 8100, armor: 13500 },
+            '5': { pos: 5, id: 177, class: 2, level: 380, str: 1830, dex: 1858, int: 7489, con: 37846, lck: 2673, health: 28838652, min: 9157, max: 18000, armor: 2750 },
+            '6': { pos: 6, id: 178, class: 3, level: 382, str: 1869, dex: 7421, int: 1855, con: 38714, lck: 2694, health: 59309848, min: 5100, max: 10200, armor: 7000 },
+            '7': { pos: 7, id: 179, class: 1, level: 384, str: 7464, dex: 2620, int: 2586, con: 38978, lck: 1765, health: 75032648, min: 4115, max: 8191, armor: 14250 },
+            '8': { pos: 8, id: 180, class: 3, level: 386, str: 1890, dex: 7507, int: 1876, con: 39237, lck: 2721, health: 60738876, min: 5162, max: 10319, armor: 7250 },
+            '9': { pos: 9, id: 181, class: 2, level: 388, str: 1874, dex: 1900, int: 7654, con: 38918, lck: 2729, health: 30278204, min: 9600, max: 18600, armor: 2800 },
+            '10': { pos: 10, id: 182, class: 1, level: 390, str: 7592, dex: 2665, int: 2632, con: 39754, lck: 1781, health: 77719072, min: 4180, max: 8336, armor: 15000 }
         }
     },
     '112': {
