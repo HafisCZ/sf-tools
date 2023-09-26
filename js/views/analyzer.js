@@ -83,7 +83,7 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
 
     this.ExpressionConfig = DEFAULT_EXPRESSION_CONFIG.clone();
 
-    for (const name of ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round']) {
+    for (const name of ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round', 'Attacker State Display', 'Target State Display']) {
         this.ExpressionConfig.register('accessor', 'none', name, (object) => object[name]);
     }
   }
@@ -208,11 +208,13 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
       this.fighterA = fighterA;
       this.fighterB = fighterB;
 
-      this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState }, index, array) => ({
+      this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState, attackerSpecialDisplay, targetSpecialDisplay }, index, array) => ({
           'Attacker': attacker,
           'Target': target,
           'Attacker State': attackerSpecialState,
+          'Attacker State Display': attackerSpecialDisplay,
           'Target State': targetSpecialState,
+          'Target State Display': targetSpecialDisplay,
           'Player 1 Attacking': attacker.ID === fighterA.ID,
           'Player 2 Attacking': attacker.ID === fighterB.ID,
           'Critical': attackCrit,
