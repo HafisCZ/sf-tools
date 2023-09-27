@@ -1779,7 +1779,7 @@ ScriptCommands.register(
     'glob order <asc|des> <value>',
     /^glob order (asc|des) (\d+)$/,
     (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
-    (root, value, index) => Highlighter.keyword('glob order ').constant(value).constant(index)
+    (root, value, index) => Highlighter.keyword('glob order ').constant(value).space().constant(index)
 )
 
 ScriptCommands.register(
