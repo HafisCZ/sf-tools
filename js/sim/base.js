@@ -339,6 +339,7 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
 
             SummonChance: 0.5,
+            SummonImmediateAttack: false,
             Summons: [
                 {
                     Duration: 2,
@@ -1195,9 +1196,6 @@ class NecromancerModel extends SimulatorModel {
                 this.MinionDuration
             )
         }
-
-        // Enter summon state
-        this.enterState(this.Minion);
     }
 
     expireMinion (target) {
@@ -1259,6 +1257,16 @@ class NecromancerModel extends SimulatorModel {
             instance.getRage();
 
             this.summonMinion(target);
+
+            // Enter summon state
+            this.enterState(this.Minion);
+
+            if (this.Config.SummonImmediateAttack) {
+                // Attack as minion
+                this.attackMinion(instance, target);
+
+                this.expireMinion(target);
+            }
         } else {
             // Attack as usual
             super.control(instance, target);
