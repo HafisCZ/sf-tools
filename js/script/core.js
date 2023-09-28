@@ -442,7 +442,7 @@ ScriptCommands.register(
             root.addFunction(name, ast, args.split(',').map(v => v.trim()));
         }
     },
-    (root, name, args, expression) => Highlighter.keyword('mset ').function(name).keyword(' with ').join(args.split(','), 'value').keyword(' as ').expression(expression, root).asMacro(),
+    (root, name, args, expression) => Highlighter.deprecatedKeyword('mset').space().function(name).space().deprecatedKeyword('with').space().join(args.split(','), 'value').space().deprecatedKeyword('as').space().expression(expression, root).asMacro(),
     { evalNever: true, evalOnRender: true, isDeprecated: 'TABLE_FUNCTION' }
 )
 
@@ -457,7 +457,7 @@ ScriptCommands.register(
             root.addVariable(name, ast, 'global');
         }
     },
-    (root, name, expression) => Highlighter.keyword('mset ').constant(name).keyword(' as ').expression(expression, root).asMacro(),
+    (root, name, expression) => Highlighter.deprecatedKeyword('mset').space().constant(name).space().deprecatedKeyword('as').space().expression(expression, root).asMacro(),
     { evalOnRender: true, isDeprecated: 'VARIABLE_GLOBAL' }
 )
 
@@ -1458,7 +1458,7 @@ ScriptCommands.register(
     'brackets <on|off>',
     /^brackets (on|off)$/,
     (root, value) => root.addShared('differenceBrackets', value === 'on' ? '()' : false),
-    (root, value) => Highlighter.keyword('brackets').space().boolean(value, value == 'on'),
+    (root, value) => Highlighter.deprecatedKeyword('brackets').space().boolean(value, value == 'on'),
     { isDeprecated: 'TABLE_SHARED_DIFFERENCE_BRACKETS' }
 )
 
@@ -1640,7 +1640,7 @@ ScriptCommands.register(
         }
     },
     (root, params, value) => {
-        const acc = Highlighter.keyword('large rows');
+        const acc = Highlighter.deprecatedKeyword('large rows');
         if (params) {
             return acc.space(1).boolean(value, value == 'on')
         } else {
