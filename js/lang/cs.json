@@ -1554,6 +1554,7 @@
         "script_archive": {
             "title": "Archiv skriptu",
             "clear": "Odstranit všechny položky z archívu",
+            "copy_toast": "Script has been copied",
             "types": {
                 "create_script": "Script vytvořen",
                 "overwrite_script": "Skript přepsán novou verzí",

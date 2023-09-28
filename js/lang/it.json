@@ -1554,6 +1554,7 @@
         "script_archive": {
             "title": "Archivio script",
             "clear": "Elimina tutti gli elementi dall'archivio",
+            "copy_toast": "Script has been copied",
             "types": {
                 "create_script": "Script creato",
                 "overwrite_script": "Script sovrascritto da una nuova versione",

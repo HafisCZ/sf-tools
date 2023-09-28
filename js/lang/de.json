@@ -1554,6 +1554,7 @@
         "script_archive": {
             "title": "Skript Archiv",
             "clear": "Alle Elemente aus dem Archiv löschen",
+            "copy_toast": "Script has been copied",
             "types": {
                 "create_script": "Skript erstellt",
                 "overwrite_script": "Skript von neuer Version überschrieben",
