@@ -1114,7 +1114,7 @@ ScriptCommands.register(
         const ast = Expression.create(expression, root);
         if (ast) {
             root.addRow(name);
-            root.addDirectValue(ast);
+            root.addDirectValue('expr', ast);
 
             if (extensions) {
                 root.addExtension(... extensions.slice(0, -1).split(','));
