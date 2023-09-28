@@ -87,26 +87,9 @@ class ScriptEditor extends SignalSource {
 
         this.#handleTab(event.shiftKey);
       } else if (Expression.TERMINATORS[event.key]) {
-        const start = this.textarea.selectionStart;
-        const end = this.textarea.selectionEnd;
-
-        if (start === end) {
-          this.textarea.setRangeText(Expression.TERMINATORS[event.key], this.textarea.selectionEnd, this.textarea.selectionEnd);
-        } else {
-          const { lines } = this.#getSelectedLines();
-          
-          if (lines.length === 1) {
-            _stopAndPrevent(event);
-  
-            this.textarea.setRangeText(event.key, this.textarea.selectionStart, this.textarea.selectionStart);
-            this.textarea.setRangeText(Expression.TERMINATORS[event.key], this.textarea.selectionEnd, this.textarea.selectionEnd);
-            this.textarea.selectionStart += 1;
-  
-            this.#update();
-          } else {
-            // Keep bubbling
-          }
-        }
+        this.#applyTerminator(event, event.key, Expression.TERMINATORS[event.key]);
+      } else if (Expression.STRING_TERMINATORS.has(event.key)) {
+        this.#applyTerminator(event, event.key, event.key);
       } else if (event.key === 'Backspace') {
         const value = this.textarea.value;
 
@@ -177,6 +160,29 @@ class ScriptEditor extends SignalSource {
         window.requestAnimationFrame(this.#updateOverlays);
       }
     }).bind(this)
+  }
+
+  #applyTerminator (event, terminatorStart, terminatorEnd) {
+    const start = this.textarea.selectionStart;
+    const end = this.textarea.selectionEnd;
+
+    if (start === end) {
+      this.textarea.setRangeText(terminatorEnd, this.textarea.selectionEnd, this.textarea.selectionEnd);
+    } else {
+      const { lines } = this.#getSelectedLines();
+      
+      if (lines.length === 1) {
+        _stopAndPrevent(event);
+
+        this.textarea.setRangeText(terminatorStart, this.textarea.selectionStart, this.textarea.selectionStart);
+        this.textarea.setRangeText(terminatorEnd, this.textarea.selectionEnd, this.textarea.selectionEnd);
+        this.textarea.selectionStart += 1;
+
+        this.#update();
+      } else {
+        // Keep bubbling
+      }
+    }
   }
 
   #updateHighlights () {

@@ -987,6 +987,10 @@ class Expression {
         }
     }
 
+    static STRING_TERMINATORS = new Set([
+        '\'', '"', '`'
+    ])
+
     static TERMINATORS = {
         '(': ')',
         '[': ']',
