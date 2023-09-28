@@ -8,7 +8,7 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v6.4154': {
         'Statistics': [
             'Added new setting to make table headers sticky',
             'Added autocompletion to script editor (<code>Ctrl + Space</code>)',
