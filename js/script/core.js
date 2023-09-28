@@ -1698,10 +1698,11 @@ ScriptCommands.register(
 ScriptCommands.register(
     'TABLE_EXTRA',
     ScriptType.Table,
-    'extra <expression>',
+    'extra <value>',
     /^extra (.+)$/,
     (root, value) => root.addDirectValue('displayAfter', () => value),
-    (root, value) => Highlighter.keyword('extra ').value(value)
+    (root, value) => Highlighter.deprecatedKeyword('extra').space().value(value),
+    { isDeprecated: 'TABLE_DISPLAY_AFTER' }
 )
 
 ScriptCommands.register(
