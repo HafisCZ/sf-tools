@@ -17,7 +17,7 @@ const CHANGELOG = {
             'Added new berserker icon',
             'Added <code>this</code> as a function',
             'Added new <code>repeat</code> keyword to mark header as repeated',
-            'Added deprecated status to <code>header as group of</code>, <code>padding</code>, <code>brackets</code>, <code>set with all</code>, <code>breakline</code>, and <code>mset</code> keywords',
+            'Added deprecated status to <code>header as group of</code>, <code>padding</code>, <code>brackets</code>, <code>set with all</code>, <code>breakline</code>, <code>extra</code>, and <code>mset</code> keywords',
             'Added <code>display before</code> and <code>display after</code> keywords to display additional text in cell',
             'Added <code>difference brackets</code> command to wrap difference in brackets',
             'Added <code>difference position</code> command to place difference below the value',
@@ -25,7 +25,9 @@ const CHANGELOG = {
             'Added expression as a value to <code>statistics color</code>',
             'Added list of keywords to the manual',
             'Added limit of 200 entries to script archive',
+            'Added new button to each archive entry to copy its content',
             'Added missing legendary item names and images',
+            'Added <code>~</code> operator that can test a string against a regexp string',
             'Added support for <code>Ctrl + S</code> and <code>Ctrl + Shift + S</code> in the editor',
             'Added support for <code>Ctrl + Shift + X</code> to comment/uncomment content in the editor',
             'Fixed dropdowns not updating on browse tab',
@@ -34,8 +36,7 @@ const CHANGELOG = {
             'Fixed table timestamps not working in <code>discard</code>',
             'Fixed expressions not highlighting inside conditions',
             'Fixed localization with arguments',
-            'Removed obfuscation setting',
-            'Removed undefined values displaying as question marks'
+            'Removed obfuscation setting'
         ],
         'Hellevator Simulator': [
             'Added support for logging',
