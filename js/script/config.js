@@ -2780,7 +2780,7 @@ TABLE_EXPRESSION_CONFIG.register(
       {
         condition: h => h.hydra,
         apply: h => {
-          h.displayExtra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
+          h.displayAfter = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
         }
       }
     ]
@@ -2798,7 +2798,7 @@ TABLE_EXPRESSION_CONFIG.register(
       {
         condition: h => h.grail,
         apply: h => {
-          h.displayExtra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
+          h.displayAfter = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
         }
       }
     ]
@@ -3199,7 +3199,7 @@ TABLE_EXPRESSION_CONFIG.register(
       {
         condition: h => h.maximum,
         apply: h => {
-          h.displayExtra = (p) => p ? `/${p.Fortress.Fortress}` : ''
+          h.displayAfter = (p) => p ? `/${p.Fortress.Fortress}` : ''
         }
       }
     ]

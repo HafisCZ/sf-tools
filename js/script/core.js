@@ -1700,7 +1700,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'extra <expression>',
     /^extra (.+)$/,
-    (root, value) => root.addDirectValue('displayExtra', () => value),
+    (root, value) => root.addDirectValue('displayAfter', () => value),
     (root, value) => Highlighter.keyword('extra ').value(value)
 )
 
@@ -2435,7 +2435,7 @@ class ScriptContainer {
         }
 
         // Add extras
-        if (typeof output != 'undefined' && (this.displayExtra || this.displayBefore || this.displayAfter)) {
+        if (typeof output != 'undefined' && (this.displayBefore || this.displayAfter)) {
             const before = (
                 this.displayBefore ? (
                     this.displayBefore.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
@@ -2445,10 +2445,10 @@ class ScriptContainer {
             );
 
             const after = (
-                this.displayAfter ? (
+                this.displayAfter instanceof Expression ? (
                     this.displayAfter.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
                 ) : (
-                    this.displayExtra ? this.displayExtra(player) : ''
+                    typeof this.displayAfter === 'function' ? this.displayAfter(player) : ''
                 )
             );
 
@@ -2671,7 +2671,7 @@ class Script {
     }
 
     static MERGEABLE_PROPERTIES_COLOR = ['colorForeground', 'colorBackground'];
-    static MERGEABLE_PROPERTIES_BASE = ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayExtra', 'displayBefore', 'displayAfter', 'formatUndefined', 'colorUndefined'];
+    static MERGEABLE_PROPERTIES_BASE = ['colorExpr', 'format', 'differenceFormat', 'statisticsFormat', 'displayBefore', 'displayAfter', 'formatUndefined', 'colorUndefined'];
 
     mergeProperties (target, source, list) {
         for (const type of list) {
