@@ -167,7 +167,12 @@ class ScriptEditor extends SignalSource {
     const end = this.textarea.selectionEnd;
 
     if (start === end) {
-      this.textarea.setRangeText(terminatorEnd, this.textarea.selectionEnd, this.textarea.selectionEnd);
+      const value = this.textarea.value;
+
+      if (value[start].match(/[\n\W]/) && value[start].match(/[^\\'"`]/)) {
+        // Apply only if neighboring characters arent text
+        this.textarea.setRangeText(terminatorEnd, this.textarea.selectionEnd, this.textarea.selectionEnd);
+      }
     } else {
       const { lines } = this.#getSelectedLines();
       
