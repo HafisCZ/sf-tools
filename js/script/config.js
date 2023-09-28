@@ -129,6 +129,20 @@ DEFAULT_EXPRESSION_CONFIG.register(
 )
 
 DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'math', '__like',
+  function (a, b) {
+    if (typeof a !== 'string') return undefined;
+
+    try {
+      return new RegExp(String(b), 'ig').test(a);
+    } catch (e) {
+      return undefined;
+    }
+  },
+  { isInternal: true }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
   'function', 'math', '__modulo', function (a, b) { return a % b },
   { isInternal: true }
 )
