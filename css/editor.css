@@ -39,10 +39,12 @@ div.morph .menu {
     padding-bottom: 0.25em !important;
     padding-top: 0.25em !important;
     cursor: pointer;
+
+    background-color: #1414149a;
 }
 
 .selectable:not(.selected):hover {
-    background-color: rgba(133, 133, 133, 0.05)
+    background-color: rgba(44, 44, 44, 0.6)
 }
 
 .selectable div {
@@ -55,7 +57,7 @@ div.morph .menu {
 }
 
 .selected {
-    background-color: rgba(133, 133, 133, 0.1);
+    background-color: rgba(44, 44, 44, 0.60);
 }
 
 .selectable.transparent-border {
