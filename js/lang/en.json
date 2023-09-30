@@ -595,21 +595,23 @@
             "settings": "Settings",
             "templates": "Templates",
             "name": "Currently edited script",
-            "list": "Available templates",
+            "list": "Available scripts",
+            "list_add": "Add new script",
+            "list_search": "Search ...",
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
-                "scripts": "Scripts",
+                "scripts": "Public scripts",
                 "templates": "Templates",
                 "save": "Save",
                 "copy": "Copy",
                 "archive": "Script archive",
                 "recover": "Load version v#{version}",
+                "manage": "Manage",
                 "close": "Return back",
                 "shortcuts": "Shortcuts",
                 "remove": "Remove",
                 "reset": "Discard changes",
-                "save_template": "Save as template",
                 "export": "Export",
                 "import": "Import",
                 "header": {
@@ -1460,7 +1462,7 @@
                 },
                 "ctrl_shift_s": {
                     "key": "Ctrl + Shift + S",
-                    "description": "Save template"
+                    "description": "Save script and return back"
                 },
                 "tab": {
                     "key": "Tab",

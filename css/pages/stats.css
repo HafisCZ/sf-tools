@@ -172,11 +172,11 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   margin-right: 0em;
 }
 
-[data-template-favorite] > i.thumbtack {
+[data-script-favorite] > i.thumbtack {
   display: none;
 }
 
-[data-template-favorite]:hover > i.thumbtack, [data-template-favorite="true"] > i.thumbtack {
+[data-script-favorite]:hover > i.thumbtack, [data-script-favorite="true"] > i.thumbtack {
   display: block;
 }
 

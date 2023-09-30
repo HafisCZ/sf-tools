@@ -1155,7 +1155,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       $items.off('click').on('click', (event) => {
           const key = event.currentTarget.dataset.scriptKey;
           if (DefaultScripts.exists(key)) {
-              this._applyScript(DefaultScripts.contentFor(key));
+              this._applyScript(DefaultScripts.getContent(key));
           } else {
               const $icon = $(event.currentTarget).find('i').removeClass('archive globe').addClass('loading sync');
               this._fetchScript(key).catch(() => {
@@ -1256,7 +1256,7 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
   }
 })();
 
-const TemplateManageDialog = new (class TemplateManageDialog extends Dialog {
+const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
   constructor () {
       super({
           key: 'template_manage',
@@ -1511,15 +1511,11 @@ const TemplateManageDialog = new (class TemplateManageDialog extends Dialog {
       this.$actionRepublish.hide();
   }
 
-  _applyArguments (name, callback) {
+  _applyArguments (callback) {
       this.callback = callback;
 
       this._clearForm();
       this._resetList();
-
-      if (name) {
-          this._selectTemplate(name);
-      }
   }
 })();
 
