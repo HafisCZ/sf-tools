@@ -1555,6 +1555,23 @@
             "add": "Add new counter",
             "variables": "Available variables:"
         },
+        "script_create": {
+            "title": "Create script",
+            "name": "Name",
+            "source": "Content",
+            "content": {
+                "empty": "Empty",
+                "current": "Current editor content",
+                "player": "Player",
+                "players": "Browse",
+                "group": "Group"
+            },
+            "category": {
+                "defaults": "Duplicate default script",
+                "clone": "Duplicate existing script"
+            },
+            "create": "Create"
+        },
         "script_manage": {
             "title": "Manage script",
             "category": {
