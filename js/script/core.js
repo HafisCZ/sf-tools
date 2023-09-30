@@ -3492,53 +3492,60 @@ class ScriptArchive {
         content: string
         created_at: number
         updated_at: number
-        publish: null | {
-            published_at: number
+        remote: null | {
+            synchronized_at: number
             key: string
             secret: string
             version: number
         }
         favorite: boolean
-        assignments: Array<string>
     }
 */
 class Scripts {
     static LastChange = Date.now();
 
-    static get scripts () {
-        delete this.scripts;
+    static get data () {
+        delete this.data;
 
         if (!Store.shared.has('scripts')) {
             this.#migrateLegacyScripts();
         }
 
-        return (this.scripts = Store.get('scripts', []));
+        return (this.data = Store.get('scripts', {
+            list: [],
+            assignments: {}
+        }));
     }
 
     static #migrateLegacyScripts () {
         const scripts = [];
+        const scriptsAssignments = {};
 
         const legacyScripts = Store.shared.get('settings', {});
-        for (const [identifier, { content, name, timestamp, version }] of Object.entries(legacyScripts)) {
+        for (const [identifier, { content, timestamp, version }] of Object.entries(legacyScripts)) {
+            const key = randomSHA1();
+
             scripts.push({
-                key: randomSHA1(),
-                name: `${name} (migrated)`,
+                key,
+                name: `${DatabaseManager.PlayerNames[identifier] || DatabaseManager.GroupNames[identifier] || identifier} (migrated)`,
                 content,
                 version: isNaN(version) ? 1 : version,
                 created_at: timestamp,
                 updated_at: timestamp,
-                publish: null,
+                remote: null,
                 favorite: false,
                 assignments: [identifier]
             });
+
+            scriptsAssignments[identifier] = key;
         }
 
         const legacyTemplates = Store.shared.get('templates', {});
         for (const { name, content, version, timestamp, favorite, online } of Object.values(legacyTemplates)) {
-            const publish = online ? {
+            const remote = online ? {
                 key: online.key,
                 secret: online.secret,
-                published_at: online.timestamp,
+                synchronized_at: online.timestamp,
                 version: isNaN(online.version) ? 1 : online.version
             } : null;
 
@@ -3549,13 +3556,15 @@ class Scripts {
                 version: isNaN(version) ? 1 : version,
                 created_at: timestamp,
                 updated_at: timestamp,
-                publish,
-                favorite,
-                assignments: []
+                remote,
+                favorite
             })
         }
 
-        Store.shared.set('scripts', scripts);
+        Store.shared.set('scripts', {
+            list: scripts,
+            assignments: scriptsAssignments
+        });
     }
 
     static create (name, content) {
@@ -3566,12 +3575,11 @@ class Scripts {
             version: 1,
             created_at: Date.now(),
             updated_at: Date.now(),
-            publish: null,
-            favorite: false,
-            assignments: []
+            remote: null,
+            favorite: false
         }
 
-        this.scripts.push(script);
+        this.data.list.push(script);
 
         this.#persist();
 
@@ -3581,27 +3589,27 @@ class Scripts {
     }
 
     static remove (key) {
-        _remove(this.scripts, this.findScript(key));
+        _remove(this.data.list, this.findScript(key));
 
         this.#persist();
     }
 
-    static publish (key, publishKey, publishSecret) {
+    static remoteAdd (key, remoteKey, remoteSecret) {
         const script = this.findScript(key);
 
         return this.update(key, {
-            publish: {
-                published_at: Date.now(),
+            remote: {
+                synchronized_at: Date.now(),
                 version: script.version,
-                key: publishKey || script.publish.key,
-                secret: publishSecret || script.publish.secret
+                key: remoteKey || script.remote.key,
+                secret: remoteSecret || script.remote.secret
             }
         }, false);
     }
 
-    static unpublish (key) {
+    static remoteRemove (key) {
         return this.update(key, {
-            publish: null
+            remote: null
         }, false);
     }
 
@@ -3629,7 +3637,7 @@ class Scripts {
     }
 
     static list () {
-        return this.scripts;
+        return this.data.list;
     }
 
     static sortedList () {
@@ -3653,7 +3661,7 @@ class Scripts {
     }
 
     static isAssigned (identifier) {
-        return this.scripts.some(({ assignments }) => assignments.includes(identifier));
+        return identifier in this.data.assignments;
     }
 
     static assign (targetIdentifier, key) {
@@ -3674,16 +3682,22 @@ class Scripts {
         }
     }
 
+    static getAssigns (key) {
+        return Object.entries(this.data.assignments).filter(([, v]) => v === key).map(([k,]) => k);
+    }
+
     static findAssignedScript (identifier) {
-        return this.scripts.find(({ assignments }) => assignments.includes(identifier));
+        const assignedKey = this.data.assignments[identifier];
+
+        return assignedKey ? this.data.list.find(({ key }) => key === assignedKey) : null;
     }
 
     static findScript (key) {
-        return this.scripts.find(({ key: _key }) => key === _key);
+        return this.data.list.find(({ key: _key }) => key === _key);
     }
 
     static #persist () {
-        Store.set('scripts', this.scripts);
+        Store.set('scripts', this.data);
 
         this.LastChange = Date.now();
     }

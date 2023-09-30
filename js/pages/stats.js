@@ -2494,7 +2494,9 @@ class ScriptsTab extends Tab {
 
         this.$manage = this.$parent.operator('manage');
         this.$manage.click(() => {
-            DialogController.open(ScriptManageDialog, () => {
+            DialogController.open(ScriptManageDialog, this.script.key, () => {
+                this.script = Scripts.findScript(this.script.key);
+
                 this.#updateSidebars();
             });
         });
@@ -2758,11 +2760,12 @@ class ScriptsTab extends Tab {
         });
 
         this.$list.find('[data-script-add]').click(() => {
-            // TODO: Add dialog
-            const { key } = Scripts.create(`New script ${_formatDate(Date.now())}`, this.editor.content);
+            DialogController.open(ScriptCreateDialog, this.editor.content, (name, content) => {
+                const { key } = Scripts.create(name, content);
 
-            this.#setScript(key);
-            this.#updateSidebars();
+                this.#setScript(key);
+                this.#updateSidebars();
+            })
         })
 
         if (this.returnTo) {
