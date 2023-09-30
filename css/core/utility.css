@@ -507,8 +507,16 @@
   border-color: red !important;
 }
 
+.\!border-orange {
+  border-color: rgba(255, 166, 0, 0.7) !important;
+}
+
 .border-gray {
   border: 1px solid rgb(58, 58, 58);
+}
+
+.border-dashed {
+  border-style: dashed;
 }
 
 .border-left-gray {

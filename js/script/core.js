@@ -3484,13 +3484,148 @@ class ScriptArchive {
     }
 }
 
+/*
+    type Script = {
+        key: string
+        name: string
+        version: number
+        content: string
+        created_at: number
+        updated_at: number
+        publish: null | {
+            published_at: number
+            key: string
+            secret: string
+            version: number
+        }
+        favorite: boolean
+        assignments: Array<string>
+    }
+*/
 class Scripts {
     static LastChange = Date.now();
 
     static get scripts () {
         delete this.scripts;
 
+        if (!Store.shared.has('scripts')) {
+            this.#migrateLegacyScripts();
+        }
+
         return (this.scripts = Store.get('scripts', []));
+    }
+
+    static #migrateLegacyScripts () {
+        const scripts = [];
+
+        const legacyScripts = Store.shared.get('settings', {});
+        for (const [identifier, { content, name, timestamp, version }] of Object.entries(legacyScripts)) {
+            scripts.push({
+                key: randomSHA1(),
+                name: `${name} (migrated)`,
+                content,
+                version: isNaN(version) ? 1 : version,
+                created_at: timestamp,
+                updated_at: timestamp,
+                publish: null,
+                favorite: false,
+                assignments: [identifier]
+            });
+        }
+
+        const legacyTemplates = Store.shared.get('templates', {});
+        for (const { name, content, version, timestamp, favorite, online } of Object.values(legacyTemplates)) {
+            const publish = online ? {
+                key: online.key,
+                secret: online.secret,
+                published_at: online.timestamp,
+                version: isNaN(online.version) ? 1 : online.version
+            } : null;
+
+            scripts.push({
+                key: randomSHA1(),
+                name: `${name} (migrated)`,
+                content,
+                version: isNaN(version) ? 1 : version,
+                created_at: timestamp,
+                updated_at: timestamp,
+                publish,
+                favorite,
+                assignments: []
+            })
+        }
+
+        Store.shared.set('scripts', scripts);
+    }
+
+    static create (name, content) {
+        const script = {
+            key: randomSHA1(),
+            name,
+            content,
+            version: 1,
+            created_at: Date.now(),
+            updated_at: Date.now(),
+            publish: null,
+            favorite: false,
+            assignments: []
+        }
+
+        this.scripts.push(script);
+
+        this.#persist();
+
+        ScriptArchive.add('create_script', name, 1, content);
+
+        return script;
+    }
+
+    static remove (key) {
+        _remove(this.scripts, this.findScript(key));
+
+        this.#persist();
+    }
+
+    static publish (key, publishKey, publishSecret) {
+        const script = this.findScript(key);
+
+        return this.update(key, {
+            publish: {
+                published_at: Date.now(),
+                version: script.version,
+                key: publishKey || script.publish.key,
+                secret: publishSecret || script.publish.secret
+            }
+        }, false);
+    }
+
+    static unpublish (key) {
+        return this.update(key, {
+            publish: null
+        }, false);
+    }
+
+    static update (key, changes, touch = true) {
+        const script = this.findScript(key);
+
+        if (touch) {
+            ScriptArchive.add('overwrite_script', script.key, script.version, script.content);
+        }
+
+        Object.assign(script, changes);
+
+        if (touch) {
+            script.version += 1;
+            script.updated_at = Date.now();
+        }
+
+        this.#persist();
+
+        if (touch) {   
+            ScriptArchive.add('save_script', script.key, script.version, script.content);
+        }
+
+        return script;
     }
 
     static list () {
@@ -3498,232 +3633,58 @@ class Scripts {
     }
 
     static sortedList () {
-        return _sortDesc(_sortDesc(this.list(), ({ timestamp }) => timestamp), ({ favorite }) => favorite ? 1 : -1);
+        return _sortDesc(_sortDesc(this.list(), ({ updated_at }) => updated_at), ({ favorite }) => favorite ? 1 : -1);
     }
 
-    static contentFor (targetIdentifier, fallbackIdentifier) {
+    static getAssignedContent (targetIdentifier, fallbackIdentifier) {
         return (
-            this.findScriptByBinding(targetIdentifier)?.content
+            this.findAssignedScript(targetIdentifier)?.content
         ) ?? (
             fallbackIdentifier ? (
-                this.findScriptByBinding(fallbackIdentifier)?.content ?? DefaultScripts.contentFor(fallbackIdentifier)
+                this.findAssignedScript(fallbackIdentifier)?.content ?? DefaultScripts.getContent(fallbackIdentifier)
             ) : (
-                DefaultScripts.contentFor(targetIdentifier)
+                DefaultScripts.getContent(targetIdentifier)
             )
         );
     }
 
-    static isBound (identifier) {
-        return this.scripts.some(({ bindings }) => bindings.includes(identifier));
+    static getContent (key) {
+        return this.findScript(key).content;
     }
 
-    static bind (targetIdentifier, script) {
-        _pushUnlessIncludes(script.bindings, targetIdentifier);
+    static isAssigned (identifier) {
+        return this.scripts.some(({ assignments }) => assignments.includes(identifier));
+    }
+
+    static assign (targetIdentifier, key) {
+        _pushUnlessIncludes(
+            this.findScript(key).assignments,
+            targetIdentifier
+        );
 
         this.#persist();
     }
 
-    static unbind (targetIdentifier) {
-        const script = this.findScriptByBinding(targetIdentifier);
+    static unassign (targetIdentifier) {
+        const script = this.findAssignedScript(targetIdentifier);
         if (script) {
-            _remove(script.bindings, targetIdentifier);
+            _remove(script.assignments, targetIdentifier);
 
             this.#persist();
         }
     }
 
-    static findScriptByBinding (identifier) {
-        return this.scripts.find(({ bindings }) => bindings.includes(identifier));
+    static findAssignedScript (identifier) {
+        return this.scripts.find(({ assignments }) => assignments.includes(identifier));
+    }
+
+    static findScript (key) {
+        return this.scripts.find(({ key: _key }) => key === _key);
     }
 
     static #persist () {
         Store.set('scripts', this.scripts);
 
         this.LastChange = Date.now();
-    }
-}
-
-// Settings manager
-class ScriptManager {
-    static LastChange = Date.now()
-
-    static get scripts () {
-        delete this.scripts
-
-        return (this.scripts = Store.get('settings', {}));
-    }
-
-    static #persist () {
-        Store.set('settings', this.scripts);
-
-        this.LastChange = Date.now();
-    }
-
-    static save (name, content, parent) {
-        let script = this.scripts[name];
-        if (script) {
-            ScriptArchive.add('overwrite_script', name, this.scripts[name].version, this.scripts[name].content);
-            
-            script.content = content;
-            script.version = (isNaN(script.version) ? 1 : script.version) + 1;
-            script.timestamp = Date.now();
-            script.parent = parent;
-
-            ScriptArchive.add('save_script', name, script.version, script.content);
-        } else {
-            ScriptArchive.add('create_script', name, 1, content);
-
-            script = {
-                name: name,
-                content: content,
-                parent: parent,
-                version: 1,
-                timestamp: Date.now()
-            }
-        }
-
-        this.scripts[name] = script;
-
-        this.#persist();
-
-        return script.version;
-    }
-
-    static remove (name) {
-        if (this.scripts[name]) {
-            ScriptArchive.add('remove_script', name, this.scripts[name].version, this.scripts[name].content);
-
-            delete this.scripts[name];
-            this.#persist();
-        }
-    }
-
-    static exists (name) {
-        return name in this.scripts;
-    }
-
-    static all () {
-        return this.scripts;
-    }
-
-    static list () {
-        return Object.values(this.scripts);
-    }
-
-    static keys () {
-        return Object.keys(this.scripts);
-    }
-
-    static getContent (name, fallback, template) {
-        const script = this.scripts[name] || this.scripts[fallback];
-        return script ? script.content : template;
-    }
-
-    static get (name, fallback) {
-        return this.scripts[name] || this.scripts[fallback];
-    }
-}
-
-// Templates
-class TemplateManager {
-    static get templates () {
-        delete this.templates;
-
-        return (this.templates = Store.shared.get('templates', {}));
-    }
-
-    static #persist () {
-        Store.shared.set('templates', this.templates);
-    }
-
-    static toggleFavorite (name) {
-        this.templates[name].favorite = !this.templates[name].favorite;
-        this.#persist();
-    }
-
-    static setOnline (name, key, secret, version) {
-        if (this.templates[name]) {
-            this.templates[name].online = {
-                timestamp: this.templates[name].timestamp,
-                key,
-                secret,
-                version: isNaN(version) ? 1 : version
-            };
-
-            this.#persist();
-        }
-    }
-
-    static setOffline (name) {
-        if (this.templates[name]) {
-            this.templates[name].online = false;
-
-            this.#persist();
-        }
-    }
-
-    static save (name, content) {
-        let template = this.templates[name];
-        if (template && template.content === content) {
-            // No need to save as content did not change
-            return;
-        } else if (template) {
-            ScriptArchive.add('overwrite_template', name, template.version, template.content);
-
-            // Overwrite needed parts
-            template.content = content;
-            template.version = (isNaN(template.version) ? 1 : template.version) + 1;
-            template.timestamp = Date.now();
-
-            ScriptArchive.add('save_template', name, template.version, template.content);
-        } else {
-            ScriptArchive.add('create_template', name, 1, content);
-
-            // Create new object
-            template = {
-                name: name,
-                content: content,
-                version: 1,
-                timestamp: Date.now(),
-                online: false
-            };
-        }
-
-        this.templates[name] = template;
-
-        this.#persist();
-    }
-
-    static remove (name) {
-        if (this.templates[name]) {
-            ScriptArchive.add('remove_template', name, this.templates[name].version, this.templates[name].content);
-
-            delete this.templates[name];
-            this.#persist();
-        }
-    }
-
-    static exists (name) {
-        return name in this.templates;
-    }
-
-    static all () {
-        return this.templates;
-    }
-
-    static list () {
-        return Object.values(this.templates);
-    }
-
-    static sortedList () {
-        return _sortDesc(_sortDesc(this.list(), (template) => template.timestamp), (template) => template.favorite ? 1 : -1);
-    }
-
-    static get (name) {
-        return this.templates[name];
-    }
-
-    static getContent (name) {
-        return this.templates[name] ? this.templates[name].content : '';
     }
 }

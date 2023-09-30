@@ -47,7 +47,7 @@ class DefaultScripts {
     return Object.entries(this.#internal);
   }
 
-  static contentFor (key) {
+  static getContent (key) {
     return this.#internal[key].content;
   }
 }

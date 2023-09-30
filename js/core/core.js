@@ -83,6 +83,10 @@ class StoreWrapper {
         return Object.keys(this.store);
     }
 
+    has (key) {
+        return key in this.store;
+    }
+
     all () {
         return this.store;
     }

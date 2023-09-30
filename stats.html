@@ -183,15 +183,14 @@
                 <div class="three wide column">
                     <div class="ui inverted form">
                         <div class="field">
-                            <label data-intl="stats.scripts.name"></label>
-                            <div class="ui search selection inverted icon dropdown script-dropdown" data-op="selector-dropdown">
-                                <div class="w-full text"></div>
-                                <i class="dropdown icon"></i>
+                            <label data-intl="stats.scripts.list"></label>
+                            <div class="ui inverted icon input">
+                                <i class="search icon"></i>
+                                <input type="text" data-op="list-search" data-intl-placeholder="stats.scripts.list_search">
                             </div>
                         </div>
                         <div class="field">
-                            <label data-intl="stats.scripts.list"></label>
-                            <div data-op="list" class="pr-2 overflow-y-scroll flex flex-col gap-4" style="height: 75vh;"></div>
+                            <div data-op="list" class="pr-2 overflow-y-scroll flex flex-col gap-4" style="height: 80vh;"></div>
                         </div>
                     </div>
                 </div>
@@ -208,15 +207,15 @@
                         <button class="ui basic inverted button" data-op="reset"><i class="ui recycle format icon"></i> <span data-intl="stats.scripts.sidebar.reset"></span></button>
                         <h3 class="ui inverted header !mt-2" data-intl="stats.scripts.sidebar.header.modify"></h3>
                         <button class="ui basic inverted button" data-op="save"><i class="ui save icon"></i> <span data-intl="stats.scripts.sidebar.save"></span></button>
-                        <button class="ui basic inverted button" data-op="save-template"><i class="ui save icon"></i> <span data-intl="stats.scripts.sidebar.save_template"></span></button>
                         <button class="ui basic inverted button" data-op="remove"><i class="ui trash icon"></i> <span data-intl="stats.scripts.sidebar.remove"></span></button>
+                        <div>&nbsp;</div>
+                        <button class="ui basic inverted button" data-op="manage"><i class="ui wrench icon"></i> <span data-intl="stats.scripts.sidebar.manage"></span></button>
                         <h3 class="ui inverted header !mt-2" data-intl="stats.scripts.sidebar.header.help"></h3>
                         <button class="ui basic inverted button" data-op="help-manual"><i class="ui lightbulb outline icon"></i> <span data-intl="stats.scripts.sidebar.manual"></span></button>
                         <button class="ui basic inverted button" data-op="help-wiki"><i class="ui book icon"></i> <span data-intl="stats.scripts.sidebar.wiki"></span></button>
                         <button class="ui basic inverted button" data-op="help-shortcuts"><i class="ui keyboard outline icon"></i> <span data-intl="stats.scripts.sidebar.shortcuts"></span></button>
                         <h3 class="ui inverted header !mt-2" data-intl="stats.scripts.sidebar.header.library"></h3>
                         <button class="ui basic inverted button" data-op="library-scripts"><i class="ui stream icon"></i> <span data-intl="stats.scripts.sidebar.scripts"></span></button>
-                        <button class="ui basic inverted button" data-op="library-templates"><i class="ui stream icon"></i> <span data-intl="stats.scripts.sidebar.templates"></span></button>
                         <button class="ui basic inverted button" data-op="library-archive"><i class="ui archive icon"></i> <span data-intl="stats.scripts.sidebar.archive"></span></button>
                         <h3 class="ui inverted header !mt-2" data-intl="stats.scripts.sidebar.header.actions"></h3>
                         <button class="ui basic inverted button" data-op="copy"><i class="ui copy outline icon"></i> <span data-intl="stats.scripts.sidebar.copy"></span></button>

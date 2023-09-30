@@ -263,7 +263,7 @@ class GroupDetailTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { key: this.identifier })
+                UI.show(UI.Scripts, { identifier: this.identifier })
             }
         });
 
@@ -278,7 +278,7 @@ class GroupDetailTab extends Tab {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
-            action: (value, text, element) => {
+            action: (text, value, element) => {
                 this.$configure.find('.item').removeClass('active');
 
                 if (this.templateOverride == value) {
@@ -299,12 +299,7 @@ class GroupDetailTab extends Tab {
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
-                ... TemplateManager.sortedList().map(({ name }) => {
-                    return {
-                        value: name,
-                        name
-                    };
-                })
+                ... Scripts.sortedList().map(({ key: value, name }) => ({ name, value }))
             ]
         });
     }
@@ -388,13 +383,17 @@ class GroupDetailTab extends Tab {
     }
 
     load () {
-        DOM.settingsButton(this.$configure.get(0), Scripts.isBound(this.identifier));
+        DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned(this.identifier));
 
         if (this.templateOverride) {
             this.table.clearSorting();
         }
 
-        this.table.setScript(this.templateOverride ? Scripts.contentFor(this.templateOverride, 'group') : Scripts.contentFor(this.identifier, 'group'));
+        if  (this.templateOverride) {
+            this.table.setScript(Scripts.getContent(this.templateOverride));
+        } else {
+            this.table.setScript(Scripts.getAssignedContent(this.identifier, 'group'));
+        }
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -541,7 +540,7 @@ class PlayerDetailTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { key: this.identifier })
+                UI.show(UI.Scripts, { identifier: this.identifier })
             }
         });
 
@@ -567,19 +566,19 @@ class PlayerDetailTab extends Tab {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
-            action: (value, text, element) => {
+            action: (text, value, element) => {
                 this.$configure.find('.item').removeClass('active');
 
                 let settings = '';
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = Scripts.contentFor(this.identifier, 'player');
+                    settings = Scripts.getAssignedContent(this.identifier, 'player');
                 } else {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Scripts.contentFor(value, 'player');
+                    settings = Scripts.getContent(value);
                 }
 
                 this.table.setScript(settings);
@@ -593,12 +592,7 @@ class PlayerDetailTab extends Tab {
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
-                ... TemplateManager.sortedList().map(({ name }) => {
-                    return {
-                        value: name,
-                        name
-                    };
-                })
+                ... Scripts.sortedList().map(({ key: value, name }) => ({ name, value }))
             ]
         });
     }
@@ -630,12 +624,12 @@ class PlayerDetailTab extends Tab {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setScript(Scripts.contentFor(this.identifier, 'player'));
+        this.table.setScript(Scripts.getAssignedContent(this.identifier, 'player'));
 
         this.array.forEach((e) => DatabaseManager.loadPlayer(e.player));
 
         // Configuration indicator
-        DOM.settingsButton(this.$configure.get(0), Scripts.isBound(this.identifier));
+        DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned(this.identifier));
         
         this.refresh();
     }
@@ -783,7 +777,7 @@ class BrowseTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { key: 'players' })
+                UI.show(UI.Scripts, { identifier: 'players' })
             }
         });
 
@@ -1122,9 +1116,9 @@ class BrowseTab extends Tab {
     load () {
         // Configuration indicator
         this.$configure.find('.item').removeClass('active');
-        DOM.settingsButton(this.$configure.get(0), Scripts.isBound('players'));
+        DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned('players'));
 
-        this.table.setScript(Scripts.contentFor('players', 'players'));
+        this.table.setScript(Scripts.getAssignedContent('players', 'players'));
 
         this.templateOverride = null;
         this.recalculate = true;
@@ -1135,19 +1129,19 @@ class BrowseTab extends Tab {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
-            action: (value, text, element) => {
+            action: (text, value, element) => {
                 this.$configure.find('.item').removeClass('active');
 
                 let settings = '';
                 if (this.templateOverride == value) {
                     this.templateOverride = null;
 
-                    settings = Scripts.contentFor('players', 'players');
+                    settings = Scripts.getAssignedContent('players', 'players');
                 } else {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Scripts.contentFor(value, 'players');
+                    settings = Scripts.getContent(value);
                 }
 
                 this.table.setScript(settings);
@@ -1162,12 +1156,7 @@ class BrowseTab extends Tab {
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
-                ... TemplateManager.sortedList().map(({ name }) => {
-                    return {
-                        value: name,
-                        name
-                    };
-                })
+                ... Scripts.sortedList().map(({ key: value, name }) => ({ name, value }))
             ]
         });
     }
@@ -2468,13 +2457,13 @@ class ScriptsTab extends Tab {
     constructor (parent) {
         super(parent);
 
-        // Reserved script names
-        this.reservedScripts = ['players', 'player', 'group'];
-
         // Left sidebar
         this.$list = this.$parent.operator('list');
 
-        this.$selectorDropdown = this.$parent.operator('selector-dropdown');
+        this.$listSearch = this.$parent.operator('list-search');
+        this.$listSearch.on('input', () => {
+            this.#updateSearch();
+        })
 
         // Right sidebar
         this.$helpWiki = this.$parent.operator('help-wiki');
@@ -2496,16 +2485,18 @@ class ScriptsTab extends Tab {
         this.$libraryScripts.click(() => {
             DialogController.open(ScriptRepositoryDialog, (content) => this.editor.content = content);
         });
-
-        this.$libraryTemplates = this.$parent.operator('library-templates');
-        this.$libraryTemplates.click(() => {
-            DialogController.open(TemplateManageDialog, this.script.parent, () => this._updateSidebars());
-        });
  
         // Actions
         this.$copy = this.$parent.operator('copy');
         this.$copy.click(() => {
             copyText(this.editor.content);
+        });
+
+        this.$manage = this.$parent.operator('manage');
+        this.$manage.click(() => {
+            DialogController.open(ScriptManageDialog, () => {
+                this.#updateSidebars();
+            });
         });
 
         this.$export = this.$parent.operator('export');
@@ -2523,14 +2514,14 @@ class ScriptsTab extends Tab {
         // Archive
         this.$libraryArchive = this.$parent.operator('library-archive');
         this.$libraryArchive.click((event) => {
-            if (event.ctrlKey && this._hasArchivedPreviousVersion()) {
-                this.editor.content = ScriptArchive.find('overwrite_script', this.script.name, this.script.version - 1).content;
+            if (event.ctrlKey && this.#hasArchivedPreviousVersion()) {
+                this.editor.content = ScriptArchive.find('overwrite_script', this.script.key, this.script.version - 1).content;
 
-                this._updateSidebars();
+                this.#updateSidebars();
             } else {
                 DialogController.open(ScriptArchiveDialog, (content) => {
                     if (content === true) {
-                        this._updateSidebars();
+                        this.#updateSidebars();
                     } else {
                         this.editor.content = content;
                     }
@@ -2547,12 +2538,13 @@ class ScriptsTab extends Tab {
         this.$reset = this.$parent.operator('reset');
         this.$reset.click(() => {
             this.hide();
-            this.show({ key: this.script.name });
+            this.show({ key: this.script.key });
         });
 
         this.$save = this.$parent.operator('save');
         this.$save.click((event) => {
             this.save();
+
             if (event.ctrlKey && this.returnTo) {
                 this.returnTo();
             }
@@ -2569,88 +2561,61 @@ class ScriptsTab extends Tab {
             );
         });
 
-        this.$saveTemplate = this.$parent.operator('save-template');
-        this.$saveTemplate.click((event) => {
-            if (event.ctrlKey && this.returnTo && this.script.parent) {
-                this.save();
-
-                TemplateManager.save(this.script.parent, this.editor.content);
-
-                this.returnTo();
-            } else {
-                DialogController.open(
-                    TemplateSaveDialog,
-                    this.script.parent,
-                    (name) => {
-                        TemplateManager.save(name, this.editor.content);
-    
-                        this.script.parent = name;
-    
-                        this._contentChanged(true, 'parent');
-                        this._updateSidebars();
-                    }
-                )
-            }
-        })
-
         this.editor = new ScriptEditor(this.$parent.operator('editor').get(0), ScriptType.Table);
+
         this.editor.subscribe('change', (val) => {
-            this._contentChanged(this.script && val !== this.script.content, 'content')
+            if (this.script) {
+                this.#contentChanged(val !== this.script.content);
+            }
         })
         
         this.editor.subscribe('ctrl+s', () => {
-            if (!this.$save.hasClass('disabled')) this.$save.click();
+            if (!this.$save.hasClass('disabled')) {
+                this.save();
+            }
         })
 
         this.editor.subscribe('ctrl+shift+s', () => {
-            if (!this.$saveTemplate.hasClass('disabled')) {
-                if (this.script.parent) {
-                    TemplateManager.save(this.script.parent, this.editor.content);
-    
-                    this._contentChanged(true, 'parent');
-                    this._updateSidebars();
-                } else {
-                    this.$saveTemplate.click();
+            if (!this.$save.hasClass('disabled')) {
+                this.save();
+
+                if (this.returnTo) {
+                    this.returnTo();
                 }
             }
         })
 
         // React to CTRL presses
         this.ctrlDown = false;
-        this._updateButtons();
+        this.#updateButtons();
 
         window.addEventListener('keydown', (event) => {
             if (event.key === 'Control' && !this.ctrlDown) {
                 this.ctrlDown = true;
-                this._updateButtons();
+                this.#updateButtons();
             }
         });
 
         window.addEventListener('keyup', (event) => {
             if (event.key === 'Control' && this.ctrlDown) {
                 this.ctrlDown = false;
-                this._updateButtons();
+                this.#updateButtons();
             }
         });
     }
 
-    _updateButtons () {
+    #updateButtons () {
         if (UI.current !== this) {
             return;
         }
 
         if (this.ctrlDown && this.returnTo) {
-            this.$save.find('i').removeClass('save').addClass('reply')
-            
-            if (this.script.parent) {
-                this.$saveTemplate.find('i').removeClass('save').addClass('reply')
-            }
+            this.$save.find('i').removeClass('save').addClass('reply');
         } else {
-            this.$save.find('i').removeClass('reply').addClass('save')
-            this.$saveTemplate.find('i').removeClass('reply').addClass('save')
+            this.$save.find('i').removeClass('reply').addClass('save');
         }
 
-        if (this.ctrlDown && this._hasArchivedPreviousVersion()) {
+        if (this.ctrlDown && this.#hasArchivedPreviousVersion()) {
             this.$libraryArchive.find('i').removeClass('archive').addClass('box open');
 
             const version = this.script.version - 1;
@@ -2659,30 +2624,23 @@ class ScriptsTab extends Tab {
             this.$libraryArchive.find('i').addClass('archive').removeClass('box open');
             this.$libraryArchive.find('span').text(intl('stats.scripts.sidebar.archive'));
         }
-    }
 
-    _hasArchivedPreviousVersion () {
-        return this.script && !isNaN(this.script.version) && this.script.version > 1 && ScriptArchive.find('overwrite_script', this.script.name, this.script.version - 1);
-    }
-
-    // Returns default key for specified key
-    _defaultKey (value) {
-        if (value === 'players' || value === 'player' || value === 'group') {
-            return value;
-        } else if (value.includes('_p')) {
-            return 'player';
+        if (this.script) {
+            this.$remove.removeClass('disabled');
+            this.$manage.removeClass('disabled');
         } else {
-            return 'group';
+            this.$remove.addClass('disabled');
+            this.$manage.addClass('disabled');
         }
     }
 
-    // Returns default template for specified key
-    _defaultContent (value) {
-        return Scripts.contentFor(this._defaultKey(value));
+    #hasArchivedPreviousVersion () {
+        return this.script && this.script.version > 1 && ScriptArchive.find('overwrite_script', this.script.key, this.script.version - 1);
     }
 
     remove () {
-        ScriptManager.remove(this.script.name);
+        Scripts.remove(this.script.key);
+
         if (this.returnTo) {
             this.returnTo();
         } else {
@@ -2690,177 +2648,127 @@ class ScriptsTab extends Tab {
         }
     }
 
-    show ({ origin, key }) {
+    show ({ origin, identifier, key }) {
         if ([UI.Browse, UI.GroupDetail, UI.PlayerDetail].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
             this.returnTo = null;
         }
 
-        this._setScript(key || _dig(origin, 'identifier') || 'players');
-        this._updateSidebars();
+        if (typeof key !== 'undefined') {
+            this.#setScript(key);
+        } else {
+            this.#setScript(Scripts.findAssignedScript(identifier || _dig(origin, 'identifier') || 'players')?.key);
+        }
+
+        this.$listSearch.val('');
+
+        this.#updateSidebars();
     }
 
-    _setScript (key) {
-        this.script = Object.assign({
-            name: key,
-            content: this._defaultContent(key),
-            parent: null
-        }, ScriptManager.get(key, this._defaultKey(key)) || {});
+    #setScript (key) {
+        this.script = Scripts.findScript(key);
 
-        this.editor.content = this.script.content;
+        if (this.script) {
+            this.editor.content = this.script.content;
+        } else {
+            this.editor.content = '';
+        }
+
         this.editor.scrollTop();
 
-        this._contentChanged(false);
+        this.#contentChanged(false);
     }
 
     save () {
-        this.script.content = this.editor.content;
-        this.script.version = ScriptManager.save(this.script.name, this.script.content, this.script.parent);
+        this.script = Scripts.update(this.script.key, {
+            content: this.editor.content
+        });
 
-        this._updateSidebars();
-        this._contentChanged(false);
+        this.#updateSidebars();
+        this.#contentChanged(false);
     }
 
-    _contentChanged (valueChanged, ...changes) {
-        if (typeof this.changes === 'undefined') {
-            this.changes = {};
-        }
-
-        if (!valueChanged && changes.length === 0) {
-            this.changes = {};
-        } else {
-            for (const change of changes) {
-                if (valueChanged) {
-                    this.changes[change] = true;
-                } else {
-                    delete this.changes[change];
-                }
-            }
-        }
-
-        const wasChanged = Object.keys(this.changes).length > 0;
-        const wasSaved = this.script ? (this.reservedScripts.includes(this.script.name) || Scripts.isBound(this.script.name)) : false;
-
-        if (wasChanged) {
+    #contentChanged (changed) {
+        if (changed) {
             this.$reset.removeClass('disabled');
+            this.$save.addClass('yellow').removeClass('disabled inverted');
         } else {
             this.$reset.addClass('disabled');
-        }
-        
-        if (wasSaved && !wasChanged) {
             this.$save.removeClass('yellow').addClass('disabled inverted');
-        } else {
-            this.$save.addClass('yellow').removeClass('disabled inverted');
-        }
-
-        if (this.script) {
-            this.$parent.find('[data-template-name]').removeClass('background-light');
-            this.$parent.find(`[data-template-name="${this.script.parent}"]`).addClass('background-light');
         }
     }
 
     hide () {
-        if (Object.keys(this.changes).length > 0) {
-            ScriptArchive.add('discard_script', this.script.name, this.script.version || 1, this.editor.content);
+        if (this.script && this.script.content !== this.editor.content) {
+            ScriptArchive.add('discard_script', this.script.key, this.script.version, this.editor.content);
         }
     }
 
-    _getFormattedScriptName (script) {
-        const name = this._getScriptName(script.name);
-        const icon = this._getScriptIcon(script.name);
-        return `
-            <div>
-                <i class="ui ${icon} icon"></i>
-                <span>${name}</span>
-                ${isNaN(script.version) ? '' : `<span class="script-version text-gray">v${script.version}</span>`}
+    #updateSearch () {
+        const value = this.$listSearch.val().toLowerCase();
+
+        this.$parent.find('[data-script-name]').each((_, element) => {
+            if (element.dataset.scriptName.toLowerCase().startsWith(value)) {
+                element.style.display = 'flex';
+            } else {
+                element.style.display = 'none';
+            }
+        })
+    }
+
+    #updateSidebars () {
+        let content = `
+            <div data-script-add class="!border-radius-1 border-gray border-dashed p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center">
+                <div class="flex gap-2 items-center text-gray">
+                    <i class="ui large plus icon"></i>
+                    <div>${intl('stats.scripts.list_add')}</div>
+                </div>
             </div>
         `;
-    }
 
-    _getScriptName (value) {
-        if (this.reservedScripts.includes(value)) {
-            return intl(`stats.scripts.types.${value}`);
-        } else {
-            return DatabaseManager.PlayerNames[value] || DatabaseManager.GroupNames[value] || value;
-        }
-    }
-
-    _updateSidebars () {
-        // Template list
-        let content = '';
-        for (const { name, version, timestamp } of TemplateManager.sortedList()) {
+        for (const { key, name, version, favorite, updated_at } of Scripts.sortedList()) {
             content += `
-                <div data-template-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script && this.script.parent === name ? 'background-light' : ''}">
+                <div data-script-key="${key}" data-script-favorite="${favorite}" data-script-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
                     <div>
                         <div>${name}</div>
-                        <div class="text-gray">v${isNaN(version) ? 1 : version} - ${_formatDate(timestamp)}</div>
+                        <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
                     </div>
+                    <i class="ui thumbtack icon text-gray text-white:hover" style="margin-left: auto;"></i>
                 </div>
             `;
         }
 
         this.$list.html(content);
-        this.$list.find('[data-template-name]').click((event) => {
-            const name = event.currentTarget.dataset.templateName;
 
-            this.editor.content = TemplateManager.getContent(name);
+        this.$list.find('[data-script-key]').click((event) => {
+            const key = event.currentTarget.dataset.scriptKey;
 
-            if (this.script.parent !== name) {
-                this.script.parent = name;
-                this._contentChanged(true, 'parent');
+            if (event.target.classList.contains('thumbtack')) {
+                const script = Scripts.findScript(key);
+
+                Scripts.update(key, { favorite: !script.favorite }, false);
+
+                this.#updateSidebars();
+            } else {
+                this.#setScript(key);
             }
+
+            this.#updateSidebars();
         });
+
+        this.$list.find('[data-script-add]').click(() => {
+            // TODO: Add dialog
+            const { key } = Scripts.create(`New script ${_formatDate(Date.now())}`, this.editor.content);
+
+            this.#setScript(key);
+            this.#updateSidebars();
+        })
 
         if (this.returnTo) {
             this.$close.show();
         } else {
             this.$close.hide();
-        }
-
-        const values = [
-            ...this.reservedScripts.map((name) => {
-                const script = Object.assign({ name }, ScriptManager.get(name, this._defaultKey(name)) || {});
-
-                return {
-                    name: this._getFormattedScriptName(script),
-                    value: name
-                }
-            }),
-            ...ScriptManager.list().filter((script) => !this.reservedScripts.includes(script.name)).map((script) => ({
-                name: this._getFormattedScriptName(script),
-                value: script.name
-            }))
-        ]
-
-        if (values.every(({ value }) => this.script.name !== value)) {
-            // if there is no script for current, add it
-            values.push({
-                name: this._getFormattedScriptName(this.script),
-                value: this.script.name
-            })
-        }
-
-        this.$selectorDropdown.dropdown({ values })
-        this.$selectorDropdown.dropdown('set selected', this.script.name);
-        this.$selectorDropdown.dropdown('setting', 'onChange', (value) => {
-            if (this.script.name === value) {
-                // Ignore if identical
-                return;
-            }
-
-            if (this.returnTo) {
-                this.returnTo = null;
-                this._updateSidebars();
-            }
-
-            this._setScript(value);
-        })
-
-        if (Scripts.isBound(this.script.name)) {
-            this.$remove.removeClass('disabled');
-        } else {
-            this.$remove.addClass('disabled');
         }
 
         if (ScriptArchive.empty()) {
@@ -2869,17 +2777,8 @@ class ScriptsTab extends Tab {
             this.$libraryArchive.removeClass('disabled');
         }
 
-        this._updateButtons();
-    }
-
-    _getScriptIcon (value) {
-        if (this.reservedScripts.includes(value)) {
-            return { players: 'database', player: 'user', group: 'archive' }[value];
-        } else if (DatabaseManager.isPlayer(value)) {
-            return 'user';
-        } else {
-            return 'archive';
-        }
+        this.#updateButtons();
+        this.#updateSearch();
     }
 }
 
