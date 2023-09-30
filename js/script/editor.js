@@ -816,6 +816,14 @@ class ScriptEditor extends SignalSource {
     this.overlayClone = this.overlay.cloneNode(true);
   }
 
+  set enabled (value) {
+    if (value) {
+      this.textarea.removeAttribute('disabled');
+    } else {
+      this.textarea.setAttribute('disabled', 'disabled');
+    }
+  }
+
   get content() {
     return this.textarea.value.replaceAll(FIELD_REGEXP, '');
   }
