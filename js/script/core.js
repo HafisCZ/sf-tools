@@ -3484,6 +3484,65 @@ class ScriptArchive {
     }
 }
 
+class Scripts {
+    static LastChange = Date.now();
+
+    static get scripts () {
+        delete this.scripts;
+
+        return (this.scripts = Store.get('scripts', []));
+    }
+
+    static list () {
+        return this.scripts;
+    }
+
+    static sortedList () {
+        return _sortDesc(_sortDesc(this.list(), ({ timestamp }) => timestamp), ({ favorite }) => favorite ? 1 : -1);
+    }
+
+    static contentFor (targetIdentifier, fallbackIdentifier) {
+        return (
+            this.findScriptByBinding(targetIdentifier)?.content
+        ) ?? (
+            fallbackIdentifier ? (
+                this.findScriptByBinding(fallbackIdentifier)?.content ?? DefaultScripts.contentFor(fallbackIdentifier)
+            ) : (
+                DefaultScripts.contentFor(targetIdentifier)
+            )
+        );
+    }
+
+    static isBound (identifier) {
+        return this.scripts.some(({ bindings }) => bindings.includes(identifier));
+    }
+
+    static bind (targetIdentifier, script) {
+        _pushUnlessIncludes(script.bindings, targetIdentifier);
+
+        this.#persist();
+    }
+
+    static unbind (targetIdentifier) {
+        const script = this.findScriptByBinding(targetIdentifier);
+        if (script) {
+            _remove(script.bindings, targetIdentifier);
+
+            this.#persist();
+        }
+    }
+
+    static findScriptByBinding (identifier) {
+        return this.scripts.find(({ bindings }) => bindings.includes(identifier));
+    }
+
+    static #persist () {
+        Store.set('scripts', this.scripts);
+
+        this.LastChange = Date.now();
+    }
+}
+
 // Settings manager
 class ScriptManager {
     static LastChange = Date.now()

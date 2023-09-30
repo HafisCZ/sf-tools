@@ -388,13 +388,13 @@ class GroupDetailTab extends Tab {
     }
 
     load () {
-        DOM.settingsButton(this.$configure.get(0), ScriptManager.exists(this.identifier));
+        DOM.settingsButton(this.$configure.get(0), Scripts.isBound(this.identifier));
 
         if (this.templateOverride) {
             this.table.clearSorting();
         }
 
-        this.table.setScript(this.templateOverride ? TemplateManager.getContent(this.templateOverride) : ScriptManager.getContent(this.identifier, 'guilds', DefaultScripts.getContent('groups')));
+        this.table.setScript(this.templateOverride ? Scripts.contentFor(this.templateOverride, 'group') : Scripts.contentFor(this.identifier, 'group'));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -574,12 +574,12 @@ class PlayerDetailTab extends Tab {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players'));
+                    settings = Scripts.contentFor(this.identifier, 'player');
                 } else {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = TemplateManager.getContent(value);
+                    settings = Scripts.contentFor(value, 'player');
                 }
 
                 this.table.setScript(settings);
@@ -626,16 +626,16 @@ class PlayerDetailTab extends Tab {
     }
 
     load () {
-        this.templateOverride = '';
+        this.templateOverride = null;
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setScript(ScriptManager.getContent(this.identifier, 'me', DefaultScripts.getContent('players')));
+        this.table.setScript(Scripts.contentFor(this.identifier, 'player'));
 
         this.array.forEach((e) => DatabaseManager.loadPlayer(e.player));
 
         // Configuration indicator
-        DOM.settingsButton(this.$configure.get(0), ScriptManager.exists(this.identifier));
+        DOM.settingsButton(this.$configure.get(0), Scripts.isBound(this.identifier));
         
         this.refresh();
     }
@@ -1097,14 +1097,14 @@ class BrowseTab extends Tab {
 
     show (params) {
         const nonBrowseOrigin = params && params.origin !== UI.Browse;
-        const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === ScriptManager.LastChange;
+        const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
 
         if (nonBrowseOrigin && nonUpdated) {
             // If no update has happened, just do nothing and display previously rendered table
             return;
         } else {
             this.lastDatabaseChange = DatabaseManager.LastChange;
-            this.lastScriptChange = ScriptManager.LastChange
+            this.lastScriptChange = Scripts.LastChange
 
             this.timestamp = DatabaseManager.LatestPlayer;
             this.reference = DatabaseManager.LatestPlayer;
@@ -1122,11 +1122,11 @@ class BrowseTab extends Tab {
     load () {
         // Configuration indicator
         this.$configure.find('.item').removeClass('active');
-        DOM.settingsButton(this.$configure.get(0), ScriptManager.exists('players'));
+        DOM.settingsButton(this.$configure.get(0), Scripts.isBound('players'));
 
-        this.table.setScript(ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse')));
+        this.table.setScript(Scripts.contentFor('players', 'players'));
 
-        this.templateOverride = '';
+        this.templateOverride = null;
         this.recalculate = true;
         this.$filter.trigger('change');
     }
@@ -1140,14 +1140,14 @@ class BrowseTab extends Tab {
 
                 let settings = '';
                 if (this.templateOverride == value) {
-                    this.templateOverride = '';
+                    this.templateOverride = null;
 
-                    settings = ScriptManager.getContent('players', 'players', DefaultScripts.getContent('browse'));
+                    settings = Scripts.contentFor('players', 'players');
                 } else {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = TemplateManager.getContent(value);
+                    settings = Scripts.contentFor(value, 'players');
                 }
 
                 this.table.setScript(settings);
@@ -2469,7 +2469,7 @@ class ScriptsTab extends Tab {
         super(parent);
 
         // Reserved script names
-        this.reservedScripts = ['players', 'me', 'guilds'];
+        this.reservedScripts = ['players', 'player', 'group'];
 
         // Left sidebar
         this.$list = this.$parent.operator('list');
@@ -2667,18 +2667,18 @@ class ScriptsTab extends Tab {
 
     // Returns default key for specified key
     _defaultKey (value) {
-        if (value === 'players' || value === 'me') {
+        if (value === 'players' || value === 'player' || value === 'group') {
             return value;
         } else if (value.includes('_p')) {
-            return 'me';
+            return 'player';
         } else {
-            return 'guilds';
+            return 'group';
         }
     }
 
     // Returns default template for specified key
     _defaultContent (value) {
-        return DefaultScripts.getContent({ players: 'browse', me: 'players', guilds: 'groups' }[this._defaultKey(value)]);
+        return Scripts.contentFor(this._defaultKey(value));
     }
 
     remove () {
@@ -2740,7 +2740,7 @@ class ScriptsTab extends Tab {
         }
 
         const wasChanged = Object.keys(this.changes).length > 0;
-        const wasSaved = this.script ? (this.reservedScripts.includes(this.script.name) || ScriptManager.exists(this.script.name)) : false;
+        const wasSaved = this.script ? (this.reservedScripts.includes(this.script.name) || Scripts.isBound(this.script.name)) : false;
 
         if (wasChanged) {
             this.$reset.removeClass('disabled');
@@ -2857,7 +2857,7 @@ class ScriptsTab extends Tab {
             this._setScript(value);
         })
 
-        if (ScriptManager.exists(this.script.name)) {
+        if (Scripts.isBound(this.script.name)) {
             this.$remove.removeClass('disabled');
         } else {
             this.$remove.addClass('disabled');
@@ -2874,7 +2874,7 @@ class ScriptsTab extends Tab {
 
     _getScriptIcon (value) {
         if (this.reservedScripts.includes(value)) {
-            return { players: 'database', me: 'user', guilds: 'archive' }[value];
+            return { players: 'database', player: 'user', group: 'archive' }[value];
         } else if (DatabaseManager.isPlayer(value)) {
             return 'user';
         } else {
