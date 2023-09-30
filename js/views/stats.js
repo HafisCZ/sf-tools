@@ -1155,7 +1155,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       $items.off('click').on('click', (event) => {
           const key = event.currentTarget.dataset.scriptKey;
           if (DefaultScripts.exists(key)) {
-              this._applyScript(DefaultScripts.getContent(key));
+              this._applyScript(DefaultScripts.contentFor(key));
           } else {
               const $icon = $(event.currentTarget).find('i').removeClass('archive globe').addClass('loading sync');
               this._fetchScript(key).catch(() => {
