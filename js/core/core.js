@@ -557,18 +557,9 @@ class Actions {
     }
 
     static init () {
-        this.#defaultScript = typeof DefaultScripts === 'function' ? DefaultScripts.contentFor('actions') : '';
+        this.#defaultScript = typeof DefaultScripts === 'function' ? DefaultScripts.getContent('actions') : '';
 
         this.#loadScript();
-
-        const legacyTracker = ScriptManager.getContent('tracker', '');
-        if (legacyTracker) {
-            this.#script = `${this.#script || ''}\n${legacyTracker}`;
-
-            Store.set('actions_script', this.#script);
-            ScriptManager.remove('tracker');
-        }
-
         this.#executeScript();
     }
 
