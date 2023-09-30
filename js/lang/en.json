@@ -1555,23 +1555,32 @@
             "add": "Add new counter",
             "variables": "Available variables:"
         },
-        "template_manage": {
-            "title": "Templates",
-            "general": "General",
-            "online": "Publish",
+        "script_manage": {
+            "title": "Manage script",
+            "category": {
+                "general": "General",
+                "remote": "Publish",
+                "usage": "Usage"
+            },
             "script": {
                 "name": "Name",
                 "version": "Local version",
-                "updated": "Updated at",
-                "published": "Published at",
-                "published_version": "Published version",
-                "published_key": "Code"
+                "updated_at": "Updated at",
+                "created_at": "Created at",
+                "remote_synchronized_at": "Published at",
+                "remote_version": "Remote version",
+                "remote_key": "Code",
+                "assignments": "Assigned to",
+                "assignment": {
+                    "player": "All tables within players",
+                    "group": "All tables within groups",
+                    "players": "Browse table"
+                }
             },
             "action": {
-                "publish": "Publish template",
-                "republish": "Publish new version",
-                "unpublish": "Unpublish template",
-                "remove": "Remove permanently"
+                "remote_add": "Publish script",
+                "remote_update": "Publish new version",
+                "remote_remove": "Unpublish script"
             },
             "error": "Action was not successful"
         },

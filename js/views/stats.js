@@ -1256,266 +1256,239 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
   }
 })();
 
+const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
+    constructor () {
+        super({
+            key: 'script_create',
+            dismissable: true
+        })
+    }
+
+    // TODO: Add dialog
+})
+
 const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
   constructor () {
       super({
-          key: 'template_manage',
+          key: 'script_manage',
           dismissable: true
       })
   }
 
   _createModal () {
       return `
-          <div class="ui big bordered inverted dialog">
-              <div class="header flex justify-content-between items-center">
-                  <div>${this.intl('title')}</div>
-                  <i class="ui small link close icon" data-op="close"></i>
-              </div>
-              <div class="flex gap-4">
-                  <div class="flex flex-col overflow-y-scroll gap-2 pr-4" style="height: 65vh; width: 45em;" data-op="list"></div>
-                  <div class="ui inverted form w-full pl-4 border-left-gray flex flex-col">
-                      <div class="field">
-                          <h3 class="ui inverted header">${this.intl('general')}</h3>
-                      </div>
-                      <div class="field">
-                          <label>${this.intl('script.name')}</label>
-                          <div class="ui inverted centered input">
-                              <input type="text" readonly data-op="template_name">
-                          </div>
-                      </div>
-                      <div class="two fields">
-                          <div class="field">
-                              <label>${this.intl('script.updated')}</label>
-                              <div class="ui inverted centered input">
-                                  <input type="text" readonly data-op="template_updated">
-                              </div>
-                          </div>
-                          <div class="field">
-                              <label>${this.intl('script.version')}</label>
-                              <div class="ui inverted centered input">
-                                  <input type="text" readonly data-op="template_version">
-                              </div>
-                          </div>
-                      </div>
-                      <div class="field !mt-8">
-                          <h3 class="ui inverted header">${this.intl('online')}</h3>
-                      </div>
-                      <div class="field">
-                          <label>${this.intl('script.published_key')}</label>
-                          <div class="ui inverted centered input">
-                              <input type="text" readonly data-op="template_key">
-                          </div>
-                      </div>
-                      <div class="two fields">
-                          <div class="field">
-                              <label>${this.intl('script.published')}</label>
-                              <div class="ui inverted centered input">
-                                  <input type="text" readonly data-op="template_published">
-                              </div>
-                          </div>
-                          <div class="field">
-                              <label>${this.intl('script.published_version')}</label>
-                              <div class="ui inverted centered input">
-                                  <input type="text" readonly data-op="template_publishedVersion">
-                              </div>
-                          </div>
-                      </div>
-                      <div class="two fields">
-                          <div class="field">
-                              <div class="ui basic inverted fluid button" data-op="action_publish">
-                                  <i class="ui cloud upload alternate icon"></i> ${this.intl('action.publish')}
-                              </div>
-                              <div class="ui basic inverted fluid button" data-op="action_republish">
-                                  <i class="ui sync alternate icon"></i> ${this.intl('action.republish')}
-                              </div>
-                          </div>
-                          <div class="field">
-                              <div class="ui basic inverted fluid button" data-op="action_unpublish">
-                                  <i class="ui cloud download alternate icon"></i> ${this.intl('action.unpublish')}
-                              </div>
-                          </div>
-                      </div>
-                      <div class="two fields !mb-0" style="margin-top: auto;">
-                          <div class="field"></div>
-                          <div class="field">
-                              <div class="ui red basic inverted fluid button" data-op="action_remove">
-                                  <i class="ui trash alternate icon"></i> ${this.intl('action.remove')}
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      `;
-  }
-
-  _createSegment ({ name, version, timestamp, online, favorite }) {
-      return `
-          <div data-template-name="${name}" data-template-favorite="${favorite}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
-              <i class="ui big ${online ? 'globe' : 'archive'} disabled icon"></i>
-              <div>
-                  <div>${name}</div>
-                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${_formatDate(timestamp)}</div>
-              </div>
-              <i class="ui thumbtack icon text-gray text-white:hover" style="margin-left: auto;"></i>
-          </div>
+        <div class="ui small bordered inverted dialog">
+            <div class="header flex justify-content-between items-center">
+                <div>${this.intl('title')}</div>
+                <i class="ui small link close icon" data-op="close"></i>
+            </div>
+            <div class="ui inverted form">
+                <div class="field">
+                    <h3 class="ui inverted header">${this.intl('category.general')}</h3>
+                </div>
+                <div class="field">
+                    <label>${this.intl('script.name')}</label>
+                    <div class="ui inverted centered input">
+                        <input type="text" data-field="name">
+                    </div>
+                </div>
+                <div class="three fields">
+                    <div class="field">
+                        <label>${this.intl('script.created_at')}</label>
+                        <div class="ui inverted centered input">
+                            <input type="text" readonly data-field="created_at">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('script.updated_at')}</label>
+                        <div class="ui inverted centered input">
+                            <input type="text" readonly data-field="updated_at">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('script.version')}</label>
+                        <div class="ui inverted centered input">
+                            <input type="text" readonly data-field="version">
+                        </div>
+                    </div>
+                </div>
+                <div class="field !mt-8">
+                    <h3 class="ui inverted header">${this.intl('category.usage')}</h3>
+                </div>
+                <div class="field">
+                    <label>${this.intl('script.assignments')}</label>
+                    <div class="ui inverted centered input">
+                    <input type="text" readonly data-field="assignments">
+                </div>
+                </div>
+                <div class="field !mt-8">
+                    <h3 class="ui inverted header">${this.intl('category.remote')}</h3>
+                </div>
+                <div class="field">
+                    <label>${this.intl('script.remote_key')}</label>
+                    <div class="ui inverted centered input">
+                        <input type="text" readonly data-field="remote.key">
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label>${this.intl('script.remote_synchronized_at')}</label>
+                        <div class="ui inverted centered input">
+                            <input type="text" readonly data-field="remote.synchronized_at">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('script.remote_version')}</label>
+                        <div class="ui inverted centered input">
+                            <input type="text" readonly data-field="remote.version">
+                        </div>
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <div class="ui basic inverted fluid button" data-op="action-remote-add">
+                            <i class="ui cloud upload alternate icon"></i> ${this.intl('action.remote_add')}
+                        </div>
+                        <div class="ui basic inverted fluid button" data-op="action-remote-update">
+                            <i class="ui sync alternate icon"></i> ${this.intl('action.remote_update')}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui basic inverted fluid button" data-op="action-remote-remove">
+                            <i class="ui cloud download alternate icon"></i> ${this.intl('action.remote_remove')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
       `;
   }
 
   _createBindings () {
-      this.$close = this.$parent.operator('close');
-      this.$close.click(() => {
-          this.close();
+    this.$close = this.$parent.operator('close');
+    this.$close.click(() => {
+        this.close();
+    });
+
+    this.$fields = this.$parent.find('[data-field]');
+
+    this.$nameField = this.$parent.find('[data-field="name"]');
+    this.$nameField.on('input change', () => {
+      this.script = Scripts.update(this.script.key, {
+        name: this.$nameField.val().trim()
+      }, false);
+
+      this.callback();
+    });
+
+    this.$remoteAdd = this.$parent.operator('action-remote-add');
+    this.$remoteUpdate = this.$parent.operator('action-remote-update');
+    this.$remoteRemove = this.$parent.operator('action-remote-remove');
+
+    // Bindings
+    this.$remoteAdd.click(() => {
+      const { key, name, content } = this.script;
+
+      this.$remoteAdd.addClass('loading disabled');
+
+      SiteAPI.post('script_create', { description: name, author: 'unknown', content }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
+        this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
+      }).catch(({ error }) => {
+        this.#error(error);
+      }).finally(() => {
+        this.$remoteAdd.removeClass('loading disabled');
+        
+        this.#refresh();
       });
+    });
+
+    this.$remoteUpdate.click(() => {
+      const { key, name, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+
+      this.$remoteUpdate.addClass('loading disabled');
+      this.$remoteRemove.addClass('disabled');
       
-      this.$list = this.$parent.operator('list');
-      this.$form = this.$parent.operator('form');
-
-      this.$formFields = [];
-      for (const operator of ['name', 'version', 'updated', 'published', 'publishedVersion', 'key']) {
-          this.$formFields.push(this[`$template${operator.charAt(0).toUpperCase()}${operator.slice(1)}`] = this.$parent.operator(`template_${operator}`));
-      }
-
-      this.$formActions = [];
-      for (const operator of ['publish', 'republish', 'unpublish', 'remove']) {
-          this.$formActions.push(this[`$action${operator.charAt(0).toUpperCase()}${operator.slice(1)}`] = this.$parent.operator(`action_${operator}`));
-      }
-
-      // Bindings
-      this.$actionPublish.click(() => {
-          const { name, content, version } = this.template;
-
-          this._setLoading();
-          SiteAPI.post('script_create', { name, author: 'unknown', content }).then(({ script: { key, secret } }) => {
-              TemplateManager.setOnline(name, key, secret, version);
-          }).catch(({ error }) => {
-              this._error(error);
-          }).finally(() => {
-              this._resetList();
-              this._selectTemplate(name);
-          });
+      SiteAPI.post('script_update', { description: name, content, key: remoteKey, secret: remoteSecret }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
+        this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
+      }).catch(({ error }) => {
+        this.#error(error);
+      }).finally(() => {
+        this.$remoteUpdate.removeClass('loading disabled');
+        this.$remoteRemove.removeClass('disabled');
+        
+        this.#refresh();
       });
+    });
 
-      this.$actionRepublish.click(() => {
-          const { name, content, version, online: { key, secret } } = this.template;
+    this.$remoteRemove.click(() => {
+      const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
 
-          this._setLoading();
-          SiteAPI.post('script_update', { name, content, key, secret }).then(({ script: { key, secret } }) => {
-              TemplateManager.setOnline(name, key, secret, version);
-          }).catch(({ error }) => {
-              this._error(error);
-          }).finally(() => {
-              this._resetList();
-              this._selectTemplate(name);
-          });
+      this.$remoteUpdate.addClass('disabled');
+      this.$remoteRemove.addClass('loading disabled');
+
+      SiteAPI.get('script_delete', { key: remoteKey, secret: remoteSecret }).then(() => {
+        this.script = Scripts.remoteRemove(key);
+      }).catch(({ error }) => {
+        this.#error(error);
+      }).finally(() => {
+        this.$remoteUpdate.removeClass('disabled');
+        this.$remoteRemove.removeClass('loading disabled');
+
+        this.#refresh();
       });
-
-      this.$actionUnpublish.click(() => {
-          const { name, online: { key, secret } } = this.template;
-
-          this._setLoading();
-          SiteAPI.get('script_delete', { key, secret }).then(() => {
-              TemplateManager.setOffline(name);
-          }).catch(({ error }) => {
-              this._error(error);
-          }).finally(() => {
-              this._resetList();
-              this._selectTemplate(name);
-          });
-      });
-
-      this.$actionRemove.click(() => {
-          TemplateManager.remove(this.template.name);
-
-          this._clearForm();
-          this._resetList();
-
-          this.callback();
-      });
+    });
   }
 
-  _error (reason) {
-      Toast.error(this.intl('error'), reason);
+  #error (reason) {
+    Toast.error(this.intl('error'), reason);
   }
 
-  _setLoading () {
-      this.$element.find('i').removeClass('globe archive').addClass('loading sync');
+  #localizeAssignment (identifier) {
+    if (identifier === 'player' || identifier === 'group' || identifier === 'players') {
+      return this.intl(`script.assignment.${identifier}`);
+    } else {
+      return DatabaseManager.PlayerNames[identifier] || DatabaseManager.GroupNames[identifier] || identifier;
+    }
   }
 
-  _selectTemplate (name) {
-      this.$list.find('[data-template-name]').removeClass('background-dark');
-      this.$element = this.$list.find(`[data-template-name="${name}"]`).addClass('background-dark');
+  #refresh () {
+    this.$fields.each((_, element) => {
+      const field = element.dataset.field;
+      const value = _dig(this.script, ...field.split('.'));
 
-      // Render template
-      for (const $element of this.$formFields) {
-          $element.val('');
-      }
-      
-      const { version, timestamp, online } = (this.template = TemplateManager.get(name));
-      this.$templateName.val(name);
-      this.$templateVersion.val(`v${isNaN(version) ? 1 : version}`);
-      this.$templateUpdated.val(_formatDate(timestamp));
-
-      // Unlock buttons
-      for (const $element of this.$formActions) {
-          $element.removeClass('disabled');
-      }
-
-      if (online) {
-          this.$actionPublish.hide();
-          this.$actionRepublish.show();
-
-          const { key, version, timestamp: _timestamp } = online;
-          this.$templatePublished.val(_formatDate(_timestamp));
-          this.$templatePublishedVersion.val(`v${isNaN(version) ? 1 : version}`)
-          this.$templateKey.val(key);
+      if (field.endsWith('_at')) {
+        element.value = _formatDate(value);
+      } else if (field.endsWith('version') && value) {
+        element.value = `v${value}`;
+      } else if (field === 'assignments') {
+        element.value = Scripts.getAssigns(this.script.key).map((v) => this.#localizeAssignment(v)).join(', ');
       } else {
-          this.$actionPublish.show();
-          this.$actionRepublish.hide();
-          this.$actionUnpublish.addClass('disabled');
+        element.value = value || '';
       }
+    });
+
+    if (this.script.remote) {
+      this.$remoteAdd.hide();
+      this.$remoteUpdate.show();
+      this.$remoteRemove.removeClass('disabled');
+
+      if (this.script.version === this.script.remote.version) {
+        this.$remoteUpdate.addClass('disabled');
+      } else {
+        this.$remoteUpdate.removeClass('disabled');
+      }
+    } else {
+      this.$remoteAdd.show();
+      this.$remoteUpdate.hide();
+      this.$remoteRemove.addClass('disabled');
+    }
   }
 
-  _resetList () {
-      let content = '';
-      for (const data of TemplateManager.sortedList()) {
-          content += this._createSegment(data);
-      }
+  _applyArguments (key, callback) {
+    this.script = Scripts.findScript(key);
+    this.callback = callback;
 
-      this.$list.html(content);
-      this.$list.find('[data-template-name]').click((event) => {
-          const name = event.currentTarget.dataset.templateName;
-          if (event.target.classList.contains('thumbtack')) {
-              TemplateManager.toggleFavorite(name);
-
-              this.callback();
-              this._resetList();
-          } else {                
-              this._selectTemplate(name);
-          }
-      });
-  }
-
-  _clearForm () {
-      this.$element = null;
-
-      for (const $element of this.$formFields) {
-          $element.val('');
-      }
-
-      for (const $element of this.$formActions) {
-          $element.addClass('disabled');
-      }
-
-      this.$actionPublish.show();
-      this.$actionRepublish.hide();
-  }
-
-  _applyArguments (callback) {
-      this.callback = callback;
-
-      this._clearForm();
-      this._resetList();
+    this.#refresh();
   }
 })();
 
