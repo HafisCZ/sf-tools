@@ -8,6 +8,14 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
+    'v6.XXXX': {
+        'Fight Analyzer': [
+            'Added option to open prefilled player simulator for a selected group'
+        ],
+        'All Tools': [
+            'Added support for Necromancer'
+        ]
+    },
     'v6.4154': {
         'Statistics': [
             'Added new setting to make table headers sticky',
@@ -54,11 +62,7 @@ const CHANGELOG = {
             'Added more debugging variables',
             'Fixed shield value when morphing into warrior'
         ],
-        'Fight Analyzer': [
-            'Added option to open prefilled player simulator for a selected group'
-        ],
         'All Tools': [
-            'Added support for Necromancer',
             'Added <code>SFTOOLS</code> content creator code to the main page',
             'Added new link to community-made tool on the main page'
         ]
