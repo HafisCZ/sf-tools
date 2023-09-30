@@ -8,7 +8,10 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
-    'v6.XXXX': {
+    'v7.XXXX': {
+        'Statistics': [
+            'Reworked Scripts & Templates'
+        ],
         'Fight Analyzer': [
             'Added option to open prefilled player simulator for a selected group'
         ],

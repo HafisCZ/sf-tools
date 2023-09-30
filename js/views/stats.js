@@ -1264,7 +1264,91 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         })
     }
 
-    // TODO: Add dialog
+    _createModal () {
+        return `
+            <div class="ui small bordered inverted dialog">
+                <div class="header flex justify-content-between items-center">
+                    <div>${this.intl('title')}</div>
+                    <i class="ui small link close icon" data-op="close"></i>
+                </div>
+                <div class="ui inverted form">
+                    <div class="field">
+                        <label>${this.intl('name')}</label>
+                        <div class="ui inverted input">
+                            <input type="text" data-op="name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('source')}</label>
+                        <div class="ui fluid selection inverted search dropdown" data-op="source">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui fluid two buttons">
+                    <div class="ui black button" data-op="close">${intl('dialog.shared.cancel')}</div>
+                    <div class="ui button !text-black !background-orange" data-op="create">${this.intl('create')}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$close = this.$parent.operator('close');
+        this.$close.click(() => {
+            this.close();
+        });
+
+        this.$name = this.$parent.operator('name');
+        this.$source = this.$parent.operator('source');
+
+        this.$create = this.$parent.operator('create');
+        this.$create.click(() => {
+            const name = this.$name.val().trim();
+            const source = this.$source.dropdown('get value');
+
+            if (name && source) {
+                this.callback(name, this._getContentFromSource(source));
+                this.close();
+            }
+        });
+    }
+
+    _getContentFromSource (source) {
+        switch (source) {
+            case '_empty': return '';
+            case '_current': return this.editorContent;
+            case '_player': return DefaultScripts.getContent('player');
+            case '_group': return DefaultScripts.getContent('group');
+            case '_players': return DefaultScripts.getContent('players');
+            default: {
+                return Scripts.getContent(source);
+            }
+        }
+    }
+
+    _applyArguments (editorContent, callback) {
+        this.editorContent = editorContent;
+        this.callback = callback;
+
+        this.$name.val(`New script ${_formatDate(Date.now())}`);
+
+        this.$source.dropdown({
+            values: [
+                { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
+                { value: '_current', name: this.intl('content.current'), icon: 'minus' },
+                { type: 'header', name: this.intl('category.defaults') },
+                { value: '_player', name: this.intl('content.player'), icon: 'user' },
+                { value: '_group', name: this.intl('content.group'), icon: 'archive' },
+                { value: '_players', name: this.intl('content.players'), icon: 'database' },
+                { type: 'header', name: this.intl('category.clone') },
+                ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
+            ]
+        });
+
+        this.$source.dropdown('set selected', '_empty');
+    }
 })
 
 const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
