@@ -2669,7 +2669,7 @@ class ScriptsTab extends Tab {
         if (this.returnTo) {
             this.returnTo();
         } else {
-            this.show({});
+            this.show({ identifier: '' });
         }
     }
 
@@ -2855,14 +2855,14 @@ class ScriptsTab extends Tab {
 
         this.$list.find('[data-script-add]').click(() => {
             DialogController.open(ScriptCreateDialog, this.editor.content, (name, source, content) => {
+                if (source !== '_current') {
+                    this.hide();
+                }
+
                 const { key } = Scripts.create(name, content);
 
                 if (this.target) {
                     Scripts.assign(this.target, key);
-                }
-
-                if (source !== '_current') {
-                    this.hide();
                 }
     
                 this.#setScript(key);
