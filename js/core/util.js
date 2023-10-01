@@ -19,6 +19,10 @@ function _pushUnlessIncludes(arr, obj) {
     }
 }
 
+function _escape (string) {
+    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
+}
+
 function _excludes (arr, obj) {
     return !arr.includes(obj);
 }

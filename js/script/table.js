@@ -1383,26 +1383,26 @@ const CellGenerator = {
             color = getCSSColorFromBackground(b);
         }
 
-        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
+        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'cursor-pointer' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ _escape(b) };` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
     WideCell: function (text, color, colSpan, alignClass, style) {
         let { fg, bg } = typeof color === 'object' ? color : {};
         return `
-            <td class="${ alignClass || '' }" colspan="${ colSpan }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ bg };` : '' }${ style || '' }">${ text }</td>
+            <td class="${ alignClass || '' }" colspan="${ colSpan }" style="${ fg ? `color: ${fg};` : '' }${ bg ? `background:${ _escape(bg) };` : '' }${ style || '' }">${ text }</td>
         `;
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style, cellWidth) {
         let border = getCSSBorderClass(bo);
 
-        return `<td class="${ border } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ border } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ bg ? `background: ${ _escape(bg) };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     PlainSpan: function (s, c, bo, al, bg, style) {
         let border = getCSSBorderClass(bo);
 
-        return `<td class="${ border } ${ al ? al : '' }" colspan="${ s }"  style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ border } ${ al ? al : '' }" colspan="${ s }"  style="${ bg ? `background: ${ _escape(bg) };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, showBrackets, position, c) {
@@ -1418,7 +1418,7 @@ const CellGenerator = {
     },
     // Embed table
     EmbedTable: function (c, b, bo, f) {
-        let bg = b ? `background:${ b };` : '';
+        let bg = b ? `background:${ _escape(b) };` : '';
         let fr = f ? `font: ${f};` : '';
         return `<td style="padding: 0; vertical-align: top; ${ bg }" class="${bo ? 'border-right-thin' : ''}">
             <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ bg } ${fr}">

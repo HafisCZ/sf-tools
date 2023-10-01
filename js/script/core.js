@@ -142,7 +142,7 @@ class Highlighter {
     static #text = '';
 
     static #escape (text) {
-        return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return _escape(String(text));
     }
 
     static keyword (text) {
