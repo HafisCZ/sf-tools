@@ -2713,7 +2713,7 @@ class ScriptsTab extends Tab {
         if (this.script) {
             this.$list.find(`[data-script-key="${this.script.key}"]`).get(0).scrollIntoView({ block: 'center' })
         } else {
-            this.$list.find('[data-script-key]').get(0).scrollIntoView({ block: 'center' })
+            this.$list.find('[data-script-add]').get(0).scrollIntoView({ block: 'center' })
         }
     }
 
