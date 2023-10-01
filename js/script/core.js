@@ -3665,21 +3665,13 @@ class Scripts {
     }
 
     static assign (targetIdentifier, key) {
-        _pushUnlessIncludes(
-            this.findScript(key).assignments,
-            targetIdentifier
-        );
-
+        this.data.assignments[targetIdentifier] = key;
         this.#persist();
     }
 
     static unassign (targetIdentifier) {
-        const script = this.findAssignedScript(targetIdentifier);
-        if (script) {
-            _remove(script.assignments, targetIdentifier);
-
-            this.#persist();
-        }
+        delete this.data.assignments[targetIdentifier];
+        this.#persist();
     }
 
     static getAssigns (key) {
