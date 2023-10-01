@@ -611,7 +611,8 @@
                 "default": "Defaults"
             },
             "tooltip": {
-                "favorite": "Toggle this script as favorite",
+                "pin": "Pin script to the top of the list",
+                "unpin": "Unpin script",
                 "assign": "Assign script to current table",
                 "unassign": "Unassign script from current table"
             },
