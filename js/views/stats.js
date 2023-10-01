@@ -1331,7 +1331,7 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         }
     }
 
-    _applyArguments (editorContent, callback) {
+    _applyArguments (editorContent, contentLock, callback) {
         this.editorContent = editorContent;
         this.callback = callback;
 
@@ -1350,7 +1350,13 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
             ]
         });
 
-        this.$source.dropdown('set selected', '_current');
+        this.$source.dropdown('set selected', contentLock || '_current');
+        
+        if (contentLock) {
+            this.$source.addClass('disabled');
+        } else {
+            this.$source.removeClass('disabled');
+        }
     }
 })
 
