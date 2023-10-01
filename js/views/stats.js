@@ -1312,7 +1312,7 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
             const source = this.$source.dropdown('get value');
 
             if (name && source) {
-                this.callback(name, this._getContentFromSource(source));
+                this.callback(name, source, this._getContentFromSource(source));
                 this.close();
             }
         });
