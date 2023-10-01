@@ -1347,7 +1347,7 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
             ]
         });
 
-        this.$source.dropdown('set selected', '_empty');
+        this.$source.dropdown('set selected', '_current');
     }
 })
 
