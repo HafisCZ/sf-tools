@@ -2568,6 +2568,8 @@ class ScriptsTab extends Tab {
         this.editor.subscribe('change', (val) => {
             if (this.script) {
                 this.#contentChanged(val !== this.script.content);
+            } else {
+                this.#contentChanged(val !== '');
             }
         })
         
@@ -2609,11 +2611,13 @@ class ScriptsTab extends Tab {
             if (allowReturn && this.returnTo) {
                 this.returnTo();
             }
-        } else if (this.target) {
+        } else {
             DialogController.open(ScriptCreateDialog, this.editor.content, (name, source, content) => {
                 this.script = Scripts.create(name, content);
 
-                Scripts.assign(this.target, this.script.key);
+                if (this.target) {
+                    Scripts.assign(this.target, this.script.key);
+                }
 
                 this.#updateSidebars();
                 this.#contentChanged(false);
@@ -2669,7 +2673,7 @@ class ScriptsTab extends Tab {
         if (this.returnTo) {
             this.returnTo();
         } else {
-            this.show({ identifier: '' });
+            this.show({});
         }
     }
 
@@ -2684,23 +2688,23 @@ class ScriptsTab extends Tab {
 
         if (typeof key !== 'undefined') {
             this.#setScript(key);
-        } else if (identifier === '') {
-            this.target = '';
-
-            this.editor.content = '';
-
-            this.#contentChanged(false);
         } else {
             this.target = identifier || _dig(origin, 'identifier');
 
-            const script = Scripts.findAssignedScript(this.target) || Scripts.findAssignedScript(this.#getDefaultScript(this.target));
-            if (script) {
-                this.#setScript(script.key)
-            } else if (this.target) {
-                this.editor.content = DefaultScripts.getContent(this.#getDefaultScript(this.target));
-
-                this.#contentChanged(true);
+            if (this.target) {
+                const script = Scripts.findAssignedScript(this.target) || Scripts.findAssignedScript(this.#getDefaultScript(this.target));
+                if (script) {
+                    this.#setScript(script.key)
+                } else if (this.target) {
+                    this.editor.content = DefaultScripts.getContent(this.#getDefaultScript(this.target));
+    
+                    this.#contentChanged(true);
+                } else {
+                    this.#contentChanged(false);
+                }
             } else {
+                this.editor.content = '';
+    
                 this.#contentChanged(false);
             }
         }
