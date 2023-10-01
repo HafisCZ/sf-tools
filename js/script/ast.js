@@ -224,13 +224,6 @@ class ExpressionRenderer {
                 } else if (token == '$' || token == '$!' || token == '$$') {
                     highlighter.keyword(token);
                     nextName = true;
-                } else if (nextName) {
-                    nextName = false;
-                    if (/[a-zA-Z0-9\-\_]+/.test(token)) {
-                        highlighter.constant(token);
-                    } else {
-                        highlighter.normal(token);
-                    }
                 } else if (Expression.TERMINATORS[token]) {
                     bracketStack.unshift(Expression.TERMINATORS[token]);
 
@@ -242,6 +235,13 @@ class ExpressionRenderer {
                         highlighter.normal(token);
                     } else {
                         highlighter.error(token, true);
+                    }
+                } else if (nextName) {
+                    nextName = false;
+                    if (/[a-zA-Z0-9\-\_]+/.test(token)) {
+                        highlighter.constant(token);
+                    } else {
+                        highlighter.normal(token);
                     }
                 } else {
                     highlighter.normal(token);
