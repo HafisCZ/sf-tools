@@ -3269,7 +3269,7 @@ class Script {
 
         // Evaluate custom rows
         for (const row of this.customRows) {
-            const currentValue = row.expr.eval(new ExpressionScope(this).with(array[0]).addSelf(tableArray));
+            const currentValue = row.expr.eval(new ExpressionScope(this).with(tableArray[0]).addSelf(tableArray));
 
             row.eval = {
                 value: currentValue
