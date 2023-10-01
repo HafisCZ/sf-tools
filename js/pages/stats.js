@@ -2693,11 +2693,11 @@ class ScriptsTab extends Tab {
         } else {
             this.target = identifier || _dig(origin, 'identifier');
 
-            const script = Scripts.findAssignedScript(this.target);
+            const script = Scripts.findAssignedScript(this.target) || Scripts.findAssignedScript(this.#getDefaultScript(this.target));
             if (script) {
                 this.#setScript(script.key)
             } else if (this.target) {
-                this.editor.content = this.#getDefaultContent(this.target);
+                this.editor.content = DefaultScripts.getContent(this.#getDefaultScript(this.target));
 
                 this.#contentChanged(true);
             } else {
@@ -2737,13 +2737,13 @@ class ScriptsTab extends Tab {
         })
     }
 
-    #getDefaultContent (target) {
+    #getDefaultScript (target) {
         if (target === 'player' || target === 'players' || target === 'group') {
-            return DefaultScripts.getContent(target);
+            return target;
         } else if (DatabaseManager.isPlayer(target)) {
-            return DefaultScripts.getContent('player');
+            return 'player';
         } else {
-            return DefaultScripts.getContent('group');
+            return 'group';
         }
     }
 
