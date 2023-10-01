@@ -1684,17 +1684,6 @@
             "cancel": "Cancel",
             "save": "Save"
         },
-        "save_online_script": {
-            "title": "Import template",
-            "loader": "Preparing Files",
-            "author": "Author",
-            "created_updated": "Created/Updated",
-            "name": "Name",
-            "name_placeholder": "Template name",
-            "error": "The requested template is not available!",
-            "cancel": "Cancel",
-            "save": "Save"
-        },
         "edit_file_tag": {
             "title": "Edit tags",
             "current": "Current tags",
