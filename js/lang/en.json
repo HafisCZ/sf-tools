@@ -1568,7 +1568,7 @@
             "variables": "Available variables:"
         },
         "script_create": {
-            "title": "Create script",
+            "title": "Save script",
             "name": "Name",
             "source": "Content",
             "content": {
