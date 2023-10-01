@@ -599,6 +599,17 @@
             "list_add": "Add new script",
             "list_search": "Search ...",
             "target": "Current table",
+            "targets": {
+                "none": "None",
+                "players": "Browse",
+                "player": "Players",
+                "group": "Guilds"
+            },
+            "targets_category": {
+                "player": "Players",
+                "group": "Guilds",
+                "default": "Defaults"
+            },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
@@ -621,12 +632,6 @@
                     "library": "Libraries",
                     "help": "Help"
                 }
-            },
-            "types": {
-                "me": "Me",
-                "players": "Players",
-                "guilds": "Guilds",
-                "default": "Default"
             },
             "online": {
                 "not_available": "No scripts available"

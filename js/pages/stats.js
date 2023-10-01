@@ -2609,11 +2609,11 @@ class ScriptsTab extends Tab {
             if (allowReturn && this.returnTo) {
                 this.returnTo();
             }
-        } else if (this.identifier) {
+        } else if (this.target) {
             DialogController.open(ScriptCreateDialog, this.editor.content, (name, content) => {
                 this.script = Scripts.create(name, content);
 
-                Scripts.assign(this.identifier, this.script.key);
+                Scripts.assign(this.target, this.script.key);
 
                 this.#updateSidebars();
                 this.#contentChanged(false);
@@ -2662,6 +2662,10 @@ class ScriptsTab extends Tab {
     remove () {
         Scripts.remove(this.script.key);
 
+        if (this.target) {
+            Scripts.unassign(this.target);
+        }
+
         if (this.returnTo) {
             this.returnTo();
         } else {
@@ -2680,22 +2684,31 @@ class ScriptsTab extends Tab {
 
         if (typeof key !== 'undefined') {
             this.#setScript(key);
-        } else {
-            this.identifier = identifier || _dig(origin, 'identifier');
+        } else if (identifier === '') {
+            this.target = '';
 
-            const script = Scripts.findAssignedScript(this.identifier);
+            this.editor.content = '';
+
+            this.#contentChanged(false);
+        } else {
+            this.target = identifier || _dig(origin, 'identifier');
+
+            const script = Scripts.findAssignedScript(this.target);
             if (script) {
                 this.#setScript(script.key)
-            } else if (this.identifier) {
-                this.editor.content = this.#getDefaultContent(this.identifier);
+            } else if (this.target) {
+                this.editor.content = this.#getDefaultContent(this.target);
 
                 this.#contentChanged(true);
+            } else {
+                this.#contentChanged(false);
             }
         }
 
         this.$listSearch.val('');
 
         this.#updateSidebars();
+        this.#updateTarget();
 
         if (this.script) {
             this.$list.find(`[data-script-key="${this.script.key}"]`).get(0).scrollIntoView({ block: 'center' })
@@ -2704,10 +2717,30 @@ class ScriptsTab extends Tab {
         }
     }
 
-    #getDefaultContent (identifier) {
-        if (identifier === 'player' || identifier === 'players' || identifier === 'group') {
-            return DefaultScripts.getContent(identifier);
-        } else if (DatabaseManager.isPlayer(identifier)) {
+    #updateTarget () {
+        const values = [
+            { value: '', name: intl('stats.scripts.targets.none'), icon: 'text-gray globe' },
+            { type: 'header', name: intl('stats.scripts.targets_category.default') },
+            { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'text-gray user' },
+            { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'text-gray archive' },
+            { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'text-gray database' },
+            { type: 'header', name: intl('stats.scripts.targets_category.group') },
+            ...Object.entries(DatabaseManager.GroupNames).map(([value, name]) => ({ value, name, icon: 'text-gray archive' })),
+            { type: 'header', name: intl('stats.scripts.targets_category.player') },
+            ...Object.entries(DatabaseManager.PlayerNames).map(([value, name]) => ({ value, name, icon: 'text-gray user' })),
+        ]
+
+        this.$target.dropdown({ values })
+        this.$target.dropdown('set selected', this.target || '');
+        this.$target.dropdown('setting', 'onChange', (value) => {
+            this.show({ identifier: value, origin: this });
+        })
+    }
+
+    #getDefaultContent (target) {
+        if (target === 'player' || target === 'players' || target === 'group') {
+            return DefaultScripts.getContent(target);
+        } else if (DatabaseManager.isPlayer(target)) {
             return DefaultScripts.getContent('player');
         } else {
             return DefaultScripts.getContent('group');
@@ -2801,6 +2834,10 @@ class ScriptsTab extends Tab {
 
                 this.#updateSidebars();
             } else {
+                if (this.target) {
+                    Scripts.assign(this.target, key);
+                }
+
                 this.#setScript(key);
             }
 
@@ -2810,6 +2847,10 @@ class ScriptsTab extends Tab {
         this.$list.find('[data-script-add]').click(() => {
             DialogController.open(ScriptCreateDialog, this.editor.content, (name, content) => {
                 const { key } = Scripts.create(name, content);
+
+                if (this.target) {
+                    Scripts.assign(this.target, key);
+                }
 
                 this.#setScript(key);
                 this.#updateSidebars();
