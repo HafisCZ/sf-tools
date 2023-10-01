@@ -2721,9 +2721,9 @@ class ScriptsTab extends Tab {
         const values = [
             { value: '', name: intl('stats.scripts.targets.none'), icon: 'text-gray globe' },
             { type: 'header', name: intl('stats.scripts.targets_category.default') },
-            { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'text-gray user' },
-            { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'text-gray archive' },
             { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'text-gray database' },
+            { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'text-gray archive' },
+            { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'text-gray user' },
             { type: 'header', name: intl('stats.scripts.targets_category.group') },
             ...Object.entries(DatabaseManager.GroupNames).map(([value, name]) => ({ value, name, icon: 'text-gray archive' })),
             { type: 'header', name: intl('stats.scripts.targets_category.player') },
@@ -2812,12 +2812,16 @@ class ScriptsTab extends Tab {
 
         for (const { key, name, version, favorite, updated_at } of Scripts.sortedList()) {
             content += `
-                <div data-script-key="${key}" data-script-favorite="${favorite}" data-script-name="${name}" class="!border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
+                <div data-script-key="${key}" data-script-name="${name}" class="script !border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
                     <div>
                         <div>${name}</div>
                         <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
                     </div>
-                    <i class="ui thumbtack icon text-gray text-white:hover" style="margin-left: auto;"></i>
+                    <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${Scripts.isAssignedTo(this.target, key)}" data-favorite="${favorite}">
+                        <i class="ui thumbtack icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.favorite')}"></i>
+                        <i class="ui unlink icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.unassign')}"></i>
+                        <i class="ui linkify icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.assign')}"></i>
+                    </div>
                 </div>
             `;
         }
@@ -2833,11 +2837,15 @@ class ScriptsTab extends Tab {
                 Scripts.update(key, { favorite: !script.favorite }, false);
 
                 this.#updateSidebars();
-            } else {
+            } else if (event.target.classList.contains('linkify')) {
                 if (this.target) {
                     Scripts.assign(this.target, key);
                 }
-
+            } else if (event.target.classList.contains('unlink')) {
+                if (this.target) {
+                    Scripts.unassign(this.target);
+                }
+            } else {
                 this.hide();
                 this.#setScript(key);
             }
