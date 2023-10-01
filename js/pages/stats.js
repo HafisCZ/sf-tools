@@ -2557,7 +2557,7 @@ class ScriptsTab extends Tab {
             DialogController.open(
                 ConfirmationDialog,
                 intl('dialog.delete_script.title'),
-                intl('dialog.delete_script.notice'),
+                intl(`dialog.delete_script.${this.script.remote ? 'notice_remote' : 'notice'}`),
                 () => this.remove(),
                 null
             );
