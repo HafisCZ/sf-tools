@@ -1339,9 +1339,9 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
                 { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
                 { value: '_current', name: this.intl('content.current'), icon: 'minus' },
                 { type: 'header', name: this.intl('category.defaults') },
-                { value: '_player', name: this.intl('content.player'), icon: 'user' },
-                { value: '_group', name: this.intl('content.group'), icon: 'archive' },
                 { value: '_players', name: this.intl('content.players'), icon: 'database' },
+                { value: '_group', name: this.intl('content.group'), icon: 'archive' },
+                { value: '_player', name: this.intl('content.player'), icon: 'user' },
                 { type: 'header', name: this.intl('category.clone') },
                 ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
             ]

@@ -172,11 +172,35 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   margin-right: 0em;
 }
 
-[data-script-favorite] > i.thumbtack {
+.script {
+
+}
+
+.script-icons {
+  margin-left: auto;
+
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.5em;
+}
+
+.script-icons > i.thumbtack, .script-icons > i.linkify, .script-icons > i.unlink {
   display: none;
 }
 
-[data-script-favorite]:hover > i.thumbtack, [data-script-favorite="true"] > i.thumbtack {
+.script-icons[data-favorite="true"] > i.thumbtack {
+  display: block;
+}
+
+.script-icons[data-assigned="true"] > i.linkify {
+  display: none;
+}
+
+.script-icons[data-assigned="true"] > i.unlink {
+  display: block;
+}
+
+.script:hover > .script-icons > i.thumbtack, .script:hover > .script-icons[data-assigned="false"][data-assignable="true"] > i.linkify {
   display: block;
 }
 

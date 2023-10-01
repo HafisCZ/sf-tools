@@ -3664,6 +3664,10 @@ class Scripts {
         return identifier in this.data.assignments;
     }
 
+    static isAssignedTo (identifier, key) {
+        return this.data.assignments[identifier] === key;
+    }
+
     static assign (targetIdentifier, key) {
         this.data.assignments[targetIdentifier] = key;
         this.#persist();

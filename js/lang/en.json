@@ -610,6 +610,11 @@
                 "group": "Guilds",
                 "default": "Defaults"
             },
+            "tooltip": {
+                "favorite": "Toggle this script as favorite",
+                "assign": "Assign script to current table",
+                "unassign": "Unassign script from current table"
+            },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
