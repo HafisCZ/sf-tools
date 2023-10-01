@@ -598,6 +598,7 @@
             "list": "Available scripts",
             "list_add": "Add new script",
             "list_search": "Search ...",
+            "target": "Current table",
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
@@ -1562,9 +1563,9 @@
             "content": {
                 "empty": "Empty",
                 "current": "Current editor content",
-                "player": "Player",
+                "player": "Players",
                 "players": "Browse",
-                "group": "Group"
+                "group": "Guilds"
             },
             "category": {
                 "defaults": "Duplicate default script",

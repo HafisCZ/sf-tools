@@ -2467,6 +2467,8 @@ class ScriptsTab extends Tab {
             this.#updateSearch();
         })
 
+        this.$target = this.$parent.operator('target');
+
         // Right sidebar
         this.$helpWiki = this.$parent.operator('help-wiki');
         this.$helpWiki.click(() => {
@@ -2607,9 +2609,11 @@ class ScriptsTab extends Tab {
             if (allowReturn && this.returnTo) {
                 this.returnTo();
             }
-        } else {
+        } else if (this.identifier) {
             DialogController.open(ScriptCreateDialog, this.editor.content, (name, content) => {
                 this.script = Scripts.create(name, content);
+
+                Scripts.assign(this.identifier, this.script.key);
 
                 this.#updateSidebars();
                 this.#contentChanged(false);
@@ -2672,10 +2676,21 @@ class ScriptsTab extends Tab {
             this.returnTo = null;
         }
 
+        this.script = null;
+
         if (typeof key !== 'undefined') {
             this.#setScript(key);
         } else {
-            this.#setScript(Scripts.findAssignedScript(identifier || _dig(origin, 'identifier'))?.key);
+            this.identifier = identifier || _dig(origin, 'identifier');
+
+            const script = Scripts.findAssignedScript(this.identifier);
+            if (script) {
+                this.#setScript(script.key)
+            } else if (this.identifier) {
+                this.editor.content = this.#getDefaultContent(this.identifier);
+
+                this.#contentChanged(true);
+            }
         }
 
         this.$listSearch.val('');
@@ -2689,6 +2704,16 @@ class ScriptsTab extends Tab {
         }
     }
 
+    #getDefaultContent (identifier) {
+        if (identifier === 'player' || identifier === 'players' || identifier === 'group') {
+            return DefaultScripts.getContent(identifier);
+        } else if (DatabaseManager.isPlayer(identifier)) {
+            return DefaultScripts.getContent('player');
+        } else {
+            return DefaultScripts.getContent('group');
+        }
+    }
+
     #setScript (key) {
         this.script = Scripts.findScript(key);
 
@@ -2697,8 +2722,6 @@ class ScriptsTab extends Tab {
         } else {
             this.editor.content = '';
         }
-
-        this.editor.scrollTop();
 
         this.#contentChanged(false);
     }
@@ -2713,12 +2736,16 @@ class ScriptsTab extends Tab {
     }
 
     #contentChanged (changed) {
-        if (changed) {
+        if (this.script && changed) {
             this.$reset.removeClass('disabled');
-            this.$save.addClass('yellow')//.removeClass('disabled inverted');
         } else {
             this.$reset.addClass('disabled');
-            this.$save.removeClass('yellow')//.addClass('disabled inverted');
+        }
+
+        if (changed) {
+            this.$save.addClass('yellow').removeClass('disabled inverted');
+        } else {
+            this.$save.removeClass('yellow').addClass('disabled inverted');
         }
     }
 
