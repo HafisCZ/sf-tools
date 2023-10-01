@@ -348,7 +348,7 @@ class Site {
 }
 
 class SiteAPI {
-    static #baseUrl = 'https://sftools-api.netlify.app/api/';
+    static #baseUrl = 'https://api.sftools.mar21.eu/api/';
 
     static #log (method, url) {
         Logger.log('APICALL', `${method} ${url}`)
