@@ -188,7 +188,7 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   display: none;
 }
 
-.script-icons[data-favorite="true"] > i.thumbtack {
+.script-icons[data-pinned="true"] > i.thumbtack {
   display: block;
 }
 

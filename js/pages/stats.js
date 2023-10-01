@@ -2817,8 +2817,8 @@ class ScriptsTab extends Tab {
                         <div>${name}</div>
                         <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
                     </div>
-                    <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${Scripts.isAssignedTo(this.target, key)}" data-favorite="${favorite}">
-                        <i class="ui thumbtack icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.favorite')}"></i>
+                    <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${Scripts.isAssignedTo(this.target, key)}" data-pinned="${favorite}">
+                        <i class="ui thumbtack icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${favorite ? 'unpin' : 'pin'}`)}"></i>
                         <i class="ui unlink icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.unassign')}"></i>
                         <i class="ui linkify icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.assign')}"></i>
                     </div>
@@ -2837,15 +2837,15 @@ class ScriptsTab extends Tab {
                 Scripts.update(key, { favorite: !script.favorite }, false);
 
                 this.#updateSidebars();
-            } else if (event.target.classList.contains('linkify')) {
-                if (this.target) {
-                    Scripts.assign(this.target, key);
-                }
             } else if (event.target.classList.contains('unlink')) {
                 if (this.target) {
                     Scripts.unassign(this.target);
                 }
             } else {
+                if (this.target && event.target.classList.contains('linkify')) {
+                    Scripts.assign(this.target, key);
+                }
+
                 this.hide();
                 this.#setScript(key);
             }
