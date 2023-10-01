@@ -2612,7 +2612,7 @@ class ScriptsTab extends Tab {
                 this.returnTo();
             }
         } else {
-            DialogController.open(ScriptCreateDialog, this.editor.content, (name, source, content) => {
+            DialogController.open(ScriptCreateDialog, this.editor.content, '_current', (name, source, content) => {
                 this.script = Scripts.create(name, content);
 
                 if (this.target) {
@@ -2858,7 +2858,7 @@ class ScriptsTab extends Tab {
         });
 
         this.$list.find('[data-script-add]').click(() => {
-            DialogController.open(ScriptCreateDialog, this.editor.content, (name, source, content) => {
+            DialogController.open(ScriptCreateDialog, this.editor.content, null, (name, source, content) => {
                 if (source !== '_current') {
                     this.hide();
                 }
