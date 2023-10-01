@@ -837,13 +837,14 @@ class ScriptEditor extends SignalSource {
 
     this.#update();
 
-    this.scrollTop();
     this.textarea.focus();
 
     if (previousText === text) {
-      this.textarea.setSelectionRange(start, end, 'forward')
+      this.textarea.setSelectionRange(start, end, 'forward');
     } else {
-      this.textarea.setSelectionRange(0, 0, 'forward')
+      this.textarea.setSelectionRange(0, 0, 'forward');
+
+      this.scrollTop();
     }
   }
 
