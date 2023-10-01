@@ -3185,10 +3185,6 @@ Site.ready(null, function (urlParams) {
         }[urlParams.get('tab') || SiteOptions.tab] || UI.Groups)
 
         UI.show(defaultTab);
-
-        if (urlParams.has('template')) {
-            DialogController.open(SaveOnlineScriptDialog, urlParams.get('template'));
-        }
     }).catch(function (e) {
         Loader.toggle(false);
         DialogController.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);

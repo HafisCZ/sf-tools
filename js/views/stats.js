@@ -53,6 +53,7 @@ const FileEditDialog = new (class FileEditDialog extends Dialog {
   }
 })();
 
+<<<<<<< HEAD
 const SaveOnlineScriptDialog = new (class SaveOnlineScriptDialog extends Dialog {
   constructor () {
       super({
@@ -160,6 +161,8 @@ const SaveOnlineScriptDialog = new (class SaveOnlineScriptDialog extends Dialog 
   }
 })();
 
+=======
+>>>>>>> e056e4f7 (Removed remote script save shortcut)
 const EditFileTagDialog = new (class EditFileTagDialog extends Dialog {
   constructor () {
       super({
