@@ -2838,6 +2838,7 @@ class ScriptsTab extends Tab {
                     Scripts.assign(this.target, key);
                 }
 
+                this.hide();
                 this.#setScript(key);
             }
 
@@ -2852,6 +2853,7 @@ class ScriptsTab extends Tab {
                     Scripts.assign(this.target, key);
                 }
 
+                this.hide();
                 this.#setScript(key);
                 this.#updateSidebars();
             })
