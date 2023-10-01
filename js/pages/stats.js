@@ -664,6 +664,8 @@ class BrowseTab extends Tab {
         this.table = this.tableBase;
         this.tableQEnabled = false;
 
+        this.identifier = 'players';
+
         this.$reference = this.$parent.find('[data-op="reference"]');
         this.$timestamp = this.$parent.find('[data-op="timestamp"]');
 
@@ -2545,11 +2547,7 @@ class ScriptsTab extends Tab {
 
         this.$save = this.$parent.operator('save');
         this.$save.click((event) => {
-            this.save();
-
-            if (event.ctrlKey && this.returnTo) {
-                this.returnTo();
-            }
+            this.#saveScript(event.ctrlKey);
         });
 
         this.$remove = this.$parent.operator('remove');
@@ -2572,19 +2570,11 @@ class ScriptsTab extends Tab {
         })
         
         this.editor.subscribe('ctrl+s', () => {
-            if (!this.$save.hasClass('disabled')) {
-                this.save();
-            }
+            this.#saveScript(false);
         })
 
         this.editor.subscribe('ctrl+shift+s', () => {
-            if (!this.$save.hasClass('disabled')) {
-                this.save();
-
-                if (this.returnTo) {
-                    this.returnTo();
-                }
-            }
+            this.#saveScript(true);
         })
 
         // React to CTRL presses
@@ -2604,6 +2594,31 @@ class ScriptsTab extends Tab {
                 this.#updateButtons();
             }
         });
+    }
+
+    #saveScript (allowReturn) {
+        if (this.$save.hasClass('disabled')) {
+            return;
+        }
+
+        if (this.script) {
+            this.save();
+    
+            if (allowReturn && this.returnTo) {
+                this.returnTo();
+            }
+        } else {
+            DialogController.open(ScriptCreateDialog, this.editor.content, (name, content) => {
+                this.script = Scripts.create(name, content);
+
+                this.#updateSidebars();
+                this.#contentChanged(false);
+
+                if (allowReturn && this.returnTo) {
+                    this.returnTo();
+                }
+            });
+        }
     }
 
     #updateButtons () {
@@ -2660,12 +2675,18 @@ class ScriptsTab extends Tab {
         if (typeof key !== 'undefined') {
             this.#setScript(key);
         } else {
-            this.#setScript(Scripts.findAssignedScript(identifier || _dig(origin, 'identifier') || 'players')?.key);
+            this.#setScript(Scripts.findAssignedScript(identifier || _dig(origin, 'identifier'))?.key);
         }
 
         this.$listSearch.val('');
 
         this.#updateSidebars();
+
+        if (this.script) {
+            this.$list.find(`[data-script-key="${this.script.key}"]`).get(0).scrollIntoView({ block: 'center' })
+        } else {
+            this.$list.find('[data-script-key]').get(0).scrollIntoView({ block: 'center' })
+        }
     }
 
     #setScript (key) {
@@ -2694,10 +2715,10 @@ class ScriptsTab extends Tab {
     #contentChanged (changed) {
         if (changed) {
             this.$reset.removeClass('disabled');
-            this.$save.addClass('yellow').removeClass('disabled inverted');
+            this.$save.addClass('yellow')//.removeClass('disabled inverted');
         } else {
             this.$reset.addClass('disabled');
-            this.$save.removeClass('yellow').addClass('disabled inverted');
+            this.$save.removeClass('yellow')//.addClass('disabled inverted');
         }
     }
 

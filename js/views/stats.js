@@ -1397,15 +1397,6 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
                     </div>
                 </div>
                 <div class="field !mt-8">
-                    <h3 class="ui inverted header">${this.intl('category.usage')}</h3>
-                </div>
-                <div class="field">
-                    <label>${this.intl('script.assignments')}</label>
-                    <div class="ui inverted centered input">
-                    <input type="text" readonly data-field="assignments">
-                </div>
-                </div>
-                <div class="field !mt-8">
                     <h3 class="ui inverted header">${this.intl('category.remote')}</h3>
                 </div>
                 <div class="field">
@@ -1527,14 +1518,6 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
     Toast.error(this.intl('error'), reason);
   }
 
-  #localizeAssignment (identifier) {
-    if (identifier === 'player' || identifier === 'group' || identifier === 'players') {
-      return this.intl(`script.assignment.${identifier}`);
-    } else {
-      return DatabaseManager.PlayerNames[identifier] || DatabaseManager.GroupNames[identifier] || identifier;
-    }
-  }
-
   #refresh () {
     this.$fields.each((_, element) => {
       const field = element.dataset.field;
@@ -1544,8 +1527,6 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
         element.value = _formatDate(value);
       } else if (field.endsWith('version') && value) {
         element.value = `v${value}`;
-      } else if (field === 'assignments') {
-        element.value = Scripts.getAssigns(this.script.key).map((v) => this.#localizeAssignment(v)).join(', ');
       } else {
         element.value = value || '';
       }

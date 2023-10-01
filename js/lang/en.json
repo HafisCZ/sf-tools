@@ -1576,8 +1576,7 @@
             "title": "Manage script",
             "category": {
                 "general": "General",
-                "remote": "Publish",
-                "usage": "Usage"
+                "remote": "Publish"
             },
             "script": {
                 "name": "Name",
@@ -1586,13 +1585,7 @@
                 "created_at": "Created at",
                 "remote_synchronized_at": "Published at",
                 "remote_version": "Remote version",
-                "remote_key": "Code",
-                "assignments": "Assigned to",
-                "assignment": {
-                    "player": "All tables within players",
-                    "group": "All tables within groups",
-                    "players": "Browse table"
-                }
+                "remote_key": "Code"
             },
             "action": {
                 "remote_add": "Publish script",
