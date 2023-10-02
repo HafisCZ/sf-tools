@@ -53,116 +53,6 @@ const FileEditDialog = new (class FileEditDialog extends Dialog {
   }
 })();
 
-<<<<<<< HEAD
-const SaveOnlineScriptDialog = new (class SaveOnlineScriptDialog extends Dialog {
-  constructor () {
-      super({
-          key: 'save_online_script'
-      });
-  }
-
-  _createModal () {
-      return `
-          <div class="small inverted dialog">
-              <div class="header">${this.intl('title')}</div>
-              <div>
-                  <div class="ui inverted form">
-                      <div class="ui active dimmer">
-                          <div class="ui indeterminate text loader">${this.intl('loader')}</div>
-                      </div>
-                      <div class="two fields">
-                          <div class="field">
-                              <label>${this.intl('author')}:</label>
-                              <div class="ui inverted input">
-                                  <input data-op="author" type="text" disabled>
-                              </div>
-                          </div>
-                          <div class="field">
-                              <label>${this.intl('created_updated')}:</label>
-                              <div class="ui inverted input">
-                                  <input data-op="date" type="text" disabled>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="field">
-                          <label>${this.intl('name')}:</label>
-                          <div class="ui inverted input">
-                              <input data-op="name" type="text" placeholder="${this.intl('name_placeholder')}">
-                          </div>
-                      </div>
-                  </div>
-                  <div data-op="error" style="display: none;">
-                      <h3 class="header text-orange text-center" style="margin-top: 4.125em; margin-bottom: 3.5em;">${this.intl('error')}</h3>
-                  </div>
-              </div>
-              <div class="ui two fluid buttons">
-                  <button class="ui black button disabled" data-op="cancel">${this.intl('cancel')}</button>
-                  <button class="ui button disabled !text-black !background-orange" data-op="save">${this.intl('save')}</button>
-              </div>
-          </div>
-      `;
-  }
-
-  _createBindings () {
-      this.$name = this.$parent.find('[data-op="name"]');
-      this.$date = this.$parent.find('[data-op="date"]');
-      this.$author = this.$parent.find('[data-op="author"]');
-      this.$form = this.$parent.find('.ui.form');
-      this.$error = this.$parent.find('[data-op="error"]');
-
-      this.$loader = this.$parent.find('.ui.dimmer');
-      this.$cancel = this.$parent.find('[data-op="cancel"]').click(() => {
-          this.close();
-      });
-
-      this.$save = this.$parent.find('[data-op="save"]').click(() => {
-          let name = this.$name.val().trim();
-          if (name.length) {
-              TemplateManager.save(name, this.data.content);
-
-              // This dialog appears on page open, so it is necessary to refresh dropdowns
-              if (UI.current.refreshTemplateDropdown) {
-                  UI.current.refreshTemplateDropdown();
-              }
-
-              this.close();
-          } else {
-              this.$name.parent('.field').addClass('error').transition('shake');
-          }
-      });
-  }
-
-  setReady () {
-      this.$loader.removeClass('active');
-      this.$cancel.removeClass('disabled');
-      this.$save.removeClass('disabled');
-  }
-
-  setUnavailable () {
-      this.$form.hide();
-      this.$error.show();
-      this.$cancel.removeClass('disabled');
-  }
-
-  _applyArguments (code) {
-      SiteAPI.get('script_get', { key: code.trim() }).then(({ script }) => {
-          const { name, author, created_at } = script;
-
-          this.data = script;
-
-          this.$date.val(_formatDate(new Date(created_at)));
-          this.$name.val(name);
-          this.$author.val(author);
-
-          this.setReady();
-      }).catch(() => {
-          this.setUnavailable();
-      })
-  }
-})();
-
-=======
->>>>>>> e056e4f7 (Removed remote script save shortcut)
 const EditFileTagDialog = new (class EditFileTagDialog extends Dialog {
   constructor () {
       super({
@@ -1037,12 +927,21 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _createModal () {
       return `
-          <div class="inverted small bordered dialog">
+          <div class="inverted big bordered dialog">
               <div class="header flex justify-content-between items-center">
                   <div>${this.intl('title')}</div>
                   <i class="ui small link close icon" data-op="close"></i>
               </div>
-              <div class="flex flex-col gap-2 overflow-y-scroll" style="height: 50vh;" data-op="list"></div>
+              <div class="ui inverted form" style="margin-bottom: -1em;">
+                <div class="field">
+                    <label></label>
+                    <div class="ui inverted icon input">
+                        <i class="search icon"></i>
+                        <input type="text" data-op="list-search" placeholder="${this.intl('search')}">
+                    </div>
+                </div>
+              </div>
+              <div class="gap-2 overflow-y-scroll" style="height: 60vh; display: grid; grid-template-columns: repeat(2, 49%); align-content: start;" data-op="list"></div>
               <div class="ui inverted form">
                   <div class="field">
                       <label>${this.intl('private_code.label')}</label>    
@@ -1058,6 +957,11 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _createBindings () {
       this.$list = this.$parent.operator('list');
+      
+      this.$listSearch = this.$parent.operator('list-search');
+      this.$listSearch.on('input', () => {
+          this.#updateSearch();
+      })
 
       this.$close = this.$parent.operator('close');
       this.$close.click(() => {
@@ -1084,7 +988,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
               codeSubmit();
           }
       });
-  }
+    }
 
   _fetchScript (key) {
       return SiteAPI.get('script_get', { key }).then(({ script }) => {
@@ -1097,13 +1001,26 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       this.close();
   }
 
-  _createSegment (key, description, author, updatedAt) {
+  #updateSearch () {
+    const value = this.$listSearch.val().toLowerCase();
+
+    this.$parent.find('[data-script-name]').each((_, element) => {
+        if (element.dataset.scriptName.toLowerCase().startsWith(value)) {
+            element.style.display = 'flex';
+        } else {
+            element.style.display = 'none';
+        }
+    })
+  }
+
+  _createSegment (key, name, author, version, createdAt) {
       return `
-          <div data-script-key="${key}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
-              <i class="ui big ${DefaultScripts.exists(key) ? 'archive' : 'globe'} disabled icon"></i>
+          <div data-script-key="${key}" data-script-name="${name}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="height: 90px;">
+              <i class="ui big ${DefaultScripts.exists(key) ? 'archive' : 'globe'} disabled icon mr-2"></i>
               <div>    
-                  <div>${description}</div>
-                  <div class="text-gray">${intl(`dialog.script_repository.list.about${updatedAt ? '_with_date' : ''}`, { author, date: updatedAt ? _formatDate(Date.parse(updatedAt), true, false) : null })}</div>
+                  <div>${name}</div>
+                  <div class="text-gray mt-1">${intl('dialog.script_repository.list.about', { author })}</div>
+                  ${version ? `<div class="text-gray">v${version} - ${_formatDate(Date.parse(createdAt))}</div>` : ''}
               </div>
           </div>
       `;
@@ -1111,8 +1028,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _showOnline (scripts) {
       let content = '';
-      for (const { author, name, key, created_at } of _sortDesc(scripts, (script) => Date.parse(script.created_at))) {
-          content += this._createSegment(key, name, author, created_at);
+      for (const { author, description, key, version, date } of _sortDesc(scripts, (script) => Date.parse(script.date))) {
+          content += this._createSegment(key, description, author, version, date);
       }
 
       this.$list.append(content);
@@ -1125,11 +1042,13 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       let content = '';
       for (const [type, { author, description }] of DefaultScripts.entries()) {
           if (author) {
-              content += this._createSegment(type, description, author, null);
+              content += this._createSegment(type, description, author, null, null);
           }
       }
 
       this.$list.html(content);
+      this.$listSearch.val('');
+
       this._updateListeners();
 
       const cache = Store.shared.get('templateCache', { content: [], expire: 0 });
