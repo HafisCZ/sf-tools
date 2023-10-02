@@ -65,6 +65,10 @@
   overflow-x: hidden;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .overflow-y-auto {
   overflow-y: auto;
 }
