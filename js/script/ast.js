@@ -228,6 +228,8 @@ class ExpressionRenderer {
                     bracketStack.unshift(Expression.TERMINATORS[token]);
 
                     highlighter.normal(token);
+
+                    nextName = false;
                 } else if (Expression.TERMINATORS_INVERTED[token]) {
                     if (bracketStack[0] === token) {
                         bracketStack.shift();
