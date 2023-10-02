@@ -2815,16 +2815,17 @@ class ScriptsTab extends Tab {
         `;
 
         for (const { key, name, version, favorite, updated_at } of Scripts.sortedList()) {
+            const assigned = Scripts.isAssignedTo(this.target, key);
+
             content += `
                 <div data-script-key="${key}" data-script-name="${name}" class="script !border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
                     <div>
                         <div>${name}</div>
                         <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
                     </div>
-                    <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${Scripts.isAssignedTo(this.target, key)}" data-pinned="${favorite}">
-                        <i class="ui thumbtack icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${favorite ? 'unpin' : 'pin'}`)}"></i>
-                        <i class="ui unlink icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.unassign')}"></i>
-                        <i class="ui linkify icon text-gray text-white:hover" title="${intl('stats.scripts.tooltip.assign')}"></i>
+                    <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${assigned}" data-pinned="${favorite}">
+                        <i data-op="icon-pin" class="ui thumbtack icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${favorite ? 'unpin' : 'pin'}`)}"></i>
+                        <i data-op="icon-assign" class="ui ${assigned ? 'unlink' : 'linkify'} icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${assigned ? 'unassign' : 'assign'}`)}"></i>
                     </div>
                 </div>
             `;

@@ -173,35 +173,32 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
 }
 
 .script {
-
+  position: relative;
 }
 
 .script-icons {
-  margin-left: auto;
-
   display: flex;
   flex-direction: row-reverse;
-  gap: 0.5em;
+  gap: 0.25em;
+
+  position: absolute;
+  inset: 1em 0.5em 0 0;
 }
 
-.script-icons > i.thumbtack, .script-icons > i.linkify, .script-icons > i.unlink {
-  display: none;
+.script-icons > i {
+  visibility: hidden;
 }
 
-.script-icons[data-pinned="true"] > i.thumbtack {
-  display: block;
+.script-icons[data-pinned="true"] > i[data-op="icon-pin"], .script:hover > .script-icons > i[data-op="icon-pin"] {
+  visibility: visible;
 }
 
-.script-icons[data-assigned="true"] > i.linkify {
-  display: none;
+.script-icons[data-assigned="true"] > i[data-op="icon-assign"] {
+  visibility: visible;
 }
 
-.script-icons[data-assigned="true"] > i.unlink {
-  display: block;
-}
-
-.script:hover > .script-icons > i.thumbtack, .script:hover > .script-icons[data-assigned="false"][data-assignable="true"] > i.linkify {
-  display: block;
+.script:hover > .script-icons[data-assigned="false"][data-assignable="true"] > i[data-op="icon-assign"] {
+  visibility: visible;
 }
 
 .css-context-menu {
