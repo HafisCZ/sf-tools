@@ -417,7 +417,7 @@ Site.ready(null, function () {
             (level) => ''
         ], `
             <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td></td></tr>
-            <tr><td>40</td><td data-lq="15"></td><td>20</td><td>3 750</td><td>5 760 000</td><td>1 872 000</td><td>45</td><td></td></tr>
+            <tr><td>45</td><td data-lq="15"></td><td>20</td><td>3 750</td><td>5 760 000</td><td>1 872 000</td><td>50</td><td></td></tr>
         `);
 
         const SMITHY = [
