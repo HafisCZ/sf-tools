@@ -182,7 +182,26 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   gap: 0.25em;
 
   position: absolute;
-  inset: 1em 0.5em 0 0;
+  top: 1em;
+  right: 0.5em;
+}
+
+.script-indicators {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.25em;
+
+  position: absolute;
+  right: 0.5em;
+  bottom: 1em;
+}
+
+.script-indicators > i {
+  visibility: hidden;
+}
+
+.script-indicators[data-remote="true"] > i[data-op="icon-remote"] {
+  visibility: visible;
 }
 
 .script-icons > i {

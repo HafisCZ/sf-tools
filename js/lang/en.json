@@ -614,7 +614,8 @@
                 "pin": "Pin script to the top of the list",
                 "unpin": "Unpin script",
                 "assign": "Assign script to current table",
-                "unassign": "Unassign script from current table"
+                "unassign": "Unassign script from current table",
+                "remote": "This script is published"
             },
             "sidebar": {
                 "wiki": "Wiki",
