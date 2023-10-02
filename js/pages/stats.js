@@ -2814,7 +2814,7 @@ class ScriptsTab extends Tab {
             </div>
         `;
 
-        for (const { key, name, version, favorite, updated_at } of Scripts.sortedList()) {
+        for (const { key, name, version, favorite, updated_at, remote } of Scripts.sortedList()) {
             const assigned = Scripts.isAssignedTo(this.target, key);
 
             content += `
@@ -2826,6 +2826,9 @@ class ScriptsTab extends Tab {
                     <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${assigned}" data-pinned="${favorite}">
                         <i data-op="icon-pin" class="ui thumbtack icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${favorite ? 'unpin' : 'pin'}`)}"></i>
                         <i data-op="icon-assign" class="ui ${assigned ? 'unlink' : 'linkify'} icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${assigned ? 'unassign' : 'assign'}`)}"></i>
+                    </div>
+                    <div class="script-indicators" data-remote="${!!remote}">
+                        <i data-op="icon-remote" class="ui share alternate icon text-gray" title="${intl('stats.scripts.tooltip.remote')}"></i>
                     </div>
                 </div>
             `;
