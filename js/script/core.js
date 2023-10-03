@@ -3541,8 +3541,7 @@ class Scripts {
                 created_at: timestamp,
                 updated_at: timestamp,
                 remote: null,
-                favorite: false,
-                assignments: [identifier]
+                favorite: false
             });
 
             scriptsAssignments[identifier] = key;
