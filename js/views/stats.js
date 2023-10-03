@@ -1146,7 +1146,7 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
           <div data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
               <i class="ui big ${this._getIcon(type.split('_')[0])} disabled icon"></i>
               <div>
-                  <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${name}</div>
+                  <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${_escape(name)}</div>
                   <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
               </div>
               <i class="ui large !ml-auto copy outline text-gray text-white:hover icon" title="${intl('editor.copy')}" data-archive-copy="${timestamp}"></i>
