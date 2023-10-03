@@ -2814,11 +2814,11 @@ class ScriptsTab extends Tab {
             </div>
         `;
 
-        for (const { key, name, version, favorite, updated_at, remote } of Scripts.sortedList()) {
+        for (const { key, name, version, favorite, updated_at, remote, description } of Scripts.sortedList()) {
             const assigned = Scripts.isAssignedTo(this.target, key);
 
             content += `
-                <div data-script-key="${key}" data-script-name="${name}" class="script !border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
+                <div data-script-key="${key}" data-script-name="${name}" title="${_escape(description || '')}" class="script !border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
                     <div>
                         <div>${name}</div>
                         <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
