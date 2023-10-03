@@ -3651,8 +3651,13 @@ class Scripts {
         return this.data.list;
     }
 
-    static sortedList () {
-        return _sortDesc(_sortDesc(this.list(), ({ updated_at }) => updated_at), ({ favorite }) => favorite ? 1 : -1);
+    static sortedList (table = null) {
+        let list = this.list();
+        if (table) {
+            list = list.filter((script) => script.tables ? script.tables.includes(table) : true);
+        }
+
+        return _sortDesc(_sortDesc(list, ({ updated_at }) => updated_at), ({ favorite }) => favorite ? 1 : -1);
     }
 
     static getAssignedContent (targetIdentifier, fallbackIdentifier) {
