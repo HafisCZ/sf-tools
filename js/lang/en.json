@@ -1589,15 +1589,11 @@
             "clear": "Delete all items from archive",
             "copy_toast": "Script has been copied",
             "types": {
-                "create_script": "Script created",
-                "overwrite_script": "Script overwritten by new version",
-                "save_script": "Script saved",
-                "remove_script": "Script removed",
-                "discard_script": "Script changes were discarded",
-                "create_template": "Template created",
-                "overwrite_template": "Template overwritten by new version",
-                "save_template": "Template saved",
-                "remove_template": "Template removed"
+                "create": "Script created",
+                "overwrite": "Script overwritten by new version",
+                "save": "Script saved",
+                "remove": "Script removed",
+                "discard": "Script changes were discarded"
             },
             "item": {
                 "description": "Archived: #{change}. Expires: #{expire}",

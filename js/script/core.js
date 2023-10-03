@@ -3597,7 +3597,7 @@ class Scripts {
 
         this.#persist();
 
-        ScriptArchive.add('create_script', script.key, 1, content);
+        ScriptArchive.add('create', script.key, 1, content);
 
         return script;
     }
@@ -3631,7 +3631,7 @@ class Scripts {
         const script = this.findScript(key);
 
         if (touch) {
-            ScriptArchive.add('overwrite_script', script.key, script.version, script.content);
+            ScriptArchive.add('overwrite', script.key, script.version, script.content);
         }
 
         Object.assign(script, changes);
@@ -3644,7 +3644,7 @@ class Scripts {
         this.#persist();
 
         if (touch) {   
-            ScriptArchive.add('save_script', script.key, script.version, script.content);
+            ScriptArchive.add('save', script.key, script.version, script.content);
         }
 
         return script;

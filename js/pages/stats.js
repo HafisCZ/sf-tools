@@ -2525,7 +2525,7 @@ class ScriptsTab extends Tab {
         this.$libraryArchive = this.$parent.operator('library-archive');
         this.$libraryArchive.click((event) => {
             if (event.ctrlKey && this.#hasArchivedPreviousVersion()) {
-                this.editor.content = ScriptArchive.find('overwrite_script', this.script.key, this.script.version - 1).content;
+                this.editor.content = ScriptArchive.find('overwrite', this.script.key, this.script.version - 1).content;
 
                 this.#updateSidebars();
             } else {
@@ -2664,7 +2664,7 @@ class ScriptsTab extends Tab {
     }
 
     #hasArchivedPreviousVersion () {
-        return this.script && this.script.version > 1 && ScriptArchive.find('overwrite_script', this.script.key, this.script.version - 1);
+        return this.script && this.script.version > 1 && ScriptArchive.find('overwrite', this.script.key, this.script.version - 1);
     }
 
     remove () {
@@ -2792,7 +2792,7 @@ class ScriptsTab extends Tab {
 
     hide () {
         if (this.script && this.script.content !== this.editor.content) {
-            ScriptArchive.add('discard_script', this.script.key, this.script.version, this.editor.content);
+            ScriptArchive.add('discard', this.script.key, this.script.version, this.editor.content);
         }
     }
 
