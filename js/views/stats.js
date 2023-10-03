@@ -1201,6 +1201,12 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
                         </div>
                     </div>
                     <div class="field">
+                        <label>${this.intl('description')}</label>
+                        <div class="ui inverted input">
+                            <textarea rows="3" data-op="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="field">
                         <label>${this.intl('source')}</label>
                         <div class="ui fluid selection inverted search dropdown" data-op="source">
                             <div class="text"></div>
@@ -1223,15 +1229,18 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         });
 
         this.$name = this.$parent.operator('name');
+        this.$description = this.$parent.operator('description');
         this.$source = this.$parent.operator('source');
 
         this.$create = this.$parent.operator('create');
         this.$create.click(() => {
             const name = this.$name.val().trim();
+            const description = this.$description.val().trim();
+
             const source = this.$source.dropdown('get value');
 
             if (name && source) {
-                this.callback(name, source, this._getContentFromSource(source));
+                this.callback(name, description, this._getContentFromSource(source), source);
                 this.close();
             }
         });
@@ -1304,6 +1313,12 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
                         <input type="text" data-field="name">
                     </div>
                 </div>
+                <div class="field">
+                    <label>${this.intl('script.description')}</label>
+                    <div class="ui inverted input">
+                        <textarea rows="3" data-field="description"></textarea>
+                    </div>
+                </div>
                 <div class="three fields">
                     <div class="field">
                         <label>${this.intl('script.created_at')}</label>
@@ -1334,17 +1349,17 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
                 <div class="field !mt-8">
                     <h3 class="ui inverted header">${this.intl('category.remote')}</h3>
                 </div>
-                <div class="field">
-                    <label>${this.intl('script.remote_key')}</label>
-                    <div class="ui inverted centered input">
-                        <input type="text" readonly data-field="remote.key">
-                    </div>
-                </div>
-                <div class="two fields">
+                <div class="three fields">
                     <div class="field">
                         <label>${this.intl('script.remote_synchronized_at')}</label>
                         <div class="ui inverted centered input">
                             <input type="text" readonly data-field="remote.synchronized_at">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('script.remote_key')}</label>
+                        <div class="ui inverted centered input">
+                            <input type="text" readonly data-field="remote.key">
                         </div>
                     </div>
                     <div class="field">
@@ -1386,6 +1401,15 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
     this.$nameField.on('input change', () => {
       this.script = Scripts.update(this.script.key, {
         name: this.$nameField.val().trim()
+      }, false);
+
+      this.callback();
+    });
+
+    this.$descriptionField = this.$parent.find('[data-field="description"]');
+    this.$descriptionField.on('input change', () => {
+      this.script = Scripts.update(this.script.key, {
+        description: this.$descriptionField.val().trim()
       }, false);
 
       this.callback();

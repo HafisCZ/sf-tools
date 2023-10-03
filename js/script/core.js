@@ -3537,6 +3537,7 @@ class Scripts {
             scripts.push({
                 key,
                 name: `${DatabaseManager.PlayerNames[identifier] || DatabaseManager.GroupNames[identifier] || identifier} (migrated)`,
+                description: '',
                 content,
                 version: isNaN(version) ? 1 : version,
                 created_at: timestamp,
@@ -3562,6 +3563,7 @@ class Scripts {
                 key: randomSHA1(),
                 name: `${name} (migrated)`,
                 content,
+                description: '',
                 version: isNaN(version) ? 1 : version,
                 created_at: timestamp,
                 updated_at: timestamp,
@@ -3577,11 +3579,12 @@ class Scripts {
         });
     }
 
-    static create (name, content) {
+    static create ({ name, content, description }) {
         const script = {
             key: randomSHA1(),
             name,
             content,
+            description,
             version: 1,
             created_at: Date.now(),
             updated_at: Date.now(),
@@ -3594,7 +3597,7 @@ class Scripts {
 
         this.#persist();
 
-        ScriptArchive.add('create_script', name, 1, content);
+        ScriptArchive.add('create_script', script.key, 1, content);
 
         return script;
     }

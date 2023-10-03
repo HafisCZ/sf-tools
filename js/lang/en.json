@@ -1545,6 +1545,7 @@
         "script_create": {
             "title": "Save script",
             "name": "Name",
+            "description": "Description",
             "source": "Content",
             "content": {
                 "empty": "Empty",
@@ -1567,6 +1568,7 @@
             },
             "script": {
                 "name": "Name",
+                "description": "Description",
                 "tables": "Compatible tables",
                 "version": "Local version",
                 "updated_at": "Updated",
