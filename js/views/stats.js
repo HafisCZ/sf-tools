@@ -1399,11 +1399,13 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
     this.$nameField = this.$parent.find('[data-field="name"]');
     this.$nameField.on('input change', () => {
-      this.script = Scripts.update(this.script.key, {
-        name: this.$nameField.val().trim()
-      }, false);
-
-      this.callback();
+        const name = this.$nameField.val().trim();
+        
+        if (name) {
+            this.script = Scripts.update(this.script.key, { name }, false);
+      
+            this.callback();
+        }
     });
 
     this.$descriptionField = this.$parent.find('[data-field="description"]');
