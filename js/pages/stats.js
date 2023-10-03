@@ -2612,8 +2612,8 @@ class ScriptsTab extends Tab {
                 this.returnTo();
             }
         } else {
-            DialogController.open(ScriptCreateDialog, this.editor.content, '_current', (name, source, content) => {
-                this.script = Scripts.create(name, content);
+            DialogController.open(ScriptCreateDialog, this.editor.content, '_current', (name, description, content) => {
+                this.script = Scripts.create({ name, description, content });
 
                 if (this.target) {
                     Scripts.assign(this.target, this.script.key);
@@ -2862,12 +2862,12 @@ class ScriptsTab extends Tab {
         });
 
         this.$list.find('[data-script-add]').click(() => {
-            DialogController.open(ScriptCreateDialog, this.editor.content, null, (name, source, content) => {
+            DialogController.open(ScriptCreateDialog, this.editor.content, null, (name, description, content, source) => {
                 if (source !== '_current') {
                     this.hide();
                 }
 
-                const { key } = Scripts.create(name, content);
+                const { key } = Scripts.create({ name, description, content });
 
                 if (this.target) {
                     Scripts.assign(this.target, key);
