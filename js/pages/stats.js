@@ -1204,6 +1204,8 @@ class GroupsTab extends Tab {
 
         this.$list = this.$parent.find('[data-op="list"]');
 
+        this.identifier = 'group';
+
         // Toggles
         this.hidden = this._prepareOption('show-hidden', 'hidden', 'groups_hidden');
         this.others = this._prepareOption('show-other', 'others', 'groups_other');
@@ -1429,6 +1431,8 @@ class PlayersTab extends Tab {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]');
+
+        this.identifier = 'player';
 
         // Toggles
         this.hidden = this._prepareOption('show-hidden', 'hidden', 'players_hidden');
