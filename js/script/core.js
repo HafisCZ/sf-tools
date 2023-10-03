@@ -3504,6 +3504,11 @@ class ScriptArchive {
 class Scripts {
     static LastChange = Date.now();
 
+    static #DEFAULT_DATA = {
+        list: [],
+        assignments: {}
+    };
+
     static get data () {
         delete this.data;
 
@@ -3511,10 +3516,13 @@ class Scripts {
             this.#migrateLegacyScripts();
         }
 
-        return (this.data = Store.get('scripts', {
-            list: [],
-            assignments: {}
-        }));
+        if (Store.isTemporary()) {
+            this.data = Store.shared.get('scripts', this.#DEFAULT_DATA);
+        } else {
+            this.data = Store.get('scripts', this.#DEFAULT_DATA);
+        }
+
+        return this.data;
     }
 
     static #migrateLegacyScripts () {
