@@ -1141,10 +1141,14 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
       }
   }
 
+  _getColor (type) {
+    return '';
+  }
+
   _createSegment (type, name, version, timestamp, temporary) {
       return `
-          <div data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
-              <i class="ui big ${this._getIcon(type.split('_')[0])} disabled icon"></i>
+          <div data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center ${this._getColor(type)}">
+              <i class="ui big ${this._getIcon(type)} disabled icon"></i>
               <div>
                   <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${_escape(name)}</div>
                   <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
