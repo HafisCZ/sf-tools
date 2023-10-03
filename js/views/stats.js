@@ -1103,14 +1103,48 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
                   <div>${this.intl('title')}</div>
                   <i class="ui small link close icon" data-op="close"></i>
               </div>
+              <div class="ui inverted form">
+                <div class="field">
+                    <label>${this.intl('filter')}</label>
+                    <div class="ui fluid selection inverted search dropdown" data-op="filter">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                    </div>
+                </div>
+              </div>
               <div class="flex flex-col gap-2 overflow-y-scroll" style="height: 50vh;" data-op="list"></div>
               <div class="ui black fluid button" data-op="clear">${this.intl('clear')}</div>
           </div>
       `;
   }
 
+  #updateSearch (value) {
+    this.$list.find('[data-archive-type]').each((_, element) => {
+        if (value === '' || element.dataset.archiveType === value) {
+            element.style.display = 'flex';
+        } else {
+            element.style.display = 'none';
+        }
+    })
+  }
+
   _createBindings () {
       this.$list = this.$parent.operator('list');
+
+      this.$listFilter = this.$parent.operator('filter');
+      this.$listFilter.dropdown({
+        values: [
+            { value: '', name: this.intl('types.all'), icon: 'question' },
+            { value: 'create', name: this.intl('types.create'), icon: 'plus' },
+            { value: 'overwrite', name: this.intl('types.overwrite'), icon: 'pencil alternate' },
+            { value: 'save', name: this.intl('types.save'), icon: 'save' },
+            { value: 'remove', name: this.intl('types.remove'), icon: 'trash alternate outline' },
+            { value: 'discard', name: this.intl('types.discard'), icon: 'recycle' }
+        ],
+        onChange: (value) => {
+            this.#updateSearch(value);
+        }
+      })
 
       this.$clear = this.$parent.operator('clear');
       this.$clear.click(() => {
@@ -1167,7 +1201,7 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
 
   _createSegment (type, name, version, timestamp, temporary) {
       return `
-          <div data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="border-color: #${this._getColor(type)}60;">
+          <div data-archive-type="${type}" data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="border-color: #${this._getColor(type)}60;">
               <i class="ui big ${this._getIcon(type)} disabled icon" style="color: #${this._getColor(type)};"></i>
               <div>
                   <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${_escape(this._scriptName(name))}</div>
@@ -1192,13 +1226,16 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
 
           this.close();
       });
+
       this.$list.find('[data-archive-copy]').on('click', (event) => {
         _stopAndPrevent(event);
 
         copyText(ScriptArchive.get(event.currentTarget.dataset.archiveCopy));
 
         Toast.info(this.intl('title'), this.intl('copy_toast'))``
-      })
+      });
+
+      this.$listFilter.dropdown('set selected', '');
   }
 })();
 

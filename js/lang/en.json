@@ -1586,10 +1586,12 @@
         },
         "script_archive": {
             "title": "Script archive",
+            "filter": "Filter by type",
             "clear": "Delete all items from archive",
             "copy_toast": "Script has been copied",
             "unknown": "Unknown",
             "types": {
+                "all": "Display all changes",
                 "create": "Script created",
                 "overwrite": "Script overwritten by new version",
                 "save": "Script saved",
