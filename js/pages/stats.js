@@ -295,7 +295,7 @@ class GroupDetailTab extends Tab {
             },
             values: [
                 {
-                    name: intl('stats.templates.quick_swap'),
+                    name: intl('stats.scripts.quick_swap'),
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
@@ -588,7 +588,7 @@ class PlayerDetailTab extends Tab {
             },
             values: [
                 {
-                    name: intl('stats.templates.quick_swap'),
+                    name: intl('stats.scripts.quick_swap'),
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
@@ -1154,7 +1154,7 @@ class BrowseTab extends Tab {
             },
             values: [
                 {
-                    name: intl('stats.templates.quick_swap'),
+                    name: intl('stats.scripts.quick_swap'),
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },

@@ -599,6 +599,7 @@
             "list_add": "Add new script",
             "list_search": "Search ...",
             "target": "Current table",
+            "quick_swap": "Quick swap script",
             "targets": {
                 "none": "None",
                 "players": "Browse",
