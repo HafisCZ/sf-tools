@@ -3492,6 +3492,7 @@ class ScriptArchive {
         content: string
         created_at: number
         updated_at: number
+        tables: string[]
         remote: null | {
             synchronized_at: number
             key: string
@@ -3541,7 +3542,8 @@ class Scripts {
                 created_at: timestamp,
                 updated_at: timestamp,
                 remote: null,
-                favorite: false
+                favorite: false,
+                tables: null
             });
 
             scriptsAssignments[identifier] = key;
@@ -3564,7 +3566,8 @@ class Scripts {
                 created_at: timestamp,
                 updated_at: timestamp,
                 remote,
-                favorite
+                favorite,
+                tables: null
             })
         }
 
@@ -3583,7 +3586,8 @@ class Scripts {
             created_at: Date.now(),
             updated_at: Date.now(),
             remote: null,
-            favorite: false
+            favorite: false,
+            tables: ['players', 'group', 'player']
         }
 
         this.data.list.push(script);

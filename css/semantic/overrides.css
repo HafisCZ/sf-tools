@@ -83,3 +83,7 @@ body.inverted {
 .ui.inverted.container {
   color: rgba(255, 255, 255, .9);
 }
+
+div.ui.multiple.dropdown > .default.text {
+  margin-bottom: 0;
+}

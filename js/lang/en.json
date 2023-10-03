@@ -1593,6 +1593,7 @@
             },
             "script": {
                 "name": "Name",
+                "tables": "Compatible tables",
                 "version": "Local version",
                 "updated_at": "Updated at",
                 "created_at": "Created at",
