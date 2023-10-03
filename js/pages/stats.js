@@ -2791,8 +2791,12 @@ class ScriptsTab extends Tab {
     }
 
     hide () {
-        if (this.script && this.script.content !== this.editor.content) {
-            ScriptArchive.add('discard', this.script.key, this.script.version, this.editor.content);
+        if (this.script) {
+            if (this.script.content !== this.editor.content) {
+                ScriptArchive.add('discard', this.script.key, this.script.version, this.editor.content);
+            }
+        } else {
+            ScriptArchive.add('discard', null, 1, this.editor.content);
         }
     }
 

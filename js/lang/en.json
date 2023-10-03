@@ -1588,6 +1588,7 @@
             "title": "Script archive",
             "clear": "Delete all items from archive",
             "copy_toast": "Script has been copied",
+            "unknown": "Unknown",
             "types": {
                 "create": "Script created",
                 "overwrite": "Script overwritten by new version",
