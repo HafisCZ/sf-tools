@@ -1595,9 +1595,9 @@
                 "name": "Name",
                 "tables": "Compatible tables",
                 "version": "Local version",
-                "updated_at": "Updated at",
-                "created_at": "Created at",
-                "remote_synchronized_at": "Published at",
+                "updated_at": "Updated",
+                "created_at": "Created",
+                "remote_synchronized_at": "Published",
                 "remote_version": "Remote version",
                 "remote_key": "Code"
             },
