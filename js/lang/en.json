@@ -687,33 +687,6 @@
                 "code_reusable": "Online code (2 days)"
             }
         },
-        "online_templates": {
-            "title": "Public scripts",
-            "description": "Description",
-            "author": "Author",
-            "created_on": "Created on",
-            "loading": "Fetching scripts",
-            "code": "Enter your private code..."
-        },
-        "templates": {
-            "title": "Templates",
-            "loading": "Committing changes",
-            "form": {
-                "changed_on": "Changed on",
-                "version": "Tool Version",
-                "compatibility": "Compatibility",
-                "published_on": "Published on",
-                "code": "Code",
-                "publish": "Publish",
-                "publish_tooltip": "Publish template",
-                "unpublish_tooltip": "Unpublish template",
-                "update": "Update",
-                "update_tooltip": "Update template with current script",
-                "remove": "Remove",
-                "remove_tooltip": "Remove template"
-            },
-            "quick_swap": "Quick swap custom templates"
-        },
         "player": {
             "attributes": "Attributes",
             "basis": "Basis",
