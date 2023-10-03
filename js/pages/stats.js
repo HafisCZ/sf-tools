@@ -299,7 +299,7 @@ class GroupDetailTab extends Tab {
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
-                ... Scripts.sortedList().map(({ key: value, name }) => ({ name, value }))
+                ... Scripts.sortedList('group').map(({ key: value, name }) => ({ name, value }))
             ]
         });
     }
@@ -592,7 +592,7 @@ class PlayerDetailTab extends Tab {
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
-                ... Scripts.sortedList().map(({ key: value, name }) => ({ name, value }))
+                ... Scripts.sortedList('player').map(({ key: value, name }) => ({ name, value }))
             ]
         });
     }
@@ -1158,7 +1158,7 @@ class BrowseTab extends Tab {
                     type: 'header',
                     class: 'header font-bold !text-center'
                 },
-                ... Scripts.sortedList().map(({ key: value, name }) => ({ name, value }))
+                ... Scripts.sortedList('players').map(({ key: value, name }) => ({ name, value }))
             ]
         });
     }
