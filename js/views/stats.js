@@ -1324,6 +1324,13 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
                         </div>
                     </div>
                 </div>
+                <div class="field">
+                    <label>${this.intl('script.tables')}</label>
+                    <div class="ui fluid selection inverted multiple dropdown" data-field="tables">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                    </div>
+                </div>
                 <div class="field !mt-8">
                     <h3 class="ui inverted header">${this.intl('category.remote')}</h3>
                 </div>
@@ -1383,6 +1390,23 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
       this.callback();
     });
+
+    this.$tablesField = this.$parent.find('[data-field="tables"]');
+    this.$tablesField.dropdown({
+        placeholder: this.intl('script.tables'),
+        values: [
+            { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'database' },
+            { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'archive' },
+            { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'user' }
+        ],
+        onChange: () => {
+            this.script = Scripts.update(this.script.key, {
+                tables: this.$tablesField.dropdown('get values')
+            }, false);
+
+            this.callback();
+        }
+    })
 
     this.$remoteAdd = this.$parent.operator('action-remote-add');
     this.$remoteUpdate = this.$parent.operator('action-remote-update');
@@ -1455,6 +1479,9 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
         element.value = _formatDate(value);
       } else if (field.endsWith('version') && value) {
         element.value = `v${value}`;
+      } else if (field === 'tables') {
+        this.$tablesField.dropdown('clear', true);
+        this.$tablesField.dropdown('set selected', value || ['players', 'group', 'player'], true);
       } else {
         element.value = value || '';
       }
