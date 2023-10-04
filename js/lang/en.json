@@ -1607,7 +1607,7 @@
             }
         },
         "script_repository": {
-            "title": "Script Repository",
+            "title": "Public scripts",
             "search": "Search ...",
             "list_add": "Add published script to your list",
             "list": {
