@@ -3508,7 +3508,8 @@ class Scripts {
 
     static #DEFAULT_DATA = {
         list: [],
-        assignments: {}
+        assignments: {},
+        remote: []
     };
 
     static get data () {
@@ -3610,21 +3611,15 @@ class Scripts {
         this.#persist();
     }
 
-    static remoteAdd (key, remote) {
+    static markRemote (key, remote = null) {
         return this.update(key, {
-            remote: {
+            remote: remote ? {
                 created_at: Date.parse(remote.created_at),
                 updated_at: Date.parse(remote.updated_at),
                 version: remote.version,
                 key: remote.key,
                 secret: remote.secret
-            }
-        }, false);
-    }
-
-    static remoteRemove (key) {
-        return this.update(key, {
-            remote: null
+            } : null
         }, false);
     }
 
@@ -3653,6 +3648,22 @@ class Scripts {
 
     static list () {
         return this.data.list;
+    }
+
+    static remoteList () {
+        return SiteAPI.get('script_list', { include: this.data.remote });
+    }
+
+    static remoteAdd (key) {
+        _pushUnlessIncludes(this.data.remote, key);
+
+        this.#persist();
+    }
+
+    static remoteRemove (key) {
+        _remove(this.data.remote, key);
+
+        this.#persist();
     }
 
     static sortedList (table = null) {
