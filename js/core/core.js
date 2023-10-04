@@ -200,7 +200,8 @@ const SiteOptions = new OptionsHandler(
         unsafe_delete: false,
         event_override: [],
         simulator_info_id: 0,
-        table_sticky_header: false
+        table_sticky_header: false,
+        script_author: ''
     }
 )
 

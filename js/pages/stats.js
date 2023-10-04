@@ -2921,6 +2921,12 @@ class SettingsTab extends Tab {
             SiteOptions.load_rows = parseInt(value) || SiteOptions.default('load_rows');
         });
 
+        this.$inputScriptAuthor = this.$parent.find('[data-op="input-script-author"]');
+        this.$inputScriptAuthor.val(SiteOptions.script_author);
+        this.$inputScriptAuthor.on('change', () => {
+            SiteOptions.script_author = this.$inputScriptAuthor.val().trim();
+        })
+
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
         this.prepareCheckbox('terms_accepted', 'terms');
