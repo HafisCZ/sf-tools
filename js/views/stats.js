@@ -1028,8 +1028,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _showOnline (scripts) {
       let content = '';
-      for (const { author, name, key, version, date } of _sortDesc(scripts, (script) => Date.parse(script.date))) {
-          content += this._createSegment(key, name, author, version, date);
+      for (const { author, name, key, version, updated_at } of _sortDesc(scripts, (script) => Date.parse(script.updated_at))) {
+          content += this._createSegment(key, name, author, version, updated_at);
       }
 
       this.$list.append(content);
