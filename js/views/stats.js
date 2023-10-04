@@ -877,12 +877,74 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
                 </div>
               </div>
               <div class="gap-2 overflow-y-scroll flex flex-col" style="height: 60vh; padding-right: 0.5em;" data-op="list"></div>
+              <div class="overflow-y-scroll flex flex-col items-center justify-content-center" style="height: 60vh; padding-right: 0.5em;" data-op="list-add">
+                <div class="flex flex-col gap-4" style="width: 50%;">
+                  <div class="ui inverted form">
+                    <div class="field">
+                      <label>${this.intl('list_add_key')}</label>
+                      <div class="ui inverted centered input">
+                        <input type="text" maxlength="12" data-op="key">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui fluid two buttons gap-2">
+                    <div class="ui black button" data-op="list-add-cancel">${intl('dialog.shared.cancel')}</div>
+                    <div class="ui !text-black !background-orange button" data-op="list-add-accept">${this.intl('list_add_accept')}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
       `;
   }
 
+  #showListAdd (show) {
+    if (show) {
+      this.$list.hide();
+      this.$listAdd.show();
+
+      this.$listAdd.operator('key').val('').focus();
+
+      this.$listSearch.parent('.input').addClass('disabled');
+    } else {
+      this.$list.show();
+      this.$listAdd.hide();
+
+      this.$listSearch.parent('.input').removeClass('disabled');
+    }
+  }
+
   _createBindings () {
       this.$list = this.$parent.operator('list');
+      this.$listAdd = this.$parent.operator('list-add');
+
+      this.$listAddCancel = this.$listAdd.operator('list-add-cancel');
+      this.$listAddCancel.click(() => {
+        this.#showListAdd(false);
+      });
+
+      this.$listAddAccept = this.$listAdd.operator('list-add-accept');
+      this.$listAddAccept.click(async () => {
+        const key = this.$listAdd.operator('key').val();
+
+        this.$listAddAccept.addClass('loading disabled');
+        this.$listAddCancel.addClass('disabled');
+
+        try {
+          const script = await SiteAPI.get('script_get', { key }).then(({ script }) => script);
+
+          StoreCache.invalidate('remote_scripts');
+
+          Scripts.remoteAdd(script.key);
+
+          this.#createScript(script);
+        } catch (e) {
+          Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
+        }
+
+        this.$listAddAccept.removeClass('loading disabled');
+        this.$listAddCancel.removeClass('disabled');
+      })
       
       this.$listSearch = this.$parent.operator('list-search');
       this.$listSearch.on('input', () => {
@@ -914,16 +976,22 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
           Loader.toggle(true);
 
-          // TODO: Replace with proper script creation
           if (DefaultScripts.exists(key)) {
-            this.callback(DefaultScripts.getContent(key));
+            this.#createScript(DefaultScripts.get(key));
           } else {
-            SiteAPI.get('script_get', { key }).then(({ script }) => this.callback(script.content)).catch(() => Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message')))
+            SiteAPI.get('script_get', { key }).then(({ script }) => this.#createScript(script)).catch(() => Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message')))
           }
         } else {
-          // TODO: Add new remote script
+          this.#showListAdd(true);
         }
       })
+  }
+
+  #createScript (script) {
+    // TODO: Replace with proper script creation
+
+    this.close();
+    this.callback(script.content)
   }
 
   #updateSearch () {
@@ -949,11 +1017,21 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     `
   }
 
+  #createSegmentIcon (key) {
+    if (Scripts.remoteIs(key)) {
+      return `<i class="ui eye slash outline icon" title="${this.intl('list.private')}"></i>`;
+    } else if (DefaultScripts.exists(key)) {
+      return `<i class="ui archive icon" title="${this.intl('list.default')}"></i>`;
+    } else {
+      return `<i class="ui globe icon" title="${this.intl('list.public')}"></i>`;
+    }
+  }
+
   #createSegment (identifier, { name, description, author, key, version, updated_at }) {
     return `
       <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
         <div class="flex flex-col gap-2">
-          <div>${Scripts.remoteIs(key) ? `<i class="ui eye slash outline icon" title="${this.intl('list.private')}"></i> ` : ''}${_escape(name)}</div>
+          <div>${this.#createSegmentIcon(key || identifier)} ${_escape(name)}</div>
           <div class="text-gray">${this.intl('list.about', { author: _escape(author) })}</div>
           <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
         </div>
@@ -1011,6 +1089,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _applyArguments (callback) {
     this.callback = callback;
+
+    this.#showListAdd(false);
 
     this.$listSearch.val('');
 
