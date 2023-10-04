@@ -1040,9 +1040,9 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       this.callback = callback;
 
       let content = '';
-      for (const [type, { author, description }] of DefaultScripts.entries()) {
+      for (const [type, { author, name }] of DefaultScripts.entries()) {
           if (author) {
-              content += this._createSegment(type, description, author, null, null);
+              content += this._createSegment(type, name, author, null, null);
           }
       }
 
