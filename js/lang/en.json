@@ -1618,7 +1618,8 @@
                 "remove": "Remove script from your list",
                 "private": "This script is private",
                 "public": "This script is public",
-                "default": "This script is available to everyone locally"
+                "default": "This script is available to everyone locally",
+                "new": "New!"
             },
             "error_fetch": {
                 "title": "There was an error while fetching scripts",

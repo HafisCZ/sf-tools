@@ -1042,6 +1042,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
   }
 
   #createSegment (identifier, { name, description, author, key, version, updated_at }) {
+    const savedRemote = Scripts.remoteGet(key);
+
     return `
       <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
         <div class="flex flex-col gap-2">
@@ -1050,7 +1052,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
           <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
         </div>
         <div class="flex flex-col gap-2 text-center" style="visibility: ${key ? 'visible' : 'hidden'};">
-          <div>v${version}</div>
+          <div>v${version}${savedRemote && savedRemote.updated_at < Date.parse(updated_at) ? ` <span class="text-orange">${this.intl('list.new')}</span>` : ''}</div>
           <div class="text-gray">${updated_at ? _formatDate(Date.parse(updated_at)) : ''}</div>
         </div>
         <div style="visibility: ${key ? 'visible' : 'hidden'};">
@@ -1058,7 +1060,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
             <input type="text" readonly value="${key}" style="font-family: monospace;">
           </div>
         </div>
-        <div style="visibility: ${Scripts.remoteGet(key) ? 'visible' : 'hidden'};">
+        <div style="visibility: ${savedRemote ? 'visible' : 'hidden'};">
           <div class="ui inverted orange basic icon small button" title="${this.intl('list.remove')}">
             <i class="ui times icon"></i>
           </div>
