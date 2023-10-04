@@ -1581,7 +1581,11 @@
                 "remote_update": "Publish new version",
                 "remote_remove": "Unpublish script"
             },
-            "error": "Action was not successful"
+            "error": "Action was not successful",
+            "error_remote_author_missing": {
+                "title": "You must set your user name before you can publish scripts",
+                "message": "Please head over to Settings and set your 'author name for published scripts'"
+            }
         },
         "script_archive": {
             "title": "Script archive",

@@ -1385,6 +1385,16 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
       `;
   }
 
+  #checkAuthorPresence () {
+    if (SiteOptions.script_author) {
+      return false;
+    } else {
+      Toast.warn(this.intl('error_remote_author_missing.title'), this.intl('error_remote_author_missing.message'));
+
+      return true;
+    }
+  }
+
   _createBindings () {
     this.$close = this.$parent.operator('close');
     this.$close.click(() => {
@@ -1436,6 +1446,8 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
     // Bindings
     this.$remoteAdd.click(() => {
+      if (this.#checkAuthorPresence()) return;
+            
       const { key, name, version, description, content } = this.script;
 
       this.$remoteAdd.addClass('loading disabled');
@@ -1452,6 +1464,8 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
     });
 
     this.$remoteUpdate.click(() => {
+      if (this.#checkAuthorPresence()) return;
+
       const { key, name, version, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
 
       this.$remoteUpdate.addClass('loading disabled');
@@ -1470,6 +1484,8 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
     });
 
     this.$remoteRemove.click(() => {
+      if (this.#checkAuthorPresence()) return;
+
       const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
 
       this.$remoteUpdate.addClass('disabled');
