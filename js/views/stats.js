@@ -953,7 +953,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     return `
       <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
         <div class="flex flex-col gap-2">
-          <div>${_escape(name)}</div>
+          <div>${Scripts.remoteIs(key) ? `<i class="ui eye slash outline icon" title="${this.intl('list.private')}"></i> ` : ''}${_escape(name)}</div>
           <div class="text-gray">${this.intl('list.about', { author: _escape(author) })}</div>
           <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
         </div>
