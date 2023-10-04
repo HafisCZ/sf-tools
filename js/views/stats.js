@@ -1028,8 +1028,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _showOnline (scripts) {
       let content = '';
-      for (const { author, description, key, version, date } of _sortDesc(scripts, (script) => Date.parse(script.date))) {
-          content += this._createSegment(key, description, author, version, date);
+      for (const { author, name, key, version, date } of _sortDesc(scripts, (script) => Date.parse(script.date))) {
+          content += this._createSegment(key, name, author, version, date);
       }
 
       this.$list.append(content);
@@ -1505,7 +1505,7 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
       this.$remoteAdd.addClass('loading disabled');
 
-      SiteAPI.post('script_create', { description: name, author: 'unknown', content }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
+      SiteAPI.post('script_create', { name, author: 'unknown', content }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
         this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
       }).catch(({ error }) => {
         this.#error(error);
@@ -1522,7 +1522,7 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
       this.$remoteUpdate.addClass('loading disabled');
       this.$remoteRemove.addClass('disabled');
       
-      SiteAPI.post('script_update', { description: name, content, key: remoteKey, secret: remoteSecret }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
+      SiteAPI.post('script_update', { name, content, key: remoteKey, secret: remoteSecret }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
         this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
       }).catch(({ error }) => {
         this.#error(error);
