@@ -1436,12 +1436,12 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
     // Bindings
     this.$remoteAdd.click(() => {
-      const { key, name, description, content } = this.script;
+      const { key, name, version, description, content } = this.script;
 
       this.$remoteAdd.addClass('loading disabled');
 
-      SiteAPI.post('script_create', { name, description, author: 'unknown', content }).then(({ script }) => {
-        this.script = Scripts.remoteAdd(key, script);
+      SiteAPI.post('script_create', { name, description, version, author: 'unknown', content }).then(({ script }) => {
+        this.script = Scripts.markRemote(key, script);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
@@ -1452,13 +1452,13 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
     });
 
     this.$remoteUpdate.click(() => {
-      const { key, name, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+      const { key, name, version, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
 
       this.$remoteUpdate.addClass('loading disabled');
       this.$remoteRemove.addClass('disabled');
       
-      SiteAPI.post('script_update', { name, description, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
-        this.script = Scripts.remoteAdd(key, script);
+      SiteAPI.post('script_update', { name, description, version, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
+        this.script = Scripts.markRemote(key, script);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
@@ -1476,7 +1476,7 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
       this.$remoteRemove.addClass('loading disabled');
 
       SiteAPI.get('script_delete', { key: remoteKey, secret: remoteSecret }).then(() => {
-        this.script = Scripts.remoteRemove(key);
+        this.script = Scripts.markRemote(key);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
