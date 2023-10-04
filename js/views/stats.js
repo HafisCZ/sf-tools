@@ -1347,9 +1347,9 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
                 </div>
                 <div class="three fields">
                     <div class="field">
-                        <label>${this.intl('script.remote_synchronized_at')}</label>
+                        <label>${this.intl('script.remote_updated_at')}</label>
                         <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="remote.synchronized_at">
+                            <input type="text" readonly data-field="remote.updated_at">
                         </div>
                     </div>
                     <div class="field">
@@ -1440,8 +1440,8 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
       this.$remoteAdd.addClass('loading disabled');
 
-      SiteAPI.post('script_create', { name, description, author: 'unknown', content }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
-        this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
+      SiteAPI.post('script_create', { name, description, author: 'unknown', content }).then(({ script }) => {
+        this.script = Scripts.remoteAdd(key, script);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
@@ -1457,8 +1457,8 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
       this.$remoteUpdate.addClass('loading disabled');
       this.$remoteRemove.addClass('disabled');
       
-      SiteAPI.post('script_update', { name, description, content, key: remoteKey, secret: remoteSecret }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
-        this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
+      SiteAPI.post('script_update', { name, description, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
+        this.script = Scripts.remoteAdd(key, script);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {

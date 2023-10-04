@@ -1571,7 +1571,7 @@
                 "version": "Local version",
                 "updated_at": "Updated",
                 "created_at": "Created",
-                "remote_synchronized_at": "Published",
+                "remote_updated_at": "Published",
                 "remote_version": "Remote version",
                 "remote_key": "Code"
             },
