@@ -937,7 +937,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
   }
 
   #updateSearch () {
-    const value = this.$listSearch.val().toLowerCase();
+    const value = _escape(this.$listSearch.val().toLowerCase());
 
     this.$parent.find('[data-script-name]').each((_, element) => {
         if (element.dataset.scriptName.toLowerCase().startsWith(value)) {
@@ -950,11 +950,11 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _createSegment (key, name, author, version, createdAt) {
       return `
-          <div data-script-key="${key}" data-script-name="${name}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="height: 90px;">
+          <div data-script-key="${key}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="height: 90px;">
               <i class="ui big ${DefaultScripts.exists(key) ? 'archive' : 'globe'} disabled icon mr-2"></i>
               <div>    
-                  <div>${name}</div>
-                  <div class="text-gray mt-1">${intl('dialog.script_repository.list.about', { author })}</div>
+                  <div>${_escape(name)}</div>
+                  <div class="text-gray mt-1">${intl('dialog.script_repository.list.about', { author: _escape(author) })}</div>
                   ${version ? `<div class="text-gray">v${version} - ${_formatDate(Date.parse(createdAt))}</div>` : ''}
               </div>
           </div>
