@@ -145,12 +145,12 @@ const SaveOnlineScriptDialog = new (class SaveOnlineScriptDialog extends Dialog 
 
   _applyArguments (code) {
       SiteAPI.get('script_get', { key: code.trim() }).then(({ script }) => {
-          const { description, author, date } = script;
+          const { name, author, created_at } = script;
 
           this.data = script;
 
-          this.$date.val(_formatDate(new Date(date)));
-          this.$name.val(description);
+          this.$date.val(_formatDate(new Date(created_at)));
+          this.$name.val(name);
           this.$author.val(author);
 
           this.setReady();
@@ -1108,8 +1108,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
   _showOnline (scripts) {
       let content = '';
-      for (const { author, description, key, date } of _sortDesc(scripts, (script) => Date.parse(script.date))) {
-          content += this._createSegment(key, description, author, date);
+      for (const { author, name, key, created_at } of _sortDesc(scripts, (script) => Date.parse(script.created_at))) {
+          content += this._createSegment(key, name, author, created_at);
       }
 
       this.$list.append(content);
@@ -1386,7 +1386,7 @@ const TemplateManageDialog = new (class TemplateManageDialog extends Dialog {
           const { name, content, version } = this.template;
 
           this._setLoading();
-          SiteAPI.post('script_create', { description: name, author: 'unknown', content }).then(({ script: { key, secret } }) => {
+          SiteAPI.post('script_create', { name, author: 'unknown', content }).then(({ script: { key, secret } }) => {
               TemplateManager.setOnline(name, key, secret, version);
           }).catch(({ error }) => {
               this._error(error);
@@ -1400,7 +1400,7 @@ const TemplateManageDialog = new (class TemplateManageDialog extends Dialog {
           const { name, content, version, online: { key, secret } } = this.template;
 
           this._setLoading();
-          SiteAPI.post('script_update', { description: name, content, key, secret }).then(({ script: { key, secret } }) => {
+          SiteAPI.post('script_update', { name, content, key, secret }).then(({ script: { key, secret } }) => {
               TemplateManager.setOnline(name, key, secret, version);
           }).catch(({ error }) => {
               this._error(error);
