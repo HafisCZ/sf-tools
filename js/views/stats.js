@@ -986,25 +986,19 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
       this._updateListeners();
 
-      const cache = Store.shared.get('remoteScriptsCache', { content: [], expire: 0 });
-      if (cache.expire < Date.now()) {
-          Scripts.remoteList().then(({ scripts }) => {
-              Store.shared.set('remoteScriptsCache', {
-                  content: scripts,
-                  expire: Date.now() + 3600000
-              });
-
-              this._showOnline(scripts);
-          }).catch(() => {
-              this.$list.append(`
-                  <div>
-                      <b>${intl('stats.scripts.online.not_available')}</b>
-                  </div>
-              `)
-          })
-      } else {
-          this._showOnline(cache.content);
-      }
+      StoreCache.use(
+        'remote_scripts',
+        () => Scripts.remoteList().then(({ scripts }) => scripts),
+        StoreCache.hours(1)
+      ).then((scripts) => {
+        this._showOnline(scripts);
+      }).catch(() => {
+        this.$list.append(`
+          <div>
+              <b>${intl('stats.scripts.online.not_available')}</b>
+          </div>
+        `)
+      });
   }
 
   _updateListeners () {
