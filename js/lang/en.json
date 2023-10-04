@@ -1613,7 +1613,8 @@
             "list": {
                 "about": "Created by #{author}",
                 "no_description": "No description",
-                "remove": "Remove script from your list"
+                "remove": "Remove script from your list",
+                "private": "This script is private"
             },
             "error_fetch": {
                 "title": "There was an error while fetching scripts",
