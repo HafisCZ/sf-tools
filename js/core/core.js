@@ -110,6 +110,43 @@ const Store = (function () {
     );
 })();
 
+class StoreCache {
+  // Timings
+  static hours (value) {
+    return value * 60 * 60 * 1000;
+  }
+
+  // Method
+  static use (key, getter, lifetime) {
+    const { entries } = Store.get('cache', { entries: {} });
+  
+    return new Promise(async (resolve, reject) => {
+      if (entries[key] && entries[key].expire >= Date.now()) {
+        resolve(entries[key].value);
+      } else {
+        try {
+          const value = await getter();
+    
+          entries[key] = {
+            value,
+            expire: Date.now() + lifetime
+          }
+    
+          Store.set('cache', { entries });
+    
+          resolve(value);
+        } catch (e) {
+          reject(e);
+        }
+      }
+    });
+  }
+
+  static clear () {
+    Store.set('cache', { entries: {} });
+  }
+}
+
 // Options
 class OptionsHandler {
     #key;
