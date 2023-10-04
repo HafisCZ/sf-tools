@@ -938,7 +938,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     })
   }
 
-  _createInputSegment () {
+  #createInputSegment () {
     return `
       <div data-script-add data-script-name="" class="!border-radius-1 border-gray text-gray p-4 background-dark:hover cursor-pointer gap-2 border-dashed" style="min-height: 80px; display: grid; grid-template-columns: 98%;">
         <div class="flex gap-2 items-center justify-content-center pointer-events-none">
@@ -949,7 +949,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     `
   }
 
-  _createSegment (identifier, { name, description, author, key, version, updated_at }) {
+  #createSegment (identifier, { name, description, author, key, version, updated_at }) {
     return `
       <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
         <div class="flex flex-col gap-2">
@@ -975,40 +975,49 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     `;
   }
 
-  _showOnline (scripts) {
-    let content = '';
-    for (const script of _sortDesc(scripts, (script) => Date.parse(script.updated_at))) {
-        content += this._createSegment(script.key, script);
-    }
-
-    this.$list.find('[data-script-add]').after(content);
+  #resetList () {
+    this.$list.html(`
+      <div class="flex flex-col gap-8 items-center justify-content-center h-full opacity-50">
+        <img src="res/favicon.png" class="loader" width="100">
+      </div>
+    `);
   }
 
-  _applyArguments (callback) {
-      this.callback = callback;
+  async #loadList () {
+    let content = this.#createInputSegment();
 
-      let content = this._createInputSegment();
-
-      for (const [type, script] of DefaultScripts.entries()) {
-          if (script.author) {
-              content += this._createSegment(type, script);
-          }
-      }
-
-      this.$list.html(content);
-      this.$listSearch.val('');
-
-      StoreCache.use(
+    try {
+      const remoteScripts = await StoreCache.use(
         'remote_scripts',
         () => Scripts.remoteList().then(({ scripts }) => scripts),
         StoreCache.hours(1)
-      ).then((scripts) => {
-        this._showOnline(_sortDesc(scripts, ({ updated_at }) => updated_at ? Date.parse(updated_at) : 0));
-      }).catch(() => {
-        Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
-      });
+      );
+
+      for (const script of _sortDesc(remoteScripts, ({ updated_at }) => updated_at ? Date.parse(updated_at) : 0)) {
+        content += this.#createSegment(script.key, script);
+      }
+    } catch (e) {
+      Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
+    }
+
+    for (const [type, script] of DefaultScripts.entries()) {
+      if (script.author) {
+        content += this.#createSegment(type, script);
+      }
+    }
+
+    this.$list.html(content);
   }
-})();
+
+  _applyArguments (callback) {
+    this.callback = callback;
+
+    this.$listSearch.val('');
+
+    this.#resetList();
+    this.#loadList();
+  }
+});
 
 const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
   constructor () {
