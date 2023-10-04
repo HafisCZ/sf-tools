@@ -1501,11 +1501,11 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
     // Bindings
     this.$remoteAdd.click(() => {
-      const { key, name, content } = this.script;
+      const { key, name, description, content } = this.script;
 
       this.$remoteAdd.addClass('loading disabled');
 
-      SiteAPI.post('script_create', { name, author: 'unknown', content }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
+      SiteAPI.post('script_create', { name, description, author: 'unknown', content }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
         this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
       }).catch(({ error }) => {
         this.#error(error);
@@ -1517,12 +1517,12 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
     });
 
     this.$remoteUpdate.click(() => {
-      const { key, name, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+      const { key, name, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
 
       this.$remoteUpdate.addClass('loading disabled');
       this.$remoteRemove.addClass('disabled');
       
-      SiteAPI.post('script_update', { name, content, key: remoteKey, secret: remoteSecret }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
+      SiteAPI.post('script_update', { name, description, content, key: remoteKey, secret: remoteSecret }).then(({ script: { key: remoteKey, secret: remoteSecret } }) => {
         this.script = Scripts.remoteAdd(key, remoteKey, remoteSecret);
       }).catch(({ error }) => {
         this.#error(error);
