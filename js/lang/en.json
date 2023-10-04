@@ -1548,7 +1548,7 @@
             "source": "Content",
             "content": {
                 "empty": "Empty",
-                "current": "Current editor content",
+                "current": "Current content",
                 "player": "Players",
                 "players": "Browse",
                 "group": "Guilds"
@@ -1607,7 +1607,7 @@
             }
         },
         "script_repository": {
-            "title": "Public scripts",
+            "title": "Online scripts",
             "search": "Search ...",
             "list_add": "Add published script to your list",
             "list_add_key": "Code",

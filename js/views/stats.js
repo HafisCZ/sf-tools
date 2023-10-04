@@ -988,10 +988,15 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
   }
 
   #createScript (script) {
-    // TODO: Replace with proper script creation
-
     this.close();
-    this.callback(script.content)
+
+    Loader.toggle(false);
+
+    DialogController.open(ScriptCreateDialog, script, '_current', (name, description, content) => {
+      const { key } = Scripts.create({ name, description, content });
+
+      this.callback(key);
+    });
   }
 
   #updateSearch () {
@@ -1321,7 +1326,7 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
     _getContentFromSource (source) {
         switch (source) {
             case '_empty': return '';
-            case '_current': return this.editorContent;
+            case '_current': return this.script.content;
             case '_player': return DefaultScripts.getContent('player');
             case '_group': return DefaultScripts.getContent('group');
             case '_players': return DefaultScripts.getContent('players');
@@ -1331,11 +1336,12 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         }
     }
 
-    _applyArguments (editorContent, contentLock, callback) {
-        this.editorContent = editorContent;
+    _applyArguments (script, contentLock, callback) {
+        this.script = Object.assign({ name: `New script ${_formatDate(Date.now())}`, description: '' }, script);
         this.callback = callback;
 
-        this.$name.val(`New script ${_formatDate(Date.now())}`);
+        this.$name.val(this.script.name);
+        this.$description.val(this.script.description);
 
         this.$source.dropdown({
             values: [
