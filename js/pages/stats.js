@@ -274,17 +274,17 @@ class GroupDetailTab extends Tab {
         this.$reference = this.$parent.find('[data-op="reference"]');
     }
 
-    refreshTemplateDropdown () {
+    refreshQuickSwapDropdown () {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
             action: (text, value, element) => {
                 this.$configure.find('.item').removeClass('active');
 
-                if (this.templateOverride == value) {
-                    this.templateOverride = '';
+                if (this.scriptOverride == value) {
+                    this.scriptOverride = '';
                 } else {
-                    this.templateOverride = value;
+                    this.scriptOverride = value;
 
                     $(element).addClass('active');
                 }
@@ -305,7 +305,7 @@ class GroupDetailTab extends Tab {
     }
 
     show ({ identifier }) {
-        this.refreshTemplateDropdown();
+        this.refreshQuickSwapDropdown();
 
         this.identifier = identifier;
         this.group = DatabaseManager.getGroup(identifier);
@@ -385,12 +385,12 @@ class GroupDetailTab extends Tab {
     load () {
         DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned(this.identifier));
 
-        if (this.templateOverride) {
+        if (this.scriptOverride) {
             this.table.clearSorting();
         }
 
-        if  (this.templateOverride) {
-            this.table.setScript(Scripts.getContent(this.templateOverride));
+        if  (this.scriptOverride) {
+            this.table.setScript(Scripts.getContent(this.scriptOverride));
         } else {
             this.table.setScript(Scripts.getAssignedContent(this.identifier, 'group'));
         }
@@ -470,8 +470,8 @@ class GroupDetailTab extends Tab {
     }
 
     reload () {
-        this.templateOverride = '';
-        this.refreshTemplateDropdown();
+        this.scriptOverride = '';
+        this.refreshQuickSwapDropdown();
         this.load();
     }
 }
@@ -562,7 +562,7 @@ class PlayerDetailTab extends Tab {
         this.$identifier = this.$parent.find('[data-op="identifier"]');
     }
 
-    refreshTemplateDropdown () {
+    refreshQuickSwapDropdown () {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
@@ -570,12 +570,12 @@ class PlayerDetailTab extends Tab {
                 this.$configure.find('.item').removeClass('active');
 
                 let settings = '';
-                if (this.templateOverride == value) {
-                    this.templateOverride = '';
+                if (this.scriptOverride == value) {
+                    this.scriptOverride = '';
 
                     settings = Scripts.getAssignedContent(this.identifier, 'player');
                 } else {
-                    this.templateOverride = value;
+                    this.scriptOverride = value;
 
                     $(element).addClass('active');
                     settings = Scripts.getContent(value);
@@ -598,7 +598,7 @@ class PlayerDetailTab extends Tab {
     }
 
     show ({ identifier }) {
-        this.refreshTemplateDropdown();
+        this.refreshQuickSwapDropdown();
         this.identifier = identifier;
 
         const { List: list, Latest: player } = DatabaseManager.getPlayer(identifier);
@@ -620,7 +620,7 @@ class PlayerDetailTab extends Tab {
     }
 
     load () {
-        this.templateOverride = null;
+        this.scriptOverride = null;
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
@@ -640,7 +640,7 @@ class PlayerDetailTab extends Tab {
     }
 
     reload () {
-        this.refreshTemplateDropdown();
+        this.refreshQuickSwapDropdown();
         this.load();
     }
 }
@@ -1108,7 +1108,7 @@ class BrowseTab extends Tab {
             this.tableBase.resetInjector();
             this.tableQ.resetInjector();
     
-            this.refreshTemplateDropdown();
+            this.refreshQuickSwapDropdown();
             this.updateSelectors();
     
             this.load();
@@ -1122,12 +1122,12 @@ class BrowseTab extends Tab {
 
         this.table.setScript(Scripts.getAssignedContent('players', 'players'));
 
-        this.templateOverride = null;
+        this.scriptOverride = null;
         this.recalculate = true;
         this.$filter.trigger('change');
     }
 
-    refreshTemplateDropdown () {
+    refreshQuickSwapDropdown () {
         this.$configure.dropdown({
             on: 'contextmenu',
             showOnFocus: false,
@@ -1135,12 +1135,12 @@ class BrowseTab extends Tab {
                 this.$configure.find('.item').removeClass('active');
 
                 let settings = '';
-                if (this.templateOverride == value) {
-                    this.templateOverride = null;
+                if (this.scriptOverride == value) {
+                    this.scriptOverride = null;
 
                     settings = Scripts.getAssignedContent('players', 'players');
                 } else {
-                    this.templateOverride = value;
+                    this.scriptOverride = value;
 
                     $(element).addClass('active');
                     settings = Scripts.getContent(value);
@@ -1179,7 +1179,7 @@ class BrowseTab extends Tab {
     }
 
     reload () {
-        this.refreshTemplateDropdown();
+        this.refreshQuickSwapDropdown();
         this.load();
     }
 }

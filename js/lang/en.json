@@ -593,7 +593,6 @@
         },
         "scripts": {
             "settings": "Settings",
-            "templates": "Templates",
             "name": "Currently edited script",
             "list": "Available scripts",
             "list_add": "Add new script",
@@ -622,7 +621,6 @@
                 "wiki": "Wiki",
                 "manual": "Manual",
                 "scripts": "Public scripts",
-                "templates": "Templates",
                 "save": "Save",
                 "copy": "Copy",
                 "archive": "Script archive",
