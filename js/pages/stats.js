@@ -2491,7 +2491,11 @@ class ScriptsTab extends Tab {
 
         this.$libraryScripts = this.$parent.operator('library-scripts');
         this.$libraryScripts.click(() => {
-            DialogController.open(ScriptRepositoryDialog, (content) => this.editor.content = content);
+            DialogController.open(ScriptRepositoryDialog, (content) => {
+                this.editor.content = content;
+
+                Loader.toggle(false);
+            });
         });
  
         // Actions

@@ -1609,12 +1609,15 @@
         "script_repository": {
             "title": "Script Repository",
             "search": "Search ...",
-            "private_code": {
-                "label": "Private code",
-                "placeholder": "Enter your private code..."
-            },
+            "list_add": "Add published script to your list",
             "list": {
-                "about": "Created by #{author}"
+                "about": "Created by #{author}",
+                "no_description": "No description",
+                "remove": "Remove script from your list"
+            },
+            "error_fetch": {
+                "title": "There was an error while fetching scripts",
+                "message": "Please wait few moments and try again"
             }
         },
         "statistics_integration_options": {

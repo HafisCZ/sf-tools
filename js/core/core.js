@@ -142,6 +142,14 @@ class StoreCache {
     });
   }
 
+  static invalidate (key) {
+    const { entries } = Store.get('cache', { entries: {} });
+
+    delete entries[key];
+
+    Store.set('cache', { entries });
+  }
+
   static clear () {
     Store.set('cache', { entries: {} });
   }

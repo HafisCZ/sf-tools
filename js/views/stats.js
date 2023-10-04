@@ -876,16 +876,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
                     </div>
                 </div>
               </div>
-              <div class="gap-2 overflow-y-scroll" style="height: 60vh; display: grid; grid-template-columns: repeat(2, 49%); align-content: start;" data-op="list"></div>
-              <div class="ui inverted form">
-                  <div class="field">
-                      <label>${this.intl('private_code.label')}</label>    
-                      <div class="ui inverted icon input">
-                          <input type="text" placeholder="${this.intl('private_code.placeholder')}" data-op="code">
-                          <i class="ui sign in alternate link icon" data-op="code-submit"></i>
-                      </div>
-                  </div>
-              </div>
+              <div class="gap-2 overflow-y-scroll flex flex-col" style="height: 60vh; padding-right: 0.5em;" data-op="list"></div>
           </div>
       `;
   }
@@ -903,37 +894,36 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
           this.close();
       });
 
-      this.$code = this.$parent.operator('code');
-      this.$codeSubmit = this.$parent.operator('code-submit');
+      this.$list.click((event) => {
+        const realTarget = event.target;
+        const realContainer = realTarget.closest('[data-script-key], [data-script-add]');
+        
+        if (!realContainer || realTarget.closest('.ui.input')) {
+          return;
+        }
+        
+        const key = realContainer.dataset.scriptKey;
+        if (realTarget.closest('.ui.button')) {
+          Scripts.remoteRemove(key);
 
-      const codeSubmit = () => {
-          const key = this.$code.val().trim();
-          if (key) {
-              this._fetchScript(key).catch(() => {
-                  this.$code.closest('.field').addClass('error').transition('shake');
-              });
+          StoreCache.invalidate('remote_scripts');
+
+          realContainer.remove();
+        } else if (key) {
+          this.close();
+
+          Loader.toggle(true);
+
+          // TODO: Replace with proper script creation
+          if (DefaultScripts.exists(key)) {
+            this.callback(DefaultScripts.getContent(key));
           } else {
-              this.$code.closest('.field').addClass('error').transition('shake');
+            SiteAPI.get('script_get', { key }).then(({ script }) => this.callback(script.content)).catch(() => Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message')))
           }
-      }
-
-      this.$codeSubmit.click(() => codeSubmit());
-      this.$code.keypress((event) => {
-          if (event.which === 13) {
-              codeSubmit();
-          }
-      });
-    }
-
-  _fetchScript (key) {
-      return SiteAPI.get('script_get', { key }).then(({ script }) => {
-          this._applyScript(script.content);
-      });
-  }
-
-  _applyScript (script) {
-      this.callback(script);
-      this.close();
+        } else {
+          // TODO: Add new remote script
+        }
+      })
   }
 
   #updateSearch () {
@@ -941,78 +931,81 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
     this.$parent.find('[data-script-name]').each((_, element) => {
         if (element.dataset.scriptName.toLowerCase().startsWith(value)) {
-            element.style.display = 'flex';
+            element.style.display = 'grid';
         } else {
             element.style.display = 'none';
         }
     })
   }
 
-  _createSegment (key, name, author, version, createdAt) {
-      return `
-          <div data-script-key="${key}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="height: 90px;">
-              <i class="ui big ${DefaultScripts.exists(key) ? 'archive' : 'globe'} disabled icon mr-2"></i>
-              <div>    
-                  <div>${_escape(name)}</div>
-                  <div class="text-gray mt-1">${intl('dialog.script_repository.list.about', { author: _escape(author) })}</div>
-                  ${version ? `<div class="text-gray">v${version} - ${_formatDate(Date.parse(createdAt))}</div>` : ''}
-              </div>
+  _createInputSegment () {
+    return `
+      <div data-script-add data-script-name="" class="!border-radius-1 border-gray text-gray p-4 background-dark:hover cursor-pointer gap-2 border-dashed" style="min-height: 80px; display: grid; grid-template-columns: 98%;">
+        <div class="flex gap-2 items-center justify-content-center pointer-events-none">
+          <i class="ui big plus disabled icon"></i>
+          <div>${this.intl('list_add')}</div>
+        </div>
+      </div>
+    `
+  }
+
+  _createSegment (identifier, { name, description, author, key, version, updated_at }) {
+    return `
+      <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
+        <div class="flex flex-col gap-2">
+          <div>${_escape(name)}</div>
+          <div class="text-gray">${this.intl('list.about', { author: _escape(author) })}</div>
+          <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
+        </div>
+        <div class="flex flex-col gap-2 text-center" style="visibility: ${key ? 'visible' : 'hidden'};">
+          <div>v${version}</div>
+          <div class="text-gray">${updated_at ? _formatDate(Date.parse(updated_at)) : ''}</div>
+        </div>
+        <div style="visibility: ${key ? 'visible' : 'hidden'};">
+          <div class="ui inverted small input text-center" style="width: 8rem;">
+            <input type="text" readonly value="${key}" style="font-family: monospace;">
           </div>
-      `;
+        </div>
+        <div style="visibility: ${Scripts.remoteIs(key) ? 'visible' : 'hidden'};">
+          <div class="ui inverted orange basic icon small button" title="${this.intl('list.remove')}">
+            <i class="ui times icon"></i>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   _showOnline (scripts) {
-      let content = '';
-      for (const { author, name, key, version, updated_at } of _sortDesc(scripts, (script) => Date.parse(script.updated_at))) {
-          content += this._createSegment(key, name, author, version, updated_at);
-      }
+    let content = '';
+    for (const script of _sortDesc(scripts, (script) => Date.parse(script.updated_at))) {
+        content += this._createSegment(script.key, script);
+    }
 
-      this.$list.append(content);
-      this._updateListeners();
+    this.$list.find('[data-script-add]').after(content);
   }
 
   _applyArguments (callback) {
       this.callback = callback;
 
-      let content = '';
-      for (const [type, { author, name }] of DefaultScripts.entries()) {
-          if (author) {
-              content += this._createSegment(type, name, author, null, null);
+      let content = this._createInputSegment();
+
+      for (const [type, script] of DefaultScripts.entries()) {
+          if (script.author) {
+              content += this._createSegment(type, script);
           }
       }
 
       this.$list.html(content);
       this.$listSearch.val('');
 
-      this._updateListeners();
-
       StoreCache.use(
         'remote_scripts',
         () => Scripts.remoteList().then(({ scripts }) => scripts),
         StoreCache.hours(1)
       ).then((scripts) => {
-        this._showOnline(scripts);
+        this._showOnline(_sortDesc(scripts, ({ updated_at }) => updated_at ? Date.parse(updated_at) : 0));
       }).catch(() => {
-        this.$list.append(`
-          <div>
-              <b>${intl('stats.scripts.online.not_available')}</b>
-          </div>
-        `)
-      });
-  }
-
-  _updateListeners () {
-      const $items = this.$list.find('[data-script-key]');
-      $items.off('click').on('click', (event) => {
-          const key = event.currentTarget.dataset.scriptKey;
-          if (DefaultScripts.exists(key)) {
-              this._applyScript(DefaultScripts.getContent(key));
-          } else {
-              const $icon = $(event.currentTarget).find('i').removeClass('archive globe').addClass('loading sync');
-              this._fetchScript(key).catch(() => {
-                  $icon.removeClass('loading sync').addClass('text-red warning');
-              });
-          }
+        Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
       });
   }
 })();
