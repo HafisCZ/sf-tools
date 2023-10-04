@@ -1450,6 +1450,10 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
       SiteAPI.post('script_create', { name, description, version, author: SiteOptions.script_author, content }).then(({ script }) => {
         this.script = Scripts.markRemote(key, script);
+
+        StoreCache.invalidate('remote_scripts');
+
+        Scripts.remoteAdd(script.key);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
@@ -1489,6 +1493,10 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
       SiteAPI.get('script_delete', { key: remoteKey, secret: remoteSecret }).then(() => {
         this.script = Scripts.markRemote(key);
+
+        StoreCache.invalidate('remote_scripts');
+
+        Scripts.remoteRemove(remoteKey);
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
