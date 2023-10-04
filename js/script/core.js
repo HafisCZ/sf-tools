@@ -3670,6 +3670,10 @@ class Scripts {
         this.#persist();
     }
 
+    static remoteIs (key) {
+        return this.data.remote.includes(key);
+    }
+
     static sortedList (table = null) {
         let list = this.list();
         if (table) {
