@@ -1440,7 +1440,7 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
       this.$remoteAdd.addClass('loading disabled');
 
-      SiteAPI.post('script_create', { name, description, version, author: 'unknown', content }).then(({ script }) => {
+      SiteAPI.post('script_create', { name, description, version, author: SiteOptions.script_author, content }).then(({ script }) => {
         this.script = Scripts.markRemote(key, script);
       }).catch(({ error }) => {
         this.#error(error);
@@ -1457,7 +1457,7 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
       this.$remoteUpdate.addClass('loading disabled');
       this.$remoteRemove.addClass('disabled');
       
-      SiteAPI.post('script_update', { name, description, version, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
+      SiteAPI.post('script_update', { name, description, version, author: SiteOptions.script_author, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
         this.script = Scripts.markRemote(key, script);
       }).catch(({ error }) => {
         this.#error(error);
