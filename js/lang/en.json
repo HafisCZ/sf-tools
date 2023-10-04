@@ -620,10 +620,10 @@
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
-                "scripts": "Public scripts",
+                "scripts": "Online scripts",
                 "save": "Save",
                 "copy": "Copy",
-                "archive": "Script archive",
+                "archive": "Archived scripts",
                 "recover": "Load version v#{version}",
                 "manage": "Manage",
                 "close": "Return back",
@@ -1588,7 +1588,7 @@
             }
         },
         "script_archive": {
-            "title": "Script archive",
+            "title": "Archived scripts",
             "filter": "Filter by type",
             "clear": "Delete all items from archive",
             "copy_toast": "Script has been copied",
