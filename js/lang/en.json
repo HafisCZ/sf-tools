@@ -1610,11 +1610,15 @@
             "title": "Public scripts",
             "search": "Search ...",
             "list_add": "Add published script to your list",
+            "list_add_key": "Code",
+            "list_add_accept": "Add to my list",
             "list": {
                 "about": "Created by #{author}",
                 "no_description": "No description",
                 "remove": "Remove script from your list",
-                "private": "This script is private"
+                "private": "This script is private",
+                "public": "This script is public",
+                "default": "This script is available to everyone locally"
             },
             "error_fetch": {
                 "title": "There was an error while fetching scripts",
