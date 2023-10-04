@@ -2491,10 +2491,10 @@ class ScriptsTab extends Tab {
 
         this.$libraryScripts = this.$parent.operator('library-scripts');
         this.$libraryScripts.click(() => {
-            DialogController.open(ScriptRepositoryDialog, (content) => {
-                this.editor.content = content;
-
-                Loader.toggle(false);
+            DialogController.open(ScriptRepositoryDialog, (key) => {
+                this.hide();
+                this.#setScript(key);
+                this.#updateSidebars();
             });
         });
  
@@ -2620,7 +2620,7 @@ class ScriptsTab extends Tab {
                 this.returnTo();
             }
         } else {
-            DialogController.open(ScriptCreateDialog, this.editor.content, '_current', (name, description, content) => {
+            DialogController.open(ScriptCreateDialog, { content: this.editor.content }, '_current', (name, description, content) => {
                 this.script = Scripts.create({ name, description, content });
 
                 if (this.target) {
@@ -2874,7 +2874,7 @@ class ScriptsTab extends Tab {
         });
 
         this.$list.find('[data-script-add]').click(() => {
-            DialogController.open(ScriptCreateDialog, this.editor.content, null, (name, description, content, source) => {
+            DialogController.open(ScriptCreateDialog, { content: this.editor.content }, null, (name, description, content, source) => {
                 if (source !== '_current') {
                     this.hide();
                 }
