@@ -988,7 +988,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
       const cache = Store.shared.get('remoteScriptsCache', { content: [], expire: 0 });
       if (cache.expire < Date.now()) {
-          SiteAPI.get('script_list').then(({ scripts }) => {
+          Scripts.remoteList().then(({ scripts }) => {
               Store.shared.set('remoteScriptsCache', {
                   content: scripts,
                   expire: Date.now() + 3600000

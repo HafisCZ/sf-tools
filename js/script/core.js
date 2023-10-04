@@ -3525,6 +3525,10 @@ class Scripts {
             this.data = Store.get('scripts', this.#DEFAULT_DATA);
         }
 
+        if (typeof this.data.remote === 'undefined') {
+            this.data.remote = [];
+        }
+
         return this.data;
     }
 
