@@ -3494,7 +3494,8 @@ class ScriptArchive {
         updated_at: number
         tables: string[]
         remote: null | {
-            synchronized_at: number
+            created_at: number
+            updated_at: number
             key: string
             secret: string
             version: number
@@ -3555,7 +3556,8 @@ class Scripts {
             const remote = online ? {
                 key: online.key,
                 secret: online.secret,
-                synchronized_at: online.timestamp,
+                created_at: online.timestamp,
+                updated_at: online.timestamp,
                 version: isNaN(online.version) ? 1 : online.version
             } : null;
 
@@ -3608,15 +3610,14 @@ class Scripts {
         this.#persist();
     }
 
-    static remoteAdd (key, remoteKey, remoteSecret) {
-        const script = this.findScript(key);
-
+    static remoteAdd (key, remote) {
         return this.update(key, {
             remote: {
-                synchronized_at: Date.now(),
-                version: script.version,
-                key: remoteKey || script.remote.key,
-                secret: remoteSecret || script.remote.secret
+                created_at: Date.parse(remote.created_at),
+                updated_at: Date.parse(remote.updated_at),
+                version: remote.version,
+                key: remote.key,
+                secret: remote.secret
             }
         }, false);
     }
