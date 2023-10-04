@@ -3526,7 +3526,7 @@ class Scripts {
         }
 
         if (typeof this.data.remote === 'undefined') {
-            this.data.remote = [];
+            this.data.remote = Object.create(null);
         }
 
         return this.data;
@@ -3655,23 +3655,23 @@ class Scripts {
     }
 
     static remoteList () {
-        return SiteAPI.get('script_list', { include: this.data.remote });
+        return SiteAPI.get('script_list', { include: Object.keys(this.data.remote) });
     }
 
-    static remoteAdd (key) {
-        _pushUnlessIncludes(this.data.remote, key);
+    static remoteAdd (key, script) {
+        this.data.remote[key] = script;
 
         this.#persist();
     }
 
     static remoteRemove (key) {
-        _remove(this.data.remote, key);
+        delete this.data.remote[key];
 
         this.#persist();
     }
 
-    static remoteIs (key) {
-        return this.data.remote.includes(key);
+    static remoteGet (key) {
+        return this.data.remote[key];
     }
 
     static sortedList (table = null) {

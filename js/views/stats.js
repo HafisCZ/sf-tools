@@ -883,7 +883,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
                     <div class="field">
                       <label>${this.intl('list_add_key')}</label>
                       <div class="ui inverted centered input">
-                        <input type="text" maxlength="12" data-op="key">
+                        <input type="text" maxlength="12" data-op="list-add-key">
                       </div>
                     </div>
                   </div>
@@ -903,7 +903,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       this.$list.hide();
       this.$listAdd.show();
 
-      this.$listAdd.operator('key').val('').focus();
+      this.$listAddKey.val('').focus();
 
       this.$listSearch.parent('.input').addClass('disabled');
     } else {
@@ -917,6 +917,12 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
   _createBindings () {
       this.$list = this.$parent.operator('list');
       this.$listAdd = this.$parent.operator('list-add');
+      this.$listAddKey = this.$parent.operator('list-add-key');
+      this.$listAddKey.on('keydown', (event) => {
+        if (event.originalEvent.key === 'Enter') {
+            this.$listAddAccept.click();
+        }
+      })
 
       this.$listAddCancel = this.$listAdd.operator('list-add-cancel');
       this.$listAddCancel.click(() => {
@@ -925,19 +931,22 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
       this.$listAddAccept = this.$listAdd.operator('list-add-accept');
       this.$listAddAccept.click(async () => {
-        const key = this.$listAdd.operator('key').val();
+        const key = this.$listAddKey.val();
 
         this.$listAddAccept.addClass('loading disabled');
         this.$listAddCancel.addClass('disabled');
 
         try {
-          const script = await SiteAPI.get('script_get', { key }).then(({ script }) => script);
+          const script = await SiteAPI.get('script_info', { key }).then(({ script }) => script);
 
           StoreCache.invalidate('remote_scripts');
 
-          Scripts.remoteAdd(script.key);
+          Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
 
-          this.#createScript(script);
+          this.#showListAdd(false);
+
+          this.#resetList();
+          this.#loadList();
         } catch (e) {
           Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
         }
@@ -1023,7 +1032,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
   }
 
   #createSegmentIcon (key) {
-    if (Scripts.remoteIs(key)) {
+    if (Scripts.remoteGet(key)) {
       return `<i class="ui eye slash outline icon" title="${this.intl('list.private')}"></i>`;
     } else if (DefaultScripts.exists(key)) {
       return `<i class="ui archive icon" title="${this.intl('list.default')}"></i>`;
@@ -1049,7 +1058,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
             <input type="text" readonly value="${key}" style="font-family: monospace;">
           </div>
         </div>
-        <div style="visibility: ${Scripts.remoteIs(key) ? 'visible' : 'hidden'};">
+        <div style="visibility: ${Scripts.remoteGet(key) ? 'visible' : 'hidden'};">
           <div class="ui inverted orange basic icon small button" title="${this.intl('list.remove')}">
             <i class="ui times icon"></i>
           </div>
@@ -1539,7 +1548,7 @@ const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
 
         StoreCache.invalidate('remote_scripts');
 
-        Scripts.remoteAdd(script.key);
+        Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
       }).catch(({ error }) => {
         this.#error(error);
       }).finally(() => {
