@@ -2721,12 +2721,6 @@ class ScriptsTab extends Tab {
 
         this.#updateSidebars();
         this.#updateTarget();
-
-        if (this.script) {
-            this.$list.find(`[data-script-key="${this.script.key}"]`).get(0).scrollIntoView({ block: 'center' })
-        } else {
-            this.$list.find('[data-script-add]').get(0).scrollIntoView({ block: 'center' })
-        }
     }
 
     #updateTarget () {
@@ -2826,7 +2820,7 @@ class ScriptsTab extends Tab {
             </div>
         `;
 
-        for (const { key, name, version, favorite, updated_at, remote, description } of _sortDesc(Scripts.sortedList(), (script) => script === this.script ? 1 : 0)) {
+        for (const { key, name, version, favorite, updated_at, remote, description } of Scripts.sortedList()) {
             const assigned = Scripts.isAssignedTo(this.target, key);
 
             content += `
