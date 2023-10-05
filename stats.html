@@ -179,8 +179,8 @@
         </div>
 
         <div id="view-scripts" class="ui main inverted container" style="display: none; width: 95vw;">
-            <div class="ui grid">
-                <div class="three wide column">
+            <div class="grid" style="grid-template-columns: 0.22fr auto 0.13fr; grid-template-rows: calc(100vh - 50px - 3em); gap: 2em; overflow-y: hidden;">
+                <div class="flex flex-col gap-4">
                     <div class="ui inverted form">
                         <div class="field">
                             <label data-intl="stats.scripts.target"></label>
@@ -196,19 +196,15 @@
                                 <input type="text" data-op="list-search" data-intl-placeholder="stats.scripts.list_search">
                             </div>
                         </div>
-                        <div class="field">
-                            <div data-op="list" class="pr-2 overflow-y-scroll flex flex-col gap-4" style="height: 73vh;"></div>
-                        </div>
+                    </div>
+                    <div data-op="list" class="pr-2 overflow-y-scroll flex flex-col gap-4"></div>
+                </div>
+                <div class="ui inverted form h-full">
+                    <div class="field h-full">
+                        <div data-op="editor"></div>
                     </div>
                 </div>
-                <div class="eleven wide column">
-                    <div class="ui inverted form h-full">
-                        <div class="field h-full">
-                            <div data-op="editor"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="two wide column">
+                <div>
                     <div class="ui spaced fluid small vertical buttons">
                         <button class="ui basic inverted button" data-op="close"><i class="ui reply icon"></i> <span data-intl="stats.scripts.sidebar.close"></span></button>
                         <button class="ui basic inverted button" data-op="reset"><i class="ui recycle format icon"></i> <span data-intl="stats.scripts.sidebar.reset"></span></button>
