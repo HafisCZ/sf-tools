@@ -2826,7 +2826,7 @@ class ScriptsTab extends Tab {
             </div>
         `;
 
-        for (const { key, name, version, favorite, updated_at, remote, description } of Scripts.sortedList()) {
+        for (const { key, name, version, favorite, updated_at, remote, description } of _sortDesc(Scripts.sortedList(), (script) => script === this.script ? 1 : 0)) {
             const assigned = Scripts.isAssignedTo(this.target, key);
 
             content += `
