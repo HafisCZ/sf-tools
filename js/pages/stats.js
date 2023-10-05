@@ -2640,11 +2640,17 @@ class ScriptsTab extends Tab {
 
     #updateScript () {
         if (this.script) {
-            const { name, version, updated_at } = this.script;
+            const { name, description, version, remote, updated_at } = this.script;
             
             this.$script.html(`
-                <div>${_escape(name)}</div>
-                <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
+                <div>
+                    <div>${_escape(name)}</div>
+                    <div class="text-gray overflow-hidden" title="${_escape(description || '')}">${_escape(_truncate(description || '', 100))}</div>
+                </div>
+                <div class="text-gray">
+                    <div><i class="ui desktop icon"></i> v${version} - ${_formatDate(updated_at)}</div>
+                    <div>${remote ? `<i class="ui satellite dish icon"></i> v${remote.version} - ${_formatDate(remote.updated_at)}` : '&nbsp;'}</div>
+                </div>
             `)
         } else {
             this.$script.empty()
