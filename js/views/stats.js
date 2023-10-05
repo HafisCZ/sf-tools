@@ -1374,6 +1374,8 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         } else {
             this.$source.removeClass('disabled');
         }
+
+        setTimeout(() => this.$name.focus(), 100);
     }
 })
 
