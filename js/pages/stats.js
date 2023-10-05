@@ -2465,6 +2465,7 @@ class ScriptsTab extends Tab {
 
         // Left sidebar
         this.$list = this.$parent.operator('list');
+        this.$script = this.$parent.operator('script');
 
         this.$listSearch = this.$parent.operator('list-search');
         this.$listSearch.on('input', () => {
@@ -2637,6 +2638,19 @@ class ScriptsTab extends Tab {
         }
     }
 
+    #updateScript () {
+        if (this.script) {
+            const { name, version, updated_at } = this.script;
+            
+            this.$script.html(`
+                <div>${_escape(name)}</div>
+                <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
+            `)
+        } else {
+            this.$script.empty()
+        }
+    }
+
     #updateButtons () {
         if (UI.current !== this) {
             return;
@@ -2782,9 +2796,9 @@ class ScriptsTab extends Tab {
         }
 
         if (changed) {
-            this.$save.addClass('yellow').removeClass('disabled inverted');
+            this.$save.removeClass('disabled');
         } else {
-            this.$save.removeClass('yellow').addClass('disabled inverted');
+            this.$save.addClass('disabled');
         }
     }
 
@@ -2898,6 +2912,7 @@ class ScriptsTab extends Tab {
 
         this.#updateButtons();
         this.#updateSearch();
+        this.#updateScript();
     }
 }
 
