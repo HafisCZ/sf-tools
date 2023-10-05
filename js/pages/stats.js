@@ -2644,8 +2644,8 @@ class ScriptsTab extends Tab {
             
             this.$script.html(`
                 <div>
-                    <div>${_escape(name)}</div>
-                    <div class="text-gray overflow-hidden" title="${_escape(description || '')}">${_escape(_truncate(description || '', 100))}</div>
+                    <div class="wrap-none overflow-hidden text-overflow-ellipsis" title="${_escape(name)}">${_escape(name)}</div>
+                    <div class="text-gray text-overflow-ellipsis-2-line" title="${_escape(description || '')}">${_escape(description || '')}</div>
                 </div>
                 <div class="text-gray">
                     <div><i class="ui desktop icon"></i> v${version} - ${_formatDate(updated_at)}</div>
@@ -2845,8 +2845,8 @@ class ScriptsTab extends Tab {
 
             content += `
                 <div data-script-key="${key}" data-script-name="${_escape(name)}" title="${_escape(description || '')}" class="script !border-radius-1 border-gray p-4 background-dark background-light:hover cursor-pointer flex gap-2 items-center ${this.script?.key === key ? 'background-light !border-orange' : ''}">
-                    <div>
-                        <div>${_escape(name)}</div>
+                    <div style="width: calc(100% - 3em);">
+                        <div class="wrap-none overflow-hidden text-overflow-ellipsis" title="${_escape(name)}">${_escape(name)}</div>
                         <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
                     </div>
                     <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${assigned}" data-pinned="${favorite}">
@@ -2854,7 +2854,7 @@ class ScriptsTab extends Tab {
                         <i data-op="icon-assign" class="ui ${assigned ? 'unlink' : 'linkify'} icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${assigned ? 'unassign' : 'assign'}`)}"></i>
                     </div>
                     <div class="script-indicators" data-remote="${!!remote}">
-                        <i data-op="icon-remote" class="ui share alternate icon text-gray" title="${intl('stats.scripts.tooltip.remote')}"></i>
+                        <i data-op="icon-remote" class="ui satellite dish icon text-gray" title="${intl('stats.scripts.tooltip.remote')}"></i>
                     </div>
                 </div>
             `;
