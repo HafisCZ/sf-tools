@@ -598,6 +598,7 @@
             "list_add": "Add new script",
             "list_search": "Search ...",
             "target": "Current table",
+            "script": "Current script",
             "quick_swap": "Quick swap script",
             "targets": {
                 "none": "None",
