@@ -1303,8 +1303,8 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
                     </div>
                 </div>
                 <div class="ui fluid two buttons">
-                    <div class="ui black button" data-op="close">${intl('dialog.shared.cancel')}</div>
-                    <div class="ui button !text-black !background-orange" data-op="create">${this.intl('create')}</div>
+                    <button class="ui black button" data-op="close">${intl('dialog.shared.cancel')}</button>
+                    <button class="ui button !text-black !background-orange" data-op="create">${this.intl('create')}</button>
                 </div>
             </div>
         `;
