@@ -343,7 +343,7 @@ const CONFIG = Object.defineProperties(
             Summons: [
                 {
                     Duration: 2,
-                    DamageMultiplier: 1,
+                    DamageBonus: 0,
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
@@ -354,7 +354,7 @@ const CONFIG = Object.defineProperties(
                 },
                 {
                     Duration: 1,
-                    DamageMultiplier: 1.75,
+                    DamageBonus: 0.75,
                     SkipChance: 0,
                     CriticalBonus: 0.5,
                     CriticalChance: 0.6,
@@ -362,7 +362,7 @@ const CONFIG = Object.defineProperties(
                 },
                 {
                     Duration: 3,
-                    DamageMultiplier: 0.75,
+                    DamageBonus: -0.25,
                     SkipChance: 0.25,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
@@ -857,11 +857,13 @@ class SimulatorModel {
             Weapon1: this.Data.Weapon1
         }
     
-        if (typeof config.DamageMultiplier !== 'undefined') {
+        if (typeof config.DamageBonus !== 'undefined') {
+            const multiplier = (this.Config.DamageMultiplier + config.DamageBonus) / this.Config.DamageMultiplier;
+
             state.Weapon1 = {
-                Base: config.DamageMultiplier * this.Data.Weapon1.Base,
-                Max: config.DamageMultiplier * this.Data.Weapon1.Max,
-                Min: config.DamageMultiplier * this.Data.Weapon1.Min
+                Base: multiplier * this.Data.Weapon1.Base,
+                Max: multiplier * this.Data.Weapon1.Max,
+                Min: multiplier * this.Data.Weapon1.Min
             }
         }
     
