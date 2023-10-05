@@ -320,6 +320,19 @@
   margin-bottom: 3em;
 }
 
+.text-overflow-ellipsis {
+  text-overflow: ellipsis;
+}
+
+.text-overflow-ellipsis-2-line {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+}
+
 /* Text Size */
 .text-5 {
   font-size: 1.25em;
