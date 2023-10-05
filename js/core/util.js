@@ -447,6 +447,14 @@ function _parseDate (text) {
     }
 }
 
+function _truncate (string, length) {
+    if (string.length > length) {
+        return string.slice(0, length) + '...';
+    } else {
+        return string;
+    }
+}
+
 function _formatDurationLegacy (duration) {
     if (duration == '' || duration == undefined) return '';
     duration = Math.max(0, duration);
