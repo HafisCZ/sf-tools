@@ -2647,9 +2647,9 @@ class ScriptsTab extends Tab {
                     <div class="wrap-none overflow-hidden text-overflow-ellipsis" title="${_escape(name)}">${_escape(name)}</div>
                     <div class="text-gray text-overflow-ellipsis-2-line" title="${_escape(description || '')}">${_escape(description || '')}</div>
                 </div>
-                <div class="text-gray">
+                <div class="text-gray flex justify-content-between">
                     <div><i class="ui desktop icon"></i> v${version} - ${_formatDate(updated_at)}</div>
-                    <div>${remote ? `<i class="ui satellite dish icon"></i> v${remote.version} - ${_formatDate(remote.updated_at)}` : '&nbsp;'}</div>
+                    <div>${remote ? `<i class="ui satellite dish icon" title="${intl('stats.scripts.tooltip.remote')}"></i> <span class="font-monospace" style="line-height: 14px;">${remote.key}</span>` : ''}</div>
                 </div>
             `)
         } else {
