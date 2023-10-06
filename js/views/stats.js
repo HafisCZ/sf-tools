@@ -1052,7 +1052,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
           <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
         </div>
         <div class="flex flex-col gap-2 text-center" style="visibility: ${key ? 'visible' : 'hidden'};">
-          <div>v${version}${savedRemote && savedRemote.updated_at < Date.parse(updated_at) ? ` <span class="text-orange">${this.intl('list.new')}</span>` : ''}</div>
+          <div>v${version}${savedRemote && savedRemote.version < version ? ` <span class="text-orange">${this.intl('list.new')}</span>` : ''}</div>
           <div class="text-gray">${updated_at ? _formatDate(Date.parse(updated_at)) : ''}</div>
         </div>
         <div style="visibility: ${key ? 'visible' : 'hidden'};">
