@@ -1001,11 +1001,11 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
     Loader.toggle(false);
 
-    DialogController.open(ScriptCreateDialog, script, '_current', (name, description, content) => {
-      const { key } = Scripts.create({ name, description, content });
+    DialogController.open(ScriptEditDialog, script, (_script) => {
+        const { key } = Scripts.create(_script);
 
-      this.callback(key);
-    });
+        this.callback(key);
+    }, '_current');
   }
 
   #updateSearch () {
@@ -1266,10 +1266,10 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
   }
 })();
 
-const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
+const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
     constructor () {
         super({
-            key: 'script_create',
+            key: 'script_edit',
             dismissable: true
         })
     }
@@ -1278,7 +1278,7 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         return `
             <div class="ui small bordered inverted dialog">
                 <div class="header flex justify-content-between items-center">
-                    <div>${this.intl('title')}</div>
+                    <div data-op="title"></div>
                     <i class="ui small link close icon" data-op="close"></i>
                 </div>
                 <div class="ui inverted form">
@@ -1294,7 +1294,14 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
                             <textarea rows="3" data-op="description"></textarea>
                         </div>
                     </div>
-                    <div class="field">
+                    <div class="field !mb-0">
+                        <label>${this.intl('tables')}</label>
+                        <div class="ui fluid selection inverted multiple dropdown" data-op="tables">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="field !mt-4">
                         <label>${this.intl('source')}</label>
                         <div class="ui fluid selection inverted search dropdown" data-op="source">
                             <div class="text"></div>
@@ -1304,7 +1311,7 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
                 </div>
                 <div class="ui fluid two buttons">
                     <button class="ui black button" data-op="close">${intl('dialog.shared.cancel')}</button>
-                    <button class="ui button !text-black !background-orange" data-op="create">${this.intl('create')}</button>
+                    <button class="ui button !text-black !background-orange" data-op="create">${intl('dialog.shared.save')}</button>
                 </div>
             </div>
         `;
@@ -1316,22 +1323,46 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
             this.close();
         });
 
+        this.$title = this.$parent.operator('title');
         this.$name = this.$parent.operator('name');
         this.$description = this.$parent.operator('description');
         this.$source = this.$parent.operator('source');
 
         this.$create = this.$parent.operator('create');
         this.$create.click(() => {
-            const name = this.$name.val().trim();
-            const description = this.$description.val().trim();
+            const script = {
+                name: this.$name.val().trim(),
+                description: this.$description.val().trim(),
+                tables: this.$tables.dropdown('get values')
+            }
 
-            const source = this.$source.dropdown('get value');
+            if (!script.name) {
+                // Require script name
+                Toast.warn(this.intl('error_title'), this.intl('error_name_blank'));
 
-            if (name && source) {
-                this.callback(name, description, this._getContentFromSource(source), source);
+                return;
+            }
+
+            if (this.script.key) {
+                this.callback(script, null);
+                this.close();
+            } else {
+                const source = this.$source.dropdown('get value');
+
+                this.callback(Object.assign(script, { content: this._getContentFromSource(source) }), source);
                 this.close();
             }
         });
+
+        this.$tables = this.$parent.operator('tables');
+        this.$tables.dropdown({
+            placeholder: this.intl('tables'),
+            values: [
+                { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'database' },
+                { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'archive' },
+                { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'user' }
+            ]
+        })
     }
 
     _getContentFromSource (source) {
@@ -1347,311 +1378,52 @@ const ScriptCreateDialog = new (class ScriptCreateDialog extends Dialog {
         }
     }
 
-    _applyArguments (script, contentLock, callback) {
-        this.script = Object.assign({ name: `New script ${_formatDate(Date.now())}`, description: '' }, script);
+    _applyArguments (script, callback, contentLock) {
         this.callback = callback;
+
+        if (typeof script.key === 'undefined') {
+            // Create script
+            this.script = Object.assign({ name: `New script ${_formatDate(Date.now())}`, description: '' }, script);
+            
+            this.$title.text(this.intl('title.create'));
+
+            this.$source.parent('.field').show();
+
+            this.$source.dropdown({
+                values: [
+                    { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
+                    { value: '_current', name: this.intl('content.current'), icon: 'minus' },
+                    { type: 'header', name: this.intl('category.defaults') },
+                    { value: '_players', name: this.intl('content.players'), icon: 'database' },
+                    { value: '_group', name: this.intl('content.group'), icon: 'archive' },
+                    { value: '_player', name: this.intl('content.player'), icon: 'user' },
+                    { type: 'header', name: this.intl('category.clone') },
+                    ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
+                ]
+            });
+
+            this.$source.dropdown('set selected', contentLock || '_current');
+
+            if (contentLock) {
+                this.$source.addClass('disabled');
+            } else {
+                this.$source.removeClass('disabled');
+            }
+    
+            setTimeout(() => this.$name.focus(), 100);
+        } else {
+            this.script = script;
+            
+            this.$title.text(this.intl('title.edit'));
+        
+            this.$source.parent('.field').hide();
+        }
 
         this.$name.val(this.script.name);
         this.$description.val(this.script.description);
-
-        this.$source.dropdown({
-            values: [
-                { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
-                { value: '_current', name: this.intl('content.current'), icon: 'minus' },
-                { type: 'header', name: this.intl('category.defaults') },
-                { value: '_players', name: this.intl('content.players'), icon: 'database' },
-                { value: '_group', name: this.intl('content.group'), icon: 'archive' },
-                { value: '_player', name: this.intl('content.player'), icon: 'user' },
-                { type: 'header', name: this.intl('category.clone') },
-                ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
-            ]
-        });
-
-        this.$source.dropdown('set selected', contentLock || '_current');
-        
-        if (contentLock) {
-            this.$source.addClass('disabled');
-        } else {
-            this.$source.removeClass('disabled');
-        }
-
-        setTimeout(() => this.$name.focus(), 100);
+        this.$tables.dropdown('clear', true).dropdown('set selected', this.script.tables || ['players', 'group', 'player'], true);
     }
 })
-
-const ScriptManageDialog = new (class ScriptManageDialog extends Dialog {
-  constructor () {
-      super({
-          key: 'script_manage',
-          dismissable: true
-      })
-  }
-
-  _createModal () {
-      return `
-        <div class="ui small bordered inverted dialog">
-            <div class="header flex justify-content-between items-center">
-                <div>${this.intl('title')}</div>
-                <i class="ui small link close icon" data-op="close"></i>
-            </div>
-            <div class="ui inverted form">
-                <div class="field">
-                    <h3 class="ui inverted header">${this.intl('category.general')}</h3>
-                </div>
-                <div class="field">
-                    <label>${this.intl('script.name')}</label>
-                    <div class="ui inverted centered input">
-                        <input type="text" data-field="name">
-                    </div>
-                </div>
-                <div class="field">
-                    <label>${this.intl('script.description')}</label>
-                    <div class="ui inverted input">
-                        <textarea rows="3" data-field="description"></textarea>
-                    </div>
-                </div>
-                <div class="three fields">
-                    <div class="field">
-                        <label>${this.intl('script.created_at')}</label>
-                        <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="created_at">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('script.updated_at')}</label>
-                        <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="updated_at">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('script.version')}</label>
-                        <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="version">
-                        </div>
-                    </div>
-                </div>
-                <div class="field">
-                    <label>${this.intl('script.tables')}</label>
-                    <div class="ui fluid selection inverted multiple dropdown" data-field="tables">
-                        <div class="text"></div>
-                        <i class="dropdown icon"></i>
-                    </div>
-                </div>
-                <div class="field !mt-8">
-                    <h3 class="ui inverted header">${this.intl('category.remote')}</h3>
-                </div>
-                <div class="three fields">
-                    <div class="field">
-                        <label>${this.intl('script.remote_updated_at')}</label>
-                        <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="remote.updated_at">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('script.remote_key')}</label>
-                        <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="remote.key">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>${this.intl('script.remote_version')}</label>
-                        <div class="ui inverted centered input">
-                            <input type="text" readonly data-field="remote.version">
-                        </div>
-                    </div>
-                </div>
-                <div class="two fields">
-                    <div class="field">
-                        <div class="ui basic inverted fluid button" data-op="action-remote-add">
-                            <i class="ui cloud upload alternate icon"></i> ${this.intl('action.remote_add')}
-                        </div>
-                        <div class="ui basic inverted fluid button" data-op="action-remote-update">
-                            <i class="ui sync alternate icon"></i> ${this.intl('action.remote_update')}
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui basic inverted fluid button" data-op="action-remote-remove">
-                            <i class="ui cloud download alternate icon"></i> ${this.intl('action.remote_remove')}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      `;
-  }
-
-  #checkAuthorPresence () {
-    if (SiteOptions.script_author) {
-      return false;
-    } else {
-      Toast.warn(this.intl('error_remote_author_missing.title'), this.intl('error_remote_author_missing.message'));
-
-      return true;
-    }
-  }
-
-  _createBindings () {
-    this.$close = this.$parent.operator('close');
-    this.$close.click(() => {
-        this.close();
-    });
-
-    this.$fields = this.$parent.find('[data-field]');
-
-    this.$nameField = this.$parent.find('[data-field="name"]');
-    this.$nameField.on('input change', () => {
-        const name = this.$nameField.val().trim();
-        
-        if (name) {
-            this.script = Scripts.update(this.script.key, { name }, false);
-      
-            this.callback();
-        }
-    });
-
-    this.$descriptionField = this.$parent.find('[data-field="description"]');
-    this.$descriptionField.on('input change', () => {
-      this.script = Scripts.update(this.script.key, {
-        description: this.$descriptionField.val().trim()
-      }, false);
-
-      this.callback();
-    });
-
-    this.$tablesField = this.$parent.find('[data-field="tables"]');
-    this.$tablesField.dropdown({
-        placeholder: this.intl('script.tables'),
-        values: [
-            { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'database' },
-            { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'archive' },
-            { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'user' }
-        ],
-        onChange: () => {
-            this.script = Scripts.update(this.script.key, {
-                tables: this.$tablesField.dropdown('get values')
-            }, false);
-
-            this.callback();
-        }
-    })
-
-    this.$remoteAdd = this.$parent.operator('action-remote-add');
-    this.$remoteUpdate = this.$parent.operator('action-remote-update');
-    this.$remoteRemove = this.$parent.operator('action-remote-remove');
-
-    // Bindings
-    this.$remoteAdd.click(() => {
-      if (this.#checkAuthorPresence()) return;
-            
-      const { key, name, version, description, content } = this.script;
-
-      this.$remoteAdd.addClass('loading disabled');
-
-      SiteAPI.post('script_create', { name, description, version, author: SiteOptions.script_author, content }).then(({ script }) => {
-        this.script = Scripts.markRemote(key, script);
-
-        StoreCache.invalidate('remote_scripts');
-
-        Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
-      }).catch(({ error }) => {
-        this.#error(error);
-      }).finally(() => {
-        this.$remoteAdd.removeClass('loading disabled');
-        
-        this.#refresh();
-      });
-    });
-
-    this.$remoteUpdate.click(() => {
-      if (this.#checkAuthorPresence()) return;
-
-      const { key, name, version, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
-
-      this.$remoteUpdate.addClass('loading disabled');
-      this.$remoteRemove.addClass('disabled');
-      
-      SiteAPI.post('script_update', { name, description, version, author: SiteOptions.script_author, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
-        this.script = Scripts.markRemote(key, script);
-      }).catch(({ error }) => {
-        this.#error(error);
-      }).finally(() => {
-        this.$remoteUpdate.removeClass('loading disabled');
-        this.$remoteRemove.removeClass('disabled');
-        
-        this.#refresh();
-      });
-    });
-
-    this.$remoteRemove.click(() => {
-      if (this.#checkAuthorPresence()) return;
-
-      const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
-
-      this.$remoteUpdate.addClass('disabled');
-      this.$remoteRemove.addClass('loading disabled');
-
-      SiteAPI.get('script_delete', { key: remoteKey, secret: remoteSecret }).then(() => {
-        this.script = Scripts.markRemote(key);
-
-        StoreCache.invalidate('remote_scripts');
-
-        Scripts.remoteRemove(remoteKey);
-      }).catch(({ error }) => {
-        this.#error(error);
-      }).finally(() => {
-        this.$remoteUpdate.removeClass('disabled');
-        this.$remoteRemove.removeClass('loading disabled');
-
-        this.#refresh();
-      });
-    });
-  }
-
-  #error (reason) {
-    Toast.error(this.intl('error'), reason);
-  }
-
-  #refresh () {
-    this.$fields.each((_, element) => {
-      const field = element.dataset.field;
-      const value = _dig(this.script, ...field.split('.'));
-
-      if (field.endsWith('_at')) {
-        element.value = _formatDate(value);
-      } else if (field.endsWith('version') && value) {
-        element.value = `v${value}`;
-      } else if (field === 'tables') {
-        this.$tablesField.dropdown('clear', true);
-        this.$tablesField.dropdown('set selected', value || ['players', 'group', 'player'], true);
-      } else {
-        element.value = value || '';
-      }
-    });
-
-    if (this.script.remote) {
-      this.$remoteAdd.hide();
-      this.$remoteUpdate.show();
-      this.$remoteRemove.removeClass('disabled');
-
-      if (this.script.version === this.script.remote.version) {
-        this.$remoteUpdate.addClass('disabled');
-      } else {
-        this.$remoteUpdate.removeClass('disabled');
-      }
-    } else {
-      this.$remoteAdd.show();
-      this.$remoteUpdate.hide();
-      this.$remoteRemove.addClass('disabled');
-    }
-  }
-
-  _applyArguments (key, callback) {
-    this.script = Scripts.findScript(key);
-    this.callback = callback;
-
-    this.#refresh();
-  }
-})();
 
 const PlayerDetailDialog = new (class PlayerDetailDialog extends Dialog {
   constructor () {

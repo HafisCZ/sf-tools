@@ -197,7 +197,19 @@
                                 </div>
                                 <div class="flex gap-2 w-full">
                                     <button class="ui large basic inverted icon button" data-intl-title="stats.scripts.sidebar.save" data-op="save"><i class="ui save icon"></i></button>
-                                    <button class="ui large basic inverted icon button" data-intl-title="stats.scripts.sidebar.manage" data-op="manage"><i class="ui wrench icon"></i></button>
+                                    <button class="ui large basic inverted icon button" data-intl-title="stats.scripts.sidebar.edit" data-op="edit"><i class="ui pencil icon"></i></button>
+                                    <button class="ui large basic inverted icon button" data-intl-title="stats.scripts.sidebar.remote_add" data-op="remote-add"><i class="ui satellite dish icon"></i></button>
+                                    <button class="ui large basic inverted ui simple dropdown icon button" data-op="remote-manage">
+                                        <i class="ui satellite dish icon"></i>
+                                        <div class="menu">
+                                            <div class="item" data-intl-title="stats.scripts.sidebar.remote_update" data-op="remote-update">
+                                                <i class="ui cloud upload alternate icon"></i> <span data-intl="stats.scripts.sidebar.remote_update"></span>
+                                            </div>
+                                            <div class="item" data-intl-title="stats.scripts.sidebar.remote_remove" data-op="remote-remove">
+                                                <i class="ui cloud download alternate icon"></i> <span data-intl="stats.scripts.sidebar.remote_remove"></span>
+                                            </div>
+                                        </div>
+                                    </button>
                                     <button class="ui large basic inverted icon button !ml-auto" data-intl-title="stats.scripts.sidebar.remove" data-op="remove"><i class="ui trash icon"></i></button>
                                 </div>
                             </div>

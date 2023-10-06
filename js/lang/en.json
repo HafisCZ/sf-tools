@@ -626,7 +626,10 @@
                 "copy": "Copy",
                 "archive": "Archived scripts",
                 "recover": "Load version v#{version}",
-                "manage": "Manage",
+                "edit": "Edit name or description",
+                "remote_add": "Publish script",
+                "remote_update": "Republish new version of this script",
+                "remote_remove": "Unpublish script",
                 "close": "Return back",
                 "shortcuts": "Shortcuts",
                 "remove": "Remove",
@@ -645,7 +648,8 @@
             },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
-            }
+            },
+            "remote_action_error": "Action was not successful"
         },
         "players": {
             "other": "Show other players",
@@ -1542,11 +1546,15 @@
             "add": "Add new counter",
             "variables": "Available variables:"
         },
-        "script_create": {
-            "title": "Save script",
+        "script_edit": {
+            "title": {
+                "edit": "Edit script",
+                "create": "Add new script"
+            },
             "name": "Name",
             "description": "Description",
             "source": "Content",
+            "tables": "Compatible tables",
             "content": {
                 "empty": "Empty",
                 "current": "Current content",
@@ -1558,35 +1566,8 @@
                 "defaults": "Duplicate default script",
                 "clone": "Duplicate existing script"
             },
-            "create": "Create"
-        },
-        "script_manage": {
-            "title": "Manage script",
-            "category": {
-                "general": "General",
-                "remote": "Publish"
-            },
-            "script": {
-                "name": "Name",
-                "description": "Description",
-                "tables": "Compatible tables",
-                "version": "Local version",
-                "updated_at": "Updated",
-                "created_at": "Created",
-                "remote_updated_at": "Published",
-                "remote_version": "Remote version",
-                "remote_key": "Code"
-            },
-            "action": {
-                "remote_add": "Publish script",
-                "remote_update": "Publish new version",
-                "remote_remove": "Unpublish script"
-            },
-            "error": "Action was not successful",
-            "error_remote_author_missing": {
-                "title": "You must set your user name before you can publish scripts",
-                "message": "Please head over to Settings and set your 'author name for published scripts'"
-            }
+            "error_title": "Warning",
+            "error_name_blank": "Script name may not be blank"
         },
         "script_archive": {
             "title": "Archived scripts",
@@ -1654,6 +1635,10 @@
             "title": "Remove script",
             "notice": "Are you sure you want to permanently remove selected script?",
             "notice_remote": "Are you sure you want to permanently remove selected script?<br><br>This will not unpublish your script and you will lose edit access to it!"
+        },
+        "delete_remote_script": {
+            "title": "Unpublish script",
+            "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
         },
         "warning": {
             "title": "An issue has occured!",
