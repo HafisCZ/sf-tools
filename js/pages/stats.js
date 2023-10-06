@@ -2558,6 +2558,10 @@ class ScriptsTab extends Tab {
             SiteAPI.post('script_update', { name, description, version, author: SiteOptions.script_author, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
                 this.script = Scripts.markRemote(key, script);
 
+                StoreCache.invalidate('remote_scripts');
+
+                Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
+
                 this.#updateSidebars();
             }).catch(({ error }) => {
                 Toast.error(intl('stats.scripts.remote_action_error'), error);
