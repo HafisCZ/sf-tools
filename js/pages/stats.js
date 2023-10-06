@@ -2505,13 +2505,13 @@ class ScriptsTab extends Tab {
             copyText(this.editor.content);
         });
 
-        this.$manage = this.$parent.operator('manage');
-        this.$manage.click(() => {
-            DialogController.open(ScriptManageDialog, this.script.key, () => {
-                this.script = Scripts.findScript(this.script.key);
+        this.$edit = this.$parent.operator('edit');
+        this.$edit.click(() => {
+            DialogController.open(ScriptEditDialog, this.script, (script) => {
+                this.script = Scripts.update(this.script.key, script);
 
                 this.#updateSidebars();
-            });
+            }, null);
         });
 
         this.$export = this.$parent.operator('export');
@@ -2524,7 +2524,76 @@ class ScriptsTab extends Tab {
             const text = await _dig(event, 'currentTarget', 'files', 0).text();
  
             this.editor.content = text;
+        });
+
+        this.$remoteManage = this.$parent.operator('remote-manage');
+
+        this.$remoteAdd = this.$parent.operator('remote-add');
+        this.$remoteAdd.click(() => {
+            Loader.toggle(true);
+
+            const { key, name, version, description, content } = this.script;
+
+            SiteAPI.post('script_create', { name, description, version, author: SiteOptions.script_author, content }).then(({ script }) => {
+                this.script = Scripts.markRemote(key, script);
+        
+                StoreCache.invalidate('remote_scripts');
+        
+                Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
+
+                this.#updateSidebars();
+            }).catch(({ error }) => {
+                Toast.error(intl('stats.scripts.remote_action_error'), error);
+            }).finally(() => {
+                Loader.toggle(false);
+            });
+        });
+
+        this.$remoteUpdate = this.$parent.operator('remote-update');
+        this.$remoteUpdate.click(() => {
+            Loader.toggle(true);
+
+            const { key, name, version, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+
+            SiteAPI.post('script_update', { name, description, version, author: SiteOptions.script_author, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
+                this.script = Scripts.markRemote(key, script);
+
+                this.#updateSidebars();
+            }).catch(({ error }) => {
+                Toast.error(intl('stats.scripts.remote_action_error'), error);
+            }).finally(() => {
+                Loader.toggle(false);
+            });
         })
+
+        this.$remoteRemove = this.$parent.operator('remote-remove');
+        this.$remoteRemove.click(() => {
+            DialogController.open(
+                ConfirmationDialog,
+                intl('dialog.delete_remote_script.title'),
+                intl(`dialog.delete_remote_script.message`),
+                () => {
+                    Loader.toggle(true);
+
+                    const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+
+                    SiteAPI.get('script_delete', { key: remoteKey, secret: remoteSecret }).then(() => {
+                        this.script = Scripts.markRemote(key);
+                
+                        StoreCache.invalidate('remote_scripts');
+                
+                        Scripts.remoteRemove(remoteKey);
+
+                        this.#updateSidebars();
+                    }).catch(({ error }) => {
+                        Toast.error(intl('stats.scripts.remote_action_error'), error);
+                    }).finally(() => {
+                        Loader.toggle(false);
+                    });
+                },
+                null
+            );
+        });
 
         // Archive
         this.$libraryArchive = this.$parent.operator('library-archive');
@@ -2621,8 +2690,8 @@ class ScriptsTab extends Tab {
                 this.returnTo();
             }
         } else {
-            DialogController.open(ScriptCreateDialog, { content: this.editor.content }, '_current', (name, description, content) => {
-                this.script = Scripts.create({ name, description, content });
+            DialogController.open(ScriptEditDialog, { content: this.editor.content }, (script) => {
+                this.script = Scripts.create(script);
 
                 if (this.target) {
                     Scripts.assign(this.target, this.script.key);
@@ -2634,7 +2703,7 @@ class ScriptsTab extends Tab {
                 if (allowReturn && this.returnTo) {
                     this.returnTo();
                 }
-            });
+            }, '_current');
         }
     }
 
@@ -2680,10 +2749,39 @@ class ScriptsTab extends Tab {
 
         if (this.script) {
             this.$remove.removeClass('disabled');
-            this.$manage.removeClass('disabled');
+            this.$edit.removeClass('disabled');
+
+            if (this.script.remote) {
+                if (SiteOptions.script_author) {
+                    this.$remoteManage.removeClass('disabled');
+                } else {
+                    this.$remoteManage.addClass('disabled');
+                }
+
+                if (this.script.remote.version !== this.script.version) {
+                    this.$remoteUpdate.removeClass('disabled');
+                } else {
+                    this.$remoteUpdate.addClass('disabled');
+                }
+
+                this.$remoteAdd.hide();
+                this.$remoteManage.show();
+            } else {
+                if (SiteOptions.script_author) {
+                    this.$remoteAdd.removeClass('disabled');
+                } else {
+                    this.$remoteAdd.addClass('disabled');
+                }
+
+                this.$remoteAdd.show();
+                this.$remoteManage.hide();
+            }
         } else {
             this.$remove.addClass('disabled');
-            this.$manage.addClass('disabled');
+            this.$edit.addClass('disabled');
+
+            this.$remoteAdd.show().addClass('disabled');
+            this.$remoteManage.hide();
         }
     }
 
@@ -2888,12 +2986,12 @@ class ScriptsTab extends Tab {
         });
 
         this.$list.find('[data-script-add]').click(() => {
-            DialogController.open(ScriptCreateDialog, { content: this.editor.content }, null, (name, description, content, source) => {
+            DialogController.open(ScriptEditDialog, { content: this.editor.content }, (script, source) => {
                 if (source !== '_current') {
                     this.hide();
                 }
 
-                const { key } = Scripts.create({ name, description, content });
+                const { key } = Scripts.create(script);
 
                 if (this.target) {
                     Scripts.assign(this.target, key);
@@ -2901,7 +2999,7 @@ class ScriptsTab extends Tab {
     
                 this.#setScript(key);
                 this.#updateSidebars();
-            })
+            }, null)
         })
 
         if (this.returnTo) {
