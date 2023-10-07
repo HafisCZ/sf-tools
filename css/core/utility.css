@@ -252,6 +252,10 @@
   margin-left: auto !important;
 }
 
+.\!mr-0 {
+  margin-right: 0 !important;
+}
+
 .\!mr-2 {
   margin-right: 0.5em !important;
 }
