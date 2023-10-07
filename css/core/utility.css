@@ -513,6 +513,14 @@
   z-index: 2;
 }
 
+.select-none {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 /* Font Family */
 .font-arial {
   font-family: Arial, Helvetica, sans-serif !important;

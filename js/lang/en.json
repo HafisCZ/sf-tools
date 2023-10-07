@@ -616,7 +616,8 @@
                 "unpin": "Unpin script",
                 "assign": "Assign script to current table",
                 "unassign": "Unassign script from current table",
-                "remote": "This script is published"
+                "remote": "This script is published",
+                "remote_copy": "Click here to copy the code"
             },
             "sidebar": {
                 "wiki": "Wiki",
@@ -643,13 +644,14 @@
                     "help": "Help"
                 }
             },
-            "online": {
-                "not_available": "No scripts available"
-            },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
             },
-            "remote_action_error": "Action was not successful"
+            "remote_action_error": "Action was not successful",
+            "remote_copy_toast": {
+                "title": "Copy",
+                "message": "Code has been copied"
+            }
         },
         "players": {
             "other": "Show other players",
