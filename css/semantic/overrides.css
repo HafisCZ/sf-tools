@@ -93,3 +93,7 @@ body.inverted {
 div.ui.multiple.dropdown > .default.text {
   margin-bottom: 0;
 }
+
+.ui.fluid.dropdown.flex {
+  display: flex;
+}
