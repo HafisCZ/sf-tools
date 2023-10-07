@@ -173,6 +173,10 @@
   padding-left: 1em;
 }
 
+.\!pl-4 {
+  padding-left: 1em !important;
+}
+
 .pr-2 {
   padding-right: 0.5em;
 }
@@ -191,6 +195,10 @@
 
 .p-2 {
   padding: 0.5em;
+}
+
+.p-3 {
+  padding: 0.75em;
 }
 
 .py-4 {

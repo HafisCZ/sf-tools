@@ -21,7 +21,7 @@ class Dialog {
 
                 if (!this._hasParent()) {
                     this.$dialog = $(this._createModal());
-                    this.$parent = $(`<div class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}"></div>`);
+                    this.$parent = $(`<div data-dialog-name="${this.options.key}" class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}"></div>`);
 
                     this.$dialog.appendTo(this.$parent);
                     this.$parent.appendTo(document.body);
