@@ -2550,6 +2550,8 @@ class ScriptsTab extends Tab {
         });
 
         this.$remoteUpdate = this.$parent.operator('remote-update');
+        this.$remoteUpdateAvailable = this.$parent.operator('remote-update-available');
+
         this.$remoteUpdate.click(() => {
             Loader.toggle(true);
 
@@ -2772,8 +2774,10 @@ class ScriptsTab extends Tab {
 
                 if (this.script.remote.version !== this.script.version) {
                     this.$remoteUpdate.removeClass('disabled');
+                    this.$remoteUpdateAvailable.show();
                 } else {
                     this.$remoteUpdate.addClass('disabled');
+                    this.$remoteUpdateAvailable.hide();
                 }
 
                 this.$remoteAdd.hide();
