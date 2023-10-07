@@ -469,17 +469,17 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
                 <h1 class="ui inverted header text-center !mb-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">${intl('terms.title')}</h1>
                 <div class="text-white">
                     <ul>
-                        <li>${intl('terms.endpoint.clause0')}</li>
-                        <li class="mt-2">${intl('terms.endpoint.clause1')}</li>
-                        <li class="mt-2">${intl('terms.endpoint.clause2')}</li>
-                        <li class="mt-2">${intl('terms.endpoint.clause3')}</li>
+                        <li>Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
+                        <li class="mt-2">All data entered is sent directly to the game server without involvement of any 3rd party.</li>
+                        <li class="mt-2">It is not possible to capture any other players than those explicitly stated within the application.</li>
+                        <li class="mt-2">All data collection is done using normal means, without any use of forbidden actions.</li>
                     </ul>
                 </div>
                 <h1 class="ui inverted header text-center !mb-0 !mt-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">${intl('terms.title2')}</h1>
                 <div class="text-white">
                     <ul>
-                        <li>${intl('terms.endpoint.clause4')}</li>
-                        <li class="mt-2">${intl('terms.endpoint.clause5')}</li>
+                        <li>You can access your S&F Account using your username and password.</li>
+                        <li class="mt-2">You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>.</li>
                     </ul>
                 </div>
                 <div class="ui two buttons">
