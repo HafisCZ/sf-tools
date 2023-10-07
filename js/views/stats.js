@@ -1276,6 +1276,27 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
 
     _createModal () {
         return `
+            <style>
+                [data-dialog-name="script_edit"] [data-table][data-active="true"] > i.times {
+                    display: none;
+                }
+        
+                [data-dialog-name="script_edit"] [data-table][data-active="true"] > i:not(.times) {
+                    display: block;
+                }
+
+                [data-dialog-name="script_edit"] [data-table][data-active="false"] {
+                    opacity: 50%;
+                }
+
+                [data-dialog-name="script_edit"] [data-table][data-active="false"] > i.times {
+                    display: block;
+                }
+        
+                [data-dialog-name="script_edit"] [data-table][data-active="false"] > i:not(.times) {
+                    display: none;
+                }
+            </style>
             <div class="ui small bordered inverted dialog">
                 <div class="header flex justify-content-between items-center">
                     <div data-op="title"></div>
@@ -1296,9 +1317,22 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
                     </div>
                     <div class="field !mb-0">
                         <label>${this.intl('tables')}</label>
-                        <div class="ui fluid selection inverted multiple dropdown" data-op="tables">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
+                        <div class="grid gap-2" style="grid-template-columns: repeat(3, 1fr);" data-op="tables">
+                            <div data-table="players" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                                <i class="ui times icon"></i>
+                                <i class="ui database icon"></i>
+                                <div>${intl('stats.scripts.targets.players')}</div>
+                            </div>
+                            <div data-table="group" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                                <i class="ui times icon"></i>
+                                <i class="ui archive icon"></i>
+                                <div>${intl('stats.scripts.targets.group')}</div>
+                            </div>
+                            <div data-table="player" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                                <i class="ui times icon"></i>
+                                <i class="ui user icon"></i>
+                                <div>${intl('stats.scripts.targets.player')}</div>
+                            </div>
                         </div>
                     </div>
                     <div class="field !mt-4">
@@ -1317,6 +1351,16 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
         `;
     }
 
+    #setTables (tables) {
+        this.$tables.find('[data-table]').each((_, element) => {
+            element.dataset.active = tables.includes(element.dataset.table);
+        })
+    }
+
+    #getTables () {
+        return this.$tables.find('[data-table]').get().filter((element) => element.dataset.active === 'true').map((element) => element.dataset.table);
+    }
+
     _createBindings () {
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
@@ -1333,7 +1377,7 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
             const script = {
                 name: this.$name.val().trim(),
                 description: this.$description.val().trim(),
-                tables: this.$tables.dropdown('get values')
+                tables: this.#getTables()
             }
 
             if (!script.name) {
@@ -1355,13 +1399,8 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
         });
 
         this.$tables = this.$parent.operator('tables');
-        this.$tables.dropdown({
-            placeholder: this.intl('tables'),
-            values: [
-                { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'database' },
-                { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'archive' },
-                { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'user' }
-            ]
+        this.$tables.find('[data-table]').click((event) => {
+            event.currentTarget.dataset.active = event.currentTarget.dataset.active !== 'true';
         })
     }
 
@@ -1421,7 +1460,8 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
 
         this.$name.val(this.script.name);
         this.$description.val(this.script.description);
-        this.$tables.dropdown('clear', true).dropdown('set selected', this.script.tables || ['players', 'group', 'player'], true);
+
+        this.#setTables(this.script.tables || ['players', 'group', 'player']);
     }
 })
 

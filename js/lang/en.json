@@ -629,7 +629,7 @@
                 "recover": "Load version v#{version}",
                 "edit": "Edit name or description",
                 "remote_add": "Publish selected script",
-                "remote_update": "Republish new version of selected script",
+                "remote_update": "Publish new version of selected script",
                 "remote_remove": "Unpublish selected script",
                 "close": "Return back",
                 "shortcuts": "Shortcuts",
