@@ -2808,18 +2808,20 @@ class ScriptsTab extends Tab {
     remove () {
         Scripts.remove(this.script.key);
 
-        if (this.target) {
+        if (Scripts.isAssignedTo(this.target, this.script.key)) {
             Scripts.unassign(this.target);
-        }
 
-        if (this.returnTo) {
-            this.returnTo();
+            if (this.returnTo) {
+                this.returnTo();
+            } else {
+                this.show({ identifier: this.target, blank: true });
+            }
         } else {
-            this.show({});
+            this.show({ identifier: this.target, blank: true });
         }
     }
 
-    show ({ origin, identifier, key }) {
+    show ({ origin, identifier, blank, key }) {
         if ([UI.Browse, UI.GroupDetail, UI.PlayerDetail].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
@@ -2833,7 +2835,7 @@ class ScriptsTab extends Tab {
         } else {
             this.target = identifier || _dig(origin, 'identifier');
 
-            if (this.target) {
+            if (this.target && blank !== true) {
                 const script = Scripts.findAssignedScript(this.target) || Scripts.findAssignedScript(this.#getDefaultScript(this.target));
                 if (script) {
                     this.#setScript(script.key)
