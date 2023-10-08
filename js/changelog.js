@@ -10,7 +10,11 @@ const ANNOUNCEMENTS = [
 const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
-            'Reworked Scripts & Templates'
+            'Reworked Scripts & Templates',
+            'Reworked Scripts & Templates',
+            'Added author name and description to published scripts',
+            'Added ability to track updates for any published scripts',
+            'Added filter by type to script archive'
         ],
         'Fight Analyzer': [
             'Added option to open prefilled player simulator for a selected group'
