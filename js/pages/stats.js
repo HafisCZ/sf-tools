@@ -2852,7 +2852,7 @@ class ScriptsTab extends Tab {
     }
 
     show ({ origin, identifier, blank, key }) {
-        if ([UI.Browse, UI.GroupDetail, UI.PlayerDetail].includes(origin)) {
+        if ([UI.Browse, UI.Groups, UI.GroupDetail, UI.Players, UI.PlayerDetail].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
             this.returnTo = null;
