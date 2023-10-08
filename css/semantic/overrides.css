@@ -97,3 +97,7 @@ div.ui.multiple.dropdown > .default.text {
 .ui.fluid.dropdown.flex {
   display: flex;
 }
+
+.ui.dropdown.disabled.disabled-no-icon > i {
+  visibility: hidden;
+}
