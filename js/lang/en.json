@@ -577,8 +577,7 @@
             "tooltip": {
                 "pin": "Pin script to the top of the list",
                 "unpin": "Unpin script",
-                "assign": "Assign script to current table",
-                "unassign": "Unassign script from current table",
+                "assigned": "This script is assigned to current table",
                 "remote": "This script is published",
                 "remote_copy": "Click here to copy the code"
             },
@@ -586,6 +585,8 @@
                 "wiki": "Wiki",
                 "manual": "Manual",
                 "scripts": "Online scripts",
+                "assign": "Assign selected script to current table",
+                "unassign": "Unassign script from current table",
                 "save": "Save",
                 "copy": "Copy",
                 "archive": "Archived scripts",

@@ -184,9 +184,15 @@
                     <div class="ui inverted form">
                         <div class="field">
                             <label data-intl="stats.scripts.target"></label>
-                            <div class="ui search selection inverted icon dropdown" data-op="target">
-                                <div class="w-full text"></div>
-                                <i class="dropdown icon"></i>
+                            <div class="flex gap-2">
+                                <div class="ui search selection inverted icon dropdown w-full" data-op="target">
+                                    <div class="w-full text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                                <div>
+                                    <button class="ui large basic inverted icon fluid button" data-intl-title="stats.scripts.sidebar.assign" data-op="assign"><i class="ui linkify icon"></i></button>
+                                    <button class="ui large basic inverted icon fluid button" data-intl-title="stats.scripts.sidebar.unassign" data-op="unassign"><i class="ui unlink icon"></i></button>
+                                </div>
                             </div>
                         </div>
                         <div class="field">

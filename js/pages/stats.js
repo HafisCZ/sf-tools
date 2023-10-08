@@ -2690,6 +2690,20 @@ class ScriptsTab extends Tab {
                 Toast.info(intl('stats.scripts.remote_copy_toast.title'), intl('stats.scripts.remote_copy_toast.message'));
             }
         })
+
+        this.$assign = this.$parent.operator('assign');
+        this.$assign.click(() => {
+            Scripts.assign(this.target, this.script.key);
+
+            this.#updateSidebars();
+        })
+
+        this.$unassign = this.$parent.operator('unassign');
+        this.$unassign.click(() => {
+            Scripts.unassign(this.target);
+
+            this.#updateSidebars();
+        })
     }
 
     #saveScript (allowReturn) {
@@ -2765,6 +2779,19 @@ class ScriptsTab extends Tab {
             this.$remove.removeClass('disabled');
             this.$edit.removeClass('disabled');
 
+            if (this.target) {
+                if (Scripts.isAssignedTo(this.target, this.script.key)) {
+                    this.$assign.hide();
+                    this.$unassign.show();
+                } else {
+                    this.$assign.show().removeClass('disabled');
+                    this.$unassign.hide();
+                }
+            } else {
+                this.$assign.show().addClass('disabled');
+                this.$unassign.hide();
+            }
+
             if (this.script.remote) {
                 if (SiteOptions.script_author) {
                     this.$remoteManage.removeClass('disabled');
@@ -2798,6 +2825,9 @@ class ScriptsTab extends Tab {
 
             this.$remoteAdd.show().addClass('disabled');
             this.$remoteManage.hide();
+
+            this.$assign.show().addClass('disabled');
+            this.$unassign.hide();
         }
     }
 
@@ -2965,12 +2995,12 @@ class ScriptsTab extends Tab {
                         <div class="wrap-none overflow-hidden text-overflow-ellipsis" title="${_escape(name)}">${_escape(name)}</div>
                         <div class="text-gray">v${version} - ${_formatDate(updated_at)}</div>
                     </div>
-                    <div class="script-icons" data-assignable="${!!this.target}" data-assigned="${assigned}" data-pinned="${favorite}">
+                    <div class="script-icons" data-pinned="${favorite}">
                         <i data-op="icon-pin" class="ui thumbtack icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${favorite ? 'unpin' : 'pin'}`)}"></i>
-                        <i data-op="icon-assign" class="ui ${assigned ? 'unlink' : 'linkify'} icon text-gray text-white:hover" title="${intl(`stats.scripts.tooltip.${assigned ? 'unassign' : 'assign'}`)}"></i>
                     </div>
-                    <div class="script-indicators" data-remote="${!!remote}">
+                    <div class="script-indicators" data-remote="${!!remote}" data-assigned="${assigned}">
                         <i data-op="icon-remote" class="ui satellite dish icon text-gray" title="${intl('stats.scripts.tooltip.remote')}"></i>
+                        <i data-op="icon-assigned" class="ui linkify icon text-gray" title="${intl(`stats.scripts.tooltip.assigned`)}"></i>
                     </div>
                 </div>
             `;
@@ -2987,15 +3017,7 @@ class ScriptsTab extends Tab {
                 Scripts.update(key, { favorite: !script.favorite }, false);
 
                 this.#updateSidebars();
-            } else if (event.target.classList.contains('unlink')) {
-                if (this.target) {
-                    Scripts.unassign(this.target);
-                }
             } else {
-                if (this.target && event.target.classList.contains('linkify')) {
-                    Scripts.assign(this.target, key);
-                }
-
                 this.hide();
                 this.#setScript(key);
             }

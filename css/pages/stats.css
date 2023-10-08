@@ -204,19 +204,15 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
   visibility: visible;
 }
 
+.script-indicators[data-assigned="true"] > i[data-op="icon-assigned"] {
+  visibility: visible;
+}
+
 .script-icons > i {
   visibility: hidden;
 }
 
 .script-icons[data-pinned="true"] > i[data-op="icon-pin"], .script:hover > .script-icons > i[data-op="icon-pin"] {
-  visibility: visible;
-}
-
-.script-icons[data-assigned="true"] > i[data-op="icon-assign"] {
-  visibility: visible;
-}
-
-.script:hover > .script-icons[data-assigned="false"][data-assignable="true"] > i[data-op="icon-assign"] {
   visibility: visible;
 }
 
