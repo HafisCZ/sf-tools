@@ -182,7 +182,7 @@ const TermsAndConditionsDialog = new (class TermsAndConditionsDialog extends Dia
                         <li class="mt-2">The site is distributed <b>AS IS</b> without any warranties. You are fully responsible for use of this site.</li>
                         <li class="mt-2">You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.</li>
                         <li class="mt-2">You agree to limit data collection from the game to reasonable amounts.</li>
-                        <li class="mt-2">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html">Terms and Conditions</a></li>
+                        <li class="mt-2">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html" target="_blank">Terms and Conditions</a></li>
                         <li class="mt-2">You are not allowed to automate any part of this tool.</li>
                     </ul>
                     <h4 class="text-center text-orange">§2 Endpoint</h4>
