@@ -2775,7 +2775,7 @@ class ScriptsTab extends Tab {
             this.$libraryArchive.find('span').text(intl('stats.scripts.sidebar.archive'));
         }
 
-        if (this.returnTo) {
+        if (this.returnTo && this.targetExplicit) {
             this.$target.addClass('disabled');
         } else {
             this.$target.removeClass('disabled');
@@ -2869,6 +2869,7 @@ class ScriptsTab extends Tab {
         if (typeof key !== 'undefined') {
             this.#setScript(key);
         } else {
+            this.targetExplicit = typeof identifier !== 'undefined';
             this.target = identifier || _dig(origin, 'identifier');
 
             if (this.target && blank !== true) {
