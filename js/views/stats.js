@@ -1001,7 +1001,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
     Loader.toggle(false);
 
-    DialogController.open(ScriptEditDialog, script, (_script) => {
+    DialogController.open(ScriptEditDialog, _pick(script, ['name', 'description', 'content']), (_script) => {
         const { key } = Scripts.create(_script);
 
         this.callback(key);
