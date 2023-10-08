@@ -3323,25 +3323,30 @@ Site.ready(null, function (urlParams) {
         UI.register({
             Players: {
                 tab: new PlayersTab('view-players'),
-                buttonId: 'show-players'
+                buttonId: 'show-players',
+                buttonHistory: 'Scripts'
             },
             PlayerDetail: {
                 tab: new PlayerDetailTab('view-player-detail'),
                 buttonId: 'show-players',
+                buttonHistory: 'Scripts',
                 buttonClickable: false
             },
             Groups: {
                 tab: new GroupsTab('view-groups'),
-                buttonId: 'show-groups'
+                buttonId: 'show-groups',
+                buttonHistory: 'Scripts'
             },
             GroupDetail: {
                 tab: new GroupDetailTab('view-group-detail'),
                 buttonId: 'show-groups',
+                buttonHistory: 'Scripts',
                 buttonClickable: false
             },
             Browse: {
                 tab: new BrowseTab('view-browse'),
-                buttonId: 'show-browse'
+                buttonId: 'show-browse',
+                buttonHistory: 'Scripts'
             },
             Scripts: {
                 tab: new ScriptsTab('view-scripts'),

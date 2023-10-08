@@ -74,6 +74,7 @@ class UI {
     }
 
     static #showScreen (tab) {
+        this.previous = this.current;
         this.current = tab;
 
         window.scrollTo(0, 0);
@@ -89,6 +90,10 @@ class UI {
             }
 
             this.#tabs[tab._registeredName].buttonElement.style.color = 'orange';
+
+            if (this.previous && this.#tabs[this.previous._registeredName].buttonHistory === tab._registeredName) {
+                this.#tabs[this.previous._registeredName].buttonElement.style.color = '#ffd17c';
+            }
         }
     }
 }
