@@ -2775,6 +2775,12 @@ class ScriptsTab extends Tab {
             this.$libraryArchive.find('span').text(intl('stats.scripts.sidebar.archive'));
         }
 
+        if (this.returnTo) {
+            this.$target.addClass('disabled');
+        } else {
+            this.$target.removeClass('disabled');
+        }
+
         if (this.script) {
             this.$remove.removeClass('disabled');
             this.$edit.removeClass('disabled');
