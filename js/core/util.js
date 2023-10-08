@@ -447,6 +447,17 @@ function _parseDate (text) {
     }
 }
 
+function _pick (object, fields) {
+    const value = Object.create(null);
+    for (const field of fields) {
+        if (field in object) {
+            value[field] = object[field];
+        }
+    }
+
+    return value;
+}
+
 function _truncate (string, length) {
     if (string.length > length) {
         return string.slice(0, length) + '...';
