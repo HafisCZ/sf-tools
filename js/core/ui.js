@@ -84,11 +84,11 @@ class UI {
         if (this.#tabs[tab._registeredName].buttonElement) {
             for (const { buttonElement } of Object.values(this.#tabs)) {
                 if (buttonElement) {
-                    buttonElement.classList.remove('!text-orange');
+                    buttonElement.style.color = '';
                 }
             }
 
-            this.#tabs[tab._registeredName].buttonElement.classList.add('!text-orange');
+            this.#tabs[tab._registeredName].buttonElement.style.color = 'orange';
         }
     }
 }
