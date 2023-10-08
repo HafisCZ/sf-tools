@@ -557,9 +557,9 @@
         "scripts": {
             "settings": "Settings",
             "name": "Currently edited script",
-            "list": "Available scripts",
+            "list": "Select script",
             "list_add": "Add new script",
-            "list_search": "Search ...",
+            "list_search": "Search available scripts ...",
             "target": "Current table",
             "script": "Current script",
             "quick_swap": "Quick swap script",
