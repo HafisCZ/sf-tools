@@ -66,6 +66,7 @@ const SCOPES = {
       Shadow: true,
       Twister: true,
       Group: true,
+      Player: true,
       Youtube: true
     },
     Prefix: true,
