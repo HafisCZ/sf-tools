@@ -2530,6 +2530,8 @@ class ScriptsTab extends Tab {
 
         this.$remoteAdd = this.$parent.operator('remote-add');
         this.$remoteAdd.click(() => {
+            if (this.#verifyRemoteRequirements()) return;
+
             Loader.toggle(true);
 
             const { key, name, version, description, content } = this.script;
@@ -2553,6 +2555,8 @@ class ScriptsTab extends Tab {
         this.$remoteUpdateAvailable = this.$parent.operator('remote-update-available');
 
         this.$remoteUpdate.click(() => {
+            if (this.#verifyRemoteRequirements()) return;
+
             Loader.toggle(true);
 
             const { key, name, version, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
@@ -2706,6 +2710,16 @@ class ScriptsTab extends Tab {
         })
     }
 
+    #verifyRemoteRequirements () {
+        if (SiteOptions.script_author) {
+            return false;
+        } else {
+            Toast.warn(intl('stats.scripts.remote_author_missing.title'), intl('stats.scripts.remote_author_missing.message'));
+
+            return true;
+        }
+    }
+
     #saveScript (allowReturn) {
         if (this.$save.hasClass('disabled')) {
             return;
@@ -2799,11 +2813,7 @@ class ScriptsTab extends Tab {
             }
 
             if (this.script.remote) {
-                if (SiteOptions.script_author) {
-                    this.$remoteManage.removeClass('disabled');
-                } else {
-                    this.$remoteManage.addClass('disabled');
-                }
+                this.$remoteManage.removeClass('disabled');
 
                 if (this.script.remote.version !== this.script.version) {
                     this.$remoteUpdate.removeClass('disabled');
@@ -2816,13 +2826,7 @@ class ScriptsTab extends Tab {
                 this.$remoteAdd.hide();
                 this.$remoteManage.show();
             } else {
-                if (SiteOptions.script_author) {
-                    this.$remoteAdd.removeClass('disabled');
-                } else {
-                    this.$remoteAdd.addClass('disabled');
-                }
-
-                this.$remoteAdd.show();
+                this.$remoteAdd.show().removeClass('disabled');
                 this.$remoteManage.hide();
             }
         } else {
