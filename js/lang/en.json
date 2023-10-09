@@ -615,6 +615,10 @@
             "remote_copy_toast": {
                 "title": "Copy",
                 "message": "Code has been copied"
+            },
+            "remote_author_missing": {
+                "title": "You must set your user name before you can publish scripts",
+                "message": "Please head over to Settings and set your 'author name for published scripts'"
             }
         },
         "players": {
