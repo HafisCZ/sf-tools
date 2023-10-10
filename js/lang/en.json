@@ -1566,6 +1566,7 @@
             "list_add_accept": "Add to my list",
             "list": {
                 "about": "Created by #{author}",
+                "about_with_uses": "Created by #{author}; #{uses} uses",
                 "no_description": "No description",
                 "remove": "Remove script from your list",
                 "private": "This script is private",

@@ -1041,14 +1041,14 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     }
   }
 
-  #createSegment (identifier, { name, description, author, key, version, updated_at }) {
+  #createSegment (identifier, { name, description, author, key, version, updated_at, uses }) {
     const savedRemote = Scripts.remoteGet(key);
 
     return `
       <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
         <div class="flex flex-col gap-2">
           <div>${this.#createSegmentIcon(key || identifier)} ${_escape(name)}</div>
-          <div class="text-gray">${this.intl('list.about', { author: _escape(author) })}</div>
+          <div class="text-gray">${this.intl(typeof uses !== 'undefined' ? 'list.about_with_uses' : 'list.about', { author: _escape(author), uses })}</div>
           <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
         </div>
         <div class="flex flex-col gap-2 text-center" style="visibility: ${key ? 'visible' : 'hidden'};">
