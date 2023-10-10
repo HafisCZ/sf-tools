@@ -13,7 +13,8 @@ const CHANGELOG = {
             'Reworked Scripts & Templates',
             'Reworked Scripts & Templates',
             'Added author name and description to published scripts',
-            'Added ability to track updates for any published scripts',
+            'Added indicator for when new version of published scripts is found',
+            'Added usage count for published scripts',
             'Added filter by type to script archive'
         ],
         'Fight Analyzer': [
