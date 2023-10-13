@@ -328,22 +328,24 @@ const CONFIG = Object.defineProperties(
         Necromancer: {
             Attribute: 'Intelligence',
 
-            HealthMultiplier: 2,
+            HealthMultiplier: 4,
             WeaponMultiplier: 4.5,
-            DamageMultiplier: 1,
+            DamageMultiplier: 5 / 9,
             MaximumDamageReduction: 10,
-            MaximumDamageReductionMultiplier: 1,
+            MaximumDamageReductionMultiplier: 2,
 
             SkipChance: 0,
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
 
+            DemonHunterDamageBonus: 0.1,
+
             SummonChance: 0.5,
-            SummonImmediateAttack: false,
+            SummonImmediateAttack: true,
             Summons: [
                 {
-                    Duration: 2,
-                    DamageBonus: 0,
+                    Duration: 3,
+                    DamageBonus: 0.25,
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
@@ -353,16 +355,16 @@ const CONFIG = Object.defineProperties(
                     ReviveChance: 0.5
                 },
                 {
-                    Duration: 1,
-                    DamageBonus: 0.75,
+                    Duration: 2,
+                    DamageBonus: 1,
                     SkipChance: 0,
                     CriticalBonus: 0.5,
                     CriticalChance: 0.6,
                     CriticalChanceBonus: 0.1
                 },
                 {
-                    Duration: 3,
-                    DamageBonus: -0.25,
+                    Duration: 4,
+                    DamageBonus: 0,
                     SkipChance: 0.25,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
@@ -603,9 +605,10 @@ class SimulatorModel {
         this.DataCache = Object.create(null);
 
         // Configuration
+        this.ConfigKey = this.constructor.name.slice(0, -5);
         this.Config = Object.assign(
             Object.create(null),
-            CONFIG[this.constructor.name.slice(0, -5)],
+            CONFIG[this.ConfigKey],
             CONFIG.General
         );
 
@@ -623,7 +626,7 @@ class SimulatorModel {
         if (source.Config.BypassDamageReduction) {
             return 0;
         } else {
-            return (this.Config.MaximumDamageReductionMultiplier) * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
+            return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
         }
     }
     
@@ -817,7 +820,13 @@ class SimulatorModel {
 
     // Returns extra damage multiplier, default is 1 for no extra damage
     getDamageMultiplier (target) {
-        return this.Config.DamageMultiplier;
+        let multiplier = this.Config.DamageMultiplier;
+
+        if (typeof this.Config[`${target.ConfigKey}DamageBonus`] !== 'undefined') {
+            multiplier += this.Config[`${target.ConfigKey}DamageBonus`];
+        }
+
+        return multiplier;
     }
 
     // Before anyone takes control
