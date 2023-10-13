@@ -121,7 +121,6 @@ input:disabled {
   right: 0;
   justify-content: space-between;
   align-items: flex-end;
-  z-index: -1;
 }
 
 .footer * {
