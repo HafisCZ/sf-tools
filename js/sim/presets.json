@@ -1,6 +1,7 @@
 [
   {
     "name": "Generic - Level 500",
+    "suffix": "no span",
     "data": {
       "Armor": 50000,
       "Level": 500,
@@ -66,6 +67,7 @@
   },
   {
     "name": "Generic - Level 500 (Max Range)",
+    "suffix": "max span",
     "data": {
       "Armor": 50000,
       "Level": 500,
