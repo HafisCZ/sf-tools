@@ -2224,13 +2224,13 @@ class ModelUtils {
     static toSimulatorData (model, includeCompanions = false) {
         if (includeCompanions && typeof model.Companions !== 'undefined') {
             return [
-                ModelUtils._toSimulatorData(model),
-                ModelUtils._toSimulatorData(model.Companions.Bert),
-                ModelUtils._toSimulatorData(model.Companions.Mark),
-                ModelUtils._toSimulatorData(model.Companions.Kunigunde),
+                this.#toSimulatorData(model),
+                this.#toSimulatorData(model.Companions.Bert),
+                this.#toSimulatorData(model.Companions.Mark),
+                this.#toSimulatorData(model.Companions.Kunigunde),
             ]
         } else {
-            return ModelUtils._toSimulatorData(model);
+            return this.#toSimulatorData(model);
         }
     }
 
@@ -2272,7 +2272,7 @@ class ModelUtils {
         return copy;
     }
     
-    static _toSimulatorData (model) {
+    static #toSimulatorData (model) {
         return {
             Armor: model.Armor,
             Class: model.Class,
