@@ -424,9 +424,9 @@ const SimulatorUtils = class {
                 }).dropdown('setting', 'onChange', (value) => {
                     const method = this.#callbacks.get('insert');
 
-                    const { data } = presets[parseInt(value)];
+                    const { data, suffix } = presets[parseInt(value)];
 
-                    method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(data, index)));
+                    method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(Object.assign(data, { Class: WARRIOR }), index, suffix)));
                 });
 
                 $insertButton.insertAfter($dialogButton);
@@ -434,8 +434,8 @@ const SimulatorUtils = class {
         }
     }
 
-    static #generatePlayerFromSample (sample, newClass) {
-        const oldDefinition = CONFIG.fromIndex(WARRIOR);
+    static #generatePlayerFromSample (sample, newClass, suffix) {
+        const oldDefinition = CONFIG.fromIndex(sample.Class);
         const newDefinition = CONFIG.fromIndex(newClass);
 
         // Helper methods
@@ -481,7 +481,7 @@ const SimulatorUtils = class {
         }
 
         data.Class = newClass;
-        data.Name = intl(`general.class${newClass}`);
+        data.Name = `${intl(`general.class${newClass}`)} - ${suffix}`;
 
         return data;
     }
