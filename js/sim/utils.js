@@ -238,13 +238,12 @@ const SimulatorUtils = class {
     static #currentConfig;
     static #defaultConfig;
 
-    static #insertType;
     static #display;
     static #debug;
 
     static #callbacks = new Map();
 
-    static configure ({ params, onCopy, onChange, onInsert, onLog, insertType }) {
+    static configure ({ params, onCopy, onChange, onInsert, onLog }) {
         // Updated config
         this.#currentConfig = null;
         this.#defaultConfig = mergeDeep({}, CONFIG);
@@ -254,9 +253,6 @@ const SimulatorUtils = class {
         if (onChange) this.#callbacks.set('change', onChange);
         if (onInsert) this.#callbacks.set('insert', onInsert);
         if (onLog) this.#callbacks.set('log', onLog);
-
-        // Data
-        this.#insertType = insertType;
 
         // Debug elements
         this.#debug = params && params.has('debug');
@@ -399,10 +395,8 @@ const SimulatorUtils = class {
             $logButton.insertAfter($dialogButton);
         }
 
-        if (this.#callbacks.has('insert') && typeof this.#insertType === 'string') {
-            fetch('js/sim/presets.json').then((response) => response.json()).then((data) => {
-                const sampleData = data[this.#insertType];
-
+        if (this.#callbacks.has('insert')) {
+            fetch('js/sim/presets.json').then((response) => response.json()).then((presets) => {
                 const $insertButton = $(`
                     <div class="ui mini dropdown inverted item !p-0">
                         <button class="ui basic inverted icon button !box-shadow-none">
@@ -420,7 +414,7 @@ const SimulatorUtils = class {
                             type: 'header',
                             class: 'header text-center'
                         },
-                        ...sampleData.map((sample, index) => ({ name: sample.name, value: index }))
+                        ...presets.map((sample, index) => ({ name: sample.name, value: index }))
                     ],
                     on: 'hover',
                     delay : {
@@ -428,15 +422,68 @@ const SimulatorUtils = class {
                         show: 0
                     }
                 }).dropdown('setting', 'onChange', (value) => {
-                    const { data } = sampleData[parseInt(value)];
                     const method = this.#callbacks.get('insert');
 
-                    method(data);
+                    const { data } = presets[parseInt(value)];
+
+                    method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(data, index)));
                 });
 
                 $insertButton.insertAfter($dialogButton);
             })
         }
+    }
+
+    static #generatePlayerFromSample (sample, newClass) {
+        const oldDefinition = CONFIG.fromIndex(WARRIOR);
+        const newDefinition = CONFIG.fromIndex(newClass);
+
+        // Helper methods
+        const getAttributeList = function (attribute) {
+            return {
+                'Strength': ['Strength', 'Dexterity', 'Intelligence'],
+                'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
+                'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
+            }[attribute]
+        }
+
+        const swapAttributes = function (obj) {
+            const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
+            const newAttributes = getAttributeList(newDefinition.Attribute);
+
+            for (let i = 0; i < 3; i++) {
+                for (const type of ['Base', 'Total']) {
+                    obj[newAttributes[i]][type] = oldattributes[i][type];
+                }
+            }
+        }
+
+        const scaleValue = function (value, oldValue, newValue) {
+            return Math.ceil(value / oldValue * newValue);
+        }
+
+        // Convert data
+        const data = _clone(sample);
+
+        swapAttributes(data);
+
+        data.Armor = scaleValue(data.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+        data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+        data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+
+        if (newClass == WARRIOR) {
+            data.BlockChance = newDefinition.SkipChance * 100;
+
+            data.Items.Wpn2 = ItemModel.empty();
+            data.Items.Wpn2.DamageMin = newDefinition.SkipChance * 100;
+        } else if (newClass == ASSASSIN) {
+            data.Items.Wpn2 = data.Items.Wpn1;
+        }
+
+        data.Class = newClass;
+        data.Name = intl(`general.class${newClass}`);
+
+        return data;
     }
 
     static #computeConfigDiff(differences, path) {
