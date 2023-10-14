@@ -365,7 +365,7 @@ const CONFIG = Object.defineProperties(
                 {
                     Duration: 4,
                     DamageBonus: 0,
-                    SkipChance: 0.25,
+                    SkipChance: 0.35,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0
@@ -867,7 +867,8 @@ class SimulatorModel {
         }
     
         if (typeof config.DamageBonus !== 'undefined') {
-            const multiplier = (this.Config.DamageMultiplier + config.DamageBonus) / this.Config.DamageMultiplier;
+            const base = this.getDamageMultiplier(target);
+            const multiplier = (base + config.DamageBonus) / base;
 
             state.Weapon1 = {
                 Base: multiplier * this.Data.Weapon1.Base,
