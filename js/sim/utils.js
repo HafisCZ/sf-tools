@@ -234,6 +234,59 @@ const SimulatorInformationDialog = new (class SimulatorInformationDialog extends
     }
 })
 
+const SimulatorCustomPresetDialog = new (class SimulatorCustomPresetDialog extends Dialog {
+    constructor () {
+        super({
+            key: 'simulator_custom_preset',
+            dismissable: true,
+            opacity: 0
+        })
+    }
+
+    _createModal () {
+        return `
+            <div class="small bordered inverted dialog">
+                <div class="header">${this.intl('title')}</div>
+                <div class="ui inverted form" id="preset-editor"></div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black button" data-op="close">${this.intl('close')}</button>
+                    <button class="ui button !text-black !background-orange" data-op="insert">${this.intl('insert')}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$closeButton = this.$parent.operator('close');
+        this.$closeButton.click(() => {
+            this.close();
+        });
+
+        this.$insertButton = this.$parent.operator('insert');
+        this.$insertButton.click(() => {
+            if (this.editor.valid()) {
+                this.callback(this.editor.read());
+    
+                this.close();
+            }
+        });
+
+        Editor.createPlayerEditor('#preset-editor');
+
+        this.editor = new Editor('#preset-editor');
+        this.editor.fields.class.toggle(false);
+
+        this.$parent.find('.segment').removeClass('segment');
+        this.$parent.find('.field').first().hide();
+    }
+
+    _applyArguments (callback) {
+        this.callback = callback;
+
+        this.editor.clear();
+    }
+})
+
 const SimulatorUtils = class {
     static #currentConfig;
     static #defaultConfig;
