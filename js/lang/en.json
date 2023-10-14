@@ -1316,6 +1316,7 @@
         "information": "Important notice!",
         "configure_copy": "Copy everyone including current configuration",
         "configure_insert": "Insert sample data",
+        "configure_insert_custom": "Specify values manually",
         "configure_log": "Run simulation with logging enabled",
         "configure_log_file": "Save to file",
         "configure_log_broadcast": "Open with analyzer",

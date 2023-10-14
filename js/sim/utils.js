@@ -414,7 +414,12 @@ const SimulatorUtils = class {
                             type: 'header',
                             class: 'header text-center'
                         },
-                        ...presets.map((sample, index) => ({ name: sample.name, value: index }))
+                        ...presets.map((sample, index) => ({ name: sample.name, value: index })),
+                        {
+                            name: intl('simulator.configure_insert_custom'),
+                            icon: 'pencil',
+                            value: 'custom'
+                        }
                     ],
                     on: 'hover',
                     delay : {
@@ -424,9 +429,18 @@ const SimulatorUtils = class {
                 }).dropdown('setting', 'onChange', (value) => {
                     const method = this.#callbacks.get('insert');
 
-                    const { data, suffix } = presets[parseInt(value)];
-
-                    method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(Object.assign(data, { Class: WARRIOR }), index, suffix)));
+                    if (value === 'custom') {
+                        DialogController.open(
+                            SimulatorCustomPresetDialog,
+                            (data) => {
+                                method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(data, index)));
+                            }
+                        )
+                    } else {
+                        const { data, suffix } = presets[parseInt(value)];
+    
+                        method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(data, index, suffix)));
+                    }
                 });
 
                 $insertButton.insertAfter($dialogButton);
@@ -435,7 +449,7 @@ const SimulatorUtils = class {
     }
 
     static #generatePlayerFromSample (sample, newClass, suffix) {
-        const oldDefinition = CONFIG.fromIndex(sample.Class);
+        const oldDefinition = CONFIG.fromIndex(WARRIOR);
         const newDefinition = CONFIG.fromIndex(newClass);
 
         // Helper methods
@@ -481,7 +495,7 @@ const SimulatorUtils = class {
         }
 
         data.Class = newClass;
-        data.Name = `${intl(`general.class${newClass}`)} - ${suffix}`;
+        data.Name = `${intl(`general.class${newClass}`)}${suffix ? ` - ${suffix}` : ''}`;
 
         return data;
     }
