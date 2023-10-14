@@ -23,6 +23,10 @@ function _escape (string) {
     return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
 }
 
+function _scale (value, oldValue, newValue) {
+    return Math.ceil(value / oldValue * newValue);
+}
+
 function _excludes (arr, obj) {
     return !arr.includes(obj);
 }

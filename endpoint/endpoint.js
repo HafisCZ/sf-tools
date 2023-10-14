@@ -1006,10 +1006,6 @@ const StatisticsIntegration = new (class {
                 }
             }
 
-            const scaleValue = function (value, oldValue, newValue) {
-                return Math.ceil(value / oldValue * newValue);
-            }
-
             // Morph all items to desired class
             const getAttributeID = (attribute) => {
                 return {
@@ -1027,9 +1023,9 @@ const StatisticsIntegration = new (class {
             swapAttributes(player);
 
             // Scale damage & armor
-            player.Armor = scaleValue(player.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
-            player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
-            player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+            player.Armor = _scale(player.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+            player.Items.Wpn1.DamageMin = _scale(player.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+            player.Items.Wpn1.DamageMax = _scale(player.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
 
             // Set per-class data
             if (this.cheats.class == WARRIOR) {

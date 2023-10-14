@@ -545,18 +545,14 @@ class Editor extends EditorBase {
                 }
             }
 
-            const scaleValue = function (value, oldValue, newValue) {
-                return Math.ceil(value / oldValue * newValue);
-            }
-
             // Convert data
             const data = this.read();
 
             swapAttributes(data);
 
-            data.Armor = scaleValue(data.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
-            data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
-            data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+            data.Armor = _scale(data.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+            data.Items.Wpn1.DamageMin = _scale(data.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+            data.Items.Wpn1.DamageMax = _scale(data.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
 
             if (newClass == WARRIOR) {
                 data.BlockChance = newDefinition.SkipChance * 100;
