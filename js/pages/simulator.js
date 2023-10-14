@@ -52,7 +52,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         onCopy: () => {
             return players.map(p => ModelUtils.toSimulatorData(p.player));
         },
-        insertType: 'players',
         onInsert: (data) => {
             handlePaste(data);
         },
