@@ -1,24 +1,22 @@
 // Category
 class HeaderGroup {
-    constructor ({ name, empty, expa_eval }, i) {
-        this.name = expa_eval != undefined ? expa_eval : name;
-        this.empty =  expa_eval != undefined ? expa_eval.length == 0 : empty;
+    constructor (name, settings, i) {
+        this.name = name;
         this.index = i;
 
-        this.sortKey = `${ name }.${ i }`;
+        this.sortKey = `${ settings.name }.${ i }`;
 
         this.width = 0;
         this.length = 0;
         this.headers = [];
     }
 
-    add (settings, generators, sort, bordered, span = 1) {
-        let { expa_eval, nameOverride, name } = settings;
-        let header = Object.assign(settings || {}, {
-            name: expa_eval != undefined ? expa_eval : (nameOverride != undefined ? nameOverride : name),
+    add (name, settings, generators, sort, bordered, span = 1) {
+        const header = Object.assign(settings || {}, {
+            name,
             generators,
             sort,
-            sortKey: SHA1(`${ this.sortKey }.${ name }.${ this.headers.length }`),
+            sortKey: SHA1(`${ this.sortKey }.${ settings.name }.${ this.headers.length }`),
             span,
             bordered
         });
@@ -100,8 +98,9 @@ class TableInstance {
         }
     }
 
-    #addHeader (group, header, showBorder) {
+    #addHeader (name, group, header, showBorder) {
         group.add(
+            name,
             header,
             {
                 cell: (player, compare) => {
@@ -158,10 +157,11 @@ class TableInstance {
         );
     }
 
-    #addGroupedHeader (group, header, showBorder) {
+    #addGroupedHeader (name, group, header, showBorder) {
         let callWidth = header.width || 100;
 
         group.add(
+            name,
             header,
             {
                 cell: (player, compare) => {
@@ -207,12 +207,13 @@ class TableInstance {
         );
     }
 
-    #addEmbeddedHeader (group, header, showBorder) {
+    #addEmbeddedHeader (name, group, header, showBorder) {
         if (header.columns && !header.width) {
             header.width = _sum(header.columns);
         }
 
         group.add(
+            name,
             header,
             {
                 cell: (player, compare) => {
@@ -227,22 +228,20 @@ class TableInstance {
                     const generators = header.headers.map((embedHeader) => {
                         return {
                             name: () => {
-                                let expa_eval = undefined;
-                                if (embedHeader.nameExpression) {
-                                    expa_eval = embedHeader.nameExpression(this.settings, category);
-                                    if (expa_eval != undefined) {
-                                        expa_eval = String(expa_eval);
+                                let embedName = embedHeader.nameOverride || embedHeader.name;
+                                if (typeof embedHeader.nameExpression !== 'undefined') {
+                                    const resolvedName = embedHeader.nameExpression(this.settings, embedHeader);
+                                    if (resolvedName != undefined) {
+                                        embedName = String(resolvedName);
                                     }
                                 }
 
-                                const name = expa_eval || embedHeader.nameOverride || embedHeader.name || '';
-
                                 return this.#getCell(
                                     embedHeader,
-                                    name,
+                                    embedName,
                                     '',
                                     embedHeader.border,
-                                    _dig(header, 'columns', 0) || Math.max(100, name.length * 12)
+                                    _dig(header, 'columns', 0) || Math.max(100, embedName.length * 12)
                                 );
                             },
                             get: (value, i) => {
@@ -321,15 +320,16 @@ class TableInstance {
         // Loop over all categories
         this.settings.categories.forEach((category, categoryIndex, categories) => {
             // Add expression alias
-            if (category.nameExpression) {
-                category.expa_eval = category.nameExpression(this.settings, category);
-                if (category.expa_eval != undefined) {
-                    category.expa_eval = String(category.expa_eval);
+            let categoryName = category.nameOverride || category.name;
+            if (typeof category.nameExpression !== 'undefined') {
+                const resolvedName = category.nameExpression(this.settings, category);
+                if (resolvedName != undefined) {
+                    categoryName = String(resolvedName);
                 }
             }
 
             // Create header group
-            let group = new HeaderGroup(category, this.config.length);
+            let group = new HeaderGroup(categoryName, category, this.config.length);
             let lastCategory = categoryIndex == categories.length - 1;
 
             // Loop over all headers
@@ -340,19 +340,20 @@ class TableInstance {
                 let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
 
                 // Add expression alias
-                if (header.nameExpression) {
-                    header.expa_eval = header.nameExpression(this.settings, header);
-                    if (header.expa_eval != undefined) {
-                        header.expa_eval = String(header.expa_eval);
+                let headerName = header.nameOverride || header.name;
+                if (typeof header.nameExpression !== 'undefined') {
+                    const resolvedName = header.nameExpression(this.settings, header);
+                    if (resolvedName != undefined) {
+                        headerName = String(resolvedName);
                     }
                 }
 
                 if (header.embedded) {
-                    this.#addEmbeddedHeader(group, header, showBorder);
+                    this.#addEmbeddedHeader(headerName, group, header, showBorder);
                 } else if (header.grouped) {
-                    this.#addGroupedHeader(group, header, showBorder);
+                    this.#addGroupedHeader(headerName, group, header, showBorder);
                 } else {
-                    this.#addHeader(group, header, showBorder);
+                    this.#addHeader(headerName, group, header, showBorder);
                 }
             })
 
@@ -982,32 +983,36 @@ class TableInstance {
     }
 
     #getCategoryBlock (config = this.config, alwaysRightBorder = false) {
-        let aligned = this.settings.getTitleAlign();
-        return _join(config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
-            let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
+        const aligned = this.settings.getTitleAlign();
 
-            if (empty && !aligned) {
+        return _join(config, ({ headers, length, name: categoryName }, categoryIndex, categoryArray) => {
+            const notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
+            const emptyCategoryName = categoryName.length === 0;
+
+            if (emptyCategoryName && !aligned) {
                 return _join(headers, ({ width, span, sortKey, name: headerName, alignTitle }, headerIndex, headerArray) => {
-                    let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
+                    const lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
                     return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ alignTitle ? alignTitle : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortKey) }>${ headerName }</td>`
                 });
             } else {
-                return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
+                return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && emptyCategoryName ? '' : categoryName }</td>`;
             }
         });
     }
 
     #getHeaderBlock (config = this.config, alwaysRightBorder = false) {
-        let aligned = this.settings.getTitleAlign();
-        return _join(config, ({ headers, empty }, categoryIndex, categoryArray) => {
-            let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
+        const aligned = this.settings.getTitleAlign();
 
-            if (empty && !aligned) {
+        return _join(config, ({ headers, name: categoryName }, categoryIndex, categoryArray) => {
+            const notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
+            const emptyCategoryName = categoryName.length === 0;
+
+            if (emptyCategoryName && !aligned) {
                 return '';
             } else {
                 return _join(headers, ({ width, span, name, sortKey, alignTitle }, headerIndex, headerArray) => {
-                    let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
+                    const lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
                     return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ alignTitle ? alignTitle : '' } ${ lastHeader ? 'border-right-thin' : '' } cursor-pointer" ${ this.#getSortingTag(sortKey) }>${ name }</td>`
                 });
