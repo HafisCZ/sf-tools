@@ -14,6 +14,7 @@
         "class7": "Cazademonios",
         "class8": "Druida",
         "class9": "Bardo",
+        "class10": "Necromancer",
         "mask0": "Águila",
         "mask1": "Oso",
         "mask2": "Gato",
@@ -122,8 +123,18 @@
         "attack24": "Evadido",
         "attack28": "Crítico bloqueado",
         "attack29": "Crítico evadido",
+        "attack30": "Minion Normal",
+        "attack31": "Minion Critical",
+        "attack33": "Minion Blocked",
+        "attack34": "Minion Evaded",
+        "attack38": "Minion Critical Blocked",
+        "attack39": "Minion Critical Evaded",
         "attack100": "Revivir",
         "attack200": "Canción de Bardo",
+        "attack331": "Summon Skeleton",
+        "attack311": "Revive Skeleton",
+        "attack322": "Summon Hound",
+        "attack343": "Summon Golem",
         "gt_background1": "Oro",
         "gt_background2": "Plata",
         "gt_background3": "Bronce",
@@ -398,43 +409,6 @@
             "accept": "Aceptar",
             "reject": "Rechazar"
         },
-        "general": {
-            "heading0": {
-                "title": "Uso general",
-                "clause0": "Se recomienda nunca compartir archivos HAR ya que <b>podrían</b> contener datos privados como dirección IP y cookies.",
-                "clause1": "El sitio se distribuye <b>TAL COMO ES</b> sin ninguna garantía. Usted es completamente responsable del uso de este sitio.",
-                "clause2": "Usted es libre de compartir, copiar y modificar el sitio, pero no está autorizado a distribuirlo ni ninguna de sus partes sin la aprobación explícita.",
-                "clause3": "Aceptas limitar la recogida de datos del juego a cantidades razonables.",
-                "clause4": "Aceptas seguir los <a href=\"https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html\">Términos y Condiciones</a> de Shakes & Fidget",
-                "clause5": "No se le permite automatizar ninguna parte de esta herramienta."
-            },
-            "heading1": {
-                "title": "Endpoint",
-                "clause0": "Endpoint es una aplicación de Unity que incluye la herramienta que te permite iniciar sesión en el juego y recopilar datos limitados sobre ti y tus miembros del gremio sin el largo proceso de creación de un archivo HAR.",
-                "clause1": "No es posible capturar otros jugadores que los mencionados anteriormente.",
-                "clause2": "Todo sucede localmente de una manera idéntica a jugar el juego a través del navegador."
-            },
-            "heading2": {
-                "title": "Servicio de compartir integrado",
-                "clause0": "Todos los datos compartidos a través de la función compartida integrada no están protegidos de ninguna otra forma que no sea la clave de compartir.",
-                "clause1": "Los datos compartidos pueden ser borrados en cualquier momento, hasta 2 días."
-            },
-            "heading3": {
-                "title": "Sentry",
-                "clause0": "Todos los errores surgidos durante el uso de esta herramienta se informarán a través de la herramienta Sentry.io.",
-                "clause1": "Estos informes son anónimos para que no sea posible rastrear su origen.",
-                "clause2": "Tenga en cuenta que ciertos bloqueadores de anuncios podrían impedir que Sentry funcione.",
-                "clause3": "Si quieres contribuir a este proyecto, es recomendable desactivar los bloqueadores de anuncios para este sitio."
-            }
-        },
-        "endpoint": {
-            "clause0": "Endpoint es una pequeña aplicación Unity que incluye la herramienta que te permite iniciar sesión en el juego y recopilar datos limitados del juego sin el largo proceso de crear un archivo HAR.",
-            "clause1": "Todos los datos introducidos se envían directamente al servidor del juego sin la participación de ningún tercero.",
-            "clause2": "No es posible capturar ningún otro jugador que los explícitamente indicados en la aplicación.",
-            "clause3": "Toda recogida de datos se realiza con medios normales, sin ningún uso de acciones prohibidas.",
-            "clause4": "You can access your S&F Account using your username and password.",
-            "clause5": "You can access your unbound character using your character name and server url in the following format: <code>charname@s1.sfgame.de</code>."
-        },
         "toast": {
             "rejected": {
                 "title": "Términos no aceptados",
@@ -582,23 +556,49 @@
         },
         "scripts": {
             "settings": "Ajustes",
-            "templates": "Plantillas",
             "name": "Script editado actualmente",
-            "list": "Plantillas disponibles",
+            "list": "Select script",
+            "list_add": "Add new script",
+            "list_search": "Search available scripts ...",
+            "target": "Current table",
+            "script": "Current script",
+            "quick_swap": "Quick swap script",
+            "targets": {
+                "none": "None",
+                "players": "Browse",
+                "player": "Players",
+                "group": "Guilds"
+            },
+            "targets_category": {
+                "player": "Players",
+                "group": "Guilds",
+                "default": "Defaults"
+            },
+            "tooltip": {
+                "pin": "Pin script to the top of the list",
+                "unpin": "Unpin script",
+                "assigned": "This script is assigned to current table",
+                "remote": "This script is published",
+                "remote_copy": "Click here to copy the code"
+            },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
-                "scripts": "Scripts",
-                "templates": "Plantillas",
+                "scripts": "Online scripts",
+                "assign": "Assign selected script to current table",
+                "unassign": "Unassign script from current table",
                 "save": "Guardar",
                 "copy": "Copiar",
-                "archive": "Archivo de scripts",
+                "archive": "Archived scripts",
                 "recover": "Load version v#{version}",
+                "edit": "Edit name or description",
+                "remote_add": "Publish selected script",
+                "remote_update": "Publish new version of selected script",
+                "remote_remove": "Unpublish selected script",
                 "close": "Volver",
                 "shortcuts": "Shortcuts",
                 "remove": "Eliminar",
                 "reset": "Descartar cambios",
-                "save_template": "Guardar como plantilla",
                 "export": "Export",
                 "import": "Import",
                 "header": {
@@ -608,17 +608,17 @@
                     "help": "Help"
                 }
             },
-            "types": {
-                "me": "Yo",
-                "players": "Jugadores",
-                "guilds": "Gremios",
-                "default": "Predeterminado"
-            },
-            "online": {
-                "not_available": "No hay scripts disponibles"
-            },
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+            },
+            "remote_action_error": "Action was not successful",
+            "remote_copy_toast": {
+                "title": "Copy",
+                "message": "Code has been copied"
+            },
+            "remote_author_missing": {
+                "title": "You must set your user name before you can publish scripts",
+                "message": "Please head over to Settings and set your 'author name for published scripts'"
             }
         },
         "players": {
@@ -659,33 +659,6 @@
                 "code": "Online code (1 use or 2 days)",
                 "code_reusable": "Online code (2 days)"
             }
-        },
-        "online_templates": {
-            "title": "Scripts públicos",
-            "description": "Descripción",
-            "author": "Autor",
-            "created_on": "Creado el",
-            "loading": "Obteniendo scripts",
-            "code": "Ingresa tu código privado..."
-        },
-        "templates": {
-            "title": "Plantillas",
-            "loading": "Confirmando los cambios",
-            "form": {
-                "changed_on": "Modificado el",
-                "version": "Versión de la herramienta",
-                "compatibility": "Compatibilidad",
-                "published_on": "Publicado el",
-                "code": "Código",
-                "publish": "Publicar",
-                "publish_tooltip": "Publicar plantilla",
-                "unpublish_tooltip": "Despublicar plantilla",
-                "update": "Actualizar",
-                "update_tooltip": "Actualizar plantilla con el script actual",
-                "remove": "Eliminar",
-                "remove_tooltip": "Eliminar plantilla"
-            },
-            "quick_swap": "Cambio rápido de plantillas personalizadas"
         },
         "player": {
             "attributes": "Atributos",
@@ -743,6 +716,7 @@
             "always_prev": "Comparar anterior (gremios)",
             "empty_groups": "Mostrar grupos vacíos",
             "unsafe_delete": "Omitir confirmación al eliminar archivos",
+            "script_author": "Author name for published scripts",
             "table_sticky_header": "Enable sticky table headers",
             "terms": "Aceptar los términos del servicio",
             "tab": "Pestaña por defecto",
@@ -1151,6 +1125,7 @@
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
         "clear_changes": "Reset to original state",
+        "simulate": "Open simulator with current data",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
             "rage": "Furia",
@@ -1168,7 +1143,10 @@
         "special_state": {
             "druid_rage": "Druid is enraged",
             "berserker_rage": "Berserker is enraged",
-            "bard_song": "Bard has played a song"
+            "bard_song": "Bard has played a song",
+            "necromancer_minion_1": "Skeleton attack",
+            "necromancer_minion_2": "Hound attack",
+            "necromancer_minion_3": "Golem attack"
         },
         "sidebar": {
             "toggles": {
@@ -1301,6 +1279,7 @@
         "information": "Important notice!",
         "configure_copy": "Copiar a todos incluyendo la configuración actual",
         "configure_insert": "Insertar datos de muestra",
+        "configure_insert_custom": "Specify values manually",
         "configure_log": "Run simulation with logging enabled",
         "configure_log_file": "Save to file",
         "configure_log_broadcast": "Open with analyzer",
@@ -1444,7 +1423,7 @@
                 },
                 "ctrl_shift_s": {
                     "key": "Ctrl + Shift + S",
-                    "description": "Save template"
+                    "description": "Save script and return back"
                 },
                 "tab": {
                     "key": "Tab",
@@ -1531,40 +1510,42 @@
             "add": "Add new counter",
             "variables": "Available variables:"
         },
-        "template_manage": {
-            "title": "Plantillas",
-            "general": "General",
-            "online": "Publicar",
-            "script": {
-                "name": "Nombre",
-                "version": "Versión local",
-                "updated": "Actualizado el",
-                "published": "Publicado el",
-                "published_version": "Versión publicada",
-                "published_key": "Código"
+        "script_edit": {
+            "title": {
+                "edit": "Edit script",
+                "create": "Add new script"
             },
-            "action": {
-                "publish": "Publicar plantilla",
-                "republish": "Publicar nueva versión",
-                "unpublish": "Quitar plantilla publicada",
-                "remove": "Eliminar permanentemente"
+            "name": "Name",
+            "description": "Description",
+            "source": "Content",
+            "tables": "Compatible tables",
+            "content": {
+                "empty": "Empty",
+                "current": "Current content",
+                "player": "Players",
+                "players": "Browse",
+                "group": "Guilds"
             },
-            "error": "La acción no fue exitosa"
+            "category": {
+                "defaults": "Duplicate default script",
+                "clone": "Duplicate existing script"
+            },
+            "error_title": "Warning",
+            "error_name_blank": "Script name may not be blank"
         },
         "script_archive": {
-            "title": "Archivo de scripts",
+            "title": "Archived scripts",
+            "filter": "Filter by type",
             "clear": "Eliminar todos los elementos del archivo",
             "copy_toast": "Script has been copied",
+            "unknown": "Unknown",
             "types": {
-                "create_script": "Script creado",
-                "overwrite_script": "Script sobrescrito por una nueva versión",
-                "save_script": "Script guardado",
-                "remove_script": "Script eliminado",
-                "discard_script": "Script changes were discarded",
-                "create_template": "Plantilla creada",
-                "overwrite_template": "Plantilla sobrescrita por una nueva versión",
-                "save_template": "Plantilla guardada",
-                "remove_template": "Plantilla eliminada"
+                "all": "Display all changes",
+                "create": "Script created",
+                "overwrite": "Script overwritten by new version",
+                "save": "Script saved",
+                "remove": "Script removed",
+                "discard": "Script changes were discarded"
             },
             "item": {
                 "description": "Archivado: #{change}. Expira: #{expire}",
@@ -1572,14 +1553,24 @@
             }
         },
         "script_repository": {
-            "title": "Repositorio de scripts",
-            "private_code": {
-                "label": "Código privado",
-                "placeholder": "Ingresa tu código privado..."
-            },
+            "title": "Online scripts",
+            "search": "Search ...",
+            "list_add": "Add published script to your list",
+            "list_add_key": "Code",
+            "list_add_accept": "Add to my list",
             "list": {
-                "about": "Añadido por #{author}",
-                "about_with_date": "Añadido por #{author} el #{date}"
+                "about": "Created by #{author}",
+                "about_with_uses": "Created by #{author}; #{uses} uses",
+                "no_description": "No description",
+                "remove": "Remove script from your list",
+                "private": "This script is private",
+                "public": "This script is public",
+                "default": "This script is available to everyone locally",
+                "new": "New!"
+            },
+            "error_fetch": {
+                "title": "There was an error while fetching scripts",
+                "message": "Please wait few moments and try again"
             }
         },
         "statistics_integration_options": {
@@ -1607,7 +1598,13 @@
         },
         "delete_script": {
             "title": "Eliminar script",
-            "notice": "¿Está seguro que desea eliminar permanentemente el script seleccionado?"
+            "notice": "¿Está seguro que desea eliminar permanentemente el script seleccionado?",
+            "notice_bonus_remote": "<br><br>This will not unpublish your script and you will lose edit access to it!",
+            "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
+        },
+        "delete_remote_script": {
+            "title": "Unpublish script",
+            "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
         },
         "warning": {
             "title": "¡Se ha producido un error!",
@@ -1626,17 +1623,6 @@
         "file_edit": {
             "title": "Editar archivo",
             "timestamp": "Fecha y hora",
-            "cancel": "Cancelar",
-            "save": "Guardar"
-        },
-        "save_online_script": {
-            "title": "Importar plantilla",
-            "loader": "Preparando archivos",
-            "author": "Autor",
-            "created_updated": "Creado/Actualizado",
-            "name": "Nombre",
-            "name_placeholder": "Nombre de la plantilla",
-            "error": "¡La plantilla solicitada no está disponible!",
             "cancel": "Cancelar",
             "save": "Guardar"
         },
@@ -1680,14 +1666,6 @@
                 "secondary": "Configuración de filtro de grupo secundario"
             }
         },
-        "template_save": {
-            "title": "Guardar plantilla",
-            "select": "Añadir una nueva o seleccionar una plantilla existente",
-            "or": "o",
-            "name": "Nombre de la plantilla",
-            "cancel": "Cancelar",
-            "save": "Guardar"
-        },
         "confirm": {
             "cancel": "Cancelar",
             "ok": "Aceptar",
@@ -1713,6 +1691,11 @@
             "ok": "Aplicar",
             "reset": "Resetear",
             "title": "Configuración del Simulador"
+        },
+        "simulator_custom_preset": {
+            "title": "Add custom preset",
+            "close": "Close",
+            "insert": "Insert preset"
         }
     },
     "attributes": {
