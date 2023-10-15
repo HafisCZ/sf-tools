@@ -224,11 +224,11 @@ class TableInstance {
                         values = Array.isArray(value) ? value : [value];
                     }
 
-                    const allBlank = _every(header.headers, h => !(h.nameExpression || h.nameOverride || h.name));
+                    const allBlank = _every(header.headers, h => !(h.nameExpression || (h.nameOverride ?? h.name)));
                     const generators = header.headers.map((embedHeader) => {
                         return {
                             name: () => {
-                                let embedName = embedHeader.nameOverride || embedHeader.name;
+                                let embedName = embedHeader.nameOverride ?? embedHeader.name;
                                 if (typeof embedHeader.nameExpression !== 'undefined') {
                                     const resolvedName = embedHeader.nameExpression(this.settings, embedHeader);
                                     if (resolvedName != undefined) {
@@ -320,7 +320,7 @@ class TableInstance {
         // Loop over all categories
         this.settings.categories.forEach((category, categoryIndex, categories) => {
             // Add expression alias
-            let categoryName = category.nameOverride || category.name;
+            let categoryName = category.nameOverride ?? category.name;
             if (typeof category.nameExpression !== 'undefined') {
                 const resolvedName = category.nameExpression(this.settings, category);
                 if (resolvedName != undefined) {
@@ -340,7 +340,7 @@ class TableInstance {
                 let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
 
                 // Add expression alias
-                let headerName = header.nameOverride || header.name;
+                let headerName = header.nameOverride ?? header.name;
                 if (typeof header.nameExpression !== 'undefined') {
                     const resolvedName = header.nameExpression(this.settings, header);
                     if (resolvedName != undefined) {
