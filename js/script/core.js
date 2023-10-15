@@ -2912,11 +2912,10 @@ class Script {
         });
     }
 
-    // Add alias
     addAlias (name) {
         let object = (this.definition || this.header || this.embed);
         if (object) {
-            object.alias = name;
+            object.nameOverride = name;
         }
     }
 
@@ -2942,7 +2941,7 @@ class Script {
     addAliasExpression (expression) {
         let object = (this.row || this.definition || this.header || this.embed || this.category);
         if (object) {
-            object.expa = expression;
+            object.nameExpression = expression;
         }
     }
 
