@@ -299,20 +299,19 @@ const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
     }
 
     _createModal () {
-        const { title, content } = ANNOUNCEMENTS[SiteOptions.announcement_accepted];
-
         return `
-            <div class="small inverted dialog">
-                <div class="header">${title}</div>
-                <div class="text-center mb-4 mt-4" style="max-height: 50vh;">
-                    ${content}
-                </div>
+            <div class="small bordered inverted dialog">
+                <div class="header text-orange" data-op="title"></div>
+                <div class="text-center mb-4 mt-4" data-op="content" style="max-height: 50vh;"></div>
                 <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
             </div>
         `;
     }
 
     _createBindings () {
+        this.$title = this.$parent.find('[data-op="title"]');
+        this.$content = this.$parent.find('[data-op="content"]');
+
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.announcement_accepted = SiteOptions.announcement_accepted + 1;
             this.close();
@@ -321,6 +320,13 @@ const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
                 DialogController.open(this);
             }
         });
+    }
+
+    _applyArguments () {
+        const { title, content } = ANNOUNCEMENTS[SiteOptions.announcement_accepted];
+
+        this.$title.html(title);
+        this.$content.html(content);
     }
 })
 
