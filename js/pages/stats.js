@@ -2642,10 +2642,20 @@ class ScriptsTab extends Tab {
 
         this.$remove = this.$parent.operator('remove');
         this.$remove.click(() => {
+            const assignments = Scripts.getAssigns(this.script.key).map((identifier) => {
+                if (DatabaseManager.isPlayer(identifier)) {
+                    return DatabaseManager.PlayerNames[identifier] ?? identifier;
+                } else if (DatabaseManager.isGroup(identifier)) {
+                    return DatabaseManager.GroupNames[identifier] ?? identifier;
+                } else {
+                    return identifier;
+                }
+            });
+
             DialogController.open(
                 ConfirmationDialog,
                 intl('dialog.delete_script.title'),
-                intl(`dialog.delete_script.${this.script.remote ? 'notice_remote' : 'notice'}`),
+                intl('dialog.delete_script.notice') + (this.script.remote ? intl('dialog.delete_script.notice_bonus_remote') : '') + (assignments.length > 0 ? intl('dialog.delete_script.notice_bonus_used', { tables: assignments.join(', ') }) : ''),
                 () => this.remove(),
                 null
             );
