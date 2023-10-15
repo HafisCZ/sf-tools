@@ -458,9 +458,9 @@ function _pick (object, fields) {
     return value;
 }
 
-function _truncate (string, length) {
+function _truncateString (string, length, ellipsis = '...') {
     if (string.length > length) {
-        return string.slice(0, length) + '...';
+        return string.slice(0, length - ellipsis.length) + ellipsis;
     } else {
         return string;
     }

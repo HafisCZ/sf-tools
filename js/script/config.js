@@ -969,6 +969,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'function', 'value', 'truncateString',
+  function (value, length, ellipsis = '...') {
+    return _truncateString(value, length, ellipsis);
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'function', 'value', 'trunc',
   function (value) {
     if (isNaN(value)) {
