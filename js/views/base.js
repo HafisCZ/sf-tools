@@ -302,7 +302,7 @@ const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header text-orange" data-op="title"></div>
-                <div class="text-center mb-4 mt-4" data-op="content" style="max-height: 50vh;"></div>
+                <div class="text-center mb-4 mt-4" data-op="content" style="max-height: 50vh; line-height: 1.5em;"></div>
                 <button class="ui black fluid button" data-op="accept">${intl('dialog.shared.continue')}</button>
             </div>
         `;
