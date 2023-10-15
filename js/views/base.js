@@ -299,7 +299,7 @@ const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
     }
 
     _createModal () {
-        const { title, content } = ANNOUNCEMENTS.at(-1)
+        const { title, content } = ANNOUNCEMENTS[SiteOptions.announcement_accepted];
 
         return `
             <div class="small inverted dialog">
@@ -314,8 +314,12 @@ const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
 
     _createBindings () {
         this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.announcement_accepted = ANNOUNCEMENTS.length;
+            SiteOptions.announcement_accepted = SiteOptions.announcement_accepted + 1;
             this.close();
+
+            if (SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
+                DialogController.open(this);
+            }
         });
     }
 })

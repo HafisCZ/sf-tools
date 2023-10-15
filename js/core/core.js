@@ -224,7 +224,7 @@ const SiteOptions = new OptionsHandler(
         terms_accepted: false,
         endpoint_terms_accepted: false,
         version_accepted: false,
-        announcement_accepted: false,
+        announcement_accepted: 0,
         groups_hidden: false,
         players_hidden: false,
         browse_hidden: false,
