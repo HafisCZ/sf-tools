@@ -2633,7 +2633,6 @@ class Script {
 
             this.categories.unshift({
                 name: '',
-                empty: true,
                 headers
             });
         }
@@ -2883,8 +2882,7 @@ class Script {
 
         // Category
         this.category = {
-            name: name,
-            empty: name == '',
+            name,
             headers: []
         };
 
