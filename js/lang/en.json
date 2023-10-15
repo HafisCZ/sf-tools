@@ -1605,7 +1605,8 @@
         "delete_script": {
             "title": "Remove script",
             "notice": "Are you sure you want to permanently remove selected script?",
-            "notice_remote": "Are you sure you want to permanently remove selected script?<br><br>This will not unpublish your script and you will lose edit access to it!"
+            "notice_bonus_remote": "<br><br>This will not unpublish your script and you will lose edit access to it!",
+            "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
         },
         "delete_remote_script": {
             "title": "Unpublish script",
