@@ -23,7 +23,7 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
-    'v7.XXXX': {
+    'v7.4306': {
         'Statistics': [
             'Reworked Scripts & Templates',
             'Added author name and description to published scripts',
