@@ -13,9 +13,9 @@ class HeaderGroup {
     }
 
     add (settings, generators, sort, bordered, span = 1) {
-        let { expa_eval, alias, name } = settings;
+        let { expa_eval, nameOverride, name } = settings;
         let header = Object.assign(settings || {}, {
-            name: expa_eval != undefined ? expa_eval : (alias != undefined ? alias : name),
+            name: expa_eval != undefined ? expa_eval : (nameOverride != undefined ? nameOverride : name),
             generators,
             sort,
             sortKey: SHA1(`${ this.sortKey }.${ name }.${ this.headers.length }`),
@@ -223,19 +223,19 @@ class TableInstance {
                         values = Array.isArray(value) ? value : [value];
                     }
 
-                    const allBlank = _every(header.headers, h => !(h.expa || h.alias || h.name));
+                    const allBlank = _every(header.headers, h => !(h.nameExpression || h.nameOverride || h.name));
                     const generators = header.headers.map((embedHeader) => {
                         return {
                             name: () => {
                                 let expa_eval = undefined;
-                                if (embedHeader.expa) {
-                                    expa_eval = embedHeader.expa(this.settings, category);
+                                if (embedHeader.nameExpression) {
+                                    expa_eval = embedHeader.nameExpression(this.settings, category);
                                     if (expa_eval != undefined) {
                                         expa_eval = String(expa_eval);
                                     }
                                 }
 
-                                const name = expa_eval || embedHeader.alias || embedHeader.name || '';
+                                const name = expa_eval || embedHeader.nameOverride || embedHeader.name || '';
 
                                 return this.#getCell(
                                     embedHeader,
@@ -321,8 +321,8 @@ class TableInstance {
         // Loop over all categories
         this.settings.categories.forEach((category, categoryIndex, categories) => {
             // Add expression alias
-            if (category.expa) {
-                category.expa_eval = category.expa(this.settings, category);
+            if (category.nameExpression) {
+                category.expa_eval = category.nameExpression(this.settings, category);
                 if (category.expa_eval != undefined) {
                     category.expa_eval = String(category.expa_eval);
                 }
@@ -340,8 +340,8 @@ class TableInstance {
                 let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
 
                 // Add expression alias
-                if (header.expa) {
-                    header.expa_eval = header.expa(this.settings, header);
+                if (header.nameExpression) {
+                    header.expa_eval = header.nameExpression(this.settings, header);
                     if (header.expa_eval != undefined) {
                         header.expa_eval = String(header.expa_eval);
                     }

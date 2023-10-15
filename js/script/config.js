@@ -2084,7 +2084,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Strength Bonus',
   {
     expr: p => p.Strength.Bonus,
-    alias: 'Str Bonus'
+    nameOverride: 'Str Bonus'
   }
 )
 
@@ -2092,7 +2092,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Dexterity Bonus',
   {
     expr: p => p.Dexterity.Bonus,
-    alias: 'Dex Bonus'
+    nameOverride: 'Dex Bonus'
   }
 )
 
@@ -2100,7 +2100,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Intelligence Bonus',
   {
     expr: p => p.Intelligence.Bonus,
-    alias: 'Int Bonus'
+    nameOverride: 'Int Bonus'
   }
 )
 
@@ -2108,7 +2108,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Constitution Bonus',
   {
     expr: p => p.Constitution.Bonus,
-    alias: 'Con Bonus'
+    nameOverride: 'Con Bonus'
   }
 )
 
@@ -2116,7 +2116,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Luck Bonus',
   {
     expr: p => p.Luck.Bonus,
-    alias: 'Lck Bonus'
+    nameOverride: 'Lck Bonus'
   }
 )
 
