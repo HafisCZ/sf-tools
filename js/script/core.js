@@ -815,7 +815,7 @@ ScriptCommands.register(
         const val = root.constants.fetch(value);
 
         if (val != undefined) {
-            root.addAlias(val);
+            root.addNameValue('nameOverride', val);
         }
     },
     (root, value) => {
@@ -1805,7 +1805,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addAliasExpression((a, b) => ast.eval(new ExpressionScope(a)));
+            root.addNameValue('nameExpression', (a, b) => ast.eval(new ExpressionScope(a)));
         }
     },
     (root, expression) => Highlighter.keyword('expa ').expression(expression, root)
@@ -2910,10 +2910,10 @@ class Script {
         });
     }
 
-    addAlias (name) {
-        let object = (this.definition || this.header || this.embed);
+    addNameValue (field, name) {
+        let object = (this.row || this.definition || this.header || this.embed || this.category);
         if (object) {
-            object.nameOverride = name;
+            object[field] = name;
         }
     }
 
@@ -2933,13 +2933,6 @@ class Script {
         let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
             object.colorForeground = expression;
-        }
-    }
-
-    addAliasExpression (expression) {
-        let object = (this.row || this.definition || this.header || this.embed || this.category);
-        if (object) {
-            object.nameExpression = expression;
         }
     }
 

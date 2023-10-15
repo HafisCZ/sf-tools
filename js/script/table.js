@@ -315,6 +315,8 @@ class TableInstance {
         Actions.updateFromScript(this.settings.trackers);
 
         this.config = [];
+        this.rowsConfig = [];
+
         this.sorting = [];
 
         // Loop over all categories
@@ -788,10 +790,10 @@ class TableInstance {
         `;
     }
 
-    #getRow (row, val, cmp, player = undefined) {
+    #getRow (name, row, val, cmp, player = undefined) {
         return `
             <tr>
-                <td class="border-right-thin" colspan="${ this.leftFlatSpan }">${ row.name }</td>
+                <td class="border-right-thin" colspan="${ this.leftFlatSpan }">${name}</td>
                 ${ CellGenerator.WideCell(
                     this.#getCellDisplayValue(row, val, cmp, player),
                     this.#getCellColor(row, val, player),
@@ -905,14 +907,26 @@ class TableInstance {
         }
     }
 
+    #renderRow (row, val, cmp, player) {
+        let rowName = row.nameOverride ?? row.name;
+        if (typeof row.nameExpression !== 'undefined') {
+            const resolvedName = row.nameExpression(this.settings, row);
+            if (resolvedName != undefined) {
+                rowName = String(resolvedName);
+            }
+        }
+
+        return this.#getRow(rowName, row, val, cmp, player);
+    }
+
     #renderRows (includePlayer = false) {
         if (this.cache.has('rows')) {
             return;
         } else if (this.settings.customRows.length) {
             if (includePlayer) {
-                this.cache.set('rows', _join(this.settings.customRows, row => this.#getRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.#renderRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))));
             } else {
-                this.cache.set('rows', _join(this.settings.customRows, row => this.#getRow(row, row.eval.value, row.eval.compare)));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.#renderRow(row, row.eval.value, row.eval.compare)));
             }
         } else {
             this.cache.set('rows', '');
