@@ -12,6 +12,9 @@ const CHANGELOG = {
         'Fight Analyzer': [
             'Added option to open prefilled player simulator for a selected group'
         ],
+        'Fight Simulator': [
+            'Added debug option to generate custom characters'
+        ],
         'All Tools': [
             'Added support for Necromancer'
         ]
