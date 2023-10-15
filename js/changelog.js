@@ -4,13 +4,27 @@ const ANNOUNCEMENTS = [
         content: `
             I am happy to announce that SF Tools was granted its very own WebShop code.<br><br>If you want to support the website development via your normal shroom purchases, simply introduce the code <code class="text-orange" style="font-family: arial;">SFTOOLS</code> at checkout.
         `
+    },
+    {
+        title: 'The age of Templates is over!',
+        content: `
+            It took long enough but we are finally here, templates are no more.<br>
+            Now welcome new scripts, which is just like templates, but much much better! Here are some of the benefits:<br><br>
+            <div style="margin-inline: 2em;">
+                &bullet; One script can be applied to multiple tables. Previously a script would be duplicated for each table leading to a management nightmare.<br><br>
+                &bullet; Scripts can have a name and description, unlike templates which allowed only name. When publishing a script you will now also be required to specify your name so online scripts won't appear without author.<br><br>
+                &bullet; When using online script, you will be able to see if the author published a new version as well as see how many times the script was used.<br><br>
+                &bullet; You can easily duplicate existing scripts or create new ones from scratch.
+            </div>
+            <br>
+            Sound like a lot? Don't worry! <b class="text-orange">Your existing scripts and templates will all be safe and converted to the new system!</b> However you might need to clean your converted library a bit :).
+        `
     }
 ]
 
 const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
-            'Reworked Scripts & Templates',
             'Reworked Scripts & Templates',
             'Added author name and description to published scripts',
             'Added indicator for when new version of published scripts is found',
