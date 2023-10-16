@@ -2769,7 +2769,7 @@ class ScriptsTab extends Tab {
             this.$script.html(`
                 <div>
                     <div class="wrap-none overflow-hidden text-overflow-ellipsis font-bold" title="${_escape(name)}">${_escape(name)}</div>
-                    <div class="text-gray text-overflow-ellipsis-2-line mt-2" title="${_escape(description || '')}">${_escape(description || '')}</div>
+                    <div class="text-gray text-overflow-ellipsis-2-line wrap-pre mt-2" title="${_escape(description || '')}">${_escape(description || '')}</div>
                 </div>
                 <div class="text-gray flex justify-content-between">
                     <div><i class="ui desktop icon"></i> v${version} - ${_formatDate(updated_at)}</div>

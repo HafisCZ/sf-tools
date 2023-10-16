@@ -520,6 +520,10 @@
   white-space: nowrap;
 }
 
+.wrap-pre {
+  white-space: pre;
+}
+
 /* zIndex */
 .z-2 {
   z-index: 2;
