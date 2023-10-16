@@ -1049,7 +1049,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
         <div class="flex flex-col gap-2">
           <div>${this.#createSegmentIcon(key || identifier)} ${_escape(name)}</div>
           <div class="text-gray">${this.intl(typeof uses !== 'undefined' ? 'list.about_with_uses' : 'list.about', { author: _escape(author), uses })}</div>
-          <div class="text-gray">${_escape(description || this.intl('list.no_description'))}</div>
+          <div class="text-gray wrap-pre">${_escape(description || this.intl('list.no_description'))}</div>
         </div>
         <div class="flex flex-col gap-2 text-center" style="visibility: ${key ? 'visible' : 'hidden'};">
           <div>v${version}${savedRemote && savedRemote.version < version ? ` <span class="text-orange">${this.intl('list.new')}</span>` : ''}</div>
