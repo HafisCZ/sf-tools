@@ -25,7 +25,7 @@
         "Group": 50
       },
       "Fortress": {
-        "Gladiator": 15
+        "Gladiator": 0
       },
       "Potions": {
         "Life": 25
@@ -91,7 +91,7 @@
         "Group": 50
       },
       "Fortress": {
-        "Gladiator": 15
+        "Gladiator": 0
       },
       "Potions": {
         "Life": 25
