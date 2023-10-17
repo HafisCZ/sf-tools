@@ -323,7 +323,7 @@ const CONFIG = Object.defineProperties(
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
             EffectBaseChance: [25, 50, 25],
-            EffectValues: [ 20, 40, 60 ]
+            EffectValues: [ 0.2, 0.4, 0.6 ]
         },
         Necromancer: {
             Attribute: 'Intelligence',
@@ -836,7 +836,7 @@ class SimulatorModel {
 
     // Take control
     control (instance, target) {
-        const weapon = this.Data.Weapon1;
+        const weapon = this.State.Weapon1;
 
         this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
@@ -901,7 +901,8 @@ class AssassinModel extends SimulatorModel {
     }
 
     control (instance, target) {
-        const weapon1 = this.Data.Weapon1;
+        const weapon1 = this.State.Weapon1;
+
         if (this.attack(
             instance.getRage() * (Math.random() * (1 + weapon1.Max - weapon1.Min) + weapon1.Min),
             target,
@@ -909,7 +910,8 @@ class AssassinModel extends SimulatorModel {
             getRandom(this.State.CriticalChance),
             ATTACK_NORMAL
         )) {
-            const weapon2 = this.Data.Weapon2;
+            const weapon2 = this.State.Weapon2;
+
             this.attack(
                 instance.getRage() * (Math.random() * (1 + weapon2.Max - weapon2.Min) + weapon2.Min),
                 target,
@@ -951,7 +953,7 @@ class BattlemageModel extends SimulatorModel {
 
 class BerserkerModel extends SimulatorModel {
     control (instance, target) {
-        const weapon = this.Data.Weapon1;
+        const weapon = this.State.Weapon1;
 
         this.attack(
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
@@ -1113,7 +1115,20 @@ class BardModel extends SimulatorModel {
     initializeData (target) {
         super.initializeData(target);
 
-        this.Data.BeforeAttack = !target.Config.BypassSpecial;
+        this.Data.Songs = this.Config.EffectValues.map((effectValue) => {
+            const multiplier = 1 + effectValue;
+
+            return {
+                SkipChance: this.Data.SkipChance,
+                CriticalMultiplier: this.Data.CriticalMultiplier,
+                CriticalChance: this.Data.CriticalChance,
+                Weapon1: {
+                    Base: multiplier * this.Data.Weapon1.Base,
+                    Max: multiplier * this.Data.Weapon1.Max,
+                    Min: multiplier * this.Data.Weapon1.Min
+                }
+            }
+        });
     }
 
     rollEffect () {
@@ -1125,7 +1140,7 @@ class BardModel extends SimulatorModel {
         this.EffectCounter = 0;
         this.EffectRound = 0;
 
-        this.EffectCurrent = 1 + this.Config.EffectValues[level] / 100;
+        this.enterState(this.Data.Songs[level]);
     }
 
     consumeMultiplier (target) {
@@ -1141,12 +1156,12 @@ class BardModel extends SimulatorModel {
         }
 
         if (this.EffectCounter >= this.EffectReset) {
-            this.EffectCurrent = 0;
+            this.enterState();
         }
     }
 
     control (instance, target) {
-        if (this.Data.BeforeAttack) {
+        if (!target.Config.BypassSpecial) {
             this.EffectRound += 1;
 
             if (this.EffectRound >= this.Config.EffectRounds) {
@@ -1158,10 +1173,6 @@ class BardModel extends SimulatorModel {
     }
 
     attack (damage, target, skipped, critical, type) {
-        if (this.EffectCurrent) {
-            damage *= this.EffectCurrent;
-        }
-
         const state = super.attack(
             damage,
             target,
@@ -1170,7 +1181,7 @@ class BardModel extends SimulatorModel {
             type
         )
 
-        if (this.EffectCurrent) {
+        if (this.specialState()) {
             this.consumeMultiplier(target);
         }
 

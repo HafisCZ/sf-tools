@@ -1071,6 +1071,21 @@ Site.ready(null, function (urlParams) {
         return val >= min ? (val <= max ? 0 : 2) : 1;
     }
 
+    function findState (round, model) {
+        if (round.attackerSpecialState) {
+            switch (round.attacker.Class) {
+                case DRUID: return model.Data.RageState;
+                case BARD: return model.Data.Songs[round.attackerSpecialState % 10 - 1];
+                case NECROMANCER: return model.Data.Minions[round.attackerSpecialState - 1];
+                default: {
+                    return model.Data;
+                }
+            }
+        } else {
+            return model.Data;
+        }
+    }
+
     function processGroup (group) {
         const variance = parseInt(analyzerOptions.base_damage_error_margin);
 
@@ -1110,8 +1125,8 @@ Site.ready(null, function (urlParams) {
                     round.targetDeaths = deathsA;
                 }
 
-                // Add flags to minion attacks for necromancer class
                 if (round.attacker.Class === NECROMANCER) {
+                    // Add flags to minion attacks for necromancer class
                     if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
                         const summonType = round.attackType % 10;
 
@@ -1123,6 +1138,17 @@ Site.ready(null, function (urlParams) {
                             }
                         }
                     }
+                } else if (round.attacker.Class === BARD) {
+                    // Add flags to attacks after bard summons his notes
+                    if (round.attackType >= ATTACK_SPECIAL_SONG) {
+                        const spellRound = rounds[i - 1];
+
+                        if (spellRound) {
+                            spellRound.attackerSpecialState = round.attackType % 100;
+                        }
+
+                        round.hasIgnore = true;
+                    }
                 }
             }
         }
@@ -1130,7 +1156,9 @@ Site.ready(null, function (urlParams) {
         const flatRounds = group.fights.map((fight) => fight.rounds).flat();
 
         // Decorate each round
-        for (const round of flatRounds) {
+        for (let i = 0; i < flatRounds.length; i++) {
+            const round = flatRounds[i];
+
             // Set display special state
             if (round.attackerSpecialState && round.attacker.Class === DRUID) {
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
@@ -1148,6 +1176,13 @@ Site.ready(null, function (urlParams) {
                 round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerSpecialState }
             }
 
+            if (round.attackerSpecialState && round.attacker.Class === BARD) {
+                const spellLevel = round.attackerSpecialState % 10;
+                const spellNotes = Math.trunc(round.attackerSpecialState / 10);
+
+                round.attackerSpecialDisplay = { type: 'bard_song', level: spellLevel, notes: spellNotes }
+            }
+
             // Skip if missed or special
             if (round.attackSpecial || round.attackMissed) {
                 continue;
@@ -1158,27 +1193,13 @@ Site.ready(null, function (urlParams) {
         }
 
         // Calculate base damage of each round
-        for (const [index, round] of Object.entries(flatRounds)) {
+        for (const round of flatRounds) {
             // We are assuming that lute round always follows after bard attack
-            if (round.attackType >= ATTACK_SPECIAL_SUMMON && round.attacker.Class === NECROMANCER) {
-                continue;
-            } else if (round.attackType >= ATTACK_SPECIAL_SONG && round.attacker.Class === BARD && index > 0) {
-                const spellLevel = round.attackType % 10 - 1;
-                const spellNotes = Math.trunc((round.attackType % 100) / 10);
-                const spellBonus = 1 + CONFIG.Bard.EffectValues[spellLevel] / 100;
-                const superRound = flatRounds[index - 1];
-
-                superRound.attackBase = Math.round(superRound.attackBase / spellBonus);
-                superRound.attackerSpecialDisplay = { type: 'bard_song', level: spellLevel, notes: spellNotes };
-
-                round.hasIgnore = true;
-
+            if (round.hasIgnore) {
                 continue;
             } else if (round.hasBase) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const state = round.attackerSpecialState && round.attacker.Class === DRUID ? model.Data.RageState : (
-                    round.attacker.Class === NECROMANCER && round.attackerSpecialState ? model.Data.Minions[round.attackerSpecialState - 1] : model.Data
-                );
+                const state = findState(round, model);
 
                 // Scaled down weapon damage
                 let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? state.Weapon2.Base : state.Weapon1.Base);
