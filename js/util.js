@@ -547,10 +547,10 @@ function getColorFromHSLA (h, s, l, a) {
 }
 
 function getColorFromRGBA (r, g, b, a) {
-    var hr = Number(Math.trunc(r)).toString(16);
-    var hg = Number(Math.trunc(g)).toString(16);
-    var hb = Number(Math.trunc(b)).toString(16);
-    var ha = isNaN(a) ? 'ff' : Number(Math.trunc(a * 255)).toString(16);
+    var hr = Number(Math.trunc(_clamp(r, 0, 255))).toString(16);
+    var hg = Number(Math.trunc(_clamp(g, 0, 255))).toString(16);
+    var hb = Number(Math.trunc(_clamp(b, 0, 255))).toString(16);
+    var ha = isNaN(a) ? 'ff' : Number(Math.trunc(_clamp(a, 0, 1) * 255)).toString(16);
 
     return '#' + '0'.repeat(2 - hr.length) + hr + '0'.repeat(2 - hg.length) + hg + '0'.repeat(2 - hb.length) + hb + '0'.repeat(2 - ha.length) + ha;
 }
