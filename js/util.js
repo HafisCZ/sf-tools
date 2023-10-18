@@ -520,9 +520,9 @@ function getColorFromGradient(a, b, sample) {
 function getColorFromHSLA (h, s, l, a) {
     let r, g, b;
 
-    h = parseInt(h) / 360;
-    s = parseInt(s) / 100;
-    l = parseInt(l) / 100;
+    h = _clamp(parseInt(h), 0, 360) / 360;
+    s = _clamp(parseInt(s), 0, 100) / 100;
+    l = _clamp(parseInt(l), 0, 100) / 100;
 
     if (s == 0) {
         r = g = b = l;
