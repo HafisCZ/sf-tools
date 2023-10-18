@@ -1135,6 +1135,8 @@ Site.ready(null, function (urlParams) {
                             if (rounds[j].attacker === round.attacker && ATTACKS_SUMMON.includes(rounds[j].attackType)) {
                                 rounds[j].attackerSpecialState = summonType;
                                 durationLeft--;
+                            } else if (rounds[j].target === round.attacker) {
+                                rounds[j].targetSpecialState = summonType;
                             }
                         }
                     }
@@ -1174,6 +1176,10 @@ Site.ready(null, function (urlParams) {
 
             if (round.attackerSpecialState && round.attacker.Class === NECROMANCER) {
                 round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerSpecialState }
+            }
+
+            if (round.targetSpecialState && round.target.Class === NECROMANCER) {
+                round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetSpecialState }
             }
 
             if (round.attackerSpecialState && round.attacker.Class === BARD) {
