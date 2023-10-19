@@ -88,8 +88,6 @@ class ScriptEditor extends SignalSource {
         this.#handleTab(event.shiftKey);
       } else if (Expression.TERMINATORS[event.key]) {
         this.#applyTerminator(event, event.key, Expression.TERMINATORS[event.key]);
-      } else if (Expression.STRING_TERMINATORS.has(event.key)) {
-        this.#applyTerminator(event, event.key, event.key);
       } else if (event.key === 'Backspace') {
         const value = this.textarea.value;
 
