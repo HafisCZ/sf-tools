@@ -52,6 +52,8 @@ class Dialog {
     close (value) {
         this.openRequested = false;
 
+        DialogController.dialogOpen = false;
+
         if (this._hasParent() && this.resolve) {
             this.$parent.hide();
             this.resolve(value);
@@ -157,10 +159,15 @@ class Toast {
 
 class DialogController {
     static #promise = Promise.resolve();
+    static dialogOpen = false;
 
     static open (popup, ...args) {
         popup.requestOpen();
-        return (this.#promise = this.#promise.then(() => popup.open(...args)));
+        return (this.#promise = this.#promise.then(() => {
+            this.dialogOpen = true;
+
+            return popup.open(...args);
+        }));
     }
 
     static close (popup) {
