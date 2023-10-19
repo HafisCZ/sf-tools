@@ -1369,6 +1369,12 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
 
         this.$title = this.$parent.operator('title');
         this.$name = this.$parent.operator('name');
+        this.$name.on('keydown', (event) => {
+            if (event.originalEvent.key === 'Enter') {
+                this.$create.click();
+            }
+        })
+
         this.$description = this.$parent.operator('description');
         this.$source = this.$parent.operator('source');
 

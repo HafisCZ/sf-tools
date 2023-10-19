@@ -1527,7 +1527,7 @@
             "tables": "Compatible tables",
             "content": {
                 "empty": "Empty",
-                "current": "Current content",
+                "current": "Current editor content",
                 "player": "Players",
                 "players": "Browse",
                 "group": "Guilds"
