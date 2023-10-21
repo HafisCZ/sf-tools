@@ -92,7 +92,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             this.fields['name'].set(HELPER_NAMES[index]);
 
             this.resumeListener();
-
         }
 
         _morph (newClass) {
