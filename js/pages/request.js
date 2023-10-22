@@ -35,6 +35,31 @@ const ITEM_SCOPE = {
   RuneValue: true
 }
 
+const COMPANION_SCOPE = {
+  Class: true,
+  Strength: true,
+  Dexterity: true,
+  Intelligence: true,
+  Constitution: true,
+  Luck: true,
+  Potions: true,
+  Damage: true,
+  Damage2: true,
+  Armor: true,
+  Items: {
+    Head: ITEM_SCOPE,
+    Body: ITEM_SCOPE,
+    Hand: ITEM_SCOPE,
+    Feet: ITEM_SCOPE,
+    Neck: ITEM_SCOPE,
+    Belt: ITEM_SCOPE,
+    Ring: ITEM_SCOPE,
+    Misc: ITEM_SCOPE,
+    Wpn1: ITEM_SCOPE,
+    Wpn2: ITEM_SCOPE,
+  }
+}
+
 const SCOPES = {
   'default': {
     ID: true,
@@ -142,6 +167,13 @@ const SCOPES = {
         Wpn1: ITEM_SCOPE,
         Wpn2: ITEM_SCOPE
       }
+    }
+  },
+  'companions': {
+    Companions: {
+      Bert: COMPANION_SCOPE,
+      Kunigunde: COMPANION_SCOPE,
+      Mark: COMPANION_SCOPE
     }
   }
 }
