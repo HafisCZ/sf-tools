@@ -1563,6 +1563,7 @@
             "search": "Search ...",
             "list_add": "Add published script to your list",
             "list_add_key": "Code",
+            "list_add_create": "Save as new script",
             "list_add_accept": "Add to my list",
             "list": {
                 "about": "Created by #{author}",

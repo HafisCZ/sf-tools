@@ -886,6 +886,9 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
                         <input type="text" maxlength="12" data-op="list-add-key">
                       </div>
                     </div>
+                    <div class="ui inverted checkbox mb-4" data-op="list-add-create">
+                        <input type="checkbox"><label>${this.intl('list_add_create')}</label>
+                    </div>
                   </div>
                   <div class="ui fluid two buttons gap-2">
                     <div class="ui black button" data-op="list-add-cancel">${intl('dialog.shared.cancel')}</div>
@@ -904,6 +907,8 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
       this.$listAdd.show();
 
       this.$listAddKey.val('').focus();
+
+      this.$listAddCreate.checkbox('set checked');
 
       this.$listSearch.parent('.input').addClass('disabled');
     } else {
@@ -924,6 +929,9 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
         }
       })
 
+      this.$listAddCreate = this.$parent.operator('list-add-create');
+      this.$listAddCreate.checkbox();
+
       this.$listAddCancel = this.$listAdd.operator('list-add-cancel');
       this.$listAddCancel.click(() => {
         this.#showListAdd(false);
@@ -943,10 +951,16 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
 
           Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
 
-          this.#showListAdd(false);
+          if (this.$listAddCreate.checkbox('is checked')) {
+            const { script } = await SiteAPI.get('script_get', { key });
 
-          this.#resetList();
-          this.#loadList();
+            this.#createScript(script);
+          } else {
+            this.#showListAdd(false);
+
+            this.#resetList();
+            this.#loadList();
+          }
         } catch (e) {
           Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
         }
