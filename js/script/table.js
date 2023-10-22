@@ -437,6 +437,9 @@ class TableInstance {
             this.array.reference = array.reference;
         }
 
+        // Apply sorting
+        this.#applyIndexSorting(array)
+
         // Evaluate variables
         if (this.tableType == TableType.Player) {
             this.settings.evalPlayer(this.array, array);
@@ -453,19 +456,62 @@ class TableInstance {
             this.#createCache();
         }
 
+        this.#generateEntries();
+    }
+
+    #applyIndexSorting (array) {
         if (array.externalSort) {
-            this.array.sort((a, b) => array.externalSort(b.player, b.compare) - array.externalSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
+            _sortDesc(this.array, ({ player, compare }) => array.externalSort(player, compare));
+        } else if (this.settings.globals.orderAllBy) {
+            this.array.sort((a, b) => this.#compareItems(
+                this.#safeEval(this.settings.globals.orderAllBy, a.player, a.compare, this.settings),
+                this.#safeEval(this.settings.globals.orderAllBy, b.player, b.compare, this.settings)
+            ));
+        } else if (this.flat.some((header) => header.orderDefault)) {
+            const sortingList = [];
+
+            for (const header of this.flat) {
+                if (header.orderDefault) {
+                    const { direction, index } = header.orderDefault;
+                    const self = this;
+
+                    sortingList.splice(typeof index === 'undefined' ? sortingList.length : index, 0, {
+                        direction: direction === 'asc' ? 2 : 1,
+                        flip: header.flip,
+                        method: (player, compare) => {
+                            const { order, expr, sort } = header;
+
+                            if (order) {
+                                const value = self.#safeEval(expr, player, compare, self.settings, undefined, header);
+
+                                return self.#safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value));
+                            } else {
+                                // Return native sorting function
+                                return sort ? sort(player, compare) : 0;
+                            }
+                        }
+                    })
+                }
+            }
+
+            this.array.sort((a, b) => sortingList.reduce((result, { method, flip, direction }) => {
+                if (result) return;
+
+                const valueA = method(a.player, a.compare);
+                const valueB = method(b.player, b.compare);
+
+                return valueA == undefined ? 1 : (valueB == undefined ? -1 : (((direction == 1 && !flip) || (direction == 2 && flip)) ? this.#compareItems(valueA, valueB) : this.#compareItems(valueB, valueA)));
+            }, undefined));
         }
 
-        this.#generateEntries();
+        this.array.forEach((entry, i) => entry.index = i);
     }
 
     #generateSorting (player, compare, index) {
         const self = this;
 
         return new Proxy({
-            '_index': index,
-            '_order_by': this.settings.globals.orderBy ? this.#safeEval(this.settings.globals.orderBy, player, compare, this.settings) : undefined
+            '_index': index
         }, {
             get: function (target, prop) {
                 if (target[prop]) {
@@ -611,10 +657,6 @@ class TableInstance {
         }
     }
 
-    setDefaultSorting () {
-        this.sorting = [ ...this.globalSorting ];
-    }
-
     #compareItems (a, b) {
         if (typeof(a) == 'string' && typeof(b) == 'string') {
             if (a == '') return 1;
@@ -650,25 +692,6 @@ class TableInstance {
     #createSorting () {
         this.globalSortingKey = '_index';
         this.globalSortingOrder = 1;
-
-        if (this.settings.globals.orderBy) {
-            this.globalSortingKey = '_order_by';
-        } else if (this.flat.some(x => 'globOrder' in x)) {
-            const sorting = [];
-
-            for (const { sortKey, globOrder } of this.flat) {
-                if (typeof globOrder != 'undefined') {
-                    sorting.splice(typeof globOrder.index === 'undefined' ? sorting.length : globOrder.index, 0, {
-                        key: sortKey,
-                        flip: undefined,
-                        order: globOrder.ord ? 2 : 1
-                    });
-                }
-            }
-
-            this.globalSorting = sorting;
-            this.setDefaultSorting();
-        }
     }
 
     #getCellDividerStyle () {
@@ -1355,9 +1378,6 @@ class TableController extends SignalSource {
                     }
     
                     // Redraw table
-                    this.refresh();
-                } else if (this.table.globalSorting) {
-                    this.table.setDefaultSorting();
                     this.refresh();
                 }
             })

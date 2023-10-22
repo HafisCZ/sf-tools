@@ -1770,7 +1770,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'glob order <asc|des>',
     /^glob order (asc|des)$/,
-    (root, value) => root.addGlobOrder(undefined, value == 'asc'),
+    (root, value) => root.addSuperDirectValue('orderDefault', { index: undefined, direction: value }),
     (root, value) => Highlighter.keyword('glob order ').constant(value)
 )
 
@@ -1779,7 +1779,7 @@ ScriptCommands.register(
     ScriptType.Table,
     'glob order <asc|des> <value>',
     /^glob order (asc|des) (\d+)$/,
-    (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
+    (root, value, index) => root.addSuperDirectValue('orderDefault', { index: parseInt(index), direction: value }),
     (root, value, index) => Highlighter.keyword('glob order ').constant(value).space().constant(index)
 )
 
@@ -1854,7 +1854,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addGlobal('orderBy', ast);
+            root.addGlobal('orderAllBy', ast);
         }
     },
     (root, expression) => Highlighter.keyword('order all by ').expression(expression, root)
@@ -2936,14 +2936,16 @@ class Script {
         }
     }
 
-    addGlobOrder (index, order) {
-        let object = (this.header || this.embed);
+    addAliasExpression (expression) {
+        let object = (this.row || this.definition || this.header || this.embed || this.category);
         if (object) {
-            object.globOrder = {
-                ord: order,
-                index: index
-            }
+            object.expa = expression;
         }
+    }
+
+    addSuperDirectValue (field, value) {
+        const target = (this.header || this.embed);
+        if (target) target[field] = value;
     }
 
     // Can be added only to row, definition, header or embed
