@@ -48,22 +48,22 @@ class TableArray extends Array {
 
 // entryLimit, externalSort, suppressUpdate, timestamp, reference
 class BrowseTableArray extends TableArray {
-    add (player, compare, latest, hidden) {
+    add (current, compare, latest, hidden) {
         super.push({
-            player: player,
-            compare: compare || player,
-            latest: latest,
+            current,
+            compare: compare || current,
             index: this.length,
+            latest,
             hidden: hidden
         });
     }
 }
 
 class PlayerTableArray extends TableArray {
-    add (player, compare) {
+    add (current, compare) {
         super.push({
-            player,
-            compare: compare || player,
+            current,
+            compare: compare || current,
             index: this.length
         })
     }
@@ -71,10 +71,10 @@ class PlayerTableArray extends TableArray {
 
 // joined, kicked, missing, timestamp, reference
 class GroupTableArray extends TableArray {
-    add (player, compare) {
+    add (current, compare) {
         super.push({
-            player: player,
-            compare: compare || player,
+            current: current,
+            compare: compare || current,
             index: this.length
         });
     }
@@ -103,8 +103,8 @@ class TableInstance {
             name,
             header,
             {
-                cell: (player, compare) => {
-                    const val = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
+                cell: (current, compare) => {
+                    const val = this.#safeEval(header.expr, current, compare, this.settings, undefined, header);
 
                     if (val == undefined) {
                         return this.#getEmptyCell(header, showBorder);
@@ -112,14 +112,14 @@ class TableInstance {
                         const cmp = header.difference ? this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
                         return this.#getCell(
                             header,
-                            this.#getCellDisplayValue(header, val, cmp, player, compare),
-                            this.#getCellColor(header, val, player, compare),
+                            this.#getCellDisplayValue(header, val, cmp, current, compare),
+                            this.#getCellColor(header, val, current, compare),
                             showBorder
                         );
                     }
                 },
-                statistics: (players, operation) => {
-                    let val = players.map(({ player, compare }) => this.#safeEval(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
+                statistics: (currentList, operation) => {
+                    let val = currentList.map(({ current, compare }) => this.#safeEval(header.expr, current, compare, this.settings, undefined, header)).filter(v => v != undefined);
                     if (val.length) {
                         // Get value and trunc if necessary
                         val = operation(val);
@@ -130,7 +130,7 @@ class TableInstance {
                         // Compare value
                         let cmp = undefined;
                         if (header.difference) {
-                            cmp = players.map(({ compare }) => this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
+                            cmp = currentList.map(({ compare }) => this.#safeEval(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
                             if (cmp.length) {
                                 cmp = operation(cmp);
 
@@ -152,7 +152,7 @@ class TableInstance {
                     }
                 }
             },
-            (player, compare) => this.#safeEval(header.expr, player, compare, this.settings, undefined, header),
+            (current, compare) => this.#safeEval(header.expr, current, compare, this.settings, undefined, header),
             showBorder
         );
     }
@@ -164,8 +164,8 @@ class TableInstance {
             name,
             header,
             {
-                cell: (player, compare) => {
-                    const vals = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
+                cell: (current, compare) => {
+                    const vals = this.#safeEval(header.expr, current, compare, this.settings, undefined, header);
 
                     if (!Array.isArray(vals)) {
                         return this.#getEmptyCell(header, showBorder, header.grouped);
@@ -183,8 +183,8 @@ class TableInstance {
                             } else {
                                 return this.#getCell(
                                     header,
-                                    this.#getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
-                                    this.#getCellColor(header, val, player, compare, extra),
+                                    this.#getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, current, compare, extra),
+                                    this.#getCellColor(header, val, current, compare, extra),
                                     showEndBorder,
                                     callWidth
                                 );
@@ -193,8 +193,8 @@ class TableInstance {
                     }
                 }
             },
-            (player, compare) => {
-                const vals = this.#safeEval(header.expr, player, compare, this.settings, undefined, header);
+            (current, compare) => {
+                const vals = this.#safeEval(header.expr, current, compare, this.settings, undefined, header);
 
                 if (Array.isArray(vals)) {
                     return _fastSum(_strictSlice(vals, header.grouped, undefined));
@@ -216,11 +216,11 @@ class TableInstance {
             name,
             header,
             {
-                cell: (player, compare) => {
+                cell: (current, compare) => {
                     let values = [null];
 
                     if (header.expr) {
-                        const value = header.expr.eval(new ExpressionScope(this.settings).with(player, compare).via(header));
+                        const value = header.expr.eval(new ExpressionScope(this.settings).with(current, compare).via(header));
                         values = Array.isArray(value) ? value : [value];
                     }
 
@@ -247,10 +247,10 @@ class TableInstance {
                             get: (value, i) => {
                                 const val = this.#safeEval(
                                     embedHeader.expr,
-                                    player,
+                                    current,
                                     compare,
                                     this.settings,
-                                    new ExpressionScope(this.settings).with(player, compare).addSelf(value).via(embedHeader),
+                                    new ExpressionScope(this.settings).with(current, compare).addSelf(value).via(embedHeader),
                                     embedHeader
                                 );
 
@@ -268,8 +268,8 @@ class TableInstance {
 
                                     return this.#getCell(
                                         embedHeader,
-                                        this.#getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
-                                        this.#getCellColor(embedHeader, val, player, compare, undefined, false, value),
+                                        this.#getCellDisplayValue(embedHeader, val, cmp, current, compare, undefined, value),
+                                        this.#getCellColor(embedHeader, val, current, compare, undefined, false, value),
                                         embedHeader.border,
                                         _dig(header, 'columns', i + 1)
                                     );
@@ -283,7 +283,7 @@ class TableInstance {
                         return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                     }).join('');
 
-                    return CellGenerator.EmbedTable(entries, this.#getCellColor(header, values, player, compare).bg, showBorder, header.font);
+                    return CellGenerator.EmbedTable(entries, this.#getCellColor(header, values, current, compare).bg, showBorder, header.font);
                 }
             },
             null,
@@ -413,10 +413,10 @@ class TableInstance {
         this.settings.evalBefore(array)
 
         this.array = array.map(obj => {
-            let { player, compare } = obj;
+            let { current, compare } = obj;
 
-            let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
-            let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
+            let p = DatabaseManager.getPlayer(current.Identifier, current.Timestamp);
+            let c = DatabaseManager.getPlayer(current.Identifier, compare.Timestamp);
 
             let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
             ExpressionCache.reset();
@@ -461,11 +461,11 @@ class TableInstance {
 
     #applyIndexSorting (array) {
         if (array.externalSort) {
-            _sortDesc(this.array, ({ player, compare }) => array.externalSort(player, compare));
+            _sortDesc(this.array, ({ current, compare }) => array.externalSort(current, compare));
         } else if (this.settings.globals.orderAllBy) {
             this.array.sort((a, b) => this.#compareItems(
-                this.#safeEval(this.settings.globals.orderAllBy, a.player, a.compare, this.settings),
-                this.#safeEval(this.settings.globals.orderAllBy, b.player, b.compare, this.settings)
+                this.#safeEval(this.settings.globals.orderAllBy, a.current, a.compare, this.settings),
+                this.#safeEval(this.settings.globals.orderAllBy, b.current, b.compare, this.settings)
             ));
         } else if (this.flat.some((header) => header.orderDefault)) {
             const sortingList = [];
@@ -478,16 +478,16 @@ class TableInstance {
                     sortingList.splice(typeof index === 'undefined' ? sortingList.length : index, 0, {
                         direction: direction === 'asc' ? 2 : 1,
                         flip: header.flip,
-                        method: (player, compare) => {
+                        method: (current, compare) => {
                             const { order, expr, sort } = header;
 
                             if (order) {
-                                const value = self.#safeEval(expr, player, compare, self.settings, undefined, header);
+                                const value = self.#safeEval(expr, current, compare, self.settings, undefined, header);
 
-                                return self.#safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value));
+                                return self.#safeEval(order, current, compare, self.settings, new ExpressionScope(self.settings).with(current, compare).addSelf(value));
                             } else {
                                 // Return native sorting function
-                                return sort ? sort(player, compare) : 0;
+                                return sort ? sort(current, compare) : 0;
                             }
                         }
                     })
@@ -497,8 +497,8 @@ class TableInstance {
             this.array.sort((a, b) => sortingList.reduce((result, { method, flip, direction }) => {
                 if (result) return;
 
-                const valueA = method(a.player, a.compare);
-                const valueB = method(b.player, b.compare);
+                const valueA = method(a.current, a.compare);
+                const valueB = method(b.current, b.compare);
 
                 return valueA == undefined ? 1 : (valueB == undefined ? -1 : (((direction == 1 && !flip) || (direction == 2 && flip)) ? this.#compareItems(valueA, valueB) : this.#compareItems(valueB, valueA)));
             }, undefined));
@@ -507,7 +507,7 @@ class TableInstance {
         this.array.forEach((entry, i) => entry.index = i);
     }
 
-    #generateSorting (player, compare, index) {
+    #generateSorting (current, compare, index) {
         const self = this;
 
         return new Proxy({
@@ -523,11 +523,11 @@ class TableInstance {
 
                         let sortValue = undefined;
                         if (order) {
-                            let value = self.#safeEval(expr, player, compare, self.settings, undefined, header);
-                            sortValue = self.#safeEval(order, player, compare, self.settings, new ExpressionScope(self.settings).with(player, compare).addSelf(value));
+                            let value = self.#safeEval(expr, current, compare, self.settings, undefined, header);
+                            sortValue = self.#safeEval(order, current, compare, self.settings, new ExpressionScope(self.settings).with(current, compare).addSelf(value));
                         } else {
                             // Return native sorting function
-                            sortValue = sort ? sort(player, compare) : 0;
+                            sortValue = sort ? sort(current, compare) : 0;
                         }
     
                         return(target[prop] = sortValue);
@@ -554,14 +554,14 @@ class TableInstance {
         // Generate entries
         this.entries = this.array.map((entry) => ({
             index: entry.index,
-            player: entry.player,
-            sorting: this.#generateSorting(entry.player, entry.compare, entry.index),
+            current: entry.current,
+            sorting: this.#generateSorting(entry.current, entry.compare, entry.index),
             get node () {
                 delete this.node;
 
                 let html = '';
                 for (const header of self.flat) {
-                    html += self.#getCellContent(header, entry.player, entry.compare);
+                    html += self.#getCellContent(header, entry.current, entry.compare);
                 }
 
                 const node = document.createElement('tr');
@@ -743,9 +743,9 @@ class TableInstance {
         }
     }
 
-    #getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
+    #getCellDisplayValue (header, val, cmp, current = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
         const { difference, ex_difference, flip, differenceBrackets, differencePosition } = header;
-        const displayValue = header.getValue(player, compare, this.settings, val, extra, header, altSelf);
+        const displayValue = header.getValue(current, compare, this.settings, val, extra, header, altSelf);
 
         if (!difference || isNaN(cmp)) {
             return displayValue;
@@ -754,7 +754,7 @@ class TableInstance {
             if ((Object.is(diff, NaN) && !ex_difference) || diff == 0) {
                 return displayValue;
             } else {
-                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, header.getDifferenceValue(player, compare, this.settings, diff, extra));
+                return displayValue + CellGenerator.Difference(diff, differenceBrackets, differencePosition, header.getDifferenceValue(current, compare, this.settings, diff, extra));
             }
         }
     }
@@ -779,8 +779,8 @@ class TableInstance {
         return header.getStatisticsColor(this.settings, value);
     }
 
-    #getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
-        return header.getColor(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
+    #getCellColor (header, val, current = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
+        return header.getColor(current, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
     #getTable () {
@@ -813,13 +813,13 @@ class TableInstance {
         `;
     }
 
-    #getRow (name, row, val, cmp, player = undefined) {
+    #getRow (name, row, val, cmp, current = undefined) {
         return `
             <tr>
                 <td class="border-right-thin" colspan="${ this.leftFlatSpan }">${name}</td>
                 ${ CellGenerator.WideCell(
-                    this.#getCellDisplayValue(row, val, cmp, player),
-                    this.#getCellColor(row, val, player),
+                    this.#getCellDisplayValue(row, val, cmp, current),
+                    this.#getCellColor(row, val, current),
                     this.flatWidth,
                     row.align,
                     row.style ? row.style.cssText : undefined
@@ -930,7 +930,7 @@ class TableInstance {
         }
     }
 
-    #renderRow (row, val, cmp, player) {
+    #renderRow (row, val, cmp, current) {
         let rowName = row.nameOverride ?? row.name;
         if (typeof row.nameExpression !== 'undefined') {
             const resolvedName = row.nameExpression(this.settings, row);
@@ -939,7 +939,7 @@ class TableInstance {
             }
         }
 
-        return this.#getRow(rowName, row, val, cmp, player);
+        return this.#getRow(rowName, row, val, cmp, current);
     }
 
     #renderRows (includePlayer = false) {
@@ -947,7 +947,7 @@ class TableInstance {
             return;
         } else if (this.settings.customRows.length) {
             if (includePlayer) {
-                this.cache.set('rows', _join(this.settings.customRows, row => this.#renderRow(row, row.eval.value, undefined, _dig(this.array, 0, 'player'))));
+                this.cache.set('rows', _join(this.settings.customRows, row => this.#renderRow(row, row.eval.value, undefined, _dig(this.array, 0, 'current'))));
             } else {
                 this.cache.set('rows', _join(this.settings.customRows, row => this.#renderRow(row, row.eval.value, row.eval.compare)));
             }
@@ -995,11 +995,11 @@ class TableInstance {
         };
     }
 
-    #getCellContent ({ action, generators: { cell } }, player, compare) {
+    #getCellContent ({ action, generators: { cell } }, current, compare) {
         if (action == 'show') {
-            return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }" data-ts="${ player.Timestamp }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
+            return cell(current, compare).replace('{__ACTION__}', `data-id="${ current.Identifier }" data-ts="${ current.Timestamp }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
         } else {
-            return cell(player, compare);
+            return cell(current, compare);
         }
     }
 

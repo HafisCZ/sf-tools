@@ -2375,9 +2375,9 @@ class ScriptContainer {
         this.name = name;
     }
 
-    getColor (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
+    getColor (current, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
         // Get color from expression
-        const expressionColor = this.colorExpr ? this.colorExpr.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)) : undefined;
+        const expressionColor = this.colorExpr ? this.colorExpr.eval(new ExpressionScope(settings).with(current, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)) : undefined;
         // Get color from color block
         const blockColor = this.colorRules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
 
@@ -2389,7 +2389,7 @@ class ScriptContainer {
         if (this.colorForeground === true) {
             textColor = _invertColor(_parseColor(backgroundColor) || _parseColor(this.colorBackground), true);
         } else if (this.colorForeground) {
-            textColor = getCSSColor(this.colorForeground.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
+            textColor = getCSSColor(this.colorForeground.eval(new ExpressionScope(settings).with(current, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header)));
         }
 
         // Return color or empty string
@@ -2415,18 +2415,18 @@ class ScriptContainer {
         }
     }
 
-    getValue (player, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {
+    getValue (current, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {
         // Get value from value block
         let output = this.formatRules.get(value);
 
         // Get value from format expression
         if (typeof output == 'undefined') {
             if (this.format instanceof Expression) {
-                output = this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header));
+                output = this.format.eval(new ExpressionScope(settings).with(current, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header));
             } else if (typeof this.format === 'function') {
-                output = this.format(player, value);
+                output = this.format(current, value);
             } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
-                output = ARG_FORMATTERS[this.format](player, value);
+                output = ARG_FORMATTERS[this.format](current, value);
             }
         }
 
@@ -2439,7 +2439,7 @@ class ScriptContainer {
         if (typeof output != 'undefined' && (this.displayBefore || this.displayAfter)) {
             const before = (
                 this.displayBefore ? (
-                    this.displayBefore.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
+                    this.displayBefore.eval(new ExpressionScope(settings).with(current, compare).addSelf(alternateSelf).add(extra).via(header))
                 ) : (
                     ''
                 )
@@ -2447,9 +2447,9 @@ class ScriptContainer {
 
             const after = (
                 this.displayAfter instanceof Expression ? (
-                    this.displayAfter.eval(new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).add(extra).via(header))
+                    this.displayAfter.eval(new ExpressionScope(settings).with(current, compare).addSelf(alternateSelf).add(extra).via(header))
                 ) : (
-                    typeof this.displayAfter === 'function' ? this.displayAfter(player) : ''
+                    typeof this.displayAfter === 'function' ? this.displayAfter(current) : ''
                 )
             );
 
@@ -2464,21 +2464,21 @@ class ScriptContainer {
         return output;
     }
 
-    getDifferenceValue (player, compare, settings, value, extra = undefined) {
+    getDifferenceValue (current, compare, settings, value, extra = undefined) {
         let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
 
         if (this.differenceFormat === true) {
             if (this.format instanceof Expression) {
-                return this.format.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
+                return this.format.eval(new ExpressionScope(settings).with(current, compare).addSelf(value).add(extra));
             } else if (typeof this.format === 'function') {
-                return this.format(player, value);
+                return this.format(current, value);
             } else if (typeof this.format === 'string' && ARG_FORMATTERS.hasOwnProperty(this.format)) {
-                return ARG_FORMATTERS[this.format](player, value);
+                return ARG_FORMATTERS[this.format](current, value);
             } else {
                 return nativeDifference;
             }
         } else if (this.differenceFormat instanceof Expression) {
-            return this.differenceFormat.eval(new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra));
+            return this.differenceFormat.eval(new ExpressionScope(settings).with(current, compare).addSelf(value).add(extra));
         } else if (typeof this.differenceFormat == 'function') {
             return this.differenceFormat(settings, value);
         } else {
@@ -3173,9 +3173,9 @@ class Script {
 
     evalRowIndexes (array) {
         for (let i = 0; i < array.length; i++) {
-            const player = array[i].player;
+            const current = array[i].current;
 
-            this.rowIndexes[`${player.Identifier}_${player.Timestamp}`] = i;
+            this.rowIndexes[`${current.Identifier}_${current.Timestamp}`] = i;
         }
     }
 
@@ -3232,9 +3232,9 @@ class Script {
         globalArray = [].concat(globalArray);
 
         // Get shared scope
-        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.current, entry.compare]);
         this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
-        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.current, entry.compare]);
         this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
 
         // Iterate over all variables
@@ -3280,8 +3280,8 @@ class Script {
         const sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
-        this.listClasses = tableArray.reduce((c, { player }) => {
-            c[player.Class]++;
+        this.listClasses = tableArray.reduce((c, { current }) => {
+            c[current.Class]++;
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
@@ -3290,9 +3290,9 @@ class Script {
         globalArray = [].concat(globalArray);
 
         // Get segmented lists
-        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.current, entry.compare]);
         this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
-        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.current, entry.compare]);
         this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
 
         // Get compare env
@@ -3349,8 +3349,8 @@ class Script {
         const sameTimestamp = tableArray.timestamp == tableArray.reference;
 
         // Set lists
-        this.listClasses = tableArray.reduce((c, { player }) => {
-            c[player.Class]++;
+        this.listClasses = tableArray.reduce((c, { current }) => {
+            c[current.Class]++;
             return c;
         }, _arrayToDefaultHash(CONFIG.indexes(), 0));
 
@@ -3363,17 +3363,17 @@ class Script {
         globalArray = [].concat(globalArray);
 
         // Get segmented lists
-        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.player, entry.compare]);
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.current, entry.compare]);
         this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
-        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.player, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.current, entry.compare]);
         this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
 
         // Get compare env
         const compareEnvironment = this.getCompareEnvironment();
 
         // Get own player
-        const ownEntry = tableArray.find(entry => entry.player.Own) || tableArray[0];
-        const ownPlayer = _dig(ownEntry, 'player');
+        const ownEntry = tableArray.find(entry => entry.current.Own) || tableArray[0];
+        const ownPlayer = _dig(ownEntry, 'current');
         const ownCompare = _dig(ownEntry, 'compare');
 
         // Evaluate variables
