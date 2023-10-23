@@ -2525,7 +2525,7 @@ class Script {
         this.variablesReference = Object.create(null);
 
         this.trackers = {};
-        this.playerRowIndexes = {};
+        this.rowIndexes = {};
 
         // Table
         this.categories = [];
@@ -3088,7 +3088,7 @@ class Script {
             tableArrayCurrent: this.tableArrayCompare,
             globalArrayCurrent: this.globalArrayCompare,
             constants: this.constants,
-            playerRowIndexes: this.playerRowIndexes,
+            rowIndexes: this.rowIndexes,
             timestamp: this.reference,
             reference: this.reference,
             identifier: this.identifier
@@ -3175,7 +3175,7 @@ class Script {
         for (let i = 0; i < array.length; i++) {
             const player = array[i].player;
 
-            this.playerRowIndexes[`${player.Identifier}_${player.Timestamp}`] = i;
+            this.rowIndexes[`${player.Identifier}_${player.Timestamp}`] = i;
         }
     }
 

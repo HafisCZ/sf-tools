@@ -270,7 +270,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
     if (node.args.length !== 1) return undefined;
 
     const a = self.evalInternal(scope, node.args[0]);
-    const b = self.evalInternal(scope.clone().with(scope.reference, scope.reference), node.args[0]);
+    const b = self.evalInternal(scope.clone().with(scope.compare, scope.compare), node.args[0]);
 
     if (isNaN(a) || isNaN(b)) {
       return undefined;
@@ -821,14 +821,14 @@ const TABLE_EXPRESSION_CONFIG = DEFAULT_EXPRESSION_CONFIG.clone();
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'player',
   function (scope) {
-    return scope.player;
+    return scope.current;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'reference',
   function (scope) {
-    return scope.reference;
+    return scope.compare;
   }
 )
 
@@ -842,8 +842,8 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'entries',
   function (scope) {
-    if (scope.player) {
-      return DatabaseManager.getPlayer(scope.player.Identifier).List;
+    if (scope.current) {
+      return DatabaseManager.getPlayer(scope.current.Identifier).List;
     } else {
       return undefined;
     }
@@ -896,7 +896,7 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'row_index',
   function (scope) {
-    return scope.env.playerRowIndexes && scope.player ? scope.env.playerRowIndexes[`${scope.player.Identifier}_${scope.player.Timestamp}`] : undefined;
+    return scope.env.rowIndexes && scope.current ? scope.env.rowIndexes[`${scope.current.Identifier}_${scope.current.Timestamp}`] : undefined;
   }
 )
 
@@ -950,8 +950,8 @@ TABLE_EXPRESSION_CONFIG.register(
   function (self, scope, node) {
     if (node.args.length !== 1) return undefined;
 
-    if (scope.player) {
-      return DatabaseManager.getTracker(scope.player.Identifier, node.args[0]);
+    if (scope.current) {
+      return DatabaseManager.getTracker(scope.current.Identifier, node.args[0]);
     } else {
       return undefined;
     }
