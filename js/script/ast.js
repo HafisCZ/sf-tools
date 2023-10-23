@@ -54,8 +54,8 @@ class ExpressionScope {
         let _copy = new ExpressionScope(this.env);
         _copy.self = [ ... this.self ];
         _copy.indirect = [ ... this.indirect ];
-        _copy.player = this.player;
-        _copy.reference = this.reference;
+        _copy.current = this.current;
+        _copy.compare = this.compare;
         _copy.header = this.header;
 
         return _copy;
@@ -66,7 +66,7 @@ class ExpressionScope {
     }
 
     alwaysEval () {
-        return !this.empty() || !this.player || !this.reference;
+        return !this.empty() || !this.current || !this.compare;
     }
 
     constructor (env) {
@@ -80,12 +80,12 @@ class ExpressionScope {
         return this;
     }
 
-    with (player, reference) {
-        this.player = player;
-        this.reference = reference;
+    with (current, compare) {
+        this.current = current;
+        this.compare = compare;
 
-        if (player && reference) {
-            this.token = `${this.env.identifier}.${player.Identifier}.${player.Timestamp}.${reference.Timestamp}`;
+        if (current && compare) {
+            this.token = `${this.env.identifier}.${current.Identifier}.${current.Timestamp}.${compare.Timestamp}`;
         }
         
         return this;
@@ -912,7 +912,7 @@ class Expression {
                         case 'accessor': {
                             if (node.args.length == 1) {
                                 const obj = this.evalInternal(scope, node.args[0]);
-                                return obj && typeof obj === 'object' ? data.data(obj, scope.player) : undefined;
+                                return obj && typeof obj === 'object' ? data.data(obj, scope.current) : undefined;
                             } else {
                                 return undefined;
                             }
@@ -950,11 +950,11 @@ class Expression {
                         return data.data(scope);
                     }
                     case 'header': {
-                        return scope.player ? data.data.expr(scope.player) : undefined;
+                        return scope.current ? data.data.expr(scope.current) : undefined;
                     }
                     case 'accessor': {
                         const self = scope.getSelf();
-                        return self && typeof self === 'object' ? data.data(self, scope.player) : undefined;
+                        return self && typeof self === 'object' ? data.data(self, scope.current) : undefined;
                     }
                     case 'function': {
                         const self = scope.getSelf();
@@ -974,7 +974,7 @@ class Expression {
                     return ExpressionCache.get(scope.token, node);
                 } else {
                     ExpressionCache.set(scope.token, node, undefined);
-                    let value = variable.ast.eval(new ExpressionScope(scope.env).with(scope.player, scope.reference).via(scope.header));
+                    let value = variable.ast.eval(new ExpressionScope(scope.env).with(scope.current, scope.compare).via(scope.header));
                     ExpressionCache.set(scope.token, node, value);
                     return value;
                 }
