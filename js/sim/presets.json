@@ -38,7 +38,7 @@
       },
       "Items": {
         "Hand": {
-          "HasEnchantment":true
+          "HasEnchantment":false
         },
         "Wpn1": {
           "AttributeTypes": {
@@ -60,7 +60,7 @@
           },
           "DamageMax": 0,
           "DamageMin": 0,
-          "HasEnchantment": false
+          "HasEnchantment": true
         }
       }
     }
@@ -104,7 +104,7 @@
       },
       "Items": {
         "Hand": {
-          "HasEnchantment":true
+          "HasEnchantment":false
         },
         "Wpn1": {
           "AttributeTypes": {
@@ -126,7 +126,7 @@
           },
           "DamageMax": 0,
           "DamageMin": 0,
-          "HasEnchantment": false
+          "HasEnchantment": true
         }
       }
     }

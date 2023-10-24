@@ -23,6 +23,12 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
+    'v7.XXXX': {
+        'Statistics': [
+            'Added checkbox to create new script out of online code immediately',
+            'Fixed <code>Power</code> header to account for no weapon equipped'
+        ]
+    },
     'v7.4306': {
         'Statistics': [
             'Reworked Scripts & Templates',
