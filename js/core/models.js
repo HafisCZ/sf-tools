@@ -2215,9 +2215,9 @@ class ModelUtils {
         const base = model[config.Attribute].Total * model.Constitution.Total * model.Level / config.WeaponMultiplier;
 
         if (model.Class === ASSASSIN) {
-            return base * (model.Items.Wpn1.DamageMin + model.Items.Wpn1.DamageMax + model.Items.Wpn2.DamageMin + model.Items.Wpn2.DamageMax) / 4;
+            return base * (Math.max(model.Damage?.Min || 0, model.Items.Wpn1.DamageMin) + Math.max(model.Damage?.Max || 0, model.Items.Wpn1.DamageMax) + Math.max(model.Damage2?.Min || 0, model.Items.Wpn2.DamageMin) + Math.max(model.Damage2?.Max || 0, model.Items.Wpn2.DamageMax)) / 4;
         } else {
-            return base * (model.Items.Wpn1.DamageMin + model.Items.Wpn1.DamageMax) / 2;
+            return base * (Math.max(model.Damage?.Min || 0, model.Items.Wpn1.DamageMin) + Math.max(model.Damage?.Max || 0, model.Items.Wpn1.DamageMax)) / 2;
         }
     }
 
