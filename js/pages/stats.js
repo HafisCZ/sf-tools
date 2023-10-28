@@ -201,7 +201,7 @@ class GroupDetailTab extends Tab {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            copyJSON(this.table.getArray().map(p => ModelUtils.toSimulatorData(p.player)));
+            copyJSON(this.table.getArray().map(p => ModelUtils.toSimulatorData(p.current)));
         });
 
         // Save
@@ -626,7 +626,7 @@ class PlayerDetailTab extends Tab {
         // Table instance
         this.table.setScript(Scripts.getAssignedContent(this.identifier, 'player'));
 
-        this.array.forEach((e) => DatabaseManager.loadPlayer(e.player));
+        this.array.forEach((e) => DatabaseManager.loadPlayer(e.current));
 
         // Configuration indicator
         DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned(this.identifier));
@@ -770,7 +770,7 @@ class BrowseTab extends Tab {
                 array = array.slice(0, slice);
             }
 
-            copyJSON(array.map(p => ModelUtils.toSimulatorData(p.player)));
+            copyJSON(array.map(p => ModelUtils.toSimulatorData(p.current)));
         });
 
         // Configuration
