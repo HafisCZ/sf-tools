@@ -822,11 +822,27 @@ TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'player',
   function (scope) {
     return scope.current;
+  },
+  { isDeprecated: 'current' }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'variable', 'scope', 'current',
+  function (scope) {
+    return scope.current;
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'reference',
+  function (scope) {
+    return scope.compare;
+  },
+  { isDeprecated: 'compare' }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'variable', 'scope', 'compare',
   function (scope) {
     return scope.compare;
   }
