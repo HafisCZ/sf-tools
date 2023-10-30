@@ -1331,21 +1331,26 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
                     </div>
                     <div class="field !mb-0">
                         <label>${this.intl('tables')}</label>
-                        <div class="grid gap-2" style="grid-template-columns: repeat(3, 1fr);" data-op="tables">
+                        <div class="grid gap-2" style="grid-template-columns: repeat(2, 1fr);" data-op="tables">
                             <div data-table="players" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
                                 <i class="ui times icon"></i>
                                 <i class="ui database icon"></i>
-                                <div>${intl('stats.scripts.targets.players')}</div>
+                                <div>${intl('stats.topbar.browse_players')}</div>
                             </div>
-                            <div data-table="group" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                            <div data-table="groups" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
                                 <i class="ui times icon"></i>
-                                <i class="ui archive icon"></i>
-                                <div>${intl('stats.scripts.targets.group')}</div>
+                                <i class="ui database icon"></i>
+                                <div>${intl('stats.topbar.browse_groups')}</div>
                             </div>
                             <div data-table="player" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
                                 <i class="ui times icon"></i>
                                 <i class="ui user icon"></i>
-                                <div>${intl('stats.scripts.targets.player')}</div>
+                                <div>${intl('stats.topbar.players')}</div>
+                            </div>
+                            <div data-table="group" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
+                                <i class="ui times icon"></i>
+                                <i class="ui archive icon"></i>
+                                <div>${intl('stats.topbar.groups')}</div>
                             </div>
                         </div>
                     </div>
@@ -1431,6 +1436,7 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
             case '_player': return DefaultScripts.getContent('player');
             case '_group': return DefaultScripts.getContent('group');
             case '_players': return DefaultScripts.getContent('players');
+            case '_groups': return DefaultScripts.getContent('groups');
             default: {
                 return Scripts.getContent(source);
             }
@@ -1453,9 +1459,10 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
                     { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
                     { value: '_current', name: this.intl('content.current'), icon: 'minus' },
                     { type: 'header', name: this.intl('category.defaults') },
-                    { value: '_players', name: this.intl('content.players'), icon: 'database' },
-                    { value: '_group', name: this.intl('content.group'), icon: 'archive' },
-                    { value: '_player', name: this.intl('content.player'), icon: 'user' },
+                    { value: '_players', name: intl('stats.topbar.browse_players'), icon: 'database' },
+                    { value: '_player', name: intl('stats.topbar.players'), icon: 'user' },
+                    { value: '_groups', name: intl('stats.topbar.browse_groups'), icon: 'database' },
+                    { value: '_group', name: intl('stats.topbar.groups'), icon: 'archive' },
                     { type: 'header', name: this.intl('category.clone') },
                     ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
                 ]
@@ -1481,7 +1488,7 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
         this.$name.val(this.script.name);
         this.$description.val(this.script.description);
 
-        this.#setTables(this.script.tables || ['players', 'group', 'player']);
+        this.#setTables(this.script.tables || ['players', 'player', 'groups', 'group']);
     }
 })
 

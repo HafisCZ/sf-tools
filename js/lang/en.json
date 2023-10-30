@@ -420,8 +420,9 @@
         "topbar": {
             "temporary_flag": "Temporary",
             "players": "Players",
-            "guilds": "Guilds",
-            "browse": "Browse",
+            "groups": "Guilds",
+            "browse_players": "Browse Players",
+            "browse_groups": "Browse Guilds",
             "scripts": "Scripts",
             "files": "Files",
             "settings": "Settings",
@@ -535,7 +536,7 @@
         "filters": {
             "types": {
                 "players": "Filter players by server, class, guild and/or username",
-                "guilds": "Filter groups by server or name"
+                "groups": "Filter groups by server or name"
             },
             "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
             "p": "Player name",
@@ -564,14 +565,9 @@
             "script": "Current script",
             "quick_swap": "Quick swap script",
             "targets": {
-                "none": "None",
-                "players": "Browse",
-                "player": "Players",
-                "group": "Guilds"
+                "none": "None"
             },
             "targets_category": {
-                "player": "Players",
-                "group": "Guilds",
                 "default": "Defaults"
             },
             "tooltip": {
@@ -1528,10 +1524,7 @@
             "tables": "Compatible tables",
             "content": {
                 "empty": "Empty",
-                "current": "Current editor content",
-                "player": "Players",
-                "players": "Browse",
-                "group": "Guilds"
+                "current": "Current editor content"
             },
             "category": {
                 "defaults": "Duplicate default script",

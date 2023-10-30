@@ -93,7 +93,7 @@ class TableInstance {
             return Object.assign(props, this.#createPlayerTable());
         } else if (this.tableType === TableType.Group) {
             return Object.assign(props, this.#createGroupTable());
-        } else if (this.tableType === TableType.Browse) {
+        } else if (this.tableType === TableType.BrowsePlayer || this.tableType === TableType.BrowseGroup) {
             return Object.assign(props, this.#createBrowseTable());
         }
     }
@@ -425,7 +425,7 @@ class TableInstance {
         }).filter(e => e);
 
         // Copy over lost properties
-        if (this.tableType === TableType.Browse) {
+        if (this.tableType === TableType.BrowsePlayer || this.tableType === TableType.BrowseGroup) {
             this.array.entryLimit = array.entryLimit;
             this.array.timestamp = array.timestamp;
             this.array.reference = array.reference;
@@ -444,8 +444,10 @@ class TableInstance {
         if (this.tableType == TableType.Player) {
             this.settings.evalPlayer(this.array, array);
         } else if (!array.suppressUpdate) {
-            if (this.tableType == TableType.Browse) {
-                this.settings.evalBrowse(this.array, array);
+            if (this.tableType == TableType.BrowsePlayer) {
+                this.settings.evalPlayers(this.array, array);
+            } else if (this.tableType == TableType.BrowseGroup) {
+                this.settings.evalGroups(this.array, array);
             } else {
                 this.settings.evalGroup(this.array, array);
             }
@@ -545,8 +547,8 @@ class TableInstance {
         const dividerStyle = this.#getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
 
-        const outdated = this.tableType === TableType.Browse && this.settings.getOutdatedStyle();
-        const hidden = this.tableType === TableType.Browse;
+        const outdated = this.tableType === TableType.BrowsePlayer && this.settings.getOutdatedStyle();
+        const hidden = this.tableType === TableType.BrowsePlayer;
 
         // Hoist
         const self = this;
