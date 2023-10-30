@@ -952,7 +952,7 @@ class BrowseGroupsTab extends Tab {
                     if (event.ctrlKey) {
                         event.currentTarget.classList.toggle('css-op-select');
                     } else {
-                        UI.show(GroupDetail, { identifier: event.currentTarget.dataset.id });
+                        UI.show(UI.GroupDetail, { identifier: event.currentTarget.dataset.id });
                     }
                 });
 
