@@ -1,7 +1,8 @@
 const TableType = {
     Player: 0,
     Group: 1,
-    Browse: 2
+    BrowsePlayer: 2,
+    BrowseGroup: 3
 }
 
 const ScriptType = {
@@ -134,8 +135,9 @@ class RuleEvaluator {
 
 const FilterTypes = {
     'Guild': TableType.Group,
+    'Guilds': TableType.BrowseGroup,
     'Player': TableType.Player,
-    'Players': TableType.Browse
+    'Players': TableType.BrowsePlayer
 };
 
 class Highlighter {
@@ -2021,8 +2023,9 @@ class ScriptParser {
         // Special constants for macros
         const constants = new Constants();
         constants.add('guild', TableType.Group);
+        constants.add('guilds', TableType.BrowseGroup);
         constants.add('player', TableType.Player);
-        constants.add('players', TableType.Browse);
+        constants.add('players', TableType.BrowsePlayer);
 
         // Generate initial settings
         let settings = this.handleMacroEnvironment(lines, scriptScope, constants);
@@ -2603,7 +2606,7 @@ class Script {
                 }, true);
 
                 headers.push(nameHeader);
-            } else if (type === TableType.Browse) {
+            } else if (type === TableType.BrowsePlayer || type === TableType.BrowseGroup) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
                     const serverHeader = new ScriptContainer('Server');
@@ -3115,7 +3118,7 @@ class Script {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.scriptScope.table == TableType.Browse) {
+            if (this.scriptScope.table == TableType.BrowsePlayer || this.scriptScope.table == TableType.BrowseGroup) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),
@@ -3272,7 +3275,70 @@ class Script {
         this.evalRules();
     }
 
-    evalBrowse (tableArray, globalArray) {
+    evalGroups (tableArray, globalArray) {
+        // Evaluate row indexes
+        this.evalRowIndexes(tableArray);
+
+        // Variables
+        const sameTimestamp = tableArray.timestamp == tableArray.reference;
+
+        // Purify array
+        tableArray = [].concat(tableArray);
+        globalArray = [].concat(globalArray);
+
+        // Get segmented lists
+        this.tableArrayCurrent = Script.createSegmentedArray(tableArray, entry => [entry.current, entry.compare]);
+        this.tableArrayCompare = Script.createSegmentedArray(tableArray, entry => [entry.compare, entry.compare]);
+        this.globalArrayCurrent = Script.createSegmentedArray(globalArray, entry => [entry.current, entry.compare]);
+        this.globalArrayCompare = Script.createSegmentedArray(globalArray, entry => [entry.compare, entry.compare]);
+
+        // Get compare env
+        const compareEnvironment = this.getCompareEnvironment();
+
+        // Evaluate variables
+        for (const [ name, variable ] of Object.entries(this.variables)) {
+            // Copy over to reference variables
+            this.variablesReference[name] = {
+                ast: variable.ast,
+                type: variable.type
+            }
+
+            if (variable.type !== 'local') {
+                // Calculate values of table variable
+                const currentValue = variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? this.globalArrayCurrent : this.tableArrayCurrent));
+                const compareValue = sameTimestamp ? currentValue : variable.ast.eval(new ExpressionScope(this).addSelf(variable.type === 'global' ? this.globalArrayCompare : this.tableArrayCompare));
+
+                // Set values if valid
+                if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
+                    variable.value = currentValue;
+                } else {
+                    delete variable.value;
+                }
+
+                if (!isNaN(compareValue) || typeof compareValue == 'object' || typeof compareValue == 'string') {
+                    this.variablesReference[name].value = compareValue;
+                } else {
+                    delete this.variablesReference[name].value;
+                }
+            }
+        }
+
+        // Evaluate custom rows
+        for (const row of this.customRows) {
+            const currentValue = row.expr.eval(new ExpressionScope(this).addSelf(this.tableArrayCurrent));
+            const compareValue = sameTimestamp ? currentValue : row.expr.eval(new ExpressionScope(compareEnvironment).addSelf(this.tableArrayCompare));
+
+            row.eval = {
+                value: currentValue,
+                compare: compareValue
+            }
+        }
+
+        // Evaluate array constants
+        this.evalRules();
+    }
+
+    evalPlayers (tableArray, globalArray) {
         // Evaluate row indexes
         this.evalRowIndexes(tableArray);
 

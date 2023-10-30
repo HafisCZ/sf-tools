@@ -656,8 +656,11 @@ class PlayerDetailTab extends Tab {
     }
 }
 
-// Browse View
-class BrowseTab extends Tab {
+class BrowseGroupsTab extends Tab {
+
+}
+
+class BrowsePlayersTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -665,10 +668,10 @@ class BrowseTab extends Tab {
         this.$table2 = this.$parent.find('[data-op="table2"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table1, TableType.Browse);
+        this.tableBase = new TableController(this.$table1, TableType.BrowsePlayer);
         this.tableSubscribe(this.tableBase);
 
-        this.tableQ = new TableController(this.$table2, TableType.Browse);
+        this.tableQ = new TableController(this.$table2, TableType.BrowsePlayer);
         this.tableSubscribe(this.tableQ);
 
         // Keep track of what table is displayed and swap if necessary later
@@ -689,7 +692,7 @@ class BrowseTab extends Tab {
 
         document.addEventListener('keyup', (event) => {
             if (event.keyCode == 17) {
-                if (UI.current == UI.browse) {
+                if (UI.current == UI.browse_groups) {
                     this.$parent.find('.css-op-select').removeClass('css-op-select');
                 }
             }
@@ -1103,7 +1106,7 @@ class BrowseTab extends Tab {
     }
 
     show (params) {
-        const nonBrowseOrigin = params && params.origin !== UI.browse;
+        const nonBrowseOrigin = params && params.origin !== UI.browse_players;
         const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
 
         if (nonBrowseOrigin && nonUpdated) {
@@ -2886,7 +2889,7 @@ class ScriptsTab extends Tab {
     }
 
     show ({ origin, identifier, blank, key }) {
-        if ([UI.browse, UI.groups, UI.group_detail, UI.players, UI.player_detail].includes(origin)) {
+        if ([UI.browse_players, UI.browse_groups, UI.groups, UI.group_detail, UI.players, UI.player_detail].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
             this.returnTo = null;
@@ -2928,12 +2931,13 @@ class ScriptsTab extends Tab {
         const values = [
             { value: '', name: intl('stats.scripts.targets.none'), icon: 'text-gray globe' },
             { type: 'header', name: intl('stats.scripts.targets_category.default') },
-            { value: 'players', name: intl('stats.scripts.targets.players'), icon: 'text-gray database' },
-            { value: 'group', name: intl('stats.scripts.targets.group'), icon: 'text-gray archive' },
-            { value: 'player', name: intl('stats.scripts.targets.player'), icon: 'text-gray user' },
-            { type: 'header', name: intl('stats.scripts.targets_category.group') },
+            { value: 'players', name: intl('stats.topbar.browse_players'), icon: 'text-gray database' },
+            { value: 'player', name: intl('stats.topbar.players'), icon: 'text-gray user' },
+            { value: 'groups', name: intl('stats.topbar.browse_groups'), icon: 'text-gray database' },
+            { value: 'group', name: intl('stats.topbar.groups'), icon: 'text-gray archive' },
+            { type: 'header', name: intl('stats.topbar.groups') },
             ...Object.entries(DatabaseManager.GroupNames).map(([value, name]) => ({ value, name, icon: 'text-gray archive' })),
-            { type: 'header', name: intl('stats.scripts.targets_category.player') },
+            { type: 'header', name: intl('stats.topbar.players') },
             ...Object.entries(DatabaseManager.PlayerNames).map(([value, name]) => ({ value, name, icon: 'text-gray user' })),
         ]
 
@@ -2945,7 +2949,7 @@ class ScriptsTab extends Tab {
     }
 
     #getDefaultScript (target) {
-        if (target === 'player' || target === 'players' || target === 'group') {
+        if (target === 'player' || target === 'players' || target === 'group' || target === 'groups') {
             return target;
         } else if (DatabaseManager.isPlayer(target)) {
             return 'player';
@@ -3377,10 +3381,16 @@ Site.ready(null, function (urlParams) {
                 buttonClickable: false
             },
             {
-                tab: new BrowseTab('view-browse'),
-                tabName: 'browse',
-                buttonId: 'show-browse',
-                buttonHistory: 'scripts'
+                tab: new BrowsePlayersTab('view-browse-players'),
+                tabName: 'browse_players',
+                buttonId: 'show-browse-players',
+                buttonHistory: 'Scripts'
+            },
+            {
+                tab: new BrowseGroupsTab('view-browse-groups'),
+                tabName: 'browse_groups',
+                buttonId: 'show-browse-groups',
+                buttonHistory: 'Scripts'
             },
             {
                 tab: new ScriptsTab('view-scripts'),
