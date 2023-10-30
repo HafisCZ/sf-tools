@@ -93,7 +93,7 @@ class TableInstance {
             return Object.assign(props, this.#createPlayerTable());
         } else if (this.tableType === TableType.Group) {
             return Object.assign(props, this.#createGroupTable());
-        } else if (this.tableType === TableType.BrowsePlayer || this.tableType === TableType.BrowseGroup) {
+        } else if (this.tableType === TableType.BrowsePlayers || this.tableType === TableType.BrowseGroups) {
             return Object.assign(props, this.#createBrowseTable());
         }
     }
@@ -425,7 +425,7 @@ class TableInstance {
         }).filter(e => e);
 
         // Copy over lost properties
-        if (this.tableType === TableType.BrowsePlayer || this.tableType === TableType.BrowseGroup) {
+        if (this.tableType === TableType.BrowsePlayers || this.tableType === TableType.BrowseGroups) {
             this.array.entryLimit = array.entryLimit;
             this.array.timestamp = array.timestamp;
             this.array.reference = array.reference;
@@ -444,9 +444,9 @@ class TableInstance {
         if (this.tableType == TableType.Player) {
             this.settings.evalPlayer(this.array, array);
         } else if (!array.suppressUpdate) {
-            if (this.tableType == TableType.BrowsePlayer) {
+            if (this.tableType == TableType.BrowsePlayers) {
                 this.settings.evalPlayers(this.array, array);
-            } else if (this.tableType == TableType.BrowseGroup) {
+            } else if (this.tableType == TableType.BrowseGroups) {
                 this.settings.evalGroups(this.array, array);
             } else {
                 this.settings.evalGroup(this.array, array);
@@ -547,8 +547,8 @@ class TableInstance {
         const dividerStyle = this.#getCellDividerStyle();
         const rowHeight = this.settings.getRowHeight();
 
-        const outdated = this.tableType === TableType.BrowsePlayer && this.settings.getOutdatedStyle();
-        const hidden = this.tableType === TableType.BrowsePlayer;
+        const outdated = this.tableType === TableType.BrowsePlayers && this.settings.getOutdatedStyle();
+        const hidden = this.tableType === TableType.BrowsePlayers;
 
         // Hoist
         const self = this;

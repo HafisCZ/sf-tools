@@ -657,7 +657,483 @@ class PlayerDetailTab extends Tab {
 }
 
 class BrowseGroupsTab extends Tab {
+    constructor (parent) {
+        super(parent);
 
+        this.$table1 = this.$parent.find('[data-op="table1"]');
+        this.$table2 = this.$parent.find('[data-op="table2"]');
+
+        // Tables
+        this.tableBase = new TableController(this.$table1, TableType.BrowsePlayers);
+        this.tableSubscribe(this.tableBase);
+
+        this.tableQ = new TableController(this.$table2, TableType.BrowseGroups);
+        this.tableSubscribe(this.tableQ);
+
+        // Keep track of what table is displayed and swap if necessary later
+        this.table = this.tableBase;
+        this.tableQEnabled = false;
+
+        this.identifier = 'groups';
+
+        this.$reference = this.$parent.find('[data-op="reference"]');
+        this.$timestamp = this.$parent.find('[data-op="timestamp"]');
+
+        // Copy
+        this.$parent.find('[data-op="copy"]').click(() => {
+            this.table.forceInject();
+
+            copyNode(this.table.element);
+        });
+
+        document.addEventListener('keyup', (event) => {
+            if (event.keyCode == 17) {
+                if (UI.current == UI.BrowseGroups) {
+                    this.$parent.find('.css-op-select').removeClass('css-op-select');
+                }
+            }
+        });
+
+        // Save
+        this.$parent.find('[data-op="save"]').click(() => {
+            this.table.toImage().then((blob) => {
+                Exporter.png(blob, `groups.${this.timestamp}`);
+            });
+        });
+
+        this.$parent.find('[data-op="save-csv"]').click(() => {
+            this.table.toCSV().then((blob) => {
+                Exporter.csv(blob, `groups.${this.timestamp}`);
+            });
+        });
+
+         // Context menu
+         this.contextMenu = new CustomMenu(
+            this.$parent.get(0),
+            [
+                {
+                    label: intl('stats.context.hide'),
+                    action: (source) => {
+                        var sel = this.$parent.find('[data-id].css-op-select');
+                        if (sel.length) {
+                            for (var el of sel) {
+                                DatabaseManager.hideIdentifier($(el).attr('data-id'));
+                            }
+                        } else {
+                            DatabaseManager.hideIdentifier(source.dataset.id);
+                        }
+
+                        this.$filter.trigger('change');
+                    }
+                },
+                {
+                    label: intl('stats.share.title_short'),
+                    action: (source) => {
+                        let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
+                        ids.push(source.dataset.id);
+
+                        DialogController.open(
+                            ExportFileDialog,
+                            () => DatabaseManager.export(_uniq(ids)),
+                            'groups'
+                        )
+                    }
+                },
+                {
+                    label: intl('stats.context.remove'),
+                    action: (source) => {
+                        let elements = this.$parent.find('[data-id].css-op-select').toArray();
+                        let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.dataset.id];
+
+                        DatabaseManager.safeRemove({ identifiers }, () => this.$filter.trigger('change'));
+                    }
+                }
+            ]
+        );
+
+        // Configuration
+        this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
+            event.preventDefault();
+        }).click(event => {
+            let caller = $(event.target);
+            if (caller.hasClass('icon') || caller.hasClass('button')) {
+                UI.show(UI.Scripts, { identifier: 'groups' })
+            }
+        });
+
+        // Hidden toggle
+        this.hidden = SiteOptions.browse_hidden;
+
+        DOM.toggle({
+            element: this.$parent.operator('show-hidden').get(0),
+            value: SiteOptions.browse_hidden,
+            callback: (active) => {
+                SiteOptions.browse_hidden = (this.hidden = active);
+
+                this.recalculate = true;
+                this.$filter.trigger('change');
+            }
+        })
+
+        // Filter
+        this.$filter = this.$parent.operator('filter').searchfield(
+            'create',
+            _arrayToHash(
+                ['g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 't'],
+                k => [k, intl(`stats.filters.${k}`)]
+            )
+        ).change(async (event) => {
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(g|s|e|l|f|r|h|o|sr|q|t|#):/);
+
+            var terms = [
+                {
+                   test: function (arg, current) {
+                       var matches = arg.reduce((total, term) => {
+                           var subterms = term.split('|').map(rarg => rarg.trim());
+                           for (var subterm of subterms) {
+                               if (current.Name.toLowerCase().includes(subterm) || current.Prefix.toLowerCase().includes(subterm)) {
+                                   return total + 1;
+                               }
+                           }
+
+                           return total;
+                       }, 0);
+                       return (matches == arg.length);
+                   },
+                   arg: filter[0].toLowerCase().split('&').map(rarg => rarg.trim())
+                }
+            ];
+
+            var entryLimit = undefined;
+
+            this.shidden = false;
+            this.autosort = undefined;
+            this.tableQEnabled = false;
+
+            for (var i = 1; i < filter.length; i += 2) {
+                var key = filter[i];
+                var arg = (filter[i + 1] || '').trim();
+
+                if (key == 'g') {
+                    terms.push({
+                        test: (arg, group) => {
+                            for (var term of arg) {
+                                if (group.Name.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
+                    });
+                } else if (key == 's') {
+                    terms.push({
+                        test: (arg, current) => {
+                            for (var term of arg) {
+                                if (current.Prefix.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
+                    });
+                } else if (key == '#') {
+                    terms.push({
+                        test: (arg, current) => {
+                            return current.Data.tag && arg.some(rarg => current.Data.tag == rarg);
+                        },
+                        arg: arg.split('|').map(rarg => rarg.trim())
+                    })
+                } else if (key == 'l') {
+                    terms.push({
+                        test: (arg, current, timestamp) => current.Timestamp == timestamp,
+                        arg: arg.toLowerCase()
+                    });
+                    this.recalculate = true;
+                } else if (key == 'e') {
+                    var ast = Expression.create(arg);
+                    if (ast) {
+                        terms.push({
+                            test: (arg, current, timestamp, compare) => arg.eval(new ExpressionScope().with(current, compare)),
+                            arg: ast
+                        });
+                    }
+                } else if (key == 'sr') {
+                    var ast = Expression.create(arg);
+                    if (ast) {
+                        this.autosort = (current, compare) => ast.eval(new ExpressionScope().with(current, compare));
+                    }
+                } else if (key == 'f') {
+                    entryLimit = isNaN(arg) ? 1 : Math.max(1, Number(arg));
+                } else if (key == 'r') {
+                    this.recalculate = true;
+                } else if (key == 'h') {
+                    this.shidden = true;
+                } else if (key == 'o') {
+                    terms.push({
+                        test: (arg, current, timestamp) => DatabaseManager.getPlayer(current.Identifier).Own
+                    });
+                    this.recalculate = true;
+                    this.shidden = true;
+                } else if (key == 'q' && typeof(arg) == 'string' && arg.length) {
+                    this.tableQEnabled = true;
+                    this.recalculate = true;
+
+                    // Clear original sort
+                    this.table.clearSorting();
+
+                    this.table = this.tableQ;
+                    this.table.setScript(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
+                } else if (key == 't' && typeof(arg) == 'string' && arg.length) {
+                    let script = await this.tryGetSettings(arg.trim());
+                    if (script) {
+                        this.tableQEnabled = true;
+                        this.recalculate = true;
+
+                        // Clear original sort
+                        this.table.clearSorting();
+
+                        this.table = this.tableQ;
+                        this.table.setScript(script);
+                    }
+                }
+            }
+
+            if (!this.tableQEnabled) {
+                this.table = this.tableBase;
+            }
+
+            const entries = new BrowseTableArray({
+                entryLimit,
+                timestamp: _safeInt(this.timestamp),
+                reference: _safeInt(this.reference),
+                externalSort: this.autosort,
+                suppressUpdate: !this.recalculate
+            });
+
+            for (const [identifier, { List: list }] of Object.entries(DatabaseManager.Groups)) {
+                const hidden = DatabaseManager.isIdentifierHidden(identifier);
+                if (this.hidden || this.shidden || !hidden) {
+                    const current = list.find((entry) => entry.Timestamp <= this.timestamp);
+                    if (current) {
+                        const timestamp = current.Timestamp;
+
+                        const compare = list.concat().reverse().find((entry) => entry.Timestamp >= this.reference && entry.Timestamp <= timestamp) || current;
+                        const reference = compare.Timestamp;
+                        
+                        if (terms.every((term) => term.test(term.arg, current, this.timestamp, reference))) {
+                            entries.add(
+                                current,
+                                compare,
+                                timestamp == this.timestamp,
+                                hidden
+                            )
+                        }
+                    }
+                }
+            }
+
+            this.table.setEntries(entries);
+
+            this.refresh();
+
+            this.recalculate = false;
+        });
+    }
+
+    tableSubscribe (table) {
+        table.subscribe('inject', (element) => {
+            const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
+            for (const clickableElement of clickableElements) {
+                clickableElement.addEventListener('click', (event) => {
+                    if (event.ctrlKey) {
+                        event.currentTarget.classList.toggle('css-op-select');
+                    } else {
+                        UI.show(GroupDetail, { identifier: event.currentTarget.dataset.id });
+                    }
+                });
+
+                clickableElement.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                })
+            }
+
+            this.contextMenu.attach(clickableElements);
+        });
+    }
+
+    async tryGetSettings (code) {
+        if (typeof this.settingsRepo == 'undefined') {
+            this.settingsRepo = {};
+        }
+
+        if (!(code in this.settingsRepo)) {
+            this.settingsRepo[code] = (await SiteAPI.get('script_get', { key: code.trim() })).script.content;
+        }
+
+        return this.settingsRepo[code];
+    }
+
+    updateSelectors () {
+        const timestamps = [];
+        const references = [];
+
+        for (const timestamp of DatabaseManager.GroupTimestamps) {
+            timestamps.push({
+                name: _formatDate(timestamp),
+                value: timestamp,
+                selected: timestamp == this.timestamp
+            });
+
+            references.push({
+                name: _formatDate(timestamp),
+                value: timestamp,
+                selected: timestamp == this.reference
+            });
+        }
+
+        timestamps.sort((a, b) => b.value - a.value);
+        references.sort((a, b) => b.value - a.value);
+
+        this.$timestamp.dropdown('clear', true);
+        this.$reference.dropdown('clear', true);
+
+        DOM.dropdown(this.$timestamp.get(0), timestamps);
+        DOM.dropdown(this.$reference.get(0), references);
+
+        this.$timestamp.dropdown({
+            onChange: (value) => {
+                this.timestamp = value;
+                this.recalculate = true;
+
+                if (this.reference > this.timestamp) {
+                    this.reference = value;
+                }
+
+                const subref = references.slice(references.findIndex(entry => entry.value == this.timestamp));
+                for (let i = 0; i < subref.length; i++) {
+                    subref[i].selected = subref[i].value == this.reference;
+                }
+
+                this.$reference.dropdown('clear', true);
+
+                DOM.dropdown(this.$reference.get(0), subref);
+
+                this.$reference.dropdown({
+                    onChange: (value) => {
+                        this.reference = value;
+                        this.recalculate = true;
+                        this.$filter.trigger('change');
+                    }
+                });
+    
+                this.$filter.trigger('change');
+            }
+        })
+
+        this.$reference.dropdown({
+            onChange: (value) => {
+                this.reference = value;
+                this.recalculate = true;
+                this.$filter.trigger('change');
+            }
+        });
+    }
+
+    show (params) {
+        const nonBrowseOrigin = params && params.origin !== UI.BrowseGroups;
+        const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
+
+        if (nonBrowseOrigin && nonUpdated) {
+            // If no update has happened, just do nothing and display previously rendered table
+            return;
+        } else {
+            this.lastDatabaseChange = DatabaseManager.LastChange;
+            this.lastScriptChange = Scripts.LastChange
+
+            this.timestamp = DatabaseManager.LatestGroup;
+            this.reference = DatabaseManager.LatestGroup;
+
+            this.tableBase.resetInjector();
+            this.tableQ.resetInjector();
+    
+            this.refreshQuickSwapDropdown();
+            this.updateSelectors();
+    
+            this.load();
+        }
+    }
+
+    load () {
+        // Configuration indicator
+        this.$configure.find('.item').removeClass('active');
+        DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned('groups'));
+
+        this.table.setScript(Scripts.getAssignedContent('groups', 'groups'));
+
+        this.scriptOverride = null;
+        this.recalculate = true;
+        this.$filter.trigger('change');
+    }
+
+    refreshQuickSwapDropdown () {
+        this.$configure.dropdown({
+            on: 'contextmenu',
+            showOnFocus: false,
+            action: (text, value, element) => {
+                this.$configure.find('.item').removeClass('active');
+
+                let settings = '';
+                if (this.scriptOverride == value) {
+                    this.scriptOverride = null;
+
+                    settings = Scripts.getAssignedContent('groups', 'groups');
+                } else {
+                    this.scriptOverride = value;
+
+                    $(element).addClass('active');
+                    settings = Scripts.getContent(value);
+                }
+
+                this.table.setScript(settings);
+
+                this.recalculate = true;
+                this.$filter.trigger('change');
+                this.$configure.dropdown('hide');
+            },
+            values: [
+                {
+                    name: intl('stats.scripts.quick_swap'),
+                    type: 'header',
+                    class: 'header font-bold !text-center'
+                },
+                ... Scripts.sortedList('groups').map(({ key: value, name }) => ({ name, value }))
+            ]
+        });
+    }
+
+    _toggleTable (table) {
+        if (table === this.table) {
+            table.element.style.display = '';
+        } else {
+            table.element.style.display = 'none';
+        }
+    }
+
+    refresh () {
+        this._toggleTable(this.tableBase);
+        this._toggleTable(this.tableQ);
+
+        this.table.refresh();
+    }
+
+    reload () {
+        this.refreshQuickSwapDropdown();
+        this.load();
+    }
 }
 
 class BrowsePlayersTab extends Tab {
@@ -668,10 +1144,10 @@ class BrowsePlayersTab extends Tab {
         this.$table2 = this.$parent.find('[data-op="table2"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table1, TableType.BrowsePlayer);
+        this.tableBase = new TableController(this.$table1, TableType.BrowsePlayers);
         this.tableSubscribe(this.tableBase);
 
-        this.tableQ = new TableController(this.$table2, TableType.BrowsePlayer);
+        this.tableQ = new TableController(this.$table2, TableType.BrowsePlayers);
         this.tableSubscribe(this.tableQ);
 
         // Keep track of what table is displayed and swap if necessary later

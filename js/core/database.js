@@ -654,6 +654,7 @@ class DatabaseManager {
         this.Identifiers = new ModelRegistry();
         this.Timestamps = new ModelRegistry();
         this.PlayerTimestamps = [];
+        this.GroupTimestamps = [];
         this.Prefixes = [];
         this.GroupNames = {};
         this.PlayerNames = {};
@@ -718,12 +719,14 @@ class DatabaseManager {
     static #updateLists () {
         this.Latest = 0;
         this.LatestPlayer = 0;
+        this.LatestGroup = 0;
         this.LastChange = Date.now();
         this.GroupNames = Object.create(null);
         this.PlayerNames = Object.create(null);
 
         const prefixes = new Set();
         const playerTimestamps = new Set();
+        const groupTimestamps = new Set();
 
         for (const player of Object.values(this.Players)) {
             player.LatestTimestamp = 0;
@@ -773,12 +776,15 @@ class DatabaseManager {
                     array.push(obj);
 
                     this.Latest = Math.max(this.Latest, timestamp);
+                    this.LatestGroup = Math.max(this.LatestGroup, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
                     obj.MembersPresent = Array.from(this.Timestamps.values(timestamp)).filter((id) => obj.Members.includes(id)).length
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
+
+                    groupTimestamps.add(ts);
                 }
             }
 
@@ -794,6 +800,7 @@ class DatabaseManager {
         }
 
         this.PlayerTimestamps = Array.from(playerTimestamps);
+        this.GroupTimestamps = Array.from(groupTimestamps);
         this.Prefixes = Array.from(prefixes);
     }
 
