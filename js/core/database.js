@@ -441,6 +441,8 @@ class PlayaResponse {
                     data.calendar = r.calenderinfo?.numbers;
                     data.webshopid = r.webshopid?.string;
                     data.resources = r.resources?.numbers;
+                    data.dailyTasks = r.dailytasklist?.numbers;
+                    data.eventTasks = r.eventtasklist?.numbers;
 
                     // Post-process
                     if (data.save[435]) {

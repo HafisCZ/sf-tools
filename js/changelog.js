@@ -26,6 +26,7 @@ const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
             'Added checkbox to create new script out of online code immediately',
+            'Added support for capturing of daily and event tasks',
             'Fixed <code>Power</code> header to account for no weapon equipped'
         ]
     },
