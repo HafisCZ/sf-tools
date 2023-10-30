@@ -700,7 +700,14 @@ class DatabaseManager {
 
     // INTERNAL: Add group
     static #addGroup (data) {
-        this.#registerModel('Groups', data.identifier, data.timestamp, new GroupModel(data));
+        const model = new GroupModel(data);
+        Object.defineProperty(model, 'Players', {
+            get () {
+                return this.Members.map((id) => DatabaseManager.getPlayer(id, this.Timestamp));
+            }
+        })
+
+        this.#registerModel('Groups', data.identifier, data.timestamp, model);
     }
 
     // INTERNAL: Add model
