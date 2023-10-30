@@ -1462,6 +1462,7 @@
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
+                "header_group": "Headers for all guilds",
                 "header_private": "Headers for own characters",
                 "header_scoped": "Accessors for objects",
                 "function": "Functions",

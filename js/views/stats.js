@@ -1978,6 +1978,11 @@ const ScriptManualDialog = new (class ScriptManualDialog extends Dialog {
                 TABLE_EXPRESSION_CONFIG.all('header', 'protected')
             ],
             [
+                'header_group',
+                'ta-reserved-group',
+                TABLE_EXPRESSION_CONFIG.all('header', 'group')
+            ],
+            [
                 'header_private',
                 'ta-reserved-private',
                 TABLE_EXPRESSION_CONFIG.all('header', 'private')
