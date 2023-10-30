@@ -253,6 +253,11 @@
   font-weight: bold;
 }
 
+.ta-reserved-group {
+  color: #5f3d7e;
+  font-weight: bold;
+}
+
 .ta-reserved-private {
   color: #3269a8;
   font-weight: bold;
