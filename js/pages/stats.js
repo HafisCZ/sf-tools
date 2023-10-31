@@ -656,7 +656,7 @@ class PlayerDetailTab extends Tab {
     }
 }
 
-class BrowseGroupsTab extends Tab {
+class GroupsTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -688,7 +688,7 @@ class BrowseGroupsTab extends Tab {
 
         document.addEventListener('keyup', (event) => {
             if (event.keyCode == 17) {
-                if (UI.current == UI.BrowseGroups) {
+                if (UI.current == this) {
                     this.$parent.find('.css-op-select').removeClass('css-op-select');
                 }
             }
@@ -1044,7 +1044,7 @@ class BrowseGroupsTab extends Tab {
     }
 
     show (params) {
-        const nonBrowseOrigin = params && params.origin !== UI.BrowseGroups;
+        const nonBrowseOrigin = params && params.origin !== this;
         const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
 
         if (nonBrowseOrigin && nonUpdated) {
@@ -1136,7 +1136,7 @@ class BrowseGroupsTab extends Tab {
     }
 }
 
-class BrowsePlayersTab extends Tab {
+class PlayersTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -1168,7 +1168,7 @@ class BrowsePlayersTab extends Tab {
 
         document.addEventListener('keyup', (event) => {
             if (event.keyCode == 17) {
-                if (UI.current == UI.browse_groups) {
+                if (UI.current == this) {
                     this.$parent.find('.css-op-select').removeClass('css-op-select');
                 }
             }
@@ -1582,7 +1582,7 @@ class BrowsePlayersTab extends Tab {
     }
 
     show (params) {
-        const nonBrowseOrigin = params && params.origin !== UI.browse_players;
+        const nonBrowseOrigin = params && params.origin !== this;
         const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
 
         if (nonBrowseOrigin && nonUpdated) {
@@ -1675,7 +1675,7 @@ class BrowsePlayersTab extends Tab {
 }
 
 // Groups View
-class GroupsTab extends Tab {
+class GroupsGridTab extends Tab {
     _prepareOption (operator, key, storeKey) {
         DOM.toggle({
             element: this.$parent.operator(operator).get(0),
@@ -1903,7 +1903,7 @@ class GroupsTab extends Tab {
 }
 
 // Players View
-class PlayersTab extends Tab {
+class PlayersGridTab extends Tab {
     _prepareOption (operator, key, storeKey) {
         DOM.toggle({
             element: this.$parent.operator(operator).get(0),
@@ -3407,10 +3407,10 @@ class ScriptsTab extends Tab {
         const values = [
             { value: '', name: intl('stats.scripts.targets.none'), icon: 'text-gray globe' },
             { type: 'header', name: intl('stats.scripts.targets_category.default') },
-            { value: 'players', name: intl('stats.topbar.browse_players'), icon: 'text-gray database' },
-            { value: 'player', name: intl('stats.topbar.players'), icon: 'text-gray user' },
-            { value: 'groups', name: intl('stats.topbar.browse_groups'), icon: 'text-gray database' },
-            { value: 'group', name: intl('stats.topbar.groups'), icon: 'text-gray archive' },
+            { value: 'players', name: intl('stats.topbar.players'), icon: 'text-gray database' },
+            { value: 'groups', name: intl('stats.topbar.groups'), icon: 'text-gray database' },
+            { value: 'player', name: intl('stats.topbar.player'), icon: 'text-gray user' },
+            { value: 'group', name: intl('stats.topbar.group'), icon: 'text-gray archive' },
             { type: 'header', name: intl('stats.topbar.groups') },
             ...Object.entries(DatabaseManager.GroupNames).map(([value, name]) => ({ value, name, icon: 'text-gray archive' })),
             { type: 'header', name: intl('stats.topbar.players') },
@@ -3831,41 +3831,41 @@ Site.ready(null, function (urlParams) {
     DatabaseManager.load(profile).then(function () {
         UI.register([
             {
-                tab: new PlayersTab('view-players'),
-                tabName: 'players',
-                buttonId: 'show-players',
+                tab: new PlayersGridTab('view-players-grid'),
+                tabName: 'players_grid',
+                buttonId: 'show-player',
                 buttonHistory: 'scripts'
             },
             {
                 tab: new PlayerDetailTab('view-player-detail'),
                 tabName: 'player_detail',
-                buttonId: 'show-players',
+                buttonId: 'show-player',
                 buttonHistory: 'scripts',
                 buttonClickable: false
             },
             {
-                tab: new GroupsTab('view-groups'),
-                tabName: 'groups',
-                buttonId: 'show-groups',
+                tab: new GroupsGridTab('view-groups-grid'),
+                tabName: 'groups_grid',
+                buttonId: 'show-group',
                 buttonHistory: 'scripts'
             },
             {
                 tab: new GroupDetailTab('view-group-detail'),
                 tabName: 'group_detail',
-                buttonId: 'show-groups',
+                buttonId: 'show-group',
                 buttonHistory: 'scripts',
                 buttonClickable: false
             },
             {
-                tab: new BrowsePlayersTab('view-browse-players'),
-                tabName: 'browse_players',
-                buttonId: 'show-browse-players',
+                tab: new PlayersTab('view-players'),
+                tabName: 'players',
+                buttonId: 'show-players',
                 buttonHistory: 'Scripts'
             },
             {
-                tab: new BrowseGroupsTab('view-browse-groups'),
-                tabName: 'browse_groups',
-                buttonId: 'show-browse-groups',
+                tab: new GroupsTab('view-groups'),
+                tabName: 'groups',
+                buttonId: 'show-groups',
                 buttonHistory: 'Scripts'
             },
             {
@@ -3892,7 +3892,7 @@ Site.ready(null, function (urlParams) {
         ],
         {
             activeTab: urlParams.has('temp') ? 'files' : Store.session.get('activeTab', urlParams.get('tab') || SiteOptions.tab),
-            defaultTab: 'groups',
+            defaultTab: 'groups_grid',
             onTabChange: (tabName) => {
                 Store.session.set('activeTab', tabName);
             }
