@@ -521,6 +521,10 @@ class ItemModel {
 }
 
 class GroupModel {
+    static PET_CLASSES = [
+        2, 0, 0, 1, 1, 1, 2, 2, 2, 0, 1, 1, 2, 2, 0, 0, 1, 0, 0, 2, 0, 0, 1, 1, 2, 2, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 0, 1, 2, 0, 0, 2, 2, 0, 2, 1, 1, 0, 0, 2, 0, 2, 2, 1, 1, 1, 0, 0, 0, 2, 2, 0, 1, 1, 2, 2, 1, 0, 1, 1, 2, 2, 2, 2, 2, 1, 0, 1, 0, 1, 0, 0, 0, 0, 2, 0, 2, 2, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 2
+    ]
+
     constructor (data) {
         this.Data = data;
 
@@ -540,6 +544,7 @@ class GroupModel {
         this.Pet = data.save[378];
         this.Hydra = data.save[379];
         
+        this.PetClass = this.PetID ? (GroupModel.PET_CLASSES[this.PetID - 1] + 1) : undefined;
         this.PetStrength = data.save[385];
         this.PetDexterity = data.save[386];
         this.PetIntelligence = data.save[387];
