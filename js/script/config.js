@@ -1310,6 +1310,13 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+TABLE_EXPRESSION_CONFIG.register(
+  'function', 'value', 'get_day',
+  function (value) {
+    return new Date(value).getDay();
+  }
+)
+
 /*
 Public headers
 */
