@@ -3345,6 +3345,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Class',
+  {
+    expr: (obj) => obj.PetClass
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Pet Strength',
   {
     expr: (obj) => obj.PetStrength
