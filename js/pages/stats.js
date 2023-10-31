@@ -729,12 +729,15 @@ class GroupsTab extends Tab {
                 {
                     label: intl('stats.share.title_short'),
                     action: (source) => {
-                        let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
+                        const ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
                         ids.push(source.dataset.id);
+
+                        const cleanedIds = _uniq(ids);
+                        const cleanedMembers = cleanedIds.map((id) => DatabaseManager.Groups[id].List.reduce((memo, g) => memo.concat(g.Members), []));
 
                         DialogController.open(
                             ExportFileDialog,
-                            () => DatabaseManager.export(_uniq(ids)),
+                            () => DatabaseManager.export(_uniq([ ...cleanedIds, ...cleanedMembers ].flat())),
                             'groups'
                         )
                     }
