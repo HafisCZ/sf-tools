@@ -536,8 +536,15 @@ class GroupModel {
         this.MembersPresent = 0;
 
         this.Honor = data.save[13];
+        this.PetID = data.save[377];
         this.Pet = data.save[378];
         this.Hydra = data.save[379];
+        
+        this.PetStrength = data.save[385];
+        this.PetDexterity = data.save[386];
+        this.PetIntelligence = data.save[387];
+        this.PetConstitution = data.save[388];
+        this.PetLuck = data.save[389];
 
         let dataType = new ComplexDataType(data.save.slice(4, 9));
         dataType.short();
@@ -557,7 +564,9 @@ class GroupModel {
         this.Names = data.names;
 
         this.IsUnderAttack = data.save[364] > 0;
+        this.IsUnderAttackID = data.save[364];
         this.IsAttacking = data.save[366] > 0;
+        this.IsAttackingID = data.save[366];
 
         this.Treasures = data.save.slice(214, 264);
         this.Instructors = data.save.slice(264, 314);
@@ -586,6 +595,7 @@ class GroupModel {
 
         this.MembersTotal = this.Members.length;
         this.TotalKnights = data.save[370];
+        this.TotalKnights15 = data.save[371];
         this.TotalInstructor = Math.trunc(Math.min(_sum(this.Instructors), 500) / 5);
         this.TotalTreasure = Math.trunc(Math.min(_sum(this.Treasures), 500) / 5);
 
