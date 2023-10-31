@@ -44,10 +44,10 @@
     <body class="inverted">
         <div class="ui fixed inverted borderless huge menu">
             <div class="header item"><a href="index.html">SFTools</a> <span class="css-temporary" style="display: none;" data-intl="stats.topbar.temporary_flag"></span></div>
-            <a class="item" id="show-players"><i class="small user icon"></i><span data-intl="stats.topbar.players"></span></a>
-            <a class="item" id="show-browse-players"><i class="small database icon"></i><span data-intl="stats.topbar.browse_players"></span></a>
-            <a class="item" id="show-groups"><i class="small archive icon"></i><span data-intl="stats.topbar.groups"></span></a>
-            <a class="item" id="show-browse-groups"><i class="small database icon"></i><span data-intl="stats.topbar.browse_groups"></span></a>
+            <a class="item" id="show-players-grid"><i class="small user icon"></i><span data-intl="stats.topbar.players_grid"></span></a>
+            <a class="item" id="show-players"><i class="small database icon"></i><span data-intl="stats.topbar.players"></span></a>
+            <a class="item" id="show-groups-grid"><i class="small archive icon"></i><span data-intl="stats.topbar.groups_grid"></span></a>
+            <a class="item" id="show-groups"><i class="small database icon"></i><span data-intl="stats.topbar.groups"></span></a>
             <a class="item" id="show-scripts"><i class="small edit icon"></i><span data-intl="stats.topbar.scripts"></span></a>
             <a class="item" id="show-files"><i class="small folder open icon"></i><span data-intl="stats.topbar.files"></span></a>
             <a class="item" id="show-profiles"><i class="small wrench icon"></i><span data-intl="stats.topbar.profile"></span></a>
@@ -262,7 +262,7 @@
             </div>
         </div>
 
-        <div id="view-players" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-player-grid" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
@@ -280,7 +280,7 @@
             <div class="ui five column stackable doubling grid" data-op="list"></div>
         </div>
 
-        <div id="view-groups" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-group-grid" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
@@ -299,7 +299,7 @@
             <div class="ui five column stackable doubling grid" data-op="list"></div>
         </div>
 
-        <div id="view-browse-groups" class="ui main inverted container mb-20" style="display: none";>
+        <div id="view-groups" class="ui main inverted container mb-20" style="display: none";>
             <div class="ui grid !mb-1">
                 <div class="three wide left aligned column">
                     <div class="flex flex-col">
@@ -335,7 +335,7 @@
             <table class="sftools-table" data-op="table2"></table>
         </div>
 
-        <div id="view-browse-players" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-players" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide left aligned column">
                     <div class="flex flex-col">
@@ -467,10 +467,10 @@
                             <div class="field">
                                 <label data-intl="stats.settings.tab"></label>
                                 <select class="ui fluid selection inverted dropdown" data-op="dropdown-tab">
-                                    <option value="browsePlayers" data-intl="stats.topbar.browse_players"></option>
                                     <option value="players" data-intl="stats.topbar.players"></option>
-                                    <option value="browseGroups" data-intl="stats.topbar.browse_groups"></option>
                                     <option value="groups" data-intl="stats.topbar.groups"></option>
+                                    <option value="player" data-intl="stats.topbar.player"></option>
+                                    <option value="group" data-intl="stats.topbar.group"></option>
                                     <option value="scripts" data-intl="stats.topbar.scripts"></option>
                                     <option value="files" data-intl="stats.topbar.files"></option>
                                 </select>
