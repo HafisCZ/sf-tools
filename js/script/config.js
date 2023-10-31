@@ -3293,6 +3293,164 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Attacking',
+  {
+    expr: (obj) => obj.IsAttacking,
+    format: 'boolean'
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Attacking ID',
+  {
+    expr: (obj) => obj.IsAttackingID
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Defending',
+  {
+    expr: (obj) => obj.IsUnderAttack,
+    format: 'boolean'
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Defending ID',
+  {
+    expr: (obj) => obj.IsUnderAttackID
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Knights 15+',
+  {
+    expr: (obj) => obj.TotalKnights15
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Level',
+  {
+    expr: (obj) => obj.Pet
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet',
+  {
+    expr: (obj) => obj.PetID
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Strength',
+  {
+    expr: (obj) => obj.PetStrength
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Dexterity',
+  {
+    expr: (obj) => obj.PetDexterity
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Intelligence',
+  {
+    expr: (obj) => obj.PetIntelligence
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Constitution',
+  {
+    expr: (obj) => obj.PetConstitution
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Pet Luck',
+  {
+    expr: (obj) => obj.PetLuck
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Roles',
+  {
+    expr: (obj) => obj.Roles,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Knights',
+  {
+    expr: (obj) => obj.Knights,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Treasures',
+  {
+    expr: (obj) => obj.Treasures,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Instructors',
+  {
+    expr: (obj) => obj.Instructors,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Pets',
+  {
+    expr: (obj) => obj.Pets,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member States',
+  {
+    expr: (obj) => obj.States,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Names',
+  {
+    expr: (obj) => obj.Names,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Last Actives',
+  {
+    expr: (obj) => obj.LastActives,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member IDs',
+  {
+    expr: (obj) => obj.Members,
+    disabled: true
+  }
+)
+
 /*
   Protected headers
 */
