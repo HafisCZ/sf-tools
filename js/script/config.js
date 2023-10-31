@@ -3211,6 +3211,17 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 /*
+  Group headers
+*/
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Members',
+  {
+    expr: p => p.Players,
+    disabled: true
+  }
+)
+
+/*
   Protected headers
 */
 TABLE_EXPRESSION_CONFIG.register(
