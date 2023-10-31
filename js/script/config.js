@@ -3286,6 +3286,13 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Hydra',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.Hydra, () => obj.Hydra),
+  }
+)
+
 /*
   Protected headers
 */
