@@ -1382,33 +1382,6 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'header', 'public', 'Guild ID',
-  {
-    expr: p => _dig(p, 'Group', 'ID'),
-    difference: false,
-    statistics: false
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'public', 'Guild Identifier',
-  {
-    expr: p => _dig(p, 'Group', 'Identifier'),
-    difference: false,
-    statistics: false
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'public', 'Guild Rank',
-  {
-    expr: p => _dig(p, 'Group', 'Rank'),
-    difference: false,
-    statistics: false
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Role',
   {
     expr: p => (p && p.hasGuild()) ? _dig(p, 'Group', 'Role') : undefined,
@@ -2394,6 +2367,7 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Dungeon',
   {
@@ -3221,6 +3195,97 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+function fetchPlayerGroupValue (object, ifPlayer, ifGroup) {
+  if (DatabaseManager.isPlayer(object?.Identifier)) {
+    return ifPlayer();
+  } else {
+    return ifGroup();
+  }
+}
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild ID',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.ID, () => obj.ID),
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Identifier',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Identifier, () => obj.Identifier),
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Rank',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Rank, () => obj.Rank),
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Raids',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Raid, () => obj.Raid),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Portal Floor',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.PortalFloor, () => obj.PortalFloor),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Portal Life',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.PortalLife, () => obj.PortalLife),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Portal Percent',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.PortalPercent, () => obj.PortalPercent),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Honor',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.Honor, () => obj.Honor),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Knights',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.TotalKnights, () => obj.TotalKnights),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Treasure',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => (obj.Group?.Group?.TotalTreasure || 0) + 2 * Math.min(p.Dungeons.Raid, 50), () => obj.TotalTreasure + Math.min(obj.Raid, 50)),
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Instructor',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => (obj.Group?.Group?.TotalInstructor || 0) + 2 * Math.min(p.Dungeons.Raid, 50), () => obj.TotalInstructor + Math.min(obj.Raid, 50)),
+  }
+)
+
 /*
   Protected headers
 */
@@ -3277,13 +3342,6 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'header', 'public', 'Guild Raids',
-  {
-    expr: p => p.Group.Raid
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Power',
   {
     expr: p => ModelUtils.estimatePower(p),
@@ -3295,55 +3353,6 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'protected', 'Pet',
   {
     expr: p => p.Group.Pet
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Portal Floor',
-  {
-    expr: p => _dig(p, 'Group', 'Group', 'PortalFloor')
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Portal Life',
-  {
-    expr: p => _dig(p, 'Group', 'Group', 'PortalLife')
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Portal Percent',
-  {
-    expr: p => _dig(p, 'Group', 'Group', 'PortalPercent')
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Honor',
-  {
-    expr: p => _dig(p, 'Group', 'Group', 'Honor')
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Knights',
-  {
-    expr: p => _dig(p, 'Group', 'Group', 'TotalKnights')
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Treasure',
-  {
-    expr: p => (_dig(p, 'Group', 'Group', 'TotalTreasure') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'protected', 'Guild Instructor',
-  {
-    expr: p => (_dig(p, 'Group', 'Group', 'TotalInstructor') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
   }
 )
 
