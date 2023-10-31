@@ -1,8 +1,8 @@
 const TableType = {
     Player: 0,
+    Players: 2,
     Group: 1,
-    BrowsePlayers: 2,
-    BrowseGroups: 3
+    Groups: 3
 }
 
 const ScriptType = {
@@ -135,9 +135,9 @@ class RuleEvaluator {
 
 const FilterTypes = {
     'Guild': TableType.Group,
-    'Guilds': TableType.BrowseGroups,
+    'Guilds': TableType.Groups,
     'Player': TableType.Player,
-    'Players': TableType.BrowsePlayers
+    'Players': TableType.Players
 };
 
 class Highlighter {
@@ -2023,9 +2023,9 @@ class ScriptParser {
         // Special constants for macros
         const constants = new Constants();
         constants.add('guild', TableType.Group);
-        constants.add('guilds', TableType.BrowseGroups);
+        constants.add('guilds', TableType.Groups);
         constants.add('player', TableType.Player);
-        constants.add('players', TableType.BrowsePlayers);
+        constants.add('players', TableType.Players);
 
         // Generate initial settings
         let settings = this.handleMacroEnvironment(lines, scriptScope, constants);
@@ -2606,7 +2606,7 @@ class Script {
                 }, true);
 
                 headers.push(nameHeader);
-            } else if (type === TableType.BrowsePlayers || type === TableType.BrowseGroups) {
+            } else if (type === TableType.Players || type === TableType.Groups) {
                 const serverWidth = this.getServerStyle();
                 if (serverWidth) {
                     const serverHeader = new ScriptContainer('Server');
@@ -3118,7 +3118,7 @@ class Script {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.scriptScope.table == TableType.BrowsePlayers || this.scriptScope.table == TableType.BrowseGroups) {
+            if (this.scriptScope.table == TableType.Players || this.scriptScope.table == TableType.Groups) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),

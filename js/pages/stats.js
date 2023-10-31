@@ -664,10 +664,10 @@ class BrowseGroupsTab extends Tab {
         this.$table2 = this.$parent.find('[data-op="table2"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table1, TableType.BrowsePlayers);
+        this.tableBase = new TableController(this.$table1, TableType.Groups);
         this.tableSubscribe(this.tableBase);
 
-        this.tableQ = new TableController(this.$table2, TableType.BrowseGroups);
+        this.tableQ = new TableController(this.$table2, TableType.Groups);
         this.tableSubscribe(this.tableQ);
 
         // Keep track of what table is displayed and swap if necessary later
@@ -1144,10 +1144,10 @@ class BrowsePlayersTab extends Tab {
         this.$table2 = this.$parent.find('[data-op="table2"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table1, TableType.BrowsePlayers);
+        this.tableBase = new TableController(this.$table1, TableType.Players);
         this.tableSubscribe(this.tableBase);
 
-        this.tableQ = new TableController(this.$table2, TableType.BrowsePlayers);
+        this.tableQ = new TableController(this.$table2, TableType.Players);
         this.tableSubscribe(this.tableQ);
 
         // Keep track of what table is displayed and swap if necessary later
