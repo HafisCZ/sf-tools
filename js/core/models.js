@@ -564,6 +564,7 @@ class GroupModel {
 
         this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_p' + mid));
         this.States = data.save.slice(64, 114).map(level => Math.trunc(level / 1000));
+        this.Levels = data.save.slice(64, 114).map(level => level % 1000);
         this.Roles = data.save.slice(314, 364);
         this.LastActives = data.save.slice(114, 164).map(ts => parseInt(ts) * 1000 + data.offset);
         this.Names = data.names;
