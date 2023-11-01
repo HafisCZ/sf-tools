@@ -3395,6 +3395,14 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Levels',
+  {
+    expr: (obj) => obj.Levels,
+    disabled: true
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Member Knights',
   {
     expr: (obj) => obj.Knights,
