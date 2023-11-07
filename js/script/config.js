@@ -859,7 +859,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'entries',
   function (scope) {
     if (scope.current) {
-      return DatabaseManager.getAny(scope.current.Identifier).List;
+      return DatabaseManager.getAnyEntry(scope.current.Identifier).List;
     } else {
       return undefined;
     }

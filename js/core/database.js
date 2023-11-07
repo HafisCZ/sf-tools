@@ -1071,7 +1071,15 @@ class DatabaseManager {
         }
     }
 
-    static getAny (identifier) {
+    static getAny (identifier, timestamp) {
+        if (this.isPlayer(identifier)) {
+            return this.getPlayer(identifier, timestamp);
+        } else {
+            return this.getGroup(identifier, timestamp);
+        }
+    }
+
+    static getAnyEntry (identifier) {
         return this[this.isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
     }
 

@@ -415,8 +415,8 @@ class TableInstance {
         this.array = array.map(obj => {
             let { current, compare } = obj;
 
-            let p = DatabaseManager.getPlayer(current.Identifier, current.Timestamp);
-            let c = DatabaseManager.getPlayer(current.Identifier, compare.Timestamp);
+            let p = DatabaseManager.getAny(current.Identifier, current.Timestamp);
+            let c = DatabaseManager.getAny(current.Identifier, compare.Timestamp);
 
             let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
             ExpressionCache.reset();

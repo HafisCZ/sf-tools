@@ -691,7 +691,7 @@ const StatisticsIntegrationOptionsDialog = new (class StatisticsIntegrationOptio
                 </div>
             `);
 
-            const data = _dig(DatabaseManager.getAny(identifier), 'Latest', 'Data');
+            const data = _dig(DatabaseManager.getAnyEntry(identifier), 'Latest', 'Data');
 
             $item.find('input').val(data ? `${data.name} @ ${_formatPrefix(data.prefix)}` : identifier);
             $item.find('i').click(() => {
