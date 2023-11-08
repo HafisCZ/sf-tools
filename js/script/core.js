@@ -3513,6 +3513,9 @@ class Scripts {
 
         if (Store.isTemporary()) {
             this.data = Store.shared.get('scripts', this.#DEFAULT_DATA);
+
+            // Clear assignments for temporary mode
+            this.data.assignments = this.#DEFAULT_DATA.assignments;
         } else {
             this.data = Store.get('scripts', this.#DEFAULT_DATA);
         }
