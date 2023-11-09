@@ -1045,7 +1045,8 @@
             "3": "Gluttony",
             "4": "Greed",
             "5": "Heresy",
-            "6": "Limbo Plain"
+            "6": "Limbo",
+            "7": "Violence"
         },
         "win": {
             "all": "All #{count} floors were defeated with 100% chance",
