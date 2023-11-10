@@ -613,6 +613,51 @@ Site.ready(null, function (urlParams) {
         }
     }
 
+    const GT_REWARDS = {
+        1: 'hellevator_point',
+        2: 'hellevator_ticket',
+        3: 'mushroom',
+        4: 'gold',
+        5: 'lucky_coin',
+        6: 'wood',
+        7: 'stone',
+        8: 'arcane',
+        9: 'metal',
+        10: 'souls',
+        11: 'fruit1',
+        12: 'fruit2',
+        13: 'fruit3',
+        14: 'fruit4',
+        15: 'fruit5',
+        16: 'gem_legendary',
+        17: 'shadow_gold',
+        18: 'shadow_silver',
+        19: 'shadow_bronze',
+        20: 'gem_small',
+        21: 'gem_medium',
+        22: 'gem_large',
+        23: 'fruit_mixed',
+        24: 'experience',
+        25: 'pet_egg',
+        26: 'hourglass',
+        27: 'honor',
+        28: 'beer'
+    };
+
+    function getRewards (response) {
+        const rewards = {};
+
+        if (response.gtreward) {
+            for (const [type, _, amount] of _eachBlock(response.gtreward.numbers, 3)) {
+                if (type) {
+                    rewards[GT_REWARDS[type]] = amount;
+                }
+            }
+        }
+
+        return rewards;
+    }
+
     // Extract individual fights from raw data array
     function importHAR (json) {
         const digestedFights = [];
@@ -634,13 +679,15 @@ Site.ready(null, function (urlParams) {
                     for (let i = 1; i <= count; i++) {
                         digestedFights.push({
                             header: r[`fightheader${i}`].mixed,
-                            rounds: r[`fight${i}`].numbers
+                            rounds: r[`fight${i}`].numbers,
+                            rewards: getRewards(r)
                         });
                     }
                 } else {
                     digestedFights.push({
                         header: r.fightheader.mixed,
-                        rounds: r.fight.numbers
+                        rounds: r.fight.numbers,
+                        rewards: getRewards(r)
                     });
                 }
             }
@@ -695,7 +742,7 @@ Site.ready(null, function (urlParams) {
             }
         }
 
-        for (const { header, rounds } of digestedFights) {
+        for (const { header, rounds, rewards } of digestedFights) {
             const fightType = header[0];
 
             // Proceed only if type of fight is known to the system
@@ -787,7 +834,8 @@ Site.ready(null, function (urlParams) {
                 currentFights.push({
                     fighterA,
                     fighterB,
-                    rounds: processedRounds
+                    rounds: processedRounds,
+                    rewards
                 })
             }
         }
