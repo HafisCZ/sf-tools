@@ -3421,20 +3421,40 @@ class Script {
 
 // Script archive
 class ScriptArchive {
-    static dataExpiry = 86400000;
+    static DATA_LIFETIME = 86_400_000;
+    static DATA_QUOTA = 1_024_000;
 
     static get data () {
         delete this.data;
 
-        this.data = Store.shared.get('archive', []).filter(({ timestamp }) => timestamp > Date.now() - this.dataExpiry);
+        this.data = Store.shared.get('archive', []);
         this.#persist();
 
         return this.data;
     }
 
     static #persist () {
-        this.data = this.all().slice(0, 200);
+        this.#truncate();
         Store.shared.set('archive', this.data);
+    }
+
+    static #truncate () {
+        this.bytes = 0;
+        this.data = this.all().filter(({ timestamp }) => timestamp > Date.now() - this.DATA_LIFETIME).slice(0, 200);
+
+        let index = -1;
+        for (let i = 0; i < this.data.length; i++) {
+            this.bytes += JSON.stringify(this.data[i]).length;
+
+            if (this.bytes > this.DATA_QUOTA) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index >= 0) {
+            this.data = this.data.slice(0, index);
+        }
     }
 
     static clear () {

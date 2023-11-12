@@ -1246,7 +1246,7 @@ const ScriptArchiveDialog = new (class ScriptArchiveDialog extends Dialog {
               <i class="ui big ${this._getIcon(type)} disabled icon" style="color: #${this._getColor(type)};"></i>
               <div>
                   <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${_escape(this._scriptName(name))}</div>
-                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.dataExpiry) })}</div>
+                  <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.DATA_LIFETIME) })}</div>
               </div>
               <i class="ui large !ml-auto copy outline text-gray text-white:hover icon" title="${intl('editor.copy')}" data-archive-copy="${timestamp}"></i>
           </div>
