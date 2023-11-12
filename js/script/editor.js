@@ -118,7 +118,7 @@ class ScriptEditor extends SignalSource {
     this.textarea.addEventListener('dragenter', (event) => _stopAndPrevent(event));
     this.textarea.addEventListener('drop', (event) => {
       const contentType = _dig(event, 'dataTransfer', 'files', 0, 'type')
-      if (!contentType || contentType === 'text/plain') {
+      if ((!contentType || contentType === 'text/plain') && event.dataTransfer.files[0] instanceof Blob) {
         _stopAndPrevent(event)
 
         const reader = new FileReader();
