@@ -152,7 +152,8 @@ const PLAYER_CLASS_SEARCH = [
     'berserker',
     'demon hunter',
     'druid',
-    'bard'
+    'bard',
+    'necromancer'
 ];
 
 // Group Detail View

@@ -240,6 +240,7 @@ class Constants {
                 'demonhunter': 7,
                 'druid': 8,
                 'bard': 9,
+                'necromancer': 10,
                 'empty': '',
                 'tiny': 40,
                 'small': 60,
