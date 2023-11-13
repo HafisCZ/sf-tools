@@ -207,11 +207,21 @@ class GroupDetailTab extends Tab {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            this.table.toImage(($document) => {
+            this.table.toImage(($table) => {
                 const ta = Number(this.timestamp);
                 const tb = Number(this.reference);
 
-                $document.find('tbody').prepend($(`<tr style="height: 2em;"><td colspan="8" class="text-left" style="padding-left: 8px;">${_formatDate(ta)}${ta != tb ? ` - ${_formatDate(tb)}` : ''}</td></tr>`));
+                const $tableBody = $table.find('tbody');
+
+                const tableSpan = $table.attr('data-column-count');
+                const tableFixed = $table.hasClass('sftools-table-fixed');
+
+                const timestampRow = $(`<tr style="height: 2em;"><td colspan="${tableSpan}" class="text-left" style="padding-left: 8px;">${_formatDate(ta)}${ta != tb ? ` - ${_formatDate(tb)}` : ''}</td></tr>`);
+                if (tableFixed) {
+                    $tableBody.children(":first").after(timestampRow);
+                } else {
+                    $tableBody.prepend(timestampRow);
+                }                
             }).then((blob) => {
                 Exporter.png(blob, `${this.group.Latest.Name}.${this.timestamp}${this.timestamp != this.reference ? `.${this.reference}` : ''}`);
             });

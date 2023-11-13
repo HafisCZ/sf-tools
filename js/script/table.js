@@ -834,7 +834,8 @@ class TableInstance {
             style: [ this.settings.getFontStyle() ],
             class: [ this.settings.getOpaqueStyle() ],
             width: this.flatWidth,
-            widthFixed: this.settings.isStrictWidthPolicy()
+            widthFixed: this.settings.isStrictWidthPolicy(),
+            columnCount: this.flatSpan
         };
     }
 
@@ -1106,7 +1107,7 @@ class TableController extends SignalSource {
                 useCORS: true,
                 onclone: (document) => {
                     if (cloneCallback) {
-                        cloneCallback($(document));
+                        cloneCallback($(document).find(`table[data-uuid="${this.element.dataset.uuid}"]`));
                     }
                 }
             });
@@ -1276,7 +1277,7 @@ class TableController extends SignalSource {
         this.entriesChanged = false;
 
         // Get table content
-        let { content, entries, style, class: klass, theme, width, widthFixed } = this.table.createTable();
+        let { content, entries, style, class: klass, theme, width, widthFixed, columnCount } = this.table.createTable();
 
         entries = [].concat(entries);
 
@@ -1294,6 +1295,9 @@ class TableController extends SignalSource {
         } else {
             this.element.classList.remove('sftools-table-fixed');
         }
+
+        this.element.dataset.uuid = randomSHA1();
+        this.element.dataset.columnCount = columnCount;
 
         this.bodyElement.setAttribute('style', `${themeStyle} ${style.join(' ')}`);
         this.bodyElement.setAttribute('class', `${themeClass} ${klass.join(' ')}`);
