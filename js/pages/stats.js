@@ -2283,7 +2283,7 @@ class FilesTab extends Tab {
                     <div class="ui inverted input">
                         <input class="ta-editor-textarea" style="padding-left: 1em !important;" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
                     </div>
-                    <div class="ta-editor-overlay" style="width: 100%; margin-top: calc(-1em - 16px); margin-left: 1em;"></div>
+                    <div class="ta-editor-overlay" style="width: 100%; margin-top: 0.75em; margin-left: 1em;"></div>
                 </div>
             </div>
         `);
