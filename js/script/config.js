@@ -3187,14 +3187,6 @@ TABLE_EXPRESSION_CONFIG.register(
 /*
   Group headers
 */
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Members',
-  {
-    expr: p => p.Players,
-    disabled: true
-  }
-)
-
 function fetchPlayerGroupValue (object, ifPlayer, ifGroup) {
   if (DatabaseManager.isPlayer(object?.Identifier)) {
     return ifPlayer();
@@ -3387,81 +3379,9 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Roles',
+  'header', 'group', 'Guild Members',
   {
-    expr: (obj) => obj.Roles,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Levels',
-  {
-    expr: (obj) => obj.Levels,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Knights',
-  {
-    expr: (obj) => obj.Knights,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Treasures',
-  {
-    expr: (obj) => obj.Treasures,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Instructors',
-  {
-    expr: (obj) => obj.Instructors,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Pets',
-  {
-    expr: (obj) => obj.Pets,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member States',
-  {
-    expr: (obj) => obj.States,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Names',
-  {
-    expr: (obj) => obj.Names,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member Last Actives',
-  {
-    expr: (obj) => obj.LastActives,
-    disabled: true
-  }
-)
-
-TABLE_EXPRESSION_CONFIG.register(
-  'header', 'group', 'Guild Member IDs',
-  {
-    expr: (obj) => obj.Members,
+    expr: (obj) => obj.Players,
     disabled: true
   }
 )

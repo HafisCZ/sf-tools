@@ -611,6 +611,19 @@ class GroupModel {
                 Tokens: data.gtsave.tokens
             }
         }
+
+        this.Players = this.Members.map((id, i) => ({
+            Role: this.Roles[i],
+            Level: this.Levels[i],
+            Knights: this.Knights?.[i],
+            Treasure: this.Treasures[i],
+            Instructor: this.Instructors[i],
+            Pet: this.Pets[i],
+            LastActive: this.LastActives[i],
+            Name: this.Names[i],
+            State: this.States[i],
+            ID: id
+        }));
     }
 }
 
