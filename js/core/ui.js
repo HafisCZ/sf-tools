@@ -30,10 +30,10 @@ class UI {
     static #tabs = Object.create(null);
 
     static register (configs) {
-        for (const [name, config] of Object.entries(configs)) {
-            const tab = (this[name] = config.tab);
+        for (const config of configs) {
+            const tab = (this[config.tabName] = config.tab);
 
-            tab._registeredName = name;
+            tab._registeredName = config.tabName;
 
             if ('buttonId' in config) {
                 const buttonElement = document.getElementById(config.buttonId);
@@ -57,12 +57,23 @@ class UI {
         }
     }
 
+    static showInitial (name, defaultName) {
+        const tab = this.#tabs[name];
+        if (tab && tab.buttonClickable !== false) {
+            this.show(tab.tab);
+        } else {
+            this.show(this.#tabs[defaultName].tab);
+        }
+    }
+
     static show (tab, args) {
         const origin = this.current;
         if (origin) origin.hide({ target: tab });
 
         this.#showScreen(tab);
         tab.show(Object.assign({ origin }, args));
+
+        this.#updateURL();
     }
 
     static returnTo (tab) {
@@ -71,6 +82,17 @@ class UI {
 
         this.#showScreen(tab);
         tab.reload();
+    }
+
+    static #updateURL () {
+        const tab = this.#tabs[this.current._registeredName];
+
+        if (tab && tab.buttonClickable !== false) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('tab', this.current._registeredName);
+    
+            window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${urlParams.toString().replace(/=&/g, '&').replace(/=$/, '')}`);
+        }
     }
 
     static #showScreen (tab) {

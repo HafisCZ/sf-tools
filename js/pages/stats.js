@@ -274,7 +274,7 @@ class GroupDetailTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { identifier: this.identifier })
+                UI.show(UI.scripts, { identifier: this.identifier })
             }
         });
 
@@ -551,7 +551,7 @@ class PlayerDetailTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { identifier: this.identifier })
+                UI.show(UI.scripts, { identifier: this.identifier })
             }
         });
 
@@ -689,7 +689,7 @@ class BrowseTab extends Tab {
 
         document.addEventListener('keyup', (event) => {
             if (event.keyCode == 17) {
-                if (UI.current == UI.Browse) {
+                if (UI.current == UI.browse) {
                     this.$parent.find('.css-op-select').removeClass('css-op-select');
                 }
             }
@@ -790,7 +790,7 @@ class BrowseTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { identifier: 'players' })
+                UI.show(UI.scripts, { identifier: 'players' })
             }
         });
 
@@ -1103,7 +1103,7 @@ class BrowseTab extends Tab {
     }
 
     show (params) {
-        const nonBrowseOrigin = params && params.origin !== UI.Browse;
+        const nonBrowseOrigin = params && params.origin !== UI.browse;
         const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
 
         if (nonBrowseOrigin && nonUpdated) {
@@ -1374,7 +1374,7 @@ class GroupsTab extends Tab {
     show () {
         const viewableGroups = Object.entries(DatabaseManager.Groups);
         if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
-            UI.show(UI.GroupDetail, { identifier: viewableGroups[0][0] });
+            UI.show(UI.group_detail, { identifier: viewableGroups[0][0] });
         } else {
             this.load();
         }
@@ -1407,7 +1407,7 @@ class GroupsTab extends Tab {
 
         this.loader.start(() => {
             const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                UI.show(UI.GroupDetail, { identifier: this.dataset.id });
+                UI.show(UI.group_detail, { identifier: this.dataset.id });
             })
 
             this.contextMenu.attach(blockClickable.get());
@@ -1630,7 +1630,7 @@ class PlayersTab extends Tab {
     show () {
         let identitifiers = Object.keys(DatabaseManager.Players);
         if (identitifiers.length == 1) {
-            UI.show(UI.PlayerDetail, { identifier: identitifiers[0] });
+            UI.show(UI.player_detail, { identifier: identitifiers[0] });
         } else {
             this.load();
         }
@@ -1662,7 +1662,7 @@ class PlayersTab extends Tab {
 
         this.loader.start(() => {
             const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                UI.show(UI.PlayerDetail, { identifier: this.dataset.id });
+                UI.show(UI.player_detail, { identifier: this.dataset.id });
             })
 
             this.contextMenu.attach(blockClickable.get());
@@ -2886,7 +2886,7 @@ class ScriptsTab extends Tab {
     }
 
     show ({ origin, identifier, blank, key }) {
-        if ([UI.Browse, UI.Groups, UI.GroupDetail, UI.Players, UI.PlayerDetail].includes(origin)) {
+        if ([UI.browse, UI.groups, UI.group_detail, UI.players, UI.player_detail].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
             this.returnTo = null;
@@ -3349,64 +3349,65 @@ Site.ready(null, function (urlParams) {
 
     Loader.toggle(true);
     DatabaseManager.load(profile).then(function () {
-        UI.register({
-            Players: {
+        UI.register([
+            {
                 tab: new PlayersTab('view-players'),
+                tabName: 'players',
                 buttonId: 'show-players',
-                buttonHistory: 'Scripts'
+                buttonHistory: 'scripts'
             },
-            PlayerDetail: {
+            {
                 tab: new PlayerDetailTab('view-player-detail'),
+                tabName: 'player_detail',
                 buttonId: 'show-players',
-                buttonHistory: 'Scripts',
+                buttonHistory: 'scripts',
                 buttonClickable: false
             },
-            Groups: {
+            {
                 tab: new GroupsTab('view-groups'),
+                tabName: 'groups',
                 buttonId: 'show-groups',
-                buttonHistory: 'Scripts'
+                buttonHistory: 'scripts'
             },
-            GroupDetail: {
+            {
                 tab: new GroupDetailTab('view-group-detail'),
+                tabName: 'group_detail',
                 buttonId: 'show-groups',
-                buttonHistory: 'Scripts',
+                buttonHistory: 'scripts',
                 buttonClickable: false
             },
-            Browse: {
+            {
                 tab: new BrowseTab('view-browse'),
+                tabName: 'browse',
                 buttonId: 'show-browse',
-                buttonHistory: 'Scripts'
+                buttonHistory: 'scripts'
             },
-            Scripts: {
+            {
                 tab: new ScriptsTab('view-scripts'),
+                tabName: 'scripts',
                 buttonId: 'show-scripts'
             },
-            Files: {
+            {
                 tab: new FilesTab('view-files'),
+                tabName: 'files',
                 buttonId: 'show-files'
             },
-            Settings: {
+            {
                 tab: new SettingsTab('view-settings'),
+                tabName: 'settings',
                 buttonId: 'show-settings'
             },
-            Profiles: {
+            {
                 tab: new ProfilesTab('view-profiles'),
+                tabName: 'profiles',
                 buttonId: 'show-profiles',
                 buttonDisabled: urlParams.has('temp')
             }
-        });
+        ]);
 
         Loader.toggle(false);
 
-        const defaultTab = urlParams.has('temp') ? UI.Files : ({
-            'players': UI.Players,
-            'groups': UI.Groups,
-            'browse': UI.Browse,
-            'scripts': UI.Scripts,
-            'files': UI.Files
-        }[urlParams.get('tab') || SiteOptions.tab] || UI.Groups)
-
-        UI.show(defaultTab);
+        UI.showInitial(urlParams.has('temp') ? 'files' : (urlParams.get('tab') || SiteOptions.tab), 'groups');
     }).catch(function (e) {
         Loader.toggle(false);
         DialogController.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);

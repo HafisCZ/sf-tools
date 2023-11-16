@@ -11,26 +11,30 @@ class GenericTab extends Tab {
 }
 
 Site.ready(null, function () {
-    UI.register({
-        GoldExperience: {
+    UI.register([
+        {
             tab: new GenericTab('tab-gold-experience', false),
+            tabName: 'gold_experience',
             buttonId: 'show-attributes'
         },
-        Fortress: {
+        {
             tab: new GenericTab('tab-fortress', true),
+            tabName: 'fortress',
             buttonId: 'show-fortress'
         },
-        Underworld: {
+        {
             tab: new GenericTab('tab-underworld', true),
+            tabName: 'underworld',
             buttonId: 'show-underworld'
         },
-        GoldTable: {
+        {
             tab: new GenericTab('tab-gold-table', false),
+            tabName: 'gold_table',
             buttonId: 'show-gold-table'
         }
-    });
+    ]);
 
-    UI.show(UI.GoldExperience);
+    UI.show(UI.gold_experience);
 
     function updateTimers (lq) {
         $('[data-lq]').each((_, el) => {
