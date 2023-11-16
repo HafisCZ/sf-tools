@@ -84,7 +84,13 @@ class UI {
         tab.reload();
     }
 
+    static #isLocal () {
+        return document.location.protocol == 'file:';
+    }
+
     static #updateURL () {
+        if (this.#isLocal()) return;
+
         const tab = this.#tabs[this.current._registeredName];
 
         if (tab && tab.buttonClickable !== false) {
