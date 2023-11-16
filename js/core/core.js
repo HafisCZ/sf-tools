@@ -236,7 +236,7 @@ const SiteOptions = new OptionsHandler(
         migration_accepted: false,
         profile: 'default',
         groups_empty: false,
-        tab: 'groups',
+        tab: 'groups_grid',
         load_rows: 100,
         persisted: false,
         has_storage_access: false,

@@ -419,9 +419,9 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporary",
-            "player": "Player",
+            "players_grid": "Player",
             "players": "Players",
-            "group": "Guild",
+            "groups_grid": "Guild",
             "groups": "Guilds",
             "scripts": "Scripts",
             "files": "Files",
