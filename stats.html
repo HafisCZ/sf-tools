@@ -262,7 +262,7 @@
             </div>
         </div>
 
-        <div id="view-player-grid" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-players-grid" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
@@ -280,7 +280,7 @@
             <div class="ui five column stackable doubling grid" data-op="list"></div>
         </div>
 
-        <div id="view-group-grid" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-groups-grid" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide column">
@@ -372,7 +372,7 @@
             <table class="sftools-table" data-op="table2"></table>
         </div>
 
-        <div id="view-player-detail" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-player" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="three wide column"></div>
                 <div class="ten wide center aligned column !pb-0">
@@ -395,7 +395,7 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <div id="view-group-detail" class="ui main inverted container mb-20" style="display: none;">
+        <div id="view-group" class="ui main inverted container mb-20" style="display: none;">
             <div class="ui grid !mb-1">
                 <div class="four wide column">
                     <div class="flex flex-col">
@@ -467,10 +467,10 @@
                             <div class="field">
                                 <label data-intl="stats.settings.tab"></label>
                                 <select class="ui fluid selection inverted dropdown" data-op="dropdown-tab">
+                                    <option value="players_grid" data-intl="stats.topbar.players_grid"></option>
+                                    <option value="groups_grid" data-intl="stats.topbar.groups_grid"></option>
                                     <option value="players" data-intl="stats.topbar.players"></option>
                                     <option value="groups" data-intl="stats.topbar.groups"></option>
-                                    <option value="player" data-intl="stats.topbar.player"></option>
-                                    <option value="group" data-intl="stats.topbar.group"></option>
                                     <option value="scripts" data-intl="stats.topbar.scripts"></option>
                                     <option value="files" data-intl="stats.topbar.files"></option>
                                 </select>

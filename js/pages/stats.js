@@ -157,7 +157,7 @@ const PLAYER_CLASS_SEARCH = [
 ];
 
 // Group Detail View
-class GroupDetailTab extends Tab {
+class GroupTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -487,7 +487,7 @@ class GroupDetailTab extends Tab {
     }
 }
 
-class PlayerDetailTab extends Tab {
+class PlayerTab extends Tab {
     constructor (parent) {
         super(parent);
 
@@ -760,7 +760,7 @@ class GroupsTab extends Tab {
         }).click(event => {
             let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
-                UI.show(UI.Scripts, { identifier: 'groups' })
+                UI.show(UI.scripts, { identifier: 'groups' })
             }
         });
 
@@ -955,7 +955,7 @@ class GroupsTab extends Tab {
                     if (event.ctrlKey) {
                         event.currentTarget.classList.toggle('css-op-select');
                     } else {
-                        UI.show(UI.GroupDetail, { identifier: event.currentTarget.dataset.id });
+                        UI.show(UI.group, { identifier: event.currentTarget.dataset.id });
                     }
                 });
 
@@ -1856,7 +1856,7 @@ class GroupsGridTab extends Tab {
     show () {
         const viewableGroups = Object.entries(DatabaseManager.Groups);
         if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
-            UI.show(UI.group_detail, { identifier: viewableGroups[0][0] });
+            UI.show(UI.group, { identifier: viewableGroups[0][0] });
         } else {
             this.load();
         }
@@ -1889,7 +1889,7 @@ class GroupsGridTab extends Tab {
 
         this.loader.start(() => {
             const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                UI.show(UI.group_detail, { identifier: this.dataset.id });
+                UI.show(UI.group, { identifier: this.dataset.id });
             })
 
             this.contextMenu.attach(blockClickable.get());
@@ -2112,7 +2112,7 @@ class PlayersGridTab extends Tab {
     show () {
         let identitifiers = Object.keys(DatabaseManager.Players);
         if (identitifiers.length == 1) {
-            UI.show(UI.player_detail, { identifier: identitifiers[0] });
+            UI.show(UI.player, { identifier: identitifiers[0] });
         } else {
             this.load();
         }
@@ -2144,7 +2144,7 @@ class PlayersGridTab extends Tab {
 
         this.loader.start(() => {
             const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                UI.show(UI.player_detail, { identifier: this.dataset.id });
+                UI.show(UI.player, { identifier: this.dataset.id });
             })
 
             this.contextMenu.attach(blockClickable.get());
@@ -3368,7 +3368,7 @@ class ScriptsTab extends Tab {
     }
 
     show ({ origin, identifier, blank, key }) {
-        if ([UI.browse_players, UI.browse_groups, UI.groups, UI.group_detail, UI.players, UI.player_detail].includes(origin)) {
+        if ([UI.players, UI.groups, UI.groups_grid, UI.group, UI.players_grid, UI.player].includes(origin)) {
             this.returnTo = () => UI.returnTo(origin);
         } else if (typeof origin !== 'undefined') {
             this.returnTo = null;
@@ -3412,11 +3412,11 @@ class ScriptsTab extends Tab {
             { type: 'header', name: intl('stats.scripts.targets_category.default') },
             { value: 'players', name: intl('stats.topbar.players'), icon: 'text-gray database' },
             { value: 'groups', name: intl('stats.topbar.groups'), icon: 'text-gray database' },
-            { value: 'player', name: intl('stats.topbar.player'), icon: 'text-gray user' },
-            { value: 'group', name: intl('stats.topbar.group'), icon: 'text-gray archive' },
-            { type: 'header', name: intl('stats.topbar.groups') },
+            { value: 'player', name: intl('stats.topbar.players_grid'), icon: 'text-gray user' },
+            { value: 'group', name: intl('stats.topbar.groups_grid'), icon: 'text-gray archive' },
+            { type: 'header', name: intl('stats.topbar.groups_grid') },
             ...Object.entries(DatabaseManager.GroupNames).map(([value, name]) => ({ value, name, icon: 'text-gray archive' })),
-            { type: 'header', name: intl('stats.topbar.players') },
+            { type: 'header', name: intl('stats.topbar.players_grid') },
             ...Object.entries(DatabaseManager.PlayerNames).map(([value, name]) => ({ value, name, icon: 'text-gray user' })),
         ]
 
@@ -3836,26 +3836,26 @@ Site.ready(null, function (urlParams) {
             {
                 tab: new PlayersGridTab('view-players-grid'),
                 tabName: 'players_grid',
-                buttonId: 'show-player',
+                buttonId: 'show-players-grid',
                 buttonHistory: 'scripts'
             },
             {
-                tab: new PlayerDetailTab('view-player-detail'),
-                tabName: 'player_detail',
-                buttonId: 'show-player',
+                tab: new PlayerTab('view-player'),
+                tabName: 'player',
+                buttonId: 'show-players-grid',
                 buttonHistory: 'scripts',
                 buttonClickable: false
             },
             {
                 tab: new GroupsGridTab('view-groups-grid'),
                 tabName: 'groups_grid',
-                buttonId: 'show-group',
+                buttonId: 'show-groups-grid',
                 buttonHistory: 'scripts'
             },
             {
-                tab: new GroupDetailTab('view-group-detail'),
-                tabName: 'group_detail',
-                buttonId: 'show-group',
+                tab: new GroupTab('view-group'),
+                tabName: 'group',
+                buttonId: 'show-groups-grid',
                 buttonHistory: 'scripts',
                 buttonClickable: false
             },
@@ -3863,13 +3863,13 @@ Site.ready(null, function (urlParams) {
                 tab: new PlayersTab('view-players'),
                 tabName: 'players',
                 buttonId: 'show-players',
-                buttonHistory: 'Scripts'
+                buttonHistory: 'scripts'
             },
             {
                 tab: new GroupsTab('view-groups'),
                 tabName: 'groups',
                 buttonId: 'show-groups',
-                buttonHistory: 'Scripts'
+                buttonHistory: 'scripts'
             },
             {
                 tab: new ScriptsTab('view-scripts'),

@@ -1345,12 +1345,12 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
                             <div data-table="player" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
                                 <i class="ui times icon"></i>
                                 <i class="ui user icon"></i>
-                                <div>${intl('stats.topbar.player')}</div>
+                                <div>${intl('stats.topbar.players_grid')}</div>
                             </div>
                             <div data-table="group" class="!border-radius-1 border-gray p-3 !pl-4 background-dark:hover cursor-pointer flex gap-2 items-center">
                                 <i class="ui times icon"></i>
                                 <i class="ui archive icon"></i>
-                                <div>${intl('stats.topbar.group')}</div>
+                                <div>${intl('stats.topbar.groups_grid')}</div>
                             </div>
                         </div>
                     </div>
