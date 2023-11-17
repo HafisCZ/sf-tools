@@ -778,6 +778,17 @@ class GroupsTab extends Tab {
             }
         })
 
+        DOM.toggle({
+            element: this.$parent.operator('show-empty').get(0),
+            value: SiteOptions.groups_empty,
+            callback: (active) => {
+                SiteOptions.groups_empty = !SiteOptions.groups_empty;
+
+                this.recalculate = true;
+                this.$filter.trigger('change');
+            }
+        })
+
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
             'create',
@@ -917,7 +928,9 @@ class GroupsTab extends Tab {
                 suppressUpdate: !this.recalculate
             });
 
-            for (const [identifier, { List: list }] of Object.entries(DatabaseManager.Groups)) {
+            for (const [identifier, { List: inputList }] of Object.entries(DatabaseManager.Groups)) {
+                const list = SiteOptions.groups_empty ? inputList : inputList.filter((g) => g.MembersPresent);
+
                 const hidden = DatabaseManager.isIdentifierHidden(identifier);
                 if (this.hidden || this.shidden || !hidden) {
                     const current = list.find((entry) => entry.Timestamp <= this.timestamp);
@@ -1048,12 +1061,12 @@ class GroupsTab extends Tab {
 
     show (params) {
         const nonBrowseOrigin = params && params.origin !== this;
-        const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
+        // const nonUpdated = this.lastDatabaseChange === DatabaseManager.LastChange && this.lastScriptChange === Scripts.LastChange;
 
-        if (nonBrowseOrigin && nonUpdated) {
+        /*if (nonBrowseOrigin && nonUpdated) {
             // If no update has happened, just do nothing and display previously rendered table
             return;
-        } else {
+        } else*/ {
             this.lastDatabaseChange = DatabaseManager.LastChange;
             this.lastScriptChange = Scripts.LastChange
 
@@ -1873,7 +1886,17 @@ class GroupsGridTab extends Tab {
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override) && (this.empty || group.LatestDisplayTimestamp);
         });
 
-        const items = [];
+        const items = [`
+            <div class="column">
+                <div class="ui basic grey inverted segment cursor-pointer !p-0 !border-radius-1 h-full gap-4 justify-content-center flex flex-col items-center" data-id="view-table">
+                    <div>
+                        <i class="ui huge inverted table icon"></i>
+                    </div>
+                    <span>${intl('stats.guilds.browse')}</span>
+                </div>
+            </div>
+        `];
+
         for (const group of filteredEntries) {
             items.push(`
                 <div class="column">
@@ -1889,7 +1912,14 @@ class GroupsGridTab extends Tab {
 
         this.loader.start(() => {
             const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                UI.show(UI.group, { identifier: this.dataset.id });
+                const identifier = this.dataset.id;
+
+                if (identifier === 'view-table') {
+                    UI.show(UI.groups);
+                } else {
+                    UI.show(UI.group, { identifier });
+                }
+            
             })
 
             this.contextMenu.attach(blockClickable.get());
@@ -3868,8 +3898,9 @@ Site.ready(null, function (urlParams) {
             {
                 tab: new GroupsTab('view-groups'),
                 tabName: 'groups',
-                buttonId: 'show-groups',
-                buttonHistory: 'scripts'
+                buttonId: 'show-groups-grid',
+                buttonHistory: 'scripts',
+                buttonClickable: false
             },
             {
                 tab: new ScriptsTab('view-scripts'),

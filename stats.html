@@ -45,9 +45,9 @@
         <div class="ui fixed inverted borderless huge menu">
             <div class="header item"><a href="index.html">SFTools</a> <span class="css-temporary" style="display: none;" data-intl="stats.topbar.temporary_flag"></span></div>
             <a class="item" id="show-players-grid"><i class="small user icon"></i><span data-intl="stats.topbar.players_grid"></span></a>
-            <a class="item" id="show-players"><i class="small database icon"></i><span data-intl="stats.topbar.players"></span></a>
             <a class="item" id="show-groups-grid"><i class="small archive icon"></i><span data-intl="stats.topbar.groups_grid"></span></a>
-            <a class="item" id="show-groups"><i class="small database icon"></i><span data-intl="stats.topbar.groups"></span></a>
+            <a class="item" id="show-players"><i class="small database icon"></i><span data-intl="stats.topbar.players"></span></a>
+            <!--<a class="item" id="show-groups"><i class="small database icon"></i><span data-intl="stats.topbar.groups"></span></a>-->
             <a class="item" id="show-scripts"><i class="small edit icon"></i><span data-intl="stats.topbar.scripts"></span></a>
             <a class="item" id="show-files"><i class="small folder open icon"></i><span data-intl="stats.topbar.files"></span></a>
             <a class="item" id="show-profiles"><i class="small wrench icon"></i><span data-intl="stats.topbar.profile"></span></a>
@@ -323,6 +323,7 @@
                         <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-inverted="" data-op="save"><i class="file image icon"></i></div>
                         <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.csv" data-inverted="" data-op="save-csv"><i class="file excel icon"></i></div>
                         <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-inverted="" data-op="copy"><i class="copy icon"></i></div>
+                        <div class="ui button" data-op="show-empty" data-position="bottom center" data-intl-tooltip="stats.guilds.empty" data-inverted=""><i class="ui eraser icon"></i></div>
                         <div class="ui button" data-position="bottom center" data-intl-tooltip="stats.browse.hidden" data-inverted="" data-op="show-hidden"><i class="ui low vision icon"></i></div>
                         <div class="ui top left pointing inverted dropdown button" data-op="configure">
                             <i class="cog icon"></i>
@@ -470,7 +471,7 @@
                                     <option value="players_grid" data-intl="stats.topbar.players_grid"></option>
                                     <option value="groups_grid" data-intl="stats.topbar.groups_grid"></option>
                                     <option value="players" data-intl="stats.topbar.players"></option>
-                                    <option value="groups" data-intl="stats.topbar.groups"></option>
+                                    <!--<option value="groups" data-intl="stats.topbar.groups"></option>-->
                                     <option value="scripts" data-intl="stats.topbar.scripts"></option>
                                     <option value="files" data-intl="stats.topbar.files"></option>
                                 </select>

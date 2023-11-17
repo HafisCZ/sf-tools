@@ -419,10 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporary",
-            "players_grid": "Player",
-            "players": "Players",
-            "groups_grid": "Guild",
-            "groups": "Guilds",
+            "players_grid": "Players",
+            "players": "Browse",
+            "groups_grid": "Guilds",
+            "groups": "Browse (Guilds)",
             "scripts": "Scripts",
             "files": "Files",
             "settings": "Settings",
@@ -625,7 +625,8 @@
             "other": "Show other guilds",
             "hidden": "Show hidden",
             "empty": "Show empty groups",
-            "missing": "Player data is missing for following members:"
+            "missing": "Player data is missing for following members:",
+            "browse": "View guilds in a table"
         },
         "browse": {
             "hidden": "Show hidden"
