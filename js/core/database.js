@@ -360,6 +360,7 @@ class PlayaResponse {
         let groups = [];
         let players = [];
         let bonusPool = {};
+        let bonusPoolByName = {};
         let currentVersion = undefined;
 
         for (const { url, text, date } of this.search(json)) {
@@ -368,7 +369,7 @@ class PlayaResponse {
                 offset = date.getTimezoneOffset() * 60 * 1000;
             }
 
-            if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal')) {
+            if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal') || text.includes('gtranking')) {
                 if (url) {
                     const urlParts = url.toLowerCase().split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
                     if (urlParts.length > 2) {
@@ -507,6 +508,17 @@ class PlayaResponse {
                     };
                 }
             }
+
+            if (r.gtranking) {
+                for (let gtEntry of r.gtranking.table) {
+                    bonusPoolByName[`${prefix}_g${gtEntry[1]}`] = {
+                        gtsave: {
+                            rank: parseInt(gtEntry[0]),
+                            tokens: parseInt(gtEntry[2])
+                        }
+                    };
+                }
+            }
         }
 
         for (const player of players) {
@@ -515,6 +527,13 @@ class PlayaResponse {
             let bonusEntry = undefined;
             if (bonusEntry = bonusPool[player.identifier]) {
                 Object.assign(player, bonusEntry);
+            }
+        }
+
+        for (const group of groups) {
+            let bonusEntry = undefined;
+            if (bonusEntry = bonusPoolByName[`${group.prefix}_g${group.name}`]) {
+                Object.assign(group, bonusEntry);
             }
         }
 
