@@ -149,7 +149,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
         }
 
-        if (firstPossibleLoss == lastPossibleLoss && enemies.length > 10) {
+        if (firstPossibleLoss !== 0 && firstPossibleLoss == lastPossibleLoss && enemies.length > 10) {
             content = `
                 <div class="row">
                     <div class="sixteen wide text-center column">
