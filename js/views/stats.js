@@ -1461,8 +1461,8 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
                     { type: 'header', name: this.intl('category.defaults') },
                     { value: '_players', name: intl('stats.topbar.players'), icon: 'database' },
                     { value: '_groups', name: intl('stats.topbar.groups'), icon: 'database' },
-                    { value: '_player', name: intl('stats.topbar.player'), icon: 'user' },
-                    { value: '_group', name: intl('stats.topbar.group'), icon: 'archive' },
+                    { value: '_player', name: intl('stats.topbar.players_grid'), icon: 'user' },
+                    { value: '_group', name: intl('stats.topbar.groups_grid'), icon: 'archive' },
                     { type: 'header', name: this.intl('category.clone') },
                     ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
                 ]
