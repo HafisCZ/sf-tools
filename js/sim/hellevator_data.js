@@ -10,7 +10,7 @@ class HellevatorEnemies {
   ]
 
   static HELLEVATOR_THEMES = [
-    6, 5, 4, 3, 2, 1, 0
+    7, 6, 5, 4, 3, 2, 1, 0
   ]
 
   static HELLEVATOR_ENEMY_DELTA = [
