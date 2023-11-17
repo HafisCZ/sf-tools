@@ -105,7 +105,8 @@ const Store = (function () {
     return Object.assign(
         new StoreWrapper(store),
         {
-            shared: new StoreWrapper(store)
+            shared: new StoreWrapper(store),
+            session: new StoreWrapper(StoreWrapper.getStore('sessionStorage') || {})
         }
     );
 })();

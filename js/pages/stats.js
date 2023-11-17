@@ -3403,11 +3403,16 @@ Site.ready(null, function (urlParams) {
                 buttonId: 'show-profiles',
                 buttonDisabled: urlParams.has('temp')
             }
-        ]);
+        ],
+        {
+            activeTab: urlParams.has('temp') ? 'files' : Store.session.get('activeTab', urlParams.get('tab') || SiteOptions.tab),
+            defaultTab: 'groups',
+            onTabChange: (tabName) => {
+                Store.session.set('activeTab', tabName);
+            }
+        });
 
         Loader.toggle(false);
-
-        UI.showInitial(urlParams.has('temp') ? 'files' : (urlParams.get('tab') || SiteOptions.tab), 'groups');
     }).catch(function (e) {
         Loader.toggle(false);
         DialogController.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);

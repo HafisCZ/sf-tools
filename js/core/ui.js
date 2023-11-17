@@ -27,9 +27,12 @@ class Tab {
 class UI {
     static current = null;
 
+    static #options = Object.create(null);
     static #tabs = Object.create(null);
 
-    static register (configs) {
+    static register (configs, options = null) {
+        if (options) this.#options = options;
+
         for (const config of configs) {
             const tab = (this[config.tabName] = config.tab);
 
@@ -55,14 +58,16 @@ class UI {
 
             this.#tabs[tab._registeredName] = config;
         }
+
+        this.#showInitial();
     }
 
-    static showInitial (name, defaultName) {
-        const tab = this.#tabs[name];
+    static #showInitial () {
+        const tab = this.#tabs[this.#options.activeTab];
         if (tab && tab.buttonClickable !== false) {
             this.show(tab.tab);
         } else {
-            this.show(this.#tabs[defaultName].tab);
+            this.show(this.#tabs[this.#options.defaultTab].tab);
         }
     }
 
@@ -84,20 +89,12 @@ class UI {
         tab.reload();
     }
 
-    static #isLocal () {
-        return document.location.protocol == 'file:';
-    }
-
     static #updateURL () {
-        if (this.#isLocal()) return;
-
-        const tab = this.#tabs[this.current._registeredName];
+        const tabName = this.current._registeredName;
+        const tab = this.#tabs[tabName];
 
         if (tab && tab.buttonClickable !== false) {
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('tab', this.current._registeredName);
-    
-            window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${urlParams.toString().replace(/=&/g, '&').replace(/=$/, '')}`);
+           this.#options.onTabChange?.(tabName);
         }
     }
 
