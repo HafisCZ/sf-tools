@@ -32,9 +32,9 @@ Site.ready(null, function () {
             tabName: 'gold_table',
             buttonId: 'show-gold-table'
         }
-    ]);
-
-    UI.show(UI.gold_experience);
+    ], {
+        defaultTab: 'gold_experience'
+    });
 
     function updateTimers (lq) {
         $('[data-lq]').each((_, el) => {
