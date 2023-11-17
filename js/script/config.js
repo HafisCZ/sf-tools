@@ -3386,6 +3386,21 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild GT Rank',
+  {
+    expr: (obj) => obj.GroupTournament?.Rank
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild GT Tokens',
+  {
+    expr: (obj) => obj.GroupTournament?.Tokens,
+    format: 'fnumber'
+  }
+)
+
 /*
   Protected headers
 */
