@@ -1425,7 +1425,15 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
 
         this.$tables = this.$parent.operator('tables');
         this.$tables.find('[data-table]').click((event) => {
-            event.currentTarget.dataset.active = event.currentTarget.dataset.active !== 'true';
+            const element = event.currentTarget;
+
+            if (element.dataset.active = (element.dataset.active !== 'true')) {
+                if (element.dataset.table === 'groups') {
+                    this.#setTables(['groups']);
+                } else {
+                    this.#setTables(this.#getTables().filter((table) => table !== 'groups'));
+                }
+            }
         })
     }
 
@@ -1488,7 +1496,7 @@ const ScriptEditDialog = new (class ScriptEditDialog extends Dialog {
         this.$name.val(this.script.name);
         this.$description.val(this.script.description);
 
-        this.#setTables(this.script.tables || ['players', 'groups', 'player', 'group']);
+        this.#setTables(this.script.tables || ['players', 'player', 'group']);
     }
 })
 
