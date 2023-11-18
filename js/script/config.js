@@ -3268,14 +3268,14 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Treasure',
   {
-    expr: (obj) => fetchPlayerGroupValue(obj, () => (obj.Group?.Group?.TotalTreasure || 0) + 2 * Math.min(p.Dungeons.Raid, 50), () => obj.TotalTreasure + Math.min(obj.Raid, 50)),
+    expr: (obj) => fetchPlayerGroupValue(obj, () => (obj.Group?.Group?.TotalTreasure || 0) + 2 * Math.min(p.Dungeons.Raid, 50), () => obj.TotalTreasure + 2 * Math.min(obj.Raid, 50)),
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Instructor',
   {
-    expr: (obj) => fetchPlayerGroupValue(obj, () => (obj.Group?.Group?.TotalInstructor || 0) + 2 * Math.min(p.Dungeons.Raid, 50), () => obj.TotalInstructor + Math.min(obj.Raid, 50)),
+    expr: (obj) => fetchPlayerGroupValue(obj, () => (obj.Group?.Group?.TotalInstructor || 0) + 2 * Math.min(p.Dungeons.Raid, 50), () => obj.TotalInstructor + 2 * Math.min(obj.Raid, 50)),
   }
 )
 
