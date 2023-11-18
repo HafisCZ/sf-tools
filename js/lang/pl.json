@@ -14,7 +14,7 @@
         "class7": "Łowca Demonów",
         "class8": "Druid",
         "class9": "Bard",
-        "class10": "Necromancer",
+        "class10": "Nekromanta",
         "mask0": "Orzeł",
         "mask1": "Niedźwiedź",
         "mask2": "Kot",
@@ -123,18 +123,18 @@
         "attack24": "Unik",
         "attack28": "Atak krytyczny zablokowany",
         "attack29": "Atak krytyczny uniknięty",
-        "attack30": "Minion Normal",
-        "attack31": "Minion Critical",
-        "attack33": "Minion Blocked",
-        "attack34": "Minion Evaded",
-        "attack38": "Minion Critical Blocked",
-        "attack39": "Minion Critical Evaded",
+        "attack30": "Minion Normalny",
+        "attack31": "Minion Krytyczny",
+        "attack33": "Minion Zablokowany",
+        "attack34": "Minion Uniknięty",
+        "attack38": "Minion Krytyczny Zablokowany",
+        "attack39": "Minion Krytyczny Uniknięty",
         "attack100": "Wskrzeszenie",
         "attack200": "Utwór Barda",
-        "attack331": "Summon Skeleton",
-        "attack311": "Revive Skeleton",
-        "attack322": "Summon Hound",
-        "attack343": "Summon Golem",
+        "attack331": "Przywałaj Szkieleta",
+        "attack311": "Wskrzeszenie Szkieleta",
+        "attack322": "Przywołaj Ogara",
+        "attack343": "Przywołaj Golema",
         "gt_background1": "Złoto",
         "gt_background2": "Srebro",
         "gt_background3": "Brąz",
@@ -559,12 +559,12 @@
             "name": "Aktualnie edytowany skrypt",
             "list": "Wybierz skrypt",
             "list_add": "Dodaj nowy skrypt",
-            "list_search": "Search available scripts ...",
-            "target": "Current table",
-            "script": "Current script",
-            "quick_swap": "Quick swap script",
+            "list_search": "Szukaj dostępnych skryptów ...",
+            "target": "Bieżąca tabela",
+            "script": "Bieżący skrypt",
+            "quick_swap": "Szybka zmiana skryptu",
             "targets": {
-                "none": "None",
+                "none": "Brak",
                 "players": "Przeglądaj",
                 "player": "Gracze",
                 "group": "Gildie"
@@ -572,31 +572,31 @@
             "targets_category": {
                 "player": "Gracze",
                 "group": "Gildie",
-                "default": "Defaults"
+                "default": "Domyślne"
             },
             "tooltip": {
-                "pin": "Pin script to the top of the list",
-                "unpin": "Unpin script",
-                "assigned": "This script is assigned to current table",
-                "remote": "This script is published",
-                "remote_copy": "Click here to copy the code"
+                "pin": "Przypnij skrypt na górze listy",
+                "unpin": "Odepnij skrypt",
+                "assigned": "Ten skrypt jest przypisany do bieżącej tabeli",
+                "remote": "Ten skrypt jest publiczny",
+                "remote_copy": "Kliknij tutaj, aby skopiować kod"
             },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Instrukcja",
-                "scripts": "Online scripts",
-                "assign": "Assign selected script to current table",
-                "unassign": "Unassign script from current table",
+                "scripts": "Skrypty online",
+                "assign": "Przypisz wybrany skrypt do bieżącej tabeli",
+                "unassign": "Usuń skrypt z bieżącej tabeli",
                 "save": "Zapisz",
                 "copy": "Kopiuj",
-                "archive": "Archived scripts",
+                "archive": "Zarchiwizowane skrypty",
                 "recover": "Wczytaj wersję v#{version}",
-                "edit": "Edit name or description",
-                "remote_add": "Publish selected script",
-                "remote_update": "Publish new version of selected script",
-                "remote_remove": "Unpublish selected script",
+                "edit": "Edytuj nazwę lub opis",
+                "remote_add": "Opublikuj wybrany skrypt",
+                "remote_update": "Opublikuj nową wersję wybranego skryptu",
+                "remote_remove": "Anuluj publikację wybranego skryptu",
                 "close": "Powrót",
-                "shortcuts": "Shortcuts",
+                "shortcuts": "Skróty",
                 "remove": "Usuń",
                 "reset": "Odrzuć zmiany",
                 "export": "Eksportuj",
@@ -611,14 +611,14 @@
             "info": {
                 "deprecated": "Użycie <b>#{name1}</b> jest przestarzałe; zamiast tego użyj <b>#{name2}</b>"
             },
-            "remote_action_error": "Action was not successful",
+            "remote_action_error": "Akcja nie powiodła się",
             "remote_copy_toast": {
-                "title": "Copy",
-                "message": "Code has been copied"
+                "title": "Kopiuj",
+                "message": "Kod został skopiowany"
             },
             "remote_author_missing": {
-                "title": "You must set your user name before you can publish scripts",
-                "message": "Please head over to Settings and set your 'author name for published scripts'"
+                "title": "Musisz ustawić nazwę użytkownika, zanim będziesz mógł publikować skrypty",
+                "message": "Przejdź do ustawień i ustaw swoje 'Nazwa autora opublikowanych skryptów'"
             }
         },
         "players": {
@@ -716,7 +716,7 @@
             "always_prev": "Porównaj poprzednie (gildie)",
             "empty_groups": "Pokaż puste grupy",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
-            "script_author": "Author name for published scripts",
+            "script_author": "Nazwa autora dla opublikowanych skryptów",
             "table_sticky_header": "Włącz przyklejone nagłówki tabeli",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
@@ -1045,7 +1045,8 @@
             "3": "Obżarstwo",
             "4": "Chciwość",
             "5": "Herezja",
-            "6": "Limbo"
+            "6": "Próżnia",
+            "7": "Przemoc"
         },
         "win": {
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
@@ -1125,7 +1126,7 @@
         "analyze": "Analizator statystyczny",
         "gladiator": "Gladiator nie obniżony",
         "clear_changes": "Resetuj do stanu początkowego",
-        "simulate": "Open simulator with current data",
+        "simulate": "Otwórz symulator z bieżącymi danymi",
         "table": {
             "select": "#{index} - #{rounds} rund - #{nameA} - #{nameB} - Zwycięzca: #{winner}",
             "rage": "Furia",
@@ -1144,9 +1145,9 @@
             "druid_rage": "Druid jest wściekły",
             "berserker_rage": "Berserker jest w furii",
             "bard_song": "Bard zagrał utwór",
-            "necromancer_minion_1": "Skeleton attack",
-            "necromancer_minion_2": "Hound attack",
-            "necromancer_minion_3": "Golem attack"
+            "necromancer_minion_1": "Przywołany Szkielet ma wpływ na gracza",
+            "necromancer_minion_2": "Przywołany Ogar ma wpływ na gracza",
+            "necromancer_minion_3": "Przywołany Golem ma wpływ na gracza"
         },
         "sidebar": {
             "toggles": {
@@ -1279,7 +1280,7 @@
         "information": "Ważna informacja!",
         "configure_copy": "Skopiuj wszystkich z bieżącą konfiguracją",
         "configure_insert": "Załaduj przykładowe dane",
-        "configure_insert_custom": "Specify values manually",
+        "configure_insert_custom": "Określ wartości ręcznie",
         "configure_log": "Uruchom symulację z włączonym rejestrowaniem",
         "configure_log_file": "Zapisz w pliku",
         "configure_log_broadcast": "Otwórz za pomocą analizatora",
@@ -1415,31 +1416,31 @@
             "search": "Szukaj według nazwy lochu lub bossa ..."
         },
         "editor_shortcuts": {
-            "title": "Editor shortcuts",
+            "title": "Edytor skrótów",
             "shortcuts": {
                 "ctrl_s": {
                     "key": "Ctrl + S",
-                    "description": "Save script"
+                    "description": "Zapisz skrypt"
                 },
                 "ctrl_shift_s": {
                     "key": "Ctrl + Shift + S",
-                    "description": "Save script and return back"
+                    "description": "Zapisz skrypt i wróć z powrotem"
                 },
                 "tab": {
                     "key": "Tab",
-                    "description": "Add indent to selected lines<br>Move to next field"
+                    "description": "Dodaj wcięcie do wybranych linii<br>Przenieś do następnego pola"
                 },
                 "shift_tab": {
                     "key": "Shift + Tab",
-                    "description": "Remove indent from selected lines<br>Move to previous field"
+                    "description": "Usuń wcięcie z wybranych linii<br>Przenieś do poprzedniego pola"
                 },
                 "ctrl_shift_x": {
                     "key": "Ctrl + Shift + X",
-                    "description": "Comment or uncomment selected lines"
+                    "description": "Skomentuj lub odkomentuj wybrane linie"
                 },
                 "ctrl_space": {
                     "key": "Ctrl + Space",
-                    "description": "Show suggestions"
+                    "description": "Pokaż sugestie"
                 },
                 "ctrl_c": {
                     "key": "Ctrl + C",
@@ -1451,7 +1452,7 @@
                 },
                 "ctrl_x": {
                     "key": "Ctrl + X",
-                    "description": "Cut selection"
+                    "description": "Wytnij zaznaczenie"
                 }
             }
         },
@@ -1512,16 +1513,16 @@
         },
         "script_edit": {
             "title": {
-                "edit": "Edit script",
-                "create": "Add new script"
+                "edit": "Edytuj skrypt",
+                "create": "Dodaj nowy skrypt"
             },
-            "name": "Name",
-            "description": "Description",
-            "source": "Content",
-            "tables": "Compatible tables",
+            "name": "Nazwa",
+            "description": "Opis",
+            "source": "Zawartość",
+            "tables": "Kompatybilne tabele",
             "content": {
-                "empty": "Empty",
-                "current": "Current content",
+                "empty": "Pusto",
+                "current": "Bieżąca zawartość edytora",
                 "player": "Gracze",
                 "players": "Przeglądaj",
                 "group": "Gidlie"
@@ -1557,6 +1558,7 @@
             "search": "Szukaj...",
             "list_add": "Dodaj opublikowany skrypt do swojej listy",
             "list_add_key": "Kod",
+            "list_add_create": "Zapisz jako nowy skrypt",
             "list_add_accept": "Dodaj do mojej listy",
             "list": {
                 "about": "Stworzony przez #{author}",
@@ -1599,12 +1601,12 @@
         "delete_script": {
             "title": "Usuń skrypt",
             "notice": "Czy na pewno chcesz trwale usunąć wybrany skrypt?",
-            "notice_bonus_remote": "<br><br>This will not unpublish your script and you will lose edit access to it!",
-            "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
+            "notice_bonus_remote": "<br><br>To nie spowoduje cofnięcia publikacji twojego skryptu i stracisz dostęp do jego edycji!",
+            "notice_bonus_used": "<br><br>Ten skrypt jest obecnie stosowany do następujących tabel: #{tables}"
         },
         "delete_remote_script": {
             "title": "Cofnij publikację skryptu",
-            "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
+            "message": "Ta akcja unieważni kod powiązany z tym skryptem i zostanie trwale usunięta! Czy na pewno chcesz kontynuować?"
         },
         "warning": {
             "title": "Wystąpił błąd!",
@@ -1694,7 +1696,7 @@
         },
         "simulator_custom_preset": {
             "title": "Add custom preset",
-            "close": "Close",
+            "close": "Zamknij",
             "insert": "Insert preset"
         }
     },

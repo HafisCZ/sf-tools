@@ -1045,7 +1045,8 @@
             "3": "Gluttony",
             "4": "Greed",
             "5": "Heresy",
-            "6": "Limbo Plain"
+            "6": "Limbo",
+            "7": "Violence"
         },
         "win": {
             "all": "Todos los #{count} pisos fueron derrotados con 100% de probabilidad",
@@ -1144,9 +1145,9 @@
             "druid_rage": "Druid is enraged",
             "berserker_rage": "Berserker is enraged",
             "bard_song": "Bard has played a song",
-            "necromancer_minion_1": "Skeleton attack",
-            "necromancer_minion_2": "Hound attack",
-            "necromancer_minion_3": "Golem attack"
+            "necromancer_minion_1": "Summoned Skeleton is affecting the player",
+            "necromancer_minion_2": "Summoned Hound is affecting the player",
+            "necromancer_minion_3": "Summoned Golem is affecting the player"
         },
         "sidebar": {
             "toggles": {
@@ -1521,7 +1522,7 @@
             "tables": "Compatible tables",
             "content": {
                 "empty": "Empty",
-                "current": "Current content",
+                "current": "Current editor content",
                 "player": "Players",
                 "players": "Browse",
                 "group": "Guilds"
@@ -1557,6 +1558,7 @@
             "search": "Search ...",
             "list_add": "Add published script to your list",
             "list_add_key": "Code",
+            "list_add_create": "Save as new script",
             "list_add_accept": "Add to my list",
             "list": {
                 "about": "Created by #{author}",

@@ -14,7 +14,7 @@
         "class7": "Cacciatore di Demoni",
         "class8": "Druido",
         "class9": "Bardo",
-        "class10": "Necromancer",
+        "class10": "Negromante",
         "mask0": "Aquila",
         "mask1": "Orso",
         "mask2": "Tigre",
@@ -123,18 +123,18 @@
         "attack24": "Schivato",
         "attack28": "Critico bloccato",
         "attack29": "Critico schivato",
-        "attack30": "Minion Normal",
-        "attack31": "Minion Critical",
-        "attack33": "Minion Blocked",
-        "attack34": "Minion Evaded",
-        "attack38": "Minion Critical Blocked",
-        "attack39": "Minion Critical Evaded",
+        "attack30": "Servitore normale",
+        "attack31": "Servitore critico",
+        "attack33": "Servitore bloccato",
+        "attack34": "Servitore schivato",
+        "attack38": "Servitore critico bloccato",
+        "attack39": "Servitore critico schivato",
         "attack100": "Resurrezione",
         "attack200": "Brano Bardo",
-        "attack331": "Summon Skeleton",
-        "attack311": "Revive Skeleton",
-        "attack322": "Summon Hound",
-        "attack343": "Summon Golem",
+        "attack331": "Evoca scheletro",
+        "attack311": "Rianima Scheletro",
+        "attack322": "Evoca Mastino",
+        "attack343": "Evoca Golem",
         "gt_background1": "Oro",
         "gt_background2": "Argento",
         "gt_background3": "Bronzo",
@@ -305,9 +305,9 @@
             "mention": "Menzioni speciali"
         },
         "footer": {
-            "beta": "Check out public beta",
-            "kofi": "Give mar some shrooms",
-            "crowdin": "Help with translations",
+            "beta": "Dai un'occhiata alla beta pubblica",
+            "kofi": "Dai un po' di funghi",
+            "crowdin": "Aiuta con la traduzione",
             "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
             "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
         },
@@ -557,50 +557,50 @@
         "scripts": {
             "settings": "Opzioni",
             "name": "Script attualmente in modifica",
-            "list": "Select script",
-            "list_add": "Add new script",
-            "list_search": "Search available scripts ...",
-            "target": "Current table",
-            "script": "Current script",
+            "list": "Seleziona script",
+            "list_add": "Aggiungi nuovo script",
+            "list_search": "Ricerca script disponibili...",
+            "target": "Tabella attuale",
+            "script": "Script corrente",
             "quick_swap": "Quick swap script",
             "targets": {
-                "none": "None",
-                "players": "Browse",
-                "player": "Players",
-                "group": "Guilds"
+                "none": "Nessuno",
+                "players": "Esplora",
+                "player": "Giocatori",
+                "group": "Gilde"
             },
             "targets_category": {
-                "player": "Players",
-                "group": "Guilds",
-                "default": "Defaults"
+                "player": "Giocatori",
+                "group": "Gilde",
+                "default": "Predefiniti"
             },
             "tooltip": {
-                "pin": "Pin script to the top of the list",
+                "pin": "Fissa lo script in cima alla lista",
                 "unpin": "Unpin script",
-                "assigned": "This script is assigned to current table",
-                "remote": "This script is published",
-                "remote_copy": "Click here to copy the code"
+                "assigned": "Questo script è assegnato alla tabella attuale",
+                "remote": "Questo script è stato pubblicato",
+                "remote_copy": "Clicca qui per copiare il codice"
             },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manuale",
-                "scripts": "Online scripts",
+                "scripts": "Script online",
                 "assign": "Assign selected script to current table",
                 "unassign": "Unassign script from current table",
                 "save": "Salva",
                 "copy": "Copia",
-                "archive": "Archived scripts",
-                "recover": "Load version v#{version}",
-                "edit": "Edit name or description",
-                "remote_add": "Publish selected script",
-                "remote_update": "Publish new version of selected script",
-                "remote_remove": "Unpublish selected script",
+                "archive": "Script archiviati",
+                "recover": "Carica versione v#{version}",
+                "edit": "Modifica nome o descrizione",
+                "remote_add": "Pubblica lo script selezionato",
+                "remote_update": "Pubblica una nuova versione dello script selezionato",
+                "remote_remove": "Pubblica lo script selezionato",
                 "close": "Torna indietro",
-                "shortcuts": "Shortcuts",
+                "shortcuts": "Scorciatoie",
                 "remove": "Rimuovi",
                 "reset": "Scarta le modifiche",
-                "export": "Export",
-                "import": "Import",
+                "export": "Esporta",
+                "import": "Importa",
                 "header": {
                     "actions": "Azioni",
                     "modify": "Script",
@@ -611,13 +611,13 @@
             "info": {
                 "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
             },
-            "remote_action_error": "Action was not successful",
+            "remote_action_error": "Azione non riuscita",
             "remote_copy_toast": {
-                "title": "Copy",
-                "message": "Code has been copied"
+                "title": "Copia",
+                "message": "Il codice è stato copiato"
             },
             "remote_author_missing": {
-                "title": "You must set your user name before you can publish scripts",
+                "title": "Devi impostare il tuo nome utente prima di poter pubblicare script",
                 "message": "Please head over to Settings and set your 'author name for published scripts'"
             }
         },
@@ -751,7 +751,7 @@
             "collected": "Raccolti",
             "available": "Disponibili",
             "locked": "Bloccati",
-            "footer#": "Event times might not be accurate. Please verify within the game."
+            "footer#": "Gli orari degli eventi potrebbero non essere accurati. Verifica all'interno del gioco."
         },
         "map": {
             "gladiator": "Gladiatore"
@@ -1044,8 +1044,9 @@
             "2": "Frode",
             "3": "Golosità",
             "4": "Avidità",
-            "5": "Heresy",
-            "6": "Limbo Plain"
+            "5": "Eresia",
+            "6": "Limbo",
+            "7": "Violence"
         },
         "win": {
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
@@ -1125,7 +1126,7 @@
         "analyze": "Analisi statistica",
         "gladiator": "Gladiatore non ridotto",
         "clear_changes": "Ripristina allo stato iniziale",
-        "simulate": "Open simulator with current data",
+        "simulate": "Apri simulatore con i dati correnti",
         "table": {
             "select": "#{index} - #{rounds} round - #{nameA} - #{nameB} - Vincitore: #{winner}",
             "rage": "Rabbia",
@@ -1144,9 +1145,9 @@
             "druid_rage": "Il druido è infuriato",
             "berserker_rage": "Il Berserker è infuriato",
             "bard_song": "Il bardo ha suonato un brano",
-            "necromancer_minion_1": "Skeleton attack",
-            "necromancer_minion_2": "Hound attack",
-            "necromancer_minion_3": "Golem attack"
+            "necromancer_minion_1": "Summoned Skeleton is affecting the player",
+            "necromancer_minion_2": "Summoned Hound is affecting the player",
+            "necromancer_minion_3": "Summoned Golem is affecting the player"
         },
         "sidebar": {
             "toggles": {
@@ -1264,7 +1265,7 @@
             "guilds": "Importa gilde salvate"
         },
         "tooltip": {
-            "cheats": "Apply modifications to characters",
+            "cheats": "Applica le modifiche ai personaggi",
             "options": "Configure integration"
         }
     },
@@ -1279,7 +1280,7 @@
         "information": "Avviso importante!",
         "configure_copy": "Copia tutto, inclusa la configurazione attuale",
         "configure_insert": "Inserire dati di esempio",
-        "configure_insert_custom": "Specify values manually",
+        "configure_insert_custom": "Inserisci manualmente i valori",
         "configure_log": "Esegui la simulazione con la registrazione abilitata",
         "configure_log_file": "Salva su file",
         "configure_log_broadcast": "Apri con analizzatore",
@@ -1316,7 +1317,7 @@
         "fire": "Fuoco",
         "cold": "Freddo",
         "lightning": "Fulmine",
-        "auto": "Auto",
+        "auto": "Automatico",
         "gladiator": "Gladiatore (0 - 15)",
         "life_potion": "Pozione della Vita",
         "hand_enchant": "Ombra del Cowboy",
@@ -1362,7 +1363,7 @@
             "error_player_not_found": "Il personaggio non è stato trovato sul server",
             "error_sessionid_invalid": "Sessione scaduta o interrotta da un altro dispositivo",
             "error_login_only_with_sf_account_allowed": "Devi effettuare il login con il tuo account SF per accedere a questo personaggio",
-            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
+            "error_server_has_been_merged": "È necessario accedere al server unito corretto poiché questo server è stato unito e non è più disponibile",
             "playa_account_login_no_credentials_set": "Devi aggiungere un indirizzo email al tuo account per accedere su altre piattaforme",
             "playa_account_login_unknown_or_wrong_credentials": "Nome utente o password errati",
             "playa_account_not_active": "Il tuo account non è attivo",
@@ -1385,9 +1386,9 @@
         }
     },
     "request": {
-        "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
-        "access": "Click here to grant this domain access to your characters",
+        "title": "sta richiedendo i dati del tuo personaggio",
+        "notice#": "Seleziona un personaggio che desideri condividere con il sito.<br>Nessun dato personale sarà condiviso!",
+        "access": "Clicca qui per consentire a questo sito di accedere ai tuoi personaggi",
         "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
         "error": {
             "title": "Request error",
@@ -1419,7 +1420,7 @@
             "shortcuts": {
                 "ctrl_s": {
                     "key": "Ctrl + S",
-                    "description": "Save script"
+                    "description": "Salva script"
                 },
                 "ctrl_shift_s": {
                     "key": "Ctrl + Shift + S",
@@ -1430,28 +1431,28 @@
                     "description": "Add indent to selected lines<br>Move to next field"
                 },
                 "shift_tab": {
-                    "key": "Shift + Tab",
+                    "key": "Maiusc + Tab",
                     "description": "Remove indent from selected lines<br>Move to previous field"
                 },
                 "ctrl_shift_x": {
-                    "key": "Ctrl + Shift + X",
+                    "key": "Ctrl + Maiusc + X",
                     "description": "Comment or uncomment selected lines"
                 },
                 "ctrl_space": {
-                    "key": "Ctrl + Space",
-                    "description": "Show suggestions"
+                    "key": "Ctrl + Spazio",
+                    "description": "Mostra suggerimenti"
                 },
                 "ctrl_c": {
                     "key": "Ctrl + C",
-                    "description": "Copy selection"
+                    "description": "Copia selezione"
                 },
                 "ctrl_v": {
                     "key": "Ctrl + V",
-                    "description": "Paste"
+                    "description": "Incolla"
                 },
                 "ctrl_x": {
                     "key": "Ctrl + X",
-                    "description": "Cut selection"
+                    "description": "Taglia selezione"
                 }
             }
         },
@@ -1467,7 +1468,7 @@
                 "enum": "Enumerazioni",
                 "constant": "Costanti predefinite",
                 "variable": "Variabili",
-                "command": "Commands"
+                "command": "Comandi"
             },
             "description": {}
         },
@@ -1512,40 +1513,40 @@
         },
         "script_edit": {
             "title": {
-                "edit": "Edit script",
-                "create": "Add new script"
+                "edit": "Modifica script",
+                "create": "Aggiungi nuovo script"
             },
-            "name": "Name",
-            "description": "Description",
-            "source": "Content",
-            "tables": "Compatible tables",
+            "name": "Nome",
+            "description": "Descrizione",
+            "source": "Contenuto",
+            "tables": "Tabelle compatibili",
             "content": {
-                "empty": "Empty",
-                "current": "Current content",
-                "player": "Players",
-                "players": "Browse",
-                "group": "Guilds"
+                "empty": "Vuoto",
+                "current": "Current editor content",
+                "player": "Giocatori",
+                "players": "Sfoglia",
+                "group": "Gilde"
             },
             "category": {
                 "defaults": "Duplicate default script",
-                "clone": "Duplicate existing script"
+                "clone": "Duplica script esistente"
             },
-            "error_title": "Warning",
-            "error_name_blank": "Script name may not be blank"
+            "error_title": "Attenzione",
+            "error_name_blank": "Il nome dello script non può essere vuoto"
         },
         "script_archive": {
             "title": "Archived scripts",
-            "filter": "Filter by type",
+            "filter": "Filtra per tipo",
             "clear": "Elimina tutti gli elementi dall'archivio",
-            "copy_toast": "Script has been copied",
-            "unknown": "Unknown",
+            "copy_toast": "Lo script è stato copiato",
+            "unknown": "Sconosciuto",
             "types": {
-                "all": "Display all changes",
-                "create": "Script created",
-                "overwrite": "Script overwritten by new version",
-                "save": "Script saved",
-                "remove": "Script removed",
-                "discard": "Script changes were discarded"
+                "all": "Visualizza tutte le modifiche",
+                "create": "Script creato",
+                "overwrite": "Script sostituito da una nuova versione",
+                "save": "Script salvato",
+                "remove": "Script rimosso",
+                "discard": "Le modifiche allo script sono state eliminate"
             },
             "item": {
                 "description": "Archiviato: #{change}. Scade il: #{expire}",
@@ -1553,24 +1554,25 @@
             }
         },
         "script_repository": {
-            "title": "Online scripts",
-            "search": "Search ...",
-            "list_add": "Add published script to your list",
-            "list_add_key": "Code",
-            "list_add_accept": "Add to my list",
+            "title": "Script online",
+            "search": "Cerca ...",
+            "list_add": "Aggiungi lo script pubblicato alla tua lista",
+            "list_add_key": "Codice",
+            "list_add_create": "Save as new script",
+            "list_add_accept": "Aggiungi alla mia lista",
             "list": {
-                "about": "Created by #{author}",
-                "about_with_uses": "Created by #{author}; #{uses} uses",
-                "no_description": "No description",
-                "remove": "Remove script from your list",
-                "private": "This script is private",
-                "public": "This script is public",
-                "default": "This script is available to everyone locally",
-                "new": "New!"
+                "about": "Creato da #{author}",
+                "about_with_uses": "Creato da #{author}; #{uses} usa",
+                "no_description": "Nessuna descrizione",
+                "remove": "Rimuovi script dal tuo elenco",
+                "private": "Questo script è privato",
+                "public": "Questo script è pubblico",
+                "default": "Questo script è disponibile per tutti a livello locale",
+                "new": "Novità!"
             },
             "error_fetch": {
-                "title": "There was an error while fetching scripts",
-                "message": "Please wait few moments and try again"
+                "title": "Si è verificato un errore durante il recupero degli script",
+                "message": "Attendere qualche minuto e riprovare"
             }
         },
         "statistics_integration_options": {
@@ -1603,7 +1605,7 @@
             "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
         },
         "delete_remote_script": {
-            "title": "Unpublish script",
+            "title": "Annulla pubblicazione script",
             "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
         },
         "warning": {
@@ -1693,8 +1695,8 @@
             "title": "Configurazione del simulatore"
         },
         "simulator_custom_preset": {
-            "title": "Add custom preset",
-            "close": "Close",
+            "title": "Aggiungi preset personalizzato",
+            "close": "Chiudi",
             "insert": "Insert preset"
         }
     },
@@ -1988,7 +1990,7 @@
             "7": "Demone Demoralizzante",
             "8": "Coniglio Mostruoso Rosa",
             "9": "Banshee",
-            "10": "Yourself"
+            "10": "Te stesso"
         },
         "10": {
             "name": "La Fortezza del Teschio Nero",
