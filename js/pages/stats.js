@@ -1867,12 +1867,15 @@ class GroupsGridTab extends Tab {
     }
 
     show () {
-        const viewableGroups = Object.entries(DatabaseManager.Groups);
-        if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
-            UI.show(UI.group, { identifier: viewableGroups[0][0] });
-        } else {
-            this.load();
-        }
+        /*
+            const viewableGroups = Object.entries(DatabaseManager.Groups);
+            if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
+                UI.show(UI.group, { identifier: viewableGroups[0][0] });
+            } else {
+                this.load();
+            }
+        */
+       this.load();
     }
 
     refresh () {
