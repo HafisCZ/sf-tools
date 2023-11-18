@@ -1888,7 +1888,7 @@ class GroupsGridTab extends Tab {
 
         const items = [`
             <div class="column">
-                <div class="ui basic grey inverted segment cursor-pointer !p-0 !border-radius-1 h-full gap-4 justify-content-center flex flex-col items-center" data-id="view-table">
+                <div class="ui basic grey inverted segment cursor-pointer !p-0 !border-radius-1 h-full gap-4 justify-content-center flex flex-col items-center" data-id="view-table" style="height: 270px;">
                     <div>
                         <i class="ui huge inverted table icon"></i>
                     </div>
@@ -1900,7 +1900,7 @@ class GroupsGridTab extends Tab {
         for (const group of filteredEntries) {
             items.push(`
                 <div class="column">
-                    <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }">
+                    <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }" style="height: 270px;">
                         <span class="text-85% my-2">${ _formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
                         <img class="ui image" src="res/group.png" width="173" height="173">
                         <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
@@ -2162,7 +2162,7 @@ class PlayersGridTab extends Tab {
         for (const player of filteredEntries) {
             items.push(`
                 <div class="column">
-                    <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }">
+                    <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }" style="height: 270px;">
                         <span class="text-85% my-2">${ _formatDate(player.LatestTimestamp) }</span>
                         <img class="ui image" src="${_classImageUrl(player.Latest.Class)}" width="173" height="173">
                         <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
