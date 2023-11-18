@@ -1695,9 +1695,9 @@
             "title": "Konfiguracja symulatora"
         },
         "simulator_custom_preset": {
-            "title": "Add custom preset",
+            "title": "Dodaj niestandardowe ustawienia",
             "close": "Zamknij",
-            "insert": "Insert preset"
+            "insert": "Wybierz ustawienia"
         }
     },
     "attributes": {
