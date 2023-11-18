@@ -80,6 +80,14 @@ class EndpointController {
             this.window.query_hall_of_fame();
         })
     }
+
+    queryHellevator () {
+        Logger.log('ECLIENT', 'Query Hellevator');
+
+        return this.#promisify(() => {
+            this.window.query_hellevator();
+        })
+    }
 }
 
 const EndpointDialog = new (class EndpointDialog extends Dialog {
@@ -248,7 +256,11 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
 
                 this.$step4.show();
 
-                const promise = this._funcLogin(server, username, password);
+                const promise = this._funcLogin(server, username, password).then(async (data) => {
+                    if (data.hasHellevator) await this.endpoint.queryHellevator();
+
+                    return data;
+                });
                 
                 const mode = this.$mode.dropdown('get value');
                 if (mode === 'own') {
