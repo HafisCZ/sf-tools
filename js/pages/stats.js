@@ -1922,7 +1922,7 @@ class GroupsGridTab extends Tab {
             
             })
 
-            this.contextMenu.attach(blockClickable.get());
+            this.contextMenu.attach(blockClickable.get().filter((element) => element.dataset.id !== 'view-table'));
 
             if (items.length == 0) {
                 this.loader.stop();
