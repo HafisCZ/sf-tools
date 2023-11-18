@@ -3287,6 +3287,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Member Count',
+  {
+    expr: (obj) => obj.MembersTotal
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Attacking',
   {
     expr: (obj) => obj.IsAttacking,
