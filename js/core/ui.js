@@ -51,7 +51,7 @@ class UI {
 
                 if (config.buttonClickable !== false) {
                     config.buttonElement.addEventListener('click', () => {
-                        if (config.buttonReturn && config.buttonReturn[this.current._registeredName] === this.previous._registeredName) {
+                        if (config.buttonReturn && this.previous && config.buttonReturn[this.current._registeredName] === this.previous._registeredName) {
                             this.show(this.previous);
                         } else {
                             this.show(tab);
