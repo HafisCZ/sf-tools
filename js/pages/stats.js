@@ -3880,7 +3880,10 @@ Site.ready(null, function (urlParams) {
                 tab: new GroupsGridTab('view-groups-grid'),
                 tabName: 'groups_grid',
                 buttonId: 'show-groups-grid',
-                buttonHistory: 'scripts'
+                buttonHistory: 'scripts',
+                buttonReturn: {
+                    'group': 'groups'
+                }
             },
             {
                 tab: new GroupTab('view-group'),
