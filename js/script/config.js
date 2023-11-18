@@ -3254,6 +3254,7 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Honor',
   {
     expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Group?.Honor, () => obj.Honor),
+    format: 'fnumber'
   }
 )
 
