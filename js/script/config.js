@@ -3216,9 +3216,7 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Rank',
   {
-    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Rank, () => obj.Rank),
-    difference: false,
-    statistics: false
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Rank, () => obj.Rank)
   }
 )
 
@@ -3297,14 +3295,18 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Attacking',
   {
     expr: (obj) => obj.IsAttacking,
-    format: 'boolean'
+    format: 'boolean',
+    difference: false,
+    statistics: false
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Attacking ID',
   {
-    expr: (obj) => obj.IsAttackingID
+    expr: (obj) => obj.IsAttackingID,
+    difference: false,
+    statistics: false
   }
 )
 
@@ -3312,14 +3314,18 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Defending',
   {
     expr: (obj) => obj.IsUnderAttack,
-    format: 'boolean'
+    format: 'boolean',
+    difference: false,
+    statistics: false
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Defending ID',
   {
-    expr: (obj) => obj.IsUnderAttackID
+    expr: (obj) => obj.IsUnderAttackID,
+    difference: false,
+    statistics: false
   }
 )
 
@@ -3354,35 +3360,40 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Pet Strength',
   {
-    expr: (obj) => obj.PetStrength
+    expr: (obj) => obj.PetStrength,
+    format: 'fnumber'
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Pet Dexterity',
   {
-    expr: (obj) => obj.PetDexterity
+    expr: (obj) => obj.PetDexterity,
+    format: 'fnumber'
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Pet Intelligence',
   {
-    expr: (obj) => obj.PetIntelligence
+    expr: (obj) => obj.PetIntelligence,
+    format: 'fnumber'
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Pet Constitution',
   {
-    expr: (obj) => obj.PetConstitution
+    expr: (obj) => obj.PetConstitution,
+    format: 'fnumber'
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Pet Luck',
   {
-    expr: (obj) => obj.PetLuck
+    expr: (obj) => obj.PetLuck,
+    format: 'fnumber'
   }
 )
 
@@ -3482,7 +3493,8 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'protected', 'GT Tokens',
   {
-    expr: p => p.GroupTournament?.Tokens
+    expr: p => p.GroupTournament?.Tokens,
+    format: 'fnumber'
   }
 )
 
