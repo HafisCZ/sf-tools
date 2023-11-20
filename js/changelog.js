@@ -23,11 +23,33 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
-    'v7.XXXX': {
+    'v7.4394': {
         'Statistics': [
+            'Added new browse table for guilds',
             'Added checkbox to create new script out of online code immediately',
             'Added support for capturing of daily and event tasks',
-            'Fixed <code>Power</code> header to account for no weapon equipped'
+            'Added support for capturing Hellevator data for players and guilds',
+            'Added <code>get_day</code> function',
+            'Added size limit to script archive',
+            'Added new guild-only headers',
+            'Removed script assignments when opening statistics in temporary mode',
+            'Fixed <code>Power</code> header to account for no weapon equipped',
+            'Fixed multiline script descriptions',
+            'Fixed copy for fight simulator',
+            'Fixed script editor crashing when adding brackets to end of script',
+            'Fixed drag and drop inside the editor',
+            'Fixed guild table image export with fixed layout',
+            'Fixed highlighting for files filter'
+        ],
+        'Fight Simulator': [
+            'Removed gladiator and glove enchantments from debug presets'
+        ],
+        'Hellevator Simulator': [
+            'Added new hellevator theme',
+            'Fixed first round loss counting as win against all floors'
+        ],
+        'Endpoint': [
+            'Updated to Unity 2023'
         ]
     },
     'v7.4306': {
