@@ -419,9 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporaire",
-            "players": "Joueurs",
-            "guilds": "Guildes",
-            "browse": "Explorer",
+            "players_grid": "Players",
+            "players": "Browse",
+            "groups_grid": "Guilds",
+            "groups": "Browse (Guilds)",
             "scripts": "Scripts",
             "files": "Fichiers",
             "settings": "Paramètres",
@@ -535,7 +536,7 @@
         "filters": {
             "types": {
                 "players": "Filtrer les joueurs par serveur, classe, guilde et/ou nom d'utilisateur",
-                "guilds": "Filtrer les groupes par serveur ou par nom"
+                "groups": "Filter groups by server or name"
             },
             "c": "Classe du joueur, utilisez le nom complet de la classe en minuscules (ex. : berserker, mage de combat).",
             "p": "Nom de Joueur",
@@ -564,14 +565,9 @@
             "script": "Current script",
             "quick_swap": "Quick swap script",
             "targets": {
-                "none": "None",
-                "players": "Browse",
-                "player": "Players",
-                "group": "Guilds"
+                "none": "None"
             },
             "targets_category": {
-                "player": "Players",
-                "group": "Guilds",
                 "default": "Defaults"
             },
             "tooltip": {
@@ -629,7 +625,8 @@
             "other": "Afficher les autres guildes",
             "hidden": "Afficher les joueurs masqués",
             "empty": "Afficher les groupes vides",
-            "missing": "Données manquantes pour les membres suivants :"
+            "missing": "Données manquantes pour les membres suivants :",
+            "browse": "View guilds in a table"
         },
         "browse": {
             "hidden": "Afficher les joueurs masqués"
@@ -1462,6 +1459,7 @@
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
+                "header_group": "Headers for all guilds",
                 "header_private": "Headers for own characters",
                 "header_scoped": "Accessors for objects",
                 "function": "Functions",
@@ -1522,10 +1520,7 @@
             "tables": "Compatible tables",
             "content": {
                 "empty": "Empty",
-                "current": "Current editor content",
-                "player": "Players",
-                "players": "Browse",
-                "group": "Guilds"
+                "current": "Current editor content"
             },
             "category": {
                 "defaults": "Duplicate default script",

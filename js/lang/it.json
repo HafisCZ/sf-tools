@@ -419,9 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporaneo",
-            "players": "Giocatori",
-            "guilds": "Gilde",
-            "browse": "Esplora",
+            "players_grid": "Players",
+            "players": "Browse",
+            "groups_grid": "Guilds",
+            "groups": "Browse (Guilds)",
             "scripts": "Script",
             "files": "File",
             "settings": "Impostazioni",
@@ -535,7 +536,7 @@
         "filters": {
             "types": {
                 "players": "Filtra i giocatori per server, classe, gilda e/o nome utente",
-                "guilds": "Filtra i gruppi per server o nome"
+                "groups": "Filter groups by server or name"
             },
             "c": "Classe del giocatore, usare il nome completo in minuscolo in INGLESE! (es. mage, scout, ecc.)",
             "p": "Nome del giocatore",
@@ -564,14 +565,9 @@
             "script": "Script corrente",
             "quick_swap": "Quick swap script",
             "targets": {
-                "none": "Nessuno",
-                "players": "Esplora",
-                "player": "Giocatori",
-                "group": "Gilde"
+                "none": "Nessuno"
             },
             "targets_category": {
-                "player": "Giocatori",
-                "group": "Gilde",
                 "default": "Predefiniti"
             },
             "tooltip": {
@@ -629,7 +625,8 @@
             "other": "Mostra altre gilde",
             "hidden": "Mostra nascosti",
             "empty": "Mostra gruppi vuoti",
-            "missing": "Dati giocatore mancanti per i seguenti membri:"
+            "missing": "Dati giocatore mancanti per i seguenti membri:",
+            "browse": "View guilds in a table"
         },
         "browse": {
             "hidden": "Mostra nascosti"
@@ -1462,6 +1459,7 @@
             "heading": {
                 "header": "Intestazioni per tutti i personaggi",
                 "header_protected": "Intestazioni per i membri della gilda",
+                "header_group": "Headers for all guilds",
                 "header_private": "Intestazioni per i propri personaggi",
                 "header_scoped": "Accessori per oggetti",
                 "function": "Funzioni",
@@ -1522,10 +1520,7 @@
             "tables": "Tabelle compatibili",
             "content": {
                 "empty": "Vuoto",
-                "current": "Current editor content",
-                "player": "Giocatori",
-                "players": "Sfoglia",
-                "group": "Gilde"
+                "current": "Current editor content"
             },
             "category": {
                 "defaults": "Duplicate default script",

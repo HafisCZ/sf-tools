@@ -419,9 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Tymczasowe",
-            "players": "Gracze",
-            "guilds": "Gildie",
-            "browse": "Przeglądaj",
+            "players_grid": "Players",
+            "players": "Browse",
+            "groups_grid": "Guilds",
+            "groups": "Browse (Guilds)",
             "scripts": "Skrypty",
             "files": "Pliki",
             "settings": "Ustawienia",
@@ -535,7 +536,7 @@
         "filters": {
             "types": {
                 "players": "Filtruj graczy według serwera, klasy, gildii i/lub nazwy użytkownika",
-                "guilds": "Filtruj grupy według serwera lub nazwy"
+                "groups": "Filter groups by server or name"
             },
             "c": "Klasa gracza, użyj pełnej nazwy z malej litery (eg.: berserker, battle mage)",
             "p": "Nick gracza",
@@ -564,14 +565,9 @@
             "script": "Bieżący skrypt",
             "quick_swap": "Szybka zmiana skryptu",
             "targets": {
-                "none": "Brak",
-                "players": "Przeglądaj",
-                "player": "Gracze",
-                "group": "Gildie"
+                "none": "Brak"
             },
             "targets_category": {
-                "player": "Gracze",
-                "group": "Gildie",
                 "default": "Domyślne"
             },
             "tooltip": {
@@ -629,7 +625,8 @@
             "other": "Pokaż inne gildie",
             "hidden": "Pokaż ukryte",
             "empty": "Pokaż puste grupy",
-            "missing": "Brakuje danych dla następujących członków:"
+            "missing": "Brakuje danych dla następujących członków:",
+            "browse": "View guilds in a table"
         },
         "browse": {
             "hidden": "Pokaż ukryte"
@@ -1462,6 +1459,7 @@
             "heading": {
                 "header": "Nagłówki dla wszystkich postaci",
                 "header_protected": "Nagrody dla własnych członków gildii",
+                "header_group": "Headers for all guilds",
                 "header_private": "Nagłówki dla własnych postaci",
                 "header_scoped": "Akcesoria dla obiektów",
                 "function": "Funkcje",
@@ -1522,10 +1520,7 @@
             "tables": "Kompatybilne tabele",
             "content": {
                 "empty": "Pusto",
-                "current": "Bieżąca zawartość edytora",
-                "player": "Gracze",
-                "players": "Przeglądaj",
-                "group": "Gidlie"
+                "current": "Bieżąca zawartość edytora"
             },
             "category": {
                 "defaults": "Duplikuj domyślny skrypt",
