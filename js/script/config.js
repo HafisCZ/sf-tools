@@ -3188,7 +3188,9 @@ TABLE_EXPRESSION_CONFIG.register(
   Group headers
 */
 function fetchPlayerGroupValue (object, ifPlayer, ifGroup) {
-  if (DatabaseManager.isPlayer(object?.Identifier)) {
+  if (!object) {
+    return undefined;
+  } else if (DatabaseManager.isPlayer(object?.Identifier)) {
     return ifPlayer();
   } else {
     return ifGroup();
