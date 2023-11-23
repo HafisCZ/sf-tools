@@ -253,6 +253,10 @@ class DatabaseUtils {
                 return Promise.resolve([]);
             }
 
+            all (store, index, query) {
+                return Promise.resolve([]);
+            }
+
             close () {
 
             }
