@@ -59,30 +59,79 @@ class ItemModel {
         this.HasEnchantment = enchantmentType > 0;
         this.Color = (this.Index >= 50 || this.Type == 10) ? 0 : ((damageMax + damageMin + _sum(attributeType) + _sum(attributeValue)) % 5);
         this.ColorClass = (this.Type >= 8) ? 0 : this.Class;
+        this.RuneType = Math.max(0, this.AttributeTypes[2] - 30);
+        this.RuneValue = this.AttributeTypes[2] > 30 ? this.Attributes[2] : 0;
 
-        this.SellPrice = {
+        this._SellPrice = {
             Gold: gold / 100,
             Mushrooms: coins
+        };
+    }
+
+    get Strength () {
+        if (!this._StrengthSet) {
+            this._StrengthSet = true;
+            this._Strength = this.getAttribute(1);
         }
 
-        var dismantle = this.getDismantleReward();
-        this.DismantlePrice = {
-            Metal: dismantle.Metal,
-            Crystal: dismantle.Crystal
+        return this._Strength;
+    }
+
+    get Dexterity () {
+        if (!this._DexteritySet) {
+            this._DexteritySet = true;
+            this._Dexterity = this.getAttribute(2);
         }
 
-        var sell = this.getBlacksmithPrice();
-        this.SellPrice.Metal = sell.Metal;
-        this.SellPrice.Crystal = sell.Crystal;
+        return this._Dexterity;
+    }
 
-        this.Strength = this.getAttribute(1);
-        this.Dexterity = this.getAttribute(2);
-        this.Intelligence = this.getAttribute(3);
-        this.Constitution = this.getAttribute(4);
-        this.Luck = this.getAttribute(5);
+    get Intelligence () {
+        if (!this._IntelligenceSet) {
+            this._IntelligenceSet = true;
+            this._Intelligence = this.getAttribute(3);
+        }
 
-        this.RuneType = this.getRuneType();
-        this.RuneValue = this.getRuneValue();
+        return this._Intelligence;
+    }
+
+    get Constitution () {
+        if (!this._ConstitutionSet) {
+            this._ConstitutionSet = true;
+            this._Constitution = this.getAttribute(4);
+        }
+
+        return this._Constitution;
+    }
+
+    get Luck () {
+        if (!this._LuckSet) {
+            this._LuckSet = true;
+            this._Luck = this.getAttribute(5);
+        }
+
+        return this._Luck;
+    }
+
+    get DismantlePrice () {
+        if (!this._DismantlePriceSet) {
+            this._DismantlePriceSet = true;
+            this._DismantlePrice = this.getDismantleReward();
+        }
+
+        return this._DismantlePrice;
+    }
+
+    get SellPrice () {
+        if (!this._SellPriceSet) {
+            this._SellPriceSet = true;
+
+            const sell = this.getBlacksmithPrice();
+            this._SellPrice.Metal = sell.Metal;
+            this._SellPrice.Crystal = sell.Crystal;    
+        }
+
+        return this._SellPrice;
     }
 
     get ImageUrl () {
@@ -162,14 +211,6 @@ class ItemModel {
             Type: id,
             Value: 0
         };
-    }
-
-    getRuneType () {
-        return Math.max(0, this.AttributeTypes[2] - 30);
-    }
-
-    getRuneValue () {
-        return this.AttributeTypes[2] > 30 ? this.Attributes[2] : 0;
     }
 
     getBlacksmithQuality () {
