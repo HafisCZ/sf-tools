@@ -568,7 +568,8 @@
                 "none": "Brak"
             },
             "targets_category": {
-                "default": "Domyślne"
+                "default": "Domyślne",
+                "existing": "Assigned tables"
             },
             "tooltip": {
                 "pin": "Przypnij skrypt na górze listy",

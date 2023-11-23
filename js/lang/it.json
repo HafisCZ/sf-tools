@@ -568,7 +568,8 @@
                 "none": "Nessuno"
             },
             "targets_category": {
-                "default": "Predefiniti"
+                "default": "Predefiniti",
+                "existing": "Assigned tables"
             },
             "tooltip": {
                 "pin": "Fissa lo script in cima alla lista",

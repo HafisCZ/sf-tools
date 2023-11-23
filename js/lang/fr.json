@@ -568,7 +568,8 @@
                 "none": "None"
             },
             "targets_category": {
-                "default": "Defaults"
+                "default": "Defaults",
+                "existing": "Assigned tables"
             },
             "tooltip": {
                 "pin": "Pin script to the top of the list",
