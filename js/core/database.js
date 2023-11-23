@@ -1604,12 +1604,19 @@ class DatabaseManager {
 
     static findUsedTags (timestamps) {
         const tags = {};
-        const { players } = this.getFile(null, timestamps);
-        for (const player of players) {
-            if (tags[player.tag]) {
-                tags[player.tag] += 1;
-            } else {
-                tags[player.tag] = 1;
+
+        const requestedTimestamps = timestamps ?? this.Timestamps.keys();
+        for (const timestamp of requestedTimestamps) {
+            for (const identifier of this.Timestamps.values(timestamp)) {
+                if (this.isPlayer(identifier)) {
+                    const tag = _dig(this.Players, identifier, timestamp, 'Data', 'tag');
+
+                    if (tags[tag]) {
+                        tags[tag] += 1;
+                    } else {
+                        tags[tag] = 1;
+                    }
+                }
             }
         }
 
