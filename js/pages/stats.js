@@ -3437,6 +3437,8 @@ class ScriptsTab extends Tab {
     }
 
     #updateTarget () {
+        const globalTables = ['players', 'groups', 'player', 'group'];
+
         const values = [
             { value: '', name: intl('stats.scripts.targets.none'), icon: 'text-gray globe' },
             { type: 'header', name: intl('stats.scripts.targets_category.default') },
@@ -3444,11 +3446,27 @@ class ScriptsTab extends Tab {
             { value: 'groups', name: intl('stats.topbar.groups'), icon: 'text-gray database' },
             { value: 'player', name: intl('stats.topbar.players_grid'), icon: 'text-gray user' },
             { value: 'group', name: intl('stats.topbar.groups_grid'), icon: 'text-gray archive' },
-            { type: 'header', name: intl('stats.topbar.groups_grid') },
-            ...Object.entries(DatabaseManager.GroupNames).map(([value, name]) => ({ value, name, icon: 'text-gray archive' })),
-            { type: 'header', name: intl('stats.topbar.players_grid') },
-            ...Object.entries(DatabaseManager.PlayerNames).map(([value, name]) => ({ value, name, icon: 'text-gray user' })),
+            { type: 'header', name: intl('stats.scripts.targets_category.existing') }
         ]
+
+        if (this.target && !globalTables.includes(this.target)) {
+            values.push({
+                value: this.target,
+                name: DatabaseManager.GroupNames[this.target] ?? DatabaseManager.PlayerNames[this.target] ?? this.target,
+                icon: DatabaseManager.isPlayer(this.target) ? 'text-gray user' : 'text-gray archive'
+            })
+        }
+
+        const existingAssignments = Scripts.getAssigns(true).filter((identifier) => !globalTables.includes(identifier));
+        if (existingAssignments.length > 0) {
+            values.push(
+                ...existingAssignments.map((identifier) => ({
+                    value: identifier,
+                    name: DatabaseManager.GroupNames[identifier] ?? DatabaseManager.PlayerNames[identifier] ?? identifier,
+                    icon: DatabaseManager.isPlayer(identifier) ? 'text-gray user' : 'text-gray archive'
+                })).sort((a, b) => a.name.localeCompare(b.name))
+            )
+        }
 
         this.$target.dropdown({ values })
         this.$target.dropdown('set selected', this.target || '');

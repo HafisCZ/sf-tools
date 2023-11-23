@@ -3799,7 +3799,11 @@ class Scripts {
     }
 
     static getAssigns (key) {
-        return Object.entries(this.data.assignments).filter(([, v]) => v === key).map(([k,]) => k);
+        if (key === true) {
+            return Object.keys(this.data.assignments);
+        } else {
+            return Object.entries(this.data.assignments).filter(([, v]) => v === key).map(([k,]) => k);
+        }
     }
 
     static findAssignedScript (identifier) {
