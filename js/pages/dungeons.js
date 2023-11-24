@@ -239,7 +239,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             values: Object.entries(dungeon.floors).map(([ id, _boss ]) => {
                 return {
                     name: `
-                        <span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }"">
+                        <span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }">
                             ${ _boss.class ? `<img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">` : '' }
                             ${ _boss.pos }. ${ _boss.name }
                             ${ getDisplayRunes(_boss.runes) }
