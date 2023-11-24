@@ -187,7 +187,9 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
                 selected: value === Store.shared.get('endpoint_mode', 'default', true)
             })),
             onChange: (value) => {
-                Store.shared.set('endpoint_mode', value, true)
+                if (Store.isPermanent()) {
+                    Store.shared.set('endpoint_mode', value, true);
+                }
             }
         });
 

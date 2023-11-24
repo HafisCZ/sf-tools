@@ -96,7 +96,11 @@ class StoreWrapper {
     }
 
     isTemporary () {
-        return !(this.store instanceof Storage);
+        return !this.isPermanent();
+    }
+
+    isPermanent () {
+        return this.store instanceof Storage;
     }
 }
 
