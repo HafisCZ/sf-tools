@@ -522,6 +522,13 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             experienceTotal = _mappedSum(entries, getDungeonExperience, 0);
         }
 
+        for (const { boss } of entries) {
+            // Set class for mirror boss
+            if (typeof boss.class === 'undefined') {
+                boss.class = players[0].Class;
+            }
+        }
+
         DialogController.open(
             SimulatorResultsDialog,
             entries,
