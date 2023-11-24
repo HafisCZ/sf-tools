@@ -292,17 +292,23 @@ class GroupTab extends Tab {
             action: (text, value, element) => {
                 this.$configure.find('.item').removeClass('active');
 
+                let settings = '';
                 if (this.scriptOverride == value) {
                     this.scriptOverride = '';
+
+                    settings = Scripts.getAssignedContent(this.identifier, 'group');
                 } else {
                     this.scriptOverride = value;
 
                     $(element).addClass('active');
+                    settings = Scripts.getContent(value);
                 }
 
-                this.load();
+                this.table.setScript(settings);
+                this.refresh();
 
                 this.$configure.dropdown('hide');
+
             },
             values: [
                 {
@@ -394,17 +400,12 @@ class GroupTab extends Tab {
     }
 
     load () {
+        this.scriptOverride = null;
+        this.$configure.find('.item').removeClass('active');
+
         DOM.settingsButton(this.$configure.get(0), Scripts.isAssigned(this.identifier));
 
-        if (this.scriptOverride) {
-            this.table.clearSorting();
-        }
-
-        if  (this.scriptOverride) {
-            this.table.setScript(Scripts.getContent(this.scriptOverride));
-        } else {
-            this.table.setScript(Scripts.getAssignedContent(this.identifier, 'group'));
-        }
+        this.table.setScript(Scripts.getAssignedContent(this.identifier, 'group'));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -473,6 +474,7 @@ class GroupTab extends Tab {
         });
 
         this.table.setEntries(entries);
+
         this.refresh();
     }
 
