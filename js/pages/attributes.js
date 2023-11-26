@@ -398,7 +398,7 @@ Site.ready(null, function () {
             [19473, 6644], [41727, 13909], [113400, 36818], [282273, 90818], [622800, 205200],
             [1404000, 464400], [2808000, 936000], [5400000, 1755000], [11340000, 3780000]
         ];
-        generateTable('fortress-mages', BARRACKS, [
+        generateTable('fortress-mages', MAGES, [
             (level) => Math.max(7, level),
             (level) => formatAsSpacedNumber(level * 6),
             (level, wood) => formatAsSpacedNumber(wood),
