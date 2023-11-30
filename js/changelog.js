@@ -25,7 +25,16 @@ const ANNOUNCEMENTS = [
 const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
-            'Added support for capturing player descriptions'
+            'Added support for capturing player descriptions',
+            'Added multiple performance optimizations',
+            'Fixed quick swap in guild table'
+        ],
+        'Dungeon Simulator': [
+            'Fixed mirror enemy class image not appearing',
+            'Fixed broken enemy dropdown'
+        ],
+        'Gold & Experience': [
+            'Fixed Mage Tower upgrade prices'
         ]
     },
     'v7.4394': {
