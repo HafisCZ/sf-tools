@@ -352,7 +352,7 @@ class PlayaResponse {
     static unescape (string) {
         if (typeof string === 'string') {
             for (const [encodedCharacter, character] of this.PLAYA_RESPONSE_CHARACTER_ENCODING) {
-                string = string.replace(`$${encodedCharacter}`, character)
+                string = string.replaceAll(`$${encodedCharacter}`, character)
             }
         }
 
@@ -448,6 +448,7 @@ class PlayaResponse {
                     data.resources = r.resources?.numbers;
                     data.dailyTasks = r.dailytasklist?.numbers;
                     data.eventTasks = r.eventtasklist?.numbers;
+                    data.description = r.owndescription?.string;
 
                     // Post-process
                     if (data.save[435]) {
@@ -487,6 +488,7 @@ class PlayaResponse {
                     data.achievements = r.otherplayerachievement?.numbers || r.achievement?.number;
                     data.fortressrank = r.otherplayerfortressrank?.number;
                     data.pets = r.otherplayerpetbonus?.numbers;
+                    data.description = r.otherdescription?.string;
 
                     // Post-process
                     if (data.save[161]) {

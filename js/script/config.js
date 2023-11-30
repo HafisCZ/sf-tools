@@ -1382,6 +1382,15 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Description',
+  {
+    expr: p => p.Description,
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Role',
   {
     expr: p => p.Group?.Role,

@@ -1584,6 +1584,8 @@ class PlayerModel {
                 FloorMax: data.gtsave.floor_max
             }
         }
+
+        this.Description = PlayaResponse.unescape(data.description);
     }
 
     hasGuild () {

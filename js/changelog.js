@@ -23,6 +23,11 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
+    'v7.XXXX': {
+        'Statistics': [
+            'Added support for capturing player descriptions'
+        ]
+    },
     'v7.4394': {
         'Statistics': [
             'Added new browse table for guilds',
