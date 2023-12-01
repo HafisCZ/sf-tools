@@ -145,6 +145,10 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         const player = _clone(players[0]);
         const config = CONFIG.fromIndex(player.Class);
 
+        if (dungeon.shadow) {
+            player.Constitution.Total = 4 * player.Constitution.Total;
+        }
+
         player.Health = Math.trunc(
             Math.floor(
                 Math.floor(

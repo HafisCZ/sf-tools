@@ -30,6 +30,7 @@ const CHANGELOG = {
             'Fixed quick swap in guild table'
         ],
         'Dungeon Simulator': [
+            'Fixed mirror enemy health for shadow variant',
             'Fixed mirror enemy class image not appearing',
             'Fixed broken enemy dropdown'
         ],
