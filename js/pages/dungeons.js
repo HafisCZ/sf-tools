@@ -150,15 +150,13 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         }
 
         player.Health = Math.trunc(
-            Math.floor(
-                Math.floor(
-                    player.Constitution.Total * config.HealthMultiplier * (player.Level + 1) * ((100 + player.Dungeons.Player) / 100)
-                ) * (player.Potions.Life ? 1.25 : 1)
-            ) * ((100 + player.Runes.Health) / 100)
+            player.Constitution.Total * config.HealthMultiplier * (player.Level + 1)
         );
 
         player.Level = data.level;
         player.Name = data.name;
+        player.Fortress = { Gladiator: 0 }
+        player.Dungeons = { Player: 0, Group: 0 }
     
         delete player.Prefix;
 
