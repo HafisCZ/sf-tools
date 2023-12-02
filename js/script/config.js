@@ -3232,6 +3232,15 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Description',
+  {
+    expr: (obj) => obj.Description,
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Raids',
   {
     expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Raid, () => obj.Raid),

@@ -401,6 +401,7 @@ class PlayaResponse {
                     data.knights = r.owngroupknights.numbers;
                     data.save = r.owngroupsave.numbers;
                     data.names = r.owngroupmember.strings;
+                    data.description = r.owngroupdescription.string?.slice(r.owngroupdescription.string.indexOf('§') + 1);
                 } else {
                     data.own = false;
                     data.name = r.othergroupname.string;
@@ -408,6 +409,7 @@ class PlayaResponse {
                     data.knights = undefined;
                     data.save = r.othergroup.numbers;
                     data.names = r.othergroupmember.strings;
+                    data.description = r.othergroupdescription.string?.slice(r.othergroupdescription.string.indexOf('§') + 1);
                 }
 
                 data.identifier = `${data.prefix}_g${data.save[0]}`;

@@ -26,6 +26,7 @@ const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
             'Added support for capturing player descriptions',
+            'Added support for capturing guild descriptions',
             'Added multiple performance optimizations',
             'Fixed quick swap in guild table'
         ],

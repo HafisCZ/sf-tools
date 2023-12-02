@@ -665,6 +665,8 @@ class GroupModel {
             State: this.States[i],
             ID: id
         }));
+
+        this.Description = PlayaResponse.unescape(data.description);
     }
 }
 
