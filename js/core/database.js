@@ -410,6 +410,10 @@ class PlayaResponse {
                     data.save = r.othergroup.numbers;
                     data.names = r.othergroupmember.strings;
                     data.description = r.othergroupdescription.string?.slice(r.othergroupdescription.string.indexOf('§') + 1);
+
+                    if (data.description.indexOf('$s$s$s') !== -1) {
+                        data.description = data.description.slice(data.description.indexOf('$s$s$s') + 6);
+                    }
                 }
 
                 data.identifier = `${data.prefix}_g${data.save[0]}`;
