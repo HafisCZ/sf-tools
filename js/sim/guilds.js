@@ -39,19 +39,18 @@ class GuildSimulator extends SimulatorBase {
 
     cache (guild, index) {
         return guild.map(({ player, inactive }) => {
-            let model = SimulatorModel.create(index, player);
             if (inactive == 1) {
                 // Inactive players have their HP reduced by 50%
-                model.Player.HealthMultiplier = 0.5;
+                player.HealthMultiplier = 0.5;
             } else if (inactive == 2) {
                 // Inactive players beyond 21 days have their HP reduced by 90%
-                model.Player.HealthMultiplier = 0.1;
+                player.HealthMultiplier = 0.1;
             } else {
                 // Rest modifier
-                model.Player.HealthMultiplier = 1.0;
+                player.HealthMultiplier = 1.0;
             }
-
-            return model;
+            
+            return SimulatorModel.create(index, player);
         }).sort((a, b) => a.Player.Level - b.Player.Level);
     }
 
