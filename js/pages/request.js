@@ -175,6 +175,15 @@ const SCOPES = {
       Kunigunde: COMPANION_SCOPE,
       Mark: COMPANION_SCOPE
     }
+  },
+  'idle': {
+    Idle: {
+      Runes: true,
+      Upgrades: {
+        Money: true,
+        Speed: true
+      }
+    }
   }
 }
 
