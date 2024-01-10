@@ -2272,6 +2272,18 @@ class CompanionModel extends PlayerModel {
         this.Runes.DamageLightning = Math.min(60, this.Runes.DamageLightning);
     }
 
+    // Override to disable gem doubling
+    getEquipmentGemBonus (attribute) {
+        let bonus = 0;
+        for (const item of this.ItemsArray) {
+            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
+                bonus += item.GemValue;
+            }
+        }
+
+        return bonus;
+    }
+
     static fromTower (dataType) {
         const data = {
             Level: dataType.long()
