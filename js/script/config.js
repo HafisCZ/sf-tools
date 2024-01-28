@@ -2086,6 +2086,14 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Attribute Type',
+  {
+    expr: p => p.Primary?.Type,
+    width: 110
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Strength Bonus',
   {
     expr: p => p.Strength?.Bonus,
