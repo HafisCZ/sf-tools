@@ -1059,7 +1059,10 @@ const StatisticsIntegration = new (class {
                 model.Runes.ResistanceCold = 75;
                 model.Runes.ResistanceLightning = 75;
                 model.Items.Wpn1.Attributes[2] = 60;
-                model.Items.Wpn2.Attributes[2] = 60;
+
+                if (model.Items.Wpn2) {
+                    model.Items.Wpn2.Attributes[2] = 60;
+                }
             });
         }
     }
