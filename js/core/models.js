@@ -892,7 +892,7 @@ class PlayerModel {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = PlayerModel.loadEquipment(dataType, 1);
+        this.Items = PlayerModel.loadEquipment(dataType, 1, this.Class);
         this.Inventory = {
             Backpack: [],
             Chest: [],
@@ -1280,7 +1280,7 @@ class PlayerModel {
         }
 
         if (data.dummy) {
-            this.Inventory.Dummy = PlayerModel.loadEquipment(new ComplexDataType(data.dummy), 5);
+            this.Inventory.Dummy = PlayerModel.loadEquipment(new ComplexDataType(data.dummy), 5, this.Class);
         }
 
         dataType = new ComplexDataType(data.witch);
@@ -1358,15 +1358,15 @@ class PlayerModel {
 
             dataType.skip(3);
             var bert = CompanionModel.fromTower(dataType);
-            this.Inventory.Bert = PlayerModel.loadEquipment(dataType, 2);
+            this.Inventory.Bert = PlayerModel.loadEquipment(dataType, 2, WARRIOR);
 
             dataType.skip(6);
             var mark = CompanionModel.fromTower(dataType);
-            this.Inventory.Mark = PlayerModel.loadEquipment(dataType, 3);
+            this.Inventory.Mark = PlayerModel.loadEquipment(dataType, 3, MAGE);
 
             dataType.skip(6);
             var kuni = CompanionModel.fromTower(dataType);
-            this.Inventory.Kunigunde = PlayerModel.loadEquipment(dataType, 4);
+            this.Inventory.Kunigunde = PlayerModel.loadEquipment(dataType, 4, SCOUT);
 
             this.Companions = {
                 Bert: new CompanionModel(this, bert, this.Inventory.Bert, WARRIOR),
@@ -1435,7 +1435,7 @@ class PlayerModel {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = PlayerModel.loadEquipment(dataType, 1);
+        this.Items = PlayerModel.loadEquipment(dataType, 1, this.Class);
         this.Mount = dataType.short();
         this.MountValue = PlayerModel.getMount(this.Mount);
 
@@ -1876,11 +1876,13 @@ class PlayerModel {
             }
         }
 
-        this.Damage2 = {
-            Min: this.Items.Wpn2.DamageMin,
-            Max: this.Items.Wpn2.DamageMax
-        };
-        this.Damage2.Avg = (this.Damage2.Min + this.Damage2.Max) / 2;
+        if (this.Class === ASSASSIN) {
+            this.Damage2 = {
+                Min: this.Items.Wpn2.DamageMin,
+                Max: this.Items.Wpn2.DamageMax
+            };
+            this.Damage2.Avg = (this.Damage2.Min + this.Damage2.Max) / 2;
+        }
 
         this.Runes.Gold = Math.min(50, this.Runes.Gold);
         this.Runes.Chance = Math.min(50, this.Runes.Chance);
@@ -1991,8 +1993,8 @@ class PlayerModel {
 
     }
 
-    static loadEquipment (dataType, inventoryType) {
-        return {
+    static loadEquipment (dataType, inventoryType, characterClass) {
+        const items = {
             Head: new ItemModel(dataType.sub(12), inventoryType, 1),
             Body: new ItemModel(dataType.sub(12), inventoryType, 2),
             Hand: new ItemModel(dataType.sub(12), inventoryType, 3),
@@ -2001,9 +2003,16 @@ class PlayerModel {
             Belt: new ItemModel(dataType.sub(12), inventoryType, 6),
             Ring: new ItemModel(dataType.sub(12), inventoryType, 7),
             Misc: new ItemModel(dataType.sub(12), inventoryType, 8),
-            Wpn1: new ItemModel(dataType.sub(12), inventoryType, 9),
-            Wpn2: new ItemModel(dataType.sub(12), inventoryType, 10)
-        };
+            Wpn1: new ItemModel(dataType.sub(12), inventoryType, 9)
+        }
+
+        if (characterClass === WARRIOR || characterClass === ASSASSIN) {
+            items.Wpn2 = new ItemModel(dataType.sub(12), inventoryType, 10)
+        } else {
+            dataType.sub(12);
+        }
+
+        return items;
     }
 
     static decodeScrapbook (data) {
@@ -2422,14 +2431,14 @@ class ModelUtils {
                 },
                 Wpn2: {
                     AttributeTypes: {
-                        2: model.Items.Wpn2.AttributeTypes[2]
+                        2: model.Items.Wpn2?.AttributeTypes[2] ?? 0
                     },
                     Attributes: {
-                        2: model.Items.Wpn2.Attributes[2]
+                        2: model.Items.Wpn2?.Attributes[2] ?? 0
                     },
-                    DamageMax: model.Items.Wpn2.DamageMax,
-                    DamageMin: model.Items.Wpn2.DamageMin,
-                    HasEnchantment: model.Items.Wpn2.HasEnchantment
+                    DamageMax: model.Items.Wpn2?.DamageMax ?? 0,
+                    DamageMin: model.Items.Wpn2?.DamageMin ?? 0,
+                    HasEnchantment: model.Items.Wpn2?.HasEnchantment ?? false
                 }
             }
         };
