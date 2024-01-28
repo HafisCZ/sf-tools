@@ -33,6 +33,10 @@
             }
 
             window.login = function (server, username, password) {
+                if (password.length > 40) {
+                    password = password.slice(0, 40);
+                }
+
                 window.unity.SendMessage('Controller', 'Login', JSON.stringify({
                     server,
                     username,
