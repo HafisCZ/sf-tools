@@ -1341,6 +1341,7 @@
             "title": "Loading Endpoint"
         },
         "step3": {
+            "toggle": "Toggle all",
             "title": "Select players to be imported"
         },
         "step4": {

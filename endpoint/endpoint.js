@@ -387,7 +387,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         for (const name of array) {
             html += `
                 <div class="item">
-                    <div class="ui inverted checkbox w-full">
+                    <div class="ui inverted checkbox w-full" data-selectable>
                         <input type="checkbox" name="${name}">
                         <label for="${name}">
                             <div class="flex justify-content-between">
@@ -408,11 +408,46 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         .then((data) => {
             if (data.members.length > 0 || data.friends.length > 0) {
                 this.$list.html(`
+                    <div class="item" style="border: none;">
+                        <div class="ui inverted checkbox w-full">
+                            <input type="checkbox" name="-toggle-select-all">
+                            <label for="-toggle-select-all">
+                                <span>${this.intl('step3.toggle')}</span>
+                            </label>
+                        </div>
+                    </div>
                     ${this._renderSelectItems(data.members, 'user circle')}
                     ${this._renderSelectItems(data.friends, 'thumbs up')}
                 `);
 
                 this.$list.find('.checkbox').checkbox();
+
+                const $toggle = this.$list.find('.checkbox').first();
+                $toggle.checkbox({
+                    onChecked: () => {
+                        this.$list.find('.checkbox[data-selectable]').checkbox('set checked');
+                    },
+                    onUnchecked: () => {
+                        this.$list.find('.checkbox[data-selectable]').checkbox('set unchecked');
+                    }
+                }).checkbox('set unchecked');
+
+                const recalculateToggle = () => {
+                    const total = this.$list.find('.checkbox[data-selectable] input').length;
+                    const checked = this.$list.find('.checkbox[data-selectable] input:checked').length;
+
+                    if (total == checked) {
+                        $toggle.checkbox('set checked');
+                    } else if (checked > 0) {
+                        $toggle.checkbox('set indeterminate');
+                    } else if (checked === 0) {
+                        $toggle.checkbox('set unchecked');
+                    }
+                }
+
+                this.$list.find('.checkbox[data-selectable]').change(() => {
+                    recalculateToggle()
+                })
 
                 this.$step4.hide();
                 this.$step3.show();
@@ -429,7 +464,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         this.$step4.show();
         this.$step3.hide();
 
-        const names = this.$list.find('.checkbox input:checked').get().map((input) => input.getAttribute('name'));
+        const names = this.$list.find('.checkbox[data-selectable] input:checked').get().map((input) => input.getAttribute('name'));
 
         this.endpoint.query(names)
             .then((data) => this._import(data.data))
