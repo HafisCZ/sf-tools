@@ -636,8 +636,37 @@ class ModelRegistry {
     }
 }
 
+class LinkPool {
+    #storage = null;
+    #links = null;
+
+    async initialize (storage) {
+        this.#storage = storage;
+        this.#links = Object.create(null);
+
+        const links = await this.#storage.all('links');
+        for (const link of links) {
+            this.#links[link.id] = link.pid;
+        }
+    }
+
+    // identifier = player / group identifier
+    // pid = pool item id
+    async set (identifier, pid = _generateId()) {
+        this.#links[identifier] = pid;
+
+        await this.#storage.set('links', { id: identifier, pid });
+    }
+
+    get (identifier) {
+        return this.#links[identifier];
+    }
+}
+
 class DatabaseManager {
     static #interface = null;
+
+    static #links = new LinkPool();
 
     // Metadata & Settings
     static #metadataDelta = [];
@@ -856,6 +885,9 @@ class DatabaseManager {
 
     static async #loadTemporary () {
         this.#interface = DatabaseUtils.createTemporarySession();
+
+        await this.#links.initialize(this.#interface);
+
         this.#hiddenIdentifiers = new Set();
 
         this.#updateLists();
@@ -888,6 +920,8 @@ class DatabaseManager {
         if (!this.#interface) {
             throw 'Database was not opened correctly';
         }
+
+        await this.#links.initialize(this.#interface);
 
         // Load metadata
         this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
