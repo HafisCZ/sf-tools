@@ -1,5 +1,5 @@
 const DATABASE_PARAMS = [
-    7,
+    8,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -26,6 +26,9 @@ const DATABASE_PARAMS = [
         },
         metadata: {
             key: 'timestamp'
+        },
+        links: {
+            key: 'id'
         }
     },
     [
@@ -63,6 +66,12 @@ const DATABASE_PARAMS = [
 
                 transaction.objectStore('players').deleteIndex('profile')
                 transaction.objectStore('groups').deleteIndex('profile')
+            }
+        },
+        {
+            shouldApply: version => version < 8,
+            apply: (_transaction, database) => {
+                database.createObjectStore('links', { keypath: 'id' })
             }
         }
     ],
@@ -154,10 +163,13 @@ class IndexedDBWrapper {
             this.database = db;
 
             if (this.version != this.oldVersion && Array.isArray(this.dataUpdaters)) {
-                Logger.log('STORAGE', 'Updating database data due to compatibility with new version');
-                Toast.info(intl('database.update_info.title'), intl('database.update_info.message'));
-                for (const updater of this.dataUpdaters) {
-                    if (updater.shouldApply(this.oldVersion)) {
+                const updatersToRun = this.dataUpdaters.filter((updater) => updater.shouldApply(this.oldVersion));
+
+                if (updatersToRun.length > 0) {
+                    Logger.log('STORAGE', 'Updating database data due to compatibility with new version');
+                    Toast.info(intl('database.update_info.title'), intl('database.update_info.message'));
+
+                    for (const updater of this.dataUpdaters) {
                         await updater.apply(this);
                     }
                 }
