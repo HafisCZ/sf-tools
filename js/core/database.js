@@ -71,7 +71,7 @@ const DATABASE_PARAMS = [
         {
             shouldApply: version => version < 8,
             apply: (_transaction, database) => {
-                database.createObjectStore('links', { keypath: 'id' })
+                database.createObjectStore('links', { keyPath: 'id' })
             }
         }
     ],
@@ -636,37 +636,9 @@ class ModelRegistry {
     }
 }
 
-class LinkPool {
-    #storage = null;
-    #links = null;
-
-    async initialize (storage) {
-        this.#storage = storage;
-        this.#links = Object.create(null);
-
-        const links = await this.#storage.all('links');
-        for (const link of links) {
-            this.#links[link.id] = link.pid;
-        }
-    }
-
-    // identifier = player / group identifier
-    // pid = pool item id
-    async set (identifier, pid = _generateId()) {
-        this.#links[identifier] = pid;
-
-        await this.#storage.set('links', { id: identifier, pid });
-    }
-
-    get (identifier) {
-        return this.#links[identifier];
-    }
-}
-
 class DatabaseManager {
     static #interface = null;
-
-    static #links = new LinkPool();
+    static #links = new Map();
 
     // Metadata & Settings
     static #metadataDelta = [];
@@ -692,6 +664,7 @@ class DatabaseManager {
         }
 
         this.#interface = null;
+        this.#links.clear();
 
         // Models
         this.Players = Object.create(null);
@@ -739,16 +712,36 @@ class DatabaseManager {
                 } else if (prop == 'IsProxy') {
                     return true;
                 } else {
-                    return DatabaseManager.getPlayer(target.Identifier, target.Timestamp)[prop];
+                    return DatabaseManager.getPlayer(DatabaseManager.getLink(target.Identifier), target.Timestamp)[prop];
                 }
             }
         });
 
-        if (this.hasGroup(data.group, data.timestamp)) {
-            this.Groups[data.group][data.timestamp].MembersPresent++;
+        if (this.hasGroup(this.getLink(data.group), data.timestamp)) {
+            this.Groups[this.getLink(data.group)][data.timestamp].MembersPresent++;
         }
 
         this.#registerModel('Players', data.identifier, data.timestamp, player);
+    }
+
+    static getLink (identifier, ) {
+        if (this.#links.has(identifier) == false) {
+            // If link is not set yet we need to set it to random value
+            console.info(`${identifier} not previously linked, linking`);
+
+            const pid = _generateId();
+
+            this.#links.set(identifier, pid);
+            this.#interface.set('links', { id: identifier, pid });
+        }
+
+        return this.#links.get(identifier);
+    }
+
+    static async setLink (identifier, pid = _generateId()) {
+        this.#links.set(identifier, pid);
+
+        await this.#interface.set('links', { id: identifier, pid });
     }
 
     // INTERNAL: Add group
@@ -758,14 +751,16 @@ class DatabaseManager {
 
     // INTERNAL: Add model
     static #registerModel (type, identifier, timestamp, model) {
+        const link = this.getLink(identifier);
+
         this.Identifiers.add(identifier, timestamp);
         this.Timestamps.add(timestamp, identifier);
 
-        if (!this[type][identifier]) {
-            this[type][identifier] = Object.create(null);
+        if (!this[type][link]) {
+            this[type][link] = Object.create(null);
         }
 
-        this[type][identifier][timestamp] = model;
+        this[type][link][timestamp] = model;
     }
 
     // INTERNAL: Update internal player/group lists
@@ -866,7 +861,7 @@ class DatabaseManager {
             const player = new PlayerModel(data);
             player.injectGroup(this.getGroup(player.Group.Identifier, timestamp));
 
-            let playerObj = this.Players[identifier];
+            let playerObj = this.Players[this.getLink(identifier)];
 
             playerObj[timestamp] = player;
 
@@ -886,8 +881,7 @@ class DatabaseManager {
     static async #loadTemporary () {
         this.#interface = DatabaseUtils.createTemporarySession();
 
-        await this.#links.initialize(this.#interface);
-
+        this.#links.clear();
         this.#hiddenIdentifiers = new Set();
 
         this.#updateLists();
@@ -921,7 +915,13 @@ class DatabaseManager {
             throw 'Database was not opened correctly';
         }
 
-        await this.#links.initialize(this.#interface);
+        // Load all existing links
+        const links = await this.#interface.all('links');
+
+        this.#links.clear();
+        for (const { id, pid } of links) {
+            this.#links.set(id, pid);
+        }
 
         // Load metadata
         this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
@@ -1093,9 +1093,15 @@ class DatabaseManager {
         return this.Groups[id] && (timestamp ? this.Groups[id][timestamp] : true) ? true : false;
     }
 
+    static isLink (text) {
+        return !text.includes('_');
+    }
+
     // Get player
     static getPlayer (identifier, timestamp) {
-        let player = this.Players[identifier];
+        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
+
+        let player = this.Players[link];
         if (player && timestamp) {
             return this.loadPlayer(player[timestamp]);
         } else {
@@ -1115,23 +1121,29 @@ class DatabaseManager {
 
     // Get group
     static getGroup (identifier, timestamp) {
-        if (timestamp && this.Groups[identifier]) {
-            return this.Groups[identifier][timestamp];
+        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
+
+        if (timestamp && this.Groups[link]) {
+            return this.Groups[link][timestamp];
         } else {
-            return this.Groups[identifier];
+            return this.Groups[link];
         }
     }
 
     static getAny (identifier, timestamp) {
-        if (this.isPlayer(identifier)) {
-            return this.getPlayer(identifier, timestamp);
+        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
+
+        if (this.isPlayer(link)) {
+            return this.getPlayer(link, timestamp);
         } else {
-            return this.getGroup(identifier, timestamp);
+            return this.getGroup(link, timestamp);
         }
     }
 
     static getAnyEntry (identifier) {
-        return this[this.isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
+        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
+
+        return this[this.isPlayer(link) ? 'Players' : 'Groups'][link];
     }
 
     static async remove (instances) {
