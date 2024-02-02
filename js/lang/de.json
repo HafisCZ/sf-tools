@@ -419,10 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporär",
-            "players_grid": "Players",
-            "players": "Browse",
-            "groups_grid": "Guilds",
-            "groups": "Browse (Guilds)",
+            "players_grid": "Spieler",
+            "players": "Durchsuchen",
+            "groups_grid": "Gilden",
+            "groups": "Durchsuche (Gilden)",
             "scripts": "Skripte",
             "files": "Dateien",
             "settings": "Einstellungen",
@@ -536,7 +536,7 @@
         "filters": {
             "types": {
                 "players": "Spieler nach Server, Klasse, Gilde und/oder Benutzername filtern",
-                "groups": "Filter groups by server or name"
+                "groups": "Sortiere Gruppen nach Server oder Name"
             },
             "c": "Spielerklasse in Kleinbuchstaben schreiben (z.B. berserker, battle mage)",
             "p": "Spielername",
@@ -558,11 +558,11 @@
         "scripts": {
             "settings": "Einstellungen",
             "name": "Aktuell bearbeitetes Skript",
-            "list": "Select script",
-            "list_add": "Add new script",
-            "list_search": "Search available scripts ...",
-            "target": "Current table",
-            "script": "Current script",
+            "list": "Skript auswählen",
+            "list_add": "Neues Skript hinzufügen",
+            "list_search": "Verfügbare Skripte durchsuchen ...",
+            "target": "Aktueller Reiter",
+            "script": "Derzeitiges Skript",
             "quick_swap": "Quick swap script",
             "targets": {
                 "none": "None"
@@ -573,27 +573,27 @@
             },
             "tooltip": {
                 "pin": "Pin script to the top of the list",
-                "unpin": "Unpin script",
-                "assigned": "This script is assigned to current table",
-                "remote": "This script is published",
-                "remote_copy": "Click here to copy the code"
+                "unpin": "Skript lösen",
+                "assigned": "Dieses Skript ist dem aktuellen Reiter zugewiesen",
+                "remote": "Dieses Skript ist veröffentlicht",
+                "remote_copy": "Hier klicken, um den Code zu kopieren"
             },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Handbuch",
-                "scripts": "Online scripts",
-                "assign": "Assign selected script to current table",
-                "unassign": "Unassign script from current table",
+                "scripts": "Online-Skripte",
+                "assign": "Ausgewähltes Skript dem aktuellen Reiter zuweisen",
+                "unassign": "Skript von dem aktuellen Reiter entfernen",
                 "save": "Speichern",
                 "copy": "Kopieren",
-                "archive": "Archived scripts",
+                "archive": "Archivierte Skripte",
                 "recover": "Version #{version} laden",
-                "edit": "Edit name or description",
-                "remote_add": "Publish selected script",
-                "remote_update": "Publish new version of selected script",
-                "remote_remove": "Unpublish selected script",
+                "edit": "Name oder Beschreibung bearbeiten",
+                "remote_add": "Ausgewähltes Skript veröffentlichen",
+                "remote_update": "Neue Version des ausgewählten Skripts veröffentlichen",
+                "remote_remove": "Veröffentlichung vom ausgewählten Skript rückgängig machen",
                 "close": "Zurück",
-                "shortcuts": "Shortcuts",
+                "shortcuts": "Tastenkürzel",
                 "remove": "Entfernen",
                 "reset": "Änderungen verwerfen",
                 "export": "Exportieren",
@@ -608,14 +608,14 @@
             "info": {
                 "deprecated": "Die Verwendung von <b>#{name1}</b> ist veraltet; verwende stattdessen <b>#{name2}</b>"
             },
-            "remote_action_error": "Action was not successful",
+            "remote_action_error": "Die Aktion war nicht erfolgreich",
             "remote_copy_toast": {
-                "title": "Copy",
-                "message": "Code has been copied"
+                "title": "Kopieren",
+                "message": "Code wurde kopiert"
             },
             "remote_author_missing": {
-                "title": "You must set your user name before you can publish scripts",
-                "message": "Please head over to Settings and set your 'author name for published scripts'"
+                "title": "Du musst deinen Benutzernamen festlegen, bevor du Skripte veröffentlichen kannst",
+                "message": "Bitte gehe in die Einstellungen und trage deinen \"Autorennamen für veröffentlichte Skripte\" ein"
             }
         },
         "players": {
@@ -627,7 +627,7 @@
             "hidden": "Versteckte anzeigen",
             "empty": "Leere Gilden anzeigen",
             "missing": "Für folgende Spieler fehlen Daten:",
-            "browse": "View guilds in a table"
+            "browse": "Gilden in einer Tabelle anzeigen"
         },
         "browse": {
             "hidden": "Versteckte anzeigen"
@@ -714,8 +714,8 @@
             "always_prev": "Vorherige vergleichen (Gilden)",
             "empty_groups": "Leere Gruppen anzeigen",
             "unsafe_delete": "Bestätigung beim Löschen von Dateien überspringen",
-            "script_author": "Author name for published scripts",
-            "table_sticky_header": "Enable sticky table headers",
+            "script_author": "Autorenname für veröffentlichte Skripte",
+            "table_sticky_header": "Aktiviere fixierte Spaltennamen",
             "terms": "Nutzungsbedingungen akzeptieren",
             "tab": "Standard-Tab",
             "preload": "Zeilen vorladen",
@@ -749,7 +749,7 @@
             "collected": "Gesammelt",
             "available": "Verfügbar",
             "locked": "Gesperrt",
-            "footer#": "Event times might not be accurate. Please verify within the game."
+            "footer#": "Eventuell sind die Event-Zeiten nicht korrekt. Bitte überprüfe es im Spiel."
         },
         "map": {
             "gladiator": "Gladi"
@@ -902,30 +902,30 @@
             "8": "Kann Dir montags nachts im Schattenfelsgebirge begegnen.",
             "9": "Kann Dir an Herbstagen im Gammelforst begegnen.",
             "10": "Kann Dir Montag nachts in Scarpa begegnen.",
-            "11": "Can be found on Tusk Mountain on Tuesday night.",
-            "12": "Can be found in Erogenion on Wednesday night.",
-            "13": "Can be found in Stumble Steppe on Thursday during the day.",
-            "14": "Can be found in Black Forest on Halloween.",
-            "15": "Can be found in Gnarogrim. Required: Hall of fame top 1,000 or 50,000 honor when finishing the quest.",
-            "16": "Can be found in Busted Lands during XP Event.",
-            "17": "Can be found in Rotten Lands on Friday the 13th.",
-            "18": "Is rewarded for clearing 10th floor of the 15th dungeon of the Shadow World. Location: Plains of Oz'Korr.",
-            "19": "Can be found on the last floor of the Shadow Habitat. Location: Sunburn Desert.",
-            "20": "Can be found in Stumble Steppe during the day.",
-            "21": "Can be found in Moldy Forest at night.",
-            "22": "Can be found in Erogenion during the day.",
-            "23": "Can be found on Shadowrock Mountain during the day.",
-            "24": "Can be found in Sprawling Jungle on spring nights.",
-            "25": "Can be found in Nevermoor on Saturday during the day.",
-            "26": "Can be found in Sunburn Desert on summer days.",
-            "27": "Can be found in Flooded Caldwell on fall days.",
-            "28": "Can be found on Skull Island on Monday night.",
-            "29": "Can be found in Busted Lands on Tuesday during the day.",
-            "30": "Can be found on Tusk Mountain on Sunday during the day.",
-            "31": "Can be found in Northrunt on Wednesday night.",
-            "32": "Can be found in Evernight Forest on Thursday during the day.",
-            "33": "Can be found in Black Water Swamp on Friday during the day.",
-            "34": "Can be found in Erogenion. Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.",
+            "11": "Kann dir Dienstagnacht im Schattenfelsgebirge begegnen.",
+            "12": "Kann Mittwochabend in Erogenion gefunden werden.",
+            "13": "Kann donnerstags tagsüber in der Stolpersteppe gefunden werden.",
+            "14": "Kann dir zu Halloween im Schwarzwald begegnen.",
+            "15": "Kann in Gnarogrim gefunden werden, wenn du beim Abschluss der Quest dich in der Ehrenhalle mindestens in den Top 1.000 befindest oder 50.000 Ehre hast.",
+            "16": "Kann dir während des \"Erfahrungsreichtum\"-Events in der Schweinöde begegnen.",
+            "17": "Kann dir am Freitag, dem 13. in den \"Rottenden Landen\" begegnen.",
+            "18": "Kann dir in den Ebenen von Oz'Korr begegnen, wenn du den 15. Dungeon in der Schattenwelt abgeschlossen hast.",
+            "19": "Kann in der Sonnenbrandwüste gefunden werden, sobald alle Schattenhabitate besiegt wurden.",
+            "20": "Kann tagsüber in der Stolpersteppe gefunden werden.",
+            "21": "Kann dir während der Nacht im Gammelforst begegnen.",
+            "22": "Kann tagsüber in Erogenion gefunden werden.",
+            "23": "Kann tagsüber im Schattenfelsgebirge gefunden werden.",
+            "24": "Kann dir in Frühlingsnächten im Wucherdschungel begegnen.",
+            "25": "Kann dir samstags tagsüber im Nevermoor begegnen.",
+            "26": "Kann dir an Sommertagen in der Sonnenbrandwüste begegnen.",
+            "27": "Kann dir an Herbsttagen auf Insel Scarpa begegnen.",
+            "28": "Kann dir montagnachts bei der Totenkopfinsel begegnen.",
+            "29": "Kann dir dienstags tagsüber in der Schweinöde begegnen.",
+            "30": "Kann dir sonntags tagsüber im Fangzahngebirge begegnen.",
+            "31": "Kann dir mittwochnachts in Nordingen begegnen.",
+            "32": "Kann dir donnerstags tagsüber im Immernachtswald begegnen.",
+            "33": "Kann dir freitags tagsüber in den Schwarzwassersümpfen begegnen.",
+            "34": "Ist in Erogenion anzutreffen, falls deine Gilde mindestens auf Platz 100 der Rangliste steht oder mindestens 2.500 Ehrenpunkte hat.",
             "35": "Can be found in Northrunt in December.",
             "36": "Can be found in Split Canyon on April Fools' Day. For real!",
             "37": "Can be found in Erogenion during Epic Event.",
