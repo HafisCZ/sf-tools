@@ -175,7 +175,7 @@ class ItemModel {
     }
 
     static forceCorrectRune (item) {
-        if (item.AttributeTypes[2] < 31) {
+        if (item && item.AttributeTypes[2] < 31) {
             item.Attributes[2] = 0;
         }
     }
