@@ -731,7 +731,7 @@ class DatabaseManager {
                 // If link is not set yet we need to set it to random value
                 console.info(`${identifier} not previously linked, linking`);
     
-                const pid = _generateId(this.isPlayer(identifier) ? 'p_' : 'g_');
+                const pid = _generateId(this.isPlayer(identifier) ? 'p::' : 'g::');
     
                 this.#links.set(identifier, pid);
                 this.#interface.set('links', { id: identifier, pid });
@@ -742,6 +742,17 @@ class DatabaseManager {
             // Return undefined since we dont want links to be created for invalid identifiers
             return undefined;
         }
+    }
+
+    static async resetLinks () {
+        this.#links.clear();
+
+        await this.#interface.clear('links');
+    }
+
+    static getLink (identifier) {
+        // Public method that just fetches the identifier
+        return this.#links.get(identifier);
     }
 
     static async setLink (identifier, pid) {
@@ -1105,8 +1116,8 @@ class DatabaseManager {
     }
 
     // Get player
-    static getPlayer (identifier, timestamp) {
-        let player = this.Players[identifier];
+    static getPlayer (identifier, timestamp = undefined) {
+        const player = this.Players[identifier];
         if (player && timestamp) {
             return this.loadPlayer(player[timestamp]);
         } else {
@@ -1116,7 +1127,6 @@ class DatabaseManager {
 
     static getLatestPlayers (onlyOwn = false) {
         const array = Object.values(this.Players).map(player => player.Latest);
-
         if (onlyOwn) {
             return array.filter((player) => player.Own);
         } else {
@@ -1125,15 +1135,16 @@ class DatabaseManager {
     }
 
     // Get group
-    static getGroup (identifier, timestamp) {
-        if (timestamp && this.Groups[identifier]) {
-            return this.Groups[identifier][timestamp];
+    static getGroup (identifier, timestamp = undefined) {
+        const group = this.Groups[identifier];
+        if (group && timestamp) {
+            return group[timestamp];
         } else {
-            return this.Groups[identifier];
+            return group;
         }
     }
 
-    static getAny (identifier, timestamp) {
+    static getAny (identifier, timestamp = undefined) {
         if (this.isPlayer(identifier)) {
             return this.getPlayer(identifier, timestamp);
         } else {
@@ -1468,11 +1479,11 @@ class DatabaseManager {
     }
 
     static isPlayer (identifier) {
-        return /_p\d/.test(identifier) || /^p_/.test(identifier);
+        return /_p\d/.test(identifier) || /^p::/.test(identifier);
     }
 
     static isGroup (identifier) {
-        return /_g\d/.test(identifier) || /^g_/.test(identifier);;
+        return /_g\d/.test(identifier) || /^g::/.test(identifier);;
     }
 
     static #normalizeGroup (group) {
