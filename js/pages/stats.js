@@ -245,7 +245,7 @@ class GroupTab extends Tab {
                     last5: createExport(this.list.slice(0, 5).map(entry => entry.Timestamp)),
                     all: createExport(this.list.map(entry => entry.Timestamp))
                 },
-                this.identifier
+                DatabaseManager.getAny(this.identifier).Latest.Identifier
             )
         });
 
@@ -567,7 +567,7 @@ class PlayerTab extends Tab {
                     last5: createExport(this.list.slice(0, 5).map(entry => entry.Timestamp)),
                     all: createExport()
                 },
-                this.identifier
+                DatabaseManager.getAny(this.identifier).Latest.Identifier
             )
         });
 
@@ -1755,7 +1755,7 @@ class GroupsGridTab extends Tab {
                         DialogController.open(
                             ExportFileDialog,
                             () => DatabaseManager.export([ group, ... _uniq(members) ]),
-                            group
+                            DatabaseManager.getAny(group).Latest.Identifier
                         );
                     }
                 },
@@ -1995,7 +1995,7 @@ class PlayersGridTab extends Tab {
                         DialogController.open(
                             ExportFileDialog,
                             () => DatabaseManager.export([ source.dataset.id ]),
-                            source.dataset.id
+                            DatabaseManager.getAny(source.dataset.id).Latest.Identifier
                         )
                     }
                 },
