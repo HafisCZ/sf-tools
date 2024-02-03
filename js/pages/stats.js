@@ -328,7 +328,7 @@ class GroupTab extends Tab {
         this.group = DatabaseManager.getGroup(identifier);
 
         this.$name.html(this.group.Latest.Name);
-        this.$identifier.html(this.identifier);
+        this.$identifier.html(`${this.group.Latest.Identifier} / ${this.identifier}`);
 
         var listTimestamp = [];
         var listReference = [];
@@ -432,25 +432,25 @@ class GroupTab extends Tab {
         // Members
         var members = [];
         var missing = [];
-        for (var id of current.Members) {
-            let player = DatabaseManager.getPlayer(id, this.timestamp);
+        for (const { LinkId: linkId, Name: name } of current.Players) {
+            let player = DatabaseManager.getPlayer(linkId, this.timestamp);
             if (player) {
                 members.push(player);
             } else {
-                missing.push(current.Names[current.Members.findIndex(x => x == id)]);
+                missing.push(name);
             }
         }
 
         // Reference members
         var membersReferences = [];
-        for (var member of members) {
-            var player = DatabaseManager.getPlayer(member.Identifier);
+        for (const member of members) {
+            var player = DatabaseManager.getPlayer(member.LinkId);
             if (player) {
-                var playerReference = DatabaseManager.getPlayer(member.Identifier, this.reference);
-                if (playerReference && playerReference.Group.Identifier == this.identifier) {
+                var playerReference = DatabaseManager.getPlayer(member.LinkId, this.reference);
+                if (playerReference && playerReference.Group.LinkId == this.identifier) {
                     membersReferences.push(playerReference);
                 } else {
-                    var p = player.List.concat().reverse().find(p => p.Timestamp >= this.reference && p.Timestamp <= member.Timestamp && p.Group.Identifier == this.identifier);
+                    var p = player.List.concat().reverse().find(p => p.Timestamp >= this.reference && p.Timestamp <= member.Timestamp && p.Group.LinkId == this.identifier);
                     if (p) {
                         membersReferences.push(p);
                     }
@@ -470,7 +470,7 @@ class GroupTab extends Tab {
         });
 
         members.forEach(function (player) {
-            entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
+            entries.add(player, membersReferences.find(c => c.LinkId == player.LinkId));
         });
 
         this.table.setEntries(entries);
@@ -627,7 +627,7 @@ class PlayerTab extends Tab {
         }
 
         this.$name.html(this.player.Name);
-        this.$identifier.html(this.identifier);
+        this.$identifier.html(`${this.player.Identifier} / ${this.identifier}`);
 
         this.load();
     }
@@ -1882,7 +1882,7 @@ class GroupsGridTab extends Tab {
 
         const latestPlayerTimestamp = this.empty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
         const filteredEntries = this.entries.filter(group => {
-            const visible = !DatabaseManager.isIdentifierHidden(group.Latest.Identifier);
+            const visible = !DatabaseManager.isIdentifierHidden(group.Latest.LinkId);
             const own = group.Own;
 
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override) && (this.empty || group.LatestDisplayTimestamp);
@@ -1902,7 +1902,7 @@ class GroupsGridTab extends Tab {
         for (const group of filteredEntries) {
             items.push(`
                 <div class="column">
-                    <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(group.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ group.Latest.Identifier }" style="height: 270px;">
+                    <div class="ui basic ${latestPlayerTimestamp != (this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) ? 'red' : 'grey'} inverted segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(group.Latest.LinkId) ? 'opacity-50' : '' }" data-id="${ group.Latest.LinkId }" style="height: 270px;">
                         <span class="text-85% my-2">${ _formatDate(this.empty ? group.LatestTimestamp : group.LatestDisplayTimestamp) }</span>
                         <img class="ui image" src="res/group.png" width="173" height="173">
                         <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
@@ -2122,7 +2122,7 @@ class PlayersGridTab extends Tab {
             this.entries = [];
 
             for (var player of Object.values(DatabaseManager.Players)) {
-                var hidden = DatabaseManager.isIdentifierHidden(player.Latest.Identifier);
+                var hidden = DatabaseManager.isIdentifierHidden(player.Latest.LinkId);
                 if (this.hidden || !hidden || this.hidden_override) {
                     var matches = true;
                     for (var term of terms) {
@@ -2154,7 +2154,7 @@ class PlayersGridTab extends Tab {
         this.$list.empty();
 
         const filteredEntries = this.entries.filter(player => {
-            const visible = !DatabaseManager.isIdentifierHidden(player.Latest.Identifier);
+            const visible = !DatabaseManager.isIdentifierHidden(player.Latest.LinkId);
             const own = player.Own;
             
             return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override);
@@ -2164,7 +2164,7 @@ class PlayersGridTab extends Tab {
         for (const player of filteredEntries) {
             items.push(`
                 <div class="column">
-                    <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(player.Latest.Identifier) ? 'opacity-50' : '' }" data-id="${ player.Latest.Identifier }" style="height: 270px;">
+                    <div class="ui basic inverted ${DatabaseManager.Latest != player.LatestTimestamp ? 'red' : 'grey'} segment cursor-pointer !p-0 !border-radius-1 flex flex-col items-center ${ DatabaseManager.isIdentifierHidden(player.Latest.LinkId) ? 'opacity-50' : '' }" data-id="${ player.Latest.LinkId }" style="height: 270px;">
                         <span class="text-85% my-2">${ _formatDate(player.LatestTimestamp) }</span>
                         <img class="ui image" src="${_classImageUrl(player.Latest.Class)}" width="173" height="173">
                         <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>

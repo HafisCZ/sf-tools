@@ -998,7 +998,7 @@ class TableInstance {
 
     #getCellContent ({ action, generators: { cell } }, current, compare) {
         if (action == 'show') {
-            return cell(current, compare).replace('{__ACTION__}', `data-id="${ current.Identifier }" data-ts="${ current.Timestamp }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
+            return cell(current, compare).replace('{__ACTION__}', `data-id="${ current.LinkId }" data-ts="${ current.Timestamp }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
         } else {
             return cell(current, compare);
         }

@@ -513,6 +513,6 @@ function _classImageUrl (klass) {
     return `res/class${klass}.png`
 }
 
-function _generateId () {
-    return `${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`
+function _generateId (prefix) {
+    return `${prefix}${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`
 }
