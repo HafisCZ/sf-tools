@@ -1419,7 +1419,7 @@ class DatabaseManager {
             }
 
             if (entry.hidden && !SiteOptions.hidden) {
-                this.#unload(entry.identifier, entry.timestamp);
+                this.#unload(this.getLink(entry.identifier), entry.timestamp);
             }
 
             await this.#interface.set(this.isPlayer(entry.identifier) ? 'players' : 'groups', entry);
@@ -1434,7 +1434,7 @@ class DatabaseManager {
 
             for (const timestamp of timestamps) {
                 for (const identifier of this.Timestamps.values(timestamp)) {
-                    const model = _dig(this, this.isPlayer(identifier) ? 'Players' : 'Groups', identifier, timestamp, 'Data')
+                    const model = _dig(this, this.isPlayer(identifier) ? 'Players' : 'Groups', this.getLink(identifier), timestamp, 'Data')
 
                     if (shouldHide) {
                         this.#hiddenModels.add(model)
