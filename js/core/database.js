@@ -721,10 +721,10 @@ class DatabaseManager {
             this.Groups[this.getLink(data.group)][data.timestamp].MembersPresent++;
         }
 
-        this.#registerModel('Players', data.identifier, data.timestamp, player);
+        this.#registerModel('Players', this.getLink(data.identifier), data.timestamp, player);
     }
 
-    static getLink (identifier, ) {
+    static getLink (identifier) {
         if (this.#links.has(identifier) == false) {
             // If link is not set yet we need to set it to random value
             console.info(`${identifier} not previously linked, linking`);
@@ -744,23 +744,27 @@ class DatabaseManager {
         await this.#interface.set('links', { id: identifier, pid });
     }
 
+    static isPlayerLink (pid) {
+        for (const kv of this.#links) {
+            if (kv[1] == pid) return this.isPlayer(kv[0]);
+        }
+    }
+
     // INTERNAL: Add group
     static #addGroup (data) {
-        this.#registerModel('Groups', data.identifier, data.timestamp, new GroupModel(data));
+        this.#registerModel('Groups', this.getLink(data.identifier), data.timestamp, new GroupModel(data));
     }
 
     // INTERNAL: Add model
     static #registerModel (type, identifier, timestamp, model) {
-        const link = this.getLink(identifier);
-
         this.Identifiers.add(identifier, timestamp);
         this.Timestamps.add(timestamp, identifier);
 
-        if (!this[type][link]) {
-            this[type][link] = Object.create(null);
+        if (!this[type][identifier]) {
+            this[type][identifier] = Object.create(null);
         }
 
-        this[type][link][timestamp] = model;
+        this[type][identifier][timestamp] = model;
     }
 
     // INTERNAL: Update internal player/group lists
@@ -808,7 +812,7 @@ class DatabaseManager {
                 player.Latest = this.loadPlayer(player[player.LatestTimestamp]);
             }
 
-            this.PlayerNames[player.Latest.Data.identifier] = player.Latest.Data.name;
+            this.PlayerNames[this.getLink(player.Latest.Data.identifier)] = player.Latest.Data.name;
 
             prefixes.add(player.Latest.Data.prefix);
         }
@@ -842,7 +846,7 @@ class DatabaseManager {
             group.Own = array.find(g => g.Own) != undefined;
             group.Latest = group[group.LatestTimestamp];
 
-            this.GroupNames[group.Latest.Data.identifier] = group.Latest.Data.name;
+            this.GroupNames[this.getLink(group.Latest.Data.identifier)] = group.Latest.Data.name;
 
             prefixes.add(group.Latest.Data.prefix);
         }
@@ -1093,15 +1097,9 @@ class DatabaseManager {
         return this.Groups[id] && (timestamp ? this.Groups[id][timestamp] : true) ? true : false;
     }
 
-    static isLink (text) {
-        return !text.includes('_');
-    }
-
     // Get player
     static getPlayer (identifier, timestamp) {
-        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
-
-        let player = this.Players[link];
+        let player = this.Players[identifier];
         if (player && timestamp) {
             return this.loadPlayer(player[timestamp]);
         } else {
@@ -1121,29 +1119,19 @@ class DatabaseManager {
 
     // Get group
     static getGroup (identifier, timestamp) {
-        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
-
-        if (timestamp && this.Groups[link]) {
-            return this.Groups[link][timestamp];
+        if (timestamp && this.Groups[identifier]) {
+            return this.Groups[identifier][timestamp];
         } else {
-            return this.Groups[link];
+            return this.Groups[identifier];
         }
     }
 
     static getAny (identifier, timestamp) {
-        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
-
-        if (this.isPlayer(link)) {
-            return this.getPlayer(link, timestamp);
+        if (this.isPlayer(identifier)) {
+            return this.getPlayer(identifier, timestamp);
         } else {
-            return this.getGroup(link, timestamp);
+            return this.getGroup(identifier, timestamp);
         }
-    }
-
-    static getAnyEntry (identifier) {
-        const link = this.isLink(identifier) ? identifier : this.getLink(identifier);
-
-        return this[this.isPlayer(link) ? 'Players' : 'Groups'][link];
     }
 
     static async remove (instances) {
