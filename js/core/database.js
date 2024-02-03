@@ -1195,7 +1195,7 @@ class DatabaseManager {
             await this.#interface.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
             this.#removeMetadata(identifier, timestamp);
-            this.#unload(identifier, timestamp);
+            this.#unload(this.getLink(identifier), timestamp);
         }
 
         await this.#updateMetadata();
@@ -1269,11 +1269,13 @@ class DatabaseManager {
 
     static async purge () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
-            for (const identifier of identifiers) {
-                let isPlayer = this.isPlayer(identifier);
-                await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+            for (const linkId of identifiers) {
+                for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                    let isPlayer = this.isPlayer(identifier);
+                    await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
-                this.#removeMetadata(identifier, timestamp);
+                    this.#removeMetadata(identifier, timestamp);
+                }
             }
         }
 
@@ -1315,13 +1317,16 @@ class DatabaseManager {
     }
 
     static async #removeIdentifiers (... identifiers) {
-        for (const identifier of identifiers) {
-            for (const timestamp of this.Identifiers.values(identifier)) {
-                let isPlayer = this.isPlayer(identifier);
-                await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+        for (const linkId of identifiers) {
+            for (const timestamp of this.Identifiers.values(linkId)) {
+                for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                    let isPlayer = this.isPlayer(identifier);
+                    await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
-                this.#removeMetadata(identifier, timestamp);
-                this.#unload(identifier, timestamp);
+                    this.#removeMetadata(identifier, timestamp);
+                }
+ 
+                this.#unload(linkId, timestamp);
             }
         }
 
