@@ -859,10 +859,10 @@ TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'entries',
   function (scope) {
     if (scope.current) {
-      if (DatabaseManager.isPlayer(scope.current.Identifier)) {
-        return DatabaseManager.getPlayer(scope.current.Identifier)?.List;
+      if (DatabaseManager.isPlayer(scope.current.LinkId)) {
+        return DatabaseManager.getPlayer(scope.current.LinkId)?.List;
       } else {
-        return DatabaseManager.getGroup(scope.current.Identifier)?.List;
+        return DatabaseManager.getGroup(scope.current.LinkId)?.List;
       }
     } else {
       return undefined;
@@ -916,7 +916,7 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'row_index',
   function (scope) {
-    return scope.env.rowIndexes && scope.current ? scope.env.rowIndexes[`${scope.current.Identifier}_${scope.current.Timestamp}`] : undefined;
+    return scope.env.rowIndexes && scope.current ? scope.env.rowIndexes[`${scope.current.LinkId}_${scope.current.Timestamp}`] : undefined;
   }
 )
 
@@ -971,7 +971,7 @@ TABLE_EXPRESSION_CONFIG.register(
     if (node.args.length !== 1) return undefined;
 
     if (scope.current) {
-      return DatabaseManager.getTracker(scope.current.Identifier, node.args[0]);
+      return DatabaseManager.getTracker(scope.current.LinkId, node.args[0]);
     } else {
       return undefined;
     }
@@ -1362,6 +1362,15 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Identifier',
   {
     expr: p => p.Identifier,
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Link Identifier',
+  {
+    expr: p => p.LinkId,
     difference: false,
     statistics: false
   }
@@ -3211,7 +3220,7 @@ TABLE_EXPRESSION_CONFIG.register(
 function fetchPlayerGroupValue (object, ifPlayer, ifGroup) {
   if (!object) {
     return undefined;
-  } else if (DatabaseManager.isPlayer(object?.Identifier)) {
+  } else if (DatabaseManager.isPlayer(object?.LinkId)) {
     return ifPlayer();
   } else {
     return ifGroup();
@@ -3231,6 +3240,15 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'group', 'Guild Identifier',
   {
     expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.Identifier, () => obj.Identifier),
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'group', 'Guild Link Identifier',
+  {
+    expr: (obj) => fetchPlayerGroupValue(obj, () => obj.Group?.LinkId, () => obj.LinkId),
     difference: false,
     statistics: false
   }
