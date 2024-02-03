@@ -890,7 +890,7 @@ class GroupsTab extends Tab {
                     this.shidden = true;
                 } else if (key == 'o') {
                     terms.push({
-                        test: (arg, current, timestamp) => DatabaseManager.getPlayer(current.Identifier).Own
+                        test: (arg, current, timestamp) => DatabaseManager.getPlayer(current.LinkId).Own
                     });
                     this.recalculate = true;
                     this.shidden = true;
@@ -1430,7 +1430,7 @@ class PlayersTab extends Tab {
                     this.shidden = true;
                 } else if (key == 'o') {
                     terms.push({
-                        test: (arg, player, timestamp) => DatabaseManager.getPlayer(player.Identifier).Own
+                        test: (arg, player, timestamp) => DatabaseManager.getPlayer(player.LinkId).Own
                     });
                     this.recalculate = true;
                     this.shidden = true;

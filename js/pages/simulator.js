@@ -493,7 +493,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                             ${
                                 players.sort((a, b) => b.Own - a.Own || b.Timestamp - a.Timestamp).map(player => {
                                     return `
-                                        <div class="item" data-value="${player.Identifier}">
+                                        <div class="item" data-value="${player.LinkId}">
                                             <img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(player.Class)}"><span>${ player.Level } - ${ player.Name }</span>
                                         </div>
                                     `;

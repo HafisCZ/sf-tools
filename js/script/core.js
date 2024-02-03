@@ -3178,7 +3178,7 @@ class Script {
         for (let i = 0; i < array.length; i++) {
             const current = array[i].current;
 
-            this.rowIndexes[`${current.Identifier}_${current.Timestamp}`] = i;
+            this.rowIndexes[`${current.LinkId}_${current.Timestamp}`] = i;
         }
     }
 

@@ -685,7 +685,7 @@ class Actions {
                     if (conditionExpr.eval(scope)) {
                         let tag = tagExpr.eval(scope);
                         if (player.Data.tag != tag) {
-                            await DatabaseManager.setTagFor(player.Identifier, player.Timestamp, tag);
+                            await DatabaseManager.setTagFor(player.LinkId, player.Timestamp, tag);
                         }
                     }
                 }
@@ -694,7 +694,7 @@ class Actions {
                 let scope = new ExpressionScope().add({ players: mappedPlayers, groups });
                 if (conditionExpr.eval(scope)) {
                     const tag = tagExpr.eval(scope);
-                    for (const { Identifier: id, Timestamp: ts, Data: data } of players) {
+                    for (const { LinkId: id, Timestamp: ts, Data: data } of players) {
                         if (data.tag != tag) {
                             await DatabaseManager.setTagFor(id, ts, tag);
                         }

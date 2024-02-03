@@ -85,7 +85,7 @@ class ExpressionScope {
         this.compare = compare;
 
         if (current && compare) {
-            this.token = `${this.env.identifier}.${current.Identifier}.${current.Timestamp}.${compare.Timestamp}`;
+            this.token = `${this.env.identifier}.${current.LinkId}.${current.Timestamp}.${compare.Timestamp}`;
         }
         
         return this;
