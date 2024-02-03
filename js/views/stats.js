@@ -1562,6 +1562,9 @@ const PlayerDetailDialog = new (class PlayerDetailDialog extends Dialog {
         <div class="detail-identifier">
             ${ player.Identifier }
         </div>
+        <div class="detail-link">
+            ${ player.LinkId }
+        </div>
         <div class="detail-content">
             <div class="detail-panel">
                 <!-- Player -->

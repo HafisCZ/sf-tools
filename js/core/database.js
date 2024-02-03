@@ -691,11 +691,11 @@ class DatabaseManager {
         this.#hiddenVisible = SiteOptions.hidden;
     }
 
-    // INTERNAL: Add player
     static #addPlayer (data) {
-        let player = new Proxy({
+        const model = new Proxy({
             Data: data,
             Identifier: data.identifier,
+            LinkId: this.#getLink(data.identifier),
             Timestamp: data.timestamp,
             Own: data.own,
             Name: data.name,
@@ -703,56 +703,63 @@ class DatabaseManager {
             Class: data.class || ((data.own ? data.save[29] : data.save[20]) % 65536),
             Group: {
                 Identifier: data.group,
+                LinkId: this.#getLink(data.group),
                 Name: data.groupname
             }
         }, {
             get: function (target, prop) {
-                if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp' || prop == 'Own' || prop == 'Name' || prop == 'Prefix' || prop == 'Class' || prop == 'Group') {
+                if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp' || prop == 'Own' || prop == 'Name' || prop == 'Prefix' || prop == 'Class' || prop == 'Group' || prop == 'LinkId') {
                     return target[prop];
                 } else if (prop == 'IsProxy') {
                     return true;
                 } else {
-                    return DatabaseManager.getPlayer(DatabaseManager.getLink(target.Identifier), target.Timestamp)[prop];
+                    return DatabaseManager.getPlayer(target.LinkId, target.Timestamp)[prop];
                 }
             }
         });
 
-        if (this.hasGroup(this.getLink(data.group), data.timestamp)) {
-            this.Groups[this.getLink(data.group)][data.timestamp].MembersPresent++;
+        if (this.hasGroup(model.Group.LinkId, model.Timestamp)) {
+            this.Groups[model.Group.LinkId][model.Timestamp].MembersPresent++;
         }
 
-        this.#registerModel('Players', this.getLink(data.identifier), data.timestamp, player);
+        this.#registerModel('Players', model.LinkId, model.Timestamp, model);
     }
 
-    static getLink (identifier) {
-        if (this.#links.has(identifier) == false) {
-            // If link is not set yet we need to set it to random value
-            console.info(`${identifier} not previously linked, linking`);
-
-            const pid = _generateId();
-
-            this.#links.set(identifier, pid);
-            this.#interface.set('links', { id: identifier, pid });
+    static #getLink (identifier) {
+        if (identifier) {
+            if (this.#links.has(identifier) == false) {
+                // If link is not set yet we need to set it to random value
+                console.info(`${identifier} not previously linked, linking`);
+    
+                const pid = _generateId(this.isPlayer(identifier) ? 'p_' : 'g_');
+    
+                this.#links.set(identifier, pid);
+                this.#interface.set('links', { id: identifier, pid });
+            }
+    
+            return this.#links.get(identifier);
+        } else {
+            // Return undefined since we dont want links to be created for invalid identifiers
+            return undefined;
         }
-
-        return this.#links.get(identifier);
     }
 
-    static async setLink (identifier, pid = _generateId()) {
+    static async setLink (identifier, pid) {
         this.#links.set(identifier, pid);
 
         await this.#interface.set('links', { id: identifier, pid });
     }
 
-    static isPlayerLink (pid) {
-        for (const kv of this.#links) {
-            if (kv[1] == pid) return this.isPlayer(kv[0]);
-        }
-    }
-
-    // INTERNAL: Add group
     static #addGroup (data) {
-        this.#registerModel('Groups', this.getLink(data.identifier), data.timestamp, new GroupModel(data));
+        // Create model instance and set link id
+        const model = new GroupModel(data);
+        model.LinkId = this.#getLink(model.Identifier);
+
+        for (const player of model.Players) {
+            player.LinkId = this.#getLink(player.Identifier);
+        }
+
+        this.#registerModel('Groups', model.LinkId, model.Timestamp, model);
     }
 
     // INTERNAL: Add model
@@ -794,10 +801,11 @@ class DatabaseManager {
                     player.LatestTimestamp = Math.max(player.LatestTimestamp, timestamp);
 
                     if (obj.Data.group) {
-                        this.GroupNames[obj.Data.group] = obj.Data.groupname;
+                        this.GroupNames[obj.Group.LinkId] = obj.Data.groupname;
                     }
 
                     playerTimestamps.add(timestamp);
+                    prefixes.add(obj.Data.prefix);
                 }
             }
 
@@ -812,9 +820,7 @@ class DatabaseManager {
                 player.Latest = this.loadPlayer(player[player.LatestTimestamp]);
             }
 
-            this.PlayerNames[this.getLink(player.Latest.Data.identifier)] = player.Latest.Data.name;
-
-            prefixes.add(player.Latest.Data.prefix);
+            this.PlayerNames[player.Latest.LinkId] = player.Latest.Data.name;
         }
 
         for (const group of Object.values(this.Groups)) {
@@ -831,12 +837,13 @@ class DatabaseManager {
                     this.LatestGroup = Math.max(this.LatestGroup, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
-                    obj.MembersPresent = Array.from(this.Timestamps.values(timestamp)).filter((id) => obj.Members.includes(id)).length
+                    obj.MembersPresent = Array.from(this.Timestamps.values(timestamp)).filter((id) => obj.Players.some((p) => p.LinkId === id)).length
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
 
                     groupTimestamps.add(ts);
+                    prefixes.add(obj.Data.prefix);
                 }
             }
 
@@ -846,9 +853,7 @@ class DatabaseManager {
             group.Own = array.find(g => g.Own) != undefined;
             group.Latest = group[group.LatestTimestamp];
 
-            this.GroupNames[this.getLink(group.Latest.Data.identifier)] = group.Latest.Data.name;
-
-            prefixes.add(group.Latest.Data.prefix);
+            this.GroupNames[group.Latest.LinkId] = group.Latest.Data.name;
         }
 
         this.PlayerTimestamps = Array.from(playerTimestamps);
@@ -859,13 +864,15 @@ class DatabaseManager {
     // INTERNAL: Load player from proxy
     static loadPlayer (lazyPlayer) {
         if (lazyPlayer && lazyPlayer.IsProxy) {
-            const { Identifier: identifier, Timestamp: timestamp, Data: data } = lazyPlayer;
+            const { LinkId: linkId, Timestamp: timestamp, Data: data, Group: { LinkId: groupLinkId } } = lazyPlayer;
 
-            // Get player
+            // Create player instance and set links and inject guild data
             const player = new PlayerModel(data);
-            player.injectGroup(this.getGroup(player.Group.Identifier, timestamp));
+            player.LinkId = linkId;
+            player.injectGroup(this.getGroup(groupLinkId, timestamp));
+            player.Group.LinkId = groupLinkId;
 
-            let playerObj = this.Players[this.getLink(identifier)];
+            let playerObj = this.Players[linkId];
 
             playerObj[timestamp] = player;
 
@@ -1461,11 +1468,11 @@ class DatabaseManager {
     }
 
     static isPlayer (identifier) {
-        return /_p\d/.test(identifier);
+        return /_p\d/.test(identifier) || /^p_/.test(identifier);
     }
 
     static isGroup (identifier) {
-        return /_g\d/.test(identifier);
+        return /_g\d/.test(identifier) || /^g_/.test(identifier);;
     }
 
     static #normalizeGroup (group) {

@@ -663,7 +663,7 @@ class GroupModel {
             LastActive: this.LastActives[i],
             Name: this.Names[i],
             State: this.States[i],
-            ID: id
+            Identifier: id
         }));
 
         this.Description = PlayaResponse.unescape(data.description);
