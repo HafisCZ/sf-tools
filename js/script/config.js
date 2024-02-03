@@ -859,7 +859,11 @@ TABLE_EXPRESSION_CONFIG.register(
   'variable', 'scope', 'entries',
   function (scope) {
     if (scope.current) {
-      return DatabaseManager.getAnyEntry(scope.current.Identifier)?.List;
+      if (DatabaseManager.isPlayer(scope.current.Identifier)) {
+        return DatabaseManager.getPlayer(scope.current.Identifier)?.List;
+      } else {
+        return DatabaseManager.getGroup(scope.current.Identifier)?.List;
+      }
     } else {
       return undefined;
     }
