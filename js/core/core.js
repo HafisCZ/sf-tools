@@ -179,7 +179,7 @@ class OptionsHandler {
                     return this.options[name];
                 },
                 set: function (value) {
-                    if (this.options[name] === value) return;
+                    if (this.options[name] === value && typeof value !== 'object') return;
                     else {
                         this.options[name] = value;
                         Logger.log('OPTIONS', `Set ${this.#key}.${name} to ${Array.isArray(value) ? `[...${value.length}]` : value}`)
