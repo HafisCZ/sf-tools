@@ -638,7 +638,9 @@ class ModelRegistry {
 
 class DatabaseManager {
     static #interface = null;
+
     static #links = new Map();
+    static #linksLookup = new Map();
 
     // Metadata & Settings
     static #metadataDelta = [];
@@ -664,7 +666,9 @@ class DatabaseManager {
         }
 
         this.#interface = null;
+
         this.#links.clear();
+        this.#linksLookup.clear();
 
         // Models
         this.Players = Object.create(null);
@@ -731,10 +735,12 @@ class DatabaseManager {
                 // If link is not set yet we need to set it to random value
                 console.info(`${identifier} not previously linked, linking`);
     
-                const pid = _generateId(this.isPlayer(identifier) ? 'p::' : 'g::');
+                const linkId = _generateId(this.isPlayer(identifier) ? 'p::' : 'g::');
     
-                this.#links.set(identifier, pid);
-                this.#interface.set('links', { id: identifier, pid });
+                this.#links.set(identifier, linkId);
+                this.#linksLookup.set(linkId, [identifier]);
+
+                this.#interface.set('links', { id: identifier, pid: linkId });
             }
     
             return this.#links.get(identifier);
@@ -746,6 +752,7 @@ class DatabaseManager {
 
     static async resetLinks () {
         this.#links.clear();
+        this.#linksLookup.clear();
 
         await this.#interface.clear('links');
     }
@@ -755,10 +762,36 @@ class DatabaseManager {
         return this.#links.get(identifier);
     }
 
-    static async setLink (identifier, pid) {
-        this.#links.set(identifier, pid);
+    static async unlink (identifier) {
+        const linkId = this.getLink(identifier);
 
-        await this.#interface.set('links', { id: identifier, pid });
+        if (linkId) {
+            this.#links.remove(identifier);
+
+            const lookup = this.#linksLookup.get(linkId);
+            if (lookup.length > 1) {
+                this.#linksLookup.set(linkId, lookup.filter((item) => item !== identifier))
+            } else {
+                this.#linksLookup.remove(linkId);
+            }
+
+            await this.#interface.remove('links', identifier);
+        }
+    }
+
+    static async setLink (identifier, linkId) {
+        this.#links.set(identifier, linkId);
+
+        const lookup = this.#linksLookup.get(linkId);
+        lookup.push(identifier);
+
+        this.#linksLookup.set(linkId, lookup);
+
+        await this.#interface.set('links', { id: identifier, pid: linkId });
+    }
+
+    static getLinkedIdentifiers (linkId) {
+        return this.#linksLookup.get(linkId) || [];
     }
 
     static #addGroup (data) {
@@ -941,8 +974,13 @@ class DatabaseManager {
         const links = await this.#interface.all('links');
 
         this.#links.clear();
-        for (const { id, pid } of links) {
-            this.#links.set(id, pid);
+        for (const { id: identifier, pid: linkId } of links) {
+            this.#links.set(identifier, linkId);
+
+            const lookup = this.#linksLookup.get(linkId) || [];
+            lookup.push(identifier);
+    
+            this.#linksLookup.set(linkId, lookup);
         }
 
         // Load metadata
@@ -1212,12 +1250,16 @@ class DatabaseManager {
     // Remove one or more timestamps
     static async #removeTimestamps (... timestamps) {
         for (const timestamp of timestamps) {
-            for (const identifier of this.Timestamps.values(timestamp)) {
-                let isPlayer = this.isPlayer(identifier);
-                await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+            for (const linkId of this.Timestamps.values(timestamp)) {
+                for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                    // Try removal for all linked identifiers
+                    let isPlayer = this.isPlayer(identifier);
+                    await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
-                this.#removeMetadata(identifier, timestamp);
-                this.#unload(identifier, timestamp);
+                    this.#removeMetadata(identifier, timestamp);
+                }
+
+                this.#unload(linkId, timestamp);
             }
         }
 
