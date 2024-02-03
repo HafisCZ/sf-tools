@@ -779,7 +779,7 @@ class DatabaseManager {
         }
     }
 
-    static async setLink (identifier, linkId) {
+    static async link (identifier, linkId) {
         this.#links.set(identifier, linkId);
 
         const lookup = this.#linksLookup.get(linkId);
@@ -790,7 +790,7 @@ class DatabaseManager {
         await this.#interface.set('links', { id: identifier, pid: linkId });
     }
 
-    static getLinkedIdentifiers (linkId) {
+    static #getLinkedIdentifiers (linkId) {
         return this.#linksLookup.get(linkId) || [];
     }
 
@@ -1251,7 +1251,7 @@ class DatabaseManager {
     static async #removeTimestamps (... timestamps) {
         for (const timestamp of timestamps) {
             for (const linkId of this.Timestamps.values(timestamp)) {
-                for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                for (const identifier of this.#getLinkedIdentifiers(linkId)) {
                     // Try removal for all linked identifiers
                     let isPlayer = this.isPlayer(identifier);
                     await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
@@ -1270,7 +1270,7 @@ class DatabaseManager {
     static async purge () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
             for (const linkId of identifiers) {
-                for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                for (const identifier of this.#getLinkedIdentifiers(linkId)) {
                     let isPlayer = this.isPlayer(identifier);
                     await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1319,7 +1319,7 @@ class DatabaseManager {
     static async #removeIdentifiers (... identifiers) {
         for (const linkId of identifiers) {
             for (const timestamp of this.Identifiers.values(linkId)) {
-                for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                for (const identifier of this.#getLinkedIdentifiers(linkId)) {
                     let isPlayer = this.isPlayer(identifier);
                     await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1482,7 +1482,7 @@ class DatabaseManager {
         
         if (bundleGroups) {
             for (const player of players) {
-                const group = _dig(this.Groups, player.group, player.timestamp, 'Data');
+                const group = _dig(this.Groups, this.getLink(player.group), player.timestamp, 'Data');
                 if (group) {
                     entries[_uuid(group)] = group;
                 }
@@ -1612,7 +1612,7 @@ class DatabaseManager {
     
             this.#updateLists();
             for (const player of players) {
-                await this.#track(player.identifier, player.timestamp);
+                await this.#track(this.getLink(player.identifier), player.timestamp);
             }
     
             await Actions.apply(players, groups);
@@ -1628,7 +1628,7 @@ class DatabaseManager {
         this.#trackerConfigEntries = Object.entries(this.#trackerConfig);
         this.#trackerData = Store.get('tracker_data', {});
 
-        const addTrackers = _compact(this.#trackerConfigEntries.map(([ name, { ast, out, hash } ]) => this.#trackerData[name] != hash ? name : undefined));
+        const addTrackers = _compact(this.#trackerConfigEntries.map(([ name, { hash } ]) => this.#trackerData[name] != hash ? name : undefined));
         const remTrackers = Object.keys(this.#trackerData).filter(name => !this.#trackerConfig[name]);
 
         this.#trackerData = _arrayToHash(this.#trackerConfigEntries, ([name, { hash }]) => [name, hash]);;
