@@ -2499,9 +2499,9 @@ class FilesTab extends Tab {
                 // Prefix
                 prefixes.length === 0 || prefixes.includes(data.prefix),
                 // Player identifier
-                player_identifiers.length === 0 || (isPlayer && player_identifiers.includes(data.identifier)),
+                player_identifiers.length === 0 || (isPlayer && player_identifiers.includes(DatabaseManager.getLink(data.identifier))),
                 // Group identifiers
-                group_identifiers.length === 0 || group_identifiers.includes(isPlayer ? data.group : data.identifier),
+                group_identifiers.length === 0 || group_identifiers.includes(DatabaseManager.getLink(isPlayer ? data.group : data.identifier)),
                 // Timestamps
                 timestamps.length === 0 || timestamps.includes(data.timestamp),
                 // Tags
@@ -2873,13 +2873,13 @@ class FilesTab extends Tab {
             <div class="field">
                 <label>${intl('stats.files.filters.player')} (<span data-op="unique-player"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-player">
-                    ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }${ playerNameFrequency[value] > 1 ? ` - ${_formatPrefix(player)}` : '' }</option>`).join('') }
+                    ${ Object.entries(this.playerMap).map(([identifier, name]) => `<option value="${ identifier }">${ name }${ playerNameFrequency[name] > 1 ? ` - ${DatabaseManager.getAny(identifier).Latest.Prefix}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.group')} (<span data-op="unique-group"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-group">
-                    ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }${ groupNameFrequency[value] > 1 ? ` - ${_formatPrefix(group)}` : '' }</option>`).join('') }
+                    ${ Object.entries(this.groupMap).map(([identifier, name]) => `<option value="${ identifier }">${ name }${ groupNameFrequency[name] > 1 ? ` - ${DatabaseManager.getAny(identifier).Latest.Prefix}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
