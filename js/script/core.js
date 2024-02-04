@@ -3590,6 +3590,8 @@ class Scripts {
         remote: []
     };
 
+    static RESERVED_SCRIPT_IDENTIFIERS = ['players', 'groups', 'player', 'group'];
+
     static get data () {
         delete this.data;
 
@@ -3617,7 +3619,7 @@ class Scripts {
 
     static #migrateIdentifiersToLinks () {
         for (const [identifier, scriptId] of Object.entries(this.data.assignments)) {
-            if (DatabaseManager.isLink(identifier)) {
+            if (DatabaseManager.isLink(identifier) || Scripts.RESERVED_SCRIPT_IDENTIFIERS.includes(identifier)) {
                 // Do nothing
             } else {
                 delete this.data.assignments[identifier];
