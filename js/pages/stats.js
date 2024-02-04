@@ -3442,8 +3442,6 @@ class ScriptsTab extends Tab {
     }
 
     #updateTarget () {
-        const globalTables = ['players', 'groups', 'player', 'group'];
-
         const values = [
             { value: '', name: intl('stats.scripts.targets.none'), icon: 'text-gray globe' },
             { type: 'header', name: intl('stats.scripts.targets_category.default') },
@@ -3454,7 +3452,7 @@ class ScriptsTab extends Tab {
             { type: 'header', name: intl('stats.scripts.targets_category.existing') }
         ]
 
-        if (this.target && !globalTables.includes(this.target)) {
+        if (this.target && !Scripts.RESERVED_SCRIPT_IDENTIFIERS.includes(this.target)) {
             values.push({
                 value: this.target,
                 name: DatabaseManager.GroupNames[this.target] ?? DatabaseManager.PlayerNames[this.target] ?? DatabaseManager.getLinkedIdentifiers(identifier)[0] ?? this.target,
@@ -3462,7 +3460,7 @@ class ScriptsTab extends Tab {
             })
         }
 
-        const existingAssignments = Scripts.getAssigns(true).filter((identifier) => !globalTables.includes(identifier));
+        const existingAssignments = Scripts.getAssigns(true).filter((identifier) => !Scripts.RESERVED_SCRIPT_IDENTIFIERS.includes(identifier));
         if (existingAssignments.length > 0) {
             values.push(
                 ...existingAssignments.map((identifier) => ({
