@@ -3336,7 +3336,7 @@ class ScriptsTab extends Tab {
             if (event.key === 'Control' && !this.ctrlDown) {
                 this.ctrlDown = true;
                 this.#updateButtons();
-            } else if (event.key === 'Escape' && UI.current === this && !DialogController.dialogOpen && this.returnTo()) {
+            } else if (event.key === 'Escape' && UI.current === this && !DialogController.dialogOpen && this.returnTo) {
                 this.hide();
                 this.returnTo();
             }
