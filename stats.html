@@ -280,7 +280,7 @@
             <div class="ui five column stackable doubling grid" data-op="list"></div>
             <div data-op="actions" class="position-absolute p-2 border-gray !border-radius-1 flex flex-col gap-2" style="right: 4em; bottom: 4em; width: 250px; display: none;">
                 <div class="text-center font-bold" data-intl="stats.context.title"></div>
-                <div data-op="action-hide" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                <div data-op="action-unselect" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
                     <i class="ui check icon !mr-2"></i><span data-intl="stats.context.unselect"></span>
                 </div>
                 <div data-op="action-hide" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
@@ -296,7 +296,7 @@
                     <i class="ui share alternate icon !mr-2"></i><span data-intl="stats.share.title_short"></span>
                 </div>
                 <div data-op="action-link" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
-                    <i class="ui linkify icon !mr-2"></i><span data-intl="stats.context.link"></span>
+                    <i class="ui linkify icon !mr-2"></i><span data-intl="stats.context.link_players"></span>
                 </div>
                 <div data-op="action-remove" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
                     <i class="ui trash alternate outline icon !mr-2"></i><span data-intl="stats.context.remove"></span>
@@ -321,6 +321,27 @@
                 </div>
             </div>
             <div class="ui five column stackable doubling grid" data-op="list"></div>
+            <div data-op="actions" class="position-absolute p-2 border-gray !border-radius-1 flex flex-col gap-2" style="right: 4em; bottom: 4em; width: 250px; display: none;">
+                <div class="text-center font-bold" data-intl="stats.context.title"></div>
+                <div data-op="action-unselect" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                    <i class="ui check icon !mr-2"></i><span data-intl="stats.context.unselect"></span>
+                </div>
+                <div data-op="action-hide" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                    <i class="ui eye slash outline icon !mr-2"></i><span data-intl="stats.context.hide"></span>
+                </div>
+                <div data-op="action-copy" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                    <i class="ui copy icon !mr-2"></i><span data-intl="stats.copy.player"></span>
+                </div>
+                <div data-op="action-share" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                    <i class="ui share alternate icon !mr-2"></i><span data-intl="stats.share.title_short"></span>
+                </div>
+                <div data-op="action-link" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                    <i class="ui linkify icon !mr-2"></i><span data-intl="stats.context.link_groups"></span>
+                </div>
+                <div data-op="action-remove" class="w-full border-gray p-2 flex items-center !border-radius-1 background-dark background-light:hover cursor-pointer">
+                    <i class="ui trash alternate outline icon !mr-2"></i><span data-intl="stats.context.remove"></span>
+                </div>
+            </div>
         </div>
 
         <div id="view-groups" class="ui main inverted container mb-20" style="display: none";>
