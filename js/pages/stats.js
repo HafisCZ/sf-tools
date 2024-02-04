@@ -1932,7 +1932,9 @@ class GroupsGridTab extends Tab {
                 }
             })
 
-            blockClickable.find('.checkbox').checkbox();
+            blockClickable.find('.checkbox').checkbox({
+                onChange: () => this.refreshMenu()
+            });
 
             this.contextMenu.attach(blockClickable.get().filter((element) => element.dataset.id !== 'view-table'));
 
@@ -1975,6 +1977,9 @@ class PlayersGridTab extends Tab {
         
         // Observer
         this.loader = new DynamicLoader(this.$list.get(0));
+
+        // Actions
+        this.$actions = this.$parent.operator('actions');
 
         // Context menu
         this.contextMenu = new CustomMenu(
@@ -2160,6 +2165,22 @@ class PlayersGridTab extends Tab {
         }
     }
 
+    #refreshActions () {
+        const checkedItems = this.$list.find('.checkbox input:checked').length;
+
+        if (checkedItems) {
+            this.$actions.show();
+
+            if (checkedItems > 1) {
+                this.$actions.operator('action-copy-companions').addClass('pointer-events-none text-gray');
+            } else {
+                this.$actions.operator('action-copy-companions').removeClass('pointer-events-none text-gray');
+            }
+        } else {
+            this.$actions.hide();
+        }
+    }
+
     refresh () {
         this.$list.empty();
 
@@ -2198,7 +2219,9 @@ class PlayersGridTab extends Tab {
                 }
             })
 
-            blockClickable.find('.checkbox').checkbox();
+            blockClickable.find('.checkbox').checkbox({
+                onChange: () => this.#refreshActions()
+            });
 
             this.contextMenu.attach(blockClickable.get());
 
@@ -2206,6 +2229,8 @@ class PlayersGridTab extends Tab {
                 this.loader.stop();
             }
         });
+
+        this.#refreshActions();
     }
 
     load () {
