@@ -830,6 +830,7 @@ class DatabaseManager {
 
         for (const player of Object.values(this.Players)) {
             player.LatestTimestamp = 0;
+            player.Links = Object.create(null);
 
             const array = [];
             for (const [ ts, obj ] of Object.entries(player)) {
@@ -847,6 +848,12 @@ class DatabaseManager {
 
                     playerTimestamps.add(timestamp);
                     prefixes.add(obj.Data.prefix);
+
+                    player.Links[obj.Identifier] = {
+                        Identifier: obj.Identifier,
+                        Prefix: obj.Prefix,
+                        Name: obj.Name
+                    }
                 }
             }
 
@@ -867,6 +874,7 @@ class DatabaseManager {
         for (const group of Object.values(this.Groups)) {
             group.LatestTimestamp = 0;
             group.LatestDisplayTimestamp = 0;
+            group.Links = Object.create(null);
 
             const array = [];
             for (const [ ts, obj ] of Object.entries(group)) {
@@ -885,6 +893,12 @@ class DatabaseManager {
 
                     groupTimestamps.add(ts);
                     prefixes.add(obj.Data.prefix);
+
+                    group.Links[obj.Identifier] = {
+                        Identifier: obj.Identifier,
+                        Prefix: obj.Prefix,
+                        Name: obj.Name
+                    }
                 }
             }
 
