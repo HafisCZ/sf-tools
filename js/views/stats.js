@@ -1,3 +1,27 @@
+const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
+    constructor () {
+        super({
+            key: 'manage_link',
+            opacity: 0,
+            dismissable: true
+        })
+    }
+
+    _createModal () {
+        return `
+
+        `;
+    }
+
+    _createBindings () {
+
+    }
+    
+    _applyArguments (linkIds) {
+
+    }
+})
+
 const FileEditDialog = new (class FileEditDialog extends Dialog {
   constructor () {
       super({
