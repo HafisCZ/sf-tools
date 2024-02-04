@@ -1407,6 +1407,19 @@
             "ok": "Ok",
             "apply": "Apply"
         },
+        "manage_link": {
+            "title": "Manage player / guild merge",
+            "link": {
+                "heading1": "Merge following objects",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
+            },
+            "unlink": {
+                "heading1": "Split following object",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will remain under the source object."
+            }
+        },
         "dungeons_options": {
             "title": "Simulator options",
             "threshold": {
