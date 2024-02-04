@@ -733,8 +733,6 @@ class DatabaseManager {
         if (identifier) {
             if (generateIfMissing && this.#links.has(identifier) == false) {
                 // If link is not set yet we need to set it to random value
-                console.info(`${identifier} not previously linked, linking`);
-    
                 const linkId = _generateId(this.isPlayer(identifier) ? 'p::' : 'g::');
     
                 this.#links.set(identifier, linkId);
