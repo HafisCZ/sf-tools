@@ -1024,6 +1024,15 @@ class DatabaseManager {
             const trackers = await this.#interface.all('trackers');
 
             for (const tracker of trackers) {
+                if (DatabaseManager.isLink(tracker.identifier) == false) {
+                    // If tracker is not a link, we need to replace it with one
+                    await this.#interface.remove('trackers', tracker.identifier);
+
+                    tracker.identifier = this.getLink(tracker.identifier, true);
+
+                    await this.#interface.set('trackers', tracker);
+                }
+
                 this.#trackedPlayers[tracker.identifier] = tracker;
             }
         }
