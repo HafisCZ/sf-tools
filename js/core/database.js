@@ -699,7 +699,7 @@ class DatabaseManager {
         const model = new Proxy({
             Data: data,
             Identifier: data.identifier,
-            LinkId: this.#getLink(data.identifier),
+            LinkId: this.getLink(data.identifier, true),
             Timestamp: data.timestamp,
             Own: data.own,
             Name: data.name,
@@ -707,7 +707,7 @@ class DatabaseManager {
             Class: data.class || ((data.own ? data.save[29] : data.save[20]) % 65536),
             Group: {
                 Identifier: data.group,
-                LinkId: this.#getLink(data.group),
+                LinkId: this.getLink(data.group, true),
                 Name: data.groupname
             }
         }, {
@@ -729,9 +729,9 @@ class DatabaseManager {
         this.#registerModel('Players', model.LinkId, model.Timestamp, model);
     }
 
-    static #getLink (identifier) {
+    static getLink (identifier, generateIfMissing = false) {
         if (identifier) {
-            if (this.#links.has(identifier) == false) {
+            if (generateIfMissing && this.#links.has(identifier) == false) {
                 // If link is not set yet we need to set it to random value
                 console.info(`${identifier} not previously linked, linking`);
     
@@ -757,9 +757,8 @@ class DatabaseManager {
         await this.#interface.clear('links');
     }
 
-    static getLink (identifier) {
-        // Public method that just fetches the identifier
-        return this.#links.get(identifier);
+    static isLink (identifier) {
+        return identifier && identifier.includes('::');
     }
 
     static async unlink (identifier) {
@@ -790,17 +789,17 @@ class DatabaseManager {
         await this.#interface.set('links', { id: identifier, pid: linkId });
     }
 
-    static #getLinkedIdentifiers (linkId) {
+    static getLinkedIdentifiers (linkId) {
         return this.#linksLookup.get(linkId) || [];
     }
 
     static #addGroup (data) {
         // Create model instance and set link id
         const model = new GroupModel(data);
-        model.LinkId = this.#getLink(model.Identifier);
+        model.LinkId = this.getLink(model.Identifier, true);
 
         for (const player of model.Players) {
-            player.LinkId = this.#getLink(player.Identifier);
+            player.LinkId = this.getLink(player.Identifier, true);
         }
 
         this.#registerModel('Groups', model.LinkId, model.Timestamp, model);
@@ -1251,7 +1250,7 @@ class DatabaseManager {
     static async #removeTimestamps (... timestamps) {
         for (const timestamp of timestamps) {
             for (const linkId of this.Timestamps.values(timestamp)) {
-                for (const identifier of this.#getLinkedIdentifiers(linkId)) {
+                for (const identifier of this.getLinkedIdentifiers(linkId)) {
                     // Try removal for all linked identifiers
                     let isPlayer = this.isPlayer(identifier);
                     await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
@@ -1270,7 +1269,7 @@ class DatabaseManager {
     static async purge () {
         for (const [timestamp, identifiers] of this.Timestamps.entries()) {
             for (const linkId of identifiers) {
-                for (const identifier of this.#getLinkedIdentifiers(linkId)) {
+                for (const identifier of this.getLinkedIdentifiers(linkId)) {
                     let isPlayer = this.isPlayer(identifier);
                     await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1319,7 +1318,7 @@ class DatabaseManager {
     static async #removeIdentifiers (... identifiers) {
         for (const linkId of identifiers) {
             for (const timestamp of this.Identifiers.values(linkId)) {
-                for (const identifier of this.#getLinkedIdentifiers(linkId)) {
+                for (const identifier of this.getLinkedIdentifiers(linkId)) {
                     let isPlayer = this.isPlayer(identifier);
                     await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
