@@ -1770,7 +1770,11 @@ class GroupsGridTab extends Tab {
         })
 
         this.$actions.operator('action-link').click(() => {
-            Toast.error('WIP', 'This function is not supported yet!');
+            DialogController.open(
+                ManageLinkDialog,
+                this.#selection,
+                () => window.location.reload()
+            )
 
             this.#clearSelection();
         })
@@ -2053,7 +2057,11 @@ class PlayersGridTab extends Tab {
         })
 
         this.$actions.operator('action-link').click(() => {
-            Toast.error('WIP', 'This function is not supported yet!');
+            DialogController.open(
+                ManageLinkDialog,
+                this.#selection,
+                () => window.location.reload()
+            )
 
             this.#clearSelection();
         })
