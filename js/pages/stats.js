@@ -50,8 +50,8 @@ class CustomMenu {
 
                 action(this.source);
 
-                if (this._visible()) {
-                    this._hide();
+                if (this.#visible()) {
+                    this.#hide();
                 }
             });
 
@@ -59,17 +59,17 @@ class CustomMenu {
         }
 
         window.addEventListener('click', () => {
-            if (this._visible()) {
-                this._hide();
+            if (this.#visible()) {
+                this.#hide();
             }
         })
 
         this.container.addEventListener('mouseenter', () => {
-            this._endTimer();
+            this.#endTimer();
         })
 
         this.container.addEventListener('mouseleave', () => {
-            this._startTimer();
+            this.#startTimer();
         })
     }
 
@@ -82,7 +82,7 @@ class CustomMenu {
                 event.stopPropagation();
 
                 const bounds = event.currentTarget.getBoundingClientRect();
-                this._show(
+                this.#show(
                     event.currentTarget,
                     window.scrollX + bounds.left + bounds.width,
                     window.scrollY + bounds.top
@@ -91,26 +91,26 @@ class CustomMenu {
         }
     }
 
-    _visible () {
+    #visible () {
         return this.container.classList.contains('visible');
     }
 
-    _hidden () {
+    #hidden () {
         return this.container.classList.contains('hidden');
     }
 
-    _startTimer () {
+    #startTimer () {
         if (this.timer) {
             return;
         }
 
         this.timer = setTimeout(
-            () => this._hide(),
+            () => this.#hide(),
             1500
         );
     }
 
-    _endTimer () {
+    #endTimer () {
         if (this.timer) {
             clearTimeout(this.timer);
 
@@ -118,26 +118,26 @@ class CustomMenu {
         }
     }
 
-    _show (element, x, y) {
+    #show (element, x, y) {
         this.source = element;
 
         this.container.style.left = `${x}px`;
         this.container.style.top = `${y}px`;
 
-        if (this._hidden()) {
+        if (this.#hidden()) {
             $(this.container).transition('fade').show();
         }
 
-        this._endTimer();
-        this._startTimer();
+        this.#endTimer();
+        this.#startTimer();
     }
 
-    _hide () {
-        if (this._visible()) {
+    #hide () {
+        if (this.#visible()) {
             $(this.container).transition('fade').hide();
         }
 
-        this._endTimer();
+        this.#endTimer();
     }
 }
 
