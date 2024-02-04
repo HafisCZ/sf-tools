@@ -1907,22 +1907,32 @@ class GroupsGridTab extends Tab {
                         <img class="ui image" src="res/group.png" width="173" height="173">
                         <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
                         <h3 class="ui inverted header !mt-0 !mb-1">${ group.Latest.Name }</h3>
+                        <div class="ui fitted checkbox" style="position: absolute; left: 0.5em; top: 0.5em;">
+                            <input type="checkbox">
+                        </div>
                     </div>
                 </div>
             `)
         }
 
         this.loader.start(() => {
-            const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                const identifier = this.dataset.id;
-
-                if (identifier === 'view-table') {
-                    UI.show(UI.groups);
+            const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function (event) {
+                if (event.target.closest('.checkbox')) {
+                    return;
+                } else if (event.ctrlKey) {
+                    $(event.currentTarget).find('.checkbox').checkbox('toggle checked');
                 } else {
-                    UI.show(UI.group, { identifier });
+                    const identifier = this.dataset.id;
+
+                    if (identifier === 'view-table') {
+                        UI.show(UI.groups);
+                    } else {
+                        UI.show(UI.group, { identifier });
+                    }
                 }
-            
             })
+
+            blockClickable.find('.checkbox').checkbox();
 
             this.contextMenu.attach(blockClickable.get().filter((element) => element.dataset.id !== 'view-table'));
 
@@ -2169,15 +2179,26 @@ class PlayersGridTab extends Tab {
                         <img class="ui image" src="${_classImageUrl(player.Latest.Class)}" width="173" height="173">
                         <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
                         <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
+                        <div class="ui fitted checkbox" style="position: absolute; left: 0.5em; top: 0.5em;">
+                            <input type="checkbox">
+                        </div>
                     </div>
                 </div>
             `);
         }
 
         this.loader.start(() => {
-            const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function () {
-                UI.show(UI.player, { identifier: this.dataset.id });
+            const blockClickable = $(items.splice(0, 20).join('')).appendTo(this.$list).find('[data-id]').click(function (event) {
+                if (event.target.closest('.checkbox')) {
+                    return;
+                } else if (event.ctrlKey) {
+                    $(event.currentTarget).find('.checkbox').checkbox('toggle checked');
+                } else {
+                    UI.show(UI.player, { identifier: this.dataset.id });
+                }
             })
+
+            blockClickable.find('.checkbox').checkbox();
 
             this.contextMenu.attach(blockClickable.get());
 
