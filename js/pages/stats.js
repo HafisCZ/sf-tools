@@ -2029,13 +2029,13 @@ class PlayersGridTab extends Tab {
         })
 
         this.$actions.operator('action-copy').click(() => {
-            copyJSON(this.#selection.map((identifier) => ModelUtils.toSimulatorData(DatabaseManager.getPlayer(identifier).Latest)));
+            copyJSON(this.#selection.flatMap((identifier) => ModelUtils.toSimulatorData(DatabaseManager.getPlayer(identifier).Latest)));
 
             this.#clearSelection();
         })
 
         this.$actions.operator('action-copy-companions').click(() => {
-            copyJSON(this.#selection.map((identifier) => ModelUtils.toSimulatorData(DatabaseManager.getPlayer(identifier).Latest, true)));
+            copyJSON(this.#selection.flatMap((identifier) => ModelUtils.toSimulatorData(DatabaseManager.getPlayer(identifier).Latest, true)));
 
             this.#clearSelection();
         })
