@@ -1722,51 +1722,62 @@ class GroupsGridTab extends Tab {
         // Observer
         this.loader = new DynamicLoader(this.$list.get(0));
 
-        // Context menu
-        this.contextMenu = new CustomMenu(
-            this.$parent.get(0),
-            [
-                {
-                    label: intl('stats.context.hide'),
-                    action: (source) => {
-                        DatabaseManager.hideIdentifier(source.dataset.id);
-                        this.show();
-                    }
-                },
-                {
-                    label: intl('stats.copy.player'),
-                    action: (source) => {
-                        let group = DatabaseManager.getGroup(source.dataset.id).Latest;
-                        copyJSON(group.Members.map(id => {
-                            if (DatabaseManager.hasPlayer(id, group.Timestamp)) {
-                                return ModelUtils.toSimulatorData(DatabaseManager.getPlayer(id, group.Timestamp));
-                            } else {
-                                return null;
-                            }
-                        }).filter(x => x));
-                    }
-                },
-                {
-                    label: intl('stats.share.title_short'),
-                    action: (source) => {
-                        const group = source.dataset.id;
-                        const members = DatabaseManager.Groups[group].List.reduce((memo, g) => memo.concat(g.Members), []);
+        // Actions
+        this.$actions = this.$parent.operator('actions');
 
-                        DialogController.open(
-                            ExportFileDialog,
-                            () => DatabaseManager.export([ group, ... _uniq(members) ]),
-                            DatabaseManager.getAny(group).Latest.Identifier
-                        );
+        this.$actions.operator('action-unselect').click(() => {
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-hide').click(() => {
+            for (const identifier of this.#selection) {
+                DatabaseManager.hideIdentifier(identifier);
+            }
+
+            this.show();
+        })
+
+        this.$actions.operator('action-copy').click(() => {
+            const players = this.#selection.flatMap((identifier) => {
+                const group = DatabaseManager.getGroup(identifier).Latest;
+
+                return group.Players.map((player) => {
+                    if (DatabaseManager.hasPlayer(player.LinkId, group.Timestamp)) {
+                        return ModelUtils.toSimulatorData(DatabaseManager.getPlayer(player.LinkId, group.Timestamp));
+                    } else {
+                        return null;
                     }
-                },
-                {
-                    label: intl('stats.context.remove'),
-                    action: (source) => {
-                        DatabaseManager.safeRemove({ identifiers: [ source.dataset.id ] }, () => this.show());
-                    }
-                }
-            ]
-        )
+                }).filter((p) => p)
+            })
+
+            copyJSON(players);
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-share').click(() => {
+            const selection = _uniq(this.#selection.flatMap((groupIdentifier) => {
+                return [groupIdentifier, ...DatabaseManager.Groups[groupIdentifier].List.reduce((memo, g) => memo.concat(g.Players.map((p) => p.LinkId)), [])]
+            }));
+
+            DialogController.open(
+                ExportFileDialog,
+                () => DatabaseManager.export(selection),
+                'groups'
+            )
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-link').click(() => {
+            Toast.error('WIP', 'This function is not supported yet!');
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-remove').click(() => {
+            DatabaseManager.safeRemove({ identifiers: this.#selection }, () => this.show());
+        })
 
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
@@ -1877,6 +1888,32 @@ class GroupsGridTab extends Tab {
         }
     }
 
+    #refreshActions () {
+        const checkedItems = this.#selection.length;
+
+        if (checkedItems) {
+            this.$actions.show();
+
+            if (checkedItems > 1) {
+                this.$actions.operator('action-copy-companions').addClass('pointer-events-none text-gray');
+            } else {
+                this.$actions.operator('action-copy-companions').removeClass('pointer-events-none text-gray');
+            }
+        } else {
+            this.$actions.hide();
+        }
+    }
+
+    get #selection () {
+        return this.$list.find('.checkbox input:checked').get().map((item) => item.dataset.checkboxId);
+    }
+
+    #clearSelection () {
+        this.$list.find('.checkbox').checkbox('set unchecked');
+
+        this.#refreshActions();
+    }
+
     refresh () {
         this.$list.empty();
 
@@ -1908,7 +1945,7 @@ class GroupsGridTab extends Tab {
                         <h3 class="ui grey header !m-0 !mt-2">${ group.Latest.Prefix }</h3>
                         <h3 class="ui inverted header !mt-0 !mb-1">${ group.Latest.Name }</h3>
                         <div class="ui fitted checkbox" style="position: absolute; left: 0.5em; top: 0.5em;">
-                            <input type="checkbox">
+                            <input type="checkbox" data-checkbox-id="${group.Latest.LinkId}">
                         </div>
                     </div>
                 </div>
@@ -1933,10 +1970,8 @@ class GroupsGridTab extends Tab {
             })
 
             blockClickable.find('.checkbox').checkbox({
-                onChange: () => this.refreshMenu()
+                onChange: () => this.#refreshActions()
             });
-
-            this.contextMenu.attach(blockClickable.get().filter((element) => element.dataset.id !== 'view-table'));
 
             if (items.length == 0) {
                 this.loader.stop();
@@ -1981,47 +2016,51 @@ class PlayersGridTab extends Tab {
         // Actions
         this.$actions = this.$parent.operator('actions');
 
-        // Context menu
-        this.contextMenu = new CustomMenu(
-            this.$parent.get(0),
-            [
-                {
-                    label: intl('stats.context.hide'),
-                    action: (source) => {
-                        DatabaseManager.hideIdentifier(source.dataset.id);
-                        this.show();
-                    }
-                },
-                {
-                    label: intl('stats.copy.player'),
-                    action: (source) => {
-                        copyJSON(ModelUtils.toSimulatorData(DatabaseManager.getPlayer(source.dataset.id).Latest));
-                    }
-                },
-                {
-                    label: intl('stats.copy.player_companions'),
-                    action: (source) => {
-                        copyJSON(ModelUtils.toSimulatorData(DatabaseManager.getPlayer(source.dataset.id).Latest, true));
-                    }
-                },
-                {
-                    label: intl('stats.share.title_short'),
-                    action: (source) => {
-                        DialogController.open(
-                            ExportFileDialog,
-                            () => DatabaseManager.export([ source.dataset.id ]),
-                            DatabaseManager.getAny(source.dataset.id).Latest.Identifier
-                        )
-                    }
-                },
-                {
-                    label: intl('stats.context.remove'),
-                    action: (source) => {
-                        DatabaseManager.safeRemove({ identifiers: [ source.dataset.id ] }, () => this.show());
-                    }
-                }
-            ]
-        )
+        this.$actions.operator('action-unselect').click(() => {
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-hide').click(() => {
+            for (const identifier of this.#selection) {
+                DatabaseManager.hideIdentifier(identifier);
+            }
+
+            this.show();
+        })
+
+        this.$actions.operator('action-copy').click(() => {
+            copyJSON(this.#selection.map((identifier) => ModelUtils.toSimulatorData(DatabaseManager.getPlayer(identifier).Latest)));
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-copy-companions').click(() => {
+            copyJSON(this.#selection.map((identifier) => ModelUtils.toSimulatorData(DatabaseManager.getPlayer(identifier).Latest, true)));
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-share').click(() => {
+            const selection = this.#selection;
+
+            DialogController.open(
+                ExportFileDialog,
+                () => DatabaseManager.export(selection),
+                'players'
+            )
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-link').click(() => {
+            Toast.error('WIP', 'This function is not supported yet!');
+
+            this.#clearSelection();
+        })
+
+        this.$actions.operator('action-remove').click(() => {
+            DatabaseManager.safeRemove({ identifiers: this.#selection }, () => this.show());
+        })
 
         // Filter
         this.$filter = this.$parent.operator('filter').searchfield(
@@ -2166,7 +2205,7 @@ class PlayersGridTab extends Tab {
     }
 
     #refreshActions () {
-        const checkedItems = this.$list.find('.checkbox input:checked').length;
+        const checkedItems = this.#selection.length;
 
         if (checkedItems) {
             this.$actions.show();
@@ -2179,6 +2218,16 @@ class PlayersGridTab extends Tab {
         } else {
             this.$actions.hide();
         }
+    }
+
+    get #selection () {
+        return this.$list.find('.checkbox input:checked').get().map((item) => item.dataset.checkboxId);
+    }
+
+    #clearSelection () {
+        this.$list.find('.checkbox').checkbox('set unchecked');
+
+        this.#refreshActions();
     }
 
     refresh () {
@@ -2201,7 +2250,7 @@ class PlayersGridTab extends Tab {
                         <h3 class="ui grey header !m-0 !mt-2">${ player.Latest.Prefix }</h3>
                         <h3 class="ui inverted header !mt-0 !mb-1">${ player.Latest.Name }</h3>
                         <div class="ui fitted checkbox" style="position: absolute; left: 0.5em; top: 0.5em;">
-                            <input type="checkbox">
+                            <input type="checkbox" data-checkbox-id="${player.Latest.LinkId}">
                         </div>
                     </div>
                 </div>
@@ -2222,8 +2271,6 @@ class PlayersGridTab extends Tab {
             blockClickable.find('.checkbox').checkbox({
                 onChange: () => this.#refreshActions()
             });
-
-            this.contextMenu.attach(blockClickable.get());
 
             if (items.length == 0) {
                 this.loader.stop();
