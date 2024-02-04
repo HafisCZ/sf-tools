@@ -520,8 +520,11 @@
             "player_companions": "Copy with companions"
         },
         "context": {
+            "title": "Apply action to selected items",
             "hide": "Show / Hide",
-            "remove": "Remove permanently"
+            "remove": "Remove permanently",
+            "link": "Merge characters / guilds",
+            "unselect": "Deselect all"
         },
         "profiles": {
             "players": "Players",
