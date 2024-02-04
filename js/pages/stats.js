@@ -1773,7 +1773,11 @@ class GroupsGridTab extends Tab {
             DialogController.open(
                 ManageLinkDialog,
                 this.#selection,
-                () => window.location.reload()
+                (result) => {
+                    if (result) {
+                        window.location.reload();
+                    }
+                }
             )
 
             this.#clearSelection();
@@ -1893,15 +1897,21 @@ class GroupsGridTab extends Tab {
     }
 
     #refreshActions () {
-        const checkedItems = this.#selection.length;
+        const checkedItems = this.#selection;
 
-        if (checkedItems) {
+        if (checkedItems.length > 0) {
             this.$actions.show();
 
-            if (checkedItems > 1) {
+            if (checkedItems.length > 1) {
                 this.$actions.operator('action-copy-companions').addClass('pointer-events-none text-gray');
             } else {
                 this.$actions.operator('action-copy-companions').removeClass('pointer-events-none text-gray');
+            }
+
+            if (checkedItems.length !== 1 || DatabaseManager.getLinkedIdentifiers(checkedItems[0]).length > 1) {
+                this.$actions.operator('action-link').removeClass('pointer-events-none text-gray');
+            } else {
+                this.$actions.operator('action-link').addClass('pointer-events-none text-gray');
             }
         } else {
             this.$actions.hide();
@@ -2060,7 +2070,11 @@ class PlayersGridTab extends Tab {
             DialogController.open(
                 ManageLinkDialog,
                 this.#selection,
-                () => window.location.reload()
+                (result) => {
+                    if (result) {
+                        window.location.reload();
+                    }
+                }
             )
 
             this.#clearSelection();
@@ -2213,15 +2227,21 @@ class PlayersGridTab extends Tab {
     }
 
     #refreshActions () {
-        const checkedItems = this.#selection.length;
+        const checkedItems = this.#selection;
 
-        if (checkedItems) {
+        if (checkedItems.length > 0) {
             this.$actions.show();
 
-            if (checkedItems > 1) {
+            if (checkedItems.length > 1) {
                 this.$actions.operator('action-copy-companions').addClass('pointer-events-none text-gray');
             } else {
                 this.$actions.operator('action-copy-companions').removeClass('pointer-events-none text-gray');
+            }
+
+            if (checkedItems.length !== 1 || DatabaseManager.getLinkedIdentifiers(checkedItems[0]).length > 1) {
+                this.$actions.operator('action-link').removeClass('pointer-events-none text-gray');
+            } else {
+                this.$actions.operator('action-link').addClass('pointer-events-none text-gray');
             }
         } else {
             this.$actions.hide();

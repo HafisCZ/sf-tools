@@ -9,16 +9,75 @@ const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
 
     _createModal () {
         return `
+            <div class="small bordered inverted dialog">
+                <div class="left header">${this.intl('title')}</div>
+                <div class="flex flex-col gap-4" data-op="link">
+                    <div class="font-bold">${this.intl('link.heading1')}</div>
+                    <div class="flex flex-col gap-1" data-op="list1"></div>
+                    <div class="font-bold">${this.intl('link.heading2')}</div>
+                    <div class="flex flex-col gap-1" data-op="list2"></div>
+                    <div><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('link.warning')}</div>
+                </div>
+                <div class="flex flex-col gap-4" data-op="unlink">
+                    <div class="font-bold">${this.intl('unlink.heading1')}</div>
+                    <div class="flex flex-col gap-1" data-op="list1"></div>
+                    <div class="font-bold">${this.intl('unlink.heading2')}</div>
+                    <div class="flex flex-col gap-1" data-op="list2"></div>
+                    <div><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('unlink.warning')}</div>
+                </div>
+                <div class="ui two fluid buttons">
+                    <button class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
+                    <button class="ui button !text-black !background-orange" data-op="save">${intl('dialog.shared.apply')}</button>
+                </div>
+            </div>
+        `;
+    }
 
+    _createItem ({ Identifier: identifier, Prefix: prefix, Name: name }) {
+        return `
+            <div class="border-gray p-2 !border-radius-1 flex">
+                <div style="flex: 0 0 50%;"><i class="ui ${DatabaseManager.isPlayer(identifier) ? 'user' : 'archive'} icon"></i> ${name}</div>
+                <div style="flex: 0 0 50%;">${prefix}</div>
+            </div>
         `;
     }
 
     _createBindings () {
+        this.$link = this.$parent.operator('link');
+        this.$unlink = this.$parent.operator('unlink');
 
+        this.$parent.find('[data-op="cancel"]').click(() => {
+            this.callback(false);
+            this.close();
+        });
+
+        this.$parent.operator('save').click(() => {
+            Toast.error('WIP', 'Not implemented yet!')
+
+            this.callback(false);
+            this.close();
+        })
     }
     
-    _applyArguments (linkIds) {
+    _applyArguments (linkIds, callback) {
+        this.callback = callback;
+        this.objects = _sortDesc(linkIds.map((linkId) => DatabaseManager.getAny(linkId)), (object) => object.LatestTimestamp);
 
+        if (linkIds.length > 1) {
+            // Link
+            this.$link.show();
+            this.$unlink.hide();
+
+            this.$link.operator('list1').html(this.objects.flatMap((object) => Object.values(object.Links).map((link) => this._createItem(link))).join(''));
+            this.$link.operator('list2').html(this._createItem(this.objects[0].Latest));
+        } else {
+            // Unlink
+            this.$link.hide();
+            this.$unlink.show();
+
+            this.$link.operator('list1').html(this._createItem(this.objects[0].Latest));
+            this.$link.operator('list2').html(Object.values(this.objects[0].Links).map((link) => this._createItem(link)).join(''));
+        }
     }
 })
 
