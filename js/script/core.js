@@ -3606,8 +3606,6 @@ class Scripts {
             this.data.assignments = this.#DEFAULT_DATA.assignments;
         } else {
             this.data = Store.get('scripts', this.#DEFAULT_DATA);
-
-            this.#migrateIdentifiersToLinks();
         }
 
         if (typeof this.data.remote === 'undefined') {
@@ -3615,20 +3613,6 @@ class Scripts {
         }
 
         return this.data;
-    }
-
-    static #migrateIdentifiersToLinks () {
-        for (const [identifier, scriptId] of Object.entries(this.data.assignments)) {
-            if (DatabaseManager.isLink(identifier) || Scripts.RESERVED_SCRIPT_IDENTIFIERS.includes(identifier)) {
-                // Do nothing
-            } else {
-                delete this.data.assignments[identifier];
-
-                this.data.assignments[DatabaseManager.getLink(identifier, true)] = scriptId;
-            }
-        }
-
-        this.#persist();
     }
 
     static #migrateLegacyScripts () {
