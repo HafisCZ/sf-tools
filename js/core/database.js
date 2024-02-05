@@ -732,13 +732,10 @@ class DatabaseManager {
     static getLink (identifier, generateIfMissing = false) {
         if (identifier) {
             if (generateIfMissing && this.#links.has(identifier) == false) {
-                // If link is not set yet we need to set it to random value
-                const linkId = _generateId(this.isPlayer(identifier) ? 'p::' : 'g::');
-    
-                this.#links.set(identifier, linkId);
-                this.#linksLookup.set(linkId, [identifier]);
+                this.#links.set(identifier, identifier);
+                this.#linksLookup.set(identifier, [identifier]);
 
-                this.#interface.set('links', { id: identifier, pid: linkId });
+                this.#interface.set('links', { id: identifier, pid: identifier });
             }
     
             return this.#links.get(identifier);
@@ -1038,15 +1035,6 @@ class DatabaseManager {
             const trackers = await this.#interface.all('trackers');
 
             for (const tracker of trackers) {
-                if (DatabaseManager.isLink(tracker.identifier) == false) {
-                    // If tracker is not a link, we need to replace it with one
-                    await this.#interface.remove('trackers', tracker.identifier);
-
-                    tracker.identifier = this.getLink(tracker.identifier, true);
-
-                    await this.#interface.set('trackers', tracker);
-                }
-
                 this.#trackedPlayers[tracker.identifier] = tracker;
             }
         }

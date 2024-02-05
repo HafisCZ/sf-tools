@@ -3576,7 +3576,7 @@ class ScriptsTab extends Tab {
         if (this.target && !Scripts.RESERVED_SCRIPT_IDENTIFIERS.includes(this.target)) {
             values.push({
                 value: this.target,
-                name: DatabaseManager.GroupNames[this.target] ?? DatabaseManager.PlayerNames[this.target] ?? DatabaseManager.getLinkedIdentifiers(this.target)[0] ?? this.target,
+                name: DatabaseManager.GroupNames[this.target] ?? DatabaseManager.PlayerNames[this.target] ?? this.target,
                 icon: DatabaseManager.isPlayer(this.target) ? 'text-gray user' : 'text-gray archive'
             })
         }
@@ -3586,7 +3586,7 @@ class ScriptsTab extends Tab {
             values.push(
                 ...existingAssignments.map((identifier) => ({
                     value: identifier,
-                    name: DatabaseManager.GroupNames[identifier] ?? DatabaseManager.PlayerNames[identifier] ?? DatabaseManager.getLinkedIdentifiers(identifier)[0] ?? identifier,
+                    name: DatabaseManager.GroupNames[identifier] ?? DatabaseManager.PlayerNames[identifier] ?? identifier,
                     icon: DatabaseManager.isPlayer(identifier) ? 'text-gray user' : 'text-gray archive'
                 })).sort((a, b) => a.name.localeCompare(b.name))
             )
