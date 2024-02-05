@@ -1779,7 +1779,7 @@ class GroupsGridTab extends Tab {
                 this.#selection,
                 (result) => {
                     if (result) {
-                        window.location.reload();
+                        this.show();
                     }
                 }
             )
@@ -2076,7 +2076,7 @@ class PlayersGridTab extends Tab {
                 this.#selection,
                 (result) => {
                     if (result) {
-                        window.location.reload();
+                        this.show();
                     }
                 }
             )
