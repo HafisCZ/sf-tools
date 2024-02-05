@@ -523,8 +523,8 @@
             "title": "Apply action to selected items",
             "hide": "Show / Hide",
             "remove": "Remove permanently",
-            "link_players": "Merge characters",
-            "link_groups": "Merge guilds",
+            "link_players": "Merge / split characters",
+            "link_groups": "Merge / split guilds",
             "unselect": "Deselect all"
         },
         "profiles": {
