@@ -1643,10 +1643,7 @@ const PlayerDetailDialog = new (class PlayerDetailDialog extends Dialog {
             ${ _formatDate(player.Timestamp) }${ diff ? ` - ${ _formatDate(compare.Timestamp) }` : '' }
         </div>
         <div class="detail-identifier">
-            ${ player.Identifier }
-        </div>
-        <div class="detail-link">
-            ${ player.LinkId }
+            ${ DatabaseManager.getLinkedIdentifiers(identifier).join(' / ') }
         </div>
         <div class="detail-content">
             <div class="detail-panel">

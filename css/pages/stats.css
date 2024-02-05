@@ -58,22 +58,14 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
 .detail-timestamp {
   color: white;
   position: absolute;
-  top: 0.25em;
+  top: 1.25em;
   right: 2em;
 }
 
 .detail-identifier {
   color: white;
   position: absolute;
-  top: 1.75em;
-  right: 2em;
-  opacity: 40%;
-}
-
-.detail-link {
-  color: white;
-  position: absolute;
-  top: 3.25em;
+  top: 2.75em;
   right: 2em;
   opacity: 40%;
 }
