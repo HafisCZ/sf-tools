@@ -51,14 +51,30 @@ const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
             this.close();
         });
 
-        this.$parent.operator('save').click(() => {
-            Toast.error('WIP', 'Not implemented yet!')
+        this.$parent.operator('save').click(async () => {
+            if (this.objects.length > 1) {
+                // Link objects together
+                await DatabaseManager.link(
+                    this.objects.map((object) => object.Latest.LinkId),
+                    this.objects[0].Latest.LinkId
+                );
 
-            this.callback(false);
+                // TODO: Update script assignments?
+
+                this.callback(true)
+            } else {
+                // Unlink objects
+                await DatabaseManager.unlink(
+                    this.objects[0].Latest.LinkId
+                );
+
+                this.callback(true);
+            }
+            
             this.close();
         })
     }
-    
+
     _applyArguments (linkIds, callback) {
         this.callback = callback;
         this.objects = _sortDesc(linkIds.map((linkId) => DatabaseManager.getAny(linkId)), (object) => object.LatestTimestamp);
@@ -75,8 +91,8 @@ const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
             this.$link.hide();
             this.$unlink.show();
 
-            this.$link.operator('list1').html(this._createItem(this.objects[0].Latest));
-            this.$link.operator('list2').html(Object.values(this.objects[0].Links).map((link) => this._createItem(link)).join(''));
+            this.$unlink.operator('list1').html(this._createItem(this.objects[0].Latest));
+            this.$unlink.operator('list2').html(Object.values(this.objects[0].Links).map((link) => this._createItem(link)).join(''));
         }
     }
 })

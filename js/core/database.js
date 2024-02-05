@@ -752,36 +752,96 @@ class DatabaseManager {
         await this.#interface.clear('links');
     }
 
-    static isLink (identifier) {
-        return identifier && identifier.includes('::');
+    static async unlink (sourceLink) {
+        const identifiers = this.getLinkedIdentifiers(sourceLink);
+
+        // Objects that are affected
+        const { players, groups } = this.getFile([sourceLink], null);
+
+        const objects = [
+            ...players,
+            ...groups
+        ];
+
+        // Unload objects
+        for (const timestamp of this.Identifiers.values(sourceLink)) {
+            this.#unload(sourceLink, timestamp);
+        }
+
+        // Separate all links
+        for (const identifier of identifiers) {
+            this.#links.set(identifier, identifier);
+            this.#linksLookup.set(identifier, [ identifier ]);
+
+            await this.#interface.set('links', { id: identifier, pid: identifier });
+        }
+
+        // Add players and groups back to be registered with new links
+        for (const object of objects) {
+            if (this.isPlayer(object.identifier)) {
+                this.#addPlayer(object);
+            } else {
+                this.#addGroup(object);
+            }
+        }
+
+        // Reload lists
+        this.#updateLists();
     }
 
-    static async unlink (identifier) {
-        const linkId = this.getLink(identifier);
+    static async link (sourceLinks, targetLink) {
+        // Update all existing links
+        const targetLookup = this.#linksLookup.get(targetLink);
 
-        if (linkId) {
-            this.#links.remove(identifier);
+        // Objects that are affected
+        const objects = [];
 
-            const lookup = this.#linksLookup.get(linkId);
-            if (lookup.length > 1) {
-                this.#linksLookup.set(linkId, lookup.filter((item) => item !== identifier))
-            } else {
-                this.#linksLookup.remove(linkId);
+        for (const sourceLink of sourceLinks) {
+            if (sourceLink === targetLink) {
+                // Skip for target link as it is already registered
+                continue;
             }
 
-            await this.#interface.remove('links', identifier);
+            for (const identifier of this.getLinkedIdentifiers(sourceLink)) {
+                this.#links.set(identifier, targetLink);
+
+                targetLookup.push(identifier);
+
+                // Save link  to database
+                await this.#interface.set('links', { id: identifier, pid: targetLink });
+            }
+
+            // Remove from lookup as link shouldnt exist anymore afterwards
+            this.#linksLookup.delete(sourceLink);
+
+            // Add objects to array
+            const { players, groups } = this.getFile([sourceLink], null);
+
+            objects.push(...players);
+            objects.push(...groups);
+
+            // Unload
+            for (const timestamp of this.Identifiers.values(sourceLink)) {
+                this.#unload(sourceLink, timestamp);
+            }
+
+            // TODO: Update trackers
         }
-    }
 
-    static async link (identifier, linkId) {
-        this.#links.set(identifier, linkId);
+        // Set lookup to new array
+        this.#linksLookup.set(targetLink, _uniq(targetLookup));
 
-        const lookup = this.#linksLookup.get(linkId);
-        lookup.push(identifier);
+        // Add players and groups back to be registered with new links
+        for (const object of objects) {
+            if (this.isPlayer(object.identifier)) {
+                this.#addPlayer(object);
+            } else {
+                this.#addGroup(object);
+            }
+        }
 
-        this.#linksLookup.set(linkId, lookup);
-
-        await this.#interface.set('links', { id: identifier, pid: linkId });
+        // Reload lists
+        this.#updateLists();
     }
 
     static getLinkedIdentifiers (linkId) {
@@ -1534,11 +1594,11 @@ class DatabaseManager {
     }
 
     static isPlayer (identifier) {
-        return /_p\d/.test(identifier) || /^p::/.test(identifier);
+        return /_p\d/.test(identifier);
     }
 
     static isGroup (identifier) {
-        return /_g\d/.test(identifier) || /^g::/.test(identifier);;
+        return /_g\d/.test(identifier);
     }
 
     static #normalizeGroup (group) {
