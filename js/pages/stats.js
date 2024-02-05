@@ -328,7 +328,9 @@ class GroupTab extends Tab {
         this.group = DatabaseManager.getGroup(identifier);
 
         this.$name.html(this.group.Latest.Name);
-        this.$identifier.html(`${this.group.Latest.Identifier} / ${this.identifier}`);
+
+        const links = DatabaseManager.getLinkedIdentifiers(this.identifier);
+        this.$identifier.html(links.length === 1 ? links[0] : links.join(' / '));
 
         var listTimestamp = [];
         var listReference = [];
@@ -627,7 +629,9 @@ class PlayerTab extends Tab {
         }
 
         this.$name.html(this.player.Name);
-        this.$identifier.html(`${this.player.Identifier} / ${this.identifier}`);
+
+        const links = DatabaseManager.getLinkedIdentifiers(this.identifier);
+        this.$identifier.html(links.length === 1 ? links[0] : links.join(' / '));
 
         this.load();
     }
