@@ -796,6 +796,9 @@ class DatabaseManager {
         // Objects that are affected
         const objects = [];
 
+        //  Target tracker
+        let targetTracker = this.#trackedPlayers[targetLink];
+
         for (const sourceLink of sourceLinks) {
             if (sourceLink === targetLink) {
                 // Skip for target link as it is already registered
@@ -825,7 +828,25 @@ class DatabaseManager {
                 this.#unload(sourceLink, timestamp);
             }
 
-            // TODO: Update trackers
+            // Update trackers
+            const sourceTracker = this.#trackedPlayers[sourceLink];
+            if (sourceTracker) {
+                targetTracker = Object.assign(sourceTracker, targetTracker || {});
+
+                delete this.#trackedPlayers[sourceLink];
+
+                await this.#interface.remove('trackers', sourceLink);
+            }
+        }
+
+        // Update target tracker
+        if (targetTracker) {
+            // Ensure identifier is correct
+            targetTracker.identifier = targetLink;
+
+            this.#trackedPlayers[targetLink] = targetTracker;
+
+            await this.#interface.set('trackers', targetTracker);
         }
 
         // Set lookup to new array
