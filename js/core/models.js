@@ -791,7 +791,7 @@ class PlayerModel {
     };
 
     static MOUNT_MAP = [
-        '', 10, 20, 30, 50
+        '', 10, 20, 30, 50, 50
     ];
 
     constructor (data) {
