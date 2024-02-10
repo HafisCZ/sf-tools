@@ -2844,8 +2844,11 @@ class FilesTab extends Tab {
         }
 
         const groupNameFrequency = {};
-        for (const name of Object.values(this.groupMap)) {
-            if (name in groupNameFrequency) {
+        for (const [id, name] of Object.entries(this.groupMap)) {
+            if (id == '0') {
+                // 0 is a placeholder, ignore it
+                continue;
+            } else if (name in groupNameFrequency) {
                 groupNameFrequency[name]++;
             } else {
                 groupNameFrequency[name] = 1;
