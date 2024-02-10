@@ -27,6 +27,14 @@ function _wrap (object) {
     return Array.isArray(object) ? object : [object];
 }
 
+function _wrapOrEmpty (object) {
+    if (object) {
+        return _wrap(object);
+    } else {
+        return [];
+    }
+}
+
 function _scale (value, oldValue, newValue) {
     return Math.ceil(value / oldValue * newValue);
 }
