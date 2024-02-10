@@ -697,7 +697,10 @@ class Actions {
                 const tag = tagExpression.eval(scope);
 
                 for (const player of players) {
-                    player.Data.tag = tag;
+                    let existingTags = _wrap(player.Data.tag || [])
+                    _pushUnlessIncludes(existingTags, tag);
+
+                    player.Data.tag = existingTags;
                 }
             }
         }
@@ -710,7 +713,12 @@ class Actions {
                 const scope = new ExpressionScope().with(player, player);
 
                 if (conditionExpression.eval(scope)) {
-                    player.Data.tag = tagExpression.eval(scope);
+                    const tag = tagExpression.eval(scope);
+
+                    let existingTags = _wrap(player.Data.tag || [])
+                    _pushUnlessIncludes(existingTags, tag);
+
+                    player.Data.tag = existingTags;
                 }
             }
         }
