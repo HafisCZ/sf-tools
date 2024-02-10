@@ -1232,7 +1232,7 @@ const StatisticsIntegration = new (class {
                 this.$list.append($button);
             }
         } else {
-            this.generator(DatabaseManager, this.$list);
+            this.generator(DatabaseManager, this.$list, this._callback.bind(this));
         }
     }
 
