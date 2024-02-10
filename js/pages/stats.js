@@ -863,7 +863,7 @@ class GroupsTab extends Tab {
                 } else if (key == '#') {
                     terms.push({
                         test: (arg, current) => {
-                            return current.Data.tag && arg.some(rarg => current.Data.tag == rarg);
+                            return current.Data.tag && _wrapOrEmpty(current.Data.tag).some((tag) => arg.includes(tag));
                         },
                         arg: arg.split('|').map(rarg => rarg.trim())
                     })
@@ -1402,8 +1402,8 @@ class PlayersTab extends Tab {
                     });
                 } else if (key == '#') {
                     terms.push({
-                        test: (arg, player) => {
-                            return player.Data.tag && arg.some(rarg => player.Data.tag == rarg);
+                        test: (arg, current) => {
+                            return current.Data.tag && _wrapOrEmpty(current.Data.tag).some((tag) => arg.includes(tag));
                         },
                         arg: arg.split('|').map(rarg => rarg.trim())
                     })
@@ -2630,7 +2630,7 @@ class FilesTab extends Tab {
                 // Timestamps
                 timestamps.length === 0 || timestamps.includes(data.timestamp),
                 // Tags
-                tags.length === 0 || tags.includes(`${data.tag}`),
+                tags.length === 0 || _wrapOrEmpty(data.tag).some((tag) => tags.includes(tag)),
                 // Ownership
                 !ownership || data.own != ownership - 1,
                 // Type
@@ -2661,7 +2661,7 @@ class FilesTab extends Tab {
                     <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
                     <td>${ entry.name }</td>
                     <td>${ isPlayer ? (this.groupMap[entry.group] || '') : '' }</td>
-                    <td>${ entry.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(entry.tag)}; color: white;">${entry.tag}</div>` : '' }</td>
+                    <td>${ _wrapOrEmpty(entry.tag).map((tag) => `<div class="ui horizontal label" style="background-color: ${_strToHSL(tag)}; color: white;">${tag}</div>`).join('') }</td>
                 </tr>
             `
         });
@@ -2723,10 +2723,12 @@ class FilesTab extends Tab {
 
     updateFileSearchResults () {
         let currentFilesAll = (SiteOptions.groups_empty ? Array.from(DatabaseManager.Timestamps.keys()) : DatabaseManager.PlayerTimestamps).map((ts) => {
+            const playerCount = _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isPlayer(id));
+
             return {
                 timestamp: ts,
                 prettyDate: _formatDate(ts),
-                playerCount: _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isPlayer(id)),
+                playerCount,
                 groupCount: _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isGroup(id)),
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
                 tags: (() => {
@@ -2735,7 +2737,7 @@ class FilesTab extends Tab {
 
                     let tagContent = '';
                     for (const [name, count] of tagEntries) {
-                        const countText = tagEntries.length > 1 ? ` (${count})` : '';
+                        const countText = count !== playerCount ? ` (${count})` : '';
 
                         if (name === 'undefined') {
                             if (tagEntries.length > 1) {
@@ -2757,7 +2759,7 @@ class FilesTab extends Tab {
                 })()
             }
         }).filter(({ tags: { tagList } }) => {
-            return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
+            return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.length === 0 && this.tagFilter === '');
         });
 
         if (this.expressionFilter && this.expressionFilter.isValid()) {

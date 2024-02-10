@@ -3143,9 +3143,10 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'header', 'public', 'Tag',
+  'header', 'public', 'Tags',
   {
-    expr: p => p.Data.tag,
+    expr: p => _wrapOrEmpty(p.Data.tag),
+    format: (p, x) => x.join(', '),
     difference: false,
     statistics: false
   }

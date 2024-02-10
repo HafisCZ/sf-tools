@@ -697,7 +697,7 @@ class Actions {
                 const tag = tagExpression.eval(scope);
 
                 for (const player of players) {
-                    let existingTags = _wrap(player.Data.tag || [])
+                    let existingTags = _wrapOrEmpty(player.Data.tag)
                     _pushUnlessIncludes(existingTags, tag);
 
                     player.Data.tag = existingTags;
@@ -715,7 +715,7 @@ class Actions {
                 if (conditionExpression.eval(scope)) {
                     const tag = tagExpression.eval(scope);
 
-                    let existingTags = _wrap(player.Data.tag || [])
+                    let existingTags = _wrapOrEmpty(player.Data.tag)
                     _pushUnlessIncludes(existingTags, tag);
 
                     player.Data.tag = existingTags;

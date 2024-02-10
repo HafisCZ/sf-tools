@@ -1828,12 +1828,14 @@ class DatabaseManager {
         for (const timestamp of requestedTimestamps) {
             for (const identifier of this.Timestamps.values(timestamp)) {
                 if (this.isPlayer(identifier)) {
-                    const tag = _dig(this.Players, identifier, timestamp, 'Data', 'tag');
+                    const playerTags = _wrapOrEmpty(_dig(this.Players, identifier, timestamp, 'Data', 'tag'));
 
-                    if (tags[tag]) {
-                        tags[tag] += 1;
-                    } else {
-                        tags[tag] = 1;
+                    for (const tag of playerTags) {
+                        if (tags[tag]) {
+                            tags[tag] += 1;
+                        } else {
+                            tags[tag] = 1;
+                        }
                     }
                 }
             }
