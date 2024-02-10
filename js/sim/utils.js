@@ -505,18 +505,9 @@ const SimulatorUtils = class {
         const oldDefinition = CONFIG.fromIndex(WARRIOR);
         const newDefinition = CONFIG.fromIndex(newClass);
 
-        // Helper methods
-        const getAttributeList = function (attribute) {
-            return {
-                'Strength': ['Strength', 'Dexterity', 'Intelligence'],
-                'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
-                'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
-            }[attribute]
-        }
-
         const swapAttributes = function (obj) {
-            const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
-            const newAttributes = getAttributeList(newDefinition.Attribute);
+            const oldattributes = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[oldDefinition.Attribute].map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
+            const newAttributes = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[newDefinition.Attribute];
 
             for (let i = 0; i < 3; i++) {
                 for (const type of ['Base', 'Total']) {
