@@ -1947,7 +1947,7 @@ ScriptCommands.register(
         let ast1 = Expression.create(tag);
         let ast2 = Expression.create(expr);
         if (ast1 && ast2) {
-            root.addActionEntry('tag', type, ast1, ast2);
+            root.addActionEntry(`tag_${type}`, ast1, ast2);
         }
     },
     (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, Actions.EXPRESSION_CONFIG).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
@@ -1961,10 +1961,39 @@ ScriptCommands.register(
     (root, expr) => {
         let ast1 = Expression.create(expr);
         if (ast1) {
-            root.addActionEntry('remove', 'player', ast1);
+            root.addActionEntry('reject_player', ast1);
         }
     },
-    (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
+    (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG),
+    { isDeprecated: 'ACTION_REJECT_PLAYER_IF' }
+)
+
+ScriptCommands.register(
+    'ACTION_REJECT_PLAYER_IF',
+    ScriptType.Action,
+    'reject player if <expression>',
+    /^reject player if (.+)$/,
+    (root, expr) => {
+        let ast1 = Expression.create(expr);
+        if (ast1) {
+            root.addActionEntry('reject_player', ast1);
+        }
+    },
+    (root, expr) => Highlighter.keyword('reject ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
+)
+
+ScriptCommands.register(
+    'ACTION_SELECT_PLAYER_IF',
+    ScriptType.Action,
+    'select player if <expression>',
+    /^select player if (.+)$/,
+    (root, expr) => {
+        let ast1 = Expression.create(expr);
+        if (ast1) {
+            root.addActionEntry('select_player', ast1);
+        }
+    },
+    (root, expr) => Highlighter.keyword('select ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 )
 
 ScriptCommands.register(
@@ -2705,9 +2734,8 @@ class Script {
         };
     }
 
-    addActionEntry (action, type, ...args) {
+    addActionEntry (type, ...args) {
         this.actions.push({
-            action,
             type,
             args
         });

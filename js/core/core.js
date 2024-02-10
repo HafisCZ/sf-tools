@@ -663,47 +663,65 @@ class Actions {
         this.#executeScript();
     }
 
-    static async apply (playerData, groupData) {
-        if (_notEmpty(this.#actions)) {
-            let players = playerData.map(({identifier, timestamp}) => DatabaseManager.getPlayer(identifier, timestamp));
-            let groups = groupData.map(({identifier, timestamp}) => DatabaseManager.getGroup(identifier, timestamp));
+    static apply (unfilteredPlayers, unfilteredGroups) {
+        if (_empty(this.#actions)) {
+            return {
+                players: unfilteredPlayers,
+                groups: unfilteredGroups
+            }
+        } else {
+            const players = unfilteredPlayers.map((data) => new PlayerModel(data));
+            const groups = unfilteredGroups.map((data) => new GroupModel(data));
 
-            for (const action of this.#actions) {
-                Logger.log('ACTIONS', `Applying action ${action.action}`)
-                await this.#applyAction(action, players, groups);
+            this.#applyTags(players, groups);
+            this.#applyFilters(players, groups);
+
+            return {
+                players: players.map((player) => player.Data),
+                groups: groups.map((group) => group.Data)
             }
         }
     }
 
-    static async #applyAction ({ action, type, args }, players, groups) {
-        if (action == 'tag') {
-            const [tagExpr, conditionExpr] = args;
+    static #applyTags (players, groups) {
+        const tagFile = this.#actions.filter((action) => action.type === 'tag_file');
+        for (const { type, args: [tagExpression, conditionExpression] } of tagFile) {
+            Logger.log('ACTIONS', `Applying action ${type}`)
 
-            if (type == 'player') {
+            const scope = new ExpressionScope().add({
+                players: Object.assign(players.map(p => [p, p]), { segmented: true }),
+                groups
+            });
+
+            if (conditionExpression.eval(scope)) {
+                const tag = tagExpression.eval(scope);
+
                 for (const player of players) {
-                    let scope = new ExpressionScope().with(player, player);
-                    if (conditionExpr.eval(scope)) {
-                        let tag = tagExpr.eval(scope);
-                        if (player.Data.tag != tag) {
-                            await DatabaseManager.setTagFor(player.LinkId, player.Timestamp, tag);
-                        }
-                    }
+                    player.tag = tag;
                 }
-            } else if (type == 'file') {
-                let mappedPlayers = Object.assign(players.map(p => [p, p]), { segmented: true });
-                let scope = new ExpressionScope().add({ players: mappedPlayers, groups });
-                if (conditionExpr.eval(scope)) {
-                    const tag = tagExpr.eval(scope);
-                    for (const { LinkId: id, Timestamp: ts, Data: data } of players) {
-                        if (data.tag != tag) {
-                            await DatabaseManager.setTagFor(id, ts, tag);
-                        }
-                    }
-                }
-            } else {
-                throw 'Invalid action';
             }
-        } else if (action == 'remove') {
+        }
+
+        const tagPlayer = this.#actions.filter((action) => action.type === 'tag_player');
+        for (const { type, args: [tagExpression, conditionExpression] } of tagPlayer) {
+            Logger.log('ACTIONS', `Applying action ${type}`)
+
+            for (const player of players) {
+                const scope = new ExpressionScope().with(player, player);
+
+                if (conditionExpression.eval(scope)) {
+                    player.tag = tagExpression.eval(scope);
+                }
+            }
+        }
+    }
+
+    static #applyFilters (players, groups) {
+
+    }
+
+    static async #applyAction ({ action, type, args }, players, groups) {
+         if (action == 'remove') {
             const [conditionExpr] = args;
 
             if (type == 'player') {
