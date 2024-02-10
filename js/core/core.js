@@ -697,7 +697,7 @@ class Actions {
                 const tag = tagExpression.eval(scope);
 
                 for (const player of players) {
-                    player.tag = tag;
+                    player.Data.tag = tag;
                 }
             }
         }
@@ -710,36 +710,30 @@ class Actions {
                 const scope = new ExpressionScope().with(player, player);
 
                 if (conditionExpression.eval(scope)) {
-                    player.tag = tagExpression.eval(scope);
+                    player.Data.tag = tagExpression.eval(scope);
                 }
             }
         }
     }
 
     static #applyFilters (players, groups) {
+        const selects = this.#actions.filter((action) => action.type === 'select_player').map((action) => action.args[0]);
+        const rejects = this.#actions.filter((action) => action.type === 'reject_player').map((action) => action.args[0]);
 
-    }
+        if (rejects.length) {
+            _filterInPlace(players, (player) => {
+                const scope = new ExpressionScope().with(player, player);
 
-    static async #applyAction ({ action, type, args }, players, groups) {
-         if (action == 'remove') {
-            const [conditionExpr] = args;
+                return !rejects.some((expression) => expression.eval(scope));
+            })
+        }
 
-            if (type == 'player') {
-                let playersToRemove = [];
+        if (selects.length) {
+            _filterInPlace(players, (player) => {
+                const scope = new ExpressionScope().with(player, player);
 
-                for (const player of players) {
-                    let scope = new ExpressionScope().with(player, player);
-                    if (conditionExpr.eval(scope)) {
-                        playersToRemove.push(player.Data);
-                    }
-                }
-
-                await DatabaseManager.remove(playersToRemove);
-            } else {
-                throw 'Invalid action';
-            }
-        } else {
-            throw 'Invalid action';
+                return selects.some((expression) => expression.eval(scope));
+            })
         }
     }
 
