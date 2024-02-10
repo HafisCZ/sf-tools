@@ -693,7 +693,7 @@ class Actions {
                 groups
             });
 
-            if (conditionExpression.eval(scope)) {
+            if (conditionExpression ? conditionExpression.eval(scope) : true) {
                 const tag = tagExpression.eval(scope);
 
                 for (const player of players) {
@@ -712,7 +712,7 @@ class Actions {
             for (const player of players) {
                 const scope = new ExpressionScope().with(player, player);
 
-                if (conditionExpression.eval(scope)) {
+                if (conditionExpression ? conditionExpression.eval(scope) : true) {
                     const tag = tagExpression.eval(scope);
 
                     let existingTags = _wrapOrEmpty(player.Data.tag)
