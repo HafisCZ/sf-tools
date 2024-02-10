@@ -794,6 +794,29 @@ class PlayerModel {
         '', 10, 20, 30, 50, 50
     ];
 
+    static ATTRIBUTES = [
+        'Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'
+    ]
+
+    static ATTRIBUTE_TO_TYPE = {
+        'Strength': 1,
+        'Dexterity': 2,
+        'Intelligence': 3,
+        'Constitution': 4,
+        'Luck': 5
+    }
+
+    static ATTRIBUTE_ORDER = [
+        ['Strength', 'Dexterity', 'Intelligence'],
+        ['Dexterity', 'Strength', 'Intelligence'],
+        ['Intelligence', 'Strength', 'Dexterity']
+    ]
+
+    static ATTRIBUTE_ORDER_BY_ATTRIBUTE = ['Strength', 'Dexterity', 'Intelligence'].reduce((memo, attribute, index) => {
+        memo[attribute] = this.ATTRIBUTE_ORDER[index];
+        return memo;
+    }, Object.create(null))
+
     constructor (data) {
         if (data) {
             this.#initShared(data);

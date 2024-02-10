@@ -3,12 +3,6 @@
 class HellevatorEnemies {
   static #enemies = {}
 
-  static HELLEVATOR_ATTRIBUTE_MAP = [
-    ['Strength', 'Dexterity', 'Intelligence'],
-    ['Intelligence', 'Strength', 'Dexterity'],
-    ['Dexterity', 'Strength', 'Intelligence']
-  ]
-
   static HELLEVATOR_THEMES = [
     7, 6, 5, 4, 3, 2, 1, 0
   ]
@@ -96,7 +90,7 @@ class HellevatorEnemies {
     };
 
     for (let i = 0; i < 3; i++) {
-      const name = this.HELLEVATOR_ATTRIBUTE_MAP[klass - 1][i];
+      const name = PlayerModel.ATTRIBUTE_ORDER[klass - 1][i];
 
       obj[name] = {
         Total: i === 0 ? main : side

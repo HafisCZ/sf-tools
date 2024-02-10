@@ -14,16 +14,8 @@ Site.ready({ type: 'simulator' }, function () {
         def: 10000,
         validator: (value)=> !isNaN(value) && value >= 1
     })
-    
-    const getAttributeList = function (attribute) {
-        return {
-            'Strength': ['Strength', 'Dexterity', 'Intelligence'],
-            'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
-            'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
-        }[attribute]
-    }
 
-    const ATTRIBUTE_MAP = CONFIG.classes().map((data) => getAttributeList(data.Attribute));
+    const ATTRIBUTE_MAP = CONFIG.classes().map((data) => PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[data.Attribute]);
 
     Editor.createPasteTarget();
 

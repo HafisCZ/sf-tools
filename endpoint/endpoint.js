@@ -1024,17 +1024,9 @@ const StatisticsIntegration = new (class {
             const oldDefinition = CONFIG.fromIndex(player.Class);
             const newDefinition = CONFIG.fromIndex(this.cheats.class);
 
-            const getAttributeList = function (attribute) {
-                return {
-                    'Strength': ['Strength', 'Dexterity', 'Intelligence'],
-                    'Dexterity': ['Dexterity', 'Strength', 'Intelligence'],
-                    'Intelligence': ['Intelligence', 'Strength', 'Dexterity']
-                }[attribute]
-            }
-
             const swapAttributes = function (obj) {
-                const oldattributes = getAttributeList(oldDefinition.Attribute).map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
-                const newAttributes = getAttributeList(newDefinition.Attribute);
+                const oldattributes = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[oldDefinition.Attribute].map((kind) => _dig(obj, kind)).map((att) => ({ Base: att.Base, Total: att.Total }));
+                const newAttributes = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[newDefinition.Attribute];
 
                 for (let i = 0; i < 3; i++) {
                     for (const type of ['Base', 'Total']) {
@@ -1044,16 +1036,8 @@ const StatisticsIntegration = new (class {
             }
 
             // Morph all items to desired class
-            const getAttributeID = (attribute) => {
-                return {
-                    'Strength': 1,
-                    'Dexterity': 2,
-                    'Intelligence': 3
-                }[attribute]
-            }
-
             for (const [type, item] of Object.entries(player.Items)) {
-                player.Items[type] = item.morph(getAttributeID(oldDefinition.Attribute), getAttributeID(newDefinition.Attribute), true);
+                player.Items[type] = item.morph(PlayerModel.ATTRIBUTE_TO_TYPE[oldDefinition.Attribute], PlayerModel.ATTRIBUTE_TO_TYPE[newDefinition.Attribute], true);
             }
 
             // Swap attributes
@@ -1078,7 +1062,7 @@ const StatisticsIntegration = new (class {
         if (potions.length > 0 || this.cheats.pets || this.cheats.class) {
             this.#applyCheat(player, (model) => {
                 // Remove pre-calculated bonus
-                for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
+                for (let type of PlayerModel.ATTRIBUTES) {
                     model[type].Bonus = undefined;
                 }
 
