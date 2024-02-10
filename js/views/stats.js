@@ -154,7 +154,7 @@ const FileEditDialog = new (class FileEditDialog extends Dialog {
   }
 })();
 
-const EditFileTagDialog = new (class EditFileTagDialog extends Dialog {
+const TagDialog = new (class TagDialog extends Dialog {
   constructor () {
       super({
           key: 'edit_file_tag',
@@ -164,63 +164,106 @@ const EditFileTagDialog = new (class EditFileTagDialog extends Dialog {
 
   _createModal () {
       return `
-          <div class="small bordered inverted dialog">
-              <div class="header">${this.intl('title')}</div>
-              <div class="ui inverted form">
-                  <div class="field">
-                      <label>${this.intl('current')}:</label>
-                      <div class="ui inverted input">
-                          <input data-op="old-tags" type="text" placeholder="${this.intl('none')}" disabled>
-                      </div>
-                  </div>
-                  <div class="field">
-                      <label>${this.intl('replacement')}:</label>
-                      <div class="ui inverted input">
-                          <input data-op="new-tags" type="text" placeholder="${this.intl('none')}">
-                      </div>
-                  </div>
+        <div class="small bordered inverted dialog">
+          <div class="header">${this.intl('title')}</div>
+          <div class="ui inverted form">
+            <div class="field">
+              <label>${this.intl('current')}</label>
+              <div data-op="tags" class="flex flex-col gap-2" style="height: 150px;"></div>
+            </div>
+            <div class="field">
+              <label>${this.intl('insert.title')}</label>
+              <div class="ui icon right action inverted input">
+                <input type="text" placeholder="${this.intl('insert.placeholder')}" data-op="insert-input">
+                <div class="ui inverted basic compact button" data-inverted="" data-op="insert-button" data-tooltip="${this.intl('insert.tooltip')}">
+                  <i class="fitted plus icon"></i>
+                </div>
               </div>
-              <div class="ui two fluid buttons">
-                  <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
-                  <button class="ui button !text-black !background-orange" data-op="save">${this.intl('save')}</button>
-              </div>
+            </div>
           </div>
+          <div class="ui two fluid buttons">
+            <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
+            <button class="ui button !text-black !background-orange" data-op="save">${this.intl('save')}</button>
+          </div>
+        </div>
       `;
   }
 
   _createBindings () {
-      this.$oldTags = this.$parent.find('[data-op="old-tags"]');
-      this.$newTags = this.$parent.find('[data-op="new-tags"]');
+    this.$tags = this.$parent.operator('tags');
+    this.$tags.click((event) => {
+      if (event.target.nodeName === 'I') {
+        this.tags.splice(+event.target.closest('[data-tag]').dataset.tag, 1);
+        this.#renderTags();
+      }
+    })
 
-      this.$parent.find('[data-op="cancel"]').click(() => {
-          this.close();
-      });
+    this.$insertInput = this.$parent.operator('insert-input');
 
-      this.$parent.find('[data-op="save"]').click(() => {
-          const tag = this.$newTags.val().trim();
-          this.close();
-          Loader.toggle(true);
-          DatabaseManager.setTag(this.timestamps, tag).then(this.callback);
-      });
+    this.$insertButton = this.$parent.operator('insert-button');
+    this.$insertButton.click(() => {
+      const name = this.$insertInput.val().trim();
+      if (name) {
+        _pushUnlessIncludes(this.tags, name);
+        this.#renderTags();
+
+        this.$insertInput.val('');
+      }
+    })
+
+    this.$parent.find('[data-op="cancel"]').click(() => {
+      this.close();
+    });
+
+    this.$parent.find('[data-op="save"]').click(async () => {
+      this.close();
+
+      const instances = this.type === 'timestamps' ? DatabaseManager.getFile(undefined, this.array).players : this.array;
+
+      Loader.toggle(true);
+
+      await DatabaseManager.setTags(instances, this.tags);
+
+      this.callback();
+    });
   }
 
-  _applyArguments (timestamps, callback) {
-      this.timestamps = timestamps;
+  #renderTags () {
+    let html = '';
+
+    for (let i = 0; i < this.tags.length; i++) {
+      const tag = this.tags[i]
+
+      html += `
+        <div data-tag="${i}" class="flex items-center justify-content-between" style="background-color: ${_strToHSL(tag)}; color: white; border-radius: 0.5em; padding: 0.5em 1em;">
+          <div>${tag}</div>
+          <i class="cursor-pointer ui text-black close icon"></i>
+        </div>
+      `;
+    }
+
+    this.$tags.html(html);
+  }
+
+  #getTags () {
+    if (this.type === 'timestamps') {
+      return Object.keys(DatabaseManager.getTagsForTimestamp(this.array));
+    } else {
+      return _uniq(this.array.flatMap((instance) => _wrapOrEmpty(instance.tag)));
+    }
+  }
+
+  // Type would be either timestamps or instances
+  _applyArguments (type, array, callback) {
+      this.type = type;
+      this.array = array;
       this.callback = callback;
 
-      const tags = Object.entries(DatabaseManager.findUsedTags(timestamps));
-      if (tags.length == 1) {
-          const tag = _dig(tags, 0, 0);
-          if (tag == 'undefined') {
-              this.$oldTags.val('');
-          } else {
-              this.$oldTags.val(tag);
-          }
-      } else {
-          this.$oldTags.val(tags.map(([key, count]) => `${key === 'undefined' ? this.intl('none') : key} (${count})`).join(', '));
-      }
+      this.$insertInput.val('');
 
-      this.$newTags.val('');
+      this.tags = this.#getTags();
+
+      this.#renderTags();
   }
 })();
 
