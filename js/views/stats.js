@@ -167,7 +167,7 @@ const TagDialog = new (class TagDialog extends Dialog {
         <div class="small bordered inverted dialog">
           <div class="header">${this.intl('title')}</div>
           <div class="ui inverted form">
-            <div class="field" style="height: 150px;">
+            <div class="field" style="min-height: 150px;">
               <label>${this.intl('current')}</label>
               <div data-op="tags" class="flex flex-wrap gap-2" style=""></div>
             </div>
@@ -189,6 +189,16 @@ const TagDialog = new (class TagDialog extends Dialog {
       `;
   }
 
+  #insertTag () {
+    const name = this.$insertInput.val().trim();
+    if (name) {
+      _pushUnlessIncludes(this.tags, name);
+      this.#renderTags();
+
+      this.$insertInput.val('');
+    }
+  }
+
   _createBindings () {
     this.$tags = this.$parent.operator('tags');
     this.$tags.click((event) => {
@@ -199,17 +209,14 @@ const TagDialog = new (class TagDialog extends Dialog {
     })
 
     this.$insertInput = this.$parent.operator('insert-input');
+    this.$insertInput.keydown((event) => {
+        if (event.originalEvent.key === 'Enter') {
+            this.#insertTag()
+        }
+    });
 
     this.$insertButton = this.$parent.operator('insert-button');
-    this.$insertButton.click(() => {
-      const name = this.$insertInput.val().trim();
-      if (name) {
-        _pushUnlessIncludes(this.tags, name);
-        this.#renderTags();
-
-        this.$insertInput.val('');
-      }
-    })
+    this.$insertButton.click(() => this.#insertTag());
 
     this.$parent.find('[data-op="cancel"]').click(() => {
       this.close();
