@@ -26,8 +26,10 @@ const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
             'Added support for manual server merging',
+            'Added support for multiple tags per player',
             'Added support for capturing player descriptions',
             'Added support for capturing guild descriptions',
+            'Added <code>select</code> and <code>reject</code> actions for better player filtering',
             'Added multiple performance optimizations',
             'Added <code>Attribute type</code> header',
             'Added display value for legacy fox mount',
@@ -35,12 +37,14 @@ const CHANGELOG = {
             'Fixed quick swap in guild table',
             'Fixed broken items when exporting only public data',
             'Fixed companion gem bonus applying twice',
-            'Fixed error when pressing ESC in script editor with no table set'
+            'Fixed error when pressing ESC in script editor with no table set',
+            'Fixed advanced file list not acessible with guild named None'
         ],
         'Dungeon Simulator': [
             'Fixed mirror enemy health for shadow variant',
             'Fixed mirror enemy class image not appearing',
-            'Fixed broken enemy dropdown'
+            'Fixed broken enemy dropdown',
+            'Fixed berserker dungeon enemy auto armor calculation'
         ],
         'Guild Simulator': [
             'Fixed inactivity health reduction'
