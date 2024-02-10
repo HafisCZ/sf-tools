@@ -251,8 +251,8 @@ const CONFIG = Object.defineProperties(
             HealthMultiplier: 4,
             WeaponMultiplier: 2,
             DamageMultiplier: 1.25,
-            MaximumDamageReduction: 25,
-            MaximumDamageReductionMultiplier: 1,
+            MaximumDamageReduction: 50,
+            MaximumDamageReductionMultiplier: 0.5,
 
             SkipChance: 0.5,
             SkipLimit: 14,
