@@ -520,8 +520,12 @@
             "player_companions": "Kopiuj wraz z pomocnikami"
         },
         "context": {
+            "title": "Apply action to selected items",
             "hide": "Pokaż / Ukryj",
-            "remove": "Usuń na stałe"
+            "remove": "Usuń na stałe",
+            "link_players": "Merge / split characters",
+            "link_groups": "Merge / split guilds",
+            "unselect": "Deselect all"
         },
         "profiles": {
             "players": "Gracze",
@@ -1341,6 +1345,7 @@
             "title": "Ładowanie Endpoint"
         },
         "step3": {
+            "toggle": "Toggle all",
             "title": "Wybierz graczy do zeskanowania"
         },
         "step4": {
@@ -1401,6 +1406,19 @@
             "close": "Zamknij",
             "ok": "Ok",
             "apply": "Zastosuj"
+        },
+        "manage_link": {
+            "title": "Manage player / guild merge",
+            "link": {
+                "heading1": "Merge following objects",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
+            },
+            "unlink": {
+                "heading1": "Split following object",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will remain under the source object."
+            }
         },
         "dungeons_options": {
             "title": "Opcje symulatora",
