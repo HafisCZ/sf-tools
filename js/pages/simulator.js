@@ -480,7 +480,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         profile: FIGHT_SIMULATOR_PROFILE,
         type: 'players',
         cheats: true,
-        generator: function (dm, $list) {
+        generator: function (dm, $list, callback) {
             for (let [prefix, players] of Object.entries(_groupBy(dm.getLatestPlayers(), p => p.Prefix))) {
                 $list.append($(`
                     <div class="ui fluid basic left pointing scrolling dropdown small button inverted !text-center !mt-2">
@@ -505,7 +505,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     match: 'text',
                     fullTextSearch: true,
                     action: function (_, identifier) {
-                        StatisticsIntegration._callback(dm.getPlayer(identifier).Latest);
+                        callback(dm.getPlayer(identifier).Latest);
                     }
                 }));
             }
