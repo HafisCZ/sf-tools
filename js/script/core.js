@@ -1939,7 +1939,7 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
-    'ACTION_TAG',
+    'ACTION_TAG_CONDITIONAL',
     ScriptType.Action,
     'tag <player|file> as <expression> if <expression>',
     /^tag (player|file) as (.+) if (.+)$/,
@@ -1951,6 +1951,20 @@ ScriptCommands.register(
         }
     },
     (root, type, tag, expr) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, Actions.EXPRESSION_CONFIG).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
+)
+
+ScriptCommands.register(
+    'ACTION_TAG',
+    ScriptType.Action,
+    'tag <player|file> as <expression>',
+    /^tag (player|file) as (.+)$/,
+    (root, type, tag) => {
+        let ast1 = Expression.create(tag);
+        if (ast1) {
+            root.addActionEntry(`tag_${type}`, ast1);
+        }
+    },
+    (root, type, tag) => Highlighter.keyword('tag ').constant(type).keyword(' as ').expression(tag, undefined, Actions.EXPRESSION_CONFIG)
 )
 
 ScriptCommands.register(
