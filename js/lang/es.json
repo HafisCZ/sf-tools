@@ -520,8 +520,12 @@
             "player_companions": "Copiar con compañeros"
         },
         "context": {
+            "title": "Apply action to selected items",
             "hide": "Mostrar / Ocultar",
-            "remove": "Eliminar permanentemente"
+            "remove": "Eliminar permanentemente",
+            "link_players": "Merge / split characters",
+            "link_groups": "Merge / split guilds",
+            "unselect": "Deselect all"
         },
         "profiles": {
             "players": "Jugadores",
@@ -1341,6 +1345,7 @@
             "title": "Cargando Endpoint"
         },
         "step3": {
+            "toggle": "Toggle all",
             "title": "Selecciona jugadores a importar"
         },
         "step4": {
@@ -1401,6 +1406,19 @@
             "close": "Cerrar",
             "ok": "Aceptar",
             "apply": "Apply"
+        },
+        "manage_link": {
+            "title": "Manage player / guild merge",
+            "link": {
+                "heading1": "Merge following objects",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
+            },
+            "unlink": {
+                "heading1": "Split following object",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will remain under the source object."
+            }
         },
         "dungeons_options": {
             "title": "Simulator options",

@@ -307,9 +307,9 @@
         "footer": {
             "beta": "Check out public beta",
             "kofi": "Give mar some shrooms",
-            "crowdin": "Help with translations",
-            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
-            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+            "crowdin": "Aidez-moi pour les traductions",
+            "webshop#": "Utilisez le code <b class=\"text-white\">SFTOOLS</b> dans la Boutique",
+            "notice#": "Distribué <b>TEL QUEL</b>. Ce site n'est pas affilié à <b>Playa Games</b> de quelque manière."
         },
         "stats": {
             "title": "Statistiques",
@@ -362,7 +362,7 @@
         },
         "analyzer": {
             "title": "Analyseur de Combat",
-            "desc": "Display all fights within a file for detailed analysis"
+            "desc": "Affiche tous les combats dans un fichier pour une analyse détaillée"
         },
         "fights": {
             "title": "Visionneuse de Combats PvP",
@@ -386,15 +386,15 @@
         },
         "fortress": {
             "title": "Simulateur de Forteresse",
-            "desc": "Simulate the probable outcome of fortress raid"
+            "desc": "Simuler l'issue probable d'un raid de forteresse"
         },
         "changelog": {
-            "title": "Changelog",
-            "desc": "View all notable changes"
+            "title": "Historique des modifications",
+            "desc": "Regarder tous les changements notables"
         },
         "hellevator": {
-            "title": "Hellevator Simulator",
-            "desc": "Simulate the probable outcome of Hellevator battles"
+            "title": "Simulateur d'Hellevator",
+            "desc": "Simuler l'issue probable des combats dans l'Hellevator"
         }
     },
     "404": {
@@ -403,9 +403,9 @@
     },
     "terms": {
         "title": "Conditions générales",
-        "title2": "Usage",
+        "title2": "Utilisation",
         "button": {
-            "accept_full": "I understand & accept these terms",
+            "accept_full": "Je comprends et accepte ces conditions",
             "accept": "Accepter",
             "reject": "Rejeter"
         },
@@ -419,10 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporaire",
-            "players_grid": "Players",
-            "players": "Browse",
-            "groups_grid": "Guilds",
-            "groups": "Browse (Guilds)",
+            "players_grid": "Joueurs",
+            "players": "Explorer",
+            "groups_grid": "Guildes",
+            "groups": "Explorer (guildes)",
             "scripts": "Scripts",
             "files": "Fichiers",
             "settings": "Paramètres",
@@ -513,15 +513,19 @@
         },
         "copy": {
             "image": "Sauvegarder en tant qu'image",
-            "csv": "Save as CSV",
+            "csv": "Enregistrer au format CSV",
             "basic": "Copier le tableau",
             "fight": "Copier le tableau pour le simulateur PvP",
             "player": "Copier",
             "player_companions": "Copier avec les companions"
         },
         "context": {
+            "title": "Apply action to selected items",
             "hide": "Afficher / Masquer",
-            "remove": "Supprimer définitivement"
+            "remove": "Supprimer définitivement",
+            "link_players": "Merge / split characters",
+            "link_groups": "Merge / split guilds",
+            "unselect": "Deselect all"
         },
         "profiles": {
             "players": "Joueurs",
@@ -536,7 +540,7 @@
         "filters": {
             "types": {
                 "players": "Filtrer les joueurs par serveur, classe, guilde et/ou nom d'utilisateur",
-                "groups": "Filter groups by server or name"
+                "groups": "Filtrer les groupes par serveur ou par nom"
             },
             "c": "Classe du joueur, utilisez le nom complet de la classe en minuscules (ex. : berserker, mage de combat).",
             "p": "Nom de Joueur",
@@ -558,18 +562,18 @@
         "scripts": {
             "settings": "Paramètres",
             "name": "Script actuellement modifié",
-            "list": "Select script",
-            "list_add": "Add new script",
-            "list_search": "Search available scripts ...",
-            "target": "Current table",
-            "script": "Current script",
-            "quick_swap": "Quick swap script",
+            "list": "Sélectionner le script",
+            "list_add": "Ajouter un nouveau script",
+            "list_search": "Chercher des scripts disponibles...",
+            "target": "Table actuelle",
+            "script": "Script actuel",
+            "quick_swap": "Changement rapide de script",
             "targets": {
-                "none": "None"
+                "none": "Aucun"
             },
             "targets_category": {
-                "default": "Defaults",
-                "existing": "Assigned tables"
+                "default": "Par défaut",
+                "existing": "Tableaux assignés"
             },
             "tooltip": {
                 "pin": "Pin script to the top of the list",
@@ -1341,6 +1345,7 @@
             "title": "Loading Endpoint"
         },
         "step3": {
+            "toggle": "Toggle all",
             "title": "Select players to be imported"
         },
         "step4": {
@@ -1401,6 +1406,19 @@
             "close": "Close",
             "ok": "Ok",
             "apply": "Apply"
+        },
+        "manage_link": {
+            "title": "Manage player / guild merge",
+            "link": {
+                "heading1": "Merge following objects",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
+            },
+            "unlink": {
+                "heading1": "Split following object",
+                "heading2": "Into",
+                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will remain under the source object."
+            }
         },
         "dungeons_options": {
             "title": "Simulator options",
