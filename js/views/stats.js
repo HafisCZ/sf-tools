@@ -16,6 +16,7 @@ const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
                     <div class="flex flex-col gap-1" data-op="list1"></div>
                     <div class="font-bold">${this.intl('link.heading2')}</div>
                     <div class="flex flex-col gap-1" data-op="list2"></div>
+                    <br>
                     <div><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('link.warning')}</div>
                 </div>
                 <div class="flex flex-col gap-4" data-op="unlink">
@@ -23,6 +24,7 @@ const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
                     <div class="flex flex-col gap-1" data-op="list1"></div>
                     <div class="font-bold">${this.intl('unlink.heading2')}</div>
                     <div class="flex flex-col gap-1" data-op="list2"></div>
+                    <br>
                     <div><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('unlink.warning')}</div>
                 </div>
                 <div class="ui two fluid buttons">
