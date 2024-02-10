@@ -1,5 +1,5 @@
 const DATABASE_PARAMS = [
-    8,
+    9,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -54,7 +54,7 @@ const DATABASE_PARAMS = [
         },
         {
             shouldApply: version => version < 5,
-            apply: (transaction, database) => {
+            apply: (_transaction, database) => {
                 database.createObjectStore('metadata', { keyPath: 'timestamp' });
             }
         },
@@ -73,13 +73,20 @@ const DATABASE_PARAMS = [
             apply: (_transaction, database) => {
                 database.createObjectStore('links', { keyPath: 'id' })
             }
+        },
+        {
+            shouldApply: (version) => version < 9,
+            apply: (transaction) => {
+                transaction.objectStore('players').deleteIndex('tag')
+                transaction.objectStore('players').createIndex('tag', 'tag', { multiEntry: true })
+            }
         }
     ],
     [
         {
-            shouldApply: version => version < 6,
+            shouldApply: (version) => version < 6,
             apply: async (database) => {
-                const players = await database.all('players');
+                const players = await database.where('players');
                 const groups = await database.all('groups');
                 const entries = [].concat(players, groups);
 
