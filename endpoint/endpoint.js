@@ -894,7 +894,7 @@ const StatisticsIntegration = new (class {
         this.cheats = null;
 
         // Parent
-        this.$parent = $(this._html()).appendTo($(document.body));
+        this.$parent = $(this.#html()).appendTo($(document.body));
 
         // Containers
         this.$container = this.$parent.operator('container');
@@ -902,21 +902,21 @@ const StatisticsIntegration = new (class {
 
         // Buttons
         this.$poll = this.$parent.operator('poll');
-        this.$poll.click(() => this._poll());
+        this.$poll.click(() => this.#poll());
         
         this.$importEndpoint = this.$parent.operator('import-endpoint');
-        this.$importEndpoint.click(() => this._importEndpoint());
+        this.$importEndpoint.click(() => this.#importEndpoint());
         
         this.$importFile = this.$parent.operator('import-file');
-        this.$importFile.change((event) => this._importFile(event));
+        this.$importFile.change((event) => this.#importFile(event));
 
         this.$showOptions = this.$parent.operator('show-options');
         this.$showOptions.toggle(typeof this.generator === 'undefined');
-        this.$showOptions.click(() => this._showOptions());
+        this.$showOptions.click(() => this.#showOptions());
         
         this.$showCheats = this.$parent.operator('show-cheats');
         this.$showCheats.toggle(!!cheats);
-        this.$showCheats.click(() => this._showCheats());
+        this.$showCheats.click(() => this.#showCheats());
 
         // Integration options
         this.options = new OptionsHandler(
@@ -930,7 +930,7 @@ const StatisticsIntegration = new (class {
         )
     }
 
-    _html () {
+    #html () {
         return `
             <div class="position-absolute left-8 top-8 z-2" style="width: 18em;">
                 <div class="ui fluid basic inverted button" data-op="poll"><i class="sync alternate icon"></i>${intl(`integration.poll.${this.type}`)}</div>
@@ -950,12 +950,12 @@ const StatisticsIntegration = new (class {
         `;
     }
 
-    _hideCheats () {
+    #hideCheats () {
         this.cheats = null;
         this.$showCheats.removeClass('!text-orangered');
     }
 
-    _showCheats () {
+    #showCheats () {
         if (this.cheats) {
             StatisticsIntegrationCheatsDialog.openRequested = false
             StatisticsIntegrationCheatsDialog.close();
@@ -964,14 +964,14 @@ const StatisticsIntegration = new (class {
             this.$showCheats.addClass('!text-orangered');
     
             StatisticsIntegrationCheatsDialog.openRequested = true;
-            StatisticsIntegrationCheatsDialog.open(this.cheats).then(() => this._hideCheats());
+            StatisticsIntegrationCheatsDialog.open(this.cheats).then(() => this.#hideCheats());
         }
     }
 
-    _callback (item) {
+    #callback (item) {
         if (this.cheats) {
             const copy = new PlayerModel(item.Data);
-            this._applyCheats(copy);
+            this.#applyCheats(copy);
 
             this.callback(copy);
         } else {
@@ -979,7 +979,7 @@ const StatisticsIntegration = new (class {
         }
     }
 
-    _applyCheat (player, callback) {
+    #applyCheat (player, callback) {
         const models = [player];
         if (player.Companions) {
             models.push(...Object.values(player.Companions));
@@ -988,9 +988,9 @@ const StatisticsIntegration = new (class {
         models.forEach(callback);
     }
 
-    _applyCheats (player) {
+    #applyCheats (player) {
         if (this.cheats.pets) {
-            this._applyCheat(player, (model) => {
+            this.#applyCheat(player, (model) => {
                 model.Pets = {
                     Water: 40,
                     Light: 40,
@@ -1002,7 +1002,7 @@ const StatisticsIntegration = new (class {
         }
 
         if (this.cheats.enchantments) {
-            this._applyCheat(player, (model) => {
+            this.#applyCheat(player, (model) => {
                 for (let item of Object.values(model.Items)) {
                     item.HasEnchantment = true;
                 };
@@ -1012,7 +1012,7 @@ const StatisticsIntegration = new (class {
         // Set potions to player
         const potions = _compact(['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'].map((type, i) => this.cheats[type] ? (i + 1) : null))
         if (potions.length) {
-            this._applyCheat(player, (model) => {
+            this.#applyCheat(player, (model) => {
                 const potionGroup = potions.slice(0, 3);
 
                 model.Potions = potionGroup.map(type => ({ Type: type, Size: 25 }));
@@ -1076,7 +1076,7 @@ const StatisticsIntegration = new (class {
         }
 
         if (potions.length > 0 || this.cheats.pets || this.cheats.class) {
-            this._applyCheat(player, (model) => {
+            this.#applyCheat(player, (model) => {
                 // Remove pre-calculated bonus
                 for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
                     model[type].Bonus = undefined;
@@ -1088,7 +1088,7 @@ const StatisticsIntegration = new (class {
         }
 
         if (this.cheats.runes) {
-            this._applyCheat(player, (model) => {
+            this.#applyCheat(player, (model) => {
                 model.Runes.Health = 15;
                 model.Runes.ResistanceFire = 75;
                 model.Runes.ResistanceCold = 75;
@@ -1102,7 +1102,7 @@ const StatisticsIntegration = new (class {
         }
     }
 
-    _showOptions () {
+    #showOptions () {
         DialogController.open(
             StatisticsIntegrationOptionsDialog,
             this.options,
@@ -1115,23 +1115,23 @@ const StatisticsIntegration = new (class {
                 }
 
                 if (simpleChange) {
-                    this._generate();
+                    this.#generate();
                 } else {
-                    this._poll();
+                    this.#poll();
                 }
             }
         )
     }
 
-    _importEndpoint () {
+    #importEndpoint () {
         DialogController.open(EndpointDialog, true).then((actionSuccess) => {
             if (actionSuccess) {
-                this._poll();
+                this.#poll();
             }
         });
     }
 
-    _importFile (event) {
+    #importFile (event) {
         Loader.toggle(true, { progress: true });
 
         const files = Array.from(event.target.files);
@@ -1154,10 +1154,10 @@ const StatisticsIntegration = new (class {
             promises.push(promise);
         }
 
-        Promise.all(promises).then(() => this._poll());
+        Promise.all(promises).then(() => this.#poll());
     }
 
-    _generateItem (item) {
+    #generateItem (item) {
         if (this.type === 'players') {
             return {
                 visible: `${item.Name} @ ${item.Prefix}`,
@@ -1171,7 +1171,7 @@ const StatisticsIntegration = new (class {
         }
     }
 
-    _prepare (scope) {
+    #prepare (scope) {
         _sortDesc(scope, item => item.Timestamp);
 
         if (this.options.ignored_duration) {
@@ -1189,12 +1189,12 @@ const StatisticsIntegration = new (class {
         return scope;
     }
 
-    _generate () {
+    #generate () {
         this.$list.empty();
 
         if (typeof this.generator === 'undefined') {
-            for (const item of this._prepare(this.scope(DatabaseManager))) {
-                const { visible, hidden } = this._generateItem(item);
+            for (const item of this.#prepare(this.scope(DatabaseManager))) {
+                const { visible, hidden } = this.#generateItem(item);
 
                 const $button = $(`
                     <div class="ui small fluid basic vertical animated inverted button !mt-2">
@@ -1206,7 +1206,7 @@ const StatisticsIntegration = new (class {
                             </div>
                         </div>
                     </div>
-                `).click(() => this._callback(item));
+                `).click(() => this.#callback(item));
 
                 const $hide = $button.operator('hide');
                 $hide.click((event) => {
@@ -1232,14 +1232,14 @@ const StatisticsIntegration = new (class {
                 this.$list.append($button);
             }
         } else {
-            this.generator(DatabaseManager, this.$list, this._callback.bind(this));
+            this.generator(DatabaseManager, this.$list, this.#callback.bind(this));
         }
     }
 
-    _poll () {
+    #poll () {
         Loader.toggle(true);
         DatabaseManager.load(Object.assign({ slot: this.options.slot }, this.profile)).then(() => {
-            this._generate();
+            this.#generate();
 
             this.$container.show();
         }).catch((e) => {
