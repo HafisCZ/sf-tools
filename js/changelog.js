@@ -25,18 +25,33 @@ const ANNOUNCEMENTS = [
 const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
+            'Added support for manual server merging',
             'Added support for capturing player descriptions',
             'Added support for capturing guild descriptions',
             'Added multiple performance optimizations',
-            'Fixed quick swap in guild table'
+            'Added <code>Attribute type</code> header',
+            'Added display value for legacy fox mount',
+            'Removed 10th item slot from classes which do not use it',
+            'Fixed quick swap in guild table',
+            'Fixed broken items when exporting only public data',
+            'Fixed companion gem bonus applying twice',
+            'Fixed error when pressing ESC in script editor with no table set'
         ],
         'Dungeon Simulator': [
             'Fixed mirror enemy health for shadow variant',
             'Fixed mirror enemy class image not appearing',
             'Fixed broken enemy dropdown'
         ],
+        'Guild Simulator': [
+            'Fixed inactivity health reduction'
+        ],
         'Gold & Experience': [
             'Fixed Mage Tower upgrade prices'
+        ],
+        'Endpoint': [
+            'Added button to select all characters in Capture selected characters mode',
+            'Fixed login with passwords above 40 characters',
+            'Fixed hidden character list not persisting across reloads'
         ]
     },
     'v7.4394': {
