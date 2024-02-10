@@ -2998,13 +2998,13 @@ class FilesTab extends Tab {
             <div class="field">
                 <label>${intl('stats.files.filters.player')} (<span data-op="unique-player"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-player">
-                    ${ Object.entries(this.playerMap).map(([identifier, name]) => `<option value="${ identifier }">${ name }${ playerNameFrequency[name] > 1 ? ` - ${DatabaseManager.getAny(identifier).Latest.Prefix}` : '' }</option>`).join('') }
+                    ${ Object.entries(this.playerMap).map(([identifier, name]) => `<option value="${ identifier }">${ name }${ playerNameFrequency[name] > 1 ? ` - ${_formatPrefix(identifier)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>${intl('stats.files.filters.group')} (<span data-op="unique-group"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-group">
-                    ${ Object.entries(this.groupMap).map(([identifier, name]) => `<option value="${ identifier }">${ name }${ groupNameFrequency[name] > 1 ? ` - ${DatabaseManager.getAny(identifier).Latest.Prefix}` : '' }</option>`).join('') }
+                    ${ Object.entries(this.groupMap).map(([identifier, name]) => `<option value="${ identifier }">${ name }${ groupNameFrequency[name] > 1 ? ` - ${_formatPrefix(identifier)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
