@@ -60,18 +60,55 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     // Integration
     StatisticsIntegration.configure({
-        profile: SELF_PROFILE,
+        profile: FIGHT_SIMULATOR_PROFILE,
         type: 'players',
-        scope: (dm) => dm.getLatestPlayers(true).filter(({ Underworld: uw }) => typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0)),
-        callback: (player) => {
-            underworldEditor.fill(player.Underworld);
-
-            playerCurrentIndex = -1;
-            updateSaveButton();
-
-            updatePlayerList();
+        cheats: true,
+        generator: function (dm, $list) {
+            for (let [prefix, players] of Object.entries(_groupBy(dm.getLatestPlayers(), p => p.Prefix))) {
+                $list.append($(`
+                    <div class="ui fluid basic left pointing scrolling dropdown small button inverted !text-center !mt-2">
+                        <span class="">${prefix}</span>
+                        <div class="menu" style="overflow-y: scroll; width: 20rem !important;">
+                            <div class="ui left search icon inverted input">
+                                <i class="search icon"></i>
+                                <input type="text" name="search" placeholder="Search player...">
+                            </div>
+                            ${
+                                players.sort((a, b) => b.Own - a.Own || b.Timestamp - a.Timestamp).map(player => {
+                                    return `
+                                        <div class="item" data-value="${player.LinkId}">
+                                            <img class="ui centered image !-ml-3 !mr-2" src="${_classImageUrl(player.Class)}"><span>${ player.Level } - ${ player.Name }</span>
+                                        </div>
+                                    `;
+                                }).join('')
+                            }
+                        </div>
+                    </div>
+                `).dropdown({
+                    match: 'text',
+                    fullTextSearch: true,
+                    action: function (_, identifier) {
+                        StatisticsIntegration._callback(dm.getPlayer(identifier).Latest);
+                    }
+                }));
+            }
+        },
+        callback: (item) => {
+            insertPlayer(item)
         }
     });
+
+    function insertPlayer (player) {
+        playerList.unshift({
+            player: _merge(new PlayerModel(), preparePlayerData(player)),
+            score: null,
+            index: playerCurrentIndex = playerIndex++
+        })
+
+        playerEditor.clear();
+
+        updatePlayerList();
+    }
 
     DOM.input({
         element: DOM.byID('sim-threads'),
