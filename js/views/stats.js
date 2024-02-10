@@ -167,9 +167,9 @@ const TagDialog = new (class TagDialog extends Dialog {
         <div class="small bordered inverted dialog">
           <div class="header">${this.intl('title')}</div>
           <div class="ui inverted form">
-            <div class="field">
+            <div class="field" style="height: 150px;">
               <label>${this.intl('current')}</label>
-              <div data-op="tags" class="flex flex-col gap-2" style="height: 150px;"></div>
+              <div data-op="tags" class="flex flex-wrap gap-2" style=""></div>
             </div>
             <div class="field">
               <label>${this.intl('insert.title')}</label>
@@ -235,9 +235,11 @@ const TagDialog = new (class TagDialog extends Dialog {
       const tag = this.tags[i]
 
       html += `
-        <div data-tag="${i}" class="flex items-center justify-content-between" style="background-color: ${_strToHSL(tag)}; color: white; border-radius: 0.5em; padding: 0.5em 1em;">
+        <div data-tag="${i}" class="flex items-center" style="background-color: ${_strToHSL(tag)}; color: white; border-radius: 0.5em; padding: 0.5em 0.75em 0.5em 1em;">
           <div>${tag}</div>
-          <i class="cursor-pointer ui text-black close icon"></i>
+          <div class="!ml-4 flex items-center">
+            <i class="cursor-pointer fitted ui text-black close icon"></i>
+          </div>
         </div>
       `;
     }
