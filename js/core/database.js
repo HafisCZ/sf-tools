@@ -1442,23 +1442,15 @@ class DatabaseManager {
         Store.set('hidden_identifiers', Array.from(this.#hiddenIdentifiers));
     }
 
-    static async setTagFor (identifier, timestamp, tag) {
-        const player = _dig(this.Players, identifier, timestamp, 'Data');
-        player.tag = tag;
-        
-        await this.#interface.set('players', player);
-    }
-
-    static async setTag (timestamps, tag) {
-        const { players } = this.getFile(null, timestamps);
-        for (const player of players) {
-            if (!tag || _empty(tag)) {
-                delete player.tag;
+    static async setTags (instances, tags) {
+        for (const instance of instances) {
+            if (tags) {
+                instance.tag = tags;
             } else {
-                player.tag = tag;
+                delete instance.tag;
             }
 
-            await this.#interface.set('players', player);
+            await this.#interface.set(this.isPlayer(instance.identifier) ? 'players' : 'groups', instance);
         }
 
         this.LastChange = Date.now();
@@ -1821,7 +1813,7 @@ class DatabaseManager {
         return undefined;
     }
 
-    static findUsedTags (timestamps) {
+    static getTagsForTimestamp (timestamps) {
         const tags = {};
 
         const requestedTimestamps = timestamps ?? this.Timestamps.keys();

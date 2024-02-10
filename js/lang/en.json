@@ -1650,11 +1650,14 @@
         },
         "edit_file_tag": {
             "title": "Edit tags",
-            "current": "Current tags",
-            "replacement": "Replacement tag",
-            "none": "None",
+            "current": "Tags",
             "cancel": "Cancel",
-            "save": "Save"
+            "save": "Apply to all players",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Create/Edit profile",

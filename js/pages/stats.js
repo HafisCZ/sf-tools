@@ -2360,9 +2360,21 @@ class FilesTab extends Tab {
     }
 
     tagSelected () {
-        if (this.simple && this.selectedFiles.size > 0) {
-            DialogController.open(EditFileTagDialog, this.selectedFiles, () => this.show());
+        if (this.simple) {
+            if (this.selectedFiles.size > 0) {
+                DialogController.open(TagDialog, 'timestamps', Array.from(this.selectedFiles), () => this.show());
+                return;
+            }
+        } else if (this.selectedEntries.size > 0) {
+            const playerEntries = Array.from(this.selectedEntries.values()).filter((player) => DatabaseManager.isPlayer(player.identifier));
+
+            if (playerEntries.length > 0) {
+                DialogController.open(TagDialog, 'instances', Array.from(this.selectedEntries.values()), () => this.show());
+                return;
+            }
         }
+
+        // TODO: Allow tag background & color customization
     }
 
     // Delete all
@@ -2732,7 +2744,7 @@ class FilesTab extends Tab {
                 groupCount: _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isGroup(id)),
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
                 tags: (() => {
-                    const tagMap = DatabaseManager.findUsedTags([ts]);
+                    const tagMap = DatabaseManager.getTagsForTimestamp([ts]);
                     const tagEntries = _sortDesc(Object.entries(tagMap), ([, a]) => a);
 
                     let tagContent = '';
@@ -2874,7 +2886,7 @@ class FilesTab extends Tab {
 
     updateFileList () {
         // Tag filters
-        let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
+        let currentTags = Object.keys(DatabaseManager.getTagsForTimestamp());
         if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
             let content = `
                 <div data-tag="*" class="ui basic inverted tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.all')}</div>
@@ -2959,7 +2971,7 @@ class FilesTab extends Tab {
         this.groupMap = Object.assign({ 0: intl('stats.files.filters.none') }, DatabaseManager.GroupNames);
 
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
-        this.tagsArray = Object.keys(DatabaseManager.findUsedTags()).filter(tag => tag !== 'undefined');
+        this.tagsArray = Object.keys(DatabaseManager.getTagsForTimestamp()).filter(tag => tag !== 'undefined');
 
         const playerNameFrequency = {};
         for (const name of Object.values(this.playerMap)) {
@@ -3095,7 +3107,6 @@ class FilesTab extends Tab {
 
         Loader.toggle(false);
 
-        this.$tags.toggle(this.simple);
         this.$migrateHidden.toggle(!this.simple && SiteOptions.hidden);
 
         // Set counters
