@@ -1654,21 +1654,23 @@ class DatabaseManager {
     }
 
     static async #addFile (playerEntries, groupEntries, flags = {}) {
-        const players = playerEntries || [];
-        const groups = groupEntries || [];
+        const unfilteredPlayers = playerEntries || [];
+        const unfilteredGroups = groupEntries || [];
 
-        for (const group of groups) {
+        for (const group of unfilteredGroups) {
             this.#normalizeGroup(group);
         }
 
-        for (const player of players) {
+        for (const player of unfilteredPlayers) {
             this.#normalizePlayer(player);
         }
 
         if (flags.skipExisting) {
-            _filterInPlace(groups, (group) => !this.hasGroup(group.identifier, group.timestamp));
-            _filterInPlace(players, (player) => !this.hasPlayer(player.identifier, player.timestamp));
+            _filterInPlace(unfilteredGroups, (group) => !this.hasGroup(group.identifier, group.timestamp));
+            _filterInPlace(unfilteredPlayers, (player) => !this.hasPlayer(player.identifier, player.timestamp));
         }
+
+        const { players, groups } = Actions.apply(unfilteredPlayers, unfilteredGroups);
 
         if (flags.temporary) {
             for (const group of groups) {
@@ -1703,8 +1705,6 @@ class DatabaseManager {
             for (const player of players) {
                 await this.#track(this.getLink(player.identifier), player.timestamp);
             }
-    
-            await Actions.apply(players, groups);
         }
     }
 
