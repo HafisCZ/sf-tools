@@ -2677,7 +2677,7 @@ class FilesTab extends Tab {
                     <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
                     <td>${ entry.name }</td>
                     <td>${ isPlayer ? (this.groupMap[entry.group] || '') : '' }</td>
-                    <td>${ _wrapOrEmpty(entry.tag).map((tag) => `<div class="ui horizontal label" style="background-color: ${_strToHSL(tag)}; color: white;">${tag}</div>`).join('') }</td>
+                    <td class="flex gap-1 flex-wrap">${ _wrapOrEmpty(entry.tag).map((tag) => `<div class="ui horizontal label" style="background-color: ${_strToHSL(tag)}; color: white; margin: 0;">${tag}</div>`).join('') }</td>
                 </tr>
             `
         });
@@ -2755,17 +2755,9 @@ class FilesTab extends Tab {
                     for (const [name, count] of tagEntries) {
                         const countText = count !== playerCount ? `${count}x ` : '';
 
-                        if (name === 'undefined') {
-                            if (tagEntries.length > 1) {
-                                tagContent += `
-                                    <div class="ui grey horizontal label">${countText}${intl('stats.files.tags.none')}</div>
-                                `;
-                            }
-                        } else {
-                            tagContent += `
-                                <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white;">${countText}${name}</div>
-                            `;
-                        }
+                        tagContent += `
+                            <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white; margin: 0;">${countText}${name}</div>
+                        `;
                     }
 
                     return {
@@ -2805,7 +2797,7 @@ class FilesTab extends Tab {
                     <td class="!text-center">${ prettyDate }</td>
                     <td class="!text-center">${ playerCount }</td>
                     <td class="!text-center">${ groupCount }</td>
-                    <td>${ tagContent }</td>
+                    <td class="flex gap-1 flex-wrap">${ tagContent }</td>
                     <td class="!text-center">${ version || 'Not known' }</td>
                     <td class="!text-center"></td>
                     <td class="cursor-pointer !text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
