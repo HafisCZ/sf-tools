@@ -1893,7 +1893,7 @@ class GroupsGridTab extends Tab {
 
     show () {
         const viewableGroups = Object.entries(DatabaseManager.Groups);
-        if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
+        if (SiteOptions.skip_grid_if_single_entry_present && viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
             UI.show(UI.group, { identifier: viewableGroups[0][0] });
         } else {
             this.load();
@@ -2223,7 +2223,7 @@ class PlayersGridTab extends Tab {
 
     show () {
         let identitifiers = Object.keys(DatabaseManager.Players);
-        if (identitifiers.length == 1) {
+        if (SiteOptions.skip_grid_if_single_entry_present && identitifiers.length == 1) {
             UI.show(UI.player, { identifier: identitifiers[0] });
         } else {
             this.load();
@@ -3791,10 +3791,11 @@ class SettingsTab extends Tab {
             SiteOptions.script_author = this.$inputScriptAuthor.val().trim();
         })
 
-        this.prepareCheckbox('always_prev', 'alwaysprev');
-        this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
-        this.prepareCheckbox('terms_accepted', 'terms');
-        this.prepareCheckbox('table_sticky_header', 'table-sticky-header')
+        this.prepareCheckbox('always_prev');
+        this.prepareCheckbox('unsafe_delete');
+        this.prepareCheckbox('skip_grid_if_single_entry_present');
+        this.prepareCheckbox('terms_accepted');
+        this.prepareCheckbox('table_sticky_header')
 
         SiteOptions.onChange('terms_accepted', enabled => {
             if (enabled) {
@@ -3861,8 +3862,8 @@ class SettingsTab extends Tab {
     }
 
     // Prepare checkbox
-    prepareCheckbox (property, name) {
-        this.$parent.find(`[data-op="checkbox-${ name }"]`).checkbox({
+    prepareCheckbox (property) {
+        this.$parent.find(`[data-op="checkbox-${ property.replaceAll('_', '-') }"]`).checkbox({
             onChecked: () => { SiteOptions[property] = true },
             onUnchecked: () => { SiteOptions[property] = false }
         }).checkbox(SiteOptions[property] ? 'set checked' : 'set unchecked');

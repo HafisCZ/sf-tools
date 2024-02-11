@@ -720,6 +720,7 @@
             "unsafe_delete": "Skip confirmation when deleting files",
             "script_author": "Author name for published scripts",
             "table_sticky_header": "Enable sticky table headers",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Accept Terms of Service",
             "tab": "Default tab",
             "preload": "Preload rows",
