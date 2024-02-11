@@ -759,11 +759,26 @@ class DatabaseManager {
         await this.#interface.clear('links');
     }
 
+    static getRelatedLinks (links) {
+        const acc = new Set(links);
+
+        for (const link of links) {
+            const entry = DatabaseManager.getAny(link);
+            if (entry) {
+                for (const relation of entry.Relations) {
+                    acc.add(relation);
+                }
+            }
+        }
+
+        return Array.from(acc);
+    }
+
     static async unlink (sourceLink) {
         const identifiers = this.getLinkedIdentifiers(sourceLink);
 
         // Objects that are affected
-        const { players, groups } = this.getFile([sourceLink], null);
+        const { players, groups } = this.getFile(this.getRelatedLinks([sourceLink]), null);
 
         const objects = [
             ...players,
@@ -825,7 +840,7 @@ class DatabaseManager {
             this.#linksLookup.delete(sourceLink);
 
             // Add objects to array
-            const { players, groups } = this.getFile([sourceLink], null);
+            const { players, groups } = this.getFile(this.getRelatedLinks([sourceLink]), null);
 
             objects.push(...players);
             objects.push(...groups);
