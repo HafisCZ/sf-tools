@@ -3780,7 +3780,7 @@ class Scripts {
     }
 
     static remoteList () {
-        return SiteAPI.get('script_list', { include: Object.keys(this.data.remote) });
+        return Object.keys(this.data.remote);
     }
 
     static remoteAdd (key, script) {
