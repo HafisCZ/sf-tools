@@ -916,6 +916,7 @@ class DatabaseManager {
         for (const player of Object.values(this.Players)) {
             player.LatestTimestamp = 0;
             player.Links = Object.create(null);
+            player.Relations = new Set();
 
             const array = [];
             for (const [ ts, obj ] of Object.entries(player)) {
@@ -929,6 +930,9 @@ class DatabaseManager {
 
                     if (obj.Data.group) {
                         this.GroupNames[obj.Group.LinkId] = obj.Data.groupname;
+
+                        // Group is related to the player
+                        player.Relations.add(obj.Group.LinkId);
                     }
 
                     playerTimestamps.add(timestamp);
@@ -960,6 +964,7 @@ class DatabaseManager {
             group.LatestTimestamp = 0;
             group.LatestDisplayTimestamp = 0;
             group.Links = Object.create(null);
+            group.Relations = new Set();
 
             const array = [];
             for (const [ ts, obj ] of Object.entries(group)) {
@@ -974,6 +979,11 @@ class DatabaseManager {
                     obj.MembersPresent = Array.from(this.Timestamps.values(timestamp)).filter((id) => obj.Players.some((p) => p.LinkId === id)).length
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
+                    }
+
+                    for (const player of obj.Players) {
+                        // Player is related to the group
+                        group.Relations.add(player.LinkId);
                     }
 
                     groupTimestamps.add(ts);
