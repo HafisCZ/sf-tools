@@ -1250,7 +1250,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     try {
       const remoteScripts = await StoreCache.use(
         'remote_scripts',
-        () => Scripts.remoteList().then(({ scripts }) => scripts),
+        () => SiteAPI.get('script_list', { include: Scripts.remoteList() }).then(({ scripts }) => scripts),
         StoreCache.hours(1)
       );
 
