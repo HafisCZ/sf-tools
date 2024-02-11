@@ -1935,6 +1935,8 @@ class GroupsGridTab extends Tab {
     refresh () {
         this.$list.empty();
 
+        this.#refreshActions();
+
         const latestPlayerTimestamp = this.empty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
         const filteredEntries = this.entries.filter(group => {
             const visible = !DatabaseManager.isIdentifierHidden(group.Latest.LinkId);
@@ -2264,6 +2266,8 @@ class PlayersGridTab extends Tab {
 
     refresh () {
         this.$list.empty();
+
+        this.#refreshActions();
 
         const filteredEntries = this.entries.filter(player => {
             const visible = !DatabaseManager.isIdentifierHidden(player.Latest.LinkId);
