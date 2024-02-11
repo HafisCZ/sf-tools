@@ -248,6 +248,7 @@ const SiteOptions = new OptionsHandler(
         export_public_only: false,
         export_bundle_groups: true,
         unsafe_delete: false,
+        skip_grid_if_single_entry_present: true,
         event_override: [],
         simulator_info_id: 0,
         table_sticky_header: false,
