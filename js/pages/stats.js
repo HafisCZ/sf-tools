@@ -2749,17 +2749,17 @@ class FilesTab extends Tab {
 
                     let tagContent = '';
                     for (const [name, count] of tagEntries) {
-                        const countText = count !== playerCount ? ` (${count})` : '';
+                        const countText = count !== playerCount ? `${count}x ` : '';
 
                         if (name === 'undefined') {
                             if (tagEntries.length > 1) {
                                 tagContent += `
-                                    <div class="ui grey horizontal label">${intl('stats.files.tags.none')}${countText}</div>
+                                    <div class="ui grey horizontal label">${countText}${intl('stats.files.tags.none')}</div>
                                 `;
                             }
                         } else {
                             tagContent += `
-                                <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white;">${name}${countText}</div>
+                                <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white;">${countText}${name}</div>
                             `;
                         }
                     }
