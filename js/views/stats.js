@@ -1179,7 +1179,7 @@ const ScriptRepositoryDialog = new (class ScriptRepositoryDialog extends Dialog 
     const value = _escape(this.$listSearch.val().toLowerCase());
 
     this.$parent.find('[data-script-name]').each((_, element) => {
-        if (element.dataset.scriptName.toLowerCase().startsWith(value)) {
+        if (element.dataset.scriptName.toLowerCase().includes(value)) {
             element.style.display = 'grid';
         } else {
             element.style.display = 'none';
