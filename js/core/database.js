@@ -389,7 +389,7 @@ class PlayaResponse {
         for (const { url, text, date } of this.search(json)) {
             if (date) {
                 timestamp = date.getTime();
-                offset = date.getTimezoneOffset() * 60 * 1000;
+                offset = _timestampOffset(date);
             }
 
             if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal') || text.includes('gtranking')) {
@@ -1579,6 +1579,38 @@ class DatabaseManager {
         }
     }
 
+    static async importCollection (array, processCallback, errorCallback, flags = {}) {
+        const players = [];
+        const groups = [];
+
+        const offset = _timestampOffset();
+
+        for (const item of array) {
+            try {
+                const { text, timestamp } = await processCallback(item);
+
+                const { players: filePlayers } = await this.import(text, timestamp, offset, Object.assign({ deferred: true }, flags));
+
+                players.concat(filePlayers);
+            } catch (e) {
+                errorCallback(e);
+            }
+        }
+
+        this.#updateLists();
+
+        if (!flags.temporary) {
+            for (const player of players) {
+                await this.#track(this.getLink(player.identifier), player.timestamp);
+            }
+        }
+
+        return {
+            players,
+            groups
+        }
+    }
+
     // HAR - string
     // Endpoint - string
     // Share - object
@@ -1711,7 +1743,9 @@ class DatabaseManager {
                 this.#addToSession(player);
             }
 
-            this.#updateLists();
+            if (!flags.deferred) {
+                this.#updateLists();
+            }
 
             return {
                 players: unfilteredPlayers,
@@ -1735,10 +1769,13 @@ class DatabaseManager {
             }
     
             await this.#updateMetadata();
-    
-            this.#updateLists();
-            for (const player of players) {
-                await this.#track(this.getLink(player.identifier), player.timestamp);
+
+            if (!flags.deferred) {
+                this.#updateLists();
+
+                for (const player of players) {
+                    await this.#track(this.getLink(player.identifier), player.timestamp);
+                }
             }
 
             return {

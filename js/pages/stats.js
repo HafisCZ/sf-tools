@@ -2440,22 +2440,20 @@ class FilesTab extends Tab {
         let filesDone = 0;
         let filesCount = files.length;
 
-        let promises = [];
-
-        for (const file of files) {
-            const promise = file.text().then(async (content) => {
-                await DatabaseManager.import(content, file.lastModified).catch((e) => {
-                    Toast.error(intl('database.import_error'), e.message);
-                    Logger.error(e, 'Error occured while trying to import a file!');
-                });
-
+        DatabaseManager.importCollection(
+            files,
+            async (file) => {
                 Loader.progress(++filesDone / filesCount);
-            });
-
-            promises.push(promise);
-        }
-
-        Promise.all(promises).then(() => this.show());
+                return {
+                    text: await file.text(),
+                    timestamp: file.lastModified
+                }
+            },
+            (e) => {
+                Toast.error(intl('database.import_error'), e.message);
+                Logger.error(e, 'Error occured while trying to import a file!');
+            }
+        ).then(() => this.show());
     }
 
     // Import file via endpoint
