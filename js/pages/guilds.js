@@ -235,7 +235,7 @@ Site.ready({ type: 'simulator' }, function () {
                         <b>${ player.Level }</b>
                     </div>
                     <div class="nine wide column">
-                        <b>${ player.Name }${ inactive == 2 ? ' (Inactive 21+ days)' : (inactive == 1 ? ' (Inactive)' : '') }</b>
+                        <b>${ player.Name }${ inactive == 2 ? ' (Inactive 14+ days)' : (inactive == 1 ? ' (Inactive)' : '') }</b>
                     </div>
                     <div class="one wide text-center column">
                         <i class="calendar times outline right aligned cursor-pointer !text-darkgreen:hover icon" data-inactive="${ index }"></i>
