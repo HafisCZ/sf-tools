@@ -995,7 +995,7 @@ class DatabaseManager {
                     this.LatestGroup = Math.max(this.LatestGroup, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
-                    obj.MembersPresent = Array.from(this.Timestamps.values(timestamp)).filter((id) => obj.Players.some((p) => p.LinkId === id)).length
+                    obj.MembersPresent = _lenWhere(obj.Players, (player) => this.hasPlayer(player.LinkId, timestamp));
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
