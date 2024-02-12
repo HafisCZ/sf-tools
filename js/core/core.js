@@ -17,7 +17,8 @@ class Logger {
         'APPINFO': 'd29af8',
         'MESSAGE': 'ffffff',
         'APICALL': 'd99ab5',
-        'CHANNEL': 'fccb81'
+        'CHANNEL': 'fccb81',
+        'STDEBUG': 'c5d3e8'
     };
 
     static log (type, text) {
@@ -252,7 +253,8 @@ const SiteOptions = new OptionsHandler(
         event_override: [],
         simulator_info_id: 0,
         table_sticky_header: false,
-        script_author: ''
+        script_author: '',
+        debug: false
     }
 )
 
