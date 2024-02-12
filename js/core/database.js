@@ -381,7 +381,7 @@ class PlayaResponse {
     }
 
     static fromText (text) {
-        return _arrayToHash(text.split('&').filter(_notEmpty), item => {
+        return text.split('&').filter(_notEmpty).reduce((memo, item) => {
             const [key, ...val] = item.split(':');
 
             const normalizedKey = this.#normalizeKey(key);
@@ -389,8 +389,10 @@ class PlayaResponse {
                 val.splice(0, 1);
             }
 
-            return [normalizedKey, new PlayaResponse(val.join(':'))];
-        });
+            memo[normalizedKey] = new PlayaResponse(val.join(':'));
+
+            return memo;
+        }, {});
     }
 
     static #normalizeKey (key) {
