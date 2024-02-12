@@ -181,8 +181,9 @@ const TagDialog = new (class TagDialog extends Dialog {
               </div>
             </div>
           </div>
-          <div class="ui two fluid buttons">
+          <div class="ui three fluid buttons">
             <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
+            <button class="ui black button" data-op="clear">${this.intl('clear')}</button>
             <button class="ui button !text-black !background-orange" data-op="save">${this.intl('save')}</button>
           </div>
         </div>
@@ -206,6 +207,12 @@ const TagDialog = new (class TagDialog extends Dialog {
         this.tags.splice(+event.target.closest('[data-tag]').dataset.tag, 1);
         this.#renderTags();
       }
+    })
+
+    this.$clear = this.$parent.operator('clear');
+    this.$clear.click(() => {
+      this.tags = [];
+      this.#renderTags();
     })
 
     this.$insertInput = this.$parent.operator('insert-input');
