@@ -276,7 +276,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     _import (text) {
-        DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, { temporary: this.$temporary.checkbox('is checked') }).catch((e) => {
+        DatabaseManager.import(text, Date.now(), _timestampOffset(), { temporary: this.$temporary.checkbox('is checked') }).catch((e) => {
             Toast.error(intl('database.import_error'), e.message);
             Logger.error(e, 'Error occured while trying to import a file!');
         }).then(() => {

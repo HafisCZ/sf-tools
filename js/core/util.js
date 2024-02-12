@@ -120,6 +120,10 @@ function _uuid (data) {
     return `${ data.identifier }-${ data.timestamp }`;
 }
 
+function _timestampOffset (date = new Date()) {
+    return date.getTimezoneOffset() * 60 * 1000;
+}
+
 function _uniq (array) {
     return Array.from(new Set(array));
 }
