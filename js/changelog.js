@@ -47,7 +47,8 @@ const CHANGELOG = {
             'Fixed berserker dungeon enemy auto armor calculation'
         ],
         'Guild Simulator': [
-            'Fixed inactivity health reduction'
+            'Fixed inactivity health reduction',
+            'Fixed displayed inactivity duration'
         ],
         'Gold & Experience': [
             'Fixed Mage Tower upgrade prices'
