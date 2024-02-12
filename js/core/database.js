@@ -1695,12 +1695,12 @@ class DatabaseManager {
         }
 
         if (flags.temporary) {
-            for (const group of unfilteredPlayers) {
+            for (const group of unfilteredGroups) {
                 this.#addGroup(group);
                 this.#addToSession(group);
             }
 
-            for (const player of unfilteredGroups) {
+            for (const player of unfilteredPlayers) {
                 this.#addPlayer(player);
                 this.#addToSession(player);
             }
