@@ -1694,21 +1694,21 @@ class DatabaseManager {
             _filterInPlace(unfilteredPlayers, (player) => !this.hasPlayer(player.identifier, player.timestamp));
         }
 
-        const { players, groups } = Actions.apply(unfilteredPlayers, unfilteredGroups);
-
         if (flags.temporary) {
-            for (const group of groups) {
+            for (const group of unfilteredPlayers) {
                 this.#addGroup(group);
                 this.#addToSession(group);
             }
 
-            for (const player of players) {
+            for (const player of unfilteredGroups) {
                 this.#addPlayer(player);
                 this.#addToSession(player);
             }
 
             this.#updateLists();
         } else {
+            const { players, groups } = Actions.apply(unfilteredPlayers, unfilteredGroups);
+
             for (const group of groups) {
                 this.#addGroup(group);
                 this.#addMetadata(group.identifier, group.timestamp);
