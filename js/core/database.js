@@ -1286,15 +1286,17 @@ class DatabaseManager {
     }
 
     static async #updateMetadata () {
-        for (const timestamp of _uniq(this.#metadataDelta)) {
-            if (_empty(this.#metadata[timestamp].identifiers)) {
-                delete this.#metadata[timestamp];
-
-                await this.#interface.remove('metadata', timestamp);
-            } else {
-                await this.#interface.set('metadata', this.#metadata[timestamp]);
+        await this.#interface.transaction(['metadata'], (tx) => {
+            for (const timestamp of _uniq(this.#metadataDelta)) {
+                if (_empty(this.#metadata[timestamp].identifiers)) {
+                    delete this.#metadata[timestamp];
+    
+                    tx.remove('metadata', timestamp);
+                } else {
+                    tx.set('metadata', this.#metadata[timestamp]);
+                }
             }
-        }
+        });
 
         this.#metadataDelta = [];
     }
@@ -1347,12 +1349,14 @@ class DatabaseManager {
     }
 
     static async remove (instances) {
-        for (const { identifier, timestamp } of instances) {
-            await this.#interface.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-
-            this.#removeMetadata(identifier, timestamp);
-            this.#unload(this.getLink(identifier), timestamp);
-        }
+        this.#interface.transaction(['players', 'groups'], (tx) => {
+            for (const { identifier, timestamp } of instances) {
+                tx.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+    
+                this.#removeMetadata(identifier, timestamp);
+                this.#unload(this.getLink(identifier), timestamp);
+            }
+        });
 
         await this.#updateMetadata();
         this.#updateLists();
@@ -1405,19 +1409,20 @@ class DatabaseManager {
 
     // Remove one or more timestamps
     static async #removeTimestamps (... timestamps) {
-        for (const timestamp of timestamps) {
-            for (const linkId of this.Timestamps.values(timestamp)) {
-                for (const identifier of this.getLinkedIdentifiers(linkId)) {
-                    // Try removal for all linked identifiers
-                    let isPlayer = this.isPlayer(identifier);
-                    await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-
-                    this.#removeMetadata(identifier, timestamp);
+        await this.#interface.transaction(['players', 'groups'], (tx) => {
+            for (const timestamp of timestamps) {
+                for (const linkId of this.Timestamps.values(timestamp)) {
+                    for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                        // Try removal for all linked identifiers
+                        tx.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+    
+                        this.#removeMetadata(identifier, timestamp);
+                    }
+    
+                    this.#unload(linkId, timestamp);
                 }
-
-                this.#unload(linkId, timestamp);
             }
-        }
+        })
 
         await this.#updateMetadata();
         this.#updateLists();
@@ -1474,18 +1479,19 @@ class DatabaseManager {
     }
 
     static async #removeIdentifiers (... identifiers) {
-        for (const linkId of identifiers) {
-            for (const timestamp of this.Identifiers.values(linkId)) {
-                for (const identifier of this.getLinkedIdentifiers(linkId)) {
-                    let isPlayer = this.isPlayer(identifier);
-                    await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-
-                    this.#removeMetadata(identifier, timestamp);
+        await this.#interface.transaction(['players', 'groups'], (tx) => {
+            for (const linkId of identifiers) {
+                for (const timestamp of this.Identifiers.values(linkId)) {
+                    for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                        tx.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+    
+                        this.#removeMetadata(identifier, timestamp);
+                    }
+     
+                    this.#unload(linkId, timestamp);
                 }
- 
-                this.#unload(linkId, timestamp);
             }
-        }
+        });
 
         await this.#updateMetadata();
         this.#updateLists();
@@ -1504,15 +1510,17 @@ class DatabaseManager {
     }
 
     static async setTags (instances, tags) {
-        for (const instance of instances) {
-            if (tags) {
-                instance.tag = tags;
-            } else {
-                delete instance.tag;
+        await this.#interface.transaction(['players', 'groups'], (tx) => {
+            for (const instance of instances) {
+                if (tags) {
+                    instance.tag = tags;
+                } else {
+                    delete instance.tag;
+                }
+    
+                tx.set(this.isPlayer(instance.identifier) ? 'players' : 'groups', instance);
             }
-
-            await this.#interface.set(this.isPlayer(instance.identifier) ? 'players' : 'groups', instance);
-        }
+        })
 
         this.LastChange = Date.now();
     }
