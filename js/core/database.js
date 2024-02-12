@@ -199,6 +199,21 @@ class IndexedDBWrapper {
         );
     }
 
+    setAll (store, values) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.database.transaction(store, 'readwrite');
+            const objectStore = transaction.objectStore(store);
+
+            for (const value of values) {
+                objectStore.put(value);
+            }
+    
+            transaction.oncomplete = () => resolve(true);
+            transaction.onerror = () => reject(transaction.error);
+            transaction.onabort = () => reject(transaction.error);
+        })
+    }
+
     get (store, key) {
         return IndexedDBWrapper.promisify(
             this.store(store, null, 'readonly').get(key)
@@ -257,6 +272,10 @@ class DatabaseUtils {
     static createTemporarySession () {
         return new (class {
             set (store, value) {
+                return Promise.resolve();
+            }
+
+            setAll (store, values) {
                 return Promise.resolve();
             }
 
@@ -1757,16 +1776,15 @@ class DatabaseManager {
             for (const group of groups) {
                 this.#addGroup(group);
                 this.#addMetadata(group.identifier, group.timestamp);
-    
-                await this.#interface.set('groups', group);
             }
     
             for (const player of players) {
                 this.#addPlayer(player);
                 this.#addMetadata(player.identifier, player.timestamp);
-    
-                await this.#interface.set('players', player);
             }
+            
+            await this.#interface.setAll('groups', groups);
+            await this.#interface.setAll('players', players);
     
             await this.#updateMetadata();
 
