@@ -199,15 +199,20 @@ class IndexedDBWrapper {
         );
     }
 
-    setAll (store, values) {
+    transaction (storeNames, callback, mode = 'readwrite') {
         return new Promise((resolve, reject) => {
-            const transaction = this.database.transaction(store, 'readwrite');
-            const objectStore = transaction.objectStore(store);
+            const transaction = this.database.transaction(storeNames, mode);
+            const stores = storeNames.reduce((memo, storeName) => {
+                memo[storeName] = transaction.objectStore(storeName);
 
-            for (const value of values) {
-                objectStore.put(value);
-            }
-    
+                return memo;
+            }, Object.create(null));
+
+            callback({
+                set: (storeName, value) => stores[storeName].put(value),
+                remove: (storeName, key) => stores[storeName].delete(key)
+            })
+
             transaction.oncomplete = () => resolve(true);
             transaction.onerror = () => reject(transaction.error);
             transaction.onabort = () => reject(transaction.error);
@@ -275,7 +280,7 @@ class DatabaseUtils {
                 return Promise.resolve();
             }
 
-            setAll (store, values) {
+            transaction (storeNames, callback, mode) {
                 return Promise.resolve();
             }
 
@@ -1782,10 +1787,12 @@ class DatabaseManager {
                 this.#addPlayer(player);
                 this.#addMetadata(player.identifier, player.timestamp);
             }
-            
-            await this.#interface.setAll('groups', groups);
-            await this.#interface.setAll('players', players);
-    
+
+            await this.#interface.transaction(['groups', 'players'], (tx) => {
+                for (const group of groups) tx.set('groups', group);
+                for (const player of players) tx.set('players', player);
+            })
+
             await this.#updateMetadata();
 
             if (!flags.deferred) {
