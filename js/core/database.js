@@ -281,6 +281,11 @@ class DatabaseUtils {
             }
 
             transaction (storeNames, callback, mode) {
+                callback({
+                    set: () => {},
+                    remove: () => {}
+                });
+
                 return Promise.resolve();
             }
 
@@ -1419,16 +1424,17 @@ class DatabaseManager {
     }
 
     static async purge () {
-        for (const [timestamp, identifiers] of this.Timestamps.entries()) {
-            for (const linkId of identifiers) {
-                for (const identifier of this.getLinkedIdentifiers(linkId)) {
-                    let isPlayer = this.isPlayer(identifier);
-                    await this.#interface.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-
-                    this.#removeMetadata(identifier, timestamp);
+        await this.#interface.transaction(['players', 'groups'], (tx) => {
+            for (const [timestamp, identifiers] of this.Timestamps.entries()) {
+                for (const linkId of identifiers) {
+                    for (const identifier of this.getLinkedIdentifiers(linkId)) {
+                        tx.remove(this.isPlayer(identifier) ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+    
+                        this.#removeMetadata(identifier, timestamp);
+                    }
                 }
             }
-        }
+        })
 
         await this.#updateMetadata();
 
