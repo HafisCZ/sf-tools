@@ -919,6 +919,8 @@ class DatabaseManager {
 
     // INTERNAL: Update internal player/group lists
     static #updateLists () {
+        const start = Date.now();
+
         this.Latest = 0;
         this.LatestPlayer = 0;
         this.LatestGroup = 0;
@@ -1026,6 +1028,8 @@ class DatabaseManager {
         this.PlayerTimestamps = Array.from(playerTimestamps);
         this.GroupTimestamps = Array.from(groupTimestamps);
         this.Prefixes = Array.from(prefixes);
+
+        Logger.log('STDEBUG', `List update took ${Date.now() - start} ms`);
     }
 
     // INTERNAL: Load player from proxy
