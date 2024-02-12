@@ -1583,13 +1583,13 @@ class DatabaseManager {
     // Endpoint - string
     // Share - object
     // Archive - string
-    static async import (text, timestamp, timestampOffset, flags) {
+    static import (text, timestamp, timestampOffset, flags) {
         const data = typeof text === 'string' ? JSON.parse(text) : text;
 
-        await this.#import(data, timestamp, timestampOffset, flags);
+        return this.#import(data, timestamp, timestampOffset, flags);
     }
 
-    static async export (identifiers, timestamps, constraint) {
+    static export (identifiers, timestamps, constraint) {
         return this.getFile(identifiers, timestamps, constraint);
     }
 
@@ -1712,6 +1712,11 @@ class DatabaseManager {
             }
 
             this.#updateLists();
+
+            return {
+                players: unfilteredPlayers,
+                groups: unfilteredGroups
+            }
         } else {
             const { players, groups } = Actions.apply(unfilteredPlayers, unfilteredGroups);
 
@@ -1734,6 +1739,11 @@ class DatabaseManager {
             this.#updateLists();
             for (const player of players) {
                 await this.#track(this.getLink(player.identifier), player.timestamp);
+            }
+
+            return {
+                players,
+                groups
             }
         }
     }
@@ -1871,8 +1881,19 @@ class DatabaseManager {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
+                const players = [];
+                const groups = [];
+
                 for (let file of json) {
-                    await this.#addFile(file.players, file.groups, flags);
+                    const { players: filePlayers, groups: fileGroups } = await this.#addFile(file.players, file.groups, flags);
+
+                    players.concat(filePlayers);
+                    groups.concat(fileGroups);
+                }
+
+                return {
+                    players,
+                    groups
                 }
             } else {
                 const players = [];
@@ -1886,14 +1907,14 @@ class DatabaseManager {
                     }
                 }
 
-                await this.#addFile(players, groups, flags);
+                return await this.#addFile(players, groups, flags);
             }
         } else if (typeof json == 'object' && _dig(json, 'players')) {
-            await this.#addFile(json.players, json.groups, flags);
+            return this.#addFile(json.players, json.groups, flags);
         } else {
             // HAR, Endpoint
             let { players, groups } = PlayaResponse.importData(json, timestamp, timestampOffset);
-            await this.#addFile(players, groups, flags);
+            return this.#addFile(players, groups, flags);
         }
     }
 }
