@@ -646,6 +646,8 @@ class ModelRegistry {
 class DatabaseManager {
     static #interface = null;
 
+    static #profile = null;
+
     static #links = new Map();
     static #linksLookup = new Map();
 
@@ -966,7 +968,7 @@ class DatabaseManager {
             player.List = array;
             player.Own = array.find(p => p.Own) != undefined;
 
-            if (this.Profile.block_preload) {
+            if (this.#profile.block_preload) {
                 player.Latest = player[player.LatestTimestamp];
             } else {
                 player.Latest = this.loadPlayer(player[player.LatestTimestamp]);
@@ -1082,11 +1084,11 @@ class DatabaseManager {
         }
     }
 
-    static async #loadDatabase (profile) {
+    static async #loadDatabase () {
         const beginTimestamp = Date.now();
 
         // Open interface
-        this.#interface = await DatabaseUtils.createSession(profile.slot);
+        this.#interface = await DatabaseUtils.createSession(this.#profile.slot);
         if (!this.#interface) {
             throw 'Database was not opened correctly';
         }
@@ -1108,9 +1110,9 @@ class DatabaseManager {
         this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
 
         // Load groups
-        if (!profile.only_players) {
-            const groups = DatabaseUtils.filterArray(profile, 'primary_g') || await this.#interface.all('groups', ... DatabaseUtils.profileFilter(profile, 'primary_g'));
-            const groupsFilter = profile.secondary_g && Expression.create(profile.secondary_g);
+        if (!this.#profile.only_players) {
+            const groups = DatabaseUtils.filterArray(this.#profile, 'primary_g') || await this.#interface.all('groups', ... DatabaseUtils.profileFilter(this.#profile, 'primary_g'));
+            const groupsFilter = this.#profile.secondary_g && Expression.create(this.#profile.secondary_g);
 
             if (groupsFilter) {
                 for (const group of groups) {
@@ -1127,8 +1129,8 @@ class DatabaseManager {
         }
 
         // Load players
-        const players = DatabaseUtils.filterArray(profile) || await this.#interface.where('players', ... DatabaseUtils.profileFilter(profile));
-        const playersFilter = profile.secondary && Expression.create(profile.secondary);
+        const players = DatabaseUtils.filterArray(this.#profile) || await this.#interface.where('players', ... DatabaseUtils.profileFilter(this.#profile));
+        const playersFilter = this.#profile.secondary && Expression.create(this.#profile.secondary);
 
         if (playersFilter) {
             for (const player of players) {
@@ -1144,7 +1146,7 @@ class DatabaseManager {
         }
 
         // Load trackers
-        if (!profile.only_players) {
+        if (!this.#profile.only_players) {
             const trackers = await this.#interface.all('trackers');
 
             for (const tracker of trackers) {
@@ -1210,12 +1212,12 @@ class DatabaseManager {
 
         Actions.init();
 
-        this.Profile = profile;
+        this.#profile = profile;
 
-        if (profile.temporary) {
+        if (this.#profile.temporary) {
             return this.#loadTemporary();
         } else {
-            return this.#loadDatabase(profile);
+            return this.#loadDatabase();
         }
     }
 
