@@ -1539,7 +1539,7 @@ class DatabaseManager {
                 i.timestamp = to;
             }
 
-            await this.#addFile(file.players, file.groups);
+            await this.#addFile(file.players, file.groups, { skipActions: true });
             await this.#removeTimestamps(from);
         }
     }
@@ -1560,7 +1560,7 @@ class DatabaseManager {
                     item.timestamp = newestTimestamp;
                 }
 
-                await this.#addFile(file.players, file.groups, { skipExisting: true });
+                await this.#addFile(file.players, file.groups, { skipExisting: true, skipActions: true });
             }
 
             await this.#removeTimestamps(... timestamps);
@@ -1772,6 +1772,8 @@ class DatabaseManager {
             _filterInPlace(unfilteredPlayers, (player) => !this.hasPlayer(player.identifier, player.timestamp));
         }
 
+        const { players, groups } = flags.skipActions ? { players: unfilteredPlayers, groups: unfilteredGroups } : Actions.apply(unfilteredPlayers, unfilteredGroups);
+
         if (flags.temporary) {
             for (const group of unfilteredGroups) {
                 this.#addGroup(group);
@@ -1792,8 +1794,6 @@ class DatabaseManager {
                 groups: unfilteredGroups
             }
         } else {
-            const { players, groups } = Actions.apply(unfilteredPlayers, unfilteredGroups);
-
             for (const group of groups) {
                 this.#addGroup(group);
                 this.#addMetadata(group.identifier, group.timestamp);
