@@ -167,9 +167,11 @@ const TagDialog = new (class TagDialog extends Dialog {
         <div class="small bordered inverted dialog">
           <div class="header">${this.intl('title')}</div>
           <div class="ui inverted form">
-            <div class="field" style="min-height: 150px;">
+            <div class="field">
               <label>${this.intl('current')}</label>
-              <div data-op="tags" class="flex flex-wrap gap-2 overflow-y-auto" style="max-height: 50vh;"></div>
+              <div style="overflow-y: auto; height: 30vh;">
+                <div data-op="tags" class="flex flex-wrap gap-2"></div>
+              </div>
             </div>
             <div class="field">
               <label>${this.intl('insert.title')}</label>
