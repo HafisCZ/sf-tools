@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'httparty'
+
+class Synchronize
+  include HTTParty
+
+  PLAYA_CONFIG_URL = 'https://sfgame.net/config.json'
+  PLAYA_TRANSLATION_URL = 'https://cdn.playa-games.com/res/sfgame3/lang/%<version>s/sfgame_en.bin'
+
+  REGEXP_MONSTER = /^monster_name_(\d+)$/ 
+  REGEXP_ITEM = /^item_type_(\d+)_(?:class_(\d+)_)?pic_(\d+)$/
+
+  def initialize(argv:)
+  end
+
+  def run
+    config = JSON.parse(self.class.get(PLAYA_CONFIG_URL).body)
+
+    # Save list of servers
+    servers = config['servers'].each_with_object({}) do |server, memo|
+      memo[server['i'].to_s] = server['d']
+    end
+
+    File.write('servers.json', JSON.pretty_generate(servers))
+
+    # Save translations
+    strings = decode(self.class.get(format(PLAYA_TRANSLATION_URL, version: config['recommended_app_version'])).body)
+
+    monsters = strings.select { |key, _| key.match?(REGEXP_MONSTER) }
+    monsters = monsters.map do |key, text|
+      [
+        key[REGEXP_MONSTER, 1].to_i,
+        text.split('|').first
+      ]
+    end.to_h
+
+    monsters_js = File.read('monsters.js')
+    monsters_js.sub!(/const NAME_MONSTER = \{.+?\}/m) do
+      %(const NAME_MONSTER = #{JSON.pretty_generate(monsters)})
+    end
+
+    File.write('monsters.js', monsters_js)
+
+    items = strings.select { |key, _| key.match?(REGEXP_ITEM) }
+    items = items.map do |key, text|
+      [
+        key,
+        text.split('|').first
+      ]
+    end.to_h
+
+    items_js = File.read('items.js')
+    items_js.sub!(/translations: \{.+?\}/m) do
+      %(translations: #{JSON.pretty_generate(items, indent: '    ')})
+    end
+
+    File.write('items.js', items_js)
+  end
+
+  private
+
+  def decode(text)
+    bytes = text.bytes
+
+    read_value = lambda do |bytes|
+      head_len = bytes.shift.ord
+      head_len += 64 * (2 * bytes.shift - 2) if bytes.first.ord <= 8
+      bytes.shift(head_len).map(&:chr).join
+    end
+    
+    strings = {}
+    until bytes.empty?
+      key = read_value.call(bytes)
+      val = read_value.call(bytes)
+      strings[key] = val
+    end
+    
+    hash = Hash[strings.sort_by { |key, val| key.to_s }]
+  end
+end
+
+Synchronize.new(argv: ARGV).run if __FILE__ == $0
