@@ -1527,7 +1527,7 @@ class DatabaseManager {
         this.LastChange = Date.now();
     }
 
-    static async rebase (from, to) {
+    static async updateTimestamp (from, to) {
         if (from && to) {
             const file = this.getFile(null, [ from ]);
 
