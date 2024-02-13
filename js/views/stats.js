@@ -137,7 +137,7 @@ const FileEditDialog = new (class FileEditDialog extends Dialog {
           if (newTimestamp && newTimestamp != this.truncatedTimestamp) {
               this.close();
               Loader.toggle(true);
-              DatabaseManager.rebase(this.sourceTimestamp, newTimestamp * 60000).then(this.callback);
+              DatabaseManager.updateTimestamp(this.sourceTimestamp, newTimestamp * 60000).then(this.callback);
           } else {
               this.close();
           }
