@@ -1548,21 +1548,27 @@ class DatabaseManager {
         if (timestamps.length > 1) {
             timestamps.sort((b, a) => a - b);
 
-            let newestTimestamp = timestamps.shift();
-            for (let timestamp of timestamps) {
-                let file = this.getFile(null, [ timestamp ]);
+            const players = [];
+            const groups = [];
 
-                for (let item of file.players) {
-                    item.timestamp = newestTimestamp;
+            const newestTimestamp = timestamps.shift();
+
+            for (const timestamp of timestamps) {
+                const file = this.getFile(null, [ timestamp ]);
+
+                for (const player of file.players) {
+                    player.timestamp = newestTimestamp;
                 }
 
-                for (let item of file.groups) {
-                    item.timestamp = newestTimestamp;
+                for (const group of file.groups) {
+                    group.timestamp = newestTimestamp;
                 }
 
-                await this.#addFile(file.players, file.groups, { skipExisting: true, skipActions: true });
+                players.concat(file.players);
+                groups.concat(file.groups);
             }
 
+            await this.#addFile(players, groups, { skipExisting: true, skipActions: true });
             await this.#removeTimestamps(... timestamps);
         }
     }
