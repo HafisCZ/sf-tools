@@ -1548,8 +1548,8 @@ class DatabaseManager {
         if (timestamps.length > 1) {
             timestamps.sort((b, a) => a - b);
 
-            const players = [];
-            const groups = [];
+            let players = [];
+            let groups = [];
 
             const newestTimestamp = timestamps.shift();
 
@@ -1564,8 +1564,8 @@ class DatabaseManager {
                     group.timestamp = newestTimestamp;
                 }
 
-                players.concat(file.players);
-                groups.concat(file.groups);
+                players = players.concat(file.players);
+                groups = groups.concat(file.groups);
             }
 
             await this.#addFile(players, groups, { skipExisting: true, skipActions: true });
@@ -1626,8 +1626,8 @@ class DatabaseManager {
     }
 
     static async importCollection (array, processCallback, errorCallback, flags = {}) {
-        const players = [];
-        const groups = [];
+        let players = [];
+        let groups = [];
 
         const offset = _timestampOffset();
 
@@ -1637,7 +1637,7 @@ class DatabaseManager {
 
                 const { players: filePlayers } = await this.import(text, timestamp, offset, Object.assign({ deferred: true }, flags));
 
-                players.concat(filePlayers);
+                players = players.concat(filePlayers);
             } catch (e) {
                 errorCallback(e);
             }
@@ -1965,14 +1965,14 @@ class DatabaseManager {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
-                const players = [];
-                const groups = [];
+                let players = [];
+                let groups = [];
 
                 for (let file of json) {
                     const { players: filePlayers, groups: fileGroups } = await this.#addFile(file.players, file.groups, flags);
 
-                    players.concat(filePlayers);
-                    groups.concat(fileGroups);
+                    players = players.concat(filePlayers);
+                    groups = groups.concat(fileGroups);
                 }
 
                 return {
