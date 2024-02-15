@@ -61,8 +61,6 @@ const ManageLinkDialog = new (class ManageLinkDialog extends Dialog {
                     this.objects[0].Latest.LinkId
                 );
 
-                // TODO: Update script assignments?
-
                 this.callback(true)
             } else {
                 // Unlink objects

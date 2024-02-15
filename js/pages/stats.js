@@ -3829,6 +3829,38 @@ class SettingsTab extends Tab {
 
         this.$recoveryExport.click(() => this.exportDumpFile());
         this.$recoveryImport.change((event) => this.importDumpFile(event));
+
+        this.$linksReset = this.$parent.operator('links-reset');
+        this.$linksReset.click(() => {
+            DialogController.open(ConfirmationDialog, intl('stats.settings.links.reset_title'), '', async function () {
+                Loader.toggle(true);
+
+                await DatabaseManager.resetLinks();
+
+                Loader.toggle(false);
+            }, () => {})
+        })
+
+        this.$linksExport = this.$parent.operator('links-export');
+        this.$linksExport.click(() => {
+            Exporter.json(
+                DatabaseManager.exportLinks(),
+                `${Exporter.time}.links`
+            )
+        })
+
+        this.$linksImport = this.$parent.operator('links-import');
+        this.$linksImport.change((event) => {
+            DialogController.open(ConfirmationDialog, intl('stats.settings.links.import_title'), '', async function () {
+                Loader.toggle(true);
+
+                await DatabaseManager.importLinks(
+                    await _dig(event, 'currentTarget', 'files', 0).text().then((fileContent) => JSON.parse(fileContent))
+                )
+
+                Loader.toggle(false);
+            }, () => {})
+        })
     }
 
     async exportDumpFile () {
