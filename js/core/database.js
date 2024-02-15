@@ -786,10 +786,21 @@ class DatabaseManager {
     }
 
     static async resetLinks () {
-        this.#links.clear();
-        this.#linksLookup.clear();
+        for (const [sourceLink, links] of this.#linksLookup.entries()) {
+            if (links.length > 1) {
+                await this.unlink(sourceLink, false);
+            }
+        }
 
-        await this.#interface.clear('links');
+        this.#updateLists();
+    }
+
+    static exportLinks () {
+        return Object.fromEntries(Array.from(this.#linksLookup.entries()).filter(([, links]) => links.length > 1))
+    }
+
+    static importLinks (links) {
+        
     }
 
     static getRelatedLinks (links) {
@@ -807,7 +818,7 @@ class DatabaseManager {
         return Array.from(acc);
     }
 
-    static async unlink (sourceLink) {
+    static async unlink (sourceLink, updateLists = true) {
         const identifiers = this.getLinkedIdentifiers(sourceLink);
 
         // Objects that are affected
@@ -841,7 +852,9 @@ class DatabaseManager {
         }
 
         // Reload lists
-        this.#updateLists();
+        if (updateLists) {
+            this.#updateLists();
+        }
     }
 
     static async link (sourceLinks, targetLink) {

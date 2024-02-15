@@ -550,6 +550,24 @@
                             </div>
                         </div>
                         <br>
+                        <div class="ui inverted form mt-2">
+                            <div class="field">
+                                <label data-intl="stats.settings.links.title"></label>
+                                <div class="ui fluid three basic inverted icon buttons">
+                                    <div class="ui button" data-op="links-reset">
+                                        <i class="small unlink icon"></i>&nbsp;&nbsp;<span data-intl="stats.settings.links.reset"></span>
+                                    </div>
+                                    <label class="ui button" for="button-links-import">
+                                        <i class="small file import icon"></i>&nbsp;&nbsp;<span data-intl="stats.settings.links.import"></span>
+                                    </label>
+                                    <input type="file" accept=".links.json" class="ui invisible file input" id="button-links-import" data-op="links-import">
+                                    <div class="ui button" data-op="links-export">
+                                        <i class="small file export icon"></i>&nbsp;&nbsp;<span data-intl="stats.settings.links.export"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
                         <hr>
                         <h3 class="ui centered inverted header" data-intl="stats.settings.recovery.title"></h3>
                         <p data-intl="stats.settings.recovery.description#"></p>
