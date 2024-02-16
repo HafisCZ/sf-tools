@@ -720,6 +720,7 @@
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
             "script_author": "Nazwa autora dla opublikowanych skryptów",
             "table_sticky_header": "Włącz przyklejone nagłówki tabeli",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Zaakceptuj warunki korzystania z usługi",
             "tab": "Domyślna karta",
             "preload": "Wstępne ładowanie wierszy",
@@ -735,6 +736,14 @@
                 "description#": "Za pomocą opcji poniżej możesz eksportować i importować całe dane zgromadzone w przeglądarce.<br>Zalecane jest aby eksportować dane przynajmniej raz w miesiącu aby zapobiec stracie tych danych",
                 "toast": "Przywracanie danych w trakcie. Proces ten może zająć chwilę w zależności od wielkości pliku z danymi.",
                 "notice": "Czy na pewno chcesz przywrócić dane SFTools z tego pliku?<br><br>Ten proces usunie wszystkie dane SFTools zapisane w przeglądarce!"
+            },
+            "links": {
+                "title": "Player / guild merges",
+                "export": "Export",
+                "import": "Import",
+                "import_title": "Are you sure you want to import all merges?",
+                "reset": "Reset",
+                "reset_title": "Are you sure you want to reset all merges?"
             }
         }
     },
@@ -1644,11 +1653,15 @@
         },
         "edit_file_tag": {
             "title": "Edytuj tagi",
-            "current": "Obecne tagi",
-            "replacement": "Tag zastępczy",
-            "none": "Brak",
+            "current": "Tags",
             "cancel": "Anuluj",
-            "save": "Zapisz"
+            "save": "Apply to all players",
+            "clear": "Remove all tags",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Stwórz/Edytuj profil",

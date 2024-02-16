@@ -14,7 +14,7 @@
         "class7": "Dämonenjäger",
         "class8": "Druide",
         "class9": "Barde",
-        "class10": "Necromancer",
+        "class10": "Nekromant",
         "mask0": "Adler",
         "mask1": "Bär",
         "mask2": "Katze",
@@ -720,6 +720,7 @@
             "unsafe_delete": "Bestätigung beim Löschen von Dateien überspringen",
             "script_author": "Autorenname für veröffentlichte Skripte",
             "table_sticky_header": "Aktiviere fixierte Spaltennamen",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Nutzungsbedingungen akzeptieren",
             "tab": "Standard-Tab",
             "preload": "Zeilen vorladen",
@@ -735,6 +736,14 @@
                 "description#": "Mit den folgenden Optionen kannst du alle auf der Website gespeicherten Daten exportieren und importieren.<br>Es wird empfohlen, deine Daten mindestens einmal im Monat zu exportieren, um einen zufälligen Datenverlust zu verhindern.",
                 "toast": "Der Wiederherstellungsprozess wurde gerade gestartet. Bitte beachte, dass dies je nach Größe deiner Wiederherstellungsdatei lange dauern kann.",
                 "notice": "Bist du sicher, dass du SFTools von dieser Datei wiederherstellen möchtest?<br><br>Um fortzufahren, wird dieser Vorgang alle vorhandenen Daten löschen!"
+            },
+            "links": {
+                "title": "Player / guild merges",
+                "export": "Export",
+                "import": "Import",
+                "import_title": "Are you sure you want to import all merges?",
+                "reset": "Reset",
+                "reset_title": "Are you sure you want to reset all merges?"
             }
         }
     },
@@ -975,8 +984,8 @@
             "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
             "78": "Ist eine Belohnung für das Säubern des Einzelspieler-Dämonenportals. Standort: Totenkopfinsel.",
             "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
-            "80": "Can be found in Magmaron during the day.",
-            "81": "Can be found on Skull Island during the day.",
+            "80": "Kann tagsüber in Magyaren gefunden werden.",
+            "81": "Kann tagsüber nahe der Totenkopfinsel begegnen.",
             "82": "Can be found in Evernight Forest at night.",
             "83": "Can be found in Northrunt during the day.",
             "84": "Can be found in Rotten Lands on Monday during the day.",
@@ -1435,40 +1444,40 @@
             "title": "Editor shortcuts",
             "shortcuts": {
                 "ctrl_s": {
-                    "key": "Ctrl + S",
-                    "description": "Save script"
+                    "key": "Strg + S",
+                    "description": "Skript speichern"
                 },
                 "ctrl_shift_s": {
-                    "key": "Ctrl + Shift + S",
-                    "description": "Save script and return back"
+                    "key": "Strg + Umschalt + S",
+                    "description": "Skript speichern und zurückkehren"
                 },
                 "tab": {
                     "key": "Tab",
                     "description": "Add indent to selected lines<br>Move to next field"
                 },
                 "shift_tab": {
-                    "key": "Shift + Tab",
+                    "key": "Umschalt + Tab",
                     "description": "Remove indent from selected lines<br>Move to previous field"
                 },
                 "ctrl_shift_x": {
-                    "key": "Ctrl + Shift + X",
+                    "key": "Strg + Umschalt + X",
                     "description": "Comment or uncomment selected lines"
                 },
                 "ctrl_space": {
-                    "key": "Ctrl + Space",
-                    "description": "Show suggestions"
+                    "key": "Strg + Leertaste",
+                    "description": "Vorschläge anzeigen"
                 },
                 "ctrl_c": {
-                    "key": "Ctrl + C",
-                    "description": "Copy selection"
+                    "key": "Strg + C",
+                    "description": "Auswahl kopieren"
                 },
                 "ctrl_v": {
-                    "key": "Ctrl + V",
-                    "description": "Paste"
+                    "key": "Strg + V",
+                    "description": "Einfügen"
                 },
                 "ctrl_x": {
-                    "key": "Ctrl + X",
-                    "description": "Cut selection"
+                    "key": "Strg + X",
+                    "description": "Auswahl ausschneiden"
                 }
             }
         },
@@ -1530,32 +1539,32 @@
         },
         "script_edit": {
             "title": {
-                "edit": "Edit script",
-                "create": "Add new script"
+                "edit": "Skript bearbeiten",
+                "create": "Neues Skript hinzufügen"
             },
             "name": "Name",
-            "description": "Description",
-            "source": "Content",
-            "tables": "Compatible tables",
+            "description": "Beschreibung",
+            "source": "Inhalt",
+            "tables": "Kompatible Tabellen",
             "content": {
-                "empty": "Empty",
-                "current": "Current editor content"
+                "empty": "Leer",
+                "current": "Aktueller Editor Inhalt"
             },
             "category": {
-                "defaults": "Duplicate default script",
-                "clone": "Duplicate existing script"
+                "defaults": "Standard Skript duplizieren",
+                "clone": "Vorhandenes Skript duplizieren"
             },
-            "error_title": "Warning",
-            "error_name_blank": "Script name may not be blank"
+            "error_title": "Warnung",
+            "error_name_blank": "Skriptname darf nicht leer sein"
         },
         "script_archive": {
-            "title": "Archived scripts",
-            "filter": "Filter by type",
+            "title": "Archivierte Skripte",
+            "filter": "Nach Typ filtern",
             "clear": "Alle Elemente aus dem Archiv löschen",
-            "copy_toast": "Script has been copied",
-            "unknown": "Unknown",
+            "copy_toast": "Skript wurde kopiert",
+            "unknown": "Unbekannt",
             "types": {
-                "all": "Display all changes",
+                "all": "Alle Änderungen anzeigen",
                 "create": "Script created",
                 "overwrite": "Script overwritten by new version",
                 "save": "Script saved",
@@ -1644,11 +1653,15 @@
         },
         "edit_file_tag": {
             "title": "Tags bearbeiten",
-            "current": "Aktuelle Tags",
-            "replacement": "Ersatz-Tag",
-            "none": "Kein",
+            "current": "Tags",
             "cancel": "Abbrechen",
-            "save": "Speichern"
+            "save": "Apply to all players",
+            "clear": "Remove all tags",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Profil erstellen/bearbeiten",
