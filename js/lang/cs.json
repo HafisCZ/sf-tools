@@ -720,6 +720,7 @@
             "unsafe_delete": "Nevyžadovat potvrzení při mazání dat",
             "script_author": "Author name for published scripts",
             "table_sticky_header": "Enable sticky table headers",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Příjmout podmínky použití",
             "tab": "Výchozí okno",
             "preload": "Načíst řádky",
@@ -735,6 +736,14 @@
                 "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
                 "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
                 "notice": "Opravdu chcete obnovit SFTools z tohoto souboru?<br><br>Tato operace vymaže všechna vaše stávající data a nahradí je daty ze souboru!"
+            },
+            "links": {
+                "title": "Player / guild merges",
+                "export": "Export",
+                "import": "Import",
+                "import_title": "Are you sure you want to import all merges?",
+                "reset": "Reset",
+                "reset_title": "Are you sure you want to reset all merges?"
             }
         }
     },
@@ -1644,11 +1653,15 @@
         },
         "edit_file_tag": {
             "title": "Upravit tagy",
-            "current": "Aktuální tagy",
-            "replacement": "Nový tag",
-            "none": "Žádný",
+            "current": "Tags",
             "cancel": "Zrušit",
-            "save": "Uložit"
+            "save": "Apply to all players",
+            "clear": "Remove all tags",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Vytvořit nebo upravit profil",

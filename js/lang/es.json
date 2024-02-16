@@ -720,6 +720,7 @@
             "unsafe_delete": "Omitir confirmación al eliminar archivos",
             "script_author": "Author name for published scripts",
             "table_sticky_header": "Enable sticky table headers",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Aceptar los términos del servicio",
             "tab": "Pestaña por defecto",
             "preload": "Precargar filas",
@@ -735,6 +736,14 @@
                 "description#": "Con las opciones de abajo puede exportar e importar todos los datos almacenados en el sitio web.<br>Se recomienda exportar sus datos al menos una vez al mes para evitar la pérdida accidental de datos.",
                 "toast": "El proceso de recuperación acaba de comenzar. Por favor, ten en cuenta que esto puede tomar mucho tiempo dependiendo del tamaño de tu archivo de recuperación.",
                 "notice": "¿Está seguro que desea recuperar SFTools de este archivo?<br><br>¡Esta operación borrará todos tus datos existentes para continuar!"
+            },
+            "links": {
+                "title": "Player / guild merges",
+                "export": "Export",
+                "import": "Import",
+                "import_title": "Are you sure you want to import all merges?",
+                "reset": "Reset",
+                "reset_title": "Are you sure you want to reset all merges?"
             }
         }
     },
@@ -1644,11 +1653,15 @@
         },
         "edit_file_tag": {
             "title": "Editar etiquetas",
-            "current": "Etiquetas actuales",
-            "replacement": "Reemplazo etiquetas",
-            "none": "Ninguno",
+            "current": "Tags",
             "cancel": "Cancelar",
-            "save": "Guardar"
+            "save": "Apply to all players",
+            "clear": "Remove all tags",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Crear/Editar perfil",

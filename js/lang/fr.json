@@ -720,6 +720,7 @@
             "unsafe_delete": "Ignorer la confirmation lors de la suppression des fichiers",
             "script_author": "Nom d'auteur pour publication de scripts",
             "table_sticky_header": "Activer les en-têtes de tableaux collants",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Accepter les conditions d'utilisation",
             "tab": "Onglet par défaut",
             "preload": "Précharger les lignes",
@@ -735,6 +736,14 @@
                 "description#": "Avec les options ci-dessous tu peux exporter et importer toutes les données stockées dans le site. <br> Il est recommandé d'exporter tes données au moins une fois par mois afin de prévenir d'accidentelles pertes de données.",
                 "toast": "Le processus de récupération a commencé. S'il te plaît garde à l'esprit que cela peut prendre longtemps selon la taille des fichiers à récupérer.",
                 "notice": "Es-tu sûr de vouloir récupérer SFTools depuis ce fichier ? <br><br> Cette opération effacera toutes les données existantes pour fonctionner !"
+            },
+            "links": {
+                "title": "Player / guild merges",
+                "export": "Export",
+                "import": "Import",
+                "import_title": "Are you sure you want to import all merges?",
+                "reset": "Reset",
+                "reset_title": "Are you sure you want to reset all merges?"
             }
         }
     },
@@ -1644,11 +1653,15 @@
         },
         "edit_file_tag": {
             "title": "Éditer les Marqueurs",
-            "current": "Marqueurs actuelles",
-            "replacement": "Marqueur de Remplacement",
-            "none": "Aucun",
+            "current": "Tags",
             "cancel": "Annuler",
-            "save": "Sauvegarder"
+            "save": "Apply to all players",
+            "clear": "Remove all tags",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Créer/Éditer un Profile",

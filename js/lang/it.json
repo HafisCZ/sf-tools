@@ -308,8 +308,8 @@
             "beta": "Dai un'occhiata alla beta pubblica",
             "kofi": "Dai un po' di funghi",
             "crowdin": "Aiuta con la traduzione",
-            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
-            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+            "webshop#": "Usa il codice <b class=\"text-white\">SFTOOLS</b> nel Webshop",
+            "notice#": "Distribuito <b>COSÌ COM'È</b>. Questo sito non è affiliato in alcun modo a <b>Playa Games</b>."
         },
         "stats": {
             "title": "Statistiche",
@@ -419,10 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporaneo",
-            "players_grid": "Players",
-            "players": "Browse",
-            "groups_grid": "Guilds",
-            "groups": "Browse (Guilds)",
+            "players_grid": "Giocatori",
+            "players": "Sfoglia",
+            "groups_grid": "Gilde",
+            "groups": "Sfoglia (Gilde)",
             "scripts": "Script",
             "files": "File",
             "settings": "Impostazioni",
@@ -520,12 +520,12 @@
             "player_companions": "Copia anche i compagni"
         },
         "context": {
-            "title": "Apply action to selected items",
+            "title": "Applica azione agli elementi selezionati",
             "hide": "Mostra / Nascondi",
             "remove": "Rimuovi definitivamente",
-            "link_players": "Merge / split characters",
-            "link_groups": "Merge / split guilds",
-            "unselect": "Deselect all"
+            "link_players": "Unisci / dividi personaggi",
+            "link_groups": "Unisci / divide gilde",
+            "unselect": "Deseleziona tutto"
         },
         "profiles": {
             "players": "Giocatori",
@@ -540,7 +540,7 @@
         "filters": {
             "types": {
                 "players": "Filtra i giocatori per server, classe, gilda e/o nome utente",
-                "groups": "Filter groups by server or name"
+                "groups": "Filtra i gruppi per server o nome"
             },
             "c": "Classe del giocatore, usare il nome completo in minuscolo in INGLESE! (es. mage, scout, ecc.)",
             "p": "Nome del giocatore",
@@ -610,7 +610,7 @@
                 }
             },
             "info": {
-                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+                "deprecated": "L'uso di <b>#{name1}</b> è deprecato; usa <b>#{name2}</b> al suo posto"
             },
             "remote_action_error": "Azione non riuscita",
             "remote_copy_toast": {
@@ -619,7 +619,7 @@
             },
             "remote_author_missing": {
                 "title": "Devi impostare il tuo nome utente prima di poter pubblicare script",
-                "message": "Please head over to Settings and set your 'author name for published scripts'"
+                "message": "Vai su Impostazioni e imposta il tuo 'nome autore per gli script pubblicati'"
             }
         },
         "players": {
@@ -631,7 +631,7 @@
             "hidden": "Mostra nascosti",
             "empty": "Mostra gruppi vuoti",
             "missing": "Dati giocatore mancanti per i seguenti membri:",
-            "browse": "View guilds in a table"
+            "browse": "Mostra le gilde in una tabella"
         },
         "browse": {
             "hidden": "Mostra nascosti"
@@ -718,8 +718,9 @@
             "always_prev": "Confronta con i precedenti (gilde)",
             "empty_groups": "Mostra gruppi vuoti",
             "unsafe_delete": "Non chiedere conferma per cancellare i file",
-            "script_author": "Author name for published scripts",
+            "script_author": "Nome autore per gli script pubblicati",
             "table_sticky_header": "Enable sticky table headers",
+            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Accetta i Termini di Servizio",
             "tab": "Tab iniziale",
             "preload": "Pre-carica righe",
@@ -735,6 +736,14 @@
                 "description#": "Con le opzioni seguenti puoi esportare & importare tutti i dati salvati sul sito.<br>È consigliato fare un backup dei propri dati almeno una volta al mese per evitarne la perdita accidentale.",
                 "toast": "Processo di recupero iniziato. In base alle dimensioni del file da recuperare, potrebbe volerci un po' di tempo.",
                 "notice": "Sei sicuro di voler recuperare SFTools da questo file?<br><br>Quest' operazione sovrascriverà tutti i dati esistenti!"
+            },
+            "links": {
+                "title": "Player / guild merges",
+                "export": "Export",
+                "import": "Import",
+                "import_title": "Are you sure you want to import all merges?",
+                "reset": "Reset",
+                "reset_title": "Are you sure you want to reset all merges?"
             }
         }
     },
@@ -1394,8 +1403,8 @@
         "access": "Clicca qui per consentire a questo sito di accedere ai tuoi personaggi",
         "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
         "error": {
-            "title": "Request error",
-            "notice#": "A website has requested your character data but did not specify required parameters"
+            "title": "Errore nella richiesta",
+            "notice#": "Un sito web ha richiesto i tuoi dati del personaggio ma non ha specificato i parametri richiesti"
         }
     },
     "dialog": {
@@ -1408,9 +1417,9 @@
             "apply": "Applica"
         },
         "manage_link": {
-            "title": "Manage player / guild merge",
+            "title": "Gestisci unione giocatore / gilda",
             "link": {
-                "heading1": "Merge following objects",
+                "heading1": "Unisci i seguenti oggetti",
                 "heading2": "Into",
                 "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
             },
@@ -1474,7 +1483,7 @@
         },
         "script_manual": {
             "title": "Guida di riferimento",
-            "deprecated": "deprecated",
+            "deprecated": "obsoleto",
             "heading": {
                 "header": "Intestazioni per tutti i personaggi",
                 "header_protected": "Intestazioni per i membri della gilda",
@@ -1644,11 +1653,15 @@
         },
         "edit_file_tag": {
             "title": "Modifica tag",
-            "current": "Tag correnti",
-            "replacement": "Sostituisci tag",
-            "none": "Nessuno",
+            "current": "Tags",
             "cancel": "Cancella",
-            "save": "Salva"
+            "save": "Apply to all players",
+            "clear": "Remove all tags",
+            "insert": {
+                "title": "Add new tag",
+                "placeholder": "Tag name",
+                "tooltip": "Add new tag"
+            }
         },
         "profile_create": {
             "title": "Crea/Modifica profilo",
