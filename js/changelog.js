@@ -25,7 +25,7 @@ const ANNOUNCEMENTS = [
 const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
-            'Added support for manual server merging',
+            'Added support for manual character/guild merging',
             'Added support for multiple tags per player',
             'Added support for capturing player descriptions',
             'Added support for capturing guild descriptions',
