@@ -799,8 +799,57 @@ class DatabaseManager {
         return Object.fromEntries(Array.from(this.#linksLookup.entries()).filter(([, links]) => links.length > 1))
     }
 
-    static importLinks (links) {
-        
+    static async importLinks (linksObject) {
+        for (const [fileTargetLink, fileSourceLinks] of Object.entries(linksObject)) {
+            const targetLink = this.#links.get(fileTargetLink) || fileTargetLink;
+
+            for (const sourceLink of fileSourceLinks) {
+                const parentLink = this.#links.get(sourceLink) || sourceLink;
+
+                // If link is reference to self, no need to unlink
+                if (parentLink == sourceLink) continue
+                else {
+                    // Otherwise we need it to separate from parent link
+                    // Objects that are affected
+                    const { players, groups } = this.getFile(this.getRelatedLinks([parentLink]), null);
+
+                    const objects = [
+                        ...players,
+                        ...groups
+                    ];
+
+                    // Unload objects
+                    for (const timestamp of this.Identifiers.values(parentLink)) {
+                        this.#unload(parentLink, timestamp);
+                    }
+
+                    // Separate link
+                    this.#links.set(sourceLink, sourceLink);
+                    this.#linksLookup.set(sourceLink, [ sourceLink ]);
+
+                    // Remove from lookup
+                    const lookup = this.#linksLookup.get(parentLink);
+                    _remove(lookup, sourceLink);
+
+                    this.#linksLookup.set(parentLink, lookup);
+
+                    await this.#interface.set('links', { id: sourceLink, pid: sourceLink });
+
+                    // Add players and groups back to be registered with new links
+                    for (const object of objects) {
+                        if (this.isPlayer(object.identifier)) {
+                            this.#addPlayer(object);
+                        } else {
+                            this.#addGroup(object);
+                        }
+                    }
+                }
+            }
+
+            await this.link(fileSourceLinks, targetLink, false);
+        }
+
+        this.#updateLists();
     }
 
     static getRelatedLinks (links) {
@@ -808,7 +857,7 @@ class DatabaseManager {
 
         for (const link of links) {
             const entry = DatabaseManager.getAny(link);
-            if (entry) {
+            if (entry?.Relations) {
                 for (const relation of entry.Relations) {
                     acc.add(relation);
                 }
@@ -857,7 +906,7 @@ class DatabaseManager {
         }
     }
 
-    static async link (sourceLinks, targetLink) {
+    static async link (sourceLinks, targetLink, updateLists = true) {
         // Update all existing links
         const targetLookup = this.#linksLookup.get(targetLink);
 
@@ -930,7 +979,9 @@ class DatabaseManager {
         }
 
         // Reload lists
-        this.#updateLists();
+        if (updateLists) {
+            this.#updateLists();
+        }
     }
 
     static getLinkedIdentifiers (linkId) {
