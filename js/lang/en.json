@@ -357,7 +357,7 @@
             "desc": "Simulate the probable outcome of a dungeon battle"
         },
         "underworld": {
-            "title": "Underworld",
+            "title": "Underworld Simulator",
             "desc": "Simulate the probable outcome of an underworld battle"
         },
         "analyzer": {
