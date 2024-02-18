@@ -663,6 +663,10 @@ const DataManageDialog = new (class DataManageDialog extends Dialog {
       this.$cancelButton = this.$parent.find('[data-op="cancel"]');
       this.$cancelButton.click(() => {
           this.close();
+          
+          this.data = null;
+          this.$content.empty();
+
           this.callback();
       });
 
@@ -670,11 +674,15 @@ const DataManageDialog = new (class DataManageDialog extends Dialog {
       this.$okButton.click(() => {
           this.close();
 
+          this.$content.empty();
+
           if (this.$checkbox.checkbox('is checked')) {
               SiteOptions.unsafe_delete = true;
           }
 
           DatabaseManager.safeRemove(this.data, () => this.callback(), true);
+
+          this.data = null;
       });
 
       this.$content = this.$parent.find('[data-op="content"]');
