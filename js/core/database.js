@@ -739,7 +739,7 @@ class DatabaseManager {
         const model = new Proxy({
             Data: data,
             Identifier: data.identifier,
-            LinkId: this.getLink(data.identifier, true),
+            LinkId: this.getLink(data.identifier),
             Timestamp: data.timestamp,
             Own: data.own,
             Name: data.name,
@@ -747,7 +747,7 @@ class DatabaseManager {
             Class: data.class || ((data.own ? data.save[29] : data.save[20]) % 65536),
             Group: {
                 Identifier: data.group,
-                LinkId: this.getLink(data.group, true),
+                LinkId: this.getLink(data.group),
                 Name: data.groupname
             }
         }, {
@@ -769,16 +769,9 @@ class DatabaseManager {
         this.#registerModel('Players', model.LinkId, model.Timestamp, model);
     }
 
-    static getLink (identifier, generateIfMissing = false) {
+    static getLink (identifier) {
         if (identifier) {
-            if (generateIfMissing && this.#links.has(identifier) == false) {
-                this.#links.set(identifier, identifier);
-                this.#linksLookup.set(identifier, [identifier]);
-
-                this.#interface.set('links', { id: identifier, pid: identifier });
-            }
-    
-            return this.#links.get(identifier);
+            return this.#links.get(identifier) || identifier;
         } else {
             // Return undefined since we dont want links to be created for invalid identifiers
             return undefined;
@@ -791,6 +784,8 @@ class DatabaseManager {
                 await this.unlink(sourceLink, false);
             }
         }
+
+        await this.#interface.clear('links')
 
         this.#updateLists();
     }
@@ -885,10 +880,10 @@ class DatabaseManager {
 
         // Separate all links
         for (const identifier of identifiers) {
-            this.#links.set(identifier, identifier);
-            this.#linksLookup.set(identifier, [ identifier ]);
+            this.#links.delete(identifier);
+            this.#linksLookup.delete(identifier);
 
-            await this.#interface.set('links', { id: identifier, pid: identifier });
+            await this.#interface.remove('links', identifier);
         }
 
         // Add players and groups back to be registered with new links
@@ -908,7 +903,7 @@ class DatabaseManager {
 
     static async link (sourceLinks, targetLink, updateLists = true) {
         // Update all existing links
-        const targetLookup = this.#linksLookup.get(targetLink);
+        const targetLookup = this.#linksLookup.get(targetLink) || [targetLink];
 
         // Objects that are affected
         const objects = [];
@@ -917,7 +912,7 @@ class DatabaseManager {
         let targetTracker = this.#trackedPlayers[targetLink];
 
         for (const sourceLink of sourceLinks) {
-            if (sourceLink === targetLink) {
+            if (sourceLink === targetLink && this.#links.has(sourceLink)) {
                 // Skip for target link as it is already registered
                 continue;
             }
@@ -929,6 +924,11 @@ class DatabaseManager {
 
                 // Save link  to database
                 await this.#interface.set('links', { id: identifier, pid: targetLink });
+            }
+
+            if (sourceLink === targetLink) {
+                // Skip the rest for target link
+                continue;
             }
 
             // Remove from lookup as link shouldnt exist anymore afterwards
@@ -985,16 +985,16 @@ class DatabaseManager {
     }
 
     static getLinkedIdentifiers (linkId) {
-        return this.#linksLookup.get(linkId) || [];
+        return this.#linksLookup.get(linkId) || [linkId];
     }
 
     static #addGroup (data) {
         // Create model instance and set link id
         const model = new GroupModel(data);
-        model.LinkId = this.getLink(model.Identifier, true);
+        model.LinkId = this.getLink(model.Identifier);
 
         for (const player of model.Players) {
-            player.LinkId = this.getLink(player.Identifier, true);
+            player.LinkId = this.getLink(player.Identifier);
         }
 
         this.#registerModel('Groups', model.LinkId, model.Timestamp, model);
