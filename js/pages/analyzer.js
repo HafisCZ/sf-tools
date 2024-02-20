@@ -372,13 +372,17 @@ Site.ready(null, function (urlParams) {
 
     $autofill1.click(() => {
         if (currentGroup) {
-            DialogController.open(AnalyzerAutofillDialog, (data) => playerEditorA.autofill(data));
+            DialogController.open(AnalyzerAutofillDialog).then((value) => {
+                if (value) playerEditorA.autofill(value);
+            });
         }
     })
 
     $autofill2.click(() => {
         if (currentGroup) {
-            DialogController.open(AnalyzerAutofillDialog, (data) => playerEditorB.autofill(data));
+            DialogController.open(AnalyzerAutofillDialog).then((value) => {
+                if (value) playerEditorB.autofill(value);
+            });
         }
     })
 

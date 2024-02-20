@@ -1,13 +1,11 @@
-const AnalyzerOptionsDialog = new (class AnalyzerOptionsDialog extends Dialog {
-  constructor () {
-      super({
-          key: 'analyzer_options',
-          dismissable: true,
-          opacity: 0
-      });
-  }
+class AnalyzerOptionsDialog extends Dialog {
+  static OPTIONS = {
+    key: 'analyzer_options',
+    dismissable: true,
+    opacity: 0
+}
 
-  _createModal () {
+  _render () {
       return `
           <div class="small bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
@@ -19,14 +17,12 @@ const AnalyzerOptionsDialog = new (class AnalyzerOptionsDialog extends Dialog {
       `;
   }
 
-  _createBindings () {
+  _handle (callback, options, data) {
       this.$ok = this.$parent.operator('ok');
-      this.$ok.click(() => this.close());
+      this.$ok.click(() => callback(false));
 
       this.$content = this.$parent.operator('content');
-  }
 
-  _applyArguments (options, data) {
       if (!this.$content.empty()) return;
 
       for (const [ key, option ] of Object.entries(data)) {
@@ -71,24 +67,22 @@ const AnalyzerOptionsDialog = new (class AnalyzerOptionsDialog extends Dialog {
           }
       }
   }
-})();
+}
 
-const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog extends Dialog {
-  constructor () {
-    super({
+class FightStatisticalAnalysisDialog extends Dialog {
+    static OPTIONS = {
         key: 'fight_statistical_analysis',
         dismissable: true,
         opacity: 0
-    })
-
-    this.ExpressionConfig = DEFAULT_EXPRESSION_CONFIG.clone();
-
-    for (const name of ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round', 'Attacker State Display', 'Target State Display']) {
-        this.ExpressionConfig.register('accessor', 'none', name, (object) => object[name]);
     }
-  }
 
-  _createModal () {
+    _render () {
+      this.ExpressionConfig = DEFAULT_EXPRESSION_CONFIG.clone();
+
+      for (const name of ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round', 'Attacker State Display', 'Target State Display']) {
+          this.ExpressionConfig.register('accessor', 'none', name, (object) => object[name]);
+      }
+
       return `
           <div class="bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
@@ -103,10 +97,10 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
       `;
   }
 
-  _createBindings () {
+  _handle (callback, { fights, fighterA, fighterB }) {
       this.$closeButton = this.$parent.operator('cancel');
       this.$closeButton.click(() => {
-          this.close();
+        callback(false)
       })
 
       this.$content = this.$parent.operator('content');
@@ -149,6 +143,34 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
             })
           )
       }
+
+      this.fighterA = fighterA;
+      this.fighterB = fighterB;
+
+      this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState, attackerSpecialDisplay, targetSpecialDisplay }, index, array) => ({
+          'Attacker': attacker,
+          'Target': target,
+          'Attacker State': attackerSpecialState,
+          'Attacker State Display': attackerSpecialDisplay,
+          'Target State': targetSpecialState,
+          'Target State Display': targetSpecialDisplay,
+          'Player 1 Attacking': attacker.ID === fighterA.ID,
+          'Player 2 Attacking': attacker.ID === fighterB.ID,
+          'Critical': attackCrit,
+          'Missed': attackMissed,
+          'Damage': attackDamage,
+          'Rage': attackRage,
+          'Special': attackSpecial,
+          'Type': attackType,
+          'First Round': index === 0,
+          'Last Round': index === array.length - 1
+      }))).flat();
+
+      this.groups = [];
+
+      this.$content.empty();
+
+      this._inject();
   }
 
   _inject () {
@@ -203,48 +225,16 @@ const FightStatisticalAnalysisDialog = new (class FightStatisticalAnalysisDialog
           }
       }
   }
+}
 
-  _applyArguments ({ fights, fighterA, fighterB }) {
-      this.fighterA = fighterA;
-      this.fighterB = fighterB;
-
-      this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState, attackerSpecialDisplay, targetSpecialDisplay }, index, array) => ({
-          'Attacker': attacker,
-          'Target': target,
-          'Attacker State': attackerSpecialState,
-          'Attacker State Display': attackerSpecialDisplay,
-          'Target State': targetSpecialState,
-          'Target State Display': targetSpecialDisplay,
-          'Player 1 Attacking': attacker.ID === fighterA.ID,
-          'Player 2 Attacking': attacker.ID === fighterB.ID,
-          'Critical': attackCrit,
-          'Missed': attackMissed,
-          'Damage': attackDamage,
-          'Rage': attackRage,
-          'Special': attackSpecial,
-          'Type': attackType,
-          'First Round': index === 0,
-          'Last Round': index === array.length - 1
-      }))).flat();
-
-      this.groups = [];
-
-      this.$content.empty();
-
-      this._inject();
+class AnalyzerAutofillDialog extends Dialog {
+    static OPTIONS = {
+      key: 'analyzer_autofill',
+      dismissable: true,
+      opacity: 0
   }
-})();
 
-const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'analyzer_autofill',
-            dismissable: true,
-            opacity: 0
-        })
-    }
-
-    _createModal () {
+    _render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header flex justify-content-between items-center">
@@ -263,12 +253,12 @@ const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog 
         `;
     }
 
-    _createBindings () {
+    _handle (callback) {
         this.$content = this.$parent.operator('content');
         
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
-            this.close();
+          callback(false)
         })
 
         this.$search = this.$parent.operator('search');
@@ -276,7 +266,10 @@ const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog 
             this._refresh();
         })
 
-        this._generateContent();
+        this._generateContent(callback);
+        this._refresh();
+
+        this.$search.val('');
         this._refresh();
     }
 
@@ -338,7 +331,7 @@ const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog 
         };
     }
 
-    _generateContent () {
+    _generateContent (callback) {
         for (const dungeon of Object.values(DUNGEON_DATA)) {
             dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
     
@@ -366,8 +359,7 @@ const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog 
                 `);
 
                 $element.click(() => {
-                    this.close();
-                    this.callback(this._convert(dungeon, boss));
+                    callback(this._convert(dungeon, boss));
                 })
 
                 this.$content.append($element);
@@ -380,14 +372,7 @@ const AnalyzerAutofillDialog = new (class AnalyzerAutofillDialog extends Dialog 
             }
         }
     }
-
-    _applyArguments (callback) {
-        this.callback = callback;
-
-        this.$search.val('');
-        this._refresh();
-    }
-})();
+}
 
 // Custom fighter
 class FighterModel {

@@ -1,14 +1,12 @@
-const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'simulator_debug',
-            dismissable: true,
-            opacity: 0,
-            containerClass: 'debug-dialog'
-        })
+class SimulatorDebugDialog extends Dialog {
+    static OPTIONS = {
+        key: 'simulator_debug',
+        dismissable: true,
+        opacity: 0,
+        containerClass: 'debug-dialog'
     }
 
-    _createModal () {
+    _render () {
         return `
             <div class="bordered inverted dialog">
                 <div class="overflow-y-scroll overflow-x-hidden pr-4">
@@ -23,16 +21,15 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         `;
     }
 
-    _createBindings () {
+    _handle (callback, currentConfig, defaultConfig) {
         this.$cancelButton = this.$parent.find('[data-op="cancel"]');
         this.$cancelButton.click(() => {
-            this.close();
+            callback(false)
         });
 
         this.$okButton = this.$parent.find('[data-op="ok"]');
         this.$okButton.click(() => {
-            this.callback(this._readData());
-            this.close();
+            callback(this._readData());
         })
 
         this.$resetButton = this.$parent.find('[data-op="reset"]');
@@ -41,6 +38,11 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         })
 
         this.$content = this.$parent.find('[data-op="content"]');
+
+        this.currentConfig = null;
+        this.defaultConfig = defaultConfig;
+
+        this._setData(currentConfig);
     }
 
     _getValue (path, defaultValue) {
@@ -86,7 +88,7 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         return this._readGroup(this.defaultConfig, []);
     }
 
-    _formatKey (path) {
+    static _formatKey (path) {
         return path.slice(1).map((key) => key.replace(/([A-Z])/g, ' $1').trim()).join(' - ')
     }
 
@@ -112,7 +114,7 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
         let content = ''
 
         for (const [key, value] of Object.entries(group)) {
-            const prettyKey = this._formatKey([...path, key]);
+            const prettyKey = SimulatorDebugDialog._formatKey([...path, key]);
 
             if (Array.isArray(value) && typeof value[0] !== 'object') {
                 content += '<div class="equal width fields">';
@@ -164,86 +166,16 @@ const SimulatorDebugDialog = new (class SimulatorDebugDialog extends Dialog {
 
         this.$content.html(content);
     }
+}
 
-    _applyArguments (currentConfig, defaultConfig, callback) {
-        this.callback = callback;
-
-        this.currentConfig = null;
-        this.defaultConfig = defaultConfig;
-
-        this._setData(currentConfig);
-    }
-})();
-
-const SimulatorInformationDialog = new (class SimulatorInformationDialog extends Dialog {
-    #entries = [
-        // EMPTY
-    ];
-
-    constructor () {
-        super({
-            dismissable: true
-        })
+class SimulatorCustomPresetDialog extends Dialog {
+    static OPTIONS = {
+        key: 'simulator_custom_preset',
+        dismissable: true,
+        opacity: 0
     }
 
-    get #unresolvedEntries () {
-        return this.#entries.filter((entry) => !entry.resolved);
-    }
-
-    hasInformation () {
-        return this.#unresolvedEntries.length > 0;
-    }
-
-    hasUnread () {
-        return this.#unresolvedEntries[0].id !== SiteOptions.simulator_info_id;
-    }
-
-    _createModal () {
-        let html = '';
-
-        for (const { title, text } of this.#unresolvedEntries) {
-            html += `
-                <div>
-                    <h2 class="ui orange centered header">${title}</h2>
-                    <p class="text-center">${text}</p>
-                </div>
-            `;
-        }
-
-        return `
-            <div class="small bordered inverted dialog">
-                <div class="header">${intl('simulator.information')}</div>
-                <div class="overflow-y-auto flex flex-col justify-content-center" style="height: 30vh; gap: 5em;">
-                    ${html}
-                </div>
-                <button class="ui black fluid button" data-op="close">${intl('dialog.shared.close')}</button>
-            </div>
-        `;
-    }
-
-    _createBindings () {
-        this.$closeButton = this.$parent.find('[data-op="close"]');
-        this.$closeButton.click(() => {
-            this.close();
-        });
-    }
-
-    _applyArguments () {
-        // Mark as viewed
-        SiteOptions.simulator_info_id = this.#unresolvedEntries[0].id;
-    }
-})
-
-const SimulatorCustomPresetDialog = new (class SimulatorCustomPresetDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'simulator_custom_preset',
-            dismissable: true,
-            opacity: 0
-        })
-    }
-
-    _createModal () {
+    _render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header">${this.intl('title')}</div>
@@ -256,18 +188,16 @@ const SimulatorCustomPresetDialog = new (class SimulatorCustomPresetDialog exten
         `;
     }
 
-    _createBindings () {
+    _handle (callback) {
         this.$closeButton = this.$parent.operator('close');
         this.$closeButton.click(() => {
-            this.close();
+            callback();
         });
 
         this.$insertButton = this.$parent.operator('insert');
         this.$insertButton.click(() => {
             if (this.editor.valid()) {
-                this.callback(this.editor.read());
-    
-                this.close();
+                callback(this.editor.read());
             }
         });
 
@@ -278,14 +208,10 @@ const SimulatorCustomPresetDialog = new (class SimulatorCustomPresetDialog exten
 
         this.$parent.find('.segment').removeClass('segment');
         this.$parent.find('.field').first().hide();
-    }
-
-    _applyArguments (callback) {
-        this.callback = callback;
 
         this.editor.clear();
     }
-})
+}
 
 const SimulatorUtils = class {
     static #currentConfig;
@@ -312,28 +238,6 @@ const SimulatorUtils = class {
         if (this.#debug) {
             this.#insertDebugElements();
         }
-
-        if (SimulatorInformationDialog.hasInformation()) {
-            this.#insertInfoElement();
-        }
-    }
-
-    static #insertInfoElement () {
-        const $infoButton = $(`
-            <div class="item !p-0">
-                <button class="ui basic inverted icon button !box-shadow-none" data-position="bottom center" data-tooltip="${intl('simulator.information')}" data-inverted="">
-                    <i class="${SimulatorInformationDialog.hasUnread() ? 'text-orange ' : ''}exclamation triangle icon"></i>
-                </button>
-            </div>
-        `);
-
-        $infoButton.click(() => {
-            DialogController.open(SimulatorInformationDialog);
-
-            $infoButton.find('i').removeClass('text-orange');
-        });
-
-        $infoButton.insertAfter($('.ui.huge.menu .header.item'));
     }
 
     static #insertDebugElements () {
@@ -349,8 +253,9 @@ const SimulatorUtils = class {
             DialogController.open(
                 SimulatorDebugDialog,
                 this.#currentConfig,
-                this.#defaultConfig,
-                (config) => {
+                this.#defaultConfig
+            ).then((config) => {
+                if (config) {
                     this.#currentConfig = config;
                     this.#renderConfig();
 
@@ -360,7 +265,7 @@ const SimulatorUtils = class {
                         method(this.#currentConfig);
                     }
                 }
-            );
+            })
         });
 
         $dialogButton.insertAfter($('.ui.huge.menu .header.item'))
@@ -484,11 +389,12 @@ const SimulatorUtils = class {
 
                     if (value === 'custom') {
                         DialogController.open(
-                            SimulatorCustomPresetDialog,
-                            (data) => {
-                                method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(data, index)));
+                            SimulatorCustomPresetDialog
+                        ).then((value) => {
+                            if (value) {
+                                method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(value, index)));
                             }
-                        )
+                        })
                     } else {
                         const { data, suffix } = presets[parseInt(value)];
     

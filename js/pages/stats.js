@@ -754,7 +754,11 @@ class GroupsTab extends Tab {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
                         let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.dataset.id];
 
-                        DatabaseManager.safeRemove({ identifiers }, () => this.$filter.trigger('change'));
+                        DatabaseManager.safeRemove({ identifiers }).then((value) => {
+                            if (value) {
+                                this.$filter.trigger('change');
+                            }
+                        });
                     }
                 }
             ]
@@ -1268,7 +1272,11 @@ class PlayersTab extends Tab {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
                         let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.dataset.id];
 
-                        DatabaseManager.safeRemove({ identifiers }, () => this.$filter.trigger('change'));
+                        DatabaseManager.safeRemove({ identifiers }).then((value) => {
+                            if (value) {
+                                this.$filter.trigger('change');
+                            }
+                        });
                     }
                 }
             ]
@@ -1776,19 +1784,22 @@ class GroupsGridTab extends Tab {
         this.$actions.operator('action-link').click(() => {
             DialogController.open(
                 ManageLinkDialog,
-                this.#selection,
-                (result) => {
-                    if (result) {
-                        this.show();
-                    }
+                this.#selection
+            ).then((value) => {
+                if (value) {
+                    this.show();
                 }
-            )
+            })
 
             this.#clearSelection();
         })
 
         this.$actions.operator('action-remove').click(() => {
-            DatabaseManager.safeRemove({ identifiers: this.#selection }, () => this.show());
+            DatabaseManager.safeRemove({ identifiers: this.#selection }).then((value) => {
+                if (value) {
+                    this.show()
+                }
+            });
         })
 
         // Filter
@@ -2075,19 +2086,22 @@ class PlayersGridTab extends Tab {
         this.$actions.operator('action-link').click(() => {
             DialogController.open(
                 ManageLinkDialog,
-                this.#selection,
-                (result) => {
-                    if (result) {
-                        this.show();
-                    }
+                this.#selection
+            ).then((value) => {
+                if (value) {
+                    this.show();
                 }
-            )
+            })
 
             this.#clearSelection();
         })
 
         this.$actions.operator('action-remove').click(() => {
-            DatabaseManager.safeRemove({ identifiers: this.#selection }, () => this.show());
+            DatabaseManager.safeRemove({ identifiers: this.#selection }).then((value) => {
+                if (value) {
+                    this.show()
+                }
+            })
         })
 
         // Filter
@@ -2366,14 +2380,32 @@ class FilesTab extends Tab {
     tagSelected () {
         if (this.simple) {
             if (this.selectedFiles.size > 0) {
-                DialogController.open(TagDialog, 'timestamps', Array.from(this.selectedFiles), () => this.show());
+                DialogController.open(
+                    TagDialog,
+                    'timestamps',
+                    Array.from(this.selectedFiles)
+                ).then((value) => {
+                    if (value) {
+                        this.show()
+                    }
+                });
+
                 return;
             }
         } else if (this.selectedEntries.size > 0) {
             const playerEntries = Array.from(this.selectedEntries.values()).filter((player) => DatabaseManager.isPlayer(player.identifier));
 
             if (playerEntries.length > 0) {
-                DialogController.open(TagDialog, 'instances', Array.from(this.selectedEntries.values()), () => this.show());
+                DialogController.open(
+                    TagDialog,
+                    'instances',
+                    Array.from(this.selectedEntries.values())
+                ).then((value) => {
+                    if (value) {
+                        this.show()
+                    }
+                });
+
                 return;
             }
         }
@@ -2383,20 +2415,36 @@ class FilesTab extends Tab {
 
     // Delete all
     deleteAll () {
-        DialogController.open(ConfirmationDialog, intl('dialog.delete_all.title'), intl('dialog.delete_all.notice'), () => {
-            Loader.toggle(true);
-            DatabaseManager.purge().then(() => this.show());
-        }, () => {}, true, 2)
+        DialogController.open(
+            ConfirmationDialog,
+            intl('dialog.delete_all.title'),
+            intl('dialog.delete_all.notice'),
+            true,
+            2
+        ).then((value) => {
+            if (value) {
+                Loader.toggle(true);
+                DatabaseManager.purge().then(() => this.show());
+            }
+        })
     }
 
     // Delete selected
     deleteSelected () {
         if (this.simple) {
             if (this.selectedFiles.size > 0) {
-                DatabaseManager.safeRemove({ timestamps: Array.from(this.selectedFiles) }, () => this.show());
+                DatabaseManager.safeRemove({ timestamps: Array.from(this.selectedFiles) }).then((value) => {
+                    if (value) {
+                        this.show()
+                    }
+                });
             }
         } else if (this.selectedEntries.size > 0) {
-            DatabaseManager.safeRemove({ instances: Array.from(this.selectedEntries.values()) }, () => this.show());
+            DatabaseManager.safeRemove({ instances: Array.from(this.selectedEntries.values()) }).then((value) => {
+                if (value) {
+                    this.show()
+                }
+            });
         }
     }
 
@@ -2854,7 +2902,11 @@ class FilesTab extends Tab {
 
             $entries.find('[data-edit]').click((event) => {
                 const timestamp = parseInt(event.currentTarget.dataset.edit);
-                DialogController.open(FileEditDialog, timestamp, () => this.show());
+                DialogController.open(FileEditDialog, timestamp).then((value) => {
+                    if (value) {
+                        this.show()
+                    }
+                });
             });
 
             if (entries.length == 0) {
@@ -3241,8 +3293,9 @@ class ScriptsTab extends Tab {
             DialogController.open(
                 ConfirmationDialog,
                 intl('dialog.delete_remote_script.title'),
-                intl(`dialog.delete_remote_script.message`),
-                () => {
+                intl(`dialog.delete_remote_script.message`)
+            ).then((value) => {
+                if (value) {
                     Loader.toggle(true);
 
                     const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
@@ -3260,9 +3313,8 @@ class ScriptsTab extends Tab {
                     }).finally(() => {
                         Loader.toggle(false);
                     });
-                },
-                null
-            );
+                }
+            })
         });
 
         // Archive
@@ -3315,10 +3367,12 @@ class ScriptsTab extends Tab {
             DialogController.open(
                 ConfirmationDialog,
                 intl('dialog.delete_script.title'),
-                intl('dialog.delete_script.notice') + (this.script.remote ? intl('dialog.delete_script.notice_bonus_remote') : '') + (assignments.length > 0 ? intl('dialog.delete_script.notice_bonus_used', { tables: assignments.join(', ') }) : ''),
-                () => this.remove(),
-                null
-            );
+                intl('dialog.delete_script.notice') + (this.script.remote ? intl('dialog.delete_script.notice_bonus_remote') : '') + (assignments.length > 0 ? intl('dialog.delete_script.notice_bonus_used', { tables: assignments.join(', ') }) : '')
+            ).then((value) => {
+                if (value) {
+                    this.remove();
+                }
+            })
         });
 
         this.editor = new ScriptEditor(this.$parent.operator('editor').get(0), ScriptType.Table);
@@ -3832,13 +3886,19 @@ class SettingsTab extends Tab {
 
         this.$linksReset = this.$parent.operator('links-reset');
         this.$linksReset.click(() => {
-            DialogController.open(ConfirmationDialog, intl('stats.settings.links.reset_title'), '', async function () {
-                Loader.toggle(true);
+            DialogController.open(
+                ConfirmationDialog,
+                intl('stats.settings.links.reset_title'),
+                ''
+            ).then(async (value) => {
+                if (value) {
+                    Loader.toggle(true);
 
-                await DatabaseManager.resetLinks();
-
-                Loader.toggle(false);
-            }, () => {})
+                    await DatabaseManager.resetLinks();
+    
+                    Loader.toggle(false);
+                }
+            })
         })
 
         this.$linksExport = this.$parent.operator('links-export');
@@ -3851,15 +3911,21 @@ class SettingsTab extends Tab {
 
         this.$linksImport = this.$parent.operator('links-import');
         this.$linksImport.change((event) => {
-            DialogController.open(ConfirmationDialog, intl('stats.settings.links.import_title'), '', async function () {
-                Loader.toggle(true);
+            DialogController.open(
+                ConfirmationDialog,
+                intl('stats.settings.links.import_title'),
+                ''
+            ).then(async (value) => {
+                if (value) {
+                    Loader.toggle(true);
 
-                await DatabaseManager.importLinks(
-                    await _dig(event, 'currentTarget', 'files', 0).text().then((fileContent) => JSON.parse(fileContent))
-                )
-
-                Loader.toggle(false);
-            }, () => {})
+                    await DatabaseManager.importLinks(
+                        await _dig(event, 'currentTarget', 'files', 0).text().then((fileContent) => JSON.parse(fileContent))
+                    )
+    
+                    Loader.toggle(false);
+                }
+            })
         })
     }
 
@@ -3875,16 +3941,24 @@ class SettingsTab extends Tab {
     }
 
     importDumpFile (fileEvent) {
-        DialogController.open(ConfirmationDialog, intl('stats.settings.recovery.title'), intl('stats.settings.recovery.notice'), async function () {
-            Loader.toggle(true);
+        DialogController.open(
+            ConfirmationDialog,
+            intl('stats.settings.recovery.title'),
+            intl('stats.settings.recovery.notice'),
+            true,
+            2
+        ).then(async (value) => {
+            if (value) {
+                Loader.toggle(true);
 
-            Toast.info(intl('stats.settings.recovery.title'), intl('stats.settings.recovery.toast'));
-
-            let data = await _dig(fileEvent, 'currentTarget', 'files', 0).text().then(fileContent => JSON.parse(fileContent));
-            await Site.recover(data);
-
-            window.location.href = window.location.href;
-        }, () => {}, true, 2)
+                Toast.info(intl('stats.settings.recovery.title'), intl('stats.settings.recovery.toast'));
+    
+                let data = await _dig(fileEvent, 'currentTarget', 'files', 0).text().then(fileContent => JSON.parse(fileContent));
+                await Site.recover(data);
+    
+                window.location.href = window.location.href;
+            }
+        })
     }
 
     // Prepare checkbox
@@ -3996,8 +4070,14 @@ class ProfilesTab extends Tab {
         });
 
         this.$parent.find('[data-edit]').click((event) => {
-            const key = event.currentTarget.dataset.edit;
-            DialogController.open(ProfileCreateDialog, () => this.show(), key);
+            DialogController.open(
+                ProfileCreateDialog,
+                event.currentTarget.dataset.edit
+            ).then((value) => {
+                if (value) {
+                    this.show();
+                }
+            })
         });
 
         this.$parent.find('[data-op="create"]').click(() => {
@@ -4007,7 +4087,13 @@ class ProfilesTab extends Tab {
     }
 
     addProfile () {
-        DialogController.open(ProfileCreateDialog, () => this.show());
+        DialogController.open(
+            ProfileCreateDialog
+        ).then((value) => {
+            if (value) {
+                this.show();
+            }
+        })
     }
 
     showRules (rule) {
