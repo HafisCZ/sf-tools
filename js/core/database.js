@@ -1444,16 +1444,20 @@ class DatabaseManager {
         }
     }
 
-    static safeRemove (data, callback, unsafeOverride = false) {
+    static async safeRemove (data, unsafeOverride = false) {
         if (unsafeOverride || SiteOptions.unsafe_delete) {
             Loader.toggle(true);
 
-            this.#removeAuto(data).then(() => {
-                Loader.toggle(false);
-                callback();
-            });
+            await this.#removeAuto(data);
+
+            Loader.toggle(false);
+
+            return true;
         } else {
-            DialogController.open(DataManageDialog, data, callback);
+            return DialogController.open(
+                DataManageDialog,
+                data
+            );
         }
     }
 

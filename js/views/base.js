@@ -1,94 +1,134 @@
+class Loader {
+    static #wrapper = null;
+
+    static #create () {
+        this.#wrapper = document.createElement('div')
+        this.#wrapper.setAttribute('data-dialog-name', 'loader');
+        this.#wrapper.setAttribute('class', 'dialog container');
+        this.#wrapper.setAttribute('style', 'background: rgba(0, 0, 0, 0);');
+        this.#wrapper.innerHTML = `
+            <div class="basic dialog">
+                <div class="flex flex-col gap-8 items-center">
+                    <img src="res/favicon.png" class="loader" width="100">
+                    <div class="ui active tiny progress" data-percent="0" style="width: 200px;">
+                        <div class="bar" style="background: #888 !important;"></div>
+                    </div>
+                </div>
+            </div>
+        `
+
+        document.body.append(this.#wrapper);
+
+        this.$progress = $(this.#wrapper).find('.progress');
+    }
+
+    static progress (percent) {
+        this.$progress.progress({ percent: Math.trunc(100 * percent) });
+    }
+
+    static toggle (open, options = null) {
+        if (this.#wrapper === null) this.#create();
+        if (open) {
+            if (options && options.progress) {
+                this.$progress.show();
+                this.$progress.progress({ percent: 0 });
+            } else {
+                this.$progress.hide();
+            }
+
+            this.#wrapper.style.display = '';
+        } else {
+            this.#wrapper.style.display = 'none';
+        }
+    }
+}
+
+class DialogController {
+    static #promise = Promise.resolve();
+    static #queue = [];
+
+    static open (klass, ...params) {
+        const dialog = new klass(klass.OPTIONS || Dialog.DEFAULT_OPTIONS);
+
+        this.#queue.push(dialog);
+
+        return (this.#promise = this.#promise.then(async () => {
+            const value = await dialog.handle(params);
+
+            this.#queue.splice(this.#queue.indexOf(dialog), 1);
+
+            return value;
+        }));
+    }
+}
+
 class Dialog {
+    static DEFAULT_OPTIONS = {
+        opacity: 0.85,
+        dismissable: false,
+        key: '',
+        containerClass: '',
+        containerStyle: '',
+        draggable: false
+    }
+
     constructor (options) {
-        this.options = Object.assign({
-            opacity: 0.85,
-            dismissable: false,
-            key: '',
-            containerClass: '',
-            containerStyle: '',
-            draggable: false
-        }, options || {});
+        this.options = Object.assign({}, Dialog.DEFAULT_OPTIONS, options);
+    }
+
+    handle (params) {
+        return new Promise((resolve) => {
+            this.wrapper = document.createElement('div')
+            this.wrapper.setAttribute('data-dialog-name', this.options.key);
+            this.wrapper.setAttribute('class', `dialog container ${this.options.containerClass}`);
+            this.wrapper.setAttribute('style', `background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}`);
+
+            this.wrapper.innerHTML = this._render(...params);
+
+            document.body.append(this.wrapper);
+
+            const dialog = this.wrapper.querySelector('.dialog.container > .dialog');
+
+            const destroy = (value) => {
+                this.hide();
+
+                resolve(value);
+            }
+
+            this.$parent = $(dialog);
+
+            this._handle(destroy, ...params);
+
+            if (this.options.draggable) {
+                this.#setDraggable(dialog);
+            }
+
+            if (this.options.dismissable) {
+                this.wrapper.addEventListener('click', (event) => {
+                    if (event.target.classList.contains('container')) {
+                        destroy(false)
+                    }
+                })
+            }
+        })
+    }
+
+    hide () {
+        this.wrapper.remove();
     }
 
     intl (key, args = {}) {
         return intl(`dialog.${this.options.key}.${key}`, args);
     }
 
-    open (...args) {
-        return new Promise((resolve) => {
-            if (this.openRequested) {
-                this.resolve = resolve;
-
-                if (!this._hasParent()) {
-                    this.$dialog = $(this._createModal());
-                    this.$parent = $(`<div data-dialog-name="${this.options.key}" class="dialog container ${this.options.containerClass}" style="display: none; background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}"></div>`);
-
-                    this.$dialog.appendTo(this.$parent);
-                    this.$parent.appendTo(document.body);
-
-                    this._createBindings();
-
-                    if (this.options.draggable) {
-                        this._applyDraggable();
-                    }
-                }
-
-                if (this.options.dismissable) {
-                    this.$parent.click((event) => {
-                        if (event.target.classList.contains('container')) {
-                            this.close(false);
-                        }
-                    });
-                }
-
-                this._applyArguments(...args);
-                this.$parent.show();
-            } else {
-                resolve();
-            }
-        });
-    }
-
-    close (value) {
-        this.openRequested = false;
-
-        DialogController.dialogOpen = false;
-
-        if (this._hasParent() && this.resolve) {
-            this.$parent.hide();
-            this.resolve(value);
-            this.resolve = undefined;
-        }
-    }
-
-    requestOpen () {
-        this.openRequested = true;
-    }
-
-    _hasParent () {
-        return typeof this.$parent !== 'undefined';
-    }
-
-    _applyArguments () {
-
-    }
-
-    _createModal () {
-        return '';
-    }
-
-    _createBindings () {
-
-    }
-
-    _applyDraggable () {
+    #setDraggable (element) {
         let pos1 = 0;
         let pos2 = 0;
         let pos3 = 0;
         let pos4 = 0;
 
-        const dialog = this.$parent.find('> .dialog').get(0);
-        const handle = this.$parent.find('> .dialog > .header').get(0);
+        const dialog = element.querySelector('.dialog.container > .dialog');
+        const handle = element.querySelector('.dialog.container > .dialog > .header');
 
         function dragMouseDown(e) {
             e = e || window.event;
@@ -131,6 +171,14 @@ class Dialog {
 
         dialog.classList.add('draggable');
     }
+
+    _handle () {
+        throw 'not implemented'
+    }
+
+    _render () {
+        throw 'not implemented'
+    }
 }
 
 class Toast {
@@ -157,28 +205,14 @@ class Toast {
     }
 }
 
-class DialogController {
-    static #promise = Promise.resolve();
-    static dialogOpen = false;
-
-    static open (popup, ...args) {
-        popup.requestOpen();
-        return (this.#promise = this.#promise.then(() => {
-            this.dialogOpen = true;
-
-            return popup.open(...args);
-        }));
+class TermsAndConditionsDialog extends Dialog {
+    static OPTIONS = {
+        key: 'terms_and_conditions'
     }
+    
+    static VERSION = 2;
 
-    static close (popup) {
-        popup.close();
-    }
-}
-
-const TermsAndConditionsDialog = new (class TermsAndConditionsDialog extends Dialog {
-    VERSION = 2;
-
-    _createModal () {
+    _render () {
         return `
             <div class="small inverted dialog">
                 <div class="header"><u>${intl('terms.title')}</u></div>
@@ -216,16 +250,21 @@ const TermsAndConditionsDialog = new (class TermsAndConditionsDialog extends Dia
         `;
     }
 
-    _createBindings () {
+    _handle (callback) {
         this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.terms_accepted = this.VERSION;
-            this.close();
+            SiteOptions.terms_accepted = TermsAndConditionsDialog.VERSION;
+
+            callback(true);
         });
     }
-})();
+}
 
-const SimulatorShopDialog = new (class SimulatorShopDialog extends Dialog {
-    _createModal () {
+class SimulatorShopDialog extends Dialog {
+    static OPTIONS = {
+        key: 'simulator_shop'
+    }
+
+    _render () {
         const packs = [
             {
                 icon: 'white wallet',
@@ -290,22 +329,19 @@ const SimulatorShopDialog = new (class SimulatorShopDialog extends Dialog {
         `
     }
 
-    _createBindings () {
-        const $close = this.$parent.operator('close');
-        $close.click(() => {
-            this.close();
+    _handle (callback) {
+        this.$parent.find('[data-op="close"]').click(() => {
+            callback(true)
         })
     }
-})
+}
 
-const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'announcement'
-        })
+class AnnouncementDialog extends Dialog {
+    static OPTIONS = {
+        key: 'announcement'
     }
 
-    _createModal () {
+    _render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header text-orange" data-op="title"></div>
@@ -315,36 +351,33 @@ const AnnouncementDialog = new (class AnnouncementDialog extends Dialog {
         `;
     }
 
-    _createBindings () {
-        this.$title = this.$parent.find('[data-op="title"]');
-        this.$content = this.$parent.find('[data-op="content"]');
+    _handle (callback) {
+        const $title = this.$parent.find('[data-op="title"]');
+        const $content = this.$parent.find('[data-op="content"]');
 
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.announcement_accepted = SiteOptions.announcement_accepted + 1;
-            this.close();
+           
+            callback(true);
 
             if (SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
-                DialogController.open(this);
+                DialogController.open(AnnouncementDialog);
             }
         });
-    }
 
-    _applyArguments () {
         const { title, content } = ANNOUNCEMENTS[SiteOptions.announcement_accepted];
 
-        this.$title.html(title);
-        this.$content.html(content);
+        $title.html(title);
+        $content.html(content);
     }
-})
+}
 
-const ChangelogDialog = new (class ChangelogDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'changelog'
-        });
+class ChangelogDialog extends Dialog {
+    static OPTIONS = {
+        key: 'changelog'
     }
 
-    _createModal () {
+    _render () {
         const release = MODULE_VERSION;
         const entries = CHANGELOG[release];
 
@@ -378,66 +411,23 @@ const ChangelogDialog = new (class ChangelogDialog extends Dialog {
         `;
     }
 
-    _createBindings () {
+    _handle (callback) {
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.version_accepted = MODULE_VERSION;
-            this.close();
+
+            callback(true);
         });
     }
-})();
-
-const Loader = new (class Loader extends Dialog {
-    constructor () {
-        super({
-            opacity: 0
-        });
-    }
-
-    _createModal () {
-        return `
-            <div class="basic dialog">
-                <div class="flex flex-col gap-8 items-center">
-                    <img src="res/favicon.png" class="loader" width="100">
-                    <div class="ui active tiny progress" data-percent="0" style="width: 200px;">
-                        <div class="bar" style="background: #888 !important;"></div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    _createBindings () {
-        this.$progress = this.$parent.find('.progress');
-    }
-
-    _applyArguments (options) {
-        if (options && options.progress) {
-            this.$progress.show();
-            this.$progress.progress({ percent: 0 });
-        } else {
-            this.$progress.hide();
-        }
-    }
-
-    progress (percent) {
-        this.$progress.progress({ percent: Math.trunc(100 * percent) });
-    }
-
-    toggle (open, options = null) {
-        DialogController[open ? 'open' : 'close'](this, options);
-    }
-})();
+}
 
 // Non-blocking popup about an exception that occured
-const WarningDialog = new (class WarningDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'warning',
-            opacity: 0
-        });
+class WarningDialog extends Dialog {
+    static OPTIONS = {
+        key: 'warning',
+        opacity: 0
     }
 
-    _createModal () {
+    _render () {
         return `
             <div class="small inverted dialog">
                 <div class="header"><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('title')}</div>
@@ -447,25 +437,22 @@ const WarningDialog = new (class WarningDialog extends Dialog {
         `;
     }
 
-    _createBindings () {
-        this.$text = this.$parent.find('[data-op="text"]');
-        this.$parent.find('[data-op="continue"]').click(() => this.close());
-    }
+    _handle (callback, error) {
+        this.$parent.find('[data-op="continue"]').click(() => {
+            callback(true);
+        });
 
-    _applyArguments (error) {
-        this.$text.text(error instanceof Error ? error.message : error);
+        this.$parent.find('[data-op="text"]').text(error instanceof Error ? error.message : error);
     }
-})();
+}
 
 // Blocking popup about an exception that occured and is blocking execution
-const ErrorDialog = new (class ErrorDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'error'
-        });
+class ErrorDialog extends Dialog {
+    static OPTIONS = {
+        key: 'error'
     }
 
-    _createModal () {
+    _render () {
         return `
             <div class="small inverted bordered dialog">
                 <div class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</div>
@@ -479,31 +466,27 @@ const ErrorDialog = new (class ErrorDialog extends Dialog {
         `;
     }
 
-    _createBindings () {
-        this.$text = this.$parent.find('[data-op="text"]');
+    _handle (callback, error) {
         this.$parent.find('[data-op="continue"]').click(() => {
             window.location.href = window.location.href;
         });
 
         this.$parent.find('[data-op="continue-default"]').click(() => {
             ProfileManager.setActiveProfile('default');
+
             window.location.href = window.location.href;
         });
+
+        this.$parent.find('[data-op="text"]').html(error instanceof Error ? error.message : error);
+    }
+}
+
+class ConfirmationDialog extends Dialog {
+    static OPTIONS = {
+        key: 'confirm'
     }
 
-    _applyArguments (error) {
-        this.$text.html(error instanceof Error ? error.message : error);
-    }
-})();
-
-const ConfirmationDialog = new (class ConfirmationDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'confirm'
-        });
-    }
-
-    _createModal () {
+    _render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="left header" data-op="title"></div>
@@ -514,13 +497,6 @@ const ConfirmationDialog = new (class ConfirmationDialog extends Dialog {
                 </div>
             </div>
         `;
-    }
-
-    _callAndClose (callback) {
-        if (callback) callback();
-
-        this._closeTimer();
-        this.close();
     }
 
     _closeTimer () {
@@ -549,23 +525,25 @@ const ConfirmationDialog = new (class ConfirmationDialog extends Dialog {
         this.$okButton.addClass('disabled');
     }
 
-    _createBindings () {
+    _handle (callback, title, text, darkBackground = false, delay = 0) {
         this.$cancelButton = this.$parent.find('[data-op="cancel"]');
         this.$okButton = this.$parent.find('[data-op="ok"]');
 
         this.$title = this.$parent.find('[data-op="title"]');
         this.$text = this.$parent.find('[data-op="text"]');
 
-        this.$cancelButton.click(() => this._callAndClose(this.cancelCallback));
-        this.$okButton.click(() => this._callAndClose(this.okCallback));
-    }
+        this.$cancelButton.click(() => {
+            this._closeTimer();
+            callback(false);
+        });
 
-    _applyArguments (title, text, okCallback, cancelCallback, darkBackground = false, delay = 0) {
+        this.$okButton.click(() => {
+            this._closeTimer();
+            callback(true);
+        });
+
         this.$title.html(title);
         this.$text.html(text);
-
-        this.okCallback = okCallback;
-        this.cancelCallback = cancelCallback;
 
         this.$parent.css('background', `rgba(0, 0, 0, ${darkBackground ? 0.85 : 0})`);
 
@@ -580,7 +558,7 @@ const ConfirmationDialog = new (class ConfirmationDialog extends Dialog {
             }, 1000);
         }
     }
-})();
+}
 
 class Localization {
     static #LOCALES = {

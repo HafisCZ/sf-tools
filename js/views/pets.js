@@ -1,11 +1,9 @@
-const SimulatorResultsDialog = new (class SimulatorResultsDialog extends Dialog {
-  constructor () {
-      super({
-          dismissable: true
-      })
+class SimulatorResultsDialog extends Dialog {
+  static OPTIONS = {
+    dismissable: true
   }
 
-  _createModal () {
+  _render () {
       return `
           <div class="small inverted bordered dialog">
               <div class="header">${intl('pets.results')}</div>
@@ -14,44 +12,38 @@ const SimulatorResultsDialog = new (class SimulatorResultsDialog extends Dialog 
       `;
   }
 
-  _createBindings () {
-      this.$content = this.$parent.operator('content');
+  _handle (callback, results) {
+    this.$parent.find('[data-op="content"]').html(results.map(({ chance, player, boss }) => {
+      const playerIndex = 20 * player.Type + player.Pet;
+      const bossIndex = 20 * boss.Type + boss.Pet;
+
+      return `
+          <div class="two wide column">
+              <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
+          </div>
+          <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+              ${intl(`pets.names.${playerIndex}`)}
+          </div>
+          <div class="two wide column">
+              <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
+          </div>
+          <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+              ${intl(`pets.names.${bossIndex}`)}
+          </div>
+          <div class="four wide column text-center" style="line-height: 3em;">
+              ${chance == 0 ? intl('pets.bulk.not_possible') : `${chance.toFixed(chance < 0.01 ? 5 : 2)}%`}
+          </div>
+      `;
+    }).join(''))
+  }
+}
+
+class SimulatorMapDialog extends Dialog {
+  static OPTIONS = {
+    dismissable: true
   }
 
-  _applyArguments (results) {
-      this.$content.html(results.map(({ chance, player, boss }) => {
-          const playerIndex = 20 * player.Type + player.Pet;
-          const bossIndex = 20 * boss.Type + boss.Pet;
-
-          return `
-              <div class="two wide column">
-                  <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
-              </div>
-              <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                  ${intl(`pets.names.${playerIndex}`)}
-              </div>
-              <div class="two wide column">
-                  <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
-              </div>
-              <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                  ${intl(`pets.names.${bossIndex}`)}
-              </div>
-              <div class="four wide column text-center" style="line-height: 3em;">
-                  ${chance == 0 ? intl('pets.bulk.not_possible') : `${chance.toFixed(chance < 0.01 ? 5 : 2)}%`}
-              </div>
-          `;
-      }).join(''))
-  }
-})();
-
-const SimulatorMapDialog = new (class SimulatorMapDialog extends Dialog {
-  constructor () {
-      super({
-          dismissable: true
-      })
-  }
-
-  _createModal () {
+  _render () {
       return `
           <div class="very big inverted bordered dialog">
               <div class="header">${intl('pets.results')}</div>
@@ -69,16 +61,47 @@ const SimulatorMapDialog = new (class SimulatorMapDialog extends Dialog {
       `;
   }
 
-  _createBindings () {
-      this.$selector = this.$parent.operator('selector');
-      
-      this.$save = this.$parent.operator('save');
-      this.$save.click(() => {
-          const name = this.$selector.dropdown('get value');
-          this._save(name);
-      });
+  _handle (callback, maps) {
+    this.$selector = this.$parent.operator('selector');
+    
+    this.$save = this.$parent.operator('save');
+    this.$save.click(() => {
+        const name = $selector.dropdown('get value');
+        this._save(name);
+    });
 
-      this.$content = this.$parent.operator('content');
+    this.$content = this.$parent.operator('content');
+
+    this.$selector.dropdown({
+      values: maps.map(({ name }) => ({ value: SHA1(name), name })),
+      onChange: (value) => {
+          this.$content.find('[data-map]').hide();
+          this.$content.find(`[data-map="${value}"]`).show();
+      }
+    });
+
+    let content = '';
+    for (const { data, name } of maps) {
+        const size = data.find(entry => entry && entry.length).filter(value => typeof value !== 'undefined').length;
+
+        content += `
+            <table data-map="${SHA1(name)}" class="ui celled structured fixed basic table w-full text-center !m-0" style="display: none; font-size: 90% !important;">
+                <thead>
+                    <tr>
+                        ${data.find(entry => entry && entry.length).reduce((memo, chance, i) => memo + `<th class="!text-white">${intl('pets.map.gladiator')} ${i}</th>`, `<th class="!text-white">${intl('editor.level')}</th>`)}
+                        ${'<th></th>'.repeat(16 - size)}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.reduce((memo, entry, i) => memo + `<tr><td class="text-white">${i + 1}</td>${ entry.reduce((memo2, chance) => memo2 + `<td style="background-color: ${this._color(chance)};">${chance.toFixed(2)}%</td>`, '')}${'<td></td>'.repeat(16 - size)}</tr>`, '')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    this.$content.html(content);
+
+    this.$selector.dropdown('set selected', SHA1(maps[0].name));
   }
 
   _save (name) {
@@ -113,37 +136,4 @@ const SimulatorMapDialog = new (class SimulatorMapDialog extends Dialog {
           return '#ffdd99';
       }
   }
-
-  _applyArguments (maps) {
-      this.$selector.dropdown({
-          values: maps.map(({ name }) => ({ value: SHA1(name), name })),
-          onChange: (value) => {
-              this.$content.find('[data-map]').hide();
-              this.$content.find(`[data-map="${value}"]`).show();
-          }
-      });
-
-      let content = '';
-      for (const { data, name } of maps) {
-          const size = data.find(entry => entry && entry.length).filter(value => typeof value !== 'undefined').length;
-
-          content += `
-              <table data-map="${SHA1(name)}" class="ui celled structured fixed basic table w-full text-center !m-0" style="display: none; font-size: 90% !important;">
-                  <thead>
-                      <tr>
-                          ${data.find(entry => entry && entry.length).reduce((memo, chance, i) => memo + `<th class="!text-white">${intl('pets.map.gladiator')} ${i}</th>`, `<th class="!text-white">${intl('editor.level')}</th>`)}
-                          ${'<th></th>'.repeat(16 - size)}
-                      </tr>
-                  </thead>
-                  <tbody>
-                      ${data.reduce((memo, entry, i) => memo + `<tr><td class="text-white">${i + 1}</td>${ entry.reduce((memo2, chance) => memo2 + `<td style="background-color: ${this._color(chance)};">${chance.toFixed(2)}%</td>`, '')}${'<td></td>'.repeat(16 - size)}</tr>`, '')}
-                  </tbody>
-              </table>
-          `;
-      }
-
-      this.$content.html(content);
-
-      this.$selector.dropdown('set selected', SHA1(maps[0].name));
-  }
-})();
+}
