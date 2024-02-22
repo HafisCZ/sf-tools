@@ -90,7 +90,7 @@ class HellevatorEnemies {
     };
 
     for (let i = 0; i < 3; i++) {
-      const name = PlayerModel.ATTRIBUTE_ORDER[klass - 1][i];
+      const name = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[CONFIG.fromIndex(klass).Attribute][i];
 
       obj[name] = {
         Total: i === 0 ? main : side
