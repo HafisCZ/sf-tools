@@ -1050,7 +1050,7 @@
         },
         "element": "Element",
         "theme": {
-            "0": "Lust and Anger",
+            "0": "Lust",
             "1": "Treachery",
             "2": "Fraud",
             "3": "Gluttony",
@@ -1058,7 +1058,7 @@
             "5": "Heresy",
             "6": "Limbo",
             "7": "Violence",
-            "8": "February 2024"
+            "8": "Wrath"
         },
         "win": {
             "all": "All #{count} floors were defeated with 100% chance",
