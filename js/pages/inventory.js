@@ -1364,7 +1364,7 @@ Site.ready(null, function (urlParams) {
         }
     }).catch(function (e) {
         Loader.toggle(false);
-        DialogController.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);
+        Dialog.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);
         Logger.error(e, 'Database could not be opened!');
     });
 })

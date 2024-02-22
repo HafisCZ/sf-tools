@@ -3,7 +3,7 @@ class SimulatorResultsDialog extends Dialog {
     dismissable: true
   }
 
-  _render () {
+  render () {
       return `
           <div class="small inverted bordered dialog">
               <div class="header">${intl('pets.results')}</div>
@@ -12,7 +12,7 @@ class SimulatorResultsDialog extends Dialog {
       `;
   }
 
-  _handle (callback, results) {
+  handle (results) {
     this.$parent.find('[data-op="content"]').html(results.map(({ chance, player, boss }) => {
       const playerIndex = 20 * player.Type + player.Pet;
       const bossIndex = 20 * boss.Type + boss.Pet;
@@ -43,7 +43,7 @@ class SimulatorMapDialog extends Dialog {
     dismissable: true
   }
 
-  _render () {
+  render () {
       return `
           <div class="very big inverted bordered dialog">
               <div class="header">${intl('pets.results')}</div>
@@ -61,7 +61,7 @@ class SimulatorMapDialog extends Dialog {
       `;
   }
 
-  _handle (callback, maps) {
+  handle (maps) {
     this.$selector = this.$parent.operator('selector');
     
     this.$save = this.$parent.operator('save');

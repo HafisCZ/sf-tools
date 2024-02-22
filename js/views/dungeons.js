@@ -4,7 +4,7 @@ class SimulatorOptionsDialog extends Dialog {
     dismissable: true
   }
 
-  _render () {
+  render () {
       return `
           <div class="small inverted bordered dialog">
               <div class="header">${this.intl('title')}</div>
@@ -54,7 +54,7 @@ class SimulatorOptionsDialog extends Dialog {
     this.$slider.slider('set rangeValue', this.currentMin, this.currentMax, updateInputs);
   }
 
-  _handle (callback, options) {
+  handle (options) {
     this.$slider = this.$parent.find('[data-op="slider"]');
     this.$slider.slider({
       min: 0,
@@ -93,12 +93,12 @@ class SimulatorOptionsDialog extends Dialog {
       this.options.threshold_min = this.currentMin;
       this.options.threshold_max = this.currentMax;
 
-      callback(true);
+      this.close(true);
     });
 
     this.$cancelButton = this.$parent.find('[data-op="cancel"]');
     this.$cancelButton.click(() => {
-       callback(false);
+      this.close(false);
     });
 
     this.options = options;
@@ -114,7 +114,7 @@ class SimulatorResultsDialog extends Dialog {
     dismissable: true
   }
 
-  _render () {
+  render () {
       return `
           <div class="tight inverted bordered very small dialog">
               <div class="header flex justify-content-between !p-2" style="border-bottom: 1px solid #262626;">
@@ -134,7 +134,7 @@ class SimulatorResultsDialog extends Dialog {
       `;
   }
 
-  _handle (callback, entries, experience, renderChart) {
+  handle (entries, experience, renderChart) {
     this.$experience = this.$parent.operator('experience');
     this.$content = this.$parent.operator('content');
 

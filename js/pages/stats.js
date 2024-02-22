@@ -171,7 +171,7 @@ class GroupTab extends Tab {
             const clickableElements = Array.from(element.querySelectorAll('[data-id]'));
             for (const clickableElement of clickableElements) {
                 clickableElement.addEventListener('click', (event) => {
-                    DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
+                    Dialog.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
                 })
             }
 
@@ -236,7 +236,7 @@ class GroupTab extends Tab {
         this.$parent.operator('export').click(() => {
             const createExport = (timestamps) => (() => DatabaseManager.export(null, timestamps, (player) => player.group == this.identifier))
 
-            DialogController.open(
+            Dialog.open(
                 ExportFileDialog,
                 {
                     currentWithReference: createExport([ this.timestamp, this.reference ]),
@@ -503,7 +503,7 @@ class PlayerTab extends Tab {
             for (const clickableElement of clickableElements) {
                 clickableElement.addEventListener('click', (event) => {
                     const dataset = event.currentTarget.dataset;
-                    DialogController.open(PlayerDetailDialog, { identifier: dataset.id, timestamp: dataset.ts, reference: dataset.ts })
+                    Dialog.open(PlayerDetailDialog, { identifier: dataset.id, timestamp: dataset.ts, reference: dataset.ts })
                 });
             }
 
@@ -562,7 +562,7 @@ class PlayerTab extends Tab {
         this.$parent.operator('export').click(() => {
             const createExport = (timestamps) => (() => DatabaseManager.export([ this.identifier ], timestamps))
 
-            DialogController.open(
+            Dialog.open(
                 ExportFileDialog,
                 {
                     last: createExport([ _dig(this.list, 0, 'Timestamp') ]),
@@ -741,7 +741,7 @@ class GroupsTab extends Tab {
                         const cleanedIds = _uniq(ids);
                         const cleanedMembers = cleanedIds.map((id) => DatabaseManager.Groups[id].List.reduce((memo, g) => memo.concat(g.Members), []));
 
-                        DialogController.open(
+                        Dialog.open(
                             ExportFileDialog,
                             () => DatabaseManager.export(_uniq([ ...cleanedIds, ...cleanedMembers ].flat())),
                             'groups'
@@ -1259,7 +1259,7 @@ class PlayersTab extends Tab {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => el.dataset.id);
                         ids.push(source.dataset.id);
 
-                        DialogController.open(
+                        Dialog.open(
                             ExportFileDialog,
                             () => DatabaseManager.export(_uniq(ids)),
                             'players'
@@ -1520,7 +1520,7 @@ class PlayersTab extends Tab {
                     if (event.ctrlKey) {
                         event.currentTarget.classList.toggle('css-op-select');
                     } else {
-                        DialogController.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
+                        Dialog.open(PlayerDetailDialog, { identifier: event.currentTarget.dataset.id, timestamp: this.timestamp, reference: this.reference || this.timestamp })
                     }
                 });
 
@@ -1772,7 +1772,7 @@ class GroupsGridTab extends Tab {
                 return [groupIdentifier, ...DatabaseManager.Groups[groupIdentifier].List.reduce((memo, g) => memo.concat(g.Players.map((p) => p.LinkId)), [])]
             }));
 
-            DialogController.open(
+            Dialog.open(
                 ExportFileDialog,
                 () => DatabaseManager.export(selection),
                 'groups'
@@ -1782,7 +1782,7 @@ class GroupsGridTab extends Tab {
         })
 
         this.$actions.operator('action-link').click(() => {
-            DialogController.open(
+            Dialog.open(
                 ManageLinkDialog,
                 this.#selection
             ).then((value) => {
@@ -2074,7 +2074,7 @@ class PlayersGridTab extends Tab {
         this.$actions.operator('action-share').click(() => {
             const selection = this.#selection;
 
-            DialogController.open(
+            Dialog.open(
                 ExportFileDialog,
                 () => DatabaseManager.export(selection),
                 'players'
@@ -2084,7 +2084,7 @@ class PlayersGridTab extends Tab {
         })
 
         this.$actions.operator('action-link').click(() => {
-            DialogController.open(
+            Dialog.open(
                 ManageLinkDialog,
                 this.#selection
             ).then((value) => {
@@ -2339,7 +2339,7 @@ class PlayersGridTab extends Tab {
 class FilesTab extends Tab {
     // Export all to json file
     exportAll () {
-        DialogController.open(
+        Dialog.open(
             ExportFileDialog,
             () => DatabaseManager.export(),
             'files'
@@ -2351,7 +2351,7 @@ class FilesTab extends Tab {
         if (this.simple) {
             if (this.selectedFiles.size === 0) return;
 
-            DialogController.open(
+            Dialog.open(
                 ExportFileDialog,
                 () => DatabaseManager.export(undefined, this.selectedFiles),
                 'files'
@@ -2369,7 +2369,7 @@ class FilesTab extends Tab {
                 }
             }
 
-            DialogController.open(
+            Dialog.open(
                 ExportFileDialog,
                 () => ({ players, groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups) }),
                 'files'
@@ -2380,7 +2380,7 @@ class FilesTab extends Tab {
     tagSelected () {
         if (this.simple) {
             if (this.selectedFiles.size > 0) {
-                DialogController.open(
+                Dialog.open(
                     TagDialog,
                     'timestamps',
                     Array.from(this.selectedFiles)
@@ -2396,7 +2396,7 @@ class FilesTab extends Tab {
             const playerEntries = Array.from(this.selectedEntries.values()).filter((player) => DatabaseManager.isPlayer(player.identifier));
 
             if (playerEntries.length > 0) {
-                DialogController.open(
+                Dialog.open(
                     TagDialog,
                     'instances',
                     Array.from(this.selectedEntries.values())
@@ -2415,7 +2415,7 @@ class FilesTab extends Tab {
 
     // Delete all
     deleteAll () {
-        DialogController.open(
+        Dialog.open(
             ConfirmationDialog,
             intl('dialog.delete_all.title'),
             intl('dialog.delete_all.notice'),
@@ -2506,8 +2506,8 @@ class FilesTab extends Tab {
 
     // Import file via endpoint
     importEndpoint () {
-        DialogController.open(EndpointDialog, false).then((actionSuccess) => {
-            if (actionSuccess) {
+        Dialog.open(EndpointDialog, false).then((value) => {
+            if (value) {
                 this.show();
             }
         });
@@ -2515,7 +2515,11 @@ class FilesTab extends Tab {
 
     // Import file via cloud
     importCloud () {
-        DialogController.open(ImportFileDialog, () => this.show());
+        Dialog.open(ImportFileDialog).then((value) => {
+            if (value) {
+                this.show()
+            }
+        });
     }
 
     // Prepare checkbox
@@ -2902,7 +2906,7 @@ class FilesTab extends Tab {
 
             $entries.find('[data-edit]').click((event) => {
                 const timestamp = parseInt(event.currentTarget.dataset.edit);
-                DialogController.open(FileEditDialog, timestamp).then((value) => {
+                Dialog.open(FileEditDialog, timestamp).then((value) => {
                     if (value) {
                         this.show()
                     }
@@ -3194,17 +3198,17 @@ class ScriptsTab extends Tab {
 
         this.$helpManual = this.$parent.operator('help-manual');
         this.$helpManual.click(() => {
-            DialogController.open(ScriptManualDialog);
+            Dialog.open(ScriptManualDialog);
         });
 
         this.$helpShortcuts = this.$parent.operator('help-shortcuts');
         this.$helpShortcuts.click(() => {
-            DialogController.open(EditorShortcutsDialog);
+            Dialog.open(EditorShortcutsDialog);
         });
 
         this.$libraryScripts = this.$parent.operator('library-scripts');
         this.$libraryScripts.click(() => {
-            DialogController.open(ScriptRepositoryDialog, (key) => {
+            Dialog.open(ScriptRepositoryDialog, (key) => {
                 this.hide();
                 this.#setScript(key);
                 this.#updateSidebars();
@@ -3219,7 +3223,7 @@ class ScriptsTab extends Tab {
 
         this.$edit = this.$parent.operator('edit');
         this.$edit.click(() => {
-            DialogController.open(ScriptEditDialog, this.script, (script) => {
+            Dialog.open(ScriptEditDialog, this.script, (script) => {
                 this.script = Scripts.update(this.script.key, script);
 
                 this.#updateSidebars();
@@ -3290,7 +3294,7 @@ class ScriptsTab extends Tab {
 
         this.$remoteRemove = this.$parent.operator('remote-remove');
         this.$remoteRemove.click(() => {
-            DialogController.open(
+            Dialog.open(
                 ConfirmationDialog,
                 intl('dialog.delete_remote_script.title'),
                 intl(`dialog.delete_remote_script.message`)
@@ -3325,7 +3329,7 @@ class ScriptsTab extends Tab {
 
                 this.#updateSidebars();
             } else {
-                DialogController.open(ScriptArchiveDialog, (content) => {
+                Dialog.open(ScriptArchiveDialog, (content) => {
                     if (content === true) {
                         this.#updateSidebars();
                     } else {
@@ -3364,7 +3368,7 @@ class ScriptsTab extends Tab {
                 }
             });
 
-            DialogController.open(
+            Dialog.open(
                 ConfirmationDialog,
                 intl('dialog.delete_script.title'),
                 intl('dialog.delete_script.notice') + (this.script.remote ? intl('dialog.delete_script.notice_bonus_remote') : '') + (assignments.length > 0 ? intl('dialog.delete_script.notice_bonus_used', { tables: assignments.join(', ') }) : '')
@@ -3459,7 +3463,7 @@ class ScriptsTab extends Tab {
                 this.returnTo();
             }
         } else {
-            DialogController.open(ScriptEditDialog, { content: this.editor.content }, (script) => {
+            Dialog.open(ScriptEditDialog, { content: this.editor.content }, (script) => {
                 this.script = Scripts.create(script);
 
                 if (this.target) {
@@ -3781,7 +3785,7 @@ class ScriptsTab extends Tab {
         });
 
         this.$list.find('[data-script-add]').click(() => {
-            DialogController.open(ScriptEditDialog, { content: this.editor.content }, (script, source) => {
+            Dialog.open(ScriptEditDialog, { content: this.editor.content }, (script, source) => {
                 if (source !== '_current') {
                     this.hide();
                 }
@@ -3849,7 +3853,7 @@ class SettingsTab extends Tab {
             if (enabled) {
                 this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
             } else {
-                DialogController.open(TermsAndConditionsDialog);
+                Dialog.open(TermsAndConditionsDialog);
             }
         });
 
@@ -3886,7 +3890,7 @@ class SettingsTab extends Tab {
 
         this.$linksReset = this.$parent.operator('links-reset');
         this.$linksReset.click(() => {
-            DialogController.open(
+            Dialog.open(
                 ConfirmationDialog,
                 intl('stats.settings.links.reset_title'),
                 ''
@@ -3911,7 +3915,7 @@ class SettingsTab extends Tab {
 
         this.$linksImport = this.$parent.operator('links-import');
         this.$linksImport.change((event) => {
-            DialogController.open(
+            Dialog.open(
                 ConfirmationDialog,
                 intl('stats.settings.links.import_title'),
                 ''
@@ -3941,7 +3945,7 @@ class SettingsTab extends Tab {
     }
 
     importDumpFile (fileEvent) {
-        DialogController.open(
+        Dialog.open(
             ConfirmationDialog,
             intl('stats.settings.recovery.title'),
             intl('stats.settings.recovery.notice'),
@@ -4070,7 +4074,7 @@ class ProfilesTab extends Tab {
         });
 
         this.$parent.find('[data-edit]').click((event) => {
-            DialogController.open(
+            Dialog.open(
                 ProfileCreateDialog,
                 event.currentTarget.dataset.edit
             ).then((value) => {
@@ -4087,7 +4091,7 @@ class ProfilesTab extends Tab {
     }
 
     addProfile () {
-        DialogController.open(
+        Dialog.open(
             ProfileCreateDialog
         ).then((value) => {
             if (value) {
@@ -4210,7 +4214,7 @@ Site.ready(null, function (urlParams) {
         Loader.toggle(false);
     }).catch(function (e) {
         Loader.toggle(false);
-        DialogController.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);
+        Dialog.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);
         Logger.error(e, 'Database could not be opened!');
     });
 });

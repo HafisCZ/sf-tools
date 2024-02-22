@@ -43,25 +43,6 @@ class Loader {
     }
 }
 
-class DialogController {
-    static #promise = Promise.resolve();
-    static #queue = [];
-
-    static open (klass, ...params) {
-        const dialog = new klass(klass.OPTIONS || Dialog.DEFAULT_OPTIONS);
-
-        this.#queue.push(dialog);
-
-        return (this.#promise = this.#promise.then(async () => {
-            const value = await dialog.handle(params);
-
-            this.#queue.splice(this.#queue.indexOf(dialog), 1);
-
-            return value;
-        }));
-    }
-}
-
 class Dialog {
     static DEFAULT_OPTIONS = {
         opacity: 0.85,
@@ -72,32 +53,48 @@ class Dialog {
         draggable: false
     }
 
+    static #promise = Promise.resolve();
+
+    static async open (klass, ...params) {
+        const dialog = new klass(klass.OPTIONS || Dialog.DEFAULT_OPTIONS);
+
+        return (this.#promise = this.#promise.then(() => dialog.open(params)));
+    }
+
     constructor (options) {
         this.options = Object.assign({}, Dialog.DEFAULT_OPTIONS, options);
     }
 
-    handle (params) {
+    open (params) {
         return new Promise((resolve) => {
             this.wrapper = document.createElement('div')
             this.wrapper.setAttribute('data-dialog-name', this.options.key);
             this.wrapper.setAttribute('class', `dialog container ${this.options.containerClass}`);
             this.wrapper.setAttribute('style', `background: rgba(0, 0, 0, ${this.options.opacity}); ${this.options.containerStyle}`);
 
-            this.wrapper.innerHTML = this._render(...params);
+            this.wrapper.innerHTML = this.render(...params);
 
             document.body.append(this.wrapper);
 
             const dialog = this.wrapper.querySelector('.dialog.container > .dialog');
 
-            const destroy = (value) => {
-                this.hide();
+            this.close = (...values) => {
+                this.wrapper.remove();
 
-                resolve(value);
+                resolve(values);
+            }
+
+            this.replace = (klass, ...params2) => {
+                this.wrapper.remove();
+
+                const dialog = new klass(klass.OPTIONS || Dialog.DEFAULT_OPTIONS);
+
+                dialog.open(params2).then((values) => resolve(values));
             }
 
             this.$parent = $(dialog);
 
-            this._handle(destroy, ...params);
+            this.handle(...params);
 
             if (this.options.draggable) {
                 this.#setDraggable(dialog);
@@ -106,15 +103,11 @@ class Dialog {
             if (this.options.dismissable) {
                 this.wrapper.addEventListener('click', (event) => {
                     if (event.target.classList.contains('container')) {
-                        destroy(false)
+                        this.close(false)
                     }
                 })
             }
         })
-    }
-
-    hide () {
-        this.wrapper.remove();
     }
 
     intl (key, args = {}) {
@@ -172,11 +165,11 @@ class Dialog {
         dialog.classList.add('draggable');
     }
 
-    _handle () {
+    handle () {
         throw 'not implemented'
     }
 
-    _render () {
+    render () {
         throw 'not implemented'
     }
 }
@@ -212,7 +205,7 @@ class TermsAndConditionsDialog extends Dialog {
     
     static VERSION = 2;
 
-    _render () {
+    render () {
         return `
             <div class="small inverted dialog">
                 <div class="header"><u>${intl('terms.title')}</u></div>
@@ -250,11 +243,11 @@ class TermsAndConditionsDialog extends Dialog {
         `;
     }
 
-    _handle (callback) {
+    handle () {
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.terms_accepted = TermsAndConditionsDialog.VERSION;
 
-            callback(true);
+            this.close(true);
         });
     }
 }
@@ -264,7 +257,7 @@ class SimulatorShopDialog extends Dialog {
         key: 'simulator_shop'
     }
 
-    _render () {
+    render () {
         const packs = [
             {
                 icon: 'white wallet',
@@ -329,9 +322,9 @@ class SimulatorShopDialog extends Dialog {
         `
     }
 
-    _handle (callback) {
+    handle () {
         this.$parent.find('[data-op="close"]').click(() => {
-            callback(true)
+            this.close(false)
         })
     }
 }
@@ -341,7 +334,7 @@ class AnnouncementDialog extends Dialog {
         key: 'announcement'
     }
 
-    _render () {
+    render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header text-orange" data-op="title"></div>
@@ -351,17 +344,17 @@ class AnnouncementDialog extends Dialog {
         `;
     }
 
-    _handle (callback) {
+    handle () {
         const $title = this.$parent.find('[data-op="title"]');
         const $content = this.$parent.find('[data-op="content"]');
 
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.announcement_accepted = SiteOptions.announcement_accepted + 1;
-           
-            callback(true);
 
             if (SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
-                DialogController.open(AnnouncementDialog);
+                this.replace(AnnouncementDialog);
+            } else {
+                this.close(true);
             }
         });
 
@@ -377,7 +370,7 @@ class ChangelogDialog extends Dialog {
         key: 'changelog'
     }
 
-    _render () {
+    render () {
         const release = MODULE_VERSION;
         const entries = CHANGELOG[release];
 
@@ -411,11 +404,11 @@ class ChangelogDialog extends Dialog {
         `;
     }
 
-    _handle (callback) {
+    handle () {
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.version_accepted = MODULE_VERSION;
 
-            callback(true);
+            this.close(true);
         });
     }
 }
@@ -427,7 +420,7 @@ class WarningDialog extends Dialog {
         opacity: 0
     }
 
-    _render () {
+    render () {
         return `
             <div class="small inverted dialog">
                 <div class="header"><i class="ui text-orange exclamation triangle icon"></i> ${this.intl('title')}</div>
@@ -437,9 +430,9 @@ class WarningDialog extends Dialog {
         `;
     }
 
-    _handle (callback, error) {
+    handle (error) {
         this.$parent.find('[data-op="continue"]').click(() => {
-            callback(true);
+            this.close(true);
         });
 
         this.$parent.find('[data-op="text"]').text(error instanceof Error ? error.message : error);
@@ -452,7 +445,7 @@ class ErrorDialog extends Dialog {
         key: 'error'
     }
 
-    _render () {
+    render () {
         return `
             <div class="small inverted bordered dialog">
                 <div class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</div>
@@ -466,7 +459,7 @@ class ErrorDialog extends Dialog {
         `;
     }
 
-    _handle (callback, error) {
+    handle (error) {
         this.$parent.find('[data-op="continue"]').click(() => {
             window.location.href = window.location.href;
         });
@@ -486,7 +479,7 @@ class ConfirmationDialog extends Dialog {
         key: 'confirm'
     }
 
-    _render () {
+    render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="left header" data-op="title"></div>
@@ -525,7 +518,7 @@ class ConfirmationDialog extends Dialog {
         this.$okButton.addClass('disabled');
     }
 
-    _handle (callback, title, text, darkBackground = false, delay = 0) {
+    handle (title, text, darkBackground = false, delay = 0) {
         this.$cancelButton = this.$parent.find('[data-op="cancel"]');
         this.$okButton = this.$parent.find('[data-op="ok"]');
 
@@ -534,12 +527,12 @@ class ConfirmationDialog extends Dialog {
 
         this.$cancelButton.click(() => {
             this._closeTimer();
-            callback(false);
+            this.close(false);
         });
 
         this.$okButton.click(() => {
             this._closeTimer();
-            callback(true);
+            this.close(true);
         });
 
         this.$title.html(title);
@@ -718,20 +711,20 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     if (StoreWrapper.isAvailable()) {
         if (SiteOptions.terms_accepted !== TermsAndConditionsDialog.VERSION) {
-            DialogController.open(TermsAndConditionsDialog);
+            Dialog.open(TermsAndConditionsDialog);
         }
 
         if (SiteOptions.version_accepted != MODULE_VERSION) {
-            DialogController.open(ChangelogDialog);
+            Dialog.open(ChangelogDialog);
         }
 
         if (ANNOUNCEMENTS.length > 0 && SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
-            DialogController.open(AnnouncementDialog);
+            Dialog.open(AnnouncementDialog);
         }
 
         if (Site.is('simulator')) {
             if (Site.isEvent('april_fools_day')) {
-                DialogController.open(SimulatorShopDialog);
+                Dialog.open(SimulatorShopDialog);
             }
         }
     }

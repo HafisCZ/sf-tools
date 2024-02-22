@@ -298,7 +298,7 @@ Site.ready(null, function (urlParams) {
             }
         }
 
-        DialogController.open(AnalyzerOptionsDialog, analyzerOptions, options);
+        Dialog.open(AnalyzerOptionsDialog, analyzerOptions, options);
     });
 
     $buttonClear.click(() => {
@@ -366,22 +366,22 @@ Site.ready(null, function (urlParams) {
 
     $buttonAnalyzeGroup.click(() => {
         if (currentGroup) {
-            DialogController.open(FightStatisticalAnalysisDialog, currentGroup);
+            Dialog.open(FightStatisticalAnalysisDialog, currentGroup);
         }
     })
 
     $autofill1.click(() => {
         if (currentGroup) {
-            DialogController.open(AnalyzerAutofillDialog).then((value) => {
-                if (value) playerEditorA.autofill(value);
+            Dialog.open(AnalyzerAutofillDialog).then(([value, data]) => {
+                if (value) playerEditorA.autofill(data);
             });
         }
     })
 
     $autofill2.click(() => {
         if (currentGroup) {
-            DialogController.open(AnalyzerAutofillDialog).then((value) => {
-                if (value) playerEditorB.autofill(value);
+            Dialog.open(AnalyzerAutofillDialog).then(([value, data]) => {
+                if (value) playerEditorB.autofill(data);
             });
         }
     })

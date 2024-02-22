@@ -9,7 +9,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     // Options modal
     $('#button-options').click(function () {
-        DialogController.open(
+        Dialog.open(
             SimulatorOptionsDialog,
             dungeonOptions
         );
@@ -531,7 +531,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
         }
 
-        DialogController.open(
+        Dialog.open(
             SimulatorResultsDialog,
             entries,
             experienceTotal,
