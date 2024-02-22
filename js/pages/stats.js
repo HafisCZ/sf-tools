@@ -2484,17 +2484,15 @@ class FilesTab extends Tab {
 
     // Import file via endpoint
     importEndpoint () {
-        Dialog.open(EndpointDialog, false).then((value) => {
-            if (value) {
-                this.show();
-            }
+        Dialog.open(EndpointDialog, false).then(([value]) => {
+            if (value) this.show();
         });
     }
 
     // Import file via cloud
     importCloud () {
         Dialog.open(ImportFileDialog).then(([value]) => {
-            if (value) this.show()
+            if (value) this.show();
         });
     }
 

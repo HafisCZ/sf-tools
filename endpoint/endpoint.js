@@ -82,62 +82,15 @@ class EndpointController {
     }
 }
 
-const EndpointDialog = new (class EndpointDialog extends Dialog {
+class EndpointDialog extends Dialog {
     intl (key) {
         return intl(`endpoint.${key}`);
     }
 
-    _applyArguments (allowTemporary = false) {
-        if (this._termsAccepted()) {
-            this.$step0.hide();
-            this.$step1.show();
-        } else {
-            this.$step0.show();
-            this.$step1.hide();
-        }
-
-        this.$step2.hide();
-        this.$step3.hide();
-        this.$step4.hide();
-        this.$step5.hide();
-        this.$step6.hide();
-        this.$step7.hide();
-
-        // Toggle temporary capture checkbox
-        this.$temporary.checkbox('set unchecked');
-        this.$temporary.parent().toggle(allowTemporary);
-    }
-
-    _localizeError (rawError) {
-        const error = rawError.toLowerCase().replace(/\s|:/g, '_');
-
-        return this.intl(`errors.${error}`);
-    }
-
-    _showError (error, errorCritical = false) {
-        this.errorCritical = errorCritical;
-
-        this.$step5.hide();
-        this.$step6.show();
-
-        this.$errorText.text(this._localizeError(error));
-    }
-
-    _termsAccepted () {
-        return SiteOptions.endpoint_terms_accepted === 2;
-    }
-
-    _termsAccept () {
-        SiteOptions.endpoint_terms_accepted = 2;
-
-        this.$step0.hide();
-        this.$step1.show();
-    }
-
-    _createBindings () {
+    handle (allowTemporary = false) {
         // Terms and Conditions
         this.$step0 = this.$parent.find('[data-op="step0"]');
-        this.$step0.operator('accept-terms').click(() => this._termsAccept());
+        this.$step0.operator('accept-terms').click(() => this.#termsAccept());
         this.$step0.operator('reject-terms').click(() => {
             Toast.info(intl('terms.toast.rejected.title'), intl('terms.toast.rejected.message'));
 
@@ -207,7 +160,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
 
         this.$import = this.$parent.find('[data-op="import"]');
         this.$import.click(() => {
-            this._importSelection();
+            this.#importSelection();
         });
 
         const executeLogin = async () => {
@@ -250,19 +203,19 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
 
                 this.$step4.show();
 
-                const promise = this._funcLogin(server, username, password);
+                const promise = this.#funcLogin(server, username, password);
                 
                 const mode = this.$mode.dropdown('get value');
                 if (mode === 'own') {
-                    this._funcCaptureSelf(promise);
+                    this.#funcCaptureSelf(promise);
                 } else if (mode === 'guild') {
-                    this._funcCaptureMany(promise, 'members');
+                    this.#funcCaptureMany(promise, 'members');
                 } else if (mode === 'friends') {
-                    this._funcCaptureMany(promise, 'friends');
+                    this.#funcCaptureMany(promise, 'friends');
                 } else if (mode === 'hall_of_fame') {
-                    this._funcCaptureHOF(promise);
+                    this.#funcCaptureHOF(promise);
                 } else /* default */ {
-                    this._funcCaptureSelect(promise);
+                    this.#funcCaptureSelect(promise);
                 }
             }
         }
@@ -273,9 +226,54 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
                 executeLogin();
             }
         });
+
+        if (this.#termsAccepted()) {
+            this.$step0.hide();
+            this.$step1.show();
+        } else {
+            this.$step0.show();
+            this.$step1.hide();
+        }
+
+        this.$step2.hide();
+        this.$step3.hide();
+        this.$step4.hide();
+        this.$step5.hide();
+        this.$step6.hide();
+        this.$step7.hide();
+
+        // Toggle temporary capture checkbox
+        this.$temporary.checkbox('set unchecked');
+        this.$temporary.parent().toggle(allowTemporary);
     }
 
-    _import (text) {
+    #localizeError (rawError) {
+        const error = rawError.toLowerCase().replace(/\s|:/g, '_');
+
+        return this.intl(`errors.${error}`);
+    }
+
+    #showError (error, errorCritical = false) {
+        this.errorCritical = errorCritical;
+
+        this.$step5.hide();
+        this.$step6.show();
+
+        this.$errorText.text(this.#localizeError(error));
+    }
+
+    #termsAccepted () {
+        return SiteOptions.endpoint_terms_accepted === 2;
+    }
+
+    #termsAccept () {
+        SiteOptions.endpoint_terms_accepted = 2;
+
+        this.$step0.hide();
+        this.$step1.show();
+    }
+
+    #import (text) {
         DatabaseManager.import(text, Date.now(), _timestampOffset(), { temporary: this.$temporary.checkbox('is checked') }).catch((e) => {
             Toast.error(intl('database.import_error'), e.message);
             Logger.error(e, 'Error occured while trying to import a file!');
@@ -284,7 +282,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         });
     }
 
-    async _getServer (id) {
+    async #getServer (id) {
         if (typeof this.serverList === 'undefined') {
             this.serverList = await fetch('/js/playa/servers.json').then((data) => data.json());
         }
@@ -292,7 +290,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         return this.serverList[id];
     }
 
-    _funcLogin (server, username, password) {
+    #funcLogin (server, username, password) {
         return this.endpoint.login(server, username, password).then((data) => {
             return new Promise(async (resolve, reject) => {
                 if (data.type === 'sso') {
@@ -300,7 +298,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
 
                     // Inject server url
                     for (const character of data.characters) {
-                        character.server = await this._getServer(character.server_id);
+                        character.server = await this.#getServer(character.server_id);
                     }
 
                     // Continue method
@@ -351,37 +349,37 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         });
     }
 
-    _funcCaptureSelf (promise) {
+    #funcCaptureSelf (promise) {
         promise
         .then(() => this.endpoint.querySelf())
-        .then((data) => this._import(data.data))
+        .then((data) => this.#import(data.data))
         .catch((error) => {
             this.$step4.hide();
-            this._showError(error);
+            this.#showError(error);
         })
     };
 
-    _funcCaptureHOF (promise) {
+    #funcCaptureHOF (promise) {
         promise
         .then(() => this.endpoint.queryHOF())
-        .then((data) => this._import(data.data))
+        .then((data) => this.#import(data.data))
         .catch((error) => {
             this.$step4.hide();
-            this._showError(error);
+            this.#showError(error);
         })
     }
 
-    _funcCaptureMany (promise, kind = 'members') {
+    #funcCaptureMany (promise, kind = 'members') {
         promise
         .then((data) => this.endpoint.query(data[kind]))
-        .then((data) => this._import(data.data))
+        .then((data) => this.#import(data.data))
         .catch((error) => {
             this.$step4.hide();
-            this._showError(error);
+            this.#showError(error);
         })
     };
 
-    _renderSelectItems (array, icon) {
+    #renderSelectItems (array, icon) {
         let html = '';
 
         for (const name of array) {
@@ -403,7 +401,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         return html;
     }
 
-    _funcCaptureSelect (promise) {
+    #funcCaptureSelect (promise) {
         promise
         .then((data) => {
             if (data.members.length > 0 || data.friends.length > 0) {
@@ -416,8 +414,8 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
                             </label>
                         </div>
                     </div>
-                    ${this._renderSelectItems(data.members, 'user circle')}
-                    ${this._renderSelectItems(data.friends, 'thumbs up')}
+                    ${this.#renderSelectItems(data.members, 'user circle')}
+                    ${this.#renderSelectItems(data.friends, 'thumbs up')}
                 `);
 
                 this.$list.find('.checkbox').checkbox();
@@ -452,25 +450,25 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
                 this.$step4.hide();
                 this.$step3.show();
             } else {
-                this._funcCaptureSelf(promise);
+                this.#funcCaptureSelf(promise);
             }
         }).catch((error) => {
             this.$step4.hide();
-            this._showError(error);
+            this.#showError(error);
         })
     }
 
-    _importSelection () {
+    #importSelection () {
         this.$step4.show();
         this.$step3.hide();
 
         const names = this.$list.find('.checkbox[data-selectable] input:checked').get().map((input) => input.getAttribute('name'));
 
         this.endpoint.query(names)
-            .then((data) => this._import(data.data))
+            .then((data) => this.#import(data.data))
             .catch((error) => {
             this.$step4.hide();
-            this._showError(error);
+            this.#showError(error);
         })
     }
 
@@ -483,24 +481,24 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
         super.close(actionSuccess);
     }
 
-    _createModal () {
+    render () {
         return `
             <div class="very small basic dialog">
                 <iframe class="opacity-0 pointer-events-none position-fixed" data-op="iframe"></iframe>
-                <div data-op="step0">${this._createStep0()}</div>
-                <div data-op="step1">${this._createStep1()}</div>
-                <div data-op="step2">${this._createStep2()}</div>
-                <div data-op="step3">${this._createStep3()}</div>
-                <div data-op="step4">${this._createStep4()}</div>
-                <div data-op="step5">${this._createStep5()}</div>
-                <div data-op="step6">${this._createStep6()}</div>
-                <div data-op="step7">${this._createStep7()}</div>
+                <div data-op="step0">${this.#createStep0()}</div>
+                <div data-op="step1">${this.#createStep1()}</div>
+                <div data-op="step2">${this.#createStep2()}</div>
+                <div data-op="step3">${this.#createStep3()}</div>
+                <div data-op="step4">${this.#createStep4()}</div>
+                <div data-op="step5">${this.#createStep5()}</div>
+                <div data-op="step6">${this.#createStep6()}</div>
+                <div data-op="step7">${this.#createStep7()}</div>
             </div>
         `;
     }
 
     // Terms and Conditions screen
-    _createStep0 () {
+    #createStep0 () {
         return `
             <div class="flex flex-col gap-2 p-4" style="border: 1px solid #262626; background: #0b0c0c; border-radius: 0.5em; margin: -2em;">
                 <h1 class="ui inverted header text-center !mb-0" style="border-bottom: 1px solid #262626; padding-bottom: 0.25em;">${intl('terms.title')}</h1>
@@ -528,7 +526,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     // Login screen
-    _createStep1 () {
+    #createStep1 () {
         return `
             <div class="ui inverted form">
                 <div class="field">
@@ -565,7 +563,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     // Unity loader
-    _createStep2 () {
+    #createStep2 () {
         return `
             <img class="ui centered image pulse-loader" src="/endpoint/logo.png">
             <h3 class="ui inverted centered header">${this.intl('step2.title')}</h3>
@@ -573,7 +571,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     // Selection screen
-    _createStep3 () {
+    #createStep3 () {
         return `
             <h2 class="ui header centered inverted">${this.intl('step3.title')}</h2>
             <hr/>
@@ -588,7 +586,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     // Player selection screen
-    _createStep7 () {
+    #createStep7 () {
         return `
             <h2 class="ui header centered inverted">${this.intl('step7.title')}</h2>
             <hr/>
@@ -600,14 +598,14 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     // Loader
-    _createStep4 () {
+    #createStep4 () {
         return `
             <div class="ui large text-white active text loader">${this.intl('step4.title')}</div>
         `;
     }
 
     // Progress bar
-    _createStep5 () {
+    #createStep5 () {
         return `
             <h3 class="ui inverted centered header">${this.intl('step4.message')}</h3>
             <div class="ui green active inverted progress" data-percent="0">
@@ -617,7 +615,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 
     // Error message
-    _createStep6 () {
+    #createStep6 () {
         return `
             <h2 class="ui inverted centered header" data-op="error-text"></h2>
             <br/>
@@ -625,7 +623,7 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
             <button class="ui secondary button fluid" data-op="error-button">${this.intl('continue')}</button>
         `;
     }
-})();
+}
 
 class StatisticsIntegrationOptionsDialog extends Dialog {
     static OPTIONS = {
@@ -1099,10 +1097,8 @@ const StatisticsIntegration = new (class {
     }
 
     #importEndpoint () {
-        Dialog.open(EndpointDialog, true).then((actionSuccess) => {
-            if (actionSuccess) {
-                this.#poll();
-            }
+        Dialog.open(EndpointDialog, true).then(([value]) => {
+            if (value) this.#poll();
         });
     }
 

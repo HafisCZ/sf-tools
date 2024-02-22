@@ -267,10 +267,8 @@ Site.ready(null, function (urlParams) {
   }
   
   function importEndpoint () {
-    Dialog.open(EndpointDialog, true).then((success) => {
-      if (success) {
-        render();
-      }
+    Dialog.open(EndpointDialog, true).then(([value]) => {
+      if (value) render();
     });
   }
 
