@@ -754,10 +754,8 @@ class GroupsTab extends Tab {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
                         let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.dataset.id];
 
-                        DatabaseManager.safeRemove({ identifiers }).then((value) => {
-                            if (value) {
-                                this.$filter.trigger('change');
-                            }
+                        DatabaseManager.safeRemove({ identifiers }).then(([value]) => {
+                            if (value) this.$filter.trigger('change');
                         });
                     }
                 }
@@ -1272,10 +1270,8 @@ class PlayersTab extends Tab {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
                         let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.dataset.id];
 
-                        DatabaseManager.safeRemove({ identifiers }).then((value) => {
-                            if (value) {
-                                this.$filter.trigger('change');
-                            }
+                        DatabaseManager.safeRemove({ identifiers }).then(([value]) => {
+                            if (value) this.$filter.trigger('change');
                         });
                     }
                 }
@@ -1790,10 +1786,8 @@ class GroupsGridTab extends Tab {
         })
 
         this.$actions.operator('action-remove').click(() => {
-            DatabaseManager.safeRemove({ identifiers: this.#selection }).then((value) => {
-                if (value) {
-                    this.show()
-                }
+            DatabaseManager.safeRemove({ identifiers: this.#selection }).then(([value]) => {
+                if (value) this.show()
             });
         })
 
@@ -2087,10 +2081,8 @@ class PlayersGridTab extends Tab {
         })
 
         this.$actions.operator('action-remove').click(() => {
-            DatabaseManager.safeRemove({ identifiers: this.#selection }).then((value) => {
-                if (value) {
-                    this.show()
-                }
+            DatabaseManager.safeRemove({ identifiers: this.#selection }).then(([value]) => {
+                if (value) this.show()
             })
         })
 
@@ -2411,17 +2403,13 @@ class FilesTab extends Tab {
     deleteSelected () {
         if (this.simple) {
             if (this.selectedFiles.size > 0) {
-                DatabaseManager.safeRemove({ timestamps: Array.from(this.selectedFiles) }).then((value) => {
-                    if (value) {
-                        this.show()
-                    }
+                DatabaseManager.safeRemove({ timestamps: Array.from(this.selectedFiles) }).then(([value]) => {
+                    if (value) this.show()
                 });
             }
         } else if (this.selectedEntries.size > 0) {
-            DatabaseManager.safeRemove({ instances: Array.from(this.selectedEntries.values()) }).then((value) => {
-                if (value) {
-                    this.show()
-                }
+            DatabaseManager.safeRemove({ instances: Array.from(this.selectedEntries.values()) }).then(([value]) => {
+                if (value) this.show()
             });
         }
     }
