@@ -627,15 +627,13 @@ const EndpointDialog = new (class EndpointDialog extends Dialog {
     }
 })();
 
-const StatisticsIntegrationOptionsDialog = new (class StatisticsIntegrationOptionsDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'statistics_integration_options',
-            dismissable: true
-        });
+class StatisticsIntegrationOptionsDialog extends Dialog {
+    static OPTIONS = {
+        key: 'statistics_integration_options',
+        dismissable: true
     }
 
-    _createModal () {
+    render () {
         return `
             <div class="small inverted bordered dialog">
                 <div class="header">${this.intl('title')}</div>
@@ -673,21 +671,23 @@ const StatisticsIntegrationOptionsDialog = new (class StatisticsIntegrationOptio
         `;
     }
 
-    _createBindings () {
+    handle (options) {
         this.$cancel = this.$parent.operator('cancel');
         this.$cancel.click(() => {
-            this.close();
+            this.close(false);
         });
 
         this.$save = this.$parent.operator('save');
         this.$save.click(() => {
-            this.close();
-            this.callback({
-                slot: parseInt(this.$slot.dropdown('get value')),
-                limit: parseInt(this.$limit.val()),
-                ignored_duration: parseInt(this.$ignored_duration.dropdown('get value')),
-                ignored_identifiers: this.$ignored_identifiers.children().toArray().map(x => x.dataset.identifier)
-            });
+            this.close(
+                true,
+                {
+                    slot: parseInt(this.$slot.dropdown('get value')),
+                    limit: parseInt(this.$limit.val()),
+                    ignored_duration: parseInt(this.$ignored_duration.dropdown('get value')),
+                    ignored_identifiers: this.$ignored_identifiers.children().toArray().map(x => x.dataset.identifier)
+                }
+            );
         });
 
         this.$slot = this.$parent.operator('slot');
@@ -709,11 +709,6 @@ const StatisticsIntegrationOptionsDialog = new (class StatisticsIntegrationOptio
         });
 
         this.$ignored_identifiers = this.$parent.operator('ignored_identifiers');
-    }
-
-    _applyArguments (options, callback) {
-        this.options = options;
-        this.callback = callback;
 
         this.$slot.dropdown('set selected', String(options.slot));
         this.$limit.val(options.limit);
@@ -738,20 +733,18 @@ const StatisticsIntegrationOptionsDialog = new (class StatisticsIntegrationOptio
             this.$ignored_identifiers.append($item);
         }
     }
-})();
+}
 
-const StatisticsIntegrationCheatsDialog = new (class StatisticsIntegrationCheatsDialog extends Dialog {
-    constructor () {
-        super({
-            key: 'statistics_integration_cheats',
-            dismissable: true,
-            opacity: 0,
-            containerStyle: 'z-index: 1;',
-            draggable: true
-        })
+class StatisticsIntegrationCheatsDialog extends Dialog {
+    static OPTIONS = {
+        key: 'statistics_integration_cheats',
+        dismissable: true,
+        opacity: 0,
+        containerStyle: 'z-index: 1;',
+        draggable: true
     }
 
-    _createModal () {
+    render () {
         return `
             <div class="very small inverted bordered dialog">
                 <div class="header">${intl('dungeons.cheats.title')}</div>
@@ -833,21 +826,21 @@ const StatisticsIntegrationCheatsDialog = new (class StatisticsIntegrationCheats
         `
     }
 
-    _setCheat (name, value) {
+    #setCheat (name, value) {
         this.cheats[name] = value;
     }
 
-    _createBindings () {
+    handle (cheats) {
         this.$checkboxes = this.$parent.find('.checkbox');
         this.$checkboxes.each((index, checkbox) => {
             const name = checkbox.children[0].dataset.cheat;
 
             $(checkbox).checkbox({
                 onChecked: () => {
-                    this._setCheat(name, true);
+                    this.#setCheat(name, true);
                 },
                 onUnchecked: () => {
-                    this._setCheat(name, false);
+                    this.#setCheat(name, false);
                 }
             });
         })
@@ -866,7 +859,7 @@ const StatisticsIntegrationCheatsDialog = new (class StatisticsIntegrationCheats
                 })
             ],
             onChange: (value) => {
-                this._setCheat('class', parseInt(value));
+                this.#setCheat('class', parseInt(value));
             }
         })
 
@@ -874,15 +867,13 @@ const StatisticsIntegrationCheatsDialog = new (class StatisticsIntegrationCheats
         this.$close.click(() => {
             this.close();
         })
-    }
 
-    _applyArguments (cheats) {
         this.cheats = cheats;
 
         this.$checkboxes.checkbox('set unchecked');
         this.$classDropdown.dropdown('set selected', '0');
     }
-})
+}
 
 const StatisticsIntegration = new (class {
     configure ({ profile, type, callback, scope, generator, cheats }) {
@@ -957,14 +948,16 @@ const StatisticsIntegration = new (class {
 
     #showCheats () {
         if (this.cheats) {
-            StatisticsIntegrationCheatsDialog.openRequested = false
-            StatisticsIntegrationCheatsDialog.close();
+            if (this.cheatsDialog) {
+                this.cheatsDialog.close();
+                this.cheatsDialog = null;
+            }
         } else {
             this.cheats = Object.create(null);
             this.$showCheats.addClass('!text-orangered');
-    
-            StatisticsIntegrationCheatsDialog.openRequested = true;
-            StatisticsIntegrationCheatsDialog.open(this.cheats).then(() => this.#hideCheats());
+
+            this.cheatsDialog = new StatisticsIntegrationCheatsDialog(StatisticsIntegrationCheatsDialog.OPTIONS)
+            this.cheatsDialog.open([this.cheats]).then(() => this.#hideCheats());
         }
     }
 
@@ -1087,10 +1080,8 @@ const StatisticsIntegration = new (class {
     }
 
     #showOptions () {
-        Dialog.open(
-            StatisticsIntegrationOptionsDialog,
-            this.options,
-            (options) => {
+        Dialog.open(StatisticsIntegrationOptionsDialog, this.options).then(([value, options]) => {
+            if (value) {
                 const simpleChange = this.options.slot === options.slot;
                 for (const key of this.options.keys()) {
                     if (Array.isArray(this.options[key]) ? (this.options[key].length !== options[key].length || options[key].some((v, i) => v !== this.options[key][i])) : (this.options[key] !== options[key])) {
@@ -1104,7 +1095,7 @@ const StatisticsIntegration = new (class {
                     this.#poll();
                 }
             }
-        )
+        })
     }
 
     #importEndpoint () {
@@ -1235,4 +1226,4 @@ const StatisticsIntegration = new (class {
             Loader.toggle(false);
         });
     }
-})();
+})

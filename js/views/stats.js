@@ -5,7 +5,7 @@ class ManageLinkDialog extends Dialog {
         dismissable: true
     }
 
-    _render () {
+    render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="left header">${this.intl('title')}</div>
@@ -33,7 +33,7 @@ class ManageLinkDialog extends Dialog {
         `;
     }
 
-    _createItem ({ Identifier: identifier, Prefix: prefix, Name: name }) {
+    #createItem ({ Identifier: identifier, Prefix: prefix, Name: name }) {
         return `
             <div class="border-gray p-2 !border-radius-1 flex">
                 <div style="flex: 0 0 50%;"><i class="ui ${DatabaseManager.isPlayer(identifier) ? 'user' : 'archive'} icon"></i> ${name}</div>
@@ -42,12 +42,12 @@ class ManageLinkDialog extends Dialog {
         `;
     }
 
-    _handle (callback, linkIds) {
+    handle (linkIds) {
         this.$link = this.$parent.operator('link');
         this.$unlink = this.$parent.operator('unlink');
 
         this.$parent.find('[data-op="cancel"]').click(() => {
-            callback(false);
+            this.close(false);
         });
 
         this.$parent.operator('save').click(async () => {
@@ -64,10 +64,9 @@ class ManageLinkDialog extends Dialog {
                 );
             }
 
-            callback(true);
+            this.close(true);
         })
 
-        this.callback = callback;
         this.objects = _sortDesc(linkIds.map((linkId) => DatabaseManager.getAny(linkId)), (object) => object.LatestTimestamp);
 
         if (linkIds.length > 1) {
@@ -75,15 +74,15 @@ class ManageLinkDialog extends Dialog {
             this.$link.show();
             this.$unlink.hide();
 
-            this.$link.operator('list1').html(this.objects.flatMap((object) => Object.values(object.Links).map((link) => this._createItem(link))).join(''));
-            this.$link.operator('list2').html(this._createItem(this.objects[0].Latest));
+            this.$link.operator('list1').html(this.objects.flatMap((object) => Object.values(object.Links).map((link) => this.#createItem(link))).join(''));
+            this.$link.operator('list2').html(this.#createItem(this.objects[0].Latest));
         } else {
             // Unlink
             this.$link.hide();
             this.$unlink.show();
 
-            this.$unlink.operator('list1').html(this._createItem(this.objects[0].Latest));
-            this.$unlink.operator('list2').html(Object.values(this.objects[0].Links).map((link) => this._createItem(link)).join(''));
+            this.$unlink.operator('list1').html(this.#createItem(this.objects[0].Latest));
+            this.$unlink.operator('list2').html(Object.values(this.objects[0].Links).map((link) => this.#createItem(link)).join(''));
         }
     }
 }
@@ -94,7 +93,7 @@ class FileEditDialog extends Dialog {
     opacity: 0
   }
 
-  _render () {
+  render () {
       return `
           <div class="small bordered inverted dialog">
               <div class="left header">${this.intl('title')}</div>
@@ -114,9 +113,9 @@ class FileEditDialog extends Dialog {
       `;
   }
 
-  _handle (callback, timestamp) {
+  handle (timestamp) {
       this.$parent.find('[data-op="cancel"]').click(() => {
-        callback(false)
+        this.close(false)
       });
 
       this.$parent.find('[data-op="save"]').click(async () => {
@@ -128,9 +127,9 @@ class FileEditDialog extends Dialog {
 
             await DatabaseManager.updateTimestamp(this.sourceTimestamp, newTimestamp * 60000);
 
-            callback(true)
+            this.close(true)
           } else {
-            callback(false)
+            this.close(false)
           }
       });
 
@@ -148,7 +147,7 @@ class TagDialog extends Dialog {
     opacity: 0
   }
 
-  _render () {
+  render () {
       return `
         <div class="small bordered inverted dialog">
           <div class="header">${this.intl('title')}</div>
@@ -188,7 +187,7 @@ class TagDialog extends Dialog {
     }
   }
 
-  _handle (callback, type, array) {
+  handle (type, array) {
     this.$tags = this.$parent.operator('tags');
     this.$tags.click((event) => {
       if (event.target.nodeName === 'I') {
@@ -214,7 +213,7 @@ class TagDialog extends Dialog {
     this.$insertButton.click(() => this.#insertTag());
 
     this.$parent.find('[data-op="cancel"]').click(() => {
-      callback(false)
+      this.close(false)
     });
 
     this.$parent.find('[data-op="save"]').click(async () => {
@@ -224,7 +223,7 @@ class TagDialog extends Dialog {
 
       await DatabaseManager.setTags(instances, this.tags);
 
-      callback(true);
+      this.close(true);
     });
 
     this.type = type;
@@ -271,7 +270,7 @@ class ProfileCreateDialog extends Dialog {
     opacity: 0
   }
 
-  _render () {
+  render () {
       return `
           <div class="bordered inverted dialog">
               <div class="left separated header">${this.intl('title')}</div>
@@ -392,7 +391,7 @@ class ProfileCreateDialog extends Dialog {
       `;
   }
 
-  _handle (callback, id) {
+  handle (id) {
       this.$id = this.$parent.find('[data-op="id"]');
       this.$name = this.$parent.find('[data-op="name"]');
       this.$slot = this.$parent.find('[data-op="slot"]');
@@ -517,7 +516,7 @@ class ProfileCreateDialog extends Dialog {
       }).dropdown('set selected', 'equals');
 
       this.$parent.find('[data-op="cancel"]').click(() => {
-        callback(false);
+        this.close(false);
       });
 
       this.$parent.find('[data-op="save"]').click(() => {
@@ -548,7 +547,7 @@ class ProfileCreateDialog extends Dialog {
               secondary_g: this.$secondaryG.val()
           }));
 
-          callback(true);
+          this.close(true);
       });
 
       this.id = id || SHA1(String(Date.now())).slice(0, 4);
@@ -616,7 +615,7 @@ class DataManageDialog extends Dialog {
     opacity: 0
   }
 
-  _render () {
+  render () {
       return `
           <div class="small bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
@@ -634,10 +633,10 @@ class DataManageDialog extends Dialog {
       `;
   }
 
-  _handle (callback, data) {
+  handle (data) {
       this.$cancelButton = this.$parent.find('[data-op="cancel"]');
       this.$cancelButton.click(() => {
-          callback(false);
+          this.close(false);
       });
 
       this.$okButton = this.$parent.find('[data-op="ok"]');
@@ -650,7 +649,7 @@ class DataManageDialog extends Dialog {
 
           await DatabaseManager.safeRemove(this.data, true)
 
-          callback(true)
+          this.close(true)
       });
 
       this.$content = this.$parent.find('[data-op="content"]');
@@ -724,7 +723,7 @@ class DataManageDialog extends Dialog {
 }
 
 class ImportFileDialog extends Dialog {
-  _render () {
+  render () {
       return `
           <div class="very small inverted dialog">
               <div class="left header">${intl('stats.files.online.title')}</div>
@@ -743,8 +742,8 @@ class ImportFileDialog extends Dialog {
       `;
   }
 
-  _update (callback, file) {
-      this._setLoading(false);
+  #update (file) {
+      this.#setLoading(false);
 
       if (file) {
           this.hide();
@@ -752,7 +751,7 @@ class ImportFileDialog extends Dialog {
           Loader.toggle(true);
 
           DatabaseManager.import(JSON.parse(file).data).then(() => {
-              callback(true);
+              this.close(true);
           });
       } else {
           this.$field.addClass('error').transition('shake');
@@ -760,7 +759,7 @@ class ImportFileDialog extends Dialog {
       }
   }
 
-  _setLoading (loading) {
+  #setLoading (loading) {
       this.$error.hide();
       this.$field.removeClass('error');
 
@@ -775,7 +774,7 @@ class ImportFileDialog extends Dialog {
       }
   }
 
-  _handle (callback) {
+  handle () {
     this.$input = this.$parent.operator('input');
     this.$field = this.$input.parent();
 
@@ -783,32 +782,32 @@ class ImportFileDialog extends Dialog {
 
     this.$cancel = this.$parent.operator('cancel');
     this.$cancel.click(() => {
-      callback(false);
+      this.close(false);
     })
 
     this.$ok = this.$parent.operator('ok');
     this.$ok.click(() => {
         const key = this.$input.val().trim();
         if (key) {
-            this._setLoading(true);
+            this.#setLoading(true);
 
             SiteAPI.get('file_get', { key }).then(({ file }) => {
-                this._update(callback, file.content);
+                this.#update(file.content);
             }).catch(() => {
-                this._update(callback);
+                this.#update();
             });
         } else {
             this.$field.addClass('error').transition('shake');
         }
     });
 
-    this._setLoading(false);
+    this.#setLoading(false);
     this.$input.val('');
   }
 }
 
 class ExportFileDialog extends Dialog {
-    _render () {
+    render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header">${intl('stats.share.title')}</div>
@@ -853,7 +852,7 @@ class ExportFileDialog extends Dialog {
         `;
     }
 
-    _handle (callback, files, filesPrefix) {
+    handle (files, filesPrefix) {
       this.$format = this.$parent.operator('format');
       this.$format.dropdown({
           values: ['json', 'code', 'code_reusable'].map((value, i) => ({ value, name: intl(`stats.share.formats.${value}`), selected: i === 0 }))
@@ -870,12 +869,12 @@ class ExportFileDialog extends Dialog {
 
       this.$cancel = this.$parent.operator('cancel');
       this.$cancel.click(() => {
-          callback(false);
+          this.close(false);
       });
 
       this.$ok = this.$parent.operator('ok');
       this.$ok.click(() => {
-          this._exportOrClose(callback);
+          this.#exportOrClose();
       });
 
       this.$form = this.$parent.operator('form');
@@ -901,7 +900,7 @@ class ExportFileDialog extends Dialog {
       this.$form.show();
     }
 
-    async _exportFile () {
+    async #exportFile () {
         const fileGetter = typeof this.files === 'function' ? this.files : this.files[this.$file.dropdown('get value')];
         const file = await fileGetter();
 
@@ -923,30 +922,30 @@ class ExportFileDialog extends Dialog {
         return file;
     }
 
-    _exportOrClose (callback) {
+    #exportOrClose () {
         const mode = this.$format.dropdown('get value');
         if (mode === 'json') {
-            this._setLoading(true);
-            this._exportFile().then((data) => {
+            this.#setLoading(true);
+            this.#exportFile().then((data) => {
                 Exporter.json(
                     data,
                     `${this.filesPrefix || 'export'}_${Exporter.time}`
                 )
 
-                this._setLoading(false);
-                callback(true)
+                this.#setLoading(false);
+                this.close(true)
             })
         } else if (this.code) {
-            callback(false)
+            this.close(false)
         } else {
             const reusable = this.$format.dropdown('get value') === 'code_reusable';
 
-            this._setLoading(true);
-            this._publish(reusable);
+            this.#setLoading(true);
+            this.#publish(reusable);
         }
     }
 
-    _setLoading (loading) {
+    #setLoading (loading) {
         if (loading) {
             this.$ok.addClass('loading disabled');
             this.$cancel.addClass('disabled');
@@ -956,12 +955,12 @@ class ExportFileDialog extends Dialog {
         }
     }
 
-    async _publish (reusable) {
+    async #publish (reusable) {
         SiteAPI.post('file_create', {
-            content: JSON.stringify({ data: await this._exportFile() }),
+            content: JSON.stringify({ data: await this.#exportFile() }),
             multiple: reusable
         }).then(({ file }) => {
-            this._setLoading(false);
+            this.#setLoading(false);
 
             if (file.key) {
                 this.code = file.key;
@@ -975,7 +974,7 @@ class ExportFileDialog extends Dialog {
                 this.$ok.transition('shake');
             }
         }).catch(() => {
-            this._setLoading(false);
+            this.#setLoading(false);
             this.$ok.transition('shake');
         })
     }
@@ -987,7 +986,7 @@ class ScriptRepositoryDialog extends Dialog {
     dismissable: true
   }
 
-  _render () {
+  render () {
       return `
           <div class="inverted big bordered dialog">
               <div class="header flex justify-content-between items-center">
@@ -1046,7 +1045,7 @@ class ScriptRepositoryDialog extends Dialog {
     }
   }
 
-  _handle (callback) {
+  handle () {
     this.$list = this.$parent.operator('list');
     this.$listAdd = this.$parent.operator('list-add');
     this.$listAddKey = this.$parent.operator('list-add-key');
@@ -1103,7 +1102,7 @@ class ScriptRepositoryDialog extends Dialog {
 
     this.$close = this.$parent.operator('close');
     this.$close.click(() => {
-        callback(false)
+        this.close(false)
     });
 
     this.$list.click((event) => {
@@ -1122,7 +1121,7 @@ class ScriptRepositoryDialog extends Dialog {
 
         realContainer.remove();
       } else if (key) {
-        callback(true)
+        this.hide()
 
         Loader.toggle(true);
 
@@ -1147,11 +1146,22 @@ class ScriptRepositoryDialog extends Dialog {
   #createScript (script) {
     Loader.toggle(false);
 
-    Dialog.open(ScriptEditDialog, _pick(script, ['name', 'description', 'content']), (_script) => {
-        const { key } = Scripts.create(_script);
-
-        this.callback(key);
-    }, '_current');
+    this.replace(
+        [
+            ScriptEditDialog,
+            _pick(script, ['name', 'description', 'content']),
+            '_current'
+        ],
+        ([value, _script]) => {
+            if (value) {
+                const { key } = Scripts.create(_script);
+    
+                return [true, key];
+            } else {
+                return [false];
+            }
+        }
+    )
   }
 
   #updateSearch () {
@@ -1256,7 +1266,7 @@ class ScriptArchiveDialog extends Dialog {
     dismissable: true
   }
 
-  _render () {
+  render () {
       return `
           <div class="inverted small bordered dialog">
               <div class="header flex justify-content-between items-center">
@@ -1288,7 +1298,7 @@ class ScriptArchiveDialog extends Dialog {
     })
   }
 
-  _getIcon (type) {
+  #getIcon (type) {
       if (type === 'create') {
           return 'plus';
       } else if (type === 'overwrite') {
@@ -1304,7 +1314,7 @@ class ScriptArchiveDialog extends Dialog {
       }
   }
 
-  _getColor (type) {
+  #getColor (type) {
     if (type === 'create') {
         return '18cc51';
     } else if (type === 'overwrite') {
@@ -1320,7 +1330,7 @@ class ScriptArchiveDialog extends Dialog {
     }
   }
 
-  _scriptName (name) {
+  #scriptName (name) {
     if (name) {
         return Scripts.findScript(name)?.name || name;
     } else {
@@ -1328,12 +1338,12 @@ class ScriptArchiveDialog extends Dialog {
     }
   }
 
-  _createSegment (type, name, version, timestamp, temporary) {
+  #createSegment (type, name, version, timestamp, temporary) {
       return `
-          <div data-archive-type="${type}" data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="border-color: #${this._getColor(type)}60;">
-              <i class="ui big ${this._getIcon(type)} disabled icon" style="color: #${this._getColor(type)};"></i>
+          <div data-archive-type="${type}" data-archive-key="${timestamp}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center" style="border-color: #${this.#getColor(type)}60;">
+              <i class="ui big ${this.#getIcon(type)} disabled icon" style="color: #${this.#getColor(type)};"></i>
               <div>
-                  <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${_escape(this._scriptName(name))}</div>
+                  <div>${this.intl(`types.${type}`)}${temporary ? ` ${this.intl('item.temporary')}` : ''}: ${_escape(this.#scriptName(name))}</div>
                   <div class="text-gray">v${isNaN(version) ? 1 : version} - ${this.intl(`item.description`, { change: _formatDate(timestamp), expire: _formatDate(timestamp + ScriptArchive.DATA_LIFETIME) })}</div>
               </div>
               <i class="ui large !ml-auto copy outline text-gray text-white:hover icon" title="${intl('editor.copy')}" data-archive-copy="${timestamp}"></i>
@@ -1341,7 +1351,7 @@ class ScriptArchiveDialog extends Dialog {
       `;
   }
 
-  _handle (callback) {
+  handle () {
     this.$list = this.$parent.operator('list');
 
     this.$listFilter = this.$parent.operator('filter');
@@ -1362,22 +1372,22 @@ class ScriptArchiveDialog extends Dialog {
     this.$clear = this.$parent.operator('clear');
     this.$clear.click(() => {
         ScriptArchive.clear();
-        callback(false);
+        this.close(false);
     })
 
     this.$close = this.$parent.operator('close');
     this.$close.click(() => {
-        callback(false)
+        this.close(false)
     });
 
     let content = '';
     for (const { type, name, version, timestamp, temporary } of ScriptArchive.all()) {
-        content += this._createSegment(type, name, version, timestamp, temporary);
+        content += this.#createSegment(type, name, version, timestamp, temporary);
     }
 
     this.$list.html(content);
     this.$list.find('[data-archive-key]').on('click', (event) => {
-        callback(ScriptArchive.get(event.currentTarget.dataset.archiveKey));
+        this.close(true, ScriptArchive.get(event.currentTarget.dataset.archiveKey));
     });
 
     this.$list.find('[data-archive-copy]').on('click', (event) => {
@@ -1398,7 +1408,7 @@ class ScriptEditDialog extends Dialog {
       dismissable: true
     }
 
-    _render () {
+    render () {
         return `
             <style>
                 [data-dialog-name="script_edit"] [data-table][data-active="true"] > i.times {
@@ -1490,7 +1500,7 @@ class ScriptEditDialog extends Dialog {
         return this.$tables.find('[data-table]').get().filter((element) => element.dataset.active === 'true').map((element) => element.dataset.table);
     }
 
-    _getContentFromSource (source) {
+    #getContentFromSource (source) {
         switch (source) {
             case '_empty': return '';
             case '_current': return this.script.content;
@@ -1504,10 +1514,10 @@ class ScriptEditDialog extends Dialog {
         }
     }
 
-    _handle (callback, script, contentLock) {
+    handle (script, contentLock) {
       this.$close = this.$parent.operator('close');
       this.$close.click(() => {
-          callback(false)
+          this.close(false)
       });
 
       this.$title = this.$parent.operator('title');
@@ -1537,11 +1547,11 @@ class ScriptEditDialog extends Dialog {
           }
 
           if (this.script.key) {
-            callback(script, null);
+            this.close(true, script, null);
           } else {
             const source = this.$source.dropdown('get value');
 
-            callback(Object.assign(script, { content: this._getContentFromSource(source) }), source);
+            this.close(true, Object.assign(script, { content: this.#getContentFromSource(source) }), source);
           }
       });
 
@@ -1614,7 +1624,7 @@ class PlayerDetailDialog extends Dialog {
     return intl(`stats.player.${key}`);
   }
 
-  _render () {
+  render () {
     return `
       <div class="medium big basic inverted dialog mt-8">
       <i class="ui large link close icon position-fixed" style="right: 1.5em; top: 1.5em;" data-op="close"></i>
@@ -1623,9 +1633,9 @@ class PlayerDetailDialog extends Dialog {
     `;
   }
 
-  _handle (callback, { identifier, timestamp, reference }) {
+  handle ({ identifier, timestamp, reference }) {
     this.$close = this.$parent.operator('close');
-    this.$close.click(() => callback(false));
+    this.$close.click(() => this.close(false));
     
     this.$content = this.$parent.operator('content');
 
@@ -2006,7 +2016,7 @@ class EditorShortcutsDialog extends Dialog {
       key: 'editor_shortcuts'
     }
 
-    _render () {
+    render () {
         const SHORTCUTS = [
             'ctrl_space',
             'ctrl_s',
@@ -2041,10 +2051,10 @@ class EditorShortcutsDialog extends Dialog {
         `;
     }
     
-    _handle (callback) {
+    handle () {
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
-            callback(false);
+            this.close(false);
         });
     }
 }
@@ -2056,7 +2066,7 @@ class ScriptManualDialog extends Dialog {
       key: 'script_manual'
     }
 
-    _render () {
+    render () {
         let content = '';
         let navigation = '';
 
@@ -2153,7 +2163,7 @@ class ScriptManualDialog extends Dialog {
         `
     }
 
-    _showPage (name) {
+    #showPage (name) {
         this.$pages.hide();
         this.$pages.filter(`[data-page="${name}"]`).show();
 
@@ -2162,19 +2172,19 @@ class ScriptManualDialog extends Dialog {
         })
     }
 
-    _handle (callback) {
+    handle () {
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
-          callback()
+          this.close(false)
         });
 
         this.$pages = this.$parent.find('[data-page]');
 
         this.$items = this.$parent.find('[data-item]');
         this.$items.click((event) => {
-            this._showPage(event.currentTarget.dataset.item);
+            this.#showPage(event.currentTarget.dataset.item);
         });
 
-        this._showPage(this.$items.first().attr('data-item'));
+        this.#showPage(this.$items.first().attr('data-item'));
     }
 }

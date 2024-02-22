@@ -1452,12 +1452,9 @@ class DatabaseManager {
 
             Loader.toggle(false);
 
-            return true;
+            return [true];
         } else {
-            return Dialog.open(
-                DataManageDialog,
-                data
-            );
+            return Dialog.open(DataManageDialog, data);
         }
     }
 

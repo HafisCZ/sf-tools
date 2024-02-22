@@ -37,7 +37,7 @@ class SimulatorOptionsDialog extends Dialog {
       `;
   }
 
-  _validatedValue ($input, minValue, maxValue) {
+  #validatedValue ($input, minValue, maxValue) {
     const value = Number($input.val());
     if (isNaN(value) || value < minValue || value > maxValue) {
       $input.closest('.field').addClass('error');
@@ -50,7 +50,7 @@ class SimulatorOptionsDialog extends Dialog {
     }
   }
 
-  _update (updateInputs) {
+  #update (updateInputs) {
     this.$slider.slider('set rangeValue', this.currentMin, this.currentMax, updateInputs);
   }
 
@@ -72,19 +72,19 @@ class SimulatorOptionsDialog extends Dialog {
 
     this.$min = this.$parent.find('[data-op="min"]');
     this.$min.on('input', () => {
-      const value = this._validatedValue(this.$min, 0, this.currentMax);
+      const value = this.#validatedValue(this.$min, 0, this.currentMax);
       if (value) {
         this.currentMin = value;
-        this._update(false);
+        this.#update(false);
       }
     });
     
     this.$max = this.$parent.find('[data-op="max"]');
     this.$max.on('input', () => {
-      const value = this._validatedValue(this.$max, this.currentMin, 100);
+      const value = this.#validatedValue(this.$max, this.currentMin, 100);
       if (value) {
         this.currentMax = value;
-        this._update(false);
+        this.#update(false);
       }
     });
 
@@ -105,7 +105,7 @@ class SimulatorOptionsDialog extends Dialog {
     this.currentMin = this.options.threshold_min;
     this.currentMax = this.options.threshold_max;
 
-    this._update(true);
+    this.#update(true);
   }
 }
 
@@ -138,7 +138,7 @@ class SimulatorResultsDialog extends Dialog {
     this.$experience = this.$parent.operator('experience');
     this.$content = this.$parent.operator('content');
 
-    this.chart = new Chart($parent.operator('chart'), {
+    this.chart = new Chart(this.$parent.operator('chart'), {
         type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{gridLines:{color:'#2e2e2e',zeroLineColor:'#2e2e2e'},display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'white',tension:0},point:{radius:0}}}
     });
 

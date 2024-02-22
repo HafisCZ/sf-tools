@@ -300,10 +300,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             batch.run(instances).then(() => {
                 _sortDesc(results, i => i.chance);
 
-                Dialog.open(
-                    SimulatorResultsDialog,
-                    results
-                )
+                Dialog.open(SimulatorResultsDialog, results)
             })
         }
     })

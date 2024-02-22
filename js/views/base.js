@@ -79,17 +79,28 @@ class Dialog {
             const dialog = this.wrapper.querySelector('.dialog.container > .dialog');
 
             this.close = (...values) => {
-                this.wrapper.remove();
+                this.hide();
 
                 resolve(values);
             }
 
-            this.replace = (klass, ...params2) => {
-                this.wrapper.remove();
+            this.replace = (replaceParams, thenMethod = null) => {
+                const [klass, ...params2] = replaceParams;
+
+                this.hide();
 
                 const dialog = new klass(klass.OPTIONS || Dialog.DEFAULT_OPTIONS);
 
-                dialog.open(params2).then((values) => resolve(values));
+                let promise = dialog.open(params2)
+                if (thenMethod) {
+                    promise = promise.then(thenMethod);
+                }
+
+                promise.then((values) => resolve(values));
+            }
+
+            this.hide = () => {
+                this.wrapper.remove();
             }
 
             this.$parent = $(dialog);
@@ -97,7 +108,7 @@ class Dialog {
             this.handle(...params);
 
             if (this.options.draggable) {
-                this.#setDraggable(dialog);
+                this.#setDraggable(this.wrapper);
             }
 
             if (this.options.dismissable) {
@@ -352,7 +363,11 @@ class AnnouncementDialog extends Dialog {
             SiteOptions.announcement_accepted = SiteOptions.announcement_accepted + 1;
 
             if (SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
-                this.replace(AnnouncementDialog);
+                this.replace(
+                    [
+                        AnnouncementDialog
+                    ]
+                );
             } else {
                 this.close(true);
             }
@@ -492,14 +507,14 @@ class ConfirmationDialog extends Dialog {
         `;
     }
 
-    _closeTimer () {
+    #closeTimer () {
         if (this.delayTimer) {
             clearInterval(this.delayTimer);
             this.delayTimer = null;
         }
     }
 
-    _updateButton (delayLeft) {
+    #updateButton (delayLeft) {
         if (delayLeft > 0) {
             this.$okButton.addClass('disabled');
             this.$okButton.text(this.intl('wait_n_seconds').replace('%1', delayLeft));
@@ -507,15 +522,6 @@ class ConfirmationDialog extends Dialog {
             this.$okButton.removeClass('disabled');
             this.$okButton.text(this.intl('ok'));
         }
-    }
-
-    _unblockButton () {
-        this.$okButton.removeClass('disabled');
-        this.$okButton.text(this.intl('ok'));
-    }
-
-    _blockButton () {
-        this.$okButton.addClass('disabled');
     }
 
     handle (title, text, darkBackground = false, delay = 0) {
@@ -526,12 +532,12 @@ class ConfirmationDialog extends Dialog {
         this.$text = this.$parent.find('[data-op="text"]');
 
         this.$cancelButton.click(() => {
-            this._closeTimer();
+            this.#closeTimer();
             this.close(false);
         });
 
         this.$okButton.click(() => {
-            this._closeTimer();
+            this.#closeTimer();
             this.close(true);
         });
 
@@ -540,14 +546,14 @@ class ConfirmationDialog extends Dialog {
 
         this.$parent.css('background', `rgba(0, 0, 0, ${darkBackground ? 0.85 : 0})`);
 
-        this._updateButton(delay);
+        this.#updateButton(delay);
         if (delay > 0) {
             this.delayTimer = setInterval(() => {
                 if (--delay <= 0) {
-                    this._closeTimer();
+                    this.#closeTimer();
                 }
 
-                this._updateButton(delay);
+                this.#updateButton(delay);
             }, 1000);
         }
     }

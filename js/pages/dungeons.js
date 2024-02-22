@@ -9,10 +9,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
     // Options modal
     $('#button-options').click(function () {
-        Dialog.open(
-            SimulatorOptionsDialog,
-            dungeonOptions
-        );
+        Dialog.open(SimulatorOptionsDialog, dungeonOptions);
     })
 
     for (let dungeon of Object.values(DUNGEON_DATA)) {
@@ -531,12 +528,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
         }
 
-        Dialog.open(
-            SimulatorResultsDialog,
-            entries,
-            experienceTotal,
-            showGraph
-        );
+        Dialog.open(SimulatorResultsDialog, entries, experienceTotal, showGraph);
     }
 
     function preparePlayerInstances (dungeon) {
