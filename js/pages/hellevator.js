@@ -107,10 +107,10 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             const pasteData = event.originalEvent.clipboardData.getData('text');
             const pasteJson = JSON.parse(pasteData);
 
-            if (typeof pasteJson === 'object') {
-                editor.fill(preparePlayerData(pasteJson));
-            } else if (Array.isArray(pasteJson)) {
+            if (Array.isArray(pasteJson)) {
                 editor.fill(preparePlayerData(pasteJson[0]));
+            } else if (typeof pasteJson === 'object') {
+                editor.fill(preparePlayerData(pasteJson));
             }
         } catch (e) {
             console.info(e);
