@@ -743,14 +743,16 @@ class ImportFileDialog extends Dialog {
       `;
   }
 
-  _update (file) {
+  _update (callback, file) {
       this._setLoading(false);
 
       if (file) {
-          this.close();
+          this.hide();
+
           Loader.toggle(true);
+
           DatabaseManager.import(JSON.parse(file).data).then(() => {
-              this.callback();
+              callback(true);
           });
       } else {
           this.$field.addClass('error').transition('shake');
@@ -773,39 +775,35 @@ class ImportFileDialog extends Dialog {
       }
   }
 
-  _createBindings () {
-      this.$input = this.$parent.operator('input');
-      this.$field = this.$input.parent();
+  _handle (callback) {
+    this.$input = this.$parent.operator('input');
+    this.$field = this.$input.parent();
 
-      this.$error = this.$parent.operator('error');
+    this.$error = this.$parent.operator('error');
 
-      this.$cancel = this.$parent.operator('cancel');
-      this.$cancel.click(() => {
-          this.close();
-      })
+    this.$cancel = this.$parent.operator('cancel');
+    this.$cancel.click(() => {
+      callback(false);
+    })
 
-      this.$ok = this.$parent.operator('ok');
-      this.$ok.click(() => {
-          const key = this.$input.val().trim();
-          if (key) {
-              this._setLoading(true);
+    this.$ok = this.$parent.operator('ok');
+    this.$ok.click(() => {
+        const key = this.$input.val().trim();
+        if (key) {
+            this._setLoading(true);
 
-              SiteAPI.get('file_get', { key }).then(({ file }) => {
-                  this._update(file.content);
-              }).catch(() => {
-                  this._update();
-              });
-          } else {
-              this.$field.addClass('error').transition('shake');
-          }
-      });
-  }
+            SiteAPI.get('file_get', { key }).then(({ file }) => {
+                this._update(callback, file.content);
+            }).catch(() => {
+                this._update(callback);
+            });
+        } else {
+            this.$field.addClass('error').transition('shake');
+        }
+    });
 
-  _applyArguments (callback) {
-      this.callback = callback;
-
-      this._setLoading(false);
-      this.$input.val('');
+    this._setLoading(false);
+    this.$input.val('');
   }
 }
 
@@ -855,32 +853,52 @@ class ExportFileDialog extends Dialog {
         `;
     }
 
-    _createBindings () {
-        this.$format = this.$parent.operator('format');
-        this.$format.dropdown({
-            values: ['json', 'code', 'code_reusable'].map((value, i) => ({ value, name: intl(`stats.share.formats.${value}`), selected: i === 0 }))
-        });
+    _handle (callback, files, filesPrefix) {
+      this.$format = this.$parent.operator('format');
+      this.$format.dropdown({
+          values: ['json', 'code', 'code_reusable'].map((value, i) => ({ value, name: intl(`stats.share.formats.${value}`), selected: i === 0 }))
+      });
 
-        this.$public = this.$parent.operator('public');
-        this.$public.checkbox('set unchecked');
-        
-        this.$codeContainer = this.$parent.operator('code-container');
-        this.$code = this.$parent.operator('code');
+      this.$public = this.$parent.operator('public');
+      this.$public.checkbox('set unchecked');
+      
+      this.$codeContainer = this.$parent.operator('code-container');
+      this.$code = this.$parent.operator('code');
 
-        this.$fileContainer = this.$parent.operator('file-container');
-        this.$file = this.$parent.operator('file');
+      this.$fileContainer = this.$parent.operator('file-container');
+      this.$file = this.$parent.operator('file');
 
-        this.$cancel = this.$parent.operator('cancel');
-        this.$cancel.click(() => {
-            this.close();
-        });
+      this.$cancel = this.$parent.operator('cancel');
+      this.$cancel.click(() => {
+          callback(false);
+      });
 
-        this.$ok = this.$parent.operator('ok');
-        this.$ok.click(() => {
-            this._exportOrClose();
-        });
+      this.$ok = this.$parent.operator('ok');
+      this.$ok.click(() => {
+          this._exportOrClose(callback);
+      });
 
-        this.$form = this.$parent.operator('form');
+      this.$form = this.$parent.operator('form');
+
+      this.files = files;
+      this.filesPrefix = filesPrefix;
+      this.code = null;
+
+      if (typeof this.files === 'function') {
+          this.$fileContainer.hide();
+      } else {
+          const keys = Object.keys(this.files)
+
+          this.$fileContainer.show();
+          this.$file.dropdown({
+              values: keys.map((value) => ({ value, name: intl(`stats.share.files.${value}`), selected: value === keys[0] }))
+          })
+      }
+
+      this.$public.checkbox(SiteOptions.export_public_only ? 'set checked' : 'set unchecked');
+      this.$ok.text(intl('stats.share.get'))
+      this.$codeContainer.hide();
+      this.$form.show();
     }
 
     async _exportFile () {
@@ -905,7 +923,7 @@ class ExportFileDialog extends Dialog {
         return file;
     }
 
-    _exportOrClose () {
+    _exportOrClose (callback) {
         const mode = this.$format.dropdown('get value');
         if (mode === 'json') {
             this._setLoading(true);
@@ -916,38 +934,16 @@ class ExportFileDialog extends Dialog {
                 )
 
                 this._setLoading(false);
-                this.close();
+                callback(true)
             })
         } else if (this.code) {
-            this.close();
+            callback(false)
         } else {
             const reusable = this.$format.dropdown('get value') === 'code_reusable';
 
             this._setLoading(true);
             this._publish(reusable);
         }
-    }
-
-    _applyArguments (files, filesPrefix) {
-        this.files = files;
-        this.filesPrefix = filesPrefix;
-        this.code = null;
-
-        if (typeof this.files === 'function') {
-            this.$fileContainer.hide();
-        } else {
-            const keys = Object.keys(this.files)
-
-            this.$fileContainer.show();
-            this.$file.dropdown({
-                values: keys.map((value) => ({ value, name: intl(`stats.share.files.${value}`), selected: value === keys[0] }))
-            })
-        }
-
-        this.$public.checkbox(SiteOptions.export_public_only ? 'set checked' : 'set unchecked');
-        this.$ok.text(intl('stats.share.get'))
-        this.$codeContainer.hide();
-        this.$form.show();
     }
 
     _setLoading (loading) {
@@ -1050,103 +1046,108 @@ class ScriptRepositoryDialog extends Dialog {
     }
   }
 
-  _createBindings () {
-      this.$list = this.$parent.operator('list');
-      this.$listAdd = this.$parent.operator('list-add');
-      this.$listAddKey = this.$parent.operator('list-add-key');
-      this.$listAddKey.on('keydown', (event) => {
-        if (event.originalEvent.key === 'Enter') {
-            this.$listAddAccept.click();
-        }
-      })
+  _handle (callback) {
+    this.$list = this.$parent.operator('list');
+    this.$listAdd = this.$parent.operator('list-add');
+    this.$listAddKey = this.$parent.operator('list-add-key');
+    this.$listAddKey.on('keydown', (event) => {
+      if (event.originalEvent.key === 'Enter') {
+          this.$listAddAccept.click();
+      }
+    })
 
-      this.$listAddCreate = this.$parent.operator('list-add-create');
-      this.$listAddCreate.checkbox();
+    this.$listAddCreate = this.$parent.operator('list-add-create');
+    this.$listAddCreate.checkbox();
 
-      this.$listAddCancel = this.$listAdd.operator('list-add-cancel');
-      this.$listAddCancel.click(() => {
-        this.#showListAdd(false);
-      });
+    this.$listAddCancel = this.$listAdd.operator('list-add-cancel');
+    this.$listAddCancel.click(() => {
+      this.#showListAdd(false);
+    });
 
-      this.$listAddAccept = this.$listAdd.operator('list-add-accept');
-      this.$listAddAccept.click(async () => {
-        const key = this.$listAddKey.val();
+    this.$listAddAccept = this.$listAdd.operator('list-add-accept');
+    this.$listAddAccept.click(async () => {
+      const key = this.$listAddKey.val();
 
-        this.$listAddAccept.addClass('loading disabled');
-        this.$listAddCancel.addClass('disabled');
+      this.$listAddAccept.addClass('loading disabled');
+      this.$listAddCancel.addClass('disabled');
 
-        try {
-          const script = await SiteAPI.get('script_info', { key }).then(({ script }) => script);
+      try {
+        const script = await SiteAPI.get('script_info', { key }).then(({ script }) => script);
 
-          StoreCache.invalidate('remote_scripts');
+        StoreCache.invalidate('remote_scripts');
 
-          Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
+        Scripts.remoteAdd(script.key, { version: script.version, updated_at: Date.parse(script.updated_at) });
 
-          if (this.$listAddCreate.checkbox('is checked')) {
-            const { script } = await SiteAPI.get('script_get', { key });
+        if (this.$listAddCreate.checkbox('is checked')) {
+          const { script } = await SiteAPI.get('script_get', { key });
 
-            this.#createScript(script);
-          } else {
-            this.#showListAdd(false);
-
-            this.#resetList();
-            this.#loadList();
-          }
-        } catch (e) {
-          Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
-        }
-
-        this.$listAddAccept.removeClass('loading disabled');
-        this.$listAddCancel.removeClass('disabled');
-      })
-      
-      this.$listSearch = this.$parent.operator('list-search');
-      this.$listSearch.on('input', () => {
-          this.#updateSearch();
-      })
-
-      this.$close = this.$parent.operator('close');
-      this.$close.click(() => {
-          this.close();
-      });
-
-      this.$list.click((event) => {
-        const realTarget = event.target;
-        const realContainer = realTarget.closest('[data-script-key], [data-script-add]');
-        
-        if (!realContainer || realTarget.closest('.ui.input')) {
-          return;
-        }
-        
-        const key = realContainer.dataset.scriptKey;
-        if (realTarget.closest('.ui.button')) {
-          Scripts.remoteRemove(key);
-
-          StoreCache.invalidate('remote_scripts');
-
-          realContainer.remove();
-        } else if (key) {
-          this.close();
-
-          Loader.toggle(true);
-
-          if (DefaultScripts.exists(key)) {
-            this.#createScript(DefaultScripts.get(key));
-          } else {
-            SiteAPI.get('script_get', { key }).then(({ script }) => this.#createScript(script)).catch(() => Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message')))
-          }
+          this.#createScript(script);
         } else {
-          this.#showListAdd(true);
+          this.#showListAdd(false);
+
+          this.#resetList();
+          this.#loadList();
         }
-      })
+      } catch (e) {
+        Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message'));
+      }
+
+      this.$listAddAccept.removeClass('loading disabled');
+      this.$listAddCancel.removeClass('disabled');
+    })
+    
+    this.$listSearch = this.$parent.operator('list-search');
+    this.$listSearch.on('input', () => {
+        this.#updateSearch();
+    })
+
+    this.$close = this.$parent.operator('close');
+    this.$close.click(() => {
+        callback(false)
+    });
+
+    this.$list.click((event) => {
+      const realTarget = event.target;
+      const realContainer = realTarget.closest('[data-script-key], [data-script-add]');
+      
+      if (!realContainer || realTarget.closest('.ui.input')) {
+        return;
+      }
+      
+      const key = realContainer.dataset.scriptKey;
+      if (realTarget.closest('.ui.button')) {
+        Scripts.remoteRemove(key);
+
+        StoreCache.invalidate('remote_scripts');
+
+        realContainer.remove();
+      } else if (key) {
+        callback(true)
+
+        Loader.toggle(true);
+
+        if (DefaultScripts.exists(key)) {
+          this.#createScript(DefaultScripts.get(key));
+        } else {
+          SiteAPI.get('script_get', { key }).then(({ script }) => this.#createScript(script)).catch(() => Toast.error(this.intl('error_fetch.title'), this.intl('error_fetch.message')))
+        }
+      } else {
+        this.#showListAdd(true);
+      }
+    })
+
+    this.#showListAdd(false);
+
+    this.$listSearch.val('');
+
+    this.#resetList();
+    this.#loadList();
   }
 
   #createScript (script) {
-    this.close();
-
     Loader.toggle(false);
 
-    DialogController.open(ScriptEditDialog, _pick(script, ['name', 'description', 'content']), (_script) => {
+    Dialog.open(ScriptEditDialog, _pick(script, ['name', 'description', 'content']), (_script) => {
         const { key } = Scripts.create(_script);
 
         this.callback(key);
@@ -1247,17 +1248,6 @@ class ScriptRepositoryDialog extends Dialog {
 
     this.$list.html(content);
   }
-
-  _applyArguments (callback) {
-    this.callback = callback;
-
-    this.#showListAdd(false);
-
-    this.$listSearch.val('');
-
-    this.#resetList();
-    this.#loadList();
-  }
 }
 
 class ScriptArchiveDialog extends Dialog {
@@ -1296,37 +1286,6 @@ class ScriptArchiveDialog extends Dialog {
             element.style.display = 'none';
         }
     })
-  }
-
-  _createBindings () {
-      this.$list = this.$parent.operator('list');
-
-      this.$listFilter = this.$parent.operator('filter');
-      this.$listFilter.dropdown({
-        values: [
-            { value: '', name: this.intl('types.all'), icon: 'question' },
-            { value: 'create', name: this.intl('types.create'), icon: 'plus' },
-            { value: 'overwrite', name: this.intl('types.overwrite'), icon: 'pencil alternate' },
-            { value: 'save', name: this.intl('types.save'), icon: 'save' },
-            { value: 'remove', name: this.intl('types.remove'), icon: 'trash alternate outline' },
-            { value: 'discard', name: this.intl('types.discard'), icon: 'recycle' }
-        ],
-        onChange: (value) => {
-            this.#updateSearch(value);
-        }
-      })
-
-      this.$clear = this.$parent.operator('clear');
-      this.$clear.click(() => {
-          ScriptArchive.clear();
-          this.callback(true);
-          this.close();
-      })
-
-      this.$close = this.$parent.operator('close');
-      this.$close.click(() => {
-          this.close();
-      });
   }
 
   _getIcon (type) {
@@ -1382,30 +1341,54 @@ class ScriptArchiveDialog extends Dialog {
       `;
   }
 
-  _applyArguments (callback) {
-      this.callback = callback;
+  _handle (callback) {
+    this.$list = this.$parent.operator('list');
 
-      let content = '';
-      for (const { type, name, version, timestamp, temporary } of ScriptArchive.all()) {
-          content += this._createSegment(type, name, version, timestamp, temporary);
+    this.$listFilter = this.$parent.operator('filter');
+    this.$listFilter.dropdown({
+      values: [
+          { value: '', name: this.intl('types.all'), icon: 'question' },
+          { value: 'create', name: this.intl('types.create'), icon: 'plus' },
+          { value: 'overwrite', name: this.intl('types.overwrite'), icon: 'pencil alternate' },
+          { value: 'save', name: this.intl('types.save'), icon: 'save' },
+          { value: 'remove', name: this.intl('types.remove'), icon: 'trash alternate outline' },
+          { value: 'discard', name: this.intl('types.discard'), icon: 'recycle' }
+      ],
+      onChange: (value) => {
+          this.#updateSearch(value);
       }
+    })
 
-      this.$list.html(content);
-      this.$list.find('[data-archive-key]').on('click', (event) => {
-          this.callback(ScriptArchive.get(event.currentTarget.dataset.archiveKey));
+    this.$clear = this.$parent.operator('clear');
+    this.$clear.click(() => {
+        ScriptArchive.clear();
+        callback(false);
+    })
 
-          this.close();
-      });
+    this.$close = this.$parent.operator('close');
+    this.$close.click(() => {
+        callback(false)
+    });
 
-      this.$list.find('[data-archive-copy]').on('click', (event) => {
-        _stopAndPrevent(event);
+    let content = '';
+    for (const { type, name, version, timestamp, temporary } of ScriptArchive.all()) {
+        content += this._createSegment(type, name, version, timestamp, temporary);
+    }
 
-        copyText(ScriptArchive.get(event.currentTarget.dataset.archiveCopy));
+    this.$list.html(content);
+    this.$list.find('[data-archive-key]').on('click', (event) => {
+        callback(ScriptArchive.get(event.currentTarget.dataset.archiveKey));
+    });
 
-        Toast.info(this.intl('title'), this.intl('copy_toast'))``
-      });
+    this.$list.find('[data-archive-copy]').on('click', (event) => {
+      _stopAndPrevent(event);
 
-      this.$listFilter.dropdown('set selected', '');
+      copyText(ScriptArchive.get(event.currentTarget.dataset.archiveCopy));
+
+      Toast.info(this.intl('title'), this.intl('copy_toast'));
+    });
+
+    this.$listFilter.dropdown('set selected', '');
   }
 }
 
@@ -1507,63 +1490,6 @@ class ScriptEditDialog extends Dialog {
         return this.$tables.find('[data-table]').get().filter((element) => element.dataset.active === 'true').map((element) => element.dataset.table);
     }
 
-    _createBindings () {
-        this.$close = this.$parent.operator('close');
-        this.$close.click(() => {
-            this.close();
-        });
-
-        this.$title = this.$parent.operator('title');
-        this.$name = this.$parent.operator('name');
-        this.$name.on('keydown', (event) => {
-            if (event.originalEvent.key === 'Enter') {
-                this.$create.click();
-            }
-        })
-
-        this.$description = this.$parent.operator('description');
-        this.$source = this.$parent.operator('source');
-
-        this.$create = this.$parent.operator('create');
-        this.$create.click(() => {
-            const script = {
-                name: this.$name.val().trim(),
-                description: this.$description.val().trim(),
-                tables: this.#getTables()
-            }
-
-            if (!script.name) {
-                // Require script name
-                Toast.warn(this.intl('error_title'), this.intl('error_name_blank'));
-
-                return;
-            }
-
-            if (this.script.key) {
-                this.callback(script, null);
-                this.close();
-            } else {
-                const source = this.$source.dropdown('get value');
-
-                this.callback(Object.assign(script, { content: this._getContentFromSource(source) }), source);
-                this.close();
-            }
-        });
-
-        this.$tables = this.$parent.operator('tables');
-        this.$tables.find('[data-table]').click((event) => {
-            const element = event.currentTarget;
-
-            if (element.dataset.active = (element.dataset.active !== 'true')) {
-                if (element.dataset.table === 'groups') {
-                    this.#setTables(['groups']);
-                } else {
-                    this.#setTables(this.#getTables().filter((table) => table !== 'groups'));
-                }
-            }
-        })
-    }
-
     _getContentFromSource (source) {
         switch (source) {
             case '_empty': return '';
@@ -1578,52 +1504,103 @@ class ScriptEditDialog extends Dialog {
         }
     }
 
-    _applyArguments (script, callback, contentLock) {
-        this.callback = callback;
+    _handle (callback, script, contentLock) {
+      this.$close = this.$parent.operator('close');
+      this.$close.click(() => {
+          callback(false)
+      });
 
-        if (typeof script.key === 'undefined') {
-            // Create script
-            this.script = Object.assign({ name: `New script ${_formatDate(Date.now())}`, description: '' }, script);
-            
-            this.$title.text(this.intl('title.create'));
+      this.$title = this.$parent.operator('title');
+      this.$name = this.$parent.operator('name');
+      this.$name.on('keydown', (event) => {
+          if (event.originalEvent.key === 'Enter') {
+              this.$create.click();
+          }
+      })
 
-            this.$source.parent('.field').show();
+      this.$description = this.$parent.operator('description');
+      this.$source = this.$parent.operator('source');
 
-            this.$source.dropdown({
-                values: [
-                    { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
-                    { value: '_current', name: this.intl('content.current'), icon: 'minus' },
-                    { type: 'header', name: this.intl('category.defaults') },
-                    { value: '_players', name: intl('stats.topbar.players'), icon: 'database' },
-                    { value: '_groups', name: intl('stats.topbar.groups'), icon: 'database' },
-                    { value: '_player', name: intl('stats.topbar.players_grid'), icon: 'user' },
-                    { value: '_group', name: intl('stats.topbar.groups_grid'), icon: 'archive' },
-                    { type: 'header', name: this.intl('category.clone') },
-                    ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
-                ]
-            });
+      this.$create = this.$parent.operator('create');
+      this.$create.click(() => {
+          const script = {
+              name: this.$name.val().trim(),
+              description: this.$description.val().trim(),
+              tables: this.#getTables()
+          }
 
-            this.$source.dropdown('set selected', contentLock || '_current');
+          if (!script.name) {
+              // Require script name
+              Toast.warn(this.intl('error_title'), this.intl('error_name_blank'));
 
-            if (contentLock) {
-                this.$source.addClass('disabled');
-            } else {
-                this.$source.removeClass('disabled');
-            }
-    
-            setTimeout(() => this.$name.focus(), 100);
-        } else {
-            this.script = script;
-            
-            this.$title.text(this.intl('title.edit'));
+              return;
+          }
+
+          if (this.script.key) {
+            callback(script, null);
+          } else {
+            const source = this.$source.dropdown('get value');
+
+            callback(Object.assign(script, { content: this._getContentFromSource(source) }), source);
+          }
+      });
+
+      this.$tables = this.$parent.operator('tables');
+      this.$tables.find('[data-table]').click((event) => {
+          const element = event.currentTarget;
+
+          if (element.dataset.active = (element.dataset.active !== 'true')) {
+              if (element.dataset.table === 'groups') {
+                  this.#setTables(['groups']);
+              } else {
+                  this.#setTables(this.#getTables().filter((table) => table !== 'groups'));
+              }
+          }
+      })
+
+      if (typeof script.key === 'undefined') {
+        // Create script
+        this.script = Object.assign({ name: `New script ${_formatDate(Date.now())}`, description: '' }, script);
         
-            this.$source.parent('.field').hide();
+        this.$title.text(this.intl('title.create'));
+
+        this.$source.parent('.field').show();
+
+        this.$source.dropdown({
+            values: [
+                { value: '_empty', name: this.intl('content.empty'), icon: 'minus' },
+                { value: '_current', name: this.intl('content.current'), icon: 'minus' },
+                { type: 'header', name: this.intl('category.defaults') },
+                { value: '_players', name: intl('stats.topbar.players'), icon: 'database' },
+                { value: '_groups', name: intl('stats.topbar.groups'), icon: 'database' },
+                { value: '_player', name: intl('stats.topbar.players_grid'), icon: 'user' },
+                { value: '_group', name: intl('stats.topbar.groups_grid'), icon: 'archive' },
+                { type: 'header', name: this.intl('category.clone') },
+                ...Scripts.sortedList().map((script) => ({ value: script.key, name: script.name, icon: 'archive' }))
+            ]
+        });
+
+        this.$source.dropdown('set selected', contentLock || '_current');
+
+        if (contentLock) {
+            this.$source.addClass('disabled');
+        } else {
+            this.$source.removeClass('disabled');
         }
 
-        this.$name.val(this.script.name);
-        this.$description.val(this.script.description);
+        setTimeout(() => this.$name.focus(), 100);
+      } else {
+          this.script = script;
+          
+          this.$title.text(this.intl('title.edit'));
+      
+          this.$source.parent('.field').hide();
+      }
 
-        this.#setTables(this.script.tables || ['players', 'player', 'group']);
+      this.$name.val(this.script.name);
+      this.$description.val(this.script.description);
+
+      this.#setTables(this.script.tables || ['players', 'player', 'group']);
     }
 }
 
@@ -1646,14 +1623,12 @@ class PlayerDetailDialog extends Dialog {
     `;
   }
 
-  _createBindings () {
+  _handle (callback, { identifier, timestamp, reference }) {
     this.$close = this.$parent.operator('close');
-    this.$close.click(() => this.close());
+    this.$close.click(() => callback(false));
     
     this.$content = this.$parent.operator('content');
-  }
 
-  _applyArguments ({ identifier, timestamp, reference }) {
     let playerObject = DatabaseManager.getPlayer(identifier);
     let timestampsReverse = playerObject.List.map((p) => p.Timestamp).reverse(); // Newest to oldest
     let timestamps = playerObject.List.map((p) => p.Timestamp); // Oldest to newest
@@ -2066,10 +2041,10 @@ class EditorShortcutsDialog extends Dialog {
         `;
     }
     
-    _createBindings () {
+    _handle (callback) {
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
-            this.close();
+            callback(false);
         });
     }
 }

@@ -267,7 +267,7 @@ Site.ready(null, function (urlParams) {
   }
   
   function importEndpoint () {
-    DialogController.open(EndpointDialog, true).then((success) => {
+    Dialog.open(EndpointDialog, true).then((success) => {
       if (success) {
         render();
       }

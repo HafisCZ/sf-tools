@@ -300,7 +300,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             batch.run(instances).then(() => {
                 _sortDesc(results, i => i.chance);
 
-                DialogController.open(
+                Dialog.open(
                     SimulatorResultsDialog,
                     results
                 )
@@ -385,7 +385,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 }
 
                 batch.run(instances).then(() => {
-                    DialogController.open(
+                    Dialog.open(
                         SimulatorMapDialog,
                         maps.map((data, i) => ({
                             data,

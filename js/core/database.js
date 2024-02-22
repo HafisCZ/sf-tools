@@ -1454,7 +1454,7 @@ class DatabaseManager {
 
             return true;
         } else {
-            return DialogController.open(
+            return Dialog.open(
                 DataManageDialog,
                 data
             );

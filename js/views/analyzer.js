@@ -5,7 +5,7 @@ class AnalyzerOptionsDialog extends Dialog {
     opacity: 0
 }
 
-  _render () {
+  render () {
       return `
           <div class="small bordered inverted dialog">
               <div class="header">${this.intl('title')}</div>
@@ -17,9 +17,9 @@ class AnalyzerOptionsDialog extends Dialog {
       `;
   }
 
-  _handle (callback, options, data) {
+  handle (options, data) {
       this.$ok = this.$parent.operator('ok');
-      this.$ok.click(() => callback(false));
+      this.$ok.click(() => this.close(false));
 
       this.$content = this.$parent.operator('content');
 
@@ -97,10 +97,10 @@ class FightStatisticalAnalysisDialog extends Dialog {
       `;
   }
 
-  _handle (callback, { fights, fighterA, fighterB }) {
+  _handle ({ fights, fighterA, fighterB }) {
       this.$closeButton = this.$parent.operator('cancel');
       this.$closeButton.click(() => {
-        callback(false)
+        this.close(false)
       })
 
       this.$content = this.$parent.operator('content');
@@ -232,9 +232,9 @@ class AnalyzerAutofillDialog extends Dialog {
       key: 'analyzer_autofill',
       dismissable: true,
       opacity: 0
-  }
+    }
 
-    _render () {
+    render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header flex justify-content-between items-center">
@@ -253,12 +253,12 @@ class AnalyzerAutofillDialog extends Dialog {
         `;
     }
 
-    _handle (callback) {
+    handle () {
         this.$content = this.$parent.operator('content');
         
         this.$close = this.$parent.operator('close');
         this.$close.click(() => {
-          callback(false)
+          this.close(false)
         })
 
         this.$search = this.$parent.operator('search');
@@ -266,7 +266,7 @@ class AnalyzerAutofillDialog extends Dialog {
             this._refresh();
         })
 
-        this._generateContent(callback);
+        this._generateContent();
         this._refresh();
 
         this.$search.val('');
@@ -331,7 +331,7 @@ class AnalyzerAutofillDialog extends Dialog {
         };
     }
 
-    _generateContent (callback) {
+    _generateContent () {
         for (const dungeon of Object.values(DUNGEON_DATA)) {
             dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
     
@@ -359,7 +359,7 @@ class AnalyzerAutofillDialog extends Dialog {
                 `);
 
                 $element.click(() => {
-                    callback(this._convert(dungeon, boss));
+                    this.close(true, this._convert(dungeon, boss));
                 })
 
                 this.$content.append($element);

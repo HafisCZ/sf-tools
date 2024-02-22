@@ -1087,7 +1087,7 @@ const StatisticsIntegration = new (class {
     }
 
     #showOptions () {
-        DialogController.open(
+        Dialog.open(
             StatisticsIntegrationOptionsDialog,
             this.options,
             (options) => {
@@ -1108,7 +1108,7 @@ const StatisticsIntegration = new (class {
     }
 
     #importEndpoint () {
-        DialogController.open(EndpointDialog, true).then((actionSuccess) => {
+        Dialog.open(EndpointDialog, true).then((actionSuccess) => {
             if (actionSuccess) {
                 this.#poll();
             }

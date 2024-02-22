@@ -21,10 +21,10 @@ class SimulatorDebugDialog extends Dialog {
         `;
     }
 
-    _handle (callback, currentConfig, defaultConfig) {
+    _handle (currentConfig, defaultConfig) {
         this.$cancelButton = this.$parent.find('[data-op="cancel"]');
         this.$cancelButton.click(() => {
-            callback(false)
+            this.resolve(false)
         });
 
         this.$okButton = this.$parent.find('[data-op="ok"]');
@@ -188,16 +188,16 @@ class SimulatorCustomPresetDialog extends Dialog {
         `;
     }
 
-    _handle (callback) {
+    _handle () {
         this.$closeButton = this.$parent.operator('close');
         this.$closeButton.click(() => {
-            callback();
+            this.close(false);
         });
 
         this.$insertButton = this.$parent.operator('insert');
         this.$insertButton.click(() => {
             if (this.editor.valid()) {
-                callback(this.editor.read());
+                this.close(true, this.editor.read());
             }
         });
 
@@ -250,7 +250,7 @@ const SimulatorUtils = class {
         `);
 
         $dialogButton.click(() => {
-            DialogController.open(
+            Dialog.open(
                 SimulatorDebugDialog,
                 this.#currentConfig,
                 this.#defaultConfig
@@ -388,7 +388,7 @@ const SimulatorUtils = class {
                     const method = this.#callbacks.get('insert');
 
                     if (value === 'custom') {
-                        DialogController.open(
+                        Dialog.open(
                             SimulatorCustomPresetDialog
                         ).then((value) => {
                             if (value) {
