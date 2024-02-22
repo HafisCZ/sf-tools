@@ -67,7 +67,7 @@ class SimulatorMapDialog extends Dialog {
     this.$save = this.$parent.operator('save');
     this.$save.click(() => {
         const name = $selector.dropdown('get value');
-        this._save(name);
+        this.#save(name);
     });
 
     this.$content = this.$parent.operator('content');
@@ -93,7 +93,7 @@ class SimulatorMapDialog extends Dialog {
                     </tr>
                 </thead>
                 <tbody>
-                    ${data.reduce((memo, entry, i) => memo + `<tr><td class="text-white">${i + 1}</td>${ entry.reduce((memo2, chance) => memo2 + `<td style="background-color: ${this._color(chance)};">${chance.toFixed(2)}%</td>`, '')}${'<td></td>'.repeat(16 - size)}</tr>`, '')}
+                    ${data.reduce((memo, entry, i) => memo + `<tr><td class="text-white">${i + 1}</td>${ entry.reduce((memo2, chance) => memo2 + `<td style="background-color: ${this.#color(chance)};">${chance.toFixed(2)}%</td>`, '')}${'<td></td>'.repeat(16 - size)}</tr>`, '')}
                 </tbody>
             </table>
         `;
@@ -104,7 +104,7 @@ class SimulatorMapDialog extends Dialog {
     this.$selector.dropdown('set selected', SHA1(maps[0].name));
   }
 
-  _save (name) {
+  #save (name) {
       const $element = this.$parent.find(`[data-map="${name}"]`);
       
       this.$content.css('height', '');
@@ -123,7 +123,7 @@ class SimulatorMapDialog extends Dialog {
       });
   }
 
-  _color (chance) {
+  #color (chance) {
       if (chance < 0.01) {
           return '#ffad99';
       } else if (chance >= 25) {

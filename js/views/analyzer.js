@@ -3,7 +3,7 @@ class AnalyzerOptionsDialog extends Dialog {
     key: 'analyzer_options',
     dismissable: true,
     opacity: 0
-}
+  }
 
   render () {
       return `
@@ -76,7 +76,7 @@ class FightStatisticalAnalysisDialog extends Dialog {
         opacity: 0
     }
 
-    _render () {
+    render () {
       this.ExpressionConfig = DEFAULT_EXPRESSION_CONFIG.clone();
 
       for (const name of ['Player 1 Attacking', 'Player 2 Attacking', 'Attacker', 'Attacker State', 'Target', 'Target State', 'Critical', 'Missed', 'Damage', 'Rage', 'Special', 'Type', 'First Round', 'Last Round', 'Attacker State Display', 'Target State Display']) {
@@ -97,7 +97,7 @@ class FightStatisticalAnalysisDialog extends Dialog {
       `;
   }
 
-  _handle ({ fights, fighterA, fighterB }) {
+  handle ({ fights, fighterA, fighterB }) {
       this.$closeButton = this.$parent.operator('cancel');
       this.$closeButton.click(() => {
         this.close(false)
@@ -107,7 +107,7 @@ class FightStatisticalAnalysisDialog extends Dialog {
 
       this.$add = this.$parent.operator('add');
       this.$add.click(() => {
-          this._inject();
+          this.#inject();
       })
 
       this.environment = {
@@ -170,10 +170,10 @@ class FightStatisticalAnalysisDialog extends Dialog {
 
       this.$content.empty();
 
-      this._inject();
+      this.#inject();
   }
 
-  _inject () {
+  #inject () {
       const index = this.groups.length;
 
       const $group = $(`
@@ -202,7 +202,7 @@ class FightStatisticalAnalysisDialog extends Dialog {
           const html = Highlighter.expression(event.currentTarget.value || '', this.environment, this.ExpressionConfig).text;
           $overlay.html(html);
 
-          this._changed();
+          this.#changed();
       })
 
       this.groups.push({
@@ -211,10 +211,10 @@ class FightStatisticalAnalysisDialog extends Dialog {
           count: $count
       })
 
-      this._changed();
+      this.#changed();
   }
 
-  _changed () {
+  #changed () {
       const globalScope = new ExpressionScope(this.environment);
       
       for (const { selector, count } of this.groups) {
@@ -263,17 +263,17 @@ class AnalyzerAutofillDialog extends Dialog {
 
         this.$search = this.$parent.operator('search');
         this.$search.on('input change', () => {
-            this._refresh();
+            this.#refresh();
         })
 
-        this._generateContent();
-        this._refresh();
+        this.#generateContent();
+        this.#refresh();
 
         this.$search.val('');
-        this._refresh();
+        this.#refresh();
     }
 
-    _refresh () {
+    #refresh () {
         const term = this.$search.val().trim().toLowerCase();
         if (term.length > 0) {
             for (const item of this.items) {
@@ -286,7 +286,7 @@ class AnalyzerAutofillDialog extends Dialog {
         }
     }
 
-    _getBossRunes (runes) {
+    #getBossRunes (runes) {
         let values = [0, 0, 0];
     
         if (runes && runes.res) {
@@ -305,12 +305,12 @@ class AnalyzerAutofillDialog extends Dialog {
         }
     }
 
-    _convert (dungeon, data) {
+    #convert (dungeon, data) {
         return {
             Armor: data.armor || ((dungeon.armor_multiplier || 1) * (data.level * CONFIG.fromIndex(data.class).MaximumDamageReduction)),
             Dungeons: { Group: 0 },
             Fortress: { Gladiator: data.gladiator || 0 },
-            Runes: this._getBossRunes(data.runes),
+            Runes: this.#getBossRunes(data.runes),
             Items: {
                 Hand: {},
                 Wpn1: {
@@ -331,7 +331,7 @@ class AnalyzerAutofillDialog extends Dialog {
         };
     }
 
-    _generateContent () {
+    #generateContent () {
         for (const dungeon of Object.values(DUNGEON_DATA)) {
             dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
     
@@ -359,7 +359,7 @@ class AnalyzerAutofillDialog extends Dialog {
                 `);
 
                 $element.click(() => {
-                    this.close(true, this._convert(dungeon, boss));
+                    this.close(true, this.#convert(dungeon, boss));
                 })
 
                 this.$content.append($element);
