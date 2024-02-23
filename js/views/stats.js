@@ -633,7 +633,9 @@ class DataManageDialog extends Dialog {
       `;
   }
 
-  handle (data) {
+  handle (rawData) {
+      const data = Object.assign({ identifiers: [], timestamps: [], instances: [] }, rawData)
+
       this.$cancelButton = this.$parent.find('[data-op="cancel"]');
       this.$cancelButton.click(() => {
           this.close(false);
@@ -647,7 +649,7 @@ class DataManageDialog extends Dialog {
 
           this.hide();
 
-          await DatabaseManager.safeRemove(this.data, true)
+          await DatabaseManager.safeRemove(data, true)
 
           this.close(true)
       });
@@ -655,9 +657,7 @@ class DataManageDialog extends Dialog {
       this.$content = this.$parent.find('[data-op="content"]');
       this.$checkbox = this.$parent.find('[data-op="checkbox"]');
 
-      this.data = Object.assign({ identifiers: [], timestamps: [], instances: [] }, data);
-
-      let { identifiers, timestamps, instances } = this.data;
+      let { identifiers, timestamps, instances } = data;
       let content = '';
 
       if (timestamps.length > 0) {
@@ -717,8 +717,6 @@ class DataManageDialog extends Dialog {
       }
 
       this.$content.html(content);
-
-      this.$checkbox.checkbox('set unchecked');
   }
 }
 
@@ -802,7 +800,6 @@ class ImportFileDialog extends Dialog {
     });
 
     this.#setLoading(false);
-    this.$input.val('');
   }
 }
 
