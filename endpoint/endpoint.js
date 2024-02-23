@@ -248,9 +248,13 @@ class EndpointDialog extends Dialog {
     }
 
     #localizeError (rawError) {
-        const error = rawError.toLowerCase().replace(/\s|:/g, '_');
+        if (rawError.length > 50) {
+            return rawError.slice(rawError.indexOf(':') + 1);
+        } else {
+            const error = rawError.toLowerCase().replace(/\s|:/g, '_');
 
-        return this.intl(`errors.${error}`);
+            return this.intl(`errors.${error}`);
+        }
     }
 
     #showError (error, errorCritical = false) {
