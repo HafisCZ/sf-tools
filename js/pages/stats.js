@@ -3819,9 +3819,9 @@ class SettingsTab extends Tab {
         this.prepareCheckbox('terms_accepted');
         this.prepareCheckbox('table_sticky_header')
 
-        SiteOptions.onChange('terms_accepted', enabled => {
+        SiteOptions.onChange('terms_accepted', (enabled) => {
             if (enabled) {
-                this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
+                this.$parent.find(`[data-op="checkbox-terms-accepted"]`).checkbox('set checked');
             } else {
                 Dialog.open(TermsAndConditionsDialog);
             }
