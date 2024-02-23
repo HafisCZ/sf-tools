@@ -357,7 +357,7 @@
             "desc": "Simula il probabile esito di uno scontro nei dungeon"
         },
         "underworld": {
-            "title": "Mondo Sotterraneo",
+            "title": "Underworld Simulator",
             "desc": "Simula il probabile esito di uno scontro nel mondo sotterraneo"
         },
         "analyzer": {

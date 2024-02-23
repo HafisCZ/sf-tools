@@ -357,7 +357,7 @@
             "desc": "Simula el posible resultado de una mazmorra"
         },
         "underworld": {
-            "title": "Inframundo",
+            "title": "Underworld Simulator",
             "desc": "Simula el posible resultado de una batalla del inframundo"
         },
         "analyzer": {

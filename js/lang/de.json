@@ -123,18 +123,18 @@
         "attack24": "Ausgewichen",
         "attack28": "Kritisch geblockt",
         "attack29": "Kritisch ausgewichen",
-        "attack30": "Minion Normal",
-        "attack31": "Minion Critical",
-        "attack33": "Minion Blocked",
-        "attack34": "Minion Evaded",
-        "attack38": "Minion Critical Blocked",
-        "attack39": "Minion Critical Evaded",
+        "attack30": "Schergen normal",
+        "attack31": "Schergen kritisch",
+        "attack33": "Schergen blockiert",
+        "attack34": "Scherge ausgewichen",
+        "attack38": "Schergen kritisch geblockt",
+        "attack39": "Schergen kritisch ausgewichen",
         "attack100": "Wiederbeleben",
         "attack200": "Melodie",
-        "attack331": "Summon Skeleton",
-        "attack311": "Revive Skeleton",
-        "attack322": "Summon Hound",
-        "attack343": "Summon Golem",
+        "attack331": "Skelett beschwören",
+        "attack311": "Skelett wiederbeleben",
+        "attack322": "Jagdhund beschwören",
+        "attack343": "Golem beschwören",
         "gt_background1": "Gold",
         "gt_background2": "Silber",
         "gt_background3": "Bronze",
@@ -357,7 +357,7 @@
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Dungeonkampfes"
         },
         "underworld": {
-            "title": "Unterwelt",
+            "title": "Underworld Simulator",
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Unterweltkampfes"
         },
         "analyzer": {
@@ -520,12 +520,12 @@
             "player_companions": "Mit Begleitern kopieren"
         },
         "context": {
-            "title": "Apply action to selected items",
+            "title": "Aktion auf ausgewähltes Item anwenden",
             "hide": "Anzeigen / Verstecken",
             "remove": "Dauerhaft entfernen",
-            "link_players": "Merge / split characters",
-            "link_groups": "Merge / split guilds",
-            "unselect": "Deselect all"
+            "link_players": "Charaktere zusammenführen / teilen",
+            "link_groups": "Gilden zusammenführen / teilen",
+            "unselect": "Auswahl aufheben"
         },
         "profiles": {
             "players": "Spieler",
@@ -569,14 +569,14 @@
             "script": "Derzeitiges Skript",
             "quick_swap": "Quick swap script",
             "targets": {
-                "none": "None"
+                "none": "Keine(r)"
             },
             "targets_category": {
-                "default": "Defaults",
+                "default": "Standard",
                 "existing": "Assigned tables"
             },
             "tooltip": {
-                "pin": "Pin script to the top of the list",
+                "pin": "Skript an den Anfang der Liste anheften",
                 "unpin": "Skript lösen",
                 "assigned": "Dieses Skript ist dem aktuellen Reiter zugewiesen",
                 "remote": "Dieses Skript ist veröffentlicht",
@@ -739,10 +739,10 @@
             },
             "links": {
                 "title": "Player / guild merges",
-                "export": "Export",
-                "import": "Import",
+                "export": "Exportieren",
+                "import": "Importieren",
                 "import_title": "Are you sure you want to import all merges?",
-                "reset": "Reset",
+                "reset": "Zurücksetzen",
                 "reset_title": "Are you sure you want to reset all merges?"
             }
         }
@@ -939,71 +939,71 @@
             "32": "Kann dir donnerstags tagsüber im Immernachtswald begegnen.",
             "33": "Kann dir freitags tagsüber in den Schwarzwassersümpfen begegnen.",
             "34": "Ist in Erogenion anzutreffen, falls deine Gilde mindestens auf Platz 100 der Rangliste steht oder mindestens 2.500 Ehrenpunkte hat.",
-            "35": "Can be found in Northrunt in December.",
-            "36": "Can be found in Split Canyon on April Fools' Day. For real!",
-            "37": "Can be found in Erogenion during Epic Event.",
-            "38": "Is a reward for clearing the Tower. Location: Rotten Lands.",
-            "39": "Can be found on the last floor of the Light Habitat. Location: Plains of Oz'Korr.",
-            "40": "Can be found in Stumble Steppe during the day.",
-            "41": "Can be found in Gnarogrim at night.",
-            "42": "Can be found in Erogenion during the day.",
+            "35": "Triffst du im Dezember in Nordingen.",
+            "36": "Kann dir am 1. April im Spalta-Canyon begegnen. Kein Scherz!",
+            "37": "Kann dir während eines \"Epic Kaufrausch Extravaganza\"-Events in Erogenion begegnen.",
+            "38": "Kann dir nach Abschluss des Turms in den Rottenden Landen begegnen.",
+            "39": "Kommt nur im hintersten Winkel des Licht-Habitats in den Ebenen von Oz'Korr vor.",
+            "40": "Kann dir tagsüber in der Stolpersteppe begegnen.",
+            "41": "Kann dir nachts in der Region Gnarogrim begegnen.",
+            "42": "Kann dir tagsüber in Erogenion begegnen.",
             "43": "Kann Dir tagsüber in der Region Schwarzwald begegnen.",
-            "44": "Can be found in Northrunt at night.",
-            "45": "Can be found on Tusk Mountain on summer days.",
-            "46": "Can be found in Black Water Swamp on fall days.",
-            "47": "Can be found in in Split Canyon on winter days.",
-            "48": "Can be found in Magmaron on spring days.",
-            "49": "Can be found in Nevermoor on Sunday night.",
-            "50": "Can be found in Maerwynn on Monday during the day.",
-            "51": "Can be found in Busted Lands on Tuesday night.",
-            "52": "Can be found in Evernight Forest on Wednesday during the day.",
-            "53": "Can be found in Rotten Lands on Thursday during the day.",
-            "54": "Can be found in Maerwynn on Easter.",
-            "55": "Can be found in Sprawling Jungle on Whitsun.",
-            "56": "Can be found in Plains of Oz'Korr during Gold Event.",
-            "57": "Can be found in Stumble Steppe. Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "58": "Can be found in the gem mine. Required: Mine level 20.",
-            "59": "Can be found on the last floor of the Earth Habitat. Location: Moldy Forest.",
-            "60": "Can be found in Nevermoor during the day.",
-            "61": "Can be found in Flooded Caldwell at night.",
-            "62": "Can be found in Black Water Swamp at night.",
-            "63": "Can be found on Tusk Mountain during the day.",
-            "64": "Can be found in Busted Lands on Tuesday night.",
-            "65": "Can be found in Moldy Forest on fall nights.",
-            "66": "Can be found in Split Canyon on Monday during the day.",
-            "67": "Can be found in Sunburn Desert on spring days.",
-            "68": "Can be found in Plains of Oz'Korr on winter days.",
-            "69": "Can be found in Sprawling Jungle on Wednesday night.",
-            "70": "Can be found in Stumble Steppe on Thursday during the day.",
-            "71": "Can be found in Black Forest on summer days.",
-            "72": "Can be found in Magmaron on Friday during the day.",
-            "73": "Can be found in Evernight Forest on Saturday night.",
-            "74": "Can't be found in the wild, but in your local weapon shop.",
+            "44": "Kann dir nachts in der Region Nordingen begegnen.",
+            "45": "Kann dir an Sommertagen im Fangzahngebirge begegnen.",
+            "46": "Kann dir an Herbsttagen in den Schwarzwassersümpfen begegnen.",
+            "47": "Kann dir an Wintertagen im Spalta-Canyon begegnen.",
+            "48": "Kann dir an Frühlingstagen in Magmaron begegnen.",
+            "49": "Kann dir sonntagnachts im Nevermoor begegnen.",
+            "50": "Kann dir montags tagsüber in Maerwynn begegnen.",
+            "51": "Kann dir dienstagnachts in der Schweinöde begegnen.",
+            "52": "Kann dir mittwochs tagsüber im Immernachtwald begegnen.",
+            "53": "Kann dir donnerstags tagsüber in den Rottenden Landen begegnen.",
+            "54": "Kommt während der Osterzeit in Maerwynn vor.",
+            "55": "Zeigt sich zum Pfings-Event im Wucherdschungel.",
+            "56": "Zeigt sich währendes Gold-Events in den Ebenen von Oz'Korr.",
+            "57": "Taucht in der Stolpersteppe auf, wenn deine Festung in der Rangliste auf min. Platz 100 steht oder min. 2.500 Ehrenpunkte hat.",
+            "58": "Kann in der Edelsteinmine gefunden werden, sobald du diese auf Stufe 20 ausgebaut hast.",
+            "59": "Kommt nur im hintersten Winkel des Erde-Habitats im Gammelforst vor.",
+            "60": "Kann dir tagsüber in der Region Nevermoor begegnen.",
+            "61": "Kann dir nachts bei der Insel Scarpa begegnen.",
+            "62": "Kann dir nachts in den Schwarzwassersümpfen begegnen.",
+            "63": "Kann dir tagsüber im Fangzahngebirge begegnen.",
+            "64": "Kann dir dienstagnachts in der Schweinöde begegnen.",
+            "65": "Kann dir während der Nacht im Herb im Gammelforst begegnen.",
+            "66": "Kann dir montags tagsüber im Spalta-Canyon begegnen.",
+            "67": "Kann dir an Frühlingstagen in der Sonnenbrandwüste begegnen.",
+            "68": "Kann dir an Wintertagen in den Ebenen von Oz'Korr begegnen.",
+            "69": "Kann dir mittwochs nachts im Wucherdschungel begegnen.",
+            "70": "Kann dir donnerstags tagsüber in der Stolpersteppe begegnen.",
+            "71": "Kann dir an Sommertagen im Schwarzwald begegnen.",
+            "72": "Kann dir freitags tagsüber in Magmaron begegnen.",
+            "73": "Kann dir samstagnachts im Immernachtwald begegnen.",
+            "74": "Kommt nicht in der freien Wildbahn vor, dafür im Waffenladen deines Vertrauens.",
             "75": "Can be found in Maerwynn during Forest Rarities Event.",
-            "76": "Can be found in Flooded Caldwell on Valentine's Day.",
-            "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
+            "76": "Kann Valentinstag bei der Insel Scarpa vorkommen.",
+            "77": "Kann dir Silvester und Neujahr im Immernachtwald begegnen.",
             "78": "Ist eine Belohnung für das Säubern des Einzelspieler-Dämonenportals. Standort: Totenkopfinsel.",
-            "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
+            "79": "Kommt nur im hintersten Winkel des Feuer-Habitats in Gnarogrim vor.",
             "80": "Kann tagsüber in Magyaren gefunden werden.",
             "81": "Kann tagsüber nahe der Totenkopfinsel begegnen.",
-            "82": "Can be found in Evernight Forest at night.",
-            "83": "Can be found in Northrunt during the day.",
-            "84": "Can be found in Rotten Lands on Monday during the day.",
-            "85": "Can be found on Tusk Mountain on Tuesday night.",
-            "86": "Can be found in Split Canyon on Wednesday during the day.",
-            "87": "Can be found in Flooded Caldwell on winter days.",
-            "88": "Can be found in Moldy Forest on Thursday night.",
-            "89": "Can be found on Skull Island on Friday during the day.",
-            "90": "Can be found in Black Water Swamp on Saturday during the day.",
-            "91": "Can be found in Erogenion on fall nights.",
-            "92": "Can be found in Sprawling Jungle on summer days.",
-            "93": "Can be found on Shadowrock Mountain on Sunday night.",
-            "94": "Can be found on Skull Island. Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.",
-            "95": "Can't be found in the wild, but in your local magic shop.",
-            "96": "Can be found on Skull Island during the Birthday Event.",
-            "97": "Can be found in the Arcane Toilet. Required: Aura level 20.",
-            "98": "Is rewarded for the next quest after clearing dungeon 22. Location: Busted Lands.",
-            "99": "Can be found on the last floor of the Water Habitat. Location: Nevermoor."
+            "82": "Kann dir nachts im Immernachtwald begegnen.",
+            "83": "Kann dir tagsüber in Nordingen begegnen.",
+            "84": "Kann montags tagsüber in den Rottenden Landen vorkommen.",
+            "85": "Kann dir dienstagnachts im Fangzahngebirge begegnen.",
+            "86": "Kann dir mittwochs tagsüber im Spalta-Canyon begegnen.",
+            "87": "Kann dir tagsüber im Winter auf der Insel Scarpa begegnen.",
+            "88": "Kann dir donnerstagnachts im Gammelforst begegnen.",
+            "89": "Kann dir am Freitag tagsüber bei der Totenkopfinsel begegnen.",
+            "90": "Kann samstags tagsüber in den Schwarzwassersümpfen gefunden werden.",
+            "91": "Kann dir nachts im Herbst bei Erogenion begegnen.",
+            "92": "Kann dir an Sommertagen im Wucherdschungel begegnen.",
+            "93": "Kann sonntagnachts im Schattenfelsgebirge vorkommen.",
+            "94": "Kann dir bei der Totenkopfinsel begegnen. Benötigt: Pet-Rangliste min. Platz 100 oder dort min. 4000 Ehrenpunkte.",
+            "95": "Kommt nicht in der freien Wildbahn vor, dafür im Zauberladen deines Vertrauens.",
+            "96": "Kann während des Geburtstag-Events auf der Totenkopfinsel gefunden werden.",
+            "97": "Taucht bei einem Spülgang der arkanen Toilette auf. Benötigt: Aura Level 20.",
+            "98": "Kann dir nach Abschluss des 22. Lichtdungeons in einem Abenteuer in der Schweinöde begegnen.",
+            "99": "Kommt nur im hintersten Winkel des Wasser-Habitats in Nevemoor vor."
         },
         "bulk": {
             "not_possible": "Nicht möglich",
@@ -1051,13 +1051,13 @@
         "element": "Element",
         "theme": {
             "0": "Lust und Zorn",
-            "1": "Treachery",
-            "2": "Fraud",
-            "3": "Gluttony",
-            "4": "Greed",
-            "5": "Heresy",
+            "1": "Verrrat",
+            "2": "Betrug",
+            "3": "Völlerei",
+            "4": "Gier",
+            "5": "Häresie",
             "6": "Limbo",
-            "7": "Violence"
+            "7": "Gewalt"
         },
         "win": {
             "all": "Alle #{count} Etagen wurden mit 100% iger Chance besiegt",
@@ -1156,9 +1156,9 @@
             "druid_rage": "Druid is enraged",
             "berserker_rage": "Berserker is enraged",
             "bard_song": "Bard hat eine Melodie gespielt",
-            "necromancer_minion_1": "Summoned Skeleton is affecting the player",
-            "necromancer_minion_2": "Summoned Hound is affecting the player",
-            "necromancer_minion_3": "Summoned Golem is affecting the player"
+            "necromancer_minion_1": "Beschworenes Skelett hat Einfluss auf den Spieler",
+            "necromancer_minion_2": "Beschworener Jagdhund hat Einfluss auf den Spieler",
+            "necromancer_minion_3": "Beschworener Golem hat Einfluss auf den Spieler"
         },
         "sidebar": {
             "toggles": {
@@ -1417,14 +1417,14 @@
             "apply": "Anwenden"
         },
         "manage_link": {
-            "title": "Manage player / guild merge",
+            "title": "Zusammenführung von Spieler / Gilde verwalten",
             "link": {
-                "heading1": "Merge following objects",
+                "heading1": "Folgende Objekte zusammenführen",
                 "heading2": "Into",
                 "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
             },
             "unlink": {
-                "heading1": "Split following object",
+                "heading1": "Folgendes Objekt aufteilen",
                 "heading2": "Into",
                 "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will remain under the source object."
             }
@@ -1483,18 +1483,18 @@
         },
         "script_manual": {
             "title": "Referenzhandbuch",
-            "deprecated": "deprecated",
+            "deprecated": "Veraltet",
             "heading": {
                 "header": "Überschriften für alle Charaktere",
                 "header_protected": "Überschriften für eigene Gildenmitglieder",
-                "header_group": "Headers for all guilds",
+                "header_group": "Kopfzeilen für alle Gilden",
                 "header_private": "Überschriften für eigene Charaktere",
                 "header_scoped": "Zugriffsmethoden für Objekte",
                 "function": "Funktionen",
                 "enum": "Aufzählungen",
                 "constant": "Standardkonstanten",
                 "variable": "Variablen",
-                "command": "Commands"
+                "command": "Befehle"
             },
             "description": {}
         },
@@ -1565,10 +1565,10 @@
             "unknown": "Unbekannt",
             "types": {
                 "all": "Alle Änderungen anzeigen",
-                "create": "Script created",
-                "overwrite": "Script overwritten by new version",
-                "save": "Script saved",
-                "remove": "Script removed",
+                "create": "Skript erstellt",
+                "overwrite": "Skript mit neuer Version überschrieben",
+                "save": "Skript gespeichert",
+                "remove": "Skript entfernt",
                 "discard": "Script changes were discarded"
             },
             "item": {
@@ -1577,25 +1577,25 @@
             }
         },
         "script_repository": {
-            "title": "Online scripts",
-            "search": "Search ...",
-            "list_add": "Add published script to your list",
+            "title": "Online-Skripte",
+            "search": "Suche...",
+            "list_add": "Veröffentlichtes Skript zu deiner Liste hinzufügen",
             "list_add_key": "Code",
-            "list_add_create": "Save as new script",
-            "list_add_accept": "Add to my list",
+            "list_add_create": "Als neues Skript speichern",
+            "list_add_accept": "Zu meiner Liste hinzufügen",
             "list": {
-                "about": "Created by #{author}",
-                "about_with_uses": "Created by #{author}; #{uses} uses",
-                "no_description": "No description",
-                "remove": "Remove script from your list",
-                "private": "This script is private",
-                "public": "This script is public",
-                "default": "This script is available to everyone locally",
-                "new": "New!"
+                "about": "Erstellt von #{author}",
+                "about_with_uses": "Erstellt von #{author}; #{uses} Verwendungen",
+                "no_description": "Keine Beschreibung",
+                "remove": "Skript aus deiner Liste entfernen",
+                "private": "Dieses Skript ist privat",
+                "public": "Dieses Skript ist öffentlich",
+                "default": "Dieses Skript steht für jeden lokal zur Verfügung",
+                "new": "Neu!"
             },
             "error_fetch": {
-                "title": "There was an error while fetching scripts",
-                "message": "Please wait few moments and try again"
+                "title": "Beim Abrufen der Skripte ist ein Fehler aufgetreten",
+                "message": "Bitte warte einen Moment und versuche es erneut"
             }
         },
         "statistics_integration_options": {
@@ -1624,12 +1624,12 @@
         "delete_script": {
             "title": "Skript entfernen",
             "notice": "Bist du sicher, dass du das ausgewählte Skript dauerhaft entfernen möchtest?",
-            "notice_bonus_remote": "<br><br>This will not unpublish your script and you will lose edit access to it!",
-            "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
+            "notice_bonus_remote": "<br><br>Dies wird nicht die Veröffentlichung des Skripts aufheben und du verlierst damit die Berechtigung zum Bearbeiten!",
+            "notice_bonus_used": "<br><br>Dieses Skript wird derzeit auf folgende Tabellen angewandt: #{tables}"
         },
         "delete_remote_script": {
-            "title": "Unpublish script",
-            "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
+            "title": "Nicht veröffentlichtes Skript",
+            "message": "Durch diese Aktion wird der zum Skript zugehörige Code entfernt und dauerhaft gelöscht. Bist du sicher, dass du fortfahren möchtest?"
         },
         "warning": {
             "title": "Es ist ein Problem aufgetreten!",
@@ -1653,14 +1653,14 @@
         },
         "edit_file_tag": {
             "title": "Tags bearbeiten",
-            "current": "Tags",
+            "current": "Schlagwörter",
             "cancel": "Abbrechen",
-            "save": "Apply to all players",
-            "clear": "Remove all tags",
+            "save": "Auf alle Spieler anwenden",
+            "clear": "Alle Schlagwörter entfernen",
             "insert": {
-                "title": "Add new tag",
-                "placeholder": "Tag name",
-                "tooltip": "Add new tag"
+                "title": "Schlagwort hinzufügen",
+                "placeholder": "Name des Schlagworts",
+                "tooltip": "Schlagwort hinzufügen"
             }
         },
         "profile_create": {
@@ -1722,9 +1722,9 @@
             "title": "Simulatorkonfiguration"
         },
         "simulator_custom_preset": {
-            "title": "Add custom preset",
-            "close": "Close",
-            "insert": "Insert preset"
+            "title": "Benutzerdefinierte Vorlage hinzufügen",
+            "close": "Schließen",
+            "insert": "Vorlage einsetzen"
         }
     },
     "attributes": {
@@ -2017,7 +2017,7 @@
             "7": "Schrecklicher Dämon",
             "8": "Rosa Monsterhäschen",
             "9": "Banshee",
-            "10": "Yourself"
+            "10": "Du selbst"
         },
         "10": {
             "name": "Die Schwarzschädelfestung",

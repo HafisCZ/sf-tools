@@ -357,7 +357,7 @@
             "desc": "Simulez les probabilités des résultats d'un combat en donjon"
         },
         "underworld": {
-            "title": "Enfers",
+            "title": "Underworld Simulator",
             "desc": "Simulez les probabilités des résultats d'un combats dans les Enfers"
         },
         "analyzer": {
