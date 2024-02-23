@@ -392,7 +392,7 @@ Site.ready(null, function (urlParams) {
                 {
                     Health: fighter.Health
                 },
-                ModelUtils.toSimulatorData(fighter.player)
+                fighter.player ? ModelUtils.toSimulatorData(fighter.player) : {}
             ),
             fighter.editor
         );
