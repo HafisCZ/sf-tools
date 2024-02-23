@@ -23,6 +23,17 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
+    'v7.XXXX': {
+        'Fight Analyzer': [
+            'Fixed simulator shortcut'
+        ],
+        'Hellevator Simulator': [
+            'Added new hellevator theme'
+        ],
+        'All Tools': [
+            'Added new optimized dialog system'
+        ]
+    },
     'v7.4528': {
         'Statistics': [
             'Added support for manual character/guild merging',
