@@ -19,11 +19,11 @@ class AnalyzerOptionsDialog extends Dialog {
 
   handle (options, data) {
       this.$ok = this.$parent.operator('ok');
-      this.$ok.click(() => this.close(false));
+      this.$ok.click(() => {
+        this.close(false)
+      });
 
       this.$content = this.$parent.operator('content');
-
-      if (!this.$content.empty()) return;
 
       for (const [ key, option ] of Object.entries(data)) {
           if (option.type === 'dropdown') {
@@ -168,8 +168,6 @@ class FightStatisticalAnalysisDialog extends Dialog {
 
       this.groups = [];
 
-      this.$content.empty();
-
       this.#inject();
   }
 
@@ -267,9 +265,6 @@ class AnalyzerAutofillDialog extends Dialog {
         })
 
         this.#generateContent();
-        this.#refresh();
-
-        this.$search.val('');
         this.#refresh();
     }
 
