@@ -357,7 +357,7 @@
             "desc": "Przesymuluj prawdopodobny wynik walki w lochu"
         },
         "underworld": {
-            "title": "Podziemie",
+            "title": "Underworld Simulator",
             "desc": "Przesymuluj prawdopodobny wynik walki w podziemiu"
         },
         "analyzer": {
@@ -419,10 +419,10 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Tymczasowe",
-            "players_grid": "Players",
-            "players": "Browse",
-            "groups_grid": "Guilds",
-            "groups": "Browse (Guilds)",
+            "players_grid": "Gracze",
+            "players": "Przeglądaj",
+            "groups_grid": "Gidlie",
+            "groups": "Przeglądaj Gildie",
             "scripts": "Skrypty",
             "files": "Pliki",
             "settings": "Ustawienia",
@@ -520,12 +520,12 @@
             "player_companions": "Kopiuj wraz z pomocnikami"
         },
         "context": {
-            "title": "Apply action to selected items",
+            "title": "Zastosuj akcję do wybranych elementów",
             "hide": "Pokaż / Ukryj",
             "remove": "Usuń na stałe",
-            "link_players": "Merge / split characters",
-            "link_groups": "Merge / split guilds",
-            "unselect": "Deselect all"
+            "link_players": "Połącz / podziel postacie",
+            "link_groups": "Połącz / podziel gildie",
+            "unselect": "Odznacz wszystko"
         },
         "profiles": {
             "players": "Gracze",
@@ -540,7 +540,7 @@
         "filters": {
             "types": {
                 "players": "Filtruj graczy według serwera, klasy, gildii i/lub nazwy użytkownika",
-                "groups": "Filter groups by server or name"
+                "groups": "Filtruj grupy według serwera lub nazwy"
             },
             "c": "Klasa gracza, użyj pełnej nazwy z malej litery (eg.: berserker, battle mage)",
             "p": "Nick gracza",
@@ -573,7 +573,7 @@
             },
             "targets_category": {
                 "default": "Domyślne",
-                "existing": "Assigned tables"
+                "existing": "Przypisane tabele"
             },
             "tooltip": {
                 "pin": "Przypnij skrypt na górze listy",
