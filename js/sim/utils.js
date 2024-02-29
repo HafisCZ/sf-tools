@@ -175,7 +175,7 @@ class SimulatorCustomPresetDialog extends Dialog {
         opacity: 0
     }
 
-    _render () {
+    render () {
         return `
             <div class="small bordered inverted dialog">
                 <div class="header">${this.intl('title')}</div>
@@ -188,7 +188,7 @@ class SimulatorCustomPresetDialog extends Dialog {
         `;
     }
 
-    _handle () {
+    handle () {
         this.$closeButton = this.$parent.operator('close');
         this.$closeButton.click(() => {
             this.close(false);
