@@ -390,9 +390,9 @@ const SimulatorUtils = class {
                     if (value === 'custom') {
                         Dialog.open(
                             SimulatorCustomPresetDialog
-                        ).then((value) => {
+                        ).then(([value, player]) => {
                             if (value) {
-                                method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(value, index)));
+                                method(CONFIG.indexes().map((index) => this.#generatePlayerFromSample(player, index)));
                             }
                         })
                     } else {
