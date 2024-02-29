@@ -6,7 +6,7 @@ class SimulatorDebugDialog extends Dialog {
         containerClass: 'debug-dialog'
     }
 
-    _render () {
+    render () {
         return `
             <div class="bordered inverted dialog">
                 <div class="overflow-y-scroll overflow-x-hidden pr-4">
@@ -21,15 +21,15 @@ class SimulatorDebugDialog extends Dialog {
         `;
     }
 
-    _handle (currentConfig, defaultConfig) {
+    handle (currentConfig, defaultConfig) {
         this.$cancelButton = this.$parent.find('[data-op="cancel"]');
         this.$cancelButton.click(() => {
-            this.resolve(false)
+            this.close(false)
         });
 
         this.$okButton = this.$parent.find('[data-op="ok"]');
         this.$okButton.click(() => {
-            callback(this._readData());
+            this.close(true, this._readData());
         })
 
         this.$resetButton = this.$parent.find('[data-op="reset"]');
@@ -254,8 +254,8 @@ const SimulatorUtils = class {
                 SimulatorDebugDialog,
                 this.#currentConfig,
                 this.#defaultConfig
-            ).then((config) => {
-                if (config) {
+            ).then(([value, config]) => {
+                if (value) {
                     this.#currentConfig = config;
                     this.#renderConfig();
 
