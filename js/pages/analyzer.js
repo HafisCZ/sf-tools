@@ -1300,11 +1300,23 @@ Site.ready(null, function (urlParams) {
                 max: items.Wpn1.DamageMax
             };
 
+            const fist1 = (fighter.ID === currentGroup.fighterA.ID ? model1 : model2).getBaseDamage(false);
+            fighter.damages.weapon1_fist_damage = {
+                min: fist1.Min,
+                max: fist1.Max
+            }
+
             if (fighter.Class === ASSASSIN) {
                 fighter.damages.weapon2_range_base = {
                     min: items.Wpn2.DamageMin,
                     max: items.Wpn2.DamageMax
                 };
+
+                const fist2 = (fighter.ID === currentGroup.fighterA.ID ? model1 : model2).getBaseDamage(true);
+                fighter.damages.weapon2_fist_damage = {
+                    min: fist2.Min,
+                    max: fist2.Max
+                }
             }
         }
 
@@ -1355,7 +1367,9 @@ Site.ready(null, function (urlParams) {
         'weapon1_range_swoop',
         'weapon2_range_base',
         'weapon2_range',
-        'weapon2_range_critical'
+        'weapon2_range_critical',
+        'weapon1_fist_damage',
+        'weapon2_fist_damage'
     ];
 
     function renderDamagesSidebar (group) {
