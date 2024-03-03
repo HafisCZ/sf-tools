@@ -694,7 +694,12 @@ class SimulatorModel {
 
     getBaseDamage (secondary = false) {
         if (this.Player.Level > 10 && !this.Player.NoBaseDamage) {
-            const num = (secondary ? 0.1 : 0.7) * (this.Player.Level - 9) * this.getWeaponMultiplier();
+            let multiplier = 0.7;
+            if (this.Player.Class === ASSASSIN) {
+                multiplier = secondary ? 1.25 : 0.875;
+            }
+
+            const num = multiplier * (this.Player.Level - 9) * this.getWeaponMultiplier();
 
             return {
                 Min: Math.max(1, Math.ceil(num * 2 / 3)),
