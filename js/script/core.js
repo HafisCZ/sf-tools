@@ -1374,6 +1374,33 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
+    'TABLE_BORDER_COLOR',
+    ScriptType.Table,
+    'border color <value>',
+    /^border color (.+)$/,
+    (root, value) => {
+        const val = getCSSColor(root.constants.fetch(value));
+        if (val != undefined && val) {
+            root.addGlobal('borderColor', val);
+        }
+    },
+    (root, value) => {
+        const acc = Highlighter.keyword('border color ');
+        const val = getCSSColor(root.constants.fetch(value));
+    
+        if (val) {
+            if (root.constants.has(value)) {
+                return acc.constant(value);
+            } else {
+                return acc.color(value, val);
+            }
+        } else {
+            return acc.error(value);
+        }
+    }
+)
+
+ScriptCommands.register(
     'TABLE_SHARED_STATISTICS_COLOR',
     ScriptType.Table,
     'statistics color <value>',
@@ -3202,6 +3229,10 @@ class Script {
 
     getFontStyle () {
         return this.globals.font ? `font: ${ this.globals.font };` : '';
+    }
+
+    getBorderColor () {
+        return this.globals.borderColor ? `--table-border: ${this.globals.borderColor};` : '';
     }
 
     getTitleAlign () {

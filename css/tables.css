@@ -23,11 +23,13 @@ table.sftools-table tbody {
 table.sftools-table tbody.theme-dark {
   --table-foreground: #ffffff;
   --table-background: #141414;
+  --table-border: #ffffff;
 }
 
 table.sftools-table tbody.theme-light {
   --table-foreground: #212529;
   --table-background: #ffffff;
+  --table-border: #212529;
 }
 
 table.sftools-table b {
@@ -58,19 +60,19 @@ table.sftools-table .headers td {
 }
 
 .border-right-thin {
-  border-right: 1px solid var(--table-foreground) !important;
+  border-right: 1px solid var(--table-border) !important;
 }
 
 .border-top-thin, .border-top-thin > td {
-  border-top: 1px solid var(--table-foreground) !important;
+  border-top: 1px solid var(--table-border) !important;
 }
 
 .border-bottom-thin, .border-bottom-thin > td {
-  border-bottom: 1px solid var(--table-foreground) !important;
+  border-bottom: 1px solid var(--table-border) !important;
 }
 
 .border-bottom-thick, .border-bottom-thick > td {
-  border-bottom: 2px solid var(--table-foreground) !important;
+  border-bottom: 2px solid var(--table-border) !important;
   padding: 0 !important;
 }
 

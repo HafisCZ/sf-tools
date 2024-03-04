@@ -831,7 +831,7 @@ class TableInstance {
     #sharedProperties () {
         return {
             theme: this.settings.getTheme(),
-            style: [ this.settings.getFontStyle() ],
+            style: [ this.settings.getFontStyle(), this.settings.getBorderColor() ],
             class: [ this.settings.getOpaqueStyle() ],
             width: this.flatWidth,
             widthFixed: this.settings.isStrictWidthPolicy(),
