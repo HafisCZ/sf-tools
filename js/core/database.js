@@ -1727,9 +1727,17 @@ class DatabaseManager {
     // Share - object
     // Archive - string
     static import (text, timestamp, timestampOffset, flags) {
+        this.#validateImport(text);
+
         const data = typeof text === 'string' ? JSON.parse(text) : text;
 
         return this.#import(data, timestamp, timestampOffset, flags);
+    }
+
+    static #validateImport (text) {
+        if (typeof text === 'string' && text.length === 0) {
+            throw new Error('File is empty');
+        }
     }
 
     static export (identifiers, timestamps, constraint) {
