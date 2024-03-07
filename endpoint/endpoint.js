@@ -1045,6 +1045,7 @@ const StatisticsIntegration = new (class {
 
             // Set per-class data
             if (this.cheats.class == WARRIOR) {
+                player.Items.Wpn2 = ItemModel.empty();
                 player.Items.Wpn2.DamageMin = newDefinition.SkipChance * 100;
                 player.BlockChance = newDefinition.SkipChance * 100;
             } else if (this.cheats.class == ASSASSIN) {
