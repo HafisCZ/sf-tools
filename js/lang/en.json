@@ -580,6 +580,7 @@
                 "unpin": "Unpin script",
                 "assigned": "This script is assigned to current table",
                 "remote": "This script is published",
+                "remote_verified": "This script is published and verified",
                 "remote_copy": "Click here to copy the code"
             },
             "sidebar": {

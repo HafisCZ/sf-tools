@@ -3531,7 +3531,7 @@ class ScriptsTab extends Tab {
                 </div>
                 <div class="text-gray flex justify-content-between">
                     <div><i class="ui desktop icon"></i> v${version} - ${_formatDate(updated_at)}</div>
-                    <div>${remote ? `<i class="ui satellite dish icon" title="${intl('stats.scripts.tooltip.remote')}"></i> <span title="${intl('stats.scripts.tooltip.remote_copy')}" data-op="remote-copy" class="select-none font-monospace cursor-pointer" style="line-height: 14px;">${remote.key}</span>` : ''}</div>
+                    <div>${remote ? `<i class="icons" title="${intl(remote.verified ? 'stats.scripts.tooltip.remote_verified' : 'stats.scripts.tooltip.remote')}"><i class="ui satellite dish icon"></i>${remote.verified ? '<i class="ui green bottom right corner check icon" style="text-shadow: none;"></i>' : ''}</i> <span title="${intl('stats.scripts.tooltip.remote_copy')}" data-op="remote-copy" class="select-none font-monospace cursor-pointer" style="line-height: 14px;">${remote.key}</span>` : ''}</div>
                 </div>
             `)
         } else {
