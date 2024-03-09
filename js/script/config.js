@@ -502,6 +502,28 @@ DEFAULT_EXPRESSION_CONFIG.register(
   { syntax: 'indexof(<array>, <item>)' }
 )
 
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'includes',
+  function (array, obj) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === obj) return true;
+    }
+    return false;
+  },
+  { syntax: 'includes(<array>, <item>)' }
+)
+
+DEFAULT_EXPRESSION_CONFIG.register(
+  'function', 'array', 'excludes',
+  function (array, obj) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === obj) return false;
+    }
+    return true;
+  },
+  { syntax: 'indexof(<array>, <item>)' }
+)
+
 /*
   Standard functions
 */
