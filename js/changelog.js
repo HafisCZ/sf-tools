@@ -24,11 +24,21 @@ const ANNOUNCEMENTS = [
 
 const CHANGELOG = {
     'v7.XXXX': {
+        'Statistics': [
+            'Added <code>border color</code> command for custom border colors',
+            'Added <code>includes</code> and <code>excludes</code> array functions',
+            'Fixed legendary scrapbook items not being detected'
+        ],
         'Fight Analyzer': [
             'Fixed simulator shortcut'
         ],
         'Hellevator Simulator': [
             'Added new hellevator theme'
+        ],
+        'All Simulators': [
+            'Fixed switch to Warrior via cheat menu',
+            'Fixed Assassin unarmed damage',
+            'Fixed custom preset dialog'
         ],
         'All Tools': [
             'Added new optimized dialog system'
