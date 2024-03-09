@@ -3778,7 +3778,9 @@ class Scripts {
                 updated_at: Date.parse(remote.updated_at),
                 version: remote.version,
                 key: remote.key,
-                secret: remote.secret
+                secret: remote.secret,
+                visibility: remote.visibility,
+                verified: remote.verified
             } : null
         }, false);
     }

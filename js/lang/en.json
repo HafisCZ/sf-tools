@@ -595,6 +595,9 @@
                 "edit": "Edit name or description",
                 "remote_add": "Publish selected script",
                 "remote_update": "Publish new version of selected script",
+                "remote_refresh": "Refresh status of selected script",
+                "remote_mark_public": "Mark script as public",
+                "remote_mark_private": "Mark script as private",
                 "remote_remove": "Unpublish selected script",
                 "close": "Return back",
                 "shortcuts": "Shortcuts",
@@ -1639,6 +1642,10 @@
         "delete_remote_script": {
             "title": "Unpublish script",
             "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
+        },
+        "remote_script_verification": {
+            "title": "Script verification",
+            "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
         },
         "warning": {
             "title": "An issue has occured!",

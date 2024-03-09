@@ -1184,8 +1184,8 @@ class ScriptRepositoryDialog extends Dialog {
     `
   }
 
-  #createSegmentIcon (key, visibilityPrivate) {
-    if (Scripts.remoteGet(key) && visibilityPrivate) {
+  #createSegmentIcon (key, visibility) {
+    if (Scripts.remoteGet(key) && visibility === 'private') {
       return `<i class="ui eye slash outline icon" title="${this.intl('list.private')}"></i>`;
     } else if (DefaultScripts.exists(key)) {
       return `<i class="ui archive icon" title="${this.intl('list.default')}"></i>`;
@@ -1194,13 +1194,13 @@ class ScriptRepositoryDialog extends Dialog {
     }
   }
 
-  #createSegment (identifier, { name, description, author, key, version, updated_at, uses, private: visibilityPrivate }) {
+  #createSegment (identifier, { name, description, author, key, version, updated_at, uses, visibility }) {
     const savedRemote = Scripts.remoteGet(key);
 
     return `
       <div data-script-key="${identifier}" data-script-name="${_escape(name)}" class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer gap-2 items-center" style="display: grid; grid-template-columns: 58% 20% 15% 5%;">
         <div class="flex flex-col gap-2">
-          <div>${this.#createSegmentIcon(key || identifier, visibilityPrivate)} ${_escape(name)}</div>
+          <div>${this.#createSegmentIcon(key || identifier, visibility)} ${_escape(name)}</div>
           <div class="text-gray">${this.intl(typeof uses !== 'undefined' ? 'list.about_with_uses' : 'list.about', { author: _escape(author), uses })}</div>
           <div class="text-gray wrap-pre">${_escape(description || this.intl('list.no_description'))}</div>
         </div>

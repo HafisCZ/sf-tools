@@ -3285,6 +3285,78 @@ class ScriptsTab extends Tab {
             })
         });
 
+        this.$remoteRefresh = this.$parent.operator('remote-refresh');
+        this.$remoteRefresh.click(() => {
+            Loader.toggle(true);
+
+            const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+
+            SiteAPI.get('script_info', { key: remoteKey, secret: remoteSecret }).then(({ script }) => {
+                Scripts.markRemote(key, script);
+
+                StoreCache.invalidate('remote_scripts');
+
+                this.#updateSidebars();
+            }).catch(({ error }) => {
+                Toast.error(intl('stats.scripts.remote_action_error'), error);
+            }).finally(() => {
+                Loader.toggle(false);
+            });
+        })
+
+        this.$remoteRequestPublic = this.$parent.operator('remote-visibility-public');
+        this.$remoteRequestPublic.click(() => {
+            const callback = ([value]) => {
+                if (value) {
+                    Loader.toggle(true);
+
+                    const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+
+                    SiteAPI.post('script_update', { key: remoteKey, secret: remoteSecret, visibility: 'public' }).then(({ script }) => {
+                        Scripts.markRemote(key, script);
+
+                        StoreCache.invalidate('remote_scripts');
+
+                        this.#updateSidebars();
+                    }).catch(({ error }) => {
+                        Toast.error(intl('stats.scripts.remote_action_error'), error);
+                    }).finally(() => {
+                        Loader.toggle(false);
+                    });
+                }
+            }
+
+            if (this.script.remote.verified) {
+                callback([true]);
+            } else {
+                Dialog.open(
+                    ConfirmationDialog,
+                    intl('dialog.remote_script_verification.title'),
+                    intl(`dialog.remote_script_verification.message`),
+                    true
+                ).then(callback);
+            }
+        })
+
+        this.$remoteRequestPrivate = this.$parent.operator('remote-visibility-private');
+        this.$remoteRequestPrivate.click(() => {
+            Loader.toggle(true);
+
+            const { key, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
+
+            SiteAPI.post('script_update', { key: remoteKey, secret: remoteSecret, visibility: 'private' }).then(({ script }) => {
+                Scripts.markRemote(key, script);
+
+                StoreCache.invalidate('remote_scripts');
+
+                this.#updateSidebars();
+            }).catch(({ error }) => {
+                Toast.error(intl('stats.scripts.remote_action_error'), error);
+            }).finally(() => {
+                Loader.toggle(false);
+            });
+        })
+
         // Archive
         this.$libraryArchive = this.$parent.operator('library-archive');
         this.$libraryArchive.click((event) => {
@@ -3520,6 +3592,14 @@ class ScriptsTab extends Tab {
                 } else {
                     this.$remoteUpdate.addClass('disabled');
                     this.$remoteUpdateAvailable.hide();
+                }
+
+                if (this.script.remote.visibility === 'public') {
+                    this.$remoteRequestPublic.hide();
+                    this.$remoteRequestPrivate.show();
+                } else {
+                    this.$remoteRequestPrivate.hide();
+                    this.$remoteRequestPublic.show();
                 }
 
                 this.$remoteAdd.hide();
