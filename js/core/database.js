@@ -423,7 +423,7 @@ class PlayaResponse {
                 offset = _timestampOffset(date);
             }
 
-            if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal') || text.includes('gtranking')) {
+            if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal') || text.includes('gtranking') || text.includes('legendaries')) {
                 if (url) {
                     const urlParts = url.toLowerCase().split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
                     if (urlParts.length > 2) {
@@ -579,6 +579,13 @@ class PlayaResponse {
                             tokens: parseInt(gtEntry[2])
                         }
                     };
+                }
+            }
+
+            if (r.legendaries) {
+                const lastOwnPlayer = players.find((player) => player.prefix === prefix && player.own);
+                if (lastOwnPlayer) {
+                    lastOwnPlayer.scrapbook_legendary = r.legendaries.string;
                 }
             }
         }
