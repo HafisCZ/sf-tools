@@ -3650,7 +3650,7 @@ class ScriptsTab extends Tab {
         this.script = Scripts.findScript(key);
 
         if (this.script) {
-            this.editor.content = this.script.content;
+            this.editor.content = this.script.content || '';
         } else {
             this.editor.content = '';
         }
