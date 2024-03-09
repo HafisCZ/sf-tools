@@ -580,6 +580,7 @@
                 "unpin": "Odepnij skrypt",
                 "assigned": "Ten skrypt jest przypisany do bieżącej tabeli",
                 "remote": "Ten skrypt jest publiczny",
+                "remote_verified": "This script is published and verified",
                 "remote_copy": "Kliknij tutaj, aby skopiować kod"
             },
             "sidebar": {
@@ -595,6 +596,9 @@
                 "edit": "Edytuj nazwę lub opis",
                 "remote_add": "Opublikuj wybrany skrypt",
                 "remote_update": "Opublikuj nową wersję wybranego skryptu",
+                "remote_refresh": "Refresh status of selected script",
+                "remote_mark_public": "Mark script as public",
+                "remote_mark_private": "Mark script as private",
                 "remote_remove": "Anuluj publikację wybranego skryptu",
                 "close": "Powrót",
                 "shortcuts": "Skróty",
@@ -1050,14 +1054,15 @@
         },
         "element": "Żywioł",
         "theme": {
-            "0": "Żądza i gniew",
+            "0": "Lust",
             "1": "Zdrada",
             "2": "Oszustwo",
             "3": "Obżarstwo",
             "4": "Chciwość",
             "5": "Herezja",
             "6": "Próżnia",
-            "7": "Przemoc"
+            "7": "Przemoc",
+            "8": "Wrath"
         },
         "win": {
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
@@ -1171,7 +1176,9 @@
                 "weapon2_range": "Rozrzut normalny (drugorzędny)",
                 "weapon1_range_critical": "Rozrzut ciosu krytycznego",
                 "weapon2_range_critical": "Rozrzut ciosu krytycznego (drugorzędny)",
-                "weapon1_range_swoop": "Rozrzut Zasięg ataku pikującego"
+                "weapon1_range_swoop": "Rozrzut Zasięg ataku pikującego",
+                "weapon1_fist_damage": "Fist damage",
+                "weapon2_fist_damage": "Fist damage (secondary)"
             }
         }
     },
@@ -1630,6 +1637,10 @@
         "delete_remote_script": {
             "title": "Cofnij publikację skryptu",
             "message": "Ta akcja unieważni kod powiązany z tym skryptem i zostanie trwale usunięta! Czy na pewno chcesz kontynuować?"
+        },
+        "remote_script_verification": {
+            "title": "Script verification",
+            "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
         },
         "warning": {
             "title": "Wystąpił błąd!",

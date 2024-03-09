@@ -580,6 +580,7 @@
                 "unpin": "Unpin script",
                 "assigned": "This script is assigned to current table",
                 "remote": "This script is published",
+                "remote_verified": "This script is published and verified",
                 "remote_copy": "Click here to copy the code"
             },
             "sidebar": {
@@ -595,6 +596,9 @@
                 "edit": "Edit name or description",
                 "remote_add": "Publish selected script",
                 "remote_update": "Publish new version of selected script",
+                "remote_refresh": "Refresh status of selected script",
+                "remote_mark_public": "Mark script as public",
+                "remote_mark_private": "Mark script as private",
                 "remote_remove": "Unpublish selected script",
                 "close": "Vrátit zpět",
                 "shortcuts": "Klávesové zkratky",
@@ -1050,14 +1054,15 @@
         },
         "element": "Element",
         "theme": {
-            "0": "Lust and Anger",
+            "0": "Lust",
             "1": "Treachery",
             "2": "Fraud",
             "3": "Gluttony",
             "4": "Greed",
             "5": "Heresy",
             "6": "Limbo",
-            "7": "Violence"
+            "7": "Violence",
+            "8": "Wrath"
         },
         "win": {
             "all": "Všech #{count} pater bylo poraženo se 100% šancí",
@@ -1171,7 +1176,9 @@
                 "weapon2_range": "Normal range (secondary)",
                 "weapon1_range_critical": "Critical range",
                 "weapon2_range_critical": "Critical range (secondary)",
-                "weapon1_range_swoop": "Swoop range"
+                "weapon1_range_swoop": "Swoop range",
+                "weapon1_fist_damage": "Fist damage",
+                "weapon2_fist_damage": "Fist damage (secondary)"
             }
         }
     },
@@ -1630,6 +1637,10 @@
         "delete_remote_script": {
             "title": "Unpublish script",
             "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
+        },
+        "remote_script_verification": {
+            "title": "Script verification",
+            "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
         },
         "warning": {
             "title": "Vyskytl se problém!",

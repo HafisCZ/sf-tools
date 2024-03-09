@@ -580,6 +580,7 @@
                 "unpin": "Unpin script",
                 "assigned": "Questo script è assegnato alla tabella attuale",
                 "remote": "Questo script è stato pubblicato",
+                "remote_verified": "This script is published and verified",
                 "remote_copy": "Clicca qui per copiare il codice"
             },
             "sidebar": {
@@ -595,6 +596,9 @@
                 "edit": "Modifica nome o descrizione",
                 "remote_add": "Pubblica lo script selezionato",
                 "remote_update": "Pubblica una nuova versione dello script selezionato",
+                "remote_refresh": "Refresh status of selected script",
+                "remote_mark_public": "Mark script as public",
+                "remote_mark_private": "Mark script as private",
                 "remote_remove": "Pubblica lo script selezionato",
                 "close": "Torna indietro",
                 "shortcuts": "Scorciatoie",
@@ -1050,14 +1054,15 @@
         },
         "element": "Elemento",
         "theme": {
-            "0": "Desiderio e Rabbia",
+            "0": "Lust",
             "1": "Tradimento",
             "2": "Frode",
             "3": "Golosità",
             "4": "Avidità",
             "5": "Eresia",
             "6": "Limbo",
-            "7": "Violence"
+            "7": "Violence",
+            "8": "Wrath"
         },
         "win": {
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
@@ -1171,7 +1176,9 @@
                 "weapon2_range": "Intervallo normale (secondario)",
                 "weapon1_range_critical": "Intervallo critico",
                 "weapon2_range_critical": "Intervallo critico (secondario)",
-                "weapon1_range_swoop": "Intervallo Colpo dall'alto"
+                "weapon1_range_swoop": "Intervallo Colpo dall'alto",
+                "weapon1_fist_damage": "Fist damage",
+                "weapon2_fist_damage": "Fist damage (secondary)"
             }
         }
     },
@@ -1630,6 +1637,10 @@
         "delete_remote_script": {
             "title": "Annulla pubblicazione script",
             "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
+        },
+        "remote_script_verification": {
+            "title": "Script verification",
+            "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
         },
         "warning": {
             "title": "C'è stato un errore!",

@@ -580,6 +580,7 @@
                 "unpin": "Skript lösen",
                 "assigned": "Dieses Skript ist dem aktuellen Reiter zugewiesen",
                 "remote": "Dieses Skript ist veröffentlicht",
+                "remote_verified": "This script is published and verified",
                 "remote_copy": "Hier klicken, um den Code zu kopieren"
             },
             "sidebar": {
@@ -595,6 +596,9 @@
                 "edit": "Name oder Beschreibung bearbeiten",
                 "remote_add": "Ausgewähltes Skript veröffentlichen",
                 "remote_update": "Neue Version des ausgewählten Skripts veröffentlichen",
+                "remote_refresh": "Refresh status of selected script",
+                "remote_mark_public": "Mark script as public",
+                "remote_mark_private": "Mark script as private",
                 "remote_remove": "Veröffentlichung vom ausgewählten Skript rückgängig machen",
                 "close": "Zurück",
                 "shortcuts": "Tastenkürzel",
@@ -1050,14 +1054,15 @@
         },
         "element": "Element",
         "theme": {
-            "0": "Lust und Zorn",
+            "0": "Lust",
             "1": "Verrrat",
             "2": "Betrug",
             "3": "Völlerei",
             "4": "Gier",
             "5": "Häresie",
             "6": "Limbo",
-            "7": "Gewalt"
+            "7": "Gewalt",
+            "8": "Wrath"
         },
         "win": {
             "all": "Alle #{count} Etagen wurden mit 100% iger Chance besiegt",
@@ -1171,7 +1176,9 @@
                 "weapon2_range": "Normaler Bereich (sekundär)",
                 "weapon1_range_critical": "Kritischer Bereich",
                 "weapon2_range_critical": "Kritischer Bereich (sekundär)",
-                "weapon1_range_swoop": "Sturzflug Bereich"
+                "weapon1_range_swoop": "Sturzflug Bereich",
+                "weapon1_fist_damage": "Fist damage",
+                "weapon2_fist_damage": "Fist damage (secondary)"
             }
         }
     },
@@ -1630,6 +1637,10 @@
         "delete_remote_script": {
             "title": "Nicht veröffentlichtes Skript",
             "message": "Durch diese Aktion wird der zum Skript zugehörige Code entfernt und dauerhaft gelöscht. Bist du sicher, dass du fortfahren möchtest?"
+        },
+        "remote_script_verification": {
+            "title": "Script verification",
+            "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
         },
         "warning": {
             "title": "Es ist ein Problem aufgetreten!",
