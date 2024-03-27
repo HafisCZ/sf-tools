@@ -3880,11 +3880,11 @@ class SettingsTab extends Tab {
             SiteOptions.tab = value;
         });
 
-        this.$dropdownPreloadRows = this.$parent.find('[data-op="dropdown-load-rows"]');
-        this.$dropdownPreloadRows.dropdown();
-        this.$dropdownPreloadRows.dropdown('set selected', SiteOptions.load_rows);
-        this.$dropdownPreloadRows.dropdown('setting', 'onChange', (value) => {
-            SiteOptions.load_rows = parseInt(value) || SiteOptions.default('load_rows');
+        this.$inputPreloadRows = this.$parent.find('[data-op="input-load-rows"]');
+        this.$inputPreloadRows.val(SiteOptions.load_rows);
+        this.$inputPreloadRows.on('change', () => {
+            const value = parseInt(this.$inputPreloadRows.val())
+            SiteOptions.load_rows = isNaN(value) ? SiteOptions.default('load_rows') : Math.max(1, value);
         });
 
         this.$inputScriptAuthor = this.$parent.find('[data-op="input-script-author"]');
