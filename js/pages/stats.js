@@ -2575,7 +2575,7 @@ class FilesTab extends Tab {
                     this.selectedFiles.delete(timestamp);
 
                     if (visibleEntries[timestamp]) {
-                        visibleEntries[timestamp].classList.add('outline');
+                        visibleEntries[timestamp].classList.remove('check');
                     }
                 }
             } else if (!noneToMark) {
@@ -2583,7 +2583,7 @@ class FilesTab extends Tab {
                     this.selectedFiles.add(timestamp);
 
                     if (visibleEntries[timestamp]) {
-                        visibleEntries[timestamp].classList.remove('outline');
+                        visibleEntries[timestamp].classList.add('check');
                     }
                 }
             }
@@ -2607,7 +2607,7 @@ class FilesTab extends Tab {
                     this.selectedEntries.delete(uuid);
 
                     if (visibleEntries[uuid]) {
-                        visibleEntries[uuid].classList.add('outline');
+                        visibleEntries[uuid].classList.remove('check');
                     }
                 }
             } else if (!noneToMark) {
@@ -2615,7 +2615,7 @@ class FilesTab extends Tab {
                     this.selectedEntries.set(uuid, this.currentEntries[uuid]);
 
                     if (visibleEntries[uuid]) {
-                        visibleEntries[uuid].classList.remove('outline');
+                        visibleEntries[uuid].classList.add('check');
                     }
                 }
             }
@@ -2683,7 +2683,7 @@ class FilesTab extends Tab {
 
             return `
                 <tr data-tr-mark="${_uuid(entry)}" ${entry.hidden ? 'style="color: gray;"' : ''}>
-                    <td class="cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="circle outline icon"></i></td>
+                    <td class="cursor-pointer !text-center" data-mark="${_uuid(entry)}"><i class="square outline icon"></i></td>
                     <td class="!text-center">${ this.timeMap[entry.timestamp] }</td>
                     <td class="!text-center">${ this.prefixMap[entry.prefix] }</td>
                     <td class="!text-center"><i class="ui ${isPlayer ? 'blue user' : 'orange users'} icon"></i></td>
@@ -2718,20 +2718,20 @@ class FilesTab extends Tab {
                     // Change all timestamps
                     if (this.selectedEntries.has(uuid)) {
                         for (const mark of toChange) {
-                            $(`[data-mark="${mark}"] > i`).addClass('outline');
+                            $(`[data-mark="${mark}"] > i`).removeClass('check');
                             this.selectedEntries.delete(mark);
                         }
                     } else {
                         for (const mark of toChange) {
-                            $(`[data-mark="${mark}"] > i`).removeClass('outline');
+                            $(`[data-mark="${mark}"] > i`).addClass('check');
                             this.selectedEntries.set(mark, this.currentEntries[mark]);
                         }
                     }
                 } else {
-                    if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
-                        this.selectedEntries.delete(uuid);
-                    } else {
+                    if ($(`[data-mark="${uuid}"] > i`).toggleClass('check').hasClass('check')) {
                         this.selectedEntries.set(uuid, this.currentEntries[uuid]);
+                    } else {
+                        this.selectedEntries.delete(uuid);
                     }
                 }
 
@@ -2739,7 +2739,7 @@ class FilesTab extends Tab {
                 this.updateSelectedCounter();
             }).each((index, element) => {
                 if (this.selectedEntries.has(element.dataset.mark)) {
-                    element.children[0].classList.remove('outline');
+                    element.children[0].classList.add('check');
                 }
             });
 
@@ -2805,7 +2805,7 @@ class FilesTab extends Tab {
 
             return `
                 <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>
-                    <td class="cursor-pointer !text-center" data-timestamp="${timestamp}"><i class="circle outline icon"></i></td>
+                    <td class="cursor-pointer !text-center" data-timestamp="${timestamp}"><i class="square outline icon"></i></td>
                     <td class="!text-center">${ prettyDate }</td>
                     <td class="!text-center">${ playerCount }</td>
                     <td class="!text-center">${ groupCount }</td>
@@ -2841,20 +2841,20 @@ class FilesTab extends Tab {
                     // Change all timestamps
                     if (this.selectedFiles.has(timestamp)) {
                         for (const ts of toChange) {
-                            $(`[data-timestamp="${ts}"] > i`).addClass('outline');
+                            $(`[data-timestamp="${ts}"] > i`).removeClass('check');
                             this.selectedFiles.delete(ts);
                         }
                     } else {
                         for (const ts of toChange) {
-                            $(`[data-timestamp="${ts}"] > i`).removeClass('outline');
+                            $(`[data-timestamp="${ts}"] > i`).addClass('check');
                             this.selectedFiles.add(ts);
                         }
                     }
                 } else {
-                    if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
-                        this.selectedFiles.delete(timestamp);
-                    } else {
+                    if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('check').hasClass('check')) {
                         this.selectedFiles.add(timestamp);
+                    } else {
+                        this.selectedFiles.delete(timestamp);
                     }
                 }
 
@@ -2862,7 +2862,7 @@ class FilesTab extends Tab {
                 this.updateSelectedCounter();
             }).each((index, element) => {
                 if (this.selectedFiles.has(parseInt(element.dataset.timestamp))) {
-                    element.children[0].classList.remove('outline');
+                    element.children[0].classList.add('check');
                 }
             });
 
@@ -3129,8 +3129,8 @@ class FilesTab extends Tab {
             }
             this.updateSelectedCounter();
         } else {
-            this.$resultsAdvanced.find('[data-mark] > i').addClass('outline');
-            this.$resultsSimple.find('[data-timestamp] > i').addClass('outline');
+            this.$resultsAdvanced.find('[data-mark] > i').removeClass('check');
+            this.$resultsSimple.find('[data-timestamp] > i').removeClass('check');
         }
     }
 }
