@@ -3127,11 +3127,12 @@ class FilesTab extends Tab {
             } else {
                 this.updateEntryLists();
             }
-            this.updateSelectedCounter();
         } else {
             this.$resultsAdvanced.find('[data-mark] > i').removeClass('check');
             this.$resultsSimple.find('[data-timestamp] > i').removeClass('check');
         }
+
+        this.updateSelectedCounter();
     }
 }
 
