@@ -16,7 +16,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
 
         for (let enemy of Object.values(dungeon.floors)) {
-            enemy.name = intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
+            enemy.name = NAME_MONSTER[enemy.id] || intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
         }
     }
 
