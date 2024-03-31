@@ -421,7 +421,9 @@ class TableInstance {
             let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
             ExpressionCache.reset();
 
-            return disc ? null : obj;
+            return disc ? null : {
+                current: c, compare: p
+            };
         }).filter(e => e);
 
         // Copy over lost properties
