@@ -422,7 +422,7 @@ class TableInstance {
             ExpressionCache.reset();
 
             return disc ? null : {
-                current: c, compare: p
+                current: p, compare: c
             };
         }).filter(e => e);
 
