@@ -2006,35 +2006,35 @@ ScriptCommands.register(
         }
     },
     (root, expr) => Highlighter.keyword('remove ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG),
-    { isDeprecated: 'ACTION_REJECT_PLAYER_IF' }
+    { isDeprecated: 'ACTION_REJECT_IF' }
 )
 
 ScriptCommands.register(
-    'ACTION_REJECT_PLAYER_IF',
+    'ACTION_REJECT_IF',
     ScriptType.Action,
-    'reject player if <expression>',
-    /^reject player if (.+)$/,
-    (root, expr) => {
+    'reject <player|group> if <expression>',
+    /^reject (player|group) if (.+)$/,
+    (root, target, expr) => {
         let ast1 = Expression.create(expr);
         if (ast1) {
-            root.addActionEntry('reject_player', ast1);
+            root.addActionEntry(`reject_${target}`, ast1);
         }
     },
-    (root, expr) => Highlighter.keyword('reject ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
+    (root, target, expr) => Highlighter.keyword('reject ').constant(target).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 )
 
 ScriptCommands.register(
-    'ACTION_SELECT_PLAYER_IF',
+    'ACTION_SELECT_IF',
     ScriptType.Action,
-    'select player if <expression>',
-    /^select player if (.+)$/,
-    (root, expr) => {
+    'select <player|group> if <expression>',
+    /^select (player|group) if (.+)$/,
+    (root, target, expr) => {
         let ast1 = Expression.create(expr);
         if (ast1) {
-            root.addActionEntry('select_player', ast1);
+            root.addActionEntry(`select_${target}`, ast1);
         }
     },
-    (root, expr) => Highlighter.keyword('select ').constant('player').keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
+    (root, target, expr) => Highlighter.keyword('select ').constant(target).keyword(' if ').expression(expr, undefined, Actions.EXPRESSION_CONFIG)
 )
 
 ScriptCommands.register(
