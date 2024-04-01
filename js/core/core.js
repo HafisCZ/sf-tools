@@ -705,6 +705,13 @@ class Actions {
 
                     player.Data.tag = existingTags;
                 }
+
+                for (const group of groups) {
+                    let existingTags = _wrapOrEmpty(group.Data.tag)
+                    _pushUnlessIncludes(existingTags, tag);
+
+                    group.Data.tag = existingTags;
+                }
             }
         }
 
