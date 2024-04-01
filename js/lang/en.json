@@ -1672,7 +1672,6 @@
             "title": "Edit tags",
             "current": "Tags",
             "cancel": "Cancel",
-            "save": "Apply to all players",
             "clear": "Remove all tags",
             "insert": {
                 "title": "Add new tag",

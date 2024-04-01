@@ -171,7 +171,7 @@ class TagDialog extends Dialog {
           <div class="ui three fluid buttons">
             <button class="ui black button" data-op="cancel">${this.intl('cancel')}</button>
             <button class="ui black button" data-op="clear">${this.intl('clear')}</button>
-            <button class="ui button !text-black !background-orange" data-op="save">${this.intl('save')}</button>
+            <button class="ui button !text-black !background-orange" data-op="save">${intl('dialog.shared.apply')}</button>
           </div>
         </div>
       `;
@@ -217,7 +217,7 @@ class TagDialog extends Dialog {
     });
 
     this.$parent.find('[data-op="save"]').click(async () => {
-      const instances = this.type === 'timestamps' ? DatabaseManager.getFile(undefined, this.array).players : this.array;
+      const instances = this.#getInstances();
 
       Loader.toggle(true);
 
@@ -234,6 +234,19 @@ class TagDialog extends Dialog {
     this.tags = this.#getTags();
 
     this.#renderTags();
+  }
+
+  #getInstances () {
+    if (this.type === 'timestamps') {
+        const { players, groups } = DatabaseManager.getFile(undefined, this.array);
+
+        return [
+            ...players,
+            ...groups
+        ]
+    } else {
+        return this.array;
+    }
   }
 
   #renderTags () {
