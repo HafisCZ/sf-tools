@@ -1983,8 +1983,8 @@ ScriptCommands.register(
 ScriptCommands.register(
     'ACTION_TAG',
     ScriptType.Action,
-    'tag <player|file> as <expression>',
-    /^tag (player|file) as (.+)$/,
+    'tag <player|group|file> as <expression>',
+    /^tag (player|group|file) as (.+)$/,
     (root, type, tag) => {
         let ast1 = Expression.create(tag);
         if (ast1) {

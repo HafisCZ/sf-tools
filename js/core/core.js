@@ -725,6 +725,24 @@ class Actions {
                 }
             }
         }
+
+        const tagGroup = this.#actions.filter((action) => action.type === 'tag_group');
+        for (const { type, args: [tagExpression, conditionExpression] } of tagGroup) {
+            Logger.log('ACTIONS', `Applying action ${type}`)
+
+            for (const group of groups) {
+                const scope = new ExpressionScope().with(group, group);
+
+                if (conditionExpression ? conditionExpression.eval(scope) : true) {
+                    const tag = tagExpression.eval(scope);
+
+                    let existingTags = _wrapOrEmpty(group.Data.tag)
+                    _pushUnlessIncludes(existingTags, tag);
+
+                    group.Data.tag = existingTags;
+                }
+            }
+        }
     }
 
     static #applyFilters (players, groups) {
