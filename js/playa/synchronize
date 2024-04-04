@@ -14,9 +14,18 @@ class Synchronize
   REGEXP_MONSTER = /^monster_name_(\d+)$/ 
   REGEXP_ITEM = /^item_type_(\d+)_(?:class_(\d+)_)?pic_(\d+)$/
 
-  LANGUAGE_LIST = %w[
-    en
-  ].freeze
+  LANGUAGE_LIST = {
+    'en' => 'en',
+    'de' => 'de',
+    'pl' => 'pl',
+    'pt' => 'pt',
+    'cs' => 'cs',
+    'fr' => 'fr',
+    'it' => 'it',
+    'es' => 'es',
+    'hu' => 'hu',
+    'ch' => 'de'
+  }
 
   def initialize(argv:)
   end
@@ -32,10 +41,10 @@ class Synchronize
     File.write('servers.json', JSON.pretty_generate(servers))
 
     # Save translations
-    LANGUAGE_LIST.each do |language|
-      FileUtils.mkdir_p("lang/#{language}")
+    LANGUAGE_LIST.each do |sftools_language, playa_language|
+      FileUtils.mkdir_p("lang/#{sftools_language}")
 
-      strings = decode(self.class.get(format(PLAYA_TRANSLATION_URL, version: config['required_client_version_min'], language:)).body)
+      strings = decode(self.class.get(format(PLAYA_TRANSLATION_URL, version: config['required_client_version_min'], language: playa_language)).body)
 
       monsters = strings.select { |key, _| key.match?(REGEXP_MONSTER) }
       monsters = monsters.map do |key, text|
@@ -45,7 +54,7 @@ class Synchronize
         ]
       end.to_h
 
-      File.write("lang/#{language}/monsters.json", JSON.pretty_generate(monsters))
+      File.write("lang/#{sftools_language}/monsters.json", JSON.pretty_generate(monsters))
 
       items = strings.select { |key, _| key.match?(REGEXP_ITEM) }
       items = items.map do |key, text|
@@ -55,7 +64,7 @@ class Synchronize
         ]
       end.to_h
 
-      File.write("lang/#{language}/items.json", JSON.pretty_generate(items))
+      File.write("lang/#{sftools_language}/items.json", JSON.pretty_generate(items))
     end
   end
 
