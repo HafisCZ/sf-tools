@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator' }, function (urlParams) {
+Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function (urlParams) {
     const dungeonOptions = new OptionsHandler(
         'dungeons',
         {
@@ -16,7 +16,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
 
         for (let enemy of Object.values(dungeon.floors)) {
-            enemy.name = NAME_MONSTER[enemy.id] || intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
+            enemy.name = Localization.hasTranslation(`monsters.${enemy.id}`) ? intl(`monsters.${enemy.id}`) : intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
         }
     }
 

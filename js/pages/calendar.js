@@ -1,4 +1,4 @@
-Site.ready(null, function () {
+Site.ready({}, function () {
     const $petGrid = $('#pet-grid');
     const $buttonClear = $('#button-clear');
 

@@ -442,9 +442,9 @@ class FighterModel {
       if (NAME_UNIT_COMPANION[face]) {
           return NAME_UNIT_COMPANION[face];
       } else if (type == FIGHT_TYPES.Shadow) {
-          return `Shadow ${ NAME_MONSTER[face] }`;
-      } else if (NAME_MONSTER[face]) {
-          return NAME_MONSTER[face];
+          return `Shadow ${ intl(`monsters.${face}`) }`;
+      } else if (Localization.hasTranslation(`monsters.${face}`)) {
+          return intl(`monsters.${face}`);
       } else if (type == FIGHT_TYPES.Underworld) {
           return NAME_UNIT_UNDERWORLD[Math.trunc((face - 899) / 20)];
       } else {

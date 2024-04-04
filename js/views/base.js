@@ -586,28 +586,28 @@ class Localization {
         return base;
     }
 
-    static async #fetchTranslation (locale) {
+    static async #fetchTranslation (locale, path, translationPath = []) {
         if (Object.keys(this.#LOCALES).includes(locale)) {
             const start = Date.now();
 
-            const file = await fetch(this.#translationUrl(locale));
+            const file = await fetch(this.#translationUrl(locale, path));
             const data = await file.json();
 
-            Logger.log('APPINFO', `Translation ready in ${Date.now() - start} ms`);
+            Logger.log('APPINFO', `Translation (locale: ${locale}, ${path}) ready in ${Date.now() - start} ms`);
 
-            return this.generateTranslation({}, data);
+            return this.generateTranslation({}, data, ...translationPath);
         } else {
             return {};
         }
     }
 
-    static #translationUrl (locale) {
+    static #translationUrl (locale, path) {
         const useRemote = window.document.location.protocol === 'file:';
 
-        return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`;
+        return `${useRemote ? 'https://sftools.mar21.eu' : ''}${path.replace('{{locale}}', locale)}`;
     }
 
-    static async translatePage () {
+    static async translatePage (injections) {
         const locale = this.#getLocale();
 
         const $picker = $(`<div class="locale-picker"></div>`);
@@ -621,7 +621,11 @@ class Localization {
 
         $('.ui.huge.menu').append($picker);
 
-        this.translation = await this.#fetchTranslation(locale);
+        this.translation = await this.#fetchTranslation(locale, '/js/lang/{{locale}}.json');
+
+        for (const [path, translationPath] of injections) {
+            Object.assign(this.translation, await this.#fetchTranslation(locale, path, translationPath));
+        }
 
         window.document.querySelectorAll('[data-intl]').forEach(element => this.#translateElement(element));
         window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.#translateTooltip(element));
@@ -713,7 +717,12 @@ window.intl = Localization.intl.bind(Localization);
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('DOMContentLoaded', async function () {
-    await Localization.translatePage();
+    const injections = []
+
+    if (Site.requires('translations_monsters')) injections.push(['/js/playa/lang/{{locale}}/monsters.json', ['monsters']])
+    if (Site.requires('translations_items')) injections.push(['/js/playa/lang/{{locale}}/items.json', ['items']])
+
+    await Localization.translatePage(injections);
 
     if (StoreWrapper.isAvailable()) {
         if (SiteOptions.terms_accepted !== TermsAndConditionsDialog.VERSION) {

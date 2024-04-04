@@ -3,15 +3,20 @@
 # frozen_string_literal: true
 
 require 'httparty'
+require 'fileutils'
 
 class Synchronize
   include HTTParty
 
   PLAYA_CONFIG_URL = 'https://sfgame.net/config.json'
-  PLAYA_TRANSLATION_URL = 'https://cdn.playa-games.com/res/sfgame3/lang/%<version>s/sfgame_en.bin'
+  PLAYA_TRANSLATION_URL = 'https://cdn.playa-games.com/res/sfgame3/lang/%<version>s/sfgame_%<language>s.bin'
 
   REGEXP_MONSTER = /^monster_name_(\d+)$/ 
   REGEXP_ITEM = /^item_type_(\d+)_(?:class_(\d+)_)?pic_(\d+)$/
+
+  LANGUAGE_LIST = %w[
+    en
+  ].freeze
 
   def initialize(argv:)
   end
@@ -27,37 +32,31 @@ class Synchronize
     File.write('servers.json', JSON.pretty_generate(servers))
 
     # Save translations
-    strings = decode(self.class.get(format(PLAYA_TRANSLATION_URL, version: config['recommended_app_version'])).body)
+    LANGUAGE_LIST.each do |language|
+      FileUtils.mkdir_p("lang/#{language}")
 
-    monsters = strings.select { |key, _| key.match?(REGEXP_MONSTER) }
-    monsters = monsters.map do |key, text|
-      [
-        key[REGEXP_MONSTER, 1].to_i,
-        text.split('|').first
-      ]
-    end.to_h
+      strings = decode(self.class.get(format(PLAYA_TRANSLATION_URL, version: config['required_client_version_min'], language:)).body)
 
-    monsters_js = File.read('monsters.js')
-    monsters_js.sub!(/const NAME_MONSTER = \{.+?\}/m) do
-      %(const NAME_MONSTER = #{JSON.pretty_generate(monsters)})
+      monsters = strings.select { |key, _| key.match?(REGEXP_MONSTER) }
+      monsters = monsters.map do |key, text|
+        [
+          key[REGEXP_MONSTER, 1].to_i,
+          text.split('|').first
+        ]
+      end.to_h
+
+      File.write("lang/#{language}/monsters.json", JSON.pretty_generate(monsters))
+
+      items = strings.select { |key, _| key.match?(REGEXP_ITEM) }
+      items = items.map do |key, text|
+        [
+          key,
+          text.split('|').first
+        ]
+      end.to_h
+
+      File.write("lang/#{language}/items.json", JSON.pretty_generate(items))
     end
-
-    File.write('monsters.js', monsters_js)
-
-    items = strings.select { |key, _| key.match?(REGEXP_ITEM) }
-    items = items.map do |key, text|
-      [
-        key,
-        text.split('|').first
-      ]
-    end.to_h
-
-    items_js = File.read('items.js')
-    items_js.sub!(/translations: \{.+?\}/m) do
-      %(translations: #{JSON.pretty_generate(items, indent: '    ')})
-    end
-
-    File.write('items.js', items_js)
   end
 
   private

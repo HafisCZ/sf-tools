@@ -312,7 +312,11 @@ class Site {
     }
 
     static is (type) {
-        return this.#metadata && this.#metadata.type === type;
+        return this.#metadata.type === type;
+    }
+
+    static requires (name) {
+        return this.#metadata.requires?.includes(name);
     }
 
     static isEvent (type) {

@@ -1,4 +1,4 @@
-Site.ready(null, function () {
+Site.ready({}, function () {
     const $drvcs = $('.drvcs');
     if (Site.isEvent('winter')) {
         $drvcs.attr('src', 'res/drvcs_winter.png');

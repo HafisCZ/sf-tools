@@ -187,7 +187,7 @@ const SCOPES = {
   }
 }
 
-Site.ready(null, function (urlParams) {
+Site.ready({}, function (urlParams) {
   // Remove scroll if inside iframe
   if (window.parent && window.parent !== window) {
     window.document.body.classList.add('within-iframe');

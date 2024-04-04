@@ -206,7 +206,7 @@ class PlayerEditor extends EditorBase {
     }
 }
 
-Site.ready(null, function (urlParams) {
+Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
     // Elements
     const $buttonUpload = $('#button-upload');
     const $buttonClear = $('#button-clear');

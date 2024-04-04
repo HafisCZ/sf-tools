@@ -1349,7 +1349,7 @@ const UI = {
 
 $('#show-compare, #show-crystal').hide();
 
-Site.ready(null, function (urlParams) {
+Site.ready({ requires: ['translations_items'] }, function (urlParams) {
     Loader.toggle(true);
     DatabaseManager.load(SELF_PROFILE).then(function () {
         UI.initialize();

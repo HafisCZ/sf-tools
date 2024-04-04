@@ -1,4 +1,4 @@
-Site.ready(null, function () {
+Site.ready({}, function () {
     const BUILDINGS = Object.keys(Building).map(name => {
         return name.replace(/([A-Z])/g, '_$1').slice(1).toLowerCase();
     });
