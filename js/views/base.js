@@ -570,8 +570,7 @@ class Localization {
         'it': 'Italiano',
         'es': 'Español',
         'hu': 'Magyar',
-        'ch': 'Schwyzerdüütsch',
-        'pg': 'Pig Latin'
+        'ch': 'Schwyzerdüütsch'
     }
 
     static generateTranslation (base, object, ... path) {
