@@ -718,6 +718,7 @@ window.intl = Localization.intl.bind(Localization);
 window.addEventListener('DOMContentLoaded', async function () {
     const injections = []
 
+    if (Site.requires('translations_general')) injections.push(['/js/playa/lang/{{locale}}/general.json', ['general']])
     if (Site.requires('translations_monsters')) injections.push(['/js/playa/lang/{{locale}}/monsters.json', ['monsters']])
     if (Site.requires('translations_items')) injections.push(['/js/playa/lang/{{locale}}/items.json', ['items']])
 

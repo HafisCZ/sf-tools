@@ -1,4 +1,4 @@
-Site.ready({ requires: ['translations_monsters'] }, function () {
+Site.ready({ requires: ['translations_monsters', 'translations_general'] }, function () {
     const $petGrid = $('#pet-grid');
     const $buttonClear = $('#button-clear');
 
@@ -66,7 +66,7 @@ Site.ready({ requires: ['translations_monsters'] }, function () {
                         <h2 class="ui header" style="margin: 0;">${intl(`monsters.${index + 800}`)}</h2>
                         <span>${time !== 'any' ? `<i class="ui ${PET_TIME_ICONS[time]} icon"></i> ` : ''}${intl(`pets.locations.${location}`)}</span>
                         <div class="pet-hover flex flex-col justify-content-center items-center">
-                            <div>${intl(`pets.descriptions.${index}`)}</div>
+                            <div>${intl(`general.pet_requirement_${index}`)}</div>
                         </div>
                     </div>
                 </div>
