@@ -9,7 +9,7 @@ class SimulatorDebugDialog extends Dialog {
     render () {
         return `
             <div class="bordered inverted dialog">
-                <div class="overflow-y-scroll overflow-x-hidden pr-4">
+                <div class="overflow-y-scroll overflow-x-hidden pr-4" style="height: 70vh">
                     <div class="ui small inverted form" data-op="content"></div>
                 </div>
                 <div class="ui three fluid buttons">
