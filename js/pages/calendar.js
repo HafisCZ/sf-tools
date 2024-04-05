@@ -1,4 +1,4 @@
-Site.ready({}, function () {
+Site.ready({ requires: ['translations_monsters'] }, function () {
     const $petGrid = $('#pet-grid');
     const $buttonClear = $('#button-clear');
 
@@ -63,7 +63,7 @@ Site.ready({}, function () {
                     <div data-pet="${index}" style="opacity: ${petOwned ? '60' : '100'}%; height: 240px; background: ${PET_COLORS[petType]}; color: black; border-radius: 0.25em;" class="p-4 flex flex-col items-center justify-content-between text-center pet-hoverable cursor-pointer">
                         <b>${title}</b>
                         <img class="ui centered image" style="margin: 0.5em; width: 100px; height: 100px;" src="res/pets/monster${index + 800}.png">
-                        <h2 class="ui header" style="margin: 0;">${intl(`pets.names.${index}`)}</h2>
+                        <h2 class="ui header" style="margin: 0;">${intl(`monsters.${index + 800}`)}</h2>
                         <span>${time !== 'any' ? `<i class="ui ${PET_TIME_ICONS[time]} icon"></i> ` : ''}${intl(`pets.locations.${location}`)}</span>
                         <div class="pet-hover flex flex-col justify-content-center items-center">
                             <div>${intl(`pets.descriptions.${index}`)}</div>

@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator' }, function (urlParams) {
+Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function (urlParams) {
     DOM.input({
         element: DOM.byID('sim-threads'),
         key: 'pet_sim/threads',
@@ -78,7 +78,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             this.fields['pet'].initialize({
                 fullTextSearch: true,
                 values: new Array(100).fill(0).map((_ , value) => ({
-                    name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + value }.png"><span class="pet-name">${intl(`pets.names.${value}`)}</span>`,
+                    name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + value }.png"><span class="pet-name">${intl(`monsters.${800 + value}`)}</span>`,
                     value
                 })),
                 value: '0'
@@ -134,7 +134,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 }
             }
 
-            object.Name = intl(`pets.names.${this.fields.pet.get()}`);
+            object.Name = intl(`monsters.${800 + this.fields.pet.get()}`);
 
             return object;
         }
@@ -386,7 +386,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                         SimulatorMapDialog,
                         maps.map((data, i) => ({
                             data,
-                            name: `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b.Type}`)} ${ b.Pet + i + 1 } - ${intl(`pets.names.${b.Type * 20 + b.Pet + i}`)}`
+                            name: `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`monsters.${800 + a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b.Type}`)} ${ b.Pet + i + 1 } - ${intl(`monsters.${800 + b.Type * 20 + b.Pet + i}`)}`
                         }))
                     )
                 })

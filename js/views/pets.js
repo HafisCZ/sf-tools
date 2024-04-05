@@ -22,13 +22,13 @@ class SimulatorResultsDialog extends Dialog {
               <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
           </div>
           <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-              ${intl(`pets.names.${playerIndex}`)}
+              ${intl(`monsters.${800 + playerIndex}`)}
           </div>
           <div class="two wide column">
               <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
           </div>
           <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-              ${intl(`pets.names.${bossIndex}`)}
+              ${intl(`monsters.${800 + bossIndex}`)}
           </div>
           <div class="four wide column text-center" style="line-height: 3em;">
               ${chance == 0 ? intl('pets.bulk.not_possible') : `${chance.toFixed(chance < 0.01 ? 5 : 2)}%`}
