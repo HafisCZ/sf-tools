@@ -158,7 +158,7 @@ const DUNGEON_DATA = {
             '7': { pos: 7, id: 90, class: 3, level: 176, str: 850, dex: 3360, int: 840, con: 3080, lck: 1245, health: 2180640, min: 212, max: 340 },
             '8': { pos: 8, id: 42, class: 3, level: 178, str: 860, dex: 3400, int: 850, con: 3120, lck: 1260, health: 2233920, min: 214, max: 343 },
             '9': { pos: 9, id: 55, class: 2, level: 190, str: 900, dex: 920, int: 3720, con: 3280, lck: 1340, health: 1252960, min: 439, max: 621 },
-            '10': { pos: 10, id: 0, level: 195 }
+            '10': { pos: 10, level: 195 }
         }
     },
     '10': {
@@ -366,16 +366,16 @@ const DUNGEON_DATA = {
         pos: 17,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 0, class: 3, level: 250, str: 1400, dex: 11000, int: 1400, con: 35000, lck: 4500, health: 62500000, min: 600, max: 649 },
-            '2': { pos: 2, id: 0, class: 1, level: 257, str: 9722, dex: 2404, int: 2426, con: 43730, lck: 4764, health: 79681528, min: 279, max: 787 },
-            '3': { pos: 3, id: 0, class: 3, level: 265, str: 1550, dex: 11290, int: 1560, con: 44000, lck: 4800, health: 68425000, min: 681, max: 727 },
-            '4': { pos: 4, id: 0, class: 3, level: 272, str: 1965, dex: 12320, int: 1980, con: 46000, lck: 5940, health: 73970000, min: 466, max: 989 },
-            '5': { pos: 5, id: 0, class: 2, level: 280, str: 3869, dex: 3865, int: 12249, con: 49255, lck: 7662, health: 39995056, min: 764, max: 1927 },
-            '6': { pos: 6, id: 0, class: 3, level: 287, str: 4465, dex: 12440, int: 4430, con: 54100, lck: 7960, health: 94220000, min: 702, max: 816 },
-            '7': { pos: 7, id: 0, class: 3, level: 295, str: 3910, dex: 12980, int: 3850, con: 54500, lck: 7970, health: 96325000, min: 402, max: 1167 },
-            '8': { pos: 8, id: 0, class: 1, level: 302, str: 14874, dex: 3132, int: 1986, con: 58295, lck: 8022, health: 138640080, min: 564, max: 675 },
-            '9': { pos: 9, id: 0, class: 1, level: 310, str: 14470, dex: 5540, int: 5569, con: 70050, lck: 10197, health: 174284400, min: 446, max: 945 },
-            '10': { pos: 10, id: 0, class: 2, level: 317, str: 5911, dex: 4338, int: 12174, con: 70050, lck: 8540, health: 71282872, min: 1027, max: 2059 }
+            '1': { pos: 1, id: 1100, class: 3, level: 250, str: 1400, dex: 11000, int: 1400, con: 35000, lck: 4500, health: 62500000, min: 600, max: 649 },
+            '2': { pos: 2, id: 1101, class: 1, level: 257, str: 9722, dex: 2404, int: 2426, con: 43730, lck: 4764, health: 79681528, min: 279, max: 787 },
+            '3': { pos: 3, id: 1102, class: 3, level: 265, str: 1550, dex: 11290, int: 1560, con: 44000, lck: 4800, health: 68425000, min: 681, max: 727 },
+            '4': { pos: 4, id: 1103, class: 3, level: 272, str: 1965, dex: 12320, int: 1980, con: 46000, lck: 5940, health: 73970000, min: 466, max: 989 },
+            '5': { pos: 5, id: 1104, class: 2, level: 280, str: 3869, dex: 3865, int: 12249, con: 49255, lck: 7662, health: 39995056, min: 764, max: 1927 },
+            '6': { pos: 6, id: 1105, class: 3, level: 287, str: 4465, dex: 12440, int: 4430, con: 54100, lck: 7960, health: 94220000, min: 702, max: 816 },
+            '7': { pos: 7, id: 1106, class: 3, level: 295, str: 3910, dex: 12980, int: 3850, con: 54500, lck: 7970, health: 96325000, min: 402, max: 1167 },
+            '8': { pos: 8, id: 1107, class: 1, level: 302, str: 14874, dex: 3132, int: 1986, con: 58295, lck: 8022, health: 138640080, min: 564, max: 675 },
+            '9': { pos: 9, id: 1108, class: 1, level: 310, str: 14470, dex: 5540, int: 5569, con: 70050, lck: 10197, health: 174284400, min: 446, max: 945 },
+            '10': { pos: 10, id: 1109, class: 2, level: 317, str: 5911, dex: 4338, int: 12174, con: 70050, lck: 8540, health: 71282872, min: 1027, max: 2059 }
         }
     },
     '17': {
@@ -385,16 +385,16 @@ const DUNGEON_DATA = {
         pos: 18,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 0, class: 1, level: 200, str: 8800, dex: 1120, int: 1120, con: 28000, lck: 3600, health: 28140000, min: 684, max: 1154 },
-            '2': { pos: 2, id: 0, class: 1, level: 213, str: 8069, dex: 1995, int: 2014, con: 36296, lck: 3954, health: 38836720, min: 728, max: 1229 },
-            '3': { pos: 3, id: 0, class: 2, level: 228, str: 1333, dex: 1333, int: 9709, con: 37840, lck: 4128, health: 17330720, min: 1752, max: 2959 },
-            '4': { pos: 4, id: 0, class: 3, level: 242, str: 1749, dex: 10965, int: 1762, con: 40940, lck: 5287, health: 39793680, min: 1034, max: 1747 },
-            '5': { pos: 5, id: 0, class: 3, level: 258, str: 3559, dex: 11269, int: 3559, con: 45315, lck: 7049, health: 46946340, min: 1102, max: 1861 },
-            '6': { pos: 6, id: 0, class: 1, level: 273, str: 11818, dex: 4209, int: 4209, con: 51395, lck: 7562, health: 70411152, min: 932, max: 1574 },
-            '7': { pos: 7, id: 0, class: 3, level: 289, str: 3832, dex: 12720, int: 3773, con: 53410, lck: 7811, health: 61955600, min: 1232, max: 2084 },
-            '8': { pos: 8, id: 0, class: 2, level: 305, str: 3163, dex: 3163, int: 15023, con: 58878, lck: 8102, health: 36033336, min: 2340, max: 3959 },
-            '9': { pos: 9, id: 0, class: 5, level: 319, str: 14904, dex: 5706, int: 5736, con: 72152, lck: 10503, health: 115443200, min: 1088, max: 1839 },
-            '10': { pos: 10, id: 0, class: 3, level: 333, str: 6207, dex: 12783, int: 6207, con: 73553, lck: 8967, health: 98266808, min: 1420, max: 2399 }
+            '1': { pos: 1, id: 1200, class: 1, level: 200, str: 8800, dex: 1120, int: 1120, con: 28000, lck: 3600, health: 28140000, min: 684, max: 1154 },
+            '2': { pos: 2, id: 1201, class: 1, level: 213, str: 8069, dex: 1995, int: 2014, con: 36296, lck: 3954, health: 38836720, min: 728, max: 1229 },
+            '3': { pos: 3, id: 1202, class: 2, level: 228, str: 1333, dex: 1333, int: 9709, con: 37840, lck: 4128, health: 17330720, min: 1752, max: 2959 },
+            '4': { pos: 4, id: 1203, class: 3, level: 242, str: 1749, dex: 10965, int: 1762, con: 40940, lck: 5287, health: 39793680, min: 1034, max: 1747 },
+            '5': { pos: 5, id: 1204, class: 3, level: 258, str: 3559, dex: 11269, int: 3559, con: 45315, lck: 7049, health: 46946340, min: 1102, max: 1861 },
+            '6': { pos: 6, id: 1205, class: 1, level: 273, str: 11818, dex: 4209, int: 4209, con: 51395, lck: 7562, health: 70411152, min: 932, max: 1574 },
+            '7': { pos: 7, id: 1206, class: 3, level: 289, str: 3832, dex: 12720, int: 3773, con: 53410, lck: 7811, health: 61955600, min: 1232, max: 2084 },
+            '8': { pos: 8, id: 1207, class: 2, level: 305, str: 3163, dex: 3163, int: 15023, con: 58878, lck: 8102, health: 36033336, min: 2340, max: 3959 },
+            '9': { pos: 9, id: 1208, class: 5, level: 319, str: 14904, dex: 5706, int: 5736, con: 72152, lck: 10503, health: 115443200, min: 1088, max: 1839 },
+            '10': { pos: 10, id: 1209, class: 3, level: 333, str: 6207, dex: 12783, int: 6207, con: 73553, lck: 8967, health: 98266808, min: 1420, max: 2399 }
         }
     },
     '19': {
@@ -556,16 +556,16 @@ const DUNGEON_DATA = {
         pos: 22,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 0, class: 3, level: 410, str: 8720, dex: 34720, int: 8680, con: 33600, lck: 12436, health: 55238400, min: 671, max: 1034 },
-            '2': { pos: 2, id: 0, class: 2, level: 420, str: 11100, dex: 11200, int: 45000, con: 42800, lck: 15940, health: 36037600, min: 967, max: 2193 },
-            '3': { pos: 3, id: 0, class: 1, level: 430, str: 45800, dex: 16060, int: 15935, con: 44400, lck: 10170, health: 95682000, min: 481, max: 971 },
-            '4': { pos: 4, id: 0, class: 3, level: 440, str: 11800, dex: 47000, int: 11750, con: 45600, lck: 16805, health: 80438400, min: 743, max: 1142 },
-            '5': { pos: 5, id: 0, class: 1, level: 450, str: 57840, dex: 20280, int: 20130, con: 56160, lck: 12780, health: 126640800, min: 505, max: 1044 },
-            '6': { pos: 6, id: 0, class: 1, level: 460, str: 59280, dex: 20784, int: 20634, con: 57600, lck: 13068, health: 132768000, min: 517, max: 1080 },
-            '7': { pos: 7, id: 0, class: 2, level: 470, str: 15120, dex: 15240, int: 61200, con: 58560, lck: 21648, health: 55163520, min: 1087, max: 2611 },
-            '8': { pos: 8, id: 0, class: 2, level: 480, str: 18060, dex: 18200, int: 73080, con: 70000, lck: 25844, health: 67340000, min: 1120, max: 2695 },
-            '9': { pos: 9, id: 0, class: 1, level: 490, str: 74200, dex: 26012, int: 25837, con: 72240, lck: 16254, health: 177349200, min: 553, max: 1188 },
-            '10': { pos: 10, id: 0, class: 3, level: 500, str: 19040, dex: 75880, int: 18970, con: 73920, lck: 27055, health: 148135680, min: 886, max: 1358 }
+            '1': { pos: 1, id: 610, class: 3, level: 410, str: 8720, dex: 34720, int: 8680, con: 33600, lck: 12436, health: 55238400, min: 671, max: 1034 },
+            '2': { pos: 2, id: 611, class: 2, level: 420, str: 11100, dex: 11200, int: 45000, con: 42800, lck: 15940, health: 36037600, min: 967, max: 2193 },
+            '3': { pos: 3, id: 612, class: 1, level: 430, str: 45800, dex: 16060, int: 15935, con: 44400, lck: 10170, health: 95682000, min: 481, max: 971 },
+            '4': { pos: 4, id: 613, class: 3, level: 440, str: 11800, dex: 47000, int: 11750, con: 45600, lck: 16805, health: 80438400, min: 743, max: 1142 },
+            '5': { pos: 5, id: 614, class: 1, level: 450, str: 57840, dex: 20280, int: 20130, con: 56160, lck: 12780, health: 126640800, min: 505, max: 1044 },
+            '6': { pos: 6, id: 615, class: 1, level: 460, str: 59280, dex: 20784, int: 20634, con: 57600, lck: 13068, health: 132768000, min: 517, max: 1080 },
+            '7': { pos: 7, id: 616, class: 2, level: 470, str: 15120, dex: 15240, int: 61200, con: 58560, lck: 21648, health: 55163520, min: 1087, max: 2611 },
+            '8': { pos: 8, id: 617, class: 2, level: 480, str: 18060, dex: 18200, int: 73080, con: 70000, lck: 25844, health: 67340000, min: 1120, max: 2695 },
+            '9': { pos: 9, id: 618, class: 1, level: 490, str: 74200, dex: 26012, int: 25837, con: 72240, lck: 16254, health: 177349200, min: 553, max: 1188 },
+            '10': { pos: 10, id: 619, class: 3, level: 500, str: 19040, dex: 75880, int: 18970, con: 73920, lck: 27055, health: 148135680, min: 886, max: 1358 }
         }
     },
     '28': {
@@ -574,16 +574,16 @@ const DUNGEON_DATA = {
         pos: 23,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 0, class: 2, level: 325, str: 3221, dex: 3221, int: 16577, con: 61790, lck: 8964, health: 64459324, min: 861, max: 2432 },
-            '2': { pos: 2, id: 0, class: 2, level: 332, str: 6128, dex: 6057, int: 17028, con: 76695, lck: 10905, health: 83003160, min: 1291, max: 2100 },
-            '3': { pos: 3, id: 0, class: 2, level: 340, str: 5151, dex: 5237, int: 18553, con: 79880, lck: 12130, health: 90152560, min: 992, max: 2507 },
-            '4': { pos: 4, id: 0, class: 3, level: 347, str: 5875, dex: 20170, int: 5870, con: 72300, lck: 9320, health: 168640000, min: 540, max: 1439 },
-            '5': { pos: 5, id: 0, class: 2, level: 355, str: 5650, dex: 5744, int: 19876, con: 86520, lck: 12519, health: 104723808, min: 1557, max: 2132 },
-            '6': { pos: 6, id: 0, class: 1, level: 362, str: 19163, dex: 9228, int: 9077, con: 96410, lck: 13359, health: 306222272, min: 490, max: 1181 },
-            '7': { pos: 7, id: 0, class: 2, level: 370, str: 7773, dex: 7772, int: 19358, con: 91315, lck: 13191, health: 116878632, min: 1451, max: 2356 },
-            '8': { pos: 8, id: 0, class: 2, level: 377, str: 5774, dex: 5775, int: 24520, con: 96430, lck: 13751, health: 125754360, min: 1592, max: 2385 },
-            '9': { pos: 9, id: 0, class: 3, level: 385, str: 12400, dex: 29300, int: 12600, con: 130350, lck: 18640, health: 379430016, min: 848, max: 2091 },
-            '10': { pos: 10, id: 0, class: 2, level: 400, str: 8447, dex: 8378, int: 30585, con: 126470, lck: 18375, health: 190324704, min: 1912, max: 2949 }
+            '1': { pos: 1, id: 1110, class: 2, level: 325, str: 3221, dex: 3221, int: 16577, con: 61790, lck: 8964, health: 64459324, min: 861, max: 2432 },
+            '2': { pos: 2, id: 1111, class: 2, level: 332, str: 6128, dex: 6057, int: 17028, con: 76695, lck: 10905, health: 83003160, min: 1291, max: 2100 },
+            '3': { pos: 3, id: 1112, class: 2, level: 340, str: 5151, dex: 5237, int: 18553, con: 79880, lck: 12130, health: 90152560, min: 992, max: 2507 },
+            '4': { pos: 4, id: 1113, class: 3, level: 347, str: 5875, dex: 20170, int: 5870, con: 72300, lck: 9320, health: 168640000, min: 540, max: 1439 },
+            '5': { pos: 5, id: 1114, class: 2, level: 355, str: 5650, dex: 5744, int: 19876, con: 86520, lck: 12519, health: 104723808, min: 1557, max: 2132 },
+            '6': { pos: 6, id: 1115, class: 1, level: 362, str: 19163, dex: 9228, int: 9077, con: 96410, lck: 13359, health: 306222272, min: 490, max: 1181 },
+            '7': { pos: 7, id: 1116, class: 2, level: 370, str: 7773, dex: 7772, int: 19358, con: 91315, lck: 13191, health: 116878632, min: 1451, max: 2356 },
+            '8': { pos: 8, id: 1117, class: 2, level: 377, str: 5774, dex: 5775, int: 24520, con: 96430, lck: 13751, health: 125754360, min: 1592, max: 2385 },
+            '9': { pos: 9, id: 1118, class: 3, level: 385, str: 12400, dex: 29300, int: 12600, con: 130350, lck: 18640, health: 379430016, min: 848, max: 2091 },
+            '10': { pos: 10, id: 1119, class: 2, level: 400, str: 8447, dex: 8378, int: 30585, con: 126470, lck: 18375, health: 190324704, min: 1912, max: 2949 }
         }
     },
     '29': {
@@ -592,16 +592,16 @@ const DUNGEON_DATA = {
         pos: 25,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 0, class: 5, level: 348, str: 17737, dex: 3446, int: 3446, con: 66115, lck: 9591, health: 115370672, min: 1187, max: 2007, armor: 7000 },
-            '2': { pos: 2, id: 0, class: 1, level: 362, str: 18561, dex: 6602, int: 6602, con: 83598, lck: 11886, health: 151730368, min: 1234, max: 2087 },
-            '3': { pos: 3, id: 0, class: 2, level: 377, str: 5718, dex: 5813, int: 20594, con: 88667, lck: 13464, health: 67032252, min: 2895, max: 4886 },
-            '4': { pos: 4, id: 0, class: 4, level: 392, str: 6639, dex: 22792, int: 6633, con: 81699, lck: 10532, health: 128430832, min: 2673, max: 4514 },
-            '5': { pos: 5, id: 0, class: 2, level: 408, str: 6497, dex: 6606, int: 22857, con: 99498, lck: 14397, health: 81389360, min: 3130, max: 5286 },
-            '6': { pos: 6, id: 0, class: 1, level: 424, str: 22421, dex: 10797, int: 10620, con: 112800, lck: 15630, health: 239700000, min: 1446, max: 2441 },
-            '7': { pos: 7, id: 0, class: 3, level: 440, str: 9250, dex: 23036, int: 9250, con: 108665, lck: 15697, health: 191685056, min: 1874, max: 3167 },
-            '8': { pos: 8, id: 0, class: 5, level: 456, str: 29669, dex: 6988, int: 6988, con: 116680, lck: 16639, health: 266613792, min: 1554, max: 2627, armor: 7000 },
-            '9': { pos: 9, id: 0, class: 1, level: 474, str: 36039, dex: 15498, int: 15498, con: 160331, lck: 22927, health: 380786112, min: 1616, max: 2725 },
-            '10': { pos: 10, id: 0, class: 1, level: 500, str: 38231, dex: 10473, int: 10474, con: 158088, lck: 22969, health: 396010432, min: 1704, max: 2879 }
+            '1': { pos: 1, id: 1210, class: 5, level: 348, str: 17737, dex: 3446, int: 3446, con: 66115, lck: 9591, health: 115370672, min: 1187, max: 2007, armor: 7000 },
+            '2': { pos: 2, id: 1211, class: 1, level: 362, str: 18561, dex: 6602, int: 6602, con: 83598, lck: 11886, health: 151730368, min: 1234, max: 2087 },
+            '3': { pos: 3, id: 1212, class: 2, level: 377, str: 5718, dex: 5813, int: 20594, con: 88667, lck: 13464, health: 67032252, min: 2895, max: 4886 },
+            '4': { pos: 4, id: 1213, class: 4, level: 392, str: 6639, dex: 22792, int: 6633, con: 81699, lck: 10532, health: 128430832, min: 2673, max: 4514 },
+            '5': { pos: 5, id: 1214, class: 2, level: 408, str: 6497, dex: 6606, int: 22857, con: 99498, lck: 14397, health: 81389360, min: 3130, max: 5286 },
+            '6': { pos: 6, id: 1215, class: 1, level: 424, str: 22421, dex: 10797, int: 10620, con: 112800, lck: 15630, health: 239700000, min: 1446, max: 2441 },
+            '7': { pos: 7, id: 1216, class: 3, level: 440, str: 9250, dex: 23036, int: 9250, con: 108665, lck: 15697, health: 191685056, min: 1874, max: 3167 },
+            '8': { pos: 8, id: 1217, class: 5, level: 456, str: 29669, dex: 6988, int: 6988, con: 116680, lck: 16639, health: 266613792, min: 1554, max: 2627, armor: 7000 },
+            '9': { pos: 9, id: 1218, class: 1, level: 474, str: 36039, dex: 15498, int: 15498, con: 160331, lck: 22927, health: 380786112, min: 1616, max: 2725 },
+            '10': { pos: 10, id: 1219, class: 1, level: 500, str: 38231, dex: 10473, int: 10474, con: 158088, lck: 22969, health: 396010432, min: 1704, max: 2879 }
         }
     },
     '30': {
@@ -610,16 +610,16 @@ const DUNGEON_DATA = {
         pos: 26,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 0, class: 3, level: 410, str: 7080, dex: 20200, int: 7050, con: 18210, lck: 4280, health: 29937240, min: 1299, max: 3185 },
-            '2': { pos: 2, id: 0, class: 1, level: 420, str: 24240, dex: 8490, int: 8460, con: 20030, lck: 5130, health: 42163152, min: 1247, max: 3060 },
-            '3': { pos: 3, id: 0, class: 2, level: 430, str: 10150, dex: 10180, int: 29080, con: 22030, lck: 6150, health: 18989860, min: 3364, max: 8263 },
-            '4': { pos: 4, id: 0, class: 1, level: 440, str: 34890, dex: 12210, int: 12180, con: 24230, lck: 7380, health: 53427152, min: 1796, max: 4404 },
-            '5': { pos: 5, id: 0, class: 2, level: 450, str: 14610, dex: 14650, int: 41860, con: 26650, lck: 8850, health: 24038300, min: 4848, max: 11901 },
-            '6': { pos: 6, id: 0, class: 1, level: 460, str: 50230, dex: 17580, int: 17530, con: 29310, lck: 10620, health: 67559552, min: 2584, max: 6343 },
-            '7': { pos: 7, id: 0, class: 1, level: 470, str: 60270, dex: 21090, int: 21030, con: 32240, lck: 12740, health: 75925200, min: 3101, max: 7612 },
-            '8': { pos: 8, id: 0, class: 1, level: 480, str: 72320, dex: 25300, int: 25230, con: 35460, lck: 15280, health: 85281296, min: 3722, max: 9140 },
-            '9': { pos: 9, id: 0, class: 3, level: 490, str: 30360, dex: 86780, int: 30270, con: 39000, lck: 18330, health: 76596000, min: 5596, max: 13705 },
-            '10': { pos: 10, id: 0, class: 2, level: 500, str: 36430, dex: 36320, int: 104130, con: 42900, lck: 21990, health: 42985800, min: 12063, max: 29600 }
+            '1': { pos: 1, id: 253, class: 3, level: 410, str: 7080, dex: 20200, int: 7050, con: 18210, lck: 4280, health: 29937240, min: 1299, max: 3185 },
+            '2': { pos: 2, id: 254, class: 1, level: 420, str: 24240, dex: 8490, int: 8460, con: 20030, lck: 5130, health: 42163152, min: 1247, max: 3060 },
+            '3': { pos: 3, id: 255, class: 2, level: 430, str: 10150, dex: 10180, int: 29080, con: 22030, lck: 6150, health: 18989860, min: 3364, max: 8263 },
+            '4': { pos: 4, id: 256, class: 1, level: 440, str: 34890, dex: 12210, int: 12180, con: 24230, lck: 7380, health: 53427152, min: 1796, max: 4404 },
+            '5': { pos: 5, id: 257, class: 2, level: 450, str: 14610, dex: 14650, int: 41860, con: 26650, lck: 8850, health: 24038300, min: 4848, max: 11901 },
+            '6': { pos: 6, id: 258, class: 1, level: 460, str: 50230, dex: 17580, int: 17530, con: 29310, lck: 10620, health: 67559552, min: 2584, max: 6343 },
+            '7': { pos: 7, id: 259, class: 1, level: 470, str: 60270, dex: 21090, int: 21030, con: 32240, lck: 12740, health: 75925200, min: 3101, max: 7612 },
+            '8': { pos: 8, id: 260, class: 1, level: 480, str: 72320, dex: 25300, int: 25230, con: 35460, lck: 15280, health: 85281296, min: 3722, max: 9140 },
+            '9': { pos: 9, id: 261, class: 3, level: 490, str: 30360, dex: 86780, int: 30270, con: 39000, lck: 18330, health: 76596000, min: 5596, max: 13705 },
+            '10': { pos: 10, id: 262, class: 2, level: 500, str: 36430, dex: 36320, int: 104130, con: 42900, lck: 21990, health: 42985800, min: 12063, max: 29600 }
         }
     },
     '203': {
@@ -816,7 +816,7 @@ const DUNGEON_DATA = {
             '7': { pos: 7, id: 90, class: 3, level: 344, str: 1661, dex: 6567, int: 1641, con: 33110, lck: 2433, health: 45691800, min: 4600, max: 9187, armor: 4427 },
             '8': { pos: 8, id: 42, class: 3, level: 346, str: 1671, dex: 6608, int: 1652, con: 33352, lck: 2449, health: 46292576, min: 4636, max: 9250, armor: 4462 },
             '9': { pos: 9, id: 55, class: 2, level: 348, str: 1648, dex: 1685, int: 6813, con: 33038, lck: 2454, health: 23060524, min: 8377, max: 16743, armor: 1932 },
-            '10': { pos: 10, id: 0, level: 350 }
+            '10': { pos: 10, level: 350 }
         }
     },
     '110': {
