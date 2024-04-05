@@ -1197,15 +1197,5 @@ const DUNGEON_DATA = {
             '9': { pos: 9, id: 261, class: 3, level: 532, str: 34940, dex: 99800, int: 34770, con: 246920, lck: 21090, health: 526433440, min: 31926, max: 62970 },
             '10': { pos: 10, id: 262, class: 2, level: 540, str: 41920, dex: 41720, int: 119760, con: 271610, lck: 25300, health: 293882016, min: 70776, max: 136537 }
         }
-    },
-    '204': {
-        id: 204,
-        intl: '204',
-        pos: 201,
-        shadow: false,
-        floors: {
-            '5': { pos: 5, id: 0, class: 3, level: 570, str: 10000, dex: 250000, int: 10000, con: 200000, lck: 30000, health: 1000000000, runes: { type: 42, res: [75, 75, 75], damage: 60 }, min: 1022, max: 2858, gladiator: 15 },
-            '10': { pos: 10, id: 0, class: 7, level: 700, str: 51000, dex: 435000, int: 51000, con: 443000, lck: 70000, health: 1900000000, runes: { type: 41, res: [75, 75, 75], damage: 60 }, min: 1170, max: 3480, armor: 100000, gladiator: 30 }
-        }
     }
 };
