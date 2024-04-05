@@ -90,8 +90,8 @@ class SimulatorOptionsDialog extends Dialog {
 
     this.$okButton = this.$parent.find('[data-op="ok"');
     this.$okButton.click(() => {
-      this.options.threshold_min = this.currentMin;
-      this.options.threshold_max = this.currentMax;
+      this.simulatorOptions.threshold_min = this.currentMin;
+      this.simulatorOptions.threshold_max = this.currentMax;
 
       this.close(true);
     });
@@ -101,9 +101,9 @@ class SimulatorOptionsDialog extends Dialog {
       this.close(false);
     });
 
-    this.options = options;
-    this.currentMin = this.options.threshold_min;
-    this.currentMax = this.options.threshold_max;
+    this.simulatorOptions = options;
+    this.currentMin = this.simulatorOptions.threshold_min;
+    this.currentMax = this.simulatorOptions.threshold_max;
 
     this.#update(true);
   }
