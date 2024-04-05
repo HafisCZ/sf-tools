@@ -1,12 +1,16 @@
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-    self.addEventListener('message', function ({ data: { flags, guildA, guildB, iterations }}) {
+    self.addEventListener('message', function ({ data: { config, flags, guildA, guildB, iterations, log }}) {
+        CONFIG.set(config);
+
+        FLAGS.log(!!log);
         FLAGS.set(flags);
         FLAGS.set({
             NoGladiatorReduction: true
         });
 
         self.postMessage({
-            results: new GuildSimulator().simulate(guildA, guildB, iterations)
+            results: new GuildSimulator().simulate(guildA, guildB, iterations),
+            logs: FIGHT_LOG.dump()
         });
 
         self.close();

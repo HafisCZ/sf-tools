@@ -233,7 +233,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                         iterations,
                         enemy,
                         log: !!logCallback,
-                        config: SimulatorUtils.config,
+                        config: SimulatorUtils.config
                     }
                 );
             }

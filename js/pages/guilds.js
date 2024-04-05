@@ -1,5 +1,10 @@
-Site.ready({ type: 'simulator' }, function () {
-    SimulatorUtils.configure({});
+Site.ready({ type: 'simulator' }, function (urlParams) {
+    SimulatorUtils.configure({
+        params: urlParams,
+        onLog: (callback) => {
+            executeSimulation(1, 50, callback);
+        }
+    });
     
     function validateLists () {
         return playerList[0].length > 0 && playerList[1].length > 0;
@@ -346,22 +351,34 @@ Site.ready({ type: 'simulator' }, function () {
         const instances = Math.max(1, Number($('#sim-threads').val()) || 4);
         const iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
+        executeSimulation(instances, iterations);
+    })
+
+    function executeSimulation (instances, iterations, logCallback) {
         if (validateLists()) {
             const results = [];
+            let logs = [];
+
             const batch = new WorkerBatch('guilds');
 
             for (let i = 0; i < instances; i++) {
                 batch.add(
-                    ({ results: _results }, time) => {
+                    ({ results: _results, logs: _logs }, time) => {
                         results.push(_results);
 
                         Toast.info(intl('guilds.toast.end.title', { done: results.length, total: instances }), intl('guilds.toast.end.message#', { time: time / 1000 }))
+
+                        if (logCallback) {
+                            logs = logs.concat(_logs);
+                        }
                     },
                     {
                         flags: getSimulatorFlags(),
                         guildA: playerList[0],
                         guildB: playerList[1],
-                        iterations
+                        iterations,
+                        config: SimulatorUtils.config,
+                        log: !!logCallback,
                     }
                 )
             }
@@ -370,7 +387,15 @@ Site.ready({ type: 'simulator' }, function () {
                 Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
                 
                 displayResults(results, instances * iterations);
+
+                if (logs.length > 0) {
+                    logCallback({
+                        fights: logs,
+                        players: playerList.flatMap((list) => list.map(({ player }) => player)),
+                        config: SimulatorUtils.config
+                    });
+                }
             });
         }
-    })
+    }
 });
