@@ -254,19 +254,6 @@ class ReportDialog extends Dialog {
         `;
     }
 
-    #update () {
-        const tool = this.$fieldTool.dropdown('get value');
-        const type = this.$fieldType.dropdown('get value');
-        // const email = this.$fieldEmail.val();
-        const description = this.$fieldDescription.val();
-
-        if (tool && type && description) {
-            this.$submit.removeClass('disabled');
-        } else {
-            this.$submit.addClass('disabled');
-        }
-    }
-
     handle (tool = 'general') {
         this.$submit = this.$parent.find('[data-op="submit"]');
         this.$submit.click(() => {
@@ -308,6 +295,19 @@ class ReportDialog extends Dialog {
         this.$fieldEmail = this.$parent.find('[data-op="field-email"] > input');
         this.$fieldDescription = this.$parent.find('[data-op="field-description"] > textarea');
 
+        const updateFields = () => {
+            const tool = this.$fieldTool.dropdown('get value');
+            const type = this.$fieldType.dropdown('get value');
+            // const email = this.$fieldEmail.val();
+            const description = this.$fieldDescription.val();
+    
+            if (tool && type && description) {
+                this.$submit.removeClass('disabled');
+            } else {
+                this.$submit.addClass('disabled');
+            }
+        }
+
         this.$fieldTool.dropdown({
             values: [
                 {
@@ -319,7 +319,7 @@ class ReportDialog extends Dialog {
                     name: intl(`index.${value}.title`)
                 }))
             ],
-            onChange: () => this.#update()
+            onChange: () => updateFields()
         }).dropdown('set selected', tool);
 
         this.$fieldType.dropdown({
@@ -327,11 +327,11 @@ class ReportDialog extends Dialog {
                 value,
                 name: this.intl(`type.${value}`)
             })),
-            onChange: () => this.#update()
+            onChange: () => updateFields()
         }).dropdown('set selected', 'issue');
 
-        this.$fieldEmail.on('change input', () => this.#update());
-        this.$fieldDescription.on('change input', () => this.#update());
+        this.$fieldEmail.on('change input', () => updateFields());
+        this.$fieldDescription.on('change input', () => updateFields());
     }
 }
 
