@@ -236,13 +236,13 @@ class ReportDialog extends Dialog {
                     <div class="field">
                         <label>${this.intl('field.email')}</label>
                         <div class="ui inverted input" data-op="field-email">
-                            <input type="email">
+                            <input type="email" maxlength="50" placeholder="${this.intl('field.email')}">
                         </div>
                     </div>
                     <div class="field">
                         <label>${this.intl('field.description')}</label>
                         <div class="ui inverted input" data-op="field-description">
-                            <textarea rows="5" style="resize: none;"></textarea>
+                            <textarea rows="7" maxlength="1000" style="resize: none;" placeholder="${this.intl('field.description')}"></textarea>
                         </div>
                     </div>
                 </div>
@@ -267,7 +267,7 @@ class ReportDialog extends Dialog {
         }
     }
 
-    handle (tool = null) {
+    handle (tool = 'general') {
         this.$submit = this.$parent.find('[data-op="submit"]');
         this.$submit.click(() => {
             const tool = this.$fieldTool.dropdown('get value');
@@ -320,7 +320,7 @@ class ReportDialog extends Dialog {
                 }))
             ],
             onChange: () => this.#update()
-        }).dropdown('set selected', tool || 'general');
+        }).dropdown('set selected', tool);
 
         this.$fieldType.dropdown({
             values: ['issue', 'suggestion'].map((value) => ({
