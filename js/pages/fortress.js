@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator' }, function () {
+    $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'fortress'))
+
     SimulatorUtils.configure({});
 
     // Handle simulate button validation

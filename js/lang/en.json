@@ -309,6 +309,7 @@
             "kofi": "Give mar some shrooms",
             "crowdin": "Help with translations",
             "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
+            "report": "Submit feedback",
             "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
         },
         "stats": {
@@ -340,11 +341,11 @@
             "title": "Pet Calendar",
             "desc": "Look at when you can catch pets"
         },
-        "players": {
+        "simulator": {
             "title": "Fight Simulator",
             "desc": "Simulate the probable outcome of a PvP battle"
         },
-        "guild": {
+        "guilds": {
             "title": "Guild Simulator",
             "desc": "Simulate the probable outcome of a guild battle"
         },
@@ -372,11 +373,11 @@
             "title": "Boss viewer",
             "desc": "Display all PVE fights stored within archive file"
         },
-        "atts": {
+        "attributes": {
             "title": "Gold & Experience",
             "desc": "Curves & calculators"
         },
-        "smith": {
+        "blacksmith": {
             "title": "Blacksmith Upgrades",
             "desc": "What it costs and what gets lost"
         },
@@ -1217,7 +1218,31 @@
             "save": "Save",
             "close": "Close",
             "ok": "Ok",
-            "apply": "Apply"
+            "apply": "Apply",
+            "submit": "Submit"
+        },
+        "report": {
+            "title": "Feedback",
+            "field": {
+                "type": "Type",
+                "description": "Description",
+                "tool": "Tool",
+                "email": "Email (optional)"
+            },
+            "type": {
+                "issue": "Issue",
+                "suggestion": "Suggestion"
+            },
+            "toast": {
+                "success": {
+                    "title": "Thank you for your feedback",
+                    "message": "If you filled in your email you may receive a reply in several working days"
+                },
+                "error": {
+                    "title": "Your feedback could not be submitted",
+                    "message": "Please try again later"
+                }
+            }
         },
         "manage_link": {
             "title": "Manage player / guild merge",

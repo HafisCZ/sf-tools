@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator' }, function (urlParams) {
+    $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'simulator'))
+
     let simulatorMode = 'players_all';
 
     Editor.createPlayerEditor('#sim-editor');

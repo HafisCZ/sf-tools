@@ -1,4 +1,6 @@
 Site.ready({ requires: ['translations_monsters', 'translations_general'] }, function () {
+    $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'calendar'))
+
     const $petGrid = $('#pet-grid');
     const $buttonClear = $('#button-clear');
 

@@ -209,6 +209,132 @@ class Toast {
     }
 }
 
+class ReportDialog extends Dialog {
+    static OPTIONS = {
+        key: 'report'
+    }
+
+    render () {
+        return `
+            <div class="small bordered inverted dialog">
+                <div class="header">${this.intl('title')}</div>
+                <div class="ui inverted form">
+                    <div class="field">
+                        <label>${this.intl('field.tool')}</label>
+                        <div class="ui selection inverted disabled dropdown" data-op="field-tool">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('field.type')}</label>
+                        <div class="ui selection inverted dropdown" data-op="field-type">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('field.email')}</label>
+                        <div class="ui inverted input" data-op="field-email">
+                            <input type="email">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>${this.intl('field.description')}</label>
+                        <div class="ui inverted input" data-op="field-description">
+                            <textarea rows="5" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui two fluid buttons">
+                    <button class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
+                    <button class="ui button !text-black !background-orange" data-op="submit">${intl('dialog.shared.submit')}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    #update () {
+        const tool = this.$fieldTool.dropdown('get value');
+        const type = this.$fieldType.dropdown('get value');
+        // const email = this.$fieldEmail.val();
+        const description = this.$fieldDescription.val();
+
+        if (tool && type && description) {
+            this.$submit.removeClass('disabled');
+        } else {
+            this.$submit.addClass('disabled');
+        }
+    }
+
+    handle (tool = null) {
+        this.$submit = this.$parent.find('[data-op="submit"]');
+        this.$submit.click(() => {
+            const tool = this.$fieldTool.dropdown('get value');
+            const type = this.$fieldType.dropdown('get value');
+            const email = this.$fieldEmail.val();
+            const description = this.$fieldDescription.val();
+
+            if (this.$submit.hasClass('disabled')) {
+                return;
+            }
+
+            Loader.toggle(true);
+
+            SiteAPI.post('feedback', { tool, type, email, description }).then(() => {
+                this.close(true);
+
+                Toast.info(
+                    this.intl('toast.success.title'),
+                    this.intl('toast.success.message')
+                )
+            }).catch(() => {
+                Toast.error(
+                    this.intl('toast.error.title'),
+                    this.intl('toast.error.message')
+                )
+            }).finally(() => {
+                Loader.toggle(false);
+            })
+        });
+
+        this.$cancel = this.$parent.find('[data-op="cancel"]');
+        this.$cancel.click(() => {
+            this.close(false);
+        });
+
+        this.$fieldTool = this.$parent.find('[data-op="field-tool"]');
+        this.$fieldType = this.$parent.find('[data-op="field-type"]');
+        this.$fieldEmail = this.$parent.find('[data-op="field-email"] > input');
+        this.$fieldDescription = this.$parent.find('[data-op="field-description"] > textarea');
+
+        this.$fieldTool.dropdown({
+            values: [
+                {
+                    value: 'general',
+                    name: '-'
+                },
+                ...['analyzer', 'attributes', 'blacksmith', 'calendar', 'dungeons', 'fortress', 'guilds', 'hellevator', 'hydra', 'idle', 'inventory', 'pets', 'simulator', 'stats', 'underworld'].map((value) => ({
+                    value,
+                    name: intl(`index.${value}.title`)
+                }))
+            ],
+            onChange: () => this.#update()
+        }).dropdown('set selected', tool || 'general');
+
+        this.$fieldType.dropdown({
+            values: ['issue', 'suggestion'].map((value) => ({
+                value,
+                name: this.intl(`type.${value}`)
+            })),
+            onChange: () => this.#update()
+        }).dropdown('set selected', 'issue');
+
+        this.$fieldEmail.on('change input', () => this.#update());
+        this.$fieldDescription.on('change input', () => this.#update());
+    }
+}
+
 class TermsAndConditionsDialog extends Dialog {
     static OPTIONS = {
         key: 'terms_and_conditions'

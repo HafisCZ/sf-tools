@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator' }, function (urlParams) {
+    $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'underworld'))
+
     // Handle simulate button validation
     let $simulateButton = $('#simulate');
     function updateSimulateButton () {

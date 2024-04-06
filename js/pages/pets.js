@@ -1,4 +1,6 @@
 Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function (urlParams) {
+    $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'pets'))
+
     DOM.input({
         element: DOM.byID('sim-threads'),
         key: 'pet_sim/threads',
