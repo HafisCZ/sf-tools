@@ -25,9 +25,16 @@ const ANNOUNCEMENTS = [
 const CHANGELOG = {
     'v7.XXXX': {
         'Statistics': [
+            'Added new script visibility & verification system (you can now request script to be made public/private)',
             'Added <code>border color</code> command for custom border colors',
             'Added <code>includes</code> and <code>excludes</code> array functions',
-            'Fixed legendary scrapbook items not being detected'
+            'Added tags for groups',
+            'Added support for groups to <code>select</code> and <code>reject</code> actions',
+            'Replaced table preload dropdown with plain input',
+            'Fixed legendary scrapbook items not being detected',
+            'Fixed comparison data not loaded correctly',
+            'Fixed file counter not resetting when reopening the tab',
+            'Fixed empty script not being able to be selected'
         ],
         'Fight Analyzer': [
             'Fixed simulator shortcut'
@@ -35,13 +42,22 @@ const CHANGELOG = {
         'Hellevator Simulator': [
             'Added new hellevator theme'
         ],
+        'Guild Simulator': [
+            'Added support for debugging tools'
+        ],
+        'Dungeon Simulator': [
+            'Reordered enemies in first 10 dungeons'
+        ],
         'All Simulators': [
             'Fixed switch to Warrior via cheat menu',
             'Fixed Assassin unarmed damage',
-            'Fixed custom preset dialog'
+            'Fixed custom preset dialog',
+            'Fixed configuration dialog growing beyond the window'
         ],
         'All Tools': [
-            'Added new optimized dialog system'
+            'Added new optimized dialog system',
+            'Added separate translations for items and monsters',
+            'Added lazy loading system for separate translations'
         ]
     },
     'v7.4528': {
