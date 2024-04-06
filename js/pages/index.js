@@ -1,4 +1,6 @@
 Site.ready({}, function () {
+    $('[data-op="report"]').click(() => Dialog.open(ReportDialog))
+
     const $drvcs = $('.drvcs');
     if (Site.isEvent('winter')) {
         $drvcs.attr('src', 'res/drvcs_winter.png');

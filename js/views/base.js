@@ -221,7 +221,7 @@ class ReportDialog extends Dialog {
                 <div class="ui inverted form">
                     <div class="field">
                         <label>${this.intl('field.tool')}</label>
-                        <div class="ui selection inverted disabled dropdown" data-op="field-tool">
+                        <div class="ui selection inverted dropdown" data-op="field-tool">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
