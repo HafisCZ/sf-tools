@@ -309,6 +309,7 @@
             "kofi": "Daj Maro'owi kilka grzybów",
             "crowdin": "Pomoc przy tłumaczeniach",
             "webshop#": "Użyj kodu <b class=\"text-white\">SFTOOLS</b> w sklepie internetowym",
+            "report": "Submit feedback",
             "notice#": "Rozpowszechniono <b>TAK A NIE INACZEJ</b>. Ta strona nie jest w żaden sposób powiązana z <b>Playa Games</b>."
         },
         "stats": {
@@ -340,13 +341,13 @@
             "title": "Kalendarz Pupili",
             "desc": "Sprawdź, kiedy możesz złapać pupile"
         },
-        "players": {
-            "title": "Symulator Walk",
-            "desc": "Przesymuluj prawdopodobny wynik walki graczy"
+        "simulator": {
+            "title": "Fight Simulator",
+            "desc": "Simulate the probable outcome of a PvP battle"
         },
-        "guild": {
-            "title": "Symulator Gildii",
-            "desc": "Przesymuluj prawdopodobny wynik walki gildii"
+        "guilds": {
+            "title": "Guild Simulator",
+            "desc": "Simulate the probable outcome of a guild battle"
         },
         "pets": {
             "title": "Symulator Pupili",
@@ -372,13 +373,13 @@
             "title": "Podgląd bossa",
             "desc": "Wyświetl wszystkie walki PvE zapisane w archiwum"
         },
-        "atts": {
-            "title": "Złoto & Doświadczenie",
-            "desc": "Wykresy & kalkulatory"
+        "attributes": {
+            "title": "Gold & Experience",
+            "desc": "Curves & calculators"
         },
-        "smith": {
-            "title": "Ulepszenia kowala",
-            "desc": "Ile to kosztuje i co sie traci"
+        "blacksmith": {
+            "title": "Blacksmith Upgrades",
+            "desc": "What it costs and what gets lost"
         },
         "hydra": {
             "title": "Symulator hydry",
@@ -805,108 +806,6 @@
             "203": "Gabinet Magii",
             "204": "Tajemnicza toaleta"
         },
-        "descriptions": {
-            "0": "Można go znaleźć w dzień w Nigdylandii.",
-            "1": "Można go znaleźć nocą w mieście Maerwynn.",
-            "2": "Można go znaleźć nocą w Puszczy Zarośląskiej.",
-            "3": "Można go znaleźć nocą w Dziewiczym Kanionie.",
-            "4": "Można go znaleźć w poniedziałkową noc w Czarnolesie.",
-            "5": "Można go znaleźć na Moczarach Mary w godzinie duchów. (00:00 - 01:00)",
-            "6": "Można go znaleźć w letnie dni w Mrocznych Borach.",
-            "7": "Można go znaleźć w zimowe dni na Wyspie Trupiego Łba.",
-            "8": "Można go znaleźć w piątkową noc na Pogórzu Cienistej Skały.",
-            "9": "Można go znaleźć w jesienne dni w Zmurszałym Lesie.",
-            "10": "Można go znaleźć w poniedziałkową noc w Propolis.",
-            "11": "Można go znaleźć we wtorkową noc w Górach Koronkowych.",
-            "12": "Można go znaleźć w środową noc w krainie Erogenii.",
-            "13": "Można go znaleźć w czwartkowy dzień na Stepie Strapionych.",
-            "14": "Można go znaleźć w Czarnolesie w Halloween.",
-            "15": "Można go znaleźć w Gnuśnogrodzie. Wymaga: Pozycji w top 1000. sali chwały lub 50000 czci w chwili ukończenia zadania.",
-            "16": "Można go znaleźć na Ugorze Orków podczas wydarzenia Prawdziwa Profuzja PD.",
-            "17": "Można go znaleźć w piątek 13. na Trakcie Trędowatych.",
-            "18": "Można go znaleźć w krainie Ozkurr po ukończeniu 10 poziomu 15 lochu w Strefie Mroku.",
-            "19": "Musisz pokonać ostatniego pupila w środowisku i odnaleźć Pustynie Przesłoneczną.",
-            "20": "Można go znaleźć w dzień na Stepie Strapionych.",
-            "21": "Można go znaleźć nocą w Zmurszałym Lesie.",
-            "22": "Można go znaleźć w dzień w krainie Erogenii.",
-            "23": "Można go znaleźć w dzień na Pogórzu Cienistej Skały.",
-            "24": "Można go znaleźć w wiosenną noc w Puszczy Zarośląskiej.",
-            "25": "Można go znaleźć w soboty za dnia w Nigdylandii.",
-            "26": "Można go znaleźć w letnie dni na Pustyni Przesłonecznej.",
-            "27": "Można go znaleźć w jesienne dni w mieście Propolis.",
-            "28": "Można go znaleźć w poniedziałkową noc na Wyspie Trupiego Łba.",
-            "29": "Można go znaleźć we wtorek za dnia na Ugorze Orków.",
-            "30": "Można go znaleźć w niedzielę za dnia w Górach Koronkowych.",
-            "31": "Można go znaleźć w środową noc w mieście Teges.",
-            "32": "Można go znaleźć w czwartek za dnia w Mrocznych Borach.",
-            "33": "Można go znaleźć w piątek za dnia na Moczarach Mary.",
-            "34": "Można go znaleźć w krainie Erogenii. Wymaga gildii w pierwsze 100 sali chwały lub 2500 czci.",
-            "35": "Można go znaleźć przez cały grudzień w Mieście Teges.",
-            "36": "Można go znaleźć w Prima Aprilis w Dziewiczym Kanionie. Serio!",
-            "37": "Można go znaleźć podczas Epickiego Szaleństwa Zakupowego w krainie Erogenii.",
-            "38": "Można go znaleźć po ukończeniu wieży na Trakcie Trędowatych.",
-            "39": "Można go znaleźć w krainie Oz'Kurr po pokonaniu ostatniego pupila w środowisku.",
-            "40": "Można go znaleźć w dzień na Stepie Strapionych.",
-            "41": "Można go znaleźć nocą w Gnuśnogrodzie.",
-            "42": "Można go znaleźć w dzień w krainie Erogenii.",
-            "43": "Można go znaleźć w dzień w Czarnolesie.",
-            "44": "Można go znaleźć nocą w mieście Teges.",
-            "45": "Można go znaleźć w letnie dni w Górach Koronkowych.",
-            "46": "Można go znaleźć w jesienne dni na Moczarach Mary.",
-            "47": "Można go znaleźć w zimowe dni w Dziewiczym Kanionie.",
-            "48": "Można go znaleźć w wiosenne dni w Magmakaronie.",
-            "49": "Można go znaleźć w niedzielną noc w Nigdylandii.",
-            "50": "Można go znaleźć w poniedziałek za dnia w Maerwynn.",
-            "51": "Można go znaleźć we wtorkową noc na Ugorze Orków.",
-            "52": "Można go znaleźć w środę za dnia w Mrocznych Borach.",
-            "53": "Można go znaleźć w czwartek za dnia na Trakcie Trędowatych.",
-            "54": "Można go znaleźć w Święta Wielkanocne w Maerwynn.",
-            "55": "Można go znaleźć w Zielone Świątki w Puszczy Zarośląskiej.",
-            "56": "Można go znaleźć podczas eventu Złote Zbiory w Krainie Oz'Kurr.",
-            "57": "Można go znaleźć na Stepie Strapionych. Wymaga twierdzy w pierwszej 100 sali chwały lub 2500 czci w momencie ukończenia zadania.",
-            "58": "Kopalnia klejnotów na 20 poziomie pozwala na odnalezienie w niej jaja.",
-            "59": "Można go znaleźć w Zmurszałym Lesie po pokonaniu ostatniego pupila w środowisku.",
-            "60": "Można go znaleźć w dzień w Nigdylandii.",
-            "61": "Można go znaleźć nocą w mieście Propolis.",
-            "62": "Można go znaleźć nocą na Moczarach Mary.",
-            "63": "Można go znaleźć w dzień w Górach Koronkowych.",
-            "64": "Można go znaleźć we wtorkową noc na Ugorze Orków.",
-            "65": "Można go znaleźć w jesienną noc w Zmurszałym Lesie.",
-            "66": "Można go znaleźć w poniedziałek za dnia w Dziewiczym Kanionie.",
-            "67": "Można go znaleźć w wiosenne dni na Pustyni Przesłonecznej.",
-            "68": "Można go znaleźć w zimowe dni w Krainie Oz'Kurr.",
-            "69": "Można go znaleźć w środową noc w Puszczy Zarośląskiej.",
-            "70": "Można go znaleźć w czwartek za dnia na Stepie Strapionych.",
-            "71": "Można go znaleźć w letni dzień w Czarnolesie.",
-            "72": "Można go znaleźć w piątek za dnia w Magmakaronie.",
-            "73": "Można go znaleźć w sobotnią noc w Mrocznych Borach.",
-            "74": "Można go znaleźć w zbrojowni.",
-            "75": "Can be found in Maerwynn during Tidy Toilet Time Event.",
-            "76": "Można go znaleźć w Walentynki w mieście Propolis.",
-            "77": "Można go znaleźć w Sylwestra i Nowy Rok w Mrocznych Borach.",
-            "78": "Można go znaleźć po ukończeniu Portalu na Wyspie Trupiego Łba.",
-            "79": "Można go znaleźć w Gnuśnogrodzie po pokonaniu ostatniego pupila w środowisku.",
-            "80": "Można go znaleźć w dzień w Magmakaronie.",
-            "81": "Można go znaleźć w dzień na Wyspie Trupiego Łba.",
-            "82": "Można go znaleźć nocą w Mrocznych Borach.",
-            "83": "Można go znaleźć w dzień w mieście Teges.",
-            "84": "Można go znaleźć w poniedziałek za dnia na Trakcie Trędowatych.",
-            "85": "Można go znaleźć we wtorkową noc w Górach Koronkowych.",
-            "86": "Można go znaleźć w środę za dnia w Dziewiczym Kanionie.",
-            "87": "Można go znaleźć w zimowe dni w mieście Propolis.",
-            "88": "Można go znaleźć w czwartkową noc w Zmurszałym Lesie.",
-            "89": "Można go znaleźć w piątek za dnia na Wyspie Trupiego Łba.",
-            "90": "Można go znaleźć w sobotę za dnia na Moczarach Mary.",
-            "91": "Można go znaleźć w jesienną noc w krainie Erogenii.",
-            "92": "Można go znaleźć w letnie dni w Puszczy Zarośląskiej.",
-            "93": "Można go znaleźć w niedzielną noc na Pogórzu Cienistej Skały.",
-            "94": "Można go znaleźć na Wyspie Trupiego Łba. Wymaga pupili w pierwszej 100 sali chwały lub 4000 czci w chwili ukończenia zadania.",
-            "95": "Można go znaleźć tylko w osiedlowym gabinecie magii.",
-            "96": "Można go znaleźć podczas urodzin SFGame (22.06) na Wyspie Trupiego Łba.",
-            "97": "Można go znaleźć w tajemniczej toalecie. Wymaga aury na poziomie 20.",
-            "98": "Można go znaleźć na Ugorze Orków po ukończeniu 22 lochu w Strefie Światła.",
-            "99": "Można go znaleźć w Nigdylandii po pokonaniu ostatniego pupila w środowisku."
-        },
         "bulk": {
             "not_possible": "Nie jest to możliwe",
             "toast": {
@@ -1319,7 +1218,31 @@
             "save": "Zapisz",
             "close": "Zamknij",
             "ok": "Ok",
-            "apply": "Zastosuj"
+            "apply": "Zastosuj",
+            "submit": "Submit"
+        },
+        "report": {
+            "title": "Feedback",
+            "field": {
+                "type": "Type",
+                "description": "Description",
+                "tool": "Tool",
+                "email": "Email (optional)"
+            },
+            "type": {
+                "issue": "Issue",
+                "suggestion": "Suggestion"
+            },
+            "toast": {
+                "success": {
+                    "title": "Thank you for your feedback",
+                    "message": "If you filled in your email you may receive a reply in several working days"
+                },
+                "error": {
+                    "title": "Your feedback could not be submitted",
+                    "message": "Please try again later"
+                }
+            }
         },
         "manage_link": {
             "title": "Zarządzaj scaleniami graczy/gildii",

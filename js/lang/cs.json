@@ -309,6 +309,7 @@
             "kofi": "Dejte Marovi nějaké houby",
             "crowdin": "Pomozte nám s překladem",
             "webshop#": "Použijte kód <b class=\"text-white\">SFTOOLS</b> v Webshopu",
+            "report": "Submit feedback",
             "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
         },
         "stats": {
@@ -340,13 +341,13 @@
             "title": "Kalendář mažlíčků",
             "desc": "Zjisti kdy můžeš chytnout vybrané mazlíčky"
         },
-        "players": {
-            "title": "Simulátor soubojů",
-            "desc": "Zjisti jakou máš šanci na poražení ostatních hráčů"
+        "simulator": {
+            "title": "Fight Simulator",
+            "desc": "Simulate the probable outcome of a PvP battle"
         },
-        "guild": {
-            "title": "Simulátor cechovních soubojů",
-            "desc": "Zjisti jakou máš šanci na poražení ostatních cechů"
+        "guilds": {
+            "title": "Guild Simulator",
+            "desc": "Simulate the probable outcome of a guild battle"
         },
         "pets": {
             "title": "Simulátor mazlíčků",
@@ -372,13 +373,13 @@
             "title": "Prohlížeč podzemí",
             "desc": "Zobraz všechny souboje podzemí v archivu"
         },
-        "atts": {
-            "title": "Zlato & Zkušenosti",
-            "desc": "Křivky & výpočty"
+        "attributes": {
+            "title": "Gold & Experience",
+            "desc": "Curves & calculators"
         },
-        "smith": {
-            "title": "Vylepšení u kováře",
-            "desc": "Kolik vylepšení stojí a kolik materiálu ztratíš"
+        "blacksmith": {
+            "title": "Blacksmith Upgrades",
+            "desc": "What it costs and what gets lost"
         },
         "hydra": {
             "title": "Simulator hydry",
@@ -805,108 +806,6 @@
             "203": "Čaroobchod",
             "204": "Tajemný záchod"
         },
-        "descriptions": {
-            "0": "Nalezneš jej přes den v Nevermooru.",
-            "1": "Nalezneš jej v noci v Maerwynnu.",
-            "2": "Nalezneš jej v noci v Hustodžungli.",
-            "3": "Nalezneš jej v noci v Puklém kaňonu.",
-            "4": "Nalezneš jej během pondělní noci v Černém lese.",
-            "5": "Nalezneš jej během hodiny duchů v Černočerných bažinách. (00:00 - 01:00)",
-            "6": "Nalezneš jej během letních dnů v Temnolese.",
-            "7": "Nalezneš jej během zimního dne na Mrtvostrově.",
-            "8": "Nalezneš jej během páteční noci ve Stínohorách.",
-            "9": "Nalezneš jej během podzimních dnů v Hnilohvozdu.",
-            "10": "Nalezneš jej během pondělní noci na Vodostrově.",
-            "11": "Nalezneš jej během úterní noci v Tesákových horách.",
-            "12": "Nalezneš jej během středeční noci v Erogenionu.",
-            "13": "Nalezneš jej ve čtvrtek ve dne v Klopýtavé stepi.",
-            "14": "Lze nalézt v Černém lese na Halloweenu během akce \"Bláznivá sklizeň houbiček\".",
-            "15": "Nalezneš jej v Gnarogrimu. Vyžadováno: Top 1,000 v síni slávy nebo 50,000 věhlasu po dokončení úkolu.",
-            "16": "K nalezení během Události nehorázných zkušeností v Prasopustině.",
-            "17": "Nalezneš jej v pátek 13. ve Špínokraji.",
-            "18": "Dostaneš jej jako odměnu za vyčištění 10. podlaží 15. patra Stinného světa. Lokace: Oz korské planiny.",
-            "19": "Nalezneš jej na posledním podlaží stinného habitatu. Lokace: Výhňopoušť.",
-            "20": "Nalezneš jej přes den v Klopýtavé stepi.",
-            "21": "Nalezneš jej v noci na Hnilohvozdu.",
-            "22": "Can be found in Erogenion during the day.",
-            "23": "Can be found on Shadowrock Mountain during the day.",
-            "24": "Can be found in Sprawling Jungle on spring nights.",
-            "25": "Can be found in Nevermoor on Saturday during the day.",
-            "26": "Can be found in Sunburn Desert on summer days.",
-            "27": "Can be found in Flooded Caldwell on fall days.",
-            "28": "Can be found on Skull Island on Monday night.",
-            "29": "Can be found in Busted Lands on Tuesday during the day.",
-            "30": "Can be found on Tusk Mountain on Sunday during the day.",
-            "31": "Can be found in Northrunt on Wednesday night.",
-            "32": "Can be found in Evernight Forest on Thursday during the day.",
-            "33": "Can be found in Black Water Swamp on Friday during the day.",
-            "34": "Can be found in Erogenion. Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "35": "Can be found in Northrunt in December.",
-            "36": "Can be found in Split Canyon on April Fools' Day. For real!",
-            "37": "Can be found in Erogenion during Epic Event.",
-            "38": "Is a reward for clearing the Tower. Location: Rotten Lands.",
-            "39": "Can be found on the last floor of the Light Habitat. Location: Plains of Oz'Korr.",
-            "40": "Can be found in Stumble Steppe during the day.",
-            "41": "Can be found in Gnarogrim at night.",
-            "42": "Can be found in Erogenion during the day.",
-            "43": "Can be found in Black Forest during the day.",
-            "44": "Nalezneš jej přes den v Erogenionu.",
-            "45": "Can be found on Tusk Mountain on summer days.",
-            "46": "Can be found in Black Water Swamp on fall days.",
-            "47": "Can be found in in Split Canyon on winter days.",
-            "48": "Can be found in Magmaron on spring days.",
-            "49": "Can be found in Nevermoor on Sunday night.",
-            "50": "Can be found in Maerwynn on Monday during the day.",
-            "51": "Can be found in Busted Lands on Tuesday night.",
-            "52": "Can be found in Evernight Forest on Wednesday during the day.",
-            "53": "Can be found in Rotten Lands on Thursday during the day.",
-            "54": "Can be found in Maerwynn on Easter.",
-            "55": "Can be found in Sprawling Jungle on Whitsun.",
-            "56": "Can be found in Plains of Oz'Korr during Gold Event.",
-            "57": "Can be found in Stumble Steppe. Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "58": "Can be found in the gem mine. Required: Mine level 20.",
-            "59": "Can be found on the last floor of the Earth Habitat. Location: Moldy Forest.",
-            "60": "Can be found in Nevermoor during the day.",
-            "61": "Can be found in Flooded Caldwell at night.",
-            "62": "Can be found in Black Water Swamp at night.",
-            "63": "Can be found on Tusk Mountain during the day.",
-            "64": "Can be found in Busted Lands on Tuesday night.",
-            "65": "Can be found in Moldy Forest on fall nights.",
-            "66": "Can be found in Split Canyon on Monday during the day.",
-            "67": "Can be found in Sunburn Desert on spring days.",
-            "68": "Can be found in Plains of Oz'Korr on winter days.",
-            "69": "Can be found in Sprawling Jungle on Wednesday night.",
-            "70": "Can be found in Stumble Steppe on Thursday during the day.",
-            "71": "Can be found in Black Forest on summer days.",
-            "72": "Can be found in Magmaron on Friday during the day.",
-            "73": "Can be found in Evernight Forest on Saturday night.",
-            "74": "V pustině jej nenalezneš, pouze ve své zbrojírně.",
-            "75": "Can be found in Maerwynn during Tidy Toilet Time Event.",
-            "76": "Can be found in Flooded Caldwell on Valentine's Day.",
-            "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
-            "78": "Is a reward for clearing the single-player Demon Portal. Location: Skull Island.",
-            "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
-            "80": "Can be found in Magmaron during the day.",
-            "81": "Can be found on Skull Island during the day.",
-            "82": "Can be found in Evernight Forest at night.",
-            "83": "Can be found in Northrunt during the day.",
-            "84": "Can be found in Rotten Lands on Monday during the day.",
-            "85": "Can be found on Tusk Mountain on Tuesday night.",
-            "86": "Can be found in Split Canyon on Wednesday during the day.",
-            "87": "Can be found in Flooded Caldwell on winter days.",
-            "88": "Can be found in Moldy Forest on Thursday night.",
-            "89": "Can be found on Skull Island on Friday during the day.",
-            "90": "Can be found in Black Water Swamp on Saturday during the day.",
-            "91": "Can be found in Erogenion on fall nights.",
-            "92": "Can be found in Sprawling Jungle on summer days.",
-            "93": "Can be found on Shadowrock Mountain on Sunday night.",
-            "94": "Can be found on Skull Island. Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.",
-            "95": "Can't be found in the wild, but in your local magic shop.",
-            "96": "Can be found on Skull Island during the Birthday Event.",
-            "97": "Can be found in the Arcane Toilet. Required: Aura level 20.",
-            "98": "Is rewarded for the next quest after clearing dungeon 22. Location: Busted Lands.",
-            "99": "Can be found on the last floor of the Water Habitat. Location: Nevermoor."
-        },
         "bulk": {
             "not_possible": "Nemožné",
             "toast": {
@@ -1319,7 +1218,31 @@
             "save": "Uložit",
             "close": "Zavřít",
             "ok": "Ok",
-            "apply": "Použít"
+            "apply": "Použít",
+            "submit": "Submit"
+        },
+        "report": {
+            "title": "Feedback",
+            "field": {
+                "type": "Type",
+                "description": "Description",
+                "tool": "Tool",
+                "email": "Email (optional)"
+            },
+            "type": {
+                "issue": "Issue",
+                "suggestion": "Suggestion"
+            },
+            "toast": {
+                "success": {
+                    "title": "Thank you for your feedback",
+                    "message": "If you filled in your email you may receive a reply in several working days"
+                },
+                "error": {
+                    "title": "Your feedback could not be submitted",
+                    "message": "Please try again later"
+                }
+            }
         },
         "manage_link": {
             "title": "Manage player / guild merge",

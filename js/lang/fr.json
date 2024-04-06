@@ -309,6 +309,7 @@
             "kofi": "Give mar some shrooms",
             "crowdin": "Aidez-moi pour les traductions",
             "webshop#": "Utilisez le code <b class=\"text-white\">SFTOOLS</b> dans la Boutique",
+            "report": "Submit feedback",
             "notice#": "Distribué <b>TEL QUEL</b>. Ce site n'est pas affilié à <b>Playa Games</b> de quelque manière."
         },
         "stats": {
@@ -340,13 +341,13 @@
             "title": "Calendrier des Familiers",
             "desc": "Planifier quand vous pourrez attraper les familiers"
         },
-        "players": {
-            "title": "Simulateur d'Arène",
-            "desc": "Simulez les probabilités des résultats d'un combat en PvP"
+        "simulator": {
+            "title": "Fight Simulator",
+            "desc": "Simulate the probable outcome of a PvP battle"
         },
-        "guild": {
-            "title": "Simulateur de Combat de Guilde",
-            "desc": "Simulez les probabilités des résultats d'un combat de guilde"
+        "guilds": {
+            "title": "Guild Simulator",
+            "desc": "Simulate the probable outcome of a guild battle"
         },
         "pets": {
             "title": "Simulateur de Familiers",
@@ -372,13 +373,13 @@
             "title": "Visionneuse de Combats PvE",
             "desc": "Affiche tous les combats PvE stocker dans un fichier d'archives"
         },
-        "atts": {
-            "title": "Or & Expérience",
-            "desc": "Courbes & calculateurs"
+        "attributes": {
+            "title": "Gold & Experience",
+            "desc": "Curves & calculators"
         },
-        "smith": {
-            "title": "Améliorations du Forgeron",
-            "desc": "Combien ça coûte, combien on perd"
+        "blacksmith": {
+            "title": "Blacksmith Upgrades",
+            "desc": "What it costs and what gets lost"
         },
         "hydra": {
             "title": "Simulateur de l'Hydre",
@@ -805,108 +806,6 @@
             "203": "Apothicaire",
             "204": "Toilette des arcanes"
         },
-        "descriptions": {
-            "0": "Peut être trouvé dans le Marécage-Sanretour pendant la journée.",
-            "1": "Peut être trouvé à Maerwynn la nuit.",
-            "2": "Peut être trouvé dans la Jungle Grossomme la nuit.",
-            "3": "Peut être trouvé dans le Canyon Baille-Baille la nuit.",
-            "4": "Peut être trouvé dans la Forêt Noire lundi soir.",
-            "5": "Peut être trouvé dans le Marais-Onoir pendant l'heure de la Sorcière. (00:00 - 01:00)",
-            "6": "Peut être trouvé dans la Forêt-Nuitséternelles les jours d'été.",
-            "7": "Peut être trouvé sur l'Île Tête-de-mort les jours d'hiver.",
-            "8": "Peut être trouvé sur la Montagne de la Roche Ombragée le vendredi soir.",
-            "9": "Peut être trouvé dans la Forêt-Pourrie les jours d'automne.",
-            "10": "Peut être trouvé sur l'Île Scarpa le lundi soir.",
-            "11": "Peut être trouvé sur la Montagne Denquimord mardi soir.",
-            "12": "Peut être trouvé à Erogenion le mercredi soir.",
-            "13": "Peut être trouvé dans les Steppes Trébucheuse le jeudi pendant la journée.",
-            "14": "Peut être trouvé dans la Forêt Noire à Halloween.",
-            "15": "Peut être trouvé à Gnarogrim. Requis: Pantheon dans le top 1 000 ou 50 000 honneur lorsque vous terminez la quête.",
-            "16": "Peut être trouvé dans le Désert Naf-Noufpendant l'événement d'EXP.",
-            "17": "Peut être trouvé dans le Pays Troupis un vendredi 13.",
-            "18": "En récompense pour la complétion du 10ème étage du 15ème donjon du monde des ombres.",
-            "19": "Peut être trouvé au dernier étage de l'Habitat des ombres.",
-            "20": "Peut être trouvé dans les Steppes Trébucheuse pendant la journée.",
-            "21": "Peut être trouvé dans la Forêt-Pourrie la nuit.",
-            "22": "Peut être trouvé à Erogenion pendant la journée.",
-            "23": "Peut être trouvé sur la Montagne de la Roche Ombragée des ombres pendant la journée.",
-            "24": "Peut être trouvé dans la Jungle Grossomme les nuits de printemps.",
-            "25": "Peut être trouvé dans les Marécages-Sanretour le samedi pendant la journée.",
-            "26": "Peut être trouvé dans le Désert Koudsoleil les jours d'été.",
-            "27": "Peut être trouvé sur l'Île Scarpa les jours d'automne.",
-            "28": "Peut être trouvé sur l'Île Tête-de-mort lundi soir.",
-            "29": "Peut être trouvé sur le Désert Naf-Nouf le mardi pendant la journée.",
-            "30": "Peut être trouvé sur la Montagne Denquimord le dimanche pendant la journée.",
-            "31": "Peut être trouvé à Nordville le mercredi soir.",
-            "32": "Peut être trouvé dans une forêt de nuit éternelle le jeudi pendant la journée.",
-            "33": "Can be found in Black Water Swamp on Friday during the day.",
-            "34": "Can be found in Erogenion. Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "35": "Can be found in Northrunt in December.",
-            "36": "Can be found in Split Canyon on April Fools' Day. For real!",
-            "37": "Can be found in Erogenion during Epic Event.",
-            "38": "Is a reward for clearing the Tower. Location: Rotten Lands.",
-            "39": "Can be found on the last floor of the Light Habitat. Location: Plains of Oz'Korr.",
-            "40": "Can be found in Stumble Steppe during the day.",
-            "41": "Can be found in Gnarogrim at night.",
-            "42": "Can be found in Erogenion during the day.",
-            "43": "Can be found in Black Forest during the day.",
-            "44": "Can be found in Northrunt at night.",
-            "45": "Can be found on Tusk Mountain on summer days.",
-            "46": "Can be found in Black Water Swamp on fall days.",
-            "47": "Can be found in in Split Canyon on winter days.",
-            "48": "Can be found in Magmaron on spring days.",
-            "49": "Can be found in Nevermoor on Sunday night.",
-            "50": "Can be found in Maerwynn on Monday during the day.",
-            "51": "Can be found in Busted Lands on Tuesday night.",
-            "52": "Can be found in Evernight Forest on Wednesday during the day.",
-            "53": "Can be found in Rotten Lands on Thursday during the day.",
-            "54": "Can be found in Maerwynn on Easter.",
-            "55": "Can be found in Sprawling Jungle on Whitsun.",
-            "56": "Can be found in Plains of Oz'Korr during Gold Event.",
-            "57": "Can be found in Stumble Steppe. Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.",
-            "58": "Can be found in the gem mine. Required: Mine level 20.",
-            "59": "Can be found on the last floor of the Earth Habitat. Location: Moldy Forest.",
-            "60": "Can be found in Nevermoor during the day.",
-            "61": "Can be found in Flooded Caldwell at night.",
-            "62": "Can be found in Black Water Swamp at night.",
-            "63": "Can be found on Tusk Mountain during the day.",
-            "64": "Can be found in Busted Lands on Tuesday night.",
-            "65": "Can be found in Moldy Forest on fall nights.",
-            "66": "Can be found in Split Canyon on Monday during the day.",
-            "67": "Can be found in Sunburn Desert on spring days.",
-            "68": "Can be found in Plains of Oz'Korr on winter days.",
-            "69": "Can be found in Sprawling Jungle on Wednesday night.",
-            "70": "Can be found in Stumble Steppe on Thursday during the day.",
-            "71": "Can be found in Black Forest on summer days.",
-            "72": "Can be found in Magmaron on Friday during the day.",
-            "73": "Can be found in Evernight Forest on Saturday night.",
-            "74": "Can't be found in the wild, but in your local weapon shop.",
-            "75": "Can be found in Maerwynn during Tidy Toilet Time Event.",
-            "76": "Can be found in Flooded Caldwell on Valentine's Day.",
-            "77": "Can be found in Evernight Forest on New Year's Eve & Day.",
-            "78": "Is a reward for clearing the single-player Demon Portal. Location: Skull Island.",
-            "79": "Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.",
-            "80": "Can be found in Magmaron during the day.",
-            "81": "Can be found on Skull Island during the day.",
-            "82": "Can be found in Evernight Forest at night.",
-            "83": "Peut être trouvé à Nordthrund pendant la journée.",
-            "84": "Can be found in Rotten Lands on Monday during the day.",
-            "85": "Can be found on Tusk Mountain on Tuesday night.",
-            "86": "Can be found in Split Canyon on Wednesday during the day.",
-            "87": "Can be found in Flooded Caldwell on winter days.",
-            "88": "Can be found in Moldy Forest on Thursday night.",
-            "89": "Can be found on Skull Island on Friday during the day.",
-            "90": "Can be found in Black Water Swamp on Saturday during the day.",
-            "91": "Can be found in Erogenion on fall nights.",
-            "92": "Can be found in Sprawling Jungle on summer days.",
-            "93": "Can be found on Shadowrock Mountain on Sunday night.",
-            "94": "Can be found on Skull Island. Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.",
-            "95": "Can't be found in the wild, but in your local magic shop.",
-            "96": "Can be found on Skull Island during the Birthday Event.",
-            "97": "Can be found in the Arcane Toilet. Required: Aura level 20.",
-            "98": "Is rewarded for the next quest after clearing dungeon 22. Location: Busted Lands.",
-            "99": "Can be found on the last floor of the Water Habitat. Location: Nevermoor."
-        },
         "bulk": {
             "not_possible": "Impossible",
             "toast": {
@@ -1319,7 +1218,31 @@
             "save": "Save",
             "close": "Close",
             "ok": "Ok",
-            "apply": "Apply"
+            "apply": "Apply",
+            "submit": "Submit"
+        },
+        "report": {
+            "title": "Feedback",
+            "field": {
+                "type": "Type",
+                "description": "Description",
+                "tool": "Tool",
+                "email": "Email (optional)"
+            },
+            "type": {
+                "issue": "Issue",
+                "suggestion": "Suggestion"
+            },
+            "toast": {
+                "success": {
+                    "title": "Thank you for your feedback",
+                    "message": "If you filled in your email you may receive a reply in several working days"
+                },
+                "error": {
+                    "title": "Your feedback could not be submitted",
+                    "message": "Please try again later"
+                }
+            }
         },
         "manage_link": {
             "title": "Manage player / guild merge",
