@@ -1,5 +1,6 @@
 @import url('../global.css');
 @import url('../editor.css');
+@import url('../core/debug.css');
 
 .opaque-rows .row:nth-child(odd) {
   background-color: #1b1c1d;
