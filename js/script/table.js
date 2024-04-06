@@ -412,18 +412,23 @@ class TableInstance {
     setEntries (array) {
         this.settings.evalBefore(array)
 
-        this.array = array.map(obj => {
-            let { current, compare } = obj;
+        this.array = array.map((entry) => {
+            let { current, compare } = entry;
 
-            let p = DatabaseManager.getAny(current.LinkId, current.Timestamp);
-            let c = DatabaseManager.getAny(current.LinkId, compare.Timestamp);
+            current = DatabaseManager.getAny(current.LinkId, current.Timestamp);
+            compare = DatabaseManager.getAny(current.LinkId, compare.Timestamp);
 
-            let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(p, c)));
+            let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(current, compare)));
             ExpressionCache.reset();
 
-            return disc ? null : {
-                current: p, compare: c
-            };
+            if (disc) {
+                return null;
+            } else {
+                entry.current = current;
+                entry.compare = compare;
+
+                return entry;
+            }
         }).filter(e => e);
 
         // Copy over lost properties
