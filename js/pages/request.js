@@ -261,7 +261,7 @@ Site.ready({}, function (urlParams) {
     }
   
     Promise.all(promises).then(() => {
-      Loader.close();
+      Loader.toggle(false);
       render();
     });
   }
