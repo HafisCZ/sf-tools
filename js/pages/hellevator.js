@@ -135,7 +135,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     function renderEnemies (enemies, scores) {
         let content = '';
 
-        let firstPossibleLoss = enemies.length - 1;
+        let firstPossibleLoss = enemies.length;
         for (let i = 0; i < enemies.length; i++) {
             if ((scores[i] || 0) != 1) {
                 firstPossibleLoss = i;
@@ -143,19 +143,28 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
         }
 
-        let lastPossibleLoss = 0;
+        let lastPossibleWin = -1;
         for (let i = enemies.length - 1; i >= firstPossibleLoss; i--) {
             if ((scores[i] || 0) != 0) {
-                lastPossibleLoss = i;
+                lastPossibleWin = i;
                 break;
             }
         }
 
-        if (firstPossibleLoss !== 0 && firstPossibleLoss == lastPossibleLoss && enemies.length > 10) {
+        if (firstPossibleLoss === lastPossibleWin && lastPossibleWin === enemies.length && enemies.length > 10) {
+            // If player can win everything, display message
             content = `
                 <div class="row">
                     <div class="sixteen wide text-center column">
-                        ${intl(`hellevator.win.${scores[0] === 0 ? 'none' : 'all'}`, { count: enemies.length - 1 })}    
+                        ${intl(`hellevator.win.all`, { count: enemies.length })}    
+                    </div>
+                </div>
+            `
+        } else if (lastPossibleWin === -1 && enemies.length > 10) {
+            content = `
+                <div class="row">
+                    <div class="sixteen wide text-center column">
+                        ${intl(`hellevator.win.none`, { count: enemies.length })}    
                     </div>
                 </div>
             `
@@ -171,7 +180,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
 
             for (const [index, enemy] of Object.entries(enemies)) {
-                if (index < firstPossibleLoss || index > lastPossibleLoss) {
+                if (index < firstPossibleLoss || index > lastPossibleWin) {
                     continue;
                 }
                 
@@ -192,11 +201,11 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 `
             }
 
-            if (lastPossibleLoss < enemies.length - 1) {
+            if (lastPossibleWin < enemies.length) {
                 content += `
                     <div class="row">
                         <div class="sixteen wide text-center column">
-                            ${intl('hellevator.win.last', { count: enemies.length - 1 - lastPossibleLoss })}    
+                            ${intl('hellevator.win.last', { count: enemies.length - 1 - lastPossibleWin })}    
                         </div>
                     </div>
                 `
