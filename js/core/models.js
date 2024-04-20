@@ -2404,45 +2404,45 @@ class ModelUtils {
             Name: model.Name,
             Level: model.Level,
             Constitution: {
-                Total: model.Constitution.Total
+                Total: model.Constitution?.Total ?? 0
             },
             Dexterity: {
-                Total: model.Dexterity.Total
+                Total: model.Dexterity?.Total ?? 0
             },
             Intelligence: {
-                Total: model.Intelligence.Total
+                Total: model.Intelligence?.Total ?? 0
             },
             Strength: {
-                Total: model.Strength.Total
+                Total: model.Strength?.Total ?? 0
             },
             Luck: {
-                Total: model.Luck.Total
+                Total: model.Luck?.Total ?? 0
             },
             Runes: {
-                ResistanceCold: model.Runes.ResistanceCold,
-                ResistanceFire: model.Runes.ResistanceFire,
-                ResistanceLightning: model.Runes.ResistanceLightning
+                ResistanceCold: model.Runes?.ResistanceCold ?? 0,
+                ResistanceFire: model.Runes?.ResistanceFire ?? 0,
+                ResistanceLightning: model.Runes?.ResistanceLightning ?? 0
             },
             Items: {
                 Wpn1: {
                     AttributeTypes: {
-                        2: model.Items.Wpn1.AttributeTypes[2]
+                        2: model.Items?.Wpn1?.AttributeTypes?.[2] ?? 0
                     },
                     Attributes: {
-                        2: model.Items.Wpn1.Attributes[2]
+                        2: model.Items?.Wpn1?.Attributes?.[2] ?? 0
                     },
-                    DamageMax: model.Items.Wpn1.DamageMax,
-                    DamageMin: model.Items.Wpn1.DamageMin
+                    DamageMax: model.Items?.Wpn1?.DamageMax ?? 0,
+                    DamageMin: model.Items?.Wpn1?.DamageMin ?? 0
                 },
                 Wpn2: {
                     AttributeTypes: {
-                        2: model.Items.Wpn2?.AttributeTypes[2] ?? 0
+                        2: model.Items?.Wpn2?.AttributeTypes?.[2] ?? 0
                     },
                     Attributes: {
-                        2: model.Items.Wpn2?.Attributes[2] ?? 0
+                        2: model.Items?.Wpn2?.Attributes?.[2] ?? 0
                     },
-                    DamageMax: model.Items.Wpn2?.DamageMax ?? 0,
-                    DamageMin: model.Items.Wpn2?.DamageMin ?? 0
+                    DamageMax: model.Items?.Wpn2?.DamageMax ?? 0,
+                    DamageMin: model.Items?.Wpn2?.DamageMin ?? 0
                 }
             }
         };
@@ -2458,61 +2458,61 @@ class ModelUtils {
             Prefix: model.Prefix,
             BlockChance: model.BlockChance,
             Constitution: {
-                Total: model.Constitution.Total
+                Total: model.Constitution?.Total ?? 0
             },
             Dexterity: {
-                Total: model.Dexterity.Total
+                Total: model.Dexterity?.Total ?? 0
             },
             Dungeons: {
-                Player: model.Dungeons.Player,
-                Group: model.Dungeons.Group
+                Player: model.Dungeons?.Player ?? 0,
+                Group: model.Dungeons?.Group ?? 0
             },
             Fortress: {
-                Gladiator: model.Fortress.Gladiator || 0,
+                Gladiator: model.Fortress?.Gladiator ?? 0,
             },
             Intelligence: {
-                Total: model.Intelligence.Total
+                Total: model.Intelligence?.Total ?? 0
             },
             Strength: {
-                Total: model.Strength.Total
+                Total: model.Strength?.Total ?? 0
             },
             Potions: {
-                Life: model.Potions.Life
+                Life: model.Potions?.Life ?? 0
             },
             Luck: {
-                Total: model.Luck.Total
+                Total: model.Luck?.Total ?? 0
             },
             Runes: {
-                Health: model.Runes.Health,
-                ResistanceCold: model.Runes.ResistanceCold,
-                ResistanceFire: model.Runes.ResistanceFire,
-                ResistanceLightning: model.Runes.ResistanceLightning
+                Health: model.Runes?.Health ?? 0,
+                ResistanceCold: model.Runes?.ResistanceCold ?? 0,
+                ResistanceFire: model.Runes?.ResistanceFire ?? 0,
+                ResistanceLightning: model.Runes?.ResistanceLightning ?? 0
             },
             Items: {
                 Hand: {
-                    HasEnchantment: model.Items.Hand.HasEnchantment
+                    HasEnchantment: model.Items?.Hand?.HasEnchantment ?? false
                 },
                 Wpn1: {
                     AttributeTypes: {
-                        2: model.Items.Wpn1.AttributeTypes[2]
+                        2: model.Items?.Wpn1?.AttributeTypes?.[2] ?? 0
                     },
                     Attributes: {
-                        2: model.Items.Wpn1.Attributes[2]
+                        2: model.Items?.Wpn1?.Attributes?.[2] ?? 0
                     },
-                    DamageMax: model.Items.Wpn1.DamageMax,
-                    DamageMin: model.Items.Wpn1.DamageMin,
-                    HasEnchantment: model.Items.Wpn1.HasEnchantment
+                    DamageMax: model.Items?.Wpn1?.DamageMax ?? 0,
+                    DamageMin: model.Items?.Wpn1?.DamageMin ?? 0,
+                    HasEnchantment: model.Items?.Wpn1?.HasEnchantment ?? false
                 },
                 Wpn2: {
                     AttributeTypes: {
-                        2: model.Items.Wpn2?.AttributeTypes[2] ?? 0
+                        2: model.Items?.Wpn2?.AttributeTypes?.[2] ?? 0
                     },
                     Attributes: {
-                        2: model.Items.Wpn2?.Attributes[2] ?? 0
+                        2: model.Items?.Wpn2?.Attributes?.[2] ?? 0
                     },
-                    DamageMax: model.Items.Wpn2?.DamageMax ?? 0,
-                    DamageMin: model.Items.Wpn2?.DamageMin ?? 0,
-                    HasEnchantment: model.Items.Wpn2?.HasEnchantment ?? false
+                    DamageMax: model.Items?.Wpn2?.DamageMax ?? 0,
+                    DamageMin: model.Items?.Wpn2?.DamageMin ?? 0,
+                    HasEnchantment: model.Items?.Wpn2?.HasEnchantment ?? false
                 }
             }
         };
