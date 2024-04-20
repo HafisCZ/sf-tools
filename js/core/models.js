@@ -2403,6 +2403,7 @@ class ModelUtils {
             Class: model.Class,
             Name: model.Name,
             Level: model.Level,
+            Health: model.Health,
             Constitution: {
                 Total: model.Constitution?.Total ?? 0
             },
