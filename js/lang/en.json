@@ -1118,6 +1118,7 @@
         "mask": "Mask",
         "instrument": "Instrument",
         "armor": "Armor",
+        "health": "Health",
         "armor_placeholder": "Armor points",
         "min": "Min",
         "min_placeholder": "Item Min",

@@ -255,6 +255,7 @@ class Editor extends EditorBase {
             class: new Field(`${selector} [data-path="Class"]`, '1'),
             level: new Field(`${selector} [data-path="Level"]`, '', Field.isPlayerLevel),
             armor: new Field(`${selector} [data-path="Armor"]`, '', Field.isNumber),
+            health: new Field(`${selector} [data-path="Health"]`, '0', Field.isNumber),
 
             resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"]`, '', Field.isResistanceRune),
             resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"]`, '', Field.isResistanceRune),
@@ -493,6 +494,9 @@ class Editor extends EditorBase {
             }
         })('div.morph', '');
 
+        // By default hide the field
+        this.fields['health'].show(false);
+
         this.morph.initialize({
             action: 'hide',
             values: [
@@ -594,6 +598,12 @@ class Editor extends EditorBase {
                             <label>${intl('editor.level')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Level" placeholder="1 - 800">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${intl('editor.health')}</label>
+                            <div class="ui inverted centered input">
+                                <input type="text" data-path="Health">
                             </div>
                         </div>
                     </div>
