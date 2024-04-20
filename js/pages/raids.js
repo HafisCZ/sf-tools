@@ -49,6 +49,8 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
       document.querySelector(`[data-guild]:not([data-guild="${currentList}"])`).classList.remove('active-guild');
       currentTarget.classList.add('active-guild');
 
+      $(`#player-editor [data-category="modifiers"]`).toggle(currentList == 0);
+
       editor.clear();
       playerCurrentIndex = -1;
 

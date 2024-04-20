@@ -736,7 +736,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui grey inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0" data-category="modifiers">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.portal_health')}</label>
@@ -759,7 +759,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui grey inverted segment !p-2 !m-0">
+                <div class="ui grey inverted segment !p-2 !m-0" data-category="modifiers">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.portal_damage')}</label>
