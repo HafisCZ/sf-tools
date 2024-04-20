@@ -1622,6 +1622,11 @@ class PlayerModel {
     }
 
     getHealth () {
+        if (typeof this.Config === 'undefined') {
+            // Ensure config exists, needed due to simulators
+            this.Config = CONFIG.fromIndex(this.Class);
+        }
+
         let ma = this.Config.HealthMultiplier;
         let mb = (100 + this.Dungeons.Player) / 100;
         let mc = this.Potions.Life ? 1.25 : 1;

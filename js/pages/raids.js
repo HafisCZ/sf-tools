@@ -142,7 +142,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
   // Paste handler
   function preparePlayerData (data, isEnemy) {
-      let object = data.Class ? data : new PlayerModel(data);
+      let object = data.Class ? _merge(new PlayerModel(), data) : new PlayerModel(data);
 
       ItemModel.forceCorrectRune(object.Items.Wpn1);
       ItemModel.forceCorrectRune(object.Items.Wpn2);
@@ -156,6 +156,10 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
       }
 
       if (isEnemy) {
+        if (!object.Health) {
+            object.Health = object.getHealth();
+        }
+
         return ModelUtils.toSimulatorEnemyData(object)
       } else {
         return ModelUtils.toSimulatorData(object)
