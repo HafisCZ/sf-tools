@@ -18,7 +18,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
   });
 }
 
-class GuildSimulator extends SimulatorBase {
+class RaidSimulator extends SimulatorBase {
   simulate (players, enemies, iterations) {
     let score = 0;
     let playersLeftTotal = 0;
@@ -44,7 +44,7 @@ class GuildSimulator extends SimulatorBase {
   }
 
   cache (entities, index) {
-    return entities.map((entity) => SimulatorModel.create(index, entity)).sort((a, b) => a.Player.Level - b.Player.Level)
+    return entities.map((entity) => SimulatorModel.create(index, entity.player)).sort((a, b) => a.Player.Level - b.Player.Level)
   }
 
   battle () {

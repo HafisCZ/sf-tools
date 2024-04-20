@@ -52,7 +52,10 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
       $(`#player-editor [data-category="modifiers"]`).toggle(currentList == 0);
 
       editor.clear();
-      editor.field('health').show(currentList != 0);
+
+      editor.getField('health').show(currentList != 0);
+      editor.getField('weapon1_enchantment').show(currentList != 0);
+      editor.getField('weapon2_enchantment').show(currentList != 0);
 
       playerCurrentIndex = -1;
 
@@ -138,7 +141,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
   });
 
   // Paste handler
-  function preparePlayerData (data) {
+  function preparePlayerData (data, isEnemy) {
       let object = data.Class ? data : new PlayerModel(data);
 
       ItemModel.forceCorrectRune(object.Items.Wpn1);
@@ -152,7 +155,11 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
           object.Items.Wpn2 = ItemModel.empty();
       }
 
-      return object;
+      if (isEnemy) {
+        return ModelUtils.toSimulatorEnemyData(object)
+      } else {
+        return ModelUtils.toSimulatorData(object)
+      }
   }
 
   function handlePaste (data) {
@@ -168,19 +175,19 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
           for (let entry of data) {
               playerList[currentList].push({
-                  player: _merge(new PlayerModel(), preparePlayerData(entry)),
+                  player: _merge(new PlayerModel(), preparePlayerData(entry, currentList === 1)),
                   index: playerIndex++
               })
           }
 
           updatePlayerList();
       } else if (data.Class || data.save) {
-          editor.fill(preparePlayerData(data));
+          editor.fill(preparePlayerData(data, currentList === 1));
       }
   }
 
   $('#copy-all').click(function () {
-      copyJSON(playerList[currentList].map((p) => ModelUtils.toSimulatorData(p.player)));
+      copyJSON(playerList[currentList].map((p) => ModelUtils[currentList === 0 ? 'toSimulatorData' : 'toSimulatorEnemyData'](p.player)));
   })
 
   // Add methods
@@ -310,12 +317,23 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
       executeSimulation(instances, iterations);
   })
 
+  function addFlags (model, isEnemy) {
+    if (isEnemy) {
+        model.NoGladiator = true;
+        model.NoBaseDamage = true;
+    }
+  }
+
   function executeSimulation (instances, iterations, logCallback) {
+      // Add required flags to the enemy list
+      for (const entry of playerList[0]) addFlags(entry.player, false)
+      for (const entry of playerList[1]) addFlags(entry.player, true)
+
       if (validateLists()) {
           const results = [];
           let logs = [];
 
-          const batch = new WorkerBatch('guilds');
+          const batch = new WorkerBatch('raids');
 
           for (let i = 0; i < instances; i++) {
               batch.add(
@@ -330,8 +348,8 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
                   },
                   {
                       flags: getSimulatorFlags(),
-                      guildA: playerList[0],
-                      guildB: playerList[1],
+                      players: playerList[0],
+                      enemies: playerList[1],
                       iterations,
                       config: SimulatorUtils.config,
                       log: !!logCallback,
@@ -341,7 +359,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
           batch.run(instances).then((duration) => {
               Toast.info(intl('simulator.toast.title'), intl('simulator.toast.message', { duration: _formatDuration(duration) }));
-              
+
               displayResults(results, instances * iterations);
 
               if (logs.length > 0) {

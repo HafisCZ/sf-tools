@@ -317,7 +317,7 @@ class Editor extends EditorBase {
         return super.read(new PlayerModel());
     }
 
-    field (name) {
+    getField (name) {
         return this.fields[name];
     }
 
@@ -666,7 +666,7 @@ class Editor extends EditorBase {
                     </div>
                 </div>
                 <div class="ui grey inverted segment !p-2 !m-0">
-                    <div class="five fields !mb-0">
+                    <div class="four fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.min')}</label>
                             <div class="ui inverted centered input">
@@ -702,7 +702,7 @@ class Editor extends EditorBase {
                     </div>
                 </div>
                 <div class="ui grey inverted segment !p-2 !m-0" data-optional="Weapon2">
-                    <div class="five fields !mb-0">
+                    <div class="four fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.min')}</label>
                             <div class="ui inverted centered input">
