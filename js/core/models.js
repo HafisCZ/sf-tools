@@ -1992,8 +1992,8 @@ class PlayerModel {
             this.Group.Role = group.Roles[gi];
             this.Group.Index = gi;
             this.Group.Rank = group.Rank;
-            this.Group.ReadyDefense = group.States[gi] == 1 || group.States[gi] == 3;
-            this.Group.ReadyAttack = group.States[gi] > 1;
+            this.Group.ReadyAttack = group.States[gi] == 1 || group.States[gi] == 3;
+            this.Group.ReadyDefense = group.States[gi] == 2;
 
             if (this.LastOnline < 6e11) {
                 this.LastOnline = group.LastActives[gi];
