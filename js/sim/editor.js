@@ -88,6 +88,10 @@ class Field {
         }
     }
 
+    isVisible () {
+        return this.$object.get(0).offsetParent !== null;
+    }
+
     show (val) {
         if (val) {
             this.$object.closest('.field').show();
@@ -199,6 +203,12 @@ class EditorBase {
     fill (object) {
         if (object) {
             for (const field of this.fieldsArray) {
+                if (!field.isVisible()) {
+                    field.clear();
+
+                    continue;
+                }
+
                 const value = getObjectAt(object, field.path());
 
                 if (typeof value === 'undefined') {
@@ -214,6 +224,10 @@ class EditorBase {
 
     read (object = {}) {
         for (const field of this.fieldsArray) {
+            if (!field.isVisible()) {
+                continue;
+            }
+
             setObjectAt(object, field.path(), field.get());
         }
 
@@ -227,7 +241,7 @@ class EditorBase {
     }
 
     valid () {
-        return this.fieldsArray.every((field) => field.valid());
+        return this.fieldsArray.every((field) => field.isVisible() ? field.valid() : true);
     }
 }
 
@@ -255,7 +269,7 @@ class Editor extends EditorBase {
             class: new Field(`${selector} [data-path="Class"]`, '1'),
             level: new Field(`${selector} [data-path="Level"]`, '', Field.isPlayerLevel),
             armor: new Field(`${selector} [data-path="Armor"]`, '', Field.isNumber),
-            health: new Field(`${selector} [data-path="Health"]`, '0', Field.isNumber),
+            health: new Field(`${selector} [data-path="Health"]`, '0', Field.isNonZero),
 
             resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"]`, '', Field.isResistanceRune),
             resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"]`, '', Field.isResistanceRune),
@@ -303,10 +317,19 @@ class Editor extends EditorBase {
         return super.read(new PlayerModel());
     }
 
+    field (name) {
+        return this.fields[name];
+    }
+
     valid () {
         const ass = this.fields['class'].get() != 4;
 
         for (const [key, field] of this.fieldsEntries) {
+            if (!field.isVisible()) {
+                // Do not validate invisible fields
+                continue;
+            }
+
             if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
                 continue;
             }
@@ -322,7 +345,9 @@ class Editor extends EditorBase {
     empty (defClass = undefined) {
         const object = new PlayerModel();
         for (const field of Object.values(this.fields)) {
-            setObjectAt(object, field.path(), field.defaultValue);
+            if (field.isVisible()) {
+                setObjectAt(object, field.path(), field.defaultValue);
+            }
         }
 
         if (typeof defClass !== 'undefined') {

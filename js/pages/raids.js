@@ -52,6 +52,8 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
       $(`#player-editor [data-category="modifiers"]`).toggle(currentList == 0);
 
       editor.clear();
+      editor.field('health').show(currentList != 0);
+
       playerCurrentIndex = -1;
 
       updateSaveButton();
