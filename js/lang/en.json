@@ -1666,6 +1666,10 @@
             "guard": "Guard Duty / Dice (3)"
         }
     },
+    "raids": {
+        "guild1": "Players",
+        "guild2": "Enemies"
+    },
     "idle": {
         "title": "Arena Manager",
         "topbar": {

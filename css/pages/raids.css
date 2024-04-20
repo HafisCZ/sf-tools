@@ -1,0 +1,15 @@
+@import url('../global.css');
+@import url('../editor.css');
+@import url('../core/debug.css');
+
+div[data-guild].ui.button.active-guild {
+  background: #666666 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+div[data-guild].ui.button.active-guild:hover {
+  background: #666666 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
