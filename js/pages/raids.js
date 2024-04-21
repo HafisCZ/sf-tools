@@ -323,7 +323,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
           // TODO: Replace
           const enemies = [
-            { player: MonsterGenerator.get(600, WARRIOR, 40, 25) }
+            { player: MonsterGenerator.get(MonsterGenerator.MONSTER_BOOSTED, 600, WARRIOR, 40, 25) }
           ]
 
           for (let i = 0; i < instances; i++) {

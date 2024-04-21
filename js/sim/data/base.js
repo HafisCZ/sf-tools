@@ -47,24 +47,38 @@ class MonsterGenerator {
     }
   ]
 
-  static get (monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
+  static MONSTER_NORMAL = 0;
+  static MONSTER_BOOSTED = 1;
+
+  static #MULTIPLIERS = {
+    [this.MONSTER_NORMAL]: [1, 1, 1, 1, 1, 1, 1],
+    [this.MONSTER_BOOSTED]: [2, 2, 2, 2, 4, 2, 2]
+  }
+
+  static get (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
     const base = this.#DELTA.find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
 
     const delta = monsterLevel - base.range[0];
+
     const [
       resetMain, resetSide, resetCon, resetLuck, resetHealth, resetMin, resetMax
     ] = base.reset;
+
     const [
       deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax
     ] = base.delta;
 
-    const main = resetMain + deltaMain * delta;
-    const side = resetSide + deltaSide * delta;
-    const con = resetCon + deltaCon * delta;
-    const luck = resetLuck + deltaLuck * delta;
-    const health = resetHealth + deltaHealth * delta;
-    const min = resetMin + deltaMin * delta;
-    const max = resetMax + deltaMax * delta;
+    const [
+      multiplierMain, multiplierSide, multiplierCon, multiplierLuck, multiplierHealth, multiplierMin, multiplierMax
+    ] = this.#MULTIPLIERS[monsterType];
+
+    const main = multiplierMain * (resetMain + deltaMain * delta);
+    const side = multiplierSide * (resetSide + deltaSide * delta);
+    const con = multiplierCon * (resetCon + deltaCon * delta);
+    const luck = multiplierLuck * (resetLuck + deltaLuck * delta);
+    const health = multiplierHealth * (resetHealth + deltaHealth * delta);
+    const min = multiplierMin * (resetMin + deltaMin * delta);
+    const max = multiplierMax * (resetMax + deltaMax * delta);
 
     const model = {
       NoBaseDamage: true,

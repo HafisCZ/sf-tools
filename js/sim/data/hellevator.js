@@ -14,6 +14,7 @@ class HellevatorEnemies {
 
     for (let i = 0; i < 500; i++) {
       const monster = MonsterGenerator.get(
+        MonsterGenerator.MONSTER_DEFAULT,
         10 + i * 2,
         _dig(themeData, i, 1) || 1,
         _dig(themeData, i, 0) || 40,
