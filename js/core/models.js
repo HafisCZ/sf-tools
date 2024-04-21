@@ -2402,58 +2402,6 @@ class ModelUtils {
         return copy;
     }
 
-    static toSimulatorEnemyData (model) {
-        return {
-            Armor: model.Armor,
-            Class: model.Class,
-            Name: model.Name,
-            Level: model.Level,
-            Health: model.Health,
-            Constitution: {
-                Total: model.Constitution?.Total ?? 0
-            },
-            Dexterity: {
-                Total: model.Dexterity?.Total ?? 0
-            },
-            Intelligence: {
-                Total: model.Intelligence?.Total ?? 0
-            },
-            Strength: {
-                Total: model.Strength?.Total ?? 0
-            },
-            Luck: {
-                Total: model.Luck?.Total ?? 0
-            },
-            Runes: {
-                ResistanceCold: model.Runes?.ResistanceCold ?? 0,
-                ResistanceFire: model.Runes?.ResistanceFire ?? 0,
-                ResistanceLightning: model.Runes?.ResistanceLightning ?? 0
-            },
-            Items: {
-                Wpn1: {
-                    AttributeTypes: {
-                        2: model.Items?.Wpn1?.AttributeTypes?.[2] ?? 0
-                    },
-                    Attributes: {
-                        2: model.Items?.Wpn1?.Attributes?.[2] ?? 0
-                    },
-                    DamageMax: model.Items?.Wpn1?.DamageMax ?? 0,
-                    DamageMin: model.Items?.Wpn1?.DamageMin ?? 0
-                },
-                Wpn2: {
-                    AttributeTypes: {
-                        2: model.Items?.Wpn2?.AttributeTypes?.[2] ?? 0
-                    },
-                    Attributes: {
-                        2: model.Items?.Wpn2?.Attributes?.[2] ?? 0
-                    },
-                    DamageMax: model.Items?.Wpn2?.DamageMax ?? 0,
-                    DamageMin: model.Items?.Wpn2?.DamageMin ?? 0
-                }
-            }
-        };
-    }
-    
     static #toSimulatorData (model) {
         return {
             Armor: model.Armor,

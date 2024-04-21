@@ -269,7 +269,6 @@ class Editor extends EditorBase {
             class: new Field(`${selector} [data-path="Class"]`, '1'),
             level: new Field(`${selector} [data-path="Level"]`, '', Field.isPlayerLevel),
             armor: new Field(`${selector} [data-path="Armor"]`, '', Field.isNumber),
-            health: new Field(`${selector} [data-path="Health"]`, '0', Field.isNonZero),
 
             resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"]`, '', Field.isResistanceRune),
             resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"]`, '', Field.isResistanceRune),
@@ -315,10 +314,6 @@ class Editor extends EditorBase {
 
     read () {
         return super.read(new PlayerModel());
-    }
-
-    getField (name) {
-        return this.fields[name];
     }
 
     valid () {
@@ -519,9 +514,6 @@ class Editor extends EditorBase {
             }
         })('div.morph', '');
 
-        // By default hide the field
-        this.fields['health'].show(false);
-
         this.morph.initialize({
             action: 'hide',
             values: [
@@ -625,12 +617,6 @@ class Editor extends EditorBase {
                                 <input type="text" data-path="Level" placeholder="1 - 800">
                             </div>
                         </div>
-                        <div class="field">
-                            <label>${intl('editor.health')}</label>
-                            <div class="ui inverted centered input">
-                                <input type="text" data-path="Health">
-                            </div>
-                        </div>
                     </div>
                     <div class="five fields !mb-0">
                         <div class="field">
@@ -666,7 +652,7 @@ class Editor extends EditorBase {
                     </div>
                 </div>
                 <div class="ui grey inverted segment !p-2 !m-0">
-                    <div class="four fields !mb-0">
+                    <div class="five fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.min')}</label>
                             <div class="ui inverted centered input">
@@ -702,7 +688,7 @@ class Editor extends EditorBase {
                     </div>
                 </div>
                 <div class="ui grey inverted segment !p-2 !m-0" data-optional="Weapon2">
-                    <div class="four fields !mb-0">
+                    <div class="five fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.min')}</label>
                             <div class="ui inverted centered input">
@@ -771,7 +757,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui grey inverted segment !p-2 !m-0" data-category="modifiers">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.portal_health')}</label>
@@ -794,7 +780,7 @@ class Editor extends EditorBase {
                         </div>
                     </div>
                 </div>
-                <div class="ui grey inverted segment !p-2 !m-0" data-category="modifiers">
+                <div class="ui grey inverted segment !p-2 !m-0">
                     <div class="three fields !mb-0">
                         <div class="field">
                             <label>${intl('editor.portal_damage')}</label>

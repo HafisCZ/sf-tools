@@ -28,6 +28,8 @@
         <script src="js/views/base.js"></script>
         <script src="js/sim/editor.js"></script>
 
+        <script src="js/sim/data/base.js"></script>
+        <script src="js/sim/data/raids.js"></script>
         <script src="js/sim/base.js"></script>
         <script src="js/sim/utils.js"></script>
 
@@ -53,24 +55,13 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid small basic inverted button" type="submit" id="add-player" data-intl="simulator.add"></button>
+                                <button class="ui fluid basic inverted button" type="submit" id="add-player" data-intl="simulator.add"></button>
                             </div>
                             <div class="four wide column">
-                                <button class="ui fluid small basic inverted button" type="submit" id="save-player" data-intl="simulator.save"></button>
+                                <button class="ui fluid basic inverted button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
-                            <div class="eight wide column">
-                                <button class="ui small basic inverted icon right floated button" data-position="bottom center" data-intl-tooltip="guilds.gladiator_mode" data-inverted="" id="gladiator-mode"><i class="bolt icon"></i></button>
-                            </div>
-                        </div>
-                        <div class="css-small-row row">
-                            <div class="four wide column">
-                                <div class="ui small basic inverted icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" data-inverted="" id="paste-mode"><i class="paste icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" data-inverted="" id="copy-all"><i class="copy icon"></i></button>
-                                </div>
-                            </div>
-                            <div class="seven wide column">
-                                <div class="ui small inverted form">
+                            <div class="six wide column">
+                                <div class="ui inverted form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
                                             <div class="ui inverted centered input">
@@ -86,16 +77,29 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="five wide column">
-                                <button class="ui fluid small basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
+                            <div class="two wide column">
+                                <button class="ui basic inverted icon right floated button" data-position="bottom center" data-intl-tooltip="guilds.gladiator_mode" data-inverted="" id="gladiator-mode"><i class="bolt icon"></i></button>
                             </div>
                         </div>
-                        <div class="css-small-row row">
-                            <div class="sixteen wide column">
-                                <div class="ui basic inverted fluid two buttons">
-                                    <div class="ui button" data-guild="0" data-intl="raids.guild1"></div>
-                                    <div class="ui button" data-guild="1" data-intl="raids.guild2"></div>
+                        <div class="css-small-row !p-0 row">
+                            <div class="four wide column">
+                                <div class="ui basic inverted icon fluid two buttons">
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" data-inverted="" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" data-inverted="" id="copy-all"><i class="copy icon"></i></button>
                                 </div>
+                            </div>
+                            <div class="seven wide column">
+                                <div class="ui inverted form">
+                                    <div class="field">
+                                        <div class="ui search selection inverted dropdown" id="raid">
+                                            <div class="text"></div>
+                                            <i class="dropdown icon"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="five wide column">
+                                <button class="ui fluid basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
                         <div class="css-small-row row results" style="display: none;">
