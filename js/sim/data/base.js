@@ -47,7 +47,7 @@ class MonsterGenerator {
     }
   ]
 
-  static get (monsterLevel, monsterClass, monsterRuneType, monsterRuneValue) {
+  static get (monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
     const base = this.#DELTA.find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
 
     const delta = monsterLevel - base.range[0];
