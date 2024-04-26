@@ -87,6 +87,45 @@ class ManageLinkDialog extends Dialog {
     }
 }
 
+class BackupReminderDialog extends Dialog {
+  static OPTIONS = {
+    key: 'backup_reminder',
+    opacity: 0
+  }
+
+  render () {
+    return `
+      <div class="small bordered inverted dialog">
+        <div class="left header">${this.intl('title')}</div>
+        <div class="text-center">${this.intl('message')}</div>
+        <div class="ui two fluid buttons">
+          <button class="ui black button" data-op="close">${this.intl('close')}</button>
+          <button class="ui button !text-black !background-orange" data-op="save">${this.intl('save')}</button>
+        </div>
+      </div>
+    `
+  }
+
+  handle () {
+    this.$parent.find('[data-op="close"]').click(() => {
+      this.close(false)
+    });
+
+    this.$parent.find('[data-op="save"]').click(async () => {
+      this.close(true)
+
+      Loader.toggle(true);
+
+      Exporter.json(
+          await Site.dump(),
+          `recovery_dump_${Exporter.time}`
+      );
+
+      Loader.toggle(false);
+    });
+  }
+}
+
 class FileEditDialog extends Dialog {
   static OPTIONS = {
     key: 'file_edit',

@@ -1232,6 +1232,12 @@
             "apply": "Apply",
             "submit": "Submit"
         },
+        "backup_reminder": {
+            "title": "Backup Reminder",
+            "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
+            "close": "Close",
+            "save": "Download backup"
+        },
         "report": {
             "title": "Feedback",
             "field": {

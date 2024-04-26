@@ -4261,6 +4261,15 @@ Site.ready({ requires: ['translations_items'] }, function (urlParams) {
         });
 
         Loader.toggle(false);
+
+        // If reminders are enabled, invoke reminder if time expired
+        if (!profile.temporary && Site.options.backup_reminder_frequency && Site.options.backup_reminder_timestamp < Date.now()) {
+          Dialog.open(
+            BackupReminderDialog
+          )
+
+          Site.options.backup_reminder_timestamp = Date.now() + [0, 2592000000, 604800000][Site.options.backup_reminder_frequency];
+        }
     }).catch(function (e) {
         Loader.toggle(false);
         Dialog.open(ErrorDialog, `<h4 class="ui inverted header text-center">${intl('database.fatal_error#')}</h4><br>${e.message}`);
