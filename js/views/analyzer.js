@@ -331,7 +331,7 @@ class AnalyzerAutofillDialog extends Dialog {
             dungeon.name = intl(`dungeon_enemies.${dungeon.intl}.name`);
     
             for (const enemy of Object.values(dungeon.floors)) {
-                enemy.name = intl(`dungeon_enemies.${dungeon.intl}.${enemy.pos}`);
+                enemy.name = intl(`monsters.${enemy.id}`);
             }
         }
 
