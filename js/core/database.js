@@ -341,10 +341,10 @@ class DatabaseUtils {
     }
 
     static async requestPersistentStorage () {
-        if (!SiteOptions.persisted && _dig(window, 'navigator', 'storage', 'persist')) {
+        if (!Site.options.persisted && _dig(window, 'navigator', 'storage', 'persist')) {
             return window.navigator.storage.persist().then((persistent) => {
                 if (persistent) {
-                    SiteOptions.persisted = true;
+                    Site.options.persisted = true;
                 }
             });
         }
@@ -739,7 +739,7 @@ class DatabaseManager {
         this.#metadataDelta = [];
         this.#hiddenModels = new Set();
         this.#hiddenIdentifiers = new Set();
-        this.#hiddenVisible = SiteOptions.hidden;
+        this.#hiddenVisible = Site.options.hidden;
     }
 
     static #addPlayer (data) {
@@ -1098,7 +1098,7 @@ class DatabaseManager {
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
                     obj.MembersPresent = _lenWhere(obj.Players, (player) => this.hasPlayer(player.LinkId, timestamp));
-                    if (obj.MembersPresent || SiteOptions.groups_empty) {
+                    if (obj.MembersPresent || Site.options.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
 
@@ -1176,7 +1176,7 @@ class DatabaseManager {
         if (this.isHidden(model)) {
             this.#hiddenModels.add(model);
 
-            if (SiteOptions.hidden) {
+            if (Site.options.hidden) {
                 if (type === 'Player') {
                     this.#addPlayer(model);
                 } else {
@@ -1284,8 +1284,8 @@ class DatabaseManager {
     }
 
     static async reloadHidden () {
-        if (this.#hiddenVisible != SiteOptions.hidden) {
-            this.#hiddenVisible = SiteOptions.hidden;
+        if (this.#hiddenVisible != Site.options.hidden) {
+            this.#hiddenVisible = Site.options.hidden;
             
             const beginTimestamp = Date.now();
 
@@ -1452,7 +1452,7 @@ class DatabaseManager {
     }
 
     static async safeRemove (data, unsafeOverride = false) {
-        if (unsafeOverride || SiteOptions.unsafe_delete) {
+        if (unsafeOverride || Site.options.unsafe_delete) {
             Loader.toggle(true);
 
             await this.#removeAuto(data);
@@ -1655,7 +1655,7 @@ class DatabaseManager {
                 this.#hiddenModels.delete(entry);
             }
 
-            if (entry.hidden && !SiteOptions.hidden) {
+            if (entry.hidden && !Site.options.hidden) {
                 this.#unload(this.getLink(entry.identifier), entry.timestamp);
             }
 
@@ -1685,7 +1685,7 @@ class DatabaseManager {
                 await this.#markHidden(timestamp, shouldHide);
             }
 
-            if (!SiteOptions.hidden) {
+            if (!Site.options.hidden) {
                 for (const timestamp of timestamps) {
                     for (const identifier of this.Timestamps.values(timestamp)) {
                         this.#unload(identifier, timestamp);

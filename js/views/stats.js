@@ -657,7 +657,7 @@ class DataManageDialog extends Dialog {
       this.$okButton = this.$parent.find('[data-op="ok"]');
       this.$okButton.click(async () => {
           if (this.$checkbox.checkbox('is checked')) {
-              SiteOptions.unsafe_delete = true;
+            Site.options.unsafe_delete = true;
           }
 
           this.hide();
@@ -904,7 +904,7 @@ class ExportFileDialog extends Dialog {
           })
       }
 
-      this.$public.checkbox(SiteOptions.export_public_only ? 'set checked' : 'set unchecked');
+      this.$public.checkbox(Site.options.export_public_only ? 'set checked' : 'set unchecked');
       this.$ok.text(intl('stats.share.get'))
       this.$codeContainer.hide();
       this.$form.show();

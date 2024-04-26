@@ -2088,7 +2088,7 @@ class ScriptParser {
         // Scope for macros
         const scope = new ExpressionScope().addSelf(scriptScope.entries).add({
             table: scriptScope.table
-        }).add(SiteOptions.options);
+        }).add(Site.options.options);
 
         // Special constants for macros
         const constants = new Constants();

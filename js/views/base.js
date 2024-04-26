@@ -382,7 +382,7 @@ class TermsAndConditionsDialog extends Dialog {
 
     handle () {
         this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.terms_accepted = TermsAndConditionsDialog.VERSION;
+            Site.options.terms_accepted = TermsAndConditionsDialog.VERSION;
 
             this.close(true);
         });
@@ -486,9 +486,9 @@ class AnnouncementDialog extends Dialog {
         const $content = this.$parent.find('[data-op="content"]');
 
         this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.announcement_accepted = SiteOptions.announcement_accepted + 1;
+            Site.options.announcement_accepted = Site.options.announcement_accepted + 1;
 
-            if (SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
+            if (Site.options.announcement_accepted != ANNOUNCEMENTS.length) {
                 this.replace(
                     [
                         AnnouncementDialog
@@ -499,7 +499,7 @@ class AnnouncementDialog extends Dialog {
             }
         });
 
-        const { title, content } = ANNOUNCEMENTS[SiteOptions.announcement_accepted];
+        const { title, content } = ANNOUNCEMENTS[Site.options.announcement_accepted];
 
         $title.html(title);
         $content.html(content);
@@ -547,7 +547,7 @@ class ChangelogDialog extends Dialog {
 
     handle () {
         this.$parent.find('[data-op="accept"]').click(() => {
-            SiteOptions.version_accepted = MODULE_VERSION;
+            Site.options.version_accepted = MODULE_VERSION;
 
             this.close(true);
         });
@@ -809,11 +809,11 @@ class Localization {
     }
 
     static #getLocale () {
-        return SiteOptions.locale || 'en';
+        return Site.options.locale || 'en';
     }
 
     static #setLocale (locale) {
-        SiteOptions.locale = locale;
+        Site.options.locale = locale;
 
         window.location.href = window.location.href;
     }
@@ -851,15 +851,15 @@ window.addEventListener('DOMContentLoaded', async function () {
     await Localization.translatePage(injections);
 
     if (StoreWrapper.isAvailable()) {
-        if (SiteOptions.terms_accepted !== TermsAndConditionsDialog.VERSION) {
+        if (Site.options.terms_accepted !== TermsAndConditionsDialog.VERSION) {
             Dialog.open(TermsAndConditionsDialog);
         }
 
-        if (SiteOptions.version_accepted != MODULE_VERSION) {
+        if (Site.options.version_accepted != MODULE_VERSION) {
             Dialog.open(ChangelogDialog);
         }
 
-        if (ANNOUNCEMENTS.length > 0 && SiteOptions.announcement_accepted != ANNOUNCEMENTS.length) {
+        if (ANNOUNCEMENTS.length > 0 && Site.options.announcement_accepted != ANNOUNCEMENTS.length) {
             Dialog.open(AnnouncementDialog);
         }
 

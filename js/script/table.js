@@ -1190,7 +1190,7 @@ class TableController extends SignalSource {
         }
 
         this.injectorEntries = entries;
-        this.injectorBlockSize = Math.trunc((SiteOptions.load_rows || SiteOptions.default('load_rows')) / 2);
+        this.injectorBlockSize = Math.trunc((Site.options.load_rows || Site.options.default('load_rows')) / 2);
         this.injectorCounter = 0;
 
         this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.75 });
@@ -1310,7 +1310,7 @@ class TableController extends SignalSource {
         this.bodyElement.setAttribute('class', `${themeClass} ${klass.join(' ')}`);
         this.bodyElement.innerHTML = content;
 
-        this.injectCount = this.injectCount || SiteOptions.load_rows || SiteOptions.default('load_rows');
+        this.injectCount = this.injectCount || Site.options.load_rows || Site.options.default('load_rows');
         this.injectorElement = this.bodyElement.querySelector('[data-entry-injector]');
 
         if (this.injectorElement) {
@@ -1339,7 +1339,7 @@ class TableController extends SignalSource {
         this.element.style.width = `${width}px`;
         this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
 
-        if (SiteOptions.table_sticky_header) {
+        if (Site.options.table_sticky_header) {
             let offset = 0
 
             for (const header of this.element.querySelectorAll('tr.headers')) {

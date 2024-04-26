@@ -222,42 +222,6 @@ class OptionsHandler {
     }
 }
 
-const SiteOptions = new OptionsHandler(
-    'options',
-    {
-        advanced: false,
-        hidden: false,
-        terms_accepted: false,
-        endpoint_terms_accepted: false,
-        version_accepted: false,
-        announcement_accepted: 0,
-        groups_hidden: false,
-        players_hidden: false,
-        browse_hidden: false,
-        groups_other: false,
-        players_other: false,
-        always_prev: false,
-        migration_allowed: true,
-        migration_accepted: false,
-        profile: 'default',
-        groups_empty: false,
-        tab: 'groups_grid',
-        load_rows: 100,
-        persisted: false,
-        has_storage_access: false,
-        locale: 'en',
-        export_public_only: false,
-        export_bundle_groups: true,
-        unsafe_delete: false,
-        skip_grid_if_single_entry_present: true,
-        event_override: [],
-        simulator_info_id: 0,
-        table_sticky_header: false,
-        script_author: '',
-        debug: false
-    }
-)
-
 class Exporter {
     static get time () {
         return new Date().toISOString().replace(/[\-\:\.T]/g, '_').replace(/Z$/, '');
@@ -305,6 +269,42 @@ class Site {
         this.#resolve = resolve;
     });
 
+    static options = new OptionsHandler(
+        'options',
+        {
+            advanced: false,
+            hidden: false,
+            terms_accepted: false,
+            endpoint_terms_accepted: false,
+            version_accepted: false,
+            announcement_accepted: 0,
+            groups_hidden: false,
+            players_hidden: false,
+            browse_hidden: false,
+            groups_other: false,
+            players_other: false,
+            always_prev: false,
+            migration_allowed: true,
+            migration_accepted: false,
+            profile: 'default',
+            groups_empty: false,
+            tab: 'groups_grid',
+            load_rows: 100,
+            persisted: false,
+            has_storage_access: false,
+            locale: 'en',
+            export_public_only: false,
+            export_bundle_groups: true,
+            unsafe_delete: false,
+            skip_grid_if_single_entry_present: true,
+            event_override: [],
+            simulator_info_id: 0,
+            table_sticky_header: false,
+            script_author: '',
+            debug: false
+        }
+    )
+
     static run () {
         Logger.log('APPINFO', `Application ready in ${Date.now() - this.#startup} ms`);
 
@@ -320,8 +320,8 @@ class Site {
     }
 
     static isEvent (type) {
-        if (Array.isArray(SiteOptions.event_override)) {
-            if (SiteOptions.event_override.includes(type)) {
+        if (Array.isArray(Site.options.event_override)) {
+            if (Site.options.event_override.includes(type)) {
                 return true;
             }
         }
@@ -560,7 +560,7 @@ class ProfileManager {
     }
 
     static getActiveProfile () {
-        return this.profiles[SiteOptions.profile] || this.#getDefaultProfile();
+        return this.profiles[Site.options.profile] || this.#getDefaultProfile();
     }
 
     static getProfile (name) {
@@ -568,11 +568,11 @@ class ProfileManager {
     }
 
     static getActiveProfileName () {
-        return this.#uiProfile() || SiteOptions.profile || 'default';
+        return this.#uiProfile() || Site.options.profile || 'default';
     }
 
     static setActiveProfile (name) {
-        SiteOptions.profile = name;
+        Site.options.profile = name;
     }
 
     static removeProfile (name) {

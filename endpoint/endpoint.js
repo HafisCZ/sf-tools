@@ -267,11 +267,11 @@ class EndpointDialog extends Dialog {
     }
 
     #termsAccepted () {
-        return SiteOptions.endpoint_terms_accepted === 2;
+        return Site.options.endpoint_terms_accepted === 2;
     }
 
     #termsAccept () {
-        SiteOptions.endpoint_terms_accepted = 2;
+        Site.options.endpoint_terms_accepted = 2;
 
         this.$step0.hide();
         this.$step1.show();

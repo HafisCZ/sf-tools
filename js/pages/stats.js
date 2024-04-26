@@ -335,10 +335,10 @@ class GroupTab extends Tab {
         var listTimestamp = [];
         var listReference = [];
 
-        this.list = SiteOptions.groups_empty ? this.group.List : this.group.List.filter((g) => g.MembersPresent);
+        this.list = Site.options.groups_empty ? this.group.List : this.group.List.filter((g) => g.MembersPresent);
 
         this.timestamp = _dig(this.list, 0, 'Timestamp');
-        this.reference = (SiteOptions.always_prev ? _dig(this.list, 1, 'Timestamp') : undefined) || this.timestamp;
+        this.reference = (Site.options.always_prev ? _dig(this.list, 1, 'Timestamp') : undefined) || this.timestamp;
 
         const formatEntry = (group) => {
             if (group.MembersPresent >= group.MembersTotal) {
@@ -773,13 +773,13 @@ class GroupsTab extends Tab {
         });
 
         // Hidden toggle
-        this.hidden = SiteOptions.browse_hidden;
+        this.hidden = Site.options.browse_hidden;
 
         DOM.toggle({
             element: this.$parent.operator('show-hidden').get(0),
-            value: SiteOptions.browse_hidden,
+            value: Site.options.browse_hidden,
             callback: (active) => {
-                SiteOptions.browse_hidden = (this.hidden = active);
+                Site.options.browse_hidden = (this.hidden = active);
 
                 this.recalculate = true;
                 this.$filter.trigger('change');
@@ -788,9 +788,9 @@ class GroupsTab extends Tab {
 
         DOM.toggle({
             element: this.$parent.operator('show-empty').get(0),
-            value: SiteOptions.groups_empty,
+            value: Site.options.groups_empty,
             callback: (active) => {
-                SiteOptions.groups_empty = !SiteOptions.groups_empty;
+                Site.options.groups_empty = !Site.options.groups_empty;
 
                 this.recalculate = true;
                 this.$filter.trigger('change');
@@ -937,7 +937,7 @@ class GroupsTab extends Tab {
             });
 
             for (const [identifier, { List: inputList }] of Object.entries(DatabaseManager.Groups)) {
-                const list = SiteOptions.groups_empty ? inputList : inputList.filter((g) => g.MembersPresent);
+                const list = Site.options.groups_empty ? inputList : inputList.filter((g) => g.MembersPresent);
 
                 const hidden = DatabaseManager.isIdentifierHidden(identifier);
                 if (this.hidden || this.shidden || !hidden) {
@@ -1300,13 +1300,13 @@ class PlayersTab extends Tab {
         });
 
         // Hidden toggle
-        this.hidden = SiteOptions.browse_hidden;
+        this.hidden = Site.options.browse_hidden;
 
         DOM.toggle({
             element: this.$parent.operator('show-hidden').get(0),
-            value: SiteOptions.browse_hidden,
+            value: Site.options.browse_hidden,
             callback: (active) => {
-                SiteOptions.browse_hidden = (this.hidden = active);
+                Site.options.browse_hidden = (this.hidden = active);
 
                 this.recalculate = true;
                 this.$filter.trigger('change');
@@ -1705,14 +1705,14 @@ class GroupsGridTab extends Tab {
     _prepareOption (operator, key, storeKey) {
         DOM.toggle({
             element: this.$parent.operator(operator).get(0),
-            value: SiteOptions[storeKey],
+            value: Site.options[storeKey],
             callback: (active) => {
-                SiteOptions[storeKey] = (this[key] = active);
+                Site.options[storeKey] = (this[key] = active);
                 this.show();
             }
         })
 
-        return SiteOptions[storeKey];
+        return Site.options[storeKey];
     }
 
     constructor (parent) {
@@ -1893,7 +1893,7 @@ class GroupsGridTab extends Tab {
 
     show () {
         const viewableGroups = Object.entries(DatabaseManager.Groups);
-        if (SiteOptions.skip_grid_if_single_entry_present && viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
+        if (Site.options.skip_grid_if_single_entry_present && viewableGroups.length == 1 && (Site.options.groups_empty || viewableGroups[0][1].List.filter((g) => g.MembersPresent).length > 0)) {
             UI.show(UI.group, { identifier: viewableGroups[0][0] });
         } else {
             this.load();
@@ -2009,14 +2009,14 @@ class PlayersGridTab extends Tab {
     _prepareOption (operator, key, storeKey) {
         DOM.toggle({
             element: this.$parent.operator(operator).get(0),
-            value: SiteOptions[storeKey],
+            value: Site.options[storeKey],
             callback: (active) => {
-                SiteOptions[storeKey] = (this[key] = active);
+                Site.options[storeKey] = (this[key] = active);
                 this.show();
             }
         })
 
-        return SiteOptions[storeKey];
+        return Site.options[storeKey];
     }
 
     constructor (parent) {
@@ -2221,7 +2221,7 @@ class PlayersGridTab extends Tab {
 
     show () {
         let identitifiers = Object.keys(DatabaseManager.Players);
-        if (SiteOptions.skip_grid_if_single_entry_present && identitifiers.length == 1) {
+        if (Site.options.skip_grid_if_single_entry_present && identitifiers.length == 1) {
             UI.show(UI.player, { identifier: identitifiers[0] });
         } else {
             this.load();
@@ -2353,7 +2353,7 @@ class FilesTab extends Tab {
 
             Dialog.open(
                 ExportFileDialog,
-                () => ({ players, groups: DatabaseManager.relatedGroupData(players, groups, SiteOptions.export_bundle_groups) }),
+                () => ({ players, groups: DatabaseManager.relatedGroupData(players, groups, Site.options.export_bundle_groups) }),
                 'files'
             );
         }
@@ -2487,9 +2487,9 @@ class FilesTab extends Tab {
     // Prepare checkbox
     prepareCheckbox (property, name) {
         this.$parent.find(`[data-op="checkbox-${ name }"]`).checkbox({
-            onChecked: () => { SiteOptions[property] = true },
-            onUnchecked: () => { SiteOptions[property] = false }
-        }).checkbox(SiteOptions[property] ? 'set checked' : 'set unchecked');
+            onChecked: () => { Site.options[property] = true },
+            onUnchecked: () => { Site.options[property] = false }
+        }).checkbox(Site.options[property] ? 'set checked' : 'set unchecked');
     }
 
     constructor (parent) {
@@ -2523,10 +2523,10 @@ class FilesTab extends Tab {
         this.advancedLoader = new DynamicLoader(this.$advancedCenter.find('table').get(0));
 
         this.prepareCheckbox('advanced', 'advanced');
-        SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
+        Site.options.onChange('advanced', enabled => this.setLayout(enabled));
 
         this.prepareCheckbox('hidden', 'hidden');
-        SiteOptions.onChange('hidden', async () => {
+        Site.options.onChange('hidden', async () => {
             await DatabaseManager.reloadHidden();
             this.show({ forceUpdate: true });
         });
@@ -2542,7 +2542,7 @@ class FilesTab extends Tab {
             this.ExpressionConfig.register('accessor', 'none', name, (object) => object[name]);
         }
 
-        this.setLayout(SiteOptions.advanced, true);
+        this.setLayout(Site.options.advanced, true);
     }
 
     setLayout (advanced, supressUpdate = false) {
@@ -2641,7 +2641,7 @@ class FilesTab extends Tab {
         const timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
         const ownership = parseInt(this.$filter_ownership.dropdown('get value'));
         const hidden = this.$filter_hidden.dropdown('get value');
-        const hidden_allowed = SiteOptions.hidden;
+        const hidden_allowed = Site.options.hidden;
         const tags = this.$filter_tags.dropdown('get value');
         const type = parseInt(this.$filter_type.dropdown('get value'));
 
@@ -2750,7 +2750,7 @@ class FilesTab extends Tab {
     }
 
     updateFileSearchResults () {
-        let currentFilesAll = (SiteOptions.groups_empty ? Array.from(DatabaseManager.Timestamps.keys()) : DatabaseManager.PlayerTimestamps).map((ts) => {
+        let currentFilesAll = (Site.options.groups_empty ? Array.from(DatabaseManager.Timestamps.keys()) : DatabaseManager.PlayerTimestamps).map((ts) => {
             const playerCount = _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isPlayer(id));
 
             return {
@@ -3052,7 +3052,7 @@ class FilesTab extends Tab {
                     <option value="2">${intl('stats.files.filters.ownership_other')}</option>
                 </select>
             </div>
-            <div class="field" ${ SiteOptions.hidden ? '' : 'style="display: none;"' }>
+            <div class="field" ${ Site.options.hidden ? '' : 'style="display: none;"' }>
                 <label>${intl('stats.files.filters.hidden')}</label>
                 <select class="ui fluid search selection inverted dropdown" multiple="" data-op="files-search-hidden">
                     <option value="yes">${intl('general.yes')}</option>
@@ -3117,7 +3117,7 @@ class FilesTab extends Tab {
 
         Loader.toggle(false);
 
-        this.$migrateHidden.toggle(!this.simple && SiteOptions.hidden);
+        this.$migrateHidden.toggle(!this.simple && Site.options.hidden);
 
         // Set counters
         if (this.lastChange != DatabaseManager.LastChange || (params && params.forceUpdate)) {
@@ -3217,7 +3217,7 @@ class ScriptsTab extends Tab {
 
             const { key, name, version, description, content } = this.script;
 
-            SiteAPI.post('script_create', { name, description, version, author: SiteOptions.script_author, content }).then(({ script }) => {
+            SiteAPI.post('script_create', { name, description, version, author: Site.options.script_author, content }).then(({ script }) => {
                 this.script = Scripts.markRemote(key, script);
         
                 StoreCache.invalidate('remote_scripts');
@@ -3242,7 +3242,7 @@ class ScriptsTab extends Tab {
 
             const { key, name, version, description, content, remote: { key: remoteKey, secret: remoteSecret } } = this.script;
 
-            SiteAPI.post('script_update', { name, description, version, author: SiteOptions.script_author, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
+            SiteAPI.post('script_update', { name, description, version, author: Site.options.script_author, content, key: remoteKey, secret: remoteSecret }).then(({ script }) => {
                 this.script = Scripts.markRemote(key, script);
 
                 StoreCache.invalidate('remote_scripts');
@@ -3481,7 +3481,7 @@ class ScriptsTab extends Tab {
     }
 
     #verifyRemoteRequirements () {
-        if (SiteOptions.script_author) {
+        if (Site.options.script_author) {
             return false;
         } else {
             Toast.warn(intl('stats.scripts.remote_author_missing.title'), intl('stats.scripts.remote_author_missing.message'));
@@ -3876,22 +3876,22 @@ class SettingsTab extends Tab {
 
         this.$dropdownTab = this.$parent.find('[data-op="dropdown-tab"]');
         this.$dropdownTab.dropdown();
-        this.$dropdownTab.dropdown('set selected', SiteOptions.tab);
+        this.$dropdownTab.dropdown('set selected', Site.options.tab);
         this.$dropdownTab.dropdown('setting', 'onChange', (value) => {
-            SiteOptions.tab = value;
+            Site.options.tab = value;
         });
 
         this.$inputPreloadRows = this.$parent.find('[data-op="input-load-rows"]');
-        this.$inputPreloadRows.val(SiteOptions.load_rows);
+        this.$inputPreloadRows.val(Site.options.load_rows);
         this.$inputPreloadRows.on('change', () => {
             const value = parseInt(this.$inputPreloadRows.val())
-            SiteOptions.load_rows = isNaN(value) ? SiteOptions.default('load_rows') : Math.max(1, value);
+            Site.options.load_rows = isNaN(value) ? Site.options.default('load_rows') : Math.max(1, value);
         });
 
         this.$inputScriptAuthor = this.$parent.find('[data-op="input-script-author"]');
-        this.$inputScriptAuthor.val(SiteOptions.script_author);
+        this.$inputScriptAuthor.val(Site.options.script_author);
         this.$inputScriptAuthor.on('change', () => {
-            SiteOptions.script_author = this.$inputScriptAuthor.val().trim();
+            Site.options.script_author = this.$inputScriptAuthor.val().trim();
         })
 
         this.prepareCheckbox('always_prev');
@@ -3900,7 +3900,7 @@ class SettingsTab extends Tab {
         this.prepareCheckbox('terms_accepted');
         this.prepareCheckbox('table_sticky_header')
 
-        SiteOptions.onChange('terms_accepted', (enabled) => {
+        Site.options.onChange('terms_accepted', (enabled) => {
             if (enabled) {
                 this.$parent.find(`[data-op="checkbox-terms-accepted"]`).checkbox('set checked');
             } else {
@@ -4019,9 +4019,9 @@ class SettingsTab extends Tab {
     // Prepare checkbox
     prepareCheckbox (property) {
         this.$parent.find(`[data-op="checkbox-${ property.replaceAll('_', '-') }"]`).checkbox({
-            onChecked: () => { SiteOptions[property] = true },
-            onUnchecked: () => { SiteOptions[property] = false }
-        }).checkbox(SiteOptions[property] ? 'set checked' : 'set unchecked');
+            onChecked: () => { Site.options[property] = true },
+            onUnchecked: () => { Site.options[property] = false }
+        }).checkbox(Site.options[property] ? 'set checked' : 'set unchecked');
     }
 
     show () {
@@ -4246,7 +4246,7 @@ Site.ready({ requires: ['translations_items'] }, function (urlParams) {
             }
         ],
         {
-            activeTab: urlParams.has('temp') ? 'files' : Store.session.get('activeTab', urlParams.get('tab') || SiteOptions.tab),
+            activeTab: urlParams.has('temp') ? 'files' : Store.session.get('activeTab', urlParams.get('tab') || Site.options.tab),
             defaultTab: 'groups_grid',
             onTabChange: (tabName) => {
                 Store.session.set('activeTab', tabName);

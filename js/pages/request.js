@@ -283,7 +283,7 @@ Site.ready({}, function (urlParams) {
   }
 
   async function checkFullAccess () {
-    if (window.parent === window || SiteOptions.has_storage_access) {
+    if (window.parent === window || Site.options.has_storage_access) {
       return true;
     } else if (typeof window.document.hasStorageAccess === 'function' && typeof window.document.requestStorageAccess === 'function') {
       return await window.document.hasStorageAccess() || false;
@@ -296,15 +296,15 @@ Site.ready({}, function (urlParams) {
     const hasAccess = await window.document.hasStorageAccess()
 
     if (hasAccess) {
-      SiteOptions.has_storage_access = true;
+      Site.options.has_storage_access = true;
 
       return true;
     } else if (window.document.requestStorageAccess) {
-      SiteOptions.has_storage_access = await window.document.requestStorageAccess() || false;
+      Site.options.has_storage_access = await window.document.requestStorageAccess() || false;
 
-      return SiteOptions.has_storage_access;
+      return Site.options.has_storage_access;
     } else {
-      return SiteOptions.has_storage_access;
+      return Site.options.has_storage_access;
     }
   }
 
