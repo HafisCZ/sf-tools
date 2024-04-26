@@ -3881,6 +3881,13 @@ class SettingsTab extends Tab {
             Site.options.tab = value;
         });
 
+        this.$dropdownBackupReminders = this.$parent.find('[data-op="dropdown-backup-reminder-frequency"]');
+        this.$dropdownBackupReminders.dropdown();
+        this.$dropdownBackupReminders.dropdown('set selected', String(Site.options.backup_reminder_frequency));
+        this.$dropdownBackupReminders.dropdown('setting', 'onChange', (value) => {
+            Site.options.backup_reminder_frequency = parseInt(value);
+        });
+
         this.$inputPreloadRows = this.$parent.find('[data-op="input-load-rows"]');
         this.$inputPreloadRows.val(Site.options.load_rows);
         this.$inputPreloadRows.on('change', () => {

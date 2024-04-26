@@ -301,7 +301,9 @@ class Site {
             simulator_info_id: 0,
             table_sticky_header: false,
             script_author: '',
-            debug: false
+            debug: false,
+            backup_reminder_frequency: 1,
+            backup_reminder_timestamp: 0
         }
     )
 

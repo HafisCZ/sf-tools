@@ -723,6 +723,7 @@
             "always_prev": "Compare previous (guilds)",
             "empty_groups": "Show empty groups",
             "unsafe_delete": "Skip confirmation when deleting files",
+            "backup_reminder_frequency": "Remind me about a backup",
             "script_author": "Author name for published scripts",
             "table_sticky_header": "Enable sticky table headers",
             "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
@@ -733,6 +734,11 @@
                 "title": "Actions",
                 "discard": "Discard unsaved changes",
                 "save": "Save actions"
+            },
+            "backup_reminder_frequency_values": {
+                "0": "Never",
+                "1": "Monthly",
+                "2": "Weekly"
             },
             "recovery": {
                 "title": "Recovery",
