@@ -1082,6 +1082,10 @@
         "tooltip": {
             "cheats": "Apply modifications to characters",
             "options": "Configure integration"
+        },
+        "hide": {
+            "title": "Are you sure you want to hide this character?",
+            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
         }
     },
     "simulator": {

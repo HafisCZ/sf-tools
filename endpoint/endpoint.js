@@ -1191,10 +1191,18 @@ const StatisticsIntegration = new (class {
 
                     const index = this.options.ignored_identifiers.indexOf(item.LinkId);
                     if (index === -1) {
-                        $button.addClass('opacity-50');
-                        $hide.find('i').removeClass('slash');
-
-                        this.options.ignored_identifiers.push(item.LinkId);
+                        Dialog.open(
+                            ConfirmationDialog,
+                            intl('integration.hide.title'),
+                            intl('integration.hide.message')
+                        ).then(([value]) => {
+                            if (value) {
+                                $button.addClass('opacity-50');
+                                $hide.find('i').removeClass('slash');
+        
+                                this.options.ignored_identifiers.push(item.LinkId);
+                            }
+                        })
                     } else {
                         $button.removeClass('opacity-50');
                         $hide.find('i').addClass('slash');
