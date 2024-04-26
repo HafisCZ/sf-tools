@@ -221,7 +221,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
             const player = editor.read();
 
-            const start = player.GroupTournament.Floor;
+            const start = player.GroupTournament.Floor || 1;
             const end = player.RangeEnd;
 
             const enemies = await HellevatorEnemies.floorRange(start, Math.max(start, end), player.RangeTheme);
