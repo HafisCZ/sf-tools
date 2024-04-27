@@ -2751,8 +2751,16 @@ class FilesTab extends Tab {
 
     updateFileSearchResults () {
         let currentFilesAll = (Site.options.groups_empty ? Array.from(DatabaseManager.Timestamps.keys()) : DatabaseManager.PlayerTimestamps).map((ts) => {
-            const playerCount = _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isPlayer(id));
-            const groupCount = _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isGroup(id));
+            let playerCount = 0;
+            let groupCount = 0;
+
+            for (const id of DatabaseManager.Timestamps.values(ts)) {
+                if (DatabaseManager.isPlayer(id)) {
+                    playerCount++;
+                } else {
+                    groupCount++;
+                }
+            }
 
             return {
                 timestamp: ts,
