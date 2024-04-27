@@ -2752,12 +2752,13 @@ class FilesTab extends Tab {
     updateFileSearchResults () {
         let currentFilesAll = (Site.options.groups_empty ? Array.from(DatabaseManager.Timestamps.keys()) : DatabaseManager.PlayerTimestamps).map((ts) => {
             const playerCount = _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isPlayer(id));
+            const groupCount = _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isGroup(id));
 
             return {
                 timestamp: ts,
                 prettyDate: _formatDate(ts),
                 playerCount,
-                groupCount: _lenWhere(Array.from(DatabaseManager.Timestamps.values(ts)), id => DatabaseManager.isGroup(id)),
+                groupCount,
                 version: DatabaseManager.findDataFieldFor(ts, 'version'),
                 tags: (() => {
                     const tagMap = DatabaseManager.getTagsForTimestamp([ts]);
@@ -2765,7 +2766,7 @@ class FilesTab extends Tab {
 
                     let tagContent = '';
                     for (const [name, count] of tagEntries) {
-                        const countText = count !== playerCount ? `${count}x ` : '';
+                        const countText = count !== (playerCount + groupCount) ? `${count}x ` : '';
 
                         tagContent += `
                             <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white; margin: 0;">${countText}${name}</div>
