@@ -416,12 +416,20 @@ class TableInstance {
             let { current, compare } = entry;
 
             current = DatabaseManager.getAny(current.LinkId, current.Timestamp);
-            compare = DatabaseManager.getAny(current.LinkId, compare.Timestamp);
 
-            let disc = this.settings.discardRules.some(rule => rule.eval(new ExpressionScope(this.settings).with(current, compare)));
+            const discardReference = this.settings.discard.reference.some(rule => rule.eval(new ExpressionScope(this.settings).with(compare, compare)));
             ExpressionCache.reset();
 
-            if (disc) {
+            if (discardReference) {
+                compare = current;
+            } else {
+                compare = DatabaseManager.getAny(current.LinkId, compare.Timestamp);
+            }
+
+            const discardTimestamp = this.settings.discard.timestamp.some(rule => rule.eval(new ExpressionScope(this.settings).with(current, compare)));
+            ExpressionCache.reset();
+
+            if (discardTimestamp) {
                 return null;
             } else {
                 entry.current = current;

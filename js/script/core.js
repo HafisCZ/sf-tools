@@ -1862,6 +1862,20 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
+    'TABLE_FLAG',
+    ScriptType.Table,
+    'discard reference <expression>',
+    /^discard reference (.+)$/,
+    (root, expression) => {
+        let ast = Expression.create(expression, root);
+        if (ast) {
+            root.addDiscardRule('reference', ast);
+        }
+    },
+    (root, expression) => Highlighter.keyword('discard reference ').expression(expression, root)
+)
+
+ScriptCommands.register(
     'TABLE_DISCARD',
     ScriptType.Table,
     'discard <expression>',
@@ -1869,7 +1883,7 @@ ScriptCommands.register(
     (root, expression) => {
         let ast = Expression.create(expression, root);
         if (ast) {
-            root.addDiscardRule(ast);
+            root.addDiscardRule('timestamp', ast);
         }
     },
     (root, expression) => Highlighter.keyword('discard ').expression(expression, root)
@@ -2590,7 +2604,10 @@ class Script {
         this.constants = new Constants();
 
         // Discard rules
-        this.discardRules = [];
+        this.discard = {
+            timestamp: [],
+            reference: []
+        };
 
         // Variables and functions
         this.functions = Object.create(null);
@@ -3147,8 +3164,8 @@ class Script {
     }
 
     // Add discard rule
-    addDiscardRule (rule) {
-        this.discardRules.push(rule);
+    addDiscardRule (type, rule) {
+        this.discard[type].push(rule);
     }
 
     // Get compare environment
