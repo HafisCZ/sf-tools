@@ -723,6 +723,7 @@
             "always_prev": "Porównaj poprzednie (gildie)",
             "empty_groups": "Pokaż puste grupy",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
+            "backup_reminder_frequency": "Remind me about a backup",
             "script_author": "Nazwa autora dla opublikowanych skryptów",
             "table_sticky_header": "Włącz przyklejone nagłówki tabeli",
             "skip_grid_if_single_entry_present": "Pomiń do szczegółów gracza/grupy jeśli jest sam w siatce",
@@ -733,6 +734,11 @@
                 "title": "Akcja",
                 "discard": "Odrzuć niezapisane zmiany",
                 "save": "Zapisz akcje"
+            },
+            "backup_reminder_frequency_values": {
+                "0": "Never",
+                "1": "Monthly",
+                "2": "Weekly"
             },
             "recovery": {
                 "title": "Odzyskiwanie",
@@ -1082,6 +1088,10 @@
         "tooltip": {
             "cheats": "Zastosuj modyfikacje do postaci",
             "options": "Konfiguruj integrację"
+        },
+        "hide": {
+            "title": "Are you sure you want to hide this character?",
+            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
         }
     },
     "simulator": {
@@ -1118,6 +1128,7 @@
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Pancerz",
+        "health": "Health",
         "armor_placeholder": "Punkty pancerza",
         "min": "Min",
         "min_placeholder": "Obraż. Min",
@@ -1220,6 +1231,12 @@
             "ok": "Ok",
             "apply": "Zastosuj",
             "submit": "Submit"
+        },
+        "backup_reminder": {
+            "title": "Backup Reminder",
+            "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
+            "close": "Close",
+            "save": "Download backup"
         },
         "report": {
             "title": "Feedback",
@@ -1659,6 +1676,10 @@
             "mount": "Gryf",
             "guard": "Warta / kostki (3)"
         }
+    },
+    "raids": {
+        "guild1": "Players",
+        "guild2": "Enemies"
     },
     "idle": {
         "title": "Manager Areny",

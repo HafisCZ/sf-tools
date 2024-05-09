@@ -309,8 +309,8 @@
             "kofi": "Dejte Marovi nějaké houby",
             "crowdin": "Pomozte nám s překladem",
             "webshop#": "Použijte kód <b class=\"text-white\">SFTOOLS</b> v Webshopu",
-            "report": "Submit feedback",
-            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+            "report": "Odeslat zpětnou vazbu.",
+            "notice#": "Distribuováno <b>JAK JE</b>. Tato stránka není žádným způsobem spojena s <b>Playa Games</b>."
         },
         "stats": {
             "title": "Statistiky",
@@ -342,12 +342,12 @@
             "desc": "Zjisti kdy můžeš chytnout vybrané mazlíčky"
         },
         "simulator": {
-            "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "title": "Bojový Simulátor",
+            "desc": "Simulovat pravděpodobný výsledek PvP bitvy"
         },
         "guilds": {
-            "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "title": "Cechovní simulátor ",
+            "desc": "Simulovat pravděpodobný výsledek souboje cechu"
         },
         "pets": {
             "title": "Simulátor mazlíčků",
@@ -358,7 +358,7 @@
             "desc": "Zjisti jakou máš šanci na poražení podzemí"
         },
         "underworld": {
-            "title": "Underworld Simulator",
+            "title": "Simulátor Podsvětí",
             "desc": "Zjisti jakou máš šanci na poražení hráčů ve svém podsvětí"
         },
         "analyzer": {
@@ -374,12 +374,12 @@
             "desc": "Zobraz všechny souboje podzemí v archivu"
         },
         "attributes": {
-            "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "title": "Zlato a Zkušenosti",
+            "desc": "Křivky a výpočty"
         },
         "blacksmith": {
-            "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "title": "Vylepšení kováře",
+            "desc": "Kolik vylepšení stojí a kolik materiálu ztratíš"
         },
         "hydra": {
             "title": "Simulator hydry",
@@ -421,9 +421,9 @@
         "topbar": {
             "temporary_flag": "Dočasné",
             "players_grid": "Hráči",
-            "players": "Browse",
-            "groups_grid": "Guilds",
-            "groups": "Browse (Guilds)",
+            "players": "Procházet",
+            "groups_grid": "Cechy",
+            "groups": "Prohlédnout (Cechy)",
             "scripts": "Skripty",
             "files": "Soubory",
             "settings": "Nastavení",
@@ -473,7 +473,7 @@
             "options": {
                 "title": "Nastavení",
                 "advanced": "Zobrazit pokročilý seznam",
-                "advanced_title": "Manage players and groups individually",
+                "advanced_title": "Spravovat hrýče a skupiny jednotlivě",
                 "hidden": "Zobrazit skryté položky",
                 "export_public_only": "Exportovat pouze veřejná data",
                 "export_public_only_title": "All exports from this site will contain only public data (no private data will be included)",
@@ -521,12 +521,12 @@
             "player_companions": "Kopírovat s pomocníky"
         },
         "context": {
-            "title": "Apply action to selected items",
+            "title": "Použít akci na vybrané položky",
             "hide": "Zobrazit / Skrýt",
             "remove": "Smazat",
-            "link_players": "Merge / split characters",
-            "link_groups": "Merge / split guilds",
-            "unselect": "Deselect all"
+            "link_players": "Sloučit / rozdělit postavy",
+            "link_groups": "Sloučit / rozdělit cechy",
+            "unselect": "Zrušit výběr všech položek"
         },
         "profiles": {
             "players": "Hráči",
@@ -541,7 +541,7 @@
         "filters": {
             "types": {
                 "players": "Filtrovat hráče podle serveru, třídy, klanu a/nebo uživatelského jména",
-                "groups": "Filter groups by server or name"
+                "groups": "Filtrovat skupiny podle serveru nebo jména"
             },
             "c": "Třída postavy v angličtině (eg.: berserker, battle mage)",
             "p": "Jméno hráče",
@@ -562,45 +562,45 @@
         },
         "scripts": {
             "settings": "Skripty",
-            "name": "Currently edited script",
-            "list": "Select script",
-            "list_add": "Add new script",
-            "list_search": "Search available scripts ...",
-            "target": "Current table",
-            "script": "Current script",
-            "quick_swap": "Quick swap script",
+            "name": "Aktuálně upravovaný skript",
+            "list": "Vybrat skript",
+            "list_add": "Přidat nový skript",
+            "list_search": "Hledat dostupné skripty...",
+            "target": "Aktuální tabulka",
+            "script": "Aktuální skript",
+            "quick_swap": "Rychlá výměna skriptu",
             "targets": {
-                "none": "None"
+                "none": "Žádný"
             },
             "targets_category": {
-                "default": "Defaults",
-                "existing": "Assigned tables"
+                "default": "Výchozí",
+                "existing": "Přiřazené tabulky"
             },
             "tooltip": {
-                "pin": "Pin script to the top of the list",
-                "unpin": "Unpin script",
-                "assigned": "This script is assigned to current table",
-                "remote": "This script is published",
-                "remote_verified": "This script is published and verified",
-                "remote_copy": "Click here to copy the code"
+                "pin": "Připnout skript na začátek seznamu",
+                "unpin": "Odepnout skript",
+                "assigned": "Tento skript je přiřazen k aktuální tabulce",
+                "remote": "Tento skript je publikován",
+                "remote_verified": "Tento skript je publikován a ověřen",
+                "remote_copy": "Kliknutím zde zkopírujete kód"
             },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manuál",
-                "scripts": "Online scripts",
-                "assign": "Assign selected script to current table",
-                "unassign": "Unassign script from current table",
+                "scripts": "Online skripty",
+                "assign": "Přiřadit vybraný skript k aktuální tabulce",
+                "unassign": "Odebrat skript z aktuální tabulky",
                 "save": "Uložit",
                 "copy": "Kopírovat",
-                "archive": "Archived scripts",
-                "recover": "Load version v#{version}",
-                "edit": "Edit name or description",
-                "remote_add": "Publish selected script",
-                "remote_update": "Publish new version of selected script",
-                "remote_refresh": "Refresh status of selected script",
-                "remote_mark_public": "Mark script as public",
-                "remote_mark_private": "Mark script as private",
-                "remote_remove": "Unpublish selected script",
+                "archive": "Archivované skripty",
+                "recover": "Načíst verzi v#{version}",
+                "edit": "Upravit jméno nebo popis",
+                "remote_add": "Publikovat vybraný skript",
+                "remote_update": "Publikovat novou verzi vybraného skriptu",
+                "remote_refresh": "Aktualizovat stav vybraného skriptu",
+                "remote_mark_public": "Označit skript jako veřejný",
+                "remote_mark_private": "Označit skript jako soukromý",
+                "remote_remove": "Zrušit publikaci vybraného skriptu",
                 "close": "Vrátit zpět",
                 "shortcuts": "Klávesové zkratky",
                 "remove": "Smazat",
@@ -615,16 +615,16 @@
                 }
             },
             "info": {
-                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+                "deprecated": "Použití <b>#{name1}</b> je zastaralé; místo toho použijte <b>#{name2}</b>"
             },
             "remote_action_error": "Akce se nezdařila",
             "remote_copy_toast": {
-                "title": "Copy",
+                "title": "Kopírovat",
                 "message": "Kód byl zkopírován"
             },
             "remote_author_missing": {
-                "title": "You must set your user name before you can publish scripts",
-                "message": "Please head over to Settings and set your 'author name for published scripts'"
+                "title": "Před publikováním skriptů musíte nastavit své uživatelské jméno",
+                "message": "Přejděte do Nastavení a nastavte 'jméno autora pro publikované skripty'"
             }
         },
         "players": {
@@ -636,7 +636,7 @@
             "hidden": "Zobrazit skrýté",
             "empty": "Zobrazit prázné cechy",
             "missing": "Data nebyla nalezena pro následující postavy:",
-            "browse": "View guilds in a table"
+            "browse": "Zobrazit cechy v tabulce"
         },
         "browse": {
             "hidden": "Zobrazit skryté"
@@ -723,6 +723,7 @@
             "always_prev": "Automaticky porovnat s předchozím souborem (cech)",
             "empty_groups": "Zobrazit prázné cechy",
             "unsafe_delete": "Nevyžadovat potvrzení při mazání dat",
+            "backup_reminder_frequency": "Remind me about a backup",
             "script_author": "Author name for published scripts",
             "table_sticky_header": "Enable sticky table headers",
             "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
@@ -734,6 +735,11 @@
                 "discard": "Zahodit neuložené změny",
                 "save": "Uložit"
             },
+            "backup_reminder_frequency_values": {
+                "0": "Nikdy",
+                "1": "Měsíčně",
+                "2": "Týdně"
+            },
             "recovery": {
                 "title": "Obnova",
                 "import": "Importovat data",
@@ -743,12 +749,12 @@
                 "notice": "Opravdu chcete obnovit SFTools z tohoto souboru?<br><br>Tato operace vymaže všechna vaše stávající data a nahradí je daty ze souboru!"
             },
             "links": {
-                "title": "Player / guild merges",
+                "title": "Hráč / sloučení cechu",
                 "export": "Export",
                 "import": "Import",
                 "import_title": "Are you sure you want to import all merges?",
-                "reset": "Reset",
-                "reset_title": "Are you sure you want to reset all merges?"
+                "reset": "Obnovit",
+                "reset_title": "Jste si jistí, že chcete obnovit všechny propojení?"
             }
         }
     },
@@ -765,8 +771,8 @@
         "results": "Výsledky",
         "calendar": {
             "collected": "Collected",
-            "available": "Available",
-            "locked": "Locked",
+            "available": "Dostupný",
+            "locked": "Zamčeno",
             "footer#": "Event times might not be accurate. Please verify within the game."
         },
         "map": {
@@ -912,29 +918,29 @@
         "toast": {
             "start": {
                 "title": "Simulace se spouští",
-                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+                "message#": "<b>Velikost bloku:</b> #{blockSize}<br/><b>Iterace:</b> #{iterations}<br/><b>Počet vláken:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Simulační vlákno #{done} / #{total} dokončeno",
+                "message#": "<b>Čas:</b> #{time} sekund"
             }
         }
     },
     "analyzer": {
         "topbar": {
-            "import": "Import",
-            "clear": "Clear",
+            "import": "Importovat",
+            "clear": "Vymazat",
             "export": "Export",
             "options": "Nastavení"
         },
         "form": {
             "fight_group": "Vybrat skupinu",
             "fight_list": "Vybrat boj",
-            "editable_data": "Editable data"
+            "editable_data": "Upravitelná data"
         },
         "players": "Hráči",
         "preview": "Fight preview",
-        "export": "Export fights",
+        "export": "Exportovat souboje",
         "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
@@ -948,10 +954,10 @@
             "type": "Type",
             "health": "Health left",
             "damage": "Damage",
-            "damage_base": "Base damage"
+            "damage_base": "Základní poškození"
         },
         "toast_import_error": {
-            "title": "Import failed",
+            "title": "Import se nezdařil",
             "message": "Ensure that you are importing a valid HAR or fight JSON"
         },
         "special_state": {
@@ -1015,8 +1021,8 @@
                 "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "title": "Simulační vlákno #{done} / #{total} dokončeno",
+                "message#": "<b>Čas:</b> #{time} sekund"
             }
         }
     },
@@ -1082,6 +1088,10 @@
         "tooltip": {
             "cheats": "Apply modifications to characters",
             "options": "Configure integration"
+        },
+        "hide": {
+            "title": "Are you sure you want to hide this character?",
+            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
         }
     },
     "simulator": {
@@ -1118,6 +1128,7 @@
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Brnění",
+        "health": "Health",
         "armor_placeholder": "Body brnění",
         "min": "Min",
         "min_placeholder": "Min. položka",
@@ -1221,8 +1232,14 @@
             "apply": "Použít",
             "submit": "Submit"
         },
+        "backup_reminder": {
+            "title": "Backup Reminder",
+            "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
+            "close": "Zavřít",
+            "save": "Stáhnout zálohu"
+        },
         "report": {
-            "title": "Feedback",
+            "title": "Zpětná vazba",
             "field": {
                 "type": "Type",
                 "description": "Description",
@@ -1235,12 +1252,12 @@
             },
             "toast": {
                 "success": {
-                    "title": "Thank you for your feedback",
+                    "title": "Děkujeme Vám za zpětnou vazbu",
                     "message": "If you filled in your email you may receive a reply in several working days"
                 },
                 "error": {
                     "title": "Your feedback could not be submitted",
-                    "message": "Please try again later"
+                    "message": "Zkuste to prosím později"
                 }
             }
         },
@@ -1273,11 +1290,11 @@
             "shortcuts": {
                 "ctrl_s": {
                     "key": "Ctrl + S",
-                    "description": "Save script"
+                    "description": "Uložit skript"
                 },
                 "ctrl_shift_s": {
                     "key": "Ctrl + Shift + S",
-                    "description": "Save script and return back"
+                    "description": "Uložit skript a vrátit se zpět"
                 },
                 "tab": {
                     "key": "Tab",
@@ -1292,16 +1309,16 @@
                     "description": "Comment or uncomment selected lines"
                 },
                 "ctrl_space": {
-                    "key": "Ctrl + Space",
-                    "description": "Show suggestions"
+                    "key": "Ctrl + Mezerník",
+                    "description": "Zobrazit návrhy"
                 },
                 "ctrl_c": {
                     "key": "Ctrl + C",
-                    "description": "Copy selection"
+                    "description": "Kopírovat výběr"
                 },
                 "ctrl_v": {
                     "key": "Ctrl + V",
-                    "description": "Paste"
+                    "description": "Vložit"
                 },
                 "ctrl_x": {
                     "key": "Ctrl + X",
@@ -1659,6 +1676,10 @@
             "mount": "Griffinodrak",
             "guard": "Guard Duty / Dice (3)"
         }
+    },
+    "raids": {
+        "guild1": "Players",
+        "guild2": "Enemies"
     },
     "idle": {
         "title": "Správce arény",

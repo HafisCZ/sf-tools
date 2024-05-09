@@ -723,6 +723,7 @@
             "always_prev": "Confronta con i precedenti (gilde)",
             "empty_groups": "Mostra gruppi vuoti",
             "unsafe_delete": "Non chiedere conferma per cancellare i file",
+            "backup_reminder_frequency": "Remind me about a backup",
             "script_author": "Nome autore per gli script pubblicati",
             "table_sticky_header": "Enable sticky table headers",
             "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
@@ -733,6 +734,11 @@
                 "title": "Azioni",
                 "discard": "Scarta i cambiamenti non salvati",
                 "save": "Salve le azioni"
+            },
+            "backup_reminder_frequency_values": {
+                "0": "Never",
+                "1": "Monthly",
+                "2": "Weekly"
             },
             "recovery": {
                 "title": "Recupero",
@@ -1082,6 +1088,10 @@
         "tooltip": {
             "cheats": "Applica le modifiche ai personaggi",
             "options": "Configure integration"
+        },
+        "hide": {
+            "title": "Are you sure you want to hide this character?",
+            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
         }
     },
     "simulator": {
@@ -1118,6 +1128,7 @@
         "mask": "Maschera",
         "instrument": "Strumento",
         "armor": "Armatura",
+        "health": "Health",
         "armor_placeholder": "Punti armatura",
         "min": "Min",
         "min_placeholder": "Danno Min",
@@ -1220,6 +1231,12 @@
             "ok": "Ok",
             "apply": "Applica",
             "submit": "Submit"
+        },
+        "backup_reminder": {
+            "title": "Backup Reminder",
+            "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
+            "close": "Close",
+            "save": "Download backup"
         },
         "report": {
             "title": "Feedback",
@@ -1659,6 +1676,10 @@
             "mount": "Grifone",
             "guard": "Lavoro guardia / Dadi (3)"
         }
+    },
+    "raids": {
+        "guild1": "Players",
+        "guild2": "Enemies"
     },
     "idle": {
         "title": "Gestore Arena",
