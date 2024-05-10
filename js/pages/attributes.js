@@ -642,6 +642,36 @@ Site.ready({}, function () {
 
     $('#quest-level, #quest-xp, #quest-gold, #quest-tower, #quest-book, #quest-rxp, #quest-rgold').on('change input', questUpdate);
     $('#quest-exp, #quest-gold').dropdown().dropdown('setting', 'onChange', questUpdate)
+                
+    const expeditionUpdate = function () {
+        if (validate($('#expedition-level'), $('#expedition-group-xp'), $('#expedition-group-gold'), $('#expedition-tower'), $('#expedition-book'), $('#expedition-rxp'), 
+            $('#expedition-rgold'), $('#expedition-stars'))) {
+            const level = getClampedValue('#expedition-level', 1, 800);
+            const gxp = getClampedValue('#expedition-group-xp', 0, 200);
+            const ggold = getClampedValue('#expedition-group-gold', 0, 200);
+            const book = getClampedValue('#expedition-book', 0, 100);
+            const tower = getClampedValue('#expedition-tower', 0, 100);
+            const rxp = getClampedValue('#expedition-rxp', 0, 10);
+            const rgold = getClampedValue('#expedition-rgold', 0, 50);
+            const stars = getClampedValue('#expedition-stars', 0, 3);
+            const mount = _clamp(Number.parseInt($('#expedition-mount').dropdown('get value')), 0, 4);
+            const xpscroll = $('#expedition-enchantment_exp').dropdown('get value') === '1';
+            const goldscroll = $('#expedition-enchantment_gold').dropdown('get value') === '1';
+
+            const xp = Calculations.experienceExpedition(level, book, gxp, rxp, xpscroll, stars, mount);
+            const gold = Calculations.goldExpedition(level, tower, ggold, rgold, goldscroll, mount);
+            const chestGold = gold / 5; 
+            const midGold = gold / 10;
+
+            $('#expedition-gold').val(formatValue(gold));
+            $('#expedition-gold_chest').val(formatValue(chestGold));
+            $('#expedition-gold_mid').val(formatValue(midGold));
+            $('#expedition-xp').val(formatAsSpacedNumber(xp, ' '));
+        }
+    }
+
+    $('#expedition-level, #expedition-group-xp, #expedition-group-gold, #expedition-tower, #expedition-book, #expedition-rxp, #expedition-rgold, #expedition-stars').on('change input', expeditionUpdate) 
+    $('#expedition-enchantment_exp, #expedition-enchantment_gold, #expedition-mount').dropdown().dropdown('setting', 'onChange', expeditionUpdate)
 
     $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit, #gold-runes').on('change input', function () {
         if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'), $('#gold-pit'))) {
