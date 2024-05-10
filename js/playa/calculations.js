@@ -44,6 +44,44 @@ class Calculations {
     return this.experienceQuestMin(level, book, guildInstructor, runes) * 5;
   }
 
+  // Returns experience bonus from stars for expedition
+  static expeditionStarBonus(stars) {
+    switch (stars) {
+      case 0:
+        return 0;
+      case 1:
+        return 0.1;
+      case 2:
+        return 0.2;
+      case 3:
+        return 0.35;
+    }
+  }
+
+  // Returns mount bonus for expedition
+  static expeditionMountBonus(mount) {
+    switch (mount) {
+      case 0:
+        return 0;
+      case 1:
+        return 0.11
+      case 2:
+        return 0.25
+      case 3:
+        return 0.42
+      case 4:
+        return 1
+    }
+  }
+
+  // Returns experience reward for 25 thirst 
+  static experienceExpedition (level, book, guildInstructor, runes, scroll, stars, mount) {
+    let base = (1 + _clamp(guildInstructor, 0, 200) / 100 + _clamp(book, 0, 100) / 100 + _clamp(runes, 0, 10) / 100) * this.experienceBase(level) / 11 / this.experienceReducedBase(level) * 15.18;
+    if (scroll)
+      base *= 1.1;
+    return base * (1 + this.expeditionStarBonus(stars)) * (1 + this.expeditionMountBonus(mount));
+  }
+
   // Returns experience from secret mission of the day
   static experienceSecretMission (level, hydra) {
     return this.experienceBase(level) * (1 + 0.25 * _clamp(hydra, 0, 20));
@@ -327,6 +365,16 @@ class Calculations {
   // Returns maximum gold reward from quest segment
   static goldQuestMax (level, tower, guildTreasure, runes) {
     return Math.min(10000000, 5 * (1 + _clamp(guildTreasure, 0, 200) / 100 + _clamp(tower, 0, 100) / 100) * this.goldBase(level) / 11) * (1 + _clamp(runes, 0, 50) / 100);
+  }
+
+  // Returns expedition final gold reward for 25 thirst 
+  static goldExpedition (level, tower, guildTreasure, runes, scroll, mount) {
+    let base = this.gold(level) / 60.38647;
+    let goldMultiplier = 1 + _clamp(_clamp(guildTreasure, 0, 200) / 100 + _clamp(tower, 0, 100) * 2 / 100, 0, 3) + _clamp(runes, 0, 50) / 100
+    if (scroll)
+      goldMultiplier *= 1.1;
+    
+    return _clamp(base * goldMultiplier, 0, 50_000_000) * (1 + this.expeditionMountBonus(mount));
   }
 
   /*
