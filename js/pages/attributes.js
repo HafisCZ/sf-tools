@@ -615,7 +615,7 @@ Site.ready({}, function () {
         }
     });
 
-    $('#quest-level, #quest-xp, #quest-gold, #quest-tower, #quest-book, #quest-rxp, #quest-rgold').on('change input', function () {
+    const questUpdate = function () {
         if (validate($('#quest-level'), $('#quest-xp'), $('#quest-gold'), $('#quest-tower'), $('#quest-book'), $('#quest-rxp'), $('#quest-rgold'))) {
             const level = getClampedValue('#quest-level', 1, 800);
             const gxp = getClampedValue('#quest-xp', 0, 200);
@@ -624,19 +624,24 @@ Site.ready({}, function () {
             const tower = getClampedValue('#quest-tower', 0, 100);
             const rxp = getClampedValue('#quest-rxp', 0, 10);
             const rgold = getClampedValue('#quest-rgold', 0, 50);
+            const exp = $('#quest-exp').dropdown('get value') === '1' ? 1.1 : 1;
+            const egold = $('#quest-egold').dropdown('get value') === '1' ? 1.1 : 1;
 
-            const xpmin = Calculations.experienceQuestMin(level, book, gxp, rxp);
-            const xpmax = Calculations.experienceQuestMax(level, book, gxp, rxp);
+            const xpmin = exp * Calculations.experienceQuestMin(level, book, gxp, rxp);
+            const xpmax = exp * Calculations.experienceQuestMax(level, book, gxp, rxp);
 
-            const goldmin = Calculations.goldQuestMin(level, tower, ggold, rgold);
-            const goldmax = Calculations.goldQuestMax(level, tower, ggold, rgold);
+            const goldmin = egold * Calculations.goldQuestMin(level, tower, ggold, rgold);
+            const goldmax = egold * Calculations.goldQuestMax(level, tower, ggold, rgold);
 
             $('#quest-goldmin').val(formatValue(goldmin));
             $('#quest-goldmax').val(formatValue(goldmax));
             $('#quest-xpmin').val(formatAsSpacedNumber(xpmin, ' '));
             $('#quest-xpmax').val(formatAsSpacedNumber(xpmax, ' '));
         }
-    });
+    }
+
+    $('#quest-level, #quest-xp, #quest-gold, #quest-tower, #quest-book, #quest-rxp, #quest-rgold').on('change input', questUpdate);
+    $('#quest-exp, #quest-gold').dropdown().dropdown('setting', 'onChange', questUpdate)
 
     $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit, #gold-runes').on('change input', function () {
         if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'), $('#gold-pit'))) {

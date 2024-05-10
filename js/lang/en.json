@@ -1657,7 +1657,9 @@
             "min_xp": "Minimum XP",
             "max_xp": "Maximum XP",
             "min_gold": "Minimum Gold",
-            "max_gold": "Maximum Gold"
+            "max_gold": "Maximum Gold",
+            "enchantment_exp": "XP Enchantment",
+            "enchantment_gold": "Gold Enchantment"
         },
         "misc": {
             "title": "Miscellaneous",
