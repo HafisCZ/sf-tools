@@ -23,7 +23,7 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
-    'v7.XXXX': {
+    'v7.4638': {
         'Statistics': [
             'Added new script visibility & verification system (you can now request script to be made public/private)',
             'Added <code>border color</code> command for custom border colors',
