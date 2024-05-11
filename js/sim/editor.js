@@ -485,6 +485,8 @@ class Editor extends EditorBase {
             value: ''
         });
 
+        this.fields['treat'].show(false);
+
         this.fields['weapon1_enchantment'].initialize({
             values: [
                 {

@@ -53,6 +53,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
 
             super._bind();
+
+            this.fields['treat'].show(true);
         }
 
         fill (object) {
