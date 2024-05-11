@@ -1651,7 +1651,34 @@
             "min_xp": "Minimale EXP",
             "max_xp": "Maximale EXP",
             "min_gold": "Minimales Gold",
-            "max_gold": "Maximales Gold"
+            "max_gold": "Maximales Gold",
+            "enchantment_exp": "XP Enchantment",
+            "enchantment_gold": "Gold Enchantment"
+        },
+        "expeditions": {
+            "title": "Expeditions (Experimental)",
+            "notice": "* Values represent 25 thirst expedition rewards",
+            "album": "Scrapbook %",
+            "group_exp": "Guild XP %",
+            "group_gold": "Guild Gold %",
+            "tower": "Tower",
+            "rune_exp": "Experience Rune",
+            "rune_gold": "Gold Rune",
+            "stars": "Stars",
+            "mount": {
+                "title": "Mount",
+                "none": "None",
+                "pig": "Pig / Cow",
+                "wolf": "Wolf / Horse",
+                "raptor": "Raptor / Tiger",
+                "griffin": "Griffin"
+            },
+            "enchantment_exp": "XP Enchantment",
+            "enchantment_gold": "Gold Enchantment",
+            "xp": "XP (Final)",
+            "gold_chest": "Gold (Chest)",
+            "gold_mid": "Gold (Mid)",
+            "gold": "Gold (Final)"
         },
         "misc": {
             "title": "Diverses",
