@@ -357,13 +357,14 @@ class Site {
             Store.shared.set(key, value, true);
         }
 
-        for (let [slot, { players, groups, trackers, metadata }] of Object.entries(data)) {
+        for (let [slot, { players, groups, trackers, metadata, links }] of Object.entries(data)) {
             let db = await DatabaseUtils.createSession(parseInt(slot || '0'));
 
             await db.clear('players');
             await db.clear('groups');
             await db.clear('trackers');
             await db.clear('metadata');
+            await db.clear('links');
 
             for (let player of players) {
                 await db.set('players', player);
@@ -380,6 +381,10 @@ class Site {
             for (let metadat of metadata) {
                 await db.set('metadata', metadat);
             }
+
+            for (let link of (links ?? [])) {
+                await db.set('links', link);
+            }
         }
     }
 
@@ -395,7 +400,8 @@ class Site {
                 players: await db.where('players'),
                 groups: await db.all('groups'),
                 trackers: await db.all('trackers'),
-                metadata: await db.all('metadata')
+                metadata: await db.all('metadata'),
+                links: await db.all('links')
             }
 
             resolve()
