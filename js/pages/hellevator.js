@@ -153,6 +153,10 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             }
         }
 
+        if (lastPossibleWin === -1 && firstPossibleLoss === enemies.length) {
+            lastPossibleWin = firstPossibleLoss;
+        }
+
         if (firstPossibleLoss === lastPossibleWin && lastPossibleWin === enemies.length && enemies.length > 10) {
             // If player can win everything, display message
             content = `
