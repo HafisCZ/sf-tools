@@ -537,18 +537,18 @@ const TREATS = {
     'cookie_legendary': { LuckBonus: 0.3 },
     'granola': { SideAttributeBonus: 0.15 },
     'granola_legendary': { SideAttributeBonus: 0.3 },
-    'rune_damage_fire': { RuneDamageType: RUNE_FIRE_DAMAGE, RuneDamageBonus: 0.3 },
-    'rune_damage_fire_legendary': { RuneDamageType: RUNE_FIRE_DAMAGE, RuneDamageBonus: 0.5 },
-    'rune_damage_cold': { RuneDamageType: RUNE_COLD_DAMAGE, RuneDamageBonus: 0.3 },
-    'rune_damage_cold_legendary': { RuneDamageType: RUNE_COLD_DAMAGE, RuneDamageBonus: 0.5 },
-    'rune_damage_lightning': { RuneDamageType: RUNE_LIGHTNING_DAMAGE, RuneDamageBonus: 0.3 },
-    'rune_damage_lightning_legendary': { RuneDamageType: RUNE_LIGHTNING_DAMAGE, RuneDamageBonus: 0.5 },
-    'rune_resistance_fire_cold': { RuneResistanceFireBonus: 0.3, RuneResistanceColdBonus: 0.3 },
-    'rune_resistance_fire_cold_legendary': { RuneResistanceFireBonus: 0.5, RuneResistanceColdBonus: 0.5 },
-    'rune_resistance_cold_lightning': { RuneResistanceColdBonus: 0.3, RuneResistanceLightningBonus: 0.3 },
-    'rune_resistance_cold_lightning_legendary': { RuneResistanceColdBonus: 0.3, RuneResistanceLightningBonus: 0.3 },
-    'rune_resistance_lightning_fire': { RuneResistanceLightningBonus: 0.3, RuneResistanceFireBonus: 0.3 },
-    'rune_resistance_lightning_fire_legendary': { RuneResistanceLightningBonus: 0.3, RuneResistanceFireBonus: 0.3 }
+    'rune_damage_fire': { RuneDamageType: RUNE_FIRE_DAMAGE, RuneDamageBonus: 30 },
+    'rune_damage_fire_legendary': { RuneDamageType: RUNE_FIRE_DAMAGE, RuneDamageBonus: 50 },
+    'rune_damage_cold': { RuneDamageType: RUNE_COLD_DAMAGE, RuneDamageBonus: 30 },
+    'rune_damage_cold_legendary': { RuneDamageType: RUNE_COLD_DAMAGE, RuneDamageBonus: 50 },
+    'rune_damage_lightning': { RuneDamageType: RUNE_LIGHTNING_DAMAGE, RuneDamageBonus: 30 },
+    'rune_damage_lightning_legendary': { RuneDamageType: RUNE_LIGHTNING_DAMAGE, RuneDamageBonus: 50 },
+    'rune_resistance_fire_cold': { RuneResistanceFireBonus: 30, RuneResistanceColdBonus: 30 },
+    'rune_resistance_fire_cold_legendary': { RuneResistanceFireBonus: 50, RuneResistanceColdBonus: 50 },
+    'rune_resistance_cold_lightning': { RuneResistanceColdBonus: 30, RuneResistanceLightningBonus: 30 },
+    'rune_resistance_cold_lightning_legendary': { RuneResistanceColdBonus: 50, RuneResistanceLightningBonus: 50 },
+    'rune_resistance_lightning_fire': { RuneResistanceLightningBonus: 30, RuneResistanceFireBonus: 30 },
+    'rune_resistance_lightning_fire_legendary': { RuneResistanceLightningBonus: 50, RuneResistanceFireBonus: 50 }
 }
 
 // Fighter models
@@ -647,7 +647,16 @@ class SimulatorModel {
     }
 
     getAttribute (source) {
-        return this.Player[source.Config.Attribute].Total;
+        let attribute = this.Player[source.Config.Attribute].Total;
+
+        // Following is true if it's main attribute
+        if (this.Config.Attribute === source.Config.Attribute) {
+            attribute *= 1 + (this.Treat.AttributeBonus ?? 0);
+        } else {
+            attribute *= 1 + (this.Treat.SideAttributeBonus ?? 0);
+        }
+
+        return attribute;
     }
 
     // Damage Reduction
@@ -655,7 +664,7 @@ class SimulatorModel {
         if (source.Config.BypassDamageReduction) {
             return 0;
         } else {
-            return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
+            return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction + (this.Treat.MaximumDamageReductionBonus ?? 0), this.Player.Armor / source.Player.Level);
         }
     }
     
@@ -695,6 +704,7 @@ class SimulatorModel {
         }
 
         multiplier += this.Config.CritGladiatorBonus * Math.max(0, ownGladiator - reducingGladiator);
+        multiplier += this.Treat.CriticalBonus ?? 0;
 
         return multiplier;
     }
@@ -706,6 +716,7 @@ class SimulatorModel {
         } else {
             let health = this.Player.Constitution.Total;
             health *= this.Config.HealthMultiplier;
+            health *= 1 + (this.Treat.ConstitutionBonus ?? 0);
             health *= this.Player.Level + 1;
 
             health = Math.ceil(health * (1 + this.Player.Potions.Life / 100));
@@ -743,15 +754,34 @@ class SimulatorModel {
     }
 
     getDamageBase (weapon, target) {
-        let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
-        let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
-        let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
-        let ma = (1 - Math.min(target.Player.Runes.ResistanceFire, target.Player.Runes.ResistanceCold, target.Player.Runes.ResistanceLightning) / 100) * (getRuneValue(weapon, RUNE_AUTO_DAMAGE) / 100);
+        // Rune resistances
+        const rf = target.Player.Runes.ResistanceFire + (target.Treat.RuneResistanceFireBonus ?? 0);
+        const rc = target.Player.Runes.ResistanceCold + (target.Treat.RuneResistanceColdBonus ?? 0);
+        const rl = target.Player.Runes.ResistanceLightning + (target.Treat.RuneResistanceLightningBonus ?? 0);
+
+        let rd = weapon.Attributes[2]; // Rune damage
+        let rr = 0; // Rune resistance
+
+        if (weapon.AttributeTypes[2] === RUNE_AUTO_DAMAGE) {
+            rd += this.Treat.RuneDamageBonus ?? 0;
+            rr = Math.min(rf, rc, rl);
+        } else if (weapon.AttributeTypes[2] === RUNE_FIRE_DAMAGE || this.Treat.RuneDamageType === RUNE_FIRE_DAMAGE) {
+            rd += this.Treat.RuneDamageBonus ?? 0;
+            rr = rf;
+        } else if (weapon.AttributeTypes[2] === RUNE_COLD_DAMAGE || this.Treat.RuneDamageType === RUNE_COLD_DAMAGE) {
+            rd += this.Treat.RuneDamageBonus ?? 0;
+            rr = rc;
+        } else if (weapon.AttributeTypes[2] === RUNE_LIGHTNING_DAMAGE || this.Treat.RuneDamageType === RUNE_LIGHTNING_DAMAGE) {
+            rd += this.Treat.RuneDamageBonus ?? 0;
+            rr = rl;
+        }  else {
+            rd = 0;
+        }
 
         let aa = this.getAttribute(this);
         let ad = FLAGS.NoAttributeReduction ? 0 : (target.getAttribute(this) / 2);
 
-        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + mf + mc + ml + ma);
+        let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + (1 - Math.min(75, rr) / 100) * (Math.min(60, rd) / 100));
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10
 
@@ -1124,11 +1154,13 @@ class BardModel extends SimulatorModel {
         // Bonus round
         this.BonusRounds = 0;
 
-        const mainAttribute = this.getAttribute(this);
-        if (this.Player.Constitution.Total >= mainAttribute / 2) {
+        const attribute = this.getAttribute(this);
+        const constitution = this.Player.Constitution.Total * (1 + (this.Treat.ConstitutionBonus ?? 0));
+
+        if (constitution >= attribute / 2) {
             this.BonusRounds++;
         }
-        if (this.Player.Constitution.Total >= 3 * mainAttribute / 4) {
+        if (constitution >= 3 * attribute / 4) {
             this.BonusRounds++;
         }
     }
