@@ -268,6 +268,7 @@ class Editor extends EditorBase {
 
             class: new Field(`${selector} [data-path="Class"]`, '1'),
             level: new Field(`${selector} [data-path="Level"]`, '', Field.isPlayerLevel),
+            treat: new Field(`${selector} [data-path="Treat"]`, '', ''),
             armor: new Field(`${selector} [data-path="Armor"]`, '', Field.isNumber),
 
             resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"]`, '', Field.isResistanceRune),
@@ -470,6 +471,20 @@ class Editor extends EditorBase {
             value: 'false'
         });
 
+        this.fields['treat'].initialize({
+            values: [
+                {
+                    name: this.intl('none'),
+                    value: ''
+                },
+                ...Object.keys(TREATS).map((value) => ({
+                    value,
+                    name: this.intl(`treats.${value}`)
+                }))
+            ],
+            value: ''
+        });
+
         this.fields['weapon1_enchantment'].initialize({
             values: [
                 {
@@ -615,6 +630,13 @@ class Editor extends EditorBase {
                             <label>${intl('editor.level')}</label>
                             <div class="ui inverted centered input">
                                 <input type="text" data-path="Level" placeholder="1 - 800">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${intl('editor.treat')}</label>
+                            <div class="ui selection inverted dropdown" data-path="Treat">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
                             </div>
                         </div>
                     </div>
