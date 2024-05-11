@@ -523,6 +523,34 @@ const ATTACK_REVIVE = 100;
 const ATTACK_SPECIAL_SONG = 200;
 const ATTACK_SPECIAL_SUMMON = 300;
 
+// Modifiers
+const TREATS = {
+    'spinach': { CriticalBonus: 0.35 },
+    'spinach_legendary': { CriticalBonus: 0.5 },
+    'stone': { MaximumDamageReductionBonus: 10 },
+    'stone_legendary': { MaximumDamageReductionBonus: 20 },
+    'beer': { AttributeBonus: 0.1 },
+    'beer_legendary': { AttributeBonus: 0.2 },
+    'gingerbread': { ConstitutionBonus: 0.1 },
+    'gingerbread_legendary': { ConstitutionBonus: 0.2 },
+    'cookie': { LuckBonus: 0.15 },
+    'cookie_legendary': { LuckBonus: 0.3 },
+    'granola': { SideAttributeBonus: 0.15 },
+    'granola_legendary': { SideAttributeBonus: 0.3 },
+    'rune_damage_fire': { RuneDamageType: RUNE_FIRE_DAMAGE, RuneDamageBonus: 0.3 },
+    'rune_damage_fire_legendary': { RuneDamageType: RUNE_FIRE_DAMAGE, RuneDamageBonus: 0.5 },
+    'rune_damage_cold': { RuneDamageType: RUNE_COLD_DAMAGE, RuneDamageBonus: 0.3 },
+    'rune_damage_cold_legendary': { RuneDamageType: RUNE_COLD_DAMAGE, RuneDamageBonus: 0.5 },
+    'rune_damage_lightning': { RuneDamageType: RUNE_LIGHTNING_DAMAGE, RuneDamageBonus: 0.3 },
+    'rune_damage_lightning_legendary': { RuneDamageType: RUNE_LIGHTNING_DAMAGE, RuneDamageBonus: 0.5 },
+    'rune_resistance_fire_cold': { RuneResistanceFireBonus: 0.3, RuneResistanceColdBonus: 0.3 },
+    'rune_resistance_fire_cold_legendary': { RuneResistanceFireBonus: 0.5, RuneResistanceColdBonus: 0.5 },
+    'rune_resistance_cold_lightning': { RuneResistanceColdBonus: 0.3, RuneResistanceLightningBonus: 0.3 },
+    'rune_resistance_cold_lightning_legendary': { RuneResistanceColdBonus: 0.3, RuneResistanceLightningBonus: 0.3 },
+    'rune_resistance_lightning_fire': { RuneResistanceLightningBonus: 0.3, RuneResistanceFireBonus: 0.3 },
+    'rune_resistance_lightning_fire_legendary': { RuneResistanceLightningBonus: 0.3, RuneResistanceFireBonus: 0.3 }
+}
+
 // Fighter models
 class SimulatorModel {
     static initializeFighters (fighterA, fighterB) {
@@ -598,6 +626,7 @@ class SimulatorModel {
     constructor (index, player) {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
+        this.Treat = TREATS[player.Treat] ?? {}
 
         // Caching
         this.Data = null;
