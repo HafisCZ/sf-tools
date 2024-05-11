@@ -54,7 +54,8 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
             super._bind();
 
-            this.fields['treat'].show(true);
+            this.fields['snack'].show(true);
+            this.fields['snack_potency'].show(true);
         }
 
         fill (object) {

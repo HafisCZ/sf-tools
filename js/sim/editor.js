@@ -270,8 +270,10 @@ class Editor extends EditorBase {
 
             class: new Field(`${selector} [data-path="Class"]`, '1'),
             level: new Field(`${selector} [data-path="Level"]`, '', Field.isPlayerLevel),
-            treat: new Field(`${selector} [data-path="Treat"]`, '', ''),
             armor: new Field(`${selector} [data-path="Armor"]`, '', Field.isNumber),
+
+            snack: new Field(`${selector} [data-path="Snack"]`, '', ''),
+            snack_potency: new Field(`${selector} [data-path="SnackPotency"]`, '0', Field.createRange(0, 20)),
 
             resistance_fire: new Field(`${selector} [data-path="Runes.ResistanceFire"]`, '', Field.isResistanceRune),
             resistance_cold: new Field(`${selector} [data-path="Runes.ResistanceCold"]`, '', Field.isResistanceRune),
@@ -473,21 +475,29 @@ class Editor extends EditorBase {
             value: 'false'
         });
 
-        this.fields['treat'].initialize({
+        this.fields['snack'].initialize({
             values: [
                 {
                     name: this.intl('none'),
                     value: ''
                 },
-                ...Object.keys(TREATS).map((value) => ({
+                ...Object.keys(SNACKS).map((value) => ({
                     value,
-                    name: this.intl(`treats.${value}`)
+                    name: `<img src="res/snacks/gt_snack_${value.replace('_legendary', '')}.png" class="!-ml-3 !mr-2"><span class="${value.includes('_legendary') ? '!text-orange' : ''}">${this.intl(`snacks.${value.replace('_legendary', '')}`)}</span>`,
                 }))
             ],
             value: ''
         });
 
-        this.fields['treat'].show(false);
+        this.fields['snack_potency'].initialize({
+            values: _sequence(11).map((value) => ({
+                name: `${value * 2} %`,
+                value: value * 2
+            }))
+        });
+
+        this.fields['snack'].show(false);
+        this.fields['snack_potency'].show(false);
 
         this.fields['weapon1_enchantment'].initialize({
             values: [
@@ -636,9 +646,18 @@ class Editor extends EditorBase {
                                 <input type="text" data-path="Level" placeholder="1 - 800">
                             </div>
                         </div>
+                    </div>
+                    <div class="two fields">
                         <div class="field">
-                            <label>${intl('editor.treat')}</label>
-                            <div class="ui selection inverted dropdown" data-path="Treat">
+                            <label>${intl('editor.snack')}</label>
+                            <div class="ui selection inverted dropdown" data-path="Snack">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>${intl('editor.snack_potency')}</label>
+                            <div class="ui selection inverted dropdown" data-path="SnackPotency">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
