@@ -285,11 +285,7 @@ class AnalyzerAutofillDialog extends Dialog {
         let values = [0, 0, 0];
     
         if (runes && runes.res) {
-            if (Array.isArray(runes.res)) {
-                values = runes.res;
-            } else {
-                values[runes.type - 40] = runes.res;
-            }
+            values = runes.res;
         }
 
         return {

@@ -125,11 +125,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
         let values = [0, 0, 0];
 
         if (runes && runes.res) {
-            if (Array.isArray(runes.res)) {
-                values = runes.res;
-            } else {
-                values[runes.type - 40] = runes.res;
-            }
+            values = runes.res;
         }
 
         return {
@@ -213,9 +209,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
             let displayResistance = '';
             if (Array.isArray(runes.res)) {
-                displayResistance = ` / ${['F', 'C', 'L'].map((type, index) => `${runes.res[index]} ${type}`).join('&nbsp; ')}`;
-            } else if (runes.res) {
-                displayResistance = ` / ${runes.res} ${displayType}`;
+                displayResistance = ` / ${['F', 'C', 'L'].map((type, index) => runes.res[index] ? `${runes.res[index]} ${type}` : '').filter((v) => v).join('&nbsp; ')}`;
             }
 
             return `<span class="boss-rune">${displayDamage}${displayResistance}</span>`;
