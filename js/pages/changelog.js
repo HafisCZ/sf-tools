@@ -1,4 +1,4 @@
-window.addEventListener('load', function () {
+Site.ready({ type: 'simulator' }, function (urlParams) {
     function getEntryTemplate (version, content) {
         return `
             <div class="row">
@@ -43,4 +43,4 @@ window.addEventListener('load', function () {
     }
 
     $('.version-list').html(Object.keys(CHANGELOG).map(version => getChangelogEntry(version)).join(''));
-});
+})
