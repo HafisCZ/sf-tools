@@ -626,7 +626,14 @@ class SimulatorModel {
     constructor (index, player) {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
-        this.Snack = SNACKS[player.Snack] ?? {}
+
+        // Snacks
+        const snack = SNACKS[player.Snack];
+
+        this.Snack = snack ?? {};
+        if (snack) {
+            this.Snack.DamageBonus = this.Player.SnackPotency;
+        }
 
         // Caching
         this.Data = null;
@@ -784,10 +791,7 @@ class SimulatorModel {
         let base = (1 + this.Player.Dungeons.Group / 100) * (1 - target.getDamageReduction(this) / 100) * (1 + (1 - Math.min(75, rr) / 100) * (Math.min(60, rd) / 100));
         base *= this.getDamageMultiplier(target);
         base *= 1 + Math.max(aa / 2, aa - ad) / 10;
-        
-        if (this.Snack) {
-            base *= 1 + (this.Player.SnackPotency ?? 0) / 100;
-        }
+        base *= 1 + (this.Snack.DamageBonus ?? 0) / 100;
 
         return base;
     }
