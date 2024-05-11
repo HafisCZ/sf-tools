@@ -93,11 +93,13 @@ class Field {
     }
 
     show (val) {
-        if (val) {
-            this.$object.closest('.field').show();
-        } else {
-            this.$object.closest('.field').hide();
-        }
+        const $field = this.$object.closest('.field');
+
+        $field.toggle(val);
+
+        const $fields = $field.closest('.fields');
+
+        $fields.toggle($fields.find('.field').get().some((f) => f.style.display !== 'none'));
     }
 
     clear () {
