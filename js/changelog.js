@@ -30,23 +30,38 @@ const CHANGELOG = {
             'Added <code>includes</code> and <code>excludes</code> array functions',
             'Added tags for groups',
             'Added support for groups to <code>select</code> and <code>reject</code> actions',
+            'Added <code>discard reference</code> command to discard player compare data',
+            'Added periodic backup reminders',
             'Replaced table preload dropdown with plain input',
             'Fixed legendary scrapbook items not being detected',
             'Fixed comparison data not loaded correctly',
             'Fixed file counter not resetting when reopening the tab',
-            'Fixed empty script not being able to be selected'
+            'Fixed empty script not being able to be selected',
+            'Fixed <code>outdated</code> command not working',
+            'Fixed labels appearing split on files',
+            'Fixed player & group counter counting slowly'
         ],
         'Fight Analyzer': [
             'Fixed simulator shortcut'
         ],
         'Hellevator Simulator': [
-            'Added new hellevator theme'
+            'Added new hellevator theme',
+            'Fixed prefill for characters without any hellevator progress'
         ],
         'Guild Simulator': [
             'Added support for debugging tools'
         ],
+        'Pet Calendar': [
+            'Updated pet locations'
+        ],
         'Dungeon Simulator': [
-            'Reordered enemies in first 10 dungeons'
+            'Reordered enemies in first 10 dungeons',
+            'Improved accuracy of Nordic Gods & Olympus dungeons',
+            'Added confirmation when hiding characters via statistics integration'
+        ],
+        'Gold & Experience': [
+            'Added enchantments to Quests calculations',
+            'Added Expeditions calculations'
         ],
         'All Simulators': [
             'Fixed switch to Warrior via cheat menu',
@@ -57,7 +72,8 @@ const CHANGELOG = {
         'All Tools': [
             'Added new optimized dialog system',
             'Added separate translations for items and monsters',
-            'Added lazy loading system for separate translations'
+            'Added lazy loading system for separate translations',
+            'Added feedback form'
         ]
     },
     'v7.4528': {
