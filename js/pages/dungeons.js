@@ -512,6 +512,8 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
             entries.sort((b, a) => a.score - b.score);
         }
 
+        entries = _clone(entries)
+
         let experienceTotal = 0;
         if (calculateTotalExperience) {
             experienceTotal = _mappedSum(entries, getDungeonExperience, 0);
