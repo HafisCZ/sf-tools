@@ -23,6 +23,17 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
+    'v7.XXXX': {
+        'Statistics': [
+            'Added character and guild links to backup file'
+        ],
+        'Hellevator Simulator': [
+            'Added support for Snacks / Treats'
+        ],
+        'Dungeon Simulator': [
+            'Fixed mirror enemy class being incorrectly set when simulating more than once'
+        ]
+    },
     'v7.4638': {
         'Statistics': [
             'Added new script visibility & verification system (you can now request script to be made public/private)',
