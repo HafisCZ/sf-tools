@@ -549,6 +549,8 @@ const SNACKS = {
     '11_legendary': { MaximumDamageReductionBonus: 20 },
     '12': { SideAttributeBonus: 0.15 },
     '12_legendary': { SideAttributeBonus: 0.3 },
+    '13': { /* No fight bonus */ },
+    '13_legendary': { /* No fight bonus */ }
 }
 
 // Fighter models
