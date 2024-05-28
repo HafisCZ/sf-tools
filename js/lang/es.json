@@ -14,7 +14,7 @@
         "class7": "Cazademonios",
         "class8": "Druida",
         "class9": "Bardo",
-        "class10": "Necromancer",
+        "class10": "Nigromante",
         "mask0": "Águila",
         "mask1": "Oso",
         "mask2": "Gato",
@@ -131,10 +131,10 @@
         "attack39": "Minion Critical Evaded",
         "attack100": "Revivir",
         "attack200": "Canción de Bardo",
-        "attack331": "Summon Skeleton",
-        "attack311": "Revive Skeleton",
+        "attack331": "Invocar Esqueleto",
+        "attack311": "Revivir Esqueleto",
         "attack322": "Summon Hound",
-        "attack343": "Summon Golem",
+        "attack343": "Invocar Golem",
         "gt_background1": "Oro",
         "gt_background2": "Plata",
         "gt_background3": "Bronce",
@@ -183,9 +183,9 @@
         "companion1": "Bert",
         "companion2": "Mark",
         "companion3": "Kunigunde",
-        "companion1_full": "#{player}'s Bert",
-        "companion2_full": "#{player}'s Mark",
-        "companion3_full": "#{player}'s Kunigunde"
+        "companion1_full": "Bert de #{player}",
+        "companion2_full": "Mark de #{player}",
+        "companion3_full": "Kunigunde de #{player}"
     },
     "achievements": {
         "0": "Trotamundos",
@@ -305,12 +305,12 @@
             "mention": "Otras menciones"
         },
         "footer": {
-            "beta": "Check out public beta",
-            "kofi": "Give mar some shrooms",
-            "crowdin": "Help with translations",
-            "webshop#": "Use code <b class=\"text-white\">SFTOOLS</b> in the Webshop",
-            "report": "Submit feedback",
-            "notice#": "Distributed <b>AS IS</b>. This site is not affiliated with <b>Playa Games</b> in any way."
+            "beta": "Echa un vistazo a la beta pública",
+            "kofi": "Dale a mar algunas setas",
+            "crowdin": "Ayuda con las traducciones",
+            "webshop#": "Usa el código <b class=\"text-white\">SFTOOLS</b> en la tienda web",
+            "report": "Enviar comentarios",
+            "notice#": "Distribuido <b>AS IS</b>. Este sitio no está afiliado con <b>Playa Games</b> de ninguna manera."
         },
         "stats": {
             "title": "Estadísticas",
@@ -342,12 +342,12 @@
             "desc": "Mira cuando puedes obtener las mascotas"
         },
         "simulator": {
-            "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "title": "Simulador de Batallas",
+            "desc": "Simula el posible resultado de una batalla PvP"
         },
         "guilds": {
-            "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "title": "Simulador de Gremio",
+            "desc": "Simula el posible resultado de una batalla de gremio"
         },
         "pets": {
             "title": "Simulador de mascotas",
@@ -374,12 +374,12 @@
             "desc": "Muestra todas las batallas PVE almacenados en un archivo"
         },
         "attributes": {
-            "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "title": "Oro y Experiencia",
+            "desc": "Curvas & calculadoras"
         },
         "blacksmith": {
-            "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "title": "Mejoras del Herrero",
+            "desc": "Cuanto cuesta y cuanto se pierde"
         },
         "hydra": {
             "title": "Simulador de Hidra",
@@ -404,7 +404,7 @@
     },
     "terms": {
         "title": "Términos y Condiciones",
-        "title2": "Usage",
+        "title2": "Uso",
         "button": {
             "accept_full": "Entiendo y acepto los términos",
             "accept": "Aceptar",
@@ -420,16 +420,16 @@
     "stats": {
         "topbar": {
             "temporary_flag": "Temporal",
-            "players_grid": "Players",
-            "players": "Browse",
-            "groups_grid": "Guilds",
-            "groups": "Browse (Guilds)",
+            "players_grid": "Jugadores",
+            "players": "Buscar",
+            "groups_grid": "Gremios",
+            "groups": "Buscar (Gremios)",
             "scripts": "Scripts",
             "files": "Archivos",
             "settings": "Ajustes",
             "temporary": "Sesión temporal",
             "changelog": "Historial de cambios",
-            "profile": "Profiles"
+            "profile": "Perfiles"
         },
         "files": {
             "titles": {
@@ -514,19 +514,19 @@
         },
         "copy": {
             "image": "Guardar como imagen",
-            "csv": "Save as CSV",
+            "csv": "Guardar como CSV",
             "basic": "Copiar tabla",
             "fight": "Copiar tabla para el simulador de lucha",
             "player": "Copiar",
             "player_companions": "Copiar con compañeros"
         },
         "context": {
-            "title": "Apply action to selected items",
+            "title": "Aplicar acción a los elementos seleccionados",
             "hide": "Mostrar / Ocultar",
             "remove": "Eliminar permanentemente",
-            "link_players": "Merge / split characters",
-            "link_groups": "Merge / split guilds",
-            "unselect": "Deselect all"
+            "link_players": "Fusionar / dividir personajes",
+            "link_groups": "Fusionar / dividir gremios",
+            "unselect": "Desmarcar todo"
         },
         "profiles": {
             "players": "Jugadores",
@@ -541,7 +541,7 @@
         "filters": {
             "types": {
                 "players": "Filtrar jugadores por servidor, clase, gremio y/o nombre de usuario",
-                "groups": "Filter groups by server or name"
+                "groups": "Filtrar grupos por servidor o nombre"
             },
             "c": "Clase del jugador, use el nombre completo de la clase en minúsculas (por ejemplo: berserker, battle mage)",
             "p": "Nombre del jugador",
@@ -563,68 +563,68 @@
         "scripts": {
             "settings": "Ajustes",
             "name": "Script editado actualmente",
-            "list": "Select script",
-            "list_add": "Add new script",
-            "list_search": "Search available scripts ...",
-            "target": "Current table",
-            "script": "Current script",
-            "quick_swap": "Quick swap script",
+            "list": "Seleccionar script",
+            "list_add": "Agregar nuevo script",
+            "list_search": "Buscar scripts disponibles...",
+            "target": "Tabla actual",
+            "script": "Script actual",
+            "quick_swap": "Cambio rápido de script",
             "targets": {
-                "none": "None"
+                "none": "Ninguno"
             },
             "targets_category": {
-                "default": "Defaults",
-                "existing": "Assigned tables"
+                "default": "Valores predeterminados",
+                "existing": "Tablas asignadas"
             },
             "tooltip": {
-                "pin": "Pin script to the top of the list",
-                "unpin": "Unpin script",
-                "assigned": "This script is assigned to current table",
-                "remote": "This script is published",
-                "remote_verified": "This script is published and verified",
-                "remote_copy": "Click here to copy the code"
+                "pin": "Anclar script al principio de la lista",
+                "unpin": "Desanclar script",
+                "assigned": "Este script está asignado a la tabla actual",
+                "remote": "Este script está publicado",
+                "remote_verified": "Este script está publicado y verificado",
+                "remote_copy": "Haga clic aquí para copiar el código"
             },
             "sidebar": {
                 "wiki": "Wiki",
                 "manual": "Manual",
-                "scripts": "Online scripts",
-                "assign": "Assign selected script to current table",
-                "unassign": "Unassign script from current table",
+                "scripts": "Scripts en línea",
+                "assign": "Asignar el script seleccionado a la tabla actual",
+                "unassign": "Desasignar script de la tabla actual",
                 "save": "Guardar",
                 "copy": "Copiar",
-                "archive": "Archived scripts",
-                "recover": "Load version v#{version}",
-                "edit": "Edit name or description",
-                "remote_add": "Publish selected script",
-                "remote_update": "Publish new version of selected script",
-                "remote_refresh": "Refresh status of selected script",
-                "remote_mark_public": "Mark script as public",
-                "remote_mark_private": "Mark script as private",
-                "remote_remove": "Unpublish selected script",
+                "archive": "Scripts archivados",
+                "recover": "Cargar versión v#{version}",
+                "edit": "Editar nombre o descripción",
+                "remote_add": "Publicar script seleccionado",
+                "remote_update": "Publicar nueva versión del script seleccionado",
+                "remote_refresh": "Actualizar el estado del script seleccionado",
+                "remote_mark_public": "Marcar script como público",
+                "remote_mark_private": "Marcar script como privado",
+                "remote_remove": "Despublicar script seleccionado",
                 "close": "Volver",
-                "shortcuts": "Shortcuts",
+                "shortcuts": "Accesos directos",
                 "remove": "Eliminar",
                 "reset": "Descartar cambios",
-                "export": "Export",
-                "import": "Import",
+                "export": "Exportar",
+                "import": "Importar",
                 "header": {
                     "actions": "Acciones",
                     "modify": "Script",
                     "library": "Librerías",
-                    "help": "Help"
+                    "help": "Ayuda"
                 }
             },
             "info": {
-                "deprecated": "Use of <b>#{name1}</b> is deprecated; use <b>#{name2}</b> instead"
+                "deprecated": "El uso de <b>#{name1}</b> está obsoleto; usa <b>#{name2}</b> en su lugar"
             },
-            "remote_action_error": "Action was not successful",
+            "remote_action_error": "La acción no fue exitosa",
             "remote_copy_toast": {
-                "title": "Copy",
-                "message": "Code has been copied"
+                "title": "Copiar",
+                "message": "¡El código ha sido copiado!"
             },
             "remote_author_missing": {
-                "title": "You must set your user name before you can publish scripts",
-                "message": "Please head over to Settings and set your 'author name for published scripts'"
+                "title": "Debes establecer tu nombre de usuario antes de poder publicar scripts",
+                "message": "Por favor, diríjase a Ajustes y establezca su \"nombre de autor para los scripts publicados\""
             }
         },
         "players": {
@@ -636,35 +636,35 @@
             "hidden": "Mostrar ocultos",
             "empty": "Mostrar grupos vacíos",
             "missing": "Faltan datos del jugador para los siguientes miembros:",
-            "browse": "View guilds in a table"
+            "browse": "Ver gremios en una tabla"
         },
         "browse": {
             "hidden": "Mostrar ocultos"
         },
         "share": {
-            "title": "File export",
-            "title_short": "Export",
+            "title": "Exportar archivo",
+            "title_short": "Exportar",
             "options": "Opciones",
             "code": "Tu código",
             "file": "Selection",
-            "format": "Format",
-            "get": "Export",
+            "format": "Formato",
+            "get": "Exportar",
             "ok": "Aceptar",
-            "public": "Export only public data (regardless of your current global setting)",
+            "public": "Exportar sólo datos públicos (independientemente de tu configuración global actual)",
             "expire": "El código caducará automáticamente después de 2 días.",
             "single_use": "Sólo uso único",
             "single_use_notice": "Por favor, considere mantener esta opción habilitada a menos que planee compartir el archivo con varias personas.",
             "files": {
                 "all": "All",
-                "last": "Latest",
-                "last5": "Latest 5",
-                "current": "Selected",
+                "last": "Último",
+                "last5": "Últimos 5",
+                "current": "Seleccionados",
                 "currentWithReference": "Selected & Reference"
             },
             "formats": {
-                "json": "JSON file",
-                "code": "Online code (1 use or 2 days)",
-                "code_reusable": "Online code (2 days)"
+                "json": "Archivo JSON",
+                "code": "Código online (1 uso o 2 días)",
+                "code_reusable": "Código online (2 días)"
             }
         },
         "player": {
@@ -723,8 +723,8 @@
             "always_prev": "Comparar anterior (gremios)",
             "empty_groups": "Mostrar grupos vacíos",
             "unsafe_delete": "Omitir confirmación al eliminar archivos",
-            "backup_reminder_frequency": "Remind me about a backup",
-            "script_author": "Author name for published scripts",
+            "backup_reminder_frequency": "Recordarme una copia de seguridad",
+            "script_author": "Nombre de autor para scripts publicados",
             "table_sticky_header": "Enable sticky table headers",
             "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Aceptar los términos del servicio",
@@ -736,9 +736,9 @@
                 "save": "Guardar acciones"
             },
             "backup_reminder_frequency_values": {
-                "0": "Never",
-                "1": "Monthly",
-                "2": "Weekly"
+                "0": "Nunca",
+                "1": "Mensual",
+                "2": "Semanal"
             },
             "recovery": {
                 "title": "Recuperación",
@@ -749,12 +749,12 @@
                 "notice": "¿Está seguro que desea recuperar SFTools de este archivo?<br><br>¡Esta operación borrará todos tus datos existentes para continuar!"
             },
             "links": {
-                "title": "Player / guild merges",
-                "export": "Export",
-                "import": "Import",
-                "import_title": "Are you sure you want to import all merges?",
-                "reset": "Reset",
-                "reset_title": "Are you sure you want to reset all merges?"
+                "title": "Fusiones de Jugador/Gremio",
+                "export": "Exportar",
+                "import": "Importar",
+                "import_title": "¿Está seguro que desea importar todas las fusiones?",
+                "reset": "Resetear",
+                "reset_title": "¿Estás seguro de que quieres restablecer todas las fusiones?"
             }
         }
     },
@@ -770,10 +770,10 @@
         "simulate_dungeons": "Simular todas las mazmorras restantes",
         "results": "Resultados",
         "calendar": {
-            "collected": "Collected",
-            "available": "Available",
-            "locked": "Locked",
-            "footer#": "Event times might not be accurate. Please verify within the game."
+            "collected": "Recogido",
+            "available": "Disponible",
+            "locked": "Bloqueado",
+            "footer#": "Puede que las horas del evento no sean exactas. Por favor, verifica dentro del juego."
         },
         "map": {
             "gladiator": "Gladiador"
@@ -931,7 +931,7 @@
             "import": "Importar",
             "clear": "Borrar",
             "export": "Exportar",
-            "options": "Options"
+            "options": "Opciones"
         },
         "form": {
             "fight_group": "Seleccionar grupo",
@@ -941,11 +941,11 @@
         "players": "Jugadores",
         "preview": "Vista previa de batalla",
         "export": "Exportar luchas",
-        "autofill": "Fill editable data in from predefined list",
-        "analyze": "Statistical analysis",
-        "gladiator": "Gladiator not reduced",
-        "clear_changes": "Reset to original state",
-        "simulate": "Open simulator with current data",
+        "autofill": "Rellenar datos editables de la lista predefinida",
+        "analyze": "Análisis estadístico",
+        "gladiator": "Gladiator no reducido",
+        "clear_changes": "Restablecer al estado original",
+        "simulate": "Abrir simulador con los datos actuales",
         "table": {
             "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
             "rage": "Furia",
@@ -970,15 +970,15 @@
         },
         "sidebar": {
             "toggles": {
-                "damages": "Show damage ranges"
+                "damages": "Mostrar rango de daños"
             },
             "damages": {
                 "weapon1_range_base": "Input range",
                 "weapon2_range_base": "Input range (secondary)",
-                "weapon1_range": "Normal range",
-                "weapon2_range": "Normal range (secondary)",
-                "weapon1_range_critical": "Critical range",
-                "weapon2_range_critical": "Critical range (secondary)",
+                "weapon1_range": "Rango normal",
+                "weapon2_range": "Rango normal (secundario)",
+                "weapon1_range_critical": "Rango de crítico",
+                "weapon2_range_critical": "Rango de crítico (secundario)",
                 "weapon1_range_swoop": "Swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
@@ -1079,19 +1079,19 @@
         }
     },
     "integration": {
-        "file": "File",
+        "file": "Archivo",
         "game": "Endpoint",
         "poll": {
             "players": "Poll saved players",
             "guilds": "Poll saved guilds"
         },
         "tooltip": {
-            "cheats": "Apply modifications to characters",
-            "options": "Configure integration"
+            "cheats": "Aplicar modificaciones a los personajes",
+            "options": "Configurar integración"
         },
         "hide": {
-            "title": "Are you sure you want to hide this character?",
-            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
+            "title": "¿Está seguro de que desea ocultar este personaje?",
+            "message": "Podrás mostrarlo de nuevo haciendo clic en el icono del engranaje y eliminándolo de la lista de gremios y personajes ignorados"
         }
     },
     "simulator": {
@@ -1102,13 +1102,13 @@
         "save": "Guardar",
         "simulate": "Simular",
         "configure": "Configurar simulador",
-        "information": "Important notice!",
+        "information": "¡Aviso importante!",
         "configure_copy": "Copiar a todos incluyendo la configuración actual",
         "configure_insert": "Insertar datos de muestra",
-        "configure_insert_custom": "Specify values manually",
-        "configure_log": "Run simulation with logging enabled",
-        "configure_log_file": "Save to file",
-        "configure_log_broadcast": "Open with analyzer",
+        "configure_insert_custom": "Especificar valores manualmente",
+        "configure_log": "Ejecutar simulación con el log habilitado",
+        "configure_log_file": "Guardar como archivo",
+        "configure_log_broadcast": "Abrir con el analizador",
         "clipboard": {
             "copy_all": "Copiar todos",
             "paste_mode": "Cambiar Añadir/Reemplazar modo de inserción"
@@ -1129,6 +1129,24 @@
         "instrument": "Instrumento",
         "armor": "Armadura",
         "health": "Health",
+        "snack": "Snack",
+        "snack_potency": "Snack Strength",
+        "snacks": {
+            "1": "Chocolate Chili Peppers",
+            "2": "Peppermint Chocolate",
+            "3": "Electroshock",
+            "4": "Chili Ice Cream",
+            "5": "Crackling Chewing Gum",
+            "6": "Peppermint Chewing Gum",
+            "7": "Beer Biscuit",
+            "8": "Gingerbread Heart",
+            "9": "Fortune Cookie",
+            "10": "Canned Spinach",
+            "11": "Stone Biscuit",
+            "12": "Organic Granola Bar",
+            "13": "Chocolate Gold Coin",
+            "14": "Protein Shake"
+        },
         "armor_placeholder": "Puntos de armadura",
         "min": "Mínimo",
         "min_placeholder": "Ítem mínimo",
@@ -1143,7 +1161,7 @@
         "fire": "Fuego",
         "cold": "Frío",
         "lightning": "Rayo",
-        "auto": "Auto",
+        "auto": "Automático",
         "gladiator": "Gladiador (0 - 15)",
         "life_potion": "Poción de Vida Eterna",
         "hand_enchant": "Sombra del Cowboy",
@@ -1177,27 +1195,27 @@
             "message": "Recuperando datos"
         },
         "step7": {
-            "title": "Select your character"
+            "title": "Selecciona tu personaje"
         },
         "user_error": {
             "title": "El nombre de usuario o la contraseña no son válidos",
             "message": "Por favor, asegúrese de que está en el formato correcto (username@url)"
         },
         "errors": {
-            "error_unreachable": "Server cannot be reached",
-            "error_malformed_url": "Server URL is not valid",
-            "error_wrong_pass": "Incorrect password",
-            "error_player_not_found": "Character was not found on the server",
-            "error_sessionid_invalid": "Session expired or interrupted by another device",
-            "error_login_only_with_sf_account_allowed": "You need to login with your account in order to access this character",
-            "error_server_has_been_merged": "You need to login into appropriate fusion server as this server has been merged and is no longer available",
-            "playa_account_login_no_credentials_set": "You need to add an email address to your account in order to log in on other platforms",
-            "playa_account_login_unknown_or_wrong_credentials": "Wrong account name or password",
-            "playa_account_not_active": "Your account is not active",
-            "playa_account_empty": "Your account has no characters",
-            "playa_account_blocked": "Your account has been permanently locked",
-            "playa_account_blocked_temporary": "Your account has been temporarily locked",
-            "an_error_occurred": "Server is not available, please try again later"
+            "error_unreachable": "No se puede acceder al servidor",
+            "error_malformed_url": "La URL del servidor no es válida",
+            "error_wrong_pass": "Contraseña incorrecta",
+            "error_player_not_found": "El personaje no se encontró en el servidor",
+            "error_sessionid_invalid": "Sesión expirada o interrumpida por otro dispositivo",
+            "error_login_only_with_sf_account_allowed": "Necesitas iniciar sesión con tu cuenta para acceder a este personaje",
+            "error_server_has_been_merged": "Necesitas iniciar sesión en el servidor de fusión apropiado ya que este servidor ha sido fusionado y ya no está disponible",
+            "playa_account_login_no_credentials_set": "Necesitas añadir una dirección de correo electrónico a tu cuenta para iniciar sesión en otras plataformas",
+            "playa_account_login_unknown_or_wrong_credentials": "Usuario o contraseña incorrectos",
+            "playa_account_not_active": "Su cuenta no está activa",
+            "playa_account_empty": "Tu cuenta no tiene personajes",
+            "playa_account_blocked": "Tu cuenta ha sido bloqueada permanentemente",
+            "playa_account_blocked_temporary": "Tu cuenta ha sido bloqueada temporalmente",
+            "an_error_occurred": "Servidor no disponible. Por favor inténtalo más tarde."
         }
     },
     "database": {
@@ -1213,13 +1231,13 @@
         }
     },
     "request": {
-        "title": "is requesting your character data",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
-        "access": "Click here to grant this domain access to your characters",
-        "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
+        "title": "está solicitando los datos de tu personaje",
+        "notice#": "Por favor, seleccione un personaje que desea compartir con el sitio web.<br>¡No se compartirán datos personales!",
+        "access": "Haz clic aquí para permitir el acceso de este dominio a tus personajes",
+        "access_hint": "Tenga en cuenta que el uso de bloqueadores de anuncios o rastreadores puede impedir que se carguen todos los personajes almacenados",
         "error": {
-            "title": "Request error",
-            "notice#": "A website has requested your character data but did not specify required parameters"
+            "title": "Error de solicitud",
+            "notice#": "Un sitio web ha solicitado los datos de tu personaje pero no especificó los parámetros requeridos"
         }
     },
     "dialog": {
@@ -1229,35 +1247,35 @@
             "save": "Guardar",
             "close": "Cerrar",
             "ok": "Aceptar",
-            "apply": "Apply",
-            "submit": "Submit"
+            "apply": "Aplicar",
+            "submit": "Enviar"
         },
         "backup_reminder": {
-            "title": "Backup Reminder",
-            "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
-            "close": "Close",
-            "save": "Download backup"
+            "title": "Recordatorio de copia de seguridad",
+            "message": "Hola. Este es un recordatorio para que usted realice una copia de seguridad de sus datos regularmente.<br><br><i>Puedes desactivar o cambiar la frecuencia de este recordatorio en los ajustes.</i>",
+            "close": "Cerrar",
+            "save": "Descargar copia de seguridad"
         },
         "report": {
-            "title": "Feedback",
+            "title": "Comentarios",
             "field": {
-                "type": "Type",
-                "description": "Description",
-                "tool": "Tool",
-                "email": "Email (optional)"
+                "type": "Tipo",
+                "description": "Descripción",
+                "tool": "Herramienta",
+                "email": "Email (opcional)"
             },
             "type": {
-                "issue": "Issue",
-                "suggestion": "Suggestion"
+                "issue": "Incidencia",
+                "suggestion": "Sugerencia"
             },
             "toast": {
                 "success": {
-                    "title": "Thank you for your feedback",
-                    "message": "If you filled in your email you may receive a reply in several working days"
+                    "title": "Gracias por sus comentarios",
+                    "message": "Si has rellenado tu correo electrónico puedes recibir una respuesta en varios días hábiles"
                 },
                 "error": {
-                    "title": "Your feedback could not be submitted",
-                    "message": "Please try again later"
+                    "title": "Tu comentario no ha podido ser enviado.",
+                    "message": "Por favor, inténtalo de nuevo más tarde"
                 }
             }
         },
@@ -1331,15 +1349,15 @@
             "deprecated": "deprecated",
             "heading": {
                 "header": "Headers for all characters",
-                "header_protected": "Headers for own guild members",
-                "header_group": "Headers for all guilds",
-                "header_private": "Headers for own characters",
+                "header_protected": "Cabeceras para miembros de mi guild",
+                "header_group": "Cabeceras para todos los gremios",
+                "header_private": "Cabeceras para mis personajes",
                 "header_scoped": "Accessors for objects",
                 "function": "Functions",
                 "enum": "Enumerations",
                 "constant": "Default constants",
                 "variable": "Variables",
-                "command": "Commands"
+                "command": "Comandos"
             },
             "description": {}
         },
@@ -1350,25 +1368,25 @@
                     "title": "Rage display mode",
                     "value": {
                         "decimal": "Decimal",
-                        "percentage": "Percentage",
-                        "fraction": "Fractional"
+                        "percentage": "Porcentaje",
+                        "fraction": "Fraccional"
                     }
                 },
                 "type_display_mode": {
-                    "title": "Attack type display mode",
+                    "title": "Modo de visualización de tipo de ataque",
                     "value": {
-                        "text": "Name",
-                        "text_with_id": "Name with ID",
+                        "text": "Nombre",
+                        "text_with_id": "Nombre con ID",
                         "id": "ID"
                     }
                 },
                 "base_damage_error_margin": {
-                    "title": "Acceptable base error"
+                    "title": "Error de base aceptable"
                 },
                 "group_sort": {
-                    "title": "Sort groups by",
+                    "title": "Ordenar grupos por",
                     "value": {
-                        "default": "Default",
+                        "default": "Predeterminado",
                         "fight_count": "Fight count",
                         "fighter_b_level": "Level of player B"
                     }
