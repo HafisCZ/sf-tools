@@ -1199,7 +1199,7 @@
         },
         "user_error": {
             "title": "Your user name or password is not valid",
-            "message": "Please ensure that it is in correct format (username@url)"
+            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
         },
         "errors": {
             "error_unreachable": "Server cannot be reached",
