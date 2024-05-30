@@ -41,7 +41,15 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
   Editor.createPlayerEditor('#player-editor');
   Editor.createPasteTarget();
 
-  const editor = new Editor('#player-editor');
+  const editor = new (class extends Editor {
+    _bind () {
+        super._bind();
+
+        this.fields['snack'].show(true);
+        this.fields['snack_potency'].show(true);
+    }
+  })('#player-editor');
+
   editor.clear();
 
   // Captive inputs
@@ -273,16 +281,9 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
       $('div.row.results').html(`
           <div class="sixteen wide column" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-              <div style="flex: 1 1 50%; margin: 0.5em;">
-                  <h3 class="ui centered inverted header" style="margin-top: 0em;">
-                      <span>${score.toFixed(2)}%</span>
-                  </h3>
-              </div>
-              <div style="flex: 1 1 50%; margin: 0.5em;">
-                  <h3 class="ui centered inverted header" style="margin-top: 0em;">
-                      <span>${(100 - score).toFixed(2)}%</span>
-                  </h3>
-              </div>
+                <h3 class="ui centered inverted header" style="margin-top: 1em;">
+                    <span>${ intl('raids.result', { chance: score.toFixed(2) }) }</span>
+                </h3>
           </div>
       `).show();
   }

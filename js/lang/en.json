@@ -396,6 +396,10 @@
         "hellevator": {
             "title": "Hellevator Simulator",
             "desc": "Simulate the probable outcome of Hellevator battles"
+        },
+        "raids": {
+            "title": "Raid Simulator",
+            "desc": "Simulate the probable outcome of guild raids"
         }
     },
     "404": {
@@ -1729,8 +1733,7 @@
         }
     },
     "raids": {
-        "guild1": "Players",
-        "guild2": "Enemies"
+        "result": "Chance to defeat raid: #{chance}%"
     },
     "idle": {
         "title": "Arena Manager",
