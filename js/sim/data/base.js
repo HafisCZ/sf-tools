@@ -48,11 +48,13 @@ class MonsterGenerator {
   ]
 
   static MONSTER_NORMAL = 0;
-  static MONSTER_BOOSTED = 1;
+  static MONSTER_RAID = 1;
+  static MONSTER_BOSS = 2;
 
   static #MULTIPLIERS = {
+    // Main, Side, Con, Luck, Health, Min, Max
     [this.MONSTER_NORMAL]: [1, 1, 1, 1, 1, 1, 1],
-    [this.MONSTER_BOOSTED]: [2, 2, 2, 2, 4, 2, 2]
+    [this.MONSTER_RAID]: [1.5, 1.5, 1.5, 1.5, 3, 1.5, 1.5]
   }
 
   static get (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
