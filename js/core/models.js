@@ -619,6 +619,26 @@ class GroupModel {
         this.Instructors = data.save.slice(264, 314);
         this.Pets = data.save.slice(390, 440);
 
+        this.MemberActions = (data.save.length >= 503 ? data.save.slice(454, 504) : Array.from({ length: 50 })).map((value, index) => {
+            const valueLegacy = this.States[index]
+
+            if (typeof value === 'number') {
+                return {
+                    Hydra: Math.trunc(value / 100) === 1,
+                    Attack: Math.trunc((value % 100) / 10) === 1,
+                    Defense: Math.trunc(value % 10) === 1,
+                    Raid: valueLegacy === 3
+                }
+            } else {
+                return {
+                    Hydra: false,
+                    Attack: valueLegacy === 1,
+                    Defense: valueLegacy === 2,
+                    Raid: valueLegacy === 3
+                }
+            }
+        });
+
         if (data.knights) {
             this.Knights = data.knights.slice(0, 50);
         }
@@ -636,6 +656,7 @@ class GroupModel {
                 this.States.splice(i, 1);
                 this.Names.splice(i, 1);
                 this.LastActives.splice(i, 1);
+                this.MemberActions.splice(i, 1);
                 this.Members.splice(i--, 1);
             }
         }
@@ -663,6 +684,7 @@ class GroupModel {
             LastActive: this.LastActives[i],
             Name: this.Names[i],
             State: this.States[i],
+            Actions: this.MemberActions[i],
             Identifier: id
         }));
 
@@ -1991,14 +2013,19 @@ class PlayerModel {
         if (group) {
             // Find index of player in the group
             const gi = group.Members.findIndex(identifier => identifier == this.Identifier);
+            if (gi === -1) {
+                return
+            }
 
             // Add guild information
             this.Group.Group = group;
             this.Group.Role = group.Roles[gi];
             this.Group.Index = gi;
             this.Group.Rank = group.Rank;
-            this.Group.ReadyAttack = group.States[gi] == 1 || group.States[gi] == 3;
-            this.Group.ReadyDefense = group.States[gi] == 2;
+            this.Group.Actions = group.MemberActions[gi];
+
+            this.Group.ReadyAttack = this.Group.Actions.Attack || this.Group.Actions.Raid;
+            this.Group.ReadyDefense = this.Group.Actions.Defense;
 
             if (this.LastOnline < 6e11) {
                 this.LastOnline = group.LastActives[gi];
@@ -2018,7 +2045,6 @@ class PlayerModel {
                 this.Group.Pet = group.Pets[gi];
             }
         }
-
     }
 
     static loadEquipment (dataType, inventoryType, characterClass) {

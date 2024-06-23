@@ -3585,6 +3585,46 @@ TABLE_EXPRESSION_CONFIG.register(
   }
 )
 
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'protected', 'Hydra Attacked',
+  {
+    expr: p => p.Group?.Actions?.Hydra,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'protected', 'Attack Joined',
+  {
+    expr: p => p.Group?.Actions?.Attack,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'protected', 'Raid Joined',
+  {
+    expr: p => p.Group?.Actions?.Raid,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'protected', 'Defense Joined',
+  {
+    expr: p => p.Group?.Actions?.Defense,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
 /*
   Private headers
 */
