@@ -503,6 +503,7 @@ class PlayaResponse {
                     data.webshopid = r.webshopid?.string;
                     data.resources = r.resources?.numbers;
                     data.dailyTasks = r.dailytasklist?.numbers;
+                    data.dailyTasksRewards = r.dailytaskrewardpreview?.numbers;
                     data.eventTasks = r.eventtasklist?.numbers;
                     data.description = r.owndescription?.string;
 
