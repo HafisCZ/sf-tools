@@ -449,7 +449,7 @@ class PlayaResponse {
                     data.name = r.owngroupname.string;
                     data.rank = r.owngrouprank.number;
                     data.knights = r.owngroupknights.numbers;
-                    data.save = r.owngroupsave.numbers;
+                    data.save = r.owngroupsave.mixed;
                     data.names = r.owngroupmember.strings;
                     data.description = r.owngroupdescription.string?.slice(r.owngroupdescription.string.indexOf('§') + 1);
                 } else {
@@ -457,7 +457,7 @@ class PlayaResponse {
                     data.name = r.othergroupname.string;
                     data.rank = r.othergrouprank.number;
                     data.knights = undefined;
-                    data.save = r.othergroup.numbers;
+                    data.save = r.othergroup.mixed;
                     data.names = r.othergroupmember.strings;
                     data.description = r.othergroupdescription.string?.slice(r.othergroupdescription.string.indexOf('§') + 1);
 
