@@ -1426,6 +1426,23 @@ class PlayerModel {
         this.WebshopID = PlayaResponse.unescape(data.webshopid);
 
         this.Gold = (resources.Gold || 0) / 100;
+
+        if (_notEmpty(data.dailyTasksRewards)) {
+            const rewards = []
+
+            for (const [collected, required,, resourceType, resourceAmount] of _eachBlock(data.dailyTasksRewards, 5)) {
+                rewards.push({
+                    Points: collected,
+                    PointsRequired: required,
+                    ResourceType: resourceType,
+                    ResourceAmount: resourceAmount
+                })
+            }
+
+            this.DailyTasks = {
+                Rewards: rewards
+            }
+        }
     }
 
     #initOther (data) {
