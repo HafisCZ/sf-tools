@@ -1432,8 +1432,8 @@ class PlayerModel {
 
             for (const [collected, required,, resourceType, resourceAmount] of _eachBlock(data.dailyTasksRewards, 5)) {
                 rewards.push({
-                    Points: collected,
-                    PointsRequired: required,
+                    Collected: !!collected,
+                    Points: required,
                     ResourceType: resourceType,
                     ResourceAmount: resourceAmount
                 })
@@ -1449,8 +1449,8 @@ class PlayerModel {
 
             for (const [collected, required,, resourceType, resourceAmount] of _eachBlock(data.eventTasksRewards, 5)) {
                 rewards.push({
-                    Points: collected,
-                    PointsRequired: required,
+                    Collected: !!collected,
+                    Points: required,
                     ResourceType: resourceType,
                     ResourceAmount: resourceAmount
                 })
