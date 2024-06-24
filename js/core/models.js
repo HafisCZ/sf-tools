@@ -1443,6 +1443,23 @@ class PlayerModel {
                 Rewards: rewards
             }
         }
+
+        if (_notEmpty(data.eventTasksRewards)) {
+            const rewards = []
+
+            for (const [collected, required,, resourceType, resourceAmount] of _eachBlock(data.eventTasksRewards, 5)) {
+                rewards.push({
+                    Points: collected,
+                    PointsRequired: required,
+                    ResourceType: resourceType,
+                    ResourceAmount: resourceAmount
+                })
+            }
+
+            this.EventTasks = {
+                Rewards: rewards
+            }
+        }
     }
 
     #initOther (data) {

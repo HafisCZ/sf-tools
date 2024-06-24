@@ -505,6 +505,7 @@ class PlayaResponse {
                     data.dailyTasks = r.dailytasklist?.numbers;
                     data.dailyTasksRewards = r.dailytaskrewardpreview?.numbers;
                     data.eventTasks = r.eventtasklist?.numbers;
+                    data.eventTasksRewards = r.eventtaskrewardpreview?.numbers;
                     data.description = r.owndescription?.string;
 
                     // Post-process
