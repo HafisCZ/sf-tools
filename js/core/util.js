@@ -271,7 +271,9 @@ function _strictSlice (array, length, def) {
 
 function * _eachBlock(arr, size) {
     for (let i = 0; i < arr.length / size; i++) {
-        yield arr.slice(i * size, i * size + size);
+        if (arr.length >= i * size + size) {
+            yield arr.slice(i * size, i * size + size);
+        }
     }
 }
 
