@@ -18,6 +18,7 @@ const FIGHT_TYPES = {
     GuildPet: 17,
     Hellevator: 18,
     GuildRaid: 20,
+    Tutorial: 21,
     FortRevenge: 109
 };
 
