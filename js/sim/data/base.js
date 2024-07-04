@@ -47,9 +47,9 @@ class MonsterGenerator {
     }
   ]
 
-  static MONSTER_NORMAL = 0;
-  static MONSTER_RAID = 1;
-  static MONSTER_BOSS = 2;
+  static MONSTER_NORMAL = Symbol();
+  static MONSTER_RAID = Symbol();
+  static MONSTER_BOSS = Symbol();
 
   static #MULTIPLIERS = {
     // Main, Side, Con, Luck, Health, Min, Max
