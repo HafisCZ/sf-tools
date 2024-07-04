@@ -655,7 +655,8 @@ Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
         const rewards = {};
 
         if (response.gtreward) {
-            for (const [type, _, amount] of _eachBlock(response.gtreward.numbers, 3)) {
+            // TODO: Replace with specific separator
+            for (const [type, _, amount] of _eachBlock(response.gtreward.numbers(/\/|,/), 3)) {
                 if (type) {
                     rewards[GT_REWARDS[type]] = amount;
                 }
@@ -685,15 +686,15 @@ Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
 
                     for (let i = 1; i <= count; i++) {
                         digestedFights.push({
-                            header: r[`fightheader${i}`].mixed,
-                            rounds: r[`fight${i}`].numbers,
+                            header: r[`fightheader${i}`].mixed(),
+                            rounds: r[`fight${i}`].numbers(','),
                             rewards: getRewards(r)
                         });
                     }
                 } else {
                     digestedFights.push({
-                        header: r.fightheader.mixed,
-                        rounds: r.fight.numbers,
+                        header: r.fightheader.mixed(),
+                        rounds: r.fight.numbers(','),
                         rewards: getRewards(r)
                     });
                 }
@@ -706,9 +707,9 @@ Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
                     // Read only necessary data from own player
                     digestedPlayers.push({
                         own: true,
-                        save: r.ownplayersave.numbers,
+                        save: r.ownplayersave.numbers(),
                         name: r.ownplayername.string,
-                        tower: r.owntower?.numbers
+                        tower: r.owntower?.numbers()
                     })
                 } else if (r.ownplayersave) {
                     // Capture save
@@ -716,9 +717,9 @@ Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
                     if (lastPlayer) {
                         digestedPlayers.push({
                             own: true,
-                            save: r.ownplayersave.numbers,
+                            save: r.ownplayersave.numbers(),
                             name: lastPlayer.name,
-                            tower: r.owntower?.numbers || lastPlayer.tower
+                            tower: r.owntower?.numbers() || lastPlayer.tower
                         })
                     }
                 } else if (r['#ownplayersave']) {
@@ -727,7 +728,7 @@ Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
                     if (lastPlayer) {
                         const save = Array.from(lastPlayer.save);
 
-                        for (const [index, value] of _eachBlock(r['#ownplayersave'].numbers, 2)) {
+                        for (const [index, value] of _eachBlock(r['#ownplayersave'].numbers(), 2)) {
                             save[index] = value;
                         }
 
@@ -735,13 +736,13 @@ Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
                             own: true,
                             save,
                             name: lastPlayer.name,
-                            tower: r.owntower?.numbers || lastPlayer.tower
+                            tower: r.owntower?.numbers() || lastPlayer.tower
                         })
                     }
                 } else if (r.otherplayer && r.otherplayername) {
                     digestedPlayers.push({
                         own: false,
-                        save: r.otherplayer.numbers,
+                        save: r.otherplayer.numbers(),
                         name: r.otherplayername.string,
                         tower: null
                     })

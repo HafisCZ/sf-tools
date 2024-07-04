@@ -448,17 +448,17 @@ class PlayaResponse {
                     data.own = true;
                     data.name = r.owngroupname.string;
                     data.rank = r.owngrouprank.number;
-                    data.knights = r.owngroupknights.numbers;
-                    data.save = r.owngroupsave.mixed;
-                    data.names = r.owngroupmember.strings;
+                    data.knights = r.owngroupknights.numbers(',');
+                    data.save = r.owngroupsave.mixed();
+                    data.names = r.owngroupmember.strings(',');
                     data.description = r.owngroupdescription.string?.slice(r.owngroupdescription.string.indexOf('§') + 1);
                 } else {
                     data.own = false;
                     data.name = r.othergroupname.string;
                     data.rank = r.othergrouprank.number;
                     data.knights = undefined;
-                    data.save = r.othergroup.mixed;
-                    data.names = r.othergroupmember.strings;
+                    data.save = r.othergroup.mixed();
+                    data.names = r.othergroupmember.strings(',');
                     data.description = r.othergroupdescription.string?.slice(r.othergroupdescription.string.indexOf('§') + 1);
 
                     if (data.description.indexOf('$s$s$s') !== -1) {
@@ -483,29 +483,30 @@ class PlayaResponse {
                 if (r.ownplayername) {
                     data.own = true;
                     data.name = r.ownplayername.string;
-                    data.save = r.ownplayersave.numbers;
+                    data.save = r.ownplayersave.numbers();
                     data.identifier = `${data.prefix}_p${data.save[1]}`;
                     data.class = data.save[29] % 65536;
 
                     // Optionals
                     data.groupname = r.owngroupname?.string;
-                    data.units = r.unitlevel?.numbers;
-                    data.achievements = r.achievement?.numbers;
-                    data.pets = r.ownpets?.numbers;
-                    data.tower = r.owntower?.numbers;
-                    data.chest = r.fortresschest?.numbers;
-                    data.dummy = r.dummies?.numbers;
+                    // TODO: Replace with specific separator
+                    data.units = r.unitlevel?.numbers(/\/|,/);
+                    data.achievements = r.achievement?.numbers();
+                    data.pets = r.ownpets?.numbers();
+                    data.tower = r.owntower?.numbers();
+                    data.chest = r.fortresschest?.numbers();
+                    data.dummy = r.dummies?.numbers();
                     data.scrapbook = r.scrapbook?.string;
                     data.scrapbook_legendary = r.legendaries?.string;
-                    data.witch = r.witch?.numbers;
-                    data.idle = r.idle?.numbers;
-                    data.calendar = r.calenderinfo?.numbers;
+                    data.witch = r.witch?.numbers();
+                    data.idle = r.idle?.numbers();
+                    data.calendar = r.calenderinfo?.numbers();
                     data.webshopid = r.webshopid?.string;
-                    data.resources = r.resources?.numbers;
-                    data.dailyTasks = r.dailytasklist?.numbers;
-                    data.dailyTasksRewards = r.dailytaskrewardpreview?.numbers;
-                    data.eventTasks = r.eventtasklist?.numbers;
-                    data.eventTasksRewards = r.eventtaskrewardpreview?.numbers;
+                    data.resources = r.resources?.numbers();
+                    data.dailyTasks = r.dailytasklist?.numbers();
+                    data.dailyTasksRewards = r.dailytaskrewardpreview?.numbers();
+                    data.eventTasks = r.eventtasklist?.numbers();
+                    data.eventTasksRewards = r.eventtaskrewardpreview?.numbers();
                     data.description = r.owndescription?.string;
 
                     // Post-process
@@ -518,12 +519,12 @@ class PlayaResponse {
                     }
 
                     data.dungeons = {
-                        light: r.dungeonprogresslight?.numbers,
-                        shadow: r.dungeonprogressshadow?.numbers
+                        light: r.dungeonprogresslight?.numbers(),
+                        shadow: r.dungeonprogressshadow?.numbers()
                     }
 
                     if (r.gtsave) {
-                        const v = r.gtsave.numbers;
+                        const v = r.gtsave.numbers();
                         data.gtsave = {
                             tokens: v[4],
                             floor_max: v[7],
@@ -536,16 +537,17 @@ class PlayaResponse {
                 } else {
                     data.own = false;
                     data.name = r.otherplayername.string;
-                    data.save = r.otherplayer.numbers;
+                    data.save = r.otherplayer.numbers();
                     data.identifier = `${data.prefix}_p${data.save[0]}`;
                     data.class = data.save[20] % 65536;
 
                     // Optionals
                     data.groupname = r.otherplayergroupname?.string;
-                    data.units = r.otherplayerunitlevel?.numbers;
-                    data.achievements = r.otherplayerachievement?.numbers || r.achievement?.number;
+                    // TODO: Replace with specific separator
+                    data.units = r.otherplayerunitlevel?.numbers(/\/|,/);
+                    data.achievements = r.otherplayerachievement?.numbers() || r.achievement?.numbers();
                     data.fortressrank = r.otherplayerfortressrank?.number;
-                    data.pets = r.otherplayerpetbonus?.numbers;
+                    data.pets = r.otherplayerpetbonus?.numbers();
                     data.description = r.otherdescription?.string;
 
                     // Post-process
@@ -615,20 +617,20 @@ class PlayaResponse {
         this._value = value;
     }
 
-    get numbers () {
-        return this._value.split(/\/|,/).map(Number);
+    numbers (delimiter = '/') {
+        return this._value.split(delimiter).map(Number);
     }
 
-    get mixed () {
-        return this._value.split(/\/|,/).map((v) => isNaN(v) ? v : Number(v))
+    mixed (delimiter = '/') {
+        return this._value.split(delimiter).map((v) => isNaN(v) ? v : Number(v))
+    }
+
+    strings (delimiter = '/') {
+        return this._value.split(delimiter);
     }
 
     get number () {
         return parseInt(this._value);
-    }
-
-    get strings () {
-        return this._value.split(/\/|,/);
     }
 
     get string () {

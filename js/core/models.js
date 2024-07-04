@@ -584,6 +584,7 @@ class GroupModel {
         this.PetID = data.save[377];
         this.Pet = data.save[378];
         this.Hydra = data.save[379];
+        this.HydraMax = data.save[380];
         
         this.PetClass = this.PetID ? (GroupModel.PET_CLASSES[this.PetID - 1] + 1) : undefined;
         this.PetStrength = data.save[385];
@@ -619,7 +620,7 @@ class GroupModel {
         this.Instructors = data.save.slice(264, 314);
         this.Pets = data.save.slice(390, 440);
 
-        this.MemberActions = (data.save.length >= 503 ? data.save.slice(454, 504) : Array.from({ length: 50 })).map((value, index) => {
+        this.MemberActions = (data.save.length >= 503 ? data.save.slice(445, 495) : Array.from({ length: 50 })).map((value, index) => {
             const valueLegacy = this.States[index]
 
             if (typeof value === 'number') {
