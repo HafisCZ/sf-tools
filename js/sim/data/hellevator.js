@@ -8,7 +8,7 @@ class HellevatorEnemies {
       const monster = MonsterGenerator.create(
         MonsterGenerator.MONSTER_NORMAL,
         10 + i * 2,
-        1,
+        WARRIOR,
         40,
         25
       )
