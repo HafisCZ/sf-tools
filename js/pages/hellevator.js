@@ -258,7 +258,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     {
                         player,
                         iterations,
-                        enemy: MonsterGenerator.variants(enemy, [WARRIOR, MAGE, SCOUT], [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]),
+                        enemy: MonsterGenerator.createVariantsOf(enemy, [WARRIOR, MAGE, SCOUT], [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]),
                         log: !!logCallback,
                         config: SimulatorUtils.config
                     }

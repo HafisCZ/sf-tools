@@ -57,7 +57,7 @@ class MonsterGenerator {
     [this.MONSTER_RAID]: [1.5, 1.5, 1.5, 1.5, 3, 1.5, 1.5]
   }
 
-  static get (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
+  static create (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
     const base = this.#DELTA.find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
 
     const delta = monsterLevel - base.range[0];
@@ -117,7 +117,7 @@ class MonsterGenerator {
     return model;
   }
 
-  static variants (monster, classList, runeList) {
+  static createVariantsOf (monster, classList, runeList) {
     const variants = []
 
     const oldDefinition = CONFIG.fromIndex(monster.Class);
