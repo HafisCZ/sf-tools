@@ -1,92 +1,132 @@
 class MonsterGenerator {
-  static #DELTA = [
-    {
-      range: [10, 199],
-      reset: [100, 50, 100, 50, 2000, 50, 75],
-      delta: [20, 10, 20, 10, 2000, 2, 2]
-    },
-    {
-      range: [200, 399],
-      reset: [5000, 2500, 5500, 2500, 1000000, 500, 750],
-      delta: [120, 60, 500, 60, 1500000, 4, 4]
-    },
-    {
-      range: [400, 499],
-      reset: [30000, 15000, 110000, 15000, 300000000, 1500, 1750],
-      delta: [450, 250, 800, 250, 3000000, 5, 5]
-    },
-    {
-      range: [500, 599],
-      reset: [80000, 40000, 190000, 40000, 600000000, 2000, 2250],
-      delta: [500, 250, 800, 250, 3000000, 5, 5]
-    },
-    {
-      range: [600, 699],
-      reset: [140000, 70000, 270000, 65000, 900000000, 2500, 2750],
-      delta: [550, 275, 800, 250, 3000000, 5, 5]
-    },
-    {
-      range: [700, 799],
-      reset: [210000, 105000, 350000, 90000, 1200000000, 3000, 3250],
-      delta: [600, 300, 800, 250, 3000000, 5, 5]
-    },
-    {
-      range: [800, 899],
-      reset: [280000, 140000, 430000, 115000, 1500000000, 3500, 3750],
-      delta: [1000, 500, 800, 250, 7000000, 25, 25]
-    },
-    {
-      range: [900, 999],
-      reset: [400000, 200000, 510000, 140000, 2200000000, 6000, 6250],
-      delta: [1200, 600, 800, 250, 7000000, 25, 25]
-    },
-    {
-      range: [1000, 1009],
-      reset: [540000, 280000, 590000, 165000, 2900000000, 8500, 8750],
-      delta: [1300, 700, 800, 250, 7000000, 25, 25]
-    }
-  ]
-
   static MONSTER_NORMAL = Symbol();
   static MONSTER_RAID = Symbol();
   static MONSTER_BOSS = Symbol();
 
-  static #MULTIPLIERS = {
-    // Main, Side, Con, Luck, Health, Min, Max
-    [this.MONSTER_NORMAL]: [1, 1, 1, 1, 1, 1, 1],
-    [this.MONSTER_RAID]: [1.5, 1.5, 1.5, 1.5, 3, 1.5, 1.5]
+  static #DELTA = {
+    [this.MONSTER_NORMAL]: [
+      {
+        range: [10, 199],
+        reset: [100, 50, 100, 50, 2000, 50, 75, -1],
+        delta: [20, 10, 20, 10, 2000, 2, 2, 0]
+      },
+      {
+        range: [200, 399],
+        reset: [5000, 2500, 5500, 2500, 1000000, 500, 750, -1],
+        delta: [120, 60, 500, 60, 1500000, 4, 4, 0]
+      },
+      {
+        range: [400, 499],
+        reset: [30000, 15000, 110000, 15000, 300000000, 1500, 1750, -1],
+        delta: [450, 250, 800, 250, 3000000, 5, 5, 0]
+      },
+      {
+        range: [500, 599],
+        reset: [80000, 40000, 190000, 40000, 600000000, 2000, 2250, -1],
+        delta: [500, 250, 800, 250, 3000000, 5, 5, 0]
+      },
+      {
+        range: [600, 699],
+        reset: [140000, 70000, 270000, 65000, 900000000, 2500, 2750, -1],
+        delta: [550, 275, 800, 250, 3000000, 5, 5, 0]
+      },
+      {
+        range: [700, 799],
+        reset: [210000, 105000, 350000, 90000, 1200000000, 3000, 3250, -1],
+        delta: [600, 300, 800, 250, 3000000, 5, 5, 0]
+      },
+      {
+        range: [800, 899],
+        reset: [280000, 140000, 430000, 115000, 1500000000, 3500, 3750, -1],
+        delta: [1000, 500, 800, 250, 7000000, 25, 25, 0]
+      },
+      {
+        range: [900, 999],
+        reset: [400000, 200000, 510000, 140000, 2200000000, 6000, 6250, -1],
+        delta: [1200, 600, 800, 250, 7000000, 25, 25, 0]
+      },
+      {
+        range: [1000, 1009],
+        reset: [540000, 280000, 590000, 165000, 2900000000, 8500, 8750, -1],
+        delta: [1300, 700, 800, 250, 7000000, 25, 25, 0]
+      }
+    ],
+    [this.MONSTER_RAID]: [
+      {
+        range: [10, 199],
+        reset: [150, 75, 150, 75, 6000, 75, 113, 150],
+        delta: [30, 15, 30, 15, 6000, 3, 3, 75]
+      },
+      {
+        range: [200, 399],
+        reset: [7500, 3750, 7530, 3750, 3000000, 750, 1125, 15000],
+        delta: [180, 90, 750, 90, 4500000, 6, 6, 120]
+      },
+      {
+        range: [400, 499],
+        reset: [45000, 22500, 165000, 22500, 900000000, 2250, 2625, 40500],
+        delta: [675, 375, 1200, 375, 9000000, 7.5, 7.5, 180]
+      },
+      {
+        range: [500, 599],
+        reset: [120000, 60000, 165000, 22500, 1800000000, 3000, 3375, 61560],
+        delta: [750, 375, 1200, 375, 9000000, 7.5, 7.5, 180]
+      },
+      {
+        range: [600, 699],
+        reset: [218250, 109125, 417000, 101250, 2790000000, 3825, 4200, 78300],
+        delta: [825, 412.5, 1200, 375, 9000000, 7.5, 7.5, 180]
+      },
+      {
+        range: [700, 799],
+        reset: [315000, 157500, 525000, 135000, 3600000000, 4500, 4875, 94500],
+        delta: [900, 450, 1200, 375, 9000000, 7.5, 7.5, 180]
+      },
+      {
+        range: [800, 899],
+        reset: [420000, 210000, 645000, 172500, 4500000000, 5250, 5625, 112500],
+        delta: [1500, 750, 1200, 375, 21000000, 37.5, 37.5, 180]
+      },
+      {
+        range: [900, 999],
+        reset: [600000, 300000, 765000, 210000, 6600000000, 9000, 9375, 130500],
+        delta: [1800, 900, 1200, 375, 21000000, 37.5, 37.5, 180]
+      },
+      {
+        range: [1000, 1009],
+        reset: [808800, 420000, 885000, 247500, 8700000000, 12750, 13125, 148500],
+        delta: [2100, 1050, 1200, 375, 21000000, 37.5, 37.5, 180]
+      }
+    ]
   }
 
   static create (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
-    const base = this.#DELTA.find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
+    const base = this.#DELTA[monsterType].find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
 
     const delta = monsterLevel - base.range[0];
 
     const [
-      resetMain, resetSide, resetCon, resetLuck, resetHealth, resetMin, resetMax
+      resetMain, resetSide, resetCon, resetLuck, resetHealth, resetMin, resetMax, resetArmor
     ] = base.reset;
 
     const [
-      deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax
+      deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax, deltaArmor
     ] = base.delta;
 
-    const [
-      multiplierMain, multiplierSide, multiplierCon, multiplierLuck, multiplierHealth, multiplierMin, multiplierMax
-    ] = this.#MULTIPLIERS[monsterType];
-
-    const main = multiplierMain * (resetMain + deltaMain * delta);
-    const side = multiplierSide * (resetSide + deltaSide * delta);
-    const con = multiplierCon * (resetCon + deltaCon * delta);
-    const luck = multiplierLuck * (resetLuck + deltaLuck * delta);
-    const health = multiplierHealth * (resetHealth + deltaHealth * delta);
-    const min = multiplierMin * (resetMin + deltaMin * delta);
-    const max = multiplierMax * (resetMax + deltaMax * delta);
+    const main = resetMain + deltaMain * delta;
+    const side = resetSide + deltaSide * delta;
+    const con = resetCon + deltaCon * delta;
+    const luck = resetLuck + deltaLuck * delta;
+    const health = resetHealth + deltaHealth * delta;
+    const min = resetMin + deltaMin * delta;
+    const max = resetMax + deltaMax * delta;
+    const armor = resetArmor + deltaArmor * delta;
 
     const model = {
       NoBaseDamage: true,
       Level: monsterLevel,
       Class: monsterClass,
-      Armor: monsterLevel * CONFIG.fromIndex(monsterClass).MaximumDamageReduction,
+      Armor: armor === -1 ? monsterLevel * CONFIG.fromIndex(monsterClass).MaximumDamageReduction : armor,
       Health: health,
       Luck: { Total: luck },
       Constitution: { Total: con },
