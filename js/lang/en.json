@@ -1734,7 +1734,10 @@
         }
     },
     "raids": {
-        "result": "Chance to defeat raid: #{chance}%"
+        "result": "Chance to defeat raid: #{chance}%",
+        "raids": {
+            "hellevator": "Hellevator Raid #{number}"
+        }
     },
     "idle": {
         "title": "Arena Manager",
