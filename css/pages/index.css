@@ -105,8 +105,23 @@
     position: relative;
 }
 
+.preview {
+    position: relative;
+}
+
 .wip::before {
     content: 'Work In Progress';
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    top: 1em;
+    color: orange;
+    font-weight: bold;
+}
+
+.preview::before {
+    content: 'Preview';
     position: absolute;
     left: 0;
     right: 0;
