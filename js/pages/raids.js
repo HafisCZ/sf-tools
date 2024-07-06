@@ -37,6 +37,35 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
   updateSaveButton();
   updatePlayerList();
 
+  // Current raid
+  const availableRaids = [
+    'hellevator_1',
+    'hellevator_2',
+    'hellevator_3',
+    'hellevator_4',
+    'hellevator_5',
+    'hellevator_6',
+    'hellevator_7',
+    'hellevator_8',
+    'hellevator_9',
+    'hellevator_10'
+  ]
+
+  let raid = null
+  $('#raid').dropdown({
+    values: availableRaids.map((value) => {
+        const [type, number] = value.split('_')
+
+        return {
+            value,
+            name: intl(`raids.raids.${type}`, { number }) 
+        }
+    }),
+    onChange: (value) => {
+        raid = value
+    }
+  }).dropdown('set selected', availableRaids[0])
+
   // Editor configuration
   Editor.createPlayerEditor('#player-editor');
   Editor.createPasteTarget();
@@ -315,6 +344,22 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
     }
   });
 
+  function generateEnemies () {
+    if (raid.startsWith('hellevator_')) {
+        const tier = parseInt(raid.slice(11))
+
+        return Array.from({ length: 10 }).map((_, i) => {
+            return MonsterGenerator.createVariantsOf(
+                MonsterGenerator.create(MonsterGenerator.MONSTER_RAID, 18 + i * 10 + (tier - 1) * 100, WARRIOR, 40, 25),
+                [WARRIOR, MAGE, SCOUT],
+                [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]
+            )
+        })
+    } else {
+        throw new Error('Not implemented')
+    }
+  }
+
   function executeSimulation (instances, iterations, logCallback) {
       if (validateLists()) {
           const results = [];
@@ -322,10 +367,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
 
           const batch = new WorkerBatch('raids');
 
-          // TODO: Replace
-          const enemies = [
-            { player: MonsterGenerator.create(MonsterGenerator.MONSTER_RAID, 600, WARRIOR, 40, 25) }
-          ]
+          const enemies = generateEnemies()
 
           for (let i = 0; i < instances; i++) {
               batch.add(
