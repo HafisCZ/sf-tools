@@ -21,57 +21,99 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 class RaidSimulator extends SimulatorBase {
   simulate (players, enemies, iterations) {
     let score = 0;
-    let playersLeftTotal = 0;
-    let enemiesLeftTotal = 0;
 
-    this.ca = this.cache(players, 0);
-    this.cb = this.cache(enemies, 1);
+    this.cachedPlayers = this.cache(players, 0);
+    this.cachedEnemies = this.cache(enemies, 1);
 
     for (let i = 0; i < iterations; i++) {
-      let { win, playersLeft, enemiesLeft } = this.battle();
+      let { win } = this.battle();
 
       score += win;
-      playersLeftTotal += playersLeft;
-      enemiesLeftTotal += enemiesLeft;
     }
 
     return {
-      score,
-      // Average count left
-      players: Math.floor(playersLeftTotal / iterations),
-      enemies: Math.floor(enemiesLeftTotal / iterations)
-    };
+      score
+    }
   }
 
   cache (entities, index) {
-    return entities.map((entity) => SimulatorModel.create(index, entity.player)).sort((a, b) => a.Player.Level - b.Player.Level)
+    return entities.map((entity) => {
+      if (Array.isArray(entity)) {
+        return entity.map((variant) => SimulatorModel.create(index, variant.player))
+      } else {
+        return SimulatorModel.create(index, entity.player)
+      }
+    }).sort((a, b) => (Array.isArray(a) ? a[0].Player.Level : a.Player.Level) - (Array.isArray(b) ? b[0].Player.Level : b.Player.Level))
   }
 
   battle () {
-      this.la = [ ... this.ca ];
-      this.lb = [ ... this.cb ];
+    // Clone everyone
+    this.currentPlayers = this.cachedPlayers.slice();
+    this.currentEnemies = this.cachedEnemies.map((variants) => variants.slice());
 
-      for (let entity of this.la) entity.reset();
-      for (let entity of this.lb) entity.reset();
+    // Reset players only, enemies are reset individually
+    for (const player of this.currentPlayers) player.reset();
 
-      while (this.la.length > 0 && this.lb.length > 0) {
-          this.a = this.la[0];
-          this.b = this.lb[0];
+    // Go through each enemy group and pick the worst result
+    for (const enemyVariants of this.currentEnemies) {
+      // Save healths, so they can be recovered later
+      const currentHealths = this.currentPlayers.map((p) => p.Health)
+
+      // Do all 9 fights, return list of healths left
+      const futureHealths = enemyVariants.map((enemy) => {
+        const players = this.currentPlayers.slice()
+
+        for (let i = 0; i < players.length; i++) {
+          // Recover healths
+          players[i].Health = currentHealths[i]
+        }
+
+        while (players.length > 0) {
+          this.a = players[0]
+          this.b = enemy
+
+          // Hard reset enemy
+          this.b.reset()
 
           SimulatorModel.initializeFighters(this.a, this.b);
 
           if (this.fight() == 0) {
-              this.la.shift();
+            players.shift();
           } else {
-              this.lb.shift();
+            break;
           }
+        }
+
+        const newHealths = players.map((player) => player.Health)
+
+        // Accumulate all healths to decide what path to take later
+        newHealths.total = 0
+        for (const health of newHealths) newHealths.total += health
+
+        return newHealths
+      })
+
+      const leastHealth = Math.min(...futureHealths.map((set) => set.total))
+
+      if (leastHealth === 0) {
+        // If 0, everyone died Dave
+        return {
+          win: false
+        }
       }
 
-      return {
-          win: (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0,
-          playersLeft: this.la.length,
-          enemiesLeft: this.lb.length
-      };
+      const leastHealths = futureHealths.find((healths) => healths.total === leastHealth)
+
+      // Set healths to the healths from the worst attempt
+      this.currentPlayers = this.currentPlayers.slice(this.currentPlayers.length - leastHealths.length)
+      for (let i = 0; i < this.currentPlayers.length; i++) {
+        this.currentPlayers[i].Health = leastHealths[i]
+      }
+    }
+
+    return {
+      win: this.currentPlayers.length > 0
+    }
   }
 
   fight () {
