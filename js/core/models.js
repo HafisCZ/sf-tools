@@ -620,7 +620,7 @@ class GroupModel {
         this.Instructors = data.save.slice(264, 314);
         this.Pets = data.save.slice(390, 440);
 
-        this.MemberActions = (data.save.length >= 503 ? data.save.slice(445, 495) : Array.from({ length: 50 })).map((value, index) => {
+        this.MemberActions = (data.save.length >= 502 ? data.save.slice(445, 495) : Array.from({ length: 50 })).map((value, index) => {
             const valueLegacy = this.States[index]
 
             if (typeof value === 'number') {
