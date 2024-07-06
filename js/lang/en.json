@@ -1120,6 +1120,7 @@
         "win_chance": "Win %",
         "min_chance": "Min %",
         "max_chance": "Max %",
+        "avg_chance": "Avg %",
         "toast": {
             "title": "Simulation finished",
             "message": "Simulation took #{duration}"

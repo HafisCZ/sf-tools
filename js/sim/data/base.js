@@ -116,4 +116,52 @@ class MonsterGenerator {
 
     return model;
   }
+
+  static variants (monster, classList, runeList) {
+    const variants = []
+
+    const oldDefinition = CONFIG.fromIndex(monster.Class);
+    const oldattributes = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[oldDefinition.Attribute].map((kind) => _dig(monster, kind)).map((att) => ({ Total: att.Total }));
+
+    for (let i = 0; i < classList.length; i++) {
+      const newDefinition = CONFIG.fromIndex(classList[i]);
+
+      const classVariant = mergeDeep({}, monster)
+
+      const newAttributes = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[newDefinition.Attribute];
+
+      for (let i = 0; i < 3; i++) {
+        classVariant[newAttributes[i]]['Total'] = oldattributes[i]['Total'];
+      }
+
+      classVariant.Armor = _scale(monster.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
+      classVariant.Items.Wpn1.DamageMin = _scale(monster.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+      classVariant.Items.Wpn1.DamageMax = _scale(monster.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+
+      if (classList[i] == WARRIOR) {
+        classVariant.BlockChance = newDefinition.SkipChance * 100;
+
+        classVariant.Items.Wpn2 = ItemModel.empty();
+        classVariant.Items.Wpn2.DamageMin = newDefinition.SkipChance * 100;
+      } else if (classList[i] == ASSASSIN) {
+        classVariant.Items.Wpn2 = classVariant.Items.Wpn1;
+      }
+
+      classVariant.Class = classList[i];
+
+      for (let j = 0; j < runeList.length; j++) {
+        const variant = mergeDeep({}, classVariant)
+
+        variant.Items.Wpn1.AttributeTypes = { 2: runeList[j] }
+
+        if (variant.Class === ASSASSIN) {
+          variant.Items.Wpn2.AttributeTypes = { 2: runeList[j] }
+        }
+
+        variants.push(variant)
+      }
+    }
+
+    return variants;
+  }
 }

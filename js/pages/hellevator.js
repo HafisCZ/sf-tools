@@ -40,14 +40,6 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         _bind () {
             this.fields['name'].editable(false);
 
-            this.fields['range_theme'].initialize({
-                values: HellevatorEnemies.HELLEVATOR_THEMES.map((value) => ({
-                    name: intl(`hellevator.theme.${value}`),
-                    value
-                })),
-                value: HellevatorEnemies.HELLEVATOR_THEMES[0]
-            });
-
             for (const field of this.fieldsArray) {
                 field.triggerAlways = true;
             }
@@ -79,8 +71,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             '#sim-editor',
             {
                 range_start: new Field('#range-start', '1', Field.createRange(1, 500)),
-                range_end: new Field('#range-end', '500', Field.createRange(1, 500)),
-                range_theme: new Field('#range-theme', '')
+                range_end: new Field('#range-end', '500', Field.createRange(1, 500))
             }
         )
     )
@@ -136,11 +127,17 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
     // Display
     const $enemyList = $('#enemy-list');
     function renderEnemies (enemies, scores) {
+        for (const scoreSet of scores) {
+            scoreSet.avg = _sum(scoreSet) / scoreSet.length;
+            scoreSet.max = _fastMax(scoreSet)
+            scoreSet.min = _fastMin(scoreSet)
+        }
+
         let content = '';
 
         let firstPossibleLoss = enemies.length;
         for (let i = 0; i < enemies.length; i++) {
-            if ((scores[i] || 0) != 1) {
+            if ((scores[i]?.min || 0) != 1) {
                 firstPossibleLoss = i;
                 break;
             }
@@ -148,7 +145,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
 
         let lastPossibleWin = -1;
         for (let i = enemies.length - 1; i >= firstPossibleLoss; i--) {
-            if ((scores[i] || 0) != 0) {
+            if ((scores[i]?.max || 0) != 0) {
                 lastPossibleWin = i;
                 break;
             }
@@ -162,7 +159,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             // If player can win everything, display message
             content = `
                 <div class="row">
-                    <div class="sixteen wide text-center column">
+                    <div class="sixteen wide text-center column" style="color: lightgreen;">
                         ${intl(`hellevator.win.all`, { count: enemies.length })}    
                     </div>
                 </div>
@@ -170,7 +167,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
         } else if (lastPossibleWin === -1 && enemies.length > 10) {
             content = `
                 <div class="row">
-                    <div class="sixteen wide text-center column">
+                    <div class="sixteen wide text-center column" style="color: orange;">
                         ${intl(`hellevator.win.none`, { count: enemies.length })}    
                     </div>
                 </div>
@@ -179,7 +176,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             if (firstPossibleLoss > 0) {
                 content += `
                     <div class="row">
-                        <div class="sixteen wide text-center column">
+                        <div class="sixteen wide text-center column" style="color: lightgreen;">
                             ${intl('hellevator.win.first', { count: firstPossibleLoss })}    
                         </div>
                     </div>
@@ -190,28 +187,40 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                 if (index < firstPossibleLoss || index > lastPossibleWin) {
                     continue;
                 }
-                
-                const score = scores[index] || 0;
+
+                const bestScore = scores[index].max
+                const averageScore = scores[index].avg
+                const worstScore = scores[index].min
 
                 content += `
-                    <div class="row !p-0">
+                    <div class="row">
                         <div class="two wide text-center column">${enemy.Floor}</div>
-                        <div class="three wide text-center column">
-                            <img class="ui medium centered image" style="width: 50px;" src="${_classImageUrl(enemy.Class)}">
-                        </div>
-                        <div class="three wide text-center column">
-                            <img class="ui medium centered image" style="width: 50px;" src="res/element${enemy.Items.Wpn1.AttributeTypes[2] - 40}.webp">    
-                        </div>
                         <div class="three wide text-center column">${enemy.Level}</div>
-                        <div class="five wide text-center column">${score === 0 ? intl('pets.bulk.not_possible') : `${(100 * score).toFixed(2)}%`}</div>
+                        ${
+                            bestScore === 0 ? `
+                                <div class="eleven wide text-center column">
+                                    ${intl('pets.bulk.not_possible')}
+                                </div>
+                            ` : `
+                                <div class="four wide text-center column" style="color: ${worstScore === 0 ? 'orange' : worstScore === 1 ? 'lightgreen' : 'white'};">
+                                    ${(100 * worstScore).toFixed(2)}%
+                                </div>
+                                <div class="three wide text-center column" style="color: ${averageScore === 0 ? 'orange' : averageScore === 1 ? 'lightgreen' : 'white'};">
+                                    ${(100 * averageScore).toFixed(2)}%
+                                </div>
+                                <div class="four wide text-center column" style="color: ${bestScore === 0 ? 'orange' : bestScore === 1 ? 'lightgreen' : 'white'};">
+                                    ${(100 * bestScore).toFixed(2)}%
+                                </div>
+                            `
+                        }
                     </div>
                 `
             }
 
-            if (lastPossibleWin < enemies.length) {
+            if (lastPossibleWin < enemies.length - 1) {
                 content += `
                     <div class="row">
-                        <div class="sixteen wide text-center column">
+                        <div class="sixteen wide text-center column" style="color: orange;">
                             ${intl('hellevator.win.last', { count: enemies.length - 1 - lastPossibleWin })}    
                         </div>
                     </div>
@@ -231,7 +240,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             const start = player.GroupTournament.Floor || 1;
             const end = player.RangeEnd;
 
-            const enemies = await HellevatorEnemies.floorRange(start, Math.max(start, end), player.RangeTheme);
+            const enemies = await HellevatorEnemies.floorRange(start, Math.max(start, end));
             const scores = [];
             let logs = [];
 
@@ -249,7 +258,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
                     {
                         player,
                         iterations,
-                        enemy,
+                        enemy: MonsterGenerator.variants(enemy, [WARRIOR, MAGE, SCOUT], [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]),
                         log: !!logCallback,
                         config: SimulatorUtils.config
                     }
