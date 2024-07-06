@@ -5,7 +5,7 @@ class HellevatorEnemies {
 
   static async #generateEnemies () {
     for (let i = 0; i < 500; i++) {
-      const monster = MonsterGenerator.get(
+      const monster = MonsterGenerator.create(
         MonsterGenerator.MONSTER_NORMAL,
         10 + i * 2,
         1,
