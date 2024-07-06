@@ -353,7 +353,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
                 MonsterGenerator.create(MonsterGenerator.MONSTER_RAID, 18 + i * 10 + (tier - 1) * 100, WARRIOR, 40, 25),
                 [WARRIOR, MAGE, SCOUT],
                 [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]
-            )
+            ).map((variant) => ({ player: variant }))
         })
     } else {
         throw new Error('Not implemented')
