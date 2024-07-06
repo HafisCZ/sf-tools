@@ -3,7 +3,7 @@
 class HellevatorEnemies {
   static #enemies = []
 
-  static async #generateEnemies () {
+  static #generateEnemies () {
     for (let i = 0; i < 500; i++) {
       const monster = MonsterGenerator.create(
         MonsterGenerator.MONSTER_NORMAL,
@@ -19,9 +19,9 @@ class HellevatorEnemies {
     }
   }
 
-  static async floorRange (start, end = start) {
+  static floorRange (start, end = start) {
     if (this.#enemies.length === 0) {
-      await this.#generateEnemies();
+      this.#generateEnemies();
     }
 
     return this.#enemies.slice(start - 1, end);
