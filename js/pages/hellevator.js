@@ -240,7 +240,7 @@ Site.ready({ type: 'simulator' }, function (urlParams) {
             const start = player.GroupTournament.Floor || 1;
             const end = player.RangeEnd;
 
-            const enemies = await HellevatorEnemies.floorRange(start, Math.max(start, end));
+            const enemies = HellevatorEnemies.floorRange(start, Math.max(start, end));
             const scores = [];
             let logs = [];
 
