@@ -144,7 +144,7 @@ Site.ready({ type: 'simulator' }, function () {
                     editor.fill(playersToData(players));
                 }
             } catch (e) {
-                // Do nothing
+                console.info(e)
             }
         }
     });

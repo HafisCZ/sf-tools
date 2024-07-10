@@ -226,7 +226,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
                 disabled: Object.keys(floors).length == 0
             };
         })
-    }).dropdown('setting', 'onChange', (value, text) => {
+    }).dropdown('setting', 'onChange', (value) => {
         dungeon_current = value;
         dungeon = DUNGEON_DATA[value];
 
@@ -243,7 +243,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
                     value: id
                 };
             })
-        }).dropdown('setting', 'onChange', (value, text) => {
+        }).dropdown('setting', 'onChange', (value) => {
             if (!ignoreChanges) {
                 $('#available-list').dropdown('clear');
             }
@@ -262,7 +262,7 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
             try {
                 showData(SimulatorUtils.handlePaste(JSON.parse(event.originalEvent.clipboardData.getData('text'))));
             } catch (e) {
-                // Do nothing
+                console.info(e)
             }
         }
     });
@@ -273,7 +273,10 @@ Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function 
         ItemModel.forceCorrectRune(data.Items.Wpn1);
         ItemModel.forceCorrectRune(data.Items.Wpn2);
 
-        if (data.Class == WARRIOR && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
+        if (data.Class == WARRIOR && typeof data.BlockChance == 'undefined') {
+            data.BlockChance = data.Items.Wpn2.DamageMin;
+        }
+
         if (data.Class != ASSASSIN) data.Items.Wpn2 = ItemModel.empty();
 
         if (selected > 0) {
