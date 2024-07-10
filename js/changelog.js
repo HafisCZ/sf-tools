@@ -31,7 +31,8 @@ const CHANGELOG = {
             'Added support for Snacks / Treats'
         ],
         'Dungeon Simulator': [
-            'Fixed mirror enemy class being incorrectly set when simulating more than once'
+            'Fixed mirror enemy class being incorrectly set when simulating more than once',
+            'Fixed pasting of copied companions'
         ]
     },
     'v7.4638': {

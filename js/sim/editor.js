@@ -89,7 +89,7 @@ class Field {
     }
 
     isVisible () {
-        return this.$object.get(0).offsetParent !== null;
+        return this.$object.get(0).offsetParent !== null || this.$object.closest('.segment').attr('data-optional');
     }
 
     show (val) {
