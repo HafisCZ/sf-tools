@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator' }, function (urlParams) {
+Site.ready({ type: 'simulator', name: 'hellevator' }, function (urlParams) {
     $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'hellevator'))
 
     SimulatorUtils.configure({

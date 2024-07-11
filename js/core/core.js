@@ -313,7 +313,11 @@ class Site {
         this.#resolve();
     }
 
-    static is (type) {
+    static is (name) {
+        return this.#metadata.name === name;
+    }
+
+    static isType (type) {
         return this.#metadata.type === type;
     }
 

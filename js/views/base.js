@@ -863,7 +863,7 @@ window.addEventListener('DOMContentLoaded', async function () {
             Dialog.open(AnnouncementDialog);
         }
 
-        if (Site.is('simulator')) {
+        if (Site.isType('simulator')) {
             if (Site.isEvent('april_fools_day')) {
                 Dialog.open(SimulatorShopDialog);
             }
