@@ -1,11 +1,13 @@
 const ANNOUNCEMENTS = [
     {
+        id: '10-07-2024',
         title: 'WebShop Code',
         content: `
             I am happy to announce that SF Tools was granted its very own WebShop code.<br><br>If you want to support the website development via your normal shroom purchases, simply introduce the code <code class="text-orange" style="font-family: arial;">SFTOOLS</code> at checkout.
         `
     },
     {
+        id: '09-07-2024',
         title: 'The age of Templates is over!',
         content: `
             It took long enough but we are finally here, templates are no more.<br>

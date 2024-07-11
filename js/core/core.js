@@ -277,7 +277,6 @@ class Site {
             terms_accepted: false,
             endpoint_terms_accepted: false,
             version_accepted: false,
-            announcement_accepted: 0,
             groups_hidden: false,
             players_hidden: false,
             browse_hidden: false,
@@ -303,7 +302,9 @@ class Site {
             script_author: '',
             debug: false,
             backup_reminder_frequency: 1,
-            backup_reminder_timestamp: 0
+            backup_reminder_timestamp: 0,
+            announcement_accepted: 0,
+            announcements_viewed: []
         }
     )
 

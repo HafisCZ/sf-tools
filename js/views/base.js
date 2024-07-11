@@ -485,10 +485,14 @@ class AnnouncementDialog extends Dialog {
         const $title = this.$parent.find('[data-op="title"]');
         const $content = this.$parent.find('[data-op="content"]');
 
-        this.$parent.find('[data-op="accept"]').click(() => {
-            Site.options.announcement_accepted = Site.options.announcement_accepted + 1;
+        // Find announcement that was not viewed before and can be viewed on this page
+        const { title, content, id } = ANNOUNCEMENTS.find((announcement) => !Site.options.announcements_viewed.includes(announcement.id) && (!announcement.for || announcement.for.some((page) => Site.is(page))))
 
-            if (Site.options.announcement_accepted != ANNOUNCEMENTS.length) {
+        this.$parent.find('[data-op="accept"]').click(() => {
+            Site.options.announcements_viewed = [...Site.options.announcements_viewed, id];
+
+            // Show next possible announcement, or hide dialog
+            if (ANNOUNCEMENTS.some((announcement) => !Site.options.announcements_viewed.includes(announcement.id) && (!announcement.for || announcement.for.some((page) => Site.is(page))))) {
                 this.replace(
                     [
                         AnnouncementDialog
@@ -498,8 +502,6 @@ class AnnouncementDialog extends Dialog {
                 this.close(true);
             }
         });
-
-        const { title, content } = ANNOUNCEMENTS[Site.options.announcement_accepted];
 
         $title.html(title);
         $content.html(content);
@@ -859,7 +861,13 @@ window.addEventListener('DOMContentLoaded', async function () {
             Dialog.open(ChangelogDialog);
         }
 
-        if (ANNOUNCEMENTS.length > 0 && Site.options.announcement_accepted != ANNOUNCEMENTS.length) {
+        if (Site.options.announcement_accepted > 0) {
+            // Update viewed announcements from the legacy setting
+            Site.options.announcements_viewed = ANNOUNCEMENTS.slice(0, Site.options.announcement_accepted).map((announcement) => announcement.id);
+            Site.options.announcement_accepted = -1;
+        }
+
+        if (ANNOUNCEMENTS.some((announcement) => !Site.options.announcements_viewed.includes(announcement.id) && (!announcement.for || announcement.for.some((page) => Site.is(page))))) {
             Dialog.open(AnnouncementDialog);
         }
 
