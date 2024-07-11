@@ -1,4 +1,4 @@
-Site.ready({}, function () {
+Site.ready({ name: 'index' }, function () {
     $('[data-op="report"]').click(() => Dialog.open(ReportDialog))
 
     const $drvcs = $('.drvcs');

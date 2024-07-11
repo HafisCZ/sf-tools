@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator' }, function (urlParams) {
+Site.ready({ name: 'changelog' }, function (urlParams) {
     function getEntryTemplate (version, content) {
         return `
             <div class="row">

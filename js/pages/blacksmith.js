@@ -73,7 +73,7 @@ class Blacksmith {
     }
 }
 
-Site.ready({}, function () {
+Site.ready({ name: 'blacksmith' }, function () {
     let $table = $('#table');
 
     const EditorController = new (class extends EditorBase {

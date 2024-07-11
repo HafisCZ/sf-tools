@@ -10,7 +10,7 @@ class GenericTab extends Tab {
     }
 }
 
-Site.ready({}, function () {
+Site.ready({ name: 'attributes' }, function () {
     UI.register([
         {
             tab: new GenericTab('tab-gold-experience', false),

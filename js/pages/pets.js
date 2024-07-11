@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator', requires: ['translations_monsters'] }, function (urlParams) {
+Site.ready({ name: 'pets', type: 'simulator', requires: ['translations_monsters'] }, function (urlParams) {
     $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'pets'))
 
     DOM.input({

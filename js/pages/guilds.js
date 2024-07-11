@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator' }, function (urlParams) {
+Site.ready({ name: 'guilds', type: 'simulator' }, function (urlParams) {
     $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'guilds'))
 
     SimulatorUtils.configure({

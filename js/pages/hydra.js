@@ -1,4 +1,4 @@
-Site.ready({ type: 'simulator' }, function () {
+Site.ready({ name: 'hydra', type: 'simulator' }, function () {
     $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'hydra'))
 
     SimulatorUtils.configure({});

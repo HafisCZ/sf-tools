@@ -4180,7 +4180,7 @@ class ProfilesTab extends Tab {
     }
 }
 
-Site.ready({ requires: ['translations_items'] }, function (urlParams) {
+Site.ready({ name: 'stats', requires: ['translations_items'] }, function (urlParams) {
     let profile = ProfileManager.getProfile(urlParams.get('profile'));
     if (urlParams.has('temp')) {
         Store.temporary();

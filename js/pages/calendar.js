@@ -1,4 +1,4 @@
-Site.ready({ requires: ['translations_monsters', 'translations_general'] }, function () {
+Site.ready({ name: 'calendar', requires: ['translations_monsters', 'translations_general'] }, function () {
     $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'calendar'))
 
     const $petGrid = $('#pet-grid');

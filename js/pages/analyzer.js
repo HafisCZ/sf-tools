@@ -209,7 +209,7 @@ class PlayerEditor extends EditorBase {
     }
 }
 
-Site.ready({ requires: ['translations_monsters'] }, function (urlParams) {
+Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (urlParams) {
     // Elements
     const $buttonUpload = $('#button-upload');
     const $buttonClear = $('#button-clear');
