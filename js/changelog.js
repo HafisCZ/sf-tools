@@ -1,5 +1,16 @@
 const ANNOUNCEMENTS = [
     {
+        id: '11-07-2024',
+        for: ['hellevator', 'raids'],
+        title: 'Hellevator & Raid Simulator',
+        content: `
+            As you might quickly notice, Hellevator themes are no longer available for you to select in the simulator.<br>
+            This is because of the constant need to keep them up to date for upcoming Hellevators which is quite inpractical or impossible (for Hellevator Raids).<br>
+            Due to this I have decided to remove themes completely in favor of Min, Avg and Max win chances.<br>
+            These are calculated by simulating fights against all 9 combinations of monsters (3 classes and 3 runes) and showing the lowest, average and highest chances to beat them.
+        `
+    },
+    {
         id: '10-07-2024',
         title: 'WebShop Code',
         content: `
