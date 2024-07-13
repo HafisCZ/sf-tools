@@ -898,7 +898,7 @@ class PlayerModel {
         this.DevilPercent = dataType.short();
         dataType.skip(1); // skip
         this.Mushrooms = {
-            Current: dataType.long() || resources.Mushrooms,
+            Current: resources.Mushrooms || dataType.long(),
             Total: dataType.long()
         }
         dataType.skip(1);
