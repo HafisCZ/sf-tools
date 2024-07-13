@@ -897,8 +897,9 @@ class PlayerModel {
         dataType.short();
         this.DevilPercent = dataType.short();
         dataType.skip(1); // skip
+        const mushroomsCurrent = dataType.long();
         this.Mushrooms = {
-            Current: resources.Mushrooms || dataType.long(),
+            Current: resources.Mushrooms || mushroomsCurrent,
             Total: dataType.long()
         }
         dataType.skip(1);
