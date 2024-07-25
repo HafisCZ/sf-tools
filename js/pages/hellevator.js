@@ -193,7 +193,7 @@ Site.ready({ name: 'hellevator', type: 'simulator' }, function (urlParams) {
                 const worstScore = scores[index].min
 
                 content += `
-                    <div class="row">
+                    <div class="row" data-has-popup>
                         <div class="two wide text-center column">${enemy.Floor}</div>
                         <div class="three wide text-center column">${enemy.Level}</div>
                         ${
@@ -214,6 +214,26 @@ Site.ready({ name: 'hellevator', type: 'simulator' }, function (urlParams) {
                             `
                         }
                     </div>
+                    <div class="ui inverted popup" style="border: 1px solid #0b0c0c; width: 250px;">
+                        <div class="text-center header" style="height: 3em;">${intl('hellevator.win.title')}</div>
+                        <div class="ui grid css-nomargin-grid">
+                            ${
+                                scores[index].map((score, scoreIndex) => `
+                                    <div class="row">
+                                        <div class="four wide text-center column">
+                                            <img class="ui medium centered image" style="width: 40px;" src="${_classImageUrl(1 + Math.trunc(scoreIndex / 3))}">
+                                        </div>
+                                        <div class="four wide text-center column">
+                                            <img class="ui medium centered image" style="width: 40px;" src="res/element${scoreIndex % 3}.webp">
+                                        </div>
+                                        <div class="eight wide text-center column items-center justify-content-center" style="display: flex;">
+                                            ${(100 * score).toFixed(2)}%
+                                        </div>
+                                    </div>
+                                `).join('')
+                            }
+                        </div>
+                    </div>
                 `
             }
 
@@ -229,6 +249,10 @@ Site.ready({ name: 'hellevator', type: 'simulator' }, function (urlParams) {
         }
 
         $enemyList.html(content);
+        $enemyList.find('[data-has-popup]').popup({
+            inline: true,
+            position: 'left center'
+        })
     }
 
     async function executeSimulation (instances, iterations, logCallback) {
