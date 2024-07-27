@@ -1295,7 +1295,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
         // Prepare summary
         for (const fighter of [group.fighterA, group.fighterB]) {
-            fighter.damages = {};
+            fighter.damages = {
+                _samples: 0
+            };
 
             const items = fighter.editor.Items;
 
@@ -1337,7 +1339,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         container.damages[key] = {
                             min: +Infinity,
                             max: -Infinity,
-                            err: 0
+                            err: 0,
+                            cnt: 0
                         };
                     }
 
@@ -1345,7 +1348,10 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
                     range.min = Math.min(range.min, attackBase);
                     range.max = Math.max(range.max, attackBase);
-                    range.err = range.err | hasError
+                    range.err = range.err | hasError;
+                    range.cnt++;
+
+                    container.damages._samples++;
                 }
             }
         }
@@ -1392,11 +1398,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             let content = '';
             for (const type of RANGE_TYPES) {
                 if (type in damages) {
-                    const { min, max, err } = damages[type];
+                    const { min, max, err, cnt } = damages[type];
 
                     content += `
                         <div class="field">
-                            <label class="${err ? '!text-orangered' : ''}">${intl(`analyzer.sidebar.damages.${type}`)}${err ? ' !' : ''}${err & 1 ? ' < min' : ''}${err & 2 ? ' > max' : ''}</label>
+                            <label class="${err ? '!text-orangered' : ''}" style="display: flex;">
+                                <div>${intl(`analyzer.sidebar.damages.${type}`)}${err ? ' !' : ''}${err & 1 ? ' < min' : ''}${err & 2 ? ' > max' : ''}</div>
+                                ${typeof cnt === 'number' ? `<div style="margin-left: auto;">(${cnt} / ${damages._samples})</div>` : ''}
+                            </label>
                             <div class="ui inverted centered input">
                                 <input type="text" class="${err ? '!text-orangered' : ''}" disabled value="${min} - ${max}">
                             </div>
