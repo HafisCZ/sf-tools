@@ -157,7 +157,7 @@ class MonsterGenerator {
     return model;
   }
 
-  static createVariantsOf (monster, classList, runeList) {
+  static createVariantsOf (monster, classList, runeList, mirrorRuneResistance = false) {
     const variants = []
 
     const oldDefinition = CONFIG.fromIndex(monster.Class);
@@ -196,6 +196,18 @@ class MonsterGenerator {
 
         if (variant.Class === ASSASSIN) {
           variant.Items.Wpn2.AttributeTypes = { 2: runeList[j] }
+        }
+
+        if (mirrorRuneResistance) {
+          const maxResistance = Math.max(
+            variant.Runes.ResistanceFire,
+            variant.Runes.ResistanceCold,
+            variant.Runes.ResistanceLightning
+          )
+
+          variant.Runes.ResistanceFire = runeList[j] === RUNE_FIRE_DAMAGE ? maxResistance : 0
+          variant.Runes.ResistanceCold = runeList[j] === RUNE_COLD_DAMAGE ? maxResistance : 0
+          variant.Runes.ResistanceLightning = runeList[j] === RUNE_LIGHTNING_DAMAGE ? maxResistance : 0
         }
 
         variants.push(variant)

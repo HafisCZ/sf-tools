@@ -352,7 +352,8 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
             return MonsterGenerator.createVariantsOf(
                 MonsterGenerator.create(MonsterGenerator.MONSTER_RAID, 18 + i * 10 + (tier - 1) * 100, WARRIOR, 40, 25),
                 [WARRIOR, MAGE, SCOUT],
-                [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]
+                [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE],
+                true
             ).map((variant) => ({ player: variant }))
         })
     } else {

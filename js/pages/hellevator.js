@@ -282,7 +282,7 @@ Site.ready({ name: 'hellevator', type: 'simulator' }, function (urlParams) {
                     {
                         player,
                         iterations,
-                        enemy: MonsterGenerator.createVariantsOf(enemy, [WARRIOR, MAGE, SCOUT], [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE]),
+                        enemy: MonsterGenerator.createVariantsOf(enemy, [WARRIOR, MAGE, SCOUT], [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE], true),
                         log: !!logCallback,
                         config: SimulatorUtils.config
                     }
