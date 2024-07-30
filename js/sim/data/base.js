@@ -157,7 +157,7 @@ class MonsterGenerator {
     return model;
   }
 
-  static createVariantsOf (monster, classList, runeList, mirrorRuneResistance = false) {
+  static createVariantsOf (monster, classList, runeList, flags = { updateRuneResistance: false, updateDamage: true }) {
     const variants = []
 
     const oldDefinition = CONFIG.fromIndex(monster.Class);
@@ -175,8 +175,11 @@ class MonsterGenerator {
       }
 
       classVariant.Armor = _scale(monster.Armor, oldDefinition.MaximumDamageReduction, newDefinition.MaximumDamageReduction);
-      classVariant.Items.Wpn1.DamageMin = _scale(monster.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
-      classVariant.Items.Wpn1.DamageMax = _scale(monster.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+
+      if (flags.updateDamage) {
+        classVariant.Items.Wpn1.DamageMin = _scale(monster.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+        classVariant.Items.Wpn1.DamageMax = _scale(monster.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+      }
 
       if (classList[i] == WARRIOR) {
         classVariant.BlockChance = newDefinition.SkipChance * 100;
@@ -198,7 +201,7 @@ class MonsterGenerator {
           variant.Items.Wpn2.AttributeTypes = { 2: runeList[j] }
         }
 
-        if (mirrorRuneResistance) {
+        if (flags.updateRuneResistance) {
           const maxResistance = Math.max(
             variant.Runes.ResistanceFire,
             variant.Runes.ResistanceCold,
