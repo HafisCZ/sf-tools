@@ -355,7 +355,8 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
                 [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE],
                 {
                     updateRuneResistance: true,
-                    updateDamage: false
+                    updateDamage: false,
+                    updateHealth: false
                 }
             ).map((variant) => ({ player: variant }))
         })

@@ -157,7 +157,7 @@ class MonsterGenerator {
     return model;
   }
 
-  static createVariantsOf (monster, classList, runeList, flags = { updateRuneResistance: false, updateDamage: true }) {
+  static createVariantsOf (monster, classList, runeList, flags = { updateRuneResistance: false, updateDamage: true, updateHealth: true }) {
     const variants = []
 
     const oldDefinition = CONFIG.fromIndex(monster.Class);
@@ -179,6 +179,10 @@ class MonsterGenerator {
       if (flags.updateDamage) {
         classVariant.Items.Wpn1.DamageMin = _scale(monster.Items.Wpn1.DamageMin, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
         classVariant.Items.Wpn1.DamageMax = _scale(monster.Items.Wpn1.DamageMax, oldDefinition.WeaponMultiplier, newDefinition.WeaponMultiplier);
+      }
+
+      if (monster.Health && flags.updateHealth) {
+        classVariant.Health = _scale(monster.Health, oldDefinition.HealthMultiplier, newDefinition.HealthMultiplier);
       }
 
       if (classList[i] == WARRIOR) {
@@ -203,9 +207,9 @@ class MonsterGenerator {
 
         if (flags.updateRuneResistance) {
           const maxResistance = Math.max(
-            variant.Runes.ResistanceFire,
-            variant.Runes.ResistanceCold,
-            variant.Runes.ResistanceLightning
+            monster.Runes.ResistanceFire,
+            monster.Runes.ResistanceCold,
+            monster.Runes.ResistanceLightning
           )
 
           variant.Runes.ResistanceFire = runeList[j] === RUNE_FIRE_DAMAGE ? maxResistance : 0

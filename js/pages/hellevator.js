@@ -288,7 +288,8 @@ Site.ready({ name: 'hellevator', type: 'simulator' }, function (urlParams) {
                             [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE],
                             {
                                 updateRuneResistance: true,
-                                updateDamage: false
+                                updateDamage: false,
+                                updateHealth: false
                             }
                         ),
                         log: !!logCallback,
