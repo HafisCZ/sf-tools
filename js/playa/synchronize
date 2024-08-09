@@ -93,7 +93,7 @@ class Synchronize
 
     read_value = lambda do |bytes|
       head_len = bytes.shift.ord
-      head_len += 64 * (2 * bytes.shift - 2) if bytes.first.ord <= 8
+      head_len += 64 * (2 * bytes.shift - 2) if bytes.first.ord <= 32
       bytes.shift(head_len).map(&:chr).join
     end
     
