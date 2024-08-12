@@ -298,7 +298,7 @@ const CONFIG = Object.defineProperties(
             SwoopChanceMin: 0,
             SwoopChanceMax: 0.50,
             SwoopChanceDecay: -0.05,
-            SwoopBonus: 0.775,
+            SwoopBonus: 0.61,
 
             Rage: {
                 SkipChance: 0,
@@ -1100,7 +1100,7 @@ class DruidModel extends SimulatorModel {
         this.Data.RageState = this.createState(target, this.Config.Rage);
     }
 
-    attack (damage, target, skipped, critical, type) {
+    control (instance, target) {
         if (this.RequestState) {
             this.RequestState = false;
 
@@ -1109,33 +1109,27 @@ class DruidModel extends SimulatorModel {
             this.enterState();
         }
 
-        if (this.specialState()) {
-            return super.attack(
-                damage,
-                target,
-                skipped,
-                critical,
-                type
-            );
+        this.attackSwoop(instance, target);
+
+        super.control(instance, target);
+    }
+
+    attackSwoop (instance, target) {
+        if (this.specialState() || this.Health <= 0) {
+            // Do not swoop if enraged or if not alive
+            return
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
-            
-            // Swoop
-            return super.attack(
-                damage * this.SwoopMultiplier,
+
+            const weapon = this.State.Weapon1;
+    
+            this.attack(
+                instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier,
                 target,
-                skipped,
+                target.skip(SKIP_TYPE_DEFAULT),
                 false,
                 ATTACK_SWOOP
-            );
-        } else {
-            return super.attack(
-                damage,
-                target,
-                skipped,
-                critical,
-                type
-            );
+            )
         }
     }
 
