@@ -128,6 +128,17 @@ class FIGHT_LOG {
         )
     }
 
+    static logStance (source, type) {
+        this.#logRound(
+            source,
+            source,
+            0,
+            ATTACK_SPECIAL_SUMMON + type,
+            false,
+            false
+        )
+    }
+
     static logSummon (source, target, type, duration) {
         this.#logRound(
             source,
@@ -376,6 +387,46 @@ const CONFIG = Object.defineProperties(
                     CriticalChanceBonus: 0
                 }
             ]
+        },
+        Class11: {
+            Attribute: 'Strength',
+
+            HealthMultiplier: 7,
+            WeaponMultiplier: 2,
+            DamageMultiplier: 0.72,
+
+            MaximumDamageReduction: 55,
+            MaximumDamageReductionMultiplier: 1,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
+
+            StanceChangeChance: 0.5,
+            Stances: [
+                {
+                    /* Nothing, he just sad */
+                    SkipChance: 0,
+                    CriticalBonus: 0,
+                    CriticalChance: 0,
+                    CriticalChanceBonus: 0
+                },
+                {
+                    DamageReductionBonus: 11.25,
+                    MaximumDamageReductionBonus: 11.25,
+                    SkipChance: 0,
+                    CriticalBonus: 0,
+                    CriticalChance: 0,
+                    CriticalChanceBonus: 0
+                },
+                {
+                    DamageBonus: 0.35,
+                    SkipChance: 0,
+                    CriticalBonus: 0,
+                    CriticalChance: 0,
+                    CriticalChanceBonus: 0
+                }
+            ]
         }
     },
     {
@@ -448,6 +499,7 @@ const DEMONHUNTER = 7;
 const DRUID = 8;
 const BARD = 9;
 const NECROMANCER = 10;
+const CLASS_11 = 11;
 
 // Rune values
 const RUNE_FIRE_DAMAGE = 40;
@@ -573,7 +625,8 @@ class SimulatorModel {
             [DEMONHUNTER]: DemonHunterModel,
             [DRUID]: DruidModel,
             [BARD]: BardModel,
-            [NECROMANCER]: NecromancerModel
+            [NECROMANCER]: NecromancerModel,
+            [CLASS_11]: Class11Model
         };
 
         return new MODELS[player.Class](index, player);
@@ -671,11 +724,11 @@ class SimulatorModel {
     }
 
     // Damage Reduction
-    getDamageReduction (source, maximumReduction = this.Config.MaximumDamageReduction) {
+    getDamageReduction (source, maximumReduction = this.Config.MaximumDamageReduction, flatBonusReduction = 0) {
         if (source.Config.BypassDamageReduction) {
             return 0;
         } else {
-            return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction + (this.Snack.MaximumDamageReductionBonus ?? 0), this.Player.Armor / source.Player.Level);
+            return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction + (this.Snack.MaximumDamageReductionBonus ?? 0), flatBonusReduction + this.Player.Armor / source.Player.Level);
         }
     }
     
@@ -834,6 +887,9 @@ class SimulatorModel {
         this.Data.SkipChance = this.getSkipChance(target);
         this.Data.CriticalChance = this.getCriticalChance(target);
         this.Data.CriticalMultiplier = this.getCriticalMultiplier(weapon1, weapon2, target);
+
+        // Default multiplier for all incoming damage
+        this.Data.ReceivedDamageMultiplier = 1;
     }
 
     reset (resetHealth = true) {
@@ -874,7 +930,7 @@ class SimulatorModel {
                 damage *= this.State.CriticalMultiplier;
             }
 
-            damage = Math.trunc(damage);
+            damage = Math.trunc(damage * target.State.ReceivedDamageMultiplier);
 
             // Reset skip count
             target.SkipCount = 0;
@@ -943,6 +999,7 @@ class SimulatorModel {
             SkipChance: target.Config.BypassSkipChance ? 0 : config.SkipChance,
             CriticalMultiplier: (this.Config.CritBase + config.CriticalBonus) * this.Data.CriticalMultiplier / this.Config.CritBase,
             CriticalChance: this.getCriticalChance(target, config.CriticalChance, config.CriticalChanceBonus),
+            ReceivedDamageMultiplier: 1,
             Weapon1: this.Data.Weapon1
         }
     
@@ -955,6 +1012,14 @@ class SimulatorModel {
                 Max: multiplier * this.Data.Weapon1.Max,
                 Min: multiplier * this.Data.Weapon1.Min
             }
+        }
+
+        if (typeof config.DamageReductionBonus !== 'undefined' || typeof config.MaximumDamageReductionBonus !== 'undefined') {
+            state.ReceivedDamageMultiplier = (
+                1 - this.getDamageReduction(target, this.Config.MaximumDamageReduction + config.MaximumDamageReductionBonus ?? 0, config.DamageReductionBonus ?? 0) / 100
+            ) / (
+                1 - this.getDamageReduction(target) / 100
+            );
         }
     
         return state;
@@ -1202,6 +1267,7 @@ class BardModel extends SimulatorModel {
                 SkipChance: this.Data.SkipChance,
                 CriticalMultiplier: this.Data.CriticalMultiplier,
                 CriticalChance: this.Data.CriticalChance,
+                ReceivedDamageMultiplier: 1,
                 Weapon1: {
                     Base: multiplier * this.Data.Weapon1.Base,
                     Max: multiplier * this.Data.Weapon1.Max,
@@ -1266,6 +1332,37 @@ class BardModel extends SimulatorModel {
         }
 
         return state;
+    }
+}
+
+class Class11Model extends SimulatorModel {
+    initializeData (target) {
+        super.initializeData(target);
+
+        this.Data.Stances = this.Config.Stances.map((stance) => this.createState(target, stance));
+    }
+
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
+
+        this.StanceIndex = 0;
+    }
+
+    control (instance, target) {
+        if (target.class !== MAGE && (this.StanceIndex === 0 || getRandom(this.Config.StanceChangeChance))) {
+            this.StanceIndex++;
+            if (this.StanceIndex > this.Config.Stances.length) {
+                this.StanceIndex = 1;
+            }
+
+            if (FIGHT_LOG_ENABLED) {
+                FIGHT_LOG.logStance(this, this.StanceIndex);
+            }
+
+            this.enterState(this.Data.Stances[this.StanceIndex - 1]);
+        }
+
+        super.control(instance, target);
     }
 }
 

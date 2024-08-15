@@ -217,6 +217,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
     const $buttonOptions = $('#button-options');
     const $buttonDamages = $('#button-damages');
     const $buttonGladiator = $('#button-gladiator');
+    const $buttonArmor = $('#button-armor');
 
     const $buttonExportGroup = $('#button-export-group');
     const $buttonExportFight = $('#button-export-fight');
@@ -1010,6 +1011,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 return copyMode ? 'berserker_rage' : `<i class="ui bolt icon text-orangered" title="${intl('analyzer.special_state.berserker_rage')}"></i>`;
             } else if (state.type === 'necromancer_minion') {
                 return copyMode ? `necromancer_minion_${state.minion}`: `<i class="ui skull crossbones icon text-orangered" title="${intl(`analyzer.special_state.necromancer_minion_${state.minion}`)}"></i>`;
+            } else if (state.type === 'class_11_stance') {
+                return `s${state.stance}`
             }
         }
 
@@ -1133,6 +1136,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 case DRUID: return model.Data.RageState;
                 case BARD: return model.Data.Songs[round.attackerSpecialState % 10 - 1];
                 case NECROMANCER: return model.Data.Minions[round.attackerSpecialState - 1];
+                case CLASS_11: return model.Data.Stances[round.attackerSpecialState - 1];
                 default: {
                     return model.Data;
                 }
@@ -1196,6 +1200,22 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             }
                         }
                     }
+                } else if (round.attacker.Class === CLASS_11) {
+                    if (round.attackType > ATTACK_SPECIAL_SUMMON) {
+                        round.hasIgnore = true;
+
+                        const stance = round.attackType % 10;
+
+                        for (let j = i + 1; j < rounds.length; j++) {
+                            if (rounds[j].attacker === round.attacker) {
+                                if (rounds[j].attackType > ATTACK_SPECIAL_SUMMON) break;
+
+                                rounds[j].attackerSpecialState = stance
+                            } else if (rounds[j].target === round.attacker) {
+                                rounds[j].targetSpecialState = stance
+                            }
+                        }
+                    }
                 } else if (round.attacker.Class === BARD) {
                     // Add flags to attacks after bard summons his notes
                     if (round.attackType >= ATTACK_SPECIAL_SONG) {
@@ -1220,6 +1240,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             // Set display special state
             if (round.attackerSpecialState && round.attacker.Class === DRUID) {
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
+            }
+
+            if (round.attackerSpecialState && round.attacker.Class === CLASS_11) {
+                round.attackerSpecialDisplay = { type: 'class_11_stance', stance: round.attackerSpecialState };
+            }
+
+            if (round.targetSpecialState && round.target.Class === CLASS_11) {
+                round.targetSpecialDisplay = { type: 'class_11_stance', stance: round.targetSpecialState };
             }
 
             if (round.targetSpecialState && round.target.Class === DRUID) {
