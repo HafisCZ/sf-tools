@@ -286,7 +286,7 @@ const CONFIG = Object.defineProperties(
 
             HealthMultiplier: 5,
             WeaponMultiplier: 4.5,
-            DamageMultiplier: 1 / 3,
+            DamageMultiplier: 111 / 250,
             MaximumDamageReduction: 20,
             MaximumDamageReductionMultiplier: 2,
 
@@ -294,17 +294,19 @@ const CONFIG = Object.defineProperties(
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
 
-            SwoopChance: 0.25,
+            DemonHunterDamageBonus: 0.1,
+
+            SwoopChance: 0.15,
             SwoopChanceMin: 0,
             SwoopChanceMax: 0.50,
             SwoopChanceDecay: -0.05,
-            SwoopBonus: 0.61,
+            SwoopBonus: 0.65,
 
             Rage: {
                 SkipChance: 0,
                 CriticalChance: 0.75,
                 CriticalChanceBonus: 0.1,
-                CriticalBonus: 3.6
+                CriticalBonus: 2.25
             }
         },
         Bard: {
@@ -1109,7 +1111,11 @@ class DruidModel extends SimulatorModel {
             this.enterState();
         }
 
-        this.attackSwoop(instance, target);
+        if (target.Config.BypassSpecial) {
+            // Experience sadness
+        } else {
+            this.attackSwoop(instance, target);
+        }
 
         super.control(instance, target);
     }
