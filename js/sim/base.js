@@ -60,6 +60,8 @@ class FIGHT_LOG {
         if (type == ATTACK_SWOOP) {
             if (skip) {
                 return targetWarrior ? ATTACK_SWOOP_BLOCKED : ATTACK_SWOOP_EVADED;
+            } else if (critical) {
+                return ATTACK_SWOOP_CRITICAL;
             } else {
                 return ATTACK_SWOOP;
             }
@@ -505,6 +507,7 @@ const ATTACK_FIREBALL_BLOCKED = 16;
 const ATTACK_SWOOP = 5;
 const ATTACK_SWOOP_BLOCKED = 6;
 const ATTACK_SWOOP_EVADED = 7;
+const ATTACK_SWOOP_CRITICAL = 25;
 
 const ATTACK_SUMMON = 30;
 const ATTACK_SUMMON_CRITICAL = 31;
@@ -1134,7 +1137,7 @@ class DruidModel extends SimulatorModel {
                 instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier,
                 target,
                 target.skip(SKIP_TYPE_DEFAULT),
-                false,
+                getRandom(this.State.CriticalChance),
                 ATTACK_SWOOP
             )
         }
