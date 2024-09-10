@@ -514,7 +514,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 ATTACK_CRITICAL,
                 ATTACK_CRITICAL_BLOCKED,
                 ATTACK_CRITICAL_EVADED
-            ].includes(attackType % 10);
+            ].includes(attackType % 10) || attackType === ATTACK_SWOOP_CRITICAL;
 
             const attackMissedDefault = [
                 ATTACK_BLOCKED,
