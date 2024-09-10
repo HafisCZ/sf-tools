@@ -850,7 +850,8 @@ class TableInstance {
             class: [ this.settings.getOpaqueStyle() ],
             width: this.flatWidth,
             widthFixed: this.settings.isStrictWidthPolicy(),
-            columnCount: this.flatSpan
+            columnCount: this.flatSpan,
+            stickyHeaders: this.settings.isStickyHeaders()
         };
     }
 
@@ -1292,7 +1293,7 @@ class TableController extends SignalSource {
         this.entriesChanged = false;
 
         // Get table content
-        let { content, entries, style, class: klass, theme, width, widthFixed, columnCount } = this.table.createTable();
+        let { content, entries, style, class: klass, theme, width, widthFixed, columnCount, stickyHeaders } = this.table.createTable();
 
         entries = [].concat(entries);
 
@@ -1347,7 +1348,7 @@ class TableController extends SignalSource {
         this.element.style.width = `${width}px`;
         this.element.style.left = `max(0px, calc(50vw - 9px - ${ width / 2 }px))`;
 
-        if (Site.options.table_sticky_header) {
+        if (stickyHeaders === undefined ? Site.options.table_sticky_header : stickyHeaders) {
             let offset = 0
 
             for (const header of this.element.querySelectorAll('tr.headers')) {

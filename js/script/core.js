@@ -1657,6 +1657,22 @@ ScriptCommands.register(
 )
 
 ScriptCommands.register(
+    'TABLE_GLOBAL_STICKY_HEADERS',
+    ScriptType.Table,
+    'sticky headers (on|off)',
+    /^sticky headers( (on|off))?$/,
+    (root, params, value) => root.addGlobal('stickyHeaders', params ? ARGUMENT_MAP_ON_OFF[value] : true),
+    (root, params, value) => {
+        const acc = Highlighter.keyword('sticky headers');
+        if (params) {
+            return acc.space(1).boolean(value, value == 'on')
+        } else {
+            return acc;
+        }
+    }
+)
+
+ScriptCommands.register(
     'TABLE_GLOBAL_LARGE_ROWS',
     ScriptType.Table,
     'large rows (on|off)',
@@ -3262,6 +3278,10 @@ class Script {
 
     isStrictWidthPolicy () {
         return (this.globals.widthPolicy || 'relaxed') === 'strict';
+    }
+
+    isStickyHeaders () {
+        return this.globals.stickyHeaders;
     }
 
     evalRowIndexes (array) {
