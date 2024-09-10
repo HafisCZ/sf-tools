@@ -309,7 +309,7 @@ const CONFIG = Object.defineProperties(
                 SkipChance: 0,
                 CriticalChance: 0.75,
                 CriticalChanceBonus: 0.1,
-                CriticalBonus: 2.25
+                CriticalBonus: 4
             }
         },
         Bard: {
