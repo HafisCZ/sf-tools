@@ -903,7 +903,7 @@ class SimulatorModel {
         }
 
         if (typeof this.Config[`${target.ConfigKey}DamageMultiplier`] !== 'undefined') {
-            multiplier += this.Config[`${target.ConfigKey}DamageMultiplier`];
+            multiplier *= this.Config[`${target.ConfigKey}DamageMultiplier`];
         }
 
         return multiplier;
