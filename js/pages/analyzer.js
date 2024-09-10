@@ -1271,7 +1271,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     damage /= state.CriticalMultiplier;
                 }
 
-                if (round.attacker.Class === DRUID && round.attackType === ATTACK_SWOOP) {
+                if (round.attacker.Class === DRUID && (round.attackType === ATTACK_SWOOP || round.attackType === ATTACK_SWOOP_CRITICAL)) {
                     damage /= model.SwoopMultiplier;
                 }
 
@@ -1333,7 +1333,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
                 // Calculate damage range
                 if (hasBase) {
-                    const key = `${attackSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP ? '_swoop' : ''}${attackCrit ? '_critical' : ''}`;
+                    const key = `${attackSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP || attackType === ATTACK_SWOOP_CRITICAL ? '_swoop' : ''}${attackCrit ? '_critical' : ''}`;
 
                     if (typeof container.damages[key] === 'undefined') {
                         container.damages[key] = {
