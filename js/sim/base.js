@@ -287,20 +287,21 @@ const CONFIG = Object.defineProperties(
             HealthMultiplier: 5,
             WeaponMultiplier: 4.5,
             DamageMultiplier: 111 / 250,
-            MaximumDamageReduction: 20,
-            MaximumDamageReductionMultiplier: 2,
+            MaximumDamageReduction: 25,
+            MaximumDamageReductionMultiplier: 1,
 
             SkipChance: 0.35,
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
 
-            DemonHunterDamageBonus: 0.1,
+            DemonHunterDamageBonus: 0.15,
+            MageDamageBonus: 0.33,
 
             SwoopChance: 0.15,
             SwoopChanceMin: 0,
             SwoopChanceMax: 0.50,
             SwoopChanceDecay: -0.05,
-            SwoopBonus: 0.65,
+            SwoopBonus: 0.8,
 
             Rage: {
                 SkipChance: 0,
