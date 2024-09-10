@@ -272,7 +272,7 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
 
             ReviveChance: 0.44,
-            ReviveChanceDecay: 0.02,
+            ReviveChanceDecay: 0.11,
             ReviveHealth: 0.9,
             ReviveHealthMin: 0.1,
             ReviveHealthDecay: 0.1,
