@@ -121,6 +121,7 @@
         "attack21": "Critical",
         "attack23": "Blocked",
         "attack24": "Evaded",
+        "attack25": "Swoop Critical",
         "attack28": "Critical Blocked",
         "attack29": "Critical Evaded",
         "attack30": "Minion Normal",

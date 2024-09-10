@@ -296,8 +296,8 @@ const CONFIG = Object.defineProperties(
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
 
-            DemonHunterDamageBonus: 0.15,
-            MageDamageBonus: 0.33,
+            DemonHunterDamageMultiplier: 1.15,
+            MageDamageMultiplier: 4 / 3,
 
             SwoopChance: 0.15,
             SwoopChanceMin: 0,
@@ -900,6 +900,10 @@ class SimulatorModel {
 
         if (typeof this.Config[`${target.ConfigKey}DamageBonus`] !== 'undefined') {
             multiplier += this.Config[`${target.ConfigKey}DamageBonus`];
+        }
+
+        if (typeof this.Config[`${target.ConfigKey}DamageMultiplier`] !== 'undefined') {
+            multiplier += this.Config[`${target.ConfigKey}DamageMultiplier`];
         }
 
         return multiplier;
