@@ -986,6 +986,7 @@
                 "weapon1_range_critical": "Critical range",
                 "weapon2_range_critical": "Critical range (secondary)",
                 "weapon1_range_swoop": "Swoop range",
+                "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             }

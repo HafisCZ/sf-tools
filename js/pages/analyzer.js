@@ -1375,6 +1375,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         'weapon1_range',
         'weapon1_range_critical',
         'weapon1_range_swoop',
+        'weapon1_range_swoop_critical',
         'weapon2_range_base',
         'weapon2_range',
         'weapon2_range_critical',
