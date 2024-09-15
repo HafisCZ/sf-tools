@@ -941,7 +941,7 @@ class SimulatorModel {
         const state = {
             Config: config,
             SkipChance: target.Config.BypassSkipChance ? 0 : config.SkipChance,
-            CriticalMultiplier: this.Data.CriticalMultiplier + config.CriticalBonus,
+            CriticalMultiplier: (this.Config.CritBase + config.CriticalBonus) * this.Data.CriticalMultiplier / this.Config.CritBase,
             CriticalChance: this.getCriticalChance(target, config.CriticalChance, config.CriticalChanceBonus),
             Weapon1: this.Data.Weapon1
         }
