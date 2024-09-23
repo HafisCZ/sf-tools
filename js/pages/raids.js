@@ -1,4 +1,4 @@
-Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters'] }, function (urlParams) {
+Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters', 'translations_general'] }, function (urlParams) {
   $('[data-op="report"]').click(() => Dialog.open(ReportDialog, 'raids'))
 
   SimulatorUtils.configure({
@@ -39,23 +39,23 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
 
   // Current raid
   const availableRaids = [
-    ...Array.from({ length: 10 }, (_, index) => `hellevator_${index + 1}`)
+    ...Array.from({ length: 10 }, (_, index) => ({
+        value: `hellevator_${index + 1}`,
+        name: intl(`raids.raids.hellevator`, { number: index + 1 }) 
+    })),
+    ...Array.from({ length: 50 }, (_, index) => ({
+        value: `raid_${index + 1}`,
+        name: intl(`general.guild_raid_${index + 1}`)
+    }))
   ]
 
   let raid = null
   $('#raid').dropdown({
-    values: availableRaids.map((value) => {
-        const [type, number] = value.split('_')
-
-        return {
-            value,
-            name: intl(`raids.raids.${type}`, { number }) 
-        }
-    }),
+    values: availableRaids,
     onChange: (value) => {
         raid = value
     }
-  }).dropdown('set selected', availableRaids[0])
+  }).dropdown('set selected', availableRaids[0].value)
 
   // Editor configuration
   Editor.createPlayerEditor('#player-editor');
