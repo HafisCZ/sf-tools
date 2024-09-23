@@ -1604,7 +1604,9 @@ class PlayerModel {
         legacyDungeons.Normal[13] = dataType.long();
         legacyDungeons.Shadow = dataType.byteArray(14);
 
-        dataType.skip(3);
+        dataType.skip(2);
+
+        this.Fortress.Gladiator = dataType.long();
 
         dataType = new ComplexDataType(data.pets);
         dataType.skip(1); // skip
