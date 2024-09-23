@@ -39,16 +39,7 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
 
   // Current raid
   const availableRaids = [
-    'hellevator_1',
-    'hellevator_2',
-    'hellevator_3',
-    'hellevator_4',
-    'hellevator_5',
-    'hellevator_6',
-    'hellevator_7',
-    'hellevator_8',
-    'hellevator_9',
-    'hellevator_10'
+    ...Array.from({ length: 10 }, (_, index) => `hellevator_${index + 1}`)
   ]
 
   let raid = null
@@ -349,17 +340,18 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
         const tier = parseInt(raid.slice(11))
 
         return Array.from({ length: 10 }).map((_, i) => {
-            return MonsterGenerator.createVariantsOf(
-                MonsterGenerator.create(MonsterGenerator.MONSTER_RAID, 18 + i * 10 + (tier - 1) * 100, WARRIOR, 40, 25),
-                [WARRIOR, MAGE, SCOUT],
-                [RUNE_FIRE_DAMAGE, RUNE_COLD_DAMAGE, RUNE_LIGHTNING_DAMAGE],
-                {
-                    updateRuneResistance: true,
-                    updateDamage: false,
-                    updateHealth: false
-                }
-            ).map((variant) => ({ player: variant }))
-        })
+            const monsterIndex = 10 * (tier - 1) + i
+
+            const [ monsterClass, monsterRune ] = HELLEVATOR_RAID_DATA[monsterIndex]
+
+            return MonsterGenerator.create(
+                MonsterGenerator.MONSTER_RAID,
+                18 + i * 10 + (tier - 1) * 100,
+                monsterClass,
+                monsterRune,
+                25
+            )
+        }).map((player) => ({ player }))
     } else {
         throw new Error('Not implemented')
     }
