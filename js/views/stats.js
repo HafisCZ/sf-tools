@@ -1862,6 +1862,12 @@ class PlayerDetailDialog extends Dialog {
                     <div class="detail-item">${this.intl('damage_bonus')}</div>
                     <div class="detail-item text-center">${ player.Dungeons.Group }%${ asDiff(player.Dungeons.Group, compare.Dungeons.Group) }</div>
                 </div>
+                ${ player.Fortress.Gladiator ? `
+                    <div class="detail-entry">
+                        <div class="detail-item">${this.intl('gladiator')}</div>
+                        <div class="detail-item text-center">${ player.Fortress.Gladiator }${ asDiff(player.Fortress.Gladiator, compare.Fortress.Gladiator) }</div>
+                    </div>
+                ` : '' }
                 ${ player.Group && player.Group.Treasure ? `
                     <div class="detail-entry">
                         <div class="detail-item">${this.intl('treasure')}</div>
