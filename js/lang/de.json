@@ -121,6 +121,7 @@
         "attack21": "Kritisch",
         "attack23": "Blockiert",
         "attack24": "Ausgewichen",
+        "attack25": "Swoop Critical",
         "attack28": "Kritisch geblockt",
         "attack29": "Kritisch ausgewichen",
         "attack30": "Schergen normal",
@@ -309,7 +310,7 @@
             "kofi": "Spendiere Mar ein paar Pilze",
             "crowdin": "Hilf beim Übersetzen",
             "webshop#": "Verwende den Code <b class=\"text-white\">SFTOOLS</b> im Webshop",
-            "report": "Submit feedback",
+            "report": "Feedback abgeben",
             "notice#": "Verteilt <b>WIE ES IST</b>. Diese Seite steht in keiner Weise in Verbindung mit <b>Playa Games</b>."
         },
         "stats": {
@@ -342,12 +343,12 @@
             "desc": "Schau wann du welche Pets finden kannst"
         },
         "simulator": {
-            "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "title": "Kampf Simulator",
+            "desc": "Simuliere die Wahrscheinlichkeit eines PvP Kampfes"
         },
         "guilds": {
-            "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "title": "Gilden Simulator",
+            "desc": "Simuliere die Wahrscheinlichkeit eines Gilden Kampfes"
         },
         "pets": {
             "title": "Pet Simulator",
@@ -358,7 +359,7 @@
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Dungeonkampfes"
         },
         "underworld": {
-            "title": "Underworld Simulator",
+            "title": "Unterwelt Simulator",
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Unterweltkampfes"
         },
         "analyzer": {
@@ -374,12 +375,12 @@
             "desc": "Zeigt alle PvE-Kämpfe an die in einer Archivdatei gespeichert sind."
         },
         "attributes": {
-            "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "title": "Gold & Erfahrung",
+            "desc": "Kurven & Rechner"
         },
         "blacksmith": {
-            "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "title": "Schmied Verbesserungen",
+            "desc": "Was es kostet und was verloren geht"
         },
         "hydra": {
             "title": "Hydra Simulator",
@@ -396,6 +397,10 @@
         "hellevator": {
             "title": "Hellevator Simulator",
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Hellevatorkämpfes"
+        },
+        "raids": {
+            "title": "Raid Simulator",
+            "desc": "Simulate the probable outcome of guild raids"
         }
     },
     "404": {
@@ -568,20 +573,20 @@
             "list_search": "Verfügbare Skripte durchsuchen ...",
             "target": "Aktueller Reiter",
             "script": "Derzeitiges Skript",
-            "quick_swap": "Quick swap script",
+            "quick_swap": "Schnell Skript wechseln",
             "targets": {
                 "none": "Keine(r)"
             },
             "targets_category": {
                 "default": "Standard",
-                "existing": "Assigned tables"
+                "existing": "Zugewiesene Tabellen"
             },
             "tooltip": {
                 "pin": "Skript an den Anfang der Liste anheften",
                 "unpin": "Skript lösen",
                 "assigned": "Dieses Skript ist dem aktuellen Reiter zugewiesen",
                 "remote": "Dieses Skript ist veröffentlicht",
-                "remote_verified": "This script is published and verified",
+                "remote_verified": "Dieses Skript ist veröffentlicht und verifiziert",
                 "remote_copy": "Hier klicken, um den Code zu kopieren"
             },
             "sidebar": {
@@ -597,9 +602,9 @@
                 "edit": "Name oder Beschreibung bearbeiten",
                 "remote_add": "Ausgewähltes Skript veröffentlichen",
                 "remote_update": "Neue Version des ausgewählten Skripts veröffentlichen",
-                "remote_refresh": "Refresh status of selected script",
-                "remote_mark_public": "Mark script as public",
-                "remote_mark_private": "Mark script as private",
+                "remote_refresh": "Status des gewählten Skripts aktualisieren",
+                "remote_mark_public": "Skript als öffentlich markieren",
+                "remote_mark_private": "Skript als privat markieren",
                 "remote_remove": "Veröffentlichung vom ausgewählten Skript rückgängig machen",
                 "close": "Zurück",
                 "shortcuts": "Tastenkürzel",
@@ -686,6 +691,7 @@
             "heath_bonus": "Lebens Bonus",
             "damage_bonus": "Schadens Bonus",
             "treasure": "Golschatz",
+            "gladiator": "Gladiator",
             "instructor": "Lehrmeister",
             "pet": "Gildenpet",
             "knights": "Ritterhalle",
@@ -723,7 +729,7 @@
             "always_prev": "Vorherige vergleichen (Gilden)",
             "empty_groups": "Leere Gruppen anzeigen",
             "unsafe_delete": "Bestätigung beim Löschen von Dateien überspringen",
-            "backup_reminder_frequency": "Remind me about a backup",
+            "backup_reminder_frequency": "Erinnere mich an ein Backup",
             "script_author": "Autorenname für veröffentlichte Skripte",
             "table_sticky_header": "Aktiviere fixierte Spaltennamen",
             "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
@@ -736,9 +742,9 @@
                 "save": "Aktionen speichern"
             },
             "backup_reminder_frequency_values": {
-                "0": "Never",
-                "1": "Monthly",
-                "2": "Weekly"
+                "0": "Niemals",
+                "1": "Monatlich",
+                "2": "Wöchentlich"
             },
             "recovery": {
                 "title": "Wiederherstellung",
@@ -871,7 +877,8 @@
             "all": "Alle #{count} Etagen wurden mit 100% iger Chance besiegt",
             "none": "Alle #{count} Etagen sind unmöglich zu besiegen",
             "first": "Die ersten #{count} Etagen wurden mit 100% Chance besiegt",
-            "last": "Die letzten #{count} Etagen sind unmöglich zu besiegen"
+            "last": "Die letzten #{count} Etagen sind unmöglich zu besiegen",
+            "title": "Individual chances"
         },
         "footer#": "Basierend auf <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards & Monster Stats</a> von ÐonMuErte."
     },
@@ -945,7 +952,7 @@
         "analyze": "Statistische Analyse",
         "gladiator": "Gladiator nicht reduziert",
         "clear_changes": "Auf den ursprünglichen Zustand zurücksetzen",
-        "simulate": "Open simulator with current data",
+        "simulate": "Simulator mit aktuellen Daten öffnen",
         "table": {
             "select": "#{index} - #{rounds} Runden - #{nameA} - #{nameB} - Gewinner: #{winner}",
             "rage": "Kampfrausch",
@@ -980,6 +987,7 @@
                 "weapon1_range_critical": "Kritischer Bereich",
                 "weapon2_range_critical": "Kritischer Bereich (sekundär)",
                 "weapon1_range_swoop": "Sturzflug Bereich",
+                "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             }
@@ -1087,11 +1095,11 @@
         },
         "tooltip": {
             "cheats": "Änderungen auf Charaktere anwenden",
-            "options": "Configure integration"
+            "options": "Integration konfigurieren"
         },
         "hide": {
-            "title": "Are you sure you want to hide this character?",
-            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
+            "title": "Bist du sicher, dass du diesen Charakter ausblenden möchtest?",
+            "message": "Du kannst es wieder anzeigen, indem du auf das Zahnradsymbol klickst und es von der Liste der ignorierten Spieler und Gilden entfernst"
         }
     },
     "simulator": {
@@ -1105,10 +1113,10 @@
         "information": "Wichtiger Hinweis!",
         "configure_copy": "Kopiere alle inklusive der aktuellen Einstellungen",
         "configure_insert": "Beispieldaten einfügen",
-        "configure_insert_custom": "Specify values manually",
+        "configure_insert_custom": "Werte manuell eingeben",
         "configure_log": "Simulation mit aktiviertem Logging ausführen",
         "configure_log_file": "Als Datei speichern",
-        "configure_log_broadcast": "Open with analyzer",
+        "configure_log_broadcast": "Mit Analysator öffnen",
         "clipboard": {
             "copy_all": "Alle kopieren",
             "paste_mode": "Umschalten zwischen hinzufügen/ersetzen Modus"
@@ -1116,6 +1124,7 @@
         "win_chance": "Sieg %",
         "min_chance": "Min. %",
         "max_chance": "Max. %",
+        "avg_chance": "Avg %",
         "toast": {
             "title": "Simulation abgeschlossen",
             "message": "Simulation dauerte #{duration}"
@@ -1199,7 +1208,7 @@
         },
         "user_error": {
             "title": "Ihr Benutzername oder Passwort ist ungültig",
-            "message": "Bitte achten Sie auf das richtige Format (Benutzername@url)"
+            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
         },
         "errors": {
             "error_unreachable": "Der Server kann nicht erreicht werden",
@@ -1304,7 +1313,7 @@
             "search": "Suche nach Dungeon oder Boss Namen ..."
         },
         "editor_shortcuts": {
-            "title": "Editor shortcuts",
+            "title": "Editor Tastenkürzel",
             "shortcuts": {
                 "ctrl_s": {
                     "key": "Strg + S",
@@ -1495,7 +1504,7 @@
             "message": "Durch diese Aktion wird der zum Skript zugehörige Code entfernt und dauerhaft gelöscht. Bist du sicher, dass du fortfahren möchtest?"
         },
         "remote_script_verification": {
-            "title": "Script verification",
+            "title": "Skript-Verifizierung",
             "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
         },
         "warning": {
@@ -1670,29 +1679,29 @@
             "max_xp": "Maximale EXP",
             "min_gold": "Minimales Gold",
             "max_gold": "Maximales Gold",
-            "enchantment_exp": "XP Enchantment",
-            "enchantment_gold": "Gold Enchantment"
+            "enchantment_exp": "XP Verzauberung",
+            "enchantment_gold": "Gold Verzauberung"
         },
         "expeditions": {
-            "title": "Expeditions (Experimental)",
+            "title": "Expeditionen (Experimentell)",
             "notice": "* Values represent 25 thirst expedition rewards",
-            "album": "Scrapbook %",
-            "group_exp": "Guild XP %",
-            "group_gold": "Guild Gold %",
+            "album": "Sammelalbum %",
+            "group_exp": "Gilde XP %",
+            "group_gold": "Gilde Gold %",
             "tower": "Tower",
-            "rune_exp": "Experience Rune",
-            "rune_gold": "Gold Rune",
+            "rune_exp": "Erfahrungs-Rune",
+            "rune_gold": "Gold-Rune",
             "stars": "Stars",
             "mount": {
-                "title": "Mount",
-                "none": "None",
-                "pig": "Pig / Cow",
-                "wolf": "Wolf / Horse",
+                "title": "Reittier",
+                "none": "Nichts",
+                "pig": "Schwein / Kuh",
+                "wolf": "Wolf / Pferd",
                 "raptor": "Raptor / Tiger",
-                "griffin": "Griffin"
+                "griffin": "Greifendrache"
             },
-            "enchantment_exp": "XP Enchantment",
-            "enchantment_gold": "Gold Enchantment",
+            "enchantment_exp": "XP Verzauberung",
+            "enchantment_gold": "Gold Verzauberung",
             "xp": "XP (Final)",
             "gold_chest": "Gold (Chest)",
             "gold_mid": "Gold (Mid)",
@@ -1723,8 +1732,10 @@
         }
     },
     "raids": {
-        "guild1": "Players",
-        "guild2": "Enemies"
+        "result": "Chance to defeat raid: #{chance}%",
+        "raids": {
+            "hellevator": "Hellevator Raid #{number}"
+        }
     },
     "idle": {
         "title": "Arena Manager",

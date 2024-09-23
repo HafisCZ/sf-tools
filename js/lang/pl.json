@@ -9,7 +9,7 @@
         "class2": "Mag",
         "class3": "Zwiadowca",
         "class4": "Zabójca",
-        "class5": "Paladyn",
+        "class5": "Mag Bojowy",
         "class6": "Berserk",
         "class7": "Łowca Demonów",
         "class8": "Druid",
@@ -121,6 +121,7 @@
         "attack21": "Krytyczny",
         "attack23": "Zablokowany",
         "attack24": "Unik",
+        "attack25": "Swoop Critical",
         "attack28": "Atak krytyczny zablokowany",
         "attack29": "Atak krytyczny uniknięty",
         "attack30": "Minion Normalny",
@@ -309,7 +310,7 @@
             "kofi": "Daj Maro'owi kilka grzybów",
             "crowdin": "Pomoc przy tłumaczeniach",
             "webshop#": "Użyj kodu <b class=\"text-white\">SFTOOLS</b> w sklepie internetowym",
-            "report": "Submit feedback",
+            "report": "Wyślij feedback",
             "notice#": "Rozpowszechniono <b>TAK A NIE INACZEJ</b>. Ta strona nie jest w żaden sposób powiązana z <b>Playa Games</b>."
         },
         "stats": {
@@ -342,12 +343,12 @@
             "desc": "Sprawdź, kiedy możesz złapać pupile"
         },
         "simulator": {
-            "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "title": "Symulator Walk",
+            "desc": "Przesymuluj prawdopodobny wynik walki graczy"
         },
         "guilds": {
-            "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "title": "Symulator Gildii",
+            "desc": "Przesymuluj prawdopodobny wynik walki gildii"
         },
         "pets": {
             "title": "Symulator Pupili",
@@ -374,12 +375,12 @@
             "desc": "Wyświetl wszystkie walki PvE zapisane w archiwum"
         },
         "attributes": {
-            "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "title": "Złoto & Doświadczenie",
+            "desc": "Wykresy & Kalkulatory"
         },
         "blacksmith": {
-            "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "title": "Ulepszenia Kowala",
+            "desc": "Ile materiałów zyskasz lub stracisz"
         },
         "hydra": {
             "title": "Symulator hydry",
@@ -396,6 +397,10 @@
         "hellevator": {
             "title": "Symulator Windy Piekieł",
             "desc": "Przesymuluj prawdopodobny wynik walki w Windzie Piekieł"
+        },
+        "raids": {
+            "title": "Raid Simulator",
+            "desc": "Simulate the probable outcome of guild raids"
         }
     },
     "404": {
@@ -543,7 +548,7 @@
                 "players": "Filtruj graczy według serwera, klasy, gildii i/lub nazwy użytkownika",
                 "groups": "Filtruj grupy według serwera lub nazwy"
             },
-            "c": "Klasa gracza, użyj pełnej nazwy z malej litery (eg.: berserker, battle mage)",
+            "c": "Klasa gracza, użyj pełnej nazwy z malej litery (np.: berserker, battle mage)",
             "p": "Nick gracza",
             "g": "Nazwa gildii",
             "s": "Serwer",
@@ -686,6 +691,7 @@
             "heath_bonus": "Bonus do HP",
             "damage_bonus": "Bonus do Obrażeń",
             "treasure": "Skarbiec",
+            "gladiator": "Gladiator",
             "instructor": "Trener",
             "pet": "Pupil",
             "knights": "Sala Rycerska",
@@ -723,7 +729,7 @@
             "always_prev": "Porównaj poprzednie (gildie)",
             "empty_groups": "Pokaż puste grupy",
             "unsafe_delete": "Pomiń potwierdzenie przy usuwaniu plików",
-            "backup_reminder_frequency": "Remind me about a backup",
+            "backup_reminder_frequency": "Przypomnij mi o kopii zapasowej",
             "script_author": "Nazwa autora dla opublikowanych skryptów",
             "table_sticky_header": "Włącz przyklejone nagłówki tabeli",
             "skip_grid_if_single_entry_present": "Pomiń do szczegółów gracza/grupy jeśli jest sam w siatce",
@@ -736,9 +742,9 @@
                 "save": "Zapisz akcje"
             },
             "backup_reminder_frequency_values": {
-                "0": "Never",
-                "1": "Monthly",
-                "2": "Weekly"
+                "0": "Nigdy",
+                "1": "Co miesiąc",
+                "2": "Co tydzień"
             },
             "recovery": {
                 "title": "Odzyskiwanie",
@@ -871,7 +877,8 @@
             "all": "Wszystkie #{count} piętra zostały pokonane z 100% szans",
             "none": "Nie można pokonać wszystkich #{count} pięter",
             "first": "Pierwsze #{count} piętra zostały pokonane z 100% szans",
-            "last": "Ostatnie #{count} pięter jest niemożliwe do pokonania"
+            "last": "Ostatnie #{count} pięter jest niemożliwe do pokonania",
+            "title": "Individual chances"
         },
         "footer#": "Bazuje na <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Nagrodach Windy Piekieł &amp; Statystyki potworów</a> od ÐonMuErte."
     },
@@ -980,8 +987,9 @@
                 "weapon1_range_critical": "Rozrzut ciosu krytycznego",
                 "weapon2_range_critical": "Rozrzut ciosu krytycznego (drugorzędny)",
                 "weapon1_range_swoop": "Rozrzut Zasięg ataku pikującego",
-                "weapon1_fist_damage": "Fist damage",
-                "weapon2_fist_damage": "Fist damage (secondary)"
+                "weapon1_range_swoop_critical": "Critical swoop range",
+                "weapon1_fist_damage": "Obrażenia bez broni",
+                "weapon2_fist_damage": "Obrażenia bez broni (2 slot)"
             }
         }
     },
@@ -1090,8 +1098,8 @@
             "options": "Konfiguruj integrację"
         },
         "hide": {
-            "title": "Are you sure you want to hide this character?",
-            "message": "You will be able to display it again by clicking on the cog icon and removing it from the ignored players and guilds list"
+            "title": "Czy na pewno chcesz ukryć tę postać?",
+            "message": "Będzie można wyświetlić go ponownie, klikając ikonę zębatki i usuwając go z listy ignorowanych graczy i gildii"
         }
     },
     "simulator": {
@@ -1116,6 +1124,7 @@
         "win_chance": "Szansa na zwycięstwo %",
         "min_chance": "Minimalna szansa %",
         "max_chance": "Maksymalna szansa %",
+        "avg_chance": "Avg %",
         "toast": {
             "title": "Symulacja zakończona",
             "message": "Symulacja zajęła #{duration}"
@@ -1128,24 +1137,24 @@
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Pancerz",
-        "health": "Health",
-        "snack": "Snack",
-        "snack_potency": "Snack Strength",
+        "health": "HP",
+        "snack": "Przekąska",
+        "snack_potency": "Siła przekąski",
         "snacks": {
-            "1": "Chocolate Chili Peppers",
-            "2": "Peppermint Chocolate",
-            "3": "Electroshock",
-            "4": "Chili Ice Cream",
-            "5": "Crackling Chewing Gum",
-            "6": "Peppermint Chewing Gum",
-            "7": "Beer Biscuit",
-            "8": "Gingerbread Heart",
-            "9": "Fortune Cookie",
-            "10": "Canned Spinach",
-            "11": "Stone Biscuit",
-            "12": "Organic Granola Bar",
-            "13": "Chocolate Gold Coin",
-            "14": "Protein Shake"
+            "1": "Czekoladowe papryczki chili",
+            "2": "Czekolada miętowa",
+            "3": "Elektrowstrząs",
+            "4": "Lody o smaku chili",
+            "5": "Strzelająca guma do żucia",
+            "6": "Miętowa guma do żucia",
+            "7": "Ciasteczko piwne",
+            "8": "Serduszko z piernika",
+            "9": "Ciastko z wróżbą",
+            "10": "Szpinak w puszce",
+            "11": "Ciasteczko kamienne",
+            "12": "Organiczny baton z granolą (wegański)",
+            "13": "Czekoladowa złota moneta",
+            "14": "Koktajl proteinowy"
         },
         "armor_placeholder": "Punkty pancerza",
         "min": "Min",
@@ -1199,7 +1208,7 @@
         },
         "user_error": {
             "title": "Nieprawidłowa nazwa użytkowanika lub hasło",
-            "message": "Proszę upewnij się, że jest we własciwej formie(nazwa użytkownika@url)"
+            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
         },
         "errors": {
             "error_unreachable": "Serwer jest nieosiągalny",
@@ -1248,34 +1257,34 @@
             "close": "Zamknij",
             "ok": "Ok",
             "apply": "Zastosuj",
-            "submit": "Submit"
+            "submit": "Wyślij"
         },
         "backup_reminder": {
-            "title": "Backup Reminder",
-            "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
-            "close": "Close",
-            "save": "Download backup"
+            "title": "Przypomnienie o kopii zapasowej",
+            "message": "Cześć. To jest przypomnienie o regularnej kopii zapasowej.<br><br><i>Możesz wyłączyć lub zmienić częstotliwość tego przypomnienia w ustawieniach.</i>",
+            "close": "Zamknij",
+            "save": "Pobierz kopię zapasową"
         },
         "report": {
             "title": "Feedback",
             "field": {
-                "type": "Type",
-                "description": "Description",
-                "tool": "Tool",
-                "email": "Email (optional)"
+                "type": "Typ",
+                "description": "Opis",
+                "tool": "Narzędzie",
+                "email": "Email (opcjonalnie)"
             },
             "type": {
-                "issue": "Issue",
-                "suggestion": "Suggestion"
+                "issue": "Problem",
+                "suggestion": "Sugestia"
             },
             "toast": {
                 "success": {
-                    "title": "Thank you for your feedback",
-                    "message": "If you filled in your email you may receive a reply in several working days"
+                    "title": "Dziękujemy za podzielenie się opinią",
+                    "message": "Jeśli podano email, to możesz dostać odpowiedź w ciągu kilku dni roboczych"
                 },
                 "error": {
-                    "title": "Your feedback could not be submitted",
-                    "message": "Please try again later"
+                    "title": "Twoja opinia nie mogła zostać przesłana",
+                    "message": "Spróbuj ponownie później"
                 }
             }
         },
@@ -1283,12 +1292,12 @@
             "title": "Zarządzaj scaleniami graczy/gildii",
             "link": {
                 "heading1": "Scal następujące obiekty",
-                "heading2": "Into",
+                "heading2": "Do",
                 "warning": "Pamiętaj, że dowolne przypisania <b>skryptów</b> i <b>trackery</b> zostaną scalone do obiektu docelowego. Tej akcji nie można cofnąć!"
             },
             "unlink": {
                 "heading1": "Podziel poniższy obiekt",
-                "heading2": "Into",
+                "heading2": "Do",
                 "warning": "Pamiętaj, że wszystkie przypisania <b>skryptu</b> i <b>trackery</b> pozostaną pod obiektem źródłowym."
             }
         },
@@ -1670,33 +1679,33 @@
             "max_xp": "Maksymalne PD",
             "min_gold": "Minimalne Złoto",
             "max_gold": "Maksymalne Złoto",
-            "enchantment_exp": "XP Enchantment",
-            "enchantment_gold": "Gold Enchantment"
+            "enchantment_exp": "XP (Wiedźma)",
+            "enchantment_gold": "Złoto (Wiedźma)"
         },
         "expeditions": {
-            "title": "Expeditions (Experimental)",
-            "notice": "* Values represent 25 thirst expedition rewards",
-            "album": "Scrapbook %",
-            "group_exp": "Guild XP %",
-            "group_gold": "Guild Gold %",
-            "tower": "Tower",
-            "rune_exp": "Experience Rune",
-            "rune_gold": "Gold Rune",
-            "stars": "Stars",
+            "title": "Wyprawy (eksperymentalnie)",
+            "notice": "* Wartości reprezentują nagrody za wyprawy za 25 awanturniczości",
+            "album": "% Klasera",
+            "group_exp": "Bonus Gildii (XP %)",
+            "group_gold": "Złoto (Bonus Gildii %)",
+            "tower": "Wieża",
+            "rune_exp": "XP (Runa)",
+            "rune_gold": "Złoto (Runa)",
+            "stars": "Gwiazdki",
             "mount": {
-                "title": "Mount",
-                "none": "None",
-                "pig": "Pig / Cow",
-                "wolf": "Wolf / Horse",
-                "raptor": "Raptor / Tiger",
-                "griffin": "Griffin"
+                "title": "Wierzchowiec",
+                "none": "Brak",
+                "pig": "Świnia / Krowa",
+                "wolf": "Wilk / Koń",
+                "raptor": "Raptor / Tygrys",
+                "griffin": "Gryf"
             },
-            "enchantment_exp": "XP Enchantment",
-            "enchantment_gold": "Gold Enchantment",
-            "xp": "XP (Final)",
-            "gold_chest": "Gold (Chest)",
-            "gold_mid": "Gold (Mid)",
-            "gold": "Gold (Final)"
+            "enchantment_exp": "XP (Wiedźma)",
+            "enchantment_gold": "Złoto (Wiedźma)",
+            "xp": "XP - Końcowe",
+            "gold_chest": "Złoto - Skrzynie",
+            "gold_mid": "Złoto - Mid",
+            "gold": "Złoto - Końcowe"
         },
         "misc": {
             "title": "Różne",
@@ -1723,8 +1732,10 @@
         }
     },
     "raids": {
-        "guild1": "Players",
-        "guild2": "Enemies"
+        "result": "Chance to defeat raid: #{chance}%",
+        "raids": {
+            "hellevator": "Hellevator Raid #{number}"
+        }
     },
     "idle": {
         "title": "Manager Areny",

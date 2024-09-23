@@ -121,6 +121,7 @@
         "attack21": "Critico",
         "attack23": "Bloccato",
         "attack24": "Schivato",
+        "attack25": "Swoop Critical",
         "attack28": "Critico bloccato",
         "attack29": "Critico schivato",
         "attack30": "Servitore normale",
@@ -396,6 +397,10 @@
         "hellevator": {
             "title": "Simulatore Infernatore",
             "desc": "Simula il probabile esito degli scontri nell'Infernatore"
+        },
+        "raids": {
+            "title": "Raid Simulator",
+            "desc": "Simulate the probable outcome of guild raids"
         }
     },
     "404": {
@@ -686,6 +691,7 @@
             "heath_bonus": "Bonus vita",
             "damage_bonus": "Bonus danni",
             "treasure": "Tesoro",
+            "gladiator": "Gladiator",
             "instructor": "Istruttore",
             "pet": "Famiglio gilda",
             "knights": "Sala dei cavalieri",
@@ -871,7 +877,8 @@
             "all": "Tutti i #{count} piani sono stati sconfitti con il 100% di possibilità",
             "none": "Tutti i #{count} piani sono impossibili da sconfiggere",
             "first": "I primi #{count} piani sono stati sconfitti con il 100% di possibilità",
-            "last": "Gli ultimi #{count} piani sono impossibili da sconfiggere"
+            "last": "Gli ultimi #{count} piani sono impossibili da sconfiggere",
+            "title": "Individual chances"
         },
         "footer#": "Basato su <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> di ÐonMuErte."
     },
@@ -980,6 +987,7 @@
                 "weapon1_range_critical": "Intervallo critico",
                 "weapon2_range_critical": "Intervallo critico (secondario)",
                 "weapon1_range_swoop": "Intervallo Colpo dall'alto",
+                "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             }
@@ -1116,6 +1124,7 @@
         "win_chance": "% vittoria",
         "min_chance": "% min",
         "max_chance": "% max",
+        "avg_chance": "Avg %",
         "toast": {
             "title": "Simulazione completata",
             "message": "La simulazione ha richiesto #{duration}"
@@ -1199,7 +1208,7 @@
         },
         "user_error": {
             "title": "Username o password non validi!",
-            "message": "Assicurati che il formato sia corretto (username@url)"
+            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
         },
         "errors": {
             "error_unreachable": "Impossibile raggiungere il server",
@@ -1723,8 +1732,10 @@
         }
     },
     "raids": {
-        "guild1": "Players",
-        "guild2": "Enemies"
+        "result": "Chance to defeat raid: #{chance}%",
+        "raids": {
+            "hellevator": "Hellevator Raid #{number}"
+        }
     },
     "idle": {
         "title": "Gestore Arena",

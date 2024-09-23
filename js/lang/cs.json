@@ -121,6 +121,7 @@
         "attack21": "Kritický",
         "attack23": "Blokovaný",
         "attack24": "Zásah vyhnut",
+        "attack25": "Swoop Critical",
         "attack28": "Kritický zásah zablokován",
         "attack29": "Kritický zásah vyhnut",
         "attack30": "Minion normální",
@@ -396,6 +397,10 @@
         "hellevator": {
             "title": "Simulátor Hellevatoru",
             "desc": "Simulovat pravděpodobný výsledek bitev v Hellevatoru"
+        },
+        "raids": {
+            "title": "Raid Simulator",
+            "desc": "Simulate the probable outcome of guild raids"
         }
     },
     "404": {
@@ -476,9 +481,9 @@
                 "advanced_title": "Spravovat hrýče a skupiny jednotlivě",
                 "hidden": "Zobrazit skryté položky",
                 "export_public_only": "Exportovat pouze veřejná data",
-                "export_public_only_title": "All exports from this site will contain only public data (no private data will be included)",
+                "export_public_only_title": "Všechny exporty z tohoto webu budou obsahovat pouze veřejná data (žádná soukromá data nebudou zahrnuta)",
                 "export_bundle_groups": "Balíček skupin s hráči",
-                "export_bundle_groups_title": "Includes groups for every player selected when exporting via advanced file list"
+                "export_bundle_groups_title": "Zahrnuje skupiny pro každého vybraného hráče při exportu prostřednictvím pokročilého seznamu souborů"
             },
             "tags": {
                 "single": "Štítek",
@@ -663,8 +668,8 @@
             },
             "formats": {
                 "json": "Soubor JSON",
-                "code": "Online code (1 use or 2 days)",
-                "code_reusable": "Online code (2 days)"
+                "code": "Online kód (1 použití nebo 2 dny)",
+                "code_reusable": "Online kód (2 dny)"
             }
         },
         "player": {
@@ -686,6 +691,7 @@
             "heath_bonus": "Bonus k životu",
             "damage_bonus": "Bonus k poškození",
             "treasure": "Pokladnice",
+            "gladiator": "Gladiator",
             "instructor": "Instruktor",
             "pet": "Mazlíček",
             "knights": "Síň Rytířů",
@@ -723,10 +729,10 @@
             "always_prev": "Automaticky porovnat s předchozím souborem (cech)",
             "empty_groups": "Zobrazit prázné cechy",
             "unsafe_delete": "Nevyžadovat potvrzení při mazání dat",
-            "backup_reminder_frequency": "Remind me about a backup",
-            "script_author": "Author name for published scripts",
-            "table_sticky_header": "Enable sticky table headers",
-            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
+            "backup_reminder_frequency": "Připomeň mi zálohu",
+            "script_author": "Jméno autora pro publikované skripty",
+            "table_sticky_header": "Povolit pevné záhlaví tabulky",
+            "skip_grid_if_single_entry_present": "Přejít na detail hráče/skupiny, pokud je v mřížce sám",
             "terms": "Příjmout podmínky použití",
             "tab": "Výchozí okno",
             "preload": "Načíst řádky",
@@ -744,15 +750,15 @@
                 "title": "Obnova",
                 "import": "Importovat data",
                 "export": "Stáhnout data",
-                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
-                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
+                "description#": "S následujícími možnostmi můžete exportovat a importovat všechna data uložená na webu.<br>Doporučuje se exportovat vaše data alespoň jednou za měsíc, aby se předešlo náhodné ztrátě dat.",
+                "toast": "Proces obnovy právě začal. Mějte prosím na paměti, že to může trvat dlouho v závislosti na velikosti vašeho souboru pro obnovu.",
                 "notice": "Opravdu chcete obnovit SFTools z tohoto souboru?<br><br>Tato operace vymaže všechna vaše stávající data a nahradí je daty ze souboru!"
             },
             "links": {
                 "title": "Hráč / sloučení cechu",
                 "export": "Export",
                 "import": "Import",
-                "import_title": "Are you sure you want to import all merges?",
+                "import_title": "Opravdu chcete importovat všechny slučování?",
                 "reset": "Obnovit",
                 "reset_title": "Jste si jistí, že chcete obnovit všechny propojení?"
             }
@@ -760,7 +766,7 @@
     },
     "pets": {
         "generate": {
-            "iterations": "Amount of iterations per thread when generating a pet map.",
+            "iterations": "Počet iterací na vlákno při generování mapy domácích mazlíčků.",
             "tooltip": "Generovat tabulku pro zbývající levely mazlíčka a úrověň gladiátora. Funguje pouze proti podzemí.",
             "one": "Generovat",
             "five": "Generovat dalších 5",
@@ -770,10 +776,10 @@
         "simulate_dungeons": "Simulovat zbývající podzemí",
         "results": "Výsledky",
         "calendar": {
-            "collected": "Collected",
+            "collected": "Shromážděno",
             "available": "Dostupný",
             "locked": "Zamčeno",
-            "footer#": "Event times might not be accurate. Please verify within the game."
+            "footer#": "Časy událostí nemusí být přesné. Prosím ověřte je přímo ve hře."
         },
         "map": {
             "gladiator": "Gladiátor"
@@ -786,27 +792,27 @@
             "4": "Voda"
         },
         "locations": {
-            "0": "Black Forest",
-            "1": "Black Water Swamp",
-            "2": "Busted Lands",
+            "0": "Černý les",
+            "1": "Bažina Černé vody",
+            "2": "Zničené země",
             "3": "Erogenion",
-            "4": "Evernight Forest",
-            "5": "Flooded Caldwell",
+            "4": "Les Věčné noci",
+            "5": "Zaplavený Caldwell",
             "6": "Gnarogrim",
             "7": "Maerwyn",
             "8": "Magmaron",
             "9": "Moldy Forest",
             "10": "Nevermoor",
             "11": "Northrunt",
-            "12": "Plains Of Ozkorr",
+            "12": "Pláně Ozkorr",
             "13": "Rotten Lands",
-            "14": "Shadowrock Mountain",
-            "15": "Skull Island",
+            "14": "Hora Stínové skály",
+            "15": "Ostrov lebek",
             "16": "Split Canyon",
-            "17": "Sprawling Jungle",
+            "17": "Rozlehlá džungle",
             "18": "Stumble Steppe",
-            "19": "Sunburn Desert",
-            "20": "Tusk Mountain",
+            "19": "Poušť Spálená sluncem",
+            "20": "Hora kly",
             "201": "Důl na drahokamy",
             "202": "Zbrojírna",
             "203": "Čaroobchod",
@@ -851,27 +857,28 @@
     },
     "hellevator": {
         "range": {
-            "start": "Start at floor",
-            "end": "End at floor",
-            "theme": "Theme"
+            "start": "Začít od patra",
+            "end": "Konec v patře",
+            "theme": "Téma"
         },
         "element": "Element",
         "theme": {
-            "0": "Lust",
-            "1": "Treachery",
+            "0": "Chtíč",
+            "1": "Zrada",
             "2": "Fraud",
             "3": "Gluttony",
             "4": "Greed",
             "5": "Heresy",
             "6": "Limbo",
-            "7": "Violence",
+            "7": "Násilí",
             "8": "Wrath"
         },
         "win": {
             "all": "Všech #{count} pater bylo poraženo se 100% šancí",
             "none": "Žádné z #{count} pater lze porazit",
             "first": "Prvních #{count} pater bylo poraženo se 100% šancí",
-            "last": "Posledních #{count} pater nelze porazit"
+            "last": "Posledních #{count} pater nelze porazit",
+            "title": "Individual chances"
         },
         "footer#": "Podle <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> od ÐonMuErte."
     },
@@ -904,7 +911,7 @@
         },
         "simulate_next_info": {
             "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
-            "message#": "Use <b>All</b> function to simulate all open dungeons"
+            "message#": "Použít <b>Všechny</b> funkce k simulaci všech odemknutých podzemí"
         }
     },
     "underworld": {
@@ -939,21 +946,21 @@
             "editable_data": "Upravitelná data"
         },
         "players": "Hráči",
-        "preview": "Fight preview",
+        "preview": "Náhled boje",
         "export": "Exportovat souboje",
-        "autofill": "Fill editable data in from predefined list",
-        "analyze": "Statistical analysis",
-        "gladiator": "Gladiator not reduced",
-        "clear_changes": "Reset to original state",
-        "simulate": "Open simulator with current data",
+        "autofill": "Vyplnit upravitelná data z předem definovaného seznamu",
+        "analyze": "Statistická analýza",
+        "gladiator": "Gladiátor nebyl snížen",
+        "clear_changes": "Obnovit do původního stavu",
+        "simulate": "Otevřít simulátor s aktuálními daty",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
-            "rage": "Rage",
-            "attacker": "Attacker",
-            "target": "Target",
-            "type": "Type",
-            "health": "Health left",
-            "damage": "Damage",
+            "select": "#{index} - #{rounds} kola - #{nameA} - #{nameB} - vítěz: #{winner}",
+            "rage": "Zuřivost",
+            "attacker": "Útočník",
+            "target": "Cíl",
+            "type": "Typ",
+            "health": "Zbývající zdraví",
+            "damage": "Poškození",
             "damage_base": "Základní poškození"
         },
         "toast_import_error": {
@@ -970,7 +977,7 @@
         },
         "sidebar": {
             "toggles": {
-                "damages": "Show damage ranges"
+                "damages": "Zobrazit rozsah poškození"
             },
             "damages": {
                 "weapon1_range_base": "Input range",
@@ -980,6 +987,7 @@
                 "weapon1_range_critical": "Critical range",
                 "weapon2_range_critical": "Critical range (secondary)",
                 "weapon1_range_swoop": "Swoop range",
+                "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             }
@@ -1003,16 +1011,16 @@
             },
             "end": {
                 "title": "Simulation thread #{done} / #{total} finished",
-                "message#": "<b>Time:</b> #{time} seconds"
+                "message#": "<b>Čas:</b> #{time} sekund"
             },
             "tournament": {
                 "title": "Preparing ladder",
-                "message#": "<b>Players:</b> #{count}"
+                "message#": "<b>Hráči:</b> #{count}"
             }
         }
     },
     "guilds": {
-        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "gladiator_mode": "Gladiator bude nastaven na 15 bez ohledu na nastavení",
         "guild1": "Cech A",
         "guild2": "Cech B",
         "toast": {
@@ -1116,6 +1124,7 @@
         "win_chance": "Výhra %",
         "min_chance": "Min. %",
         "max_chance": "Max. %",
+        "avg_chance": "Avg %",
         "toast": {
             "title": "Simulace dokončena",
             "message": "Simulace trvala #{duration}"
@@ -1199,7 +1208,7 @@
         },
         "user_error": {
             "title": "Tvoje jméno nebo heslo není platné",
-            "message": "Prosím zkontroluj zda je ve vyžadovaném formátu (username@url)"
+            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
         },
         "errors": {
             "error_unreachable": "Server není dostupný",
@@ -1259,22 +1268,22 @@
         "report": {
             "title": "Zpětná vazba",
             "field": {
-                "type": "Type",
-                "description": "Description",
-                "tool": "Tool",
-                "email": "Email (optional)"
+                "type": "Typ",
+                "description": "Popis",
+                "tool": "Nástroj",
+                "email": "E-mail (nepovinné)"
             },
             "type": {
-                "issue": "Issue",
-                "suggestion": "Suggestion"
+                "issue": "Problém",
+                "suggestion": "Návrh"
             },
             "toast": {
                 "success": {
                     "title": "Děkujeme Vám za zpětnou vazbu",
-                    "message": "If you filled in your email you may receive a reply in several working days"
+                    "message": "Pokud jste vyplnili svůj e-mail, můžete obdržet odpověď během několika pracovních dnů"
                 },
                 "error": {
-                    "title": "Your feedback could not be submitted",
+                    "title": "Vaše zpětná vazba nemohla být odeslána",
                     "message": "Zkuste to prosím později"
                 }
             }
@@ -1282,7 +1291,7 @@
         "manage_link": {
             "title": "Manage player / guild merge",
             "link": {
-                "heading1": "Merge following objects",
+                "heading1": "Sloučit následující objekty",
                 "heading2": "Into",
                 "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
             },
@@ -1304,7 +1313,7 @@
             "search": "Hledat podle názvu podzemí nebo nepřítele ..."
         },
         "editor_shortcuts": {
-            "title": "Editor shortcuts",
+            "title": "Zkratky editoru",
             "shortcuts": {
                 "ctrl_s": {
                     "key": "Ctrl + S",
@@ -1315,7 +1324,7 @@
                     "description": "Uložit skript a vrátit se zpět"
                 },
                 "tab": {
-                    "key": "Tab",
+                    "key": "Záložka",
                     "description": "Add indent to selected lines<br>Move to next field"
                 },
                 "shift_tab": {
@@ -1340,24 +1349,24 @@
                 },
                 "ctrl_x": {
                     "key": "Ctrl + X",
-                    "description": "Cut selection"
+                    "description": "Vyjmout výběr"
                 }
             }
         },
         "script_manual": {
             "title": "Manuál",
-            "deprecated": "deprecated",
+            "deprecated": "zastaralé",
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
                 "header_group": "Headers for all guilds",
                 "header_private": "Headers for own characters",
                 "header_scoped": "Accessors for objects",
-                "function": "Functions",
+                "function": "Funkce",
                 "enum": "Enumerations",
                 "constant": "Default constants",
-                "variable": "Variables",
-                "command": "Commands"
+                "variable": "Proměnné",
+                "command": "Příkazy"
             },
             "description": {}
         },
@@ -1368,7 +1377,7 @@
                     "title": "Rage display mode",
                     "value": {
                         "decimal": "Decimal",
-                        "percentage": "Percentage",
+                        "percentage": "Procentuálně",
                         "fraction": "Fractional"
                     }
                 },
@@ -1408,76 +1417,76 @@
             "name": "Name",
             "description": "Description",
             "source": "Content",
-            "tables": "Compatible tables",
+            "tables": "Kompatibilní tabulky",
             "content": {
-                "empty": "Empty",
-                "current": "Current editor content"
+                "empty": "Prázdné",
+                "current": "Aktuální obsah editoru"
             },
             "category": {
-                "defaults": "Duplicate default script",
-                "clone": "Duplicate existing script"
+                "defaults": "Duplikovat výchozí skript",
+                "clone": "Duplikovat existující skript"
             },
-            "error_title": "Warning",
-            "error_name_blank": "Script name may not be blank"
+            "error_title": "Varování",
+            "error_name_blank": "Název skriptu nesmí být prázdný"
         },
         "script_archive": {
-            "title": "Archived scripts",
-            "filter": "Filter by type",
+            "title": "Archivované skripty",
+            "filter": "Filtrovat podle typu",
             "clear": "Odstranit všechny položky z archívu",
-            "copy_toast": "Script has been copied",
-            "unknown": "Unknown",
+            "copy_toast": "Kód byl zkopírován",
+            "unknown": "Neznámý",
             "types": {
-                "all": "Display all changes",
-                "create": "Script created",
-                "overwrite": "Script overwritten by new version",
-                "save": "Script saved",
-                "remove": "Script removed",
-                "discard": "Script changes were discarded"
+                "all": "Zobrazit všechny změny",
+                "create": "Skript vytvořen",
+                "overwrite": "Skript byl přepsán novou verzí",
+                "save": "Skript uložen",
+                "remove": "Skript odstraněn",
+                "discard": "Změny byly zahozeny"
             },
             "item": {
-                "description": "Archived: #{change}. Expires: #{expire}",
-                "temporary": "in temporary mode"
+                "description": "Archivováno: #{change}. Vyprší: #{expire}",
+                "temporary": "v dočasném režimu"
             }
         },
         "script_repository": {
-            "title": "Online scripts",
-            "search": "Search ...",
-            "list_add": "Add published script to your list",
-            "list_add_key": "Code",
-            "list_add_create": "Save as new script",
-            "list_add_accept": "Add to my list",
+            "title": "Online skripty",
+            "search": "Hledat ...",
+            "list_add": "Přidat publikovaný skript do vašeho seznamu",
+            "list_add_key": "Kód",
+            "list_add_create": "Uložit jako nový skript",
+            "list_add_accept": "Přidat do mého seznamu",
             "list": {
-                "about": "Created by #{author}",
-                "about_with_uses": "Created by #{author}; #{uses} uses",
-                "no_description": "No description",
-                "remove": "Remove script from your list",
-                "private": "This script is private",
-                "public": "This script is public",
+                "about": "Vytvořeno uživatelem #{author}",
+                "about_with_uses": "Vytvořeno uživatelem #{author}; #{uses} použití",
+                "no_description": "Bez popisu",
+                "remove": "Odebrat skript z vašeho seznamu",
+                "private": "Tento skript je soukromý",
+                "public": "Tento skript je veřejný",
                 "default": "This script is available to everyone locally",
-                "new": "New!"
+                "new": "Novinka!"
             },
             "error_fetch": {
-                "title": "There was an error while fetching scripts",
-                "message": "Please wait few moments and try again"
+                "title": "Při načítání skriptů došlo k chybě",
+                "message": "Chvíli počkejte a zkuste to znovu"
             }
         },
         "statistics_integration_options": {
-            "title": "Statistics Integration Options",
+            "title": "Nastavení integrace statistik",
             "slot": "Slot",
             "limit": {
                 "title": "Maximální počet zobrazených položek",
-                "placeholder": "Use 0 to disable"
+                "placeholder": "Použijte 0 k vypnutí"
             },
             "ignored_duration": {
-                "title": "Ignore entries older than",
-                "0": "None",
-                "86400000": "> 1 day",
-                "604800000": "> 1 week",
-                "2592000000": "> 1 month",
-                "7776000000": "> 3 months"
+                "title": "Ignorovat záznamy starší než",
+                "0": "Žádný",
+                "86400000": "> 1 den",
+                "604800000": "> 1 týden",
+                "2592000000": "> 1 měsíc",
+                "7776000000": "> 3 měsíce"
             },
             "ignored_identifiers": {
-                "title": "Ignored players and groups"
+                "title": "Ignorovaní hráči a skupiny"
             }
         },
         "delete_all": {
@@ -1486,7 +1495,7 @@
         },
         "delete_script": {
             "title": "Smazat skript",
-            "notice": "Are you sure you want to permanently remove selected script?",
+            "notice": "Opravdu chcete trvale odstranit vybraný skript?",
             "notice_bonus_remote": "<br><br>This will not unpublish your script and you will lose edit access to it!",
             "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
         },
@@ -1723,8 +1732,10 @@
         }
     },
     "raids": {
-        "guild1": "Players",
-        "guild2": "Enemies"
+        "result": "Chance to defeat raid: #{chance}%",
+        "raids": {
+            "hellevator": "Hellevator Raid #{number}"
+        }
     },
     "idle": {
         "title": "Správce arény",

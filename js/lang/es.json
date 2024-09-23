@@ -121,6 +121,7 @@
         "attack21": "Crítico",
         "attack23": "Bloqueado",
         "attack24": "Evadido",
+        "attack25": "Swoop Critical",
         "attack28": "Crítico bloqueado",
         "attack29": "Crítico evadido",
         "attack30": "Minion Normal",
@@ -396,6 +397,10 @@
         "hellevator": {
             "title": "Simulador del Hellevator",
             "desc": "Simula el posible resultado de batallas del Hellevator"
+        },
+        "raids": {
+            "title": "Raid Simulator",
+            "desc": "Simulate the probable outcome of guild raids"
         }
     },
     "404": {
@@ -686,6 +691,7 @@
             "heath_bonus": "Bonif. de Vida",
             "damage_bonus": "Bonif. de daño",
             "treasure": "Tesoro",
+            "gladiator": "Gladiator",
             "instructor": "Instructor",
             "pet": "Mascota",
             "knights": "Salón de Caballeros",
@@ -871,7 +877,8 @@
             "all": "Todos los #{count} pisos fueron derrotados con 100% de probabilidad",
             "none": "Todos los pisos #{count} son imposibles de derrotar",
             "first": "Los primeros #{count} pisos fueron derrotados con 100% de probabilidad",
-            "last": "Los últimos #{count} pisos son imposibles de derrotar"
+            "last": "Los últimos #{count} pisos son imposibles de derrotar",
+            "title": "Individual chances"
         },
         "footer#": "Basado en <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Recompensas de Hellevator &amp; Estadísticas de los Monstruos</a> de ÐonMuErte."
     },
@@ -980,6 +987,7 @@
                 "weapon1_range_critical": "Rango de crítico",
                 "weapon2_range_critical": "Rango de crítico (secundario)",
                 "weapon1_range_swoop": "Swoop range",
+                "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             }
@@ -1116,6 +1124,7 @@
         "win_chance": "Victoria %",
         "min_chance": "Mínimo %",
         "max_chance": "Máximo %",
+        "avg_chance": "Avg %",
         "toast": {
             "title": "Simulación finalizada",
             "message": "La simulación duró #{duration}"
@@ -1199,7 +1208,7 @@
         },
         "user_error": {
             "title": "El nombre de usuario o la contraseña no son válidos",
-            "message": "Por favor, asegúrese de que está en el formato correcto (username@url)"
+            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
         },
         "errors": {
             "error_unreachable": "No se puede acceder al servidor",
@@ -1723,8 +1732,10 @@
         }
     },
     "raids": {
-        "guild1": "Players",
-        "guild2": "Enemies"
+        "result": "Chance to defeat raid: #{chance}%",
+        "raids": {
+            "hellevator": "Hellevator Raid #{number}"
+        }
     },
     "idle": {
         "title": "Director de Arena",
