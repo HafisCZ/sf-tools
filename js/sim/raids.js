@@ -37,82 +37,33 @@ class RaidSimulator extends SimulatorBase {
   }
 
   cache (entities, index) {
-    return entities.map((entity) => {
-      if (Array.isArray(entity)) {
-        return entity.map((variant) => SimulatorModel.create(index, variant.player))
-      } else {
-        return SimulatorModel.create(index, entity.player)
-      }
-    }).sort((a, b) => (Array.isArray(a) ? a[0].Player.Level : a.Player.Level) - (Array.isArray(b) ? b[0].Player.Level : b.Player.Level))
+    return entities.map((entity) => SimulatorModel.create(index, entity.player)).sort((a, b) => a.Player.Level - b.Player.Level)
   }
 
   battle () {
-    // Clone everyone
     this.currentPlayers = this.cachedPlayers.slice();
-    this.currentEnemies = this.cachedEnemies.map((variants) => variants.slice());
+    this.currentEnemies = this.cachedEnemies.slice();
 
-    // Reset players only, enemies are reset individually
-    for (const player of this.currentPlayers) player.reset();
+    for (const entity of this.currentPlayers) entity.reset();
+    for (const entity of this.currentEnemies) entity.reset();
 
-    // Go through each enemy group and pick the worst result
-    for (const enemyVariants of this.currentEnemies) {
-      // Save healths, so they can be recovered later
-      const currentHealths = this.currentPlayers.map((p) => p.Health)
+    while (this.currentPlayers.length > 0 && this.currentEnemies.length > 0) {
+      this.a = this.currentPlayers[0];
+      this.b = this.currentEnemies[0];
 
-      // Do all 9 fights, return list of healths left
-      const futureHealths = enemyVariants.map((enemy) => {
-        const players = this.currentPlayers.slice()
+      SimulatorModel.initializeFighters(this.a, this.b);
 
-        for (let i = 0; i < players.length; i++) {
-          // Recover healths
-          players[i].Health = currentHealths[i]
-        }
-
-        while (players.length > 0) {
-          this.a = players[0]
-          this.b = enemy
-
-          // Hard reset enemy
-          this.b.reset()
-
-          SimulatorModel.initializeFighters(this.a, this.b);
-
-          if (this.fight() == 0) {
-            players.shift();
-          } else {
-            break;
-          }
-        }
-
-        const newHealths = players.map((player) => player.Health)
-
-        // Accumulate all healths to decide what path to take later
-        newHealths.total = 0
-        for (const health of newHealths) newHealths.total += health
-
-        return newHealths
-      })
-
-      const leastHealth = Math.min(...futureHealths.map((set) => set.total))
-
-      if (leastHealth === 0) {
-        // If 0, everyone died Dave
-        return {
-          win: false
-        }
-      }
-
-      const leastHealths = futureHealths.find((healths) => healths.total === leastHealth)
-
-      // Set healths to the healths from the worst attempt
-      this.currentPlayers = this.currentPlayers.slice(this.currentPlayers.length - leastHealths.length)
-      for (let i = 0; i < this.currentPlayers.length; i++) {
-        this.currentPlayers[i].Health = leastHealths[i]
+      if (this.fight() == 0) {
+        this.currentPlayers.shift();
+      } else {
+        this.currentEnemies.shift();
       }
     }
 
     return {
-      win: this.currentPlayers.length > 0
+      win: (this.currentPlayers.length > 0 ? this.currentPlayers[0].Index : this.currentEnemies[0].Index) == 0,
+      left1: this.currentPlayers.length,
+      left2: this.currentEnemies.length
     }
   }
 
