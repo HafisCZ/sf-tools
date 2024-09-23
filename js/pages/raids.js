@@ -352,6 +352,54 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
                 25
             )
         }).map((player) => ({ player }))
+    } else if (raid.startsWith('raid_')) {
+        const raidData = RAID_DATA[raid]
+
+        return Array.from({ length: Object.keys(raidData.floors).length }).map((_, i) => {
+            const data = raidData.floors[i + 1]
+
+            return {
+                Armor: data.level * CONFIG.fromIndex(data.class).MaximumDamageReduction,
+                Class: data.class,
+                Name: `Monster ${i + 1}`,
+                Level: data.level,
+                Health: data.health,
+                NoBaseDamage: true,
+                BlockChance: typeof data.block !== 'undefined' ? data.block : undefined,
+                Identifier: 999,
+                Strength: { Total: data.str },
+                Dexterity: { Total: data.dex },
+                Intelligence: { Total: data.int },
+                Constitution: { Total: data.con },
+                Luck: { Total: data.lck },
+                Dungeons: { Player: 0, Group: 0 },
+                Fortress: { Gladiator: 0 },
+                Potions: { Life: 0 },
+                Runes: {
+                    Health: 0,
+                    ResistanceFire: 0,
+                    ResistanceCold: 0,
+                    ResistanceLightning: 0,
+                },
+                Items: {
+                    Hand: {},
+                    Wpn1: {
+                        AttributeTypes: { 2: 0 },
+                        Attributes: { 2: 0 },
+                        DamageMax: data.max,
+                        DamageMin: data.min,
+                        HasEnchantment: false
+                    },
+                    Wpn2: {
+                        AttributeTypes: { 2: 0 },
+                        Attributes: { 2: 0 },
+                        DamageMax: data.max,
+                        DamageMin: data.min,
+                        HasEnchantment: false
+                    }
+                }
+            };
+        }).map((player) => ({ player }))
     } else {
         throw new Error('Not implemented')
     }
