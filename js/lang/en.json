@@ -1739,6 +1739,7 @@
     },
     "raids": {
         "result": "Chance to defeat raid: #{chance}%",
+        "footer#": "Special thanks to Eggman & everyone else who went through the pain of gathering raid data for the greater good",
         "raids": {
             "hellevator": "Hellevator Raid #{number}"
         }
