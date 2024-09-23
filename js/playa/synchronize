@@ -14,6 +14,7 @@ class Synchronize
   REGEXP_MONSTER = /^monster_name_(\d+)$/ 
   REGEXP_ITEM = /^item_type_(\d+)_(?:class_(\d+)_)?pic_(\d+)$/
   REGEXP_PET_REQUIREMENT = /^pet_requirements_(fire|water|earth|shadow|light)_(\d\d)$/
+  REGEXP_RAID_NAME = /^guild_raid_name_(\d+)$/
 
   LANGUAGE_LIST = {
     'en' => 'en',
@@ -67,11 +68,13 @@ class Synchronize
 
       File.write("lang/#{sftools_language}/items.json", JSON.pretty_generate(items))
 
-      general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT].any? { key.match?(_1) } }
+      general = strings.select { |key, _| [REGEXP_PET_REQUIREMENT, REGEXP_RAID_NAME].any? { key.match?(_1) } }
       general = general.map do |key, text|
         parsed_key = case key
         when REGEXP_PET_REQUIREMENT
           "pet_requirement_#{%w[shadow light earth fire water].index(Regexp.last_match(1)) * 20 + Regexp.last_match(2).to_i - 1}"
+        when REGEXP_RAID_NAME
+          "guild_raid_#{Regexp.last_match(1).to_i}"
         else
           key
         end
