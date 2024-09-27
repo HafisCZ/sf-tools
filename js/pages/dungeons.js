@@ -70,19 +70,24 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
 
             super.fill(object);
 
-            if (index > 0) {
-                this.fields['class'].set(index);
+            let isDebugEnabled = urlParams && urlParams.has('debug');
+
+            // fill companions data automatically and disable companions class morph if sim is not in debug mode
+            if (!isDebugEnabled) {
+                if (index > 0) {
+                    this.fields['class'].set(index);
+                }
+
+                this.morph.show(index == 0);
             }
 
-            this.morph.show(index == 0);
-
-            this.fields['class'].toggle(index == 0);
+            this.fields['class'].toggle(index == 0 || isDebugEnabled);
             this.fields['gladiator'].toggle(index == 0);
             this.fields['portal_hp'].toggle(index == 0);
             this.fields['portal_damage'].toggle(index == 0);
             this.fields['potion_life'].toggle(index == 0);
             this.fields['level'].toggle(index == 0);
-            this.fields['shield'].show(object.Class == 1 && index == 0);
+            this.fields['shield'].show(object.Class == 1 && (index == 0 || isDebugEnabled));
             this.fields['name'].set(HELPER_NAMES[index]);
 
             this.resumeListener();
