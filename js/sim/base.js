@@ -402,14 +402,15 @@ const CONFIG = Object.defineProperties(
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
 
-            StanceChangeChance: 0.5,
+            StanceInitial: 0,
             Stances: [
                 {
                     /* Nothing, he just sad */
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0,
-                    CriticalChanceBonus: 0
+                    CriticalChanceBonus: 0,
+                    StanceChangeChance: 0.5
                 },
                 {
                     DamageReductionBonus: 11.25,
@@ -417,14 +418,16 @@ const CONFIG = Object.defineProperties(
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0,
-                    CriticalChanceBonus: 0
+                    CriticalChanceBonus: 0,
+                    StanceChangeChance: 0.5
                 },
                 {
                     DamageBonus: 0.35,
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0,
-                    CriticalChanceBonus: 0
+                    CriticalChanceBonus: 0,
+                    StanceChangeChance: 0.5
                 }
             ]
         }
@@ -1339,27 +1342,37 @@ class PaladinModel extends SimulatorModel {
     initializeData (target) {
         super.initializeData(target);
 
-        this.Data.Stances = this.Config.Stances.map((stance) => this.createState(target, stance));
+        this.Data.Stances = this.Config.Stances.map((stance) => {
+            const data = this.createState(target, stance)
+
+            data.StanceChangeChance = stance.StanceChangeChance
+
+            return data
+        });
     }
 
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
-        this.StanceIndex = 0;
+        this.StanceIndex = -1;
     }
 
     control (instance, target) {
-        if (target.class !== MAGE && (this.StanceIndex === 0 || getRandom(this.Config.StanceChangeChance))) {
-            this.StanceIndex++;
-            if (this.StanceIndex > this.Config.Stances.length) {
-                this.StanceIndex = 1;
+        if (!target.Config.BypassSpecial && (this.StanceIndex === -1 || getRandom(this.State.StanceChangeChance))) {
+            if (this.StanceIndex === -1) {
+                this.StanceIndex = this.Config.StanceInitial
+            } else {
+                this.StanceIndex++;
+                if (this.StanceIndex >= this.Config.Stances.length) {
+                    this.StanceIndex = 0;
+                }
+
+                if (FIGHT_LOG_ENABLED) {
+                    FIGHT_LOG.logStance(this, this.StanceIndex);
+                }
             }
 
-            if (FIGHT_LOG_ENABLED) {
-                FIGHT_LOG.logStance(this, this.StanceIndex);
-            }
-
-            this.enterState(this.Data.Stances[this.StanceIndex - 1]);
+            this.enterState(this.Data.Stances[this.StanceIndex]);
         }
 
         super.control(instance, target);

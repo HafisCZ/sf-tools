@@ -974,7 +974,10 @@
             "bard_song": "Bard has played a song",
             "necromancer_minion_1": "Summoned Skeleton is affecting the player",
             "necromancer_minion_2": "Summoned Hound is affecting the player",
-            "necromancer_minion_3": "Summoned Golem is affecting the player"
+            "necromancer_minion_3": "Summoned Golem is affecting the player",
+            "paladin_stance_1": "Neutral",
+            "paladin_stance_2": "Defensive",
+            "paladin_stance_3": "Offensive"
         },
         "sidebar": {
             "toggles": {

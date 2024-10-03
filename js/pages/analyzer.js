@@ -1011,8 +1011,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 return copyMode ? 'berserker_rage' : `<i class="ui bolt icon text-orangered" title="${intl('analyzer.special_state.berserker_rage')}"></i>`;
             } else if (state.type === 'necromancer_minion') {
                 return copyMode ? `necromancer_minion_${state.minion}`: `<i class="ui skull crossbones icon text-orangered" title="${intl(`analyzer.special_state.necromancer_minion_${state.minion}`)}"></i>`;
-            } else if (state.type === 'class_11_stance') {
-                return `s${state.stance}`
+            } else if (state.type === 'paladin_stance') {
+                return copyMode ? `paladin_stance_${state.stance}` : `<div class="flex items-center justify-content-center"><i class="ui shield alternate icon text-orangered"></i> ${intl(`analyzer.special_state.paladin_stance_${state.stance}`)}</div>`
             }
         }
 
@@ -1130,13 +1130,29 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return val >= min ? (val <= max ? 0 : 2) : 1;
     }
 
-    function findState (round, model) {
+    function findAttackerState (round, model) {
         if (round.attackerSpecialState) {
             switch (round.attacker.Class) {
                 case DRUID: return model.Data.RageState;
                 case BARD: return model.Data.Songs[round.attackerSpecialState % 10 - 1];
                 case NECROMANCER: return model.Data.Minions[round.attackerSpecialState - 1];
                 case PALADIN: return model.Data.Stances[round.attackerSpecialState - 1];
+                default: {
+                    return model.Data;
+                }
+            }
+        } else {
+            return model.Data;
+        }
+    }
+
+    function findTargetState (round, model) {
+        if (round.targetSpecialState) {
+            switch (round.target.Class) {
+                case DRUID: return model.Data.RageState;
+                case BARD: return model.Data.Songs[round.targetSpecialState % 10 - 1];
+                case NECROMANCER: return model.Data.Minions[round.targetSpecialState - 1];
+                case PALADIN: return model.Data.Stances[round.targetSpecialState - 1];
                 default: {
                     return model.Data;
                 }
@@ -1185,6 +1201,16 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     round.targetDeaths = deathsA;
                 }
 
+                if (round.attacker.Class === PALADIN && typeof round.attackerSpecialState === 'boolean') {
+                    const attackerModel = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
+                    round.attackerSpecialState = attackerModel.Config.StanceInitial + 1
+                }
+
+                if (round.target.Class === PALADIN && typeof round.targetSpecialState === 'boolean') {
+                    const targetModel = round.target.ID === currentGroup.fighterA.ID ? model1 : model2;
+                    round.targetSpecialState = targetModel.Config.StanceInitial + 1
+                }
+
                 if (round.attacker.Class === NECROMANCER) {
                     // Add flags to minion attacks for necromancer class
                     if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
@@ -1201,7 +1227,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         }
                     }
                 } else if (round.attacker.Class === PALADIN) {
-                    if (round.attackType > ATTACK_SPECIAL_SUMMON) {
+                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
                         round.hasIgnore = true;
 
                         const stance = round.attackType % 10;
@@ -1210,9 +1236,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             if (rounds[j].attacker === round.attacker) {
                                 if (rounds[j].attackType > ATTACK_SPECIAL_SUMMON) break;
 
-                                rounds[j].attackerSpecialState = stance
+                                rounds[j].attackerSpecialState = stance + 1
                             } else if (rounds[j].target === round.attacker) {
-                                rounds[j].targetSpecialState = stance
+                                rounds[j].targetSpecialState = stance + 1
                             }
                         }
                     }
@@ -1242,12 +1268,12 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
             }
 
-            if (round.attackerSpecialState && round.attacker.Class === PALADIN) {
-                round.attackerSpecialDisplay = { type: 'class_11_stance', stance: round.attackerSpecialState };
+            if (round.attacker.Class === PALADIN) {
+                round.attackerSpecialDisplay = { type: 'paladin_stance', stance: round.attackerSpecialState };
             }
 
-            if (round.targetSpecialState && round.target.Class === PALADIN) {
-                round.targetSpecialDisplay = { type: 'class_11_stance', stance: round.targetSpecialState };
+            if (round.target.Class === PALADIN) {
+                round.targetSpecialDisplay = { type: 'paladin_stance', stance: round.targetSpecialState };
             }
 
             if (round.targetSpecialState && round.target.Class === DRUID) {
@@ -1288,24 +1314,30 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             if (round.hasIgnore) {
                 continue;
             } else if (round.hasBase) {
-                const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const state = findState(round, model);
+                const attackerModel = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
+                const attackerState = findAttackerState(round, attackerModel);
+
+                const targetModel = round.target.ID === currentGroup.fighterA.ID ? model1 : model2;
+                const targetState = findTargetState(round, targetModel);
 
                 // Scaled down weapon damage
-                let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? state.Weapon2.Base : state.Weapon1.Base);
+                let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? attackerState.Weapon2.Base : attackerState.Weapon1.Base);
 
                 // Special cases
                 if (round.attackCrit) {
-                    damage /= state.CriticalMultiplier;
+                    damage /= attackerState.CriticalMultiplier;
                 }
 
                 if (round.attacker.Class === DRUID && (round.attackType === ATTACK_SWOOP || round.attackType === ATTACK_SWOOP_CRITICAL)) {
-                    damage /= model.SwoopMultiplier;
+                    damage /= attackerModel.SwoopMultiplier;
                 }
 
                 if (round.attacker.Class === DEMONHUNTER) {
-                    damage /= Math.max(model.Config.ReviveDamageMin, model.Config.ReviveDamage - round.attackerDeaths * model.Config.ReviveDamageDecay);
+                    damage /= Math.max(attackerModel.Config.ReviveDamageMin, attackerModel.Config.ReviveDamage - round.attackerDeaths * attackerModel.Config.ReviveDamageDecay);
                 }
+
+                // Apply back reduced damage
+                damage /= targetState.ReceivedDamageMultiplier;
 
                 round.attackBase = Math.trunc(damage);
             }
