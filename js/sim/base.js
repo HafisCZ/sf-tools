@@ -408,7 +408,7 @@ const CONFIG = Object.defineProperties(
                     /* Nothing, he just sad */
                     SkipChance: 0,
                     CriticalBonus: 0,
-                    CriticalChance: 0,
+                    CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
                     StanceChangeChance: 0.5
                 },
@@ -417,7 +417,7 @@ const CONFIG = Object.defineProperties(
                     MaximumDamageReductionBonus: 11.25,
                     SkipChance: 0,
                     CriticalBonus: 0,
-                    CriticalChance: 0,
+                    CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
                     StanceChangeChance: 0.5
                 },
@@ -425,7 +425,7 @@ const CONFIG = Object.defineProperties(
                     DamageBonus: 0.35,
                     SkipChance: 0,
                     CriticalBonus: 0,
-                    CriticalChance: 0,
+                    CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
                     StanceChangeChance: 0.5
                 }
