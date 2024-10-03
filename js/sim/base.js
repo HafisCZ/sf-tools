@@ -388,7 +388,7 @@ const CONFIG = Object.defineProperties(
                 }
             ]
         },
-        Class11: {
+        Paladin: {
             Attribute: 'Strength',
 
             HealthMultiplier: 7,
@@ -499,7 +499,7 @@ const DEMONHUNTER = 7;
 const DRUID = 8;
 const BARD = 9;
 const NECROMANCER = 10;
-const CLASS_11 = 11;
+const PALADIN = 11;
 
 // Rune values
 const RUNE_FIRE_DAMAGE = 40;
@@ -626,7 +626,7 @@ class SimulatorModel {
             [DRUID]: DruidModel,
             [BARD]: BardModel,
             [NECROMANCER]: NecromancerModel,
-            [CLASS_11]: Class11Model
+            [PALADIN]: PaladinModel
         };
 
         return new MODELS[player.Class](index, player);
@@ -1335,7 +1335,7 @@ class BardModel extends SimulatorModel {
     }
 }
 
-class Class11Model extends SimulatorModel {
+class PaladinModel extends SimulatorModel {
     initializeData (target) {
         super.initializeData(target);
 

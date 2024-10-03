@@ -1136,7 +1136,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 case DRUID: return model.Data.RageState;
                 case BARD: return model.Data.Songs[round.attackerSpecialState % 10 - 1];
                 case NECROMANCER: return model.Data.Minions[round.attackerSpecialState - 1];
-                case CLASS_11: return model.Data.Stances[round.attackerSpecialState - 1];
+                case PALADIN: return model.Data.Stances[round.attackerSpecialState - 1];
                 default: {
                     return model.Data;
                 }
@@ -1200,7 +1200,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             }
                         }
                     }
-                } else if (round.attacker.Class === CLASS_11) {
+                } else if (round.attacker.Class === PALADIN) {
                     if (round.attackType > ATTACK_SPECIAL_SUMMON) {
                         round.hasIgnore = true;
 
@@ -1242,11 +1242,11 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
             }
 
-            if (round.attackerSpecialState && round.attacker.Class === CLASS_11) {
+            if (round.attackerSpecialState && round.attacker.Class === PALADIN) {
                 round.attackerSpecialDisplay = { type: 'class_11_stance', stance: round.attackerSpecialState };
             }
 
-            if (round.targetSpecialState && round.target.Class === CLASS_11) {
+            if (round.targetSpecialState && round.target.Class === PALADIN) {
                 round.targetSpecialDisplay = { type: 'class_11_stance', stance: round.targetSpecialState };
             }
 
