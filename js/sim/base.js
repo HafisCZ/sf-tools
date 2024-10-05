@@ -402,10 +402,17 @@ const CONFIG = Object.defineProperties(
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
 
+            AssassinDamageMultiplier: 1,
+            DruidDamageMultiplier: 1,
+            
             StanceInitial: 0,
             Stances: [
                 {
+                    Name: 'NEUTRAL',
                     /* Nothing, he just sad */
+                    DamageBonus: 0,
+                    DamageReductionBonus: 0,
+                    MaximumDamageReductionBonus: 0,
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
@@ -413,6 +420,8 @@ const CONFIG = Object.defineProperties(
                     StanceChangeChance: 0.5
                 },
                 {
+                    Name: 'DEFENSIVE',
+                    DamageBonus: 0,
                     DamageReductionBonus: 11.25,
                     MaximumDamageReductionBonus: 11.25,
                     SkipChance: 0,
@@ -422,7 +431,10 @@ const CONFIG = Object.defineProperties(
                     StanceChangeChance: 0.5
                 },
                 {
+                    Name: 'OFFENSIVE',
                     DamageBonus: 0.35,
+                    DamageReductionBonus: 0,
+                    MaximumDamageReductionBonus: 0,
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
