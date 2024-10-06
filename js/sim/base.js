@@ -1366,22 +1366,20 @@ class PaladinModel extends SimulatorModel {
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
-        this.StanceIndex = -1;
+        this.StanceIndex = this.Config.StanceInitial;
+
+        this.enterState(this.Data.Stances[this.StanceIndex]);
     }
 
     control (instance, target) {
-        if (!target.Config.BypassSpecial && (this.StanceIndex === -1 || getRandom(this.State.StanceChangeChance))) {
-            if (this.StanceIndex === -1) {
-                this.StanceIndex = this.Config.StanceInitial
-            } else {
-                this.StanceIndex++;
-                if (this.StanceIndex >= this.Config.Stances.length) {
-                    this.StanceIndex = 0;
-                }
+        if (!target.Config.BypassSpecial && getRandom(this.State.StanceChangeChance)) {
+            this.StanceIndex++;
+            if (this.StanceIndex >= this.Config.Stances.length) {
+                this.StanceIndex = 0;
+            }
 
-                if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logStance(this, this.StanceIndex);
-                }
+            if (FIGHT_LOG_ENABLED) {
+                FIGHT_LOG.logStance(this, this.StanceIndex);
             }
 
             this.enterState(this.Data.Stances[this.StanceIndex]);
