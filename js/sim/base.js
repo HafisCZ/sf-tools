@@ -852,7 +852,7 @@ class SimulatorModel {
                 target,
                 damage,
                 critical ? attackTypeCritical : attackType,
-                skipped ? DEFENSE_TYPE_BLOCK : DEFENSE_TYPE_NONE
+                skipped ? (target.Player.Class === WARRIOR? DEFENSE_TYPE_BLOCK : DEFENSE_TYPE_EVADE) : DEFENSE_TYPE_NONE
             )
         }
 
