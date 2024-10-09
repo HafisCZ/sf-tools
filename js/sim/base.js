@@ -3,23 +3,18 @@ let FIGHT_LOG_ENABLED = false;
 class FIGHT_LOG {
     static #allLogs = [];
 
-    static #logRound (attacker, target, damage, type, skip, critical) {
+    static logRound (attacker, target, damage, attackType, defenseType) {
         this.lastLog.rounds.push({
-            attackerId: attacker.Player.ID || attacker.Index,
-            attackerSpecialState: attacker.specialState(),
-            targetId: target.Player.ID || target.Index,
-            targetSpecialState: target.specialState(),
-            targetHealthLeft: Math.max(0, target.Health - damage),
-            targetSkipCount: target.SkipCount,
-            attackDamage: damage,
-            attackRage: this.currentRage || 1,
-            attackType: type,
-            attackChained: ATTACKS_CHAIN.includes(type),
-            attackSecondary: ATTACKS_SECONDARY.includes(type),
-            attackCrit: critical,
-            attackMissed: skip,
-            attackSpecial: type >= ATTACK_REVIVE
-        });
+            attakerId: attacker.Player.ID || attacker.Index,
+            attackerState: attacker.getState(),
+            targetState: attacker.getState(),
+            attackType,
+            defenseType,
+            attackerHealth: attacker.Health,
+            targetHealth: Math.max(0, target.Health - damage),
+            attackerEffects: attacker.getEffects(),
+            targetEffects: target.getEffects()
+        })
     }
 
     static dump () {
@@ -52,102 +47,6 @@ class FIGHT_LOG {
 
     static logRage (currentRage) {
         this.currentRage = currentRage;
-    }
-
-    static #calculateType (target, type, skip, critical) {
-        const targetWarrior = target.Player.Class === WARRIOR;
-
-        if (type == ATTACK_SWOOP) {
-            if (skip) {
-                return targetWarrior ? ATTACK_SWOOP_BLOCKED : ATTACK_SWOOP_EVADED;
-            } else if (critical) {
-                return ATTACK_SWOOP_CRITICAL;
-            } else {
-                return ATTACK_SWOOP;
-            }
-        } else if (type === ATTACK_NORMAL || type === ATTACK_SUMMON || type === ATTACK_SECONDARY_NORMAL || type === ATTACK_CHAIN_NORMAL) {
-            if (critical) {
-                if (skip) {
-                    return type + (targetWarrior ? ATTACK_CRITICAL_BLOCKED : ATTACK_CRITICAL_EVADED);
-                } else {
-                    return type + ATTACK_CRITICAL;
-                }
-            } else if (skip) {
-                return type + (targetWarrior ? ATTACK_BLOCKED : ATTACK_EVADED);
-            } else {
-                return type;
-            }
-        } else {
-            return type;
-        }
-    }
-
-    static logAttack (source, target, damage, baseType, skip, critical) {
-        const type = this.#calculateType(target, baseType, skip, critical);
-
-        this.#logRound(
-            source,
-            target,
-            damage,
-            type,
-            skip,
-            critical
-        )
-    }
-
-    static logFireball (source, target, damage) {
-        this.#logRound(
-            source,
-            target,
-            damage,
-            damage == 0 ? ATTACK_FIREBALL_BLOCKED : ATTACK_FIREBALL,
-            damage == 0,
-            false
-        )
-    }
-
-    static logRevive (source) {
-        this.#logRound(
-            source,
-            source,
-            0,
-            ATTACK_REVIVE,
-            false,
-            false
-        )
-    }
-
-    static logSpell (source, target, level, notes) {
-        this.#logRound(
-            source,
-            target,
-            0,
-            ATTACK_SPECIAL_SONG + 10 * notes + level,
-            false,
-            false
-        )
-    }
-
-    static logStance (source, type) {
-        this.#logRound(
-            source,
-            source,
-            0,
-            ATTACK_SPECIAL_SUMMON + type,
-            false,
-            false
-        )
-    }
-
-    static logSummon (source, target, type, duration) {
-        this.#logRound(
-            source,
-            target,
-            0,
-            ATTACK_SPECIAL_SUMMON + 10 * duration + type,
-            false,
-            false
-        )
     }
 }
 
@@ -527,70 +426,32 @@ const STATE_DEAD = 0;
 const STATE_ALIVE = 1;
 
 // Attack types
-const ATTACK_NORMAL = 0;
-const ATTACK_CRITICAL = 1;
-const ATTACK_BLOCKED = 3;
-const ATTACK_EVADED = 4;
-const ATTACK_CRITICAL_BLOCKED = 8;
-const ATTACK_CRITICAL_EVADED = 9;
+const FIGHTER_STATE_NORMAL = 0;
+const FIGHTER_STATE_DRUID_HIDDEN = 10;
+const FIGHTER_STATE_DRUID_RAGE = 11;
+const FIGHTER_STATE_PALADIN_OFFENSIVE = 20;
+const FIGHTER_STATE_PALADIN_DEFENSIVE = 21;
+const FIGHTER_STATE_BERSERKER_RAGE = 30;
 
-const ATTACK_SECONDARY_NORMAL = 10;
-const ATTACK_SECONDARY_CRITICAL = 11;
-const ATTACK_SECONDARY_BLOCKED = 13;
-const ATTACK_SECONDARY_EVADED = 14;
-const ATTACK_SECONDARY_CRITICAL_BLOCKED = 18;
-const ATTACK_SECONDARY_CRITICAL_EVADED = 19;
+const ATTACK_TYPE_NORMAL = 0;
+const ATTACK_TYPE_CRITICAL = 1;
+const ATTACK_TYPE_FIREBALL = 10;
+const ATTACK_TYPE_MINION_SUMMON = 11;
+const ATTACK_TYPE_MINION = 12;
+const ATTACK_TYPE_SWOOP = 13;
+const ATTACK_TYPE_REVIVE = 14;
+const ATTACK_TYPE_MINION_CRITICAL = 15;
+const ATTACK_TYPE_SWOOP_CRITICAL = 16;
+const ATTACK_TYPE_NORMAL_SECONDARY = 100;
+const ATTACK_TYPE_CRITICAL_SECONDARY = 101;
 
-const ATTACKS_SECONDARY = [                     
-    ATTACK_SECONDARY_NORMAL,
-    ATTACK_SECONDARY_CRITICAL,
-    ATTACK_SECONDARY_BLOCKED,
-    ATTACK_SECONDARY_EVADED,
-    ATTACK_SECONDARY_CRITICAL_BLOCKED,
-    ATTACK_SECONDARY_CRITICAL_EVADED
-];
+const DEFENSE_TYPE_NONE = 0;
+const DEFENSE_TYPE_BLOCK = 3;
+const DEFENSE_TYPE_EVADE = 4;
+const DEFENSE_TYPE_MAGIC = 5;
 
-const ATTACK_CHAIN_NORMAL = 20;
-const ATTACK_CHAIN_CRITICAL = 21;
-const ATTACK_CHAIN_BLOCKED = 23;
-const ATTACK_CHAIN_EVADED = 24;
-const ATTACK_CHAIN_CRITICAL_BLOCKED = 28;
-const ATTACK_CHAIN_CRITICAL_EVADED = 29;
-
-const ATTACKS_CHAIN = [
-    ATTACK_CHAIN_NORMAL,
-    ATTACK_CHAIN_CRITICAL,
-    ATTACK_CHAIN_BLOCKED,
-    ATTACK_CHAIN_EVADED,
-    ATTACK_CHAIN_CRITICAL_BLOCKED,
-    ATTACK_CHAIN_CRITICAL_EVADED
-];
-
-const ATTACK_CATAPULT = 2;
-
-const ATTACK_FIREBALL = 15;
-const ATTACK_FIREBALL_BLOCKED = 16;
-
-const ATTACK_SWOOP = 5;
-const ATTACK_SWOOP_BLOCKED = 6;
-const ATTACK_SWOOP_EVADED = 7;
-const ATTACK_SWOOP_CRITICAL = 25;
-
-const ATTACK_SUMMON = 30;
-const ATTACK_SUMMON_CRITICAL = 31;
-const ATTACK_SUMMON_BLOCKED = 33;
-const ATTACK_SUMMON_EVADED = 34;
-
-const ATTACKS_SUMMON = [
-    ATTACK_SUMMON,
-    ATTACK_SUMMON_CRITICAL,
-    ATTACK_SUMMON_BLOCKED,
-    ATTACK_SUMMON_EVADED
-]
-
-const ATTACK_REVIVE = 100;
-const ATTACK_SPECIAL_SONG = 200;
-const ATTACK_SPECIAL_SUMMON = 300;
+const EFFECT_TYPE_SONG = 1;
+const EFFECT_TYPE_MINION = 2;
 
 // Modifiers
 const SNACKS = {
@@ -924,8 +785,16 @@ class SimulatorModel {
     }
 
     // Returns true when model is in special state
-    specialState () {
-        return this.State !== this.Data;
+    getState () {
+        return FIGHTER_STATE_NORMAL;
+    }
+
+    getEffects () {
+        return [];
+    }
+
+    addEffect () {
+
     }
 
     // Enters special or default state if no state given
@@ -934,7 +803,7 @@ class SimulatorModel {
     }
 
     // Attack
-    attack (damage, target, skipped, critical, type) {
+    attack (damage, target, skipped, critical, attackType, attackTypeCritical) {
         if (skipped) {
             damage = 0;
 
@@ -952,13 +821,12 @@ class SimulatorModel {
         }
 
         if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logAttack(
+            FIGHT_LOG.logRound(
                 this,
                 target,
                 damage,
-                type,
-                skipped,
-                critical
+                critical ? attackTypeCritical : attackType,
+                skipped ? DEFENSE_TYPE_BLOCK : DEFENSE_TYPE_NONE
             )
         }
 
@@ -994,7 +862,8 @@ class SimulatorModel {
             target,
             target.skip(SKIP_TYPE_DEFAULT),
             getRandom(this.State.CriticalChance),
-            ATTACK_NORMAL
+            ATTACK_TYPE_NORMAL,
+            ATTACK_TYPE_CRITICAL
         )
     }
 
@@ -1068,7 +937,8 @@ class AssassinModel extends SimulatorModel {
             target,
             getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
             getRandom(this.State.CriticalChance),
-            ATTACK_NORMAL
+            ATTACK_TYPE_NORMAL,
+            ATTACK_TYPE_CRITICAL
         )) {
             const weapon2 = this.State.Weapon2;
 
@@ -1077,7 +947,8 @@ class AssassinModel extends SimulatorModel {
                 target,
                 getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
                 getRandom(this.State.CriticalChance),
-                ATTACK_SECONDARY_NORMAL
+                ATTACK_TYPE_NORMAL_SECONDARY,
+                ATTACK_TYPE_CRITICAL_SECONDARY
             )
         }
     }
@@ -1100,7 +971,13 @@ class BattlemageModel extends SimulatorModel {
         const damage = this.getFireballDamage(target);
 
         if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logFireball(this, target, damage);
+            FIGHT_LOG.logRound(
+                this,
+                target,
+                damage,
+                ATTACK_TYPE_FIREBALL,
+                damage === 0 ? DEFENSE_TYPE_MAGIC : DEFENSE_TYPE_NONE
+            )
         }
 
         if (damage === 0) {
@@ -1112,6 +989,10 @@ class BattlemageModel extends SimulatorModel {
 }
 
 class BerserkerModel extends SimulatorModel {
+    getState () {
+        return this.SkipCount > 0 ? FIGHTER_STATE_BERSERKER_RAGE : FIGHTER_STATE_NORMAL;
+    }
+
     control (instance, target) {
         const weapon = this.State.Weapon1;
 
@@ -1120,7 +1001,8 @@ class BerserkerModel extends SimulatorModel {
             target,
             getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
             getRandom(this.State.CriticalChance),
-            this.SkipCount > 0 ? ATTACK_CHAIN_NORMAL : ATTACK_NORMAL
+            ATTACK_TYPE_NORMAL,
+            ATTACK_TYPE_CRITICAL
         )
     }
 }
@@ -1147,7 +1029,13 @@ class DemonHunterModel extends SimulatorModel {
                 this.DeathTriggers += 1;
 
                 if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logRevive(this);
+                    FIGHT_LOG.logRound(
+                        this,
+                        this,
+                        0,
+                        ATTACK_TYPE_REVIVE,
+                        DEFENSE_TYPE_NONE
+                    )
                 }
 
                 return STATE_ALIVE;
@@ -1190,12 +1078,17 @@ class DruidModel extends SimulatorModel {
         this.Data.RageState = this.createState(target, this.Config.Rage);
     }
 
+    getState () {
+        return this.State !== this.Data ? FIGHTER_STATE_DRUID_RAGE : FIGHTER_STATE_DRUID_HIDDEN;
+    }
+
     control (instance, target) {
         if (this.RequestState) {
             this.RequestState = false;
 
             this.enterState(this.Data.RageState);
-        } else if (this.specialState()) {
+        } else if (this.getState() === FIGHTER_STATE_DRUID_RAGE) {
+            // Reset state if druid was enraged
             this.enterState();
         }
 
@@ -1209,7 +1102,7 @@ class DruidModel extends SimulatorModel {
     }
 
     attackSwoop (instance, target) {
-        if (this.specialState() || this.Health <= 0) {
+        if (this.getState() === FIGHTER_STATE_DRUID_RAGE || this.Health <= 0) {
             // Do not swoop if enraged or if not alive
             return
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
@@ -1228,7 +1121,7 @@ class DruidModel extends SimulatorModel {
     }
 
     onDamageTaken (source, damage) {
-        if (damage == 0 && !this.specialState()) {
+        if (damage == 0 && this.getState() !== FIGHTER_STATE_DRUID_RAGE) {
             this.RequestState = true;
         }
 
@@ -1292,6 +1185,18 @@ class BardModel extends SimulatorModel {
         });
     }
 
+    getEffects () {
+        if (this.EffectLevel) {
+            return [{
+                type: EFFECT_TYPE_SONG,
+                duration: this.EffectReset - this.EffectCounter + 1,
+                tier: this.EffectLevel
+            }]
+        } else {
+            return []
+        }
+    }
+
     rollEffect () {
         const roll = Math.random() * this.Bracket2;
         const level = roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
@@ -1306,15 +1211,6 @@ class BardModel extends SimulatorModel {
 
     consumeMultiplier (target) {
         this.EffectCounter += 1;
-
-        if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logSpell(
-                this,
-                target,
-                this.EffectLevel,
-                this.EffectReset - this.EffectCounter + 1
-            );
-        }
 
         if (this.EffectCounter >= this.EffectReset) {
             this.enterState();
@@ -1371,15 +1267,21 @@ class PaladinModel extends SimulatorModel {
         this.enterState(this.Data.Stances[this.StanceIndex]);
     }
 
+    getState () {
+        if (this.StanceIndex === 1) {
+            return FIGHTER_STATE_PALADIN_OFFENSIVE
+        } else if (this.StanceIndex === 2) {
+            return FIGHTER_STATE_PALADIN_DEFENSIVE
+        } else {
+            return FIGHTER_STATE_NORMAL
+        }
+    }
+
     control (instance, target) {
         if (!target.Config.BypassSpecial && getRandom(this.State.StanceChangeChance)) {
             this.StanceIndex++;
             if (this.StanceIndex >= this.Config.Stances.length) {
                 this.StanceIndex = 0;
-            }
-
-            if (FIGHT_LOG_ENABLED) {
-                FIGHT_LOG.logStance(this, this.StanceIndex);
             }
 
             this.enterState(this.Data.Stances[this.StanceIndex]);
@@ -1402,6 +1304,18 @@ class NecromancerModel extends SimulatorModel {
         this.Minion = null;
     }
 
+    getEffects () {
+        if (this.Minion) {
+            return [{
+                type: EFFECT_TYPE_MINION,
+                duration: this.MinionDuration,
+                tier: this.MinionType
+            }]
+        } else {
+            return []
+        }
+    }
+
     summonMinion (target) {
         const type = Math.trunc(Math.random() * 3);
         const minion = this.Data.Minions[type];
@@ -1412,11 +1326,12 @@ class NecromancerModel extends SimulatorModel {
         this.MinionRevives = minion.Config.ReviveCount;
 
         if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logSummon(
+            FIGHT_LOG.logRound(
                 this,
                 target,
-                this.MinionType,
-                this.MinionDuration
+                0,
+                ATTACK_TYPE_MINION_SUMMON,
+                DEFENSE_TYPE_NONE
             )
         }
     }
@@ -1433,11 +1348,12 @@ class NecromancerModel extends SimulatorModel {
 
                 // Log resurrection like another summoning
                 if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logSummon(
+                    FIGHT_LOG.logRound(
                         this,
                         target,
-                        this.MinionType,
-                        this.MinionDuration
+                        0,
+                        ATTACK_TYPE_MINION_SUMMON,
+                        DEFENSE_TYPE_NONE
                     )
                 }
             } else {
@@ -1457,7 +1373,8 @@ class NecromancerModel extends SimulatorModel {
             target,
             target.skip(SKIP_TYPE_DEFAULT),
             getRandom(this.State.CriticalChance),
-            ATTACK_SUMMON
+            ATTACK_TYPE_MINION,
+            ATTACK_TYPE_MINION_CRITICAL
         )
     }
 
