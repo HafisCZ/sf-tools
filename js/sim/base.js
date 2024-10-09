@@ -443,6 +443,7 @@ const FIGHTER_STATE_BERSERKER_RAGE = 30;
 
 const ATTACK_TYPE_NORMAL = 0;
 const ATTACK_TYPE_CRITICAL = 1;
+const ATTACK_TYPE_CATAPULT = 2;
 const ATTACK_TYPE_FIREBALL = 10;
 const ATTACK_TYPE_MINION_SUMMON = 11;
 const ATTACK_TYPE_MINION = 12;
@@ -1140,7 +1141,8 @@ class DruidModel extends SimulatorModel {
                 target,
                 target.skip(SKIP_TYPE_DEFAULT),
                 getRandom(this.State.CriticalChance),
-                ATTACK_SWOOP
+                ATTACK_TYPE_SWOOP,
+                ATTACK_TYPE_SWOOP_CRITICAL
             )
         }
     }
