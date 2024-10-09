@@ -1115,8 +1115,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         if (round.attackerState || round.attackerEffects.length > 0) {
             switch (round.attacker.Class) {
                 case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.attackerEffects[0].tier];
-                case NECROMANCER: return model.Data.Minions[round.attackerEffects[0].tier];
+                case BARD: return model.Data.Songs[round.attackerEffects[0].tier - 1];
+                case NECROMANCER: return model.Data.Minions[round.attackerEffects[0].tier - 1];
                 case PALADIN: return model.Data.Stances[round.attackerState - 1];
                 default: {
                     return model.Data;
@@ -1131,8 +1131,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         if (round.targetState || round.targetEffects.length > 0) {
             switch (round.target.Class) {
                 case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.targetEffects[0].tier];
-                case NECROMANCER: return model.Data.Minions[round.targetEffects[0].tier];
+                case BARD: return model.Data.Songs[round.targetEffects[0].tier - 1];
+                case NECROMANCER: return model.Data.Minions[round.targetEffects[0].tier - 1];
                 case PALADIN: return model.Data.Stances[round.targetState - 1];
                 default: {
                     return model.Data;
