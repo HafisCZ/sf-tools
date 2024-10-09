@@ -690,12 +690,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 if (round.attackTypeSpecial && round.attackType !== ATTACK_TYPE_MINION_SUMMON) {
                     // Decrease rage if it's a special attack (revive, note)
                     attackRageOffset--;
-                } else if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
-                    // Increase rage if it's a chained attack
-                    attackRageOffset++;
                 }
 
                 round.attackRage = 1 + ((i + attackRageOffset) / 6);
+
+                if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
+                    // Increase rage if it's a chained attack
+                    attackRageOffset++;
+                }
             }
 
             return processedRounds
