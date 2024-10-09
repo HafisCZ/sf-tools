@@ -688,19 +688,21 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     for (let i = 1; i <= count; i++) {
                         digestedFights.push({
                             header: r[`fightheader${i}`].mixed(),
-                            rounds: r[`fight${i}`].numbers(','),
-                            rewards: getRewards(r)
+                            rounds: r[`fight${i}`].numbers(/[,/]/),
+                            rewards: getRewards(r),
+                            version: r.fightversion?.number ?? 1
                         });
                     }
                 } else {
                     digestedFights.push({
                         header: r.fightheader.mixed(),
-                        rounds: r.fight.numbers(','),
-                        rewards: getRewards(r)
+                        rounds: r.fight.numbers(/[,/]/),
+                        rewards: getRewards(r),
+                        version: r.fightversion?.number ?? 1
                     });
                 }
             }
-            
+
             if (text.includes('playerlookat') || text.includes('ownplayersave')) {
                 const r = PlayaResponse.fromText(text);
 
