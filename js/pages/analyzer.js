@@ -991,7 +991,7 @@ console.log(currentFights)
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackTypeCritical,
-                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
+                targetHealth, attackerSpecialDisplay, targetSpecialDisplay,
                 hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
 
@@ -1014,7 +1014,7 @@ console.log(currentFights)
                         <td class="!text-center"></th>
                         <td class="!text-center text-violet">${formatAttackType(attackType)}</th>
                         <td class="!text-center"></th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Health).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * targetHealth / target.Health).toFixed(1)}%</th>
                         <td class="!text-center"></th>
                     </tr>
                 `;
@@ -1034,7 +1034,7 @@ console.log(currentFights)
                         <td class="!text-center">${targetState}</th>
                         <td class="!text-center${attackClass}">${formatAttackType(attackType)}</th>
                         <td class="!text-center${attackClass}">${displayDamage}</th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Health).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * targetHealth / target.Health).toFixed(1)}%</th>
                         <td class="!text-center">${displayBase}${hasError ? ' <span class="text-orangered">!</span>' : ''}</th>
                     </tr>
                 `;
@@ -1447,9 +1447,21 @@ console.log(currentFights)
     ];
 
     const ROUND_WHITELIST = [
-        'attackChained', 'attackCrit', 'attackDamage', 'attackMissed',
-        'attackRage', 'attackSecondary', 'attackSpecial', 'attackType',
-        'targetHealthLeft', 'attackerSpecialState', 'targetSpecialState'
+        'attackerId',
+        'targetId',
+        'attackerState',
+        'targetState',
+        'attackType',
+        'defenseType',
+        'attackerHealth',
+        'targetHealth',
+        'attackerEffects',
+        'targetEffects',
+        'attackDamage',
+        'attackRage',
+        'attackTypeSecondary',
+        'attackTypeCritical',
+        'attackTypeSpecial'
     ];
 
     function cleanCopy (rawObject, whitelist) {

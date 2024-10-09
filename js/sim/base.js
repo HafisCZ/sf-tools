@@ -5,7 +5,7 @@ class FIGHT_LOG {
 
     static logRound (attacker, target, damage, attackType, defenseType) {
         this.lastLog.rounds.push({
-            attakerId: attacker.Player.ID || attacker.Index,
+            attackerId: attacker.Player.ID || attacker.Index,
             targetId: target.Player.ID || target.Index,
             attackerState: attacker.getCurrentStateForLog(),
             targetState: target.getCurrentStateForLog(),
