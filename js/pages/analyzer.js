@@ -993,7 +993,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackTypeCritical,
-                targetHealth, attackerSpecialDisplay, targetSpecialDisplay,
+                targetHealth, attackerSpecialDisplay, targetSpecialDisplay, attackerHealth,
                 hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
 
@@ -1010,13 +1010,13 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     <tr${attacker.ID == group.fighterA.ID ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                         <td class="!text-center">${i + 1}</th>
                         <td class="!text-center"></th>
-                        <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
+                        <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
                         <td class="!text-center">${attackerState}</th>
                         <td class="!text-center"></th>
                         <td class="!text-center"></th>
                         <td class="!text-center text-violet">${formatAttackType(attackType)}</th>
                         <td class="!text-center"></th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealth / target.Health).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * attackerHealth / attacker.Health).toFixed(1)}%</th>
                         <td class="!text-center"></th>
                     </tr>
                 `;
