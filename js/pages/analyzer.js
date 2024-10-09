@@ -667,7 +667,13 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             const findHealth = (i) => {
                 const currentRound = processedRounds[i];
                 for (let j = i - 1, round; round = processedRounds[j]; j--) {
-                    if (round.attacker == currentRound.attacker && (round.attackType === ATTACK_TYPE_REVIVE || !round.attackTypeSpecial)) {
+                    if (round.attackType === ATTACK_TYPE_REVIVE) {
+                        if (round.attacker === currentRound.attacker) {
+                            return round.targetHealth;
+                        } else {
+                            return round.attackerHealth;
+                        }
+                    } else if (round.attacker == currentRound.attacker && !round.attackTypeSpecial) {
                         return round.targetHealth;
                     }
                 }
@@ -679,7 +685,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             let attackRageOffset = 0;
             for (let i = 0, round; round = processedRounds[i]; i++) {
                 // Calculate attack damage
-                if (round.attackType === ATTACK_TYPE_MINION_SUMMON) {
+                if (round.attackType === ATTACK_TYPE_REVIVE) {
+                    round.attackDamage = round.attackerHealth;
+                } else if (round.attackType === ATTACK_TYPE_MINION_SUMMON) {
                     round.targetHealth = findHealth(i);
                 } else if (round.attackType !== ATTACK_TYPE_REVIVE) {
                     round.attackDamage = findHealth(i) - round.targetHealth;
@@ -964,6 +972,12 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         'id': (type) => type
     }
 
+    const DEFENSE_TYPE_FORMATS = {
+        'text': (type) => intl(`general.defense${type}`),
+        'text_with_id': (type) => `${intl(`general.defense${type}`)} #${type}`,
+        'id': (type) => type
+    }
+
     const BARD_NOTE_COLORS = ['c4c4c4', '5e7fc4', 'd1a130'];
 
     function renderState (state, copyMode) {
@@ -986,7 +1000,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
     function renderFight (group, fight, copyMode = false) {
         const formatAttackRage = ATTACK_RAGE_FORMATS[analyzerOptions.rage_display_mode];
+
         const formatAttackType = ATTACK_TYPE_FORMATS[analyzerOptions.type_display_mode];
+        const formatDefenseType = DEFENSE_TYPE_FORMATS[analyzerOptions.type_display_mode];
 
         let content = '';
 
@@ -994,7 +1010,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             const {
                 attacker, target, attackType, attackRage, attackDamage, attackBase, attackTypeCritical,
                 targetHealth, attackerSpecialDisplay, targetSpecialDisplay, attackerHealth,
-                hasDamage, hasBase, hasError, hasIgnore
+                hasDamage, hasBase, hasError, hasIgnore, defenseType
             } = fight.rounds[i];
 
             const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"';
@@ -1034,7 +1050,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         <td class="!text-center">${attackerState}</th>
                         <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
                         <td class="!text-center">${targetState}</th>
-                        <td class="!text-center${attackClass}">${formatAttackType(attackType)}</th>
+                        <td class="!text-center${attackClass}">${formatAttackType(attackType)}${defenseType ? ` - ${formatDefenseType(defenseType)}` : ''}</th>
                         <td class="!text-center${attackClass}">${displayDamage}</th>
                         <td class="!text-center">${Math.max(0, 100 * targetHealth / target.Health).toFixed(1)}%</th>
                         <td class="!text-center">${displayBase}${hasError ? ' <span class="text-orangered">!</span>' : ''}</th>
