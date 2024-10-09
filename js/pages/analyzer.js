@@ -811,7 +811,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 }
             }
         }
-console.log(currentFights)
+
         // Convert all player data into actual player models and optionally companions
         for (const data of digestedPlayers) {
             const player = new PlayerModel(data);
@@ -1094,12 +1094,12 @@ console.log(currentFights)
     }
 
     function findAttackerState (round, model) {
-        if (round.attackerSpecialState) {
+        if (round.attackerState || round.attackerEffects.length > 0) {
             switch (round.attacker.Class) {
                 case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.attackerSpecialState % 10 - 1];
-                case NECROMANCER: return model.Data.Minions[round.attackerSpecialState - 1];
-                case PALADIN: return model.Data.Stances[round.attackerSpecialState - 1];
+                case BARD: return model.Data.Songs[round.attackerEffects[0].tier];
+                case NECROMANCER: return model.Data.Minions[round.attackerEffects[0].tier];
+                case PALADIN: return model.Data.Stances[round.attackerState - 1];
                 default: {
                     return model.Data;
                 }
@@ -1110,12 +1110,12 @@ console.log(currentFights)
     }
 
     function findTargetState (round, model) {
-        if (round.targetSpecialState) {
+        if (round.targetState || round.targetEffects.length > 0) {
             switch (round.target.Class) {
                 case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.targetSpecialState % 10 - 1];
-                case NECROMANCER: return model.Data.Minions[round.targetSpecialState - 1];
-                case PALADIN: return model.Data.Stances[round.targetSpecialState - 1];
+                case BARD: return model.Data.Songs[round.targetEffects[0].tier];
+                case NECROMANCER: return model.Data.Minions[round.targetEffects[0].tier];
+                case PALADIN: return model.Data.Stances[round.targetState - 1];
                 default: {
                     return model.Data;
                 }
@@ -1173,16 +1173,16 @@ console.log(currentFights)
             const round = flatRounds[i];
 
             // Set display special state
-            if (round.attackerSpecialState && round.attacker.Class === DRUID) {
+            if (round.attackerState === FIGHTER_STATE_DRUID_RAGE) {
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
             }
 
             if (round.attacker.Class === PALADIN) {
-                round.attackerSpecialDisplay = { type: 'paladin_stance', stance: round.attackerSpecialState };
+                round.attackerSpecialDisplay = { type: 'paladin_stance', stance: round.attackerState };
             }
 
             if (round.target.Class === PALADIN) {
-                round.targetSpecialDisplay = { type: 'paladin_stance', stance: round.targetSpecialState };
+                round.targetSpecialDisplay = { type: 'paladin_stance', stance: round.targetState };
             }
 
             if (round.targetState === FIGHTER_STATE_DRUID_RAGE) {
@@ -1193,19 +1193,18 @@ console.log(currentFights)
                 round.attackerSpecialDisplay = { type: 'berserker_rage' }
             }
 
-            if (round.attackerSpecialState && round.attacker.Class === NECROMANCER) {
-                round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerSpecialState }
+            if (round.attackerEffects.length > 0 && round.attacker.Class === NECROMANCER) {
+                round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerEffects[0].tier }
             }
 
-            if (round.targetSpecialState && round.target.Class === NECROMANCER) {
-                round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetSpecialState }
+            if (round.targetEffects.length > 0 && round.target.Class === NECROMANCER) {
+                round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetEffects[0].tier }
             }
 
-            if (round.attackerSpecialState && round.attacker.Class === BARD) {
-                const spellLevel = round.attackerSpecialState % 10;
-                const spellNotes = Math.trunc(round.attackerSpecialState / 10);
+            if (round.attackerEffects.length > 0 && round.attacker.Class === BARD) {
+                const effect = round.attackerEffects[0]
 
-                round.attackerSpecialDisplay = { type: 'bard_song', level: spellLevel, notes: spellNotes }
+                round.attackerSpecialDisplay = { type: 'bard_song', level: effect.tier, notes: effect.duration }
             }
 
             // Skip if missed or special
