@@ -6,14 +6,14 @@ class FIGHT_LOG {
     static logRound (attacker, target, damage, attackType, defenseType) {
         this.lastLog.rounds.push({
             attakerId: attacker.Player.ID || attacker.Index,
-            attackerState: attacker.getState(),
-            targetState: attacker.getState(),
+            attackerState: attacker.getCurrentStateForLog(),
+            targetState: attacker.getCurrentStateForLog(),
             attackType,
             defenseType,
             attackerHealth: attacker.Health,
             targetHealth: Math.max(0, target.Health - damage),
-            attackerEffects: attacker.getEffects(),
-            targetEffects: target.getEffects()
+            attackerEffects: attacker.getCurrentEffectsForLog(),
+            targetEffects: target.getCurrentEffectsForLog()
         })
     }
 
@@ -784,17 +784,18 @@ class SimulatorModel {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
-    // Returns true when model is in special state
-    getState () {
+    // Returns type of current state of player, only for logging
+    getCurrentStateForLog () {
         return FIGHTER_STATE_NORMAL;
     }
 
-    getEffects () {
+    // Returns list of current effects on player, only for logging
+    getCurrentEffectsForLog () {
         return [];
     }
 
-    addEffect () {
-
+    specialState () {
+        return this.State !== this.Data
     }
 
     // Enters special or default state if no state given
@@ -989,7 +990,7 @@ class BattlemageModel extends SimulatorModel {
 }
 
 class BerserkerModel extends SimulatorModel {
-    getState () {
+    getCurrentStateForLog () {
         return this.SkipCount > 0 ? FIGHTER_STATE_BERSERKER_RAGE : FIGHTER_STATE_NORMAL;
     }
 
@@ -1078,8 +1079,8 @@ class DruidModel extends SimulatorModel {
         this.Data.RageState = this.createState(target, this.Config.Rage);
     }
 
-    getState () {
-        return this.State !== this.Data ? FIGHTER_STATE_DRUID_RAGE : FIGHTER_STATE_DRUID_HIDDEN;
+    getCurrentStateForLog () {
+        return this.specialState() ? FIGHTER_STATE_DRUID_RAGE : FIGHTER_STATE_DRUID_HIDDEN;
     }
 
     control (instance, target) {
@@ -1087,7 +1088,7 @@ class DruidModel extends SimulatorModel {
             this.RequestState = false;
 
             this.enterState(this.Data.RageState);
-        } else if (this.getState() === FIGHTER_STATE_DRUID_RAGE) {
+        } else if (this.specialState()) {
             // Reset state if druid was enraged
             this.enterState();
         }
@@ -1102,7 +1103,7 @@ class DruidModel extends SimulatorModel {
     }
 
     attackSwoop (instance, target) {
-        if (this.getState() === FIGHTER_STATE_DRUID_RAGE || this.Health <= 0) {
+        if (this.specialState() || this.Health <= 0) {
             // Do not swoop if enraged or if not alive
             return
         } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
@@ -1121,7 +1122,7 @@ class DruidModel extends SimulatorModel {
     }
 
     onDamageTaken (source, damage) {
-        if (damage == 0 && this.getState() !== FIGHTER_STATE_DRUID_RAGE) {
+        if (damage == 0 && !this.specialState()) {
             this.RequestState = true;
         }
 
@@ -1185,7 +1186,7 @@ class BardModel extends SimulatorModel {
         });
     }
 
-    getEffects () {
+    getCurrentEffectsForLog () {
         if (this.EffectLevel) {
             return [{
                 type: EFFECT_TYPE_SONG,
@@ -1267,7 +1268,7 @@ class PaladinModel extends SimulatorModel {
         this.enterState(this.Data.Stances[this.StanceIndex]);
     }
 
-    getState () {
+    getCurrentStateForLog () {
         if (this.StanceIndex === 1) {
             return FIGHTER_STATE_PALADIN_OFFENSIVE
         } else if (this.StanceIndex === 2) {
@@ -1304,7 +1305,7 @@ class NecromancerModel extends SimulatorModel {
         this.Minion = null;
     }
 
-    getEffects () {
+    getCurrentEffectsForLog () {
         if (this.Minion) {
             return [{
                 type: EFFECT_TYPE_MINION,
