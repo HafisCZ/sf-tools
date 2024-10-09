@@ -498,50 +498,11 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
     });
 
     // Decode attack type
-    function decodeAttackType (attackType) {
-        if (attackType >= ATTACK_REVIVE) {
-            return {
-                attackSecondary: false,
-                attackCrit: false,
-                attackMissed: false,
-                attackSpecial: true,
-                attackHasRage: attackType >= ATTACK_SPECIAL_SUMMON && attackType != 311 // Summon revival
-            }
-        } else {
-            const attackSecondary = ATTACKS_SECONDARY.includes(attackType);
-            const attackChained = ATTACKS_CHAIN.includes(attackType);
-            
-            const attackCrit = [
-                ATTACK_CRITICAL,
-                ATTACK_CRITICAL_BLOCKED,
-                ATTACK_CRITICAL_EVADED
-            ].includes(attackType % 10) || attackType === ATTACK_SWOOP_CRITICAL;
-
-            const attackMissedDefault = [
-                ATTACK_BLOCKED,
-                ATTACK_EVADED,
-                ATTACK_CRITICAL_BLOCKED,
-                ATTACK_CRITICAL_EVADED
-            ].includes(attackType % 10);
-
-            const attackMissedSpecial = [
-                ATTACK_SWOOP_BLOCKED,
-                ATTACK_SWOOP_EVADED,
-                ATTACK_FIREBALL_BLOCKED,
-                ATTACK_SUMMON_BLOCKED,
-                ATTACK_SUMMON_EVADED
-            ].includes(attackType);
-
-            const attackMissed = attackMissedDefault || attackMissedSpecial;
-
-            return {
-                attackSecondary,
-                attackCrit,
-                attackMissed,
-                attackChained,
-                attackSpecial: false,
-                attackHasRage: true
-            }
+    function decomposeAttackType (attackType) {
+        return {
+            attackTypeSecondary: ATTACK_TYPES_SECONDARY.includes(attackType),
+            attackTypeCritical: ATTACK_TYPES_CRITICAL.includes(attackType),
+            attackTypeSpecial: ATTACK_TYPE_SPECIAL.includes(attackType)
         }
     }
 
@@ -591,36 +552,6 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return SHA1(JSON.stringify(json));
     }
 
-    function toInternalAttackType (attacker, rawType) {
-        if (attacker.Class === BATTLEMAGE) {
-            switch (rawType) {
-                case ATTACK_SWOOP: return ATTACK_FIREBALL;
-                case ATTACK_SWOOP_EVADED: return ATTACK_FIREBALL_BLOCKED;
-                case ATTACK_SWOOP_BLOCKED: return ATTACK_FIREBALL_BLOCKED;
-                default: {
-                    return rawType;
-                }
-            }
-        } else if (attacker.Class === NECROMANCER) {
-            switch (rawType) {
-                case ATTACK_SWOOP: return ATTACK_SUMMON;
-                case ATTACK_SWOOP_BLOCKED: return ATTACK_SUMMON_BLOCKED;
-                case ATTACK_SWOOP_EVADED: return ATTACK_SUMMON_EVADED;
-                // TODO: Add proper type
-                case 25: return ATTACK_SUMMON_CRITICAL;
-                default: {
-                    if (rawType >= ATTACK_SPECIAL_SONG && rawType <= ATTACK_SPECIAL_SUMMON) {
-                        return rawType + (ATTACK_SPECIAL_SUMMON - ATTACK_SPECIAL_SONG);
-                    } else {
-                        return rawType;
-                    }
-                }
-            }
-        } else {
-            return rawType;
-        }
-    }
-
     const GT_REWARDS = {
         1: 'hellevator_point',
         2: 'hellevator_ticket',
@@ -667,6 +598,110 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return rewards;
     }
 
+    const HAR_ROUND_VERSION_1 = 1;
+    const HAR_ROUND_VERSION_2 = 2;
+
+    const HAR_ROUND_PARSERS = {
+        [HAR_ROUND_VERSION_1]: (fighterA, fighterB, rounds) => {
+            // Disable v1 for now
+            return null
+        },
+        [HAR_ROUND_VERSION_2]: (fighterA, fighterB, rounds) => {
+            const processedRounds = [];
+
+            const data = new ComplexDataType(rounds);
+            while (data.atLeast(9)) {
+                const attackerId = data.long();
+                const targetId = attackerId == fighterA.ID ? fighterB.ID : fighterA.ID;
+
+                const attackerState = data.long();
+                const attackType = data.long();
+
+                const defenseType = data.long();
+                const targetState = data.long();
+
+                const attackerHealth = data.long();
+                const targetHealth = data.long();
+
+                const attackerEffectCount = data.long();
+                const attackerEffects = [];
+                for (let i = 0; i < attackerEffectCount; i++) {
+                    attackerEffects.push({
+                        type: data.long(),
+                        tier: data.long(),
+                        duration: data.long()
+                    })
+                }
+
+                const targetEffectCount = data.long();
+                const targetEffects = [];
+                for (let i = 0; i < targetEffectCount; i++) {
+                    targetEffects.push({
+                        type: data.long(),
+                        tier: data.long(),
+                        duration: data.long()
+                    })
+                }
+
+                const [attacker, target] = attackerId == fighterA.ID ? [fighterA, fighterB] : [fighterB, fighterA];
+
+                processedRounds.push({
+                    attackerId,
+                    targetId,
+                    attackerState,
+                    targetState,
+                    attackType,
+                    defenseType,
+                    attackerHealth,
+                    targetHealth,
+                    attackerEffects,
+                    targetEffects,
+                    attacker,
+                    target,
+                    attackDamage: 0,
+                    attackRage: 0,
+                    ...decomposeAttackType(attackType)
+                })
+            }
+
+            const findHealth = (i) => {
+                const currentRound = processedRounds[i];
+                for (let j = i - 1, round; round = processedRounds[j]; j--) {
+                    if (round.attacker == currentRound.attacker && (round.attackType === ATTACK_TYPE_REVIVE || !round.attackTypeSpecial)) {
+                        return round.targetHealth;
+                    }
+                }
+
+                return currentRound.target.Health;
+            }
+
+            // Finalize each round
+            let attackRageOffset = 0;
+            for (let i = 0, round; round = processedRounds[i]; i++) {
+                // Calculate attack damage
+                if (round.attackType === ATTACK_TYPE_MINION_SUMMON) {
+                    round.targetHealth = findHealth(i);
+                } else if (round.attackType !== ATTACK_TYPE_REVIVE) {
+                    round.attackDamage = findHealth(i) - round.targetHealth;
+                } else {
+                    round.attackDamage = round.targetHealth;
+                }
+
+                if (round.attackTypeSpecial && round.attackType !== ATTACK_TYPE_MINION_SUMMON) {
+                    // Decrease rage if it's a special attack (revive, note)
+                    attackRageOffset--;
+                } else if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
+                    // Increase rage if it's a chained attack
+                    attackRageOffset++;
+                }
+
+                round.attackRage = 1 + ((i + attackRageOffset) / 6);
+            }
+
+            return processedRounds
+        }
+    }
+
     // Extract individual fights from raw data array
     function importHAR (json) {
         const digestedFights = [];
@@ -690,7 +725,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             header: r[`fightheader${i}`].mixed(),
                             rounds: r[`fight${i}`].numbers(/[,/]/),
                             rewards: getRewards(r),
-                            version: r.fightversion?.number ?? 1
+                            version: r.fightversion?.number
                         });
                     }
                 } else {
@@ -698,7 +733,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         header: r.fightheader.mixed(),
                         rounds: r.fight.numbers(/[,/]/),
                         rewards: getRewards(r),
-                        version: r.fightversion?.number ?? 1
+                        version: r.fightversion?.number
                     });
                 }
             }
@@ -753,7 +788,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             }
         }
 
-        for (const { header, rounds, rewards } of digestedFights) {
+        for (const { header, rounds, rewards, version } of digestedFights) {
             const fightType = header[0];
 
             // Proceed only if type of fight is known to the system
@@ -762,95 +797,21 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 const fighterA = new FighterModel(header.slice(5, 52), fightType);
                 const fighterB = new FighterModel(header.slice(52, 99), fightType);
 
-                // Parse individual rounds (group of 3 numbers)
-                const rawRounds = [];
-                for (let i = 0; i < rounds.length / 3; i++) {
-                    rawRounds.push(_sliceLen(rounds, i * 3, 3));
+                const processedRounds = HAR_ROUND_PARSERS[version ?? HAR_ROUND_VERSION_1](fighterA, fighterB, rounds)
+
+                if (processedRounds) {
+                    currentFights.push({
+                        fighterA,
+                        fighterB,
+                        rounds: processedRounds,
+                        rewards
+                    })
+                } else {
+                    // Ignore fight
                 }
-
-                // Process each round
-                const processedRounds = [];
-                for (const [attackerId, attackType, targetHealthLeft] of rawRounds) {
-                    const [attacker, target] = attackerId == fighterA.ID ? [fighterA, fighterB] : [fighterB, fighterA];
-                    const internalAttackType = toInternalAttackType(attacker, attackType)
-
-                    processedRounds.push(Object.assign({
-                        attacker,
-                        target,
-                        attackType: internalAttackType,
-                        attackDamage: 0,
-                        targetHealthLeft,
-                    }, decodeAttackType(internalAttackType)));
-                }
-
-                const findHealth = (i) => {
-                    const currentRound = processedRounds[i];
-                    for (let j = i - 1, round; round = processedRounds[j]; j--) {
-                        if (round.attacker == currentRound.attacker && (round.attackType === ATTACK_REVIVE || !round.attackSpecial)) {
-                            return round.targetHealthLeft;
-                        }
-                    }
-
-                    return currentRound.target.Health;
-                }
-
-                // Finalize each round
-                let attackRageOffset = 0;
-                for (let i = 0, round; round = processedRounds[i]; i++) {
-                    // Calculate attack damage
-                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
-                        round.targetHealthLeft = findHealth(i);
-                    } else if (round.attackHasRage) {
-                        round.attackDamage = findHealth(i) - round.targetHealthLeft;
-                    } else {
-                        round.attackDamage = round.targetHealthLeft;
-                    }
-
-                    if (round.attackSpecial && !round.attackHasRage) {
-                        // Decrease rage if it's a special attack (revive, note)
-                        attackRageOffset--;
-                    } else if (round.attackChained) {
-                        // Increase rage if it's a chained attack
-                        attackRageOffset++;
-                    }
-
-                    round.attackRage = 1 + ((i + attackRageOffset) / 6);
-                }
-
-                // Add special state
-                if (fighterA.Class === DRUID || fighterB.Class === DRUID) {
-                    // Run only when one of the fighters is a druid as only they have special states
-                    for (const fighter of [fighterA, fighterB].filter((fighter) => fighter.Class === DRUID)) {
-                        let requestState = false;
-                        let keepState = false;
-
-                        for (const round of processedRounds) {
-                            if (round.attackSpecial) {
-                                continue;
-                            } else if (round.attacker === fighter) {
-                                round.attackerSpecialState = requestState;
-
-                                keepState = requestState && !keepState;
-                                requestState = false;
-                            } else if (round.attackMissed && !keepState) {
-                                requestState = true;
-                            } else if (keepState) {
-                                round.targetSpecialState = true;
-                            }
-                        }
-                    }
-                }
-
-                // Push fight
-                currentFights.push({
-                    fighterA,
-                    fighterB,
-                    rounds: processedRounds,
-                    rewards
-                })
             }
         }
-
+console.log(currentFights)
         // Convert all player data into actual player models and optionally companions
         for (const data of digestedPlayers) {
             const player = new PlayerModel(data);
@@ -1029,7 +990,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
-                attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
+                attacker, target, attackType, attackRage, attackDamage, attackBase, attackTypeCritical,
                 targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
                 hasDamage, hasBase, hasError, hasIgnore
             } = fight.rounds[i];
@@ -1058,7 +1019,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     </tr>
                 `;
             } else {
-                const attackClass = attackCrit ? ' text-orangered font-bold' : (attackType === ATTACK_FIREBALL || attackType === ATTACK_FIREBALL_BLOCKED ? ' text-violet' : '');
+                const attackClass = attackTypeCritical ? ' text-orangered font-bold' : (attackType === ATTACK_FIREBALL || attackType === ATTACK_FIREBALL_BLOCKED ? ' text-violet' : '');
 
                 const displayDamage = hasDamage ? formatAsSpacedNumber(attackDamage) : '';
                 const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
@@ -1278,11 +1239,11 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 round.targetSpecialDisplay = { type: 'paladin_stance', stance: round.targetSpecialState };
             }
 
-            if (round.targetSpecialState && round.target.Class === DRUID) {
+            if (round.targetState === FIGHTER_STATE_DRUID_RAGE) {
                 round.targetSpecialDisplay = { type: 'druid_rage' };
             }
 
-            if (round.attackChained) {
+            if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
                 round.attackerSpecialDisplay = { type: 'berserker_rage' }
             }
 
@@ -1302,7 +1263,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             }
 
             // Skip if missed or special
-            if (round.attackSpecial || round.attackMissed) {
+            if (round.attackTypeSpecial || round.defenseType) {
                 continue;
             }
 
@@ -1323,10 +1284,10 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 const targetState = findTargetState(round, targetModel);
 
                 // Scaled down weapon damage
-                let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? attackerState.Weapon2.Base : attackerState.Weapon1.Base);
+                let damage = round.attackDamage / round.attackRage / (round.attackTypeSecondary ? attackerState.Weapon2.Base : attackerState.Weapon1.Base);
 
                 // Special cases
-                if (round.attackCrit) {
+                if (round.attackTypeCritical) {
                     damage /= attackerState.CriticalMultiplier;
                 }
 
@@ -1349,7 +1310,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         for (const round of flatRounds) {
             if (round.hasBase) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
+                const weapon = model.Player.Items[round.attackTypeSecondary ? 'Wpn2' : 'Wpn1'];
 
                 round.hasError = compareWithin(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
             }
@@ -1390,12 +1351,12 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
         // Calculate summary
         for (const fight of group.fights) {
-            for (const { attacker, attackType, hasError, attackBase, hasBase, attackSecondary, attackCrit } of fight.rounds) {
+            for (const { attacker, attackType, attackTypeSecondary, hasError, attackBase, hasBase, attackTypeCritical } of fight.rounds) {
                 const container = group[group.fighterA.ID === attacker.ID ? 'fighterA' : 'fighterB'];
 
                 // Calculate damage range
                 if (hasBase) {
-                    const key = `${attackSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP || attackType === ATTACK_SWOOP_CRITICAL ? '_swoop' : ''}${attackCrit ? '_critical' : ''}`;
+                    const key = `${attackTypeSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP || attackType === ATTACK_SWOOP_CRITICAL ? '_swoop' : ''}${attackTypeCritical ? '_critical' : ''}`;
 
                     if (typeof container.damages[key] === 'undefined') {
                         container.damages[key] = {
