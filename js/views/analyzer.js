@@ -147,20 +147,20 @@ class FightStatisticalAnalysisDialog extends Dialog {
       this.fighterA = fighterA;
       this.fighterB = fighterB;
 
-      this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackSpecial).map(({ attacker, target, attackCrit, attackMissed, attackDamage, attackRage, attackSpecial, attackType, attackerSpecialState, targetSpecialState, attackerSpecialDisplay, targetSpecialDisplay }, index, array) => ({
+      this.rounds = fights.map((fight) => fight.rounds.filter((round) => !round.attackTypeSpecial).map(({ attacker, target, attackTypeCritical, defenseType, attackDamage, attackRage, attackTypeSpecial, attackType, attackerState, targetState, attackerSpecialDisplay, targetSpecialDisplay }, index, array) => ({
           'Attacker': attacker,
           'Target': target,
-          'Attacker State': attackerSpecialState,
+          'Attacker State': attackerState,
           'Attacker State Display': attackerSpecialDisplay,
-          'Target State': targetSpecialState,
+          'Target State': targetState,
           'Target State Display': targetSpecialDisplay,
           'Player 1 Attacking': attacker.ID === fighterA.ID,
           'Player 2 Attacking': attacker.ID === fighterB.ID,
-          'Critical': attackCrit,
-          'Missed': attackMissed,
+          'Critical': attackTypeCritical,
+          'Missed': defenseType,
           'Damage': attackDamage,
           'Rage': attackRage,
-          'Special': attackSpecial,
+          'Special': attackTypeSpecial,
           'Type': attackType,
           'First Round': index === 0,
           'Last Round': index === array.length - 1
