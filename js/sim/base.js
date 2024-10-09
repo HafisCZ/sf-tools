@@ -6,14 +6,22 @@ class FIGHT_LOG {
     static logRound (attacker, target, damage, attackType, defenseType) {
         this.lastLog.rounds.push({
             attakerId: attacker.Player.ID || attacker.Index,
+            targetId: target.Player.ID || target.Index,
             attackerState: attacker.getCurrentStateForLog(),
-            targetState: attacker.getCurrentStateForLog(),
+            targetState: target.getCurrentStateForLog(),
             attackType,
             defenseType,
             attackerHealth: attacker.Health,
             targetHealth: Math.max(0, target.Health - damage),
             attackerEffects: attacker.getCurrentEffectsForLog(),
-            targetEffects: target.getCurrentEffectsForLog()
+            targetEffects: target.getCurrentEffectsForLog(),
+            // Extra fields emitted by the simulator to avoid having to re-compute these in analyzer
+            attackDamage: damage,
+            attackRage: this.currentRage || 1,
+            // Types
+            attackTypeSecondary: ATTACK_TYPES_SECONDARY.includes(attackType),
+            attackTypeCritical: ATTACK_TYPES_CRITICAL.includes(attackType),
+            attackTypeSpecial: ATTACK_TYPE_SPECIAL.includes(attackType)
         })
     }
 
@@ -444,6 +452,22 @@ const ATTACK_TYPE_MINION_CRITICAL = 15;
 const ATTACK_TYPE_SWOOP_CRITICAL = 16;
 const ATTACK_TYPE_NORMAL_SECONDARY = 100;
 const ATTACK_TYPE_CRITICAL_SECONDARY = 101;
+
+const ATTACK_TYPES_SECONDARY = [
+    ATTACK_TYPE_NORMAL_SECONDARY,
+    ATTACK_TYPE_CRITICAL_SECONDARY
+]
+
+const ATTACK_TYPES_CRITICAL = [
+    ATTACK_TYPE_CRITICAL,
+    ATTACK_TYPE_SWOOP_CRITICAL,
+    ATTACK_TYPE_CRITICAL_SECONDARY
+]
+
+const ATTACK_TYPE_SPECIAL = [
+    ATTACK_TYPE_MINION_SUMMON,
+    ATTACK_TYPE_REVIVE
+]
 
 const DEFENSE_TYPE_NONE = 0;
 const DEFENSE_TYPE_BLOCK = 3;
