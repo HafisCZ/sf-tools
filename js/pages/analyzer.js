@@ -1003,7 +1003,7 @@ console.log(currentFights)
             if (hasIgnore) {
                 // Do nothing if attack is ignored in display
                 continue;
-            } else if (attackType === ATTACK_REVIVE) {
+            } else if (attackType === ATTACK_TYPE_REVIVE) {
                 content += `
                     <tr${attacker.ID == group.fighterA.ID ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                         <td class="!text-center">${i + 1}</th>
@@ -1019,7 +1019,7 @@ console.log(currentFights)
                     </tr>
                 `;
             } else {
-                const attackClass = attackTypeCritical ? ' text-orangered font-bold' : (attackType === ATTACK_FIREBALL || attackType === ATTACK_FIREBALL_BLOCKED ? ' text-violet' : '');
+                const attackClass = attackTypeCritical ? ' text-orangered font-bold' : (attackType === ATTACK_TYPE_FIREBALL ? ' text-violet' : '');
 
                 const displayDamage = hasDamage ? formatAsSpacedNumber(attackDamage) : '';
                 const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
@@ -1148,7 +1148,7 @@ console.log(currentFights)
 
                 const isFighterA = round.attackerId === group.fighterA.ID;
 
-                if (round.attackType === ATTACK_REVIVE) {
+                if (round.attackType === ATTACK_TYPE_REVIVE) {
                     if (isFighterA) {
                         deathsA++;
                     } else {
@@ -1162,60 +1162,6 @@ console.log(currentFights)
                 } else {
                     round.attackerDeaths = deathsB;
                     round.targetDeaths = deathsA;
-                }
-
-                if (round.attacker.Class === PALADIN && typeof round.attackerSpecialState === 'boolean') {
-                    const attackerModel = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                    round.attackerSpecialState = attackerModel.Config.StanceInitial + 1
-                }
-
-                if (round.target.Class === PALADIN && typeof round.targetSpecialState === 'boolean') {
-                    const targetModel = round.target.ID === currentGroup.fighterA.ID ? model1 : model2;
-                    round.targetSpecialState = targetModel.Config.StanceInitial + 1
-                }
-
-                if (round.attacker.Class === NECROMANCER) {
-                    // Add flags to minion attacks for necromancer class
-                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
-                        const summonType = round.attackType % 10;
-
-                        for (let j = i + 1, durationLeft = Math.trunc((round.attackType % 100) / 10); j < rounds.length && durationLeft > 0; j++) {
-                            // Add attackerMinion flag to attacks dealt by minions
-                            if (rounds[j].attacker === round.attacker && ATTACKS_SUMMON.includes(rounds[j].attackType)) {
-                                rounds[j].attackerSpecialState = summonType;
-                                durationLeft--;
-                            } else if (rounds[j].target === round.attacker) {
-                                rounds[j].targetSpecialState = summonType;
-                            }
-                        }
-                    }
-                } else if (round.attacker.Class === PALADIN) {
-                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
-                        round.hasIgnore = true;
-
-                        const stance = round.attackType % 10;
-
-                        for (let j = i + 1; j < rounds.length; j++) {
-                            if (rounds[j].attacker === round.attacker) {
-                                if (rounds[j].attackType > ATTACK_SPECIAL_SUMMON) break;
-
-                                rounds[j].attackerSpecialState = stance + 1
-                            } else if (rounds[j].target === round.attacker) {
-                                rounds[j].targetSpecialState = stance + 1
-                            }
-                        }
-                    }
-                } else if (round.attacker.Class === BARD) {
-                    // Add flags to attacks after bard summons his notes
-                    if (round.attackType >= ATTACK_SPECIAL_SONG) {
-                        const spellRound = rounds[i - 1];
-
-                        if (spellRound) {
-                            spellRound.attackerSpecialState = round.attackType % 100;
-                        }
-
-                        round.hasIgnore = true;
-                    }
                 }
             }
         }
@@ -1268,7 +1214,7 @@ console.log(currentFights)
             }
 
             round.hasDamage = true;
-            round.hasBase = round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_CATAPULT;
+            round.hasBase = round.attackType !== ATTACK_TYPE_FIREBALL && round.attackType !== ATTACK_TYPE_CATAPULT;
         }
 
         // Calculate base damage of each round
@@ -1291,7 +1237,7 @@ console.log(currentFights)
                     damage /= attackerState.CriticalMultiplier;
                 }
 
-                if (round.attacker.Class === DRUID && (round.attackType === ATTACK_SWOOP || round.attackType === ATTACK_SWOOP_CRITICAL)) {
+                if (round.attacker.Class === DRUID && (round.attackType === ATTACK_TYPE_SWOOP || round.attackType === ATTACK_TYPE_SWOOP_CRITICAL)) {
                     damage /= attackerModel.SwoopMultiplier;
                 }
 
@@ -1356,7 +1302,7 @@ console.log(currentFights)
 
                 // Calculate damage range
                 if (hasBase) {
-                    const key = `${attackTypeSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP || attackType === ATTACK_SWOOP_CRITICAL ? '_swoop' : ''}${attackTypeCritical ? '_critical' : ''}`;
+                    const key = `${attackTypeSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_TYPE_SWOOP || attackType === ATTACK_TYPE_SWOOP_CRITICAL ? '_swoop' : ''}${attackTypeCritical ? '_critical' : ''}`;
 
                     if (typeof container.damages[key] === 'undefined') {
                         container.damages[key] = {
