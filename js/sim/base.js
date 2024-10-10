@@ -21,7 +21,7 @@ class FIGHT_LOG {
             // Types
             attackTypeSecondary: ATTACK_TYPES_SECONDARY.includes(attackType),
             attackTypeCritical: ATTACK_TYPES_CRITICAL.includes(attackType),
-            attackTypeSpecial: ATTACK_TYPE_SPECIAL.includes(attackType)
+            attackTypeSpecial: ATTACK_TYPES_SPECIAL.includes(attackType)
         })
     }
 
@@ -466,9 +466,14 @@ const ATTACK_TYPES_CRITICAL = [
     ATTACK_TYPE_MINION_CRITICAL
 ]
 
-const ATTACK_TYPE_SPECIAL = [
+const ATTACK_TYPES_SPECIAL = [
     ATTACK_TYPE_MINION_SUMMON,
     ATTACK_TYPE_REVIVE
+]
+
+const ATTACK_TYPES_MINION = [
+    ATTACK_TYPE_MINION,
+    ATTACK_TYPE_MINION_CRITICAL
 ]
 
 const DEFENSE_TYPE_NONE = 0;
