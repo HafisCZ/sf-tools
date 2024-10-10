@@ -1047,6 +1047,8 @@ class DemonHunterModel extends SimulatorModel {
     }
 
     resetInternalState () {
+        super.resetInternalState();
+
         this.DeathTriggers = 0;
     }
 
@@ -1101,6 +1103,8 @@ class DruidModel extends SimulatorModel {
     }
 
     resetInternalState () {
+        super.resetInternalState();
+
         this.SwoopChance = this.Config.SwoopChance;
         this.RequestState = false;
     }
@@ -1188,6 +1192,8 @@ class BardModel extends SimulatorModel {
     }
 
     resetInternalState () {
+        super.resetInternalState();
+
         this.EffectCurrent = 0;
         // How many notes were casted
         this.EffectReset = 0;
@@ -1293,6 +1299,8 @@ class PaladinModel extends SimulatorModel {
     }
 
     resetInternalState () {
+        super.resetInternalState();
+
         this.StanceIndex = this.Config.StanceInitial;
 
         this.enterState(this.Data.Stances[this.StanceIndex]);
@@ -1330,6 +1338,8 @@ class NecromancerModel extends SimulatorModel {
     }
 
     resetInternalState () {
+        super.resetInternalState();
+        
         this.Minion = null;
     }
 
