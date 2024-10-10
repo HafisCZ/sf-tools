@@ -89,8 +89,8 @@ class DungeonSimulator extends SimulatorBase {
         this.a = this.cache_players[0];
         this.b = this.cache_boss;
 
-        this.a.reset();
-        this.b.reset();
+        this.a.resetHealth();
+        this.b.resetHealth();
 
         const win = super.fight();
 
@@ -105,8 +105,8 @@ class DungeonSimulator extends SimulatorBase {
         this.lb = [ this.cache_boss ];
 
         // Reset health
-        for (let p of this.la) p.reset();
-        for (let p of this.lb) p.reset();
+        for (const p of this.la) p.resetHealth();
+        for (const p of this.lb) p.resetHealth();
 
         // Run fight
         while (this.la.length > 0 && this.lb.length > 0) {

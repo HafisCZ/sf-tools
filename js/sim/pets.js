@@ -319,8 +319,8 @@ class PetSimulator extends SimulatorBase {
         this.a = this.ca;
         this.b = this.cb;
 
-        this.a.reset();
-        this.b.reset();
+        this.a.resetHealth();
+        this.b.resetHealth();
 
         return super.fight();
     }
@@ -334,8 +334,8 @@ class PetSimulator extends SimulatorBase {
             [this.b, this.a] = [this.a, this.b];
         }
         
-        this.a.reset();
-        this.b.reset();
+        this.a.resetHealth();
+        this.b.resetHealth();
         
         this.turn = 0;
 

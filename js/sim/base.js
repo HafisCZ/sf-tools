@@ -794,15 +794,13 @@ class SimulatorModel {
         this.Data.ReceivedDamageMultiplier = 1;
     }
 
-    reset (resetHealth = true) {
-        // Reset state to default
+    resetHealth () {
+        this.Health = this.TotalHealth;
+    }
+
+    resetInternalState () {
         this.State = this.Data;
         this.SkipCount = 0;
-
-        // Reset health if required (never for guild fights or dungeon fights)
-        if (resetHealth) {
-            this.Health = this.TotalHealth;
-        }
     }
 
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
@@ -1043,9 +1041,7 @@ class DemonHunterModel extends SimulatorModel {
         super(i, p);
     }
 
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
+    resetInternalState () {
         this.DeathTriggers = 0;
     }
 
@@ -1099,9 +1095,7 @@ class DruidModel extends SimulatorModel {
         this.SwoopMultiplier = (this.Config.DamageMultiplier + this.Config.SwoopBonus) / this.Config.DamageMultiplier;
     }
 
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
+    resetInternalState () {
         this.SwoopChance = this.Config.SwoopChance;
         this.RequestState = false;
     }
@@ -1188,11 +1182,8 @@ class BardModel extends SimulatorModel {
         }
     }
 
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
+    resetInternalState () {
         this.EffectCurrent = 0;
-
         // How many notes were casted
         this.EffectReset = 0;
         // How many notes were consumed
@@ -1296,9 +1287,7 @@ class PaladinModel extends SimulatorModel {
         });
     }
 
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
+    resetInternalState () {
         this.StanceIndex = this.Config.StanceInitial;
 
         this.enterState(this.Data.Stances[this.StanceIndex]);
@@ -1335,9 +1324,7 @@ class NecromancerModel extends SimulatorModel {
         this.Data.Minions = this.Config.Summons.map((summon) => this.createState(target, summon));
     }
 
-    reset (resetHealth = true) {
-        super.reset(resetHealth);
-
+    resetInternalState () {
         this.Minion = null;
     }
 
@@ -1465,6 +1452,9 @@ class SimulatorBase {
     }
 
     fight () {
+        this.a.resetInternalState();
+        this.b.resetInternalState();
+
         this.turn = 0;
 
         if (FIGHT_LOG_ENABLED) {

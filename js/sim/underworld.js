@@ -45,8 +45,8 @@ class UnderworldSimulator extends SimulatorBase {
         this.la = [ ...this.units ];
         this.lb = [ this.player ];
 
-        for (let p of this.la) p.reset();
-        for (let p of this.lb) p.reset();
+        for (const p of this.la) p.resetHealth();
+        for (const p of this.lb) p.resetHealth();
 
         // Run fight
         while (this.la.length > 0 && this.lb.length > 0) {
