@@ -1374,17 +1374,6 @@ class NecromancerModel extends SimulatorModel {
             if (getRandom(this.MinionRevives)) {
                 this.MinionDuration = this.Minion.Config.ReviveDuration;
                 this.MinionRevives--;
-
-                // Log resurrection like another summoning
-                if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logRound(
-                        this,
-                        target,
-                        0,
-                        ATTACK_TYPE_MINION_SUMMON,
-                        DEFENSE_TYPE_NONE
-                    )
-                }
             } else {
                 // Remove minion and leave state
                 this.Minion = null;
