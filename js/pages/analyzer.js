@@ -1107,34 +1107,62 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
     }
 
     function findAttackerState (round, model) {
-        if (round.attackerState || round.attackerEffects.length > 0) {
-            switch (round.attacker.Class) {
-                case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.attackerEffects[0].tier - 1];
-                case NECROMANCER: return model.Data.Minions[round.attackerEffects[0].tier - 1];
-                case PALADIN: return model.Data.Stances[round.attackerState - 1];
-                default: {
-                    return model.Data;
+        switch (round.attackerState) {
+            case FIGHTER_STATE_DRUID_RAGE: return model.Data.RageState;
+            case FIGHTER_STATE_PALADIN_DEFENSIVE: return model.Data.Stances[1];
+            case FIGHTER_STATE_PALADIN_OFFENSIVE: return model.Data.Stances[2];
+            default: {
+                switch (model.Player.Class) {
+                    case BARD: {
+                        if (round.attackerEffects.length > 0) {
+                            return model.Data.Songs[round.attackerEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case NECROMANCER: {
+                        if (round.attackerEffects.length > 0) {
+                            return model.Data.Minions[round.attackerEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case PALADIN: return model.Data.Stances[0];
+                    default: {
+                        return model.Data;
+                    }
                 }
             }
-        } else {
-            return model.Data;
         }
     }
 
     function findTargetState (round, model) {
-        if (round.targetState || round.targetEffects.length > 0) {
-            switch (round.target.Class) {
-                case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.targetEffects[0].tier - 1];
-                case NECROMANCER: return model.Data.Minions[round.targetEffects[0].tier - 1];
-                case PALADIN: return model.Data.Stances[round.targetState - 1];
-                default: {
-                    return model.Data;
+        switch (round.targetState) {
+            case FIGHTER_STATE_DRUID_RAGE: return model.Data.RageState;
+            case FIGHTER_STATE_PALADIN_DEFENSIVE: return model.Data.Stances[1];
+            case FIGHTER_STATE_PALADIN_OFFENSIVE: return model.Data.Stances[2];
+            default: {
+                switch (model.Player.Class) {
+                    case BARD: {
+                        if (round.targetEffects.length > 0) {
+                            return model.Data.Songs[round.targetEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case NECROMANCER: {
+                        if (round.targetEffects.length > 0) {
+                            return model.Data.Minions[round.targetEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case PALADIN: return model.Data.Stances[0];
+                    default: {
+                        return model.Data;
+                    }
                 }
             }
-        } else {
-            return model.Data;
         }
     }
 
@@ -1191,11 +1219,11 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             }
 
             if (round.attacker.Class === PALADIN) {
-                round.attackerSpecialDisplay = { type: 'paladin_stance', stance: round.attackerState };
+                round.attackerSpecialDisplay = { type: 'paladin_stance', stance: [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE].indexOf(round.attackerState) + 1 };
             }
 
             if (round.target.Class === PALADIN) {
-                round.targetSpecialDisplay = { type: 'paladin_stance', stance: round.targetState };
+                round.targetSpecialDisplay = { type: 'paladin_stance', stance: [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE].indexOf(round.targetState) + 1 };
             }
 
             if (round.targetState === FIGHTER_STATE_DRUID_RAGE) {
