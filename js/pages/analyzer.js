@@ -502,7 +502,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return {
             attackTypeSecondary: ATTACK_TYPES_SECONDARY.includes(attackType),
             attackTypeCritical: ATTACK_TYPES_CRITICAL.includes(attackType),
-            attackTypeSpecial: ATTACK_TYPE_SPECIAL.includes(attackType)
+            attackTypeSpecial: ATTACK_TYPES_SPECIAL.includes(attackType)
         }
     }
 
@@ -1121,7 +1121,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         }
                     }
                     case NECROMANCER: {
-                        if (round.attackerEffects.length > 0) {
+                        if (ATTACK_TYPES_MINION.includes(round.attackType) && round.attackerEffects.length > 0) {
                             return model.Data.Minions[round.attackerEffects[0].tier - 1];
                         } else {
                             return model.Data;
