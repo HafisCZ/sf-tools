@@ -806,7 +806,7 @@ class SimulatorModel {
     }
 
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
-    onDamageTaken (source, damage) {
+    onDamageTaken (instance, source, damage) {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
@@ -830,7 +830,7 @@ class SimulatorModel {
     }
 
     // Attack
-    attack (damage, target, skipped, critical, attackType, attackTypeCritical) {
+    attack (instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
         if (skipped) {
             damage = 0;
 
@@ -857,7 +857,7 @@ class SimulatorModel {
             )
         }
 
-        return target.onDamageTaken(this, damage) != STATE_DEAD;
+        return target.onDamageTaken(instance, this, damage) != STATE_DEAD;
     }
 
     // Returns extra damage multiplier, default is 1 for no extra damage
@@ -885,6 +885,7 @@ class SimulatorModel {
         const weapon = this.State.Weapon1;
 
         this.attack(
+            instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
             target.skip(SKIP_TYPE_DEFAULT),
@@ -960,6 +961,7 @@ class AssassinModel extends SimulatorModel {
         const weapon1 = this.State.Weapon1;
 
         if (this.attack(
+            instance,
             instance.getRage() * (Math.random() * (1 + weapon1.Max - weapon1.Min) + weapon1.Min),
             target,
             getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
@@ -970,6 +972,7 @@ class AssassinModel extends SimulatorModel {
             const weapon2 = this.State.Weapon2;
 
             this.attack(
+                instance,
                 instance.getRage() * (Math.random() * (1 + weapon2.Max - weapon2.Min) + weapon2.Min),
                 target,
                 getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
@@ -1010,7 +1013,7 @@ class BattlemageModel extends SimulatorModel {
         if (damage === 0) {
             // Do nothing
         } else {
-            target.onDamageTaken(this, damage);
+            target.onDamageTaken(instance, this, damage);
         }
     }
 }
@@ -1024,6 +1027,7 @@ class BerserkerModel extends SimulatorModel {
         const weapon = this.State.Weapon1;
 
         this.attack(
+            instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
             getRandom(target.State.SkipChance) && target.Config.SkipType === SKIP_TYPE_DEFAULT,
@@ -1045,8 +1049,8 @@ class DemonHunterModel extends SimulatorModel {
         this.DeathTriggers = 0;
     }
 
-    onDamageTaken (source, damage) {
-        let state = super.onDamageTaken(source, damage);
+    onDamageTaken (instance, source, damage) {
+        let state = super.onDamageTaken(instance, source, damage);
 
         if (state == STATE_DEAD) {
             const reviveChance = this.Config.ReviveChance - this.Config.ReviveChanceDecay * this.DeathTriggers;
@@ -1054,6 +1058,8 @@ class DemonHunterModel extends SimulatorModel {
             if (!source.Config.BypassSpecial && this.DeathTriggers < this.Config.ReviveMax && getRandom(reviveChance)) {
                 this.Health = this.TotalHealth * Math.max(this.Config.ReviveHealthMin, this.Config.ReviveHealth - this.DeathTriggers * this.Config.ReviveHealthDecay);
                 this.DeathTriggers += 1;
+
+                instance.getRage()
 
                 if (FIGHT_LOG_ENABLED) {
                     FIGHT_LOG.logRound(
@@ -1072,10 +1078,11 @@ class DemonHunterModel extends SimulatorModel {
         return state;
     }
 
-    attack (damage, target, skipped, critical, type) {
+    attack (instance, damage, target, skipped, critical, type) {
         const multiplier = Math.max(this.Config.ReviveDamageMin, this.Config.ReviveDamage - this.DeathTriggers * this.Config.ReviveDamageDecay);
 
         return super.attack(
+            instance,
             damage * multiplier,
             target,
             skipped,
@@ -1138,6 +1145,7 @@ class DruidModel extends SimulatorModel {
             const weapon = this.State.Weapon1;
     
             this.attack(
+                instance,
                 instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier,
                 target,
                 target.skip(SKIP_TYPE_DEFAULT),
@@ -1148,12 +1156,12 @@ class DruidModel extends SimulatorModel {
         }
     }
 
-    onDamageTaken (source, damage) {
+    onDamageTaken (instance, source, damage) {
         if (damage == 0 && !this.specialState()) {
             this.RequestState = true;
         }
 
-        return super.onDamageTaken(source, damage);
+        return super.onDamageTaken(instance, source, damage);
     }
 }
 
@@ -1257,8 +1265,9 @@ class BardModel extends SimulatorModel {
         return super.control(instance, target);
     }
 
-    attack (damage, target, skipped, critical, type) {
+    attack (instance, damage, target, skipped, critical, type) {
         const state = super.attack(
+            instance,
             damage,
             target,
             skipped,
@@ -1397,6 +1406,7 @@ class NecromancerModel extends SimulatorModel {
         const weapon = this.State.Weapon1;
 
         this.attack(
+            instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
             target.skip(SKIP_TYPE_DEFAULT),

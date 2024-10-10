@@ -695,11 +695,6 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     round.attackDamage = round.targetHealth;
                 }
 
-                if (round.attackTypeSpecial && round.attackType !== ATTACK_TYPE_MINION_SUMMON) {
-                    // Decrease rage if it's a special attack (revive, note)
-                    attackRageOffset--;
-                }
-
                 round.attackRage = 1 + ((i + attackRageOffset) / 6);
 
                 if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
