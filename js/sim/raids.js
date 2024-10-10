@@ -44,8 +44,8 @@ class RaidSimulator extends SimulatorBase {
     this.currentPlayers = this.cachedPlayers.slice();
     this.currentEnemies = this.cachedEnemies.slice();
 
-    for (const entity of this.currentPlayers) entity.reset();
-    for (const entity of this.currentEnemies) entity.reset();
+    for (const entity of this.currentPlayers) entity.resetHealth();
+    for (const entity of this.currentEnemies) entity.resetHealth();
 
     while (this.currentPlayers.length > 0 && this.currentEnemies.length > 0) {
       this.a = this.currentPlayers[0];
@@ -65,13 +65,5 @@ class RaidSimulator extends SimulatorBase {
       left1: this.currentPlayers.length,
       left2: this.currentEnemies.length
     }
-  }
-
-  fight () {
-      // Reset counters
-      this.a.reset(false);
-      this.b.reset(false);
-
-      return super.fight();
   }
 }

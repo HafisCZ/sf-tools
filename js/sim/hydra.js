@@ -56,8 +56,8 @@ class HydraSimulator extends SimulatorBase {
         this.la = [ ... this.ca ];
         this.lb = [ ... this.cb ];
 
-        for (let player of this.la) player.reset();
-        for (let player of this.lb) player.reset();
+        for (const player of this.la) player.resetHealth();
+        for (const player of this.lb) player.resetHealth();
 
         while (this.la.length > 0 && this.lb.length > 0) {
             this.a = this.la[0];
