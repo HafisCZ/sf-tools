@@ -330,7 +330,7 @@ const CONFIG = Object.defineProperties(
                     Name: 'DEFENSIVE',
                     DamageBonus: 0,
                     DamageReductionBonus: 11.25,
-                    MaximumDamageReductionBonus: 11.25,
+                    MaximumDamageReductionBonus: 0,
                     SkipChance: 0,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
