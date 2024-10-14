@@ -1924,6 +1924,9 @@ class PlayerModel {
                     this.Runes.ResistanceCold += value;
                     this.Runes.ResistanceLightning += value;
                     this.Runes.Resistance += value;
+                    if (RUNE_VALUE.TOTAL_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.TOTAL_RESISTANCE(value);
+                    }
                 }
             }
         }
@@ -2336,6 +2339,9 @@ class CompanionModel extends PlayerModel {
                     this.Runes.ResistanceCold += value;
                     this.Runes.ResistanceLightning += value;
                     this.Runes.Resistance += value;
+                    if (RUNE_VALUE.TOTAL_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.TOTAL_RESISTANCE(value);
+                    }
                 } else if (rune == 40) {
                     this.Runes.DamageFire += value;
                     this.Runes.Damage += value;
