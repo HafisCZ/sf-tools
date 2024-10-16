@@ -36,8 +36,8 @@ class FortressSimulator extends SimulatorBase {
         this.la = [ ... this.ga ];
         this.lb = [ ... this.gb ];
 
-        for (let player of this.la) player.reset();
-        for (let player of this.lb) player.reset();
+        for (const player of this.la) player.resetHealth();
+        for (const player of this.lb) player.resetHealth();
 
         while (this.la.length > 0 && this.lb.length > 0) {
             this.a = this.la[0];
@@ -53,13 +53,5 @@ class FortressSimulator extends SimulatorBase {
         }
 
         return this.la.length > 0 ? 1 : 0;
-    }
-
-    fight () {
-        // Reset counters
-        this.a.reset(false);
-        this.b.reset(false);
-
-        return super.fight();
     }
 }

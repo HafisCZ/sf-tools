@@ -217,6 +217,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
     const $buttonOptions = $('#button-options');
     const $buttonDamages = $('#button-damages');
     const $buttonGladiator = $('#button-gladiator');
+    const $buttonArmor = $('#button-armor');
 
     const $buttonExportGroup = $('#button-export-group');
     const $buttonExportFight = $('#button-export-fight');
@@ -497,50 +498,11 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
     });
 
     // Decode attack type
-    function decodeAttackType (attackType) {
-        if (attackType >= ATTACK_REVIVE) {
-            return {
-                attackSecondary: false,
-                attackCrit: false,
-                attackMissed: false,
-                attackSpecial: true,
-                attackHasRage: attackType >= ATTACK_SPECIAL_SUMMON && attackType != 311 // Summon revival
-            }
-        } else {
-            const attackSecondary = ATTACKS_SECONDARY.includes(attackType);
-            const attackChained = ATTACKS_CHAIN.includes(attackType);
-            
-            const attackCrit = [
-                ATTACK_CRITICAL,
-                ATTACK_CRITICAL_BLOCKED,
-                ATTACK_CRITICAL_EVADED
-            ].includes(attackType % 10) || attackType === ATTACK_SWOOP_CRITICAL;
-
-            const attackMissedDefault = [
-                ATTACK_BLOCKED,
-                ATTACK_EVADED,
-                ATTACK_CRITICAL_BLOCKED,
-                ATTACK_CRITICAL_EVADED
-            ].includes(attackType % 10);
-
-            const attackMissedSpecial = [
-                ATTACK_SWOOP_BLOCKED,
-                ATTACK_SWOOP_EVADED,
-                ATTACK_FIREBALL_BLOCKED,
-                ATTACK_SUMMON_BLOCKED,
-                ATTACK_SUMMON_EVADED
-            ].includes(attackType);
-
-            const attackMissed = attackMissedDefault || attackMissedSpecial;
-
-            return {
-                attackSecondary,
-                attackCrit,
-                attackMissed,
-                attackChained,
-                attackSpecial: false,
-                attackHasRage: true
-            }
+    function decomposeAttackType (attackType) {
+        return {
+            attackTypeSecondary: ATTACK_TYPES_SECONDARY.includes(attackType),
+            attackTypeCritical: ATTACK_TYPES_CRITICAL.includes(attackType),
+            attackTypeSpecial: ATTACK_TYPES_SPECIAL.includes(attackType)
         }
     }
 
@@ -590,36 +552,6 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return SHA1(JSON.stringify(json));
     }
 
-    function toInternalAttackType (attacker, rawType) {
-        if (attacker.Class === BATTLEMAGE) {
-            switch (rawType) {
-                case ATTACK_SWOOP: return ATTACK_FIREBALL;
-                case ATTACK_SWOOP_EVADED: return ATTACK_FIREBALL_BLOCKED;
-                case ATTACK_SWOOP_BLOCKED: return ATTACK_FIREBALL_BLOCKED;
-                default: {
-                    return rawType;
-                }
-            }
-        } else if (attacker.Class === NECROMANCER) {
-            switch (rawType) {
-                case ATTACK_SWOOP: return ATTACK_SUMMON;
-                case ATTACK_SWOOP_BLOCKED: return ATTACK_SUMMON_BLOCKED;
-                case ATTACK_SWOOP_EVADED: return ATTACK_SUMMON_EVADED;
-                // TODO: Add proper type
-                case 25: return ATTACK_SUMMON_CRITICAL;
-                default: {
-                    if (rawType >= ATTACK_SPECIAL_SONG && rawType <= ATTACK_SPECIAL_SUMMON) {
-                        return rawType + (ATTACK_SPECIAL_SUMMON - ATTACK_SPECIAL_SONG);
-                    } else {
-                        return rawType;
-                    }
-                }
-            }
-        } else {
-            return rawType;
-        }
-    }
-
     const GT_REWARDS = {
         1: 'hellevator_point',
         2: 'hellevator_ticket',
@@ -666,6 +598,115 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return rewards;
     }
 
+    const HAR_ROUND_VERSION_1 = 1;
+    const HAR_ROUND_VERSION_2 = 2;
+
+    const HAR_ROUND_PARSERS = {
+        [HAR_ROUND_VERSION_1]: (fighterA, fighterB, rounds) => {
+            // Disable v1 for now
+            return null
+        },
+        [HAR_ROUND_VERSION_2]: (fighterA, fighterB, rounds) => {
+            const processedRounds = [];
+
+            const data = new ComplexDataType(rounds);
+            while (data.atLeast(9)) {
+                const attackerId = data.long();
+                const targetId = attackerId == fighterA.ID ? fighterB.ID : fighterA.ID;
+
+                const attackerState = data.long();
+                const attackType = data.long();
+
+                const defenseType = data.long();
+                const targetState = data.long();
+
+                const attackerHealth = data.long();
+                const targetHealth = data.long();
+
+                const attackerEffectCount = data.long();
+                const attackerEffects = [];
+                for (let i = 0; i < attackerEffectCount; i++) {
+                    attackerEffects.push({
+                        type: data.long(),
+                        tier: data.long(),
+                        duration: data.long()
+                    })
+                }
+
+                const targetEffectCount = data.long();
+                const targetEffects = [];
+                for (let i = 0; i < targetEffectCount; i++) {
+                    targetEffects.push({
+                        type: data.long(),
+                        tier: data.long(),
+                        duration: data.long()
+                    })
+                }
+
+                const [attacker, target] = attackerId == fighterA.ID ? [fighterA, fighterB] : [fighterB, fighterA];
+
+                processedRounds.push({
+                    attackerId,
+                    targetId,
+                    attackerState,
+                    targetState,
+                    attackType,
+                    defenseType,
+                    attackerHealth,
+                    targetHealth,
+                    attackerEffects,
+                    targetEffects,
+                    attacker,
+                    target,
+                    attackDamage: 0,
+                    attackRage: 0,
+                    ...decomposeAttackType(attackType)
+                })
+            }
+
+            const findHealth = (i) => {
+                const currentRound = processedRounds[i];
+                for (let j = i - 1, round; round = processedRounds[j]; j--) {
+                    if (round.attackType === ATTACK_TYPE_REVIVE) {
+                        if (round.attacker === currentRound.attacker) {
+                            return round.targetHealth;
+                        } else {
+                            return round.attackerHealth;
+                        }
+                    } else if (round.attacker == currentRound.attacker && !round.attackTypeSpecial) {
+                        return round.targetHealth;
+                    }
+                }
+
+                return currentRound.target.Health;
+            }
+
+            // Finalize each round
+            let attackRageOffset = 0;
+            for (let i = 0, round; round = processedRounds[i]; i++) {
+                // Calculate attack damage
+                if (round.attackType === ATTACK_TYPE_REVIVE) {
+                    round.attackDamage = round.attackerHealth;
+                } else if (round.attackType === ATTACK_TYPE_MINION_SUMMON) {
+                    round.targetHealth = findHealth(i);
+                } else if (round.attackType !== ATTACK_TYPE_REVIVE) {
+                    round.attackDamage = findHealth(i) - round.targetHealth;
+                } else {
+                    round.attackDamage = round.targetHealth;
+                }
+
+                round.attackRage = 1 + ((i + attackRageOffset) / 6);
+
+                if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
+                    // Increase rage if it's a chained attack
+                    attackRageOffset++;
+                }
+            }
+
+            return processedRounds
+        }
+    }
+
     // Extract individual fights from raw data array
     function importHAR (json) {
         const digestedFights = [];
@@ -687,19 +728,21 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     for (let i = 1; i <= count; i++) {
                         digestedFights.push({
                             header: r[`fightheader${i}`].mixed(),
-                            rounds: r[`fight${i}`].numbers(','),
-                            rewards: getRewards(r)
+                            rounds: r[`fight${i}`].numbers(/[,/]/),
+                            rewards: getRewards(r),
+                            version: r.fightversion?.number
                         });
                     }
                 } else {
                     digestedFights.push({
                         header: r.fightheader.mixed(),
-                        rounds: r.fight.numbers(','),
-                        rewards: getRewards(r)
+                        rounds: r.fight.numbers(/[,/]/),
+                        rewards: getRewards(r),
+                        version: r.fightversion?.number
                     });
                 }
             }
-            
+
             if (text.includes('playerlookat') || text.includes('ownplayersave')) {
                 const r = PlayaResponse.fromText(text);
 
@@ -750,7 +793,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             }
         }
 
-        for (const { header, rounds, rewards } of digestedFights) {
+        for (const { header, rounds, rewards, version } of digestedFights) {
             const fightType = header[0];
 
             // Proceed only if type of fight is known to the system
@@ -759,92 +802,18 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 const fighterA = new FighterModel(header.slice(5, 52), fightType);
                 const fighterB = new FighterModel(header.slice(52, 99), fightType);
 
-                // Parse individual rounds (group of 3 numbers)
-                const rawRounds = [];
-                for (let i = 0; i < rounds.length / 3; i++) {
-                    rawRounds.push(_sliceLen(rounds, i * 3, 3));
+                const processedRounds = HAR_ROUND_PARSERS[version ?? HAR_ROUND_VERSION_1](fighterA, fighterB, rounds)
+
+                if (processedRounds) {
+                    currentFights.push({
+                        fighterA,
+                        fighterB,
+                        rounds: processedRounds,
+                        rewards
+                    })
+                } else {
+                    // Ignore fight
                 }
-
-                // Process each round
-                const processedRounds = [];
-                for (const [attackerId, attackType, targetHealthLeft] of rawRounds) {
-                    const [attacker, target] = attackerId == fighterA.ID ? [fighterA, fighterB] : [fighterB, fighterA];
-                    const internalAttackType = toInternalAttackType(attacker, attackType)
-
-                    processedRounds.push(Object.assign({
-                        attacker,
-                        target,
-                        attackType: internalAttackType,
-                        attackDamage: 0,
-                        targetHealthLeft,
-                    }, decodeAttackType(internalAttackType)));
-                }
-
-                const findHealth = (i) => {
-                    const currentRound = processedRounds[i];
-                    for (let j = i - 1, round; round = processedRounds[j]; j--) {
-                        if (round.attacker == currentRound.attacker && (round.attackType === ATTACK_REVIVE || !round.attackSpecial)) {
-                            return round.targetHealthLeft;
-                        }
-                    }
-
-                    return currentRound.target.Health;
-                }
-
-                // Finalize each round
-                let attackRageOffset = 0;
-                for (let i = 0, round; round = processedRounds[i]; i++) {
-                    // Calculate attack damage
-                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
-                        round.targetHealthLeft = findHealth(i);
-                    } else if (round.attackHasRage) {
-                        round.attackDamage = findHealth(i) - round.targetHealthLeft;
-                    } else {
-                        round.attackDamage = round.targetHealthLeft;
-                    }
-
-                    if (round.attackSpecial && !round.attackHasRage) {
-                        // Decrease rage if it's a special attack (revive, note)
-                        attackRageOffset--;
-                    } else if (round.attackChained) {
-                        // Increase rage if it's a chained attack
-                        attackRageOffset++;
-                    }
-
-                    round.attackRage = 1 + ((i + attackRageOffset) / 6);
-                }
-
-                // Add special state
-                if (fighterA.Class === DRUID || fighterB.Class === DRUID) {
-                    // Run only when one of the fighters is a druid as only they have special states
-                    for (const fighter of [fighterA, fighterB].filter((fighter) => fighter.Class === DRUID)) {
-                        let requestState = false;
-                        let keepState = false;
-
-                        for (const round of processedRounds) {
-                            if (round.attackSpecial) {
-                                continue;
-                            } else if (round.attacker === fighter) {
-                                round.attackerSpecialState = requestState;
-
-                                keepState = requestState && !keepState;
-                                requestState = false;
-                            } else if (round.attackMissed && !keepState) {
-                                requestState = true;
-                            } else if (keepState) {
-                                round.targetSpecialState = true;
-                            }
-                        }
-                    }
-                }
-
-                // Push fight
-                currentFights.push({
-                    fighterA,
-                    fighterB,
-                    rounds: processedRounds,
-                    rewards
-                })
             }
         }
 
@@ -998,6 +967,12 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         'id': (type) => type
     }
 
+    const DEFENSE_TYPE_FORMATS = {
+        'text': (type) => intl(`general.defense${type}`),
+        'text_with_id': (type) => `${intl(`general.defense${type}`)} #${type}`,
+        'id': (type) => type
+    }
+
     const BARD_NOTE_COLORS = ['c4c4c4', '5e7fc4', 'd1a130'];
 
     function renderState (state, copyMode) {
@@ -1010,6 +985,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 return copyMode ? 'berserker_rage' : `<i class="ui bolt icon text-orangered" title="${intl('analyzer.special_state.berserker_rage')}"></i>`;
             } else if (state.type === 'necromancer_minion') {
                 return copyMode ? `necromancer_minion_${state.minion}`: `<i class="ui skull crossbones icon text-orangered" title="${intl(`analyzer.special_state.necromancer_minion_${state.minion}`)}"></i>`;
+            } else if (state.type === 'paladin_stance') {
+                return copyMode ? `paladin_stance_${state.stance}` : `<div class="flex items-center justify-content-center"><i class="ui shield alternate icon text-orangered"></i> ${intl(`analyzer.special_state.paladin_stance_${state.stance}`)}</div>`
             }
         }
 
@@ -1018,15 +995,17 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
     function renderFight (group, fight, copyMode = false) {
         const formatAttackRage = ATTACK_RAGE_FORMATS[analyzerOptions.rage_display_mode];
+
         const formatAttackType = ATTACK_TYPE_FORMATS[analyzerOptions.type_display_mode];
+        const formatDefenseType = DEFENSE_TYPE_FORMATS[analyzerOptions.type_display_mode];
 
         let content = '';
 
         for (let i = 0; i < fight.rounds.length; i++) {
             const {
-                attacker, target, attackType, attackRage, attackDamage, attackBase, attackCrit,
-                targetHealthLeft, attackerSpecialDisplay, targetSpecialDisplay,
-                hasDamage, hasBase, hasError, hasIgnore
+                attacker, target, attackType, attackRage, attackDamage, attackBase, attackTypeCritical,
+                targetHealth, attackerSpecialDisplay, targetSpecialDisplay, attackerHealth,
+                hasDamage, hasBase, hasError, hasIgnore, defenseType
             } = fight.rounds[i];
 
             const nameStyle = ' style="text-overflow: ellipsis; white-space: nowrap;"';
@@ -1037,23 +1016,23 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             if (hasIgnore) {
                 // Do nothing if attack is ignored in display
                 continue;
-            } else if (attackType === ATTACK_REVIVE) {
+            } else if (attackType === ATTACK_TYPE_REVIVE) {
                 content += `
                     <tr${attacker.ID == group.fighterA.ID ? ' style="background-color: #202020; color: darkgray;"' : ''}>
                         <td class="!text-center">${i + 1}</th>
                         <td class="!text-center"></th>
-                        <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
+                        <td class="!text-center"${nameStyle}>${getFighterName(attacker)}</th>
                         <td class="!text-center">${attackerState}</th>
                         <td class="!text-center"></th>
                         <td class="!text-center"></th>
                         <td class="!text-center text-violet">${formatAttackType(attackType)}</th>
                         <td class="!text-center"></th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Health).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * attackerHealth / attacker.Health).toFixed(1)}%</th>
                         <td class="!text-center"></th>
                     </tr>
                 `;
             } else {
-                const attackClass = attackCrit ? ' text-orangered font-bold' : (attackType === ATTACK_FIREBALL || attackType === ATTACK_FIREBALL_BLOCKED ? ' text-violet' : '');
+                const attackClass = attackTypeCritical ? ' text-orangered font-bold' : (attackType === ATTACK_TYPE_FIREBALL ? ' text-violet' : '');
 
                 const displayDamage = hasDamage ? formatAsSpacedNumber(attackDamage) : '';
                 const displayBase = hasBase ? formatAsSpacedNumber(attackBase) : '';
@@ -1066,9 +1045,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         <td class="!text-center">${attackerState}</th>
                         <td class="!text-center"${nameStyle}>${getFighterName(target)}</th>
                         <td class="!text-center">${targetState}</th>
-                        <td class="!text-center${attackClass}">${formatAttackType(attackType)}</th>
+                        <td class="!text-center${attackClass}">${formatAttackType(attackType)}${defenseType ? ` - ${formatDefenseType(defenseType)}` : ''}</th>
                         <td class="!text-center${attackClass}">${displayDamage}</th>
-                        <td class="!text-center">${Math.max(0, 100 * targetHealthLeft / target.Health).toFixed(1)}%</th>
+                        <td class="!text-center">${Math.max(0, 100 * targetHealth / target.Health).toFixed(1)}%</th>
                         <td class="!text-center">${displayBase}${hasError ? ' <span class="text-orangered">!</span>' : ''}</th>
                     </tr>
                 `;
@@ -1127,18 +1106,63 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         return val >= min ? (val <= max ? 0 : 2) : 1;
     }
 
-    function findState (round, model) {
-        if (round.attackerSpecialState) {
-            switch (round.attacker.Class) {
-                case DRUID: return model.Data.RageState;
-                case BARD: return model.Data.Songs[round.attackerSpecialState % 10 - 1];
-                case NECROMANCER: return model.Data.Minions[round.attackerSpecialState - 1];
-                default: {
-                    return model.Data;
+    function findAttackerState (round, model) {
+        switch (round.attackerState) {
+            case FIGHTER_STATE_DRUID_RAGE: return model.Data.RageState;
+            case FIGHTER_STATE_PALADIN_DEFENSIVE: return model.Data.Stances[1];
+            case FIGHTER_STATE_PALADIN_OFFENSIVE: return model.Data.Stances[2];
+            default: {
+                switch (model.Player.Class) {
+                    case BARD: {
+                        if (round.attackerEffects.length > 0) {
+                            return model.Data.Songs[round.attackerEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case NECROMANCER: {
+                        if (ATTACK_TYPES_MINION.includes(round.attackType) && round.attackerEffects.length > 0) {
+                            return model.Data.Minions[round.attackerEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case PALADIN: return model.Data.Stances[0];
+                    default: {
+                        return model.Data;
+                    }
                 }
             }
-        } else {
-            return model.Data;
+        }
+    }
+
+    function findTargetState (round, model) {
+        switch (round.targetState) {
+            case FIGHTER_STATE_DRUID_RAGE: return model.Data.RageState;
+            case FIGHTER_STATE_PALADIN_DEFENSIVE: return model.Data.Stances[1];
+            case FIGHTER_STATE_PALADIN_OFFENSIVE: return model.Data.Stances[2];
+            default: {
+                switch (model.Player.Class) {
+                    case BARD: {
+                        if (round.targetEffects.length > 0) {
+                            return model.Data.Songs[round.targetEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case NECROMANCER: {
+                        if (round.targetEffects.length > 0) {
+                            return model.Data.Minions[round.targetEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case PALADIN: return model.Data.Stances[0];
+                    default: {
+                        return model.Data;
+                    }
+                }
+            }
         }
     }
 
@@ -1165,7 +1189,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
                 const isFighterA = round.attackerId === group.fighterA.ID;
 
-                if (round.attackType === ATTACK_REVIVE) {
+                if (round.attackType === ATTACK_TYPE_REVIVE) {
                     if (isFighterA) {
                         deathsA++;
                     } else {
@@ -1180,34 +1204,6 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     round.attackerDeaths = deathsB;
                     round.targetDeaths = deathsA;
                 }
-
-                if (round.attacker.Class === NECROMANCER) {
-                    // Add flags to minion attacks for necromancer class
-                    if (round.attackType >= ATTACK_SPECIAL_SUMMON) {
-                        const summonType = round.attackType % 10;
-
-                        for (let j = i + 1, durationLeft = Math.trunc((round.attackType % 100) / 10); j < rounds.length && durationLeft > 0; j++) {
-                            // Add attackerMinion flag to attacks dealt by minions
-                            if (rounds[j].attacker === round.attacker && ATTACKS_SUMMON.includes(rounds[j].attackType)) {
-                                rounds[j].attackerSpecialState = summonType;
-                                durationLeft--;
-                            } else if (rounds[j].target === round.attacker) {
-                                rounds[j].targetSpecialState = summonType;
-                            }
-                        }
-                    }
-                } else if (round.attacker.Class === BARD) {
-                    // Add flags to attacks after bard summons his notes
-                    if (round.attackType >= ATTACK_SPECIAL_SONG) {
-                        const spellRound = rounds[i - 1];
-
-                        if (spellRound) {
-                            spellRound.attackerSpecialState = round.attackType % 100;
-                        }
-
-                        round.hasIgnore = true;
-                    }
-                }
             }
         }
 
@@ -1218,40 +1214,53 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             const round = flatRounds[i];
 
             // Set display special state
-            if (round.attackerSpecialState && round.attacker.Class === DRUID) {
+            if (round.attackerState === FIGHTER_STATE_DRUID_RAGE) {
                 round.attackerSpecialDisplay = { type: 'druid_rage' };
             }
 
-            if (round.targetSpecialState && round.target.Class === DRUID) {
+            if (round.attacker.Class === PALADIN) {
+                round.attackerSpecialDisplay = { type: 'paladin_stance', stance: [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE].indexOf(round.attackerState) + 1 };
+            }
+
+            if (round.target.Class === PALADIN) {
+                round.targetSpecialDisplay = { type: 'paladin_stance', stance: [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE].indexOf(round.targetState) + 1 };
+            }
+
+            if (round.targetState === FIGHTER_STATE_DRUID_RAGE) {
                 round.targetSpecialDisplay = { type: 'druid_rage' };
             }
 
-            if (round.attackChained) {
+            if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
                 round.attackerSpecialDisplay = { type: 'berserker_rage' }
             }
 
-            if (round.attackerSpecialState && round.attacker.Class === NECROMANCER) {
-                round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerSpecialState }
+            if (round.attackerEffects.length > 0 && round.attacker.Class === NECROMANCER) {
+                round.attackerSpecialDisplay = { type: 'necromancer_minion', minion: round.attackerEffects[0].tier }
             }
 
-            if (round.targetSpecialState && round.target.Class === NECROMANCER) {
-                round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetSpecialState }
+            if (round.targetEffects.length > 0 && round.target.Class === NECROMANCER) {
+                round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetEffects[0].tier }
             }
 
-            if (round.attackerSpecialState && round.attacker.Class === BARD) {
-                const spellLevel = round.attackerSpecialState % 10;
-                const spellNotes = Math.trunc(round.attackerSpecialState / 10);
+            if (round.attackerEffects.length > 0 && round.attacker.Class === BARD) {
+                const effect = round.attackerEffects[0]
 
-                round.attackerSpecialDisplay = { type: 'bard_song', level: spellLevel, notes: spellNotes }
+                round.attackerSpecialDisplay = { type: 'bard_song', level: effect.tier, notes: effect.duration + 1 }
+            }
+
+            if (round.targetEffects.length > 0 && round.target.Class === BARD) {
+                const effect = round.targetEffects[0]
+
+                round.targetSpecialDisplay = { type: 'bard_song', level: effect.tier, notes: effect.duration + 1 }
             }
 
             // Skip if missed or special
-            if (round.attackSpecial || round.attackMissed) {
+            if (round.attackTypeSpecial || round.defenseType) {
                 continue;
             }
 
             round.hasDamage = true;
-            round.hasBase = round.attackType !== ATTACK_FIREBALL && round.attackType !== ATTACK_CATAPULT;
+            round.hasBase = round.attackType !== ATTACK_TYPE_FIREBALL && round.attackType !== ATTACK_TYPE_CATAPULT;
         }
 
         // Calculate base damage of each round
@@ -1260,24 +1269,30 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             if (round.hasIgnore) {
                 continue;
             } else if (round.hasBase) {
-                const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const state = findState(round, model);
+                const attackerModel = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
+                const attackerState = findAttackerState(round, attackerModel);
+
+                const targetModel = round.target.ID === currentGroup.fighterA.ID ? model1 : model2;
+                const targetState = findTargetState(round, targetModel);
 
                 // Scaled down weapon damage
-                let damage = round.attackDamage / round.attackRage / (round.attackSecondary ? state.Weapon2.Base : state.Weapon1.Base);
+                let damage = round.attackDamage / round.attackRage / (round.attackTypeSecondary ? attackerState.Weapon2.Base : attackerState.Weapon1.Base);
 
                 // Special cases
-                if (round.attackCrit) {
-                    damage /= state.CriticalMultiplier;
+                if (round.attackTypeCritical) {
+                    damage /= attackerState.CriticalMultiplier;
                 }
 
-                if (round.attacker.Class === DRUID && (round.attackType === ATTACK_SWOOP || round.attackType === ATTACK_SWOOP_CRITICAL)) {
-                    damage /= model.SwoopMultiplier;
+                if (round.attacker.Class === DRUID && (round.attackType === ATTACK_TYPE_SWOOP || round.attackType === ATTACK_TYPE_SWOOP_CRITICAL)) {
+                    damage /= attackerModel.SwoopMultiplier;
                 }
 
                 if (round.attacker.Class === DEMONHUNTER) {
-                    damage /= Math.max(model.Config.ReviveDamageMin, model.Config.ReviveDamage - round.attackerDeaths * model.Config.ReviveDamageDecay);
+                    damage /= Math.max(attackerModel.Config.ReviveDamageMin, attackerModel.Config.ReviveDamage - round.attackerDeaths * attackerModel.Config.ReviveDamageDecay);
                 }
+
+                // Apply back reduced damage
+                damage /= targetState.ReceivedDamageMultiplier;
 
                 round.attackBase = Math.trunc(damage);
             }
@@ -1287,7 +1302,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
         for (const round of flatRounds) {
             if (round.hasBase) {
                 const model = round.attacker.ID === currentGroup.fighterA.ID ? model1 : model2;
-                const weapon = model.Player.Items[round.attackSecondary ? 'Wpn2' : 'Wpn1'];
+                const weapon = model.Player.Items[round.attackTypeSecondary ? 'Wpn2' : 'Wpn1'];
 
                 round.hasError = compareWithin(round.attackBase, weapon.DamageMin - variance, weapon.DamageMax + variance);
             }
@@ -1328,12 +1343,12 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
         // Calculate summary
         for (const fight of group.fights) {
-            for (const { attacker, attackType, hasError, attackBase, hasBase, attackSecondary, attackCrit } of fight.rounds) {
+            for (const { attacker, attackType, attackTypeSecondary, hasError, attackBase, hasBase, attackTypeCritical } of fight.rounds) {
                 const container = group[group.fighterA.ID === attacker.ID ? 'fighterA' : 'fighterB'];
 
                 // Calculate damage range
                 if (hasBase) {
-                    const key = `${attackSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_SWOOP || attackType === ATTACK_SWOOP_CRITICAL ? '_swoop' : ''}${attackCrit ? '_critical' : ''}`;
+                    const key = `${attackTypeSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_TYPE_SWOOP || attackType === ATTACK_TYPE_SWOOP_CRITICAL ? '_swoop' : ''}${attackTypeCritical ? '_critical' : ''}`;
 
                     if (typeof container.damages[key] === 'undefined') {
                         container.damages[key] = {
@@ -1478,9 +1493,21 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
     ];
 
     const ROUND_WHITELIST = [
-        'attackChained', 'attackCrit', 'attackDamage', 'attackMissed',
-        'attackRage', 'attackSecondary', 'attackSpecial', 'attackType',
-        'targetHealthLeft', 'attackerSpecialState', 'targetSpecialState'
+        'attackerId',
+        'targetId',
+        'attackerState',
+        'targetState',
+        'attackType',
+        'defenseType',
+        'attackerHealth',
+        'targetHealth',
+        'attackerEffects',
+        'targetEffects',
+        'attackDamage',
+        'attackRage',
+        'attackTypeSecondary',
+        'attackTypeCritical',
+        'attackTypeSpecial'
     ];
 
     function cleanCopy (rawObject, whitelist) {
