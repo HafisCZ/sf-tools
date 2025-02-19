@@ -4,6 +4,7 @@
 
 require 'httparty'
 require 'fileutils'
+require 'json'
 
 class Synchronize
   include HTTParty
