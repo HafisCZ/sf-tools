@@ -1444,6 +1444,20 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Server ID',
+  {
+    expr: p => p.ServerId
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Server',
+  {
+    expr: p => SERVERS[p.ServerId]
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Guild',
   {
     expr: p => p.Group?.Name,

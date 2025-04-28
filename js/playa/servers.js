@@ -1,4 +1,4 @@
-{
+const SERVERS = {
   "36": "s1.sfgame.ae",
   "65": "s2.sfgame.ae",
   "90": "s1.sfgame.com.br",

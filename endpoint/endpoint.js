@@ -286,14 +286,6 @@ class EndpointDialog extends Dialog {
         });
     }
 
-    async #getServer (id) {
-        if (typeof this.serverList === 'undefined') {
-            this.serverList = await fetch('/js/playa/servers.json').then((data) => data.json());
-        }
-
-        return this.serverList[id];
-    }
-
     #funcLogin (server, username, password) {
         return this.endpoint.login(server, username, password).then((data) => {
             return new Promise(async (resolve, reject) => {
@@ -302,7 +294,7 @@ class EndpointDialog extends Dialog {
 
                     // Inject server url
                     for (const character of data.characters) {
-                        character.server = await this.#getServer(character.server_id);
+                        character.server = SERVERS[character.server_id];
                     }
 
                     // Continue method

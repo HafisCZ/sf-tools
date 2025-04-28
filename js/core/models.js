@@ -930,7 +930,7 @@ class PlayerModel {
         dataType.clear(); // skip
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
-        this.MirrorPieces = PlayerModel.getMirrorPieces(dataType.short());
+        this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
         PlayerModel.loadAttributes(this, dataType, false);
@@ -1507,7 +1507,7 @@ class PlayerModel {
         dataType.clear(); // skip
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
-        this.MirrorPieces = PlayerModel.getMirrorPieces(dataType.short());
+        this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
         PlayerModel.loadAttributes(this, dataType);

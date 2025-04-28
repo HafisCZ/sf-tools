@@ -41,7 +41,7 @@ class Synchronize
       memo[server['i'].to_s] = server['d']
     end
 
-    File.write('servers.json', JSON.pretty_generate(servers))
+    File.write('servers.js', "const SERVERS = #{JSON.pretty_generate(servers)}")
 
     # Save translations
     LANGUAGE_LIST.each do |sftools_language, playa_language|
