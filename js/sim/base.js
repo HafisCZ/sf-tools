@@ -381,7 +381,7 @@ const CONFIG = Object.defineProperties(
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
-                    ReviveCount: 2,
+                    ReviveCount: 1,//should be 2; sfgame is bugged, for some reason the skeleton only revives once
                     ReviveDuration: 1,
                     ReviveChance: 0.5
                 },
@@ -1445,7 +1445,7 @@ class NecromancerModel extends SimulatorModel {
         // Remove minion if expired
         if (this.MinionDuration <= 0) {
             // Check if minion can be revived
-            if (getRandom(this.MinionRevives)) {
+            if (getRandom(this.Minion.Config.ReviveChance) && this.MinionRevives > 0) {//sftools had a bug here, it never checked for the revive chance, only if revives are left
                 this.MinionDuration = this.Minion.Config.ReviveDuration;
                 this.MinionRevives--;
             } else {
