@@ -348,6 +348,8 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
             SkipVariant: DEFENSE_TYPE_NONE,
 
+            ConIntRatioDependentRoundBonus: true,//Playa wants to remove this in some future update, with that toggle it could be tested now
+
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
             EffectBaseChance: [25, 50, 25],
@@ -1232,10 +1234,10 @@ class BardModel extends SimulatorModel {
         const attribute = this.getAttribute(this);
         const constitution = this.Player.Constitution.Total * (1 + (this.Snack.ConstitutionBonus ?? 0));
 
-        if (constitution >= attribute / 2) {
+        if (constitution >= attribute / 2 || !this.Config.ConIntRatioDependentRoundBonus) {
             this.BonusRounds++;
         }
-        if (constitution >= 3 * attribute / 4) {
+        if (constitution >= 3 * attribute / 4 || !this.Config.ConIntRatioDependentRoundBonus) {
             this.BonusRounds++;
         }
     }
