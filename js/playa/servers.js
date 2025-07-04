@@ -317,6 +317,7 @@ const SERVERS = {
   "531": "s18.sfgame.eu",
   "534": "s19.sfgame.eu",
   "537": "s20.sfgame.eu",
+  "538": "s21.sfgame.eu",
   "521": "am1.sfgame.net",
   "469": "f1.sfgame.net",
   "473": "f2.sfgame.net",
@@ -344,5 +345,6 @@ const SERVERS = {
   "502": "f24.sfgame.net",
   "529": "f25.sfgame.net",
   "530": "f26.sfgame.net",
+  "539": "f27.sfgame.net",
   "533": "maerwynn.sfgame.net"
 }
