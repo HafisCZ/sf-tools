@@ -12,7 +12,7 @@ class FIGHT_LOG {
             attackType,
             defenseType,
             attackerHealth: attacker.Health,
-            targetHealth: Math.max(0, target.Health - damage),
+            targetHealth: Math.max(0, target.Health),
             attackerEffects: attacker.getCurrentEffectsForLog(),
             targetEffects: target.getCurrentEffectsForLog(),
             // Extra fields emitted by the simulator to avoid having to re-compute these in analyzer
