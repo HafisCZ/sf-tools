@@ -997,6 +997,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 return copyMode ? `necromancer_minion_${state.minion}`: `<i class="ui skull crossbones icon text-orangered" title="${intl(`analyzer.special_state.necromancer_minion_${state.minion}`)}"></i>`;
             } else if (state.type === 'paladin_stance') {
                 return copyMode ? `paladin_stance_${state.stance}` : `<div class="flex items-center justify-content-center"><i class="ui shield alternate icon text-orangered"></i> ${intl(`analyzer.special_state.paladin_stance_${state.stance}`)}</div>`
+            } else if (state.type === 'plague_doctor_tincture') {
+                return copyMode ? `plague_doctor_tincture_${state.tincture}` : `<i class="ui flask icon text-orangered" title="${intl(`analyzer.special_state.plague_doctor_tincture_${state.tincture}`)}"></i>`;
             }
         }
 
@@ -1139,6 +1141,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         }
                     }
                     case PALADIN: return model.Data.Stances[0];
+                    case PLAGUEDOCTOR: {
+                        if (ATTACK_TYPES_TINCTURE.includes(round.attackType) && round.targetEffects.filter(v => v.type === EFFECT_TYPE_TINCTURE).length > 0) {
+                            return model.Data.Tinctures[round.targetEffects.filter(v => v.type === EFFECT_TYPE_TINCTURE)[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+
+                    }
                     default: {
                         return model.Data;
                     }
@@ -1169,6 +1179,13 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         }
                     }
                     case PALADIN: return model.Data.Stances[0];
+                    case PLAGUEDOCTOR: {
+                        if (round.attackerEffects.filter(v => v === EFFECT_TYPE_TINCTURE).length > 0) {
+                            return model.Data.Tinctures[round.attackerEffects.filter(v => v.type === EFFECT_TYPE_TINCTURE)[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
                     default: {
                         return model.Data;
                     }
@@ -1251,6 +1268,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
             if (round.targetEffects.length > 0 && round.target.Class === NECROMANCER) {
                 round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetEffects[0].tier }
+            }
+
+            if (round.attackerEffects.length > 0 && round.target.Class === PLAGUEDOCTOR) {
+                round.attackerSpecialDisplay = { type: 'plague_doctor_tincture', tincture: round.attackerEffects[0].tier }
+            }
+
+            if (round.targetEffects.length > 0 && round.attacker.Class === PLAGUEDOCTOR) {
+                round.targetSpecialDisplay = { type: 'plague_doctor_tincture', tincture: round.targetEffects[0].tier }
             }
 
             if (round.attackerEffects.length > 0 && round.attacker.Class === BARD) {

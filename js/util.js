@@ -242,6 +242,7 @@ class Constants {
                 'bard': 9,
                 'necromancer': 10,
                 'paladin': 11,
+                'plaguedoctor': 12,
                 'empty': '',
                 'tiny': 40,
                 'small': 60,

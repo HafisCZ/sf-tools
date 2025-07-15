@@ -13,8 +13,8 @@ class FIGHT_LOG {
             defenseType,
             attackerHealth: attacker.Health,
             targetHealth: Math.max(0, target.Health),
-            attackerEffects: attacker.getCurrentEffectsForLog(),
-            targetEffects: target.getCurrentEffectsForLog(),
+            attackerEffects: attacker.getCurrentEffectsForLog().concat(target.getTargetCurrentEffectsForLog()),
+            targetEffects: target.getCurrentEffectsForLog().concat(attacker.getTargetCurrentEffectsForLog()),
             // Extra fields emitted by the simulator to avoid having to re-compute these in analyzer
             attackDamage: damage,
             attackRage: this.currentRage || 1,
@@ -99,6 +99,7 @@ const DRUID = 8;
 const BARD = 9;
 const NECROMANCER = 10;
 const PALADIN = 11;
+const PLAGUEDOCTOR = 12;
 
 // Rune values
 const RUNE_FIRE_DAMAGE = 40;
@@ -128,6 +129,14 @@ const ATTACK_TYPE_SWOOP = 13;
 const ATTACK_TYPE_REVIVE = 14;
 const ATTACK_TYPE_MINION_CRITICAL = 15;
 const ATTACK_TYPE_SWOOP_CRITICAL = 16;
+const ATTACK_TYPE_TINCTURE_THROW_RED = 17;
+const ATTACK_TYPE_TINCTURE_THROW_YELLOW = 18;
+const ATTACK_TYPE_TINCTURE_THROW_GREEN = 19;
+const ATTACK_TYPE_TINCTURE_THROW_RED_CRITICAL = 20;
+const ATTACK_TYPE_TINCTURE_THROW_YELLOW_CRITICAL = 21;
+const ATTACK_TYPE_TINCTURE_THROW_GREEN_CRITICAL = 22;
+const ATTACK_TYPE_TINCTURE = 23;
+const ATTACK_TYPE_TINCTURE_CRITICAL = 24;
 const ATTACK_TYPE_NORMAL_SECONDARY = 100;
 const ATTACK_TYPE_CRITICAL_SECONDARY = 101;
 
@@ -140,12 +149,27 @@ const ATTACK_TYPES_CRITICAL = [
     ATTACK_TYPE_CRITICAL,
     ATTACK_TYPE_SWOOP_CRITICAL,
     ATTACK_TYPE_CRITICAL_SECONDARY,
-    ATTACK_TYPE_MINION_CRITICAL
+    ATTACK_TYPE_MINION_CRITICAL,
+    ATTACK_TYPE_TINCTURE_THROW_RED_CRITICAL,
+    ATTACK_TYPE_TINCTURE_THROW_YELLOW_CRITICAL,
+    ATTACK_TYPE_TINCTURE_THROW_GREEN_CRITICAL,
+    ATTACK_TYPE_TINCTURE_CRITICAL
 ]
 
 const ATTACK_TYPES_SPECIAL = [
     ATTACK_TYPE_MINION_SUMMON,
     ATTACK_TYPE_REVIVE
+]
+
+const ATTACK_TYPES_TINCTURE = [
+    ATTACK_TYPE_TINCTURE_THROW_RED,
+    ATTACK_TYPE_TINCTURE_THROW_YELLOW,
+    ATTACK_TYPE_TINCTURE_THROW_GREEN,
+    ATTACK_TYPE_TINCTURE_THROW_RED_CRITICAL,
+    ATTACK_TYPE_TINCTURE_THROW_YELLOW_CRITICAL,
+    ATTACK_TYPE_TINCTURE_THROW_GREEN_CRITICAL,
+    ATTACK_TYPE_TINCTURE,
+    ATTACK_TYPE_TINCTURE_CRITICAL
 ]
 
 const ATTACK_TYPES_MINION = [
@@ -161,6 +185,7 @@ const DEFENSE_TYPE_BLOCK_HEAL = 6;
 
 const EFFECT_TYPE_SONG = 1;
 const EFFECT_TYPE_MINION = 2;
+const EFFECT_TYPE_TINCTURE = 3;
 
 // Configuration
 const CONFIG = Object.defineProperties(
@@ -466,6 +491,61 @@ const CONFIG = Object.defineProperties(
                     StanceChangeChance: 0.5
                 }
             ]
+        },
+        PlagueDoctor: {
+            ID: PLAGUEDOCTOR,
+
+            Attribute: 'Dexterity',
+
+            HealthMultiplier: 4,
+            WeaponMultiplier: 2,
+            DamageMultiplier: 5 / 4,
+            MaximumDamageReduction: 25,
+            MaximumDamageReductionMultiplier: 1,
+
+            SkipChance: 0,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
+            SkipVariant: DEFENSE_TYPE_NONE,
+
+            AssassinDamageBonus: 0,
+            BattlemageDamageBonus: 0,
+            BattlemageDamageMultiplier: 1,
+            DemonHunterDamageBonus: 0,
+            DemonHunterDamageMultiplier: 1,
+
+            TinctureChance: 0.55,
+            DelayAfterTincture: true,
+            TinctureEndsAfterEnemyAttack: false,
+            Tinctures: [
+                {   // Red
+                    Duration: 1,
+                    DamageBonus: 0.33,
+                    SkipChance: 0.4,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    SkipVariant: DEFENSE_TYPE_EVADE
+                },
+                {   // Yellow
+                    Duration: 2,
+                    DamageBonus: 0,
+                    SkipChance: 0.5,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    SkipVariant: DEFENSE_TYPE_EVADE
+                },
+                {   // Green
+                    Duration: 3,
+                    DamageBonus: -0.1,
+                    SkipChance: 0.6,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    SkipVariant: DEFENSE_TYPE_EVADE
+                }
+            ]
         }
     },
     {
@@ -576,7 +656,8 @@ class SimulatorModel {
             [DRUID]: DruidModel,
             [BARD]: BardModel,
             [NECROMANCER]: NecromancerModel,
-            [PALADIN]: PaladinModel
+            [PALADIN]: PaladinModel,
+            [PLAGUEDOCTOR]: PlagueDoctorModel
         };
 
         return new MODELS[player.Class](index, player);
@@ -865,6 +946,11 @@ class SimulatorModel {
 
     // Returns list of current effects on player, only for logging
     getCurrentEffectsForLog () {
+        return [];
+    }
+
+    // Returns list of current effects on target, only for logging
+    getTargetCurrentEffectsForLog() {
         return [];
     }
 
@@ -1508,6 +1594,130 @@ class NecromancerModel extends SimulatorModel {
         }
     }
 }
+
+class PlagueDoctorModel extends SimulatorModel {
+    initializeData(target) {
+        super.initializeData(target);
+        this.delayFlag = false; // Default value
+
+        this.Data.Tinctures = this.Config.Tinctures.map((tincture) => this.createState(target, tincture));
+    }
+
+    resetInternalState() {
+        super.resetInternalState();
+
+        this.Tincture = null;
+    }
+
+    // From game perspective the tincture effect is not on the PD but on the target
+    getTargetCurrentEffectsForLog() {
+        if (this.Tincture) {
+            return [{
+                type: EFFECT_TYPE_TINCTURE,
+                duration: this.TinctureDuration,
+                tier: this.TinctureType
+            }]
+        } else {
+            return []
+        }
+    }
+
+    expireTincture() {
+        this.TinctureDuration--;
+
+        // Remove tincture effect if expired
+        if (this.TinctureDuration <= 0) {
+            this.delayFlag = this.Config.DelayAfterTincture;
+            if (!this.Config.TinctureEndsAfterEnemyAttack) {
+                this.Tincture = null;
+                this.TinctureType = null;
+                this.enterState();
+            }
+        }
+    }
+
+    procTincturePoison(instance, target) {
+        this.enterState(this.Tincture);
+
+        const weapon = this.State.Weapon1;
+
+        this.attack(
+            instance,
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            0,
+            getRandom(this.State.CriticalChance),
+            ATTACK_TYPE_TINCTURE,
+            ATTACK_TYPE_TINCTURE_CRITICAL
+        )
+    }
+
+    throwTincture(instance, target) {
+        const type = Math.trunc(Math.random() * 3);
+        const tincture = this.Data.Tinctures[type];
+
+        this.Tincture = tincture;
+        this.TinctureType = type + 1;
+        this.TinctureDuration = tincture.Config.Duration;
+
+        this.enterState(this.Tincture);
+
+        const weapon = this.State.Weapon1;
+        const skipped = target.skip(SKIP_TYPE_DEFAULT);
+
+        const attackTypes = type === 0 ? [ATTACK_TYPE_TINCTURE_THROW_RED, ATTACK_TYPE_TINCTURE_THROW_RED_CRITICAL] :
+            type === 1 ? [ATTACK_TYPE_TINCTURE_THROW_YELLOW, ATTACK_TYPE_TINCTURE_THROW_YELLOW_CRITICAL] :
+            [ATTACK_TYPE_TINCTURE_THROW_GREEN, ATTACK_TYPE_TINCTURE_THROW_GREEN_CRITICAL];
+
+        this.attack(
+            instance,
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            skipped,
+            getRandom(this.State.CriticalChance),
+            attackTypes[0],
+            attackTypes[1] 
+        )
+
+        if (skipped) {
+            // Remove tincture and leave state
+            this.Tincture = null;
+            this.TinctureType = null;
+            this.TinctureDuration = 0;
+            this.enterState();
+        }
+    }
+
+    control(instance, target) {
+        if (this.Tincture && this.TinctureDuration <= 0) {
+            this.Tincture = null;
+            this.TinctureType = null;
+            this.enterState();
+        }
+            
+        if (target.Config.BypassSpecial) {
+            // PD cannot throw against mages
+            super.control(instance, target);
+        } else if (this.Tincture) {
+            this.procTincturePoison(instance, target);
+
+            // Take control as player
+            this.enterState();
+            super.control(instance, target);
+            // Enter tincture state so PD gets the evade chance
+            this.enterState(this.Tincture);
+
+            this.expireTincture();
+        } else if (getRandom(this.Config.TinctureChance) && !this.delayFlag) {
+            this.throwTincture(instance, target);
+        } else {
+            this.delayFlag = false;
+            // Attack as usual
+            super.control(instance, target);
+        }
+    }
+}
+
 
 // Shared class between all simulators in order to make updates simple
 class SimulatorBase {
