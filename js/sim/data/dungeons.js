@@ -2112,8 +2112,8 @@ const DUNGEON_DATA = {
     },
     '132': {
       id: 132,
-      // 'Pixel Icon',
-      intl: '32',
+      // 'Pixel Icons',
+      intl: '31',
       pos: 132,
       shadow: true,
       floors: {
@@ -2132,7 +2132,7 @@ const DUNGEON_DATA = {
    '133': {
       id: 133,
       // 'Server Room',
-      intl: '33',
+      intl: '32',
       pos: 133,
       shadow: true,
       floors: {
@@ -2151,7 +2151,7 @@ const DUNGEON_DATA = {
    '134': {
       id: 134,
       // 'Undead Hunters',
-      intl: '34',
+      intl: '33',
       pos: 134,
       shadow: true,
       floors: {
