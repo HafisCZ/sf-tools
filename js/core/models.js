@@ -801,7 +801,7 @@ class DungeonHelper {
 
 class PlayerModel {
     static ACHIEVEMENTS_COUNT = 104;
-    static SCRAPBOOK_COUNT = 2315;
+    static SCRAPBOOK_COUNT = 2374;
 
     static SCROLL_MAP = {
         11: 0,
