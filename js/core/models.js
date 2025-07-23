@@ -778,7 +778,7 @@ class DungeonHelper {
     static DUNGEON_LOCKED = -2;
 
     static PLAYA_TO_INTERNAL_MAPPING = [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36
     ];
 
     static PLAYA_TO_INTERNAL_MAPPING_ENTRIES = Object.entries(DungeonHelper.PLAYA_TO_INTERNAL_MAPPING);
