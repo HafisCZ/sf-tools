@@ -254,7 +254,7 @@ const DUNGEON_DATA = {
     '201': {
         id: 201,
         intl: '201',
-        pos: 29,
+        pos: 34,
         shadow: true,
         armor_multiplier: 1.5,
         floors: {
@@ -626,7 +626,7 @@ const DUNGEON_DATA = {
       id: 31,
       // 'Pixel Icons',
       intl: '31',
-      pos: 30,
+      pos: 29,
       shadow: false,
       floors: {
          '1': { pos: 1, id: 1420, class: 3, level: 495, str: 52850, dex: 106820, int: 52850, con: 307125, lck: 27825, health: 609336000, min: 2123, max: 2341, armor: 26880, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -645,7 +645,7 @@ const DUNGEON_DATA = {
       id: 32,
       // 'Server Room',
       intl: '32',
-      pos: 31,
+      pos: 30,
       shadow: false,
       floors: {
          '1': { pos: 1, id: 1430, class: 3, level: 516, str: 58760, dex: 125320, int: 58760, con: 313560, lck: 29250, health: 648442080, min: 2161, max: 2365, armor: 26598, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
@@ -664,7 +664,7 @@ const DUNGEON_DATA = {
       id: 33,
       // 'Undead Hunters',
       intl: '33',
-      pos: 32,
+      pos: 31,
       shadow: false,
       floors: {
          '1': { pos: 1, id: 1440, class: 1, level: 537, str: 169812, dex: 74916, int: 74916, con: 377946, lck: 36180, health: 1016674740, min: 2066, max: 2246, armor: 31277, runes: {'type': 42, 'res': [0, 0, 25], 'damage': 25} },
@@ -683,7 +683,7 @@ const DUNGEON_DATA = {
       id: 34,
       // 'Retro TV',
       intl: '34',
-      pos: 33,
+      pos: 32,
       shadow: false,
       floors: {
          '1': { pos: 1, id: 1450, class: 3, level: 558, str: 84219, dex: 189543, int: 84219, con: 394664, lck: 37185, health: 882467586, min: 2714, max: 2923, armor: 30793, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -702,7 +702,7 @@ const DUNGEON_DATA = {
       id: 35,
       // 'Meeting Room',
       intl: '35',
-      pos: 34,
+      pos: 33,
       shadow: false,
       floors: {
          '1': { pos: 1, id: 1460, class: 2, level: 579, str: 120263, dex: 120263, int: 252338, con: 516207, lck: 45563, health: 598800120, min: 6532, max: 6953, armor: 36360, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
@@ -1815,7 +1815,7 @@ const DUNGEON_DATA = {
     '202': {
         id: 202,
         intl: '202',
-        pos: 130,
+        pos: 132,
         shadow: true,
         floors: {
          '1': { pos: 1, id: 1320, class: 1, level: 222, str: 90000, dex: 2000, int: 2000, con: 71749, lck: 5000, health: 80000000, min: 2000, max: 3000, armor: 11150 },
@@ -2114,7 +2114,7 @@ const DUNGEON_DATA = {
       id: 132,
       // 'Pixel Icons',
       intl: '31',
-      pos: 132,
+      pos: 129,
       shadow: true,
       floors: {
          '1': { pos: 1, id: 1420, class: 3, level: 630, str: 155400, dex: 342300, int: 155400, con: 6079500, lck: 51450, health: 15344658000, min: 4331, max: 4550, armor: 38220, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -2133,7 +2133,7 @@ const DUNGEON_DATA = {
       id: 133,
       // 'Server Room',
       intl: '32',
-      pos: 133,
+      pos: 130,
       shadow: true,
       floors: {
          '1': { pos: 1, id: 1430, class: 3, level: 662, str: 177060, dex: 395850, int: 177060, con: 6733350, lck: 52975, health: 17856844200, min: 4705, max: 4908, armor: 37986, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
@@ -2152,7 +2152,7 @@ const DUNGEON_DATA = {
       id: 134,
       // 'Undead Hunters',
       intl: '33',
-      pos: 134,
+      pos: 131,
       shadow: true,
       floors: {
          '1': { pos: 1, id: 1440, class: 1, level: 698, str: 555120, dex: 266112, int: 266112, con: 9907920, lck: 65160, health: 34628180400, min: 5335, max: 5515, armor: 45187, runes: {'type': 42, 'res': [0, 0, 25], 'damage': 25} },
