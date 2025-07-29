@@ -348,6 +348,8 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
             SkipVariant: DEFENSE_TYPE_NONE,
 
+            ConIntRatioDependentRoundBonus: true,//Playa wants to remove this in some future update, with that toggle it could be tested now
+
             EffectRounds: 4,
             EffectBaseDuration: [1, 1, 2],
             EffectBaseChance: [25, 50, 25],
@@ -381,7 +383,7 @@ const CONFIG = Object.defineProperties(
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
-                    ReviveCount: 2,
+                    ReviveCount: 1,//should be 2; sfgame is bugged, for some reason the skeleton only revives once
                     ReviveDuration: 1,
                     ReviveChance: 0.5
                 },
@@ -1232,10 +1234,10 @@ class BardModel extends SimulatorModel {
         const attribute = this.getAttribute(this);
         const constitution = this.Player.Constitution.Total * (1 + (this.Snack.ConstitutionBonus ?? 0));
 
-        if (constitution >= attribute / 2) {
+        if (constitution >= attribute / 2 || !this.Config.ConIntRatioDependentRoundBonus) {
             this.BonusRounds++;
         }
-        if (constitution >= 3 * attribute / 4) {
+        if (constitution >= 3 * attribute / 4 || !this.Config.ConIntRatioDependentRoundBonus) {
             this.BonusRounds++;
         }
     }
@@ -1445,7 +1447,7 @@ class NecromancerModel extends SimulatorModel {
         // Remove minion if expired
         if (this.MinionDuration <= 0) {
             // Check if minion can be revived
-            if (getRandom(this.MinionRevives)) {
+            if (getRandom(this.Minion.Config.ReviveChance) && this.MinionRevives > 0) {//sftools had a bug here, it never checked for the revive chance, only if revives are left
                 this.MinionDuration = this.Minion.Config.ReviveDuration;
                 this.MinionRevives--;
             } else {
