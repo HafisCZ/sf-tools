@@ -365,7 +365,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
         settingsChanged();
     }
 
-    const DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ];
+    const DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 ];
 
     function getDungeonEnemyAt (dungeon, isShadow, enemyIndex) {
         if (enemyIndex < 0) {
@@ -373,15 +373,17 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
         } else {
             let id = dungeon + (isShadow ? 100 : 0);
             let dung = DUNGEON_DATA[id];
-            let boss = Object.entries(dung.floors)[enemyIndex];
-            if (boss) {
-                return {
-                    dungeon: dung,
-                    boss: boss[1]
-                };
-            } else {
-                return null;
+            if (dung) {
+                let boss = Object.entries(dung.floors)[enemyIndex];
+                if (boss) {
+                    return {
+                        dungeon: dung,
+                        boss: boss[1]
+                    };
+                }
             }
+
+            return null;
         }
     }
 
