@@ -103,7 +103,7 @@
         "attack0": "Normal",
         "attack1": "Kritisch",
         "attack2": "Katapult",
-        "attack10": "Fireball",
+        "attack10": "Feuerball",
         "attack11": "Minion Summon",
         "attack12": "Minion",
         "attack13": "Swoop",
@@ -509,6 +509,7 @@
             "title": "Aktion auf ausgewähltes Item anwenden",
             "hide": "Anzeigen / Verstecken",
             "remove": "Dauerhaft entfernen",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Charaktere zusammenführen / teilen",
             "link_groups": "Gilden zusammenführen / teilen",
             "unselect": "Auswahl aufheben"
@@ -931,6 +932,7 @@
         "autofill": "Füllen Sie editierbare Daten aus einer vordefinierten Liste aus",
         "analyze": "Statistische Analyse",
         "gladiator": "Gladiator nicht reduziert",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Auf den ursprünglichen Zustand zurücksetzen",
         "simulate": "Simulator mit aktuellen Daten öffnen",
         "table": {
@@ -1498,6 +1500,7 @@
             "title": "Es ist ein schwerwiegender Fehler aufgetreten!",
             "notice#": "Dieser Fehler könnte auch durch Ihr aktuelles Profil verursacht worden sein.<br>Klicken Sie auf die Schaltfläche \"Zurücksetzen\", um zum Standardprofil zurückzukehren.",
             "refresh": "Klicken Sie hier oder aktualisieren Sie die Seite",
+            "temporary": "Open page in temporary mode",
             "revert": "Zum Standardprofil zurückkehren"
         },
         "changelog": {
@@ -1878,6 +1881,21 @@
         },
         "30": {
             "name": "Das Playa HQ"
+        },
+        "31": {
+            "name": "Arcade der alten Pixel-Ikonen"
+        },
+        "32": {
+            "name": "Der Serverraum"
+        },
+        "33": {
+            "name": "Werkstatt der Untotenjäger"
+        },
+        "34": {
+            "name": "Retro TV-Legenden"
+        },
+        "35": {
+            "name": "Der Meetingraum"
         },
         "201": {
             "name": "Märchenturm"

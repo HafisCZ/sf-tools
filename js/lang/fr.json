@@ -509,6 +509,7 @@
             "title": "Apply action to selected items",
             "hide": "Afficher / Masquer",
             "remove": "Supprimer définitivement",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Merge / split characters",
             "link_groups": "Merge / split guilds",
             "unselect": "Deselect all"
@@ -564,7 +565,7 @@
             "tooltip": {
                 "pin": "Pin script to the top of the list",
                 "unpin": "Unpin script",
-                "assigned": "This script is assigned to current table",
+                "assigned": "Ce script est assigné au tableau actuel",
                 "remote": "This script is published",
                 "remote_verified": "This script is published and verified",
                 "remote_copy": "Click here to copy the code"
@@ -931,6 +932,7 @@
         "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Reset to original state",
         "simulate": "Open simulator with current data",
         "table": {
@@ -1498,6 +1500,7 @@
             "title": "Une erreur est survenue !",
             "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cliquez le bouton revert ci-dessous pour revenir au profile par default",
             "refresh": "Cliquez ici pour rafraîchir la page",
+            "temporary": "Open page in temporary mode",
             "revert": "Revenir au profile par default"
         },
         "changelog": {
@@ -1878,6 +1881,21 @@
         },
         "30": {
             "name": "QG de Playa"
+        },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
         },
         "201": {
             "name": "Tour"
