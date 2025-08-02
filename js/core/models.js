@@ -1350,7 +1350,7 @@ class PlayerModel {
 
         this.Witch.Scrolls = [];
         for (let i = 0; i < 9; i++) {
-            dataType.skip();
+            dataType.skip(1);
 
             const picIndex = dataType.long();
             const date = dataType.long() * 1000 + data.offset;
