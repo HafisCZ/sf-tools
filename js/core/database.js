@@ -514,6 +514,7 @@ class PlayaResponse {
                     data.shakesItems = r.storeitemsshakes?.numbers();
                     data.equippedItems = r.ownplayersaveequipment?.numbers();
                     data.dummyItems = r.dummieequipment?.numbers();
+                    data.backpackItems = r.backpack?.numbers();
                     
                     // Post-process
                     if (data.save[435]) {
