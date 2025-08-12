@@ -509,6 +509,12 @@ class PlayaResponse {
                     data.eventTasksRewards = r.eventtaskrewardpreview?.numbers();
                     data.description = r.owndescription?.string;
 
+                    data.companionItems = r.companionequipment?.numbers();
+                    data.fidgetItems = r.storeitemsfidget?.numbers();
+                    data.shakesItems = r.storeitemsshakes?.numbers();
+                    data.equippedItems = r.ownplayersaveequipment?.numbers();
+                    data.dummyItems = r.dummieequipment?.numbers();
+                    
                     // Post-process
                     if (data.save[435]) {
                         data.group = `${data.prefix}_g${data.save[435]}`
@@ -549,6 +555,8 @@ class PlayaResponse {
                     data.fortressrank = r.otherplayerfortressrank?.number;
                     data.pets = r.otherplayerpetbonus?.numbers();
                     data.description = r.otherdescription?.string;
+
+                    data.equippedItems = r.otherplayersaveequipment?.numbers();
 
                     // Post-process
                     if (data.save[161]) {
