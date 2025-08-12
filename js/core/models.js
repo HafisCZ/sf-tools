@@ -214,9 +214,9 @@ class ItemModel {
                 }
             }
 
-            return new ItemModel(ItemModel.LEGACY, data, this.SlotType, this.SlotIndex);
+            return new ItemModel(this.Version, data, this.SlotType, this.SlotIndex);
         } else {
-            return new ItemModel(ItemModel.LEGACY, this.Data, this.SlotType, this.SlotIndex);
+            return new ItemModel(this.Version, this.Data, this.SlotType, this.SlotIndex);
         }
     }
 
