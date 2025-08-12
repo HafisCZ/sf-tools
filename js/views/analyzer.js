@@ -424,8 +424,8 @@ class FighterModel {
       this.Class = dataType.long();
 
       this.Items = {
-          Wpn1: new ItemModel(dataType.sub(12), 1, 9),
-          Wpn2: new ItemModel(dataType.sub(12), 1, 10)
+          Wpn1: new ItemModel(ItemModel.LEGACY, dataType.sub(12), 1, 9),
+          Wpn2: new ItemModel(ItemModel.LEGACY, dataType.sub(12), 1, 10)
       }
 
       if (this.Face.Mouth < 0) {
