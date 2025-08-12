@@ -367,7 +367,7 @@ class AnalyzerAutofillDialog extends Dialog {
 
 // Custom fighter
 class FighterModel {
-  constructor (data, fightType) {
+  constructor (data, equipment, fightType) {
       let dataType = new ComplexDataType(data);
       dataType.assert(47);
 
@@ -423,7 +423,10 @@ class FighterModel {
       this.Gender = dataType.long();
       this.Class = dataType.long();
 
-      this.Items = {
+      this.Items = equipment ? {
+          Wpn1: new ItemModel(ItemModel.MODERN, [equipment[0], 0, equipment[2], equipment[1], 0, 0, 0, 0, 0, equipment[3], 0, 0, equipment[4], 0, 0, 0, 0, 0, 0], 1, 9),
+          Wpn2: new ItemModel(ItemModel.MODERN, [equipment[5], 0, equipment[7], equipment[6], 0, 0, 0, 0, 0, equipment[8], 0, 0, equipment[9], 0, 0, 0, 0, 0, 0], 1, 10)
+      } : {
           Wpn1: new ItemModel(ItemModel.LEGACY, dataType.sub(12), 1, 9),
           Wpn2: new ItemModel(ItemModel.LEGACY, dataType.sub(12), 1, 10)
       }
