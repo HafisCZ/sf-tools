@@ -739,6 +739,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         digestedFights.push({
                             header: r[`fightheader${i}`].mixed(),
                             rounds: r[`fight${i}`].numbers(/[,/]/),
+                            equipment: r[`fightequipment${i}`].numbers(/[,/]/),
                             rewards: getRewards(r),
                             version: r.fightversion?.number
                         });
@@ -747,6 +748,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     digestedFights.push({
                         header: r.fightheader.mixed(),
                         rounds: r.fight.numbers(/[,/]/),
+                        equipment: r.fightequipment.numbers(/[,/]/),
                         rewards: getRewards(r),
                         version: r.fightversion?.number
                     });
