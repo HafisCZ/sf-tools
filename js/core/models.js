@@ -1514,19 +1514,19 @@ class PlayerModel {
             var kuni = CompanionModel.fromTower(dataType);
             this.Inventory.Kunigunde = PlayerModel.loadLegacyEquipment(dataType, 4, SCOUT);
 
+            if (_notEmpty(data.companionItems)) {
+                dataType = new ComplexDataType(data.companionItems);
+
+                this.Inventory.Bert = PlayerModel.loadModernEquipment(dataType, 2, WARRIOR);
+                this.Inventory.Mark = PlayerModel.loadModernEquipment(dataType, 3, MAGE);
+                this.Inventory.Kunigunde = PlayerModel.loadModernEquipment(dataType, 4, SCOUT);
+            }
+
             this.Companions = {
                 Bert: new CompanionModel(this, bert, this.Inventory.Bert, WARRIOR),
                 Mark: new CompanionModel(this, mark, this.Inventory.Mark, MAGE),
                 Kunigunde: new CompanionModel(this, kuni, this.Inventory.Kunigunde, SCOUT)
             };
-        }
-
-        if (_notEmpty(data.companionItems)) {
-            dataType = new ComplexDataType(data.companionItems);
-
-            this.Inventory.Bert = PlayerModel.loadModernEquipment(dataType, 2, WARRIOR);
-            this.Inventory.Mark = PlayerModel.loadModernEquipment(dataType, 3, MAGE);
-            this.Inventory.Kunigunde = PlayerModel.loadModernEquipment(dataType, 4, SCOUT);
         }
 
         this.Scrapbook = PlayerModel.decodeScrapbook(data.scrapbook);
