@@ -1363,6 +1363,12 @@ class PlayerModel {
         }
 
         this.Dungeons = DungeonHelper.fromData(legacyDungeons, data.dungeons);
+
+        if (data.equippedItems) {
+            // Override items with equipped items if present (modern implementation)
+            this.Items = PlayerModel.loadModernEquipment(new ComplexDataType(data.equippedItems), 1, this.Class)
+        }
+
         this.evaluateCommon();
 
         if (data.backpackItems) {
@@ -1393,11 +1399,6 @@ class PlayerModel {
                     }
                 }
             }
-        }
-
-        if (data.equippedItems) {
-            // Override items with equipped items if present (modern implementation)
-            this.Items = PlayerModel.loadModernEquipment(new ComplexDataType(data.equippedItems), 1, this.Class)
         }
 
         if (data.dummyItems) {
