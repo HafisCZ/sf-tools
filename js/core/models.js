@@ -1446,7 +1446,7 @@ class PlayerModel {
 
         dataType.skip(1);
 
-        this.Witch.Scrolls = Array.from({ length: 9 }, (_v, index) => ({
+        this.Witch.Scrolls = Array.from({ length: 9 }, () => ({
             Date: undefined,
             Type: undefined,
             Owned: false
