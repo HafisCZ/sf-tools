@@ -1448,7 +1448,7 @@ class PlayerModel {
 
         this.Witch.Scrolls = Array.from({ length: 9 }, (_v, index) => ({
             Date: undefined,
-            Type: index,
+            Type: undefined,
             Owned: false
         }));
 
