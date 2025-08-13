@@ -764,7 +764,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         own: true,
                         save: r.ownplayersave.numbers(),
                         name: r.ownplayername.string,
-                        tower: r.owntower?.numbers()
+                        tower: r.owntower?.numbers(),
+                        companionItems: r.companionequipment?.numbers(),
+                        equippedItems: r.ownplayersaveequipment?.numbers()
                     })
                 } else if (r.ownplayersave) {
                     // Capture save
@@ -774,7 +776,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             own: true,
                             save: r.ownplayersave.numbers(),
                             name: lastPlayer.name,
-                            tower: r.owntower?.numbers() || lastPlayer.tower
+                            tower: r.owntower?.numbers() || lastPlayer.tower,
+                            companionItems: r.companionequipment?.numbers() || lastPlayer.companionItems,
+                            equippedItems: r.ownplayersaveequipment?.numbers() || lastPlayer.equippedItems
                         })
                     }
                 } else if (r['#ownplayersave']) {
@@ -791,7 +795,9 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             own: true,
                             save,
                             name: lastPlayer.name,
-                            tower: r.owntower?.numbers() || lastPlayer.tower
+                            tower: r.owntower?.numbers() || lastPlayer.tower,
+                            companionItems: r.companionequipment?.numbers() || lastPlayer.companionItems,
+                            equippedItems: r.ownplayersaveequipment?.numbers() || lastPlayer.equippedItems
                         })
                     }
                 } else if (r.otherplayer && r.otherplayername) {
@@ -799,7 +805,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         own: false,
                         save: r.otherplayer.numbers(),
                         name: r.otherplayername.string,
-                        tower: null
+                        tower: null,
+                        equippedItems: r.otherplayersaveequipment?.numbers()
                     })
                 }
             }
