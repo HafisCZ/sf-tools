@@ -1446,7 +1446,12 @@ class PlayerModel {
 
         dataType.skip(1);
 
-        this.Witch.Scrolls = [];
+        this.Witch.Scrolls = Array.from({ length: 9 }, (_v, index) => ({
+            Date: undefined,
+            Type: index,
+            Owned: false
+        }));
+
         for (let i = 0; i < 9; i++) {
             dataType.skip(1);
 
