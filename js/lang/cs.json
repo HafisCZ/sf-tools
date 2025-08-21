@@ -45,7 +45,7 @@
         "souls": "Duše",
         "time": "Čas",
         "gem": "Drahokam",
-        "fight": "Boj",
+        "fight": "Souboj",
         "wood_cap": "Kapacita dřeva",
         "stone_cap": "Kapacita kamení",
         "buildings": {
@@ -59,13 +59,13 @@
             "knights": "Síň Rytířů",
             "goblins": "Skřeti",
             "trolls": "Trolové",
-            "warriors": "Válečníci",
+            "warriors": "Vojáci",
             "archers": "Lukostřelci",
             "mages": "Kouzelníci",
             "backpack_size": "Velikost batohu",
             "critical_bonus": "Kritický Bonus",
             "thirst_free": "Denní touha zdarma",
-            "thirst_usable": "Denní touha zdarma",
+            "thirst_usable": "Kapacita denní touhy",
             "fortress1": "Pevnost",
             "fortress2": "Dělnická ubikace",
             "fortress3": "Dřevorubecká chýše",
@@ -104,18 +104,18 @@
         "attack1": "Kritický",
         "attack2": "Katapult",
         "attack10": "Fireball",
-        "attack11": "Minion Summon",
-        "attack12": "Minion",
-        "attack13": "Swoop",
-        "attack14": "Revive",
-        "attack15": "Minion Critical",
-        "attack16": "Swoop Critical",
-        "attack100": "Normal",
-        "attack101": "Critical",
-        "defense3": "Block",
-        "defense4": "Evade",
-        "defense5": "Magic block",
-        "defense6": "Block & Heal",
+        "attack11": "Vyvolání Nemrtvé bytosti",
+        "attack12": "Nemrtvá bytost",
+        "attack13": "Střemhlavý útok",
+        "attack14": "Záchrana",
+        "attack15": "Kritický zásah Nemrtvé bytosti",
+        "attack16": "Kritický zásah Střemhlavým útokem",
+        "attack100": "Normální",
+        "attack101": "Kritický zásah",
+        "defense3": "Blok",
+        "defense4": "Úhyb",
+        "defense5": "Magický blok",
+        "defense6": "Blok a léčení",
         "gt_background1": "Zlato",
         "gt_background2": "Stříbrný",
         "gt_background3": "Bronz",
@@ -143,7 +143,7 @@
         "rune3": "Kvalita předmětu",
         "rune4": "Zkušenosti",
         "rune5": "Životy",
-        "rune6": "Odolonost proti ohni",
+        "rune6": "Odolnost proti ohni",
         "rune7": "Odolnost proti chladu",
         "rune8": "Odolnost proti blesku",
         "rune9": "Celková odolnost",
@@ -153,7 +153,7 @@
         "action0": "Neaktivní",
         "action1": "Pracuji",
         "action2": "Právě na cestě",
-        "action3": "Dungeon",
+        "action3": "Podzemí",
         "gem1": "Síla",
         "gem2": "Obratnost",
         "gem3": "Inteligence",
@@ -164,8 +164,8 @@
         "companion1": "Bert",
         "companion2": "Marek",
         "companion3": "Kunigunda",
-        "companion1_full": "#{player}'s Bert",
-        "companion2_full": "#{player}'s Marek",
+        "companion1_full": "Bert hráče #{player}",
+        "companion2_full": "Marek hráče #{player}",
         "companion3_full": "Kunigunda hráče #{player}"
     },
     "achievements": {
@@ -343,7 +343,7 @@
             "desc": "Zjisti jakou máš šanci na poražení hráčů ve svém podsvětí"
         },
         "analyzer": {
-            "title": "Analyzér soubojů",
+            "title": "Analyzátor soubojů",
             "desc": "Pro detailní analýzu soubojů"
         },
         "fights": {
@@ -379,8 +379,8 @@
             "desc": "Simulovat pravděpodobný výsledek bitev v Hellevatoru"
         },
         "raids": {
-            "title": "Raid Simulator",
-            "desc": "Simulate the probable outcome of guild raids"
+            "title": "Simulátor Nájezdu",
+            "desc": "Simulovat pravděpodobný výsledek cechovních nájezdů"
         }
     },
     "404": {
@@ -509,6 +509,7 @@
             "title": "Použít akci na vybrané položky",
             "hide": "Zobrazit / Skrýt",
             "remove": "Smazat",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Sloučit / rozdělit postavy",
             "link_groups": "Sloučit / rozdělit cechy",
             "unselect": "Zrušit výběr všech položek"
@@ -671,7 +672,7 @@
             "heath_bonus": "Bonus k životu",
             "damage_bonus": "Bonus k poškození",
             "treasure": "Pokladnice",
-            "gladiator": "Gladiator",
+            "gladiator": "Gladiátor",
             "instructor": "Instruktor",
             "pet": "Mazlíček",
             "knights": "Síň Rytířů",
@@ -845,20 +846,20 @@
         "theme": {
             "0": "Chtíč",
             "1": "Zrada",
-            "2": "Fraud",
-            "3": "Gluttony",
-            "4": "Greed",
-            "5": "Heresy",
-            "6": "Limbo",
+            "2": "Podvod",
+            "3": "Obžerství",
+            "4": "Chamtivost",
+            "5": "Kacířství",
+            "6": "Předpeklí",
             "7": "Násilí",
-            "8": "Wrath"
+            "8": "Zloba"
         },
         "win": {
             "all": "Všech #{count} pater bylo poraženo se 100% šancí",
             "none": "Žádné z #{count} pater lze porazit",
             "first": "Prvních #{count} pater bylo poraženo se 100% šancí",
             "last": "Posledních #{count} pater nelze porazit",
-            "title": "Individual chances"
+            "title": "Jednotlivé šance"
         },
         "footer#": "Podle <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> od ÐonMuErte."
     },
@@ -931,6 +932,7 @@
         "autofill": "Vyplnit upravitelná data z předem definovaného seznamu",
         "analyze": "Statistická analýza",
         "gladiator": "Gladiátor nebyl snížen",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Obnovit do původního stavu",
         "simulate": "Otevřít simulátor s aktuálními daty",
         "table": {
@@ -945,7 +947,7 @@
         },
         "toast_import_error": {
             "title": "Import se nezdařil",
-            "message": "Ensure that you are importing a valid HAR or fight JSON"
+            "message": "Ujistěte se, že nahráváte validní HAR nebo JSON souboje"
         },
         "special_state": {
             "druid_rage": "Druid is enraged",
@@ -954,9 +956,9 @@
             "necromancer_minion_1": "Summoned Skeleton is affecting the player",
             "necromancer_minion_2": "Summoned Hound is affecting the player",
             "necromancer_minion_3": "Summoned Golem is affecting the player",
-            "paladin_stance_1": "Neutral",
-            "paladin_stance_2": "Defensive",
-            "paladin_stance_3": "Offensive"
+            "paladin_stance_1": "Počáteční",
+            "paladin_stance_2": "Obranný",
+            "paladin_stance_3": "Útočný"
         },
         "sidebar": {
             "toggles": {
@@ -993,7 +995,7 @@
                 "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
             },
             "end": {
-                "title": "Simulation thread #{done} / #{total} finished",
+                "title": "Simulační vlákno #{done} / #{total} dokončeno",
                 "message#": "<b>Čas:</b> #{time} sekund"
             },
             "tournament": {
@@ -1498,6 +1500,7 @@
             "title": "Vyskytl se vážný problém!",
             "notice#": "Tento problém mohl být způsoben vašim aktuálním profilem.<br>Klikněte níže pro přepnutí do výchozího profilu.",
             "refresh": "Znovu načíst stránku",
+            "temporary": "Open page in temporary mode",
             "revert": "Přepnout na výchozí profil"
         },
         "changelog": {
@@ -1609,14 +1612,14 @@
             "reward": "Environmental reward",
             "guard_hr": "Hourly guard duty",
             "dice_3": "Dice game (3 of a kind)",
-            "dice_4": "Dice game (4 of a kind)",
-            "dice_5": "Dice game (5 of a kind)",
+            "dice_4": "Hra v kostky (4 stejné)",
+            "dice_5": "Hra v kostky (5 stejných)",
             "gem_s": "Malý drahokam",
             "gem_m": "Střední drahokam",
             "gem_l": "Velký drahokam",
-            "pot_10": "10% Potion",
-            "pot_15": "15% Potion",
-            "pot_25": "25% Potion",
+            "pot_10": "10% lektvar",
+            "pot_15": "15% lektvar",
+            "pot_25": "25% lektvar",
             "pot_w": "Witch Potion",
             "pot_pm": "Mushroom PoEL",
             "pot_pg": "Gold PoEL",
@@ -1637,7 +1640,7 @@
             "academy_hr": "Hourly Academy",
             "academy_time": "Academy time",
             "academy_cap": "Academy capacity",
-            "next": "Next level",
+            "next": "Další úroveň",
             "arena": "Aréna",
             "daily": "Denní mise",
             "dungeon": "Dungeon (Level is enemy level)",
@@ -1671,16 +1674,16 @@
             "album": "Scrapbook %",
             "group_exp": "Guild XP %",
             "group_gold": "Guild Gold %",
-            "tower": "Tower",
+            "tower": "Věž",
             "rune_exp": "Experience Rune",
             "rune_gold": "Gold Rune",
             "stars": "Stars",
             "mount": {
                 "title": "Mount",
                 "none": "None",
-                "pig": "Pig / Cow",
-                "wolf": "Wolf / Horse",
-                "raptor": "Raptor / Tiger",
+                "pig": "Prase / Kráva",
+                "wolf": "Vlk / Kůň",
+                "raptor": "Raptor / Tigr",
                 "griffin": "Griffin"
             },
             "enchantment_exp": "XP Enchantment",
@@ -1760,7 +1763,7 @@
             "deadly_trap": "Smrtonosná past",
             "vip_seat": "VIP sedadlo",
             "snacks": "Svačinka",
-            "straying_monsters": "Straying Monsters",
+            "straying_monsters": "Bludné Příšery",
             "toilet": "Záchod"
         },
         "upgrades": {
@@ -1793,7 +1796,7 @@
         }
     },
     "dungeon_enemies": {
-        "shadow": "Shadow",
+        "shadow": "Stinný",
         "1": {
             "name": "Znesvěcené katakomby"
         },
@@ -1820,7 +1823,7 @@
         },
         "9": {
             "name": "Pyramida šílenství",
-            "10": "Yourself"
+            "10": "Ty Sám"
         },
         "10": {
             "name": "Pevnost Černých lebek"
@@ -1879,6 +1882,21 @@
         "30": {
             "name": "Playa HQ"
         },
+        "31": {
+            "name": "Arkáda oldschoolových pixelových ikon"
+        },
+        "32": {
+            "name": "Serverovna"
+        },
+        "33": {
+            "name": "Dílna lovců nemrtvých"
+        },
+        "34": {
+            "name": "Retro TV Legendy"
+        },
+        "35": {
+            "name": "Zasedací místnost"
+        },
         "201": {
             "name": "Věž"
         },
@@ -1889,7 +1907,7 @@
             "name": "Tornádo"
         },
         "204": {
-            "name": "Sandstorm"
+            "name": "Písečná Bouře"
         }
     }
 }

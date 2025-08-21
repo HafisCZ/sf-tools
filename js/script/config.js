@@ -4919,6 +4919,13 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'accessor', 'none', 'Item Level',
+  function (object) {
+    return object.ItemLevel;
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Name',
   function (object) {
     return object.Name;

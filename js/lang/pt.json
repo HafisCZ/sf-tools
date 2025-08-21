@@ -509,6 +509,7 @@
             "title": "Apply action to selected items",
             "hide": "Mostrar / Esconder",
             "remove": "Remover Permanentemente",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Merge / split characters",
             "link_groups": "Merge / split guilds",
             "unselect": "Deselect all"
@@ -931,6 +932,7 @@
         "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Reset to original state",
         "simulate": "Open simulator with current data",
         "table": {
@@ -1498,6 +1500,7 @@
             "title": "Um erro crítico ocorreu!",
             "notice#": "Este erro também pode ter sido causado pelo seu perfil atual.<br>Clique abaixo no botão reverter para reverter para o perfil predefinido.",
             "refresh": "Clique aqui ou atualize a página",
+            "temporary": "Open page in temporary mode",
             "revert": "Reverter para o perfil predefinido"
         },
         "changelog": {
@@ -1878,6 +1881,21 @@
         },
         "30": {
             "name": "Sede da Playa"
+        },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
         },
         "201": {
             "name": "Torre"

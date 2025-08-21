@@ -509,6 +509,7 @@
             "title": "Apply action to selected items",
             "hide": "Ahzeige / Vrstecke",
             "remove": "Duurhaft entferne",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Merge / split characters",
             "link_groups": "Merge / split guilds",
             "unselect": "Deselect all"
@@ -931,6 +932,7 @@
         "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Reset to original state",
         "simulate": "Open simulator with current data",
         "table": {
@@ -1498,6 +1500,7 @@
             "title": "A fatal error has occured!",
             "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
             "refresh": "Click here or refresh the page",
+            "temporary": "Open page in temporary mode",
             "revert": "Revert back to default profile"
         },
         "changelog": {
@@ -1878,6 +1881,21 @@
         },
         "30": {
             "name": "Playa HQ"
+        },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
         },
         "201": {
             "name": "Tower"

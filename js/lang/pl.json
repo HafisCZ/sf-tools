@@ -15,7 +15,7 @@
         "class8": "Druid",
         "class9": "Bard",
         "class10": "Nekromanta",
-        "class11": "Paladin",
+        "class11": "Paladyn",
         "mask0": "Orzeł",
         "mask1": "Niedźwiedź",
         "mask2": "Kot",
@@ -509,6 +509,7 @@
             "title": "Zastosuj akcję do wybranych elementów",
             "hide": "Pokaż / Ukryj",
             "remove": "Usuń na stałe",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Połącz / podziel postacie",
             "link_groups": "Połącz / podziel gildie",
             "unselect": "Odznacz wszystko"
@@ -799,7 +800,7 @@
             "204": "Tajemnicza toaleta"
         },
         "bulk": {
-            "not_possible": "Nie jest to możliwe",
+            "not_possible": "Niemożliwe",
             "toast": {
                 "title": "Startowanie symulacji",
                 "matches": "Dopasowania:"
@@ -931,6 +932,7 @@
         "autofill": "Uzupełnij dane z wcześniej zdefiniowanej listy",
         "analyze": "Analizator statystyczny",
         "gladiator": "Gladiator nie obniżony",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Resetuj do stanu początkowego",
         "simulate": "Otwórz symulator z bieżącymi danymi",
         "table": {
@@ -1498,6 +1500,7 @@
             "title": "Wystąpił błąd krytyczny!",
             "notice#": "Ten błąd mógł być spowodowany aktualnym profilem.<br>Kliknij przycisk cofnięcia poniżej, aby powrócić do profilu domyślnego.",
             "refresh": "Kliknij tutaj lub odśwież stronę",
+            "temporary": "Open page in temporary mode",
             "revert": "Przywrócenie profilu domyślnego"
         },
         "changelog": {
@@ -1878,6 +1881,21 @@
         },
         "30": {
             "name": "Siedziba główna firmy Playa Games"
+        },
+        "31": {
+            "name": "Salon gier starych pikselowych ikon"
+        },
+        "32": {
+            "name": "Serwerownia"
+        },
+        "33": {
+            "name": "Warsztat Łowców Nieumarłych"
+        },
+        "34": {
+            "name": "Legendarne klasyki telewizji"
+        },
+        "35": {
+            "name": "Sala konferencyjna"
         },
         "201": {
             "name": "Wieża"

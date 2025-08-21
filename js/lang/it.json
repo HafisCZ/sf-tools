@@ -509,6 +509,7 @@
             "title": "Applica azione agli elementi selezionati",
             "hide": "Mostra / Nascondi",
             "remove": "Rimuovi definitivamente",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Unisci / dividi personaggi",
             "link_groups": "Unisci / divide gilde",
             "unselect": "Deseleziona tutto"
@@ -931,6 +932,7 @@
         "autofill": "Riempi i dati modificabili dall'elenco predefinito",
         "analyze": "Analisi statistica",
         "gladiator": "Gladiatore non ridotto",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Ripristina allo stato iniziale",
         "simulate": "Apri simulatore con i dati correnti",
         "table": {
@@ -1498,6 +1500,7 @@
             "title": "Errore critico!",
             "notice#": "Quest'errore potrebbe essere stato causato dal tuo profilo corrente.<br>Clicca il pulsante di reset qui sotto per tornare al profilo predefinito.",
             "refresh": "Clicca qui o aggiorna la pagina",
+            "temporary": "Open page in temporary mode",
             "revert": "Ripristina il profilo predefinito"
         },
         "changelog": {
@@ -1878,6 +1881,21 @@
         },
         "30": {
             "name": "QG di Playa"
+        },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
         },
         "201": {
             "name": "Torre"

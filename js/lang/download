@@ -4,6 +4,7 @@
 
 require 'zip'
 require 'httparty'
+require 'json'
 
 class Download
   include HTTParty

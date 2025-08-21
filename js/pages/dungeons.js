@@ -373,15 +373,17 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
         } else {
             let id = dungeon + (isShadow ? 100 : 0);
             let dung = DUNGEON_DATA[id];
-            let boss = Object.entries(dung.floors)[enemyIndex];
-            if (boss) {
-                return {
-                    dungeon: dung,
-                    boss: boss[1]
-                };
-            } else {
-                return null;
+            if (dung) {
+                let boss = Object.entries(dung.floors)[enemyIndex];
+                if (boss) {
+                    return {
+                        dungeon: dung,
+                        boss: boss[1]
+                    };
+                }
             }
+
+            return null;
         }
     }
 
