@@ -205,12 +205,23 @@ class ItemModel {
 
     morph (from, to, force = false) {
         if ((this.Type <= 7 || force) && this.SellPrice.Gold > 0) {
-            var data = [ ... this.Data ];
-            for (var i = 0; i < 3; i++) {
-                if (data[i + 4] == from) {
-                    data[i + 4] = to;
-                } else if (data[i + 4] == from + 20) {
-                    data[i + 4] = to + 20;
+            const data = [ ... this.Data ];
+
+            if (this.Version === ItemModel.LEGACY) {
+                for (let i = 0; i < 3; i++) {
+                    if (data[i + 4] == from) {
+                        data[i + 4] = to;
+                    } else if (data[i + 4] == from + 20) {
+                        data[i + 4] = to + 20;
+                    }
+                }
+            } else {
+                for (let i = 0; i < 3; i++) {
+                    if (data[i + 7] == from) {
+                        data[i + 7] = to;
+                    } else if (data[i + 7] == from + 20) {
+                        data[i + 7] = to + 20;
+                    }
                 }
             }
 
