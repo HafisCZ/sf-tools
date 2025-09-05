@@ -28,6 +28,20 @@ class SimulatorOptionsDialog extends Dialog {
                           </div>
                       </div>
                   </div>
+                  <div class="two fields">
+                      <div class="field">
+                          <div class="ui inverted checkbox">
+                              <input type="checkbox" data-op="includeTwister">
+                              <label>${intl('dungeons.simulate_next_options.includeTwister')}</label>
+                          </div>
+                      </div>
+                      <div class="field">
+                          <div class="ui inverted checkbox">
+                              <input type="checkbox" data-op="includeSandstorm">
+                              <label>${intl('dungeons.simulate_next_options.includeSandstorm')}</label>
+                          </div>
+                      </div>
+                  </div>
               </div>
               <div class="ui two fluid buttons">
                   <button class="ui black button" data-op="cancel">${intl('dialog.shared.cancel')}</button>
@@ -52,9 +66,25 @@ class SimulatorOptionsDialog extends Dialog {
 
   #update (updateInputs) {
     this.$slider.slider('set rangeValue', this.currentMin, this.currentMax, updateInputs);
+    if (updateInputs) {
+      this.$includeTwister.prop('checked', this.currentTwister);
+      this.$includeSandstorm.prop('checked', this.currentSandstorm);
+    }
   }
 
   handle (options) {
+    this.$includeTwister = this.$parent.find('[data-op="includeTwister"]');
+    this.$includeTwister.on('input', () => {
+      this.currentTwister = this.$includeTwister.prop('checked');
+      this.#update(false);
+    });
+
+    this.$includeSandstorm = this.$parent.find('[data-op="includeSandstorm"]');
+    this.$includeSandstorm.on('input', () => {
+      this.currentSandstorm = this.$includeSandstorm.prop('checked');
+      this.#update(false);
+    });
+
     this.$slider = this.$parent.find('[data-op="slider"]');
     this.$slider.slider({
       min: 0,
@@ -92,6 +122,8 @@ class SimulatorOptionsDialog extends Dialog {
     this.$okButton.click(() => {
       this.simulatorOptions.threshold_min = this.currentMin;
       this.simulatorOptions.threshold_max = this.currentMax;
+      this.simulatorOptions.includeTwister = this.currentTwister;
+      this.simulatorOptions.includeSandstorm = this.currentSandstorm;
 
       this.close(true);
     });
@@ -104,6 +136,8 @@ class SimulatorOptionsDialog extends Dialog {
     this.simulatorOptions = options;
     this.currentMin = this.simulatorOptions.threshold_min;
     this.currentMax = this.simulatorOptions.threshold_max;
+    this.currentTwister = this.simulatorOptions.includeTwister;
+    this.currentSandstorm = this.simulatorOptions.includeSandstorm;
 
     this.#update(true);
   }

@@ -893,6 +893,10 @@
         "simulate_next_info": {
             "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
             "message#": "Use <b>All</b> function to simulate all open dungeons"
+        },
+        "simulate_next_options": {
+            "includeTwister": "Include Twister",
+            "includeSandstorm": "Include Sandstorm"
         }
     },
     "underworld": {
