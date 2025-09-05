@@ -77,7 +77,8 @@ const SCOPES = {
         Raid: true,
         Hydra: true,
         TotalInstructor: true,
-        TotalTreasure: true
+        TotalTreasure: true,
+        TotalKnights: true,
       }
     },
     Mount: true,
