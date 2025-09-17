@@ -348,10 +348,8 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
             SkipVariant: DEFENSE_TYPE_NONE,
 
-            ConIntRatioDependentRoundBonus: true,//Playa wants to remove this in some future update, with that toggle it could be tested now
-
             EffectRounds: 4,
-            EffectBaseDuration: [1, 1, 2],
+            EffectBaseDuration: [3, 3, 4],
             EffectBaseChance: [25, 50, 25],
             EffectValues: [ 0.2, 0.4, 0.6 ]
         },
@@ -1227,19 +1225,6 @@ class BardModel extends SimulatorModel {
         this.Bracket0 = this.Config.EffectBaseChance[0];
         this.Bracket1 = this.Bracket0 + this.Config.EffectBaseChance[1];
         this.Bracket2 = this.Bracket1 + this.Config.EffectBaseChance[2];
-
-        // Bonus round
-        this.BonusRounds = 0;
-
-        const attribute = this.getAttribute(this);
-        const constitution = this.Player.Constitution.Total * (1 + (this.Snack.ConstitutionBonus ?? 0));
-
-        if (constitution >= attribute / 2 || !this.Config.ConIntRatioDependentRoundBonus) {
-            this.BonusRounds++;
-        }
-        if (constitution >= 3 * attribute / 4 || !this.Config.ConIntRatioDependentRoundBonus) {
-            this.BonusRounds++;
-        }
     }
 
     resetInternalState () {
@@ -1292,7 +1277,7 @@ class BardModel extends SimulatorModel {
         const level = roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
 
         this.EffectLevel = level + 1;
-        this.EffectReset = this.Config.EffectBaseDuration[level] + this.BonusRounds;
+        this.EffectReset = this.Config.EffectBaseDuration[level];
         this.EffectCounter = 0;
         this.EffectRound = 0;
 
