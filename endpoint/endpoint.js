@@ -307,11 +307,11 @@ class EndpointDialog extends Dialog {
                     const characters = _sortAsc(data.characters.filter((c) => c.server), (c) => c.order);
                     if (characters.length > 1) {
                         // Multiple characters in account, must choose
-                        for (const { server, name, id, level } of characters) {
+                        for (const { server, name, id, level, char_class } of characters) {
                             const $element = $(`
                                 <div class="!border-radius-1 border-gray p-4 background-dark:hover cursor-pointer flex gap-2 items-center">
                                     <div>
-                                        <div>${name} &nbsp;&nbsp;<span class="text-85% text-gray">(${intl('general.level')} ${level})</span></div>
+                                        <div>${name} &nbsp;&nbsp;<span class="text-85% text-gray">(${intl(`general.class${char_class}`)} - ${intl('general.level')} ${level})</span></div>
                                         <div class="text-gray">${server}</div>
                                     </div>
                                 </div>
