@@ -1444,6 +1444,20 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Server ID',
+  {
+    expr: p => p.ServerId
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Server',
+  {
+    expr: p => SERVERS[p.ServerId]
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Guild',
   {
     expr: p => p.Group?.Name,
@@ -3195,6 +3209,16 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'public', 'Friendly Fire Frame',
+  {
+    expr: p => p.Flags?.FriendlyFireFrame,
+    format: 'boolean',
+    difference: false,
+    statistics: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Official Creator',
   {
     expr: p => p.Flags?.OfficialCreator,
@@ -4201,6 +4225,15 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Sandstorm',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Sandstorm) : undefined,
+    statistics: false,
+    width: 120
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Twister',
   {
     expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Twister) : undefined,
@@ -4882,6 +4915,13 @@ TABLE_EXPRESSION_CONFIG.register(
   'accessor', 'none', 'Item Type',
   function (object) {
     return object.Type;
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'accessor', 'none', 'Item Level',
+  function (object) {
+    return object.ItemLevel;
   }
 )
 

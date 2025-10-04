@@ -87,10 +87,10 @@ const DATABASE_PARAMS = [
             shouldApply: (version) => version < 6,
             apply: async (database) => {
                 const players = await database.where('players');
-                const groups = await database.all('groups');
+                const groups = await database.where('groups');
                 const entries = [].concat(players, groups);
 
-                const metadata = _arrayToHash(await database.all('metadata'), entry => [ entry.timestamp, Object.assign(entry, { identifiers: [] }) ]);
+                const metadata = _arrayToHash(await database.where('metadata'), entry => [ entry.timestamp, Object.assign(entry, { identifiers: [] }) ]);
 
                 for (const { timestamp: dirty_timestamp, identifier } of entries) {
                     const timestamp = parseInt(dirty_timestamp);
@@ -509,6 +509,13 @@ class PlayaResponse {
                     data.eventTasksRewards = r.eventtaskrewardpreview?.numbers();
                     data.description = r.owndescription?.string;
 
+                    data.companionItems = r.companionequipment?.numbers();
+                    data.fidgetItems = r.storeitemsfidget?.numbers();
+                    data.shakesItems = r.storeitemsshakes?.numbers();
+                    data.equippedItems = r.ownplayersaveequipment?.numbers();
+                    data.dummyItems = r.dummieequipment?.numbers();
+                    data.backpackItems = r.backpack?.numbers();
+                    
                     // Post-process
                     if (data.save[435]) {
                         data.group = `${data.prefix}_g${data.save[435]}`
@@ -549,6 +556,8 @@ class PlayaResponse {
                     data.fortressrank = r.otherplayerfortressrank?.number;
                     data.pets = r.otherplayerpetbonus?.numbers();
                     data.description = r.otherdescription?.string;
+
+                    data.equippedItems = r.otherplayersaveequipment?.numbers();
 
                     // Post-process
                     if (data.save[161]) {
@@ -1204,7 +1213,7 @@ class DatabaseManager {
         }
 
         // Load all existing links
-        const links = await this.#interface.all('links');
+        const links = await this.#interface.where('links');
 
         this.#links.clear();
         for (const { id: identifier, pid: linkId } of links) {
@@ -1217,11 +1226,11 @@ class DatabaseManager {
         }
 
         // Load metadata
-        this.#metadata = _arrayToHash(await this.#interface.all('metadata'), md => [ md.timestamp, md ]);
+        this.#metadata = _arrayToHash(await this.#interface.where('metadata'), md => [ md.timestamp, md ]);
 
         // Load groups
         if (!this.#profile.only_players) {
-            const groups = DatabaseUtils.filterArray(this.#profile, 'primary_g') || await this.#interface.all('groups', ... DatabaseUtils.profileFilter(this.#profile, 'primary_g'));
+            const groups = DatabaseUtils.filterArray(this.#profile, 'primary_g') || await this.#interface.where('groups', ... DatabaseUtils.profileFilter(this.#profile, 'primary_g'));
             const groupsFilter = this.#profile.secondary_g && Expression.create(this.#profile.secondary_g);
 
             if (groupsFilter) {
@@ -1257,7 +1266,7 @@ class DatabaseManager {
 
         // Load trackers
         if (!this.#profile.only_players) {
-            const trackers = await this.#interface.all('trackers');
+            const trackers = await this.#interface.where('trackers');
 
             for (const tracker of trackers) {
                 this.#trackedPlayers[tracker.identifier] = tracker;

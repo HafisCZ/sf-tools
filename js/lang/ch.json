@@ -15,6 +15,7 @@
         "class8": "Druid",
         "class9": "Bard",
         "class10": "Necromancer",
+        "class11": "Paladin",
         "mask0": "Adlr",
         "mask1": "Bär",
         "mask2": "Chatz",
@@ -102,40 +103,19 @@
         "attack0": "Normal",
         "attack1": "Critical",
         "attack2": "Catapult",
-        "attack3": "Blocked",
-        "attack4": "Evaded",
-        "attack5": "Swoop",
-        "attack6": "Swoop Blocked",
-        "attack7": "Swoop Evaded",
-        "attack8": "Critical Blocked",
-        "attack9": "Critical Evaded",
-        "attack10": "Normal",
-        "attack11": "Critical",
-        "attack13": "Blocked",
-        "attack14": "Evaded",
-        "attack18": "Critical Blocked",
-        "attack19": "Critical Evaded",
-        "attack15": "Fireball",
-        "attack16": "Fireball blocked",
-        "attack20": "Normal",
-        "attack21": "Critical",
-        "attack23": "Blocked",
-        "attack24": "Evaded",
-        "attack25": "Swoop Critical",
-        "attack28": "Critical Blocked",
-        "attack29": "Critical Evaded",
-        "attack30": "Minion Normal",
-        "attack31": "Minion Critical",
-        "attack33": "Minion Blocked",
-        "attack34": "Minion Evaded",
-        "attack38": "Minion Critical Blocked",
-        "attack39": "Minion Critical Evaded",
-        "attack100": "Revive",
-        "attack200": "Bard Song",
-        "attack331": "Summon Skeleton",
-        "attack311": "Revive Skeleton",
-        "attack322": "Summon Hound",
-        "attack343": "Summon Golem",
+        "attack10": "Fireball",
+        "attack11": "Minion Summon",
+        "attack12": "Minion",
+        "attack13": "Swoop",
+        "attack14": "Revive",
+        "attack15": "Minion Critical",
+        "attack16": "Swoop Critical",
+        "attack100": "Normal",
+        "attack101": "Critical",
+        "defense3": "Block",
+        "defense4": "Evade",
+        "defense5": "Magic block",
+        "defense6": "Block & Heal",
         "gt_background1": "Gold",
         "gt_background2": "Silver",
         "gt_background3": "Bronze",
@@ -529,6 +509,7 @@
             "title": "Apply action to selected items",
             "hide": "Ahzeige / Vrstecke",
             "remove": "Duurhaft entferne",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Merge / split characters",
             "link_groups": "Merge / split guilds",
             "unselect": "Deselect all"
@@ -951,6 +932,7 @@
         "autofill": "Fill editable data in from predefined list",
         "analyze": "Statistical analysis",
         "gladiator": "Gladiator not reduced",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Reset to original state",
         "simulate": "Open simulator with current data",
         "table": {
@@ -973,7 +955,10 @@
             "bard_song": "Bard has played a song",
             "necromancer_minion_1": "Summoned Skeleton is affecting the player",
             "necromancer_minion_2": "Summoned Hound is affecting the player",
-            "necromancer_minion_3": "Summoned Golem is affecting the player"
+            "necromancer_minion_3": "Summoned Golem is affecting the player",
+            "paladin_stance_1": "Neutral",
+            "paladin_stance_2": "Defensive",
+            "paladin_stance_3": "Offensive"
         },
         "sidebar": {
             "toggles": {
@@ -1515,6 +1500,7 @@
             "title": "A fatal error has occured!",
             "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
             "refresh": "Click here or refresh the page",
+            "temporary": "Open page in temporary mode",
             "revert": "Revert back to default profile"
         },
         "changelog": {
@@ -1733,6 +1719,7 @@
     },
     "raids": {
         "result": "Chance to defeat raid: #{chance}%",
+        "footer#": "Special thanks to Eggman & everyone else who went through the pain of gathering raid data for the greater good",
         "raids": {
             "hellevator": "Hellevator Raid #{number}"
         }
@@ -1895,6 +1882,21 @@
         "30": {
             "name": "Playa HQ"
         },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
+        },
         "201": {
             "name": "Tower"
         },
@@ -1903,6 +1905,9 @@
         },
         "203": {
             "name": "Wirbuwindsturm"
+        },
+        "204": {
+            "name": "Sandstorm"
         }
     }
 }

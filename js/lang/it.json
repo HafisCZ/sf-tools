@@ -15,6 +15,7 @@
         "class8": "Druido",
         "class9": "Bardo",
         "class10": "Negromante",
+        "class11": "Paladin",
         "mask0": "Aquila",
         "mask1": "Orso",
         "mask2": "Tigre",
@@ -102,40 +103,19 @@
         "attack0": "Normale",
         "attack1": "Critico",
         "attack2": "Catapulta",
-        "attack3": "Bloccato",
-        "attack4": "Schivato",
-        "attack5": "Attacco dall'alto",
-        "attack6": "Attacco dall'alto bloccato",
-        "attack7": "Attacco dall'alto schivato",
-        "attack8": "Critico bloccato",
-        "attack9": "Critico schivato",
-        "attack10": "Normale",
-        "attack11": "Critico",
-        "attack13": "Bloccato",
-        "attack14": "Schivato",
-        "attack18": "Critico bloccato",
-        "attack19": "Critico schivato",
-        "attack15": "Palla di fuoco",
-        "attack16": "Palla di fuoco bloccata",
-        "attack20": "Normale",
-        "attack21": "Critico",
-        "attack23": "Bloccato",
-        "attack24": "Schivato",
-        "attack25": "Swoop Critical",
-        "attack28": "Critico bloccato",
-        "attack29": "Critico schivato",
-        "attack30": "Servitore normale",
-        "attack31": "Servitore critico",
-        "attack33": "Servitore bloccato",
-        "attack34": "Servitore schivato",
-        "attack38": "Servitore critico bloccato",
-        "attack39": "Servitore critico schivato",
-        "attack100": "Resurrezione",
-        "attack200": "Brano Bardo",
-        "attack331": "Evoca scheletro",
-        "attack311": "Rianima Scheletro",
-        "attack322": "Evoca Mastino",
-        "attack343": "Evoca Golem",
+        "attack10": "Fireball",
+        "attack11": "Minion Summon",
+        "attack12": "Minion",
+        "attack13": "Swoop",
+        "attack14": "Revive",
+        "attack15": "Minion Critical",
+        "attack16": "Swoop Critical",
+        "attack100": "Normal",
+        "attack101": "Critical",
+        "defense3": "Block",
+        "defense4": "Evade",
+        "defense5": "Magic block",
+        "defense6": "Block & Heal",
         "gt_background1": "Oro",
         "gt_background2": "Argento",
         "gt_background3": "Bronzo",
@@ -529,6 +509,7 @@
             "title": "Applica azione agli elementi selezionati",
             "hide": "Mostra / Nascondi",
             "remove": "Rimuovi definitivamente",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Unisci / dividi personaggi",
             "link_groups": "Unisci / divide gilde",
             "unselect": "Deseleziona tutto"
@@ -951,6 +932,7 @@
         "autofill": "Riempi i dati modificabili dall'elenco predefinito",
         "analyze": "Analisi statistica",
         "gladiator": "Gladiatore non ridotto",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Ripristina allo stato iniziale",
         "simulate": "Apri simulatore con i dati correnti",
         "table": {
@@ -973,7 +955,10 @@
             "bard_song": "Il bardo ha suonato un brano",
             "necromancer_minion_1": "Summoned Skeleton is affecting the player",
             "necromancer_minion_2": "Summoned Hound is affecting the player",
-            "necromancer_minion_3": "Summoned Golem is affecting the player"
+            "necromancer_minion_3": "Summoned Golem is affecting the player",
+            "paladin_stance_1": "Neutral",
+            "paladin_stance_2": "Defensive",
+            "paladin_stance_3": "Offensive"
         },
         "sidebar": {
             "toggles": {
@@ -1515,6 +1500,7 @@
             "title": "Errore critico!",
             "notice#": "Quest'errore potrebbe essere stato causato dal tuo profilo corrente.<br>Clicca il pulsante di reset qui sotto per tornare al profilo predefinito.",
             "refresh": "Clicca qui o aggiorna la pagina",
+            "temporary": "Open page in temporary mode",
             "revert": "Ripristina il profilo predefinito"
         },
         "changelog": {
@@ -1733,6 +1719,7 @@
     },
     "raids": {
         "result": "Chance to defeat raid: #{chance}%",
+        "footer#": "Special thanks to Eggman & everyone else who went through the pain of gathering raid data for the greater good",
         "raids": {
             "hellevator": "Hellevator Raid #{number}"
         }
@@ -1895,6 +1882,21 @@
         "30": {
             "name": "QG di Playa"
         },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
+        },
         "201": {
             "name": "Torre"
         },
@@ -1903,6 +1905,9 @@
         },
         "203": {
             "name": "Tornado"
+        },
+        "204": {
+            "name": "Sandstorm"
         }
     }
 }

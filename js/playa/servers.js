@@ -1,4 +1,4 @@
-{
+const SERVERS = {
   "36": "s1.sfgame.ae",
   "65": "s2.sfgame.ae",
   "90": "s1.sfgame.com.br",
@@ -313,6 +313,13 @@
   "518": "s14.sfgame.eu",
   "519": "s15.sfgame.eu",
   "520": "s16.sfgame.eu",
+  "528": "s17.sfgame.eu",
+  "531": "s18.sfgame.eu",
+  "534": "s19.sfgame.eu",
+  "537": "s20.sfgame.eu",
+  "538": "s21.sfgame.eu",
+  "541": "s22.sfgame.eu",
+  "542": "s23.sfgame.eu",
   "521": "am1.sfgame.net",
   "469": "f1.sfgame.net",
   "473": "f2.sfgame.net",
@@ -336,5 +343,10 @@
   "494": "f20.sfgame.net",
   "495": "f21.sfgame.net",
   "500": "f22.sfgame.net",
-  "501": "f23.sfgame.net"
+  "501": "f23.sfgame.net",
+  "502": "f24.sfgame.net",
+  "529": "f25.sfgame.net",
+  "530": "f26.sfgame.net",
+  "539": "f27.sfgame.net",
+  "533": "maerwynn.sfgame.net"
 }

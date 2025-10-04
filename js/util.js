@@ -241,6 +241,7 @@ class Constants {
                 'druid': 8,
                 'bard': 9,
                 'necromancer': 10,
+                'paladin': 11,
                 'empty': '',
                 'tiny': 40,
                 'small': 60,

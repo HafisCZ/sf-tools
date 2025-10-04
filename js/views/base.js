@@ -594,9 +594,10 @@ class ErrorDialog extends Dialog {
                 <div class="header"><i class="ui text-red times circle icon"></i> ${this.intl('title')}</div>
                 <div class="text-center" data-op="text"></div>
                 <h4 class="text-center">${this.intl('notice#')}</h4>
-                <div class="ui two red fluid buttons">
+                <div class="ui three red fluid buttons">
                     <button class="ui button" data-op="continue">${this.intl('refresh')}</button>
                     <button class="ui button" data-op="continue-default">${this.intl('revert')}</button>
+                    <button class="ui button" data-op="continue-temporary">${this.intl('temporary')}</button>
                 </div>
             </div>
         `;
@@ -605,6 +606,10 @@ class ErrorDialog extends Dialog {
     handle (error) {
         this.$parent.find('[data-op="continue"]').click(() => {
             window.location.href = window.location.href;
+        });
+
+        this.$parent.find('[data-op="continue-temporary"]').click(() => {
+            window.location.href = `/stats.html?temp`;
         });
 
         this.$parent.find('[data-op="continue-default"]').click(() => {

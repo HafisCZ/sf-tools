@@ -153,7 +153,8 @@ const PLAYER_CLASS_SEARCH = [
     'demon hunter',
     'druid',
     'bard',
-    'necromancer'
+    'necromancer',
+    'paladin'
 ];
 
 // Group Detail View
@@ -749,6 +750,17 @@ class GroupsTab extends Tab {
                     }
                 },
                 {
+                    label: intl('stats.context.remove_current'),
+                    action: (source) => {
+                        let elements = this.$parent.find('[data-id].css-op-select').toArray();
+                        let instances = elements.length ? elements.map((el) => DatabaseManager.getGroup(el.dataset.id, el.dataset.ts).Data) : [DatabaseManager.getGroup(source.dataset.id, source.dataset.ts).Data];
+
+                        DatabaseManager.safeRemove({ instances }).then(([value]) => {
+                            if (value) this.$filter.trigger('change');
+                        });
+                    }
+                },
+                {
                     label: intl('stats.context.remove'),
                     action: (source) => {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
@@ -1262,6 +1274,17 @@ class PlayersTab extends Tab {
                             () => DatabaseManager.export(_uniq(ids)),
                             'players'
                         )
+                    }
+                },
+                {
+                    label: intl('stats.context.remove_current'),
+                    action: (source) => {
+                        let elements = this.$parent.find('[data-id].css-op-select').toArray();
+                        let instances = elements.length ? elements.map((el) => DatabaseManager.getPlayer(el.dataset.id, el.dataset.ts).Data) : [DatabaseManager.getPlayer(source.dataset.id, source.dataset.ts).Data];
+
+                        DatabaseManager.safeRemove({ instances }).then(([value]) => {
+                            if (value) this.$filter.trigger('change');
+                        });
                     }
                 },
                 {

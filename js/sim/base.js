@@ -12,7 +12,7 @@ class FIGHT_LOG {
             attackType,
             defenseType,
             attackerHealth: attacker.Health,
-            targetHealth: Math.max(0, target.Health - damage),
+            targetHealth: Math.max(0, target.Health),
             attackerEffects: attacker.getCurrentEffectsForLog(),
             targetEffects: target.getCurrentEffectsForLog(),
             // Extra fields emitted by the simulator to avoid having to re-compute these in analyzer
@@ -63,6 +63,7 @@ const FLAGS = Object.defineProperties(
     {
         // Values
         Gladiator15: false,
+        MaximumDamageReduction: false,
         // Reductions
         NoGladiatorReduction: false,
         NoAttributeReduction: false
@@ -205,7 +206,9 @@ const CONFIG = Object.defineProperties(
             SkipChance: 0,
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
-            SkipVariant: DEFENSE_TYPE_NONE
+            SkipVariant: DEFENSE_TYPE_NONE,
+
+            PaladinDamageMultiplier: 1.5
         },
         Scout: {
             ID: SCOUT,
@@ -346,7 +349,7 @@ const CONFIG = Object.defineProperties(
             SkipVariant: DEFENSE_TYPE_NONE,
 
             EffectRounds: 4,
-            EffectBaseDuration: [1, 1, 2],
+            EffectBaseDuration: [3, 3, 4],
             EffectBaseChance: [25, 50, 25],
             EffectValues: [ 0.2, 0.4, 0.6 ]
         },
@@ -378,7 +381,7 @@ const CONFIG = Object.defineProperties(
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
-                    ReviveCount: 2,
+                    ReviveCount: 1,//should be 2; sfgame is bugged, for some reason the skeleton only revives once
                     ReviveDuration: 1,
                     ReviveChance: 0.5
                 },
@@ -403,7 +406,6 @@ const CONFIG = Object.defineProperties(
         },
         Paladin: {
             ID: PALADIN,
-            Disabled: true,
 
             Attribute: 'Strength',
 
@@ -419,6 +421,7 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
             SkipVariant: DEFENSE_TYPE_NONE,
 
+            MageDamageMultiplier: 1.5,
             AssassinDamageMultiplier: 1,
             DruidDamageMultiplier: 1,
             
@@ -430,7 +433,7 @@ const CONFIG = Object.defineProperties(
                     DamageBonus: 0,
                     DamageReductionBonus: 0,
                     MaximumDamageReductionBonus: 0,
-                    SkipChance: 0,
+                    SkipChance: 0.3,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
@@ -454,7 +457,7 @@ const CONFIG = Object.defineProperties(
                     DamageBonus: 0.42,
                     DamageReductionBonus: 0,
                     MaximumDamageReductionBonus: -25,
-                    SkipChance: 0,
+                    SkipChance: 0.25,
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
@@ -672,6 +675,8 @@ class SimulatorModel {
     getDamageReduction (source, maximumReduction = this.Config.MaximumDamageReduction, flatBonusReduction = 0) {
         if (source.Config.BypassDamageReduction) {
             return 0;
+        } else if (FLAGS.MaximumDamageReduction) {
+            return this.Config.MaximumDamageReductionMultiplier * maximumReduction;
         } else {
             return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction + (this.Snack.MaximumDamageReductionBonus ?? 0), flatBonusReduction + this.Player.Armor / source.Player.Level);
         }
@@ -1220,19 +1225,6 @@ class BardModel extends SimulatorModel {
         this.Bracket0 = this.Config.EffectBaseChance[0];
         this.Bracket1 = this.Bracket0 + this.Config.EffectBaseChance[1];
         this.Bracket2 = this.Bracket1 + this.Config.EffectBaseChance[2];
-
-        // Bonus round
-        this.BonusRounds = 0;
-
-        const attribute = this.getAttribute(this);
-        const constitution = this.Player.Constitution.Total * (1 + (this.Snack.ConstitutionBonus ?? 0));
-
-        if (constitution >= attribute / 2) {
-            this.BonusRounds++;
-        }
-        if (constitution >= 3 * attribute / 4) {
-            this.BonusRounds++;
-        }
     }
 
     resetInternalState () {
@@ -1285,7 +1277,7 @@ class BardModel extends SimulatorModel {
         const level = roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
 
         this.EffectLevel = level + 1;
-        this.EffectReset = this.Config.EffectBaseDuration[level] + this.BonusRounds;
+        this.EffectReset = this.Config.EffectBaseDuration[level];
         this.EffectCounter = 0;
         this.EffectRound = 0;
 
@@ -1440,7 +1432,7 @@ class NecromancerModel extends SimulatorModel {
         // Remove minion if expired
         if (this.MinionDuration <= 0) {
             // Check if minion can be revived
-            if (getRandom(this.MinionRevives)) {
+            if (getRandom(this.Minion.Config.ReviveChance) && this.MinionRevives > 0) {//sftools had a bug here, it never checked for the revive chance, only if revives are left
                 this.MinionDuration = this.Minion.Config.ReviveDuration;
                 this.MinionRevives--;
             } else {

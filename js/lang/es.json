@@ -15,6 +15,7 @@
         "class8": "Druida",
         "class9": "Bardo",
         "class10": "Nigromante",
+        "class11": "Paladín",
         "mask0": "Águila",
         "mask1": "Oso",
         "mask2": "Gato",
@@ -102,40 +103,19 @@
         "attack0": "Normal",
         "attack1": "Crítico",
         "attack2": "Catapulta",
-        "attack3": "Bloqueado",
-        "attack4": "Evadido",
-        "attack5": "Ataque en picado",
-        "attack6": "Ataque en picado bloqueado",
-        "attack7": "Ataque en picado evadido",
-        "attack8": "Crítico bloqueado",
-        "attack9": "Crítico evadido",
-        "attack10": "Normal",
-        "attack11": "Crítico",
-        "attack13": "Bloqueado",
-        "attack14": "Evadido",
-        "attack18": "Crítico bloqueado",
-        "attack19": "Crítico evadido",
-        "attack15": "Bola de fuego",
-        "attack16": "Bola de fuego bloqueada",
-        "attack20": "Normal",
-        "attack21": "Crítico",
-        "attack23": "Bloqueado",
-        "attack24": "Evadido",
-        "attack25": "Swoop Critical",
-        "attack28": "Crítico bloqueado",
-        "attack29": "Crítico evadido",
-        "attack30": "Minion Normal",
-        "attack31": "Minion Critical",
-        "attack33": "Minion Blocked",
-        "attack34": "Minion Evaded",
-        "attack38": "Minion Critical Blocked",
-        "attack39": "Minion Critical Evaded",
-        "attack100": "Revivir",
-        "attack200": "Canción de Bardo",
-        "attack331": "Invocar Esqueleto",
-        "attack311": "Revivir Esqueleto",
-        "attack322": "Summon Hound",
-        "attack343": "Invocar Golem",
+        "attack10": "Bola de fuego",
+        "attack11": "Invocar Ayudante",
+        "attack12": "Ayudante",
+        "attack13": "Ataque en picado",
+        "attack14": "Revivir",
+        "attack15": "Crítico de Ayudante",
+        "attack16": "Ataque en picado crítico",
+        "attack100": "Normal",
+        "attack101": "Crítico",
+        "defense3": "Bloqueo",
+        "defense4": "Evadir",
+        "defense5": "Bloqueo mágico",
+        "defense6": "Bloqueo y Sanación",
         "gt_background1": "Oro",
         "gt_background2": "Plata",
         "gt_background3": "Bronce",
@@ -359,7 +339,7 @@
             "desc": "Simula el posible resultado de una mazmorra"
         },
         "underworld": {
-            "title": "Underworld Simulator",
+            "title": "Simulador del Inframundo",
             "desc": "Simula el posible resultado de una batalla del inframundo"
         },
         "analyzer": {
@@ -399,8 +379,8 @@
             "desc": "Simula el posible resultado de batallas del Hellevator"
         },
         "raids": {
-            "title": "Raid Simulator",
-            "desc": "Simulate the probable outcome of guild raids"
+            "title": "Simulador de batida de Gremio",
+            "desc": "Simular el posible resultado de una batida de gremio"
         }
     },
     "404": {
@@ -529,6 +509,7 @@
             "title": "Aplicar acción a los elementos seleccionados",
             "hide": "Mostrar / Ocultar",
             "remove": "Eliminar permanentemente",
+            "remove_current": "Remove current entry permanently",
             "link_players": "Fusionar / dividir personajes",
             "link_groups": "Fusionar / dividir gremios",
             "unselect": "Desmarcar todo"
@@ -651,7 +632,7 @@
             "title_short": "Exportar",
             "options": "Opciones",
             "code": "Tu código",
-            "file": "Selection",
+            "file": "Selección",
             "format": "Formato",
             "get": "Exportar",
             "ok": "Aceptar",
@@ -660,11 +641,11 @@
             "single_use": "Sólo uso único",
             "single_use_notice": "Por favor, considere mantener esta opción habilitada a menos que planee compartir el archivo con varias personas.",
             "files": {
-                "all": "All",
+                "all": "Todo",
                 "last": "Último",
                 "last5": "Últimos 5",
                 "current": "Seleccionados",
-                "currentWithReference": "Selected & Reference"
+                "currentWithReference": "Seleccionado y Referencia"
             },
             "formats": {
                 "json": "Archivo JSON",
@@ -691,7 +672,7 @@
             "heath_bonus": "Bonif. de Vida",
             "damage_bonus": "Bonif. de daño",
             "treasure": "Tesoro",
-            "gladiator": "Gladiator",
+            "gladiator": "Gladiador",
             "instructor": "Instructor",
             "pet": "Mascota",
             "knights": "Salón de Caballeros",
@@ -699,7 +680,7 @@
                 "title": "Extras",
                 "registered": "Registrado",
                 "webshopid": "URL de la tienda web",
-                "webshopid_placeholder": "Hover to display"
+                "webshopid_placeholder": "Mantén el cursor encima para mostrar"
             },
             "runes": {
                 "title": "Runas"
@@ -731,8 +712,8 @@
             "unsafe_delete": "Omitir confirmación al eliminar archivos",
             "backup_reminder_frequency": "Recordarme una copia de seguridad",
             "script_author": "Nombre de autor para scripts publicados",
-            "table_sticky_header": "Enable sticky table headers",
-            "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
+            "table_sticky_header": "Habilitar cabeceras de tabla fijas",
+            "skip_grid_if_single_entry_present": "Saltar a los detalles del jugador/grupo si está solo en la cuadrícula",
             "terms": "Aceptar los términos del servicio",
             "tab": "Pestaña por defecto",
             "preload": "Precargar filas",
@@ -792,31 +773,31 @@
             "4": "Agua"
         },
         "locations": {
-            "0": "Black Forest",
-            "1": "Black Water Swamp",
-            "2": "Busted Lands",
+            "0": "Bosque Negro",
+            "1": "Pantano de Aguas Negras",
+            "2": "Tierras Devastadas",
             "3": "Erogenion",
-            "4": "Evernight Forest",
-            "5": "Flooded Caldwell",
+            "4": "Bosque nocturno",
+            "5": "Caldwell Inundado",
             "6": "Gnarogrim",
-            "7": "Maerwyn",
+            "7": "Maerwynn",
             "8": "Magmaron",
-            "9": "Moldy Forest",
+            "9": "Bosque Mohoso",
             "10": "Nevermoor",
             "11": "Northrunt",
-            "12": "Plains Of Ozkorr",
-            "13": "Rotten Lands",
-            "14": "Shadowrock Mountain",
-            "15": "Skull Island",
-            "16": "Split Canyon",
-            "17": "Sprawling Jungle",
-            "18": "Stumble Steppe",
-            "19": "Sunburn Desert",
-            "20": "Tusk Mountain",
-            "201": "Gem Mine",
-            "202": "Weapon Shop",
-            "203": "Magic Shop",
-            "204": "Arcane Toilet"
+            "12": "Llanuras de Oz'Kurr",
+            "13": "Tierras putrefactas",
+            "14": "Montaña de la sombra",
+            "15": "Isla calavera",
+            "16": "Cañón Dividido",
+            "17": "Jungla extendida",
+            "18": "Estepa Tropezante",
+            "19": "Desierto del Achicharre",
+            "20": "Montaña Colmillo",
+            "201": "Mina de gemas",
+            "202": "Armería",
+            "203": "Hechicero",
+            "204": "Retrete de los Dioses Arcanos"
         },
         "bulk": {
             "not_possible": "Imposible",
@@ -859,26 +840,26 @@
         "range": {
             "start": "Comenzar en el piso",
             "end": "Finalizar en el piso",
-            "theme": "Theme"
+            "theme": "Tema"
         },
         "element": "Elemento",
         "theme": {
-            "0": "Lust",
-            "1": "Treachery",
-            "2": "Fraud",
-            "3": "Gluttony",
-            "4": "Greed",
-            "5": "Heresy",
+            "0": "Lujuria",
+            "1": "Traición",
+            "2": "Engaño",
+            "3": "Gula",
+            "4": "Avaricia",
+            "5": "Herejía",
             "6": "Limbo",
-            "7": "Violence",
-            "8": "Wrath"
+            "7": "Violencia",
+            "8": "Ira"
         },
         "win": {
             "all": "Todos los #{count} pisos fueron derrotados con 100% de probabilidad",
             "none": "Todos los pisos #{count} son imposibles de derrotar",
             "first": "Los primeros #{count} pisos fueron derrotados con 100% de probabilidad",
             "last": "Los últimos #{count} pisos son imposibles de derrotar",
-            "title": "Individual chances"
+            "title": "Probabilidades individuales"
         },
         "footer#": "Basado en <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Recompensas de Hellevator &amp; Estadísticas de los Monstruos</a> de ÐonMuErte."
     },
@@ -951,10 +932,11 @@
         "autofill": "Rellenar datos editables de la lista predefinida",
         "analyze": "Análisis estadístico",
         "gladiator": "Gladiator no reducido",
+        "armor": "Force armor to maximum value",
         "clear_changes": "Restablecer al estado original",
         "simulate": "Abrir simulador con los datos actuales",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
+            "select": "#{index} - #{rounds} rondas - #{nameA} - #{nameB} - Ganador: #{winner}",
             "rage": "Furia",
             "attacker": "Atacante",
             "target": "Objetivo",
@@ -968,28 +950,31 @@
             "message": "Asegúrese de que está importando un HAR válido o JSON"
         },
         "special_state": {
-            "druid_rage": "Druid is enraged",
-            "berserker_rage": "Berserker is enraged",
-            "bard_song": "Bard has played a song",
-            "necromancer_minion_1": "Summoned Skeleton is affecting the player",
-            "necromancer_minion_2": "Summoned Hound is affecting the player",
-            "necromancer_minion_3": "Summoned Golem is affecting the player"
+            "druid_rage": "El druida está en cólera",
+            "berserker_rage": "El Berserker está en frenesí",
+            "bard_song": "El Bardo ha tocado una canción",
+            "necromancer_minion_1": "El esqueleto invocado está afectando al jugador",
+            "necromancer_minion_2": "El perro infernal invocado está afectando al jugador",
+            "necromancer_minion_3": "El gólem invocado está afectando al jugador",
+            "paladin_stance_1": "Neutral",
+            "paladin_stance_2": "Defensiva",
+            "paladin_stance_3": "Ofensiva"
         },
         "sidebar": {
             "toggles": {
                 "damages": "Mostrar rango de daños"
             },
             "damages": {
-                "weapon1_range_base": "Input range",
-                "weapon2_range_base": "Input range (secondary)",
+                "weapon1_range_base": "Rango de entrada",
+                "weapon2_range_base": "Rango de entrada (secundario)",
                 "weapon1_range": "Rango normal",
                 "weapon2_range": "Rango normal (secundario)",
                 "weapon1_range_critical": "Rango de crítico",
                 "weapon2_range_critical": "Rango de crítico (secundario)",
-                "weapon1_range_swoop": "Swoop range",
-                "weapon1_range_swoop_critical": "Critical swoop range",
-                "weapon1_fist_damage": "Fist damage",
-                "weapon2_fist_damage": "Fist damage (secondary)"
+                "weapon1_range_swoop": "Rango de ataque en picado",
+                "weapon1_range_swoop_critical": "Rango de ataque en picado crítico",
+                "weapon1_fist_damage": "Daño con puños",
+                "weapon2_fist_damage": "Daño con puños (secundario)"
             }
         }
     },
@@ -1124,7 +1109,7 @@
         "win_chance": "Victoria %",
         "min_chance": "Mínimo %",
         "max_chance": "Máximo %",
-        "avg_chance": "Avg %",
+        "avg_chance": "Promedio %",
         "toast": {
             "title": "Simulación finalizada",
             "message": "La simulación duró #{duration}"
@@ -1137,8 +1122,8 @@
         "mask": "Máscara",
         "instrument": "Instrumento",
         "armor": "Armadura",
-        "health": "Health",
-        "snack": "Snack",
+        "health": "Vida",
+        "snack": "Aperitivo",
         "snack_potency": "Snack Strength",
         "snacks": {
             "1": "Chocolate Chili Peppers",
@@ -1208,7 +1193,7 @@
         },
         "user_error": {
             "title": "El nombre de usuario o la contraseña no son válidos",
-            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
+            "message": "Por favor, asegúrate de que está en el formato correcto ('nombre de usuario' para cuentas SF, 'username@url' para personajes locales)"
         },
         "errors": {
             "error_unreachable": "No se puede acceder al servidor",
@@ -1289,89 +1274,89 @@
             }
         },
         "manage_link": {
-            "title": "Manage player / guild merge",
+            "title": "Gestionar fusión de jugador / gremio",
             "link": {
-                "heading1": "Merge following objects",
+                "heading1": "Combinar los siguientes objetos",
                 "heading2": "Into",
-                "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will be merged into the target object. This action cannot be reversed!"
+                "warning": "Por favor, tenga en cuenta que cualquier <b>asignación de script</b> y los <b>rastreadores</b> se fusionarán en el objeto de destino. ¡Esta acción no podrá ser revertida!"
             },
             "unlink": {
-                "heading1": "Split following object",
+                "heading1": "Dividir el objeto siguiente",
                 "heading2": "Into",
                 "warning": "Please note that any <b>script assignments</b> and <b>trackers</b> will remain under the source object."
             }
         },
         "dungeons_options": {
-            "title": "Simulator options",
+            "title": "Opciones del simulador",
             "threshold": {
-                "title": "Simulation threshold",
-                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+                "title": "Umbral de simulación",
+                "label": "Umbral % - Cualquier enemigo de mazmorra por debajo de este umbral se omitirá"
             }
         },
         "analyzer_autofill": {
-            "title": "Available data",
-            "search": "Search by dungeon or boss name ..."
+            "title": "Datos disponibles",
+            "search": "Buscar por mazmorra o nombre del jefe ..."
         },
         "editor_shortcuts": {
-            "title": "Editor shortcuts",
+            "title": "Atajos del Editor",
             "shortcuts": {
                 "ctrl_s": {
                     "key": "Ctrl + S",
-                    "description": "Save script"
+                    "description": "Guardar script"
                 },
                 "ctrl_shift_s": {
-                    "key": "Ctrl + Shift + S",
-                    "description": "Save script and return back"
+                    "key": "Ctrl + Mayús + S",
+                    "description": "Guardar script y volver"
                 },
                 "tab": {
                     "key": "Tab",
-                    "description": "Add indent to selected lines<br>Move to next field"
+                    "description": "Añadir sangría a las líneas seleccionadas<br>Mover al siguiente campo"
                 },
                 "shift_tab": {
-                    "key": "Shift + Tab",
-                    "description": "Remove indent from selected lines<br>Move to previous field"
+                    "key": "Mayús + Tab",
+                    "description": "Eliminar sangría de las líneas seleccionadas<br>Mover al campo anterior"
                 },
                 "ctrl_shift_x": {
-                    "key": "Ctrl + Shift + X",
-                    "description": "Comment or uncomment selected lines"
+                    "key": "Ctrl + Mayús + X",
+                    "description": "Comentar o descomentar las líneas seleccionadas"
                 },
                 "ctrl_space": {
-                    "key": "Ctrl + Space",
-                    "description": "Show suggestions"
+                    "key": "Ctrl + Espacio",
+                    "description": "Mostrar sugerencias"
                 },
                 "ctrl_c": {
                     "key": "Ctrl + C",
-                    "description": "Copy selection"
+                    "description": "Copiar selección"
                 },
                 "ctrl_v": {
                     "key": "Ctrl + V",
-                    "description": "Paste"
+                    "description": "Pegar"
                 },
                 "ctrl_x": {
                     "key": "Ctrl + X",
-                    "description": "Cut selection"
+                    "description": "Cortar selección"
                 }
             }
         },
         "script_manual": {
-            "title": "Reference manual",
-            "deprecated": "deprecated",
+            "title": "Manual de referencia",
+            "deprecated": "obsoleto",
             "heading": {
-                "header": "Headers for all characters",
+                "header": "Cabeceras para todos los personajes",
                 "header_protected": "Cabeceras para miembros de mi guild",
                 "header_group": "Cabeceras para todos los gremios",
                 "header_private": "Cabeceras para mis personajes",
-                "header_scoped": "Accessors for objects",
-                "function": "Functions",
+                "header_scoped": "Accesorios para objetos",
+                "function": "Funciones",
                 "enum": "Enumerations",
-                "constant": "Default constants",
+                "constant": "Constantes predeterminadas",
                 "variable": "Variables",
                 "command": "Comandos"
             },
             "description": {}
         },
         "analyzer_options": {
-            "title": "Analyzer Options",
+            "title": "Opciones del Analizador",
             "option": {
                 "rage_display_mode": {
                     "title": "Rage display mode",
@@ -1397,51 +1382,51 @@
                     "value": {
                         "default": "Predeterminado",
                         "fight_count": "Fight count",
-                        "fighter_b_level": "Level of player B"
+                        "fighter_b_level": "Nivel del jugador B"
                     }
                 }
             }
         },
         "fight_statistical_analysis": {
-            "title": "Statistical analysis",
+            "title": "Análisis estadístico",
             "selector": "Filter expression",
-            "count": "Count",
-            "add": "Add new counter",
-            "variables": "Available variables:"
+            "count": "Cuenta",
+            "add": "Añadir nuevo contador",
+            "variables": "Variables disponibles:"
         },
         "script_edit": {
             "title": {
-                "edit": "Edit script",
-                "create": "Add new script"
+                "edit": "Editar script",
+                "create": "Añadir nuevo script"
             },
-            "name": "Name",
-            "description": "Description",
-            "source": "Content",
-            "tables": "Compatible tables",
+            "name": "Nombre",
+            "description": "Descripción",
+            "source": "Contenido",
+            "tables": "Tablas compatibles",
             "content": {
-                "empty": "Empty",
-                "current": "Current editor content"
+                "empty": "Vacío",
+                "current": "Contenido actual del editor"
             },
             "category": {
-                "defaults": "Duplicate default script",
-                "clone": "Duplicate existing script"
+                "defaults": "Duplicar script predeterminado",
+                "clone": "Duplicar script existente"
             },
-            "error_title": "Warning",
-            "error_name_blank": "Script name may not be blank"
+            "error_title": "Advertencia",
+            "error_name_blank": "El nombre del script no puede estar en blanco"
         },
         "script_archive": {
-            "title": "Archived scripts",
-            "filter": "Filter by type",
+            "title": "Scripts archivados",
+            "filter": "Filtrar por tipo",
             "clear": "Eliminar todos los elementos del archivo",
-            "copy_toast": "Script has been copied",
-            "unknown": "Unknown",
+            "copy_toast": "El script ha sido copiado",
+            "unknown": "Desconocido",
             "types": {
-                "all": "Display all changes",
-                "create": "Script created",
-                "overwrite": "Script overwritten by new version",
-                "save": "Script saved",
-                "remove": "Script removed",
-                "discard": "Script changes were discarded"
+                "all": "Mostrar todos los cambios",
+                "create": "Script creado",
+                "overwrite": "Script sobrescrito por una nueva versión",
+                "save": "Script guardado",
+                "remove": "Script eliminado",
+                "discard": "Los cambios en el script fueron descartados"
             },
             "item": {
                 "description": "Archivado: #{change}. Expira: #{expire}",
@@ -1449,25 +1434,25 @@
             }
         },
         "script_repository": {
-            "title": "Online scripts",
-            "search": "Search ...",
-            "list_add": "Add published script to your list",
-            "list_add_key": "Code",
-            "list_add_create": "Save as new script",
-            "list_add_accept": "Add to my list",
+            "title": "Scripts en línea",
+            "search": "Buscar...",
+            "list_add": "Añadir script publicado a tu lista",
+            "list_add_key": "Código",
+            "list_add_create": "Guardar como nuevo script",
+            "list_add_accept": "Añadir a mi lista",
             "list": {
-                "about": "Created by #{author}",
-                "about_with_uses": "Created by #{author}; #{uses} uses",
-                "no_description": "No description",
-                "remove": "Remove script from your list",
-                "private": "This script is private",
-                "public": "This script is public",
-                "default": "This script is available to everyone locally",
-                "new": "New!"
+                "about": "Creado por #{author}",
+                "about_with_uses": "Creado por #{author}; #{uses} usos",
+                "no_description": "Sin descripción",
+                "remove": "Eliminar script de tu lista",
+                "private": "Este script es privado",
+                "public": "Este script es público",
+                "default": "Este script está disponible para todos localmente",
+                "new": "¡Nuevo!"
             },
             "error_fetch": {
-                "title": "There was an error while fetching scripts",
-                "message": "Please wait few moments and try again"
+                "title": "Se ha producido un error al obtener scripts",
+                "message": "Por favor espere un momento y vuelva a intentarlo"
             }
         },
         "statistics_integration_options": {
@@ -1496,16 +1481,16 @@
         "delete_script": {
             "title": "Eliminar script",
             "notice": "¿Está seguro que desea eliminar permanentemente el script seleccionado?",
-            "notice_bonus_remote": "<br><br>This will not unpublish your script and you will lose edit access to it!",
-            "notice_bonus_used": "<br><br>This script is currently applied to following tables: #{tables}"
+            "notice_bonus_remote": "<br><br>¡Esto no despublicará tu script y perderás el acceso para editarlo!",
+            "notice_bonus_used": "<br><br>Este script se aplica actualmente a las siguientes tablas: #{tables}"
         },
         "delete_remote_script": {
-            "title": "Unpublish script",
-            "message": "This action will revoke the code associated with this script and it will be deleted permanently! Are you sure you want to continue?"
+            "title": "Despublicar script",
+            "message": "¡Esta acción revocará el código asociado a este script y se eliminará permanentemente! ¿Estás seguro de que quieres continuar?"
         },
         "remote_script_verification": {
-            "title": "Script verification",
-            "message": "Your script has to be verified before it is made available in the public repository. By proceeding with this action you will automatically request verification.<br><br>The verification process may take up to several days."
+            "title": "Verificación del script",
+            "message": "Tu script tiene que ser verificado antes de que esté disponible en el repositorio público. Al continuar con esta acción, solicitarás automáticamente la verificación.<br><br>El proceso de verificación puede tardar varios días."
         },
         "warning": {
             "title": "¡Se ha producido un error!",
@@ -1515,6 +1500,7 @@
             "title": "¡Se ha producido un error fatal!",
             "notice#": "Este error también podría haber sido causado por su perfil actual.<br>Haga clic en el botón de revertir abajo para volver al perfil predeterminado.",
             "refresh": "Haz clic aquí o actualiza la página",
+            "temporary": "Open page in temporary mode",
             "revert": "Volver al perfil por defecto"
         },
         "changelog": {
@@ -1529,13 +1515,13 @@
         },
         "edit_file_tag": {
             "title": "Editar etiquetas",
-            "current": "Tags",
+            "current": "Etiquetas",
             "cancel": "Cancelar",
-            "clear": "Remove all tags",
+            "clear": "Eliminar todas las etiquetas",
             "insert": {
-                "title": "Add new tag",
-                "placeholder": "Tag name",
-                "tooltip": "Add new tag"
+                "title": "Añadir nueva etiqueta",
+                "placeholder": "Nombre de la etiqueta",
+                "tooltip": "Añadir nueva etiqueta"
             }
         },
         "profile_create": {
@@ -1597,9 +1583,9 @@
             "title": "Configuración del Simulador"
         },
         "simulator_custom_preset": {
-            "title": "Add custom preset",
-            "close": "Close",
-            "insert": "Insert preset"
+            "title": "Añadir preajuste personalizado",
+            "close": "Cerrar",
+            "insert": "Insertar preajuste"
         }
     },
     "attributes": {
@@ -1679,33 +1665,33 @@
             "max_xp": "XP Máximo",
             "min_gold": "Oro Mínimo",
             "max_gold": "Oro Máximo",
-            "enchantment_exp": "XP Enchantment",
-            "enchantment_gold": "Gold Enchantment"
+            "enchantment_exp": "Encantamiento de EXP",
+            "enchantment_gold": "Encantamiento de Oro"
         },
         "expeditions": {
-            "title": "Expeditions (Experimental)",
-            "notice": "* Values represent 25 thirst expedition rewards",
-            "album": "Scrapbook %",
-            "group_exp": "Guild XP %",
-            "group_gold": "Guild Gold %",
-            "tower": "Tower",
-            "rune_exp": "Experience Rune",
-            "rune_gold": "Gold Rune",
-            "stars": "Stars",
+            "title": "Expediciones (Experimental)",
+            "notice": "* Los valores representan las recompensas de expediciones de 25 de sed",
+            "album": "Álbum de la meticulosidad %",
+            "group_exp": "Gremio EXP %",
+            "group_gold": "Gremio Oro %",
+            "tower": "Torre",
+            "rune_exp": "Runa de experiencia",
+            "rune_gold": "Runa de Oro",
+            "stars": "Estrellas",
             "mount": {
-                "title": "Mount",
-                "none": "None",
-                "pig": "Pig / Cow",
-                "wolf": "Wolf / Horse",
-                "raptor": "Raptor / Tiger",
-                "griffin": "Griffin"
+                "title": "Montura",
+                "none": "Ninguna",
+                "pig": "Cerdo / Vaca",
+                "wolf": "Lobo / Caballo",
+                "raptor": "Raptor / Tigre",
+                "griffin": "Grifo"
             },
-            "enchantment_exp": "XP Enchantment",
-            "enchantment_gold": "Gold Enchantment",
-            "xp": "XP (Final)",
-            "gold_chest": "Gold (Chest)",
-            "gold_mid": "Gold (Mid)",
-            "gold": "Gold (Final)"
+            "enchantment_exp": "Encantamiento de EXP",
+            "enchantment_gold": "Encantamiento de Oro",
+            "xp": "EXP (Final)",
+            "gold_chest": "Oro (Cofre)",
+            "gold_mid": "Oro (Mid)",
+            "gold": "Oro (Final)"
         },
         "misc": {
             "title": "Misceláneo",
@@ -1732,7 +1718,8 @@
         }
     },
     "raids": {
-        "result": "Chance to defeat raid: #{chance}%",
+        "result": "Probabilidad de derrotar la batida: #{chance}%",
+        "footer#": "Agradecimiento especial a Eggman y a todos los que han pasado por el sufrimiento de recolectar datos de incursiones para el bien común",
         "raids": {
             "hellevator": "Hellevator Raid #{number}"
         }
@@ -1836,7 +1823,7 @@
         },
         "9": {
             "name": "Las pirámides de la locura",
-            "10": "Yourself"
+            "10": "Tú mismo"
         },
         "10": {
             "name": "La fortaleza de Cráneo oscuro"
@@ -1895,6 +1882,21 @@
         "30": {
             "name": "Sede central de Playa"
         },
+        "31": {
+            "name": "Arcade of the Old Pixel Icons"
+        },
+        "32": {
+            "name": "The Server Room"
+        },
+        "33": {
+            "name": "Workshop of the Hunters of the Undead"
+        },
+        "34": {
+            "name": "Retro TV Legends"
+        },
+        "35": {
+            "name": "The Meeting Room"
+        },
         "201": {
             "name": "Torre"
         },
@@ -1903,6 +1905,9 @@
         },
         "203": {
             "name": "Tornado"
+        },
+        "204": {
+            "name": "Tormenta de arena"
         }
     }
 }

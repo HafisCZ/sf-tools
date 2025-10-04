@@ -5,34 +5,84 @@ const GUILD_ROLE_MEMBER = 3;
 const GUILD_ROLE_INVITED = 4;
 
 class ItemModel {
+    static LEGACY = 0;
+    static MODERN = 1;
+
     static empty () {
-        return new ItemModel(new Array(12).fill(0), 0, 0);
+        return new ItemModel(ItemModel.MODERN, new Array(19).fill(0), 0, 0);
     }
 
-    constructor (data, slotType, slotIndex) {
+    constructor (version, data, slotType, slotIndex) {
+        let type, socket, enchantmentType, picIndex, damageMin, damageMax, attributeType, attributeValue, gold, coins, upgradeLevel, socketPower, itemLevel;
+
         let dataType = new ComplexDataType(data);
-        dataType.assert(12);
+        if (version === ItemModel.LEGACY) {
+            dataType.assert(12);
 
-        let type = dataType.short();
-        let socket = dataType.byte();
-        let enchantmentType = dataType.byte();
-        let picIndex = dataType.short();
-        dataType.short();
-        let damageMin = dataType.long();
-        let damageMax = dataType.long();
-        let attributeType = [dataType.long(), dataType.long(), dataType.long()];
-        let attributeValue = [dataType.long(), dataType.long(), dataType.long()];
-        let gold = dataType.long();
-        let coins = dataType.byte();
-        let upgradeLevel = dataType.byte();
-        let socketPower = dataType.short();
+            type = dataType.short();
+            socket = dataType.byte();
+            enchantmentType = dataType.byte();
+            picIndex = dataType.short();
+            dataType.short();
+            damageMin = dataType.long();
+            damageMax = dataType.long();
+            attributeType = [dataType.long(), dataType.long(), dataType.long()];
+            attributeValue = [dataType.long(), dataType.long(), dataType.long()];
+            gold = dataType.long();
+            coins = dataType.byte();
+            upgradeLevel = dataType.byte();
+            socketPower = dataType.short();
+            itemLevel = 0;
+        } else {
+            dataType.assert(19);
 
+            // Item type
+            type = dataType.long();
+            // Socket - 0 for no socket, 1 for socket and 2+ for slotted gems
+            socket = dataType.long();
+            // Enchantment type
+            enchantmentType = dataType.long();
+            // Picture index
+            picIndex = dataType.long();
+            // Enchantment power
+            dataType.long();
+            // Damage Min / Armor
+            damageMin = dataType.long();
+            // Damage Max
+            damageMax = dataType.long();
+            // Attribute Types
+            attributeType = [
+                dataType.long(),
+                dataType.long(),
+                dataType.long()
+            ];
+            // Attribute Values
+            attributeValue = [
+                dataType.long(),
+                dataType.long(),
+                dataType.long()
+            ];
+            // Gold valuee 
+            gold = dataType.long();
+            // Mushroom value
+            coins = dataType.long();
+            // Upgrade level
+            upgradeLevel = dataType.long();
+            // Socketted gem power
+            socketPower = dataType.long();
+            // Item level
+            itemLevel = dataType.long();
+            // Secret
+            dataType.long();
+        }
+
+        // Apply fixes for legacy attributes
         if (attributeType[1] === 4 && attributeType[2] === 5) {
-            // Legacy attribute
             attributeType = [20 + attributeType[0], 0, 0];
             attributeValue = [attributeValue[0], 0, 0];
         }
 
+        this.Version = version;
         this.Data = data;
         this.SlotType = slotType;
         this.SlotIndex = slotIndex;
@@ -50,6 +100,7 @@ class ItemModel {
         this.HasValue = (coins > 0 || gold > 0 || (upgradeLevel > 0 && gold != 0 && type != 1));
         this.Enchantment = enchantmentType;
         this.Armor = damageMin;
+        this.ItemLevel = itemLevel;
         this.DamageMin = damageMin;
         this.DamageMax = damageMax;
         this.Upgrades = upgradeLevel;
@@ -154,18 +205,29 @@ class ItemModel {
 
     morph (from, to, force = false) {
         if ((this.Type <= 7 || force) && this.SellPrice.Gold > 0) {
-            var data = [ ... this.Data ];
-            for (var i = 0; i < 3; i++) {
-                if (data[i + 4] == from) {
-                    data[i + 4] = to;
-                } else if (data[i + 4] == from + 20) {
-                    data[i + 4] = to + 20;
+            const data = [ ... this.Data ];
+
+            if (this.Version === ItemModel.LEGACY) {
+                for (let i = 0; i < 3; i++) {
+                    if (data[i + 4] == from) {
+                        data[i + 4] = to;
+                    } else if (data[i + 4] == from + 20) {
+                        data[i + 4] = to + 20;
+                    }
+                }
+            } else {
+                for (let i = 0; i < 3; i++) {
+                    if (data[i + 7] == from) {
+                        data[i + 7] = to;
+                    } else if (data[i + 7] == from + 20) {
+                        data[i + 7] = to + 20;
+                    }
                 }
             }
 
-            return new ItemModel(data, this.SlotType, this.SlotIndex);
+            return new ItemModel(this.Version, data, this.SlotType, this.SlotIndex);
         } else {
-            return new ItemModel(this.Data, this.SlotType, this.SlotIndex);
+            return new ItemModel(this.Version, this.Data, this.SlotType, this.SlotIndex);
         }
     }
 
@@ -194,7 +256,7 @@ class ItemModel {
     }
 
     clone () {
-        return new ItemModel(this.Data, this.SlotType, this.SlotIndex);
+        return new ItemModel(this.Version, this.Data, this.SlotType, this.SlotIndex);
     }
 
     getAttribute (id) {
@@ -706,7 +768,8 @@ class DungeonHelper {
             Tower: open,
             Twister: open,
             Raid: locked,
-            Youtube: locked
+            Youtube: locked,
+            Sandstorm: locked
         }
     }
 
@@ -728,6 +791,7 @@ class DungeonHelper {
             dungeons.Twister = shadow[14];
             dungeons.Player = normal[17];
             dungeons.Youtube = shadow[17];
+            dungeons.Sandstorm = normal[31];
         } else {
             // Convert old dungeon data to new format
             for (const dungeonIndex of DungeonHelper.LEGACY_TO_INTERNAL_MAPPING) {
@@ -776,7 +840,7 @@ class DungeonHelper {
     static DUNGEON_LOCKED = -2;
 
     static PLAYA_TO_INTERNAL_MAPPING = [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36
     ];
 
     static PLAYA_TO_INTERNAL_MAPPING_ENTRIES = Object.entries(DungeonHelper.PLAYA_TO_INTERNAL_MAPPING);
@@ -798,8 +862,8 @@ class DungeonHelper {
 }
 
 class PlayerModel {
-    static ACHIEVEMENTS_COUNT = 104;
-    static SCRAPBOOK_COUNT = 2315;
+    static ACHIEVEMENTS_COUNT = 115;
+    static SCRAPBOOK_COUNT = 2396;
 
     static SCROLL_MAP = {
         11: 0,
@@ -928,7 +992,7 @@ class PlayerModel {
         dataType.clear(); // skip
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
-        this.MirrorPieces = PlayerModel.getMirrorPieces(dataType.short());
+        this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
         PlayerModel.loadAttributes(this, dataType, false);
@@ -939,7 +1003,7 @@ class PlayerModel {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = PlayerModel.loadEquipment(dataType, 1, this.Class);
+        this.Items = PlayerModel.loadLegacyEquipment(dataType, 1, this.Class);
         this.Inventory = {
             Backpack: [],
             Chest: [],
@@ -950,7 +1014,7 @@ class PlayerModel {
             Kunigunde: {}
         };
         for (let i = 0; i < 5; i++) {
-            const item = new ItemModel(dataType.sub(12), 6, i + 1);
+            const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 6, i + 1);
             if (item.Type > 0) {
                 this.Inventory.Backpack.push(item);
             }
@@ -963,14 +1027,14 @@ class PlayerModel {
 
         dataType.skip(1);
         for (let i = 0; i < 6; i++) {
-            const item = new ItemModel(dataType.sub(12), 7, i + 1);
+            const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 7, i + 1);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
         }
         dataType.skip(1);
         for (let i = 0; i < 6; i++) {
-            const item = new ItemModel(dataType.sub(12), 8, i + 1);
+            const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 8, i + 1);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
@@ -1310,12 +1374,34 @@ class PlayerModel {
         }
 
         this.Dungeons = DungeonHelper.fromData(legacyDungeons, data.dungeons);
+
+        if (data.equippedItems) {
+            // Override items with equipped items if present (modern implementation)
+            this.Items = PlayerModel.loadModernEquipment(new ComplexDataType(data.equippedItems), 1, this.Class)
+        }
+
         this.evaluateCommon();
 
-        if (data.chest) {
+        if (data.backpackItems) {
+            dataType = new ComplexDataType(data.backpackItems);
+
+            this.Inventory.Chest = [];
+            this.Inventory.Backpack = [];
+
+            for (let i = 0; i < 45 && dataType.atLeast(19); i++) {
+                const item = new ItemModel(ItemModel.MODERN, dataType.sub(19), 6, i);
+                if (item.Type > 0) {
+                    if (i >= 20) {
+                        this.Inventory.Chest.push(item);
+                    } else {
+                        this.Inventory.Backpack.push(item);
+                    }
+                }
+            }
+        } else if (data.chest) {
             dataType = new ComplexDataType(data.chest);
             for (let i = 0; i < 45 && dataType.atLeast(12); i++) {
-                const item = new ItemModel(dataType.sub(12), 6, i + 6);
+                const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 6, i + 6);
                 if (item.Type > 0) {
                     if (i >= 15) {
                         this.Inventory.Chest.push(item);
@@ -1326,8 +1412,33 @@ class PlayerModel {
             }
         }
 
-        if (data.dummy) {
-            this.Inventory.Dummy = PlayerModel.loadEquipment(new ComplexDataType(data.dummy), 5, this.Class);
+        if (data.dummyItems) {
+            // Override items with dummy items if present (modern implementation)
+            this.Inventory.Dummy = PlayerModel.loadModernEquipment(new ComplexDataType(data.dummyItems), 5, this.Class);
+        } else if (data.dummy) {
+            // Otherwise load from old dummy field
+            this.Inventory.Dummy = PlayerModel.loadLegacyEquipment(new ComplexDataType(data.dummy), 5, this.Class);
+        }
+
+        // Override items with new shop items
+        if (data.shakesItems || data.fidgetItems) {
+            this.Inventory.Shop = [];
+
+            dataType = new ComplexDataType(data.shakesItems);
+            for (let i = 0; i < 6; i++) {
+                const item = new ItemModel(ItemModel.MODERN, dataType.sub(19), 7, i + 1);
+                if (item.Type > 0) {
+                    this.Inventory.Shop.push(item);
+                }
+            }
+
+            dataType = new ComplexDataType(data.fidgetItems);
+            for (let i = 0; i < 6; i++) {
+                const item = new ItemModel(ItemModel.MODERN, dataType.sub(19), 8, i + 1);
+                if (item.Type > 0) {
+                    this.Inventory.Shop.push(item);
+                }
+            }
         }
 
         dataType = new ComplexDataType(data.witch);
@@ -1346,9 +1457,14 @@ class PlayerModel {
 
         dataType.skip(1);
 
-        this.Witch.Scrolls = [];
+        this.Witch.Scrolls = Array.from({ length: 9 }, () => ({
+            Date: undefined,
+            Type: undefined,
+            Owned: false
+        }));
+
         for (let i = 0; i < 9; i++) {
-            dataType.skip();
+            dataType.skip(1);
 
             const picIndex = dataType.long();
             const date = dataType.long() * 1000 + data.offset;
@@ -1405,15 +1521,23 @@ class PlayerModel {
 
             dataType.skip(3);
             var bert = CompanionModel.fromTower(dataType);
-            this.Inventory.Bert = PlayerModel.loadEquipment(dataType, 2, WARRIOR);
+            this.Inventory.Bert = PlayerModel.loadLegacyEquipment(dataType, 2, WARRIOR);
 
             dataType.skip(6);
             var mark = CompanionModel.fromTower(dataType);
-            this.Inventory.Mark = PlayerModel.loadEquipment(dataType, 3, MAGE);
+            this.Inventory.Mark = PlayerModel.loadLegacyEquipment(dataType, 3, MAGE);
 
             dataType.skip(6);
             var kuni = CompanionModel.fromTower(dataType);
-            this.Inventory.Kunigunde = PlayerModel.loadEquipment(dataType, 4, SCOUT);
+            this.Inventory.Kunigunde = PlayerModel.loadLegacyEquipment(dataType, 4, SCOUT);
+
+            if (_notEmpty(data.companionItems)) {
+                dataType = new ComplexDataType(data.companionItems);
+
+                this.Inventory.Bert = PlayerModel.loadModernEquipment(dataType, 2, WARRIOR);
+                this.Inventory.Mark = PlayerModel.loadModernEquipment(dataType, 3, MAGE);
+                this.Inventory.Kunigunde = PlayerModel.loadModernEquipment(dataType, 4, SCOUT);
+            }
 
             this.Companions = {
                 Bert: new CompanionModel(this, bert, this.Inventory.Bert, WARRIOR),
@@ -1505,7 +1629,7 @@ class PlayerModel {
         dataType.clear(); // skip
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
-        this.MirrorPieces = PlayerModel.getMirrorPieces(dataType.short());
+        this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
         PlayerModel.loadAttributes(this, dataType);
@@ -1516,7 +1640,7 @@ class PlayerModel {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = PlayerModel.loadEquipment(dataType, 1, this.Class);
+        this.Items = PlayerModel.loadLegacyEquipment(dataType, 1, this.Class);
         this.Mount = dataType.short();
         this.MountValue = PlayerModel.getMount(this.Mount);
 
@@ -1617,6 +1741,11 @@ class PlayerModel {
             Fire: dataType.long(),
             Water: dataType.long()
         };
+
+        if (data.equippedItems) {
+            // Override items with equipped items if present (modern implementation)
+            this.Items = PlayerModel.loadModernEquipment(new ComplexDataType(data.equippedItems), 1, this.Class)
+        }
 
         this.Name = data.name;
         this.Prefix = _formatPrefix(data.prefix);
@@ -2088,23 +2217,45 @@ class PlayerModel {
         }
     }
 
-    static loadEquipment (dataType, inventoryType, characterClass) {
+    static loadLegacyEquipment (dataType, inventoryType, characterClass) {
         const items = {
-            Head: new ItemModel(dataType.sub(12), inventoryType, 1),
-            Body: new ItemModel(dataType.sub(12), inventoryType, 2),
-            Hand: new ItemModel(dataType.sub(12), inventoryType, 3),
-            Feet: new ItemModel(dataType.sub(12), inventoryType, 4),
-            Neck: new ItemModel(dataType.sub(12), inventoryType, 5),
-            Belt: new ItemModel(dataType.sub(12), inventoryType, 6),
-            Ring: new ItemModel(dataType.sub(12), inventoryType, 7),
-            Misc: new ItemModel(dataType.sub(12), inventoryType, 8),
-            Wpn1: new ItemModel(dataType.sub(12), inventoryType, 9)
+            Head: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 1),
+            Body: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 2),
+            Hand: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 3),
+            Feet: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 4),
+            Neck: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 5),
+            Belt: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 6),
+            Ring: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 7),
+            Misc: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 8),
+            Wpn1: new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 9)
         }
 
         if (characterClass === WARRIOR || characterClass === ASSASSIN) {
-            items.Wpn2 = new ItemModel(dataType.sub(12), inventoryType, 10)
+            items.Wpn2 = new ItemModel(ItemModel.LEGACY, dataType.sub(12), inventoryType, 10)
         } else {
             dataType.sub(12);
+        }
+
+        return items;
+    }
+
+    static loadModernEquipment (dataType, inventoryType, characterClass) {
+        const items = {
+            Head: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 1),
+            Body: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 2),
+            Hand: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 3),
+            Feet: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 4),
+            Neck: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 5),
+            Belt: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 6),
+            Ring: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 7),
+            Misc: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 8),
+            Wpn1: new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 9)
+        }
+
+        if (characterClass === WARRIOR || characterClass === ASSASSIN) {
+            items.Wpn2 = new ItemModel(ItemModel.MODERN, dataType.sub(19), inventoryType, 10)
+        } else {
+            dataType.sub(19);
         }
 
         return items;
@@ -2150,7 +2301,8 @@ class PlayerModel {
             GoldFrame: (value & (1 << 5)) != 0,
             OfficialCreator: (value & (1 << 9)) != 0,
             OfficialDiscord: (value & (1 << 10)) != 0,
-            TwitchFrame: (value & (1 << 11)) != 0
+            TwitchFrame: (value & (1 << 11)) != 0,
+            FriendlyFireFrame: (value & (1 << 12)) != 0
         }
     }
 

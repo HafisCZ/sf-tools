@@ -1,6 +1,6 @@
 // Version stuff
 const MODULE_VERSION_MAJOR = '7';
-const MODULE_VERSION_MINOR = '4638';
+const MODULE_VERSION_MINOR = '4811';
 const MODULE_VERSION = `v${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}`
 
 class Logger {
@@ -302,7 +302,7 @@ class Site {
             script_author: '',
             debug: false,
             backup_reminder_frequency: 1,
-            backup_reminder_timestamp: 0,
+            backup_reminder_timestamp: Date.now() + 2592000000,
             announcement_accepted: 0,
             announcements_viewed: []
         }

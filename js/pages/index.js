@@ -16,6 +16,10 @@ Site.ready({ name: 'index' }, function () {
         return date.toLocaleString('en-GB', { dateStyle: 'long', timeStyle: 'short' }).replace(' at', '');
     }
 
+    function formatMessage (message) {
+        return message.split('\n')[0]
+    }
+
     const branch = window.location.hostname.startsWith('beta.') ? 'beta' : ''
 
     const item = Store.shared.get('version', { expire: 0 });
@@ -54,11 +58,11 @@ Site.ready({ name: 'index' }, function () {
                     expire: Date.now() + 1800000
                 })
 
-                $(".footer-item").first().html(`v${ MODULE_VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
+                $(".footer-item").first().html(`v${ MODULE_VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ formatMessage(message) }`);
             })
         });
     } else {
-        $(".footer-item").first().html(`v${ MODULE_VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(item.timestamp) } - ${ item.message }`);
+        $(".footer-item").first().html(`v${ MODULE_VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(item.timestamp) } - ${ formatMessage(item.message) }`);
     }
 
     document.getElementById('credits-toggle').addEventListener('click', function () {

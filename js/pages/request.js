@@ -77,7 +77,8 @@ const SCOPES = {
         Raid: true,
         Hydra: true,
         TotalInstructor: true,
-        TotalTreasure: true
+        TotalTreasure: true,
+        TotalKnights: true,
       }
     },
     Mount: true,
@@ -92,7 +93,8 @@ const SCOPES = {
       Twister: true,
       Group: true,
       Player: true,
-      Youtube: true
+      Youtube: true,
+      Sandstorm: true
     },
     Prefix: true,
     Runes: true,

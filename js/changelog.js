@@ -49,16 +49,38 @@ const ANNOUNCEMENTS = [
 ]
 
 const CHANGELOG = {
-    'v7.XXXX': {
+    'v7.4811': {
         'Statistics': [
-            'Added character and guild links to backup file'
+            'Added character and guild links to backup file',
+            'Added header for Sandstorm dungeon',
+            'Added support for Gladiator being read from player data',
+            'Added support for daily tasks being read from player data',
+            'Added command to control sticky headers',
+            'Fixed rune amount approximation not using total resistance runes'
         ],
         'Hellevator Simulator': [
             'Added support for Snacks / Treats'
         ],
+        'Raid Simulator': [
+            'Added first 50 normal raids',
+            'Added hellevator raids'
+        ],
         'Dungeon Simulator': [
+            'Added new Sandstorm dungeon',
             'Fixed mirror enemy class being incorrectly set when simulating more than once',
-            'Fixed pasting of copied companions'
+            'Fixed pasting of copied companions',
+        ],
+        'Fight Analyzer': [
+            'Added support for Fightstring v2',
+            'Added option to assume maximum armor'
+        ],
+        'Endpoint': [
+            'Added support for rate-limiting'
+        ],
+        'All Tools': [
+            'Added support for Necromancer',
+            'Added support for reworked Druid',
+            'Adjusted fist damage calculations for all classes'
         ]
     },
     'v7.4638': {
