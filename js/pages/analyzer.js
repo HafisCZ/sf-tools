@@ -711,6 +711,27 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     // Increase rage if it's a chained attack
                     attackRageOffset++;
                 }
+
+
+                let tinctureEffect;
+                if (round.attacker.Class === PLAGUEDOCTOR) {
+                    tinctureEffect = round.targetEffects.find((effect => effect.type === EFFECT_TYPE_TINCTURE));
+                    if (tinctureEffect) {
+                        round.attackerEffects.push(tinctureEffect);
+                    }
+
+                }
+                else if (round.target.Class === PLAGUEDOCTOR) {
+                    tinctureEffect = round.attackerEffects.find((effect => effect.type === EFFECT_TYPE_TINCTURE));
+                    round.attackerEffects = round.attackerEffects.filter(v => v !== tinctureEffect);
+                    if (tinctureEffect) {
+                        round.targetEffects.push(tinctureEffect);
+                    }
+                }
+
+                if (tinctureEffect) {
+                    tinctureEffect.duration = Math.min(3, tinctureEffect.duration+1);
+                }
             }
 
             return processedRounds
@@ -1006,6 +1027,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                 return copyMode ? `necromancer_minion_${state.minion}`: `<i class="ui skull crossbones icon text-orangered" title="${intl(`analyzer.special_state.necromancer_minion_${state.minion}`)}"></i>`;
             } else if (state.type === 'paladin_stance') {
                 return copyMode ? `paladin_stance_${state.stance}` : `<div class="flex items-center justify-content-center"><i class="ui shield alternate icon text-orangered"></i> ${intl(`analyzer.special_state.paladin_stance_${state.stance}`)}</div>`
+            } else if (state.type === 'plague_doctor_tincture') {
+                return copyMode ? `plague_doctor_tincture` : `<i class="ui flask icon text-orangered" title="${intl(`analyzer.special_state.plague_doctor_tincture`)}"></i>`;
             }
         }
 
@@ -1148,6 +1171,16 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         }
                     }
                     case PALADIN: return model.Data.Stances[0];
+                    case PLAGUEDOCTOR: {
+                        const tinctureEffect = round.attackerEffects.filter(v => v.type === EFFECT_TYPE_TINCTURE)[0];
+
+                        if (tinctureEffect && ATTACK_TYPES_TINCTURE.includes(round.attackType)) {
+                            return model.Data.TinctureRounds[tinctureEffect.duration - 1];
+                        } else {
+                            return model.Data;
+                        }
+
+                    }
                     default: {
                         return model.Data;
                     }
@@ -1173,6 +1206,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                     case NECROMANCER: {
                         if (round.targetEffects.length > 0) {
                             return model.Data.Minions[round.targetEffects[0].tier - 1];
+                        } else {
+                            return model.Data;
+                        }
+                    }
+                    case PLAGUEDOCTOR: {
+                        const tinctureEffect = round.targetEffects.filter(v => v.type === EFFECT_TYPE_TINCTURE)[0];
+                        if (tinctureEffect) {
+                            return model.Data.TinctureRounds[tinctureEffect.duration - 1];
                         } else {
                             return model.Data;
                         }
@@ -1260,6 +1301,14 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
             if (round.targetEffects.length > 0 && round.target.Class === NECROMANCER) {
                 round.targetSpecialDisplay = { type: 'necromancer_minion', minion: round.targetEffects[0].tier }
+            }
+
+            if (round.attackerEffects.length > 0 && round.attacker.Class === PLAGUEDOCTOR) {
+                round.attackerSpecialDisplay = { type: 'plague_doctor_tincture', duration: round.attackerEffects[0].duration }
+            }
+
+            if (round.targetEffects.length > 0 && round.target.Class === PLAGUEDOCTOR) {
+                round.targetSpecialDisplay = { type: 'plague_doctor_tincture', duration: round.targetEffects[0].duration }
             }
 
             if (round.attackerEffects.length > 0 && round.attacker.Class === BARD) {

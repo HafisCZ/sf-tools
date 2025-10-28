@@ -16,6 +16,7 @@
         "class9": "Bard",
         "class10": "Necromancer",
         "class11": "Paladin",
+        "class12": "Plague Doctor",
         "mask0": "Eagle",
         "mask1": "Bear",
         "mask2": "Tiger",
@@ -110,6 +111,10 @@
         "attack14": "Revive",
         "attack15": "Minion Critical",
         "attack16": "Swoop Critical",
+        "attack17": "Tincture Throw",
+        "attack18": "Tincture Throw Critical",
+        "attack19": "Poison",
+        "attack20": "Poison Critical",
         "attack100": "Normal",
         "attack101": "Critical",
         "defense3": "Block",
@@ -958,7 +963,8 @@
             "necromancer_minion_3": "Summoned Golem is affecting the player",
             "paladin_stance_1": "Neutral",
             "paladin_stance_2": "Defensive",
-            "paladin_stance_3": "Offensive"
+            "paladin_stance_3": "Offensive",
+            "plague_doctor_tincture": "Tincture is affecting the player"
         },
         "sidebar": {
             "toggles": {

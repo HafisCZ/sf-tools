@@ -154,7 +154,8 @@ const PLAYER_CLASS_SEARCH = [
     'druid',
     'bard',
     'necromancer',
-    'paladin'
+    'paladin',
+    'plague doctor',
 ];
 
 // Group Detail View
