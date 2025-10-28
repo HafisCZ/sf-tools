@@ -1,9 +1,10 @@
+
 let FIGHT_LOG_ENABLED = false;
 
 class FIGHT_LOG {
     static #allLogs = [];
 
-    static logRound (attacker, target, damage, attackType, defenseType) {
+    static logRound(attacker, target, damage, attackType, defenseType) {
         this.lastLog.rounds.push({
             attackerId: attacker.Player.ID || attacker.Index,
             targetId: target.Player.ID || target.Index,
@@ -25,11 +26,11 @@ class FIGHT_LOG {
         })
     }
 
-    static dump () {
+    static dump() {
         return this.#allLogs;
     }
 
-    static logInit (playerA, playerB) {
+    static logInit(playerA, playerB) {
         this.lastLog = {
             fighterA: {
                 ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Level: playerA.Player.Level,
@@ -53,7 +54,7 @@ class FIGHT_LOG {
         this.#allLogs.push(this.lastLog)
     }
 
-    static logRage (currentRage) {
+    static logRage(currentRage) {
         this.currentRage = currentRage;
     }
 }
@@ -70,14 +71,14 @@ const FLAGS = Object.defineProperties(
     },
     {
         set: {
-            value: function (flags) {
+            value: function(flags) {
                 for (const [key, val] of Object.entries(flags || {})) {
                     this[key] = !!val;
                 }
             }
         },
         log: {
-            value: function (state) {
+            value: function(state) {
                 FIGHT_LOG_ENABLED = state;
             }
         }
@@ -99,6 +100,7 @@ const DRUID = 8;
 const BARD = 9;
 const NECROMANCER = 10;
 const PALADIN = 11;
+const PLAGUEDOCTOR = 12;
 
 // Rune values
 const RUNE_FIRE_DAMAGE = 40;
@@ -128,6 +130,10 @@ const ATTACK_TYPE_SWOOP = 13;
 const ATTACK_TYPE_REVIVE = 14;
 const ATTACK_TYPE_MINION_CRITICAL = 15;
 const ATTACK_TYPE_SWOOP_CRITICAL = 16;
+const ATTACK_TYPE_TINCTURE_THROW = 17;
+const ATTACK_TYPE_TINCTURE_THROW_CRITICAL = 18;
+const ATTACK_TYPE_TINCTURE = 19;
+const ATTACK_TYPE_TINCTURE_CRITICAL = 20;
 const ATTACK_TYPE_NORMAL_SECONDARY = 100;
 const ATTACK_TYPE_CRITICAL_SECONDARY = 101;
 
@@ -140,12 +146,21 @@ const ATTACK_TYPES_CRITICAL = [
     ATTACK_TYPE_CRITICAL,
     ATTACK_TYPE_SWOOP_CRITICAL,
     ATTACK_TYPE_CRITICAL_SECONDARY,
-    ATTACK_TYPE_MINION_CRITICAL
+    ATTACK_TYPE_MINION_CRITICAL,
+    ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
+    ATTACK_TYPE_TINCTURE_CRITICAL
 ]
 
 const ATTACK_TYPES_SPECIAL = [
     ATTACK_TYPE_MINION_SUMMON,
-    ATTACK_TYPE_REVIVE
+    ATTACK_TYPE_REVIVE,
+]
+
+const ATTACK_TYPES_TINCTURE = [
+    ATTACK_TYPE_TINCTURE_THROW,
+    ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
+    ATTACK_TYPE_TINCTURE,
+    ATTACK_TYPE_TINCTURE_CRITICAL
 ]
 
 const ATTACK_TYPES_MINION = [
@@ -161,6 +176,7 @@ const DEFENSE_TYPE_BLOCK_HEAL = 6;
 
 const EFFECT_TYPE_SONG = 1;
 const EFFECT_TYPE_MINION = 2;
+const EFFECT_TYPE_TINCTURE = 3;
 
 // Configuration
 const CONFIG = Object.defineProperties(
@@ -351,7 +367,10 @@ const CONFIG = Object.defineProperties(
             EffectRounds: 4,
             EffectBaseDuration: [3, 3, 4],
             EffectBaseChance: [25, 50, 25],
-            EffectValues: [ 0.2, 0.4, 0.6 ]
+            EffectValues: [0.2, 0.4, 0.6],
+
+            PlagueDoctorDamageBonus: 0,
+            PlagueDoctorDamageMultiplier: 1.05
         },
         Necromancer: {
             ID: NECROMANCER,
@@ -424,7 +443,6 @@ const CONFIG = Object.defineProperties(
             MageDamageMultiplier: 1.5,
             AssassinDamageMultiplier: 1,
             DruidDamageMultiplier: 1,
-            
             StanceInitial: 0,
             Stances: [
                 {
@@ -464,28 +482,80 @@ const CONFIG = Object.defineProperties(
                     StanceChangeChance: 0.5
                 }
             ]
+        },
+        PlagueDoctor: {
+            ID: PLAGUEDOCTOR,
+
+            Attribute: 'Dexterity',
+
+            HealthMultiplier: 4,
+            WeaponMultiplier: 2,
+            DamageMultiplier: 5 / 4,
+            MaximumDamageReduction: 10,
+            MaximumDamageReductionMultiplier: 2,
+
+            SkipChance: 0.20,
+            SkipLimit: 999,
+            SkipType: SKIP_TYPE_DEFAULT,
+            SkipVariant: DEFENSE_TYPE_EVADE,
+
+            AssassinDamageBonus: 0,
+            BattlemageDamageBonus: 0,
+            BattlemageDamageMultiplier: 1,
+            DemonHunterDamageBonus: 0,
+            DemonHunterDamageMultiplier: 1.065,
+            BardDamageBonus: 0,
+            BardDamageMultiplier: 1,
+
+            TinctureChance: 0.50,
+            TinctureRounds: [
+                {
+                    DamageBonus: -0.9,
+                    SkipChance: 0.35,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    SkipVariant: DEFENSE_TYPE_EVADE
+                },
+                {
+                    DamageBonus: -0.55,
+                    SkipChance: 0.50,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    SkipVariant: DEFENSE_TYPE_EVADE
+                },
+                {
+                    DamageBonus: -0.2,
+                    SkipChance: 0.65,
+                    CriticalBonus: 0,
+                    CriticalChance: 0.5,
+                    CriticalChanceBonus: 0,
+                    SkipVariant: DEFENSE_TYPE_EVADE
+                },
+            ],
         }
     },
     {
         set: {
-            value: function (config) {
+            value: function(config) {
                 for (const key of Object.keys(this)) {
                     this[key] = mergeDeep(this[key], (config || {})[key]);
                 }
             }
         },
         fromID: {
-            value: function (index) {
+            value: function(index) {
                 return Object.values(this)[index];
             }
         },
         ids: {
-            value: function () {
+            value: function() {
                 return this.classes().map((klass) => klass.ID)
             }
         },
         classes: {
-            value: function () {
+            value: function() {
                 return Object.values(this).filter((klassLike) => 'ID' in klassLike && !klassLike.Disabled);
             }
         }
@@ -493,15 +563,15 @@ const CONFIG = Object.defineProperties(
 );
 
 // Returns true if random chance occured
-function getRandom (success) {
+function getRandom(success) {
     return success && (Math.random() < success);
 }
 
-function isObject (item) {
+function isObject(item) {
     return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-function mergeDeep (target, source) {
+function mergeDeep(target, source) {
     let output = Object.assign({}, target);
 
     if (isObject(target) && isObject(source)) {
@@ -517,11 +587,11 @@ function mergeDeep (target, source) {
     return output;
 }
 
-function clamp (value, min, max) {
+function clamp(value, min, max) {
     return value <= min ? min : (value >= max ? max : value);
 }
 
-function getRuneValue (item, rune) {
+function getRuneValue(item, rune) {
     return item.AttributeTypes[2] == rune ? item.Attributes[2] : 0;
 }
 
@@ -557,12 +627,12 @@ const SNACKS = {
 
 // Fighter models
 class SimulatorModel {
-    static initializeFighters (fighterA, fighterB) {
+    static initializeFighters(fighterA, fighterB) {
         fighterA.initialize(fighterB);
         fighterB.initialize(fighterA);
     }
 
-    static create (index, player) {
+    static create(index, player) {
         const MODELS = {
             [WARRIOR]: WarriorModel,
             [MAGE]: MageModel,
@@ -574,13 +644,14 @@ class SimulatorModel {
             [DRUID]: DruidModel,
             [BARD]: BardModel,
             [NECROMANCER]: NecromancerModel,
-            [PALADIN]: PaladinModel
+            [PALADIN]: PaladinModel,
+            [PLAGUEDOCTOR]: PlagueDoctorModel
         };
 
         return new MODELS[player.Class](index, player);
     }
 
-    static normalize (player) {
+    static normalize(player) {
         return mergeDeep({
             Dungeons: {
                 Player: 0,
@@ -628,7 +699,7 @@ class SimulatorModel {
         }, player);
     }
 
-    constructor (index, player) {
+    constructor(index, player) {
         this.Index = index;
         this.Player = SimulatorModel.normalize(player);
 
@@ -658,7 +729,7 @@ class SimulatorModel {
         this.TotalHealth = this.getHealth();
     }
 
-    getAttribute (source) {
+    getAttribute(source) {
         let attribute = this.Player[source.Config.Attribute].Total;
 
         // Following is true if it's main attribute
@@ -672,7 +743,7 @@ class SimulatorModel {
     }
 
     // Damage Reduction
-    getDamageReduction (source, maximumReduction = this.Config.MaximumDamageReduction, flatBonusReduction = 0) {
+    getDamageReduction(source, maximumReduction = this.Config.MaximumDamageReduction, flatBonusReduction = 0) {
         if (source.Config.BypassDamageReduction) {
             return 0;
         } else if (FLAGS.MaximumDamageReduction) {
@@ -681,9 +752,9 @@ class SimulatorModel {
             return this.Config.MaximumDamageReductionMultiplier * Math.min(maximumReduction + (this.Snack.MaximumDamageReductionBonus ?? 0), flatBonusReduction + this.Player.Armor / source.Player.Level);
         }
     }
-    
+
     // Block Chance
-    getSkipChance (source) {
+    getSkipChance(source) {
         if (source.Config.BypassSkipChance) {
             return 0;
         } else if (this.Config.UseBlockChance && typeof this.Player.BlockChance !== 'undefined') {
@@ -694,12 +765,12 @@ class SimulatorModel {
     }
 
     // Critical Chance
-    getCriticalChance (target, maximumChance = 0.50, bonusChance = 0) {
+    getCriticalChance(target, maximumChance = 0.50, bonusChance = 0) {
         return Math.min(maximumChance, bonusChance + this.Player.Luck.Total * 2.5 / target.Player.Level / 100);
     }
 
     // Critical Multiplier
-    getCriticalMultiplier (weapon, weapon2, target) {
+    getCriticalMultiplier(weapon, weapon2, target) {
         let multiplier = this.Config.CritBase;
         if (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) {
             multiplier += this.Config.CritEnchantmentBonus;
@@ -724,7 +795,7 @@ class SimulatorModel {
     }
 
     // Health
-    getHealth () {
+    getHealth() {
         if (this.Player.Health) {
             return this.Player.Health;
         } else {
@@ -742,11 +813,11 @@ class SimulatorModel {
         }
     }
 
-    getWeaponMultiplier () {
+    getWeaponMultiplier() {
         return this.Config.WeaponMultiplier;
     }
 
-    getBaseDamage (secondary = false) {
+    getBaseDamage(secondary = false) {
         if (this.Player.Level > 10 && !this.Player.NoBaseDamage) {
             let multiplier = 0.7;
             if (this.Player.Class === ASSASSIN) {
@@ -767,7 +838,7 @@ class SimulatorModel {
         }
     }
 
-    getDamageBase (weapon, target) {
+    getDamageBase(weapon, target) {
         // Rune resistances
         const rf = target.Player.Runes.ResistanceFire + (target.Snack.RuneResistanceFireBonus ?? 0);
         const rc = target.Player.Runes.ResistanceCold + (target.Snack.RuneResistanceColdBonus ?? 0);
@@ -788,7 +859,7 @@ class SimulatorModel {
         } else if (weapon.AttributeTypes[2] === RUNE_LIGHTNING_DAMAGE || this.Snack.RuneDamageType === RUNE_LIGHTNING_DAMAGE) {
             rd += this.Snack.RuneDamageBonus ?? 0;
             rr = rl;
-        }  else {
+        } else {
             rd = 0;
         }
 
@@ -804,7 +875,7 @@ class SimulatorModel {
     }
 
     // Get damage range
-    getDamageRange (weapon, target, secondary = false) {
+    getDamageRange(weapon, target, secondary = false) {
         let base = this.getDamageBase(weapon, target);
         let baseDamage = this.getBaseDamage(secondary);
 
@@ -818,7 +889,7 @@ class SimulatorModel {
     }
 
     // Initialize model
-    initialize (target) {
+    initialize(target) {
         if (this.DataCache[target.DataHash]) {
             this.State = this.Data = this.DataCache[target.DataHash];
         } else {
@@ -829,7 +900,7 @@ class SimulatorModel {
         }
     }
 
-    initializeData (target) {
+    initializeData(target) {
         const weapon1 = this.Player.Items.Wpn1;
         const weapon2 = this.Player.Items.Wpn2;
 
@@ -847,36 +918,36 @@ class SimulatorModel {
         this.Data.SkipVariant = this.Config.SkipVariant
     }
 
-    resetHealth () {
+    resetHealth() {
         this.Health = this.TotalHealth;
     }
 
-    resetInternalState () {
+    resetInternalState() {
         this.State = this.Data;
         this.SkipCount = 0;
     }
 
     // Returns type of current state of player, only for logging
-    getCurrentStateForLog () {
+    getCurrentStateForLog() {
         return FIGHTER_STATE_NORMAL;
     }
 
     // Returns list of current effects on player, only for logging
-    getCurrentEffectsForLog () {
+    getCurrentEffectsForLog() {
         return [];
     }
 
-    specialState () {
+    specialState() {
         return this.State !== this.Data
     }
 
     // Enters special or default state if no state given
-    enterState (state = this.Data) {
+    enterState(state = this.Data) {
         this.State = state;
     }
 
     // Attack
-    attack (instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
+    attack(instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
         // Apply critical multiplier to damage
         if (critical) {
             damage *= this.State.CriticalMultiplier;
@@ -905,7 +976,7 @@ class SimulatorModel {
     }
 
     // Triggers after player receives damage (blocked or evaded damage appears as 0)
-    applyAttack (instance, source, damage, skipped, critical, attackType, defenseType) {
+    applyAttack(instance, source, damage, skipped, critical, attackType, defenseType) {
         if (!skipped) {
             // Apply damage if attack was not skipped
             this.Health -= damage;
@@ -925,7 +996,7 @@ class SimulatorModel {
     }
 
     // Returns extra damage multiplier, default is 1 for no extra damage
-    getDamageMultiplier (target) {
+    getDamageMultiplier(target) {
         let multiplier = this.Config.DamageMultiplier;
 
         if (typeof this.Config[`${target.ConfigKey}DamageBonus`] !== 'undefined') {
@@ -940,12 +1011,12 @@ class SimulatorModel {
     }
 
     // Before anyone takes control
-    before (instance, target) {
+    before(instance, target) {
 
     }
 
     // Take control
-    control (instance, target) {
+    control(instance, target) {
         const weapon = this.State.Weapon1;
 
         this.attack(
@@ -959,7 +1030,7 @@ class SimulatorModel {
         )
     }
 
-    skip (type) {
+    skip(type) {
         if (this.Config.SkipType === type && getRandom(this.State.SkipChance) && this.SkipCount < this.Config.SkipLimit) {
             this.SkipCount++;
 
@@ -969,7 +1040,7 @@ class SimulatorModel {
         }
     }
 
-    createState (target, config) {
+    createState(target, config) {
         const state = {
             Config: config,
             SkipChance: target.Config.BypassSkipChance ? 0 : config.SkipChance,
@@ -979,7 +1050,7 @@ class SimulatorModel {
             ReceivedDamageMultiplier: 1,
             Weapon1: this.Data.Weapon1
         }
-    
+
         if (typeof config.DamageBonus !== 'undefined') {
             const base = this.getDamageMultiplier(target);
             const multiplier = (base + config.DamageBonus) / base;
@@ -999,10 +1070,10 @@ class SimulatorModel {
             state.ReceivedDamageMultiplier = (
                 1 - this.getDamageReduction(target, this.Config.MaximumDamageReduction + config.MaximumDamageReductionBonus ?? 0, config.DamageReductionBonus ?? 0) / 100
             ) / (
-                1 - this.getDamageReduction(target) / 100
-            );
+                    1 - this.getDamageReduction(target) / 100
+                );
         }
-    
+
         return state;
     }
 }
@@ -1020,13 +1091,13 @@ class ScoutModel extends SimulatorModel {
 }
 
 class AssassinModel extends SimulatorModel {
-    initializeData (target) {
+    initializeData(target) {
         super.initializeData(target);
 
         this.Data.Weapon2 = this.getDamageRange(this.Player.Items.Wpn2, target, true);
     }
 
-    control (instance, target) {
+    control(instance, target) {
         const weapon1 = this.State.Weapon1;
 
         if (this.attack(
@@ -1054,7 +1125,7 @@ class AssassinModel extends SimulatorModel {
 }
 
 class BattlemageModel extends SimulatorModel {
-    getFireballDamage (target) {
+    getFireballDamage(target) {
         if (target.Config.BypassSpecial) {
             return 0;
         } else {
@@ -1064,7 +1135,7 @@ class BattlemageModel extends SimulatorModel {
         }
     }
 
-    before (instance, target) {
+    before(instance, target) {
         instance.getRage();
 
         const damage = this.getFireballDamage(target);
@@ -1074,11 +1145,11 @@ class BattlemageModel extends SimulatorModel {
 }
 
 class BerserkerModel extends SimulatorModel {
-    getCurrentStateForLog () {
+    getCurrentStateForLog() {
         return this.SkipCount > 0 ? FIGHTER_STATE_BERSERKER_RAGE : FIGHTER_STATE_NORMAL;
     }
 
-    control (instance, target) {
+    control(instance, target) {
         const weapon = this.State.Weapon1;
 
         this.attack(
@@ -1094,13 +1165,13 @@ class BerserkerModel extends SimulatorModel {
 }
 
 class DemonHunterModel extends SimulatorModel {
-    resetInternalState () {
+    resetInternalState() {
         super.resetInternalState();
 
         this.DeathTriggers = 0;
     }
 
-    applyAttack (instance, source, damage, skipped, critical, attackType, defenseType) {
+    applyAttack(instance, source, damage, skipped, critical, attackType, defenseType) {
         const state = super.applyAttack(instance, source, damage, skipped, critical, attackType, defenseType);
 
         if (state == STATE_DEAD) {
@@ -1129,7 +1200,7 @@ class DemonHunterModel extends SimulatorModel {
         return state;
     }
 
-    attack (instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
+    attack(instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
         const multiplier = Math.max(this.Config.ReviveDamageMin, this.Config.ReviveDamage - this.DeathTriggers * this.Config.ReviveDamageDecay);
 
         return super.attack(
@@ -1145,30 +1216,30 @@ class DemonHunterModel extends SimulatorModel {
 }
 
 class DruidModel extends SimulatorModel {
-    constructor (i, p) {
+    constructor(i, p) {
         super(i, p);
 
         this.SwoopMultiplier = (this.Config.DamageMultiplier + this.Config.SwoopBonus) / this.Config.DamageMultiplier;
     }
 
-    resetInternalState () {
+    resetInternalState() {
         super.resetInternalState();
 
         this.SwoopChance = this.Config.SwoopChance;
         this.RequestState = false;
     }
 
-    initializeData (target) {
+    initializeData(target) {
         super.initializeData(target);
 
         this.Data.RageState = this.createState(target, this.Config.Rage);
     }
 
-    getCurrentStateForLog () {
+    getCurrentStateForLog() {
         return this.specialState() ? FIGHTER_STATE_DRUID_RAGE : FIGHTER_STATE_DRUID_HIDDEN;
     }
 
-    control (instance, target) {
+    control(instance, target) {
         if (this.RequestState) {
             this.RequestState = false;
 
@@ -1187,7 +1258,7 @@ class DruidModel extends SimulatorModel {
         super.control(instance, target);
     }
 
-    attackSwoop (instance, target) {
+    attackSwoop(instance, target) {
         if (this.specialState() || this.Health <= 0) {
             // Do not swoop if enraged or if not alive
             return
@@ -1195,7 +1266,7 @@ class DruidModel extends SimulatorModel {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
 
             const weapon = this.State.Weapon1;
-    
+
             this.attack(
                 instance,
                 instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier,
@@ -1208,7 +1279,7 @@ class DruidModel extends SimulatorModel {
         }
     }
 
-    applyAttack (instance, source, damage, skipped, critical, attackType, defenseType) {
+    applyAttack(instance, source, damage, skipped, critical, attackType, defenseType) {
         if (skipped && !this.specialState()) {
             this.RequestState = true;
         }
@@ -1218,7 +1289,7 @@ class DruidModel extends SimulatorModel {
 }
 
 class BardModel extends SimulatorModel {
-    constructor (i, p) {
+    constructor(i, p) {
         super(i, p);
 
         // Brackets
@@ -1227,7 +1298,7 @@ class BardModel extends SimulatorModel {
         this.Bracket2 = this.Bracket1 + this.Config.EffectBaseChance[2];
     }
 
-    resetInternalState () {
+    resetInternalState() {
         super.resetInternalState();
 
         this.EffectCurrent = 0;
@@ -1239,7 +1310,7 @@ class BardModel extends SimulatorModel {
         this.EffectRound = this.Config.EffectRounds;
     }
 
-    initializeData (target) {
+    initializeData(target) {
         super.initializeData(target);
 
         this.Data.Songs = this.Config.EffectValues.map((effectValue) => {
@@ -1260,7 +1331,7 @@ class BardModel extends SimulatorModel {
         });
     }
 
-    getCurrentEffectsForLog () {
+    getCurrentEffectsForLog() {
         if (this.specialState()) {
             return [{
                 type: EFFECT_TYPE_SONG,
@@ -1272,7 +1343,7 @@ class BardModel extends SimulatorModel {
         }
     }
 
-    rollEffect () {
+    rollEffect() {
         const roll = Math.random() * this.Bracket2;
         const level = roll <= this.Bracket0 ? 0 : (roll <= this.Bracket1 ? 1 : 2);
 
@@ -1284,7 +1355,7 @@ class BardModel extends SimulatorModel {
         this.enterState(this.Data.Songs[level]);
     }
 
-    consumeMultiplier (target) {
+    consumeMultiplier(target) {
         this.EffectCounter += 1;
 
         if (this.EffectCounter >= this.EffectReset) {
@@ -1292,7 +1363,7 @@ class BardModel extends SimulatorModel {
         }
     }
 
-    control (instance, target) {
+    control(instance, target) {
         if (!target.Config.BypassSpecial) {
             this.EffectRound += 1;
 
@@ -1304,7 +1375,7 @@ class BardModel extends SimulatorModel {
         return super.control(instance, target);
     }
 
-    attack (instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
+    attack(instance, damage, target, skipped, critical, attackType, attackTypeCritical) {
         const state = super.attack(
             instance,
             damage,
@@ -1324,7 +1395,7 @@ class BardModel extends SimulatorModel {
 }
 
 class PaladinModel extends SimulatorModel {
-    initializeData (target) {
+    initializeData(target) {
         super.initializeData(target);
 
         this.Data.Stances = this.Config.Stances.map((stance) => {
@@ -1336,7 +1407,7 @@ class PaladinModel extends SimulatorModel {
         });
     }
 
-    resetInternalState () {
+    resetInternalState() {
         super.resetInternalState();
 
         this.StanceIndex = this.Config.StanceInitial;
@@ -1344,7 +1415,7 @@ class PaladinModel extends SimulatorModel {
         this.enterState(this.Data.Stances[this.StanceIndex]);
     }
 
-    getCurrentStateForLog () {
+    getCurrentStateForLog() {
         if (this.StanceIndex === 1) {
             return FIGHTER_STATE_PALADIN_DEFENSIVE
         } else if (this.StanceIndex === 2) {
@@ -1354,7 +1425,7 @@ class PaladinModel extends SimulatorModel {
         }
     }
 
-    control (instance, target) {
+    control(instance, target) {
         if (!target.Config.BypassSpecial && getRandom(this.State.StanceChangeChance)) {
             this.StanceIndex++;
             if (this.StanceIndex >= this.Config.Stances.length) {
@@ -1367,7 +1438,7 @@ class PaladinModel extends SimulatorModel {
         super.control(instance, target);
     }
 
-    applyAttack (instance, source, damage, skipped, critical, attackType, defenseType) {
+    applyAttack(instance, source, damage, skipped, critical, attackType, defenseType) {
         if (skipped && this.StanceIndex === 1) {
             const maximumHeal = Math.max(0, this.TotalHealth - this.Health)
 
@@ -1382,19 +1453,19 @@ class PaladinModel extends SimulatorModel {
 }
 
 class NecromancerModel extends SimulatorModel {
-    initializeData (target) {
+    initializeData(target) {
         super.initializeData(target);
 
         this.Data.Minions = this.Config.Summons.map((summon) => this.createState(target, summon));
     }
 
-    resetInternalState () {
+    resetInternalState() {
         super.resetInternalState();
-        
+
         this.Minion = null;
     }
 
-    getCurrentEffectsForLog () {
+    getCurrentEffectsForLog() {
         if (this.Minion) {
             return [{
                 type: EFFECT_TYPE_MINION,
@@ -1406,7 +1477,7 @@ class NecromancerModel extends SimulatorModel {
         }
     }
 
-    summonMinion (target) {
+    summonMinion(target) {
         const type = Math.trunc(Math.random() * 3);
         const minion = this.Data.Minions[type];
 
@@ -1426,7 +1497,7 @@ class NecromancerModel extends SimulatorModel {
         }
     }
 
-    expireMinion (target) {
+    expireMinion(target) {
         this.MinionDuration--;
 
         // Remove minion if expired
@@ -1444,7 +1515,7 @@ class NecromancerModel extends SimulatorModel {
         }
     }
 
-    attackMinion (instance, target) {
+    attackMinion(instance, target) {
         const weapon = this.State.Weapon1;
 
         this.attack(
@@ -1458,7 +1529,7 @@ class NecromancerModel extends SimulatorModel {
         )
     }
 
-    control (instance, target) {
+    control(instance, target) {
         if (target.Config.BypassSpecial) {
             // Necromancer cannot summon against mages
             super.control(instance, target);
@@ -1494,9 +1565,113 @@ class NecromancerModel extends SimulatorModel {
     }
 }
 
+class PlagueDoctorModel extends SimulatorModel {
+    initializeData(target) {
+        super.initializeData(target);
+        this.Data.TinctureRounds = this.Config.TinctureRounds.map(t => this.createState(target, t));
+    }
+
+    resetInternalState() {
+        super.resetInternalState();
+
+        this.Tincture = null;
+        this.TinctureDuration = 0;
+    }
+
+    getCurrentEffectsForLog() {
+        if (this.Tincture) {
+            return [{
+                type: EFFECT_TYPE_TINCTURE,
+                duration: this.TinctureDuration,
+                tier: 1 
+            }]
+        } else {
+            return []
+        }
+    }
+
+    expireTincture() {
+        this.TinctureDuration--;
+
+        // Remove tincture effect if expired
+        if (this.TinctureDuration <= 0) {
+            this.Tincture = null;
+            this.enterState();
+        }
+        else {
+            // Enter state after round expiration to get the evade chance
+            this.Tincture = this.Data.TinctureRounds[this.TinctureDuration - 1] || null;
+            this.enterState(this.Tincture);
+        }
+    }
+
+    procTincturePoison(instance, target) {
+        this.enterState(this.Tincture);
+
+        const weapon = this.State.Weapon1;
+
+        this.attack(
+            instance,
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            0,
+            getRandom(this.State.CriticalChance),
+            ATTACK_TYPE_TINCTURE,
+            ATTACK_TYPE_TINCTURE_CRITICAL
+        )
+    }
+
+    throwTincture(instance, target) {
+        this.TinctureDuration = 3;
+        this.Tincture = this.Data.TinctureRounds[this.TinctureDuration - 1];
+
+        this.enterState(this.Tincture);
+
+        const weapon = this.State.Weapon1;
+        const skipped = target.skip(SKIP_TYPE_DEFAULT);
+
+        this.attack(
+            instance,
+            instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
+            target,
+            skipped,
+            getRandom(this.State.CriticalChance),
+            ATTACK_TYPE_TINCTURE_THROW,
+            ATTACK_TYPE_TINCTURE_THROW_CRITICAL 
+        )
+
+        if (skipped) {
+            // Remove tincture and leave state
+            this.Tincture = null;
+            this.TinctureDuration = 0;
+            this.enterState();
+        }
+    }
+
+    control(instance, target) {
+        if (target.Config.BypassSpecial) {
+            // PD cannot throw against mages
+            super.control(instance, target);
+        } else if (this.Tincture) {
+            this.procTincturePoison(instance, target);
+
+            // Take control as player
+            this.enterState();
+            super.control(instance, target);
+
+            this.expireTincture();
+        } else if (getRandom(this.Config.TinctureChance) && !this.delayFlag) {
+            this.throwTincture(instance, target);
+        } else {
+            // Attack as usual
+            super.control(instance, target);
+        }
+    }
+}
+
 // Shared class between all simulators in order to make updates simple
 class SimulatorBase {
-    getRage () {
+    getRage() {
         const rage = 1 + this.turn++ / 6;
 
         if (FIGHT_LOG_ENABLED) {
@@ -1506,7 +1681,7 @@ class SimulatorBase {
         return rage;
     }
 
-    fight () {
+    fight() {
         this.a.resetInternalState();
         this.b.resetInternalState();
 
