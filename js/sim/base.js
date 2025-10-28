@@ -503,7 +503,7 @@ const CONFIG = Object.defineProperties(
             BattlemageDamageBonus: 0,
             BattlemageDamageMultiplier: 1,
             DemonHunterDamageBonus: 0,
-            DemonHunterDamageMultiplier: 1.06, //in-game seems wrong as it states 1.065 but does not add up
+            DemonHunterDamageMultiplier: 1.06,
             BardDamageBonus: 0,
             BardDamageMultiplier: 1,
 
