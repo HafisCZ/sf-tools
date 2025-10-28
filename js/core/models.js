@@ -2398,6 +2398,12 @@ class CompanionModel extends PlayerModel {
             } else if (player.Class == BARD && this.Class == SCOUT && item.Class == SCOUT && item.Type > 1) {
                 // When player is Bard and it's Scout equipment -> Intelligence into Dexterity
                 this.Items[key] = item.morph(3, 2);
+            } else if (player.Class == PLAGUEDOCTOR && this.Class == WARRIOR && item.Class == WARRIOR && item.Type == 1) {
+                // When player is Plague Doctor and it's Warrior equipment -> Dexterity into Strength
+                this.Items[key] = item.morph(2, 1);
+            } else if (player.Class == PLAGUEDOCTOR && this.Class == MAGE && item.Class == MAGE && item.Type > 1) {
+                // When player is Plague Doctor and it's Mage equipment -> Dexterity into Intelligence
+                this.Items[key] = item.morph(2, 3);
             }
         }
 
