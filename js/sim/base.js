@@ -503,7 +503,7 @@ const CONFIG = Object.defineProperties(
             BattlemageDamageBonus: 0,
             BattlemageDamageMultiplier: 1,
             DemonHunterDamageBonus: 0,
-            DemonHunterDamageMultiplier: 1.065,
+            DemonHunterDamageMultiplier: 1.06, //in-game seems wrong as it states 1.065 but does not add up
             BardDamageBonus: 0,
             BardDamageMultiplier: 1,
 
@@ -1050,10 +1050,15 @@ class SimulatorModel {
             ReceivedDamageMultiplier: 1,
             Weapon1: this.Data.Weapon1
         }
-
         if (typeof config.DamageBonus !== 'undefined') {
+            let classMultiplier = 1;
+
+            if (typeof this.Config[`${target.ConfigKey}DamageMultiplier`] !== 'undefined') {
+                classMultiplier = this.Config[`${target.ConfigKey}DamageMultiplier`];
+            }
+
             const base = this.getDamageMultiplier(target);
-            const multiplier = (base + config.DamageBonus) / base;
+            const multiplier = ((base / classMultiplier + config.DamageBonus) * classMultiplier) / base;
 
             state.Weapon1 = {
                 Base: multiplier * this.Data.Weapon1.Base,
