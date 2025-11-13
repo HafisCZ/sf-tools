@@ -503,7 +503,7 @@ const CONFIG = Object.defineProperties(
             BattlemageDamageBonus: 0,
             BattlemageDamageMultiplier: 1,
             DemonHunterDamageBonus: 0,
-            DemonHunterDamageMultiplier: 1.06,
+            DemonHunterDamageMultiplier: 1.065,
             BardDamageBonus: 0,
             BardDamageMultiplier: 1,
 
