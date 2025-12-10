@@ -859,7 +859,7 @@ const PetData = [
         time: 'any',
         condition: (player) => {
             const toilet = player.Toilet;
-            return toilet && toilet.Aura >= 20;
+            return toilet && toilet.Aura >= 50;
         }
     },
     {
