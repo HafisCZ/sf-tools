@@ -153,7 +153,7 @@ const ATTACK_TYPES_CRITICAL = [
 
 const ATTACK_TYPES_SPECIAL = [
     ATTACK_TYPE_MINION_SUMMON,
-    ATTACK_TYPE_REVIVE,
+    ATTACK_TYPE_REVIVE
 ]
 
 const ATTACK_TYPES_TINCTURE = [
@@ -218,6 +218,7 @@ const CONFIG = Object.defineProperties(
             BypassDamageReduction: true,
             BypassSkipChance: true,
             BypassSpecial: true,
+            BlockComet: true,
 
             SkipChance: 0,
             SkipLimit: 999,
@@ -268,6 +269,8 @@ const CONFIG = Object.defineProperties(
             DamageMultiplier: 1,
             MaximumDamageReduction: 10,
             MaximumDamageReductionMultiplier: 5,
+
+            BlockComet: false,
 
             SkipChance: 0,
             SkipLimit: 999,
@@ -363,14 +366,14 @@ const CONFIG = Object.defineProperties(
             SkipLimit: 999,
             SkipType: SKIP_TYPE_DEFAULT,
             SkipVariant: DEFENSE_TYPE_NONE,
+            
+            MageDamageMultiplier: 1,
+            PlagueDoctorDamageMultiplier: 1.05,
 
             EffectRounds: 4,
             EffectBaseDuration: [3, 3, 4],
             EffectBaseChance: [25, 50, 25],
-            EffectValues: [0.2, 0.4, 0.6],
-
-            PlagueDoctorDamageBonus: 0,
-            PlagueDoctorDamageMultiplier: 1.05
+            EffectValues: [0.2, 0.4, 0.6]
         },
         Necromancer: {
             ID: NECROMANCER,
@@ -443,6 +446,7 @@ const CONFIG = Object.defineProperties(
             MageDamageMultiplier: 1.5,
             AssassinDamageMultiplier: 1,
             DruidDamageMultiplier: 1,
+            
             StanceInitial: 0,
             Stances: [
                 {
@@ -499,13 +503,7 @@ const CONFIG = Object.defineProperties(
             SkipType: SKIP_TYPE_DEFAULT,
             SkipVariant: DEFENSE_TYPE_EVADE,
 
-            AssassinDamageBonus: 0,
-            BattlemageDamageBonus: 0,
-            BattlemageDamageMultiplier: 1,
-            DemonHunterDamageBonus: 0,
             DemonHunterDamageMultiplier: 1.065,
-            BardDamageBonus: 0,
-            BardDamageMultiplier: 1,
 
             TinctureChance: 0.50,
             TinctureRounds: [
@@ -1052,8 +1050,14 @@ class SimulatorModel {
         }
 
         if (typeof config.DamageBonus !== 'undefined') {
+            let classMultiplier = 1;
+
+            if (typeof this.Config[`${target.ConfigKey}DamageMultiplier`] !== 'undefined') {
+                classMultiplier = this.Config[`${target.ConfigKey}DamageMultiplier`];
+            }
+
             const base = this.getDamageMultiplier(target);
-            const multiplier = (base + config.DamageBonus) / base;
+            const multiplier = 1 + config.DamageBonus * classMultiplier / base;
 
             state.Weapon1 = {
                 Base: multiplier * this.Data.Weapon1.Base,
@@ -1126,7 +1130,7 @@ class AssassinModel extends SimulatorModel {
 
 class BattlemageModel extends SimulatorModel {
     getFireballDamage(target) {
-        if (target.Config.BypassSpecial) {
+        if (target.Config.BlockComet) {
             return 0;
         } else {
             const multiplier = 0.05 * target.Config.HealthMultiplier;
@@ -1701,7 +1705,7 @@ class SimulatorBase {
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             if (this.b.skip(SKIP_TYPE_CONTROL)) {
-                this.getRage();
+//                this.getRage();		// berserkers frenzy attacks currently dont increase enrage ; was broken by playa
             } else {
                 this.a.control(this, this.b);
             }
