@@ -3576,7 +3576,8 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Power',
   {
     expr: p => ModelUtils.estimatePower(p),
-    format: (p, x) => x.toExponential(3)
+    format: (p, x) => x.toExponential(3),
+    differenceFormat: true
   }
 )
 
