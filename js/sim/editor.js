@@ -139,7 +139,7 @@ class Field {
     }
 
     static isPlayerLevel (val) {
-        return Field.isNonZero(val) && val <= 800;
+        return Field.isNonZero(val) && val <= 999;
     }
 
     static isUnderworldBuilding (val) {
@@ -643,7 +643,7 @@ class Editor extends EditorBase {
                         <div class="field">
                             <label>${intl('editor.level')}</label>
                             <div class="ui inverted centered input">
-                                <input type="text" data-path="Level" placeholder="1 - 800">
+                                <input type="text" data-path="Level" placeholder="1 - 999">
                             </div>
                         </div>
                     </div>

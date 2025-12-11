@@ -112,7 +112,7 @@ Site.ready({ name: 'attributes' }, function () {
     }
 
     bindCallback('#fortress-lq', 0, 15, (lq) => updateTimers(lq));
-    bindCallback('#fortress-level', 1, 800, (lvl) => updateLevels(lvl));
+    bindCallback('#fortress-level', 1, 999, (lvl) => updateLevels(lvl));
 
     function generateTable (table, rows, generators, extra_rows, excludeBT = false, uwTime = false) {
         let content = '';
@@ -553,7 +553,7 @@ Site.ready({ name: 'attributes' }, function () {
     $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
         if (validate($('#misc-level'), $('#misc-gate'), $('#misc-torture'))) {
             const souls = Calculations.souls(
-                getClampedValue('#misc-level', 1, 800),
+                getClampedValue('#misc-level', 1, 999),
                 getClampedValue('#misc-gate', 0, 15),
                 getClampedValue('#misc-torture', 0, 15)
             );
@@ -617,7 +617,7 @@ Site.ready({ name: 'attributes' }, function () {
 
     const questUpdate = function () {
         if (validate($('#quest-level'), $('#quest-xp'), $('#quest-gold'), $('#quest-tower'), $('#quest-book'), $('#quest-rxp'), $('#quest-rgold'))) {
-            const level = getClampedValue('#quest-level', 1, 800);
+            const level = getClampedValue('#quest-level', 1, 999);
             const gxp = getClampedValue('#quest-xp', 0, 200);
             const ggold = getClampedValue('#quest-gold', 0, 200);
             const book = getClampedValue('#quest-book', 0, 100);
@@ -646,7 +646,7 @@ Site.ready({ name: 'attributes' }, function () {
     const expeditionUpdate = function () {
         if (validate($('#expedition-level'), $('#expedition-group-xp'), $('#expedition-group-gold'), $('#expedition-tower'), $('#expedition-book'), $('#expedition-rxp'), 
             $('#expedition-rgold'), $('#expedition-stars'))) {
-            const level = getClampedValue('#expedition-level', 1, 800);
+            const level = getClampedValue('#expedition-level', 1, 999);
             const gxp = getClampedValue('#expedition-group-xp', 0, 200);
             const ggold = getClampedValue('#expedition-group-gold', 0, 200);
             const book = getClampedValue('#expedition-book', 0, 100);
@@ -675,7 +675,7 @@ Site.ready({ name: 'attributes' }, function () {
 
     $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit, #gold-runes').on('change input', function () {
         if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'), $('#gold-pit'))) {
-            const level = getClampedValue('#gold-level', 1, 800);
+            const level = getClampedValue('#gold-level', 1, 999);
             const guild = getClampedValue('#gold-guild', 0, 200);
             const tower = getClampedValue('#gold-tower', 0, 100);
             const mine = getClampedValue('#gold-mine', 1, 14);
