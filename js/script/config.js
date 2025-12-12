@@ -1453,7 +1453,7 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'public', 'Server',
   {
-    expr: p => SERVERS[p.ServerId]
+    expr: p => Playa.getServerUrlById(p.ServerId)
   }
 )
 

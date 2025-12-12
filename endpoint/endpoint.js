@@ -45,7 +45,7 @@ class EndpointController {
         Logger.log('ECLIENT', `Logging in as ${username}@${server}`);
 
         return this.#promisify(() => {
-            this.window.login(server, username, password);
+            this.window.login(server, Playa.getClientVersion(), username, password);
         })
     }
 
@@ -53,7 +53,7 @@ class EndpointController {
         Logger.log('ECLIENT', `Continuing logging in as ${username}@${server}`);
 
         return this.#promisify(() => {
-            this.window.continue_login(server, username, id);
+            this.window.continue_login(server, Playa.getClientVersion(), username, id);
         })
     }
 
@@ -294,7 +294,7 @@ class EndpointDialog extends Dialog {
 
                     // Inject server url
                     for (const character of data.characters) {
-                        character.server = SERVERS[character.server_id];
+                        character.server = Playa.getServerUrlById(character.server_id);
                     }
 
                     // Continue method

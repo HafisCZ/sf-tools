@@ -8,8 +8,6 @@
         <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
         <script src="build/endpoint.loader.js"></script>
         <script type="text/javascript">
-            const version = '280000000000';
-
             window.callback = null;
             window.unity = null;
 
@@ -32,7 +30,7 @@
                 await window.unity.Quit();
             }
 
-            window.login = function (server, username, password) {
+            window.login = function (server, version, username, password) {
                 if (password.length > 40) {
                     password = password.slice(0, 40);
                 }
@@ -45,7 +43,7 @@
                 }));
             }
 
-            window.continue_login = function (server, username, id) {
+            window.continue_login = function (server, version, username, id) {
                 window.unity.SendMessage('Controller', 'ContinueLogin', JSON.stringify({
                     server,
                     username,
