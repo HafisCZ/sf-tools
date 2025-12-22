@@ -1019,7 +1019,7 @@ class SimulatorModel {
     control(instance, target) {
         const weapon = this.State.Weapon1;
 
-        this.attack(
+        return this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1256,23 +1256,20 @@ class DruidModel extends SimulatorModel {
 
         if (target.Config.BypassSpecial) {
             // Experience sadness
-        } else {
-            this.attackSwoop(instance, target);
+        } else if (!this.attackSwoop(instance, target)) {
+            return;
         }
 
         super.control(instance, target);
     }
 
     attackSwoop(instance, target) {
-        if (this.specialState() || this.Health <= 0) {
-            // Do not swoop if enraged or if not alive
-            return
-        } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
+        if (!this.specialState() && this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
 
             const weapon = this.State.Weapon1;
 
-            this.attack(
+            return this.attack(
                 instance,
                 instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier,
                 target,
@@ -1282,6 +1279,8 @@ class DruidModel extends SimulatorModel {
                 ATTACK_TYPE_SWOOP_CRITICAL
             )
         }
+
+        return true;
     }
 
     applyAttack(instance, source, damage, skipped, critical, attackType, defenseType) {
@@ -1541,7 +1540,9 @@ class NecromancerModel extends SimulatorModel {
         } else if (this.Minion) {
             // Take control as player
             this.enterState();
-            super.control(instance, target);
+            if (!super.control(instance, target)) {
+                return;
+            }
 
             // Take control as minion
             this.enterState(this.Minion);
@@ -1615,7 +1616,7 @@ class PlagueDoctorModel extends SimulatorModel {
 
         const weapon = this.State.Weapon1;
 
-        this.attack(
+        return this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1658,7 +1659,9 @@ class PlagueDoctorModel extends SimulatorModel {
             // PD cannot throw against mages
             super.control(instance, target);
         } else if (this.Tincture) {
-            this.procTincturePoison(instance, target);
+            if (!this.procTincturePoison(instance, target)) {
+                return;
+            }
 
             // Take control as player
             this.enterState();
