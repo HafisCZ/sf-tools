@@ -1256,23 +1256,24 @@ class DruidModel extends SimulatorModel {
 
         if (target.Config.BypassSpecial) {
             // Experience sadness
-        } else {
-            this.attackSwoop(instance, target);
+        } else if (!this.attackSwoop(instance, target)) {
+            // Avoid extra attack if swoop kills the target
+            return
         }
 
         super.control(instance, target);
     }
 
     attackSwoop(instance, target) {
-        if (this.specialState() || this.Health <= 0) {
-            // Do not swoop if enraged or if not alive
-            return
-        } else if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
+        if (this.Health <= 0) {
+            // Do not swoop if not alive (is the alive check actually necessary?)
+            return false
+        } else if (!this.specialState() && this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
             this.SwoopChance = clamp(this.SwoopChance - this.Config.SwoopChanceDecay, this.Config.SwoopChanceMin, this.Config.SwoopChanceMax);
 
             const weapon = this.State.Weapon1;
 
-            this.attack(
+            return this.attack(
                 instance,
                 instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier,
                 target,
@@ -1281,6 +1282,8 @@ class DruidModel extends SimulatorModel {
                 ATTACK_TYPE_SWOOP,
                 ATTACK_TYPE_SWOOP_CRITICAL
             )
+        } else {
+            return true
         }
     }
 
@@ -1502,7 +1505,7 @@ class NecromancerModel extends SimulatorModel {
         }
     }
 
-    expireMinion(target) {
+    expireMinion() {
         this.MinionDuration--;
 
         // Remove minion if expired
@@ -1523,7 +1526,7 @@ class NecromancerModel extends SimulatorModel {
     attackMinion(instance, target) {
         const weapon = this.State.Weapon1;
 
-        this.attack(
+        return this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1547,7 +1550,7 @@ class NecromancerModel extends SimulatorModel {
             this.enterState(this.Minion);
             this.attackMinion(instance, target);
 
-            this.expireMinion(target);
+            this.expireMinion();
         } else if (getRandom(this.Config.SummonChance)) {
             // Increment range to 'waste' a turn
             instance.getRage();
@@ -1561,7 +1564,7 @@ class NecromancerModel extends SimulatorModel {
                 // Attack as minion
                 this.attackMinion(instance, target);
 
-                this.expireMinion(target);
+                this.expireMinion();
             }
         } else {
             // Attack as usual
@@ -1615,7 +1618,7 @@ class PlagueDoctorModel extends SimulatorModel {
 
         const weapon = this.State.Weapon1;
 
-        this.attack(
+        return this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1635,7 +1638,7 @@ class PlagueDoctorModel extends SimulatorModel {
         const weapon = this.State.Weapon1;
         const skipped = target.skip(SKIP_TYPE_DEFAULT);
 
-        this.attack(
+        const state = this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1651,6 +1654,8 @@ class PlagueDoctorModel extends SimulatorModel {
             this.TinctureDuration = 0;
             this.enterState();
         }
+
+        return state
     }
 
     control(instance, target) {
@@ -1658,7 +1663,7 @@ class PlagueDoctorModel extends SimulatorModel {
             // PD cannot throw against mages
             super.control(instance, target);
         } else if (this.Tincture) {
-            this.procTincturePoison(instance, target);
+            if (!this.procTincturePoison(instance, target)) return
 
             // Take control as player
             this.enterState();
