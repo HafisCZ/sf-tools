@@ -1019,7 +1019,7 @@ class SimulatorModel {
     control(instance, target) {
         const weapon = this.State.Weapon1;
 
-        this.attack(
+        return this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1116,7 +1116,7 @@ class AssassinModel extends SimulatorModel {
         )) {
             const weapon2 = this.State.Weapon2;
 
-            this.attack(
+            return this.attack(
                 instance,
                 instance.getRage() * (Math.random() * (1 + weapon2.Max - weapon2.Min) + weapon2.Min),
                 target,
@@ -1125,6 +1125,8 @@ class AssassinModel extends SimulatorModel {
                 ATTACK_TYPE_NORMAL_SECONDARY,
                 ATTACK_TYPE_CRITICAL_SECONDARY
             )
+        } else {
+            return false
         }
     }
 }
@@ -1157,7 +1159,7 @@ class BerserkerModel extends SimulatorModel {
     control(instance, target) {
         const weapon = this.State.Weapon1;
 
-        this.attack(
+        return this.attack(
             instance,
             instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min),
             target,
@@ -1258,10 +1260,10 @@ class DruidModel extends SimulatorModel {
             // Experience sadness
         } else if (!this.attackSwoop(instance, target)) {
             // Avoid extra attack if swoop kills the target
-            return
+            return false
         }
 
-        super.control(instance, target);
+        return super.control(instance, target);
     }
 
     attackSwoop(instance, target) {
@@ -1443,7 +1445,7 @@ class PaladinModel extends SimulatorModel {
             this.enterState(this.Data.Stances[this.StanceIndex]);
         }
 
-        super.control(instance, target);
+        return super.control(instance, target);
     }
 
     applyAttack(instance, source, damage, skipped, critical, attackType, defenseType) {
@@ -1540,17 +1542,23 @@ class NecromancerModel extends SimulatorModel {
     control(instance, target) {
         if (target.Config.BypassSpecial) {
             // Necromancer cannot summon against mages
-            super.control(instance, target);
+            return super.control(instance, target);
         } else if (this.Minion) {
             // Take control as player
             this.enterState();
-            super.control(instance, target);
 
-            // Take control as minion
-            this.enterState(this.Minion);
-            this.attackMinion(instance, target);
+            if (super.control(instance, target)) {
+                // Take control as minion
+                this.enterState(this.Minion);
 
-            this.expireMinion();
+                const state = this.attackMinion(instance, target);
+
+                this.expireMinion();
+
+                return state
+            } else {
+                return false
+            }
         } else if (getRandom(this.Config.SummonChance)) {
             // Increment range to 'waste' a turn
             instance.getRage();
@@ -1562,13 +1570,17 @@ class NecromancerModel extends SimulatorModel {
 
             if (this.Config.SummonImmediateAttack) {
                 // Attack as minion
-                this.attackMinion(instance, target);
+                const state = this.attackMinion(instance, target);
 
                 this.expireMinion();
+
+                return state
+            } else {
+                return true
             }
         } else {
             // Attack as usual
-            super.control(instance, target);
+            return super.control(instance, target);
         }
     }
 }
@@ -1661,20 +1673,23 @@ class PlagueDoctorModel extends SimulatorModel {
     control(instance, target) {
         if (target.Config.BypassSpecial) {
             // PD cannot throw against mages
-            super.control(instance, target);
+            return super.control(instance, target);
         } else if (this.Tincture) {
             if (!this.procTincturePoison(instance, target)) return
 
             // Take control as player
             this.enterState();
-            super.control(instance, target);
+
+            const state = super.control(instance, target);
 
             this.expireTincture();
+
+            return state
         } else if (getRandom(this.Config.TinctureChance) && !this.delayFlag) {
-            this.throwTincture(instance, target);
+            return this.throwTincture(instance, target);
         } else {
             // Attack as usual
-            super.control(instance, target);
+            return super.control(instance, target);
         }
     }
 }
