@@ -50,12 +50,16 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
   ]
 
   let raid = null
+  const filteredRaids = availableRaids.filter(raid =>
+      raid.value in RAID_DATA || raid.value.startsWith('hellevator_')
+  );
+
   $('#raid').dropdown({
-    values: availableRaids,
+    values: filteredRaids,
     onChange: (value) => {
         raid = value
     }
-  }).dropdown('set selected', availableRaids[0].value)
+  }).dropdown('set selected', filteredRaids[0].value)
 
   // Editor configuration
   Editor.createPlayerEditor('#player-editor');
