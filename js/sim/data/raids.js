@@ -945,6 +945,25 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 400, str: 14897, dex: 5227, int: 5173, con: 135727, lck: 3419, health: 272132640, min: 366, max: 624 }
     }
   },
+  'raid_95': {
+    floors: {
+      '1': { pos: 1, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '2': { pos: 2, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '3': { pos: 3, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '4': { pos: 4, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '5': { pos: 5, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '6': { pos: 6, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '7': { pos: 7, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '8': { pos: 8, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '9': { pos: 9, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '10': { pos: 10, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '11': { pos: 11, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 20720, health: 29685030, min: 455, max: 805 },
+      '12': { pos: 12, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 24670, lck: 20720, health: 44529352, min: 455, max: 805 },
+      '13': { pos: 13, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 24670, lck: 20720, health: 44529352, min: 455, max: 805 },
+      '14': { pos: 14, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 32893, lck: 20720, health: 59371864, min: 455, max: 805 },
+      '15': { pos: 15, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 82232, lck: 20720, health: 742143872, min: 455, max: 805 }
+    }
+  },
   'raid_96': {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 492, str: 10615, dex: 3724, int: 3686, con: 19342, lck: 24360, health: 35879408, min: 457, max: 809 },
