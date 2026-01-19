@@ -43,9 +43,9 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
         value: `hellevator_${index + 1}`,
         name: intl(`raids.raids.hellevator`, { number: index + 1 }) 
     })),
-    ...Array.from({ length: 50 }, (_, index) => ({
+    ...Array.from({ length: 150 }, (_, index) => ({
         value: `raid_${index + 1}`,
-        name: intl(`general.guild_raid_${index + 1}`)
+        name: intl(`general.guild_raid_${index % 50 + 1}`) + (index >= 100 ? ' - 3' : index >= 50 ? ' - 2' : '')
     }))
   ]
 
