@@ -1058,6 +1058,63 @@ const RAID_DATA = {
       '14': { pos: 14, id: 0, class: 1, level: 500, str: 14897, dex: 5227, int: 5173, con: 43454, lck: 3419, health: 108853456, min: 465, max: 825 },
       '15': { pos: 15, id: 0, class: 1, level: 500, str: 14897, dex: 5227, int: 5173, con: 543179, lck: 3419, health: 1360663168, min: 465, max: 825 }
     }
+  },
+  'raid_145': {
+    floors: {
+      '1': { pos: 1, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '2': { pos: 2, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '3': { pos: 3, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '4': { pos: 4, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '5': { pos: 5, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '6': { pos: 6, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '7': { pos: 7, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '8': { pos: 8, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '9': { pos: 9, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '10': { pos: 10, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '11': { pos: 11, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 16446, lck: 20720, health: 148425152, min: 555, max: 1005 },
+      '12': { pos: 12, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 24670, lck: 20720, health: 222646752, min: 555, max: 1005 },
+      '13': { pos: 13, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 24670, lck: 20720, health: 222646752, min: 555, max: 1005 },
+      '14': { pos: 14, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 32893, lck: 20720, health: 296859328, min: 555, max: 1005 },
+      '15': { pos: 15, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 82232, lck: 20720, health: 3710719488, min: 555, max: 1005 }
+    }
+  },
+  'raid_146': {
+    floors: {
+      '1': { pos: 1, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '2': { pos: 2, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '3': { pos: 3, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '4': { pos: 4, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '5': { pos: 5, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '6': { pos: 6, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '7': { pos: 7, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '8': { pos: 8, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '9': { pos: 9, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '10': { pos: 10, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '11': { pos: 11, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 19342, lck: 24360, health: 179397040, min: 557, max: 1009 },
+      '12': { pos: 12, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 29013, lck: 24360, health: 269095584, min: 557, max: 1009 },
+      '13': { pos: 13, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 29013, lck: 24360, health: 269095584, min: 557, max: 1009 },
+      '14': { pos: 14, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 38684, lck: 24360, health: 358794080, min: 557, max: 1009 },
+      '15': { pos: 15, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 96711, lck: 24360, health: 4484972544, min: 557, max: 1009 }
+    }
+  },
+  'raid_147': {
+    floors: {
+      '1': { pos: 1, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '2': { pos: 2, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '3': { pos: 3, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '4': { pos: 4, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '5': { pos: 5, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '6': { pos: 6, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '7': { pos: 7, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '8': { pos: 8, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '9': { pos: 9, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '10': { pos: 10, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '11': { pos: 11, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 21701, lck: 27340, health: 206702016, min: 559, max: 1013 },
+      '12': { pos: 12, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 32552, lck: 27340, health: 310057792, min: 559, max: 1013 },
+      '13': { pos: 13, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 32552, lck: 27340, health: 310057792, min: 559, max: 1013 },
+      '14': { pos: 14, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 43402, lck: 27340, health: 413404032, min: 559, max: 1013 },
+      '15': { pos: 15, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 108505, lck: 27340, health: 5167550464, min: 559, max: 1013 }
+    }
   }
 }
 
