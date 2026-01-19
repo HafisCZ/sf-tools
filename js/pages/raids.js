@@ -355,23 +355,26 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
     } else if (raid.startsWith('raid_')) {
         const raidData = RAID_DATA[raid]
 
+        // Multiply raid stats based on raid level, to simulate dividing players attributes
+        const attr_mult = raid.split('_')[1] <= 50 ? 1 : raid.split('_')[1] <= 100 ? 10 : 50
+
         return Array.from({ length: Object.keys(raidData.floors).length }).map((_, i) => {
-            const data = raidData.floors[i + 1]
+            const data = raidData.floors[i + 1]            
 
             return {
                 Armor: data.level * CONFIG.fromID(data.class).MaximumDamageReduction,
                 Class: data.class,
                 Name: `Monster ${i + 1}`,
                 Level: data.level,
-                Health: data.health,
+                Health: data.health * attr_mult,
                 NoBaseDamage: true,
                 NoGladiator: true,
                 BlockChance: typeof data.block !== 'undefined' ? data.block : undefined,
                 Identifier: 999,
-                Strength: { Total: data.str },
-                Dexterity: { Total: data.dex },
-                Intelligence: { Total: data.int },
-                Constitution: { Total: data.con },
+                Strength: { Total: data.str * attr_mult },
+                Dexterity: { Total: data.dex * attr_mult },
+                Intelligence: { Total: data.int * attr_mult },
+                Constitution: { Total: data.con * attr_mult },
                 Luck: { Total: data.lck },
                 Dungeons: { Player: 0, Group: 0 },
                 Fortress: { Gladiator: 0 },
