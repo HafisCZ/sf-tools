@@ -62,15 +62,15 @@ class Calculations {
   static expeditionMountBonus(mount) {
     switch (mount) {
       case 0:
-        return 0;
+        return 1;
       case 1:
-        return 0.11
+        return 1.11
       case 2:
-        return 0.25
+        return 1.25
       case 3:
-        return 0.42
+        return 1.42
       case 4:
-        return 1
+        return 2
     }
   }
 
@@ -79,7 +79,7 @@ class Calculations {
     let base = (1 + _clamp(guildInstructor, 0, 200) / 100 + _clamp(book, 0, 100) / 100 + _clamp(runes, 0, 10) / 100) * this.experienceBase(level) / 11 / this.experienceReducedBase(level) * 15.18;
     if (scroll)
       base *= 1.1;
-    return base * (1 + this.expeditionStarBonus(stars)) * (1 + this.expeditionMountBonus(mount));
+    return base * (1 + this.expeditionStarBonus(stars)) * this.expeditionMountBonus(mount);
   }
 
   // Returns experience from secret mission of the day
@@ -370,11 +370,13 @@ class Calculations {
   // Returns expedition final gold reward for 25 thirst 
   static goldExpedition (level, tower, guildTreasure, runes, scroll, mount) {
     let base = this.gold(level) / 60.38647;
-    let goldMultiplier = 1 + _clamp(_clamp(guildTreasure, 0, 200) / 100 + _clamp(tower, 0, 100) * 2 / 100, 0, 3) + _clamp(runes, 0, 50) / 100
+    let goldMultiplier = 1 + _clamp(_clamp(guildTreasure, 0, 200) / 100 + _clamp(tower, 0, 100) * 2 / 100, 0, 3) + _clamp(runes, 0, 50) / 100;
     if (scroll)
       goldMultiplier *= 1.1;
     
-    return _clamp(base * goldMultiplier, 0, 50_000_000) * (1 + this.expeditionMountBonus(mount));
+    let goldWithBonuses = Math.min(40_000_000, base * goldMultiplier) * this.expeditionMountBonus(mount);
+    goldWithBonuses += _clamp(level - 557, 0, 75) * (50_000_000 * this.expeditionMountBonus(mount) - goldWithBonuses) / 75;
+    return goldWithBonuses;
   }
 
   /*
