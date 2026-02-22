@@ -359,26 +359,23 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
     } else if (raid.startsWith('raid_')) {
         const raidData = RAID_DATA[raid]
 
-        // Multiply raid stats based on raid level, to simulate dividing players attributes
-        const attr_mult = raid.split('_')[1] <= 50 ? 1 : raid.split('_')[1] <= 100 ? 10 : 50
-
         return Array.from({ length: Object.keys(raidData.floors).length }).map((_, i) => {
-            const data = raidData.floors[i + 1]            
-
+            const data = raidData.floors[i + 1]
+            
             return {
                 Armor: data.level * CONFIG.fromID(data.class).MaximumDamageReduction,
                 Class: data.class,
                 Name: `Monster ${i + 1}`,
                 Level: data.level,
-                Health: data.health * attr_mult,
+                Health: data.health,
                 NoBaseDamage: true,
                 NoGladiator: true,
                 BlockChance: typeof data.block !== 'undefined' ? data.block : undefined,
                 Identifier: 999,
-                Strength: { Total: data.str * attr_mult },
-                Dexterity: { Total: data.dex * attr_mult },
-                Intelligence: { Total: data.int * attr_mult },
-                Constitution: { Total: data.con * attr_mult },
+                Strength: { Total: data.str },
+                Dexterity: { Total: data.dex },
+                Intelligence: { Total: data.int },
+                Constitution: { Total: data.con },
                 Luck: { Total: data.lck },
                 Dungeons: { Player: 0, Group: 0 },
                 Fortress: { Gladiator: 0 },
@@ -413,6 +410,33 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
     }
   }
 
+  function applyStatScaling (playerList) {
+    if (raid.startsWith('raid_')) {
+        const raidNr = parseInt(raid.split('_')[1]);
+        if (raidNr <= 50) {
+            return playerList;
+        }
+
+        // Divide player attributes by 10 for raids 50-100, and by 50 for raids 101-150
+        const attr_div = raidNr <= 100 ? 10 : 50;
+        
+        const scaledList = playerList.map(({ player, index }) => {
+            const scaledPlayer = _clone(player)
+
+            scaledPlayer.Strength.Total = Math.max(1, Math.floor(player.Strength.Total / attr_div));
+            scaledPlayer.Dexterity.Total = Math.max(1, Math.floor(player.Dexterity.Total / attr_div));
+            scaledPlayer.Intelligence.Total = Math.max(1, Math.floor(player.Intelligence.Total / attr_div));
+            scaledPlayer.Constitution.Total = Math.max(1, Math.floor(player.Constitution.Total / attr_div));
+
+            return { player: scaledPlayer, index };        
+        });
+
+        return scaledList;
+    }
+
+    return playerList;
+  }
+
   function executeSimulation (instances, iterations, logCallback) {
       if (validateLists()) {
           const results = [];
@@ -421,6 +445,8 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
           const batch = new WorkerBatch('raids');
 
           const enemies = generateEnemies()
+
+          const scaledPlayerList = applyStatScaling(playerList);
 
           for (let i = 0; i < instances; i++) {
               batch.add(
@@ -435,7 +461,7 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
                   },
                   {
                       flags: getSimulatorFlags(),
-                      players: playerList,
+                      players: scaledPlayerList,
                       enemies,
                       iterations,
                       config: SimulatorUtils.config,
