@@ -43,9 +43,9 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
         value: `hellevator_${index + 1}`,
         name: intl(`raids.raids.hellevator_${index + 1}`) 
     })),
-    ...Array.from({ length: 50 }, (_, index) => ({
+    ...Array.from({ length: 150 }, (_, index) => ({
         value: `raid_${index + 1}`,
-        name: intl(`general.guild_raid_${index + 1}`)
+        name: `${index + 1} - ${intl(`general.guild_raid_${index % 50 + 1}`)}`
     }))
   ]
 
@@ -406,6 +406,33 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
     }
   }
 
+  function applyStatScaling (playerList) {
+    if (raid.startsWith('raid_')) {
+        const raidNr = parseInt(raid.split('_')[1]);
+        if (raidNr <= 50) {
+            return playerList;
+        }
+
+        // Divide player attributes by 10 for raids 51-100, and by 50 for raids 101-150
+        const attr_div = raidNr <= 100 ? 10 : 50;
+        
+        const scaledList = playerList.map(({ player, index }) => {
+            const scaledPlayer = _clone(player)
+
+            scaledPlayer.Strength.Total = Math.max(1, Math.floor(player.Strength.Total / attr_div));
+            scaledPlayer.Dexterity.Total = Math.max(1, Math.floor(player.Dexterity.Total / attr_div));
+            scaledPlayer.Intelligence.Total = Math.max(1, Math.floor(player.Intelligence.Total / attr_div));
+            scaledPlayer.Constitution.Total = Math.max(1, Math.floor(player.Constitution.Total / attr_div));
+
+            return { player: scaledPlayer, index };        
+        });
+
+        return scaledList;
+    }
+
+    return playerList;
+  }
+
   function executeSimulation (instances, iterations, logCallback) {
       if (validateLists()) {
           const results = [];
@@ -414,6 +441,8 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
           const batch = new WorkerBatch('raids');
 
           const enemies = generateEnemies()
+
+          const scaledPlayerList = applyStatScaling(playerList);
 
           for (let i = 0; i < instances; i++) {
               batch.add(
@@ -428,7 +457,7 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
                   },
                   {
                       flags: getSimulatorFlags(),
-                      players: playerList,
+                      players: scaledPlayerList,
                       enemies,
                       iterations,
                       config: SimulatorUtils.config,
