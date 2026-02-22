@@ -1733,7 +1733,18 @@
         "result": "Chance to defeat raid: #{chance}%",
         "footer#": "Special thanks to Eggman & everyone else who went through the pain of gathering raid data for the greater good",
         "raids": {
-            "hellevator": "Hellevator Raid #{number}"
+            "hellevator_1": "HV: Highway to Hell",
+            "hellevator_2": "HV: Limbo",
+            "hellevator_3": "HV: Lust",
+            "hellevator_4": "HV: Gluttony",
+            "hellevator_5": "HV: Greed",
+            "hellevator_6": "HV: Wrath",
+            "hellevator_7": "HV: Heresy",
+            "hellevator_8": "HV: Violence",
+            "hellevator_9": "HV: Fraud",
+            "hellevator_10": "HV: Treachery",
+            "hellevator_11": "HV: Limbo II",
+            "hellevator_12": "HV: Highway to Hell II"
         }
     },
     "idle": {

@@ -1,7 +1,17 @@
 class MonsterGenerator {
   static MONSTER_NORMAL = Symbol();
   static MONSTER_RAID = Symbol();
-  static MONSTER_BOSS = Symbol();
+
+  static #MULTIPLIERS = {
+    [this.MONSTER_NORMAL]: {
+      Default: 1,
+      Health: 1
+    },
+    [this.MONSTER_RAID]: {
+      Default: 1.5,
+      Health: 3
+    }
+  }
 
   static #DELTA = {
     [this.MONSTER_NORMAL]: [
@@ -46,9 +56,19 @@ class MonsterGenerator {
         delta: [1200, 600, 800, 250, 7000000, 25, 25, 0]
       },
       {
-        range: [1000, 1009],
-        reset: [540000, 280000, 590000, 165000, 2900000000, 8500, 8750, -1],
+        range: [1000, 1099],
+        reset: [540000, 280000, 589200, 164750, 2900000000, 8500, 8750, -1],
         delta: [1300, 700, 800, 250, 7000000, 25, 25, 0]
+      },
+      {
+        range: [1100, 1199],
+        reset: [700000, 350000, 670000, 190000, 3600000000, 11000, 11250, -1],
+        delta: [1400, 700, 800, 250, 7000000, 25, 25, 0]
+      },
+      {
+        range: [1200, 1209],
+        reset: [880000, 420000, 750000, 215000, 4300000000, 13500, 13750, -1],
+        delta: [1500, 700, 800, 250, 7000000, 25, 25, 0]
       }
     ],
     [this.MONSTER_RAID]: [
@@ -93,15 +113,25 @@ class MonsterGenerator {
         delta: [1800, 900, 1200, 375, 21000000, 37.5, 37.5, 180]
       },
       {
-        range: [1000, 1009],
+        range: [1000, 1099],
         reset: [808800, 420000, 885000, 247500, 8700000000, 12750, 13125, 148500],
         delta: [2100, 1050, 1200, 375, 21000000, 37.5, 37.5, 180]
+      },
+      {
+        range: [1100, 1199],
+        reset: [1050000, 525000, 1005000, 285000, 10800000000, 16500, 16875, 166500],
+        delta: [2100, 1050, 1200, 375, 21000000, 37.5, 37.5, 180]
+      },
+      {
+        range: [1200, 1209],
+        reset: [880000, 420000, 750000, 215000, 4300000000, 20250, 20625, 184500],
+        delta: [1500, 700, 800, 250, 7000000, 37.5, 37.5, 180]
       }
     ]
   }
 
   static create (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
-    const base = this.#DELTA[monsterType].find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
+    const base = this.#DELTA[monsterType === this.MONSTER_RAID ? this.MONSTER_NORMAL : monsterType].find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
 
     const delta = monsterLevel - base.range[0];
 
@@ -113,13 +143,15 @@ class MonsterGenerator {
       deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax, deltaArmor
     ] = base.delta;
 
-    const main = resetMain + deltaMain * delta;
-    const side = resetSide + deltaSide * delta;
-    const con = resetCon + deltaCon * delta;
-    const luck = resetLuck + deltaLuck * delta;
-    const health = resetHealth + deltaHealth * delta;
-    const min = resetMin + deltaMin * delta;
-    const max = resetMax + deltaMax * delta;
+    const multipliers = this.#MULTIPLIERS[monsterType];
+
+    const main = (resetMain + deltaMain * delta) * multipliers.Default;
+    const side = (resetSide + deltaSide * delta) * multipliers.Default;
+    const con = (resetCon + deltaCon * delta) * multipliers.Default;
+    const luck = (resetLuck + deltaLuck * delta) * multipliers.Default;
+    const health = (resetHealth + deltaHealth * delta) * multipliers.Health;
+    const min = (resetMin + deltaMin * delta) * multipliers.Default;
+    const max = (resetMax + deltaMax * delta) * multipliers.Default;
     const armor = resetArmor + deltaArmor * delta;
 
     const model = {
@@ -127,7 +159,7 @@ class MonsterGenerator {
       NoGladiator: true,
       Level: monsterLevel,
       Class: monsterClass,
-      Armor: armor === -1 ? monsterLevel * CONFIG.fromID(monsterClass).MaximumDamageReduction : armor,
+      Armor: (armor === -1 ? monsterLevel * CONFIG.fromID(monsterClass).MaximumDamageReduction : armor) * multipliers.Default,
       Health: health,
       Luck: { Total: luck },
       Constitution: { Total: con },
