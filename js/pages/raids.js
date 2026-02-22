@@ -413,7 +413,7 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
             return playerList;
         }
 
-        // Divide player attributes by 10 for raids 50-100, and by 50 for raids 101-150
+        // Divide player attributes by 10 for raids 51-100, and by 50 for raids 101-150
         const attr_div = raidNr <= 100 ? 10 : 50;
         
         const scaledList = playerList.map(({ player, index }) => {
