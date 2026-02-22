@@ -1,7 +1,17 @@
 class MonsterGenerator {
   static MONSTER_NORMAL = Symbol();
   static MONSTER_RAID = Symbol();
-  static MONSTER_BOSS = Symbol();
+
+  static #MULTIPLIERS = {
+    [this.MONSTER_NORMAL]: {
+      Default: 1,
+      Health: 1
+    },
+    [this.MONSTER_RAID]: {
+      Default: 1.5,
+      Health: 3
+    }
+  }
 
   static #DELTA = {
     [this.MONSTER_NORMAL]: [
@@ -121,7 +131,7 @@ class MonsterGenerator {
   }
 
   static create (monsterType, monsterLevel, monsterClass, monsterRuneType = 0, monsterRuneValue = 0) {
-    const base = this.#DELTA[monsterType].find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
+    const base = this.#DELTA[monsterType === this.MONSTER_RAID ? this.MONSTER_NORMAL : monsterType].find((entry) => monsterLevel >= entry.range[0] && monsterLevel <= entry.range[1]);
 
     const delta = monsterLevel - base.range[0];
 
@@ -133,13 +143,15 @@ class MonsterGenerator {
       deltaMain, deltaSide, deltaCon, deltaLuck, deltaHealth, deltaMin, deltaMax, deltaArmor
     ] = base.delta;
 
-    const main = resetMain + deltaMain * delta;
-    const side = resetSide + deltaSide * delta;
-    const con = resetCon + deltaCon * delta;
-    const luck = resetLuck + deltaLuck * delta;
-    const health = resetHealth + deltaHealth * delta;
-    const min = resetMin + deltaMin * delta;
-    const max = resetMax + deltaMax * delta;
+    const multipliers = this.#MULTIPLIERS[monsterType];
+
+    const main = (resetMain + deltaMain * delta) * multipliers.Default;
+    const side = (resetSide + deltaSide * delta) * multipliers.Default;
+    const con = (resetCon + deltaCon * delta) * multipliers.Default;
+    const luck = (resetLuck + deltaLuck * delta) * multipliers.Default;
+    const health = (resetHealth + deltaHealth * delta) * multipliers.Health;
+    const min = (resetMin + deltaMin * delta) * multipliers.Default;
+    const max = (resetMax + deltaMax * delta) * multipliers.Default;
     const armor = resetArmor + deltaArmor * delta;
 
     const model = {
@@ -147,7 +159,7 @@ class MonsterGenerator {
       NoGladiator: true,
       Level: monsterLevel,
       Class: monsterClass,
-      Armor: armor === -1 ? monsterLevel * CONFIG.fromID(monsterClass).MaximumDamageReduction : armor,
+      Armor: (armor === -1 ? monsterLevel * CONFIG.fromID(monsterClass).MaximumDamageReduction : armor) * multipliers.Default,
       Health: health,
       Luck: { Total: luck },
       Constitution: { Total: con },
