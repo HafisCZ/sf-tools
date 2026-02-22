@@ -39,9 +39,9 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
 
   // Current raid
   const availableRaids = [
-    ...Array.from({ length: 10 }, (_, index) => ({
+    ...Array.from({ length: 12 }, (_, index) => ({
         value: `hellevator_${index + 1}`,
-        name: intl(`raids.raids.hellevator`, { number: index + 1 }) 
+        name: intl(`raids.raids.hellevator_${index + 1}`) 
     })),
     ...Array.from({ length: 50 }, (_, index) => ({
         value: `raid_${index + 1}`,
@@ -340,9 +340,9 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
         const tier = parseInt(raid.slice(11))
 
         return Array.from({ length: 10 }).map((_, i) => {
-            const monsterIndex = 10 * (tier - 1) + i
+            const level = 100 * (tier - 1) + i * 10 + 4
 
-            const [ monsterClass, monsterRune ] = HELLEVATOR_RAID_DATA[monsterIndex]
+            const [ monsterClass, monsterRune ] = HellevatorEnemies.classAndRuneForLevel(level)
 
             return MonsterGenerator.create(
                 MonsterGenerator.MONSTER_RAID,
