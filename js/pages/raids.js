@@ -49,7 +49,7 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
     }))
   ]
 
-  let raid = null  
+  let raid = null
   $('#raid').dropdown({
     values: availableRaids,
     onChange: (value) => {
@@ -357,7 +357,7 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
 
         return Array.from({ length: Object.keys(raidData.floors).length }).map((_, i) => {
             const data = raidData.floors[i + 1]
-            
+
             return {
                 Armor: data.level * CONFIG.fromID(data.class).MaximumDamageReduction,
                 Class: data.class,
