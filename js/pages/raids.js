@@ -340,13 +340,13 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
         const tier = parseInt(raid.slice(11))
 
         return Array.from({ length: 10 }).map((_, i) => {
-            const level = 100 * (tier - 1) + i * 10 + 4
+            const level = 100 * (tier - 1) + i * 10 + 18
 
-            const [ monsterClass, monsterRune ] = HellevatorEnemies.classAndRuneForLevel(level)
+            const [ monsterRune, monsterClass ] = HellevatorEnemies.classAndRuneForLevel(level)
 
             return MonsterGenerator.create(
                 MonsterGenerator.MONSTER_RAID,
-                18 + i * 10 + (tier - 1) * 100,
+                level,
                 monsterClass,
                 monsterRune,
                 25

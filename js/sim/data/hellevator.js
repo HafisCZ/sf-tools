@@ -28,7 +28,7 @@ class HellevatorEnemies {
   static #enemies = []
 
   static classAndRuneForLevel (level) {
-    return this.#enemiesVariants[(level - 10) / 2]
+    return this.#enemiesVariants[(level - 18) / 2]
   }
 
   static #generateEnemies () {
