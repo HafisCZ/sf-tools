@@ -70,8 +70,8 @@ Site.ready({ name: 'hellevator', type: 'simulator' }, function (urlParams) {
         Editor.getExtendedEditorFields(
             '#sim-editor',
             {
-                range_start: new Field('#range-start', '1', Field.createRange(1, 500)),
-                range_end: new Field('#range-end', '500', Field.createRange(1, 500))
+                range_start: new Field('#range-start', '1', Field.createRange(1, 600)),
+                range_end: new Field('#range-end', '600', Field.createRange(1, 600))
             }
         )
     )

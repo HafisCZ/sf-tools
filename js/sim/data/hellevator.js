@@ -32,7 +32,7 @@ class HellevatorEnemies {
   }
 
   static #generateEnemies () {
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 600; i++) {
       const [monsterRune, monsterClass] = this.#enemiesVariants[i];
 
       const monster = MonsterGenerator.create(
