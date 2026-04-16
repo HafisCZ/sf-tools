@@ -16,6 +16,7 @@
         "class9": "Bardo",
         "class10": "Nigromante",
         "class11": "Paladín",
+        "class12": "Plague Doctor",
         "mask0": "Águila",
         "mask1": "Oso",
         "mask2": "Gato",
@@ -110,6 +111,10 @@
         "attack14": "Revivir",
         "attack15": "Crítico de Ayudante",
         "attack16": "Ataque en picado crítico",
+        "attack17": "Tincture Throw",
+        "attack18": "Tincture Throw Critical",
+        "attack19": "Poison",
+        "attack20": "Poison Critical",
         "attack100": "Normal",
         "attack101": "Crítico",
         "defense3": "Bloqueo",
@@ -958,7 +963,8 @@
             "necromancer_minion_3": "El gólem invocado está afectando al jugador",
             "paladin_stance_1": "Neutral",
             "paladin_stance_2": "Defensiva",
-            "paladin_stance_3": "Ofensiva"
+            "paladin_stance_3": "Ofensiva",
+            "plague_doctor_tincture": "Tincture is affecting the player"
         },
         "sidebar": {
             "toggles": {
@@ -1721,7 +1727,18 @@
         "result": "Probabilidad de derrotar la batida: #{chance}%",
         "footer#": "Agradecimiento especial a Eggman y a todos los que han pasado por el sufrimiento de recolectar datos de incursiones para el bien común",
         "raids": {
-            "hellevator": "Hellevator Raid #{number}"
+            "hellevator_1": "HV 1: Highway to Hell",
+            "hellevator_2": "HV 2: Limbo",
+            "hellevator_3": "HV 3: Lust",
+            "hellevator_4": "HV 4: Gluttony",
+            "hellevator_5": "HV 5: Greed",
+            "hellevator_6": "HV 6: Wrath",
+            "hellevator_7": "HV 7: Heresy",
+            "hellevator_8": "HV 8: Violence",
+            "hellevator_9": "HV 9: Fraud",
+            "hellevator_10": "HV 10: Treachery",
+            "hellevator_11": "HV 11: Limbo II",
+            "hellevator_12": "HV 12: Highway to Hell II"
         }
     },
     "idle": {

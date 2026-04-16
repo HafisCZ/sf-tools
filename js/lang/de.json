@@ -16,6 +16,7 @@
         "class9": "Barde",
         "class10": "Nekromant",
         "class11": "Paladin",
+        "class12": "Plague Doctor",
         "mask0": "Adler",
         "mask1": "Bär",
         "mask2": "Katze",
@@ -110,6 +111,10 @@
         "attack14": "Revive",
         "attack15": "Minion Critical",
         "attack16": "Swoop Critical",
+        "attack17": "Tincture Throw",
+        "attack18": "Tincture Throw Critical",
+        "attack19": "Poison",
+        "attack20": "Poison Critical",
         "attack100": "Normal",
         "attack101": "Critical",
         "defense3": "Block",
@@ -958,7 +963,8 @@
             "necromancer_minion_3": "Beschworener Golem hat Einfluss auf den Spieler",
             "paladin_stance_1": "Neutral",
             "paladin_stance_2": "Defensive",
-            "paladin_stance_3": "Offensive"
+            "paladin_stance_3": "Offensive",
+            "plague_doctor_tincture": "Tincture is affecting the player"
         },
         "sidebar": {
             "toggles": {
@@ -1718,19 +1724,19 @@
         }
     },
     "raids": {
-        "result": "Chance den Raid zu besiegen: #{chance}%",
-        "footer#": "Besonderer Dank gilt Eggman und allen anderen, die sich die Mühe gemacht haben, Raid-Daten für das Allgemeinwohl zu sammeln.",
+        "result": "Chance to defeat raid: #{chance}%",
+        "footer#": "Special thanks to Eggman & everyone else who went through the pain of gathering raid data for the greater good",
         "raids": {
             "hellevator_1": "HV 1: Highway to Hell",
             "hellevator_2": "HV 2: Limbo",
             "hellevator_3": "HV 3: Lust",
-            "hellevator_4": "HV 4: Völlerei",
-            "hellevator_5": "HV 5: Gier",
-            "hellevator_6": "HV 6: Zorn",
-            "hellevator_7": "HV 7: Häresie",
-            "hellevator_8": "HV 8: Gewalt",
-            "hellevator_9": "HV 9: Betrug",
-            "hellevator_10": "HV 10: Verrat",
+            "hellevator_4": "HV 4: Gluttony",
+            "hellevator_5": "HV 5: Greed",
+            "hellevator_6": "HV 6: Wrath",
+            "hellevator_7": "HV 7: Heresy",
+            "hellevator_8": "HV 8: Violence",
+            "hellevator_9": "HV 9: Fraud",
+            "hellevator_10": "HV 10: Treachery",
             "hellevator_11": "HV 11: Limbo II",
             "hellevator_12": "HV 12: Highway to Hell II"
         }
@@ -1894,19 +1900,19 @@
             "name": "Das Playa HQ"
         },
         "31": {
-            "name": "Arcade der alten Pixel-Ikonen"
+            "name": "Arcade of the Old Pixel Icons"
         },
         "32": {
-            "name": "Der Serverraum"
+            "name": "The Server Room"
         },
         "33": {
-            "name": "Werkstatt der Untotenjäger"
+            "name": "Workshop of the Hunters of the Undead"
         },
         "34": {
-            "name": "Retro TV-Legenden"
+            "name": "Retro TV Legends"
         },
         "35": {
-            "name": "Der Meetingraum"
+            "name": "The Meeting Room"
         },
         "201": {
             "name": "Märchenturm"

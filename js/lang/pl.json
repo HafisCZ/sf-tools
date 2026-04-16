@@ -16,6 +16,7 @@
         "class9": "Bard",
         "class10": "Nekromanta",
         "class11": "Paladyn",
+        "class12": "Plague Doctor",
         "mask0": "Orzeł",
         "mask1": "Niedźwiedź",
         "mask2": "Kot",
@@ -107,13 +108,17 @@
         "attack11": "Minion Summon",
         "attack12": "Minion",
         "attack13": "Swoop",
-        "attack14": "Revive",
+        "attack14": "Odrodzenie",
         "attack15": "Minion Critical",
         "attack16": "Swoop Critical",
-        "attack100": "Normal",
-        "attack101": "Critical",
-        "defense3": "Block",
-        "defense4": "Evade",
+        "attack17": "Tincture Throw",
+        "attack18": "Tincture Throw Critical",
+        "attack19": "Poison",
+        "attack20": "Poison Critical",
+        "attack100": "Zwykły",
+        "attack101": "Krytyczny",
+        "defense3": "Blok",
+        "defense4": "Unik",
         "defense5": "Magic block",
         "defense6": "Block & Heal",
         "gt_background1": "Złoto",
@@ -379,8 +384,8 @@
             "desc": "Przesymuluj prawdopodobny wynik walki w Windzie Piekieł"
         },
         "raids": {
-            "title": "Raid Simulator",
-            "desc": "Simulate the probable outcome of guild raids"
+            "title": "Symulator Rajdów",
+            "desc": "Przesymuluj prawdopodobny wynik rajdów gildii"
         }
     },
     "404": {
@@ -509,7 +514,7 @@
             "title": "Zastosuj akcję do wybranych elementów",
             "hide": "Pokaż / Ukryj",
             "remove": "Usuń na stałe",
-            "remove_current": "Remove current entry permanently",
+            "remove_current": "Usuń trwale bieżący wpis ",
             "link_players": "Połącz / podziel postacie",
             "link_groups": "Połącz / podziel gildie",
             "unselect": "Odznacz wszystko"
@@ -859,7 +864,7 @@
             "none": "Nie można pokonać wszystkich #{count} pięter",
             "first": "Pierwsze #{count} piętra zostały pokonane z 100% szans",
             "last": "Ostatnie #{count} pięter jest niemożliwe do pokonania",
-            "title": "Individual chances"
+            "title": "Indywidualne szanse"
         },
         "footer#": "Bazuje na <a target=\"_blank\" href=\"https://hellevatorrewards.12hp.de/\">Nagrodach Windy Piekieł &amp; Statystyki potworów</a> od ÐonMuErte."
     },
@@ -932,7 +937,7 @@
         "autofill": "Uzupełnij dane z wcześniej zdefiniowanej listy",
         "analyze": "Analizator statystyczny",
         "gladiator": "Gladiator nie obniżony",
-        "armor": "Force armor to maximum value",
+        "armor": "Wymuś maksymalną wartość pancerza",
         "clear_changes": "Resetuj do stanu początkowego",
         "simulate": "Otwórz symulator z bieżącymi danymi",
         "table": {
@@ -956,9 +961,10 @@
             "necromancer_minion_1": "Przywołany Szkielet ma wpływ na gracza",
             "necromancer_minion_2": "Przywołany Ogar ma wpływ na gracza",
             "necromancer_minion_3": "Przywołany Golem ma wpływ na gracza",
-            "paladin_stance_1": "Neutral",
-            "paladin_stance_2": "Defensive",
-            "paladin_stance_3": "Offensive"
+            "paladin_stance_1": "Neutralna",
+            "paladin_stance_2": "Defensywna",
+            "paladin_stance_3": "Ofensywna",
+            "plague_doctor_tincture": "Tincture is affecting the player"
         },
         "sidebar": {
             "toggles": {
@@ -1109,7 +1115,7 @@
         "win_chance": "Szansa na zwycięstwo %",
         "min_chance": "Minimalna szansa %",
         "max_chance": "Maksymalna szansa %",
-        "avg_chance": "Avg %",
+        "avg_chance": "Średnia %",
         "toast": {
             "title": "Symulacja zakończona",
             "message": "Symulacja zajęła #{duration}"
@@ -1193,7 +1199,7 @@
         },
         "user_error": {
             "title": "Nieprawidłowa nazwa użytkowanika lub hasło",
-            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
+            "message": "Upewnij się, że jest w poprawnym formacie ('username' dla kont SF , 'username@url' dla postaci lokalnych)"
         },
         "errors": {
             "error_unreachable": "Serwer jest nieosiągalny",
@@ -1500,7 +1506,7 @@
             "title": "Wystąpił błąd krytyczny!",
             "notice#": "Ten błąd mógł być spowodowany aktualnym profilem.<br>Kliknij przycisk cofnięcia poniżej, aby powrócić do profilu domyślnego.",
             "refresh": "Kliknij tutaj lub odśwież stronę",
-            "temporary": "Open page in temporary mode",
+            "temporary": "Otwórz stronę w trybie tymczasowym",
             "revert": "Przywrócenie profilu domyślnego"
         },
         "changelog": {
@@ -1718,10 +1724,21 @@
         }
     },
     "raids": {
-        "result": "Chance to defeat raid: #{chance}%",
-        "footer#": "Special thanks to Eggman & everyone else who went through the pain of gathering raid data for the greater good",
+        "result": "Szansa na pokonanie rajdu: #{chance}%",
+        "footer#": "Specjalne podziękowania dla Eggman'a i wszystkich, którzy włożyli masę wysiłku w zbieranie danych z rajdów dla wspólnego dobra",
         "raids": {
-            "hellevator": "Hellevator Raid #{number}"
+            "hellevator_1": "HV 1: Highway to Hell",
+            "hellevator_2": "HV 2: Limbo",
+            "hellevator_3": "HV 3: Lust",
+            "hellevator_4": "HV 4: Gluttony",
+            "hellevator_5": "HV 5: Greed",
+            "hellevator_6": "HV 6: Wrath",
+            "hellevator_7": "HV 7: Heresy",
+            "hellevator_8": "HV 8: Violence",
+            "hellevator_9": "HV 9: Fraud",
+            "hellevator_10": "HV 10: Treachery",
+            "hellevator_11": "HV 11: Limbo II",
+            "hellevator_12": "HV 12: Highway to Hell II"
         }
     },
     "idle": {
@@ -1907,7 +1924,7 @@
             "name": "Tornado"
         },
         "204": {
-            "name": "Sandstorm"
+            "name": "Burza Piaskowa"
         }
     }
 }
