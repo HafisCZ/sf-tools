@@ -709,7 +709,8 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
 
                 if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
                     // Increase rage if it's a chained attack
-                    attackRageOffset++;
+                    // Disabled (was broken by playa)
+                    // attackRageOffset++;
                 }
 
 
