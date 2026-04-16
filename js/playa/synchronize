@@ -6,11 +6,11 @@ require 'httparty'
 require 'fileutils'
 require 'json'
 
-class Synchronize
-  include HTTParty
+module Synchronize
+  module_function
 
   PLAYA_CONFIG_URL = 'https://sfgame.net/config.json'
-  PLAYA_TRANSLATION_URL = 'https://cdn.playa-games.com/res/sfgame3/lang/%<version>s/sfgame_%<language>s.bin'
+  PLAYA_TRANSLATION_URL = '%<prefix>s%<version>s/sfgame_%<language>s.bin'
 
   REGEXP_MONSTER = /^monster_name_(\d+)$/ 
   REGEXP_ITEM = /^item_type_(\d+)_(?:class_(\d+)_)?pic_(\d+)$/
@@ -21,7 +21,7 @@ class Synchronize
     'en' => 'en',
     'de' => 'de',
     'pl' => 'pl',
-    'pt' => 'pt',
+    # 'pt' => 'pt',
     'cs' => 'cs',
     'fr' => 'fr',
     'it' => 'it',
@@ -30,17 +30,22 @@ class Synchronize
     'ch' => 'de'
   }
 
-  def initialize(argv:)
-  end
-
-  def run
-    config = JSON.parse(self.class.get(PLAYA_CONFIG_URL).body)
+  def call(argv:)
+    config = JSON.parse(HTTParty.get(PLAYA_CONFIG_URL).body)
 
     # Save translations
     LANGUAGE_LIST.each do |sftools_language, playa_language|
       FileUtils.mkdir_p("lang/#{sftools_language}")
 
-      strings = decode(self.class.get(format(PLAYA_TRANSLATION_URL, version: config['required_client_version_min'][..3] + '00', language: playa_language)).body)
+      response = HTTParty.get(format(PLAYA_TRANSLATION_URL, prefix: config['language_path'], version: config['required_client_version_min'][..3] + '00', language: playa_language))
+      unless response.success?
+        puts "[#{sftools_language}] Failed to fetch #{playa_language}"
+        puts response.body
+
+        next
+      end
+
+      strings = decode(response.body)
 
       monsters = strings.select { |key, _| key.match?(REGEXP_MONSTER) }
       monsters = monsters.map do |key, text|
@@ -83,14 +88,13 @@ class Synchronize
     end
   end
 
-  private
-
   def decode(text)
     bytes = text.bytes
 
     read_value = lambda do |bytes|
       head_len = bytes.shift.ord
       head_len += 64 * (2 * bytes.shift - 2) if bytes.first.ord <= 32
+ 
       bytes.shift(head_len).map(&:chr).join
     end
     
@@ -98,11 +102,13 @@ class Synchronize
     until bytes.empty?
       key = read_value.call(bytes)
       val = read_value.call(bytes)
-      strings[key] = val
+
+      strings[key.force_encoding(Encoding::UTF_8)] = val.force_encoding(Encoding::UTF_8)
     end
     
     hash = Hash[strings.sort_by { |key, val| key.to_s }]
   end
+  private_class_method :decode
 end
 
-Synchronize.new(argv: ARGV).run if __FILE__ == $0
+Synchronize.call(argv: ARGV) if __FILE__ == $0
