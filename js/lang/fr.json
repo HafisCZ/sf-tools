@@ -9,21 +9,21 @@
         "class2": "Mage",
         "class3": "Éclaireur",
         "class4": "Assassin",
-        "class5": "Mage de Combat",
+        "class5": "Mage de combat",
         "class6": "Berserker",
-        "class7": "Chasseur de Démons",
+        "class7": "Chasseur de démons",
         "class8": "Druide",
         "class9": "Barde",
         "class10": "Nécromancien",
         "class11": "Paladin",
-        "class12": "Plague Doctor",
+        "class12": "Docteur de la peste",
         "mask0": "Aigle",
         "mask1": "Ours",
         "mask2": "Tigre",
         "instrument0": "Harpe",
         "instrument1": "Luth",
         "instrument2": "Flûte",
-        "life_potion": "Vie Éternelle",
+        "life_potion": "Vie éternelle",
         "attribute1": "Force",
         "attribute2": "Habileté",
         "attribute3": "Intelligence",
@@ -34,7 +34,7 @@
         "potion3": "Intelligence",
         "potion4": "Endurance",
         "potion5": "Chance",
-        "potion6": "Vie Éternelle",
+        "potion6": "Vie éternelle",
         "rank1": "Chef",
         "rank2": "Officier",
         "rank3": "Membre",
@@ -47,33 +47,33 @@
         "time": "Temps",
         "gem": "Gemme",
         "fight": "Combat",
-        "wood_cap": "Stockage de Bois",
-        "stone_cap": "Stockage de Pierre",
+        "wood_cap": "Stockage de bois",
+        "stone_cap": "Stockage de pierre",
         "buildings": {
             "time": "Durée de construction",
-            "hourly": "Prod. par heure",
+            "hourly": "Prod. horaire",
             "capacity": "Stockage",
             "full": "Plein dans",
             "storage": "Stockage total",
             "lure_count": "Héros Attirés",
             "lure_bonus": "Bonus leurre",
-            "knights": "Salle des Chevaliers",
+            "knights": "Salle des chevaliers",
             "goblins": "Gobelins",
             "trolls": "Trolls",
             "warriors": "Guerriers",
             "archers": "Archers",
             "mages": "Mages",
-            "backpack_size": "Taille du Sac à dos",
+            "backpack_size": "Taille du sac à dos",
             "critical_bonus": "Bonus de dégâts critiques",
             "thirst_free": "Soif gratuite journalière",
-            "thirst_usable": "Soif stockable journalière",
+            "thirst_usable": "Soif journalière stockable",
             "fortress1": "Forteresse",
-            "fortress2": "Quartier Ouvrier",
+            "fortress2": "Quartier ouvrier",
             "fortress3": "Camp de bûcherons",
             "fortress4": "Carrière",
             "fortress5": "Mine de gemmes",
             "fortress6": "Académie",
-            "fortress7": "Guilde des Archers",
+            "fortress7": "Guilde des archers",
             "fortress8": "Caserne",
             "fortress9": "Tour des mages",
             "fortress10": "Banque",
@@ -91,17 +91,17 @@
             "underworld10": "Gardien"
         },
         "reduction": "Réduction",
-        "race1": "Humains",
-        "race2": "Elfes",
-        "race3": "Nains",
-        "race4": "Gnomes",
-        "race5": "Orques",
-        "race6": "Elfes sombres",
-        "race7": "Gobelins",
-        "race8": "Démons",
+        "race1": "Humain",
+        "race2": "Elfe",
+        "race3": "Nain",
+        "race4": "Gnome",
+        "race5": "Orque",
+        "race6": "Elfe sombre",
+        "race7": "Gobelin",
+        "race8": "Démon",
         "gender1": "Homme",
         "gender2": "Femme",
-        "attack0": "Normale",
+        "attack0": "Normal",
         "attack1": "Critique",
         "attack2": "Catapulte",
         "attack10": "Fireball",
@@ -137,34 +137,34 @@
         "item11": "Clé",
         "item12": "Potion",
         "item13": "Album de maniaque",
-        "item14": "Défilement",
+        "item14": "Parchemin",
         "item15": "Gemme",
-        "item16": "Oeuf",
+        "item16": "Œuf",
         "item17": "Sablier",
         "item18": "Cœur",
         "item19": "Roue",
         "rune1": "Or",
-        "rune2": "Chance épique",
-        "rune3": "Qualité de l'objet",
+        "rune2": "Chance d'épique",
+        "rune3": "Qualité d'objet",
         "rune4": "EXP",
         "rune5": "Santé",
-        "rune6": "Résistance au Feu",
-        "rune7": "Résistance à la Glace",
-        "rune8": "Résistance à la Foudre",
+        "rune6": "Résistance au feu",
+        "rune7": "Résistance à la glace",
+        "rune8": "Résistance à la foudre",
         "rune9": "Résistance totale",
-        "rune10": "Dégâts de Feu",
-        "rune11": "Dégâts de Glace",
-        "rune12": "Dégâts de Foudre",
+        "rune10": "Dégâts de feu",
+        "rune11": "Dégâts de glace",
+        "rune12": "Dégâts de foudre",
         "action0": "Inactif",
-        "action1": "Travail",
-        "action2": "Quête en cours",
+        "action1": "En garde",
+        "action2": "En quête",
         "action3": "Donjon",
         "gem1": "Force",
-        "gem2": "Dextérité",
+        "gem2": "Habileté",
         "gem3": "Intelligence",
-        "gem4": "Constitution",
+        "gem4": "Endurance",
         "gem5": "Chance",
-        "gem6": "Noir",
+        "gem6": "Noire",
         "gem7": "Légendaire",
         "companion1": "Bébert",
         "companion2": "Marc",
@@ -284,23 +284,23 @@
         "others": "Autres outils de la communauté",
         "roles": {
             "admin": "Quelqu'un avec beaucoup de temps libre",
-            "helper": "Contributeurs - Recherche, Tests, Retours, etc...",
+            "helper": "Contributeurs - Recherche, Tests, Retours, ...",
             "tester": "Testeurs",
             "wiki": "Chef/Manager du Wiki",
             "translator": "Traducteurs",
-            "mention": "Autres Mentions"
+            "mention": "Autres mentions"
         },
         "footer": {
             "beta": "Check out public beta",
-            "kofi": "Give mar some shrooms",
-            "crowdin": "Aidez-moi pour les traductions",
-            "webshop#": "Utilisez le code <b class=\"text-white\">SFTOOLS</b> dans la Boutique",
+            "kofi": "Offrez des champis à Mar",
+            "crowdin": "Aider à la traduction",
+            "webshop#": "Utilisez le code <b class=\"text-white\">SFTOOLS</b> dans la boutique du jeu",
             "report": "Envoyer un commentaire",
             "notice#": "Distribué <b>TEL QUEL</b>. Ce site n'est en aucun cas affilié à <b>Playa Games</b>."
         },
         "stats": {
             "title": "Statistiques",
-            "desc": "Suiviez vos progrès et ceux de votre guilde"
+            "desc": "Suivez vos progrès et ceux de votre guilde"
         },
         "temp": {
             "title": "Statistiques",
@@ -309,88 +309,88 @@
         },
         "wiki": {
             "title": "Wiki",
-            "desc": "Comment dominer le monde avec les tableaux et bien d'autre..."
+            "desc": "Comment dominer le monde avec les tableaux et plus encore..."
         },
         "runes": {
-            "title": "Bonus des Runes",
-            "desc": "Tableau des bonus des runes (fait par Zorago)"
+            "title": "Bonus des runes",
+            "desc": "Tableau des bonus de runes (par Zorago)"
         },
         "inventory": {
             "title": "Gestionnaire d'inventaire",
-            "desc": "Comparez vos objets, calculez les résultats d'améliorations etc..."
+            "desc": "Comparez vos objets, calculez les résultats d'améliorations ..."
         },
         "idle": {
-            "title": "Manager d'Arène",
-            "desc": "Pleins d'outils pour le Manager d'Arène"
+            "title": "Manager d'arène",
+            "desc": "Vérifiez la production de votre gestionnaire d'arène"
         },
         "calendar": {
-            "title": "Calendrier des Familiers",
-            "desc": "Planifier quand vous pourrez attraper les familiers"
+            "title": "Calendrier des familiers",
+            "desc": "Vérifiez quand vous pouvez attraper les familiers"
         },
         "simulator": {
             "title": "Simulateur de combat",
             "desc": "Simuler l'issue probable d'un combat PvP"
         },
         "guilds": {
-            "title": "Simulateur de Combat de Guilde",
-            "desc": "Simuler l'issue probable d'une bataille de guilde"
+            "title": "Simulateur de combat de guilde",
+            "desc": "Simuler l'issue probable d'un combat de guilde"
         },
         "pets": {
-            "title": "Simulateur de Familiers",
-            "desc": "Simulez les probabilités des résultats d'un combat de familiers"
+            "title": "Simulateur de familiers",
+            "desc": "Simuler l'issue probable d'un combat de familiers"
         },
         "dungeons": {
-            "title": "Simulateur de Donjon",
-            "desc": "Simulez les probabilités des résultats d'un combat en donjon"
+            "title": "Simulateur de donjons",
+            "desc": "Simuler l'issue probable d'un combat en donjon"
         },
         "underworld": {
             "title": "Simulateur des Enfers",
-            "desc": "Simulez les probabilités des résultats d'un combats dans les Enfers"
+            "desc": "Simuler l'issue probable d'un combat dans les Enfers"
         },
         "analyzer": {
-            "title": "Analyseur de Combat",
+            "title": "Analyseur de combat",
             "desc": "Affiche tous les combats dans un fichier pour une analyse détaillée"
         },
         "fights": {
-            "title": "Visionneuse de Combats PvP",
-            "desc": "Affiche tous les combats PvP stocker dans un fichier d'archives"
+            "title": "Visionneuse de combats PvP",
+            "desc": "Affiche tous les combats PvP stockés dans un fichier d'archives"
         },
         "digest": {
-            "title": "Visionneuse de Combats PvE",
-            "desc": "Affiche tous les combats PvE stocker dans un fichier d'archives"
+            "title": "Visionneuse de combats PvE",
+            "desc": "Affiche tous les combats PvE stockés dans un fichier d'archives"
         },
         "attributes": {
             "title": "Or & Expérience",
             "desc": "Courbes & calculateurs"
         },
         "blacksmith": {
-            "title": "Améliorations du Forgeron",
-            "desc": "What it costs and what gets lost"
+            "title": "Améliorations du forgeron",
+            "desc": "Combien ça coûte, combien on perd"
         },
         "hydra": {
-            "title": "Simulateur de l'Hydre",
+            "title": "Simulateur de l'hydre",
             "desc": "Simulez quelle classe de familiers est la meilleure contre l'hydre actuelle"
         },
         "fortress": {
-            "title": "Simulateur de Forteresse",
-            "desc": "Simuler l'issue probable d'un raid de forteresse"
+            "title": "Simulateur de forteresse",
+            "desc": "Simuler l'issue probable d'un combat de forteresse"
         },
         "changelog": {
-            "title": "Historique des modifications",
-            "desc": "Voir tous les changements notables"
+            "title": "Journal des modifications",
+            "desc": "Afficher tous les changements notables"
         },
         "hellevator": {
             "title": "Simulateur d'Hellevator",
             "desc": "Simuler l'issue probable des combats dans l'Hellevator"
         },
         "raids": {
-            "title": "Simulateur de Raid",
+            "title": "Simulateur de raid",
             "desc": "Simuler l'issue probable d'un raid de guilde"
         }
     },
     "404": {
         "title": "404",
-        "text": "Il semblerai que cette page n'existe pas, veuillez verifier votre recherche"
+        "text": "Il semblerait que cette page n'existe pas, veuillez vérifier votre recherche."
     },
     "terms": {
         "title": "Conditions générales",
@@ -402,7 +402,7 @@
         },
         "toast": {
             "rejected": {
-                "title": "Conditions non acceptées",
+                "title": "Conditions d'utilisation non acceptées",
                 "message": "Vous devez accepter les conditions pour continuer"
             }
         }
@@ -417,7 +417,7 @@
             "scripts": "Scripts",
             "files": "Fichiers",
             "settings": "Paramètres",
-            "temporary": "Session Temporaire",
+            "temporary": "Session temporaire",
             "changelog": "Journal de modifications",
             "profile": "Profils"
         },
@@ -436,13 +436,13 @@
             "players": "Joueurs",
             "version": "Version",
             "import": {
-                "file": "Importer depuis un Fichier",
+                "file": "Importer depuis un fichier",
                 "shared": "Importer via Partage",
-                "game": "Importer depuis le Jeu"
+                "game": "Importer depuis le jeu"
             },
             "export": {
                 "all": "Tout exporter",
-                "selected": "Exporter la Sélection"
+                "selected": "Exporter la sélection"
             },
             "selected": {
                 "text": "items(s) sélectionné(s)",
@@ -451,7 +451,7 @@
             "hide": {
                 "label": "Cacher",
                 "tooltip": "Fonctionne indépendamment en mode simple & avancé",
-                "migrate": "Marque les fichiers avec tout les joueurs masqués comme fichiers caché"
+                "migrate": "Marquer les fichiers avec tous les joueurs masqués comme cachés"
             },
             "merge": {
                 "selected": "Fusionner la sélection"
@@ -461,14 +461,14 @@
                 "selected": "Supprimer la sélection"
             },
             "options": {
-                "title": "Options de Fichiers",
-                "advanced": "Afficher la liste des fichiers avancée",
+                "title": "Options de fichiers",
+                "advanced": "Afficher la liste avancée des fichiers",
                 "advanced_title": "Gérer les joueurs et les groupes individuellement",
                 "hidden": "Afficher les enregistrements cachés",
                 "export_public_only": "Exporter uniquement les données publiques",
                 "export_public_only_title": "Toutes les exportations de ce site ne contiendront que des données publiques (aucune donnée privée ne sera incluse)",
                 "export_bundle_groups": "Groupes de paquets avec joueurs",
-                "export_bundle_groups_title": "Inclut des groupes pour chaque joueur sélectionné lors de l'exportation via la liste de fichiers avancée"
+                "export_bundle_groups_title": "Inclue des groupes pour chaque joueur sélectionné lors de l'exportation via la liste de fichiers avancée"
             },
             "tags": {
                 "single": "Marqueur",
@@ -490,12 +490,12 @@
                 "type": "Type",
                 "ownership": "Propriété",
                 "ownership_all": "Afficher tous les personnages",
-                "ownership_own": "Afficher seulement les siens",
+                "ownership_own": "Afficher seulement les miens",
                 "ownership_other": "Afficher seulement les autres",
                 "hidden": "Caché"
             },
             "online": {
-                "title": "Partage de Fichier",
+                "title": "Partage de fichier",
                 "prompt": "Entrez votre code",
                 "invalid": "Code invalide ou expiré !",
                 "cancel": "Annuler",
@@ -508,24 +508,24 @@
             "basic": "Copier le tableau",
             "fight": "Copier le tableau pour le simulateur PvP",
             "player": "Copier",
-            "player_companions": "Copier avec les companions"
+            "player_companions": "Copier avec les compagnons"
         },
         "context": {
             "title": "Appliquer l'action aux éléments sélectionnés",
             "hide": "Afficher / Masquer",
             "remove": "Supprimer définitivement",
             "remove_current": "Supprimer définitivement l'entrée actuelle",
-            "link_players": "Fusionner / séparer les caractères",
+            "link_players": "Fusionner / séparer les personnages",
             "link_groups": "Fusionner / séparer les guildes",
             "unselect": "Tout désélectionner"
         },
         "profiles": {
             "players": "Joueurs",
             "groups": "Groupes",
-            "primary": "Filtre principale",
+            "primary": "Filtre principal",
             "secondary": "Filtre secondaire",
             "none": "Aucun",
-            "create": "Créer un nouveau profile",
+            "create": "Créer un nouveau profil",
             "between": "entre",
             "and": "et"
         },
@@ -535,19 +535,19 @@
                 "groups": "Filtrer les groupes par serveur ou par nom"
             },
             "c": "Classe du joueur, utilisez le nom complet de la classe en minuscules (ex. : berserker, mage de combat).",
-            "p": "Nom de Joueur",
-            "g": "Nom de Guilde",
+            "p": "Nom de joueur",
+            "g": "Nom de guilde",
             "s": "Serveur",
-            "e": "Expression personnalisé",
+            "e": "Expression personnalisée",
             "#": "Afficher seulement les joueurs avec les marqueurs spécifiés",
             "l": "Afficher uniquement les plus récents",
             "f": "Afficher uniquement les premières ou les n premières entrées",
-            "r": "Forcer le re calcul des variables globales",
+            "r": "Forcer le recalcul des variables globales",
             "h": "Afficher les joueurs masqués",
             "o": "Afficher votre personnage",
-            "a": "Afficher tout les personnages",
+            "a": "Afficher tous les personnages",
             "d": "Afficher les autres personnages",
-            "q": "Paramètres personnalisés (séparer les noms des en-têtes par une virgule)",
+            "q": "Paramètres personnalisés (séparez les noms d'en-tête par des virgules)",
             "t": "Afficher directement le modèle en ligne",
             "sr": "Trier par expression personnalisée"
         },
@@ -585,7 +585,7 @@
                 "copy": "Copie",
                 "archive": "Scripts archivés",
                 "recover": "Chargement de la version #{version}",
-                "edit": "Modifier le nom où la description",
+                "edit": "Modifier le nom ou la description",
                 "remote_add": "Publier le script sélectionné",
                 "remote_update": "Publier une nouvelle version du script sélectionné",
                 "remote_refresh": "Rafraîchir le statut du script sélectionné",
@@ -606,7 +606,7 @@
                 }
             },
             "info": {
-                "deprecated": "L'usage de <b>#{name1}</b> est obsolète ; utilise plutôt <b>#{name2}</b>"
+                "deprecated": "L'usage de <b>#{name1}</b> est obsolète ; utilisez plutôt <b>#{name2}</b>"
             },
             "remote_action_error": "L'action a échoué",
             "remote_copy_toast": {
@@ -614,7 +614,7 @@
                 "message": "Le code a été copié"
             },
             "remote_author_missing": {
-                "title": "Tu dois d'abord définir un nom d'utilisateur avant de publier un script",
+                "title": "Vous devez d'abord définir un nom d'utilisateur avant de publier un script",
                 "message": "Rendez-vous dans les paramètres et définissez votre \"nom d'auteur pour les scripts publiés\""
             }
         },
@@ -673,14 +673,14 @@
             "bonuses": "Bonus",
             "scrapbook": "Album de maniaque",
             "achievements": "Succès",
-            "mount": "Augmenter",
+            "mount": "Monture",
             "heath_bonus": "Bonus de vie",
             "damage_bonus": "Bonus de dégâts",
             "treasure": "Trésor",
             "gladiator": "Gladiateur",
             "instructor": "Maître",
             "pet": "Familier",
-            "knights": "Salle des Chevaliers",
+            "knights": "Salle des chevaliers",
             "extras": {
                 "title": "Extras",
                 "registered": "Inscrit",
@@ -701,13 +701,13 @@
                 "building4": "Carrière",
                 "building5": "Mine de gemmes",
                 "building6": "Académie",
-                "building7": "Guilde des Archers",
+                "building7": "Guilde des archers",
                 "building8": "Caserne",
-                "building9": "Tour des Mages",
+                "building9": "Tour des mages",
                 "building10": "Banque",
                 "building11": "Forge",
                 "building12": "Fortifications",
-                "working": "En Construction"
+                "working": "En construction"
             }
         },
         "settings": {
@@ -735,10 +735,10 @@
             "recovery": {
                 "title": "Récupération",
                 "import": "Importer des données",
-                "export": "Télécharger des données",
-                "description#": "Avec les options ci-dessous tu peux exporter et importer toutes les données stockées dans le site. <br> Il est recommandé d'exporter tes données au moins une fois par mois afin de prévenir d'accidentelles pertes de données.",
-                "toast": "Le processus de récupération a commencé. Veuillez garder à l'esprit que cela peut être long selon la taille des fichiers à récupérer.",
-                "notice": "Etes-vous sûr de vouloir récupérer SFTools depuis ce fichier ? <br><br> Cette opération effacera toutes les données existantes pour fonctionner !"
+                "export": "Sauvegarder des données",
+                "description#": "Les options ci-dessous permettent d'exporter et d'importer toutes les données stockées sur le site web.<br>Il est recommandé d'exporter vos données au moins une fois par mois afin d'éviter toute perte accidentelle.",
+                "toast": "Le processus de récupération a commencé. Veuillez garder à l'esprit que cela peut être long selon la taille du fichier à récupérer.",
+                "notice": "Êtes-vous sûr de vouloir restaurer SFTools à partir de ce fichier ?<br><br>Cette opération effacera toutes vos données existantes pour pouvoir continuer !"
             },
             "links": {
                 "title": "Fusions de joueurs / guildes",
@@ -790,7 +790,7 @@
             "9": "Forêt-Pourrie",
             "10": "Marécages-Sanretour",
             "11": "Nordville",
-            "12": "Plaines d'Oz'korr",
+            "12": "Plaines d'Ozkorr",
             "13": "Pays Troupis",
             "14": "Montagne de la Roche Ombragée",
             "15": "Île Tête-de-mort",
@@ -802,13 +802,13 @@
             "201": "Mine de gemmes",
             "202": "Armurier",
             "203": "Apothicaire",
-            "204": "Toilette des arcanes"
+            "204": "Toilette Arcanes"
         },
         "bulk": {
             "not_possible": "Impossible",
             "toast": {
                 "title": "Démarrage la simulation",
-                "matches": "Match :"
+                "matches": "Matchs :"
             }
         },
         "editor": {
@@ -819,8 +819,8 @@
             "health": "Points de vie",
             "attribute": "Attribut",
             "defense": "Défense",
-            "skip": "Skip Chance",
-            "crit": "Critical Chance",
+            "skip": "Chance d'esquive",
+            "crit": "Chance de critique",
             "damage": "Dégâts",
             "critical_bonus": "Critique",
             "at100": {
@@ -860,26 +860,26 @@
             "8": "Colère"
         },
         "win": {
-            "all": "All #{count} floors were defeated with 100% chance",
-            "none": "All #{count} floors are impossible to defeat",
-            "first": "First #{count} floors were defeated with 100% chance",
-            "last": "Last #{count} floors are impossible to defeat",
+            "all": "Les #{count} étages ont été vaincus avec 100% de chance",
+            "none": "Impossible de vaincre les #{count} étages",
+            "first": "Les #{count} premiers étages ont été vaincus avec 100% de chance",
+            "last": "Impossible de vaincre les #{count} derniers étages",
             "title": "Chances individuelles"
         },
-        "footer#": "Based on <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> from ÐonMuErte."
+        "footer#": "Basé sur <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://hellevatorrewards.12hp.de/\">Hellevator Floor Rewards &amp; Monster Stats</a> de ÐonMuErte."
     },
     "dungeons": {
         "simulate_one": "Simuler",
-        "simulate_remaining": "Simuler les Étages restants",
+        "simulate_remaining": "Simuler les étages restants",
         "simulate_all": "Tous",
         "simulate_next": "Plus",
         "player": "Joueur",
         "enemy": "Ennemis",
         "open": "Donjons actuellement ouverts",
         "graph": {
-            "y": "PV Restants",
-            "x": "- Distribution pour le nombre d'essaies sélectionnés -",
-            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
+            "y": "PV restants",
+            "x": "- Distribution pour le nombre d'essais sélectionnés -",
+            "winrate": "Taux de victoire : #{rate}% (#{score} sur #{tries})"
         },
         "results": "Résultats",
         "experience": "Total: #{experience} XP",
@@ -888,15 +888,15 @@
             "subtitle": "Sélectionnez les cheats à appliquer et rechargez votre personnage",
             "enable": "Activer les Cheats",
             "general": "Général",
-            "enchantments": "Tous les Enchantments",
-            "runes": "Runes Maximales",
-            "pets": "Familiers Maximum",
+            "enchantments": "Tous les enchantements",
+            "runes": "Runes maximum",
+            "pets": "Familiers maximum",
             "potions": "Potions (max 3)",
             "class": "Changer la classe",
             "keep_original": "Garder l'original"
         },
         "simulate_next_info": {
-            "title": "No dungeons beatable within threshold (#{threshold_min} - #{threshold_max} %)",
+            "title": "Aucun donjon ne peut être battu dans le seuil (#{threshold_min} - #{threshold_max}%)",
             "message#": "Use <b>All</b> function to simulate all open dungeons"
         }
     },
@@ -907,7 +907,7 @@
         "troll_upgrades": "Améliorations de trolls",
         "keeper": "Gardien",
         "keeper_upgrades": "Améliorations de gardien",
-        "shield_mode": "Allow underworld units to use shield",
+        "shield_mode": "Permettre aux unités des Enfers d'utiliser un bouclier",
         "toast": {
             "start": {
                 "title": "Démarrer la simulation",
@@ -934,9 +934,9 @@
         "players": "Joueurs",
         "preview": "Aperçu du combat",
         "export": "Exporter des combats",
-        "autofill": "Fill editable data in from predefined list",
+        "autofill": "Remplir les données modifiables à partir de la liste prédéfinie",
         "analyze": "Analyse statistique",
-        "gladiator": "Gladiator not reduced",
+        "gladiator": "Gladiateur non réduit",
         "armor": "Forcer l'armure à sa valeur maximale",
         "clear_changes": "Rétablir l'état d'origine",
         "simulate": "Ouvrir le simulateur avec les données actuelles",
@@ -951,12 +951,12 @@
             "damage_base": "Dégâts de base"
         },
         "toast_import_error": {
-            "title": "Échec de l'importation.",
+            "title": "Échec de l'importation",
             "message": "Ensure that you are importing a valid HAR or fight JSON"
         },
         "special_state": {
-            "druid_rage": "Druide enragé",
-            "berserker_rage": "Berserker enragé",
+            "druid_rage": "Druide est enragé",
+            "berserker_rage": "Berserker est enragé",
             "bard_song": "Barde a joué une chanson",
             "necromancer_minion_1": "Squelette invoqué affecte le joueur",
             "necromancer_minion_2": "Molosse invoqué affecte le joueur",
@@ -964,7 +964,7 @@
             "paladin_stance_1": "Neutre",
             "paladin_stance_2": "Défensif",
             "paladin_stance_3": "Offensif",
-            "plague_doctor_tincture": "Tincture is affecting the player"
+            "plague_doctor_tincture": "Teinture affecte le joueur"
         },
         "sidebar": {
             "toggles": {
@@ -985,14 +985,14 @@
         }
     },
     "players": {
-        "gladiator_mode": "Le Gladiateur sera défini à 15 indépendamment de vos paramètres",
+        "gladiator_mode": "Le gladiateur sera défini à 15 indépendamment de vos paramètres",
         "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
         "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
-        "no_attribute_reduction_mode": "Primary attribute will not be reduced by opponent's defense",
+        "no_attribute_reduction_mode": "L'attribut principal ne sera pas réduit par la défense de l'adversaire",
         "mode": {
-            "all": "Tout vs Tout",
+            "all": "Tous vs Tous",
             "attack": "Un vs Tous",
-            "defend": "Tout vs Un",
+            "defend": "Tous vs Un",
             "tournament": "Tournoi"
         },
         "toast": {
@@ -1011,7 +1011,7 @@
         }
     },
     "guilds": {
-        "gladiator_mode": "Le Gladiateur sera défini à 15 indépendamment de vos paramètres",
+        "gladiator_mode": "Le gladiateur sera défini à 15 indépendamment de vos paramètres",
         "guild1": "Guilde A",
         "guild2": "Guilde B",
         "toast": {
@@ -1027,11 +1027,11 @@
     },
     "fortress": {
         "warrior_count": "Soldats",
-        "warrior_level": "Niveau des Soldats",
+        "warrior_level": "Niveau des soldats",
         "archer_count": "Archers",
-        "archer_level": "Niveau des Archers",
+        "archer_level": "Niveau des archers",
         "mage_count": "Mages",
-        "mage_level": "Niveau des Mages",
+        "mage_level": "Niveau des mages",
         "units": {
             "remaining": "Average remaning units:",
             "player": "Soldats",
@@ -1040,19 +1040,19 @@
     },
     "hydra": {
         "footer#": "Based on <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
-        "player_count": "Nombre de Joueurs",
+        "player_count": "Nombre de joueurs",
         "main": "Principal",
         "side1": "Côté 1",
         "side2": "Côté 2",
         "hydra": "Hydre",
         "iterations": {
-            "label": "Itérations:",
+            "label": "Itérations :",
             "popup": "Nombre d'itérations par classe de familiers."
         },
         "result": {
             "health": "#{health}% PV restants",
-            "fights_single": "#{count} fight",
-            "fights_multiple": "#{count} fights"
+            "fights_single": "#{count} combat",
+            "fights_multiple": "#{count} combats"
         },
         "names": {
             "1": "Hydre à une tête",
@@ -1094,9 +1094,9 @@
         }
     },
     "simulator": {
-        "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le Simulateur",
+        "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le simulateur",
         "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombre de cœurs de votre processeur",
-        "iterations": "Nombre d'iterations par thread.",
+        "iterations": "Nombre d'itérations par thread.",
         "add": "Ajouter",
         "save": "Sauvegarder",
         "simulate": "Simuler",
@@ -1105,17 +1105,17 @@
         "configure_copy": "Copy everyone including current configuration",
         "configure_insert": "Insert sample data",
         "configure_insert_custom": "Spécifier les valeurs manuellement",
-        "configure_log": "Run simulation with logging enabled",
+        "configure_log": "Lancer la simulation avec journal actif",
         "configure_log_file": "Enregistrer dans un fichier",
         "configure_log_broadcast": "Ouvrir avec l'analyseur",
         "clipboard": {
             "copy_all": "Copier tout le monde",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
-        "win_chance": "% de Victoire",
+        "win_chance": "% de victoire",
         "min_chance": "Min %",
         "max_chance": "Max %",
-        "avg_chance": "Avg %",
+        "avg_chance": "Moy %",
         "toast": {
             "title": "Simulation terminée",
             "message": "La simulation a pris #{duration}"
@@ -1147,7 +1147,7 @@
             "13": "Pièce d'or en chocolat",
             "14": "Boisson protéinée"
         },
-        "armor_placeholder": "Points d'Armure",
+        "armor_placeholder": "Points d'armure",
         "min": "Min",
         "min_placeholder": "Élément Min",
         "max": "Max",
@@ -1155,16 +1155,16 @@
         "weapon_enchant": "Critique",
         "rune": "Rune",
         "portal_damage": "Bonus Portail Dégâts",
-        "portal_health": "Bonus Portail PdV",
-        "rune_health": "PdV Runes",
-        "block": "% Parade",
+        "portal_health": "Bonus Portail PV",
+        "rune_health": "PV Runes",
+        "block": "% parade",
         "fire": "Feu",
         "cold": "Glace",
         "lightning": "Foudre",
         "auto": "Auto",
         "gladiator": "Gladiateur (0 - 15)",
-        "life_potion": "Vie Éternelle",
-        "hand_enchant": "Ombre du Cowboy",
+        "life_potion": "Vie éternelle",
+        "hand_enchant": "Ombre du cowboy",
         "smart_change": "Changement de classe intelligent",
         "copy": "Copie",
         "none": "Aucun"
@@ -1173,7 +1173,7 @@
         "username": "Nom d'utilisateur",
         "password": "Mot de passe",
         "mode": {
-            "title": "Mode Capture",
+            "title": "Mode de capture",
             "own": "Capturer votre personnage",
             "default": "Capturez votre personnage + sélectionnés",
             "guild": "Capturez votre personnage + guilde",
@@ -1198,17 +1198,17 @@
             "title": "Sélectionnez votre personnage"
         },
         "user_error": {
-            "title": "Votre nom d'utilisateur ou votre mot de passe est invalide",
-            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
+            "title": "Votre nom d'utilisateur ou mot de passe n'est pas valide",
+            "message": "Assurez-vous que le format est correct ('nom d'utilisateur' pour les comptes SF, 'nomutilisateur@url' pour les personnages locaux)"
         },
         "errors": {
             "error_unreachable": "Le serveur est inaccessible",
             "error_malformed_url": "L'adresse du serveur n'est pas valide",
             "error_wrong_pass": "Mot de passe incorrect",
-            "error_player_not_found": "Le personnage n'a pas été trouvé sur le serveur",
+            "error_player_not_found": "Personnage introuvable sur le serveur",
             "error_sessionid_invalid": "Session expirée ou interrompue par un autre appareil",
             "error_login_only_with_sf_account_allowed": "Vous devez vous connecter avec votre compte pour accéder à ce personnage",
-            "error_server_has_been_merged": "Vous devez vous connecter au serveur de fusion approprié car ce serveur a été fusionné et n'est plus disponible",
+            "error_server_has_been_merged": "Vous devez vous connecter au serveur de fusion approprié car ce serveur a été fusionné et n'est donc plus disponible",
             "playa_account_login_no_credentials_set": "Vous devez ajouter une adresse e-mail à votre compte afin de vous connecter sur d'autres plateformes",
             "playa_account_login_unknown_or_wrong_credentials": "Nom de compte ou mot de passe incorrect",
             "playa_account_not_active": "Votre compte n'est pas actif",
@@ -1220,23 +1220,23 @@
     },
     "database": {
         "open_error": {
-            "title": "Impossible d'ouvrir la base de données.",
-            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+            "title": "Impossible d'ouvrir la base de données",
+            "message": "Vérifiez que vous n'êtes pas en mode incognito et que votre navigateur prend en charge la base de données indexée"
         },
         "import_error": "Une erreur est survenue lors de l'importation du fichier",
-        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "fatal_error#": "Votre navigateur ne prend pas en charge toutes les fonctionnalités requises par cette page !</br>Ce problème peut également être causé par l'utilisation du mode privé.",
         "update_info": {
             "title": "Une mise à jour de la base de données est en cours",
-            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+            "message": "Ne quittez pas la page avant la fin du chargement. Cela peut prendre un certain temps selon la taille de votre base de données."
         }
     },
     "request": {
         "title": "demande des données de votre personnage",
-        "notice#": "Please select a character that you wish to share with the website.<br>No personal data will be shared!",
+        "notice#": "Sélectionnez le personnage que vous souhaitez partager sur le site web.<br>Aucune donnée personnelle ne sera partagée !",
         "access": "Click here to grant this domain access to your characters",
         "access_hint": "Please note that using ad or tracker blockers might prevent you from loading all of your stored characters",
         "error": {
-            "title": "Request error",
+            "title": "Erreur de requête",
             "notice#": "Un site web a demandé vos données de personnages mais n'a pas spécifié les paramètres requis"
         }
     },
@@ -1251,7 +1251,7 @@
             "submit": "Envoyer"
         },
         "backup_reminder": {
-            "title": "Backup Reminder",
+            "title": "Rappel de sauvegarde",
             "message": "Hello. This is a reminder for you to backup your data regularly.<br><br><i>You can disable or change the frequency of this reminder in the settings.</i>",
             "close": "Fermer",
             "save": "Télécharger une sauvegarde"
@@ -1293,7 +1293,7 @@
             }
         },
         "dungeons_options": {
-            "title": "Options du Simulateur",
+            "title": "Options du simulateur",
             "threshold": {
                 "title": "Seuil de simulation",
                 "label": "Seuil % - Tous les donjons ennemis en dehors de ce seuil seront ignorés"
@@ -1346,7 +1346,7 @@
         },
         "script_manual": {
             "title": "Manuel de référence",
-            "deprecated": "Déprécié",
+            "deprecated": "déprécié",
             "heading": {
                 "header": "Headers for all characters",
                 "header_protected": "Headers for own guild members",
@@ -1418,7 +1418,7 @@
                 "clone": "Duplicate existing script"
             },
             "error_title": "Attention",
-            "error_name_blank": "Le nom du script ne peut pas être vide"
+            "error_name_blank": "Le nom du script ne peut être vide"
         },
         "script_archive": {
             "title": "Scripts archivés",
@@ -1504,10 +1504,10 @@
         },
         "error": {
             "title": "Une erreur est survenue !",
-            "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cliquez le bouton revert ci-dessous pour revenir au profile par default",
+            "notice#": "Cette erreur peut également être due à votre profil actuel.<br>Cliquez sur le bouton Retour ci-dessous pour revenir au profil par défaut.",
             "refresh": "Cliquez ici pour rafraîchir la page",
             "temporary": "Ouvrir la page en mode temporaire",
-            "revert": "Revenir au profile par default"
+            "revert": "Revenir au profil par défaut"
         },
         "changelog": {
             "release": "Sortie",
@@ -1520,7 +1520,7 @@
             "save": "Sauvegarder"
         },
         "edit_file_tag": {
-            "title": "Éditer les Marqueurs",
+            "title": "Éditer les marqueurs",
             "current": "Tags",
             "cancel": "Annuler",
             "clear": "Remove all tags",
@@ -1531,18 +1531,18 @@
             }
         },
         "profile_create": {
-            "title": "Créer/Éditer un Profile",
-            "id": "ID",
+            "title": "Créer/Editer un profil",
+            "id": "Identifiant",
             "name": "Nom",
             "slot": "Emplacement",
-            "index": "Indexe",
+            "index": "Index",
             "operation": "Opération",
             "equals": "Égaux",
-            "above": "Au Dessus",
-            "below": "Au Dessous",
+            "above": "Au-Dessus",
+            "below": "En dessous",
             "between": "entre",
             "value": "Valeur",
-            "secondary": "Second Filtre",
+            "secondary": "Second filtre",
             "cancel": "Annuler",
             "save": "Sauvegarder",
             "default": "Défaut",
@@ -1554,11 +1554,11 @@
                 "optional": "optionnel"
             },
             "player": {
-                "primary": "Configuration de filtre principale",
+                "primary": "Configuration de filtre principal",
                 "secondary": "Configuration de filtre secondaire"
             },
             "group": {
-                "primary": "Configuration de filtre de groupe principale",
+                "primary": "Configuration de filtre de groupe principal",
                 "secondary": "Configuration de filtre de groupe secondaire"
             }
         },
@@ -1574,7 +1574,7 @@
         "data_manage": {
             "cancel": "Annuler",
             "ok": "Supprimer",
-            "title": "Êtes-vous sûr de vouloir supprimer ces fichiers, joueurs ou guildes?",
+            "title": "Êtes-vous sûr de vouloir supprimer ces fichiers, joueurs ou guildes ?",
             "skip_next": "Ne pas afficher la prochaine fois",
             "label": {
                 "group": "Les guildes suivantes seront supprimées :",
@@ -1586,7 +1586,7 @@
             "cancel": "Annuler",
             "ok": "Appliquer",
             "reset": "Réinitialiser",
-            "title": "Configuration du Simulateur"
+            "title": "Configuration du simulateur"
         },
         "simulator_custom_preset": {
             "title": "Add custom preset",
@@ -1603,7 +1603,7 @@
         },
         "float": {
             "title": "Character values",
-            "quarters": "Quartier Ouvrier"
+            "quarters": "Quartier ouvrier"
         },
         "gold": {
             "title": "Or",
@@ -1611,27 +1611,27 @@
             "tower": "Tour bonus %",
             "mine": "Mine de gemmes",
             "pit": "Mine d'or",
-            "pit_cap": "Capacité de la Mine d’or",
+            "pit_cap": "Capacité de la mine d’or",
             "pit_hr": "Mine d'or /heure",
-            "pit_time": "Temps de Mine d'or",
-            "rune": "Rune de Qualité d'Objet",
+            "pit_time": "Temps de mine d'or",
+            "rune": "Rune de qualité d'objet",
             "reward": "Bonus écologique",
             "guard_hr": "Garde horaire",
-            "dice_3": "Jeu de dés (3 d'un type)",
-            "dice_4": "Jeu de dés (4 d'un type)",
-            "dice_5": "Jeu de dés (5 d'un type)",
+            "dice_3": "Jeu de dés (3 identiques)",
+            "dice_4": "Jeu de dés (4 identiques)",
+            "dice_5": "Jeu de dés (5 identiques)",
             "gem_s": "Gemme petite",
             "gem_m": "Gemme moyenne",
             "gem_l": "Gemme grande",
             "pot_10": "10% Potion",
             "pot_15": "15% Potion",
             "pot_25": "25% Potion",
-            "pot_w": "Potion de Sorcière",
+            "pot_w": "Potion de sorcière",
             "pot_pm": "Mushroom PoEL",
             "pot_pg": "Gold PoEL",
-            "scroll": "Parchemin de Sorcière",
-            "glass": "Sablier de l'impatence",
-            "glass_10": "10 Sablier de l'impatence",
+            "scroll": "Parchemin de sorcière",
+            "glass": "Sablier de l'impatience",
+            "glass_10": "10 Sabliers de l'impatience",
             "calendar_1": "Calendrier 1 lingot",
             "calendar_3": "Calendrier 3 lingots / Verrouillé",
             "arena": "Arène Max",
@@ -1641,11 +1641,11 @@
         },
         "experience": {
             "title": "Expérience",
-            "hydra": "Têtes d'Hydre",
+            "hydra": "Têtes d'hydre",
             "academy": "Académie",
-            "academy_hr": "Académie horaire",
-            "academy_time": "Temps de l'Académie",
-            "academy_cap": "Capacité de l'Académie",
+            "academy_hr": "Académie /heure",
+            "academy_time": "Temps de l'académie",
+            "academy_cap": "Capacité de l'académie",
             "next": "Niveau suivant",
             "arena": "Arène",
             "daily": "Mission quotidienne",
@@ -1665,12 +1665,12 @@
             "group_exp": "Guilde XP %",
             "group_gold": "Guilde Or %",
             "tower": "Tour",
-            "rune_exp": "Rune d’Expérience",
-            "rune_gold": "Rune d'Or",
-            "min_xp": "Minimum XP",
-            "max_xp": "Maximum XP",
-            "min_gold": "Minimum Or",
-            "max_gold": "Maximum Or",
+            "rune_exp": "Rune d’expérience",
+            "rune_gold": "Rune d'or",
+            "min_xp": "XP Minimum",
+            "max_xp": "XP Maximum",
+            "min_gold": "Or Minimum",
+            "max_gold": "Or Maximum",
             "enchantment_exp": "XP Enchantment",
             "enchantment_gold": "Gold Enchantment"
         },
@@ -1706,7 +1706,7 @@
             "souls": "Âmes (Niveau est le niveau de l'ennemi)"
         },
         "calc": {
-            "title_at": "Calculer le prix de l’attribut à",
+            "title_at": "Calcul du prix de l’attribut à",
             "title_between": "Calcul du prix de l'attribut entre",
             "attribute": "Attribut",
             "cost": "Coût",
@@ -1858,7 +1858,7 @@
             "name": "Easteros"
         },
         "16": {
-            "name": "École de Magie ancestrale"
+            "name": "École de magie ancestrale"
         },
         "17": {
             "name": "Hémorridor"
@@ -1891,7 +1891,7 @@
             "name": "Ville des complots"
         },
         "28": {
-            "name": "École de Magie express"
+            "name": "École de magie express"
         },
         "29": {
             "name": "Montagne de cendres"
