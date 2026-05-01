@@ -741,7 +741,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
 
 DEFAULT_EXPRESSION_CONFIG.register(
   'enumeration', 'array', 'AchievementNames',
-  function () { return _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`achievements.${i}`)) },
+  function () { return _sequence(PlayerModel.ACHIEVEMENTS_COUNT).map(i => intl(`general.achievement_${i}`)) },
   { isComputed: true }
 )
 
