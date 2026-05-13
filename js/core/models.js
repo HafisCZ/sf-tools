@@ -2500,8 +2500,6 @@ class PlayerModel {
         this.Runes.Damage2Cold = Math.min(60, this.Runes.Damage2Cold);
         this.Runes.Damage2Lightning = Math.min(60, this.Runes.Damage2Lightning);
 
-        this.Health = this.getHealth();
-
         this.OriginalAction = {
             Status: this.Action.Status,
             Finish: this.Action.Finish,
@@ -2552,6 +2550,8 @@ class PlayerModel {
         if (this.Class === WARRIOR) {
             this.BlockChance = this.Items.Wpn2.DamageMin;
         }
+        
+        this.Health = this.getHealth();
     }
 
     injectGroup (group) {
