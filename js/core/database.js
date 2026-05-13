@@ -529,7 +529,7 @@ class PlayaResponse {
                     // Post-process
                     if (data.saveVersion === 2) {
                         if (data.save[65]) {
-                            data.group = `${data.prefix}_g${data.save[435]}`
+                            data.group = `${data.prefix}_g${data.save[65]}`
                         }
                     } else {
                         if (data.save[435]) {
@@ -582,7 +582,7 @@ class PlayaResponse {
                     // Post-process
                     if (data.saveVersion === 2) {
                         if (data.save[65]) {
-                            data.group = `${data.prefix}_g${data.save[435]}`
+                            data.group = `${data.prefix}_g${data.save[65]}`
                         }
                     } else {
                         if (data.save[161]) {
