@@ -1147,7 +1147,7 @@ class PlayerModel {
         dataType.skip(2);
         
         // Protection timer full, half
-        dataType.skip(3);
+        dataType.skip(2);
 
         // Gemstone index, end time, start time
         dataType.skip(3);
