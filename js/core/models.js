@@ -2991,14 +2991,18 @@ class ModelUtils {
         if (player.pets) {
             copy.pets = [0, ...player.pets.slice(104, 109)];
         }
-    
-        copy.save = this.#CONVERT_PLAYER_SAVE.reduce((memo, sourceIndex, targetIndex) => {
-            if (sourceIndex !== null) {
-                memo[targetIndex] = player.save[sourceIndex];
-            }
-            
-            return memo;
-        }, Array.from({ length: this.#OTHER_PLAYER_SAVE_LENGTH }).fill(0));
+
+        if (player.saveVersion === 2) {
+            copy.save = [...player.save]
+        } else {
+            copy.save = this.#CONVERT_PLAYER_SAVE.reduce((memo, sourceIndex, targetIndex) => {
+                if (sourceIndex !== null) {
+                    memo[targetIndex] = player.save[sourceIndex];
+                }
+                
+                return memo;
+            }, Array.from({ length: this.#OTHER_PLAYER_SAVE_LENGTH }).fill(0));
+        }
     
         copy.fortressrank = copy.fortressrank || player.save[583];
     
@@ -3076,7 +3080,7 @@ class ModelUtils {
     }
 
     static #CONVERT_OTHER_GROUP_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'rank', 'names', 'identifier', 'group', 'save'];
-    static #CONVERT_OTHER_PLAYER_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'identifier', 'class', 'groupname', 'units', 'fortressrank', 'group', 'version'];
+    static #CONVERT_OTHER_PLAYER_FIELDS = ['prefix', 'timestamp', 'offset', 'name', 'identifier', 'class', 'groupname', 'units', 'fortressrank', 'group', 'version', 'equippedItems', 'potions', 'saveVersion'];
     
     static #OTHER_PLAYER_SAVE_LENGTH = 261;
     static #CONVERT_PLAYER_SAVE = [
