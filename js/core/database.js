@@ -483,9 +483,16 @@ class PlayaResponse {
                 if (r.ownplayername) {
                     data.own = true;
                     data.name = r.ownplayername.string;
-                    data.save = r.ownplayersave.numbers();
+                    data.save = (r.ownplayersavecharacter || r.ownplayersave).numbers();
+                    data.saveVersion = r.ownplayersavecharacter ? 2 : 1;
+
                     data.identifier = `${data.prefix}_p${data.save[1]}`;
-                    data.class = data.save[29] % 65536;
+                    data.class = data.save[data.saveVersion === 2 ? 20 : 29] % 65536;
+
+                    data.potions = r.ownplayersavepotions?.numbers();
+                    data.status = r.characterstatus?.numbers();
+                    data.fortress = r.fortress?.numbers();
+                    data.fortressStorage = r.fortressstorage?.numbers();
 
                     // Optionals
                     data.groupname = r.owngroupname?.string;
@@ -498,7 +505,7 @@ class PlayaResponse {
                     data.dummy = r.dummies?.numbers();
                     data.scrapbook = r.scrapbook?.string;
                     data.scrapbook_legendary = r.legendaries?.string;
-                    data.witch = r.witch?.numbers();
+                    data.witch = (r.witchshop || r.witch)?.numbers();
                     data.idle = r.idle?.numbers();
                     data.calendar = r.calenderinfo?.numbers();
                     data.webshopid = r.webshopid?.string;
@@ -508,6 +515,9 @@ class PlayaResponse {
                     data.eventTasks = r.eventtasklist?.numbers();
                     data.eventTasksRewards = r.eventtaskrewardpreview?.numbers();
                     data.description = r.owndescription?.string;
+                    data.toilet = r.arcanetoilet?.numbers();
+                    data.adventure = r.adventure?.numbers();
+                    data.groupMetadata = r.charactergroup?.numbers();
 
                     data.companionItems = r.companionequipment?.numbers();
                     data.fidgetItems = r.storeitemsfidget?.numbers();
@@ -517,12 +527,18 @@ class PlayaResponse {
                     data.backpackItems = r.backpack?.numbers();
                     
                     // Post-process
-                    if (data.save[435]) {
-                        data.group = `${data.prefix}_g${data.save[435]}`
-                    }
-
-                    for (const i of [4, 503, 504, 505, 561]) {
-                        data.save[i] = 0;
+                    if (data.saveVersion === 2) {
+                        if (data.save[65]) {
+                            data.group = `${data.prefix}_g${data.save[435]}`
+                        }
+                    } else {
+                        if (data.save[435]) {
+                            data.group = `${data.prefix}_g${data.save[435]}`
+                        }
+    
+                        for (const i of [4, 503, 504, 505, 561]) {
+                            data.save[i] = 0;
+                        }
                     }
 
                     data.dungeons = {
@@ -544,8 +560,12 @@ class PlayaResponse {
                 } else {
                     data.own = false;
                     data.name = r.otherplayername.string;
-                    data.save = r.otherplayer.numbers();
-                    data.identifier = `${data.prefix}_p${data.save[0]}`;
+                    data.save = (r.otherplayersavecharacter || r.otherplayer).numbers();
+                    data.saveVersion = r.otherplayersavecharacter ? 2 : 1;
+
+                    data.potions = r.otherplayersavepotions?.numbers();
+
+                    data.identifier = `${data.prefix}_p${data.save[data.saveVersion === 2 ? 1 : 0]}`;
                     data.class = data.save[20] % 65536;
 
                     // Optionals
@@ -560,8 +580,14 @@ class PlayaResponse {
                     data.equippedItems = r.otherplayersaveequipment?.numbers();
 
                     // Post-process
-                    if (data.save[161]) {
-                        data.group = `${data.prefix}_g${data.save[161]}`
+                    if (data.saveVersion === 2) {
+                        if (data.save[65]) {
+                            data.group = `${data.prefix}_g${data.save[435]}`
+                        }
+                    } else {
+                        if (data.save[161]) {
+                            data.group = `${data.prefix}_g${data.save[161]}`
+                        }
                     }
                 }
 

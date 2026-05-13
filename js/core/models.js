@@ -940,33 +940,35 @@ class PlayerModel {
         }
     }
 
-    #initOwn (data) {
-        const legacyDungeons = DungeonHelper.template();
-        const resources = PlayerModel.getResources(data.resources);
+    #initCharacterSave (data, legacyDungeons) {
+        const dataType = new ComplexDataType(data.save);
 
-        let dataType = new ComplexDataType(data.save);
-        dataType.assert(650);
-
-        dataType.skip(1); // skip
-        this.ID = dataType.long();
-        this.LastOnline = dataType.long() * 1000 + data.offset;
-        this.Registered = dataType.long() * 1000 + data.offset;
-        dataType.skip(3); // skip
-        this.Level = dataType.short();
-        dataType.clear();
-        this.XP = dataType.long();
-        this.XPNext = dataType.long();
-        this.Honor = dataType.long();
-        this.Rank = dataType.long();
-        dataType.short();
-        this.DevilPercent = dataType.short();
-        dataType.skip(1); // skip
-        const mushroomsCurrent = dataType.long();
-        this.Mushrooms = {
-            Current: resources.Mushrooms || mushroomsCurrent,
-            Total: dataType.long()
-        }
+        // Weird ID
         dataType.skip(1);
+
+        // Player ID
+        this.ID = dataType.long();
+
+        // Lock?
+        dataType.skip(1);
+
+        // Level
+        this.Level = dataType.short();
+        dataType.clear()
+
+        // XP
+        this.XP = dataType.long();
+
+        // XP required
+        this.XPNext = dataType.long();
+
+        // Honor
+        this.Honor = dataType.long();
+
+        // Rank
+        this.Rank = dataType.long();
+
+        // Face data
         this.Face = {
             Mouth: dataType.long(),
             Hair: {
@@ -988,113 +990,105 @@ class PlayerModel {
             Special2: dataType.long(),
             Portrait: dataType.long()
         };
+
+        // Race + Dungeon refresh
         this.Race = dataType.short();
         dataType.clear(); // skip
+
+        // Gender (unsure whether mirror even applies still)
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
         this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
+
+        // Class + Dungeon day
         this.Class = dataType.short();
         dataType.clear(); // skip
-        PlayerModel.loadAttributes(this, dataType, false);
-        this.Action = {
-            Status: dataType.short()
-        };
-        dataType.short(); // Skip
-        this.Action.Index = dataType.short();
-        dataType.short(); // Skip
-        this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = PlayerModel.loadLegacyEquipment(dataType, 1, this.Class);
-        this.Inventory = {
-            Backpack: [],
-            Chest: [],
-            Shop: [],
-            Dummy: {},
-            Bert: {},
-            Mark: {},
-            Kunigunde: {}
-        };
-        for (let i = 0; i < 5; i++) {
-            const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 6, i + 1);
-            if (item.Type > 0) {
-                this.Inventory.Backpack.push(item);
-            }
-        }
-        dataType.skip(58); // skip
-        this.Mount = dataType.short();
-        this.MountValue = PlayerModel.getMount(this.Mount);
 
+        // Mount + tower
+        this.Mount = dataType.short();
         legacyDungeons.Tower = dataType.short();
 
-        dataType.skip(1);
-        for (let i = 0; i < 6; i++) {
-            const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 7, i + 1);
-            if (item.Type > 0) {
-                this.Inventory.Shop.push(item);
-            }
-        }
-        dataType.skip(1);
-        for (let i = 0; i < 6; i++) {
-            const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 8, i + 1);
-            if (item.Type > 0) {
-                this.Inventory.Shop.push(item);
-            }
-        }
+        this.MountValue = PlayerModel.getMount(this.Mount);
 
-        legacyDungeons.Raid = dataType.short();
-
-        dataType.short();
-        dataType.skip(1); // skip
-        this.Group = {
-            ID: dataType.long(),
-            Name: data.groupname
-        };
-        dataType.skip(1); // skip
-        this.Mushrooms.Paid = dataType.long();
-        this.Mushrooms.Free = this.Mushrooms.Total - this.Mushrooms.Paid;
-        this.Book = Math.max(0, dataType.long() - 10000);
-        dataType.skip(2); // skip
-
-        legacyDungeons.Normal[10] = dataType.long();
-        legacyDungeons.Normal[11] = dataType.long();
-
-        this.Group.Joined = dataType.long() * 1000 + data.offset;
+        // Flags
         this.Flags = PlayerModel.getFlags(dataType.long());
-        dataType.short(); // skip
 
-        legacyDungeons.Group = dataType.byte();
-        legacyDungeons.Player = dataType.byte();
-
-        dataType.skip(1); // skip
+        // Armor
         this.Armor = dataType.long();
+
+        // Damage
         this.Damage = {
             Min: dataType.long(),
             Max: dataType.long()
         };
+        
         this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
-        dataType.skip(1); // skip
-        this.MountExpire = dataType.long() * 1000 + data.offset,
-        dataType.skip(3);
-        this.ThirstReroll = dataType.long() * 1000 + data.offset;
-        this.ThirstLeft = dataType.long();
-        this.UsedBeers = dataType.long();
-        dataType.skip(22); // skip
 
-        legacyDungeons.Normal[0] = dataType.long();
-        legacyDungeons.Normal[1] = dataType.long();
-        legacyDungeons.Normal[2] = dataType.long();
-        legacyDungeons.Normal[3] = dataType.long();
-        legacyDungeons.Normal[4] = dataType.long();
-        legacyDungeons.Normal[5] = dataType.long();
-        legacyDungeons.Normal[6] = dataType.long();
-        legacyDungeons.Normal[7] = dataType.long();
-        legacyDungeons.Normal[8] = dataType.long();
-        legacyDungeons.Normal[9] = dataType.long();
-        legacyDungeons.Normal[12] = dataType.long() - 120;
+        // Group bonus (partial - possibly unsafe)
+        legacyDungeons.Group = dataType.long();
 
-        this.Toilet = {
-            Aura: dataType.long(),
-            Fill: dataType.long()
-        }
+        // Unsure what this is
+        dataType.skip(1);
+
+        // Player bonus (partial - possibly unsafe)
+        legacyDungeons.Player = dataType.long();
+
+        // Mount duration
+        this.MountExpire = dataType.long() * 1000 + data.offset;
+
+        // Attributes (normal, bonus, purchased)
+        PlayerModel.loadAttributes(this, dataType, false);
+
+        // Lock duration
+        dataType.skip(1);
+
+        // Valid
+        dataType.skip(1);
+
+        // Lock reason
+        dataType.skip(1);
+
+        // Vote
+        dataType.skip(1);
+
+        // Has holy grail
+        dataType.skip(1);
+
+        // Runes
+        dataType.skip(13);
+
+        // SFA
+        dataType.skip(1);
+
+        // Active frame
+        dataType.skip(1);
+
+        // Group ID
+        this.Group = {
+            ID: dataType.long(),
+            Name: data.groupname,
+            Joined: data.groupMetadata ? (data.groupMetadata[5] * 1000 + data.offset) : undefined
+        };
+
+        // Scrapbook
+        this.Book = Math.max(0, dataType.long() - 10000);
+
+        // Invitations
+        dataType.skip(1);
+
+        // Origin server ID
+        this.OriginalServerId = dataType.long();
+
+        // Gladiator
+        this.Fortress.Gladiator = dataType.long()
+    }
+
+    #initPotionSave (data) {
+        const dataType = new ComplexDataType(data.potions);
+
+        // PID
+        dataType.skip(1);
+
         this.Potions = [{
             Type: PlayerModel.getPotionType(dataType.long()),
             Expire: dataType.skip(2).long() * 1000 + data.offset,
@@ -1108,15 +1102,15 @@ class PlayerModel {
             Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }];
+
         _sortDesc(this.Potions, potion => potion.Size);
-        this.Potions.Life = dataType.long();
-        dataType.skip(12); // skip
-        this.Toilet.Capacity = dataType.long();
-        dataType.skip(1); // skip
-        this.Flags.GoldFrameDisabled = !!dataType.long();
-        dataType.skip(3); //skip
-        this.Flags.InvitesDisabled = !!dataType.long();
-        dataType.skip(2); // skip
+    }
+
+    #initFortressSave (data) {
+        // Fortress
+        const dataType = new ComplexDataType(data.fortress);
+
+        // Levels
         this.Fortress = {
             Rank: data.fortressrank,
             Fortress: dataType.long(),
@@ -1132,77 +1126,95 @@ class PlayerModel {
             Smithy: dataType.long(),
             Fortifications: dataType.long()
         }
-        dataType.skip(6);
-        this.Hourglass = dataType.long() || resources.Hourglass;
-        dataType.skip(1);
-        this.Fortress.Wood = dataType.long() || resources.Wood;
-        this.Fortress.Stone = dataType.long() || resources.Stone;
 
-        legacyDungeons.Normal[13] = dataType.long();
-
-        dataType.skip(11); // skip
-
-        legacyDungeons.Twister = dataType.long();
-
-        dataType.skip(3); // skip
-        this.Fortress.RaidWood = Math.trunc(dataType.long() / 2);
-        this.Fortress.RaidStone = Math.trunc(dataType.long() / 2);
-        dataType.skip(1); // skip
-        this.Fortress.WoodcutterMax = dataType.long();
-        this.Fortress.QuarryMax = dataType.long();
-        this.Fortress.AcademyMax = dataType.long();
-        this.Fortress.MaxWood = dataType.long();
-        this.Fortress.MaxStone = dataType.long();
-        dataType.skip(1); // skip
+        // Build index, end time, start time
         this.Fortress.Upgrade = {
             Building: dataType.long() - 1,
             Finish: dataType.long() * 1000 + data.offset,
             Start: dataType.long() * 1000 + data.offset
         }
-        dataType.skip(4);
-        this.Coins = dataType.long() || resources.Coins;
-        dataType.skip(2);
+
+        // Level
         this.Fortress.Upgrades = dataType.long();
+
+        // Honor
         this.Fortress.Honor = dataType.long();
+        
+        // Rank
         this.Fortress.Rank = dataType.long();
-        dataType.skip(8); // skip
-        if (dataType.long() * 1000 + data.offset < data.timestamp) {
-            this.Fortress.RaidWood += Math.trunc(this.Fortress.Wood / 10);
-            this.Fortress.RaidStone += Math.trunc(this.Fortress.Stone / 10);
-        }
-        dataType.skip(5); // skip
+
+        // Next date, next id
+        dataType.skip(2);
+        
+        // Protection timer full, half
+        dataType.skip(3);
+
+        // Gemstone index, end time, start time
+        dataType.skip(3);
+
+        // Group bonus
         this.Fortress.Knights = dataType.long();
-        dataType.skip(5); // skip
 
-        legacyDungeons.Shadow = dataType.byteArray(14);
+        // Last enemy ID
+        dataType.skip(1);
+    }
 
-        dataType.clear(); // skip
-        dataType.skip(12); // skip
-        legacyDungeons.Normal[15] = dataType.long();
-        legacyDungeons.Shadow[15] = dataType.long();
-        dataType.skip(1); // skip
-        this.Group.Treasure = dataType.long();
-        this.Group.Instructor = dataType.long();
-        dataType.skip(4); // skip
-        this.Group.Pet = dataType.long();
+    #initStatusSave (data, resources) {
+        const dataType = new ComplexDataType(data.status);
+
+        // Login count
         dataType.skip(1);
 
-        legacyDungeons.Youtube = dataType.long();
+        // Action status, index, end time, start time
+        this.Action = {
+            Status: dataType.long(),
+            Index: dataType.long(),
+            Finish: dataType.long() * 1000 + data.offset,
+            Start: dataType.long() * 1000 + data.offset
+        };
 
-        dataType.skip(16);
+        // Max beer
+        dataType.skip(1);
 
-        legacyDungeons.Normal[16] = dataType.byte();
-        legacyDungeons.Shadow[16] = dataType.byte();
+        // Adventure points
+        dataType.skip(1);
 
+        // Beer bought
+        this.UsedBeers = dataType.long();
+
+        // Nordic gods + calendar
+        dataType.byte();
+        dataType.byte();
         this.CalendarDay = dataType.short();
-        dataType.skip(5);
 
-        legacyDungeons.Normal[17] = dataType.short();
-        legacyDungeons.Shadow[17] = dataType.short();
+        // Next calendar date
+        dataType.skip(1);
 
-        dataType.skip(2);
-        // Normalize calendar type in order to align it with S&F Tavern's calendar indexing
-        this.CalendarType = 1 + (dataType.long() + 10) % 12;
+        // Skip weapon store
+        dataType.skip(1);
+
+        // Skip magic store
+        dataType.skip(1);
+
+        // Message count
+        dataType.skip(1);
+
+        // Mushrooms paid
+        this.Mushrooms = {
+            Current: resources.Mushrooms,
+            Paid: dataType.long()
+        };
+
+        // Mushrooms paid ??
+        dataType.skip(1);
+
+        // Mushrooms gained
+        this.Mushrooms.Free = dataType.long();
+        this.Mushrooms.Total = this.Mushrooms.Free + this.Mushrooms.Paid;
+
+        dataType.skip(3);
+        
+        // Mushrooms TM
         this.Underworld = {
             TimeMachineMushrooms: dataType.long(),
             Upgrade: {
@@ -1211,47 +1223,355 @@ class PlayerModel {
                 Start: -1
             }
         };
-        dataType.skip(3);
-        this.LegendaryDungeonTries = dataType.long();
-        dataType.skip(2);
-        this.UsedAdventureTime = dataType.long();
-        dataType.skip(5);
-        this.ClientVersion = dataType.long();
-        this.AdventureSkips = dataType.long();
-        this.Summer = {
-            Missions: [
-                {
-                    Type: dataType.long(),
-                    Current: dataType.skip(2).long(),
-                    Target: dataType.skip(2).long(),
-                    Points: dataType.skip(2).long()
-                },
-                {
-                    Type: dataType.back(9).long(),
-                    Current: dataType.skip(2).long(),
-                    Target: dataType.skip(2).long(),
-                    Points: dataType.skip(2).long()
-                },
-                {
-                    Type: dataType.back(9).long(),
-                    Current: dataType.skip(2).long(),
-                    Target: dataType.skip(2).long(),
-                    Points: dataType.skip(2).long()
-                }
-            ],
-            TotalPoints: dataType.long()
+
+        dataType.skip(13);
+    }
+
+    #initToiletSave (data) {
+        const dataType = new ComplexDataType(data.toilet);
+
+        this.Toilet = {
+            Aura: dataType.long(),
+            Fill: dataType.long()
         }
-        dataType.skip(3);
 
-        legacyDungeons.Normal[18] = dataType.short();
-        legacyDungeons.Shadow[18] = dataType.short();
-
-        dataType.skip(7);
-        this.Fortress.SecretWood = dataType.long() || resources.SecretWood;
-        this.Fortress.SecretWoodLimit = dataType.long();
-        this.Fortress.SecretStone = dataType.long() || resources.SecretStone;
-        this.Fortress.SecretStoneLimit = dataType.long();
         dataType.skip(1);
+
+        this.Toilet.Capacity = dataType.long();
+    }
+
+    #initResources (data, resources) {
+        this.Hourglass = resources.Hourglass;
+        this.Fortress.Wood = resources.Wood;
+        this.Fortress.Stone = resources.Stone;
+        this.Coins = resources.Coins;
+        this.Fortress.SecretWood = resources.SecretWood;
+        this.Fortress.SecretStone = resources.SecretStone;
+    }
+
+    #initOwn (data) {
+        const legacyDungeons = DungeonHelper.template();
+        const resources = PlayerModel.getResources(data.resources);
+
+        let dataType = null;
+
+        if (data.saveVersion === 2) {
+            this.#initCharacterSave(data, legacyDungeons);
+            this.#initPotionSave(data);
+            this.#initStatusSave(data, resources);
+            this.#initFortressSave(data);
+            this.#initToiletSave(data);
+            this.#initResources(data, resources);
+        } else {
+            dataType = new ComplexDataType(data.save)
+            dataType.assert(650);
+    
+            dataType.skip(1); // skip
+            this.ID = dataType.long();
+            this.LastOnline = dataType.long() * 1000 + data.offset;
+            this.Registered = dataType.long() * 1000 + data.offset;
+            dataType.skip(3); // skip
+            this.Level = dataType.short();
+            dataType.clear();
+            this.XP = dataType.long();
+            this.XPNext = dataType.long();
+            this.Honor = dataType.long();
+            this.Rank = dataType.long();
+            dataType.short();
+            this.DevilPercent = dataType.short();
+            dataType.skip(1); // skip
+            const mushroomsCurrent = dataType.long();
+            this.Mushrooms = {
+                Current: resources.Mushrooms || mushroomsCurrent,
+                Total: dataType.long()
+            }
+            dataType.skip(1);
+            this.Face = {
+                Mouth: dataType.long(),
+                Hair: {
+                    Type: dataType.long() % 100,
+                    Color: Math.trunc(dataType.back(1).long() / 100)
+                },
+                Brows: {
+                    Type: dataType.long() % 100,
+                    Color: Math.trunc(dataType.back(1).long() / 100)
+                },
+                Eyes: dataType.long(),
+                Beard: {
+                    Type: dataType.long() % 100,
+                    Color: Math.trunc(dataType.back(1).long() / 100)
+                },
+                Nose: dataType.long(),
+                Ears: dataType.long(),
+                Special: dataType.long(),
+                Special2: dataType.long(),
+                Portrait: dataType.long()
+            };
+            this.Race = dataType.short();
+            dataType.clear(); // skip
+            this.Gender = dataType.byte();
+            this.Mirror = dataType.byte();
+            this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
+            this.Class = dataType.short();
+            dataType.clear(); // skip
+            PlayerModel.loadAttributes(this, dataType, false);
+            this.Action = {
+                Status: dataType.short()
+            };
+            dataType.short(); // Skip
+            this.Action.Index = dataType.short();
+            dataType.short(); // Skip
+            this.Action.Finish = dataType.long() * 1000 + data.offset;
+            this.Items = PlayerModel.loadLegacyEquipment(dataType, 1, this.Class);
+            this.Inventory = {
+                Backpack: [],
+                Chest: [],
+                Shop: [],
+                Dummy: {},
+                Bert: {},
+                Mark: {},
+                Kunigunde: {}
+            };
+            for (let i = 0; i < 5; i++) {
+                const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 6, i + 1);
+                if (item.Type > 0) {
+                    this.Inventory.Backpack.push(item);
+                }
+            }
+            dataType.skip(58); // skip
+            this.Mount = dataType.short();
+            this.MountValue = PlayerModel.getMount(this.Mount);
+    
+            legacyDungeons.Tower = dataType.short();
+    
+            dataType.skip(1);
+            for (let i = 0; i < 6; i++) {
+                const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 7, i + 1);
+                if (item.Type > 0) {
+                    this.Inventory.Shop.push(item);
+                }
+            }
+            dataType.skip(1);
+            for (let i = 0; i < 6; i++) {
+                const item = new ItemModel(ItemModel.LEGACY, dataType.sub(12), 8, i + 1);
+                if (item.Type > 0) {
+                    this.Inventory.Shop.push(item);
+                }
+            }
+    
+            legacyDungeons.Raid = dataType.short();
+    
+            dataType.short();
+            dataType.skip(1); // skip
+            this.Group = {
+                ID: dataType.long(),
+                Name: data.groupname
+            };
+            dataType.skip(1); // skip
+            this.Mushrooms.Paid = dataType.long();
+            this.Mushrooms.Free = this.Mushrooms.Total - this.Mushrooms.Paid;
+            this.Book = Math.max(0, dataType.long() - 10000);
+            dataType.skip(2); // skip
+    
+            legacyDungeons.Normal[10] = dataType.long();
+            legacyDungeons.Normal[11] = dataType.long();
+    
+            this.Group.Joined = dataType.long() * 1000 + data.offset;
+            this.Flags = PlayerModel.getFlags(dataType.long());
+            dataType.short(); // skip
+    
+            legacyDungeons.Group = dataType.byte();
+            legacyDungeons.Player = dataType.byte();
+    
+            dataType.skip(1); // skip
+            this.Armor = dataType.long();
+            this.Damage = {
+                Min: dataType.long(),
+                Max: dataType.long()
+            };
+            this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
+            dataType.skip(1); // skip
+            this.MountExpire = dataType.long() * 1000 + data.offset,
+            dataType.skip(3);
+            this.ThirstReroll = dataType.long() * 1000 + data.offset;
+            this.ThirstLeft = dataType.long();
+            this.UsedBeers = dataType.long();
+            dataType.skip(22); // skip
+    
+            legacyDungeons.Normal[0] = dataType.long();
+            legacyDungeons.Normal[1] = dataType.long();
+            legacyDungeons.Normal[2] = dataType.long();
+            legacyDungeons.Normal[3] = dataType.long();
+            legacyDungeons.Normal[4] = dataType.long();
+            legacyDungeons.Normal[5] = dataType.long();
+            legacyDungeons.Normal[6] = dataType.long();
+            legacyDungeons.Normal[7] = dataType.long();
+            legacyDungeons.Normal[8] = dataType.long();
+            legacyDungeons.Normal[9] = dataType.long();
+            legacyDungeons.Normal[12] = dataType.long() - 120;
+    
+            this.Toilet = {
+                Aura: dataType.long(),
+                Fill: dataType.long()
+            }
+            this.Potions = [{
+                Type: PlayerModel.getPotionType(dataType.long()),
+                Expire: dataType.skip(2).long() * 1000 + data.offset,
+                Size: dataType.skip(2).long()
+            }, {
+                Type: PlayerModel.getPotionType(dataType.back(6).long()),
+                Expire: dataType.skip(2).long() * 1000 + data.offset,
+                Size: dataType.skip(2).long()
+            }, {
+                Type: PlayerModel.getPotionType(dataType.back(6).long()),
+                Expire: dataType.skip(2).long() * 1000 + data.offset,
+                Size: dataType.skip(2).long()
+            }];
+            _sortDesc(this.Potions, potion => potion.Size);
+            this.Potions.Life = dataType.long();
+            dataType.skip(12); // skip
+            this.Toilet.Capacity = dataType.long();
+            dataType.skip(1); // skip
+            this.Flags.GoldFrameDisabled = !!dataType.long();
+            dataType.skip(3); //skip
+            this.Flags.InvitesDisabled = !!dataType.long();
+            dataType.skip(2); // skip
+            this.Fortress = {
+                Rank: data.fortressrank,
+                Fortress: dataType.long(),
+                LaborerQuarters: dataType.long(),
+                WoodcutterGuild: dataType.long(),
+                Quarry: dataType.long(),
+                GemMine: dataType.long(),
+                Academy: dataType.long(),
+                ArcheryGuild: dataType.long(),
+                Barracks: dataType.long(),
+                MageTower: dataType.long(),
+                Treasury: dataType.long(),
+                Smithy: dataType.long(),
+                Fortifications: dataType.long()
+            }
+            dataType.skip(6);
+            this.Hourglass = dataType.long() || resources.Hourglass;
+            dataType.skip(1);
+            this.Fortress.Wood = dataType.long() || resources.Wood;
+            this.Fortress.Stone = dataType.long() || resources.Stone;
+    
+            legacyDungeons.Normal[13] = dataType.long();
+    
+            dataType.skip(11); // skip
+    
+            legacyDungeons.Twister = dataType.long();
+    
+            dataType.skip(3); // skip
+            this.Fortress.RaidWood = Math.trunc(dataType.long() / 2);
+            this.Fortress.RaidStone = Math.trunc(dataType.long() / 2);
+            dataType.skip(1); // skip
+            this.Fortress.WoodcutterMax = dataType.long();
+            this.Fortress.QuarryMax = dataType.long();
+            this.Fortress.AcademyMax = dataType.long();
+            this.Fortress.MaxWood = dataType.long();
+            this.Fortress.MaxStone = dataType.long();
+            dataType.skip(1); // skip
+            this.Fortress.Upgrade = {
+                Building: dataType.long() - 1,
+                Finish: dataType.long() * 1000 + data.offset,
+                Start: dataType.long() * 1000 + data.offset
+            }
+            dataType.skip(4);
+            this.Coins = dataType.long() || resources.Coins;
+            dataType.skip(2);
+            this.Fortress.Upgrades = dataType.long();
+            this.Fortress.Honor = dataType.long();
+            this.Fortress.Rank = dataType.long();
+            dataType.skip(8); // skip
+            if (dataType.long() * 1000 + data.offset < data.timestamp) {
+                this.Fortress.RaidWood += Math.trunc(this.Fortress.Wood / 10);
+                this.Fortress.RaidStone += Math.trunc(this.Fortress.Stone / 10);
+            }
+            dataType.skip(5); // skip
+            this.Fortress.Knights = dataType.long();
+            dataType.skip(5); // skip
+    
+            legacyDungeons.Shadow = dataType.byteArray(14);
+    
+            dataType.clear(); // skip
+            dataType.skip(12); // skip
+            legacyDungeons.Normal[15] = dataType.long();
+            legacyDungeons.Shadow[15] = dataType.long();
+            dataType.skip(1); // skip
+            this.Group.Treasure = dataType.long();
+            this.Group.Instructor = dataType.long();
+            dataType.skip(4); // skip
+            this.Group.Pet = dataType.long();
+            dataType.skip(1);
+    
+            legacyDungeons.Youtube = dataType.long();
+    
+            dataType.skip(16);
+    
+            legacyDungeons.Normal[16] = dataType.byte();
+            legacyDungeons.Shadow[16] = dataType.byte();
+    
+            this.CalendarDay = dataType.short();
+            dataType.skip(5);
+    
+            legacyDungeons.Normal[17] = dataType.short();
+            legacyDungeons.Shadow[17] = dataType.short();
+    
+            dataType.skip(2);
+            // Normalize calendar type in order to align it with S&F Tavern's calendar indexing
+            this.CalendarType = 1 + (dataType.long() + 10) % 12;
+            this.Underworld = {
+                TimeMachineMushrooms: dataType.long(),
+                Upgrade: {
+                    Building: 0,
+                    Finish: -1,
+                    Start: -1
+                }
+            };
+            dataType.skip(3);
+            this.LegendaryDungeonTries = dataType.long();
+            dataType.skip(2);
+            this.UsedAdventureTime = dataType.long();
+            dataType.skip(5);
+            this.ClientVersion = dataType.long();
+            this.AdventureSkips = dataType.long();
+            this.Summer = {
+                Missions: [
+                    {
+                        Type: dataType.long(),
+                        Current: dataType.skip(2).long(),
+                        Target: dataType.skip(2).long(),
+                        Points: dataType.skip(2).long()
+                    },
+                    {
+                        Type: dataType.back(9).long(),
+                        Current: dataType.skip(2).long(),
+                        Target: dataType.skip(2).long(),
+                        Points: dataType.skip(2).long()
+                    },
+                    {
+                        Type: dataType.back(9).long(),
+                        Current: dataType.skip(2).long(),
+                        Target: dataType.skip(2).long(),
+                        Points: dataType.skip(2).long()
+                    }
+                ],
+                TotalPoints: dataType.long()
+            }
+            dataType.skip(3);
+    
+            legacyDungeons.Normal[18] = dataType.short();
+            legacyDungeons.Shadow[18] = dataType.short();
+    
+            dataType.skip(7);
+            this.Fortress.SecretWood = dataType.long() || resources.SecretWood;
+            this.Fortress.SecretWoodLimit = dataType.long();
+            this.Fortress.SecretStone = dataType.long() || resources.SecretStone;
+            this.Fortress.SecretStoneLimit = dataType.long();
+            dataType.skip(1);
+        }
 
         if (data.idle) {
             this.Idle = {
@@ -1591,146 +1911,153 @@ class PlayerModel {
     #initOther (data) {
         const legacyDungeons = DungeonHelper.template();
 
-        let dataType = new ComplexDataType(data.save);
-        dataType.assert(256);
+        let dataType = null;
 
-        this.ID = dataType.long();
-        this.LastOnline = dataType.long() * 1000 + data.offset;
-        this.Level = dataType.short();
-        dataType.clear(); // skip
-        this.XP = dataType.long();
-        this.XPNext = dataType.long();
-        this.Honor = dataType.long();
-        this.Rank = dataType.long();
-        dataType.short();
-        this.DevilPercent = dataType.short();
-        this.Face = {
-            Mouth: dataType.long(),
-            Hair: {
-                Type: dataType.long() % 100,
-                Color: Math.trunc(dataType.back(1).long() / 100)
-            },
-            Brows: {
-                Type: dataType.long() % 100,
-                Color: Math.trunc(dataType.back(1).long() / 100)
-            },
-            Eyes: dataType.long(),
-            Beard: {
-                Type: dataType.long() % 100,
-                Color: Math.trunc(dataType.back(1).long() / 100)
-            },
-            Nose: dataType.long(),
-            Ears: dataType.long(),
-            Special: dataType.long(),
-            Special2: dataType.long(),
-            Portrait: dataType.long()
-        };
-        this.Race = dataType.short();
-        dataType.clear(); // skip
-        this.Gender = dataType.byte();
-        this.Mirror = dataType.byte();
-        this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
-        this.Class = dataType.short();
-        dataType.clear(); // skip
-        PlayerModel.loadAttributes(this, dataType);
-        this.Action = {
-            Status: dataType.short()
-        };
-        dataType.short(); // Skip
-        this.Action.Index = dataType.short();
-        dataType.short(); // Skip
-        this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = PlayerModel.loadLegacyEquipment(dataType, 1, this.Class);
-        this.Mount = dataType.short();
-        this.MountValue = PlayerModel.getMount(this.Mount);
+        if (data.saveVersion === 2) {
+            this.#initCharacterSave(data, legacyDungeons);
+            this.#initPotionSave(data);
+        } else {
+            dataType = new ComplexDataType(data.save);
+            dataType.assert(256);
+    
+            this.ID = dataType.long();
+            this.LastOnline = dataType.long() * 1000 + data.offset;
+            this.Level = dataType.short();
+            dataType.clear(); // skip
+            this.XP = dataType.long();
+            this.XPNext = dataType.long();
+            this.Honor = dataType.long();
+            this.Rank = dataType.long();
+            dataType.short();
+            this.DevilPercent = dataType.short();
+            this.Face = {
+                Mouth: dataType.long(),
+                Hair: {
+                    Type: dataType.long() % 100,
+                    Color: Math.trunc(dataType.back(1).long() / 100)
+                },
+                Brows: {
+                    Type: dataType.long() % 100,
+                    Color: Math.trunc(dataType.back(1).long() / 100)
+                },
+                Eyes: dataType.long(),
+                Beard: {
+                    Type: dataType.long() % 100,
+                    Color: Math.trunc(dataType.back(1).long() / 100)
+                },
+                Nose: dataType.long(),
+                Ears: dataType.long(),
+                Special: dataType.long(),
+                Special2: dataType.long(),
+                Portrait: dataType.long()
+            };
+            this.Race = dataType.short();
+            dataType.clear(); // skip
+            this.Gender = dataType.byte();
+            this.Mirror = dataType.byte();
+            this.MirrorPieces = PlayerModel.getMirrorPieces(this.ServerId = dataType.short());
+            this.Class = dataType.short();
+            dataType.clear(); // skip
+            PlayerModel.loadAttributes(this, dataType);
+            this.Action = {
+                Status: dataType.short()
+            };
+            dataType.short(); // Skip
+            this.Action.Index = dataType.short();
+            dataType.short(); // Skip
+            this.Action.Finish = dataType.long() * 1000 + data.offset;
+            this.Items = PlayerModel.loadLegacyEquipment(dataType, 1, this.Class);
+            this.Mount = dataType.short();
+            this.MountValue = PlayerModel.getMount(this.Mount);
+    
+            legacyDungeons.Tower = dataType.short();
+            legacyDungeons.Raid = dataType.short();
+    
+            dataType.short();
+            this.Group = {
+                ID: dataType.long(),
+                Name: data.groupname
+            };
+            dataType.skip(1); // skip
+            this.Book = Math.max(0, dataType.long() - 10000);
+    
+            legacyDungeons.Normal[10] = dataType.long();
+            legacyDungeons.Normal[11] = dataType.long();
 
-        legacyDungeons.Tower = dataType.short();
-        legacyDungeons.Raid = dataType.short();
-
-        dataType.short();
-        this.Group = {
-            ID: dataType.long(),
-            Name: data.groupname
-        };
-        dataType.skip(1); // skip
-        this.Book = Math.max(0, dataType.long() - 10000);
-
-        legacyDungeons.Normal[10] = dataType.long();
-        legacyDungeons.Normal[11] = dataType.long();
-
-        this.Group.Joined = dataType.long() * 1000 + data.offset;
-        this.Flags = PlayerModel.getFlags(dataType.long());
-        this.Armor = dataType.long();
-        this.Damage = {
-            Min: dataType.long(),
-            Max: dataType.long()
-        };
-        this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
-        dataType.skip(12); // skip
-
-        legacyDungeons.Normal[0] = dataType.long();
-        legacyDungeons.Normal[1] = dataType.long();
-        legacyDungeons.Normal[2] = dataType.long();
-        legacyDungeons.Normal[3] = dataType.long();
-        legacyDungeons.Normal[4] = dataType.long();
-        legacyDungeons.Normal[5] = dataType.long();
-        legacyDungeons.Normal[6] = dataType.long();
-        legacyDungeons.Normal[7] = dataType.long();
-        legacyDungeons.Normal[8] = dataType.long();
-        legacyDungeons.Normal[9] = dataType.long();
-        legacyDungeons.Normal[12] = dataType.long() - 120;
-
-        this.Potions = [{
-            Type: PlayerModel.getPotionType(dataType.long()),
-            Size: dataType.skip(5).long()
-        }, {
-            Type: PlayerModel.getPotionType(dataType.back(6).long()),
-            Size: dataType.skip(5).long()
-        }, {
-            Type: PlayerModel.getPotionType(dataType.back(6).long()),
-            Size: dataType.skip(5).long()
-        }];
-        _sortDesc(this.Potions, potion => potion.Size);
-        this.Potions.Life = dataType.long();
-        this.Flags.GoldFrameDisabled = !!dataType.long();
-        this.Flags.InvitesDisabled = !!dataType.long();
-        dataType.skip(2); // skip
-        this.Fortress = {
-            Rank: data.fortressrank,
-            Fortress: dataType.long(),
-            LaborerQuarters: dataType.long(),
-            WoodcutterGuild: dataType.long(),
-            Quarry: dataType.long(),
-            GemMine: dataType.long(),
-            Academy: dataType.long(),
-            ArcheryGuild: dataType.long(),
-            Barracks: dataType.long(),
-            MageTower: dataType.long(),
-            Treasury: dataType.long(),
-            Smithy: dataType.long(),
-            Fortifications: dataType.long(),
-            RaidWood: dataType.skip(8).long(),
-            RaidStone: dataType.long()
+            this.Group.Joined = dataType.long() * 1000 + data.offset;
+            this.Flags = PlayerModel.getFlags(dataType.long());
+            this.Armor = dataType.long();
+            this.Damage = {
+                Min: dataType.long(),
+                Max: dataType.long()
+            };
+            this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
+            dataType.skip(12); // skip
+    
+            legacyDungeons.Normal[0] = dataType.long();
+            legacyDungeons.Normal[1] = dataType.long();
+            legacyDungeons.Normal[2] = dataType.long();
+            legacyDungeons.Normal[3] = dataType.long();
+            legacyDungeons.Normal[4] = dataType.long();
+            legacyDungeons.Normal[5] = dataType.long();
+            legacyDungeons.Normal[6] = dataType.long();
+            legacyDungeons.Normal[7] = dataType.long();
+            legacyDungeons.Normal[8] = dataType.long();
+            legacyDungeons.Normal[9] = dataType.long();
+            legacyDungeons.Normal[12] = dataType.long() - 120;
+    
+            this.Potions = [{
+                Type: PlayerModel.getPotionType(dataType.long()),
+                Size: dataType.skip(5).long()
+            }, {
+                Type: PlayerModel.getPotionType(dataType.back(6).long()),
+                Size: dataType.skip(5).long()
+            }, {
+                Type: PlayerModel.getPotionType(dataType.back(6).long()),
+                Size: dataType.skip(5).long()
+            }];
+            _sortDesc(this.Potions, potion => potion.Size);
+            this.Potions.Life = dataType.long();
+            this.Flags.GoldFrameDisabled = !!dataType.long();
+            this.Flags.InvitesDisabled = !!dataType.long();
+            dataType.skip(2); // skip
+            this.Fortress = {
+                Rank: data.fortressrank,
+                Fortress: dataType.long(),
+                LaborerQuarters: dataType.long(),
+                WoodcutterGuild: dataType.long(),
+                Quarry: dataType.long(),
+                GemMine: dataType.long(),
+                Academy: dataType.long(),
+                ArcheryGuild: dataType.long(),
+                Barracks: dataType.long(),
+                MageTower: dataType.long(),
+                Treasury: dataType.long(),
+                Smithy: dataType.long(),
+                Fortifications: dataType.long(),
+                RaidWood: dataType.skip(8).long(),
+                RaidStone: dataType.long()
+            }
+            dataType.skip(14); // skip
+            this.Fortress.Upgrade = {
+                Building: dataType.long() - 1,
+                Finish: dataType.long() * 1000 + data.offset,
+                Start: dataType.long() * 1000 + data.offset
+            }
+            this.Fortress.Upgrades = dataType.long();
+            this.Fortress.Honor = dataType.long();
+            dataType.skip(3); // skip
+            dataType.short(); // skip
+    
+            legacyDungeons.Group = dataType.byte();
+            legacyDungeons.Player = dataType.byte();
+            legacyDungeons.Normal[13] = dataType.long();
+            legacyDungeons.Shadow = dataType.byteArray(14);
+    
+            dataType.skip(2);
+    
+            this.Fortress.Gladiator = dataType.long();
         }
-        dataType.skip(14); // skip
-        this.Fortress.Upgrade = {
-            Building: dataType.long() - 1,
-            Finish: dataType.long() * 1000 + data.offset,
-            Start: dataType.long() * 1000 + data.offset
-        }
-        this.Fortress.Upgrades = dataType.long();
-        this.Fortress.Honor = dataType.long();
-        dataType.skip(3); // skip
-        dataType.short(); // skip
-
-        legacyDungeons.Group = dataType.byte();
-        legacyDungeons.Player = dataType.byte();
-        legacyDungeons.Normal[13] = dataType.long();
-        legacyDungeons.Shadow = dataType.byteArray(14);
-
-        dataType.skip(2);
-
-        this.Fortress.Gladiator = dataType.long();
 
         dataType = new ComplexDataType(data.pets);
         dataType.skip(1); // skip
@@ -1800,6 +2127,50 @@ class PlayerModel {
         }
 
         this.Description = PlayaResponse.unescape(data.description);
+
+        this.DataVersion = data.saveVersion;
+
+        this.Inventory = {
+            Backpack: [],
+            Chest: [],
+            Shop: [],
+            Dummy: {},
+            Bert: {},
+            Mark: {},
+            Kunigunde: {}
+        };
+
+        this.Action = {
+            Status: -1,
+            Index: -1,
+            Finish: data.offset,
+            Start: data.offset
+        }
+
+        this.Fortress = {
+            Rank: 0,
+            Fortress: 0,
+            LaborerQuarters: 0,
+            WoodcutterGuild: 0,
+            Quarry: 0,
+            GemMine: 0,
+            Academy: 0,
+            ArcheryGuild: 0,
+            Barracks: 0,
+            MageTower: 0,
+            Treasury: 0,
+            Smithy: 0,
+            Fortifications: 0,
+            Upgrade: {
+                Building: -1,
+                Finish: 1000 + data.offset,
+                Start: 1000 + data.offset
+            },
+            Upgrades: 0,
+            Honor: 0,
+            Rank: 0,
+            Knights: 0
+        }
     }
 
     hasGuild () {
@@ -2147,6 +2518,10 @@ class PlayerModel {
         }
 
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
+        if (this.DataVersion === 2) {
+            // Fill in Life potion potency for v2
+            this.Potions.Life = this.Potions.LifeIndex !== -1 ? 25 : 0
+        }
 
         this.XPTotal = this.XP + Calculations.experienceTotalLevel(this.Level);
 
