@@ -915,25 +915,41 @@ class PlayerModel {
         Arcane: 7,
         Runes: 8,
         Item: 9,
-        AttributBonusStrength: 10,
-        AttributBonusDexterity: 11,
-        AttributBonusIntelligence: 12,
-        AttributBonusConstitution: 13,
-        AttributBonusLuck: 14,
-        FruitType1: 15,
-        FruitType2: 16,
-        FruitType3: 17,
-        FruitType4: 18,
-        FruitType5: 19,
-        LevelUp: 20,
-        LifePotion: 21,
-        Hourglass: 22,
-        StrengthPotion: 23,
-        QuicknessPotion: 24,
-        IntelligencePotion: 25,
-        InstitutionPotion: 26,
-        LuckPotion: 27
+        AttributeStrength: 11,
+        AttributeDexterity: 12,
+        AttributeIntelligence: 13,
+        AttributeConstitution: 14,
+        AttributeLuck: 15,
+        FruitType1: 16,
+        FruitType2: 17,
+        FruitType3: 18,
+        FruitType4: 19,
+        FruitType5: 20,
+        LevelUp: 21,
+        LifePotion: 22,
+        Hourglass: 23,
+        StrengthPotion: 24,
+        DexterityPotion: 25,
+        IntelligencePotion: 26,
+        ConstitutionPotion: 27,
+        LuckPotion: 28
     }
+
+    static CALENDAR_INFER_MAP = [
+        // Index, position to check, reward to expect 
+        [1, 19, this.CALENDAR_REWARDS.ConstitutionPotion],
+        [2, 2, this.CALENDAR_REWARDS.Hourglass],
+        [3, 3, this.CALENDAR_REWARDS.AttributeIntelligence],
+        [4, 3, this.CALENDAR_REWARDS.AttributeLuck],
+        [5, 3, this.CALENDAR_REWARDS.XP],
+        [6, 3, this.CALENDAR_REWARDS.LifePotion],
+        [7, 3, this.CALENDAR_REWARDS.LuckPotion],
+        [8, 6, this.CALENDAR_REWARDS.AttributeLuck],
+        [9, 19, this.CALENDAR_REWARDS.LifePotion],
+        [10, 6, this.CALENDAR_REWARDS.LuckPotion],
+        [11, 14, this.CALENDAR_REWARDS.LuckPotion],
+        [12, 10, this.CALENDAR_REWARDS.Hourglass]
+    ]
 
     constructor (data) {
         if (data) {
@@ -1217,6 +1233,16 @@ class PlayerModel {
         dataType.byte();
         dataType.byte();
         this.CalendarDay = dataType.short();
+
+        if (data.calendar) {
+            for (const [type, day, expectedReward] of PlayerModel.CALENDAR_INFER_MAP) {
+                if (data.calendar[(day - 1) * 2] === expectedReward) {
+                    this.CalendarType = type
+
+                    break;
+                }
+            }
+        }
 
         // Next calendar date
         dataType.skip(1);
