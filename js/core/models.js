@@ -904,6 +904,37 @@ class PlayerModel {
         return memo;
     }, Object.create(null))
 
+    static CALENDAR_REWARDS = {
+        None: 0,
+        Gold: 1,
+        Mushrooms: 2,
+        XP: 3,
+        Wood: 4,
+        Stone: 5,
+        Souls: 6,
+        Arcane: 7,
+        Runes: 8,
+        Item: 9,
+        AttributBonusStrength: 10,
+        AttributBonusDexterity: 11,
+        AttributBonusIntelligence: 12,
+        AttributBonusConstitution: 13,
+        AttributBonusLuck: 14,
+        FruitType1: 15,
+        FruitType2: 16,
+        FruitType3: 17,
+        FruitType4: 18,
+        FruitType5: 19,
+        LevelUp: 20,
+        LifePotion: 21,
+        Hourglass: 22,
+        StrengthPotion: 23,
+        QuicknessPotion: 24,
+        IntelligencePotion: 25,
+        InstitutionPotion: 26,
+        LuckPotion: 27
+    }
+
     constructor (data) {
         if (data) {
             this.#initShared(data);
