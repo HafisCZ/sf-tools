@@ -573,6 +573,7 @@ class PlayaResponse {
                     // TODO: Replace with specific separator
                     data.units = r.otherplayerunitlevel?.numbers(/\/|,/);
                     data.achievements = r.otherplayerachievement?.numbers() || r.achievement?.numbers();
+                    data.fortress = r.otherplayerfortressbuildingprogressinfo?.numbers();
                     data.fortressrank = r.otherplayerfortressrank?.number;
                     data.pets = r.otherplayerpetbonus?.numbers();
                     data.description = r.otherdescription?.string;

@@ -1159,7 +1159,6 @@ class PlayerModel {
 
         // Levels
         this.Fortress = {
-            Rank: data.fortressrank,
             Fortress: dataType.long(),
             LaborerQuarters: dataType.long(),
             WoodcutterGuild: dataType.long(),
@@ -1171,39 +1170,49 @@ class PlayerModel {
             MageTower: dataType.long(),
             Treasury: dataType.long(),
             Smithy: dataType.long(),
-            Fortifications: dataType.long()
+            Fortifications: dataType.long(),
+            Upgrades: undefined,
+            Rank: data.fortressrank,
+            Honor: undefined,
+            Upgrade: {
+                Building: 0,
+                Finish: -1,
+                Start: -1
+            }
         }
 
-        // Build index, end time, start time
-        this.Fortress.Upgrade = {
-            Building: dataType.long() - 1,
-            Finish: dataType.long() * 1000 + data.offset,
-            Start: dataType.long() * 1000 + data.offset
+        if (data.own) {
+            // Build index, end time, start time
+            this.Fortress.Upgrade = {
+                Building: dataType.long() - 1,
+                Finish: dataType.long() * 1000 + data.offset,
+                Start: dataType.long() * 1000 + data.offset
+            }
+    
+            // Level
+            this.Fortress.Upgrades = dataType.long();
+    
+            // Honor
+            this.Fortress.Honor = dataType.long();
+            
+            // Rank
+            this.Fortress.Rank = dataType.long();
+    
+            // Next date, next id
+            dataType.skip(2);
+            
+            // Protection timer full, half
+            dataType.skip(2);
+    
+            // Gemstone index, end time, start time
+            dataType.skip(3);
+    
+            // Group bonus
+            this.Fortress.Knights = dataType.long();
+    
+            // Last enemy ID
+            dataType.skip(1);
         }
-
-        // Level
-        this.Fortress.Upgrades = dataType.long();
-
-        // Honor
-        this.Fortress.Honor = dataType.long();
-        
-        // Rank
-        this.Fortress.Rank = dataType.long();
-
-        // Next date, next id
-        dataType.skip(2);
-        
-        // Protection timer full, half
-        dataType.skip(2);
-
-        // Gemstone index, end time, start time
-        dataType.skip(3);
-
-        // Group bonus
-        this.Fortress.Knights = dataType.long();
-
-        // Last enemy ID
-        dataType.skip(1);
     }
 
     #initStatusSave (data, resources) {
@@ -1973,6 +1982,7 @@ class PlayerModel {
         if (data.saveVersion === 2) {
             this.#initCharacterSave(data, legacyDungeons);
             this.#initPotionSave(data);
+            this.#initFortressSave(data);
         } else {
             dataType = new ComplexDataType(data.save);
             dataType.assert(256);
