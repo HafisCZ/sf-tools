@@ -2639,7 +2639,7 @@ class PlayerModel {
             this.Group.ReadyAttack = this.Group.Actions.Attack || this.Group.Actions.Raid;
             this.Group.ReadyDefense = this.Group.Actions.Defense;
 
-            if (this.LastOnline < 6e11) {
+            if (typeof this.LastOnline === 'undefined' || this.LastOnline < 6e11) {
                 this.LastOnline = group.LastActives[gi];
             }
 
