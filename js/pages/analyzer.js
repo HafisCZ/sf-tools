@@ -780,23 +780,27 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
             if (text.includes('playerlookat') || text.includes('ownplayersave')) {
                 const r = PlayaResponse.fromText(text);
 
-                if (r.ownplayersave && r.ownplayername) {
+                if ((r.ownplayersavecharacter || r.ownplayersave) && r.ownplayername) {
                     // Read only necessary data from own player
                     digestedPlayers.push({
                         own: true,
-                        save: r.ownplayersave.numbers(),
+                        save: (r.ownplayersavecharacter || r.ownplayersave).numbers(),
+                        saveVersion: r.ownplayersavecharacter ? 2 : 1,
+                        potions: r.ownplayersavepotions?.numbers(),
                         name: r.ownplayername.string,
                         tower: r.owntower?.numbers(),
                         companionItems: r.companionequipment?.numbers(),
                         equippedItems: r.ownplayersaveequipment?.numbers()
                     })
-                } else if (r.ownplayersave) {
+                } else if (r.ownplayersavecharacter || r.ownplayersave) {
                     // Capture save
                     const lastPlayer = digestedPlayers.findLast((entry) => entry.own && entry.name);
                     if (lastPlayer) {
                         digestedPlayers.push({
                             own: true,
-                            save: r.ownplayersave.numbers(),
+                            save: (r.ownplayersavecharacter || r.ownplayersave).numbers(),
+                            saveVersion: r.ownplayersavecharacter ? 2 : 1,
+                            potions: r.ownplayersavepotions?.numbers() || lastPlayer.potions,
                             name: lastPlayer.name,
                             tower: r.owntower?.numbers() || lastPlayer.tower,
                             companionItems: r.companionequipment?.numbers() || lastPlayer.companionItems,
@@ -804,7 +808,7 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                         })
                     }
                 } else if (r['#ownplayersave']) {
-                    // Capture save delta
+                    // Capture save delta (ignoring for purposes of save v2)
                     const lastPlayer = digestedPlayers.findLast((entry) => entry.own && entry.name);
                     if (lastPlayer) {
                         const save = Array.from(lastPlayer.save);
@@ -822,10 +826,12 @@ Site.ready({ name: 'analyzer', requires: ['translations_monsters'] }, function (
                             equippedItems: r.ownplayersaveequipment?.numbers() || lastPlayer.equippedItems
                         })
                     }
-                } else if (r.otherplayer && r.otherplayername) {
+                } else if ((r.otherplayersavecharacter || r.otherplayer) && r.otherplayername) {
                     digestedPlayers.push({
                         own: false,
-                        save: r.otherplayer.numbers(),
+                        save: (r.otherplayersavecharacter || r.otherplayer).numbers(),
+                        saveVersion: r.otherplayersavecharacter ? 2 : 1,
+                        potions: r.otherplayersavepotions?.numbers(),
                         name: r.otherplayername.string,
                         tower: null,
                         equippedItems: r.otherplayersaveequipment?.numbers()
