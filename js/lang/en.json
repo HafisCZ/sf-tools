@@ -1006,6 +1006,9 @@
             "copy_all": "Copy everyone",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
+        "snack_apply_all": "Apply current snack to all players",
+        "snack_apply_all_toast_title": "Snack copy",
+        "snack_apply_all_toast_message": "Snack and snack strength was applied to all player",
         "win_chance": "Win %",
         "min_chance": "Min %",
         "max_chance": "Max %",

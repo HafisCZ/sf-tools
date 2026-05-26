@@ -213,6 +213,19 @@ Site.ready({ name: 'raids', type: 'simulator', requires: ['translations_monsters
       editor.clear();
   }
 
+  $('#snack-apply-all').click(() => {
+    const currentData = editor.read();
+
+    for (const player of playerList) {
+        player.player.Snack = currentData.Snack
+        player.player.SnackPotency = currentData.SnackPotency
+    }
+
+    updatePlayerList();
+
+    Toast.info(intl('simulator.snack_apply_all_toast_title'), intl('simulator.snack_apply_all_toast_message'));
+  })
+
   $('#add-player').click(function () {
       if (editor.valid()) {
           addPlayer();
