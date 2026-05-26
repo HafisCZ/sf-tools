@@ -3673,16 +3673,16 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'header', 'private', 'Wheel Uses',
+  'header', 'private', 'Wheel Used',
   {
-    expr: p => p.WheelUses
+    expr: p => p.WheelUsed
   }
 )
 
 TABLE_EXPRESSION_CONFIG.register(
-  'header', 'private', 'Dice Uses',
+  'header', 'private', 'Dice Used',
   {
-    expr: p => p.DiceUses
+    expr: p => p.DiceUsed
   }
 )
 
@@ -3710,7 +3710,25 @@ TABLE_EXPRESSION_CONFIG.register(
 TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Used Beers',
   {
-    expr: p => p.UsedBeers,
+    expr: p => p.BeerUsed,
+    statistics: false,
+    difference: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Max Beers',
+  {
+    expr: p => p.BeerMax,
+    statistics: false,
+    difference: false
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Adventure Points',
+  {
+    expr: p => p.AdventurePoints,
     statistics: false,
     difference: false
   }

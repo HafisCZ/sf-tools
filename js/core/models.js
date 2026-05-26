@@ -1230,13 +1230,13 @@ class PlayerModel {
         };
 
         // Max beer
-        dataType.skip(1);
+        this.BeerMax = dataType.long();
 
         // Adventure points
-        dataType.skip(1);
+        this.AdventurePoints = dataType.long();
 
         // Beer bought
-        this.UsedBeers = dataType.long();
+        this.BeerUsed = dataType.long();
 
         // Nordic gods + calendar
         dataType.byte();
@@ -1320,7 +1320,7 @@ class PlayerModel {
 
         this.WheelType = dataType.long();
 
-        this.WheelUses = dataType.long();
+        this.WheelUsed = dataType.long();
 
         // Next free
         dataType.skip(1);
@@ -1331,7 +1331,7 @@ class PlayerModel {
 
         dataType.skip(1);
 
-        this.DiceUses = dataType.long();
+        this.DiceUsed = dataType.long();
     }
 
     #initOwn (data) {
