@@ -575,7 +575,7 @@ Site.ready({ name: 'attributes' }, function () {
 
     $('#xp-level, #xp-hydra, #xp-academy').on('change input', function () {
         if (validate($('#xp-level'), $('#xp-hydra'), $('#xp-academy'))) {
-            const level = getClampedValue('#xp-level', 1, 799);
+            const level = getClampedValue('#xp-level', 1, 999);
             const hydra = getClampedValue('#xp-hydra', 0, 20);
             const academy = getClampedValue('#xp-academy', 1, 20);
 
