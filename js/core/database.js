@@ -518,6 +518,8 @@ class PlayaResponse {
                     data.toilet = r.arcanetoilet?.numbers();
                     data.adventure = r.adventure?.numbers();
                     data.groupMetadata = r.charactergroup?.numbers();
+                    data.wheel = r.wheel?.numbers();
+                    data.dice = r.dice?.numbers();
 
                     data.companionItems = r.companionequipment?.numbers();
                     data.fidgetItems = r.storeitemsfidget?.numbers();

@@ -3673,6 +3673,27 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Wheel Uses',
+  {
+    expr: p => p.WheelUses
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Dice Uses',
+  {
+    expr: p => p.DiceUses
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'Wheel Type',
+  {
+    expr: p => p.WheelType
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'Wood',
   {
     expr: p => p.Fortress?.Wood

@@ -1315,6 +1315,25 @@ class PlayerModel {
         this.Fortress.SecretStone = resources.SecretStone;
     }
 
+    #initWheel (data) {
+        const dataType = new ComplexDataType(data.wheel);
+
+        this.WheelType = dataType.long();
+
+        this.WheelUses = dataType.long();
+
+        // Next free
+        dataType.skip(1);
+    }
+
+    #initDice (data) {
+        const dataType = new ComplexDataType(data.dice);
+
+        dataType.skip(1);
+
+        this.DiceUses = dataType.long();
+    }
+
     #initOwn (data) {
         const legacyDungeons = DungeonHelper.template();
         const resources = PlayerModel.getResources(data.resources);
@@ -1328,6 +1347,8 @@ class PlayerModel {
             this.#initFortressSave(data);
             this.#initToiletSave(data);
             this.#initResources(data, resources);
+            this.#initWheel(data);
+            this.#initDice(data);
         } else {
             dataType = new ComplexDataType(data.save)
             dataType.assert(650);
