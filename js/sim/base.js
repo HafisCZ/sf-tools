@@ -1726,8 +1726,7 @@ class SimulatorBase {
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             if (this.b.skip(SKIP_TYPE_CONTROL)) {
-                // Disabled as broken by playa currently
-                // this.getRage();
+                this.getRage();
             } else {
                 this.a.control(this, this.b);
             }
