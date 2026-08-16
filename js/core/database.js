@@ -474,6 +474,8 @@ class PlayaResponse {
             }
 
             if (r.otherplayername || r.ownplayername) {
+                let skip = false
+
                 const data = {
                     prefix: prefix,
                     timestamp: timestamp,
@@ -559,6 +561,9 @@ class PlayaResponse {
 
                     // Save version
                     currentVersion = r.serverversion.number;
+                } else if (r.ownplayersavecharacter) {
+                    // Prevent crash when looking at own player as it were someone else (game sends ownplayersavecharacter instead of otherplayersavecharacter)
+                    skip = true
                 } else {
                     data.own = false;
                     data.name = r.otherplayername.string;
@@ -594,7 +599,7 @@ class PlayaResponse {
                     }
                 }
 
-                if (!players.find(p => p.identifier === data.identifier)) {
+                if (!skip && !players.find(p => p.identifier === data.identifier)) {
                     players.push(data);
                 }
             }
