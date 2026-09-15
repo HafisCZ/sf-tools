@@ -1828,6 +1828,18 @@
         },
         "204": {
             "name": "Sandstorm"
+        },
+        "300": {
+            "name": "Unwavering Warrior Guild"
+        },
+        "301": {
+            "name": "Inquisitive Mage Guild"
+        },
+        "302": {
+            "name": "Acrobatic Scout Guild"
+        },
+        "303": {
+            "name": "Lively Necromancer Guild"
         }
     }
 }

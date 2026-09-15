@@ -2411,5 +2411,37 @@ const DUNGEON_DATA = {
          '9': { pos: 9, id: 9, class: 3, level: 830, str: 483750, dex: 978750, int: 483750, con: 17820000, lck: 92625, health: 59233680000, min: 10219, max: 10454, armor: 58950, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
          '10': { pos: 10, id: 10, class: 2, level: 836, str: 490500, dex: 490500, int: 994500, con: 18042750, lck: 93750, health: 30203563500, min: 18698, max: 19121, armor: 59490, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
       }
-   }
+   },
+    '300': {
+        // Unwavering Warrior Guild
+        id: 300,
+        intl: '300',
+        pos: 134,
+        companions: false,
+        floors: {}
+    },
+    '301': {
+        // Inquisitive Mage Guild
+        id: 301,
+        intl: '301',
+        pos: 135,
+        companions: false,
+        floors: {}
+    },
+    '302': {
+        // Acrobatic Scout Guild
+        id: 302,
+        intl: '302',
+        pos: 136,
+        companions: false,
+        floors: {}
+    },
+    '303': {
+        // Lively Necromancer Guild
+        id: 303,
+        intl: '303',
+        pos: 137,
+        companions: false,
+        floors: {}
+    }
 };
