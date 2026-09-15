@@ -4060,6 +4060,41 @@ TABLE_EXPRESSION_CONFIG.register(
 )
 
 TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', '29 Arcade',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Normal[28]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', '30 Server Room',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Normal[29]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', '31 Undead Workshop',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Normal[30]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', '32 Retro TV',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Normal[31]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', '33 Meeting Room',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Normal[32]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'S1 Catacombs',
   {
     expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[0]) : undefined
@@ -4252,6 +4287,76 @@ TABLE_EXPRESSION_CONFIG.register(
   'header', 'private', 'S28 Playa',
   {
     expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[27]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'S29 Arcade',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[28]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'S30 Server Room',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[29]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'S31 Undead Workshop',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[30]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'S32 Retro TV',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[31]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'S33 Meeting Room',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Shadow[32]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'C1 Warrior',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Class[0]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'C2 Mage',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Class[1]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'C3 Scout',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Class[2]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'C4 Necromancer',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Class[3]) : undefined
+  }
+)
+
+TABLE_EXPRESSION_CONFIG.register(
+  'header', 'private', 'C5 Aberrations',
+  {
+    expr: p => p.Dungeons ? Math.max(0, p.Dungeons.Class[4]) : undefined
   }
 )
 
