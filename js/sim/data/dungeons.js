@@ -1,9 +1,16 @@
+/**
+ * id - Game ID of the dungeon or enemy
+ * pos - Position of dungeon or enemy in the UI
+ * intl - Translation ID (Shadow dungeons re-use the light dungeons' IDs here)
+ * companions - Whether dungeon is a companion fight
+ */
+
 const DUNGEON_DATA = {
     '1': {
         id: 1,
         intl: '1',
         pos: 1,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 129, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 77, lck: 47, health: 1694, min: 29, max: 52 },
             '2': { pos: 2, id: 75, class: 1, level: 12, str: 120, dex: 68, int: 59, con: 101, lck: 51, health: 6565, min: 13, max: 28 },
@@ -21,7 +28,7 @@ const DUNGEON_DATA = {
         id: 2,
         intl: '2',
         pos: 2,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 62, class: 3, level: 20, str: 101, dex: 264, int: 101, con: 174, lck: 119, health: 14616, min: 35, max: 58 },
             '2': { pos: 2, id: 12, class: 1, level: 24, str: 317, dex: 126, int: 117, con: 238, lck: 130, health: 29750, min: 33, max: 58 },
@@ -39,7 +46,7 @@ const DUNGEON_DATA = {
         id: 3,
         intl: '3',
         pos: 3,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 28, class: 3, level: 32, str: 155, dex: 486, int: 161, con: 276, lck: 205, health: 36432, min: 58, max: 95 },
             '2': { pos: 2, id: 3, class: 3, level: 36, str: 141, dex: 602, int: 149, con: 344, lck: 230, health: 50912, min: 60, max: 108 },
@@ -57,7 +64,7 @@ const DUNGEON_DATA = {
         id: 4,
         intl: '4',
         pos: 4,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 131, class: 3, level: 52, str: 230, dex: 880, int: 220, con: 601, lck: 315, health: 127412, min: 88, max: 154 },
             '2': { pos: 2, id: 151, class: 3, level: 58, str: 260, dex: 1000, int: 250, con: 720, lck: 360, health: 169920, min: 94, max: 163 },
@@ -75,7 +82,7 @@ const DUNGEON_DATA = {
         id: 5,
         intl: '5',
         pos: 5,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 9, class: 3, level: 72, str: 330, dex: 1280, int: 320, con: 1000, lck: 465, health: 292000, min: 108, max: 184 },
             '2': { pos: 2, id: 150, class: 3, level: 78, str: 360, dex: 1400, int: 350, con: 1120, lck: 510, health: 353920, min: 114, max: 193 },
@@ -93,7 +100,7 @@ const DUNGEON_DATA = {
         id: 6,
         intl: '6',
         pos: 6,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 128, class: 1, level: 92, str: 1680, dex: 550, int: 525, con: 1400, lck: 450, health: 651000, min: 107, max: 165 },
             '2': { pos: 2, id: 33, class: 3, level: 98, str: 460, dex: 1800, int: 450, con: 1520, lck: 660, health: 601920, min: 134, max: 223 },
@@ -111,7 +118,7 @@ const DUNGEON_DATA = {
         id: 7,
         intl: '7',
         pos: 7,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 66, class: 3, level: 112, str: 530, dex: 2080, int: 520, con: 1800, lck: 765, health: 813600, min: 148, max: 244 },
             '2': { pos: 2, id: 97, class: 3, level: 116, str: 550, dex: 2160, int: 540, con: 1880, lck: 795, health: 879840, min: 152, max: 249 },
@@ -129,7 +136,7 @@ const DUNGEON_DATA = {
         id: 8,
         intl: '8',
         pos: 8,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 38, class: 1, level: 132, str: 2480, dex: 850, int: 825, con: 2200, lck: 650, health: 1463000, min: 147, max: 204 },
             '2': { pos: 2, id: 143, class: 3, level: 140, str: 670, dex: 2640, int: 660, con: 2360, lck: 975, health: 1331040, min: 176, max: 286 },
@@ -147,7 +154,7 @@ const DUNGEON_DATA = {
         id: 9,
         intl: '9',
         pos: 9,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 136, class: 1, level: 152, str: 2880, dex: 1000, int: 975, con: 2600, lck: 750, health: 1989000, min: 167, max: 225 },
             '2': { pos: 2, id: 125, class: 2, level: 156, str: 730, dex: 750, int: 3040, con: 2600, lck: 1090, health: 816400, min: 374, max: 536 },
@@ -165,7 +172,7 @@ const DUNGEON_DATA = {
         id: 10,
         intl: '10',
         pos: 10,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 101, class: 3, level: 205, str: 995, dex: 3940, int: 985, con: 3660, lck: 1450, health: 3015840, min: 241, max: 386 },
             '2': { pos: 2, id: 2, class: 1, level: 210, str: 4040, dex: 1420, int: 1395, con: 3760, lck: 1010, health: 3966800, min: 225, max: 284 },
@@ -183,7 +190,7 @@ const DUNGEON_DATA = {
         id: 11,
         intl: '11',
         pos: 11,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 173, class: 1, level: 255, str: 4940, dex: 1735, int: 1710, con: 4660, lck: 1190, health: 5964800, min: 270, max: 339 },
             '2': { pos: 2, id: 174, class: 3, level: 260, str: 1270, dex: 5040, int: 1260, con: 4760, lck: 1835, health: 4969440, min: 306, max: 488 },
@@ -201,7 +208,7 @@ const DUNGEON_DATA = {
         id: 12,
         intl: '12',
         pos: 12,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 183, class: 2, level: 305, str: 1475, dex: 1495, int: 6020, con: 5580, lck: 2145, health: 3414960, min: 669, max: 1150 },
             '2': { pos: 2, id: 184, class: 2, level: 310, str: 1500, dex: 1520, int: 6120, con: 5680, lck: 2180, health: 3532960, min: 679, max: 1185 },
@@ -219,7 +226,7 @@ const DUNGEON_DATA = {
         id: 13,
         intl: '13',
         pos: 15,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 243, class: 1, level: 355, str: 7570, dex: 2655, int: 2630, con: 7290, lck: 1716, health: 12976200, min: 401, max: 733 },
             '2': { pos: 2, id: 244, class: 2, level: 360, str: 1970, dex: 1990, int: 8000, con: 7560, lck: 2838, health: 5458320, min: 870, max: 1843 },
@@ -237,7 +244,7 @@ const DUNGEON_DATA = {
         id: 14,
         intl: '14',
         pos: 19,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 600, class: 1, level: 310, str: 6040, dex: 2120, int: 2095, con: 5760, lck: 1410, health: 8956800, min: 325, max: 504 },
             '2': { pos: 2, id: 601, class: 1, level: 320, str: 6240, dex: 2190, int: 2165, con: 5960, lck: 1450, health: 9565800, min: 335, max: 534 },
@@ -255,7 +262,7 @@ const DUNGEON_DATA = {
         id: 201,
         intl: '201',
         pos: 34,
-        shadow: true,
+        companions: true,
         armor_multiplier: 1.5,
         floors: {
             '1': { pos: 1, id: 400, class: 1, level: 200, str: 4194, dex: 1697, int: 1665, con: 15940, lck: 2589, health: 16019700, min: 268, max: 534, block: 0 },
@@ -364,7 +371,7 @@ const DUNGEON_DATA = {
         id: 16,
         intl: '16',
         pos: 17,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1100, class: 3, level: 250, str: 1400, dex: 11000, int: 1400, con: 35000, lck: 4500, health: 62500000, min: 600, max: 649 },
             '2': { pos: 2, id: 1101, class: 1, level: 257, str: 9722, dex: 2404, int: 2426, con: 43730, lck: 4764, health: 79681528, min: 279, max: 787 },
@@ -383,7 +390,7 @@ const DUNGEON_DATA = {
         // Hemorridor
         intl: '17',
         pos: 18,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1200, class: 1, level: 200, str: 8800, dex: 1120, int: 1120, con: 28000, lck: 3600, health: 28140000, min: 684, max: 1154 },
             '2': { pos: 2, id: 1201, class: 1, level: 213, str: 8069, dex: 1995, int: 2014, con: 36296, lck: 3954, health: 38836720, min: 728, max: 1229 },
@@ -402,7 +409,7 @@ const DUNGEON_DATA = {
         // Nordic
         intl: '19',
         pos: 24,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1400, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 728, max: 1229 },
             '2': { pos: 2, id: 1401, class: 1, level: 240, str: 10965, dex: 1762, int: 12000, con: 40500, lck: 5000, health: 55687500, runes: { type: 42, res: [10, 10, 60], damage: 30 }, min: 840, max: 1439 },
@@ -421,7 +428,7 @@ const DUNGEON_DATA = {
         // Olympus
         intl: '20',
         pos: 27,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1410, class: 2, level: 210, str: 2000, dex: 2000, int: 8000, con: 80000, lck: 4000, health: 52800000, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 630, max: 1265 },
             '2': { pos: 2, id: 1411, class: 1, level: 240, str: 12000, dex: 4000, int: 4000, con: 100000, lck: 5000, health: 187500000, runes: { type: 42, res: [10, 10, 60], damage: 35 }, min: 320, max: 639 },
@@ -440,7 +447,7 @@ const DUNGEON_DATA = {
         // Birthday
         intl: '21',
         pos: 21,
-        shadow: false,
+        companions: false,
         armor_multiplier: 0.5,
         floors: {
             '1': { pos: 1, id: 1120, class: 2, level: 410, str: 7000, dex: 7000, int: 20000, con: 18000, lck: 4000, health: 10000000, min: 1416, max: 2290 },
@@ -460,7 +467,7 @@ const DUNGEON_DATA = {
         // Dragons
         intl: '22',
         pos: 13,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1130, class: 3, level: 210, str: 3100, dex: 6200, int: 3100, con: 10500, lck: 3100, health: 16000000, min: 559, max: 787, runes: { type: 40, res: [25, 0, 0], damage: 25 }, armor: 10750 },
             '2': { pos: 2, id: 1131, class: 1, level: 213, str: 6560, dex: 3280, int: 3280, con: 12000, lck: 3280, health: 20500000, min: 561, max: 772, runes: { type: 42, res: [0, 0, 25], damage: 25 }, armor: 11000 },
@@ -479,7 +486,7 @@ const DUNGEON_DATA = {
         // Horror
         intl: '23',
         pos: 14,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1140, class: 2, level: 240, str: 4900, dex: 4900, int: 9800, con: 25500, lck: 4900, health: 61000000, min: 662, max: 908, runes: { type: 41, res: [0, 25, 0], damage: 25 }, armor: 13250 },
             '2': { pos: 2, id: 1141, class: 1, level: 243, str: 10160, dex: 5080, int: 5080, con: 27000, lck: 5080, health: 65500000, min: 673, max: 922, runes: { type: 42, res: [0, 0, 25], damage: 25 }, armor: 13500 },
@@ -498,7 +505,7 @@ const DUNGEON_DATA = {
         // Superheroes
         intl: '24',
         pos: 16,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1150, class: 2, level: 280, str: 7300, dex: 7300, int: 14600, con: 45500, lck: 7300, health: 121000000, min: 820, max: 1069, runes: { type: 42, res: [0, 0, 25], damage: 25 }, armor: 16500 },
             '2': { pos: 2, id: 1151, class: 1, level: 283, str: 14960, dex: 7480, int: 7480, con: 47000, lck: 7480, health: 125500000, min: 832, max: 1080, runes: { type: 42, res: [0, 0, 25], damage: 25 }, armor: 16750 },
@@ -517,7 +524,7 @@ const DUNGEON_DATA = {
         // Anime
         intl: '25',
         pos: 20,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1160, class: 1, level: 313, str: 18560, dex: 9280, int: 9280, con: 62000, lck: 9280, health: 170500000, min: 953, max: 1199, runes: { type: 42, res: [0, 0, 25], damage: 25 }, armor: 19000 },
             '2': { pos: 2, id: 1161, class: 1, level: 316, str: 18920, dex: 9460, int: 9460, con: 63500, lck: 9460, health: 175000000, min: 964, max: 1211, runes: { type: 40, res: [25, 0, 0], damage: 25 }, armor: 19250 },
@@ -536,7 +543,7 @@ const DUNGEON_DATA = {
         // Giant Monsters
         intl: '26',
         pos: 28,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1170, class: 1, level: 480, str: 66000, dex: 35000, int: 35000, con: 174000, lck: 35000, health: 540000000, min: 1901, max: 2144, runes: { type: 42, res: [0, 0, 25], damage: 25 } },
             '2': { pos: 2, id: 1171, class: 2, level: 483, str: 35750, dex: 35750, int: 67350, con: 176400, lck: 35750, health: 549000000, min: 1918, max: 2162, runes: { type: 41, res: [0, 25, 0], damage: 25 } },
@@ -554,7 +561,7 @@ const DUNGEON_DATA = {
         id: 27,
         intl: '27',
         pos: 22,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 610, class: 3, level: 410, str: 8720, dex: 34720, int: 8680, con: 33600, lck: 12436, health: 55238400, min: 671, max: 1034 },
             '2': { pos: 2, id: 611, class: 2, level: 420, str: 11100, dex: 11200, int: 45000, con: 42800, lck: 15940, health: 36037600, min: 967, max: 2193 },
@@ -572,7 +579,7 @@ const DUNGEON_DATA = {
         id: 28,
         intl: '28',
         pos: 23,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1110, class: 2, level: 325, str: 3221, dex: 3221, int: 16577, con: 61790, lck: 8964, health: 64459324, min: 861, max: 2432 },
             '2': { pos: 2, id: 1111, class: 2, level: 332, str: 6128, dex: 6057, int: 17028, con: 76695, lck: 10905, health: 83003160, min: 1291, max: 2100 },
@@ -590,7 +597,7 @@ const DUNGEON_DATA = {
         id: 29,
         intl: '29',
         pos: 25,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 1210, class: 5, level: 348, str: 17737, dex: 3446, int: 3446, con: 66115, lck: 9591, health: 115370672, min: 1187, max: 2007, armor: 7000 },
             '2': { pos: 2, id: 1211, class: 1, level: 362, str: 18561, dex: 6602, int: 6602, con: 83598, lck: 11886, health: 151730368, min: 1234, max: 2087 },
@@ -608,7 +615,7 @@ const DUNGEON_DATA = {
         id: 30,
         intl: '30',
         pos: 26,
-        shadow: false,
+        companions: false,
         floors: {
             '1': { pos: 1, id: 253, class: 3, level: 410, str: 7080, dex: 20200, int: 7050, con: 18210, lck: 4280, health: 29937240, min: 1299, max: 3185 },
             '2': { pos: 2, id: 254, class: 1, level: 420, str: 24240, dex: 8490, int: 8460, con: 20030, lck: 5130, health: 42163152, min: 1247, max: 3060 },
@@ -627,7 +634,7 @@ const DUNGEON_DATA = {
       // 'Pixel Icons',
       intl: '31',
       pos: 29,
-      shadow: false,
+      companions: false,
       floors: {
          '1': { pos: 1, id: 1190, class: 3, level: 495, str: 52850, dex: 106820, int: 52850, con: 307125, lck: 27825, health: 609336000, min: 2123, max: 2341, armor: 26880, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
          '2': { pos: 2, id: 1191, class: 1, level: 500, str: 112000, dex: 56000, int: 56000, con: 315000, lck: 28700, health: 789075000, min: 1750, max: 1925, armor: 27300, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -646,7 +653,7 @@ const DUNGEON_DATA = {
       // 'Server Room',
       intl: '32',
       pos: 30,
-      shadow: false,
+      companions: false,
       floors: {
          '1': { pos: 1, id: 1220, class: 3, level: 516, str: 58760, dex: 125320, int: 58760, con: 313560, lck: 29250, health: 648442080, min: 2161, max: 2365, armor: 26598, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
          '2': { pos: 2, id: 1221, class: 2, level: 521, str: 60873, dex: 60873, int: 131983, con: 320142, lck: 30063, health: 334228248, min: 3965, max: 4329, armor: 26988, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -665,7 +672,7 @@ const DUNGEON_DATA = {
       // 'Undead Hunters',
       intl: '33',
       pos: 31,
-      shadow: false,
+      companions: false,
       floors: {
          '1': { pos: 1, id: 1230, class: 1, level: 537, str: 169812, dex: 74916, int: 74916, con: 377946, lck: 36180, health: 1016674740, min: 2066, max: 2246, armor: 31277, runes: {'type': 42, 'res': [0, 0, 25], 'damage': 25} },
          '2': { pos: 2, id: 1231, class: 1, level: 539, str: 172764, dex: 75852, int: 75852, con: 380862, lck: 36540, health: 1028327400, min: 2081, max: 2261, armor: 31450, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -684,7 +691,7 @@ const DUNGEON_DATA = {
       // 'Retro TV',
       intl: '34',
       pos: 32,
-      shadow: false,
+      companions: false,
       floors: {
          '1': { pos: 1, id: 1240, class: 3, level: 558, str: 84219, dex: 189543, int: 84219, con: 394664, lck: 37185, health: 882467586, min: 2714, max: 2923, armor: 30793, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
          '2': { pos: 2, id: 1241, class: 3, level: 560, str: 86430, dex: 192960, int: 86430, con: 400995, lck: 37520, health: 899832780, min: 2764, max: 2974, armor: 30954, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
@@ -703,7 +710,7 @@ const DUNGEON_DATA = {
       // 'Meeting Room',
       intl: '35',
       pos: 33,
-      shadow: false,
+      companions: false,
       floors: {
          '1': { pos: 1, id: 1250, class: 2, level: 579, str: 120263, dex: 120263, int: 252338, con: 516207, lck: 45563, health: 598800120, min: 6532, max: 6953, armor: 36360, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
          '2': { pos: 2, id: 1251, class: 1, level: 583, str: 259988, dex: 125213, int: 125213, con: 530382, lck: 46313, health: 1548715440, min: 2993, max: 3180, armor: 36720, runes: {'type': 42, 'res': [0, 0, 25], 'damage': 25} },
@@ -1761,7 +1768,7 @@ const DUNGEON_DATA = {
         id: 101,
         intl: '1',
         pos: 101,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 129, class: 2, level: 172, str: 825, dex: 894, int: 1788, con: 7282, lck: 808, health: 2519572, min: 4178, max: 8303, armor: 5150 },
             '2': { pos: 2, id: 75, class: 1, level: 174, str: 1740, dex: 986, int: 855, con: 8052, lck: 739, health: 7045500, min: 1867, max: 3730, armor: 560 },
@@ -1779,7 +1786,7 @@ const DUNGEON_DATA = {
         id: 102,
         intl: '2',
         pos: 102,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 62, class: 3, level: 192, str: 969, dex: 2534, int: 969, con: 9185, lck: 1142, health: 7090820, min: 2598, max: 5104, armor: 630 },
             '2': { pos: 2, id: 12, class: 1, level: 194, str: 2562, dex: 1018, int: 945, con: 10576, lck: 1050, health: 10311600, min: 2112, max: 4151, armor: 1920 },
@@ -1797,7 +1804,7 @@ const DUNGEON_DATA = {
         id: 103,
         intl: '3',
         pos: 103,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 28, class: 3, level: 212, str: 1026, dex: 3219, int: 1066, con: 10054, lck: 1358, health: 8566008, min: 2876, max: 5648, armor: 1070 },
             '2': { pos: 2, id: 3, class: 3, level: 214, str: 838, dex: 3578, int: 885, con: 11242, lck: 1367, health: 9668120, min: 2874, max: 5717, armor: 3350 },
@@ -1815,7 +1822,7 @@ const DUNGEON_DATA = {
         id: 104,
         intl: '4',
         pos: 104,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 131, class: 3, level: 232, str: 1026, dex: 3926, int: 981, con: 14746, lck: 1405, health: 13743272, min: 3135, max: 6199, armor: 1600 },
             '2': { pos: 2, id: 151, class: 3, level: 234, str: 1048, dex: 4034, int: 1008, con: 15972, lck: 1452, health: 15013680, min: 3138, max: 6252, armor: 2300 },
@@ -1833,7 +1840,7 @@ const DUNGEON_DATA = {
         id: 105,
         intl: '5',
         pos: 105,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 9, class: 3, level: 252, str: 1155, dex: 4480, int: 1120, con: 19250, lck: 1627, health: 19481000, min: 3422, max: 6653, armor: 4460 },
             '2': { pos: 2, id: 150, class: 3, level: 254, str: 1172, dex: 4558, int: 1139, con: 20058, lck: 1660, health: 20459160, min: 3429, max: 6773, armor: 3000 },
@@ -1851,7 +1858,7 @@ const DUNGEON_DATA = {
         id: 106,
         intl: '6',
         pos: 106,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 128, class: 1, level: 272, str: 4966, dex: 1626, int: 1552, con: 22764, lck: 1330, health: 31072860, min: 3013, max: 5695, armor: 4750 },
             '2': { pos: 2, id: 33, class: 3, level: 274, str: 1286, dex: 5032, int: 1258, con: 23370, lck: 1845, health: 25707000, min: 3681, max: 7276, armor: 3320 },
@@ -1869,7 +1876,7 @@ const DUNGEON_DATA = {
         id: 107,
         intl: '7',
         pos: 107,
-        shadow: true,
+        companions: true,
         verified: true,
         floors: {
             '1': { pos: 1, id: 66, class: 3, level: 292, str: 1381, dex: 5422, int: 1355, con: 25806, lck: 1994, health: 30244632, min: 3908, max: 7812, armor: 2804 },
@@ -1888,7 +1895,7 @@ const DUNGEON_DATA = {
         id: 108,
         intl: '8',
         pos: 108,
-        shadow: true,
+        companions: true,
         verified: true,
         floors: {
             '1': { pos: 1, id: 38, class: 1, level: 312, str: 5861, dex: 2009, int: 1950, con: 28600, lck: 1536, health: 44759000, min: 3343, max: 6676, armor: 6643 },
@@ -1907,7 +1914,7 @@ const DUNGEON_DATA = {
         id: 109,
         intl: '9',
         pos: 109,
-        shadow: true,
+        companions: true,
         verified: true,
         floors: {
             '1': { pos: 1, id: 136, class: 1, level: 332, str: 6290, dex: 2184, int: 2129, con: 31229, lck: 1638, health: 51996284, min: 3552, max: 7099, armor: 7621 },
@@ -1926,7 +1933,7 @@ const DUNGEON_DATA = {
         id: 110,
         intl: '10',
         pos: 110,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 101, class: 3, level: 352, str: 1708, dex: 6765, int: 1691, con: 34562, lck: 2489, health: 48801544, min: 4747, max: 9412 },
             '2': { pos: 2, id: 115, class: 1, level: 354, str: 6810, dex: 2393, int: 2351, con: 34859, lck: 1702, health: 61874724, min: 3793, max: 7572 },
@@ -1944,7 +1951,7 @@ const DUNGEON_DATA = {
         id: 111,
         intl: '11',
         pos: 111,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 173, class: 1, level: 372, str: 7206, dex: 2531, int: 2494, con: 37389, lck: 1736, health: 69730488, min: 3980, max: 7945, armor: 12750 },
             '2': { pos: 2, id: 174, class: 3, level: 374, str: 1826, dex: 7249, int: 1812, con: 37658, lck: 2639, health: 56487000, min: 5024, max: 9980, armor: 6500 },
@@ -1962,7 +1969,7 @@ const DUNGEON_DATA = {
         id: 112,
         intl: '12',
         pos: 112,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 183, class: 2, level: 392, str: 1895, dex: 1921, int: 7737, con: 39440, lck: 2756, health: 30999840, min: 9910, max: 18710 },
             '2': { pos: 2, id: 184, class: 2, level: 394, str: 1906, dex: 1931, int: 7778, con: 39704, lck: 2770, health: 31366160, min: 9918, max: 18819 },
@@ -1980,7 +1987,7 @@ const DUNGEON_DATA = {
         id: 113,
         intl: '13',
         pos: 115,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 243, class: 1, level: 424, str: 9041, dex: 3171, int: 3141, con: 47883, lck: 2049, health: 101751376, min: 4535, max: 9045 },
             '2': { pos: 2, id: 244, class: 2, level: 428, str: 2342, dex: 2365, int: 9511, con: 49434, lck: 3374, health: 42414372, min: 10557, max: 20581 },
@@ -1998,7 +2005,7 @@ const DUNGEON_DATA = {
         id: 114,
         intl: '14',
         pos: 119,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 600, class: 1, level: 464, str: 9040, dex: 3173, int: 3135, con: 47416, lck: 2110, health: 110242200, min: 4966, max: 9792, armor: 18000 },
             '2': { pos: 2, id: 601, class: 1, level: 468, str: 9126, dex: 3202, int: 3166, con: 47938, lck: 2120, health: 112414608, min: 5030, max: 9944, armor: 50000 },
@@ -2016,7 +2023,7 @@ const DUNGEON_DATA = {
         id: 202,
         intl: '202',
         pos: 132,
-        shadow: true,
+        companions: true,
         floors: {
          '1': { pos: 1, id: 1320, class: 1, level: 222, str: 90000, dex: 2000, int: 2000, con: 71749, lck: 5000, health: 80000000, min: 2000, max: 3000, armor: 11150 },
          '2': { pos: 2, id: 1321, class: 1, level: 244, str: 100000, dex: 2500, int: 2500, con: 81633, lck: 6000, health: 100000000, min: 2400, max: 3400, armor: 12250 },
@@ -2054,7 +2061,7 @@ const DUNGEON_DATA = {
         id: 116,
         intl: '16',
         pos: 117,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1100, class: 3, level: 410, str: 8400, dex: 66000, int: 8400, con: 157500, lck: 27000, health: 468750016, min: 1500, max: 1624 },
             '2': { pos: 2, id: 1101, class: 1, level: 420, str: 58332, dex: 14424, int: 14556, con: 196785, lck: 28584, health: 597611456, min: 700, max: 1969 },
@@ -2072,7 +2079,7 @@ const DUNGEON_DATA = {
         id: 117,
         intl: '17',
         pos: 118,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1200, class: 1, level: 328, str: 52800, dex: 6720, int: 6720, con: 126000, lck: 21600, health: 207270000, min: 1118, max: 1891 },
             '2': { pos: 2, id: 1201, class: 1, level: 349, str: 48416, dex: 11972, int: 12081, con: 163332, lck: 23725, health: 285831008, min: 1190, max: 3248 },
@@ -2091,7 +2098,7 @@ const DUNGEON_DATA = {
         // Nordic
         intl: '19',
         pos: 124,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1400, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, res: [5, 60, 5], damage: 60 }, min: 1190, max: 2011, armor: 12250 },
             '2': { pos: 2, id: 1401, class: 1, level: 390, str: 65500, dex: 10500, int: 10500, con: 184000, lck: 31500, health: 404800000, runes: { type: 42, res: [10, 10, 60], damage: 60 }, min: 1365, max: 2339, armor: 19500 },
@@ -2110,7 +2117,7 @@ const DUNGEON_DATA = {
         // Olympus
         intl: '20',
         pos: 127,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1410, class: 2, level: 345, str: 15000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 2875500032, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 1038, max: 2069, armor: 12250 },
             '2': { pos: 2, id: 1411, class: 1, level: 390, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8910000128, runes: { type: 42, res: [10, 10, 60], damage: 35 }, min: 520, max: 1049, armor: 19500 },
@@ -2129,7 +2136,7 @@ const DUNGEON_DATA = {
         // Birthday
         intl: '21',
         pos: 121,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1120, class: 2, level: 400, str: 35000, dex: 15000, int: 35000, con: 180000, lck: 20000, health: 6074999808, min: 1351, max: 2249, armor: 7000 },
             '2': { pos: 2, id: 1121, class: 1, level: 400, str: 45000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 3037499904, min: 600, max: 999, armor: 12500 },
@@ -2148,7 +2155,7 @@ const DUNGEON_DATA = {
         // Dragons
         intl: '22',
         pos: 113,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1130, class: 3, level: 320, str: 9700, dex: 19400, int: 9700, con: 65500, lck: 9700, health: 181000000, min: 981, max: 1226, runes: { type: 40, res: [25, 0, 0], damage: 50 }, armor: 19750 },
             '2': { pos: 2, id: 1131, class: 1, level: 323, str: 19760, dex: 9880, int: 9880, con: 67000, lck: 9880, health: 185500000, min: 994, max: 1242, runes: { type: 42, res: [0, 0, 25], damage: 50 }, armor: 20000 },
@@ -2167,7 +2174,7 @@ const DUNGEON_DATA = {
         // Horror
         intl: '23',
         pos: 114,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1140, class: 2, level: 350, str: 11500, dex: 11500, int: 23000, con: 80500, lck: 11500, health: 226000000, min: 1102, max: 1349, runes: { type: 41, res: [0, 25, 0], damage: 50 }, armor: 22250 },
             '2': { pos: 2, id: 1141, class: 1, level: 354, str: 23480, dex: 11740, int: 11740, con: 82500, lck: 11740, health: 232000000, min: 1116, max: 1363, runes: { type: 42, res: [0, 0, 25], damage: 50 }, armor: 22500 },
@@ -2186,7 +2193,7 @@ const DUNGEON_DATA = {
         // Superheroes
         intl: '24',
         pos: 116,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1150, class: 2, level: 370, str: 12700, dex: 12700, int: 25400, con: 90500, lck: 12700, health: 256000000, min: 1181, max: 1427, runes: { type: 42, res: [0, 0, 25], damage: 50 }, armor: 23250 },
             '2': { pos: 2, id: 1151, class: 1, level: 376, str: 26120, dex: 13060, int: 13060, con: 93500, lck: 13060, health: 265000000, min: 1212, max: 1451, runes: { type: 42, res: [0, 0, 25], damage: 50 }, armor: 24000 },
@@ -2205,7 +2212,7 @@ const DUNGEON_DATA = {
         // Anime
         intl: '25',
         pos: 120,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1160, class: 1, level: 500, str: 80000, dex: 40000, int: 40000, con: 190000, lck: 40000, health: 600000000, min: 2007, max: 2244, runes: { type: 42, res: [0, 0, 25], damage: 50 }, armor: 35000 },
             '2': { pos: 2, id: 1161, class: 1, level: 507, str: 83500, dex: 41750, int: 41750, con: 195600, lck: 41750, health: 621000000, min: 2038, max: 2283, runes: { type: 40, res: [25, 0, 0], damage: 50 }, armor: 35000 },
@@ -2224,7 +2231,7 @@ const DUNGEON_DATA = {
         // Giant Monsters
         intl: '26',
         pos: 128,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1170, class: 1, level: 600, str: 280000, dex: 140000, int: 140000, con: 430000, lck: 115000, health: 15000000000, min: 3500, max: 3750, runes: { type: 42, res: [0, 0, 25], damage: 50 }, armor: 35000 },
             '2': { pos: 2, id: 1171, class: 2, level: 605, str: 142500, dex: 142500, int: 285000, con: 434000, lck: 116250, health: 15350000000, min: 3625, max: 3875, runes: { type: 41, res: [0, 25, 0], damage: 50 }, armor: 35000 },
@@ -2242,7 +2249,7 @@ const DUNGEON_DATA = {
         id: 127,
         intl: '27',
         pos: 122,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 610, class: 3, level: 504, str: 10719, dex: 42680, int: 10670, con: 227166, lck: 15287, health: 458875328, min: 7833, max: 12252 },
             '2': { pos: 2, id: 611, class: 2, level: 508, str: 13425, dex: 13546, int: 54428, con: 284718, lck: 19279, health: 289842912, min: 12223, max: 24428 },
@@ -2260,7 +2267,7 @@ const DUNGEON_DATA = {
         id: 128,
         intl: '28',
         pos: 123,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1110, class: 2, level: 510, str: 19326, dex: 19326, int: 99462, con: 278055, lck: 53784, health: 483444928, min: 2152, max: 6080 },
             '2': { pos: 2, id: 1111, class: 2, level: 520, str: 36768, dex: 36342, int: 102168, con: 345127, lck: 65430, health: 622523712, min: 3234, max: 5251 },
@@ -2278,7 +2285,7 @@ const DUNGEON_DATA = {
         id: 129,
         intl: '29',
         pos: 125,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 1210, class: 5, level: 546, str: 106424, dex: 20679, int: 20679, con: 347519, lck: 57549, health: 950464448, min: 1870, max: 3141, armor: 14000 },
             '2': { pos: 2, id: 1211, class: 1, level: 567, str: 111363, dex: 39613, int: 39613, con: 376189, lck: 71319, health: 1068376768, min: 1935, max: 3264 },
@@ -2296,7 +2303,7 @@ const DUNGEON_DATA = {
         id: 130,
         intl: '30',
         pos: 126,
-        shadow: true,
+        companions: true,
         floors: {
             '1': { pos: 1, id: 253, class: 3, level: 468, str: 8140, dex: 23230, int: 8100, con: 115210, lck: 4920, health: 216133952, min: 7441, max: 14439 },
             '2': { pos: 2, id: 254, class: 1, level: 476, str: 27870, dex: 9760, int: 9720, con: 126730, lck: 5900, health: 302251040, min: 7086, max: 14148 },
@@ -2315,7 +2322,7 @@ const DUNGEON_DATA = {
       // 'Pixel Icons',
       intl: '31',
       pos: 129,
-      shadow: true,
+      companions: true,
       floors: {
          '1': { pos: 1, id: 1190, class: 3, level: 630, str: 155400, dex: 342300, int: 155400, con: 6079500, lck: 51450, health: 15344658000, min: 4331, max: 4550, armor: 38220, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
          '2': { pos: 2, id: 1191, class: 1, level: 633, str: 349230, dex: 157290, int: 157290, con: 6136200, lck: 51975, health: 19451754000, min: 3497, max: 3672, armor: 38472, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -2334,7 +2341,7 @@ const DUNGEON_DATA = {
       // 'Server Room',
       intl: '32',
       pos: 130,
-      shadow: true,
+      companions: true,
       floors: {
          '1': { pos: 1, id: 1220, class: 3, level: 662, str: 177060, dex: 395850, int: 177060, con: 6733350, lck: 52975, health: 17856844200, min: 4705, max: 4908, armor: 37986, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
          '2': { pos: 2, id: 1221, class: 2, level: 667, str: 185835, dex: 185835, int: 410475, con: 7040475, lck: 53788, health: 9406074600, min: 8798, max: 9162, armor: 38376, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -2353,7 +2360,7 @@ const DUNGEON_DATA = {
       // 'Undead Hunters',
       intl: '33',
       pos: 131,
-      shadow: true,
+      companions: true,
       floors: {
          '1': { pos: 1, id: 1230, class: 1, level: 698, str: 555120, dex: 266112, int: 266112, con: 9907920, lck: 65160, health: 34628180400, min: 5335, max: 5515, armor: 45187, runes: {'type': 42, 'res': [0, 0, 25], 'damage': 25} },
          '2': { pos: 2, id: 1231, class: 1, level: 708, str: 589248, dex: 276912, int: 276912, con: 10264320, lck: 66960, health: 36387014400, min: 5515, max: 5695, armor: 46051, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
@@ -2372,7 +2379,7 @@ const DUNGEON_DATA = {
       // 'Retro TV',
       intl: '34',
       pos: 132,
-      shadow: true,
+      companions: true,
       floors: {
          '1': { pos: 1, id: 1, class: 3, level: 730, str: 275370, dex: 619080, int: 275370, con: 10115325, lck: 65995, health: 29577210300, min: 6784, max: 6994, armor: 44622, runes: {'type': 40, 'res': [25, 0, 0], 'damage': 25} },
          '2': { pos: 2, id: 2, class: 3, level: 736, str: 280194, dex: 638376, int: 280194, con: 10269090, lck: 67000, health: 30273277320, min: 6884, max: 7094, armor: 45104, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
@@ -2391,7 +2398,7 @@ const DUNGEON_DATA = {
       // 'Meeting Room'
       intl: '35',
       pos: 133,
-      shadow: true,
+      companions: true,
       floors: {
          '1': { pos: 1, id: 1, class: 2, level: 766, str: 365850, dex: 365850, int: 808200, con: 13435875, lck: 80625, health: 20610632250, min: 15154, max: 15577, armor: 53190, runes: {'type': 41, 'res': [0, 25, 0], 'damage': 25} },
          '2': { pos: 2, id: 2, class: 1, level: 769, str: 816300, dex: 373275, int: 373275, con: 13724445, lck: 81188, health: 52839113250, min: 6803, max: 6990, armor: 53460, runes: {'type': 42, 'res': [0, 0, 25], 'damage': 25} },

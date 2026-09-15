@@ -344,7 +344,7 @@ class AnalyzerAutofillDialog extends Dialog {
                             <div>${boss.pos}. ${boss.name}</div>
                         </div>
                         <div style="margin-left: auto; mr-1">
-                            <i class="ui big ${dungeon.shadow ? 'users purple' : 'user'} disabled icon"></i>
+                            <i class="ui big ${dungeon.companions ? 'users purple' : 'user'} disabled icon"></i>
                         </div>
                     </div>
                 `);

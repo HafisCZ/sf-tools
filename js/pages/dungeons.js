@@ -140,7 +140,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
         const player = _clone(players[0]);
         const config = CONFIG.fromID(player.Class);
 
-        if (dungeon.shadow) {
+        if (dungeon.companions) {
             player.Constitution.Total = 4 * player.Constitution.Total;
         }
 
@@ -219,9 +219,9 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
     }
 
     $('#dungeon-list').dropdown({
-        values: _sortAsc(Object.values(DUNGEON_DATA), ({ pos }) => pos).map(({ name, shadow, floors, id: value }) => {
+        values: _sortAsc(Object.values(DUNGEON_DATA), ({ pos }) => pos).map(({ name, companions, floors, id: value }) => {
             return {
-                name: shadow ? `<span class="dungeon-shadow">${name}<span>` : name,
+                name: companions ? `<span class="dungeon-shadow">${name}<span>` : name,
                 value,
                 disabled: Object.keys(floors).length == 0
             };
@@ -234,7 +234,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
             values: Object.entries(dungeon.floors).map(([ id, _boss ]) => {
                 return {
                     name: `
-                        <span class="${ dungeon.shadow ? 'dungeon-shadow' : '' }">
+                        <span class="${ dungeon.companions ? 'dungeon-shadow' : '' }">
                             ${ _boss.class ? `<img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">` : '' }
                             ${ _boss.pos }. ${ _boss.name }
                             ${ getDisplayRunes(_boss.runes) }
@@ -444,7 +444,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
                     values: _sortAsc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
                         return {
                             name: `
-                                <span class="${_dungeon.shadow ? 'dungeon-shadow' : ''}">
+                                <span class="${_dungeon.companions ? 'dungeon-shadow' : ''}">
                                     ${ _boss.class ? `<img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="${_classImageUrl(_boss.class)}">&nbsp;` : '' }
                                     <span class="boss-dungeon-name">${ _dungeon.name }</span>
                                     <span class="boss-name">${ _boss.pos }. ${ _boss.name }</span>
@@ -539,7 +539,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
     function preparePlayerInstances (dungeon) {
         let playerInstances = players.map(p => _clone(p));
 
-        if (dungeon.shadow) {
+        if (dungeon.companions) {
             let bert = playerInstances[1];
 
             let hp_a = (100 + bert.Dungeons.Player) / 100;
@@ -551,7 +551,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
             playerInstances[1].Health = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
         }
 
-        return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
+        return dungeon.companions ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
     }
 
     $('#sim-run-all').click(function () {
@@ -796,7 +796,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
 
     function showGraph (graph, dungeon, boss, score, tries, healths) {
         graph.options.title.text = [
-            `${ dungeon.id !== 201 && dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
+            `${ dungeon.id !== 201 && dungeon.companions ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
             intl('dungeons.graph.winrate', { rate: (100 * score / tries).toFixed(2), score: formatAsSpacedNumber(score, ' '), tries: formatAsSpacedNumber(tries, ' ') })
         ];
 
