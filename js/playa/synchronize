@@ -34,11 +34,13 @@ module Synchronize
   def call(argv:)
     config = JSON.parse(HTTParty.get(PLAYA_CONFIG_URL).body)
 
+    version = argv.first || config['required_client_version_min'][..3] + '00'
+
     # Save translations
     LANGUAGE_LIST.each do |sftools_language, playa_language|
       FileUtils.mkdir_p("lang/#{sftools_language}")
 
-      response = HTTParty.get(format(PLAYA_TRANSLATION_URL, prefix: config['language_path'], version: config['required_client_version_min'][..3] + '00', language: playa_language))
+      response = HTTParty.get(format(PLAYA_TRANSLATION_URL, prefix: config['language_path'], version:, language: playa_language))
       unless response.success?
         puts "[#{sftools_language}] Failed to fetch #{playa_language}"
         puts response.body
