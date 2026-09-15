@@ -547,7 +547,8 @@ class PlayaResponse {
 
                     data.dungeons = {
                         light: r.dungeonprogresslight?.numbers(),
-                        shadow: r.dungeonprogressshadow?.numbers()
+                        shadow: r.dungeonprogressshadow?.numbers(),
+                        class: r.dungeonprogressclass?.numbers()
                     }
 
                     if (r.gtsave) {

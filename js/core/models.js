@@ -761,8 +761,9 @@ class DungeonHelper {
         const locked = DungeonHelper.DUNGEON_LOCKED;
 
         return {
-            Normal: [],
-            Shadow: [],
+            Normal: new Array(DungeonHelper.LIGHT_DUNGEON_COUNT).fill(locked),
+            Shadow: new Array(DungeonHelper.SHADOW_DUNGEON_COUNT).fill(locked),
+            Class: new Array(DungeonHelper.CLASS_DUNGEON_COUNT).fill(0),
             Group: locked,
             Player: locked,
             Tower: open,
@@ -781,9 +782,14 @@ class DungeonHelper {
             const normal = dungeonData.light;
             const shadow = dungeonData.shadow;
 
-            for (const [index, dungeonIndex] of DungeonHelper.PLAYA_TO_INTERNAL_MAPPING_ENTRIES) {
-                dungeons.Normal[index] = normal[dungeonIndex];
-                dungeons.Shadow[index] = shadow[dungeonIndex];
+            const lightCount = Math.min(DungeonHelper.LIGHT_DUNGEON_COUNT, normal.length);
+            for (let index = 0; index < lightCount; index++) {
+                dungeons.Normal[index] = normal[DungeonHelper.PLAYA_TO_INTERNAL_MAPPING[index]];
+            }
+
+            const shadowCount = Math.min(DungeonHelper.SHADOW_DUNGEON_COUNT, shadow.length);
+            for (let index = 0; index < shadowCount; index++) {
+                dungeons.Shadow[index] = shadow[DungeonHelper.PLAYA_TO_INTERNAL_MAPPING[index]];
             }
 
             // Special dungeons
@@ -820,6 +826,14 @@ class DungeonHelper {
             dungeons.Youtube = (legacyDungeons.Youtube || 0) + DungeonHelper.DUNGEON_LOCKED;
         }
 
+        // Class dungeons
+        if (dungeonData?.class) {
+            const classCount = Math.min(DungeonHelper.CLASS_DUNGEON_COUNT, dungeonData.class.length);
+            for (let dungeonIndex = 0; dungeonIndex < classCount; dungeonIndex++) {
+                dungeons.Class[dungeonIndex] = dungeonData.class[dungeonIndex];
+            }
+        }
+
         // Copy over untouched data
         dungeons.Group = legacyDungeons.Group || 0;
         dungeons.Raid = legacyDungeons.Raid || 0;
@@ -828,10 +842,12 @@ class DungeonHelper {
         const dungeonProgress = (a, b) => a + Math.max(0, b);
         dungeons.Normal.Total = dungeons.Normal.reduce(dungeonProgress, 0);
         dungeons.Shadow.Total = dungeons.Shadow.reduce(dungeonProgress, 0);
+        dungeons.Class.Total = dungeons.Class.reduce(dungeonProgress, 0);
 
         const dungeonUnlock = (a, b) => a + (b > -2 ? 1 : 0);
         dungeons.Normal.Unlocked = dungeons.Normal.reduce(dungeonUnlock, 0);
         dungeons.Shadow.Unlocked = dungeons.Shadow.reduce(dungeonUnlock, 0);
+        dungeons.Class.Unlocked = dungeons.Class.reduce(dungeonUnlock, 0);
 
         return dungeons;
     }
@@ -839,11 +855,17 @@ class DungeonHelper {
     static DUNGEON_OPEN = -1;
     static DUNGEON_LOCKED = -2;
 
+    static CLASS_DUNGEON_COUNT = 5;
+
     static PLAYA_TO_INTERNAL_MAPPING = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36
     ];
 
     static PLAYA_TO_INTERNAL_MAPPING_ENTRIES = Object.entries(DungeonHelper.PLAYA_TO_INTERNAL_MAPPING);
+
+    static LIGHT_DUNGEON_COUNT = DungeonHelper.PLAYA_TO_INTERNAL_MAPPING.length;
+
+    static SHADOW_DUNGEON_COUNT = DungeonHelper.PLAYA_TO_INTERNAL_MAPPING.length;
 
     static LEGACY_TO_INTERNAL_MAPPING = [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18
