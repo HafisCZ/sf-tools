@@ -455,7 +455,8 @@ const CONFIG = Object.defineProperties(
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
-                    StanceChangeChance: 0.5
+                    StanceChangeChance: 0.5,
+                    SkipVariant: DEFENSE_TYPE_BLOCK
                 },
                 {
                     Name: 'DEFENSIVE',
@@ -479,7 +480,8 @@ const CONFIG = Object.defineProperties(
                     CriticalBonus: 0,
                     CriticalChance: 0.5,
                     CriticalChanceBonus: 0,
-                    StanceChangeChance: 0.5
+                    StanceChangeChance: 0.5,
+                    SkipVariant: DEFENSE_TYPE_BLOCK
                 }
             ]
         },
@@ -1044,7 +1046,7 @@ class SimulatorModel {
         const state = {
             Config: config,
             SkipChance: target.Config.BypassSkipChance ? 0 : config.SkipChance,
-            SkipVariant: target.Config.SkipVariant,
+            SkipVariant: this.Config.SkipVariant,
             CriticalMultiplier: (this.Config.CritBase + config.CriticalBonus) * this.Data.CriticalMultiplier / this.Config.CritBase,
             CriticalChance: this.getCriticalChance(target, config.CriticalChance, config.CriticalChanceBonus),
             ReceivedDamageMultiplier: 1,
