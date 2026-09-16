@@ -10,15 +10,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch } from "vue"
-import { useInert } from "@utils/interactions"
-import { useAnimationFramePosition } from "@utils/position"
-import { type DropdownItem } from "@utils/components"
-import SFButton from "./SFButton.vue"
-import SFDropdownMenu from "./SFDropdownMenu.vue"
+import { ref, useTemplateRef, watch } from 'vue'
+import { useInert } from '@utils/interactions'
+import { useAnimationFramePosition } from '@utils/position'
+import { type DropdownItem } from '@utils/components'
+import SFButton from './SFButton.vue'
+import SFDropdownMenu from './SFDropdownMenu.vue'
 
 defineOptions({
-  name: "SFDropdown"
+  name: 'SFDropdown'
 })
 
 const props = withDefaults(
@@ -34,17 +34,17 @@ const props = withDefaults(
     /**
      * Direction the menu grows in: `right` starts at the trigger's left edge, `left` ends at its right edge
      */
-    float?: "right" | "left"
+    float?: 'right' | 'left'
   }>(),
   {
-    float: "right"
+    float: 'right'
   }
 )
 
 const open = ref(false)
 
 // The root hugs the trigger button, so its box is the trigger's box
-const containerElement = useTemplateRef("container-ref")
+const containerElement = useTemplateRef('container-ref')
 
 const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
 
@@ -55,10 +55,10 @@ watch(
   open,
   (value) => {
     if (!value && document.activeElement === document.body) {
-      containerElement.value?.querySelector("button")?.focus()
+      containerElement.value?.querySelector('button')?.focus()
     }
   },
-  { flush: "post" }
+  { flush: 'post' }
 )
 
 function toggle() {

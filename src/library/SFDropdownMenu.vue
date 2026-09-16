@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from "vue"
-import { onClickOutsideOf } from "@utils/focus"
-import { pickVisibleAxisPosition, type Rectangle } from "@utils/position"
-import { type DropdownItem } from "@utils/components"
+import { computed, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
+import { onClickOutsideOf } from '@utils/focus'
+import { pickVisibleAxisPosition, type Rectangle } from '@utils/position'
+import { type DropdownItem } from '@utils/components'
 
 defineOptions({
-  name: "SFDropdownMenu"
+  name: 'SFDropdownMenu'
 })
 
 const props = defineProps<{
@@ -33,7 +33,7 @@ const props = defineProps<{
   /**
    * Direction the menu grows in: `right` starts at the anchor's left edge, `left` ends at its right edge
    */
-  float: "right" | "left"
+  float: 'right' | 'left'
   /**
    * Width in pixels. Without it the menu is as wide as its content.
    */
@@ -48,7 +48,7 @@ const GAP = 4
 
 const size = shallowRef<{ width: number; height: number }>()
 
-const containerElement = useTemplateRef("container-ref")
+const containerElement = useTemplateRef('container-ref')
 
 const resizeObserver = new ResizeObserver(() => {
   const rectangle = containerElement.value?.getBoundingClientRect()
@@ -63,13 +63,13 @@ const style = computed(() => {
   const width = props.width === undefined ? undefined : `${props.width}px`
 
   if (!size.value) {
-    return { top: "0px", left: "0px", width }
+    return { top: '0px', left: '0px', width }
   }
 
   const anchor = props.anchor
   const measured = size.value
 
-  const left = props.float === "right" ? pickVisibleAxisPosition(anchor.left, anchor.right - measured.width, measured.width, window.innerWidth) : pickVisibleAxisPosition(anchor.right - measured.width, anchor.left, measured.width, window.innerWidth)
+  const left = props.float === 'right' ? pickVisibleAxisPosition(anchor.left, anchor.right - measured.width, measured.width, window.innerWidth) : pickVisibleAxisPosition(anchor.right - measured.width, anchor.left, measured.width, window.innerWidth)
 
   const top = pickVisibleAxisPosition(anchor.bottom + GAP, anchor.top - measured.height - GAP, measured.height, window.innerHeight)
 
@@ -84,7 +84,7 @@ watch(
       getMenuItems().at(0)?.focus()
     }
   },
-  { flush: "post" }
+  { flush: 'post' }
 )
 
 onMounted(() => {
@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
 onClickOutsideOf([containerElement], close, { esc: true })
 
 function close() {
-  emit("close")
+  emit('close')
 }
 
 function getMenuItems() {
@@ -114,16 +114,16 @@ function moveFocus(event: KeyboardEvent) {
   let target: HTMLElement | undefined
 
   switch (event.key) {
-    case "ArrowDown":
+    case 'ArrowDown':
       target = menuItems.at((index + 1) % menuItems.length)
       break
-    case "ArrowUp":
+    case 'ArrowUp':
       target = menuItems.at(index <= 0 ? -1 : index - 1)
       break
-    case "Home":
+    case 'Home':
       target = menuItems.at(0)
       break
-    case "End":
+    case 'End':
       target = menuItems.at(-1)
       break
     default:

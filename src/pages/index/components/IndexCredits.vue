@@ -24,12 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import SFHeading from "@library/SFHeading.vue"
-import SFIcon from "@library/SFIcon.vue"
-import { useLocalize } from "@utils/localization"
+import SFHeading from '@library/SFHeading.vue'
+import SFIcon from '@library/SFIcon.vue'
+import { useLocalize } from '@utils/localization'
 
 defineOptions({
-  name: "IndexCredits"
+  name: 'IndexCredits'
 })
 
 type Contributor = {
@@ -41,81 +41,81 @@ type Contributor = {
 
 const SECTIONS: { role: string; contributors: Contributor[] }[] = [
   {
-    role: "admin",
-    contributors: [{ name: "mar21" }]
+    role: 'admin',
+    contributors: [{ name: 'mar21' }]
   },
   {
-    role: "helper",
+    role: 'helper',
     contributors: [
-      { name: "Acclamator" },
-      { name: "Zorago" },
-      { name: "BoeseMelone" },
-      { name: "Zeraffim", url: "https://www.youtube.com/channel/UCMsDR7QC6GPF3Wg4hMQIXKw" },
-      { name: "aszu" },
-      { name: "psychoazubi" },
-      { name: "Strider" },
-      { name: "Kraggori" },
-      { name: "Timhot3p" },
-      { name: "Minidave" },
-      { name: "burningcherry" },
-      { name: "Papa Schlumpf" },
-      { name: "MajkG" },
-      { name: "Enza" },
-      { name: "Abus3r" },
-      { name: "ÐonMuErte" },
-      { name: "Milado" }
+      { name: 'Acclamator' },
+      { name: 'Zorago' },
+      { name: 'BoeseMelone' },
+      { name: 'Zeraffim', url: 'https://www.youtube.com/channel/UCMsDR7QC6GPF3Wg4hMQIXKw' },
+      { name: 'aszu' },
+      { name: 'psychoazubi' },
+      { name: 'Strider' },
+      { name: 'Kraggori' },
+      { name: 'Timhot3p' },
+      { name: 'Minidave' },
+      { name: 'burningcherry' },
+      { name: 'Papa Schlumpf' },
+      { name: 'MajkG' },
+      { name: 'Enza' },
+      { name: 'Abus3r' },
+      { name: 'ÐonMuErte' },
+      { name: 'Milado' }
     ]
   },
   {
-    role: "tester",
-    contributors: [{ name: "bl4ckwoolf", title: "the Tracker" }, { name: "AreYouAWiiizard" }, { name: "Wärkki" }, { name: "suri" }]
+    role: 'tester',
+    contributors: [{ name: 'bl4ckwoolf', title: 'the Tracker' }, { name: 'AreYouAWiiizard' }, { name: 'Wärkki' }, { name: 'suri' }]
   },
   {
-    role: "wiki",
-    contributors: [{ name: "rafa97sam" }]
+    role: 'wiki',
+    contributors: [{ name: 'rafa97sam' }]
   },
   {
-    role: "translator",
+    role: 'translator',
     contributors: [
-      { name: "Zorago", locale: "de" },
-      { name: "DrKuulJulian", locale: "de" },
-      { name: "Zwackelzahn", locale: "de" },
-      { name: "KleoZyn", locale: "de" },
-      { name: "unkenfuss", locale: "de" },
-      { name: "Koksuone", locale: "pl" },
-      { name: "ThreeG", locale: "pl" },
-      { name: "Haaaku", locale: "pl" },
-      { name: "Mathire", locale: "it" },
-      { name: "Larry84", locale: "it" },
-      { name: "dracareys", locale: "pt" },
-      { name: "seedbox", locale: "pt" },
-      { name: "Wärkki", locale: "es" },
-      { name: "Necio", locale: "es" },
-      { name: "DrKuulJulian", locale: "ch" },
-      { name: "MaxiYann", locale: "fr" },
-      { name: "KaYa 43v3r", locale: "fr" },
-      { name: "Balogh Roland", locale: "hu" },
-      { name: "Althi", locale: "hu" },
-      { name: "Eggman", locale: "pg" },
-      { name: "FarSniper", locale: "cs" },
-      { name: "OnlyDin0", locale: "cs" }
+      { name: 'Zorago', locale: 'de' },
+      { name: 'DrKuulJulian', locale: 'de' },
+      { name: 'Zwackelzahn', locale: 'de' },
+      { name: 'KleoZyn', locale: 'de' },
+      { name: 'unkenfuss', locale: 'de' },
+      { name: 'Koksuone', locale: 'pl' },
+      { name: 'ThreeG', locale: 'pl' },
+      { name: 'Haaaku', locale: 'pl' },
+      { name: 'Mathire', locale: 'it' },
+      { name: 'Larry84', locale: 'it' },
+      { name: 'dracareys', locale: 'pt' },
+      { name: 'seedbox', locale: 'pt' },
+      { name: 'Wärkki', locale: 'es' },
+      { name: 'Necio', locale: 'es' },
+      { name: 'DrKuulJulian', locale: 'ch' },
+      { name: 'MaxiYann', locale: 'fr' },
+      { name: 'KaYa 43v3r', locale: 'fr' },
+      { name: 'Balogh Roland', locale: 'hu' },
+      { name: 'Althi', locale: 'hu' },
+      { name: 'Eggman', locale: 'pg' },
+      { name: 'FarSniper', locale: 'cs' },
+      { name: 'OnlyDin0', locale: 'cs' }
     ]
   },
   {
-    role: "mention",
+    role: 'mention',
     contributors: [
-      { name: "Leander" },
-      { name: "Chicony" },
-      { name: "Kowalski" },
-      { name: "json" },
-      { name: "DORZER", url: "https://www.youtube.com/user/MrDORZER" },
-      { name: "N3utr4L", url: "https://www.youtube.com/channel/UCD52HJdjjh7Nb-sbtSgt_Jw" },
-      { name: "Azuria", url: "https://www.youtube.com/channel/UCc2QwhLNDyDrg3WA2PmFRsA" },
-      { name: "xBombayGin", url: "https://www.twitch.tv/xbombaygin" },
-      { name: "Klausi", title: "the duck boy" }
+      { name: 'Leander' },
+      { name: 'Chicony' },
+      { name: 'Kowalski' },
+      { name: 'json' },
+      { name: 'DORZER', url: 'https://www.youtube.com/user/MrDORZER' },
+      { name: 'N3utr4L', url: 'https://www.youtube.com/channel/UCD52HJdjjh7Nb-sbtSgt_Jw' },
+      { name: 'Azuria', url: 'https://www.youtube.com/channel/UCc2QwhLNDyDrg3WA2PmFRsA' },
+      { name: 'xBombayGin', url: 'https://www.twitch.tv/xbombaygin' },
+      { name: 'Klausi', title: 'the duck boy' }
     ]
   }
 ]
 
-const localize = useLocalize("index")
+const localize = useLocalize('index')
 </script>

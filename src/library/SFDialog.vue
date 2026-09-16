@@ -13,11 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, useId, useTemplateRef } from "vue"
-import SFHeading from "./SFHeading.vue"
+import { onMounted, useId, useTemplateRef } from 'vue'
+import SFHeading from './SFHeading.vue'
 
 defineOptions({
-  name: "SFDialog"
+  name: 'SFDialog'
 })
 
 const props = withDefaults(
@@ -29,10 +29,10 @@ const props = withDefaults(
     /**
      * Maximum width: sm 570px, md 760px, lg 950px
      */
-    size?: "sm" | "md" | "lg"
+    size?: 'sm' | 'md' | 'lg'
   }>(),
   {
-    size: "md"
+    size: 'md'
   }
 )
 
@@ -42,14 +42,14 @@ const slots = defineSlots<{
 }>()
 
 const SIZE_CLASSES = {
-  sm: "max-w-[570px]",
-  md: "max-w-[760px]",
-  lg: "max-w-[950px]"
+  sm: 'max-w-[570px]',
+  md: 'max-w-[760px]',
+  lg: 'max-w-[950px]'
 }
 
 const titleId = useId()
 
-const dialogElement = useTemplateRef("dialog-ref")
+const dialogElement = useTemplateRef('dialog-ref')
 
 // Move focus off the covered page so keyboard users start inside the dialog
 onMounted(() => {

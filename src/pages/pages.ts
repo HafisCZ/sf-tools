@@ -1,10 +1,10 @@
-import { type Component } from "vue"
-import { useDialog } from "@utils/dialogs"
-import { loadTranslations } from "@utils/localization"
-import { createVueApp } from "@utils/vue"
-import AnnouncementDialog from "./dialogs/AnnouncementDialog.vue"
-import ChangelogDialog from "./dialogs/ChangelogDialog.vue"
-import TermsDialog from "./dialogs/TermsDialog.vue"
+import { type Component } from 'vue'
+import { useDialog } from '@utils/dialogs'
+import { loadTranslations } from '@utils/localization'
+import { createVueApp } from '@utils/vue'
+import AnnouncementDialog from './dialogs/AnnouncementDialog.vue'
+import ChangelogDialog from './dialogs/ChangelogDialog.vue'
+import TermsDialog from './dialogs/TermsDialog.vue'
 
 // Keep in sync with TermsAndConditionsDialog.VERSION in js/views/base.js
 const TERMS_VERSION = 2
@@ -17,7 +17,7 @@ export async function createPage(metadata: SiteMetadata, component: Component) {
 
   await loadTranslations(metadata.requires)
 
-  createVueApp(component).mount("#app")
+  createVueApp(component).mount('#app')
 
   openStartupDialogs()
 

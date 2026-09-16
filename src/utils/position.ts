@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, watch, type Ref } from "vue"
+import { onScopeDispose, shallowRef, watch, type Ref } from 'vue'
 
 export type Rectangle = {
   top: number

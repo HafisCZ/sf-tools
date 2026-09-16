@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "SFInput",
+  name: 'SFInput',
   inheritAttrs: false
 })
 

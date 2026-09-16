@@ -22,13 +22,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue"
-import SFHeading from "@library/SFHeading.vue"
-import SFList from "@library/SFList.vue"
-import Page from "~/pages/Page.vue"
+import { onMounted } from 'vue'
+import SFHeading from '@library/SFHeading.vue'
+import SFList from '@library/SFList.vue'
+import Page from '~/pages/Page.vue'
 
 defineOptions({
-  name: "ChangelogPage"
+  name: 'ChangelogPage'
 })
 
 const RELEASES = Object.entries(CHANGELOG)

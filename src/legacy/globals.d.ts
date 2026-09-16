@@ -22,7 +22,7 @@ declare class Site {
   static ready(metadata: SiteMetadata, callback: (params: URLSearchParams) => unknown): void
   static run(): void
   static is(name: string): boolean
-  static isEvent(type: "april_fools_day" | "winter" | "halloween"): boolean
+  static isEvent(type: 'april_fools_day' | 'winter' | 'halloween'): boolean
 }
 
 declare class SiteAPI {

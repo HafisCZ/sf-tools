@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "ToolCard"
+  name: 'ToolCard'
 })
 
 const props = defineProps<{

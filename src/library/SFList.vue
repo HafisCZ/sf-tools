@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "SFList"
+  name: 'SFList'
 })
 </script>

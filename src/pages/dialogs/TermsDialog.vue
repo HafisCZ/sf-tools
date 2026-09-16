@@ -44,21 +44,21 @@
 
     <template #buttons>
       <SFButton variant="primary" block @click="accept">
-        {{ localize("button.accept_full") }}
+        {{ localize('button.accept_full') }}
       </SFButton>
     </template>
   </SFDialog>
 </template>
 
 <script setup lang="ts">
-import SFButton from "@library/SFButton.vue"
-import SFDialog from "@library/SFDialog.vue"
-import SFHeading from "@library/SFHeading.vue"
-import SFList from "@library/SFList.vue"
-import { useLocalize } from "@utils/localization"
+import SFButton from '@library/SFButton.vue'
+import SFDialog from '@library/SFDialog.vue'
+import SFHeading from '@library/SFHeading.vue'
+import SFList from '@library/SFList.vue'
+import { useLocalize } from '@utils/localization'
 
 defineOptions({
-  name: "TermsDialog"
+  name: 'TermsDialog'
 })
 
 const props = defineProps<{
@@ -72,11 +72,11 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const localize = useLocalize("terms")
+const localize = useLocalize('terms')
 
 function accept() {
   Site.options.terms_accepted = props.version
 
-  emit("close")
+  emit('close')
 }
 </script>

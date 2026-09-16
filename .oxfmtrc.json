@@ -1,9 +1,17 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "semi": false,
-  "singleQuote": false,
+  "singleQuote": true,
   "trailingComma": "none",
   "useTabs": false,
   "printWidth": 320,
-  "ignorePatterns": ["js/**", "css/**", "res/**", "vendor/**", "endpoint/**", "*.html"]
+  "ignorePatterns": ["js/**", "css/**", "res/**", "vendor/**", "endpoint/**", "*.html"],
+  "overrides": [
+    {
+      "files": ["*.css"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
 }

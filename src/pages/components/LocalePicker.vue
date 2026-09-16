@@ -5,13 +5,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import SFDropdown from "@library/SFDropdown.vue"
-import { type DropdownItem } from "@utils/components"
-import { LOCALES, currentLocale, setLocale } from "@utils/localization"
+import { computed } from 'vue'
+import SFDropdown from '@library/SFDropdown.vue'
+import { type DropdownItem } from '@utils/components'
+import { LOCALES, currentLocale, setLocale } from '@utils/localization'
 
 defineOptions({
-  name: "LocalePicker"
+  name: 'LocalePicker'
 })
 
 // There is no translation key for "Language", so the picker is named after the current language

@@ -1,4 +1,4 @@
-import { onScopeDispose, type Ref } from "vue"
+import { onScopeDispose, type Ref } from 'vue'
 
 /**
  * Calls `callback` when the user clicks outside every element in `elements`, or presses Escape when `esc` is set.
@@ -21,19 +21,19 @@ export function onClickOutsideOf(
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       callback()
     }
   }
 
-  window.addEventListener("click", handleClick, true)
+  window.addEventListener('click', handleClick, true)
 
   if (options.esc) {
-    window.addEventListener("keydown", handleKeydown, true)
+    window.addEventListener('keydown', handleKeydown, true)
   }
 
   onScopeDispose(() => {
-    window.removeEventListener("click", handleClick, true)
-    window.removeEventListener("keydown", handleKeydown, true)
+    window.removeEventListener('click', handleClick, true)
+    window.removeEventListener('keydown', handleKeydown, true)
   })
 }
