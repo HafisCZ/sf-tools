@@ -423,6 +423,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
 
             let normalDungeons = player.Dungeons.Normal;
             let shadowDungeons = player.Dungeons.Shadow;
+            let classDungeons = player.Dungeons.Class;
             let tower = player.Dungeons.Tower;
             let youtube = player.Dungeons.Youtube;
             let twister = player.Dungeons.Twister + 1;
@@ -435,6 +436,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
                 ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon)),
                 getSpecialDungeonEnemyAt(202, youtube),
                 getSpecialDungeonEnemyAt(204, sandstorm),
+                ...classDungeons.map((dungeon, index) => getDungeonEnemyAt(300 + index, false, dungeon))
             ].filter(boss => boss);
 
             if (availableBosses.length) {
