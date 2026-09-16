@@ -1,57 +1,47 @@
 <template>
-  <footer class="pointer-events-none fixed inset-x-0 bottom-0 flex items-end justify-between gap-4 p-3 text-[12.6px] text-white/70">
-    <p class="w-1/3">
-      <template v-if="BUILD_INFO">
-        v{{ MAJOR_VERSION }}.{{ BUILD_INFO.version }}
-        <br />
-        Last updated on {{ formatDate(BUILD_INFO.timestamp) }} - {{ BUILD_INFO.message }}
-      </template>
-    </p>
-    <div class="flex w-1/3 flex-col items-end gap-0.5 text-right">
+  <PageFooter>
+    <SFParagraph v-if="BUILD_INFO">
+      v{{ MAJOR_VERSION }}.{{ BUILD_INFO.version }}
+      <br />
+      Last updated on {{ formatDate(BUILD_INFO.timestamp) }} - {{ BUILD_INFO.message }}
+    </SFParagraph>
+
+    <template #links>
       <span class="flex items-center gap-1.5">
-        <button type="button" :class="LINK_CLASSES" @click="emit('toggleCredits')">
-          <SFIcon name="trophy" />
+        <FooterLink icon="trophy" @click="emit('toggleCredits')">
           {{ localize('toggle') }}
-        </button>
+        </FooterLink>
         &bull;
-        <button type="button" :class="LINK_CLASSES" @click="openFeedback">
-          <SFIcon name="message" />
+        <FooterLink icon="message" @click="openFeedback">
           {{ localize('footer.report') }}
-        </button>
+        </FooterLink>
       </span>
-      <a href="https://home.sfgame.net" target="_blank" :class="LINK_CLASSES">
-        <SFIcon name="basket-shopping" />
+      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
         <span v-html="localize('footer.webshop#')" />
-      </a>
+      </FooterLink>
       <span class="flex items-center gap-1.5">
-        <a href="https://crowdin.com/project/sftools" target="_blank" :class="LINK_CLASSES">
-          <SFIcon name="language" />
+        <FooterLink icon="language" href="https://crowdin.com/project/sftools">
           {{ localize('footer.crowdin') }}
-        </a>
+        </FooterLink>
         &bull;
-        <a href="https://beta.sftools.mar21.eu" target="_blank" :class="LINK_CLASSES">
-          <SFIcon name="screwdriver-wrench" />
+        <FooterLink icon="screwdriver-wrench" href="https://beta.sftools.mar21.eu">
           {{ localize('footer.beta') }}
-        </a>
+        </FooterLink>
       </span>
-      <span class="flex items-center gap-1.5">
-        <SFIcon name="copyright" />
-        2019 - 2025 | mar21 |
-        <SFIcon name="discord" />
-        mar21 |
-        <SFIcon name="envelope" />
-        support@mar21.eu
-      </span>
+      <FooterCopyright />
       <span v-html="localize('footer.notice#')" />
-    </div>
-  </footer>
+    </template>
+  </PageFooter>
 </template>
 
 <script setup lang="ts">
-import SFIcon from '@library/SFIcon.vue'
+import SFParagraph from '@library/SFParagraph.vue'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
+import FooterCopyright from '~/pages/components/FooterCopyright.vue'
+import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooter from '~/pages/components/PageFooter.vue'
 
 defineOptions({
   name: 'IndexFooter'
@@ -60,8 +50,6 @@ defineOptions({
 const emit = defineEmits<{
   toggleCredits: []
 }>()
-
-const LINK_CLASSES = 'pointer-events-auto flex cursor-pointer items-center gap-1.5 text-accent hover:underline'
 
 const MAJOR_VERSION = MODULE_VERSION_MAJOR
 
