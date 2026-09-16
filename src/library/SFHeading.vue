@@ -1,5 +1,5 @@
 <template>
-  <component :is="`h${props.level}`" :class="[LEVEL_CLASSES[props.level], props.type ? TYPE_CLASSES[props.type] : 'text-white']">
+  <component :is="`h${props.level}`" :class="[LEVEL_CLASSES[props.level], TYPE_CLASSES[props.type ?? 'default']]">
     <slot />
   </component>
 </template>
@@ -15,9 +15,9 @@ const props = defineProps<{
    */
   level: 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6'
   /**
-   * Colour variant. Omit for the default text colour.
+   * Colour variant. Omit for white, `inherit` keeps the surrounding text colour.
    */
-  type?: 'muted' | 'accent'
+  type?: 'muted' | 'accent' | 'inherit'
 }>()
 
 // Lato is loaded in 400 and 700 only, so every level is bold
@@ -31,7 +31,9 @@ const LEVEL_CLASSES = {
 }
 
 const TYPE_CLASSES = {
+  default: 'text-white',
   muted: 'text-white/60',
-  accent: 'text-accent'
+  accent: 'text-accent',
+  inherit: ''
 }
 </script>

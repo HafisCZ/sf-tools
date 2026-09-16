@@ -1,13 +1,15 @@
 <template>
   <div ref="container-ref" data-content-container class="fixed z-[1001] max-h-96 min-w-40 overflow-y-auto rounded-md border border-line bg-surface p-1 text-white/90 shadow-xl" :class="{ invisible: !size }" :style="style" @keydown="moveFocus">
-    <ul role="menu" class="flex flex-col">
-      <li v-for="item in props.items" :key="item.label" role="none">
-        <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': item.active }" @click="select(item)">
-          <img v-if="item.image" :src="item.image" alt="" class="h-4 w-6 rounded-sm object-cover" />
-          {{ item.label }}
-        </button>
-      </li>
-    </ul>
+    <slot>
+      <ul role="menu" class="flex flex-col">
+        <li v-for="item in props.items" :key="item.label" role="none">
+          <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': item.active }" @click="select(item)">
+            <img v-if="item.image" :src="item.image" alt="" class="h-4 w-6 rounded-sm object-cover" />
+            {{ item.label }}
+          </button>
+        </li>
+      </ul>
+    </slot>
   </div>
 </template>
 
@@ -23,9 +25,9 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Items shown in the menu
+   * Items shown in the menu. The default slot replaces them with custom content, whose buttons need `role="menuitem"` for arrow key navigation.
    */
-  items: DropdownItem[]
+  items?: DropdownItem[]
   /**
    * Viewport edges of the element the menu opens from
    */
