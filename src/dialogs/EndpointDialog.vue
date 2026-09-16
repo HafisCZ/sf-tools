@@ -1,9 +1,9 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-black/85 p-4">
-    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-label="localize.global(TITLE_KEYS[step])" tabindex="-1" class="flex max-h-full w-full max-w-[400px] flex-col gap-4 overflow-y-auto text-white/90 outline-none">
+    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-label="localize.global(TITLE_KEYS[step])" tabindex="-1" class="flex max-h-full min-h-[360px] w-full max-w-[400px] flex-col justify-center-safe gap-4 overflow-y-auto rounded-lg bg-white/5 p-5 text-white/90 shadow-xl backdrop-blur-md outline-none">
       <iframe ref="iframe-ref" title="Endpoint" tabindex="-1" aria-hidden="true" class="pointer-events-none fixed opacity-0" />
 
-      <div v-if="step === 'terms'" class="flex flex-col gap-4 rounded-lg border border-line bg-dialog p-4">
+      <template v-if="step === 'terms'">
         <SFHeading level="2" class="border-b border-line pb-1 text-center">{{ localize.global('terms.title') }}</SFHeading>
         <SFList>
           <li>Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
@@ -27,7 +27,7 @@
             {{ localize.global('terms.button.accept') }}
           </SFButton>
         </div>
-      </div>
+      </template>
 
       <form v-else-if="step === 'login'" class="flex flex-col gap-4" @submit.prevent="login">
         <SFInput v-model="username" :label="localize('username')" name="username" autocomplete="username" />
