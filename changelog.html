@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scheme-dark">
     <head>
         <title>SFTools - Changelog</title>
 
@@ -8,26 +8,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="css/pages/changelog.css"/>
-
-        <script src="vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="vendor/js/semantic.min.js"></script>
-
-        <script src="js/core/core.js"></script>
-        <script src="js/changelog.js"></script>
-        <script src="js/views/base.js"></script>
-
-        <script src="js/pages/changelog.js"></script>
+        <script src="js/core/core.js" vite-ignore></script>
+        <script src="js/changelog.js" vite-ignore></script>
     </head>
-    <body class="inverted">
-        <div class="ui fixed inverted borderless huge menu">
-            <div class="header item"><a href="index.html">SFTools</a></div>
-        </div>
-
-        <div class="ui main inverted container">
-            <div class="ui grid version-list">
-
-            </div>
-        </div>
+    <body class="bg-page text-sm text-white/90">
+        <div id="app"></div>
+        <script type="module" src="/src/entrypoints/changelog.ts"></script>
     </body>
 </html>
