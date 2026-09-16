@@ -27,3 +27,15 @@
   --color-accent: #ffa500;
   --color-line: rgb(255 255 255 / 0.15);
 }
+
+/* HTML that comes from legacy data, such as changelog entries and announcements */
+@utility rich-text {
+  & a {
+    color: var(--color-accent);
+    text-decoration-line: underline;
+  }
+
+  & .text-orange {
+    color: var(--color-accent);
+  }
+}

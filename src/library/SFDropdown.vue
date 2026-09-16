@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <button ref="trigger-ref" type="button" class="flex cursor-pointer items-center rounded-md p-2 transition hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-accent" aria-haspopup="menu" :aria-expanded="open" :aria-label="props.label" @click="toggle">
+  <div ref="container-ref" class="flex">
+    <SFButton variant="ghost" icon aria-haspopup="menu" :aria-expanded="open" :aria-label="props.label" @click="toggle">
       <slot />
-    </button>
+    </SFButton>
     <Teleport to="body">
       <SFDropdownMenu v-if="open && position" :items="props.items" :anchor="position" :float="props.float" @close="close" />
     </Teleport>
@@ -14,6 +14,7 @@ import { ref, useTemplateRef, watch } from "vue"
 import { useInert } from "@utils/interactions"
 import { useAnimationFramePosition } from "@utils/position"
 import { type DropdownItem } from "@utils/components"
+import SFButton from "./SFButton.vue"
 import SFDropdownMenu from "./SFDropdownMenu.vue"
 
 defineOptions({
@@ -42,9 +43,10 @@ const props = withDefaults(
 
 const open = ref(false)
 
-const triggerElement = useTemplateRef("trigger-ref")
+// The root hugs the trigger button, so its box is the trigger's box
+const containerElement = useTemplateRef("container-ref")
 
-const position = useAnimationFramePosition(open, () => triggerElement.value?.getBoundingClientRect())
+const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
 
 useInert(open)
 
@@ -53,7 +55,7 @@ watch(
   open,
   (value) => {
     if (!value && document.activeElement === document.body) {
-      triggerElement.value?.focus()
+      containerElement.value?.querySelector("button")?.focus()
     }
   },
   { flush: "post" }
