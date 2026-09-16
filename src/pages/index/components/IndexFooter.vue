@@ -8,34 +8,30 @@
       </template>
     </p>
     <div class="flex w-1/3 flex-col items-end gap-0.5 text-right">
-      <button type="button" :class="LINK_CLASSES" @click="openFeedback">
-        <SFIcon name="message" />
-        {{ localize('footer.report') }}
-      </button>
-      <a href="https://home.sfgame.net" target="_blank" :class="LINK_CLASSES">
-        <SFIcon name="basket-shopping" />
-        <span v-html="localize('footer.webshop#')" />
-      </a>
       <span class="flex items-center gap-1.5">
         <button type="button" :class="LINK_CLASSES" @click="emit('toggleCredits')">
           <SFIcon name="trophy" />
           {{ localize('toggle') }}
         </button>
         &bull;
+        <button type="button" :class="LINK_CLASSES" @click="openFeedback">
+          <SFIcon name="message" />
+          {{ localize('footer.report') }}
+        </button>
+      </span>
+      <a href="https://home.sfgame.net" target="_blank" :class="LINK_CLASSES">
+        <SFIcon name="basket-shopping" />
+        <span v-html="localize('footer.webshop#')" />
+      </a>
+      <span class="flex items-center gap-1.5">
         <a href="https://crowdin.com/project/sftools" target="_blank" :class="LINK_CLASSES">
           <SFIcon name="language" />
           {{ localize('footer.crowdin') }}
         </a>
-      </span>
-      <span class="flex items-center gap-1.5">
+        &bull;
         <a href="https://beta.sftools.mar21.eu" target="_blank" :class="LINK_CLASSES">
           <SFIcon name="screwdriver-wrench" />
           {{ localize('footer.beta') }}
-        </a>
-        &bull;
-        <a href="https://ko-fi.com/D1D02FFQR" target="_blank" :class="LINK_CLASSES">
-          <SFIcon name="mug-saucer" />
-          {{ localize('footer.kofi') }}
         </a>
       </span>
       <span class="flex items-center gap-1.5">

@@ -8,7 +8,6 @@ import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons/faCircleE
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons/faLanguage'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
-import { faMugSaucer } from '@fortawesome/free-solid-svg-icons/faMugSaucer'
 import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons/faScrewdriverWrench'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons/faTriangleExclamation'
@@ -24,7 +23,6 @@ export const ICONS = {
   envelope: faEnvelope,
   language: faLanguage,
   message: faMessage,
-  'mug-saucer': faMugSaucer,
   'screwdriver-wrench': faScrewdriverWrench,
   spinner: faSpinner,
   'triangle-exclamation': faTriangleExclamation,
