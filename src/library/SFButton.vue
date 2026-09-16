@@ -1,14 +1,24 @@
 <template>
   <button
     type="button"
-    class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+    class="relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
     :class="[VARIANT_CLASSES[props.variant], props.icon ? 'p-2' : 'px-4 py-2.5', { 'w-full': props.block }]"
+    :disabled="!!props.disabled"
+    :aria-busy="loading || undefined"
   >
-    <slot />
+    <span class="contents" :class="{ invisible: loading }">
+      <slot />
+    </span>
+    <span v-if="loading" class="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <SFIcon name="spinner" class="animate-spin" />
+    </span>
   </button>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+import SFIcon from "./SFIcon.vue"
+
 defineOptions({
   name: "SFButton"
 })
@@ -27,6 +37,10 @@ const props = withDefaults(
      * Stretches the button to the full width of its container
      */
     block?: boolean
+    /**
+     * Disables the button. Pass `'loading'` to also show a spinner over the content
+     */
+    disabled?: boolean | "loading"
   }>(),
   {
     variant: "secondary"
@@ -38,4 +52,6 @@ const VARIANT_CLASSES = {
   secondary: "bg-surface text-white/90 enabled:hover:bg-surface-hover",
   ghost: "text-white/90 enabled:hover:bg-surface-hover"
 }
+
+const loading = computed(() => props.disabled === "loading")
 </script>

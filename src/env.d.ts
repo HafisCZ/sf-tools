@@ -4,3 +4,10 @@ declare module "*.vue" {
   const component: DefineComponent
   export default component
 }
+
+// Set by vite.config.ts from the git history when the site is built, null when git wasn't available
+declare const __BUILD_INFO__: {
+  version: number
+  timestamp: number
+  message: string
+} | null

@@ -22,6 +22,11 @@ declare class Site {
   static ready(metadata: SiteMetadata, callback: (params: URLSearchParams) => unknown): void
   static run(): void
   static is(name: string): boolean
+  static isEvent(type: "april_fools_day" | "winter" | "halloween"): boolean
+}
+
+declare class SiteAPI {
+  static post(endpoint: string, data: unknown): Promise<unknown>
 }
 
 declare class StoreWrapper {
@@ -33,6 +38,7 @@ declare class Logger {
 }
 
 declare const MODULE_VERSION: string
+declare const MODULE_VERSION_MAJOR: string
 
 // js/changelog.js
 

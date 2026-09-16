@@ -3,6 +3,7 @@
 /* HTML of each page built by Vite, for the classes written directly in it */
 @source "../../changelog.html";
 @source "../../404.html";
+@source "../../index.html";
 
 @font-face {
   font-family: Lato;

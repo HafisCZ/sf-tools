@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -6,13 +7,35 @@ import vue from "@vitejs/plugin-vue"
 import tailwindcss from "@tailwindcss/vite"
 
 // Pages built by Vite: converted to Vue, or static pages styled with Tailwind. Everything else is served and copied as-is.
-const VITE_PAGES = ["changelog", "404"]
+const VITE_PAGES = ["changelog", "404", "index"]
 
 const LEGACY_DIRECTORIES = ["js", "css", "res", "vendor", "endpoint"]
 const LEGACY_FILES = ["CNAME", "sitemap.txt"]
 
 const ROOT_DIRECTORY = fileURLToPath(new URL(".", import.meta.url))
 const LEGACY_PAGES = fs.readdirSync(ROOT_DIRECTORY).filter((file) => file.endsWith(".html") && !VITE_PAGES.includes(path.basename(file, ".html")))
+
+// Build numbers count the commits since this one
+const FIRST_COMMIT = "88b32f42210cb848c77b7891f6e47a0000876ed4"
+
+// Version shown in the index page footer, read from the git history. Needs the full history, so CI must not make a shallow clone.
+function readBuildInfo() {
+  try {
+    const git = (command: string) => execSync(`git ${command}`, { cwd: ROOT_DIRECTORY, encoding: "utf8" }).trim()
+
+    const [date, message] = git("log -1 --format=%aI%n%s").split("\n")
+
+    return {
+      version: Number(git(`rev-list --count ${FIRST_COMMIT}..HEAD`)) + 1,
+      timestamp: new Date(date).getTime(),
+      message
+    }
+  } catch (e) {
+    console.warn(`Could not read the build version from git: ${String(e)}`)
+
+    return null
+  }
+}
 
 function legacySite(): Plugin {
   let outputDirectory = ""
@@ -55,6 +78,9 @@ function legacySite(): Plugin {
 export default defineConfig({
   appType: "mpa",
   plugins: [vue(), tailwindcss(), legacySite()],
+  define: {
+    __BUILD_INFO__: JSON.stringify(readBuildInfo())
+  },
   resolve: {
     alias: {
       "@library": path.join(ROOT_DIRECTORY, "src/library"),
