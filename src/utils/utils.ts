@@ -5,8 +5,10 @@ import { useErrorToast } from './toasts'
 
 type ErrorToastText = Pick<ToastParams, 'title' | 'message'>
 
-// Message of whatever was thrown: an Error, a legacy SiteAPI rejection ({ error }), or anything else
-function getErrorMessage(error: unknown) {
+/**
+ * Message of whatever was thrown: an Error, a legacy SiteAPI rejection (`{ error }`), or anything else
+ */
+export function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
     return error.message
   } else if (typeof error === 'object' && error !== null && 'error' in error && typeof error.error === 'string') {

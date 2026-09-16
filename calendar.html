@@ -1,65 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scheme-dark">
     <head>
         <title>SFTools - Calendar</title>
 
         <meta charset="utf-8">
+        <meta name="description" content="Collection of tools for Shakes & Fidget">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="css/pages/calendar.css"/>
+        <script src="js/util.js" vite-ignore></script>
+        <script src="js/playa/calculations.js" vite-ignore></script>
 
-        <script src="vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="vendor/js/semantic.min.js"></script>
-
-        <script src="js/util.js"></script>
-        <script src="js/playa/calculations.js"></script>
-
-        <script src="js/plugins.js"></script>
-
-        <script src="js/core/util.js"></script>
-        <script src="js/core/models.js"></script>
-        <script src="js/core/core.js"></script>
-        <script src="js/core/database.js"></script>
-        <script src="js/script/config.js"></script>
-        <script src="js/script/ast.js"></script>
-        <script src="js/script/core.js"></script>
-        <script src="js/changelog.js"></script>
-        <script src="js/views/base.js"></script>
-        <script src="js/sim/editor.js"></script>
-        <script src="js/sim/base.js"></script>
-        <script src="js/playa/pets.js"></script>
-        <script src="js/playa/servers.js"></script>
-
-        <script src="endpoint/endpoint.js"></script>
-
-        <script src="js/pages/calendar.js"></script>
+        <script src="js/core/util.js" vite-ignore></script>
+        <script src="js/core/models.js" vite-ignore></script>
+        <script src="js/core/core.js" vite-ignore></script>
+        <script src="js/core/database.js" vite-ignore></script>
+        <script src="js/script/config.js" vite-ignore></script>
+        <script src="js/script/ast.js" vite-ignore></script>
+        <script src="js/script/core.js" vite-ignore></script>
+        <script src="js/changelog.js" vite-ignore></script>
+        <script src="js/sim/base.js" vite-ignore></script>
+        <script src="js/playa/pets.js" vite-ignore></script>
+        <script src="js/playa/servers.js" vite-ignore></script>
     </head>
-    <body class="inverted">
-        <div class="ui fixed inverted borderless huge menu">
-            <div class="header item"><a href="index.html">SFTools</a></div>
-            <a class="item" id="button-clear"><i class="recycle icon"></i> <span data-intl="analyzer.topbar.clear"></span></a>
-        </div>
-
-        <div class="ui main inverted container mb-20">
-            <div class="ui five columns doubling grid" id="pet-grid"></div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-item" data-intl="pets.calendar.footer#"></div>
-            <div class="footer-item">
-                <span class="pointer-events-all !text-orange cursor-pointer" data-op="report">
-                    <i class="comment alternate icon"></i>
-                    <span data-intl="index.footer.report"></span>
-                </span>
-                <br>
-                <a class="pointer-events-all !text-orange cursor-pointer" href="https://home.sfgame.net" target="_blank">
-                    <i class="shopping basket icon"></i>
-                    <span data-intl="index.footer.webshop#"></span>
-                </a>
-                <br>
-                <i class="copyright outline icon"></i>2019 - 2025 | mar21 | <i class="discord icon"></i> mar21 | <i class="mail icon"></i> support@mar21.eu
-            </div>
-        </div>
+    <body class="bg-page text-sm text-white/90">
+        <div id="app"></div>
+        <script type="module" src="/src/entrypoints/calendar.ts"></script>
     </body>
 </html>
