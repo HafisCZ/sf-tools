@@ -20,15 +20,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useId, useTemplateRef, watch } from "vue"
-import { type DropdownItem, type SelectOption } from "@utils/components"
-import { useInert } from "@utils/interactions"
-import { useAnimationFramePosition } from "@utils/position"
-import SFDropdownMenu from "./SFDropdownMenu.vue"
-import SFIcon from "./SFIcon.vue"
+import { computed, ref, useId, useTemplateRef, watch } from 'vue'
+import { type DropdownItem, type SelectOption } from '@utils/components'
+import { useInert } from '@utils/interactions'
+import { useAnimationFramePosition } from '@utils/position'
+import SFDropdownMenu from './SFDropdownMenu.vue'
+import SFIcon from './SFIcon.vue'
 
 defineOptions({
-  name: "SFSelect"
+  name: 'SFSelect'
 })
 
 const props = defineProps<{
@@ -49,9 +49,9 @@ const valueId = useId()
 
 const open = ref(false)
 
-const triggerElement = useTemplateRef("trigger-ref")
+const triggerElement = useTemplateRef('trigger-ref')
 
-const selectedLabel = computed(() => props.options.find((option) => option.value === modelValue.value)?.label ?? "")
+const selectedLabel = computed(() => props.options.find((option) => option.value === modelValue.value)?.label ?? '')
 
 const items = computed<DropdownItem[]>(() =>
   props.options.map((option) => ({
@@ -73,7 +73,7 @@ watch(
       triggerElement.value?.focus()
     }
   },
-  { flush: "post" }
+  { flush: 'post' }
 )
 
 function toggle() {

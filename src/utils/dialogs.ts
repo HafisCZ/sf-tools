@@ -1,6 +1,6 @@
-import { type Component } from "vue"
-import { setCoveredElementsAsInert, unsetCoveredElementsAsInert } from "./interactions"
-import { createVueApp } from "./vue"
+import { type Component } from 'vue'
+import { setCoveredElementsAsInert, unsetCoveredElementsAsInert } from './interactions'
+import { createVueApp } from './vue'
 
 type ComponentProps<TComponent> = TComponent extends abstract new (...args: never[]) => {
   $props: infer TProps
@@ -23,7 +23,7 @@ let queue = Promise.resolve()
  */
 export function useDialog<TComponent extends Component>(
   component: TComponent,
-  props: Omit<ComponentProps<TComponent>, "onClose">,
+  props: Omit<ComponentProps<TComponent>, 'onClose'>,
   options: {
     callback?: (...params: CloseParameters<TComponent>) => void
     immediate?: boolean
@@ -31,9 +31,9 @@ export function useDialog<TComponent extends Component>(
 ) {
   function open() {
     return new Promise<void>((resolve) => {
-      const element = document.createElement("div")
-      element.setAttribute("data-content-container", "")
-      element.className = "relative z-[1000]"
+      const element = document.createElement('div')
+      element.setAttribute('data-content-container', '')
+      element.className = 'relative z-[1000]'
 
       setCoveredElementsAsInert()
 

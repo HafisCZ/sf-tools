@@ -1,4 +1,4 @@
-import { type IconName } from "./icons"
+import { type IconName } from './icons'
 
 export type DropdownItem = {
   /**
@@ -30,7 +30,7 @@ export type SelectOption = {
   label: string
 }
 
-export type ToastType = "default" | "success" | "warning" | "error"
+export type ToastType = 'default' | 'success' | 'warning' | 'error'
 
 export type ToastParams = {
   /**

@@ -14,21 +14,21 @@
 
     <template #buttons>
       <SFButton block @click="accept">
-        {{ localize("continue") }}
+        {{ localize('continue') }}
       </SFButton>
     </template>
   </SFDialog>
 </template>
 
 <script setup lang="ts">
-import SFButton from "@library/SFButton.vue"
-import SFDialog from "@library/SFDialog.vue"
-import SFHeading from "@library/SFHeading.vue"
-import SFList from "@library/SFList.vue"
-import { useLocalize } from "@utils/localization"
+import SFButton from '@library/SFButton.vue'
+import SFDialog from '@library/SFDialog.vue'
+import SFHeading from '@library/SFHeading.vue'
+import SFList from '@library/SFList.vue'
+import { useLocalize } from '@utils/localization'
 
 defineOptions({
-  name: "ChangelogDialog"
+  name: 'ChangelogDialog'
 })
 
 const emit = defineEmits<{
@@ -38,11 +38,11 @@ const emit = defineEmits<{
 const VERSION = MODULE_VERSION
 const RELEASE = CHANGELOG[VERSION]
 
-const localize = useLocalize("dialog.changelog")
+const localize = useLocalize('dialog.changelog')
 
 function accept() {
   Site.options.version_accepted = VERSION
 
-  emit("close")
+  emit('close')
 }
 </script>

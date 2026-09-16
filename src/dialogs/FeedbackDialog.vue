@@ -9,29 +9,29 @@
 
     <template #buttons>
       <SFButton block :disabled="isSubmitting" @click="emit('close')">
-        {{ localize.global("dialog.shared.cancel") }}
+        {{ localize.global('dialog.shared.cancel') }}
       </SFButton>
       <SFButton variant="primary" block :disabled="isSubmitting ? 'loading' : !isValid" @click="submit">
-        {{ localize.global("dialog.shared.submit") }}
+        {{ localize.global('dialog.shared.submit') }}
       </SFButton>
     </template>
   </SFDialog>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
-import SFButton from "@library/SFButton.vue"
-import SFDialog from "@library/SFDialog.vue"
-import SFInput from "@library/SFInput.vue"
-import SFSelect from "@library/SFSelect.vue"
-import SFTextarea from "@library/SFTextarea.vue"
-import { type SelectOption } from "@utils/components"
-import { useLocalize } from "@utils/localization"
-import { useSuccessToast } from "@utils/toasts"
-import { useSubmit } from "@utils/utils"
+import { computed, ref } from 'vue'
+import SFButton from '@library/SFButton.vue'
+import SFDialog from '@library/SFDialog.vue'
+import SFInput from '@library/SFInput.vue'
+import SFSelect from '@library/SFSelect.vue'
+import SFTextarea from '@library/SFTextarea.vue'
+import { type SelectOption } from '@utils/components'
+import { useLocalize } from '@utils/localization'
+import { useSuccessToast } from '@utils/toasts'
+import { useSubmit } from '@utils/utils'
 
 defineOptions({
-  name: "FeedbackDialog"
+  name: 'FeedbackDialog'
 })
 
 const props = withDefaults(
@@ -42,7 +42,7 @@ const props = withDefaults(
     tool?: string
   }>(),
   {
-    tool: "general"
+    tool: 'general'
   }
 )
 
@@ -51,35 +51,35 @@ const emit = defineEmits<{
 }>()
 
 // Same tools as ReportDialog in js/views/base.js
-const TOOLS = ["analyzer", "attributes", "blacksmith", "calendar", "dungeons", "fortress", "guilds", "hellevator", "hydra", "idle", "inventory", "pets", "simulator", "stats", "underworld"]
+const TOOLS = ['analyzer', 'attributes', 'blacksmith', 'calendar', 'dungeons', 'fortress', 'guilds', 'hellevator', 'hydra', 'idle', 'inventory', 'pets', 'simulator', 'stats', 'underworld']
 
-const localize = useLocalize("dialog.report")
+const localize = useLocalize('dialog.report')
 
 const tool = ref(props.tool)
-const type = ref("issue")
-const email = ref("")
-const description = ref("")
+const type = ref('issue')
+const email = ref('')
+const description = ref('')
 
-const toolOptions = computed<SelectOption[]>(() => [{ value: "general", label: "-" }, ...TOOLS.map((value) => ({ value, label: localize.global(`index.${value}.title`) }))])
+const toolOptions = computed<SelectOption[]>(() => [{ value: 'general', label: '-' }, ...TOOLS.map((value) => ({ value, label: localize.global(`index.${value}.title`) }))])
 
-const typeOptions = computed<SelectOption[]>(() => ["issue", "suggestion"].map((value) => ({ value, label: localize(`type.${value}`) })))
+const typeOptions = computed<SelectOption[]>(() => ['issue', 'suggestion'].map((value) => ({ value, label: localize(`type.${value}`) })))
 
 // Email is optional
-const isValid = computed(() => tool.value !== "" && type.value !== "" && description.value !== "")
+const isValid = computed(() => tool.value !== '' && type.value !== '' && description.value !== '')
 
 const { submit, isSubmitting } = useSubmit(
   async () => {
-    await SiteAPI.post("feedback", {
+    await SiteAPI.post('feedback', {
       tool: tool.value,
       type: type.value,
       email: email.value,
       description: description.value
     })
 
-    emit("close")
+    emit('close')
 
-    useSuccessToast(localize("toast.success.title"), localize("toast.success.message"))
+    useSuccessToast(localize('toast.success.title'), localize('toast.success.message'))
   },
-  () => ({ title: localize("toast.error.title"), message: localize("toast.error.message") })
+  () => ({ title: localize('toast.error.title'), message: localize('toast.error.message') })
 )
 </script>

@@ -9,13 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import { type ToastType } from "@utils/components"
-import { type IconName } from "@utils/icons"
-import SFIcon from "./SFIcon.vue"
+import { computed } from 'vue'
+import { type ToastType } from '@utils/components'
+import { type IconName } from '@utils/icons'
+import SFIcon from './SFIcon.vue'
 
 defineOptions({
-  name: "SFToast"
+  name: 'SFToast'
 })
 
 const props = withDefaults(
@@ -38,7 +38,7 @@ const props = withDefaults(
     icon?: IconName
   }>(),
   {
-    type: "default"
+    type: 'default'
   }
 )
 
@@ -48,16 +48,16 @@ const emit = defineEmits<{
 
 const TYPE_ICONS: Record<ToastType, IconName | undefined> = {
   default: undefined,
-  success: "circle-check",
-  warning: "triangle-exclamation",
-  error: "circle-exclamation"
+  success: 'circle-check',
+  warning: 'triangle-exclamation',
+  error: 'circle-exclamation'
 }
 
 const TYPE_COLOR_CLASSES: Record<ToastType, string> = {
-  default: "text-white",
-  success: "text-green-500",
-  warning: "text-amber-500",
-  error: "text-red-500"
+  default: 'text-white',
+  success: 'text-green-500',
+  warning: 'text-amber-500',
+  error: 'text-red-500'
 }
 
 const icon = computed(() => props.icon ?? TYPE_ICONS[props.type])

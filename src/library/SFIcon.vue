@@ -5,11 +5,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import { ICONS, type IconName } from "@utils/icons"
+import { computed } from 'vue'
+import { ICONS, type IconName } from '@utils/icons'
 
 defineOptions({
-  name: "SFIcon"
+  name: 'SFIcon'
 })
 
 const props = defineProps<{

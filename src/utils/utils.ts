@@ -1,15 +1,15 @@
-import { ref } from "vue"
-import { type ToastParams } from "./components"
-import { globalLocalize } from "./localization"
-import { useErrorToast } from "./toasts"
+import { ref } from 'vue'
+import { type ToastParams } from './components'
+import { globalLocalize } from './localization'
+import { useErrorToast } from './toasts'
 
-type ErrorToastText = Pick<ToastParams, "title" | "message">
+type ErrorToastText = Pick<ToastParams, 'title' | 'message'>
 
 // Message of whatever was thrown: an Error, a legacy SiteAPI rejection ({ error }), or anything else
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
     return error.message
-  } else if (typeof error === "object" && error !== null && "error" in error && typeof error.error === "string") {
+  } else if (typeof error === 'object' && error !== null && 'error' in error && typeof error.error === 'string') {
     return error.error
   } else {
     return String(error)
@@ -33,7 +33,7 @@ export function useSubmit<TArguments extends unknown[]>(onSubmit: (...args: TArg
     try {
       await onSubmit(...args)
     } catch (error) {
-      const text = onError?.(error) ?? { title: globalLocalize("dialog.warning.title"), message: getErrorMessage(error) }
+      const text = onError?.(error) ?? { title: globalLocalize('dialog.warning.title'), message: getErrorMessage(error) }
 
       useErrorToast(text.title, text.message)
     } finally {
