@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "SFTextarea",
+  name: 'SFTextarea',
   inheritAttrs: false
 })
 

@@ -16,11 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import SFIcon from "./SFIcon.vue"
+import { computed } from 'vue'
+import SFIcon from './SFIcon.vue'
 
 defineOptions({
-  name: "SFButton"
+  name: 'SFButton'
 })
 
 const props = withDefaults(
@@ -28,7 +28,7 @@ const props = withDefaults(
     /**
      * Visual style of the button, `ghost` has no background until hovered
      */
-    variant?: "primary" | "secondary" | "ghost"
+    variant?: 'primary' | 'secondary' | 'ghost'
     /**
      * Uses even padding for a button that only holds an icon or an image
      */
@@ -40,18 +40,18 @@ const props = withDefaults(
     /**
      * Disables the button. Pass `'loading'` to also show a spinner over the content
      */
-    disabled?: boolean | "loading"
+    disabled?: boolean | 'loading'
   }>(),
   {
-    variant: "secondary"
+    variant: 'secondary'
   }
 )
 
 const VARIANT_CLASSES = {
-  primary: "bg-accent text-black enabled:hover:brightness-110",
-  secondary: "bg-surface text-white/90 enabled:hover:bg-surface-hover",
-  ghost: "text-white/90 enabled:hover:bg-surface-hover"
+  primary: 'bg-accent text-black enabled:hover:brightness-110',
+  secondary: 'bg-surface text-white/90 enabled:hover:bg-surface-hover',
+  ghost: 'text-white/90 enabled:hover:bg-surface-hover'
 }
 
-const loading = computed(() => props.disabled === "loading")
+const loading = computed(() => props.disabled === 'loading')
 </script>

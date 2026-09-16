@@ -1,24 +1,24 @@
-import { readonly, ref, shallowRef } from "vue"
+import { readonly, ref, shallowRef } from 'vue'
 
 // Same locales as Localization in js/views/base.js, keep in sync
 export const LOCALES: Record<string, string> = {
-  en: "English",
-  de: "Deutsch",
-  pl: "Polski",
-  pt: "Português",
-  cs: "Česky",
-  fr: "Français",
-  it: "Italiano",
-  es: "Español",
-  hu: "Magyar",
-  ch: "Schwyzerdüütsch"
+  en: 'English',
+  de: 'Deutsch',
+  pl: 'Polski',
+  pt: 'Português',
+  cs: 'Česky',
+  fr: 'Français',
+  it: 'Italiano',
+  es: 'Español',
+  hu: 'Magyar',
+  ch: 'Schwyzerdüütsch'
 }
 
 // Same extra translation files as the DOMContentLoaded handler in js/views/base.js
 const INJECTIONS: Record<string, [string, string]> = {
-  translations_general: ["/js/playa/lang/{{locale}}/general.json", "general"],
-  translations_monsters: ["/js/playa/lang/{{locale}}/monsters.json", "monsters"],
-  translations_items: ["/js/playa/lang/{{locale}}/items.json", "items"]
+  translations_general: ['/js/playa/lang/{{locale}}/general.json', 'general'],
+  translations_monsters: ['/js/playa/lang/{{locale}}/monsters.json', 'monsters'],
+  translations_items: ['/js/playa/lang/{{locale}}/items.json', 'items']
 }
 
 type TranslationTree = {
@@ -31,7 +31,7 @@ type LocalizeFunction = ((key: string, variables?: LocalizationVariables) => str
   global: typeof globalLocalize
 }
 
-const locale = ref(Site.options.locale || "en")
+const locale = ref(Site.options.locale || 'en')
 
 // Reactive, so every localize() call made while rendering updates when the language changes
 const translation = shallowRef<Record<string, string>>({})
@@ -40,7 +40,7 @@ const translation = shallowRef<Record<string, string>>({})
 let requiredInjections: string[] = []
 
 // Language of the latest setLocale call, so a slower earlier request can't overwrite it
-let requestedLocale = ""
+let requestedLocale = ''
 
 /**
  * Language currently shown
@@ -49,10 +49,10 @@ export const currentLocale = readonly(locale)
 
 function flatten(base: Record<string, string>, tree: TranslationTree, ...path: string[]) {
   for (const [key, value] of Object.entries(tree)) {
-    if (typeof value === "object") {
+    if (typeof value === 'object') {
       flatten(base, value, ...path, key)
     } else {
-      base[`${path.join(".")}.${key}`] = value
+      base[`${path.join('.')}.${key}`] = value
     }
   }
 
@@ -64,14 +64,14 @@ async function fetchTranslation(value: string, url: string, ...path: string[]) {
     return {}
   }
 
-  const response = await fetch(url.replace("{{locale}}", value))
+  const response = await fetch(url.replace('{{locale}}', value))
   const tree: TranslationTree = await response.json()
 
   return flatten({}, tree, ...path)
 }
 
 async function fetchTranslations(value: string) {
-  const translations = await fetchTranslation(value, "/js/lang/{{locale}}.json")
+  const translations = await fetchTranslation(value, '/js/lang/{{locale}}.json')
 
   for (const name of requiredInjections) {
     if (Object.hasOwn(INJECTIONS, name)) {
@@ -116,7 +116,7 @@ export function globalLocalize(key: string, variables?: LocalizationVariables) {
   let value = translation.value[key]
 
   if (!value) {
-    Logger.log("IN_WARN", `Translation key ${key} not found!`)
+    Logger.log('IN_WARN', `Translation key ${key} not found!`)
 
     return key
   }

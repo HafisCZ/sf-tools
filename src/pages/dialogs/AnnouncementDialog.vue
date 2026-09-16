@@ -4,19 +4,19 @@
 
     <template #buttons>
       <SFButton block @click="accept">
-        {{ localize("continue") }}
+        {{ localize('continue') }}
       </SFButton>
     </template>
   </SFDialog>
 </template>
 
 <script setup lang="ts">
-import SFButton from "@library/SFButton.vue"
-import SFDialog from "@library/SFDialog.vue"
-import { useLocalize } from "@utils/localization"
+import SFButton from '@library/SFButton.vue'
+import SFDialog from '@library/SFDialog.vue'
+import { useLocalize } from '@utils/localization'
 
 defineOptions({
-  name: "AnnouncementDialog"
+  name: 'AnnouncementDialog'
 })
 
 const props = defineProps<{
@@ -30,11 +30,11 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const localize = useLocalize("dialog.shared")
+const localize = useLocalize('dialog.shared')
 
 function accept() {
   Site.options.announcements_viewed = [...Site.options.announcements_viewed, props.announcement.id]
 
-  emit("close")
+  emit('close')
 }
 </script>

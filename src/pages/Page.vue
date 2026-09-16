@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import LocalePicker from "./components/LocalePicker.vue"
+import LocalePicker from './components/LocalePicker.vue'
 
 defineOptions({
-  name: "Page"
+  name: 'Page'
 })
 
 const props = withDefaults(
