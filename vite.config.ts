@@ -5,14 +5,14 @@ import { defineConfig, type Plugin } from "vite"
 import vue from "@vitejs/plugin-vue"
 import tailwindcss from "@tailwindcss/vite"
 
-// Pages converted to Vue. Everything else is served and copied as-is.
-const VUE_PAGES = ["changelog"]
+// Pages built by Vite: converted to Vue, or static pages styled with Tailwind. Everything else is served and copied as-is.
+const VITE_PAGES = ["changelog", "404"]
 
 const LEGACY_DIRECTORIES = ["js", "css", "res", "vendor", "endpoint"]
 const LEGACY_FILES = ["CNAME", "sitemap.txt"]
 
 const ROOT_DIRECTORY = fileURLToPath(new URL(".", import.meta.url))
-const LEGACY_PAGES = fs.readdirSync(ROOT_DIRECTORY).filter((file) => file.endsWith(".html") && !VUE_PAGES.includes(path.basename(file, ".html")))
+const LEGACY_PAGES = fs.readdirSync(ROOT_DIRECTORY).filter((file) => file.endsWith(".html") && !VITE_PAGES.includes(path.basename(file, ".html")))
 
 function legacySite(): Plugin {
   let outputDirectory = ""
@@ -68,11 +68,11 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    entries: VUE_PAGES.map((page) => `${page}.html`)
+    entries: VITE_PAGES.map((page) => `${page}.html`)
   },
   build: {
     rolldownOptions: {
-      input: Object.fromEntries(VUE_PAGES.map((page) => [page, path.join(ROOT_DIRECTORY, `${page}.html`)]))
+      input: Object.fromEntries(VITE_PAGES.map((page) => [page, path.join(ROOT_DIRECTORY, `${page}.html`)]))
     }
   }
 })
