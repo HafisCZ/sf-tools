@@ -706,7 +706,7 @@ class SimulatorModel {
         // Snacks
         const snack = SNACKS[player.Snack];
 
-        this.Snack = snack ?? {};
+        this.Snack = { ...snack };
         if (snack) {
             this.Snack.DamageBonus = this.Player.SnackPotency;
         }
@@ -1675,7 +1675,7 @@ class PlagueDoctorModel extends SimulatorModel {
             // PD cannot throw against mages
             return super.control(instance, target);
         } else if (this.Tincture) {
-            if (!this.procTincturePoison(instance, target)) return
+            if (!this.procTincturePoison(instance, target)) return false
 
             // Take control as player
             this.enterState();
@@ -1685,7 +1685,7 @@ class PlagueDoctorModel extends SimulatorModel {
             this.expireTincture();
 
             return state
-        } else if (getRandom(this.Config.TinctureChance) && !this.delayFlag) {
+        } else if (getRandom(this.Config.TinctureChance)) {
             return this.throwTincture(instance, target);
         } else {
             // Attack as usual
