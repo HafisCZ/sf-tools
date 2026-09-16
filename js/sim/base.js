@@ -1075,7 +1075,7 @@ class SimulatorModel {
 
         if (typeof config.DamageReductionBonus !== 'undefined' || typeof config.MaximumDamageReductionBonus !== 'undefined') {
             state.ReceivedDamageMultiplier = (
-                1 - this.getDamageReduction(target, this.Config.MaximumDamageReduction + config.MaximumDamageReductionBonus ?? 0, config.DamageReductionBonus ?? 0) / 100
+                1 - this.getDamageReduction(target, this.Config.MaximumDamageReduction + (config.MaximumDamageReductionBonus ?? 0), config.DamageReductionBonus ?? 0) / 100
             ) / (
                     1 - this.getDamageReduction(target) / 100
                 );
