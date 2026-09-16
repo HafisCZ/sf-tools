@@ -34,6 +34,10 @@ const props = defineProps<{
    * Direction the menu grows in: `right` starts at the anchor's left edge, `left` ends at its right edge
    */
   float: "right" | "left"
+  /**
+   * Width in pixels. Without it the menu is as wide as its content.
+   */
+  width?: number
 }>()
 
 const emit = defineEmits<{
@@ -56,18 +60,20 @@ const resizeObserver = new ResizeObserver(() => {
 
 // Hidden until measured, so the menu never shows at a wrong position
 const style = computed(() => {
+  const width = props.width === undefined ? undefined : `${props.width}px`
+
   if (!size.value) {
-    return { top: "0px", left: "0px" }
+    return { top: "0px", left: "0px", width }
   }
 
-  const { width, height } = size.value
   const anchor = props.anchor
+  const measured = size.value
 
-  const left = props.float === "right" ? pickVisibleAxisPosition(anchor.left, anchor.right - width, width, window.innerWidth) : pickVisibleAxisPosition(anchor.right - width, anchor.left, width, window.innerWidth)
+  const left = props.float === "right" ? pickVisibleAxisPosition(anchor.left, anchor.right - measured.width, measured.width, window.innerWidth) : pickVisibleAxisPosition(anchor.right - measured.width, anchor.left, measured.width, window.innerWidth)
 
-  const top = pickVisibleAxisPosition(anchor.bottom + GAP, anchor.top - height - GAP, height, window.innerHeight)
+  const top = pickVisibleAxisPosition(anchor.bottom + GAP, anchor.top - measured.height - GAP, measured.height, window.innerHeight)
 
-  return { top: `${top}px`, left: `${left}px` }
+  return { top: `${top}px`, left: `${left}px`, width }
 })
 
 // Focus the first item once the menu is visible, hidden elements can't take focus

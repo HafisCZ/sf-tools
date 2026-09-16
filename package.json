@@ -12,6 +12,9 @@
     "format:check": "oxfmt --check src vite.config.ts"
   },
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^7.3.1",
+    "@fortawesome/free-regular-svg-icons": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "vue": "^3.5.42"
   },
   "devDependencies": {
