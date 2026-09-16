@@ -1,6 +1,6 @@
 <template>
   <SFDialog :title="props.announcement.title" size="sm">
-    <div class="text-center [&_.text-orange]:text-accent [&_a]:text-accent [&_a]:underline" v-html="props.announcement.content" />
+    <div class="rich-text text-center" v-html="props.announcement.content" />
 
     <template #buttons>
       <SFButton block @click="accept">

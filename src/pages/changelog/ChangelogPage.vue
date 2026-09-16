@@ -5,15 +5,15 @@
         <SFHeading :id="version" level="4" type="accent" class="scroll-mt-20 font-mono">
           <a :href="`#${version}`" class="hover:underline">{{ version }}</a>
         </SFHeading>
-        <ul v-if="Array.isArray(release)" class="list-disc space-y-2 pl-5 [&_a]:text-accent [&_a]:underline">
+        <SFList v-if="Array.isArray(release)" class="rich-text">
           <li v-for="(entry, index) in release" :key="index" v-html="entry" />
-        </ul>
+        </SFList>
         <div v-else class="flex flex-col gap-4">
           <div v-for="(entries, category) in release" :key="category">
             <SFHeading level="6" class="mb-2">{{ category }}</SFHeading>
-            <ul class="list-disc space-y-2 pl-5 [&_a]:text-accent [&_a]:underline">
+            <SFList class="rich-text">
               <li v-for="(entry, index) in entries" :key="index" v-html="entry" />
-            </ul>
+            </SFList>
           </div>
         </div>
       </section>
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue"
 import SFHeading from "@library/SFHeading.vue"
+import SFList from "@library/SFList.vue"
 import Page from "~/pages/Page.vue"
 
 defineOptions({
