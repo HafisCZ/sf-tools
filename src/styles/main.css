@@ -1,0 +1,29 @@
+@import "tailwindcss" source("..");
+
+/* Entry HTML of each converted page, for the classes on <html> and <body> */
+@source "../../changelog.html";
+
+@font-face {
+  font-family: Lato;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/vendor/css/themes/default/assets/fonts/Lato-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Lato;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/vendor/css/themes/default/assets/fonts/Lato-Bold.woff2") format("woff2");
+}
+
+@theme {
+  --font-sans: Lato, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --color-page: #141414;
+  --color-surface: #1b1c1d;
+  --color-surface-hover: #212121;
+  --color-dialog: #0b0c0c;
+  --color-accent: #ffa500;
+  --color-line: rgb(255 255 255 / 0.15);
+}
