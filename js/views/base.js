@@ -340,6 +340,7 @@ class TermsAndConditionsDialog extends Dialog {
         key: 'terms_and_conditions'
     }
     
+    // Keep in sync with TERMS_VERSION in src/pages/pages.ts
     static VERSION = 2;
 
     render () {
@@ -693,6 +694,7 @@ class ConfirmationDialog extends Dialog {
 }
 
 class Localization {
+    // Keep in sync with LOCALES in src/utils/localization.ts
     static #LOCALES = {
         'en': 'English',
         'de': 'Deutsch',
