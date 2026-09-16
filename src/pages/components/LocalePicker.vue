@@ -1,6 +1,6 @@
 <template>
   <SFDropdown :items="items" :label="label" float="left">
-    <img :src="`/res/flags/${currentLocale}.svg`" alt="" class="h-4 w-6 rounded-sm object-cover" />
+    <img :src="`/res/flags/${currentLocale}.svg`" alt="" class="h-6 w-auto rounded-sm" />
   </SFDropdown>
 </template>
 
