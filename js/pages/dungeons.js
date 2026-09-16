@@ -477,7 +477,7 @@ Site.ready({ name: 'dungeons', type: 'simulator', requires: ['translations_monst
     })
 
     function getDungeonExperience ({ boss, dungeon }) {
-        if (dungeon.id === 201) {
+        if (dungeon.id === 201 || dungeon.id >= 300) {
             return 0;
         } else {
             return Calculations.experienceNextLevel(boss.level) / (dungeon.id === 203 || dungeon.id === 204 ? 50 : 5);

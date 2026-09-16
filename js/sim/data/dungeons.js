@@ -2418,7 +2418,18 @@ const DUNGEON_DATA = {
         intl: '300',
         pos: 134,
         companions: false,
-        floors: {}
+        floors: {
+            '1': { pos: 1, id: 1260, class: 1, level: 250, str: 12200, dex: 6000, int: 6000, con: 45000, lck: 5000, health: 56475000, min: 820, max: 950, armor: 15000 },
+			'2': { pos: 2, id: 1261, class: 1, level: 259, str: 13100, dex: 6450, int: 6450, con: 51750, lck: 5180, health: 67275000, min: 856, max: 986, armor: 15540 },
+			'3': { pos: 3, id: 1262, class: 2, level: 269, str: 6950, dex: 6950, int: 14100, con: 59250, lck: 5380, health: 31995000, min: 2016, max: 2309, armor: 3228 },
+			'4': { pos: 4, id: 1263, class: 1, level: 278, str: 15000, dex: 7400, int: 7400, con: 66000, lck: 5560, health: 92070000, min: 932, max: 1062, armor: 16680 },
+			'5': { pos: 5, id: 1264, class: 1, level: 288, str: 16000, dex: 7900, int: 7900, con: 73500, lck: 5760, health: 106207500, min: 972, max: 1102, armor: 17280 },
+			'6': { pos: 6, id: 1265, class: 1, level: 297, str: 16900, dex: 8350, int: 8350, con: 80250, lck: 5940, health: 119572500, min: 1008, max: 1138, armor: 17820 },
+			'7': { pos: 7, id: 1266, class: 2, level: 307, str: 8850, dex: 8850, int: 20532, con: 87750, lck: 6140, health: 54054000, min: 2358, max: 2651, armor: 3684 },
+			'8': { pos: 8, id: 1267, class: 1, level: 316, str: 24816, dex: 9300, int: 9300, con: 94500, lck: 6320, health: 149782500, min: 1084, max: 1214, armor: 18960 },
+			'9': { pos: 9, id: 1268, class: 1, level: 326, str: 29576, dex: 9800, int: 9800, con: 102000, lck: 6520, health: 166770000, min: 1124, max: 1254, armor: 19560 },
+			'10': { pos: 10, id: 1269, class: 1, level: 335, str: 33860, dex: 10250, int: 10250, con: 108750, lck: 6700, health: 182700000, min: 1160, max: 1290, armor: 20100 }
+        }
     },
     '301': {
         // Inquisitive Mage Guild
@@ -2426,7 +2437,18 @@ const DUNGEON_DATA = {
         intl: '301',
         pos: 135,
         companions: false,
-        floors: {}
+        floors: {
+            '1': { pos: 1, id: 1270, class: 2, level: 255, str: 6250, dex: 6250, int: 12700, con: 48750, lck: 5100, health: 24960000, min: 1890, max: 2183, armor: 3060 },
+			'2': { pos: 2, id: 1271, class: 2, level: 264, str: 6700, dex: 6700, int: 13600, con: 55500, lck: 5280, health: 29415000, min: 1971, max: 2264, armor: 3168 },
+			'3': { pos: 3, id: 1272, class: 2, level: 274, str: 7200, dex: 7200, int: 14600, con: 63000, lck: 5480, health: 34650000, min: 2061, max: 2354, armor: 3288 },
+			'4': { pos: 4, id: 1273, class: 2, level: 283, str: 7650, dex: 7650, int: 15500, con: 69750, lck: 5660, health: 39618000, min: 2142, max: 2435, armor: 3396 },
+			'5': { pos: 5, id: 1274, class: 2, level: 293, str: 8150, dex: 8150, int: 16500, con: 77250, lck: 5860, health: 45423000, min: 2232, max: 2525, armor: 3516 },
+			'6': { pos: 6, id: 1275, class: 2, level: 302, str: 8600, dex: 8600, int: 18152, con: 84000, lck: 6040, health: 50904000, min: 2313, max: 2606, armor: 3624 },
+			'7': { pos: 7, id: 1276, class: 2, level: 312, str: 9100, dex: 9100, int: 22912, con: 91500, lck: 6240, health: 57279000, min: 2403, max: 2696, armor: 3744 },
+			'8': { pos: 8, id: 1277, class: 2, level: 321, str: 9550, dex: 9550, int: 27196, con: 98250, lck: 6420, health: 63273000, min: 2484, max: 2777, armor: 3852 },
+			'9': { pos: 9, id: 1278, class: 2, level: 331, str: 10050, dex: 10050, int: 31956, con: 105750, lck: 6620, health: 70218000, min: 2574, max: 2867, armor: 3972 },
+			'10': { pos: 10, id: 1279, class: 2, level: 340, str: 10500, dex: 10500, int: 36240, con: 112500, lck: 6800, health: 76725000, min: 2655, max: 2948, armor: 4080 }
+        }
     },
     '302': {
         // Acrobatic Scout Guild
@@ -2434,7 +2456,18 @@ const DUNGEON_DATA = {
         intl: '302',
         pos: 136,
         companions: false,
-        floors: {}
+        floors: {
+            '1': { pos: 1, id: 1280, class: 3, level: 260, str: 6500, dex: 13200, int: 6500, con: 52500, lck: 5200, health: 54810000, min: 1075, max: 1238, armor: 7800 },
+			'2': { pos: 2, id: 1281, class: 3, level: 269, str: 6950, dex: 14100, int: 6950, con: 59250, lck: 5380, health: 63990000, min: 1120, max: 1283, armor: 8070 },
+			'3': { pos: 3, id: 1282, class: 2, level: 279, str: 7450, dex: 7450, int: 15100, con: 66750, lck: 5580, health: 37380000, min: 2106, max: 2399, armor: 3348 },
+			'4': { pos: 4, id: 1283, class: 3, level: 288, str: 7900, dex: 16000, int: 7900, con: 73500, lck: 5760, health: 84966000, min: 1215, max: 1378, armor: 8640 },
+			'5': { pos: 5, id: 1284, class: 3, level: 298, str: 8400, dex: 17000, int: 8400, con: 81000, lck: 5960, health: 96876000, min: 1265, max: 1428, armor: 8940 },
+			'6': { pos: 6, id: 1285, class: 3, level: 307, str: 8850, dex: 20532, int: 8850, con: 87750, lck: 6140, health: 108108000, min: 1310, max: 1473, armor: 9210 },
+			'7': { pos: 7, id: 1286, class: 2, level: 317, str: 9350, dex: 9350, int: 25292, con: 95250, lck: 6340, health: 60579000, min: 2448, max: 2741, armor: 3804 },
+			'8': { pos: 8, id: 1287, class: 3, level: 326, str: 9800, dex: 29576, int: 9800, con: 102000, lck: 6520, health: 133416000, min: 1405, max: 1568, armor: 9780 },
+			'9': { pos: 9, id: 1288, class: 3, level: 336, str: 10300, dex: 34336, int: 10300, con: 109500, lck: 6720, health: 147606000, min: 1455, max: 1618, armor: 10080 },
+			'10': { pos: 10, id: 1289, class: 3, level: 345, str: 10750, dex: 38620, int: 10750, con: 116250, lck: 6900, health: 160890000, min: 1500, max: 1663, armor: 10350 }
+        }
     },
     '303': {
         // Lively Necromancer Guild
@@ -2442,6 +2475,17 @@ const DUNGEON_DATA = {
         intl: '303',
         pos: 137,
         companions: false,
-        floors: {}
-    }
+        floors: {
+            '1': { pos: 1, id: 1290, class: 10, level: 265, str: 6750, dex: 6750, int: 13700, con: 56250, lck: 5300, health: 59850000, min: 1980, max: 2273, armor: 6360 },
+			'2': { pos: 2, id: 1291, class: 10, level: 274, str: 7200, dex: 7200, int: 14600, con: 63000, lck: 5480, health: 69300000, min: 2061, max: 2354, armor: 6576 },
+			'3': { pos: 3, id: 1292, class: 2, level: 284, str: 7700, dex: 7700, int: 15600, con: 70500, lck: 5680, health: 40185000, min: 2151, max: 2444, armor: 3408 },
+			'4': { pos: 4, id: 1293, class: 10, level: 293, str: 8150, dex: 8150, int: 16500, con: 77250, lck: 5860, health: 90846000, min: 2232, max: 2525, armor: 7032 },
+			'5': { pos: 5, id: 1294, class: 10, level: 303, str: 8650, dex: 8650, int: 18628, con: 84750, lck: 6060, health: 103056000, min: 2322, max: 2615, armor: 7272 },
+			'6': { pos: 6, id: 1295, class: 10, level: 312, str: 9100, dex: 9100, int: 22912, con: 91500, lck: 6240, health: 114558000, min: 2403, max: 2696, armor: 7488 },
+			'7': { pos: 7, id: 1296, class: 2, level: 322, str: 9600, dex: 9600, int: 27672, con: 99000, lck: 6440, health: 63954000, min: 2493, max: 2786, armor: 3864 },
+			'8': { pos: 8, id: 1297, class: 10, level: 331, str: 10050, dex: 10050, int: 31956, con: 105750, lck: 6620, health: 140436000, min: 2574, max: 2867, armor: 7944 },
+			'9': { pos: 9, id: 1298, class: 10, level: 341, str: 10550, dex: 10550, int: 36716, con: 113250, lck: 6820, health: 154926000, min: 2664, max: 2957, armor: 8184 },
+			'10': { pos: 10, id: 1299, class: 10, level: 350, str: 11000, dex: 11000, int: 41000, con: 120000, lck: 7000, health: 168480000, min: 2745, max: 3038, armor: 8400 }
+        }
+	}
 };
