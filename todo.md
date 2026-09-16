@@ -1,0 +1,18 @@
+# Vue migration
+
+- blacksmith.html - 2
+- request.html - 3
+- hydra.html - 4
+- idle.html - 4
+- fortress.html - 4
+- hellevator.html - 5
+- underworld.html - 5
+- raids.html - 5
+- guilds.html - 5
+- attributes.html - 5
+- simulator.html - 6
+- pets.html - 6
+- inventory.html - 7
+- dungeons.html - 8
+- analyzer.html - 8
+- stats.html - 10
