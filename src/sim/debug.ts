@@ -1,4 +1,5 @@
 import { shallowRef } from 'vue'
+import { useLoader } from '@utils/loader'
 import { globalLocalize } from '@utils/localization'
 import { copyJson, mergeDeep, scaleValue } from '@utils/utils'
 
@@ -157,4 +158,36 @@ export function saveSimulatorLog(target: SimulatorLogTarget, data: unknown) {
 
     window.open(`${window.location.origin}/analyzer.html?debug&broadcast=${broadcast.token}`, '_blank')
   }
+}
+
+/**
+ * Takes the data another tab sends to this one, when the page was opened with a broadcast token in its URL
+ */
+export function receiveSimulatorBroadcast(onData: (data: unknown) => void) {
+  const params = new URLSearchParams(window.location.search)
+  const token = params.get('broadcast')
+
+  if (token === null) return
+
+  const loader = useLoader()
+  const broadcast = new Broadcast(token)
+
+  broadcast.on('data', (data) => {
+    loader.start()
+
+    try {
+      onData(data)
+    } finally {
+      loader.stop()
+
+      broadcast.close()
+    }
+  })
+
+  broadcast.send('token', token)
+
+  params.delete('broadcast')
+
+  // Keeps the flags of the URL, such as `debug`, without the `=` an empty value adds
+  window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${params.toString().replace(/=&/g, '&').replace(/=$/, '')}`)
 }
