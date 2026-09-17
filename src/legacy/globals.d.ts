@@ -16,6 +16,7 @@ type SiteOptions = {
   announcement_accepted: number
   announcements_viewed: string[]
   endpoint_terms_accepted: number
+  has_storage_access: boolean
 }
 
 declare class Site {
@@ -82,7 +83,7 @@ type DatabaseEntry = {
 
 type PlayerEntry = DatabaseEntry & {
   Level: number
-  Class: number
+  Class: CharacterClass
   Pets?: {
     Levels: number[]
     Dungeons: number[]
@@ -123,6 +124,11 @@ declare class ItemModel {
   getBlacksmithPrice(): BlacksmithResources
   getBlacksmithUpgradePrice(): BlacksmithResources
 }
+
+// js/sim/base.js
+
+// From WARRIOR (1) to PLAGUEDOCTOR (12)
+type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
 // js/playa/pets.js
 

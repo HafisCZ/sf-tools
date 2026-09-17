@@ -48,3 +48,17 @@ export function useSubmit<TArguments extends unknown[]>(onSubmit: (...args: TArg
     isSubmitting
   }
 }
+
+/**
+ * Sorts `array` in place from the highest to the lowest number that `map` picks, and returns it
+ */
+export function sortDescending<TItem>(array: TItem[], map: (item: TItem) => number) {
+  return array.sort((a, b) => map(b) - map(a))
+}
+
+/**
+ * Image of a character class, such as `/res/class1.png` for the Warrior
+ */
+export function getClassImageUrl(classId: CharacterClass) {
+  return `/res/class${classId}.png`
+}

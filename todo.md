@@ -1,6 +1,5 @@
 # Vue migration
 
-- request.html - 3
 - hydra.html - 4
 - idle.html - 4
 - fortress.html - 4
