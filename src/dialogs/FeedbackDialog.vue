@@ -1,10 +1,10 @@
 <template>
   <SFDialog :title="localize('title')" size="sm">
     <div class="flex flex-col gap-4">
-      <SFSelect v-model="tool" :label="localize('field.tool')" :options="toolOptions" />
-      <SFSelect v-model="type" :label="localize('field.type')" :options="typeOptions" />
-      <SFInput v-model="email" :label="localize('field.email')" :placeholder="localize('field.email')" type="email" maxlength="50" />
-      <SFTextarea v-model="description" :label="localize('field.description')" :placeholder="localize('field.description')" rows="7" maxlength="1000" />
+      <SFSelect ref="tool-ref" v-model="tool" :label="localize('field.tool')" :options="toolOptions" required />
+      <SFSelect ref="type-ref" v-model="type" :label="localize('field.type')" :options="typeOptions" required />
+      <SFInput ref="email-ref" v-model="email" :label="localize('field.email')" :placeholder="localize('field.email')" type="email" maxlength="50" />
+      <SFTextarea ref="description-ref" v-model="description" :label="localize('field.description')" :placeholder="localize('field.description')" required rows="7" maxlength="1000" />
     </div>
 
     <template #buttons>
@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFInput from '@library/SFInput.vue'
@@ -29,6 +29,7 @@ import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useSuccessToast } from '@utils/toasts'
 import { useSubmit } from '@utils/utils'
+import { useComponentValidation } from '@utils/validations'
 
 defineOptions({
   name: 'FeedbackDialog'
@@ -64,8 +65,7 @@ const toolOptions = computed<SelectOption[]>(() => [{ value: 'general', label: '
 
 const typeOptions = computed<SelectOption[]>(() => ['issue', 'suggestion'].map((value) => ({ value, label: localize(`type.${value}`) })))
 
-// Email is optional
-const isValid = computed(() => tool.value !== '' && type.value !== '' && description.value !== '')
+const isValid = useComponentValidation(useTemplateRef('tool-ref'), useTemplateRef('type-ref'), useTemplateRef('email-ref'), useTemplateRef('description-ref'))
 
 const { submit, isSubmitting } = useSubmit(
   async () => {

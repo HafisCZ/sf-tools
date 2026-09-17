@@ -1,6 +1,5 @@
 # Vue migration
 
-- blacksmith.html - 2
 - request.html - 3
 - hydra.html - 4
 - idle.html - 4

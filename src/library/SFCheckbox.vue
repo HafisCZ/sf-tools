@@ -27,6 +27,13 @@ const props = defineProps<{
 
 const modelValue = defineModel<boolean>({ default: false })
 
+// A checkbox is always valid, this lets it go into useComponentValidation with the other inputs
+defineExpose({
+  get isValid() {
+    return true
+  }
+})
+
 const id = useId()
 
 const inputElement = useTemplateRef('input-ref')
