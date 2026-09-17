@@ -7,7 +7,7 @@ import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
 // Pages built by Vite: converted to Vue, or static pages styled with Tailwind. Everything else is served and copied as-is.
-const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra']
+const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle']
 
 const LEGACY_DIRECTORIES = ['js', 'css', 'res', 'vendor', 'endpoint']
 const LEGACY_FILES = ['CNAME', 'sitemap.txt']

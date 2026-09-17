@@ -57,6 +57,7 @@ declare const MODULE_VERSION_MAJOR: string
 // Filters which saved players and groups DatabaseManager.load reads
 type DatabaseProfile = Record<string, unknown>
 
+declare const SELF_PROFILE: DatabaseProfile
 declare const SELF_PROFILE_WITH_GROUP: DatabaseProfile
 declare const HYDRA_PROFILE: DatabaseProfile
 
@@ -97,6 +98,15 @@ type PlayerEntry = DatabaseEntry & {
   Pets?: {
     Levels: number[]
     Dungeons: number[]
+  }
+  // Arena Manager, by building in the order of the game
+  Idle?: {
+    Runes: number
+    Buildings?: number[]
+    Upgrades: {
+      Money: number[]
+      Speed: number[]
+    }
   }
 }
 
