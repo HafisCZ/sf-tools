@@ -1,7 +1,8 @@
 <template>
-  <label class="flex flex-col gap-1.5">
-    <span class="font-bold text-white">{{ props.label }}</span>
+  <div class="flex flex-col gap-1.5">
+    <label :for="id" class="font-bold text-white">{{ props.label }}</label>
     <input
+      :id="id"
       v-model="text"
       type="text"
       :inputmode="allowsDecimals ? 'decimal' : 'numeric'"
@@ -14,11 +15,11 @@
       @paste="handlePaste"
     />
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
-  </label>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, useId, watch } from 'vue'
 import { createDefaultNumberValidator, useValidation, type ValidationProps } from '@utils/validations'
 import SFValidation from './SFValidation.vue'
 
@@ -68,6 +69,8 @@ const BORDER_CLASSES = {
   error: 'border-red-400',
   warning: 'border-yellow-400'
 }
+
+const id = useId()
 
 // What the user typed, which can be a number in progress such as `-` or `1.`
 const typedText = ref(formatValue(modelValue.value))

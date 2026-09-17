@@ -1,12 +1,14 @@
 <template>
-  <label class="flex cursor-pointer items-center gap-2">
-    <input ref="input-ref" v-model="modelValue" type="checkbox" class="size-4 cursor-pointer accent-accent" />
-    <slot>{{ props.label }}</slot>
-  </label>
+  <div class="flex items-center gap-2">
+    <input :id="id" ref="input-ref" v-model="modelValue" type="checkbox" class="size-4 cursor-pointer accent-accent" />
+    <label :for="id" class="flex flex-1 cursor-pointer items-center">
+      <slot>{{ props.label }}</slot>
+    </label>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, useTemplateRef, watch } from 'vue'
+import { onMounted, useId, useTemplateRef, watch } from 'vue'
 
 defineOptions({
   name: 'SFCheckbox'
@@ -24,6 +26,8 @@ const props = defineProps<{
 }>()
 
 const modelValue = defineModel<boolean>({ default: false })
+
+const id = useId()
 
 const inputElement = useTemplateRef('input-ref')
 

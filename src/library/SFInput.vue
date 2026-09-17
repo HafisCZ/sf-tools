@@ -1,12 +1,13 @@
 <template>
-  <label class="flex flex-col gap-1.5">
-    <span class="font-bold text-white">{{ props.label }}</span>
-    <input v-model="modelValue" v-bind="$attrs" class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none placeholder:text-white/40" :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']" :aria-invalid="validationResult?.[0] === 'error'" @keydown="showValidation" />
+  <div class="flex flex-col gap-1.5">
+    <label :for="id" class="font-bold text-white">{{ props.label }}</label>
+    <input :id="id" v-model="modelValue" v-bind="$attrs" class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none placeholder:text-white/40" :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']" :aria-invalid="validationResult?.[0] === 'error'" @keydown="showValidation" />
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
-  </label>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { useId } from 'vue'
 import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
 import SFValidation from './SFValidation.vue'
 
@@ -41,6 +42,8 @@ const BORDER_CLASSES = {
   error: 'border-red-400',
   warning: 'border-yellow-400'
 }
+
+const id = useId()
 
 const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultValidator(props))
 
