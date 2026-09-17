@@ -17,6 +17,7 @@ import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon'
 import { faRecycle } from '@fortawesome/free-solid-svg-icons/faRecycle'
+import { faRightToBracket } from '@fortawesome/free-solid-svg-icons/faRightToBracket'
 import { faRotate } from '@fortawesome/free-solid-svg-icons/faRotate'
 import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons/faScrewdriverWrench'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
@@ -25,6 +26,7 @@ import { faSun } from '@fortawesome/free-solid-svg-icons/faSun'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons/faThumbsUp'
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons/faTriangleExclamation'
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy'
+import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 
 export const ICONS = {
@@ -46,6 +48,7 @@ export const ICONS = {
   message: faMessage,
   moon: faMoon,
   recycle: faRecycle,
+  'right-to-bracket': faRightToBracket,
   rotate: faRotate,
   'screwdriver-wrench': faScrewdriverWrench,
   spinner: faSpinner,
@@ -54,6 +57,7 @@ export const ICONS = {
   'thumbs-up': faThumbsUp,
   'triangle-exclamation': faTriangleExclamation,
   trophy: faTrophy,
+  'user-lock': faUserLock,
   xmark: faXmark
 }
 
