@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+    class="relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-md border font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
     :class="[VARIANT_CLASSES[props.variant], props.icon ? ICON_SIZE_CLASSES[props.size] : SIZE_CLASSES[props.size], { 'w-full': props.block }]"
     :disabled="!!props.disabled"
     :aria-busy="loading || undefined"
@@ -52,16 +52,17 @@ const props = withDefaults(
   }
 )
 
+// Every variant has a border, so a button is as tall as an input with the same padding
 const VARIANT_CLASSES = {
-  primary: 'bg-accent text-black enabled:hover:brightness-110',
-  secondary: 'bg-surface text-white/90 enabled:hover:bg-surface-hover',
-  ghost: 'text-white/90 enabled:hover:bg-surface-hover',
-  outline: 'border border-white/60 text-white/90 enabled:hover:border-white'
+  primary: 'border-transparent bg-accent text-black enabled:hover:brightness-110',
+  secondary: 'border-transparent bg-surface text-white/90 enabled:hover:bg-surface-hover',
+  ghost: 'border-transparent text-white/90 enabled:hover:bg-surface-hover',
+  outline: 'border-white/60 text-white/90 enabled:hover:border-white'
 }
 
 const SIZE_CLASSES = {
   sm: 'px-3 py-1.5 text-xs',
-  md: 'px-4 py-2.5'
+  md: 'px-4 py-2 leading-5'
 }
 
 const ICON_SIZE_CLASSES = {

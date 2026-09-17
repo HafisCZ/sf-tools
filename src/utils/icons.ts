@@ -8,10 +8,15 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons/faCircleExclamation'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons/faCircleUser'
+import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faExclamation } from '@fortawesome/free-solid-svg-icons/faExclamation'
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faFish } from '@fortawesome/free-solid-svg-icons/faFish'
+import { faFrog } from '@fortawesome/free-solid-svg-icons/faFrog'
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear'
+import { faHatWizard } from '@fortawesome/free-solid-svg-icons/faHatWizard'
+import { faHorse } from '@fortawesome/free-solid-svg-icons/faHorse'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons/faLanguage'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
@@ -27,6 +32,7 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons/faThumbsUp'
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons/faTriangleExclamation'
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock'
+import { faWallet } from '@fortawesome/free-solid-svg-icons/faWallet'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 
 export const ICONS = {
@@ -39,10 +45,15 @@ export const ICONS = {
   clock: faClock,
   copyright: faCopyright,
   discord: faDiscord,
+  dragon: faDragon,
   envelope: faEnvelope,
   exclamation: faExclamation,
   'eye-slash': faEyeSlash,
+  fish: faFish,
+  frog: faFrog,
   gear: faGear,
+  'hat-wizard': faHatWizard,
+  horse: faHorse,
   language: faLanguage,
   lock: faLock,
   message: faMessage,
@@ -58,6 +69,7 @@ export const ICONS = {
   'triangle-exclamation': faTriangleExclamation,
   trophy: faTrophy,
   'user-lock': faUserLock,
+  wallet: faWallet,
   xmark: faXmark
 }
 

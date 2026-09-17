@@ -40,6 +40,7 @@ import SFIcon from '@library/SFIcon.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import { type IconName } from '@utils/icons'
 import { useLocalize } from '@utils/localization'
+import { formatDuration } from '@utils/utils'
 
 defineOptions({
   name: 'PetCard'
@@ -88,5 +89,5 @@ const element = computed(() => Math.trunc(props.index / 20))
 
 const timeIcon = computed(() => TIME_ICONS[pet.value.time])
 
-const waitTimeText = computed(() => _formatDuration(props.waitTime, 2))
+const waitTimeText = computed(() => formatDuration(props.waitTime, 2))
 </script>

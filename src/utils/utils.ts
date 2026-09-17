@@ -62,3 +62,62 @@ export function sortDescending<TItem>(array: TItem[], map: (item: TItem) => numb
 export function getClassImageUrl(classId: CharacterClass) {
   return `/res/class${classId}.png`
 }
+
+/**
+ * Follows `path` into `value` one key at a time, and stops at the first missing value
+ */
+export function dig(value: unknown, ...path: string[]) {
+  let current = value
+
+  for (let i = 0; current && i < path.length; i++) {
+    current = Reflect.get(Object(current), path[i])
+  }
+
+  return current
+}
+
+/**
+ * Adds up `values`, starting from `base`
+ */
+export function sum(values: number[], base = 0) {
+  return values.reduce((total, value) => total + value, base)
+}
+
+/**
+ * Takes `length` items from `array` starting at `begin`
+ */
+export function sliceLength<TItem>(array: TItem[], begin: number, length: number) {
+  return array.slice(begin, begin + length)
+}
+
+/**
+ * Leaves out the falsy items of `array`
+ */
+export function compact<TItem>(array: TItem[]) {
+  return array.filter((item): item is Exclude<TItem, false | 0 | '' | null | undefined> => Boolean(item))
+}
+
+/**
+ * Joins `parts` with commas and the last one with `and`, such as `1 h, 2 m and 3 s`
+ */
+export function joinSentence(parts: string[]) {
+  const last = parts.length > 1 ? ` and ${parts.pop()}` : ''
+
+  return parts.join(', ') + last
+}
+
+/**
+ * Formats a duration in milliseconds from weeks down to milliseconds, such as `1 h, 2 m and 3 s`, with at most `limit` units
+ */
+export function formatDuration(milliseconds: number, limit = 4) {
+  let remaining = milliseconds
+
+  const millisecondsPart = remaining % 1000
+  const seconds = ((remaining -= millisecondsPart) / 1000) % 60
+  const minutes = ((remaining -= seconds * 1000) / 60000) % 60
+  const hours = ((remaining -= minutes * 60000) / 3600000) % 24
+  const days = ((remaining -= hours * 3600000) / 86400000) % 7
+  const weeks = (remaining -= days * 86400000) / (7 * 86400000)
+
+  return joinSentence([weeks > 0 ? `${weeks} w` : '', days > 0 ? `${days} d` : '', hours > 0 ? `${hours} h` : '', minutes > 0 ? `${minutes} m` : '', seconds > 0 ? `${seconds} s` : '', millisecondsPart > 0 ? `${millisecondsPart} ms` : ''].filter((part) => part).slice(0, limit))
+}

@@ -1,6 +1,5 @@
 # Vue migration
 
-- hydra.html - 4
 - idle.html - 4
 - fortress.html - 4
 - hellevator.html - 5

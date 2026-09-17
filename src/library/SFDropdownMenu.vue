@@ -78,12 +78,12 @@ const style = computed(() => {
   return { top: `${top}px`, left: `${left}px`, width }
 })
 
-// Focus the first item once the menu is visible, hidden elements can't take focus
+// Focus the first field or item once the menu is visible, hidden elements can't take focus
 watch(
   size,
   (value, previous) => {
     if (value && !previous) {
-      getMenuItems().at(0)?.focus()
+      containerElement.value?.querySelector<HTMLElement>('input, [role="menuitem"]')?.focus()
     }
   },
   { flush: 'post' }
@@ -110,6 +110,9 @@ function getMenuItems() {
 }
 
 function moveFocus(event: KeyboardEvent) {
+  // Home and End move the caret inside a field
+  if (event.target instanceof HTMLInputElement && (event.key === 'Home' || event.key === 'End')) return
+
   const menuItems = getMenuItems()
   const index = menuItems.findIndex((element) => element === document.activeElement)
 

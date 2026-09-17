@@ -1,167 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scheme-dark">
     <head>
         <title>SFTools - Guild Hydra Simulator</title>
 
         <meta charset="utf-8">
+        <meta name="description" content="Collection of tools for Shakes & Fidget">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="css/pages/hydra.css"/>
+        <script src="js/util.js" vite-ignore></script>
+        <script src="js/playa/calculations.js" vite-ignore></script>
 
-        <script src="vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="vendor/js/semantic.min.js"></script>
-        <script src="vendor/js/sentry.bundle.min.js"></script>
-        <script src="vendor/js/chart.min.js"></script>
-
-        <script src="js/util.js"></script>
-        <script src="js/playa/calculations.js"></script>
-        
-        <script src="js/core/util.js"></script>
-        <script src="js/core/models.js"></script>
-        <script src="js/core/core.js"></script>
-        <script src="js/playa/servers.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/core/database.js"></script>
-        <script src="js/script/config.js"></script>
-        <script src="js/script/ast.js"></script>
-        <script src="js/script/core.js"></script>
-        <script src="js/views/base.js"></script>
-        <script src="endpoint/endpoint.js"></script>
-
-        <script src="js/changelog.js"></script>
-        <script src="js/sim/base.js"></script>
-        <script src="js/sim/data/hydra.js"></script>
-        <script src="js/sim/editor.js"></script>
-        <script src="js/sim/utils.js"></script>
-        
-        <script src="js/pages/hydra.js"></script>
+        <script src="js/core/util.js" vite-ignore></script>
+        <script src="js/core/models.js" vite-ignore></script>
+        <script src="js/core/core.js" vite-ignore></script>
+        <script src="js/core/database.js" vite-ignore></script>
+        <script src="js/script/config.js" vite-ignore></script>
+        <script src="js/script/ast.js" vite-ignore></script>
+        <script src="js/script/core.js" vite-ignore></script>
+        <script src="js/changelog.js" vite-ignore></script>
+        <script src="js/sim/base.js" vite-ignore></script>
+        <script src="js/playa/servers.js" vite-ignore></script>
     </head>
-    <body class="inverted">
-        <div class="ui fixed inverted borderless huge menu" style="z-index: 3;">
-            <div class="header item"><a href="index.html">SFTools</a></div>
-        </div>
-
-        <div class="ui main inverted container">
-            <div class="ui two columns stackable grid">
-                <!-- Player edit field -->
-                <div class="column">
-                    <div class="ui inverted form" id="sim-editor">
-                        <div class="flex flex-col gap-2">
-                            <div class="ui grey inverted segment !p-2 !m-0">
-                                <div class="two fields">
-                                    <div class="field">
-                                        <label data-intl="hydra.player_count"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="PlayerCount" placeholder="10 - 50">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="editor.level"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="Level" placeholder="1 - 600">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="five fields !mb-0">
-                                    <div class="field">
-                                        <label data-intl="hydra.main"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="Main">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="hydra.side1"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="Side1">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="hydra.side2"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="Side2">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="general.attribute4"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="Constitution">
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <label data-intl="general.attribute5"></label>
-                                        <div class="ui inverted centered input">
-                                            <input type="text" data-path="Luck">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ui grey inverted segment !p-2 !m-0">
-                                <div class="field !mb-0">
-                                    <label data-intl="hydra.hydra"></label>
-                                    <div class="ui search selection inverted dropdown" data-path="Hydra">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="ui grid">
-                        <div class="row">
-                            <div class="eight wide column">
-                                <div class="ui small inverted form">
-                                    <div class="two fields !mb-0">
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads" data-inverted="">
-                                            <div class="ui inverted centered input">
-                                                <input type="text" id="sim-threads" value="4">
-                                            </div>
-                                        </div>
-                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations" data-inverted="">
-                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <div class="ui inverted centered input">
-                                                <input type="text" id="sim-iterations" value="2500">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="eight wide column">
-                                <button class="ui fluid basic inverted button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
-                            </div>
-                        </div>
-                        <div class="row !p-0">
-                            <div class="sixteen wide column">
-                                <hr/>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-left: 1em; padding-right: 1em">
-                            <div id="results" class="column" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-                                <!-- Results -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-item" data-intl="hydra.footer#"></div>
-            <div class="footer-item">
-                <span class="pointer-events-all !text-orange cursor-pointer" data-op="report">
-                    <i class="comment alternate icon"></i>
-                    <span data-intl="index.footer.report"></span>
-                </span>
-                <br>
-                <a class="pointer-events-all !text-orange cursor-pointer" href="https://home.sfgame.net" target="_blank">
-                    <i class="shopping basket icon"></i>
-                    <span data-intl="index.footer.webshop#"></span>
-                </a>
-                <br>
-                <i class="copyright outline icon"></i>2019 - 2025 | mar21 | <i class="discord icon"></i> mar21 | <i class="mail icon"></i> support@mar21.eu
-            </div>
-        </div>
+    <body class="bg-page text-sm text-white/90">
+        <div id="app"></div>
+        <script type="module" src="/src/entrypoints/hydra.ts"></script>
     </body>
 </html>
