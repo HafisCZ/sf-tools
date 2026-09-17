@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:wsl": "WATCH_POLLING=1 vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "vue-tsc -b",

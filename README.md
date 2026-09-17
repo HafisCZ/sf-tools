@@ -39,6 +39,7 @@ bun install
 | Command                | What it does                                                      |
 | ---------------------- | ----------------------------------------------------------------- |
 | `bun run dev`          | Starts the dev server                                             |
+| `bun run dev:wsl`      | Starts the dev server with polling, for WSL on a Windows disk     |
 | `bun run build`        | Type checks and builds the site into `dist/`                      |
 | `bun run preview`      | Serves the built `dist/` to check a production build              |
 | `bun run typecheck`    | Type checks only                                                  |

@@ -90,7 +90,9 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ['**/res/**', '**/endpoint/**', '**/vendor/**']
+      // WSL gets no file events when Windows programs change files under /mnt, so dev:wsl checks the files on an interval instead
+      usePolling: process.env.WATCH_POLLING === '1',
+      ignored: ['**/res/**', '**/endpoint/**', '**/vendor/**', '**/dist/**']
     }
   },
   optimizeDeps: {
