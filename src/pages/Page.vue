@@ -8,7 +8,7 @@
   </header>
 
   <!-- Same width as the legacy Fomantic container (1127px) and the same 70px from the top -->
-  <main class="mx-auto w-full max-w-[calc(1127px+2rem)] px-4 pt-[70px] pb-16">
+  <main class="mx-auto w-full px-4 pt-[70px] pb-16" :class="props.wide ? 'md:max-w-[calc(80vw+2rem)]' : 'max-w-[calc(1127px+2rem)]'">
     <slot />
   </main>
 </template>
@@ -26,6 +26,10 @@ const props = withDefaults(
      * Gives the header a background and shadow. Turn it off to show the header over the page content.
      */
     opaque?: boolean
+    /**
+     * Uses 80% of the window width instead of the 1127px container, for pages with wide tables
+     */
+    wide?: boolean
   }>(),
   {
     opaque: true

@@ -1,22 +1,50 @@
 <template>
   <label class="flex flex-col gap-1.5">
     <span class="font-bold text-white">{{ props.label }}</span>
-    <input v-model="modelValue" v-bind="$attrs" class="w-full rounded-md border border-line bg-surface px-3 py-2 leading-5 text-white/90 outline-none placeholder:text-white/40 focus:border-accent" />
+    <input v-model="modelValue" v-bind="$attrs" class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none placeholder:text-white/40" :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']" :aria-invalid="validationResult?.[0] === 'error'" @keydown="showValidation" />
+    <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
   </label>
 </template>
 
 <script setup lang="ts">
+import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
+import SFValidation from './SFValidation.vue'
+
 defineOptions({
   name: 'SFInput',
   inheritAttrs: false
 })
 
-const props = defineProps<{
-  /**
-   * Text shown above the field, also its accessible name
-   */
-  label: string
-}>()
+const props = defineProps<
+  ValidationProps<string> & {
+    /**
+     * Text shown above the field, also its accessible name
+     */
+    label: string
+    /**
+     * Shows an error while the field is empty
+     */
+    required?: boolean
+  }
+>()
 
 const modelValue = defineModel<string>({ required: true })
+
+defineExpose({
+  get isValid() {
+    return isValid.value
+  }
+})
+
+const BORDER_CLASSES = {
+  default: 'border-line focus:border-accent',
+  error: 'border-red-400',
+  warning: 'border-yellow-400'
+}
+
+const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultValidator(props))
+
+function showValidation() {
+  validationVisible.value = true
+}
 </script>

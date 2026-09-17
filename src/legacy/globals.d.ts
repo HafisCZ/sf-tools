@@ -103,6 +103,27 @@ declare class DatabaseManager {
   static getGroup(identifier: string): DatabaseHistory<DatabaseEntry> | undefined
 }
 
+// js/core/models.js
+
+type BlacksmithResources = {
+  Metal: number
+  Crystal: number
+}
+
+declare class ItemModel {
+  static empty(): ItemModel
+  Type: number
+  PicIndex: number
+  Attributes: number[]
+  AttributeTypes: number[]
+  readonly SellPrice: {
+    Gold: number
+  }
+  upgradeTo(upgrades: number): void
+  getBlacksmithPrice(): BlacksmithResources
+  getBlacksmithUpgradePrice(): BlacksmithResources
+}
+
 // js/playa/pets.js
 
 type Pet = {

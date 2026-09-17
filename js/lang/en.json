@@ -1841,5 +1841,10 @@
         "303": {
             "name": "Lively Necromancer Guild"
         }
+    },
+    "validations": {
+        "empty": "This field is required",
+        "number_min": "Value has to be at least #{min}",
+        "number_max": "Value has to be at most #{max}"
     }
 }
