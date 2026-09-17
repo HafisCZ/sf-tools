@@ -13,7 +13,7 @@
       @click="toggle"
     >
       <img v-if="selectedOption?.image" :src="selectedOption.image" alt="" class="size-5 object-contain" />
-      <span :id="valueId">{{ selectedOption?.label }}</span>
+      <span :id="valueId" :class="{ 'text-accent': selectedOption?.accent }">{{ selectedOption?.label }}</span>
       <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
     </button>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
@@ -21,8 +21,8 @@
       <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" @close="close">
         <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @keydown.enter.prevent="selectFirstMatch" />
         <ul role="menu" class="flex flex-col">
-          <li v-for="option in matchingOptions" :key="option.value" role="none">
-            <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue }" @click="select(option.value)">
+          <li v-for="(option, index) in matchingOptions" :key="index" role="none">
+            <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue || option.accent }" @click="select(option.value)">
               <img v-if="option.image" :src="option.image" alt="" class="size-5 object-contain" />
               {{ option.label }}
             </button>
@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="TValue">
 import { computed, ref, useId, useTemplateRef, watch } from 'vue'
 import { type SelectOption } from '@utils/components'
 import { useInert } from '@utils/interactions'
@@ -48,7 +48,7 @@ defineOptions({
 })
 
 const props = defineProps<
-  ValidationProps<string> & {
+  ValidationProps<TValue> & {
     /**
      * Text shown above the field, also its accessible name
      */
@@ -56,7 +56,7 @@ const props = defineProps<
     /**
      * Options to pick from
      */
-    options: SelectOption[]
+    options: SelectOption<TValue>[]
     /**
      * Shows an error while no option is picked
      */
@@ -68,7 +68,7 @@ const props = defineProps<
   }
 >()
 
-const modelValue = defineModel<string>({ required: true })
+const modelValue = defineModel<TValue>({ required: true })
 
 defineExpose({
   get isValid() {
@@ -125,7 +125,7 @@ function close() {
   open.value = false
 }
 
-function select(value: string) {
+function select(value: TValue) {
   modelValue.value = value
 
   validationVisible.value = true

@@ -1,6 +1,6 @@
 <template>
   <div ref="container-ref" class="flex">
-    <SFButton variant="ghost" icon aria-haspopup="menu" :aria-expanded="open" :aria-label="props.label" @click="toggle">
+    <SFButton :variant="props.variant" icon class="min-h-9.5 min-w-9.5" aria-haspopup="menu" :aria-expanded="open" :aria-label="props.label" @click="toggle">
       <slot />
     </SFButton>
     <Teleport to="body">
@@ -35,9 +35,14 @@ const props = withDefaults(
      * Direction the menu grows in: `right` starts at the trigger's left edge, `left` ends at its right edge
      */
     float?: 'right' | 'left'
+    /**
+     * Visual style of the trigger button, same as SFButton's `variant`
+     */
+    variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
   }>(),
   {
-    float: 'right'
+    float: 'right',
+    variant: 'ghost'
   }
 )
 

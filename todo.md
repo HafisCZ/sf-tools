@@ -1,6 +1,5 @@
 # Vue migration
 
-- hellevator.html - 5
 - underworld.html - 5
 - raids.html - 5
 - guilds.html - 5

@@ -54,6 +54,23 @@ declare class Logger {
 declare const MODULE_VERSION: string
 declare const MODULE_VERSION_MAJOR: string
 
+declare class Exporter {
+  // Current date and time for file names, such as 2025_01_31_12_30_00_000
+  static readonly time: string
+  // Downloads `content` as a `<name>.json` file
+  static json(content: unknown, name?: string): void
+}
+
+// BroadcastChannel between tabs, messages are `{ type, data }`
+declare class Broadcast {
+  // Opens a channel with a random token when none is given
+  constructor(token?: string)
+  readonly token: string
+  on(type: string, callback: (data: unknown) => void): void
+  send(type: string, data: unknown): void
+  close(): void
+}
+
 // Filters which saved players and groups DatabaseManager.load reads
 type DatabaseProfile = Record<string, unknown>
 
@@ -147,8 +164,13 @@ type BlacksmithResources = {
 
 declare class ItemModel {
   static empty(): ItemModel
+  // Clears the rune value when the rune is not a damage rune
+  static forceCorrectRune(item: ItemModel | undefined): void
   Type: number
   PicIndex: number
+  DamageMin: number
+  DamageMax: number
+  HasEnchantment: boolean
   Attributes: number[]
   AttributeTypes: number[]
   readonly SellPrice: {
@@ -157,11 +179,46 @@ declare class ItemModel {
   upgradeTo(upgrades: number): void
   getBlacksmithPrice(): BlacksmithResources
   getBlacksmithUpgradePrice(): BlacksmithResources
+  // Copy with the `from` attribute type replaced by `to`, only for equipment unless `force` is set
+  morph(from: number, to: number, force?: boolean): ItemModel
 }
 
+type Attribute = MainAttribute | 'Constitution' | 'Luck'
+
+type PlayerAttribute = {
+  Base: number
+  Total: number
+  // Pre-calculated bonus, evaluateCommon calculates it again when it is missing
+  Bonus?: number
+}
+
+// Only the fields the Vue code uses. A model created without data has none of them.
 declare class PlayerModel {
+  static ATTRIBUTES: Attribute[]
+  static ATTRIBUTE_TO_TYPE: Record<Attribute, number>
   // Main attribute of a class first, then its two side attributes
   static ATTRIBUTE_ORDER_BY_ATTRIBUTE: Record<MainAttribute, MainAttribute[]>
+  // Reads raw player data from the game
+  constructor(data?: unknown)
+  Class: CharacterClass
+  Level: number
+  Armor: number
+  BlockChance?: number
+  Strength: PlayerAttribute
+  Dexterity: PlayerAttribute
+  Intelligence: PlayerAttribute
+  Constitution: PlayerAttribute
+  Luck: PlayerAttribute
+  Items: Record<string, ItemModel> & {
+    Wpn1: ItemModel
+    Wpn2: ItemModel
+  }
+  Runes: Record<string, number>
+  Pets: Record<string, number>
+  Potions: { Type: number; Size: number }[] & { Life?: number }
+  Companions?: Record<string, PlayerModel>
+  // Calculates the values that depend on class, items, pets and potions. A companion takes them from the player it belongs to.
+  evaluateCommon(player?: PlayerModel): void
 }
 
 // js/sim/base.js
@@ -171,17 +228,52 @@ type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
 type MainAttribute = 'Strength' | 'Dexterity' | 'Intelligence'
 
+declare const WARRIOR: 1
+declare const ASSASSIN: 4
+
+declare const RUNE_FIRE_DAMAGE: 40
+declare const RUNE_COLD_DAMAGE: 41
+declare const RUNE_LIGHTNING_DAMAGE: 42
+// The damage rune the simulator picks against each enemy
+declare const RUNE_AUTO_DAMAGE: 999
+
 type ClassConfig = {
   ID: CharacterClass
   Attribute: MainAttribute
   MaximumDamageReduction: number
+  WeaponMultiplier: number
+  // Chance from 0 to 1 to block or evade an attack
+  SkipChance: number
 }
 
 declare const CONFIG: {
   // Every enabled class, ordered by ID
   classes(): ClassConfig[]
+  // IDs of every enabled class
+  ids(): CharacterClass[]
   // Index 0 is the general config, so a class ID reads that class
   fromID(index: number): ClassConfig
+}
+
+// Fight bonuses of every snack by its key, such as `1` or `1_legendary`
+declare const SNACKS: Record<string, Record<string, number>>
+
+// js/sim/data/base.js
+
+type Monster = {
+  Level: number
+  Class: CharacterClass
+  Items: {
+    Wpn1: {
+      AttributeTypes: Record<number, number>
+    }
+  }
+}
+
+declare class MonsterGenerator {
+  static MONSTER_NORMAL: symbol
+  static MONSTER_RAID: symbol
+  static create(type: symbol, level: number, classId: CharacterClass, runeType?: number, runeValue?: number): Monster
 }
 
 // js/playa/pets.js

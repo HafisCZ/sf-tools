@@ -4,7 +4,7 @@
       <ul role="menu" class="flex flex-col">
         <li v-for="item in props.items" :key="item.label" role="none">
           <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': item.active }" @click="select(item)">
-            <img v-if="item.image" :src="item.image" alt="" class="h-4 w-6 rounded-sm object-cover" />
+            <img v-if="item.image" :src="item.image" alt="" class="h-4 w-6 rounded-sm object-contain" />
             {{ item.label }}
           </button>
         </li>

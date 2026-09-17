@@ -69,11 +69,13 @@ export function useComponentValidation(...refs: Readonly<Ref<ValidatedComponent[
 }
 
 /**
- * Rules of a text input: `required`
+ * Rules of an input of any kind of value: `required`, where blank text counts as empty
  */
-export function createDefaultValidator(props: { required?: boolean }): Validator<string> {
+export function createDefaultValidator<TValue>(props: { required?: boolean }): Validator<TValue> {
   return (value) => {
-    if (props.required && !value?.trim()) {
+    const isEmpty = value === null || value === undefined || (typeof value === 'string' && !value.trim())
+
+    if (props.required && isEmpty) {
       return validationError(globalLocalize('validations.empty'))
     }
 
