@@ -14,7 +14,7 @@
     >
       <img v-if="selectedOption?.image" :src="selectedOption.image" alt="" class="size-5 object-contain" />
       <span :id="valueId">{{ selectedOption?.label }}</span>
-      <SFIcon name="chevron-down" class="ml-auto text-white/60" />
+      <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
     </button>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <Teleport to="body">
