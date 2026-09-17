@@ -58,10 +58,20 @@ declare const MODULE_VERSION_MAJOR: string
 type DatabaseProfile = Record<string, unknown>
 
 declare const SELF_PROFILE_WITH_GROUP: DatabaseProfile
+declare const HYDRA_PROFILE: DatabaseProfile
+
+// js/util.js
+
+// Runs simulations in web workers built from js/sim/base.js and js/sim/<type>.js, with the loader showing progress
+declare class WorkerBatch<TResult> {
+  constructor(type: string)
+  add(callback: (data: TResult) => void, params: object): void
+  // Resolves with the duration in milliseconds
+  run(instances: number): Promise<number>
+}
 
 // js/core/util.js
 
-declare function _formatDuration(ms: number, limit?: number): string
 declare function _formatDate(date: number, showDate?: boolean, showTime?: boolean): string
 declare function _formatPrefix(prefix: string): string
 declare function _timestampOffset(date?: Date): number
@@ -90,17 +100,31 @@ type PlayerEntry = DatabaseEntry & {
   }
 }
 
+// Player loaded with all of its data, such as from DatabaseManager.getPlayer with a timestamp
+type PlayerData = PlayerEntry & Record<MainAttribute | 'Constitution' | 'Luck', { Total: number }>
+
+type GroupEntry = DatabaseEntry & {
+  Members: string[]
+  MembersTotal: number
+  MembersPresent: number
+  Hydra?: number
+}
+
 // Every saved state of one player or group, by timestamp
 type DatabaseHistory<TEntry> = Record<number, TEntry> & {
   Latest: TEntry
+  // Every saved state, newest first
+  List: TEntry[]
 }
 
 declare class DatabaseManager {
+  static Groups: Record<string, DatabaseHistory<GroupEntry>>
   static load(profile: DatabaseProfile): Promise<void>
   static import(text: string, timestamp: number, timestampOffset?: number, flags?: { temporary?: boolean }): Promise<void>
   static getLatestPlayers(onlyOwn?: boolean): PlayerEntry[]
   static isPlayer(identifier: string): boolean
   static getPlayer(identifier: string): DatabaseHistory<PlayerEntry> | undefined
+  static getPlayer(identifier: string, timestamp: number): PlayerData | undefined
   static getGroup(identifier: string): DatabaseHistory<DatabaseEntry> | undefined
 }
 
@@ -125,10 +149,30 @@ declare class ItemModel {
   getBlacksmithUpgradePrice(): BlacksmithResources
 }
 
+declare class PlayerModel {
+  // Main attribute of a class first, then its two side attributes
+  static ATTRIBUTE_ORDER_BY_ATTRIBUTE: Record<MainAttribute, MainAttribute[]>
+}
+
 // js/sim/base.js
 
 // From WARRIOR (1) to PLAGUEDOCTOR (12)
 type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+
+type MainAttribute = 'Strength' | 'Dexterity' | 'Intelligence'
+
+type ClassConfig = {
+  ID: CharacterClass
+  Attribute: MainAttribute
+  MaximumDamageReduction: number
+}
+
+declare const CONFIG: {
+  // Every enabled class, ordered by ID
+  classes(): ClassConfig[]
+  // Index 0 is the general config, so a class ID reads that class
+  fromID(index: number): ClassConfig
+}
 
 // js/playa/pets.js
 

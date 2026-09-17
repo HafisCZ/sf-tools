@@ -4,6 +4,7 @@ import { loadTranslations } from '@utils/localization'
 import { createVueApp } from '@utils/vue'
 import AnnouncementDialog from './dialogs/AnnouncementDialog.vue'
 import ChangelogDialog from './dialogs/ChangelogDialog.vue'
+import SimulatorShopDialog from './dialogs/SimulatorShopDialog.vue'
 import TermsDialog from './dialogs/TermsDialog.vue'
 
 // Keep in sync with TermsAndConditionsDialog.VERSION in js/views/base.js
@@ -19,14 +20,14 @@ export async function createPage(metadata: SiteMetadata, component: Component) {
 
   createVueApp(component).mount('#app')
 
-  openStartupDialogs()
+  openStartupDialogs(metadata)
 
   Site.run()
 }
 
 // Queues the dialogs every page shows on load, with the same checks and order as the
 // DOMContentLoaded handler in js/views/base.js
-function openStartupDialogs() {
+function openStartupDialogs(metadata: SiteMetadata) {
   if (!StoreWrapper.isAvailable()) return
 
   if (Site.options.terms_accepted !== TERMS_VERSION) {
@@ -47,5 +48,9 @@ function openStartupDialogs() {
 
   for (const announcement of announcements) {
     useDialog(AnnouncementDialog, { announcement })
+  }
+
+  if (metadata.type === 'simulator' && Site.isEvent('april_fools_day')) {
+    useDialog(SimulatorShopDialog, {})
   }
 }
