@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
-      <div class="flex items-end gap-2">
+      <div v-if="!props.nameHidden" class="flex items-end gap-2">
         <div class="min-w-0 flex-1">
           <SFInput ref="name-ref" v-model="name" :label="localize('name')" :readonly="props.nameReadonly" />
         </div>
@@ -17,7 +17,7 @@
         </SFTooltip>
       </div>
       <div class="grid grid-cols-2 gap-[14px]">
-        <SFSelect ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search />
+        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search />
         <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered />
       </div>
       <div v-if="props.snacks" class="grid grid-cols-2 gap-[14px]">
@@ -95,6 +95,14 @@ const props = defineProps<{
    * Makes the name field read only
    */
   nameReadonly?: boolean
+  /**
+   * Hides the name field and the buttons next to it, and leaves the name out of the player
+   */
+  nameHidden?: boolean
+  /**
+   * Hides the class field and leaves the class out of the player
+   */
+  classHidden?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -218,8 +226,14 @@ const runeOptions = computed<SelectOption[]>(() => [
 
 // Same order as the fields of legacy's editor, which is the order they are read in
 const fields: EditorField[] = [
-  createTextField('Name', name),
-  createSelectField('Class', classId, () => classOptions.value, String(WARRIOR)),
+  createTextField('Name', name, () => !props.nameHidden),
+  createSelectField(
+    'Class',
+    classId,
+    () => classOptions.value,
+    String(WARRIOR),
+    () => !props.classHidden
+  ),
   createNumberField('Level', level),
   createNumberField('Armor', armor),
   createSelectField(
@@ -270,7 +284,7 @@ function createWeaponFields(): WeaponFields {
   }
 }
 
-function createTextField(path: string, model: Ref<string>): EditorField {
+function createTextField(path: string, model: Ref<string>, isVisible = () => true): EditorField {
   return {
     path,
     getText: () => model.value,
@@ -280,7 +294,7 @@ function createTextField(path: string, model: Ref<string>): EditorField {
     reset: () => {
       model.value = ''
     },
-    isVisible: () => true
+    isVisible
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-2">
     <input :id="id" ref="input-ref" v-model="modelValue" type="checkbox" class="size-4 cursor-pointer accent-accent" />
-    <label :for="id" class="flex flex-1 cursor-pointer items-center">
+    <label v-if="props.label || slots.default" :for="id" class="flex flex-1 cursor-pointer items-center">
       <slot>{{ props.label }}</slot>
     </label>
   </div>
@@ -23,6 +23,10 @@ const props = defineProps<{
    * Shows the mixed state, such as a "select all" checkbox with only some items checked
    */
   indeterminate?: boolean
+}>()
+
+const slots = defineSlots<{
+  default?(): unknown
 }>()
 
 const modelValue = defineModel<boolean>({ default: false })

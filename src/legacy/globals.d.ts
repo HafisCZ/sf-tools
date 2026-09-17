@@ -77,6 +77,7 @@ type DatabaseProfile = Record<string, unknown>
 declare const SELF_PROFILE: DatabaseProfile
 declare const SELF_PROFILE_WITH_GROUP: DatabaseProfile
 declare const HYDRA_PROFILE: DatabaseProfile
+declare const FIGHT_SIMULATOR_PROFILE: DatabaseProfile
 
 // js/util.js
 
@@ -200,6 +201,7 @@ declare class PlayerModel {
   static ATTRIBUTE_ORDER_BY_ATTRIBUTE: Record<MainAttribute, MainAttribute[]>
   // Reads raw player data from the game
   constructor(data?: unknown)
+  Name: string
   Class: CharacterClass
   Level: number
   Armor: number
@@ -219,6 +221,11 @@ declare class PlayerModel {
   Companions?: Record<string, PlayerModel>
   // Calculates the values that depend on class, items, pets and potions. A companion takes them from the player it belongs to.
   evaluateCommon(player?: PlayerModel): void
+}
+
+declare class ModelUtils {
+  // Player in the shape the simulator pages copy and paste
+  static toSimulatorData(model: PlayerModel, includeCompanions?: boolean): unknown
 }
 
 // js/sim/base.js
@@ -275,6 +282,11 @@ declare class MonsterGenerator {
   static MONSTER_RAID: symbol
   static create(type: symbol, level: number, classId: CharacterClass, runeType?: number, runeValue?: number): Monster
 }
+
+// js/playa/monsters.js
+
+// Name of an underworld unit by its kind: goblin, troll and keeper
+declare const NAME_UNIT_UNDERWORLD: Record<number, string>
 
 // js/playa/pets.js
 
