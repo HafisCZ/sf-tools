@@ -1,55 +1,45 @@
 <template>
-  <div ref="container-ref" class="absolute top-[70px] left-7 z-[2] w-[300px]">
-    <SFButton block aria-haspopup="menu" :aria-expanded="open" @click="toggle">
+  <div class="absolute top-[70px] left-7 z-[2] flex w-[300px] flex-col rounded-md bg-surface/60 shadow-xl backdrop-blur-md">
+    <SFButton variant="ghost" block :aria-expanded="open" :aria-controls="panelId" @click="toggle">
       <SFIcon name="rotate" />
       {{ localize(`poll.${props.type}`) }}
-      <SFIcon name="chevron-down" class="ml-auto text-white/60" />
+      <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
     </SFButton>
-    <Teleport to="body">
-      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" @close="close">
-        <div role="menu" class="flex flex-col">
-          <div v-for="entry in entries" :key="entry.LinkId" role="none" class="group relative">
-            <button type="button" role="menuitem" class="w-full cursor-pointer rounded py-2 pr-10 pl-3 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
-              <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
-              <span class="hidden text-white/60 group-hover:inline group-has-[:focus-visible]:inline">{{ describeEntry(entry) }}</span>
-            </button>
-            <button
-              type="button"
-              role="menuitem"
-              class="absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer rounded p-1.5 text-white/60 opacity-0 outline-none group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 hover:bg-page hover:text-white focus-visible:bg-page focus-visible:text-white"
-              @click="hideEntry(entry)"
-            >
-              <SFIcon name="eye-slash" />
-            </button>
-          </div>
-          <div v-if="entries.length > 0" role="separator" class="my-1 border-t border-line" />
-          <div role="none" class="flex">
-            <button type="button" role="menuitem" class="flex-1 cursor-pointer rounded px-3 py-2 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="importEndpoint">
-              {{ localize('game') }}
-            </button>
-            <button type="button" role="menuitem" class="flex-1 cursor-pointer rounded px-3 py-2 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="importFiles">
-              {{ localize('file') }}
-            </button>
-            <button type="button" role="menuitem" class="cursor-pointer rounded px-3 py-2 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
-              <SFIcon name="gear" />
-            </button>
-          </div>
-        </div>
-      </SFDropdownMenu>
-    </Teleport>
+    <div v-if="open" :id="panelId" class="flex max-h-96 flex-col overflow-y-auto border-t border-line p-1">
+      <div v-for="entry in entries" :key="entry.LinkId" class="group relative">
+        <button type="button" class="w-full cursor-pointer rounded py-2 pr-10 pl-3 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
+          <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
+          <span class="hidden text-white/60 group-hover:inline group-has-[:focus-visible]:inline">{{ describeEntry(entry) }}</span>
+        </button>
+        <span class="absolute top-1/2 right-1 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100">
+          <SFButton variant="ghost" size="sm" icon @click="hideEntry(entry)">
+            <SFIcon name="eye-slash" />
+          </SFButton>
+        </span>
+      </div>
+      <div v-if="entries.length > 0" class="my-1 border-t border-line" />
+      <div class="flex items-center">
+        <SFButton variant="ghost" size="sm" class="flex-1" @click="importEndpoint">
+          {{ localize('game') }}
+        </SFButton>
+        <SFButton variant="ghost" size="sm" class="flex-1" @click="importFiles">
+          {{ localize('file') }}
+        </SFButton>
+        <SFButton variant="ghost" icon :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
+          <SFIcon name="gear" />
+        </SFButton>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts" generic="TEntry extends PlayerEntry | DatabaseEntry">
-import { ref, shallowRef, useTemplateRef, watch } from 'vue'
+import { ref, shallowRef, useId } from 'vue'
 import SFButton from '@library/SFButton.vue'
-import SFDropdownMenu from '@library/SFDropdownMenu.vue'
 import SFIcon from '@library/SFIcon.vue'
 import { useDialog, useFilePicker, useSimpleDialog } from '@utils/dialogs'
-import { useInert } from '@utils/interactions'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
-import { useAnimationFramePosition } from '@utils/position'
 import { useErrorToast } from '@utils/toasts'
 import { getErrorMessage } from '@utils/utils'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
@@ -97,25 +87,10 @@ const options = new OptionsHandler<IntegrationOptions>('integration', {
   ignored_duration: 0
 })
 
+const panelId = useId()
+
 const open = ref(false)
 const entries = shallowRef<TEntry[]>([])
-
-const containerElement = useTemplateRef('container-ref')
-
-const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
-
-useInert(open)
-
-// Return focus to the trigger unless the user already moved it somewhere else
-watch(
-  open,
-  (value) => {
-    if (!value && document.activeElement === document.body) {
-      containerElement.value?.querySelector('button')?.focus()
-    }
-  },
-  { flush: 'post' }
-)
 
 function toggle() {
   if (open.value) {
@@ -177,14 +152,9 @@ function describeEntry(entry: TEntry) {
 
 function selectEntry(entry: TEntry) {
   emit('select', entry)
-
-  close()
 }
 
-// The menu closes for the confirmation and comes back once it is answered
 function hideEntry(entry: TEntry) {
-  close()
-
   useSimpleDialog(
     {
       title: localize('hide.title'),
@@ -194,17 +164,12 @@ function hideEntry(entry: TEntry) {
       onAccept: () => {
         options.ignored_identifiers = [...options.ignored_identifiers, entry.LinkId]
         entries.value = entries.value.filter((item) => item !== entry)
-      },
-      callback: () => {
-        open.value = true
       }
     }
   )
 }
 
 function importEndpoint() {
-  close()
-
   useDialog(
     EndpointDialog,
     { allowTemporary: true },
@@ -219,8 +184,6 @@ function importEndpoint() {
 }
 
 function importFiles() {
-  close()
-
   useFilePicker({
     accept: '.har,.json',
     multiple: true,
@@ -250,8 +213,6 @@ async function readFiles(files: File[]) {
 }
 
 function showOptions() {
-  close()
-
   useDialog(
     StatisticsIntegrationOptionsDialog,
     {
@@ -285,8 +246,6 @@ async function saveOptions(values: IntegrationOptions) {
     await poll()
   } else {
     listEntries()
-
-    open.value = true
   }
 }
 </script>
