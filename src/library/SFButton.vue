@@ -52,7 +52,8 @@ const props = withDefaults(
   }
 )
 
-// Every variant has a border, so a button is as tall as an input with the same padding
+// Every variant has a border, so a button is as tall as an input with the same padding.
+// md also has the input height as its minimum, for buttons that only hold an icon.
 const VARIANT_CLASSES = {
   primary: 'border-transparent bg-accent text-black enabled:hover:brightness-110',
   secondary: 'border-transparent bg-surface text-white/90 enabled:hover:bg-surface-hover',
@@ -62,7 +63,7 @@ const VARIANT_CLASSES = {
 
 const SIZE_CLASSES = {
   sm: 'px-3 py-1.5 text-xs',
-  md: 'px-4 py-2 leading-5'
+  md: 'min-h-9.5 px-4 py-2 leading-5'
 }
 
 const ICON_SIZE_CLASSES = {
