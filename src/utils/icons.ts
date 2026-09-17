@@ -1,5 +1,6 @@
 // Font Awesome Free icons (https://fontawesome.com/license/free), each imported from its own file so the rest of the set stays out of the bundle
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord'
+import { faCalendarXmark } from '@fortawesome/free-regular-svg-icons/faCalendarXmark'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
 import { faCopyright } from '@fortawesome/free-regular-svg-icons/faCopyright'
@@ -53,6 +54,7 @@ export const ICONS = {
   'basket-shopping': faBasketShopping,
   bolt: faBolt,
   bone: faBone,
+  'calendar-xmark': faCalendarXmark,
   check: faCheck,
   'chevron-down': faChevronDown,
   'circle-check': faCircleCheck,
