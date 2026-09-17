@@ -285,6 +285,51 @@ declare class MonsterGenerator {
   static create(type: symbol, level: number, classId: CharacterClass, runeType?: number, runeValue?: number): Monster
 }
 
+// js/playa/calculations.js
+
+// Only the values the attributes page reads, the rest of the class is still untyped
+declare class Calculations {
+  static experienceNextLevel(level: number): number
+  static experienceQuestMin(level: number, book: number, guildInstructor: number, runes: number): number
+  static experienceQuestMax(level: number, book: number, guildInstructor: number, runes: number): number
+  static experienceExpedition(level: number, book: number, guildInstructor: number, runes: number, scroll: boolean, stars: number, mount: number): number
+  static experienceSecretMission(level: number, hydra: number): number
+  static experienceArena(level: number): number
+  static experienceWheelBooks(level: number): number
+  static experienceWheelBook(level: number): number
+  static experienceCalendar(level: number, book: number): number
+  static experiencePetHabitat(level: number): number
+  static experienceTwisterEnemy(level: number): number
+  static experienceAcademyHourly(level: number, academy: number): number
+  static experienceAcademyCapacity(level: number, academy: number): number
+  static souls(level: number, gate: number, torture: number): number
+  static gold(level: number): number
+  static goldEnvironmentalReward(level: number): number
+  static goldAttributeCost(attribute: number): number
+  static goldAttributeTotalCost(attribute: number): number
+  static goldTowerEnemy(level: number): number
+  static goldTwisterEnemy(level: number): number
+  static goldArena(level: number): number
+  static goldDice(level: number, dices: number): number
+  static goldGuardDuty(level: number, tower: number, guildTreasure: number): number
+  static goldGem(level: number, mine: number, gemSize: number): number
+  static goldWitchScroll(level: number): number
+  static goldFortressReroll(level: number): number
+  static goldWitchPotion(level: number): number
+  static goldPotionCost(level: number, runes: number, potionSize: number): number
+  static goldLifePotionCost(level: number, runes: number): number
+  static goldLifePotionShroomlessCost(level: number, runes: number): number
+  static goldCalendarBar(level: number): number
+  static goldCalendarBars(level: number): number
+  static goldHourglassCost(level: number, runes: number): number
+  static goldHourglassPackCost(level: number, runes: number): number
+  static goldPitHourly(level: number, pit: number): number
+  static goldPitCapacity(level: number, pit: number): number
+  static goldQuestMin(level: number, tower: number, guildTreasure: number, runes: number): number
+  static goldQuestMax(level: number, tower: number, guildTreasure: number, runes: number): number
+  static goldExpedition(level: number, tower: number, guildTreasure: number, runes: number, scroll: boolean, mount: number): number
+}
+
 // js/playa/monsters.js
 
 // Name of an underworld unit by its kind: goblin, troll and keeper
