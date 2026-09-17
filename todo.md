@@ -1,6 +1,5 @@
 # Vue migration
 
-- raids.html - 5
 - guilds.html - 5
 - attributes.html - 5
 - simulator.html - 6
