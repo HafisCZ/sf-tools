@@ -70,7 +70,7 @@ export function dig(value: unknown, ...path: string[]) {
   let current = value
 
   for (let i = 0; current && i < path.length; i++) {
-    current = Reflect.get(Object(current), path[i])
+    current = (current as Record<string, unknown>)[path[i]]
   }
 
   return current
@@ -128,10 +128,10 @@ export function formatDuration(milliseconds: number, limit = 4) {
 export function getValueAtPath(object: unknown, path: string) {
   if (!object) return undefined
 
-  let current = object
+  let current: unknown = object
 
   for (const key of path.split('.')) {
-    current = Reflect.get(Object(current), key)
+    current = (current as Record<string, unknown>)[key]
 
     if (current === undefined || current === null) {
       return undefined
@@ -148,21 +148,22 @@ export function setValueAtPath(object: object, path: string, value: unknown) {
   const keys = path.split('.')
   const lastKey = keys.pop() ?? ''
 
-  let current = object
+  let current = object as Record<string, unknown>
 
   for (const key of keys) {
-    let next = Reflect.get(current, key)
+    let next = current[key]
 
     if (next === undefined || next === null) {
       next = {}
 
-      Reflect.set(current, key, next)
+      current[key] = next
     }
 
-    current = Object(next)
+    // Boxed, so writing to a path that runs through a primitive is dropped instead of throwing
+    current = Object(next) as Record<string, unknown>
   }
 
-  Reflect.set(current, lastKey, value)
+  current[lastKey] = value
 }
 
 /**

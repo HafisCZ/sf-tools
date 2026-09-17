@@ -97,7 +97,7 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { getHellevatorEnemies, type HellevatorEnemy } from '~/sim/data/hellevator'
-import { saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 
 defineOptions({
   name: 'HellevatorPage'
@@ -241,28 +241,6 @@ function copyPlayer(player: PlayerModel) {
   writeRange(player)
 
   void copyJson(player)
-}
-
-function hasClass(value: unknown): value is PlayerModel {
-  return typeof value === 'object' && value !== null && Boolean(Reflect.get(value, 'Class'))
-}
-
-// Pasted data is either a player model or raw player data from the game
-function preparePlayerData(data: unknown) {
-  const player = hasClass(data) ? data : new PlayerModel(data)
-
-  ItemModel.forceCorrectRune(player.Items.Wpn1)
-  ItemModel.forceCorrectRune(player.Items.Wpn2)
-
-  if (Number(player.Class) === WARRIOR && player.BlockChance === undefined) {
-    player.BlockChance = player.Items.Wpn2.DamageMin
-  }
-
-  if (Number(player.Class) !== ASSASSIN) {
-    player.Items.Wpn2 = ItemModel.empty()
-  }
-
-  return player
 }
 
 function fillFromPaste(value: unknown) {

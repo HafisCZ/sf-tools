@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-1.5">
-    <label :for="id" class="font-bold text-white">{{ props.label }}</label>
+    <label v-if="props.label" :for="id" class="font-bold text-white">{{ props.label }}</label>
     <textarea
       :id="id"
       v-model="modelValue"
@@ -29,7 +29,7 @@ const props = defineProps<
     /**
      * Text shown above the field, also its accessible name
      */
-    label: string
+    label?: string
     /**
      * Shows an error while the field is empty
      */

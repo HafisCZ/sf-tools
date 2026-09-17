@@ -4,7 +4,7 @@
       <slot />
     </SFButton>
     <Teleport to="body">
-      <SFDropdownMenu v-if="open && position" :items="props.items" :anchor="position" :float="props.float" @close="close" />
+      <SFDropdownMenu v-if="open && position" :items="props.items" :anchor="position" :float="props.float" position="bottom" @close="close" />
     </Teleport>
   </div>
 </template>

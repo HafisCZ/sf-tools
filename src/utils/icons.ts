@@ -6,6 +6,7 @@ import { faCopyright } from '@fortawesome/free-regular-svg-icons/faCopyright'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
 import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowRightArrowLeft'
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
+import { faBolt } from '@fortawesome/free-solid-svg-icons/faBolt'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
@@ -24,14 +25,17 @@ import { faGear } from '@fortawesome/free-solid-svg-icons/faGear'
 import { faHatWizard } from '@fortawesome/free-solid-svg-icons/faHatWizard'
 import { faHorse } from '@fortawesome/free-solid-svg-icons/faHorse'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons/faLanguage'
+import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon'
+import { faPaste } from '@fortawesome/free-solid-svg-icons/faPaste'
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faRecycle } from '@fortawesome/free-solid-svg-icons/faRecycle'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons/faRightToBracket'
 import { faRotate } from '@fortawesome/free-solid-svg-icons/faRotate'
 import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons/faScrewdriverWrench'
+import { faShieldHalved } from '@fortawesome/free-solid-svg-icons/faShieldHalved'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { faStopwatch } from '@fortawesome/free-solid-svg-icons/faStopwatch'
 import { faSun } from '@fortawesome/free-solid-svg-icons/faSun'
@@ -46,6 +50,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 export const ICONS = {
   'arrow-right-arrow-left': faArrowRightArrowLeft,
   'basket-shopping': faBasketShopping,
+  bolt: faBolt,
   check: faCheck,
   'chevron-down': faChevronDown,
   'circle-check': faCircleCheck,
@@ -68,14 +73,17 @@ export const ICONS = {
   'hat-wizard': faHatWizard,
   horse: faHorse,
   language: faLanguage,
+  'list-check': faListCheck,
   lock: faLock,
   message: faMessage,
   moon: faMoon,
+  paste: faPaste,
   plus: faPlus,
   recycle: faRecycle,
   'right-to-bracket': faRightToBracket,
   rotate: faRotate,
   'screwdriver-wrench': faScrewdriverWrench,
+  'shield-halved': faShieldHalved,
   spinner: faSpinner,
   stopwatch: faStopwatch,
   sun: faSun,

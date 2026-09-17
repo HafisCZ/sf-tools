@@ -37,6 +37,10 @@ const props = defineProps<{
    */
   float: 'right' | 'left'
   /**
+   * Side of the anchor the menu opens on: under it, or next to it aligned with its top edge
+   */
+  position: 'bottom' | 'right'
+  /**
    * Width in pixels. Without it the menu is as wide as its content.
    */
   width?: number
@@ -70,6 +74,13 @@ const style = computed(() => {
 
   const anchor = props.anchor
   const measured = size.value
+
+  if (props.position === 'right') {
+    const sideLeft = pickVisibleAxisPosition(anchor.right + GAP, anchor.left - measured.width - GAP, measured.width, window.innerWidth)
+    const sideTop = pickVisibleAxisPosition(anchor.top, anchor.bottom - measured.height, measured.height, window.innerHeight)
+
+    return { top: `${sideTop}px`, left: `${sideLeft}px`, width }
+  }
 
   const left = props.float === 'right' ? pickVisibleAxisPosition(anchor.left, anchor.right - measured.width, measured.width, window.innerWidth) : pickVisibleAxisPosition(anchor.right - measured.width, anchor.left, measured.width, window.innerWidth)
 
