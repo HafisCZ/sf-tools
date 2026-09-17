@@ -1,8 +1,10 @@
 // Font Awesome Free icons (https://fontawesome.com/license/free), each imported from its own file so the rest of the set stays out of the bundle
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
+import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
 import { faCopyright } from '@fortawesome/free-regular-svg-icons/faCopyright'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
+import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowRightArrowLeft'
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
@@ -13,6 +15,8 @@ import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faExclamation } from '@fortawesome/free-solid-svg-icons/faExclamation'
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
+import { faFileZipper } from '@fortawesome/free-solid-svg-icons/faFileZipper'
+import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons/faFireFlameCurved'
 import { faFish } from '@fortawesome/free-solid-svg-icons/faFish'
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk'
 import { faFrog } from '@fortawesome/free-solid-svg-icons/faFrog'
@@ -36,9 +40,11 @@ import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons/faTrian
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock'
 import { faWallet } from '@fortawesome/free-solid-svg-icons/faWallet'
+import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 
 export const ICONS = {
+  'arrow-right-arrow-left': faArrowRightArrowLeft,
   'basket-shopping': faBasketShopping,
   check: faCheck,
   'chevron-down': faChevronDown,
@@ -46,12 +52,15 @@ export const ICONS = {
   'circle-exclamation': faCircleExclamation,
   'circle-user': faCircleUser,
   clock: faClock,
+  copy: faCopy,
   copyright: faCopyright,
   discord: faDiscord,
   dragon: faDragon,
   envelope: faEnvelope,
   exclamation: faExclamation,
   'eye-slash': faEyeSlash,
+  'file-zipper': faFileZipper,
+  'fire-flame-curved': faFireFlameCurved,
   fish: faFish,
   'floppy-disk': faFloppyDisk,
   frog: faFrog,
@@ -76,6 +85,7 @@ export const ICONS = {
   trophy: faTrophy,
   'user-lock': faUserLock,
   wallet: faWallet,
+  wrench: faWrench,
   xmark: faXmark
 }
 
