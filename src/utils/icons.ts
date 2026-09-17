@@ -14,6 +14,7 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons/faCircleExclamation'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons/faCircleUser'
+import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload'
 import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faExclamation } from '@fortawesome/free-solid-svg-icons/faExclamation'
@@ -38,6 +39,8 @@ import { faRightToBracket } from '@fortawesome/free-solid-svg-icons/faRightToBra
 import { faRotate } from '@fortawesome/free-solid-svg-icons/faRotate'
 import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons/faScrewdriverWrench'
 import { faShieldHalved } from '@fortawesome/free-solid-svg-icons/faShieldHalved'
+import { faSortDown } from '@fortawesome/free-solid-svg-icons/faSortDown'
+import { faSortUp } from '@fortawesome/free-solid-svg-icons/faSortUp'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { faStopwatch } from '@fortawesome/free-solid-svg-icons/faStopwatch'
 import { faSun } from '@fortawesome/free-solid-svg-icons/faSun'
@@ -64,6 +67,7 @@ export const ICONS = {
   copy: faCopy,
   copyright: faCopyright,
   discord: faDiscord,
+  download: faDownload,
   dragon: faDragon,
   envelope: faEnvelope,
   exclamation: faExclamation,
@@ -88,6 +92,8 @@ export const ICONS = {
   rotate: faRotate,
   'screwdriver-wrench': faScrewdriverWrench,
   'shield-halved': faShieldHalved,
+  'sort-down': faSortDown,
+  'sort-up': faSortUp,
   spinner: faSpinner,
   stopwatch: faStopwatch,
   sun: faSun,

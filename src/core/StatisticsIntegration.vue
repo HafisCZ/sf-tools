@@ -281,6 +281,9 @@ function selectEntry(entry: TEntry) {
     const player = applyCheats(new PlayerModel(entry.Data), cheats.value)
 
     emit('select', player as unknown as TEntry)
+  } else if (props.type === 'players') {
+    // The database lists players as lazy proxies, which a simulation worker cannot clone
+    emit('select', (DatabaseManager.getPlayer(entry.LinkId, entry.Timestamp) ?? entry) as unknown as TEntry)
   } else {
     emit('select', entry)
   }

@@ -59,6 +59,8 @@ declare class Exporter {
   static readonly time: string
   // Downloads `content` as a `<name>.json` file
   static json(content: unknown, name?: string): void
+  // Downloads `content` under the name, which carries its own extension
+  static download(name: string, content: Blob): void
 }
 
 // BroadcastChannel between tabs, messages are `{ type, data }`
@@ -145,6 +147,11 @@ type DatabaseHistory<TEntry> = Record<number, TEntry> & {
   List: TEntry[]
 }
 
+declare class PlayaResponse {
+  // Players and groups found in a HAR file saved from the game
+  static importData(json: unknown, timestamp?: number, offset?: number): { players: unknown[]; groups: unknown[] }
+}
+
 declare class DatabaseManager {
   static Groups: Record<string, DatabaseHistory<GroupEntry>>
   static load(profile: DatabaseProfile): Promise<void>
@@ -202,6 +209,8 @@ declare class PlayerModel {
   // Reads raw player data from the game
   constructor(data?: unknown)
   Name: string
+  // Server the player was saved from, only set for a player that comes from the database
+  Prefix?: string
   Class: CharacterClass
   Level: number
   Armor: number
@@ -354,6 +363,11 @@ declare class Playa {
   static getServerUrlById(id: number): string | undefined
   static getClientVersion(): string
 }
+
+// vendor/js/html2canvas.min.js
+
+// Draws an element onto a canvas. Version 1.1.4 only understands plain colours, not `oklch()` or `color-mix()`.
+declare function html2canvas(element: HTMLElement, options?: { logging?: boolean; backgroundColor?: string | null }): Promise<HTMLCanvasElement>
 
 // js/changelog.js
 
