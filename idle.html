@@ -1,156 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scheme-dark">
     <head>
         <title>SFTools - Arena Manager</title>
 
         <meta charset="utf-8">
+        <meta name="description" content="Collection of tools for Shakes & Fidget">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="css/pages/idle.css"/>
+        <script src="js/util.js" vite-ignore></script>
+        <script src="js/playa/calculations.js" vite-ignore></script>
 
-        <script src="vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="vendor/js/semantic.min.js"></script>
-
-        <script src="js/util.js"></script>
-        <script src="js/playa/calculations.js"></script>
-        
-        <script src="js/plugins.js"></script>
-        <script src="js/playa/idle.js"></script>
-        
-        <script src="js/core/util.js"></script>
-        <script src="js/core/models.js"></script>
-        <script src="js/core/core.js"></script>
-        <script src="js/playa/servers.js"></script>
-        <script src="js/core/database.js"></script>
-        <script src="js/script/config.js"></script>
-        <script src="js/script/ast.js"></script>
-        <script src="js/script/core.js"></script>
-        <script src="js/changelog.js"></script>
-        <script src="js/views/base.js"></script>
-        <script src="js/sim/editor.js"></script>
-        <script src="js/sim/base.js"></script>
-
-        <script src="endpoint/endpoint.js"></script>
-
-        <script src="js/pages/idle.js"></script>
+        <script src="js/core/util.js" vite-ignore></script>
+        <script src="js/core/models.js" vite-ignore></script>
+        <script src="js/core/core.js" vite-ignore></script>
+        <script src="js/core/database.js" vite-ignore></script>
+        <script src="js/script/config.js" vite-ignore></script>
+        <script src="js/script/ast.js" vite-ignore></script>
+        <script src="js/script/core.js" vite-ignore></script>
+        <script src="js/changelog.js" vite-ignore></script>
+        <script src="js/sim/base.js" vite-ignore></script>
+        <script src="js/playa/servers.js" vite-ignore></script>
     </head>
-    <body class="inverted">
-        <div class="ui fixed inverted borderless huge menu">
-            <div class="header item"><a href="index.html">SFTools</a></div>
-        </div>
-
-        <div class="ui main inverted container">
-            <div class="ui five columns middle aligned grid">
-                <div class="five wide column">
-                    <div class="ui five tiny basic inverted buttons">
-                        <a class="ui button" data-upgrade-mode="1">1</a>
-                        <a class="ui button" data-upgrade-mode="2">10</a>
-                        <a class="ui button" data-upgrade-mode="3">25</a>
-                        <a class="ui button" data-upgrade-mode="4">100</a>
-                        <a class="ui button" data-upgrade-mode="5">BP</a>
-                    </div>
-                </div>
-                <div class="six wide column">
-                    <h1 class="ui centered inverted header" data-intl="idle.title"></h1>
-                </div>
-                <div class="three wide column">
-                    <div class="ui selection tiny fluid inverted dropdown" id="suggest-mode">
-                        <div class="text"></div>
-                        <i class="dropdown icon"></i>
-                    </div>
-                </div>
-                <div class="two wide column">
-                    <div class="ui selection tiny fluid inverted dropdown" id="number-mode">
-                        <div class="text"></div>
-                        <i class="dropdown icon"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="ui inverted form">
-                <table class="ui single very compact line table inverted fixed" style="margin-top: 1em;">
-                    <thead>
-                        <tr class="text-center">
-                            <th data-intl="idle.table.runes"></th>
-                            <th></th>
-                            <th data-intl="idle.table.money_spent"></th>
-                            <th data-intl="idle.table.money_1h"></th>
-                            <th data-intl="idle.table.money_8h"></th>
-                            <th data-intl="idle.table.money_1d"></th>
-                            <th data-intl="idle.table.money_7d"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" id="runes" data-intl-placeholder="idle.table.runes">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" disabled id="runes_formatted">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" disabled id="money_spent">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" disabled id="money_1h">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" disabled id="money_8h">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" disabled id="money_1d">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="field">
-                                    <div class="ui inverted input">
-                                        <input type="text" disabled id="money_7d">
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="ui single very compact line inverted table fixed mt-4">
-                    <thead>
-                        <tr class="text-center">
-                            <th data-intl="idle.table.building"></th>
-                            <th data-intl="idle.table.upgrades"></th>
-                            <th style="width: 8%;" data-intl="idle.table.level"></th>
-                            <th style="width: 8%;" data-intl="idle.table.level_next"></th>
-                            <th data-intl="idle.table.cycle_duration"></th>
-                            <th data-intl="idle.table.cycle_money"></th>
-                            <th data-intl="idle.table.money_share"></th>
-                            <th data-intl="idle.table.upgrade_money"></th>
-                            <th data-intl="idle.table.upgrade_estimation"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="table"></tbody>
-                </table>
-            </div>
-        </div>
+    <body class="bg-page text-sm text-white/90">
+        <div id="app"></div>
+        <script type="module" src="/src/entrypoints/idle.ts"></script>
     </body>
 </html>

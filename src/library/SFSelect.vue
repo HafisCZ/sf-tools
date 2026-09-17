@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-1.5">
-    <label :id="labelId" :for="id" class="font-bold text-white">{{ props.label }}</label>
+    <label v-if="props.label" :id="labelId" :for="id" class="font-bold text-white">{{ props.label }}</label>
     <button
       :id="id"
       ref="trigger-ref"
@@ -9,7 +9,7 @@
       :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
       aria-haspopup="menu"
       :aria-expanded="open"
-      :aria-labelledby="`${labelId} ${valueId}`"
+      :aria-labelledby="props.label ? `${labelId} ${valueId}` : valueId"
       @click="toggle"
     >
       <img v-if="selectedOption?.image" :src="selectedOption.image" alt="" class="size-5 object-contain" />
@@ -52,7 +52,7 @@ const props = defineProps<
     /**
      * Text shown above the field, also its accessible name
      */
-    label: string
+    label?: string
     /**
      * Options to pick from
      */

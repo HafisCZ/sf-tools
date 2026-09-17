@@ -1,4 +1,17 @@
+import { type InjectionKey } from 'vue'
 import { type IconName } from './icons'
+
+export type TableOptions = {
+  /**
+   * Cells use smaller padding
+   */
+  dense: boolean
+}
+
+/**
+ * SFTable provides its options under this key to the headers and cells inside it
+ */
+export const TABLE_OPTIONS_KEY: InjectionKey<TableOptions> = Symbol('SFTable')
 
 export type DropdownItem = {
   /**
