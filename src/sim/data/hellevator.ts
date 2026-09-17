@@ -623,3 +623,10 @@ export function getHellevatorEnemies(start: number, end = start) {
 
   return enemies.slice(start - 1, end)
 }
+
+/**
+ * Rune type and class of the monster standing on the floor of that level
+ */
+export function getHellevatorVariant(level: number) {
+  return HELLEVATOR_VARIANTS[(level - 18) / 2]
+}
