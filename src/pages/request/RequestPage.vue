@@ -414,7 +414,7 @@ function copyWithWhitelist(source: object, target: Record<string, unknown>, whit
   for (const [key, list] of Object.entries(whitelist)) {
     if (!Object.hasOwn(source, key)) continue
 
-    const value: unknown = Reflect.get(source, key)
+    const value: unknown = (source as Record<string, unknown>)[key]
 
     if (list === true) {
       target[key] = value

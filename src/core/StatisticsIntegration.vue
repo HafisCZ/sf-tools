@@ -6,7 +6,12 @@
       <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
     </SFButton>
     <div v-if="open" :id="panelId" class="flex flex-col border-t border-line p-1">
-      <div v-if="entries.length > 0" class="flex max-h-96 flex-col overflow-y-auto">
+      <div v-if="props.grouped" class="flex max-h-96 flex-col overflow-y-auto">
+        <button v-for="group in groups" :key="group.prefix" type="button" class="w-full cursor-pointer rounded px-3 py-2 text-center outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :aria-expanded="openPrefix === group.prefix" @click="toggleGroup(group.prefix, $event)">
+          {{ group.prefix }}
+        </button>
+      </div>
+      <div v-else-if="entries.length > 0" class="flex max-h-96 flex-col overflow-y-auto">
         <div v-for="entry in entries" :key="entry.LinkId" class="group relative">
           <button type="button" class="w-full cursor-pointer rounded py-2 pr-10 pl-3 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
             <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
@@ -19,6 +24,19 @@
           </span>
         </div>
       </div>
+      <Teleport to="body">
+        <SFDropdownMenu v-if="openGroup && groupPosition" :anchor="groupPosition" float="right" position="right" :width="PANEL_WIDTH" @close="closeGroup">
+          <SFInput v-model="search" :aria-label="SEARCH_LABEL" :placeholder="SEARCH_LABEL" />
+          <ul role="menu" class="mt-1 flex flex-col">
+            <li v-for="entry in filterGroup(openGroup.entries)" :key="entry.LinkId" role="none">
+              <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectGroupEntry(entry)">
+                <img :src="getClassImageUrl(entry.Class)" alt="" class="size-5 object-contain" />
+                {{ entry.Level }} - {{ entry.Name }}
+              </button>
+            </li>
+          </ul>
+        </SFDropdownMenu>
+      </Teleport>
       <div v-if="entries.length > 0" class="my-1 border-t border-line" />
       <div class="flex items-center">
         <SFButton variant="ghost" size="sm" class="flex-1" @click="importEndpoint">
@@ -30,7 +48,7 @@
         <SFButton v-if="props.cheats" variant="ghost" icon :title="localize('tooltip.cheats')" :aria-label="localize('tooltip.cheats')" :aria-pressed="!!cheats" @click="toggleCheats">
           <SFIcon name="fire-flame-curved" :class="{ 'text-accent': cheats }" />
         </SFButton>
-        <SFButton variant="ghost" icon :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
+        <SFButton v-if="!props.grouped" variant="ghost" icon :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
           <SFIcon name="gear" />
         </SFButton>
       </div>
@@ -63,12 +81,15 @@ import { computed, ref, shallowRef, useId } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
+import SFDropdownMenu from '@library/SFDropdownMenu.vue'
 import SFIcon from '@library/SFIcon.vue'
+import SFInput from '@library/SFInput.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
 import { useDialog, useFilePicker, useSimpleDialog } from '@utils/dialogs'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
+import { useAnimationFramePosition } from '@utils/position'
 import { useErrorToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage } from '@utils/utils'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
@@ -96,6 +117,10 @@ const props = defineProps<{
    * Shows a toggle for cheats, which are applied to a copy of a player before it is selected
    */
   cheats?: boolean
+  /**
+   * Lists the players by server, each server with its own search, and leaves out the options
+   */
+  grouped?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -121,13 +146,44 @@ const options = new OptionsHandler<IntegrationOptions>('integration', {
   ignored_duration: 0
 })
 
+// Same text as the search field of the legacy grouped list, which was never translated
+const SEARCH_LABEL = 'Search player...'
+
+// Width of the panel, which the menu of a server matches. Keep in sync with the `w-[300px]` of the root.
+const PANEL_WIDTH = 300
+
 const panelId = useId()
 
 const open = ref(false)
 const entries = shallowRef<TEntry[]>([])
 
+// Server whose players are shown in grouped mode, and the query typed in its search field
+const openPrefix = ref<string | null>(null)
+const search = ref('')
+
+// Button the open group's menu is placed next to
+let groupElement: HTMLElement | null = null
+
 // Null while cheats are turned off
 const cheats = ref<Cheats | null>(null)
+
+// Players by server, own characters before the others and the newest state first
+const groups = computed(() => {
+  const map = new Map<string, PlayerEntry[]>()
+
+  for (const entry of entries.value as PlayerEntry[]) {
+    map.set(entry.Prefix, [...(map.get(entry.Prefix) ?? []), entry])
+  }
+
+  return Array.from(map, ([prefix, list]) => ({ prefix, entries: list.sort((a, b) => Number(b.Own) - Number(a.Own) || b.Timestamp - a.Timestamp) }))
+})
+
+const openGroup = computed(() => groups.value.find((group) => group.prefix === openPrefix.value))
+
+const groupPosition = useAnimationFramePosition(
+  computed(() => openPrefix.value !== null),
+  () => groupElement?.getBoundingClientRect()
+)
 
 const cheatClassOptions = computed<SelectOption<Cheats['class']>[]>(() => [{ value: 0, label: localize.global('dungeons.cheats.keep_original') }, ...CONFIG.ids().map((id) => ({ value: id, label: localize.global(`general.class${id}`), image: getClassImageUrl(id) }))])
 
@@ -162,21 +218,51 @@ async function poll() {
   }
 }
 
-// Newest first, without the entries the options leave out
+// Newest first, without the entries the options leave out. Grouped mode shows every entry, like the legacy list did.
 function listEntries() {
   let scope = props.scope().sort((a, b) => b.Timestamp - a.Timestamp)
 
-  if (options.ignored_duration) {
-    scope = scope.filter((entry) => entry.Timestamp > Date.now() - options.ignored_duration)
-  }
+  if (!props.grouped) {
+    if (options.ignored_duration) {
+      scope = scope.filter((entry) => entry.Timestamp > Date.now() - options.ignored_duration)
+    }
 
-  scope = scope.filter((entry) => !options.ignored_identifiers.includes(entry.LinkId))
+    scope = scope.filter((entry) => !options.ignored_identifiers.includes(entry.LinkId))
 
-  if (options.limit) {
-    scope = scope.slice(0, options.limit)
+    if (options.limit) {
+      scope = scope.slice(0, options.limit)
+    }
   }
 
   entries.value = scope
+}
+
+function toggleGroup(prefix: string, event: MouseEvent) {
+  if (event.currentTarget instanceof HTMLElement) {
+    groupElement = event.currentTarget
+  }
+
+  openPrefix.value = openPrefix.value === prefix ? null : prefix
+
+  search.value = ''
+}
+
+function closeGroup() {
+  openPrefix.value = null
+
+  search.value = ''
+}
+
+// The menu stays open, so several players can be picked one after another
+function selectGroupEntry(entry: PlayerEntry) {
+  selectEntry(entry as TEntry)
+}
+
+// Matched against the text of the item, the same way the legacy dropdown searched
+function filterGroup(list: PlayerEntry[]) {
+  const query = search.value.trim().toLowerCase()
+
+  return query ? list.filter((entry) => `${entry.Level} - ${entry.Name}`.toLowerCase().includes(query)) : list
 }
 
 function describeEntry(entry: TEntry) {
