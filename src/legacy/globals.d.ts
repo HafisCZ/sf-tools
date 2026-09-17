@@ -225,7 +225,9 @@ declare class PlayerModel {
 
 declare class ModelUtils {
   // Player in the shape the simulator pages copy and paste
-  static toSimulatorData(model: PlayerModel, includeCompanions?: boolean): unknown
+  static toSimulatorData(model: PlayerModel | PlayerData): PlayerModel
+  // The player followed by its three companions, when it has them
+  static toSimulatorData(model: PlayerModel | PlayerData, includeCompanions: boolean): PlayerModel | PlayerModel[]
 }
 
 // js/sim/base.js

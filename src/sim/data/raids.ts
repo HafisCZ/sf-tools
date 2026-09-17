@@ -1,5 +1,34 @@
-const RAID_DATA = {
-  'raid_1': {
+import { sequence } from '@utils/utils'
+import { getHellevatorVariant } from './hellevator'
+
+/**
+ * Monster of one floor of a raid
+ */
+export type RaidFloor = {
+  pos: number
+  id: number
+  class: CharacterClass
+  level: number
+  str: number
+  dex: number
+  int: number
+  con: number
+  lck: number
+  health: number
+  min: number
+  max: number
+  block?: number
+}
+
+/**
+ * Floors of one raid, by their number from the first floor up
+ */
+export type Raid = {
+  floors: Record<string, RaidFloor>
+}
+
+const RAID_DATA: Record<string, Raid> = {
+  raid_1: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
       '2': { pos: 2, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
@@ -15,7 +44,7 @@ const RAID_DATA = {
       '12': { pos: 12, id: 0, class: 3, level: 50, str: 221, dex: 847, int: 213, con: 5330, lck: 292, health: 1087320, min: 86, max: 152 }
     }
   },
-  'raid_2': {
+  raid_2: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
       '2': { pos: 2, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
@@ -33,7 +62,7 @@ const RAID_DATA = {
       '14': { pos: 14, id: 0, class: 3, level: 60, str: 270, dex: 1040, int: 260, con: 7220, lck: 375, health: 1761680, min: 96, max: 167 }
     }
   },
-  'raid_3': {
+  raid_3: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
       '2': { pos: 2, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
@@ -52,7 +81,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 70, str: 1240, dex: 385, int: 360, con: 9120, lck: 340, health: 3237600, min: 85, max: 144 }
     }
   },
-  'raid_4': {
+  raid_4: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
       '2': { pos: 2, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
@@ -71,7 +100,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 80, str: 370, dex: 1440, int: 360, con: 11020, lck: 525, health: 3570480, min: 116, max: 197 }
     }
   },
-  'raid_5': {
+  raid_5: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
       '2': { pos: 2, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 146, lck: 47, health: 3212, min: 29, max: 52 },
@@ -90,7 +119,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 90, str: 1640, dex: 535, int: 510, con: 12920, lck: 440, health: 5878600, min: 105, max: 164 }
     }
   },
-  'raid_6': {
+  raid_6: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 16, str: 84, dex: 195, int: 83, con: 249, lck: 94, health: 16932, min: 27, max: 48 },
       '2': { pos: 2, id: 0, class: 3, level: 20, str: 101, dex: 264, int: 101, con: 331, lck: 119, health: 27804, min: 35, max: 59 },
@@ -109,7 +138,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 100, str: 470, dex: 1840, int: 460, con: 14820, lck: 675, health: 5987280, min: 136, max: 227 }
     }
   },
-  'raid_7': {
+  raid_7: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 26, str: 359, dex: 135, int: 122, con: 494, lck: 142, health: 66690, min: 36, max: 64 },
       '2': { pos: 2, id: 0, class: 2, level: 30, str: 126, dex: 130, int: 460, con: 530, lck: 193, health: 32860, min: 97, max: 161 },
@@ -128,7 +157,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 110, str: 520, dex: 2040, int: 510, con: 16720, lck: 750, health: 7423680, min: 146, max: 242 }
     }
   },
-  'raid_8': {
+  raid_8: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 36, str: 141, dex: 602, int: 149, con: 654, lck: 230, health: 96792, min: 60, max: 109 },
       '2': { pos: 2, id: 0, class: 1, level: 40, str: 614, dex: 207, int: 191, con: 846, lck: 238, health: 173430, min: 54, max: 96 },
@@ -147,7 +176,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 120, str: 550, dex: 570, int: 2320, con: 17860, lck: 820, health: 4322120, min: 299, max: 448 }
     }
   },
-  'raid_9': {
+  raid_9: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 46, str: 768, dex: 215, int: 183, con: 1024, lck: 249, health: 240640, min: 65, max: 116 },
       '2': { pos: 2, id: 0, class: 3, level: 50, str: 221, dex: 847, int: 213, con: 1066, lck: 292, health: 217464, min: 86, max: 152 },
@@ -166,7 +195,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 130, str: 620, dex: 2440, int: 610, con: 20520, lck: 900, health: 10752480, min: 166, max: 272 }
     }
   },
-  'raid_10': {
+  raid_10: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 56, str: 250, dex: 960, int: 240, con: 1292, lck: 345, health: 294576, min: 92, max: 161 },
       '2': { pos: 2, id: 0, class: 3, level: 60, str: 270, dex: 1040, int: 260, con: 1444, lck: 375, health: 352336, min: 96, max: 167 },
@@ -185,7 +214,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 140, str: 670, dex: 2640, int: 660, con: 22420, lck: 975, health: 12644880, min: 176, max: 287 }
     }
   },
-  'raid_11': {
+  raid_11: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 66, str: 300, dex: 1160, int: 290, con: 1672, lck: 420, health: 448096, min: 102, max: 176 },
       '2': { pos: 2, id: 0, class: 1, level: 70, str: 1240, dex: 385, int: 360, con: 1824, lck: 340, health: 647520, min: 85, max: 144 },
@@ -204,7 +233,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 150, str: 720, dex: 2840, int: 710, con: 24320, lck: 1050, health: 14689280, min: 186, max: 302 }
     }
   },
-  'raid_12': {
+  raid_12: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 76, str: 350, dex: 1360, int: 340, con: 2052, lck: 495, health: 632016, min: 112, max: 191 },
       '2': { pos: 2, id: 0, class: 3, level: 80, str: 370, dex: 1440, int: 360, con: 2204, lck: 525, health: 714096, min: 116, max: 197 },
@@ -223,7 +252,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 160, str: 770, dex: 3040, int: 760, con: 26220, lck: 1125, health: 16885680, min: 196, max: 317 }
     }
   },
-  'raid_13': {
+  raid_13: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 86, str: 1560, dex: 505, int: 480, con: 2432, lck: 420, health: 1057920, min: 101, max: 160 },
       '2': { pos: 2, id: 0, class: 1, level: 90, str: 1640, dex: 535, int: 510, con: 2584, lck: 440, health: 1175720, min: 105, max: 164 },
@@ -242,7 +271,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 170, str: 3240, dex: 1135, int: 1110, con: 28120, lck: 840, health: 24042600, min: 185, max: 244 }
     }
   },
-  'raid_14': {
+  raid_14: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 96, str: 1760, dex: 580, int: 555, con: 2812, lck: 470, health: 1363820, min: 111, max: 170 },
       '2': { pos: 2, id: 0, class: 3, level: 100, str: 470, dex: 1840, int: 460, con: 2964, lck: 675, health: 1197456, min: 136, max: 227 },
@@ -261,7 +290,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 180, str: 870, dex: 3440, int: 860, con: 30020, lck: 1275, health: 21734480, min: 216, max: 347 }
     }
   },
-  'raid_15': {
+  raid_15: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 106, str: 500, dex: 1960, int: 490, con: 3192, lck: 720, health: 1366176, min: 142, max: 236 },
       '2': { pos: 2, id: 0, class: 3, level: 110, str: 520, dex: 2040, int: 510, con: 3344, lck: 750, health: 1484736, min: 146, max: 242 },
@@ -280,7 +309,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 190, str: 900, dex: 920, int: 3720, con: 31160, lck: 1340, health: 11903120, min: 439, max: 622 }
     }
   },
-  'raid_16': {
+  raid_16: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 116, str: 550, dex: 2160, int: 540, con: 3572, lck: 795, health: 1671696, min: 152, max: 251 },
       '2': { pos: 2, id: 0, class: 2, level: 120, str: 550, dex: 570, int: 2320, con: 3572, lck: 820, health: 864424, min: 299, max: 448 },
@@ -299,7 +328,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 200, str: 950, dex: 970, int: 3920, con: 33060, lck: 1410, health: 13290120, min: 459, max: 646 }
     }
   },
-  'raid_17': {
+  raid_17: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 126, str: 2360, dex: 805, int: 780, con: 3952, lck: 620, health: 2509520, min: 141, max: 200 },
       '2': { pos: 2, id: 0, class: 3, level: 130, str: 620, dex: 2440, int: 610, con: 4104, lck: 900, health: 2150496, min: 166, max: 272 },
@@ -318,7 +347,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 210, str: 4040, dex: 1420, int: 1395, con: 35720, lck: 1010, health: 37684600, min: 225, max: 285 }
     }
   },
-  'raid_18': {
+  raid_18: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 136, str: 630, dex: 650, int: 2640, con: 4180, lck: 940, health: 1145320, min: 331, max: 488 },
       '2': { pos: 2, id: 0, class: 3, level: 140, str: 670, dex: 2640, int: 660, con: 4484, lck: 975, health: 2528976, min: 176, max: 287 },
@@ -337,7 +366,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 220, str: 4240, dex: 1490, int: 1465, con: 37620, lck: 1050, health: 41570100, min: 235, max: 295 }
     }
   },
-  'raid_19': {
+  raid_19: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 144, str: 690, dex: 2720, int: 680, con: 4636, lck: 1005, health: 2688880, min: 180, max: 293 },
       '2': { pos: 2, id: 0, class: 1, level: 148, str: 2800, dex: 970, int: 945, con: 4788, lck: 730, health: 3567060, min: 163, max: 222 },
@@ -356,7 +385,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 230, str: 1120, dex: 4440, int: 1110, con: 39520, lck: 1625, health: 36516480, min: 266, max: 427 }
     }
   },
-  'raid_20': {
+  raid_20: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 152, str: 2880, dex: 1000, int: 975, con: 4940, lck: 750, health: 3779100, min: 167, max: 226 },
       '2': { pos: 2, id: 0, class: 2, level: 156, str: 730, dex: 750, int: 3040, con: 4940, lck: 1090, health: 1551160, min: 371, max: 538 },
@@ -375,7 +404,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 240, str: 4640, dex: 1630, int: 1605, con: 41420, lck: 1130, health: 49911100, min: 255, max: 315 }
     }
   },
-  'raid_21': {
+  raid_21: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 160, str: 770, dex: 3040, int: 760, con: 5244, lck: 1125, health: 3377136, min: 196, max: 317 },
       '2': { pos: 2, id: 0, class: 3, level: 164, str: 790, dex: 3120, int: 780, con: 5396, lck: 1155, health: 3561360, min: 200, max: 323 },
@@ -394,7 +423,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 250, str: 4840, dex: 1700, int: 1675, con: 43320, lck: 1170, health: 54366600, min: 265, max: 325 }
     }
   },
-  'raid_22': {
+  raid_22: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 168, str: 790, dex: 810, int: 3280, con: 5396, lck: 1180, health: 1823848, min: 395, max: 568 },
       '2': { pos: 2, id: 0, class: 1, level: 172, str: 3280, dex: 1150, int: 1125, con: 5700, lck: 850, health: 4930500, min: 187, max: 246 },
@@ -413,7 +442,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 260, str: 1270, dex: 5040, int: 1260, con: 45220, lck: 1835, health: 47209680, min: 306, max: 489 }
     }
   },
-  'raid_23': {
+  raid_23: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 176, str: 850, dex: 3360, int: 840, con: 5852, lck: 1245, health: 4143216, min: 212, max: 341 },
       '2': { pos: 2, id: 0, class: 3, level: 180, str: 870, dex: 3440, int: 860, con: 6004, lck: 1275, health: 4346896, min: 216, max: 347 },
@@ -432,7 +461,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 270, str: 5240, dex: 1840, int: 1815, con: 47120, lck: 1250, health: 63847600, min: 285, max: 385 }
     }
   },
-  'raid_24': {
+  raid_24: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 185, str: 875, dex: 895, int: 3620, con: 6042, lck: 1305, health: 2247624, min: 429, max: 610 },
       '2': { pos: 2, id: 0, class: 2, level: 190, str: 900, dex: 920, int: 3720, con: 6232, lck: 1340, health: 2380624, min: 439, max: 622 },
@@ -451,7 +480,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 280, str: 1370, dex: 5440, int: 1360, con: 49020, lck: 1975, health: 55098480, min: 346, max: 549 }
     }
   },
-  'raid_25': {
+  raid_25: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 195, str: 925, dex: 945, int: 3820, con: 6422, lck: 1375, health: 2517424, min: 449, max: 634 },
       '2': { pos: 2, id: 0, class: 2, level: 200, str: 950, dex: 970, int: 3920, con: 6612, lck: 1410, health: 2658024, min: 459, max: 646 },
@@ -470,7 +499,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 290, str: 1420, dex: 5640, int: 1410, con: 50920, lck: 2045, health: 59270880, min: 366, max: 579 }
     }
   },
-  'raid_26': {
+  raid_26: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 205, str: 995, dex: 3940, int: 985, con: 6954, lck: 1450, health: 5730096, min: 241, max: 387 },
       '2': { pos: 2, id: 0, class: 1, level: 210, str: 4040, dex: 1420, int: 1395, con: 7144, lck: 1010, health: 7536920, min: 225, max: 285 },
@@ -489,7 +518,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 300, str: 5840, dex: 2050, int: 2025, con: 52820, lck: 1370, health: 79494096, min: 315, max: 475 }
     }
   },
-  'raid_27': {
+  raid_27: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 215, str: 4140, dex: 1455, int: 1430, con: 7334, lck: 1030, health: 7920720, min: 230, max: 290 },
       '2': { pos: 2, id: 0, class: 1, level: 220, str: 4240, dex: 1490, int: 1465, con: 7524, lck: 1050, health: 8314020, min: 235, max: 295 },
@@ -508,7 +537,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 310, str: 1500, dex: 1520, int: 6120, con: 53960, lck: 2180, health: 33563120, min: 679, max: 1186 }
     }
   },
-  'raid_28': {
+  raid_28: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 225, str: 1095, dex: 4340, int: 1085, con: 7714, lck: 1590, health: 6973456, min: 261, max: 419 },
       '2': { pos: 2, id: 0, class: 3, level: 230, str: 1120, dex: 4440, int: 1110, con: 7904, lck: 1625, health: 7303296, min: 266, max: 427 },
@@ -527,7 +556,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 320, str: 1570, dex: 6240, int: 1560, con: 56620, lck: 2255, health: 72700080, min: 426, max: 669 }
     }
   },
-  'raid_29': {
+  raid_29: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 235, str: 1125, dex: 1145, int: 4620, con: 7942, lck: 1655, health: 3748624, min: 529, max: 730 },
       '2': { pos: 2, id: 0, class: 1, level: 240, str: 4640, dex: 1630, int: 1605, con: 8284, lck: 1130, health: 9982220, min: 255, max: 315 },
@@ -546,7 +575,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 330, str: 6440, dex: 2260, int: 2235, con: 58520, lck: 1490, health: 96850600, min: 345, max: 565 }
     }
   },
-  'raid_30': {
+  raid_30: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 245, str: 4740, dex: 1665, int: 1640, con: 8474, lck: 1150, health: 10423020, min: 260, max: 320 },
       '2': { pos: 2, id: 0, class: 1, level: 250, str: 4840, dex: 1700, int: 1675, con: 8664, lck: 1170, health: 10873320, min: 265, max: 325 },
@@ -565,7 +594,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 340, str: 6640, dex: 2330, int: 2305, con: 60420, lck: 1530, health: 103016096, min: 355, max: 595 }
     }
   },
-  'raid_31': {
+  raid_31: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 255, str: 4940, dex: 1735, int: 1710, con: 8854, lck: 1190, health: 11333120, min: 270, max: 340 },
       '2': { pos: 2, id: 0, class: 3, level: 260, str: 1270, dex: 5040, int: 1260, con: 9044, lck: 1835, health: 9441936, min: 306, max: 489 },
@@ -584,7 +613,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_32': {
+  raid_32: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 265, str: 5140, dex: 1805, int: 1780, con: 9234, lck: 1230, health: 12281220, min: 280, max: 370 },
       '2': { pos: 2, id: 0, class: 1, level: 270, str: 5240, dex: 1840, int: 1815, con: 9424, lck: 1250, health: 12769520, min: 285, max: 385 },
@@ -603,7 +632,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_33': {
+  raid_33: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 275, str: 1325, dex: 1345, int: 5420, con: 9462, lck: 1935, health: 5223024, min: 609, max: 941 },
       '2': { pos: 2, id: 0, class: 3, level: 280, str: 1370, dex: 5440, int: 1360, con: 9804, lck: 1975, health: 11019696, min: 346, max: 549 },
@@ -622,7 +651,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_34': {
+  raid_34: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 285, str: 5540, dex: 1945, int: 1920, con: 9994, lck: 1310, health: 14291420, min: 300, max: 430 },
       '2': { pos: 2, id: 0, class: 3, level: 290, str: 1420, dex: 5640, int: 1410, con: 10184, lck: 2045, health: 11854176, min: 366, max: 579 },
@@ -641,7 +670,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_35': {
+  raid_35: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 295, str: 1425, dex: 1445, int: 5820, con: 10222, lck: 2075, health: 6051424, min: 649, max: 1081 },
       '2': { pos: 2, id: 0, class: 1, level: 300, str: 5840, dex: 2050, int: 2025, con: 10564, lck: 1370, health: 15898820, min: 315, max: 475 },
@@ -660,7 +689,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_36': {
+  raid_36: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 305, str: 1475, dex: 1495, int: 6020, con: 10602, lck: 2145, health: 6488424, min: 669, max: 1151 },
       '2': { pos: 2, id: 0, class: 2, level: 310, str: 1500, dex: 1520, int: 6120, con: 10792, lck: 2180, health: 6712624, min: 679, max: 1186 },
@@ -679,7 +708,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_37': {
+  raid_37: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 315, str: 6140, dex: 2155, int: 2130, con: 11134, lck: 1430, health: 17591720, min: 330, max: 520 },
       '2': { pos: 2, id: 0, class: 3, level: 320, str: 1570, dex: 6240, int: 1560, con: 11324, lck: 2255, health: 14540016, min: 426, max: 669 },
@@ -698,7 +727,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_38': {
+  raid_38: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 325, str: 1575, dex: 1595, int: 6420, con: 11362, lck: 2285, health: 7408024, min: 709, max: 1291 },
       '2': { pos: 2, id: 0, class: 1, level: 330, str: 6440, dex: 2260, int: 2235, con: 11704, lck: 1490, health: 19370120, min: 345, max: 565 },
@@ -717,7 +746,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_39': {
+  raid_39: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 335, str: 1645, dex: 6540, int: 1635, con: 11894, lck: 2360, health: 15985536, min: 456, max: 714 },
       '2': { pos: 2, id: 0, class: 1, level: 340, str: 6640, dex: 2330, int: 2305, con: 12084, lck: 1530, health: 20603220, min: 355, max: 595 },
@@ -736,7 +765,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_40': {
+  raid_40: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 345, str: 6740, dex: 2365, int: 2340, con: 12274, lck: 1550, health: 21234020, min: 360, max: 610 },
       '2': { pos: 2, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
@@ -755,7 +784,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_41': {
+  raid_41: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
@@ -774,7 +803,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_42': {
+  raid_42: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
@@ -793,7 +822,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_43': {
+  raid_43: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
@@ -812,7 +841,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_44': {
+  raid_44: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 12464, lck: 1570, health: 21874320, min: 365, max: 625 },
@@ -831,7 +860,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 350, str: 6840, dex: 2400, int: 2375, con: 62320, lck: 1570, health: 109371600, min: 365, max: 625 }
     }
   },
-  'raid_45': {
+  raid_45: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 360, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 2072, health: 29685030, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 360, str: 9025, dex: 3167, int: 3134, con: 16446, lck: 2072, health: 29685030, min: 365, max: 625 },
@@ -850,7 +879,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 360, str: 9025, dex: 3167, int: 3134, con: 82232, lck: 2072, health: 148428768, min: 365, max: 625 }
     }
   },
-  'raid_46': {
+  raid_46: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 370, str: 10615, dex: 3724, int: 3686, con: 19342, lck: 2436, health: 35879408, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 370, str: 10615, dex: 3724, int: 3686, con: 19342, lck: 2436, health: 35879408, min: 365, max: 625 },
@@ -869,7 +898,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 370, str: 10615, dex: 3724, int: 3686, con: 96711, lck: 2436, health: 179398912, min: 365, max: 625 }
     }
   },
-  'raid_47': {
+  raid_47: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 380, str: 11909, dex: 4179, int: 4135, con: 21701, lck: 2734, health: 41340404, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 380, str: 11909, dex: 4179, int: 4135, con: 21701, lck: 2734, health: 41340404, min: 365, max: 625 },
@@ -888,7 +917,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 380, str: 11909, dex: 4179, int: 4135, con: 108505, lck: 2734, health: 206702032, min: 365, max: 625 }
     }
   },
-  'raid_48': {
+  raid_48: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 390, str: 13021, dex: 4569, int: 4521, con: 23727, lck: 2989, health: 46386284, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 390, str: 13021, dex: 4569, int: 4521, con: 23727, lck: 2989, health: 46386284, min: 365, max: 625 },
@@ -907,7 +936,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 390, str: 13021, dex: 4569, int: 4521, con: 118636, lck: 2989, health: 231933376, min: 365, max: 625 }
     }
   },
-  'raid_49': {
+  raid_49: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 395, str: 14006, dex: 4914, int: 4863, con: 25522, lck: 3215, health: 50533560, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 395, str: 14006, dex: 4914, int: 4863, con: 25522, lck: 3215, health: 50533560, min: 365, max: 625 },
@@ -926,7 +955,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 395, str: 14006, dex: 4914, int: 4863, con: 127611, lck: 3215, health: 252669776, min: 365, max: 625 }
     }
   },
-  'raid_50': {
+  raid_50: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 400, str: 14897, dex: 5227, int: 5173, con: 27145, lck: 3419, health: 54425724, min: 365, max: 625 },
       '2': { pos: 2, id: 0, class: 1, level: 400, str: 14897, dex: 5227, int: 5173, con: 27145, lck: 3419, health: 54425724, min: 365, max: 625 },
@@ -945,7 +974,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 400, str: 14897, dex: 5227, int: 5173, con: 135727, lck: 3419, health: 272132640, min: 365, max: 625 }
     }
   },
-  'raid_51': {
+  raid_51: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 402, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 825, max: 1415 },
       '2': { pos: 2, id: 0, class: 2, level: 402, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 825, max: 1415 },
@@ -961,7 +990,7 @@ const RAID_DATA = {
       '12': { pos: 12, id: 0, class: 3, level: 402, str: 221, dex: 847, int: 213, con: 3373, lck: 2920, health: 5436600, min: 458, max: 786 }
     }
   },
-  'raid_52': {
+  raid_52: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 404, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 830, max: 1424 },
       '2': { pos: 2, id: 0, class: 2, level: 404, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 830, max: 1424 },
@@ -979,7 +1008,7 @@ const RAID_DATA = {
       '14': { pos: 14, id: 0, class: 3, level: 404, str: 270, dex: 1040, int: 260, con: 5437, lck: 3750, health: 8808400, min: 461, max: 791 }
     }
   },
-  'raid_53': {
+  raid_53: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 406, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 834, max: 1433 },
       '2': { pos: 2, id: 0, class: 2, level: 406, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 834, max: 1433 },
@@ -998,7 +1027,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 406, str: 1240, dex: 385, int: 360, con: 7955, lck: 3400, health: 16188000, min: 371, max: 637 }
     }
   },
-  'raid_54': {
+  raid_54: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 408, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 839, max: 1442 },
       '2': { pos: 2, id: 0, class: 2, level: 408, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 839, max: 1442 },
@@ -1017,7 +1046,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 408, str: 370, dex: 1440, int: 360, con: 10912, lck: 5250, health: 17852400, min: 466, max: 801 }
     }
   },
-  'raid_55': {
+  raid_55: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 410, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 843, max: 1451 },
       '2': { pos: 2, id: 0, class: 2, level: 410, str: 48, dex: 52, int: 104, con: 4, lck: 470, health: 3212, min: 843, max: 1451 },
@@ -1036,7 +1065,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 410, str: 1640, dex: 535, int: 510, con: 14303, lck: 4400, health: 29393000, min: 375, max: 645 }
     }
   },
-  'raid_56': {
+  raid_56: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 412, str: 84, dex: 195, int: 83, con: 10, lck: 940, health: 16932, min: 471, max: 811 },
       '2': { pos: 2, id: 0, class: 3, level: 412, str: 101, dex: 264, int: 101, con: 17, lck: 1190, health: 27804, min: 471, max: 811 },
@@ -1055,7 +1084,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 412, str: 470, dex: 1840, int: 460, con: 18121, lck: 6750, health: 29936400, min: 471, max: 811 }
     }
   },
-  'raid_57': {
+  raid_57: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 414, str: 359, dex: 135, int: 122, con: 32, lck: 1420, health: 66690, min: 379, max: 653 },
       '2': { pos: 2, id: 0, class: 2, level: 414, str: 126, dex: 130, int: 460, con: 40, lck: 1930, health: 32860, min: 852, max: 1469 },
@@ -1074,7 +1103,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 414, str: 520, dex: 2040, int: 510, con: 22360, lck: 7500, health: 37118400, min: 473, max: 816 }
     }
   },
-  'raid_58': {
+  raid_58: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 416, str: 141, dex: 602, int: 149, con: 58, lck: 2300, health: 96792, min: 476, max: 821 },
       '2': { pos: 2, id: 0, class: 1, level: 416, str: 614, dex: 207, int: 191, con: 83, lck: 2380, health: 173430, min: 381, max: 657 },
@@ -1093,7 +1122,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 416, str: 550, dex: 570, int: 2320, con: 25912, lck: 8200, health: 21610600, min: 857, max: 1478 }
     }
   },
-  'raid_59': {
+  raid_59: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 418, str: 768, dex: 215, int: 183, con: 115, lck: 2490, health: 240640, min: 383, max: 661 },
       '2': { pos: 2, id: 0, class: 3, level: 418, str: 221, dex: 847, int: 213, con: 130, lck: 2920, health: 217464, min: 478, max: 826 },
@@ -1112,7 +1141,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 418, str: 620, dex: 2440, int: 610, con: 32078, lck: 9000, health: 53762400, min: 478, max: 826 }
     }
   },
-  'raid_60': {
+  raid_60: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 420, str: 250, dex: 960, int: 240, con: 175, lck: 3450, health: 294576, min: 481, max: 831 },
       '2': { pos: 2, id: 0, class: 3, level: 420, str: 270, dex: 1040, int: 260, con: 209, lck: 3750, health: 352336, min: 481, max: 831 },
@@ -1131,7 +1160,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 420, str: 670, dex: 2640, int: 660, con: 37544, lck: 9750, health: 63224400, min: 481, max: 831 }
     }
   },
-  'raid_61': {
+  raid_61: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 422, str: 300, dex: 1160, int: 290, con: 265, lck: 4200, health: 448096, min: 483, max: 836 },
       '2': { pos: 2, id: 0, class: 1, level: 422, str: 1240, dex: 385, int: 360, con: 306, lck: 3400, health: 647520, min: 387, max: 669 },
@@ -1150,7 +1179,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 422, str: 720, dex: 2840, int: 710, con: 43408, lck: 10500, health: 73446400, min: 483, max: 836 }
     }
   },
-  'raid_62': {
+  raid_62: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 424, str: 350, dex: 1360, int: 340, con: 372, lck: 4950, health: 632016, min: 486, max: 841 },
       '2': { pos: 2, id: 0, class: 3, level: 424, str: 370, dex: 1440, int: 360, con: 420, lck: 5250, health: 714096, min: 486, max: 841 },
@@ -1169,7 +1198,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 424, str: 770, dex: 3040, int: 760, con: 49664, lck: 11250, health: 84428400, min: 486, max: 841 }
     }
   },
-  'raid_63': {
+  raid_63: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 426, str: 1560, dex: 505, int: 480, con: 496, lck: 4200, health: 1057920, min: 391, max: 677 },
       '2': { pos: 2, id: 0, class: 1, level: 426, str: 1640, dex: 535, int: 510, con: 551, lck: 4400, health: 1175720, min: 391, max: 677 },
@@ -1188,7 +1217,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 426, str: 3240, dex: 1135, int: 1110, con: 56306, lck: 8400, health: 120213000, min: 391, max: 677 }
     }
   },
-  'raid_64': {
+  raid_64: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 428, str: 1760, dex: 580, int: 555, con: 636, lck: 4700, health: 1363820, min: 393, max: 681 },
       '2': { pos: 2, id: 0, class: 3, level: 428, str: 470, dex: 1840, int: 460, con: 698, lck: 6750, health: 1197456, min: 491, max: 851 },
@@ -1207,7 +1236,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 428, str: 870, dex: 3440, int: 860, con: 63329, lck: 12750, health: 108672400, min: 491, max: 851 }
     }
   },
-  'raid_65': {
+  raid_65: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 430, str: 500, dex: 1960, int: 490, con: 792, lck: 7200, health: 1366176, min: 493, max: 856 },
       '2': { pos: 2, id: 0, class: 3, level: 430, str: 520, dex: 2040, int: 510, con: 861, lck: 7500, health: 1484736, min: 493, max: 856 },
@@ -1226,7 +1255,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 430, str: 900, dex: 920, int: 3720, con: 69044, lck: 13400, health: 59515600, min: 888, max: 1541 }
     }
   },
-  'raid_66': {
+  raid_66: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 432, str: 550, dex: 2160, int: 540, con: 965, lck: 7950, health: 1671696, min: 496, max: 861 },
       '2': { pos: 2, id: 0, class: 2, level: 432, str: 550, dex: 570, int: 2320, con: 998, lck: 8200, health: 864424, min: 893, max: 1550 },
@@ -1245,7 +1274,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 432, str: 950, dex: 970, int: 3920, con: 76733, lck: 14100, health: 66450600, min: 893, max: 1550 }
     }
   },
-  'raid_67': {
+  raid_67: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 434, str: 2360, dex: 805, int: 780, con: 1154, lck: 6200, health: 2509520, min: 399, max: 693 },
       '2': { pos: 2, id: 0, class: 3, level: 434, str: 620, dex: 2440, int: 610, con: 1236, lck: 9000, health: 2150496, min: 498, max: 866 },
@@ -1264,7 +1293,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 434, str: 4040, dex: 1420, int: 1395, con: 86631, lck: 10100, health: 188423008, min: 399, max: 693 }
     }
   },
-  'raid_68': {
+  raid_68: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 436, str: 630, dex: 650, int: 2640, con: 1310, lck: 9400, health: 1145320, min: 902, max: 1568 },
       '2': { pos: 2, id: 0, class: 3, level: 436, str: 670, dex: 2640, int: 660, con: 1447, lck: 9750, health: 2528976, min: 501, max: 871 },
@@ -1283,7 +1312,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 436, str: 4240, dex: 1490, int: 1465, con: 95126, lck: 10500, health: 207850496, min: 401, max: 697 }
     }
   },
-  'raid_69': {
+  raid_69: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 438, str: 690, dex: 2720, int: 680, con: 1531, lck: 10050, health: 2688880, min: 503, max: 876 },
       '2': { pos: 2, id: 0, class: 1, level: 438, str: 2800, dex: 970, int: 945, con: 1625, lck: 7300, health: 3567060, min: 403, max: 701 },
@@ -1302,7 +1331,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 438, str: 1120, dex: 4440, int: 1110, con: 103976, lck: 16250, health: 182582400, min: 503, max: 876 }
     }
   },
-  'raid_70': {
+  raid_70: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 440, str: 2880, dex: 1000, int: 975, con: 1714, lck: 7500, health: 3779100, min: 405, max: 705 },
       '2': { pos: 2, id: 0, class: 2, level: 440, str: 730, dex: 750, int: 3040, con: 1759, lck: 10900, health: 1551160, min: 911, max: 1586 },
@@ -1321,7 +1350,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 440, str: 4640, dex: 1630, int: 1605, con: 113177, lck: 11300, health: 249555504, min: 405, max: 705 }
     }
   },
-  'raid_71': {
+  raid_71: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 442, str: 770, dex: 3040, int: 760, con: 1906, lck: 11250, health: 3377136, min: 508, max: 886 },
       '2': { pos: 2, id: 0, class: 3, level: 442, str: 790, dex: 3120, int: 780, con: 2010, lck: 11550, health: 3561360, min: 508, max: 886 },
@@ -1340,7 +1369,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 442, str: 4840, dex: 1700, int: 1675, con: 122724, lck: 11700, health: 271832992, min: 407, max: 709 }
     }
   },
-  'raid_72': {
+  raid_72: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 444, str: 790, dex: 810, int: 3280, con: 2049, lck: 11800, health: 1823848, min: 920, max: 1604 },
       '2': { pos: 2, id: 0, class: 1, level: 444, str: 3280, dex: 1150, int: 1125, con: 2216, lck: 8500, health: 4930500, min: 409, max: 713 },
@@ -1359,7 +1388,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 444, str: 1270, dex: 5040, int: 1260, con: 132611, lck: 18350, health: 236048400, min: 511, max: 891 }
     }
   },
-  'raid_73': {
+  raid_73: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 446, str: 850, dex: 3360, int: 840, con: 2317, lck: 12450, health: 4143216, min: 513, max: 896 },
       '2': { pos: 2, id: 0, class: 3, level: 446, str: 870, dex: 3440, int: 860, con: 2431, lck: 12750, health: 4346896, min: 513, max: 896 },
@@ -1378,7 +1407,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 446, str: 5240, dex: 1840, int: 1815, con: 142836, lck: 12500, health: 319238016, min: 411, max: 717 }
     }
   },
-  'raid_74': {
+  raid_74: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 448, str: 875, dex: 895, int: 3620, con: 2503, lck: 13050, health: 2247624, min: 929, max: 1622 },
       '2': { pos: 2, id: 0, class: 2, level: 448, str: 900, dex: 920, int: 3720, con: 2651, lck: 13400, health: 2380624, min: 929, max: 1622 },
@@ -1397,7 +1426,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 448, str: 1370, dex: 5440, int: 1360, con: 153392, lck: 19750, health: 275492416, min: 516, max: 901 }
     }
   },
-  'raid_75': {
+  raid_75: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 450, str: 925, dex: 945, int: 3820, con: 2791, lck: 13750, health: 2517424, min: 933, max: 1631 },
       '2': { pos: 2, id: 0, class: 2, level: 450, str: 950, dex: 970, int: 3920, con: 2947, lck: 14100, health: 2658024, min: 933, max: 1631 },
@@ -1416,7 +1445,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 450, str: 1420, dex: 5640, int: 1410, con: 164276, lck: 20450, health: 296354400, min: 518, max: 906 }
     }
   },
-  'raid_76': {
+  raid_76: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 452, str: 995, dex: 3940, int: 985, con: 3162, lck: 14500, health: 5730096, min: 521, max: 911 },
       '2': { pos: 2, id: 0, class: 1, level: 452, str: 4040, dex: 1420, int: 1395, con: 3328, lck: 10100, health: 7536920, min: 417, max: 729 },
@@ -1435,7 +1464,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 452, str: 5840, dex: 2050, int: 2025, con: 175484, lck: 13700, health: 397470464, min: 417, max: 729 }
     }
   },
-  'raid_77': {
+  raid_77: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 454, str: 4140, dex: 1455, int: 1430, con: 3482, lck: 10300, health: 7920720, min: 419, max: 733 },
       '2': { pos: 2, id: 0, class: 1, level: 454, str: 4240, dex: 1490, int: 1465, con: 3655, lck: 10500, health: 8314020, min: 419, max: 733 },
@@ -1454,7 +1483,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 454, str: 1500, dex: 1520, int: 6120, con: 184413, lck: 21800, health: 167815600, min: 942, max: 1649 }
     }
   },
-  'raid_78': {
+  raid_78: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 456, str: 1095, dex: 4340, int: 1085, con: 3815, lck: 15900, health: 6973456, min: 526, max: 921 },
       '2': { pos: 2, id: 0, class: 3, level: 456, str: 1120, dex: 4440, int: 1110, con: 3995, lck: 16250, health: 7303296, min: 526, max: 921 },
@@ -1473,7 +1502,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 456, str: 1570, dex: 6240, int: 1560, con: 198851, lck: 22550, health: 363500416, min: 526, max: 921 }
     }
   },
-  'raid_79': {
+  raid_79: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 458, str: 1125, dex: 1145, int: 4620, con: 4083, lck: 16550, health: 3748624, min: 951, max: 1667 },
       '2': { pos: 2, id: 0, class: 1, level: 458, str: 4640, dex: 1630, int: 1605, con: 4350, lck: 11300, health: 9982220, min: 423, max: 741 },
@@ -1492,7 +1521,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 458, str: 6440, dex: 2260, int: 2235, con: 211003, lck: 14900, health: 484252992, min: 423, max: 741 }
     }
   },
-  'raid_80': {
+  raid_80: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 460, str: 4740, dex: 1665, int: 1640, con: 4522, lck: 11500, health: 10423020, min: 425, max: 745 },
       '2': { pos: 2, id: 0, class: 1, level: 460, str: 4840, dex: 1700, int: 1675, con: 4717, lck: 11700, health: 10873320, min: 425, max: 745 },
@@ -1511,7 +1540,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 460, str: 6640, dex: 2330, int: 2305, con: 223462, lck: 15300, health: 515080480, min: 425, max: 745 }
     }
   },
-  'raid_81': {
+  raid_81: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 462, str: 4940, dex: 1735, int: 1710, con: 4896, lck: 11900, health: 11333120, min: 427, max: 749 },
       '2': { pos: 2, id: 0, class: 3, level: 462, str: 1270, dex: 5040, int: 1260, con: 5098, lck: 18350, health: 9441936, min: 533, max: 936 },
@@ -1530,7 +1559,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 462, str: 6840, dex: 2400, int: 2375, con: 236224, lck: 15700, health: 546857984, min: 427, max: 749 }
     }
   },
-  'raid_82': {
+  raid_82: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 464, str: 5140, dex: 1805, int: 1780, con: 5282, lck: 12300, health: 12281220, min: 429, max: 753 },
       '2': { pos: 2, id: 0, class: 1, level: 464, str: 5240, dex: 1840, int: 1815, con: 5492, lck: 12500, health: 12769520, min: 429, max: 753 },
@@ -1549,7 +1578,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 464, str: 6840, dex: 2400, int: 2375, con: 235208, lck: 15700, health: 546857984, min: 429, max: 753 }
     }
   },
-  'raid_83': {
+  raid_83: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 466, str: 1325, dex: 1345, int: 5420, con: 5592, lck: 19350, health: 5223024, min: 969, max: 1703 },
       '2': { pos: 2, id: 0, class: 3, level: 466, str: 1370, dex: 5440, int: 1360, con: 5899, lck: 19750, health: 11019696, min: 538, max: 946 },
@@ -1568,7 +1597,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 466, str: 6840, dex: 2400, int: 2375, con: 234200, lck: 15700, health: 546857984, min: 431, max: 757 }
     }
   },
-  'raid_84': {
+  raid_84: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 468, str: 5540, dex: 1945, int: 1920, con: 6094, lck: 13100, health: 14291420, min: 433, max: 761 },
       '2': { pos: 2, id: 0, class: 3, level: 468, str: 1420, dex: 5640, int: 1410, con: 6319, lck: 20450, health: 11854176, min: 541, max: 951 },
@@ -1587,7 +1616,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 468, str: 6840, dex: 2400, int: 2375, con: 233202, lck: 15700, health: 546857984, min: 433, max: 761 }
     }
   },
-  'raid_85': {
+  raid_85: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 470, str: 1425, dex: 1445, int: 5820, con: 6424, lck: 20750, health: 6051424, min: 978, max: 1721 },
       '2': { pos: 2, id: 0, class: 1, level: 470, str: 5840, dex: 2050, int: 2025, con: 6751, lck: 13700, health: 15898820, min: 435, max: 765 },
@@ -1606,7 +1635,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 470, str: 6840, dex: 2400, int: 2375, con: 232211, lck: 15700, health: 546857984, min: 435, max: 765 }
     }
   },
-  'raid_86': {
+  raid_86: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 472, str: 1475, dex: 1495, int: 6020, con: 6859, lck: 21450, health: 6488424, min: 983, max: 1730 },
       '2': { pos: 2, id: 0, class: 2, level: 472, str: 1500, dex: 1520, int: 6120, con: 7096, lck: 21800, health: 6712624, min: 983, max: 1730 },
@@ -1625,7 +1654,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 472, str: 6840, dex: 2400, int: 2375, con: 231230, lck: 15700, health: 546857984, min: 437, max: 769 }
     }
   },
-  'raid_87': {
+  raid_87: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 474, str: 6140, dex: 2155, int: 2130, con: 7407, lck: 14300, health: 17591720, min: 439, max: 773 },
       '2': { pos: 2, id: 0, class: 3, level: 474, str: 1570, dex: 6240, int: 1560, con: 7653, lck: 22550, health: 14540016, min: 548, max: 966 },
@@ -1644,7 +1673,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 474, str: 6840, dex: 2400, int: 2375, con: 230256, lck: 15700, health: 546857984, min: 439, max: 773 }
     }
   },
-  'raid_88': {
+  raid_88: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 476, str: 1575, dex: 1595, int: 6420, con: 7765, lck: 22850, health: 7408024, min: 992, max: 1748 },
       '2': { pos: 2, id: 0, class: 1, level: 476, str: 6440, dex: 2260, int: 2235, con: 8122, lck: 14900, health: 19370120, min: 441, max: 777 },
@@ -1663,7 +1692,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 476, str: 6840, dex: 2400, int: 2375, con: 229291, lck: 15700, health: 546857984, min: 441, max: 777 }
     }
   },
-  'raid_89': {
+  raid_89: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 478, str: 1645, dex: 6540, int: 1635, con: 8343, lck: 23600, health: 15985536, min: 553, max: 976 },
       '2': { pos: 2, id: 0, class: 1, level: 478, str: 6640, dex: 2330, int: 2305, con: 8603, lck: 15300, health: 20603220, min: 443, max: 781 },
@@ -1682,7 +1711,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 478, str: 6840, dex: 2400, int: 2375, con: 228333, lck: 15700, health: 546857984, min: 443, max: 781 }
     }
   },
-  'raid_90': {
+  raid_90: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 480, str: 6740, dex: 2365, int: 2340, con: 8829, lck: 15500, health: 21234020, min: 445, max: 785 },
       '2': { pos: 2, id: 0, class: 1, level: 480, str: 6840, dex: 2400, int: 2375, con: 9095, lck: 15700, health: 21874320, min: 445, max: 785 },
@@ -1701,7 +1730,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 480, str: 6840, dex: 2400, int: 2375, con: 227384, lck: 15700, health: 546857984, min: 445, max: 785 }
     }
   },
-  'raid_91': {
+  raid_91: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 482, str: 6840, dex: 2400, int: 2375, con: 9058, lck: 15700, health: 21874320, min: 447, max: 789 },
       '2': { pos: 2, id: 0, class: 1, level: 482, str: 6840, dex: 2400, int: 2375, con: 9058, lck: 15700, health: 21874320, min: 447, max: 789 },
@@ -1720,7 +1749,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 482, str: 6840, dex: 2400, int: 2375, con: 226442, lck: 15700, health: 546857984, min: 447, max: 789 }
     }
   },
-  'raid_92': {
+  raid_92: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 484, str: 6840, dex: 2400, int: 2375, con: 9020, lck: 15700, health: 21874320, min: 449, max: 793 },
       '2': { pos: 2, id: 0, class: 1, level: 484, str: 6840, dex: 2400, int: 2375, con: 9020, lck: 15700, health: 21874320, min: 449, max: 793 },
@@ -1739,7 +1768,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 484, str: 6840, dex: 2400, int: 2375, con: 225508, lck: 15700, health: 546857984, min: 449, max: 793 }
     }
   },
-  'raid_93': {
+  raid_93: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 486, str: 6840, dex: 2400, int: 2375, con: 8983, lck: 15700, health: 21874320, min: 451, max: 797 },
       '2': { pos: 2, id: 0, class: 1, level: 486, str: 6840, dex: 2400, int: 2375, con: 8983, lck: 15700, health: 21874320, min: 451, max: 797 },
@@ -1758,7 +1787,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 486, str: 6840, dex: 2400, int: 2375, con: 224582, lck: 15700, health: 546857984, min: 451, max: 797 }
     }
   },
-  'raid_94': {
+  raid_94: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 488, str: 6840, dex: 2400, int: 2375, con: 8947, lck: 15700, health: 21874320, min: 453, max: 801 },
       '2': { pos: 2, id: 0, class: 1, level: 488, str: 6840, dex: 2400, int: 2375, con: 8947, lck: 15700, health: 21874320, min: 453, max: 801 },
@@ -1777,7 +1806,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 488, str: 6840, dex: 2400, int: 2375, con: 223664, lck: 15700, health: 546857984, min: 453, max: 801 }
     }
   },
-  'raid_95': {
+  raid_95: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 12092, lck: 20720, health: 29685030, min: 455, max: 805 },
       '2': { pos: 2, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 12092, lck: 20720, health: 29685030, min: 455, max: 805 },
@@ -1796,7 +1825,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 490, str: 9025, dex: 3167, int: 3134, con: 302299, lck: 20720, health: 742143872, min: 455, max: 805 }
     }
   },
-  'raid_96': {
+  raid_96: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 492, str: 10615, dex: 3724, int: 3686, con: 14556, lck: 24360, health: 35879408, min: 457, max: 809 },
       '2': { pos: 2, id: 0, class: 1, level: 492, str: 10615, dex: 3724, int: 3686, con: 14556, lck: 24360, health: 35879408, min: 457, max: 809 },
@@ -1815,7 +1844,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 492, str: 10615, dex: 3724, int: 3686, con: 363892, lck: 24360, health: 896994560, min: 457, max: 809 }
     }
   },
-  'raid_97': {
+  raid_97: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 494, str: 11909, dex: 4179, int: 4135, con: 16703, lck: 27340, health: 41340404, min: 459, max: 813 },
       '2': { pos: 2, id: 0, class: 1, level: 494, str: 11909, dex: 4179, int: 4135, con: 16703, lck: 27340, health: 41340404, min: 459, max: 813 },
@@ -1834,7 +1863,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 494, str: 11909, dex: 4179, int: 4135, con: 417580, lck: 27340, health: 1033510144, min: 459, max: 813 }
     }
   },
-  'raid_98': {
+  raid_98: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 496, str: 13021, dex: 4569, int: 4521, con: 18667, lck: 29890, health: 46386284, min: 461, max: 817 },
       '2': { pos: 2, id: 0, class: 1, level: 496, str: 13021, dex: 4569, int: 4521, con: 18667, lck: 29890, health: 46386284, min: 461, max: 817 },
@@ -1853,7 +1882,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 496, str: 13021, dex: 4569, int: 4521, con: 466667, lck: 29890, health: 1159666944, min: 461, max: 817 }
     }
   },
-  'raid_99': {
+  raid_99: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 498, str: 14006, dex: 4914, int: 4863, con: 20254, lck: 32150, health: 50533560, min: 463, max: 821 },
       '2': { pos: 2, id: 0, class: 1, level: 498, str: 14006, dex: 4914, int: 4863, con: 20254, lck: 32150, health: 50533560, min: 463, max: 821 },
@@ -1872,7 +1901,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 498, str: 14006, dex: 4914, int: 4863, con: 506352, lck: 32150, health: 1263348864, min: 463, max: 821 }
     }
   },
-  'raid_100': {
+  raid_100: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 500, str: 14897, dex: 5227, int: 5173, con: 21727, lck: 34190, health: 54425724, min: 465, max: 825 },
       '2': { pos: 2, id: 0, class: 1, level: 500, str: 14897, dex: 5227, int: 5173, con: 21727, lck: 34190, health: 54425724, min: 465, max: 825 },
@@ -1891,7 +1920,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 500, str: 14897, dex: 5227, int: 5173, con: 543179, lck: 34190, health: 1360663168, min: 465, max: 825 }
     }
   },
-  'raid_101': {
+  raid_101: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 502, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1050, max: 1865 },
       '2': { pos: 2, id: 0, class: 2, level: 502, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1050, max: 1865 },
@@ -1907,7 +1936,7 @@ const RAID_DATA = {
       '12': { pos: 12, id: 0, class: 3, level: 502, str: 1105, dex: 4235, int: 1065, con: 13510, lck: 73000, health: 27183000, min: 583, max: 1036 }
     }
   },
-  'raid_102': {
+  raid_102: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 504, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1055, max: 1874 },
       '2': { pos: 2, id: 0, class: 2, level: 504, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1055, max: 1874 },
@@ -1925,7 +1954,7 @@ const RAID_DATA = {
       '14': { pos: 14, id: 0, class: 3, level: 504, str: 1350, dex: 5200, int: 1300, con: 21803, lck: 93750, health: 44042000, min: 586, max: 1041 }
     }
   },
-  'raid_103': {
+  raid_103: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 506, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1059, max: 1883 },
       '2': { pos: 2, id: 0, class: 2, level: 506, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1059, max: 1883 },
@@ -1944,7 +1973,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 506, str: 6200, dex: 1925, int: 1800, con: 31929, lck: 85000, health: 80940000, min: 471, max: 837 }
     }
   },
-  'raid_104': {
+  raid_104: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 508, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1064, max: 1892 },
       '2': { pos: 2, id: 0, class: 2, level: 508, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1064, max: 1892 },
@@ -1963,7 +1992,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 508, str: 1850, dex: 7200, int: 1800, con: 43842, lck: 131250, health: 89262000, min: 591, max: 1051 }
     }
   },
-  'raid_105': {
+  raid_105: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 510, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1068, max: 1901 },
       '2': { pos: 2, id: 0, class: 2, level: 510, str: 240, dex: 260, int: 520, con: 16, lck: 11750, health: 16060, min: 1068, max: 1901 },
@@ -1982,7 +2011,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 510, str: 8200, dex: 2675, int: 2550, con: 57521, lck: 110000, health: 146964992, min: 475, max: 845 }
     }
   },
-  'raid_106': {
+  raid_106: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 512, str: 420, dex: 975, int: 415, con: 41, lck: 23500, health: 84660, min: 596, max: 1061 },
       '2': { pos: 2, id: 0, class: 3, level: 512, str: 505, dex: 1320, int: 505, con: 68, lck: 29750, health: 139020, min: 596, max: 1061 },
@@ -2001,7 +2030,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 512, str: 2350, dex: 9200, int: 2300, con: 72944, lck: 168750, health: 149682000, min: 596, max: 1061 }
     }
   },
-  'raid_107': {
+  raid_107: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 514, str: 1795, dex: 675, int: 610, con: 129, lck: 35500, health: 333450, min: 479, max: 853 },
       '2': { pos: 2, id: 0, class: 2, level: 514, str: 630, dex: 650, int: 2300, con: 160, lck: 48250, health: 164300, min: 1077, max: 1919 },
@@ -2020,7 +2049,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 514, str: 2600, dex: 10200, int: 2550, con: 90093, lck: 187500, health: 185592000, min: 598, max: 1066 }
     }
   },
-  'raid_108': {
+  raid_108: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 516, str: 705, dex: 3010, int: 745, con: 234, lck: 57500, health: 483960, min: 601, max: 1071 },
       '2': { pos: 2, id: 0, class: 1, level: 516, str: 3070, dex: 1035, int: 955, con: 335, lck: 59500, health: 867150, min: 481, max: 857 },
@@ -2039,7 +2068,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 516, str: 2750, dex: 2850, int: 11600, con: 104500, lck: 205000, health: 108053000, min: 1082, max: 1928 }
     }
   },
-  'raid_109': {
+  raid_109: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 518, str: 3840, dex: 1075, int: 915, con: 464, lck: 62250, health: 1203200, min: 483, max: 861 },
       '2': { pos: 2, id: 0, class: 3, level: 518, str: 1105, dex: 4235, int: 1065, con: 524, lck: 73000, health: 1087320, min: 603, max: 1076 },
@@ -2058,7 +2087,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 518, str: 3100, dex: 12200, int: 3050, con: 129486, lck: 225000, health: 268812000, min: 603, max: 1076 }
     }
   },
-  'raid_110': {
+  raid_110: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 520, str: 1250, dex: 4800, int: 1200, con: 707, lck: 86250, health: 1472880, min: 606, max: 1081 },
       '2': { pos: 2, id: 0, class: 3, level: 520, str: 1350, dex: 5200, int: 1300, con: 845, lck: 93750, health: 1761680, min: 606, max: 1081 },
@@ -2077,7 +2106,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 520, str: 3350, dex: 13200, int: 3300, con: 151690, lck: 243750, health: 316121984, min: 606, max: 1081 }
     }
   },
-  'raid_111': {
+  raid_111: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 522, str: 1500, dex: 5800, int: 1450, con: 1071, lck: 105000, health: 2240480, min: 608, max: 1086 },
       '2': { pos: 2, id: 0, class: 1, level: 522, str: 6200, dex: 1925, int: 1800, con: 1238, lck: 85000, health: 3237600, min: 487, max: 869 },
@@ -2096,7 +2125,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 522, str: 3600, dex: 14200, int: 3550, con: 175541, lck: 262500, health: 367232000, min: 608, max: 1086 }
     }
   },
-  'raid_112': {
+  raid_112: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 524, str: 1750, dex: 6800, int: 1700, con: 1505, lck: 123750, health: 3160080, min: 611, max: 1091 },
       '2': { pos: 2, id: 0, class: 3, level: 524, str: 1850, dex: 7200, int: 1800, con: 1700, lck: 131250, health: 3570480, min: 611, max: 1091 },
@@ -2115,7 +2144,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 524, str: 3850, dex: 15200, int: 3800, con: 201020, lck: 281250, health: 422142016, min: 611, max: 1091 }
     }
   },
-  'raid_113': {
+  raid_113: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 526, str: 7800, dex: 2525, int: 2400, con: 2007, lck: 105000, health: 5289600, min: 491, max: 877 },
       '2': { pos: 2, id: 0, class: 1, level: 526, str: 8200, dex: 2675, int: 2550, con: 2231, lck: 110000, health: 5878600, min: 491, max: 877 },
@@ -2134,7 +2163,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 526, str: 16200, dex: 5675, int: 5550, con: 228108, lck: 210000, health: 601065024, min: 491, max: 877 }
     }
   },
-  'raid_114': {
+  raid_114: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 528, str: 8800, dex: 2900, int: 2775, con: 2578, lck: 117500, health: 6819100, min: 493, max: 881 },
       '2': { pos: 2, id: 0, class: 3, level: 528, str: 2350, dex: 9200, int: 2300, con: 2830, lck: 168750, health: 5987280, min: 616, max: 1101 },
@@ -2153,7 +2182,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 528, str: 4350, dex: 17200, int: 4300, con: 256787, lck: 318750, health: 543361984, min: 616, max: 1101 }
     }
   },
-  'raid_115': {
+  raid_115: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 530, str: 2500, dex: 9800, int: 2450, con: 3216, lck: 180000, health: 6830880, min: 618, max: 1106 },
       '2': { pos: 2, id: 0, class: 3, level: 530, str: 2600, dex: 10200, int: 2550, con: 3495, lck: 187500, health: 7423680, min: 618, max: 1106 },
@@ -2172,7 +2201,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 530, str: 4500, dex: 4600, int: 18600, con: 280205, lck: 335000, health: 297577984, min: 1113, max: 1991 }
     }
   },
-  'raid_116': {
+  raid_116: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 532, str: 2750, dex: 10800, int: 2700, con: 3920, lck: 198750, health: 8358480, min: 621, max: 1111 },
       '2': { pos: 2, id: 0, class: 2, level: 532, str: 2750, dex: 2850, int: 11600, con: 4055, lck: 205000, health: 4322120, min: 1118, max: 2000 },
@@ -2191,7 +2220,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 532, str: 4750, dex: 4850, int: 19600, con: 311682, lck: 352500, health: 332252992, min: 1118, max: 2000 }
     }
   },
-  'raid_117': {
+  raid_117: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 534, str: 11800, dex: 4025, int: 3900, con: 4691, lck: 155000, health: 12547600, min: 499, max: 893 },
       '2': { pos: 2, id: 0, class: 3, level: 534, str: 3100, dex: 12200, int: 3050, con: 5025, lck: 225000, health: 10752480, min: 623, max: 1116 },
@@ -2210,7 +2239,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 534, str: 20200, dex: 7100, int: 6975, con: 352193, lck: 252500, health: 942115072, min: 499, max: 893 }
     }
   },
-  'raid_118': {
+  raid_118: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 536, str: 3150, dex: 3250, int: 13200, con: 5332, lck: 235000, health: 5726600, min: 1127, max: 2018 },
       '2': { pos: 2, id: 0, class: 3, level: 536, str: 3350, dex: 13200, int: 3300, con: 5887, lck: 243750, health: 12644880, min: 626, max: 1121 },
@@ -2229,7 +2258,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 536, str: 21200, dex: 7450, int: 7325, con: 387059, lck: 262500, health: 1039252480, min: 501, max: 897 }
     }
   },
-  'raid_119': {
+  raid_119: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 538, str: 3450, dex: 13600, int: 3400, con: 6236, lck: 251250, health: 13444400, min: 628, max: 1126 },
       '2': { pos: 2, id: 0, class: 1, level: 538, str: 14000, dex: 4850, int: 4725, con: 6618, lck: 182500, health: 17835300, min: 503, max: 901 },
@@ -2248,7 +2277,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 538, str: 5600, dex: 22200, int: 5550, con: 423429, lck: 406250, health: 912912000, min: 628, max: 1126 }
     }
   },
-  'raid_120': {
+  raid_120: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 540, str: 14400, dex: 5000, int: 4875, con: 6985, lck: 187500, health: 18895500, min: 505, max: 905 },
       '2': { pos: 2, id: 0, class: 2, level: 540, str: 3650, dex: 3750, int: 15200, con: 7168, lck: 272500, health: 7755800, min: 1136, max: 2036 },
@@ -2267,7 +2296,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 540, str: 23200, dex: 8150, int: 8025, con: 461286, lck: 282500, health: 1247777536, min: 505, max: 905 }
     }
   },
-  'raid_121': {
+  raid_121: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 542, str: 3850, dex: 15200, int: 3800, con: 7774, lck: 281250, health: 16885680, min: 633, max: 1136 },
       '2': { pos: 2, id: 0, class: 3, level: 542, str: 3950, dex: 15600, int: 3900, con: 8198, lck: 288750, health: 17806800, min: 633, max: 1136 },
@@ -2286,7 +2315,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 542, str: 24200, dex: 8500, int: 8375, con: 500613, lck: 292500, health: 1359164928, min: 507, max: 909 }
     }
   },
-  'raid_122': {
+  raid_122: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 544, str: 3950, dex: 4050, int: 16400, con: 8366, lck: 295000, health: 9119240, min: 1145, max: 2054 },
       '2': { pos: 2, id: 0, class: 1, level: 544, str: 16400, dex: 5750, int: 5625, con: 9047, lck: 212500, health: 24652500, min: 509, max: 913 },
@@ -2305,7 +2334,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 544, str: 6350, dex: 25200, int: 6300, con: 541395, lck: 458750, health: 1180242048, min: 636, max: 1141 }
     }
   },
-  'raid_123': {
+  raid_123: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 546, str: 4250, dex: 16800, int: 4200, con: 9468, lck: 311250, health: 20716080, min: 638, max: 1146 },
       '2': { pos: 2, id: 0, class: 3, level: 546, str: 4350, dex: 17200, int: 4300, con: 9933, lck: 318750, health: 21734480, min: 638, max: 1146 },
@@ -2324,7 +2353,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 546, str: 26200, dex: 9200, int: 9075, con: 583616, lck: 312500, health: 1596190080, min: 511, max: 917 }
     }
   },
-  'raid_124': {
+  raid_124: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 548, str: 4375, dex: 4475, int: 18100, con: 10235, lck: 326250, health: 11238120, min: 1154, max: 2072 },
       '2': { pos: 2, id: 0, class: 2, level: 548, str: 4500, dex: 4600, int: 18600, con: 10841, lck: 335000, health: 11903120, min: 1154, max: 2072 },
@@ -2343,7 +2372,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 548, str: 6850, dex: 27200, int: 6800, con: 627260, lck: 493750, health: 1377462016, min: 641, max: 1151 }
     }
   },
-  'raid_125': {
+  raid_125: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 550, str: 4625, dex: 4725, int: 19100, con: 11422, lck: 343750, health: 12587120, min: 1158, max: 2081 },
       '2': { pos: 2, id: 0, class: 2, level: 550, str: 4750, dex: 4850, int: 19600, con: 12060, lck: 352500, health: 13290120, min: 1158, max: 2081 },
@@ -2362,7 +2391,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 550, str: 7100, dex: 28200, int: 7050, con: 672310, lck: 511250, health: 1481772032, min: 643, max: 1156 }
     }
   },
-  'raid_126': {
+  raid_126: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 552, str: 4975, dex: 19700, int: 4925, con: 12952, lck: 362500, health: 28650480, min: 646, max: 1161 },
       '2': { pos: 2, id: 0, class: 1, level: 552, str: 20200, dex: 7100, int: 6975, con: 13629, lck: 252500, health: 37684600, min: 517, max: 929 },
@@ -2381,7 +2410,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 552, str: 29200, dex: 10250, int: 10125, con: 718753, lck: 342500, health: 1987352320, min: 517, max: 929 }
     }
   },
-  'raid_127': {
+  raid_127: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 554, str: 20700, dex: 7275, int: 7150, con: 14272, lck: 257500, health: 39603600, min: 519, max: 933 },
       '2': { pos: 2, id: 0, class: 1, level: 554, str: 21200, dex: 7450, int: 7325, con: 14980, lck: 262500, health: 41570100, min: 519, max: 933 },
@@ -2400,7 +2429,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 2, level: 554, str: 7500, dex: 7600, int: 30600, con: 755926, lck: 545000, health: 839078016, min: 1167, max: 2099 }
     }
   },
-  'raid_128': {
+  raid_128: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 556, str: 5475, dex: 21700, int: 5425, con: 15650, lck: 397500, health: 34867280, min: 651, max: 1171 },
       '2': { pos: 2, id: 0, class: 3, level: 556, str: 5600, dex: 22200, int: 5550, con: 16390, lck: 406250, health: 36516480, min: 651, max: 1171 },
@@ -2419,7 +2448,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 3, level: 556, str: 7850, dex: 31200, int: 7800, con: 815755, lck: 563750, health: 1817502080, min: 651, max: 1171 }
     }
   },
-  'raid_129': {
+  raid_129: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 558, str: 5625, dex: 5725, int: 23100, con: 16765, lck: 413750, health: 18743120, min: 1176, max: 2117 },
       '2': { pos: 2, id: 0, class: 1, level: 558, str: 23200, dex: 8150, int: 8025, con: 17857, lck: 282500, health: 49911100, min: 523, max: 941 },
@@ -2438,7 +2467,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 558, str: 32200, dex: 11300, int: 11175, con: 866284, lck: 372500, health: 2421264896, min: 523, max: 941 }
     }
   },
-  'raid_130': {
+  raid_130: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 560, str: 23700, dex: 8325, int: 8200, con: 18579, lck: 287500, health: 52115100, min: 525, max: 945 },
       '2': { pos: 2, id: 0, class: 1, level: 560, str: 24200, dex: 8500, int: 8375, con: 19382, lck: 292500, health: 54366600, min: 525, max: 945 },
@@ -2457,7 +2486,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 560, str: 33200, dex: 11650, int: 11525, con: 918147, lck: 382500, health: 2575402496, min: 525, max: 945 }
     }
   },
-  'raid_131': {
+  raid_131: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 562, str: 24700, dex: 8675, int: 8550, con: 20130, lck: 297500, health: 56665600, min: 527, max: 949 },
       '2': { pos: 2, id: 0, class: 3, level: 562, str: 6350, dex: 25200, int: 6300, con: 20963, lck: 458750, health: 47209680, min: 658, max: 1186 },
@@ -2476,7 +2505,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 562, str: 34200, dex: 12000, int: 11875, con: 971329, lck: 392500, health: 2734289920, min: 527, max: 949 }
     }
   },
-  'raid_132': {
+  raid_132: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 564, str: 25700, dex: 9025, int: 8900, con: 21737, lck: 307500, health: 61406100, min: 529, max: 953 },
       '2': { pos: 2, id: 0, class: 1, level: 564, str: 26200, dex: 9200, int: 9075, con: 22601, lck: 312500, health: 63847600, min: 529, max: 953 },
@@ -2495,7 +2524,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 564, str: 34200, dex: 12000, int: 11875, con: 967890, lck: 392500, health: 2734289920, min: 529, max: 953 }
     }
   },
-  'raid_133': {
+  raid_133: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 566, str: 6625, dex: 6725, int: 27100, con: 23029, lck: 483750, health: 26115120, min: 1194, max: 2153 },
       '2': { pos: 2, id: 0, class: 3, level: 566, str: 6850, dex: 27200, int: 6800, con: 24294, lck: 493750, health: 55098480, min: 663, max: 1196 },
@@ -2514,7 +2543,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 566, str: 34200, dex: 12000, int: 11875, con: 964476, lck: 392500, health: 2734289920, min: 531, max: 957 }
     }
   },
-  'raid_134': {
+  raid_134: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 568, str: 27700, dex: 9725, int: 9600, con: 25117, lck: 327500, health: 71457104, min: 533, max: 961 },
       '2': { pos: 2, id: 0, class: 3, level: 568, str: 7100, dex: 28200, int: 7050, con: 26042, lck: 511250, health: 59270880, min: 666, max: 1201 },
@@ -2533,7 +2562,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 568, str: 34200, dex: 12000, int: 11875, con: 961086, lck: 392500, health: 2734289920, min: 533, max: 961 }
     }
   },
-  'raid_135': {
+  raid_135: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 570, str: 7125, dex: 7225, int: 29100, con: 26495, lck: 518750, health: 30257120, min: 1203, max: 2171 },
       '2': { pos: 2, id: 0, class: 1, level: 570, str: 29200, dex: 10250, int: 10125, con: 27844, lck: 342500, health: 79494096, min: 535, max: 965 },
@@ -2552,7 +2581,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 570, str: 34200, dex: 12000, int: 11875, con: 957720, lck: 392500, health: 2734289920, min: 535, max: 965 }
     }
   },
-  'raid_136': {
+  raid_136: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 572, str: 7375, dex: 7475, int: 30100, con: 28309, lck: 536250, health: 32442120, min: 1208, max: 2180 },
       '2': { pos: 2, id: 0, class: 2, level: 572, str: 7500, dex: 7600, int: 30600, con: 29287, lck: 545000, health: 33563120, min: 1208, max: 2180 },
@@ -2571,7 +2600,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 572, str: 34200, dex: 12000, int: 11875, con: 954377, lck: 392500, health: 2734289920, min: 537, max: 969 }
     }
   },
-  'raid_137': {
+  raid_137: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 574, str: 30700, dex: 10775, int: 10650, con: 30594, lck: 357500, health: 87958600, min: 539, max: 973 },
       '2': { pos: 2, id: 0, class: 3, level: 574, str: 7850, dex: 31200, int: 7800, con: 31609, lck: 563750, health: 72700080, min: 673, max: 1216 },
@@ -2590,7 +2619,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 574, str: 34200, dex: 12000, int: 11875, con: 951057, lck: 392500, health: 2734289920, min: 539, max: 973 }
     }
   },
-  'raid_138': {
+  raid_138: {
     floors: {
       '1': { pos: 1, id: 0, class: 2, level: 576, str: 7875, dex: 7975, int: 32100, con: 32097, lck: 571250, health: 37040120, min: 1217, max: 2198 },
       '2': { pos: 2, id: 0, class: 1, level: 576, str: 32200, dex: 11300, int: 11175, con: 33570, lck: 372500, health: 96850600, min: 541, max: 977 },
@@ -2609,7 +2638,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 576, str: 34200, dex: 12000, int: 11875, con: 947761, lck: 392500, health: 2734289920, min: 541, max: 977 }
     }
   },
-  'raid_139': {
+  raid_139: {
     floors: {
       '1': { pos: 1, id: 0, class: 3, level: 578, str: 8225, dex: 32700, int: 8175, con: 34511, lck: 590000, health: 79927680, min: 678, max: 1226 },
       '2': { pos: 2, id: 0, class: 1, level: 578, str: 33200, dex: 11650, int: 11525, con: 35584, lck: 382500, health: 103016096, min: 543, max: 981 },
@@ -2628,7 +2657,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 578, str: 34200, dex: 12000, int: 11875, con: 944487, lck: 392500, health: 2734289920, min: 543, max: 981 }
     }
   },
-  'raid_140': {
+  raid_140: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 580, str: 33700, dex: 11825, int: 11700, con: 36547, lck: 387500, health: 106170096, min: 545, max: 985 },
       '2': { pos: 2, id: 0, class: 1, level: 580, str: 34200, dex: 12000, int: 11875, con: 37649, lck: 392500, health: 109371600, min: 545, max: 985 },
@@ -2647,7 +2676,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 580, str: 34200, dex: 12000, int: 11875, con: 941236, lck: 392500, health: 2734289920, min: 545, max: 985 }
     }
   },
-  'raid_141': {
+  raid_141: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 582, str: 34200, dex: 12000, int: 11875, con: 37520, lck: 392500, health: 109371600, min: 547, max: 989 },
       '2': { pos: 2, id: 0, class: 1, level: 582, str: 34200, dex: 12000, int: 11875, con: 37520, lck: 392500, health: 109371600, min: 547, max: 989 },
@@ -2666,7 +2695,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 582, str: 34200, dex: 12000, int: 11875, con: 938007, lck: 392500, health: 2734289920, min: 547, max: 989 }
     }
   },
-  'raid_142': {
+  raid_142: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 584, str: 34200, dex: 12000, int: 11875, con: 37392, lck: 392500, health: 109371600, min: 549, max: 993 },
       '2': { pos: 2, id: 0, class: 1, level: 584, str: 34200, dex: 12000, int: 11875, con: 37392, lck: 392500, health: 109371600, min: 549, max: 993 },
@@ -2685,7 +2714,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 584, str: 34200, dex: 12000, int: 11875, con: 934800, lck: 392500, health: 2734289920, min: 549, max: 993 }
     }
   },
-  'raid_143': {
+  raid_143: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 586, str: 34200, dex: 12000, int: 11875, con: 37265, lck: 392500, health: 109371600, min: 551, max: 997 },
       '2': { pos: 2, id: 0, class: 1, level: 586, str: 34200, dex: 12000, int: 11875, con: 37265, lck: 392500, health: 109371600, min: 551, max: 997 },
@@ -2704,7 +2733,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 586, str: 34200, dex: 12000, int: 11875, con: 931615, lck: 392500, health: 2734289920, min: 551, max: 997 }
     }
   },
-  'raid_144': {
+  raid_144: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 588, str: 34200, dex: 12000, int: 11875, con: 37138, lck: 392500, health: 109371600, min: 553, max: 1001 },
       '2': { pos: 2, id: 0, class: 1, level: 588, str: 34200, dex: 12000, int: 11875, con: 37138, lck: 392500, health: 109371600, min: 553, max: 1001 },
@@ -2723,7 +2752,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 588, str: 34200, dex: 12000, int: 11875, con: 928452, lck: 392500, health: 2734289920, min: 553, max: 1001 }
     }
   },
-  'raid_145': {
+  raid_145: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 50228, lck: 518000, health: 148425152, min: 555, max: 1005 },
       '2': { pos: 2, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 50228, lck: 518000, health: 148425152, min: 555, max: 1005 },
@@ -2742,7 +2771,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 590, str: 45125, dex: 15835, int: 15670, con: 1255743, lck: 518000, health: 3710719488, min: 555, max: 1005 }
     }
   },
-  'raid_146': {
+  raid_146: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 60505, lck: 609000, health: 179397040, min: 557, max: 1009 },
       '2': { pos: 2, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 60505, lck: 609000, health: 179397040, min: 557, max: 1009 },
@@ -2761,7 +2790,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 592, str: 53075, dex: 18620, int: 18430, con: 1512638, lck: 609000, health: 4484972544, min: 557, max: 1009 }
     }
   },
-  'raid_147': {
+  raid_147: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 69480, lck: 683500, health: 206702016, min: 559, max: 1013 },
       '2': { pos: 2, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 69480, lck: 683500, health: 206702016, min: 559, max: 1013 },
@@ -2780,7 +2809,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 594, str: 59545, dex: 20895, int: 20675, con: 1736992, lck: 683500, health: 5167550464, min: 559, max: 1013 }
     }
   },
-  'raid_148': {
+  raid_148: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 596, str: 65105, dex: 22845, int: 22605, con: 77699, lck: 747250, health: 231931424, min: 561, max: 1017 },
       '2': { pos: 2, id: 0, class: 1, level: 596, str: 65105, dex: 22845, int: 22605, con: 77699, lck: 747250, health: 231931424, min: 561, max: 1017 },
@@ -2799,7 +2828,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 596, str: 65105, dex: 22845, int: 22605, con: 1942491, lck: 747250, health: 5798334464, min: 561, max: 1017 }
     }
   },
-  'raid_149': {
+  raid_149: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 598, str: 70030, dex: 24570, int: 24315, con: 84363, lck: 803750, health: 252667808, min: 563, max: 1021 },
       '2': { pos: 2, id: 0, class: 1, level: 598, str: 70030, dex: 24570, int: 24315, con: 84363, lck: 803750, health: 252667808, min: 563, max: 1021 },
@@ -2818,7 +2847,7 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 598, str: 70030, dex: 24570, int: 24315, con: 2109097, lck: 803750, health: 6316744192, min: 563, max: 1021 }
     }
   },
-  'raid_150': {
+  raid_150: {
     floors: {
       '1': { pos: 1, id: 0, class: 1, level: 600, str: 74485, dex: 26135, int: 25865, con: 90559, lck: 854750, health: 272128608, min: 565, max: 1025 },
       '2': { pos: 2, id: 0, class: 1, level: 600, str: 74485, dex: 26135, int: 25865, con: 90559, lck: 854750, health: 272128608, min: 565, max: 1025 },
@@ -2837,4 +2866,98 @@ const RAID_DATA = {
       '15': { pos: 15, id: 0, class: 1, level: 600, str: 74485, dex: 26135, int: 25865, con: 2263999, lck: 854750, health: 6803315712, min: 565, max: 1025 }
     }
   }
+}
+
+// Attributes a raid above 50 scales down, luck is left alone
+const SCALED_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution'] as const
+
+/**
+ * Monsters of every floor of a raid, in the order they are fought
+ */
+export function getRaidEnemies(raid: string) {
+  if (raid.startsWith('hellevator_')) {
+    const tier = Number(raid.slice(11))
+
+    return sequence(10).map((index) => {
+      const level = 100 * (tier - 1) + index * 10 + 18
+
+      const [rune, classId] = getHellevatorVariant(level)
+
+      return MonsterGenerator.create(MonsterGenerator.MONSTER_RAID, level, classId, rune, 25)
+    })
+  }
+
+  return Object.values(RAID_DATA[raid].floors).map((floor, index) => createRaidMonster(floor, index))
+}
+
+function createRaidMonster(floor: RaidFloor, index: number) {
+  return {
+    Armor: floor.level * CONFIG.fromID(floor.class).MaximumDamageReduction,
+    Class: floor.class,
+    Name: `Monster ${index + 1}`,
+    Level: floor.level,
+    Health: floor.health,
+    NoBaseDamage: true,
+    NoGladiator: true,
+    BlockChance: floor.block,
+    Identifier: 999,
+    Strength: { Total: floor.str },
+    Dexterity: { Total: floor.dex },
+    Intelligence: { Total: floor.int },
+    Constitution: { Total: floor.con },
+    Luck: { Total: floor.lck },
+    Dungeons: { Player: 0, Group: 0 },
+    Fortress: { Gladiator: 0 },
+    Potions: { Life: 0 },
+    Runes: {
+      Health: 0,
+      ResistanceFire: 0,
+      ResistanceCold: 0,
+      ResistanceLightning: 0
+    },
+    Items: {
+      Hand: {},
+      Wpn1: {
+        AttributeTypes: { 2: 0 },
+        Attributes: { 2: 0 },
+        DamageMax: floor.max,
+        DamageMin: floor.min,
+        HasEnchantment: false
+      },
+      Wpn2: {
+        AttributeTypes: { 2: 0 },
+        Attributes: { 2: 0 },
+        DamageMax: floor.max,
+        DamageMin: floor.min,
+        HasEnchantment: false
+      }
+    }
+  }
+}
+
+/**
+ * Players with the attributes a raid scales down: divided by 10 from raid 51 up, by 50 from raid 101 up
+ */
+export function scaleRaidPlayers(raid: string, players: PlayerModel[]) {
+  if (!raid.startsWith('raid_')) {
+    return players
+  }
+
+  const number = Number(raid.slice(5))
+
+  if (number <= 50) {
+    return players
+  }
+
+  const divisor = number <= 100 ? 10 : 50
+
+  return players.map((player) => {
+    const scaled = structuredClone(player)
+
+    for (const attribute of SCALED_ATTRIBUTES) {
+      scaled[attribute].Total = Math.max(1, Math.floor(player[attribute].Total / divisor))
+    }
+
+    return scaled
+  })
 }

@@ -7,6 +7,7 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
 import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowRightArrowLeft'
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
 import { faBolt } from '@fortawesome/free-solid-svg-icons/faBolt'
+import { faBone } from '@fortawesome/free-solid-svg-icons/faBone'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
@@ -51,6 +52,7 @@ export const ICONS = {
   'arrow-right-arrow-left': faArrowRightArrowLeft,
   'basket-shopping': faBasketShopping,
   bolt: faBolt,
+  bone: faBone,
   check: faCheck,
   'chevron-down': faChevronDown,
   'circle-check': faCircleCheck,
