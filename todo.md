@@ -1,6 +1,5 @@
 # Vue migration
 
-- fortress.html - 4
 - hellevator.html - 5
 - underworld.html - 5
 - raids.html - 5

@@ -2,6 +2,7 @@
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import { faCopyright } from '@fortawesome/free-regular-svg-icons/faCopyright'
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
@@ -13,6 +14,7 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faExclamation } from '@fortawesome/free-solid-svg-icons/faExclamation'
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
 import { faFish } from '@fortawesome/free-solid-svg-icons/faFish'
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk'
 import { faFrog } from '@fortawesome/free-solid-svg-icons/faFrog'
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear'
 import { faHatWizard } from '@fortawesome/free-solid-svg-icons/faHatWizard'
@@ -21,6 +23,7 @@ import { faLanguage } from '@fortawesome/free-solid-svg-icons/faLanguage'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon'
+import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus'
 import { faRecycle } from '@fortawesome/free-solid-svg-icons/faRecycle'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons/faRightToBracket'
 import { faRotate } from '@fortawesome/free-solid-svg-icons/faRotate'
@@ -50,6 +53,7 @@ export const ICONS = {
   exclamation: faExclamation,
   'eye-slash': faEyeSlash,
   fish: faFish,
+  'floppy-disk': faFloppyDisk,
   frog: faFrog,
   gear: faGear,
   'hat-wizard': faHatWizard,
@@ -58,6 +62,7 @@ export const ICONS = {
   lock: faLock,
   message: faMessage,
   moon: faMoon,
+  plus: faPlus,
   recycle: faRecycle,
   'right-to-bracket': faRightToBracket,
   rotate: faRotate,
@@ -66,6 +71,7 @@ export const ICONS = {
   stopwatch: faStopwatch,
   sun: faSun,
   'thumbs-up': faThumbsUp,
+  'trash-can': faTrashCan,
   'triangle-exclamation': faTriangleExclamation,
   trophy: faTrophy,
   'user-lock': faUserLock,
