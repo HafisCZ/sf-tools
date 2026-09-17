@@ -1,78 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scheme-dark">
     <head>
         <title>SFTools - Blacksmith</title>
 
         <meta charset="utf-8">
+        <meta name="description" content="Collection of tools for Shakes & Fidget">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="css/pages/blacksmith.css"/>
+        <script src="js/util.js" vite-ignore></script>
 
-        <script src="vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="vendor/js/semantic.min.js"></script>
-
-        <script src="js/util.js"></script>
-        <script src="js/playa/calculations.js"></script>
-
-        <script src="js/core/util.js"></script>
-        <script src="js/core/models.js"></script>
-        <script src="js/core/core.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/changelog.js"></script>
-        <script src="js/views/base.js"></script>
-        <script src="js/sim/editor.js"></script>
-        <script src="js/playa/servers.js"></script>
-
-        <script src="js/pages/blacksmith.js"></script>
+        <script src="js/core/util.js" vite-ignore></script>
+        <script src="js/core/models.js" vite-ignore></script>
+        <script src="js/core/core.js" vite-ignore></script>
+        <script src="js/changelog.js" vite-ignore></script>
     </head>
-    <body class="inverted">
-        <div class="ui fixed inverted borderless huge menu">
-            <div class="header item"><a href="index.html">SFTools</a></div>
-        </div>
-
-        <div class="ui main inverted container" style="width: 80vw;">
-            <div class="ui inverted form">
-                <div class="three fields">
-                    <div class="field">
-                        <label data-intl="blacksmith.item.type"></label>
-                        <div class="ui selection inverted dropdown" data-path="type">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label data-intl="blacksmith.item.value"></label>
-                        <div class="ui inverted input">
-                            <input type="text" data-path="value">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label data-intl="blacksmith.item.double"></label>
-                        <div class="ui selection inverted dropdown" data-path="double">
-                            <div class="text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <table class="ui inverted single very line basic table fixed mt-8">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;" class="text-center">#</th>
-                        <th style="width: 6%;" class="text-center" data-intl="blacksmith.table.bonus"></th>
-                        <th style="width: 6%;" class="text-center" data-intl="blacksmith.table.total"></th>
-                        <th style="width: 4%;"></th>
-                        <th data-intl="blacksmith.table.required"></th>
-                        <th data-intl="blacksmith.table.total"></th>
-                        <th data-intl="blacksmith.table.reclaimable"></th>
-                        <th data-intl="blacksmith.table.total"></th>
-                        <th data-intl="blacksmith.table.lost"></th>
-                        <th data-intl="blacksmith.table.total"></th>
-                    </tr>
-                </thead>
-                <tbody id="table"></tbody>
-            </table>
-        </div>
+    <body class="bg-page text-sm text-white/90">
+        <div id="app"></div>
+        <script type="module" src="/src/entrypoints/blacksmith.ts"></script>
     </body>
 </html>
