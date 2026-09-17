@@ -1,9 +1,9 @@
 <template>
   <Page wide>
     <div class="grid gap-[14px] md:grid-cols-3">
-      <SFSelect v-model="type" :label="localize('item.type')" :options="typeOptions" />
+      <SFSelect ref="type-ref" v-model="type" :label="localize('item.type')" :options="typeOptions" />
       <SFNumber ref="value-ref" v-model="value" :label="localize('item.value')" required :min="0" :step="1" />
-      <SFCheckbox v-model="double" :label="localize('item.double')" class="md:mt-[26px] md:h-[38px]" />
+      <SFCheckbox ref="double-ref" v-model="double" :label="localize('item.double')" class="md:mt-[26px] md:h-[38px]" />
     </div>
 
     <SFTable class="mt-[14px] whitespace-nowrap">
@@ -90,7 +90,7 @@ const type = ref('normal_1')
 const value = ref<number | null>(0)
 const double = ref(false)
 
-const isValid = useComponentValidation(useTemplateRef('value-ref'))
+const isValid = useComponentValidation(useTemplateRef('type-ref'), useTemplateRef('value-ref'), useTemplateRef('double-ref'))
 
 const typeOptions = computed(() => Object.keys(ATTRIBUTE_TYPES).map((key) => ({ value: key, label: localize(`item.types.${key}`) })))
 

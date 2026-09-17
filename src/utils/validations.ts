@@ -51,11 +51,21 @@ export function useValidation<TValue>(value: Readonly<Ref<TValue | null>>, props
   }
 }
 
+type ValidatedComponent = {
+  isValid: boolean
+}
+
 /**
- * Whether every input or component behind a control is valid. Pass the template ref of each, they expose `isValid`.
+ * Whether every input or component behind a control is valid. Pass the template ref of each, they expose `isValid`. A ref inside `v-for` holds a list and every item in it is checked.
  */
-export function useComponentValidation(...refs: Readonly<Ref<{ isValid: boolean } | null>>[]) {
-  return computed(() => refs.every((ref) => ref.value?.isValid ?? true))
+export function useComponentValidation(...refs: Readonly<Ref<ValidatedComponent[] | ValidatedComponent | null>>[]) {
+  return computed(() =>
+    refs.every((ref) => {
+      const value = ref.value
+
+      return Array.isArray(value) ? value.every((component) => component.isValid) : (value?.isValid ?? true)
+    })
+  )
 }
 
 /**

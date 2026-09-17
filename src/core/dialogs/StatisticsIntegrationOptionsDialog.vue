@@ -1,9 +1,9 @@
 <template>
   <SFDialog :title="localize('title')" size="sm">
     <div class="flex flex-col gap-4">
-      <SFSelect v-model="slot" :label="`${localize('slot')}:`" :options="slotOptions" />
-      <SFInput v-model="limit" :label="`${localize('limit.title')}:`" :placeholder="localize('limit.placeholder')" type="number" min="0" />
-      <SFSelect v-model="ignoredDuration" :label="`${localize('ignored_duration.title')}:`" :options="durationOptions" />
+      <SFSelect ref="slot-ref" v-model="slot" :label="`${localize('slot')}:`" :options="slotOptions" />
+      <SFInput ref="limit-ref" v-model="limit" :label="`${localize('limit.title')}:`" :placeholder="localize('limit.placeholder')" type="number" min="0" />
+      <SFSelect ref="ignored-duration-ref" v-model="ignoredDuration" :label="`${localize('ignored_duration.title')}:`" :options="durationOptions" />
       <div class="flex flex-col gap-1.5">
         <span class="font-bold text-white">{{ localize('ignored_identifiers.title') }}:</span>
         <ul class="flex h-[15em] flex-col gap-2 overflow-y-auto pr-2">
@@ -21,7 +21,7 @@
       <SFButton block @click="emit('close')">
         {{ localize.global('dialog.shared.cancel') }}
       </SFButton>
-      <SFButton variant="primary" block @click="save">
+      <SFButton variant="primary" block :disabled="!isValid" @click="save">
         {{ localize.global('dialog.shared.save') }}
       </SFButton>
     </template>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFIcon from '@library/SFIcon.vue'
@@ -37,6 +37,7 @@ import SFInput from '@library/SFInput.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
+import { useComponentValidation } from '@utils/validations'
 
 defineOptions({
   name: 'StatisticsIntegrationOptionsDialog'
@@ -71,6 +72,8 @@ const slot = ref(String(props.options.slot))
 const limit = ref(String(props.options.limit))
 const ignoredDuration = ref(String(props.options.ignored_duration))
 const ignoredIdentifiers = ref([...props.options.ignored_identifiers])
+
+const isValid = useComponentValidation(useTemplateRef('slot-ref'), useTemplateRef('limit-ref'), useTemplateRef('ignored-duration-ref'))
 
 const slotOptions = computed<SelectOption[]>(() => SLOTS.map((value) => ({ value: String(value), label: value === 0 ? localize.global('dialog.profile_create.default') : String(value) })))
 
