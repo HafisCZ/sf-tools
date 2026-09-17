@@ -211,3 +211,19 @@ export function mergeDeep(target: Record<string, unknown>, source: unknown) {
 export function copyJson(value: unknown) {
   return navigator.clipboard.writeText(JSON.stringify(value))
 }
+
+/**
+ * Copies an element with its formatting, so a copied table keeps its cells when pasted into a spreadsheet
+ */
+export function copyElement(element: Node) {
+  const range = document.createRange()
+  range.selectNode(element)
+
+  const selection = window.getSelection()
+  selection?.removeAllRanges()
+  selection?.addRange(range)
+
+  document.execCommand('copy')
+
+  selection?.removeAllRanges()
+}

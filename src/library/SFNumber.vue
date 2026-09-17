@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col gap-1.5">
-    <label v-if="props.label" :for="id" class="font-bold text-white">{{ props.label }}</label>
+    <label v-if="props.label || slots.label" :for="id" class="font-bold text-white">
+      <slot name="label">{{ props.label }}</slot>
+    </label>
     <input
       :id="id"
       v-model="text"
@@ -63,6 +65,13 @@ const props = defineProps<
 >()
 
 const modelValue = defineModel<number | null>({ required: true })
+
+const slots = defineSlots<{
+  /**
+   * Replaces the label text, for a label that holds more than plain text
+   */
+  label?(): unknown
+}>()
 
 defineExpose({
   get isValid() {
