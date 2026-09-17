@@ -1,7 +1,8 @@
 <template>
   <div class="flex flex-col gap-1.5">
-    <span :id="labelId" class="font-bold text-white">{{ props.label }}</span>
+    <label :id="labelId" :for="id" class="font-bold text-white">{{ props.label }}</label>
     <button
+      :id="id"
       ref="trigger-ref"
       type="button"
       class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border border-line bg-surface px-3 py-2 text-left leading-5 text-white/90 outline-none focus-visible:border-accent"
@@ -44,6 +45,7 @@ const props = defineProps<{
 
 const modelValue = defineModel<string>({ required: true })
 
+const id = useId()
 const labelId = useId()
 const valueId = useId()
 
