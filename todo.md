@@ -1,6 +1,5 @@
 # Vue migration
 
-- attributes.html - 5
 - simulator.html - 6
 - pets.html - 6
 - inventory.html - 7
