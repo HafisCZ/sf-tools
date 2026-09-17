@@ -12,6 +12,13 @@ defineOptions({
   name: 'SimulatorPasteTarget'
 })
 
+const props = defineProps<{
+  /**
+   * Also takes data from a file dropped anywhere on the page
+   */
+  useDragDrop?: boolean
+}>()
+
 const emit = defineEmits<{
   paste: [value: unknown]
 }>()
@@ -20,10 +27,19 @@ const localize = useLocalize('simulator')
 
 onMounted(() => {
   document.body.addEventListener('paste', handlePaste)
+
+  if (props.useDragDrop) {
+    document.body.addEventListener('dragover', handleDragOver)
+    document.body.addEventListener('dragenter', handleDragOver)
+    document.body.addEventListener('drop', handleDrop)
+  }
 })
 
 onBeforeUnmount(() => {
   document.body.removeEventListener('paste', handlePaste)
+  document.body.removeEventListener('dragover', handleDragOver)
+  document.body.removeEventListener('dragenter', handleDragOver)
+  document.body.removeEventListener('drop', handleDrop)
 })
 
 // Pastes into text fields are left to the fields
@@ -32,6 +48,29 @@ function handlePaste(event: ClipboardEvent) {
 
   try {
     emit('paste', JSON.parse(event.clipboardData?.getData('text') ?? ''))
+  } catch (e) {
+    console.info(e)
+  }
+}
+
+function handleDragOver(event: DragEvent) {
+  event.preventDefault()
+  event.stopPropagation()
+}
+
+// A text file holds data copied from a simulator, a file without a type holds a response saved from the game
+async function handleDrop(event: DragEvent) {
+  const file = event.dataTransfer?.files[0]
+
+  if (!file || (file.type !== 'text/plain' && file.type !== '')) return
+
+  event.preventDefault()
+  event.stopPropagation()
+
+  try {
+    const data = JSON.parse(await file.text())
+
+    emit('paste', file.type === 'text/plain' ? data : PlayaResponse.importData(data).players)
   } catch (e) {
     console.info(e)
   }

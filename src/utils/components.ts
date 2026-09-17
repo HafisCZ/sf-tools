@@ -1,17 +1,49 @@
 import { type InjectionKey } from 'vue'
 import { type IconName } from './icons'
 
+export type TableSorting = {
+  /**
+   * Column the rows are sorted by
+   */
+  column: string
+  /**
+   * Whether the column is sorted from its first direction or the opposite one
+   */
+  direction: 'asc' | 'desc'
+}
+
 export type TableOptions = {
   /**
    * Cells use smaller padding
    */
   dense: boolean
+  sort: {
+    /**
+     * Direction the column is sorted in, or false when the rows are sorted by another column
+     */
+    isSortedBy: (column: string) => 'asc' | 'desc' | false
+    /**
+     * Sorts by the column, turns the sorting around when it already sorts by it, and removes it on the click after that
+     */
+    sortBy: (column: string, first?: 'asc' | 'desc') => void
+  }
 }
 
 /**
  * SFTable provides its options under this key to the headers and cells inside it
  */
 export const TABLE_OPTIONS_KEY: InjectionKey<TableOptions> = Symbol('SFTable')
+
+/**
+ * Options a header or cell outside of a table works with
+ */
+export const DEFAULT_TABLE_OPTIONS: TableOptions = {
+  dense: false,
+  sort: {
+    isSortedBy: () => false,
+    sortBy: () => {}
+  }
+}
 
 export type DropdownItem = {
   /**

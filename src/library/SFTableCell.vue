@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { inject } from 'vue'
-import { TABLE_OPTIONS_KEY } from '@utils/components'
+import { DEFAULT_TABLE_OPTIONS, TABLE_OPTIONS_KEY } from '@utils/components'
 
 defineOptions({
   name: 'SFTableCell'
@@ -25,5 +25,5 @@ const ALIGN_CLASSES = {
   right: 'text-right'
 }
 
-const table = inject(TABLE_OPTIONS_KEY, { dense: false })
+const table = inject(TABLE_OPTIONS_KEY, DEFAULT_TABLE_OPTIONS)
 </script>
