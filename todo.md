@@ -1,6 +1,5 @@
 # Vue migration
 
-- idle.html - 4
 - fortress.html - 4
 - hellevator.html - 5
 - underworld.html - 5
