@@ -1,14 +1,15 @@
 <template>
   <div class="flex flex-col gap-1.5">
-    <label :for="id" class="font-bold text-white">{{ props.label }}</label>
+    <label v-if="props.label" :for="id" class="font-bold text-white">{{ props.label }}</label>
     <input
       :id="id"
       v-model="text"
+      v-bind="$attrs"
       type="text"
       :inputmode="allowsDecimals ? 'decimal' : 'numeric'"
       :placeholder="props.placeholder"
       class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none placeholder:text-white/40"
-      :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
+      :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], { 'text-center': props.centered }]"
       :aria-invalid="validationResult?.[0] === 'error'"
       @change="clampValue"
       @keydown="handleKeydown"
@@ -24,7 +25,8 @@ import { createDefaultNumberValidator, useValidation, type ValidationProps } fro
 import SFValidation from './SFValidation.vue'
 
 defineOptions({
-  name: 'SFNumber'
+  name: 'SFNumber',
+  inheritAttrs: false
 })
 
 const props = defineProps<
@@ -32,7 +34,7 @@ const props = defineProps<
     /**
      * Text shown above the field, also its accessible name
      */
-    label: string
+    label?: string
     /**
      * Shows an error while the field is empty
      */
@@ -53,6 +55,10 @@ const props = defineProps<
      * Text shown while the field is empty
      */
     placeholder?: string
+    /**
+     * Centers the text in the field
+     */
+    centered?: boolean
   }
 >()
 

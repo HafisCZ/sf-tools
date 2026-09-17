@@ -28,6 +28,10 @@ export type SelectOption = {
    * Text shown for the option
    */
   label: string
+  /**
+   * URL of an image shown before the label
+   */
+  image?: string
 }
 
 export type ToastType = 'default' | 'success' | 'warning' | 'error'
