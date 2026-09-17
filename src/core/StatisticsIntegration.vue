@@ -5,17 +5,19 @@
       {{ localize(`poll.${props.type}`) }}
       <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
     </SFButton>
-    <div v-if="open" :id="panelId" class="flex max-h-96 flex-col overflow-y-auto border-t border-line p-1">
-      <div v-for="entry in entries" :key="entry.LinkId" class="group relative">
-        <button type="button" class="w-full cursor-pointer rounded py-2 pr-10 pl-3 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
-          <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
-          <span class="hidden text-white/60 group-hover:inline group-has-[:focus-visible]:inline">{{ describeEntry(entry) }}</span>
-        </button>
-        <span class="absolute top-1/2 right-1 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100">
-          <SFButton variant="ghost" size="sm" icon @click="hideEntry(entry)">
-            <SFIcon name="eye-slash" />
-          </SFButton>
-        </span>
+    <div v-if="open" :id="panelId" class="flex flex-col border-t border-line p-1">
+      <div v-if="entries.length > 0" class="flex max-h-96 flex-col overflow-y-auto">
+        <div v-for="entry in entries" :key="entry.LinkId" class="group relative">
+          <button type="button" class="w-full cursor-pointer rounded py-2 pr-10 pl-3 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
+            <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
+            <span class="hidden text-white/60 group-hover:inline group-has-[:focus-visible]:inline">{{ describeEntry(entry) }}</span>
+          </button>
+          <span class="absolute top-1/2 right-1 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100">
+            <SFButton variant="ghost" size="sm" icon @click="hideEntry(entry)">
+              <SFIcon name="eye-slash" />
+            </SFButton>
+          </span>
+        </div>
       </div>
       <div v-if="entries.length > 0" class="my-1 border-t border-line" />
       <div class="flex items-center">
@@ -25,24 +27,52 @@
         <SFButton variant="ghost" size="sm" class="flex-1" @click="importFiles">
           {{ localize('file') }}
         </SFButton>
+        <SFButton v-if="props.cheats" variant="ghost" icon :title="localize('tooltip.cheats')" :aria-label="localize('tooltip.cheats')" :aria-pressed="!!cheats" @click="toggleCheats">
+          <SFIcon name="fire-flame-curved" :class="{ 'text-accent': cheats }" />
+        </SFButton>
         <SFButton variant="ghost" icon :title="localize('tooltip.options')" :aria-label="localize('tooltip.options')" @click="showOptions">
           <SFIcon name="gear" />
         </SFButton>
+      </div>
+      <div v-if="cheats" class="mt-1 flex flex-col gap-3 border-t border-line p-2">
+        <div class="flex flex-col gap-2">
+          <SFHeading level="6">{{ localize.global('dungeons.cheats.general') }}</SFHeading>
+          <SFCheckbox v-model="cheats.enchantments" :label="localize.global('dungeons.cheats.enchantments')" />
+          <SFCheckbox v-model="cheats.runes" :label="localize.global('dungeons.cheats.runes')" />
+          <SFCheckbox v-model="cheats.pets" :label="localize.global('dungeons.cheats.pets')" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <SFHeading level="6">{{ localize.global('dungeons.cheats.potions') }}</SFHeading>
+          <div class="grid grid-cols-2 gap-2">
+            <SFCheckbox v-model="cheats.strength" :label="localize.global('general.attribute1')" />
+            <SFCheckbox v-model="cheats.dexterity" :label="localize.global('general.attribute2')" />
+            <SFCheckbox v-model="cheats.intelligence" :label="localize.global('general.attribute3')" />
+            <SFCheckbox v-model="cheats.constitution" :label="localize.global('general.attribute4')" />
+            <SFCheckbox v-model="cheats.luck" :label="localize.global('general.attribute5')" />
+            <SFCheckbox v-model="cheats.life" :label="localize.global('general.life_potion')" />
+          </div>
+        </div>
+        <SFSelect v-model="cheats.class" :label="localize.global('dungeons.cheats.class')" :options="cheatClassOptions" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts" generic="TEntry extends PlayerEntry | DatabaseEntry">
-import { ref, shallowRef, useId } from 'vue'
+import { computed, ref, shallowRef, useId } from 'vue'
 import SFButton from '@library/SFButton.vue'
+import SFCheckbox from '@library/SFCheckbox.vue'
+import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
+import SFSelect from '@library/SFSelect.vue'
+import { type SelectOption } from '@utils/components'
 import { useDialog, useFilePicker, useSimpleDialog } from '@utils/dialogs'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast } from '@utils/toasts'
-import { getErrorMessage } from '@utils/utils'
+import { getClassImageUrl, getErrorMessage } from '@utils/utils'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
+import { applyCheats, type Cheats } from './cheats'
 import StatisticsIntegrationOptionsDialog from './dialogs/StatisticsIntegrationOptionsDialog.vue'
 
 defineOptions({
@@ -62,6 +92,10 @@ const props = defineProps<{
    * Picks the entries to list once the database is loaded
    */
   scope: () => TEntry[]
+  /**
+   * Shows a toggle for cheats, which are applied to a copy of a player before it is selected
+   */
+  cheats?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -91,6 +125,11 @@ const panelId = useId()
 
 const open = ref(false)
 const entries = shallowRef<TEntry[]>([])
+
+// Null while cheats are turned off
+const cheats = ref<Cheats | null>(null)
+
+const cheatClassOptions = computed<SelectOption<Cheats['class']>[]>(() => [{ value: 0, label: localize.global('dungeons.cheats.keep_original') }, ...CONFIG.ids().map((id) => ({ value: id, label: localize.global(`general.class${id}`), image: getClassImageUrl(id) }))])
 
 function toggle() {
   if (open.value) {
@@ -151,7 +190,32 @@ function describeEntry(entry: TEntry) {
 }
 
 function selectEntry(entry: TEntry) {
-  emit('select', entry)
+  if (cheats.value) {
+    // Saved players are player models, so the copy has the same fields as the entry
+    const player = applyCheats(new PlayerModel(entry.Data), cheats.value)
+
+    emit('select', player as unknown as TEntry)
+  } else {
+    emit('select', entry)
+  }
+}
+
+// Turning cheats off forgets the picked cheats
+function toggleCheats() {
+  cheats.value = cheats.value
+    ? null
+    : {
+        enchantments: false,
+        runes: false,
+        pets: false,
+        strength: false,
+        dexterity: false,
+        intelligence: false,
+        constitution: false,
+        luck: false,
+        life: false,
+        class: 0
+      }
 }
 
 function hideEntry(entry: TEntry) {

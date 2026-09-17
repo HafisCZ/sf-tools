@@ -32,11 +32,11 @@ export type DropdownItem = {
   action: () => void
 }
 
-export type SelectOption = {
+export type SelectOption<TValue = string> = {
   /**
    * Value stored in the model when the option is picked
    */
-  value: string
+  value: TValue
   /**
    * Text shown for the option
    */
@@ -45,6 +45,10 @@ export type SelectOption = {
    * URL of an image shown before the label
    */
   image?: string
+  /**
+   * Shows the label in the accent color
+   */
+  accent?: boolean
 }
 
 export type ToastType = 'default' | 'success' | 'warning' | 'error'

@@ -5,7 +5,7 @@
       :id="id"
       v-model="modelValue"
       v-bind="$attrs"
-      class="w-full resize-none rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none placeholder:text-white/40"
+      class="w-full resize-none rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none read-only:text-white/60 read-only:caret-transparent placeholder:text-white/40"
       :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
       :aria-invalid="validationResult?.[0] === 'error'"
       @keydown="showValidation"
@@ -46,7 +46,7 @@ defineExpose({
 })
 
 const BORDER_CLASSES = {
-  default: 'border-line focus:border-accent',
+  default: 'border-line focus:not-read-only:border-accent',
   error: 'border-red-400',
   warning: 'border-yellow-400'
 }

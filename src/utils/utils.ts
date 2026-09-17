@@ -121,3 +121,92 @@ export function formatDuration(milliseconds: number, limit = 4) {
 
   return joinSentence([weeks > 0 ? `${weeks} w` : '', days > 0 ? `${days} d` : '', hours > 0 ? `${hours} h` : '', minutes > 0 ? `${minutes} m` : '', seconds > 0 ? `${seconds} s` : '', millisecondsPart > 0 ? `${millisecondsPart} ms` : ''].filter((part) => part).slice(0, limit))
 }
+
+/**
+ * Value at a dot separated `path` in `object`, such as `Items.Wpn1.DamageMin`, or `undefined` when a part of the path is missing or `null`
+ */
+export function getValueAtPath(object: unknown, path: string) {
+  if (!object) return undefined
+
+  let current = object
+
+  for (const key of path.split('.')) {
+    current = Reflect.get(Object(current), key)
+
+    if (current === undefined || current === null) {
+      return undefined
+    }
+  }
+
+  return current
+}
+
+/**
+ * Sets the value at a dot separated `path` in `object`, and creates the missing objects along the path
+ */
+export function setValueAtPath(object: object, path: string, value: unknown) {
+  const keys = path.split('.')
+  const lastKey = keys.pop() ?? ''
+
+  let current = object
+
+  for (const key of keys) {
+    let next = Reflect.get(current, key)
+
+    if (next === undefined || next === null) {
+      next = {}
+
+      Reflect.set(current, key, next)
+    }
+
+    current = Object(next)
+  }
+
+  Reflect.set(current, lastKey, value)
+}
+
+/**
+ * Scales `value` from the `from` range to the `to` range and rounds it up
+ */
+export function scaleValue(value: number, from: number, to: number) {
+  return Math.ceil((value / from) * to)
+}
+
+/**
+ * Numbers from `base` up, `length` of them
+ */
+export function sequence(length: number, base = 0) {
+  return Array.from({ length }, (_, index) => index + base)
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+/**
+ * Copy of `target` with `source` merged into it. Objects are merged key by key, any other value from `source` replaces the one in `target`.
+ */
+export function mergeDeep(target: Record<string, unknown>, source: unknown) {
+  const output = { ...target }
+
+  if (isPlainObject(source)) {
+    for (const [key, value] of Object.entries(source)) {
+      if (isPlainObject(value)) {
+        const targetValue = target[key]
+
+        output[key] = mergeDeep(isPlainObject(targetValue) ? targetValue : {}, value)
+      } else {
+        output[key] = value
+      }
+    }
+  }
+
+  return output
+}
+
+/**
+ * Copies `value` to the clipboard as JSON
+ */
+export function copyJson(value: unknown) {
+  return navigator.clipboard.writeText(JSON.stringify(value))
+}
