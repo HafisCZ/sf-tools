@@ -30,15 +30,15 @@
       </template>
 
       <form v-else-if="step === 'login'" class="flex flex-col gap-4" @submit.prevent="login">
-        <SFInput v-model="username" :label="localize('username')" name="username" autocomplete="username" />
-        <SFInput v-model="password" :label="localize('password')" name="password" type="password" autocomplete="current-password" />
-        <SFSelect v-model="mode" :label="localize('mode.title')" :options="modeOptions" />
-        <SFCheckbox v-if="props.allowTemporary" v-model="temporary" :label="localize('temporary')" />
+        <SFInput ref="username-ref" v-model="username" :label="localize('username')" name="username" autocomplete="username" />
+        <SFInput ref="password-ref" v-model="password" :label="localize('password')" name="password" type="password" autocomplete="current-password" />
+        <SFSelect ref="mode-ref" v-model="mode" :label="localize('mode.title')" :options="modeOptions" />
+        <SFCheckbox v-if="props.allowTemporary" ref="temporary-ref" v-model="temporary" :label="localize('temporary')" />
         <div class="flex gap-2">
           <SFButton block @click="close(false)">
             {{ localize('cancel') }}
           </SFButton>
-          <SFButton variant="primary" type="submit" block>
+          <SFButton variant="primary" type="submit" block :disabled="!isLoginValid">
             {{ localize('continue') }}
           </SFButton>
         </div>
@@ -61,10 +61,10 @@
 
       <template v-else-if="step === 'select'">
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step3.title') }}</SFHeading>
-        <SFCheckbox v-model="allTargetsSelected" :indeterminate="someTargetsSelected" :label="localize('step3.toggle')" />
+        <SFCheckbox ref="all-targets-ref" v-model="allTargetsSelected" :indeterminate="someTargetsSelected" :label="localize('step3.toggle')" />
         <ul class="flex h-[30em] flex-col gap-2 overflow-y-auto border-t border-line pt-3">
           <li v-for="(target, index) in targets" :key="index">
-            <SFCheckbox v-model="target.selected">
+            <SFCheckbox ref="targets-ref" v-model="target.selected">
               <span class="flex flex-1 items-center justify-between gap-2">
                 {{ target.name }}
                 <SFIcon :name="target.icon" class="text-white/60" />
@@ -76,7 +76,7 @@
           <SFButton block @click="close(false)">
             {{ localize('cancel') }}
           </SFButton>
-          <SFButton variant="primary" block @click="selectTargets">
+          <SFButton variant="primary" block :disabled="!isSelectionValid" @click="selectTargets">
             {{ localize('continue') }}
           </SFButton>
         </div>
@@ -127,6 +127,7 @@ import { type IconName } from '@utils/icons'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
 import { getErrorMessage } from '@utils/utils'
+import { useComponentValidation } from '@utils/validations'
 
 defineOptions({
   name: 'EndpointDialog'
@@ -195,6 +196,10 @@ let controller: EndpointController | undefined
 // Resolve the waiting login once the user picks in the select or character step
 let resolveTargets: ((names: string[]) => void) | undefined
 let resolveCharacter: ((character: Character) => void) | undefined
+
+const isLoginValid = useComponentValidation(useTemplateRef('username-ref'), useTemplateRef('password-ref'), useTemplateRef('mode-ref'), useTemplateRef('temporary-ref'))
+
+const isSelectionValid = useComponentValidation(useTemplateRef('all-targets-ref'), useTemplateRef('targets-ref'))
 
 const modeOptions = computed<SelectOption[]>(() => MODES.map((value) => ({ value, label: localize(`mode.${value}`) })))
 
