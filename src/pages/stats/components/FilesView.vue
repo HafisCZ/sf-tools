@@ -39,17 +39,17 @@
       </SFButton>
       <hr class="my-4 border-line" />
       <div class="text-center">{{ selectedCount === 0 ? localize('selected.no') : selectedCount }} {{ localize('selected.text') }}</div>
-      <SFButton variant="outline" block @click="exportSelected">
+      <SFButton variant="outline" block :disabled="selectedCount === 0" @click="exportSelected">
         <SFIcon name="download" />
         {{ localize('export.selected') }}
       </SFButton>
-      <SFButton variant="outline" block @click="tagSelected">
+      <SFButton variant="outline" block :disabled="!canTag" @click="tagSelected">
         <SFIcon name="tags" />
         {{ localize('tags.multiple') }}
       </SFButton>
       <div class="flex gap-1">
         <SFTooltip :content="localize('hide.tooltip')">
-          <SFButton variant="outline" block @click="hideSelected">
+          <SFButton variant="outline" block :disabled="selectedCount === 0" @click="hideSelected">
             <SFIcon name="eye-slash" />
             {{ localize('hide.label') }}
           </SFButton>
@@ -60,11 +60,11 @@
           </SFButton>
         </SFTooltip>
       </div>
-      <SFButton variant="outline" block @click="mergeSelected">
+      <SFButton variant="outline" block :disabled="mergeTimestamps.length < 2" @click="mergeSelected">
         <SFIcon name="clone" />
         {{ localize('merge.selected') }}
       </SFButton>
-      <SFButton variant="outline" block class="border-red-400! text-red-400!" @click="deleteSelected">
+      <SFButton variant="outline" block class="border-red-400! text-red-400!" :disabled="selectedCount === 0" @click="deleteSelected">
         <SFIcon name="clone" />
         {{ localize('delete.selected') }}
       </SFButton>
@@ -180,6 +180,10 @@ const expressionFilter = computed(() => Expression.create(expressionText.value))
 const selectedEntryKeys = computed(() => new Set(selectedEntries.value.keys()))
 
 const selectedCount = computed(() => (advanced.value ? selectedEntries.value.size : selectedFiles.value.size))
+
+const canTag = computed(() => (advanced.value ? Array.from(selectedEntries.value.values()).some((entry) => DatabaseManager.isPlayer(entry.identifier)) : selectedFiles.value.size > 0))
+
+const mergeTimestamps = computed(() => (advanced.value ? unique(Array.from(selectedEntries.value.values()).map((entry) => entry.timestamp)) : Array.from(selectedFiles.value)))
 
 const typeOptions = computed<SelectOption[]>(() => [
   { value: '0', label: localize('filters.any') },
@@ -630,7 +634,7 @@ async function deleteSelected() {
 }
 
 function mergeSelected() {
-  const timestamps = advanced.value ? unique(Array.from(selectedEntries.value.values()).map((entry) => entry.timestamp)) : Array.from(selectedFiles.value)
+  const timestamps = mergeTimestamps.value
 
   if (timestamps.length > 1) {
     void runWithLoader(() => DatabaseManager.merge(timestamps))
