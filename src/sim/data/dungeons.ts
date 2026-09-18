@@ -111,7 +111,7 @@ function createMirrorBoss(entry: DungeonEntry, player: PlayerModel) {
   return mirror
 }
 
-function createBossWeapon(boss: DungeonClassBoss) {
+export function createBossWeapon(boss: DungeonClassBoss) {
   return {
     AttributeTypes: { 2: boss.runes ? boss.runes.type : 0 },
     Attributes: { 2: boss.runes ? boss.runes.damage : 0 },

@@ -1,5 +1,5 @@
 <template>
-  <Page wide>
+  <Page width="80vw">
     <div class="grid gap-[14px] md:grid-cols-3">
       <SFSelect ref="type-ref" v-model="type" :label="localize('item.type')" :options="typeOptions" />
       <SFNumber ref="value-ref" v-model="value" :label="localize('item.value')" required :min="0" :step="1" />
