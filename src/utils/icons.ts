@@ -16,6 +16,7 @@ import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons/faCircleE
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons/faCircleUser'
 import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload'
 import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon'
+import { faDungeon } from '@fortawesome/free-solid-svg-icons/faDungeon'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faExclamation } from '@fortawesome/free-solid-svg-icons/faExclamation'
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash'
@@ -44,6 +45,7 @@ import { faSortUp } from '@fortawesome/free-solid-svg-icons/faSortUp'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner'
 import { faStopwatch } from '@fortawesome/free-solid-svg-icons/faStopwatch'
 import { faSun } from '@fortawesome/free-solid-svg-icons/faSun'
+import { faTableCells } from '@fortawesome/free-solid-svg-icons/faTableCells'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons/faThumbsUp'
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons/faTriangleExclamation'
 import { faTrophy } from '@fortawesome/free-solid-svg-icons/faTrophy'
@@ -69,6 +71,7 @@ export const ICONS = {
   discord: faDiscord,
   download: faDownload,
   dragon: faDragon,
+  dungeon: faDungeon,
   envelope: faEnvelope,
   exclamation: faExclamation,
   'eye-slash': faEyeSlash,
@@ -97,6 +100,7 @@ export const ICONS = {
   spinner: faSpinner,
   stopwatch: faStopwatch,
   sun: faSun,
+  'table-cells': faTableCells,
   'thumbs-up': faThumbsUp,
   'trash-can': faTrashCan,
   'triangle-exclamation': faTriangleExclamation,

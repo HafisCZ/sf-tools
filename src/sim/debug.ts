@@ -23,11 +23,14 @@ export const isSimulatorDebug = new URLSearchParams(window.location.search).has(
  */
 export const simulatorConfig = shallowRef<SimulatorConfig | null>(null)
 
+// Taken before a page can apply a custom config to CONFIG, like in legacy SimulatorUtils.configure
+const DEFAULT_CONFIG = mergeDeep({}, CONFIG) as SimulatorConfig
+
 /**
  * Copy of the default simulator config
  */
 export function getDefaultSimulatorConfig() {
-  return mergeDeep({}, CONFIG) as SimulatorConfig
+  return mergeDeep({}, DEFAULT_CONFIG) as SimulatorConfig
 }
 
 /**
