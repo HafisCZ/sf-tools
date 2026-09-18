@@ -1,7 +1,6 @@
 // Font Awesome Free icons (https://fontawesome.com/license/free)
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord'
 import { faCalendarXmark } from '@fortawesome/free-regular-svg-icons/faCalendarXmark'
-import { faCircleXmark } from '@fortawesome/free-regular-svg-icons/faCircleXmark'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import { faClone } from '@fortawesome/free-regular-svg-icons/faClone'
 import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
@@ -71,7 +70,6 @@ import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
 import { faLinkSlash } from '@fortawesome/free-solid-svg-icons/faLinkSlash'
 import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus'
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon'
@@ -113,7 +111,6 @@ import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload'
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock'
 import { faUsers } from '@fortawesome/free-solid-svg-icons/faUsers'
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons/faUserSecret'
 import { faWallet } from '@fortawesome/free-solid-svg-icons/faWallet'
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
@@ -139,7 +136,6 @@ export const ICONS = {
   'circle-half-stroke': faCircleHalfStroke,
   'circle-info': faCircleInfo,
   'circle-user': faCircleUser,
-  'circle-xmark': faCircleXmark,
   clock: faClock,
   clone: faClone,
   'cloud-arrow-down': faCloudArrowDown,
@@ -187,7 +183,6 @@ export const ICONS = {
   'link-slash': faLinkSlash,
   'list-check': faListCheck,
   lock: faLock,
-  'magnifying-glass': faMagnifyingGlass,
   message: faMessage,
   minus: faMinus,
   moon: faMoon,
@@ -232,7 +227,6 @@ export const ICONS = {
   upload: faUpload,
   user: faUser,
   'user-lock': faUserLock,
-  'user-secret': faUserSecret,
   users: faUsers,
   wallet: faWallet,
   wrench: faWrench,
