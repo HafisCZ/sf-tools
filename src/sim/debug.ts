@@ -2,6 +2,11 @@ import { shallowRef } from 'vue'
 import { useLoader } from '@utils/loader'
 import { globalLocalize } from '@utils/localization'
 import { copyJson, mergeDeep, scaleValue } from '@utils/utils'
+import { ItemModel } from '~/data/item-model'
+import { PlayerModel } from '~/data/player-model'
+import { type RawPlayer } from '~/data/types'
+import { Broadcast } from '~/site/broadcast'
+import { Exporter } from '~/site/exporter'
 
 export type SimulatorConfig = Record<string, Record<string, unknown>>
 
@@ -91,13 +96,13 @@ function swapAttributes(data: PlayerModel, from: MainAttribute, to: MainAttribut
 }
 
 export function preparePlayerData(data: unknown) {
-  const player = hasClass(data) ? data : new PlayerModel(data)
+  const player = hasClass(data) ? data : new PlayerModel(data as RawPlayer)
 
   ItemModel.forceCorrectRune(player.Items.Wpn1)
   ItemModel.forceCorrectRune(player.Items.Wpn2)
 
   if (Number(player.Class) === WARRIOR && player.BlockChance === undefined) {
-    player.BlockChance = player.Items.Wpn2.DamageMin
+    player.BlockChance = (player.Items.Wpn2 as ItemModel).DamageMin
   }
 
   if (Number(player.Class) !== ASSASSIN) {

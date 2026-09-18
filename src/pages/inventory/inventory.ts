@@ -1,7 +1,11 @@
 import { formatSpacedNumber } from '@utils/formatting'
 import { globalLocalize } from '@utils/localization'
+import { ItemModel } from '~/data/item-model'
+import { type PlayerModel } from '~/data/player-model'
+import { type BlacksmithResources } from '~/data/types'
+import { Loca } from '~/playa/items'
 
-export type InventoryPlayer = PlayerEntry & PlayerModel
+export type InventoryPlayer = PlayerModel
 
 export type CharacterIndex = 0 | 1 | 2 | 3
 
@@ -66,13 +70,13 @@ export type CharacterStats = {
 
 type StatKey = Exclude<keyof CharacterStats, 'level' | 'runes'>
 
-const COMPANIONS = ['Bert', 'Mark', 'Kunigunde']
+const COMPANIONS = ['Bert', 'Mark', 'Kunigunde'] as const
 
 const ITEM_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'] as const
 
 const STAT_ATTRIBUTES = ['strength', 'dexterity', 'intelligence', 'constitution', 'luck'] as const
 
-const PET_HABITATS = ['Water', 'Light', 'Earth', 'Shadow', 'Fire']
+const PET_HABITATS = ['Water', 'Light', 'Earth', 'Shadow', 'Fire'] as const
 
 const STAT_LABEL_KEYS: Record<StatKey, string> = {
   strength: 'general.attribute1',

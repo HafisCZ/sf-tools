@@ -132,6 +132,10 @@ import { useToast } from '@utils/toasts'
 import { compact, copyJson, formatDuration, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sortDescending, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { type GroupModel } from '~/data/group-model'
+import { ModelUtils, type SimulatorData } from '~/data/model-utils'
+import { type PlayerModel } from '~/data/player-model'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
@@ -143,13 +147,16 @@ import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { getRaidEnemies, scaleRaidPlayers } from '~/sim/data/raids'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { WorkerBatch } from '~/sim/workers'
+import { HYDRA_PROFILE } from '~/site/profiles'
+import { Store } from '~/site/store'
 
 defineOptions({
   name: 'RaidsPage'
 })
 
 type ListPlayer = {
-  player: PlayerModel
+  player: PlayerModel | SimulatorData
   index: number
 }
 
@@ -291,7 +298,7 @@ function applySnackToAll() {
   useToast({ title: localize.global('simulator.snack_apply_all_toast_title'), message: localize.global('simulator.snack_apply_all_toast_message') })
 }
 
-function insertGroup(group: GroupEntry) {
+function insertGroup(group: GroupModel) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
   setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), index: nextIndex++ })))

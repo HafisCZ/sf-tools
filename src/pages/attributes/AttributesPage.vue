@@ -360,6 +360,7 @@ import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
 import PageFooter from '~/pages/components/PageFooter.vue'
 import Page from '~/pages/Page.vue'
+import { Calculations } from '~/playa/calculations'
 
 defineOptions({
   name: 'AttributesPage'

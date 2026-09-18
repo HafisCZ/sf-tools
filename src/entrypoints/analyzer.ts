@@ -1,5 +1,4 @@
 import '~/styles/main.css'
-import '~/legacy/bridge'
 import { createPage } from '~/pages/pages'
 import AnalyzerPage from '~/pages/analyzer/AnalyzerPage.vue'
 

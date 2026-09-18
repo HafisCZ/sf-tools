@@ -86,8 +86,11 @@ import { formatNamedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { type PlayerModel } from '~/data/player-model'
 import Page from '~/pages/Page.vue'
 import { BUILDINGS, Building, MULTIPLIERS } from '~/playa/idle'
+import { SELF_PROFILE } from '~/site/profiles'
 
 defineOptions({
   name: 'IdlePage'
@@ -288,7 +291,7 @@ function listIdlePlayers() {
   return DatabaseManager.getLatestPlayers(true).filter((player) => player.Level >= 105 && player.Idle)
 }
 
-function load(player: PlayerEntry) {
+function load(player: PlayerModel) {
   const idle = player.Idle
 
   if (!idle) return

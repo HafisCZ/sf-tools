@@ -1,3 +1,5 @@
+import { MonsterGenerator, type Monster } from './monsters'
+
 // Shamelessly stolen with permission from https://hellevatorrewards.12hp.de/
 
 export type HellevatorEnemy = Monster & {

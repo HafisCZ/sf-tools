@@ -59,7 +59,7 @@ import SFInput from '@library/SFInput.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFSelect from '@library/SFSelect.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { type SelectOption } from '@utils/components'
+import { isSelectable, type SelectOption } from '@utils/components'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl, getValueAtPath } from '@utils/utils'
@@ -236,7 +236,7 @@ function createSelectField(path: string, model: Ref<string>, getOptions: () => S
     set: (value) => {
       const text = String(value)
 
-      model.value = getOptions().some((option) => option.value === text) ? text : defaultValue
+      model.value = getOptions().some((option) => isSelectable(option) && option.value === text) ? text : defaultValue
     },
     reset: () => {
       model.value = defaultValue

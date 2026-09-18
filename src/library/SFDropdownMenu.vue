@@ -2,12 +2,27 @@
   <div ref="container-ref" data-content-container class="fixed z-[1001] max-h-96 min-w-40 overflow-y-auto rounded-md border border-line bg-surface p-1 text-white/90 shadow-xl" :class="{ invisible: !size }" :style="style" @keydown="moveFocus">
     <slot>
       <ul role="menu" class="flex flex-col">
-        <li v-for="item in props.items" :key="item.label" role="none">
-          <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': item.active }" @click="select(item)">
-            <img v-if="item.image" :src="item.image" alt="" class="h-4 w-6 rounded-sm object-contain" />
-            {{ item.label }}
-          </button>
-        </li>
+        <template v-for="(item, index) in props.items" :key="index">
+          <li v-if="!isSelectable(item)" :role="item.type === 'divider' ? 'separator' : 'presentation'" :class="item.type === 'divider' ? 'mx-1 my-1 border-t border-line' : 'px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase'">
+            {{ item.type === 'header' ? item.label : '' }}
+          </li>
+          <li v-else role="none">
+            <button
+              type="button"
+              role="menuitem"
+              class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none enabled:hover:bg-surface-hover focus-visible:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50"
+              :class="{ 'text-accent': item.active }"
+              :disabled="item.disabled"
+              @click="select(item.action)"
+            >
+              <template v-if="item.image">
+                <SFIcon v-if="isIconName(item.image)" :name="item.image" :class="{ 'text-white/60': !item.active }" />
+                <img v-else :src="item.image" alt="" class="h-4 w-6 rounded-sm object-contain" />
+              </template>
+              {{ item.label }}
+            </button>
+          </li>
+        </template>
       </ul>
     </slot>
   </div>
@@ -15,9 +30,11 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
+import { isSelectable, type DropdownItem } from '@utils/components'
 import { onClickOutsideOf } from '@utils/focus'
+import { isIconName } from '@utils/icons'
 import { pickVisibleAxisPosition, type Rectangle } from '@utils/position'
-import { type DropdownItem } from '@utils/components'
+import SFIcon from './SFIcon.vue'
 
 defineOptions({
   name: 'SFDropdownMenu'
@@ -25,7 +42,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Items shown in the menu
+   * Items shown in the menu, with optional header rows and dividers between them
    */
   items?: DropdownItem[]
   /**
@@ -93,7 +110,7 @@ watch(
   size,
   (value, previous) => {
     if (value && !previous) {
-      containerElement.value?.querySelector<HTMLElement>('input, [role="menuitem"]')?.focus()
+      containerElement.value?.querySelector<HTMLElement>('input, [role="menuitem"]:not(:disabled)')?.focus()
     }
   },
   { flush: 'post' }
@@ -116,7 +133,7 @@ function close() {
 }
 
 function getMenuItems() {
-  return Array.from(containerElement.value?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [])
+  return Array.from(containerElement.value?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? [])
 }
 
 function moveFocus(event: KeyboardEvent) {
@@ -148,8 +165,8 @@ function moveFocus(event: KeyboardEvent) {
   target?.focus()
 }
 
-function select(item: DropdownItem) {
-  item.action()
+function select(action: () => void) {
+  action()
 
   close()
 }

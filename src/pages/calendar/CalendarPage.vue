@@ -40,11 +40,15 @@ import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import PetCard from './components/PetCard.vue'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { type PlayerModel } from '~/data/player-model'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
 import PageFooter from '~/pages/components/PageFooter.vue'
 import Page from '~/pages/Page.vue'
+import { PetData, type Pet } from '~/playa/pets'
+import { SELF_PROFILE_WITH_GROUP } from '~/site/profiles'
 
 defineOptions({
   name: 'CalendarPage'
@@ -60,12 +64,12 @@ const NOW = Date.now()
 
 const localize = useLocalize('pets.calendar')
 
-const player = shallowRef<PlayerEntry | null>(null)
+const player = shallowRef<PlayerModel | null>(null)
 const ownedPets = ref(PetData.map(() => false))
 
 const pets = computed(() => {
   const entries = PetData.map((pet, index) => {
-    const [start, end] = pet.next
+    const [start, end] = pet.next as [Date, Date]
 
     const owned = ownedPets.value[index]
     const locked = isLocked(pet, index)
@@ -89,7 +93,7 @@ function isLocked(pet: Pet, index: number) {
   if (!player.value) return false
 
   const element = Math.trunc(index / 20)
-  const unlocked = Math.max(player.value.Pets?.Dungeons[element] || 0, 3)
+  const unlocked = Math.max(player.value.Pets?.Dungeons?.[element] || 0, 3)
 
   return unlocked <= index % 20 || (typeof pet.condition === 'function' && !pet.condition(player.value))
 }
@@ -98,9 +102,9 @@ function listPlayersWithPets() {
   return DatabaseManager.getLatestPlayers(true).filter((entry) => entry.Pets?.Levels)
 }
 
-function selectPlayer(entry: PlayerEntry) {
+function selectPlayer(entry: PlayerModel) {
   player.value = entry
-  ownedPets.value = PetData.map((_, index) => (entry.Pets?.Levels[index] ?? 0) > 0)
+  ownedPets.value = PetData.map((_, index) => (entry.Pets?.Levels?.[index] ?? 0) > 0)
 }
 
 function togglePet(index: number) {

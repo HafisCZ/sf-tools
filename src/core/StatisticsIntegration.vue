@@ -76,7 +76,7 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="TEntry extends PlayerEntry | DatabaseEntry">
+<script setup lang="ts" generic="TEntry extends PlayerModel | GroupModel">
 import { computed, ref, shallowRef, useId } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
@@ -87,12 +87,20 @@ import SFInput from '@library/SFInput.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
 import { useDialog, useFilePicker, useSimpleDialog } from '@utils/dialogs'
+import { formatDate } from '@utils/formatting'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useAnimationFramePosition } from '@utils/position'
 import { useErrorToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage } from '@utils/utils'
+import { DatabaseManager } from '~/data/database-manager'
+import { type GroupModel } from '~/data/group-model'
+import { PlayerModel } from '~/data/player-model'
+import { type RawPlayer } from '~/data/types'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
+import { Logger } from '~/site/logger'
+import { OptionsHandler } from '~/site/options'
+import { type DatabaseProfile } from '~/site/profiles'
 import { applyCheats, type Cheats } from './cheats'
 import StatisticsIntegrationOptionsDialog from './dialogs/StatisticsIntegrationOptionsDialog.vue'
 
@@ -162,9 +170,9 @@ let groupElement: HTMLElement | null = null
 const cheats = ref<Cheats | null>(null)
 
 const groups = computed(() => {
-  const map = new Map<string, PlayerEntry[]>()
+  const map = new Map<string, PlayerModel[]>()
 
-  for (const entry of entries.value as PlayerEntry[]) {
+  for (const entry of entries.value as PlayerModel[]) {
     map.set(entry.Prefix, [...(map.get(entry.Prefix) ?? []), entry])
   }
 
@@ -245,11 +253,11 @@ function closeGroup() {
   search.value = ''
 }
 
-function selectGroupEntry(entry: PlayerEntry) {
+function selectGroupEntry(entry: PlayerModel) {
   selectEntry(entry as TEntry)
 }
 
-function filterGroup(list: PlayerEntry[]) {
+function filterGroup(list: PlayerModel[]) {
   const query = search.value.trim().toLowerCase()
 
   return query ? list.filter((entry) => `${entry.Level} - ${entry.Name}`.toLowerCase().includes(query)) : list
@@ -257,17 +265,17 @@ function filterGroup(list: PlayerEntry[]) {
 
 function describeEntry(entry: TEntry) {
   if (props.type === 'players') {
-    const player = entry as PlayerEntry
+    const player = entry as PlayerModel
 
     return `${localize.global('editor.level')} ${player.Level} ${localize.global(`general.class${player.Class}`)}`
   } else {
-    return _formatDate(entry.Timestamp)
+    return formatDate(entry.Timestamp)
   }
 }
 
 function selectEntry(entry: TEntry) {
   if (cheats.value) {
-    const player = applyCheats(new PlayerModel(entry.Data), cheats.value)
+    const player = applyCheats(new PlayerModel(entry.Data as RawPlayer), cheats.value)
 
     emit('select', player as unknown as TEntry)
   } else if (props.type === 'players') {

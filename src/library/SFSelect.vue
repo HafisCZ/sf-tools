@@ -18,30 +18,39 @@
       <span v-if="slots.option && selectedOption" :id="valueId" class="flex min-w-0 flex-auto items-center gap-2 truncate">
         <slot name="option" :option="selectedOption" />
       </span>
-      <template v-else>
-        <img v-if="selectedOption?.image && selectedOption.imagePosition !== 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
-        <span :id="valueId" class="min-w-0 flex-auto truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
-        <img v-if="selectedOption?.image && selectedOption.imagePosition === 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
-      </template>
-      <SFIcon name="chevron-down" class="text-white/60" :class="{ 'rotate-180': open }" />
+      <span v-else :id="valueId" class="flex min-w-0 flex-auto items-center gap-2">
+        <template v-if="selectedOption?.image">
+          <SFIcon v-if="isIconName(selectedOption.image)" :name="selectedOption.image" class="text-white/60" :class="{ 'order-last': selectedOption.imagePosition === 'right' }" />
+          <img v-else :src="selectedOption.image" alt="" class="size-5 object-contain" :class="{ 'order-last': selectedOption.imagePosition === 'right' }" />
+        </template>
+        <span class="min-w-0 flex-auto truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
+      </span>
+      <SFIcon v-if="!props.readonly" name="chevron-down" class="text-white/60" :class="{ 'rotate-180': open }" />
     </button>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <Teleport to="body">
       <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="close">
         <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @keydown.enter.prevent="selectFirstMatch" />
         <ul role="menu" class="flex flex-col">
-          <li v-for="(option, index) in matchingOptions" :key="index" role="none">
-            <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue || option.accent }" @click="select(option.value)">
-              <slot name="option" :option="option">
-                <img v-if="option.image && option.imagePosition !== 'right'" :src="option.image" alt="" class="size-5 object-contain" />
-                <span class="flex min-w-0 flex-1 flex-col">
-                  <span :style="{ color: option.value === modelValue ? undefined : option.color }">{{ option.label }}</span>
-                  <span v-if="option.description" class="text-xs text-white/50">{{ option.description }}</span>
-                </span>
-                <img v-if="option.image && option.imagePosition === 'right'" :src="option.image" alt="" class="size-5 object-contain" />
-              </slot>
-            </button>
-          </li>
+          <template v-for="(option, index) in matchingOptions" :key="index">
+            <li v-if="!isSelectable(option)" :role="option.type === 'divider' ? 'separator' : 'presentation'" :class="option.type === 'divider' ? 'mx-1 my-1 border-t border-line' : 'px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase'">
+              {{ option.type === 'header' ? option.label : '' }}
+            </li>
+            <li v-else role="none">
+              <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue || option.accent }" @click="select(option.value)">
+                <slot name="option" :option="option">
+                  <template v-if="option.image">
+                    <SFIcon v-if="isIconName(option.image)" :name="option.image" :class="{ 'order-last': option.imagePosition === 'right', 'text-white/60': option.value !== modelValue }" />
+                    <img v-else :src="option.image" alt="" class="size-5 object-contain" :class="{ 'order-last': option.imagePosition === 'right' }" />
+                  </template>
+                  <span class="flex min-w-0 flex-1 flex-col">
+                    <span :style="{ color: option.value === modelValue ? undefined : option.color }">{{ option.label }}</span>
+                    <span v-if="option.description" class="text-xs text-white/50">{{ option.description }}</span>
+                  </span>
+                </slot>
+              </button>
+            </li>
+          </template>
         </ul>
       </SFDropdownMenu>
     </Teleport>
@@ -50,7 +59,8 @@
 
 <script setup lang="ts" generic="TValue">
 import { computed, ref, useId, useTemplateRef, watch } from 'vue'
-import { type SelectOption } from '@utils/components'
+import { isSelectable, type SelectDivider, type SelectHeader, type SelectOption } from '@utils/components'
+import { isIconName } from '@utils/icons'
 import { useInert } from '@utils/interactions'
 import { useAnimationFramePosition } from '@utils/position'
 import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
@@ -69,7 +79,7 @@ const props = defineProps<
      */
     label?: string
     /**
-     * Options to pick from
+     * Options to pick from, with optional header rows and dividers between them
      */
     options: SelectOption<TValue>[]
     /**
@@ -97,7 +107,7 @@ const slots = defineSlots<{
   /**
    * Replaces the image and label of an option, in the list and in the field
    */
-  option?(props: { option: SelectOption<TValue> }): unknown
+  option?(props: { option: Exclude<SelectOption<TValue>, SelectHeader | SelectDivider> }): unknown
 }>()
 
 defineExpose({
@@ -123,12 +133,14 @@ const triggerElement = useTemplateRef('trigger-ref')
 
 const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultValidator(props))
 
-const selectedOption = computed(() => props.options.find((option) => option.value === modelValue.value))
+const selectableOptions = computed(() => props.options.filter(isSelectable))
 
-const matchingOptions = computed(() => {
+const selectedOption = computed(() => selectableOptions.value.find((option) => option.value === modelValue.value))
+
+const matchingOptions = computed((): SelectOption<TValue>[] => {
   const search = query.value.trim().toLowerCase()
 
-  return search ? props.options.filter((option) => option.label.toLowerCase().includes(search) || option.description?.toLowerCase().includes(search)) : props.options
+  return search ? selectableOptions.value.filter((option) => option.label.toLowerCase().includes(search) || option.description?.toLowerCase().includes(search)) : props.options
 })
 
 const position = useAnimationFramePosition(open, () => triggerElement.value?.getBoundingClientRect())
@@ -146,7 +158,7 @@ watch(
 )
 
 function toggle() {
-  if (props.readonly || props.options.length === 0) return
+  if (props.readonly || selectableOptions.value.length === 0) return
 
   query.value = ''
   open.value = !open.value
@@ -165,7 +177,7 @@ function select(value: TValue) {
 }
 
 function selectFirstMatch() {
-  const option = matchingOptions.value.at(0)
+  const option = matchingOptions.value.find(isSelectable)
 
   if (option) {
     select(option.value)

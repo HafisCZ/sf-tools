@@ -1,5 +1,4 @@
 import '~/styles/main.css'
-import '~/legacy/bridge'
 import { createPage } from '~/pages/pages'
 import InventoryPage from '~/pages/inventory/InventoryPage.vue'
 

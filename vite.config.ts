@@ -6,9 +6,9 @@ import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
-const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory']
+const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory', 'stats']
 
-const LEGACY_DIRECTORIES = ['js', 'css', 'res', 'vendor', 'endpoint']
+const LEGACY_DIRECTORIES = ['js', 'res', 'vendor', 'endpoint']
 const LEGACY_FILES = ['CNAME', 'sitemap.txt']
 
 const ROOT_DIRECTORY = fileURLToPath(new URL('.', import.meta.url))
@@ -44,7 +44,7 @@ function legacySite(): Plugin {
       outputDirectory = path.resolve(config.root, config.build.outDir)
     },
     configureServer(server) {
-      // Vite's transforms break the worker source concatenation in js/util.js
+      // Vite's transforms break the worker source concatenation in src/sim/workers.ts
       server.middlewares.use((request, response, next) => {
         const url = request.url ?? ''
         if (url.includes('?') || !/\.(js|css)$/.test(url) || !LEGACY_DIRECTORIES.some((directory) => url.startsWith(`/${directory}/`))) {

@@ -115,7 +115,7 @@ const petOptions = computed(() =>
   sequence(20).map((index) => {
     const monster = getMonsterId(type.value, index)
 
-    return { value: index, label: localize.global(`monsters.${monster}`), image: `/res/pets/monster${monster}.png` }
+    return { value: index, label: localize.global(`monsters.${monster}`), image: `/res/pets/monster${monster}.png` as const }
   })
 )
 

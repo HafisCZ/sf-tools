@@ -36,8 +36,10 @@ import SFIcon from '@library/SFIcon.vue'
 import SFInput from '@library/SFInput.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
+import { formatPrefix } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
+import { DatabaseManager } from '~/data/database-manager'
 
 defineOptions({
   name: 'StatisticsIntegrationOptionsDialog'
@@ -82,7 +84,7 @@ function describeIdentifier(identifier: string) {
   const history = DatabaseManager.isPlayer(identifier) ? DatabaseManager.getPlayer(identifier) : DatabaseManager.getGroup(identifier)
   const data = history?.Latest.Data
 
-  return data ? `${data.name} @ ${_formatPrefix(data.prefix)}` : identifier
+  return data ? `${data.name} @ ${formatPrefix(data.prefix)}` : identifier
 }
 
 function removeIdentifier(identifier: string) {
