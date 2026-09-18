@@ -126,8 +126,13 @@ import { type EndpointCharacter, type EndpointLogin, EndpointController } from '
 import { type IconName } from '@utils/icons'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
-import { getErrorMessage } from '@utils/utils'
+import { getErrorMessage, getTimestampOffset } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
+import { DatabaseManager } from '~/data/database-manager'
+import { Playa } from '~/playa/servers'
+import { Logger } from '~/site/logger'
+import { Site } from '~/site/site'
+import { Store } from '~/site/store'
 
 defineOptions({
   name: 'EndpointDialog'
@@ -354,7 +359,7 @@ function showError(error: unknown) {
 
 async function importCapture(text: string) {
   try {
-    await DatabaseManager.import(text, Date.now(), _timestampOffset(), { temporary: temporary.value })
+    await DatabaseManager.import(text, Date.now(), getTimestampOffset(), { temporary: temporary.value })
   } catch (error) {
     useErrorToast(localize.global('database.import_error'), getErrorMessage(error))
     Logger.error(error, 'Error occured while trying to import a file!')

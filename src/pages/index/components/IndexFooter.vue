@@ -42,6 +42,7 @@ import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
 import PageFooter from '~/pages/components/PageFooter.vue'
+import { MODULE_VERSION_MAJOR } from '~/site/site'
 
 defineOptions({
   name: 'IndexFooter'

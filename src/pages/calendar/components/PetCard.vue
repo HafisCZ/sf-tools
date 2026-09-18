@@ -41,6 +41,7 @@ import SFParagraph from '@library/SFParagraph.vue'
 import { type IconName } from '@utils/icons'
 import { useLocalize } from '@utils/localization'
 import { formatDuration } from '@utils/utils'
+import { PetData, type Pet } from '~/playa/pets'
 
 defineOptions({
   name: 'PetCard'

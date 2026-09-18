@@ -111,6 +111,7 @@ import PageFooter from '~/pages/components/PageFooter.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { createFortressBattle, FORTRESS_ARCHER_MAP, FORTRESS_MAGE_MAP, FORTRESS_WALL_MAP, FORTRESS_WARRIOR_MAP, type FortressUnit, type FortressValues } from '~/sim/data/fortress'
+import { WorkerBatch } from '~/sim/workers'
 
 defineOptions({
   name: 'FortressPage'

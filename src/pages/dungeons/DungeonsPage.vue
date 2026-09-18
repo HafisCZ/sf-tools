@@ -98,6 +98,9 @@ import { useToast } from '@utils/toasts'
 import { compact, copyJson, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { ModelUtils } from '~/data/model-utils'
+import { PlayerModel } from '~/data/player-model'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
@@ -107,8 +110,12 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { createBoss, createDungeonPlayers, createSimulatorBoss, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, NEXT_DUNGEONS, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type DungeonEntry, type DungeonResult } from '~/sim/data/dungeons'
+import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, NEXT_DUNGEONS, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type Dungeon, type DungeonEntry, type DungeonResult, type DungeonRunes } from '~/sim/data/dungeons'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { WorkerBatch } from '~/sim/workers'
+import { OptionsHandler } from '~/site/options'
+import { SELF_PROFILE } from '~/site/profiles'
+import { Site } from '~/site/site'
 import DungeonChart from './components/DungeonChart.vue'
 import DungeonOptionsDialog from './dialogs/DungeonOptionsDialog.vue'
 import DungeonResultsDialog from './dialogs/DungeonResultsDialog.vue'
@@ -394,7 +401,7 @@ function insertFighters(data: unknown) {
   isChartOutdated.value = true
 }
 
-function insertPlayer(entry: PlayerEntry) {
+function insertPlayer(entry: PlayerModel) {
   insertFighters(ModelUtils.toSimulatorData(entry, true))
 
   openBosses.value = entry.Dungeons ? getOpenBosses(entry.Dungeons) : []

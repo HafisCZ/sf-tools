@@ -128,6 +128,10 @@ import { useToast } from '@utils/toasts'
 import { compact, copyJson, formatDuration, getClassImageUrl, sequence, sortDescending, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { type GroupModel } from '~/data/group-model'
+import { ModelUtils, type SimulatorData } from '~/data/model-utils'
+import { type PlayerModel } from '~/data/player-model'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
@@ -138,13 +142,16 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { WorkerBatch } from '~/sim/workers'
+import { HYDRA_PROFILE } from '~/site/profiles'
+import { Store } from '~/site/store'
 
 defineOptions({
   name: 'GuildsPage'
 })
 
 type ListPlayer = {
-  player: PlayerModel
+  player: PlayerModel | SimulatorData
   // 0 active, 1 inactive, 2 inactive for longer
   inactive: number
   index: number
@@ -298,7 +305,7 @@ function handleRowKeydown(event: KeyboardEvent, entry: ListPlayer) {
   }
 }
 
-function insertGroup(group: GroupEntry) {
+function insertGroup(group: GroupModel) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
   setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), inactive: 0, index: nextIndex++ })))

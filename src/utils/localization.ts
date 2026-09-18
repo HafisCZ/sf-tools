@@ -1,4 +1,6 @@
 import { readonly, ref, shallowRef } from 'vue'
+import { Logger } from '~/site/logger'
+import { Site } from '~/site/site'
 
 export const LOCALES: Record<string, string> = {
   en: 'English',

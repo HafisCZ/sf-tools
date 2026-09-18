@@ -40,6 +40,10 @@ import SFInput from '@library/SFInput.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import { useLocalize } from '@utils/localization'
 import { type Fighter, type GroupFight } from '~/pages/analyzer/analyzer'
+import { Constants } from '~/script/constants'
+import { Expression, ExpressionScope, type ExpressionEnvironment } from '~/script/expression'
+import { DEFAULT_EXPRESSION_CONFIG } from '~/script/expression-config'
+import { Highlighter } from '~/script/highlighter'
 
 defineOptions({
   name: 'FightAnalysisDialog'
@@ -99,7 +103,7 @@ const localize = useLocalize('dialog.fight_statistical_analysis')
 const config = DEFAULT_EXPRESSION_CONFIG.clone()
 
 for (const name of ACCESSORS) {
-  config.register('accessor', 'none', name, (object) => object[name])
+  config.register('accessor', 'none', name, (object: Record<string, unknown>) => object[name])
 }
 
 const environment: ExpressionEnvironment = {
@@ -152,7 +156,7 @@ watch(
 )
 
 function highlight(text: string) {
-  return Highlighter.expression(text, environment, config).text
+  return { html: Highlighter.expression(text, environment, config).text }
 }
 
 function addSelector() {

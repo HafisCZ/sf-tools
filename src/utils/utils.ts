@@ -45,7 +45,7 @@ export function sortDescending<TItem>(array: TItem[], map: (item: TItem) => numb
   return array.sort((a, b) => map(b) - map(a))
 }
 
-export function getClassImageUrl(classId: CharacterClass) {
+export function getClassImageUrl(classId: CharacterClass): `/${string}` {
   return `/res/class${classId}.png`
 }
 
@@ -169,6 +169,188 @@ export function mergeDeep(target: Record<string, unknown>, source: unknown) {
 
 export function copyJson(value: unknown) {
   return navigator.clipboard.writeText(JSON.stringify(value))
+}
+
+export function copyText(text: string) {
+  return navigator.clipboard.writeText(text)
+}
+
+export function clamp(value: number, min: number, max: number) {
+  return value <= min ? min : value >= max ? max : value
+}
+
+export function escapeHtml(text: string) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
+}
+
+// Falsy values give an empty array
+export function toArray<TItem>(value: TItem | TItem[] | null | undefined): TItem[] {
+  if (value) {
+    return Array.isArray(value) ? value : [value]
+  } else {
+    return []
+  }
+}
+
+export function pushUnique<TItem>(array: TItem[], item: TItem) {
+  if (array.indexOf(item) === -1) {
+    array.push(item)
+  }
+}
+
+export function removeItem<TItem>(array: TItem[] | undefined, item: TItem) {
+  if (array) {
+    const index = array.indexOf(item)
+
+    if (index > -1) {
+      array.splice(index, 1)
+    }
+  }
+}
+
+export function filterInPlace<TItem>(array: TItem[], predicate: (item: TItem) => boolean) {
+  let readIndex = 0
+  let writeIndex = 0
+
+  while (readIndex < array.length) {
+    if (predicate(array[readIndex])) {
+      array[writeIndex] = array[readIndex]
+      writeIndex++
+    }
+
+    readIndex++
+  }
+
+  array.length = writeIndex
+}
+
+export function countWhere<TItem>(items: Iterable<TItem>, predicate: (item: TItem) => boolean) {
+  let count = 0
+
+  for (const item of items) {
+    if (predicate(item)) count++
+  }
+
+  return count
+}
+
+export function isBetween(value: number, min: number, max: number) {
+  return value > min && value < max
+}
+
+export function getTimestampOffset(date = new Date()) {
+  return date.getTimezoneOffset() * 60 * 1000
+}
+
+export function unique<TItem>(items: Iterable<TItem>) {
+  return Array.from(new Set(items))
+}
+
+export function toRecord<TItem, TValue>(items: TItem[], processor: (item: TItem, index: number) => [PropertyKey, TValue], base: Record<PropertyKey, TValue> = {}) {
+  return items.reduce((record, item, index) => {
+    const [key, value] = processor(item, index)
+    record[key] = value
+    return record
+  }, base)
+}
+
+export function invertRecord(record: Record<string, string>, integerKeys = false) {
+  return Object.entries(record).reduce<Record<string, string | number>>((inverted, [key, value]) => {
+    inverted[value] = integerKeys ? parseInt(key) : key
+    return inverted
+  }, {})
+}
+
+// Null throws like the legacy helper did
+export function isEmpty(value: unknown) {
+  if (value instanceof Set) {
+    return value.size == 0
+  } else if (value instanceof Array) {
+    return value.length == 0
+  } else if (typeof value === 'string') {
+    return value.length == 0
+  } else if (typeof value === 'undefined') {
+    return true
+  } else {
+    return Object.keys(value as object).length == 0
+  }
+}
+
+export function fixedSlice<TItem, TDefault>(array: TItem[], length: number, defaultValue: TDefault) {
+  const slice = Array.from<TItem | TDefault>({ length }).fill(defaultValue)
+
+  for (let i = 0; i < Math.min(length, array.length); i++) {
+    slice[i] = array[i]
+  }
+
+  return slice
+}
+
+export function joinMapped<TItem>(array: TItem[], mapper: (item: TItem, index: number, array: TItem[]) => string) {
+  let text = ''
+
+  for (let i = 0; i < array.length; i++) {
+    text += mapper(array[i], i, array)
+  }
+
+  return text
+}
+
+export function maximum(values: number[]) {
+  let result = values[0]
+
+  for (const value of values) {
+    if (value > result) result = value
+  }
+
+  return result
+}
+
+export function minimum(values: number[]) {
+  let result = values[0]
+
+  for (const value of values) {
+    if (value < result) result = value
+  }
+
+  return result
+}
+
+export function average(values: number[]) {
+  let total = 0
+
+  for (const value of values) {
+    total += value
+  }
+
+  return total / values.length
+}
+
+export function pick<TObject extends object, TKey extends keyof TObject>(object: TObject, fields: TKey[]) {
+  const value = Object.create(null) as Pick<TObject, TKey>
+
+  for (const field of fields) {
+    if (field in object) {
+      value[field] = object[field]
+    }
+  }
+
+  return value
+}
+
+export function truncate(text: string, length: number, ellipsis = '...') {
+  if (text.length > length) {
+    return text.slice(0, length - ellipsis.length) + ellipsis
+  } else {
+    return text
+  }
+}
+
+export function arrayFromIndexes<TValue>(indexes: number[], processor: (index: number, position: number) => TValue, base: TValue[] = []) {
+  return indexes.reduce((array, index, position) => {
+    array[index] = processor(index, position)
+    return array
+  }, base)
 }
 
 export function copyElement(element: Node) {
