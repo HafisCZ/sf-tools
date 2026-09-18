@@ -6,7 +6,7 @@
           <SFSelect v-model="selected" :options="mapOptions" />
         </div>
         <SFTooltip :content="localize.global('stats.copy.image')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" @click="save">
+          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" :disabled="saving && 'loading'" @click="save">
             <SFIcon name="download" />
           </SFButton>
         </SFTooltip>
@@ -49,6 +49,7 @@ import SFIcon from '@library/SFIcon.vue'
 import SFSelect from '@library/SFSelect.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { useLocalize } from '@utils/localization'
+import { useSubmit } from '@utils/utils'
 
 defineOptions({
   name: 'PetMapDialog'
@@ -73,9 +74,24 @@ const GLADIATOR_COLUMNS = 16
 const localize = useLocalize('pets')
 
 const selected = ref(0)
-const saving = ref(false)
 
 const imageElement = useTemplateRef('image-ref')
+
+// Everything in the image needs plain colours while saving, html2canvas can't read oklab()
+const { submit: save, isSubmitting: saving } = useSubmit(async () => {
+  const map = props.maps.at(selected.value)
+
+  await nextTick()
+
+  if (!imageElement.value || !map) return
+
+  const canvas = await html2canvas(imageElement.value, { logging: false })
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve))
+
+  if (blob) {
+    Exporter.download(`${map.name}.png`, blob)
+  }
+})
 
 const mapOptions = computed(() => props.maps.map((map, index) => ({ value: index, label: map.name })))
 
@@ -102,29 +118,6 @@ function getColor(chance: number) {
     return '#fdff99'
   } else {
     return '#ffdd99'
-  }
-}
-
-// Everything in the image needs plain colours, html2canvas can't read oklab()
-async function save() {
-  const map = props.maps.at(selected.value)
-
-  if (!imageElement.value || !map) return
-
-  saving.value = true
-
-  await nextTick()
-
-  try {
-    const canvas = await html2canvas(imageElement.value, { logging: false })
-
-    canvas.toBlob((blob) => {
-      if (blob) {
-        Exporter.download(`${map.name}.png`, blob)
-      }
-    })
-  } finally {
-    saving.value = false
   }
 }
 </script>

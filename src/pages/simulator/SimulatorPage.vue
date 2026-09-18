@@ -51,13 +51,13 @@
               </SFButton>
             </SFTooltip>
             <SFTooltip :content="localize.global('stats.copy.image')">
-              <SFButton variant="outline" icon class="flex-1" :aria-label="localize.global('stats.copy.image')" @click="saveScreenshot">
+              <SFButton variant="outline" icon class="flex-1" :aria-label="localize.global('stats.copy.image')" :disabled="screenshot && 'loading'" @click="saveScreenshot">
                 <SFIcon name="download" />
               </SFButton>
             </SFTooltip>
           </div>
           <SimulatorSettings ref="settings-ref" storage-key="player_sim" :default-threads="4" :default-iterations="2500" class="col-span-7" />
-          <SFButton variant="outline" block :disabled="!canSimulate" class="col-span-5" @click="simulate">
+          <SFButton variant="outline" block :disabled="isSimulating ? 'loading' : isLogging || !canSimulate" class="col-span-5" @click="simulate">
             {{ localize('simulate') }}
           </SFButton>
         </div>
@@ -142,7 +142,7 @@ import { type SelectOption, type TableSorting } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { copyJson, formatDuration, getClassImageUrl } from '@utils/utils'
+import { copyJson, formatDuration, getClassImageUrl, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
@@ -206,9 +206,6 @@ const yourselfIndex = ref(-1)
 
 const sorting = ref<TableSorting>()
 
-// Plain colours while saving, html2canvas can't read Tailwind's oklch() colours
-const screenshot = ref(false)
-
 let nextIndex = 0
 
 const editor = useTemplateRef('editor-ref')
@@ -236,6 +233,33 @@ const sortedPlayers = computed(() => {
 })
 
 const canSimulate = computed(() => isSettingsValid.value && players.value.length > 0 && (!isSingleTarget.value || players.value.some((entry) => entry.index === yourselfIndex.value)))
+
+const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
+  if (!settings.value) return
+
+  const instances = Math.max(1, settings.value.threads || 4)
+  const iterations = Math.max(1, settings.value.iterations || 2500)
+
+  await runSimulation(instances, iterations)
+})
+
+const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
+  await runSimulation(1, 500, (log) => saveSimulatorLog(target, log))
+})
+
+// Plain colours while saving, html2canvas can't read Tailwind's oklch() colours
+const { submit: saveScreenshot, isSubmitting: screenshot } = useSubmit(async () => {
+  await nextTick()
+
+  if (!tableElement.value) return
+
+  const canvas = await html2canvas(tableElement.value, { logging: false, backgroundColor: '#ffffff' })
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve))
+
+  if (blob) {
+    Exporter.download(`simulator_${Date.now()}.png`, blob)
+  }
+})
 
 watch(mode, (value) => {
   if (isSingleTarget.value) {
@@ -398,26 +422,6 @@ function copyAll() {
   copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
-async function saveScreenshot() {
-  if (!tableElement.value) return
-
-  screenshot.value = true
-
-  await nextTick()
-
-  try {
-    const canvas = await html2canvas(tableElement.value, { logging: false, backgroundColor: '#ffffff' })
-
-    canvas.toBlob((blob) => {
-      if (blob) {
-        Exporter.download(`simulator_${Date.now()}.png`, blob)
-      }
-    })
-  } finally {
-    screenshot.value = false
-  }
-}
-
 async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {
   if (!canSimulate.value) return
 
@@ -469,19 +473,6 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
   if (onLogs && logs.length > 0) {
     onLogs({ fights: logs, players: players.value.map(({ player }) => player), config: simulatorConfig.value })
   }
-}
-
-function simulate() {
-  if (!settings.value) return
-
-  const instances = Math.max(1, settings.value.threads || 4)
-  const iterations = Math.max(1, settings.value.iterations || 2500)
-
-  void runSimulation(instances, iterations)
-}
-
-function runLogged(target: SimulatorLogTarget) {
-  void runSimulation(1, 500, (log) => saveSimulatorLog(target, log))
 }
 
 function openFeedback() {
