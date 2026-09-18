@@ -169,8 +169,11 @@ declare class ComplexDataType {
 declare function SHA1(text: string): string
 
 declare class DatabaseManager {
+  // Latest is a proxy that reads everything except the entry fields from the full model
+  static Players: Record<string, DatabaseHistory<PlayerEntry & PlayerModel>>
   static Groups: Record<string, DatabaseHistory<GroupEntry>>
   static load(profile: DatabaseProfile): Promise<void>
+  static getLink(identifier: string | null): string | undefined
   static import(text: string, timestamp: number, timestampOffset?: number, flags?: { temporary?: boolean }): Promise<void>
   static getLatestPlayers(onlyOwn?: boolean): PlayerEntry[]
   static isPlayer(identifier: string): boolean
@@ -184,6 +187,11 @@ type BlacksmithResources = {
   Crystal: number
 }
 
+type ItemAttribute = {
+  Type: number
+  Value: number
+}
+
 declare class ItemModel {
   static LEGACY: 0
   static MODERN: 1
@@ -191,22 +199,47 @@ declare class ItemModel {
   static forceCorrectRune(item: ItemModel | undefined): void
   constructor(version: number, data: number[], slotType: number, slotIndex: number)
   Type: number
+  Class: number
+  SlotIndex: number
   Index: number
   PicIndex: number
+  Upgrades: number
+  Armor: number
   DamageMin: number
   DamageMax: number
   HasEnchantment: boolean
+  HasSocket: boolean
+  HasGem: boolean
+  GemType: number
+  GemValue: number
+  HasRune: boolean
   Attributes: number[]
   AttributeTypes: number[]
   RuneType: number
   RuneValue: number
-  readonly SellPrice: {
+  readonly SellPrice: BlacksmithResources & {
     Gold: number
   }
+  readonly DismantlePrice: BlacksmithResources
+  readonly Strength: ItemAttribute
+  readonly Dexterity: ItemAttribute
+  readonly Intelligence: ItemAttribute
+  readonly Constitution: ItemAttribute
+  readonly Luck: ItemAttribute
+  clone(): ItemModel
+  setPic(pic: number): void
+  getRune(rune: number): number
   upgradeTo(upgrades: number): void
   getBlacksmithPrice(): BlacksmithResources
   getBlacksmithUpgradePrice(): BlacksmithResources
+  getBlacksmithUpgradePriceRange(max?: number): BlacksmithResources
+  getDismantlePrice(): BlacksmithResources
+  getDismantleReward(): BlacksmithResources
   morph(from: number, to: number, force?: boolean): ItemModel
+}
+
+declare const Loca: {
+  name(itemType: number, itemIndex: number, itemClass?: number): string
 }
 
 type Attribute = MainAttribute | 'Constitution' | 'Luck'
@@ -215,6 +248,17 @@ type PlayerAttribute = {
   Base: number
   Total: number
   Bonus?: number
+  PotionSize?: number
+}
+
+type PlayerInventory = {
+  Backpack: ItemModel[]
+  Chest: ItemModel[]
+  Shop: ItemModel[]
+  Dummy: Record<string, ItemModel>
+  Bert: Record<string, ItemModel>
+  Mark: Record<string, ItemModel>
+  Kunigunde: Record<string, ItemModel>
 }
 
 declare class PlayerModel {
@@ -234,10 +278,19 @@ declare class PlayerModel {
   Intelligence: PlayerAttribute
   Constitution: PlayerAttribute
   Luck: PlayerAttribute
+  Primary: PlayerAttribute & {
+    Type: number
+  }
+  ClassBonus: boolean
+  Config: ClassConfig
+  Damage: { Min: number; Max: number }
+  Metal: number
+  Crystals: number
   Items: Record<string, ItemModel> & {
     Wpn1: ItemModel
     Wpn2: ItemModel
   }
+  Inventory: PlayerInventory
   Runes: Record<string, number>
   Pets: Record<string, number>
   Potions: { Type: number; Size: number }[] & { Life?: number }
@@ -258,7 +311,10 @@ type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 type MainAttribute = 'Strength' | 'Dexterity' | 'Intelligence'
 
 declare const WARRIOR: 1
+declare const MAGE: 2
+declare const SCOUT: 3
 declare const ASSASSIN: 4
+declare const BATTLEMAGE: 5
 declare const DEMONHUNTER: 7
 declare const DRUID: 8
 declare const BARD: 9
