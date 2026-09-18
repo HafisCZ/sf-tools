@@ -36,11 +36,11 @@ const props = withDefaults(
      */
     float?: 'right' | 'left'
     /**
-     * Visual style of the trigger button, same as SFButton's `variant`
+     * Visual style of the trigger button
      */
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
     /**
-     * Disables the trigger button, so the menu can't be opened
+     * Disables the trigger button
      */
     disabled?: boolean
   }>(),
@@ -52,14 +52,12 @@ const props = withDefaults(
 
 const open = ref(false)
 
-// The root hugs the trigger button, so its box is the trigger's box
 const containerElement = useTemplateRef('container-ref')
 
 const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
 
 useInert(open)
 
-// Return focus to the trigger unless the user already moved it somewhere else
 watch(
   open,
   (value) => {

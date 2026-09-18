@@ -26,15 +26,15 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     /**
-     * Visual style of the button, `ghost` has no background until hovered, `outline` only has a light border
+     * Visual style of the button
      */
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
     /**
-     * Padding and text size, `sm` for compact buttons in panels and lists
+     * Padding and text size
      */
     size?: 'sm' | 'md'
     /**
-     * Uses even padding for a button that only holds an icon or an image
+     * Uses even padding
      */
     icon?: boolean
     /**
@@ -42,7 +42,7 @@ const props = withDefaults(
      */
     block?: boolean
     /**
-     * Disables the button. Pass `'loading'` to also show a spinner over the content
+     * Disables the button, `'loading'` also shows a spinner over the content
      */
     disabled?: boolean | 'loading'
   }>(),
@@ -52,8 +52,7 @@ const props = withDefaults(
   }
 )
 
-// Every variant has a border, so a button is as tall as an input with the same padding.
-// md also has the input height as its minimum, for buttons that only hold an icon.
+// Every variant has a border and md a minimum height, so buttons are as tall as inputs
 const VARIANT_CLASSES = {
   primary: 'border-transparent bg-accent text-black enabled:hover:brightness-110',
   secondary: 'border-transparent bg-surface text-white/90 enabled:hover:bg-surface-hover',

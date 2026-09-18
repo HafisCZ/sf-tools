@@ -11,9 +11,6 @@ function isSameRectangle(first: Rectangle | undefined, second: Rectangle | undef
   return first?.top === second?.top && first?.bottom === second?.bottom && first?.left === second?.left && first?.right === second?.right
 }
 
-/**
- * Reads `getter` on every animation frame while `open` is true, so the result follows scrolling and resizing
- */
 export function useAnimationFramePosition(open: Ref<boolean>, getter: () => Rectangle | undefined) {
   const position = shallowRef<Rectangle>()
 
@@ -50,10 +47,6 @@ export function useAnimationFramePosition(open: Ref<boolean>, getter: () => Rect
   return position
 }
 
-/**
- * Picks where an element of `size` starts on one axis: `preferred` when it fits inside `limit`,
- * otherwise `fallback` when that fits, otherwise as close to the end as possible
- */
 export function pickVisibleAxisPosition(preferred: number, fallback: number, size: number, limit: number) {
   if (preferred >= 0 && preferred + size <= limit) {
     return preferred

@@ -16,11 +16,11 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Text next to the checkbox, also its accessible name. The default slot replaces it.
+   * Text next to the checkbox, also its accessible name
    */
   label?: string
   /**
-   * Shows the mixed state, such as a "select all" checkbox with only some items checked
+   * Shows the mixed state
    */
   indeterminate?: boolean
 }>()
@@ -31,7 +31,6 @@ const slots = defineSlots<{
 
 const modelValue = defineModel<boolean>({ default: false })
 
-// A checkbox is always valid, this lets it go into useComponentValidation with the other inputs
 defineExpose({
   get isValid() {
     return true

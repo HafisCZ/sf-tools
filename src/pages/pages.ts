@@ -7,12 +7,8 @@ import ChangelogDialog from './dialogs/ChangelogDialog.vue'
 import SimulatorShopDialog from './dialogs/SimulatorShopDialog.vue'
 import TermsDialog from './dialogs/TermsDialog.vue'
 
-// Keep in sync with TermsAndConditionsDialog.VERSION in js/views/base.js
 const TERMS_VERSION = 2
 
-/**
- * Mounts a converted page into `#app` once its translations are loaded
- */
 export async function createPage(metadata: SiteMetadata, component: Component) {
   Site.ready(metadata, () => {})
 
@@ -25,8 +21,6 @@ export async function createPage(metadata: SiteMetadata, component: Component) {
   Site.run()
 }
 
-// Queues the dialogs every page shows on load, with the same checks and order as the
-// DOMContentLoaded handler in js/views/base.js
 function openStartupDialogs(metadata: SiteMetadata) {
   if (!StoreWrapper.isAvailable()) return
 

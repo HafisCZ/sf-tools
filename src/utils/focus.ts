@@ -1,9 +1,5 @@
 import { onScopeDispose, type Ref } from 'vue'
 
-/**
- * Calls `callback` when the user clicks outside every element in `elements`, or presses Escape when `esc` is set.
- * Listens for as long as the calling component lives.
- */
 export function onClickOutsideOf(
   elements: Readonly<Ref<HTMLElement | null | undefined>>[],
   callback: () => void,

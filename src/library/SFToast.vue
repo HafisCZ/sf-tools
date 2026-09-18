@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { type ToastType } from '@utils/components'
+import { type ToastParams, type ToastType } from '@utils/components'
 import { type IconName } from '@utils/icons'
 import SFIcon from './SFIcon.vue'
 
@@ -18,29 +18,9 @@ defineOptions({
   name: 'SFToast'
 })
 
-const props = withDefaults(
-  defineProps<{
-    /**
-     * Bold first line
-     */
-    title: string
-    /**
-     * Text under the title
-     */
-    message: string
-    /**
-     * Picks the icon and its colour, `default` has no icon
-     */
-    type?: ToastType
-    /**
-     * Replaces the icon the type would show
-     */
-    icon?: IconName
-  }>(),
-  {
-    type: 'default'
-  }
-)
+const props = withDefaults(defineProps<ToastParams>(), {
+  type: 'default'
+})
 
 const emit = defineEmits<{
   close: []

@@ -20,11 +20,11 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Horizontal alignment of the content, left when left out
+   * Horizontal alignment of the content
    */
   align?: 'left' | 'center' | 'right'
   /**
-   * Key the rows are sorted by when the header is clicked, which also makes the header a button
+   * Key the rows are sorted by when the header is clicked
    */
   column?: string
   /**
@@ -47,7 +47,6 @@ const JUSTIFY_CLASSES = {
 
 const table = inject(TABLE_OPTIONS_KEY, DEFAULT_TABLE_OPTIONS)
 
-// Only the column the rows are sorted by shows an arrow, like on the legacy pages
 const sortIcon = computed<IconName | false>(() => {
   switch (props.column ? table.sort.isSortedBy(props.column) : false) {
     case 'asc':

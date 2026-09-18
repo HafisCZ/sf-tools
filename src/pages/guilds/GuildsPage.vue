@@ -143,16 +143,13 @@ defineOptions({
   name: 'GuildsPage'
 })
 
-// One player of a guild
 type ListPlayer = {
   player: PlayerModel
-  // 0 active, 1 inactive, 2 inactive for longer, which the simulator turns into a health multiplier
+  // 0 active, 1 inactive, 2 inactive for longer
   inactive: number
-  // Stays the same when other players are removed
   index: number
 }
 
-// What the analyzer reads from a simulation log
 type SimulatorLog = {
   fights: unknown[]
   players: unknown[]
@@ -163,7 +160,6 @@ const PROFILE = HYDRA_PROFILE
 
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 
-// Added to the name of an inactive player, in the same English the legacy list showed
 const INACTIVE_SUFFIXES = ['', ' (Inactive)', ' (Inactive 14+ days)']
 
 const localize = useLocalize('guilds')
@@ -175,7 +171,6 @@ const guilds = shallowRef<[ListPlayer[], ListPlayer[]]>([[], []])
 const currentGuild = ref(0)
 const selectedIndex = ref(-1)
 
-// Chance for the first guild to win from 0 to 100, null until simulated
 const score = ref<number | null>(null)
 
 let nextIndex = 0
@@ -196,7 +191,7 @@ const guildOptions = computed<SelectOption[]>(() => [
   { value: '1', label: localize('guild2') }
 ])
 
-// Clicking the open guild clears the selection of the toggle group, the legacy buttons kept it
+// Ignores the toggle group's deselect, so the open guild stays selected
 const selectedGuild = computed({
   get: () => String(currentGuild.value),
   set: (value) => {
@@ -206,7 +201,6 @@ const selectedGuild = computed({
   }
 })
 
-// The newest saved state of every guild that has all of its members saved too
 function listCompleteGroups() {
   return compact(Object.values(DatabaseManager.Groups).map((group) => group.List.filter((entry) => entry.MembersTotal === entry.MembersPresent)[0]))
 }
@@ -235,7 +229,6 @@ function toggleGladiatorMode() {
   Store.shared.set(GLADIATOR_MODE_KEY, gladiatorMode.value, true)
 }
 
-// The name is only filled in for a player added by hand, like on the legacy page
 function addPlayer() {
   if (!editor.value) return
 
@@ -280,7 +273,6 @@ function resetInactive(entry: ListPlayer) {
   setPlayers(players.value.map((item) => (item === entry ? { ...item, inactive: 0 } : item)))
 }
 
-// Clicks on the inactive and remove buttons don't select the row
 function handleRowClick(event: MouseEvent, entry: ListPlayer) {
   if (event.target instanceof Element && event.target.closest('button')) return
 
@@ -293,7 +285,6 @@ function handleRowKeydown(event: KeyboardEvent, entry: ListPlayer) {
   }
 }
 
-// Every member saved at the time the guild was saved replaces the open guild
 function insertGroup(group: GroupEntry) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
@@ -308,7 +299,6 @@ function isPlayer(value: unknown) {
   return ('Class' in value && Boolean(value.Class)) || ('save' in value && Boolean(value.save))
 }
 
-// A list of players replaces the open guild, or is added to it in paste mode, a single player fills the editor
 function handlePaste(value: unknown) {
   try {
     const data = handleSimulatorPaste(value)

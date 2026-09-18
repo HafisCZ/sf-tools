@@ -56,8 +56,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Maps from js/sim/pets.js: win chances from 0 to 100 by level minus one, then by gladiator level.
-   * The levels below the pet's level and the gladiator levels below its gladiator are left out as holes.
+   * Maps to pick from, with win chances from 0 to 100 by level minus one and gladiator level
    */
   maps: {
     name: string
@@ -69,7 +68,6 @@ const emit = defineEmits<{
   close: []
 }>()
 
-// Every map has a column for each gladiator level from 0 to 15
 const GLADIATOR_COLUMNS = 16
 
 const localize = useLocalize('pets')
@@ -81,7 +79,7 @@ const imageElement = useTemplateRef('image-ref')
 
 const mapOptions = computed(() => props.maps.map((map, index) => ({ value: index, label: map.name })))
 
-// flatMap skips the holes, like reduce did on the legacy page
+// The worker leaves holes in the arrays, flatMap skips them
 const table = computed(() => {
   const data = props.maps.at(selected.value)?.data ?? []
   const gladiators = data.find((entry) => entry && entry.length > 0)?.flatMap((_, gladiator) => [gladiator]) ?? []
@@ -107,9 +105,7 @@ function getColor(chance: number) {
   }
 }
 
-// The whole table is drawn with dark text, since the image has a white background.
-// The padding keeps html2canvas from cutting off the last row, it draws the text a little lower than the browser.
-// Everything in the image needs plain colours, html2canvas can't read the oklab() of Tailwind's opacity colours.
+// Everything in the image needs plain colours, html2canvas can't read oklab()
 async function save() {
   const map = props.maps.at(selected.value)
 

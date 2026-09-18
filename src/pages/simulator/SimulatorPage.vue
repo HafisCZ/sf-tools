@@ -160,19 +160,14 @@ defineOptions({
   name: 'SimulatorPage'
 })
 
-// Who fights whom: everyone against everyone, one player against the others, the others against one player, or a ladder
 type SimulatorMode = 'all' | 'attack' | 'defend' | 'tournament'
 
-// One player of the list, the same object the simulator sends back with its score filled
 type PlayerScore = {
   player: PlayerModel
-  // Win chances from 0 to 100, null until simulated. The lowest and highest chance are only filled in the All vs All mode.
   score: { avg: number; min?: number; max?: number } | null
-  // Stays the same when other players are removed
   index: number
 }
 
-// What the analyzer reads from a simulation log
 type SimulatorLog = {
   fights: unknown[]
   players: unknown[]
@@ -185,10 +180,8 @@ const MODE_KEY = 'player_sim/mode'
 
 const MODES: SimulatorMode[] = ['all', 'attack', 'defend', 'tournament']
 
-// The button that moves the crown had no tooltip on the legacy page, so its label was never translated
 const YOURSELF_LABEL = 'Fight as this player'
 
-// Legacy order of every sorted column, which its first click sorts in
 const COMPARATORS: Record<string, (a: PlayerScore, b: PlayerScore) => number> = {
   class: (a, b) => a.player.Class - b.player.Class,
   level: (a, b) => a.player.Level - b.player.Level,
@@ -213,7 +206,7 @@ const yourselfIndex = ref(-1)
 
 const sorting = ref<TableSorting>()
 
-// Renders the list in plain colours for the screenshot, without the buttons and the selection
+// Plain colours while saving, html2canvas can't read Tailwind's oklch() colours
 const screenshot = ref(false)
 
 let nextIndex = 0
@@ -228,10 +221,8 @@ const isSettingsValid = useComponentValidation(useTemplateRef('mode-ref'), setti
 
 const modeOptions = computed<SelectOption<SimulatorMode>[]>(() => MODES.map((value) => ({ value, label: localize.global(`players.mode.${value}`) })))
 
-// Only one player fights in these modes, and it is the one the crown is on
 const isSingleTarget = computed(() => mode.value === 'attack' || mode.value === 'defend')
 
-// Every player fights every other one, so their best and worst fight is worth showing
 const showRange = computed(() => mode.value === 'all')
 
 const sortedPlayers = computed(() => {
@@ -262,7 +253,6 @@ watch(mode, (value) => {
   sorting.value = undefined
 })
 
-// The first player of the list fights when no crown is set, like on the legacy page
 watch([mode, players], () => {
   if (isSingleTarget.value && yourselfIndex.value === -1 && sortedPlayers.value.length > 0) {
     yourselfIndex.value = sortedPlayers.value[0].index
@@ -299,7 +289,6 @@ function clearEditor() {
   editor.value?.fill(undefined)
 }
 
-// The name is only filled in for a player added by hand, like on the legacy page
 function addPlayer() {
   if (!editor.value) return
 
@@ -312,7 +301,6 @@ function addPlayer() {
   addEntry(player)
 }
 
-// A new player is selected right away, so it can be edited and saved back
 function addEntry(player: PlayerModel) {
   selectedIndex.value = nextIndex++
 
@@ -321,7 +309,6 @@ function addEntry(player: PlayerModel) {
   clearEditor()
 }
 
-// Without a selected player the editor is added as a new one, like on the legacy page
 function savePlayer() {
   if (!editor.value) return
 
@@ -356,7 +343,6 @@ function removePlayer(entry: PlayerScore) {
   }
 }
 
-// Clicks on the buttons of a row don't select it
 function handleRowClick(event: MouseEvent, entry: PlayerScore) {
   if (event.target instanceof Element && event.target.closest('button')) return
 
@@ -379,7 +365,6 @@ function isPlayer(value: unknown) {
   return ('Class' in value && Boolean(value.Class)) || ('save' in value && Boolean(value.save))
 }
 
-// A list of players replaces the list, or is added to it in paste mode, a single player fills the editor
 function handlePaste(value: unknown) {
   try {
     const data = handleSimulatorPaste(value)

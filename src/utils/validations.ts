@@ -7,7 +7,7 @@ type Validator<TValue> = (value: TValue | null) => ValidationResult
 
 export type ValidationProps<TValue> = {
   /**
-   * Checks what the input's own rules don't. Returns `validationError(message)`, or `null` when the value passes.
+   * Extra check of the value, returns `validationError(message)` or `null` when the value passes
    */
   validator?: Validator<TValue>
   /**
@@ -28,9 +28,6 @@ export function validationWarning(message: string): ValidationResult {
   return ['warning', message]
 }
 
-/**
- * Validates an input's value with `props.validator` and the input's own rules. Expose `isValid`, the rest is for display.
- */
 export function useValidation<TValue>(value: Readonly<Ref<TValue | null>>, props: ValidationProps<TValue>, defaultValidator: Validator<TValue>) {
   const validationVisible = ref(props.validationTrigger === 'immediate')
 
@@ -55,9 +52,6 @@ type ValidatedComponent = {
   isValid: boolean
 }
 
-/**
- * Whether every input or component behind a control is valid. Pass the template ref of each, they expose `isValid`. A ref inside `v-for` holds a list and every item in it is checked.
- */
 export function useComponentValidation(...refs: Readonly<Ref<ValidatedComponent[] | ValidatedComponent | null>>[]) {
   return computed(() =>
     refs.every((ref) => {
@@ -68,9 +62,6 @@ export function useComponentValidation(...refs: Readonly<Ref<ValidatedComponent[
   )
 }
 
-/**
- * Rules of an input of any kind of value: `required`, where blank text counts as empty
- */
 export function createDefaultValidator<TValue>(props: { required?: boolean }): Validator<TValue> {
   return (value) => {
     const isEmpty = value === null || value === undefined || (typeof value === 'string' && !value.trim())
@@ -83,9 +74,6 @@ export function createDefaultValidator<TValue>(props: { required?: boolean }): V
   }
 }
 
-/**
- * Rules of a number input: `required`, `min` and `max`
- */
 export function createDefaultNumberValidator(props: { required?: boolean; min?: number; max?: number }): Validator<number> {
   return (value) => {
     if (value === null) {

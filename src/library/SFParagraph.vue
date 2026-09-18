@@ -11,11 +11,11 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Colour variant. Omit to keep the surrounding text colour.
+   * Colour variant
    */
   type?: 'muted' | 'accent'
   /**
-   * Text size. Omit to keep the surrounding text size.
+   * Text size
    */
   size?: 'sm' | 'lg'
 }>()

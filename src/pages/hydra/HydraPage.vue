@@ -95,7 +95,6 @@ defineOptions({
   name: 'HydraPage'
 })
 
-// What js/sim/hydra.js sends back for one pet class
 type HydraResult = {
   pet: {
     Class: CharacterClass
@@ -122,7 +121,7 @@ type EditorValues = {
 
 const PROFILE = HYDRA_PROFILE
 
-// Main attribute first, then the side attributes, for every class by its ID minus one
+// By class ID minus one
 const ATTRIBUTE_MAP = CONFIG.classes().map((data) => PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[data.Attribute])
 
 const localize = useLocalize('hydra')
@@ -180,7 +179,6 @@ function getHydraData() {
   }
 }
 
-// Main or side attribute value from the editor that a pet of this class uses for `attribute`
 function getMainOrSideAttribute(attribute: MainAttribute, classId: CharacterClass) {
   return [main.value, side1.value, side2.value][ATTRIBUTE_MAP[classId - 1].indexOf(attribute)]
 }
@@ -211,7 +209,6 @@ function getPlayerData(classId: CharacterClass) {
   }
 }
 
-// Editor values of a guild, from its 25 players with the highest main attribute
 function playersToData(players: PlayerData[], hydraId?: number): EditorValues {
   const sortedPlayers = sortDescending(players, (player) => Number(dig(player, ATTRIBUTE_MAP[player.Class - 1][0], 'Total')))
   const hydraPlayers = sliceLength(sortedPlayers, 0, 25)
@@ -241,7 +238,6 @@ function fill(values: EditorValues) {
   luck.value = values.luck
 }
 
-// The newest saved state of every guild that has all of its 10 or more members saved too
 function listCompleteGroups() {
   return compact(Object.values(DatabaseManager.Groups).map((group) => group.List.filter((entry) => entry.MembersTotal === entry.MembersPresent && entry.MembersTotal >= 10)[0]))
 }

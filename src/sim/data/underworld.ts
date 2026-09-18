@@ -1,6 +1,6 @@
 import { sequence } from '@utils/utils'
 
-// Attribute of an underworld unit by its level, from level 0 up
+// By unit level, from level 0 up
 const ATTRIBUTE_CURVE = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 53, 58, 65, 71, 76, 83, 90, 97, 103, 108, 114, 120, 126, 132, 139, 145, 152, 159, 167, 174, 179, 185, 191, 198, 206, 212, 220, 227, 232, 239, 246, 256, 268, 276, 280, 284, 292, 301, 310, 318, 326, 335, 344, 352, 361, 369, 378, 387, 395, 404, 412, 421, 430, 438, 447, 455, 469,
   473, 481, 490, 498, 507, 516, 524, 533, 541, 550, 559, 567, 576, 584, 593, 602, 610, 619, 627, 636, 645, 653, 662, 670, 679, 688, 696, 705, 714, 727, 740, 752, 768, 783, 798, 813, 828, 843, 858, 873, 888, 903, 918, 933, 948, 963, 978, 993, 1008, 1023, 1038, 1053, 1069, 1084, 1099, 1114, 1129, 1144, 1159, 1174, 1189,
@@ -14,7 +14,7 @@ const ATTRIBUTE_CURVE = [
   51557, 51858, 52159, 52460, 53062, 53363, 53664, 53965, 54266, 54567, 54868, 55169, 55470, 55771, 56072, 56373, 56674, 56975, 57276, 57577, 57878, 58179, 58480, 58781
 ]
 
-// Level of an unupgraded unit by its building level
+// By building level, from level 1 up
 const UNIT_LEVELS = [12, 15, 20, 30, 40, 55, 70, 85, 100, 120, 140, 165, 190, 220, 250]
 
 const GOBLIN_COUNTS = [1, 2, 3, 4, 5]
@@ -30,7 +30,6 @@ export type UnderworldValues = {
   keeperUpgrades: number
 }
 
-// A building above the last known count keeps that count
 function getUnitCount(building: number, counts: number[]) {
   if (building === 0) {
     return 0
@@ -45,7 +44,6 @@ function getUnitLevel(building: number, upgrades: number) {
   return UNIT_LEVELS[building - 1] + upgrades
 }
 
-// The curve ends at level 500, every level above it adds the same amount
 function getUnitAttribute(level: number, multiplier: number) {
   const base = level > 500 ? 408.5 * Math.max(0, level - 500) + ATTRIBUTE_CURVE[500] : ATTRIBUTE_CURVE[level]
 
@@ -113,9 +111,6 @@ function createUnits(index: number, building: number, upgrades: number, counts: 
   }))
 }
 
-/**
- * Units of every underworld building, the goblins first and the keeper last
- */
 export function createUnderworldUnits(values: UnderworldValues, shieldMode: boolean) {
   return [...createUnits(0, values.goblin, values.goblinUpgrades, GOBLIN_COUNTS, 1 / Math.sqrt(5), shieldMode), ...createUnits(1, values.troll, values.trollUpgrades, TROLL_COUNTS, 0.5, shieldMode), ...createUnits(2, values.keeper, values.keeperUpgrades, KEEPER_COUNTS, 1, shieldMode)]
 }

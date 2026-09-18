@@ -1,5 +1,4 @@
 <template>
-  <!-- Spacing copies the legacy page, which used em units on a 14px base -->
   <div class="md:ml-[2.5em]">
     <a href="https://discord.gg/XWfSwe3" target="_blank" class="flex items-center justify-center gap-[0.25em] pt-[1em] text-[2em] leading-5 text-accent hover:underline">
       <SFIcon name="discord" />
@@ -13,7 +12,6 @@
           <span>
             <a v-if="contributor.url" :href="contributor.url" target="_blank" class="underline">{{ contributor.name }}</a>
             <template v-else>{{ contributor.name }}</template>
-            <!-- A titled name has no comma after it, same as the legacy page -->
             <span v-if="contributor.title" class="ml-[5px] text-[70%] text-white/50">{{ contributor.title }}</span>
             <template v-else-if="index < section.contributors.length - 1">,</template>
           </span>

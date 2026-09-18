@@ -1,8 +1,3 @@
-// Globals declared by the legacy classic scripts that a page loads in its HTML (<script vite-ignore>).
-// Only what the Vue code uses is typed here.
-
-// js/core/core.js
-
 type SiteMetadata = {
   name: string
   type?: string
@@ -43,7 +38,7 @@ declare const Store: StoreWrapper & {
   session: StoreWrapper
 }
 
-// Every option is a property that saves itself to the store when set. Arrays have to be set again after changing them.
+// Only setting an option saves it, so an array has to be set again after changing it
 declare const OptionsHandler: new <TOptions extends Record<string, unknown>>(key: string, defaults: TOptions) => TOptions & { keys(): (keyof TOptions & string)[] }
 
 declare class Logger {
@@ -55,17 +50,12 @@ declare const MODULE_VERSION: string
 declare const MODULE_VERSION_MAJOR: string
 
 declare class Exporter {
-  // Current date and time for file names, such as 2025_01_31_12_30_00_000
   static readonly time: string
-  // Downloads `content` as a `<name>.json` file
   static json(content: unknown, name?: string): void
-  // Downloads `content` under the name, which carries its own extension
   static download(name: string, content: Blob): void
 }
 
-// BroadcastChannel between tabs, messages are `{ type, data }`
 declare class Broadcast {
-  // Opens a channel with a random token when none is given
   constructor(token?: string)
   readonly token: string
   on(type: string, callback: (data: unknown) => void): void
@@ -73,7 +63,6 @@ declare class Broadcast {
   close(): void
 }
 
-// Filters which saved players and groups DatabaseManager.load reads
 type DatabaseProfile = Record<string, unknown>
 
 declare const SELF_PROFILE: DatabaseProfile
@@ -81,25 +70,16 @@ declare const SELF_PROFILE_WITH_GROUP: DatabaseProfile
 declare const HYDRA_PROFILE: DatabaseProfile
 declare const FIGHT_SIMULATOR_PROFILE: DatabaseProfile
 
-// js/util.js
-
-// Runs simulations in web workers built from js/sim/base.js and js/sim/<type>.js, with the loader showing progress
 declare class WorkerBatch<TResult> {
   constructor(type: string)
   add(callback: (data: TResult) => void, params: object): void
-  // Resolves with the duration in milliseconds
   run(instances: number): Promise<number>
 }
-
-// js/core/util.js
 
 declare function _formatDate(date: number, showDate?: boolean, showTime?: boolean): string
 declare function _formatPrefix(prefix: string): string
 declare function _timestampOffset(date?: Date): number
 
-// js/core/database.js and js/core/models.js
-
-// Latest saved state of a player or a group
 type DatabaseEntry = {
   LinkId: string
   Name: string
@@ -119,7 +99,7 @@ type PlayerEntry = DatabaseEntry & {
   Class: CharacterClass
   Pets?: {
     Levels: number[]
-    // Next boss pet of each habitat's dungeon, 20 once the dungeon is finished
+    // 20 once the dungeon is finished
     Dungeons: number[]
     TotalLevel: number
   } & Record<`${PetHabitat}Count`, number> &
@@ -127,7 +107,6 @@ type PlayerEntry = DatabaseEntry & {
   Fortress?: {
     Gladiator: number
   }
-  // Arena Manager, by building in the order of the game
   Idle?: {
     Runes: number
     Buildings?: number[]
@@ -138,7 +117,6 @@ type PlayerEntry = DatabaseEntry & {
   }
 }
 
-// Player loaded with all of its data, such as from DatabaseManager.getPlayer with a timestamp
 type PlayerData = PlayerEntry & Record<MainAttribute | 'Constitution' | 'Luck', { Total: number }>
 
 type GroupEntry = DatabaseEntry & {
@@ -148,15 +126,12 @@ type GroupEntry = DatabaseEntry & {
   Hydra?: number
 }
 
-// Every saved state of one player or group, by timestamp
 type DatabaseHistory<TEntry> = Record<number, TEntry> & {
   Latest: TEntry
-  // Every saved state, newest first
   List: TEntry[]
 }
 
 declare class PlayaResponse {
-  // Players and groups found in a HAR file saved from the game
   static importData(json: unknown, timestamp?: number, offset?: number): { players: unknown[]; groups: unknown[] }
 }
 
@@ -171,8 +146,6 @@ declare class DatabaseManager {
   static getGroup(identifier: string): DatabaseHistory<DatabaseEntry> | undefined
 }
 
-// js/core/models.js
-
 type BlacksmithResources = {
   Metal: number
   Crystal: number
@@ -180,7 +153,6 @@ type BlacksmithResources = {
 
 declare class ItemModel {
   static empty(): ItemModel
-  // Clears the rune value when the rune is not a damage rune
   static forceCorrectRune(item: ItemModel | undefined): void
   Type: number
   PicIndex: number
@@ -195,7 +167,6 @@ declare class ItemModel {
   upgradeTo(upgrades: number): void
   getBlacksmithPrice(): BlacksmithResources
   getBlacksmithUpgradePrice(): BlacksmithResources
-  // Copy with the `from` attribute type replaced by `to`, only for equipment unless `force` is set
   morph(from: number, to: number, force?: boolean): ItemModel
 }
 
@@ -204,20 +175,15 @@ type Attribute = MainAttribute | 'Constitution' | 'Luck'
 type PlayerAttribute = {
   Base: number
   Total: number
-  // Pre-calculated bonus, evaluateCommon calculates it again when it is missing
   Bonus?: number
 }
 
-// Only the fields the Vue code uses. A model created without data has none of them.
 declare class PlayerModel {
   static ATTRIBUTES: Attribute[]
   static ATTRIBUTE_TO_TYPE: Record<Attribute, number>
-  // Main attribute of a class first, then its two side attributes
   static ATTRIBUTE_ORDER_BY_ATTRIBUTE: Record<MainAttribute, MainAttribute[]>
-  // Reads raw player data from the game
   constructor(data?: unknown)
   Name: string
-  // Server the player was saved from, only set for a player that comes from the database
   Prefix?: string
   Class: CharacterClass
   Level: number
@@ -236,22 +202,15 @@ declare class PlayerModel {
   Pets: Record<string, number>
   Potions: { Type: number; Size: number }[] & { Life?: number }
   Companions?: Record<string, PlayerModel>
-  // Calculates the values that depend on class, items, pets and potions. A companion takes them from the player it belongs to.
   evaluateCommon(player?: PlayerModel): void
 }
 
 declare class ModelUtils {
-  // Rough fighting strength of a player, for comparing players of one class
   static estimatePower(model: SimulatorPlayer): number
-  // Player in the shape the simulator pages copy and paste
   static toSimulatorData(model: PlayerModel | PlayerData): PlayerModel
-  // The player followed by its three companions, when it has them
   static toSimulatorData(model: PlayerModel | PlayerData, includeCompanions: boolean): PlayerModel | PlayerModel[]
 }
 
-// js/sim/base.js
-
-// From WARRIOR (1) to PLAGUEDOCTOR (12)
 type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
 type MainAttribute = 'Strength' | 'Dexterity' | 'Intelligence'
@@ -262,7 +221,6 @@ declare const ASSASSIN: 4
 declare const RUNE_FIRE_DAMAGE: 40
 declare const RUNE_COLD_DAMAGE: 41
 declare const RUNE_LIGHTNING_DAMAGE: 42
-// The damage rune the simulator picks against each enemy
 declare const RUNE_AUTO_DAMAGE: 999
 
 type ClassConfig = {
@@ -270,39 +228,28 @@ type ClassConfig = {
   Attribute: MainAttribute
   MaximumDamageReduction: number
   WeaponMultiplier: number
-  // Chance from 0 to 1 to block or evade an attack
   SkipChance: number
 }
 
 declare const CONFIG: {
   General: {
-    // Critical damage bonus of each gladiator level above the enemy's
     CritGladiatorBonus: number
   }
-  // Merges a config into the current one, groups and values it leaves out stay as they are
   set(config: unknown): void
-  // Every enabled class, ordered by ID
   classes(): ClassConfig[]
-  // IDs of every enabled class
   ids(): CharacterClass[]
-  // Index 0 is the general config, so a class ID reads that class
   fromID(index: number): ClassConfig
 }
 
-// Fight bonuses of every snack by its key, such as `1` or `1_legendary`
 declare const SNACKS: Record<string, Record<string, number>>
 
-// Player data a simulator model fights with, only the values the Vue code reads
 type SimulatorPlayer = Record<Attribute, { Total: number }> & {
   Class: CharacterClass
   Level: number
 }
 
-// Values of a fighter against its target, calculated by SimulatorModel.initialize
 type SimulatorModelState = {
-  // Chance from 0 to 1 to skip an attack of the target
   SkipChance: number
-  // Chance from 0 to 1 to hit critically
   CriticalChance: number
   CriticalMultiplier: number
   Weapon1: {
@@ -312,36 +259,24 @@ type SimulatorModelState = {
 }
 
 declare class SimulatorModel {
-  // Player data with the defaults the simulator needs filled in
   static normalize(player: SimulatorPlayer): SimulatorPlayer
   Player: SimulatorPlayer
   Config: ClassConfig
   TotalHealth: number
-  // Null until initialize is called
   Data: SimulatorModelState | null
-  // Calculates the values against the target
   initialize(target: SimulatorModel): void
 }
 
-// js/sim/pets.js
-
-// Pet as the pet simulator reads it
 type SimulatorPet = {
   Name?: string
-  // Habitat, from 0 (Shadow) to 4 (Water)
   Type: number
-  // Pet within its habitat, from 0 to 19
+  // Within its habitat, 0 to 19
   Pet: number
-  // 1 for the boss of a habitat dungeon, which ignores the values below
   Boss: number
   Level: number
-  // Pets caught in the habitat
   Pack: number
-  // Pets of the habitat at level 100 to 149
   At100: number
-  // Pets of the habitat at level 150 to 199
   At150: number
-  // Pets of the habitat at level 200
   At200: number
   Gladiator: number
 }
@@ -350,8 +285,6 @@ declare class PetModel {
   static getPlayer(pet: SimulatorPet): SimulatorPlayer
   static getModel(pet: SimulatorPet, index?: number): SimulatorModel
 }
-
-// js/sim/data/base.js
 
 type Monster = {
   Level: number
@@ -369,9 +302,6 @@ declare class MonsterGenerator {
   static create(type: symbol, level: number, classId: CharacterClass, runeType?: number, runeValue?: number): Monster
 }
 
-// js/playa/calculations.js
-
-// Only the values the attributes page reads, the rest of the class is still untyped
 declare class Calculations {
   static experienceNextLevel(level: number): number
   static experienceQuestMin(level: number, book: number, guildInstructor: number, runes: number): number
@@ -414,37 +344,24 @@ declare class Calculations {
   static goldExpedition(level: number, tower: number, guildTreasure: number, runes: number, scroll: boolean, mount: number): number
 }
 
-// js/playa/monsters.js
-
-// Name of an underworld unit by its kind: goblin, troll and keeper
 declare const NAME_UNIT_UNDERWORLD: Record<number, string>
-
-// js/playa/pets.js
 
 type Pet = {
   location: number
-  // When the pet can be found next, or now: start and end
   next: [Date, Date]
   time: 'any' | 'day' | 'night' | 'witch'
-  // True, or a check whether the player can find the pet at all
   condition: true | ((player: PlayerEntry) => boolean)
 }
 
 declare const PetData: Pet[]
-
-// js/playa/servers.js
 
 declare class Playa {
   static getServerUrlById(id: number): string | undefined
   static getClientVersion(): string
 }
 
-// vendor/js/html2canvas.min.js
-
-// Draws an element onto a canvas. Version 1.1.4 only understands plain colours, not `oklch()` or `color-mix()`.
+// Version 1.1.4 can't read oklch(), oklab() or color-mix() colours
 declare function html2canvas(element: HTMLElement, options?: { logging?: boolean; backgroundColor?: string | null }): Promise<HTMLCanvasElement>
-
-// js/changelog.js
 
 type ChangelogRelease = string[] | Record<string, string[]>
 

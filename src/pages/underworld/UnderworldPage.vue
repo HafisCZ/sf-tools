@@ -153,16 +153,13 @@ defineOptions({
   name: 'UnderworldPage'
 })
 
-// One player of the list, the same object the simulator sends back with its score filled
 type PlayerScore = {
   player: PlayerModel
-  // Win chance from 0 to 100, null until simulated
+  // 0 to 100
   score: number | null
-  // Stays the same when other players are removed
   index: number
 }
 
-// What the analyzer reads from a simulation log
 type SimulatorLog = {
   fights: unknown[]
   players: unknown[]
@@ -175,7 +172,6 @@ const GLADIATOR_MODE_KEY = 'underworld_sim/gladiator'
 
 const localize = useLocalize('underworld')
 
-// The buildings start empty and count as zero, like on the legacy page
 const goblin = ref<number | null>(null)
 const goblinUpgrades = ref<number | null>(null)
 const troll = ref<number | null>(null)
@@ -201,7 +197,6 @@ const isUnderworldValid = useComponentValidation(useTemplateRef('building-refs')
 
 const isSettingsValid = useComponentValidation(settings)
 
-// At least one building has to be there to fight, like on the legacy page
 const canSimulate = computed(() => isUnderworldValid.value && isSettingsValid.value && (goblin.value ?? 0) + (troll.value ?? 0) + (keeper.value ?? 0) > 0 && players.value.length > 0)
 
 function listPlayers() {
@@ -229,7 +224,6 @@ function toggleGladiatorMode() {
   Store.shared.set(GLADIATOR_MODE_KEY, gladiatorMode.value, true)
 }
 
-// The name is only filled in for a player added by hand, like on the legacy page
 function addPlayer() {
   if (!editor.value) return
 
@@ -270,7 +264,6 @@ function removePlayer(entry: PlayerScore) {
   }
 }
 
-// Clicks on the remove button don't select the row
 function handleRowClick(event: MouseEvent, entry: PlayerScore) {
   if (event.target instanceof Element && event.target.closest('button')) return
 
@@ -283,7 +276,6 @@ function handleRowKeydown(event: KeyboardEvent, entry: PlayerScore) {
   }
 }
 
-// A saved player is selected right away, so it can be edited and saved back
 function insertPlayer(data: unknown) {
   selectedIndex.value = nextIndex++
 
@@ -298,7 +290,6 @@ function isPlayer(value: unknown) {
   return ('Class' in value && Boolean(value.Class)) || ('save' in value && Boolean(value.save))
 }
 
-// A list of players replaces the list, or is added to it in paste mode, a single player fills the editor
 function handlePaste(value: unknown) {
   try {
     const data = handleSimulatorPaste(value)

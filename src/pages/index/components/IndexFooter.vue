@@ -53,7 +53,6 @@ const emit = defineEmits<{
 
 const MAJOR_VERSION = MODULE_VERSION_MAJOR
 
-// Latest commit and build number, compiled in from git by vite.config.ts
 const BUILD_INFO = __BUILD_INFO__
 
 const localize = useLocalize('index')
