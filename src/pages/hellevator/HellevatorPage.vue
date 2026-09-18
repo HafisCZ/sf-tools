@@ -13,7 +13,7 @@
       <div>
         <div class="grid grid-cols-3 gap-[14px]">
           <SimulatorSettings ref="settings-ref" storage-key="hellevator_sim" :default-threads="4" :default-iterations="5000" class="col-span-2" />
-          <SFButton variant="outline" block :disabled="!isValid" @click="simulate">
+          <SFButton variant="outline" block :disabled="isSimulating ? 'loading' : isLogging || !isValid" @click="simulate">
             {{ localize.global('simulator.simulate') }}
           </SFButton>
         </div>
@@ -84,7 +84,7 @@ import SFTableRow from '@library/SFTableRow.vue'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { copyJson, formatDuration, getClassImageUrl, getValueAtPath, setValueAtPath } from '@utils/utils'
+import { copyJson, formatDuration, getClassImageUrl, getValueAtPath, setValueAtPath, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
@@ -141,6 +141,19 @@ const editor = useTemplateRef('editor-ref')
 const settings = useTemplateRef('settings-ref')
 
 const isValid = useComponentValidation(editor, useTemplateRef('range-start-ref'), useTemplateRef('range-end-ref'), settings)
+
+const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
+  if (!settings.value) return
+
+  const instances = Math.max(1, settings.value.threads || 4)
+  const iterations = Math.max(1, settings.value.iterations || 5000)
+
+  await runSimulation(instances, iterations)
+})
+
+const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
+  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+})
 
 const resultRows = computed(() => {
   const list = enemies.value
@@ -300,19 +313,6 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
   if (onLogs && logs.length > 0) {
     onLogs({ fights: logs, players: [player, ...floorEnemies], config: simulatorConfig.value })
   }
-}
-
-function simulate() {
-  if (!settings.value) return
-
-  const instances = Math.max(1, settings.value.threads || 4)
-  const iterations = Math.max(1, settings.value.iterations || 5000)
-
-  void runSimulation(instances, iterations)
-}
-
-function runLogged(target: SimulatorLogTarget) {
-  void runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
 }
 
 function openFeedback() {

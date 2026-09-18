@@ -19,14 +19,14 @@
       <SFHeading level="1" class="col-span-4 col-start-7 text-center">Pet Simulator</SFHeading>
       <div class="col-span-3 text-center">{{ result }}</div>
       <div class="col-span-3 flex justify-end gap-2">
-        <SFButton variant="outline" :disabled="!canSimulate" @click="simulate">
+        <SFButton variant="outline" :disabled="isSimulating ? 'loading' : isRunning || !canSimulate" @click="simulate">
           {{ localize('simulate') }}
         </SFButton>
-        <SFDropdown :items="generateItems" :label="localize('generate.one')" variant="outline" float="left" :disabled="!canGenerate">
+        <SFDropdown :items="generateItems" :label="localize('generate.one')" variant="outline" float="left" :disabled="isGenerating ? 'loading' : isRunning || !canGenerate">
           <SFIcon name="table-cells" />
         </SFDropdown>
         <SFTooltip :content="localize('simulate_dungeons')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('simulate_dungeons')" :disabled="!canSimulateDungeons" @click="simulateDungeons">
+          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('simulate_dungeons')" :disabled="isSimulatingDungeons ? 'loading' : isRunning || !canSimulateDungeons" @click="simulateDungeons">
             <SFIcon name="dungeon" />
           </SFButton>
         </SFTooltip>
@@ -64,7 +64,7 @@ import { type DropdownItem } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { sequence, sortDescending, sum } from '@utils/utils'
+import { sequence, sortDescending, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
@@ -134,10 +134,29 @@ const canGenerate = computed(() => isMapSettingsValid.value && petA.value?.Boss 
 
 const canSimulateDungeons = computed(() => isSettingsValid.value && hasDungeonsLeft(player.value))
 
+const { submit: simulate, isSubmitting: isSimulating } = useSubmit(async () => {
+  if (!settings.value) return
+
+  const instances = Math.max(1, settings.value.threads || 4)
+  const iterations = Math.max(1, settings.value.iterations || 2.5e6)
+
+  await runSimulation(instances, iterations)
+})
+
+const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
+  await runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
+})
+
+const { submit: generate, isSubmitting: isGenerating } = useSubmit(generateMaps)
+
+const { submit: simulateDungeons, isSubmitting: isSimulatingDungeons } = useSubmit(runDungeonSimulation)
+
+const isRunning = computed(() => isSimulating.value || isLogging.value || isGenerating.value || isSimulatingDungeons.value)
+
 const generateItems = computed<DropdownItem[]>(() => [
-  { label: localize('generate.one'), action: () => void generateMaps(1) },
-  { label: localize('generate.five'), action: () => void generateMaps(5) },
-  { label: localize('generate.ten'), action: () => void generateMaps(10) }
+  { label: localize('generate.one'), action: () => void generate(1) },
+  { label: localize('generate.five'), action: () => void generate(5) },
+  { label: localize('generate.ten'), action: () => void generate(10) }
 ])
 
 watch(mapIterations, (value) => {
@@ -264,19 +283,6 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
   }
 }
 
-function simulate() {
-  if (!settings.value) return
-
-  const instances = Math.max(1, settings.value.threads || 4)
-  const iterations = Math.max(1, settings.value.iterations || 2.5e6)
-
-  void runSimulation(instances, iterations)
-}
-
-function runLogged(target: SimulatorLogTarget) {
-  void runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
-}
-
 async function generateMaps(count: number) {
   const a = petA.value
   const b = petB.value
@@ -311,7 +317,7 @@ async function generateMaps(count: number) {
   useDialog(PetMapDialog, { maps })
 }
 
-async function simulateDungeons() {
+async function runDungeonSimulation() {
   const entry = player.value
 
   if (!settings.value || !entry || !hasDungeonsLeft(entry)) return
