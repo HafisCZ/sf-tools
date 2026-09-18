@@ -21,8 +21,8 @@ import SFDialog from '@library/SFDialog.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import { useLocalize } from '@utils/localization'
 import { useSubmit } from '@utils/utils'
+import { Exporter } from '~/core/exporter'
 import { createDump } from '~/data/recovery'
-import { Exporter } from '~/site/exporter'
 
 defineOptions({
   name: 'BackupReminderDialog'

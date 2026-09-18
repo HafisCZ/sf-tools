@@ -1,7 +1,7 @@
 import { randomHash } from '@utils/hash'
 import { removeItem, sortDescending } from '@utils/utils'
+import { Store } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
-import { Store } from '~/site/store'
 import { ScriptArchive } from './archive'
 import { DefaultScripts } from './default-scripts'
 

@@ -153,7 +153,7 @@ export type ExpressionEditorProps = ValidationProps<string> & {
   /**
    * Replaces the value with the text of a dropped text file
    */
-  dropFiles?: boolean
+  useDragAndDrop?: boolean
   /**
    * Turns tabs in pasted text into spaces
    */
@@ -161,7 +161,7 @@ export type ExpressionEditorProps = ValidationProps<string> & {
   /**
    * Ctrl+S and Ctrl+Shift+S emit `save`
    */
-  saveShortcuts?: boolean
+  useSave?: boolean
 }
 
 export type SelectOption<TValue = string> =

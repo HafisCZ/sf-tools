@@ -63,10 +63,10 @@ import { type SelectOption } from '@utils/components'
 import { sha1 } from '@utils/hash'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
+import { ProfileManager, type ProfileRule } from '~/core/profiles'
 import { getGroupProfileConfig, getPlayerProfileConfig } from '~/pages/stats/stats'
 import { DEFAULT_EXPRESSION_CONFIG, type ExpressionConfig } from '~/script/expression-config'
 import { Highlighter } from '~/script/highlighter'
-import { ProfileManager, type ProfileRule } from '~/site/profiles'
 
 defineOptions({
   name: 'ProfileCreateDialog'

@@ -1,6 +1,6 @@
 import { useLoader } from '@utils/loader'
 import { formatDuration } from '@utils/utils'
-import { Logger } from '~/site/logger'
+import { Logger } from '~/core/logger'
 
 const loader = useLoader()
 
