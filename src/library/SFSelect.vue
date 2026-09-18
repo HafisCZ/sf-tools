@@ -7,16 +7,18 @@
       :id="id"
       ref="trigger-ref"
       type="button"
-      class="flex w-full cursor-pointer items-center gap-2 rounded-md border bg-surface px-3 py-2 text-left leading-5 text-white/90 outline-none"
-      :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
+      class="flex min-h-9.5 w-full items-center gap-2 rounded-md border bg-surface px-3 py-2 text-left leading-5 outline-none"
+      :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.readonly ? 'cursor-default text-white/60' : 'cursor-pointer text-white/90']"
       aria-haspopup="menu"
       :aria-expanded="open"
+      :aria-disabled="props.readonly || undefined"
       :aria-labelledby="props.label ? `${labelId} ${valueId}` : valueId"
       @click="toggle"
     >
-      <img v-if="selectedOption?.image" :src="selectedOption.image" alt="" class="size-5 object-contain" />
-      <span :id="valueId" :class="{ 'text-accent': selectedOption?.accent }">{{ selectedOption?.label }}</span>
-      <SFIcon name="chevron-down" class="ml-auto text-white/60" :class="{ 'rotate-180': open }" />
+      <img v-if="selectedOption?.image && selectedOption.imagePosition !== 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
+      <span :id="valueId" class="min-w-0 flex-auto truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
+      <img v-if="selectedOption?.image && selectedOption.imagePosition === 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
+      <SFIcon name="chevron-down" class="text-white/60" :class="{ 'rotate-180': open }" />
     </button>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <Teleport to="body">
@@ -25,8 +27,12 @@
         <ul role="menu" class="flex flex-col">
           <li v-for="(option, index) in matchingOptions" :key="index" role="none">
             <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue || option.accent }" @click="select(option.value)">
-              <img v-if="option.image" :src="option.image" alt="" class="size-5 object-contain" />
-              {{ option.label }}
+              <img v-if="option.image && option.imagePosition !== 'right'" :src="option.image" alt="" class="size-5 object-contain" />
+              <span class="flex min-w-0 flex-1 flex-col">
+                <span :style="{ color: option.value === modelValue ? undefined : option.color }">{{ option.label }}</span>
+                <span v-if="option.description" class="text-xs text-white/50">{{ option.description }}</span>
+              </span>
+              <img v-if="option.image && option.imagePosition === 'right'" :src="option.image" alt="" class="size-5 object-contain" />
             </button>
           </li>
         </ul>
@@ -64,9 +70,13 @@ const props = defineProps<
      */
     required?: boolean
     /**
-     * Shows a search field above the options that filters them by label
+     * Shows a search field above the options that filters them by label and description
      */
     search?: boolean
+    /**
+     * Shows the value without letting it be changed
+     */
+    readonly?: boolean
   }
 >()
 
@@ -107,7 +117,7 @@ const selectedOption = computed(() => props.options.find((option) => option.valu
 const matchingOptions = computed(() => {
   const search = query.value.trim().toLowerCase()
 
-  return search ? props.options.filter((option) => option.label.toLowerCase().includes(search)) : props.options
+  return search ? props.options.filter((option) => option.label.toLowerCase().includes(search) || option.description?.toLowerCase().includes(search)) : props.options
 })
 
 const position = useAnimationFramePosition(open, () => triggerElement.value?.getBoundingClientRect())
@@ -125,6 +135,8 @@ watch(
 )
 
 function toggle() {
+  if (props.readonly) return
+
   query.value = ''
   open.value = !open.value
 }

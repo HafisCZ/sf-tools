@@ -59,9 +59,21 @@ export type SelectOption<TValue = string> = {
    */
   label: string
   /**
-   * URL of an image shown before the label
+   * URL of an image shown next to the label
    */
   image?: string
+  /**
+   * Side of the label the image is shown on
+   */
+  imagePosition?: 'left' | 'right'
+  /**
+   * Smaller grey text shown under the label
+   */
+  description?: string
+  /**
+   * CSS colour of the label
+   */
+  color?: string
   /**
    * Shows the label in the accent color
    */
