@@ -1,5 +1,5 @@
 <template>
-  <SFDialog :title="localize('title')" size="sm">
+  <SFDialog :title="localize('title')" size="sm" close-via-button @close="emit('close')">
     <div class="flex max-h-[60vh] flex-col gap-4">
       <div class="shrink-0">
         <SFInput v-model="query" :aria-label="localize('search')" :placeholder="localize('search')" />
@@ -16,18 +16,11 @@
         </button>
       </div>
     </div>
-
-    <template #buttons>
-      <SFButton block @click="emit('close')">
-        {{ localize.global('dialog.shared.close') }}
-      </SFButton>
-    </template>
   </SFDialog>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFInput from '@library/SFInput.vue'
