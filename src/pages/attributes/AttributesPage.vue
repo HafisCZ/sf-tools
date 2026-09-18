@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template #nav>
+    <template #nav-left>
       <SFTabs v-model="tab" :options="tabOptions" />
     </template>
 

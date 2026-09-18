@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template #nav>
+    <template #nav-left>
       <SFButton variant="ghost" @click="openOptions">
         <SFIcon name="gear" />
         {{ localize.global('analyzer.topbar.options') }}
