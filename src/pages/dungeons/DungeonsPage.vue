@@ -22,16 +22,16 @@
         <div class="grid grid-cols-16 items-center gap-[14px]">
           <SimulatorSettings ref="settings-ref" storage-key="dungeon_sim" :default-threads="4" :default-iterations="5000" class="col-span-16 sm:col-span-6" />
           <div class="col-span-16 flex gap-1 sm:col-span-10">
-            <SFButton variant="outline" block :disabled="!canSimulateSelected" @click="simulate">
+            <SFButton variant="outline" block :disabled="isSimulating ? 'loading' : isRunning || !canSimulateSelected" @click="simulate">
               {{ localize('simulate_one') }}
             </SFButton>
-            <SFButton variant="outline" block :disabled="!canSimulateSelected" @click="simulateRemaining">
+            <SFButton variant="outline" block :disabled="isSimulatingRemaining ? 'loading' : isRunning || !canSimulateSelected" @click="simulateRemaining">
               {{ localize('simulate_remaining') }}
             </SFButton>
-            <SFButton variant="outline" block :disabled="!canSimulateOpen" @click="simulateAll">
+            <SFButton variant="outline" block :disabled="isSimulatingAll ? 'loading' : isRunning || !canSimulateOpen" @click="simulateAll">
               {{ localize('simulate_all') }}
             </SFButton>
-            <SFButton variant="outline" block :disabled="!canSimulateOpen" @click="simulateNext">
+            <SFButton variant="outline" block :disabled="isSimulatingNext ? 'loading' : isRunning || !canSimulateOpen" @click="simulateNext">
               {{ localize('simulate_next') }}
             </SFButton>
           </div>
@@ -95,7 +95,7 @@ import { type SelectOption } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, copyJson, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sum } from '@utils/utils'
+import { compact, copyJson, getClassImageUrl, getValueAtPath, sequence, setValueAtPath, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
@@ -204,6 +204,17 @@ const selectedEntry = computed((): DungeonEntry => ({ dungeon: selectedDungeon.v
 const canSimulateSelected = computed(() => isEditorValid.value && isSettingsValid.value && hasFighters([selectedDungeon.value]))
 
 const canSimulateOpen = computed(() => isEditorValid.value && isSettingsValid.value && openBosses.value.length > 0 && hasFighters(openBosses.value.map(({ dungeon }) => dungeon)))
+
+const { submit: simulate, isSubmitting: isSimulating } = useSubmit(runSelected)
+const { submit: simulateRemaining, isSubmitting: isSimulatingRemaining } = useSubmit(runRemaining)
+const { submit: simulateAll, isSubmitting: isSimulatingAll } = useSubmit(runAll)
+const { submit: simulateNext, isSubmitting: isSimulatingNext } = useSubmit(runNext)
+
+const { submit: runLogged, isSubmitting: isLogging } = useSubmit(async (target: SimulatorLogTarget) => {
+  await runBoss(1, 50, (log) => saveSimulatorLog(target, log))
+})
+
+const isRunning = computed(() => isSimulating.value || isSimulatingRemaining.value || isSimulatingAll.value || isSimulatingNext.value || isLogging.value)
 
 const dungeonOptions = computed<SelectOption[]>(() => DUNGEONS.map((dungeon) => ({ value: String(dungeon.id), label: getDungeonName(dungeon), color: dungeon.companions ? SHADOW_COLOR : undefined })))
 
@@ -540,23 +551,19 @@ async function runBosses(entries: DungeonEntry[]) {
   return compact(results)
 }
 
-function simulate() {
+async function runSelected() {
   const { instances, iterations } = readSettings()
 
-  void runBoss(instances, iterations)
+  await runBoss(instances, iterations)
 }
 
-function runLogged(target: SimulatorLogTarget) {
-  void runBoss(1, 50, (log) => saveSimulatorLog(target, log))
-}
-
-async function simulateRemaining() {
+async function runRemaining() {
   if (!canSimulateSelected.value) return
 
   showResults(await runBosses(getRemainingBosses(selectedEntry.value)))
 }
 
-async function simulateAll() {
+async function runAll() {
   if (!canSimulateOpen.value) return
 
   const results = await runBosses(openBosses.value)
@@ -564,7 +571,7 @@ async function simulateAll() {
   showResults(results.sort((a, b) => b.score - a.score))
 }
 
-async function simulateNext() {
+async function runNext() {
   if (!canSimulateOpen.value) return
 
   const { instances, iterations } = readSettings()
