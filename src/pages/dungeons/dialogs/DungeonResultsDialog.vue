@@ -1,5 +1,5 @@
 <template>
-  <SFDialog :title="localize('results')" size="sm">
+  <SFDialog :title="localize('results')" size="sm" close-via-button @close="emit('close')">
     <div class="flex max-h-[60vh] flex-col gap-[14px]">
       <div class="flex shrink-0 items-center gap-2">
         <span class="flex-1 text-center font-bold text-[lightgray]">
@@ -25,12 +25,6 @@
         </div>
       </div>
     </div>
-
-    <template #buttons>
-      <SFButton block @click="emit('close')">
-        {{ localize.global('dialog.shared.close') }}
-      </SFButton>
-    </template>
   </SFDialog>
 </template>
 
