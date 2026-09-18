@@ -26,7 +26,7 @@
       <div>
         <div class="grid grid-cols-2 gap-[14px]">
           <SimulatorSettings ref="settings-ref" storage-key="hydra_sim" :default-threads="4" :default-iterations="10000" />
-          <SFButton variant="outline" block :disabled="!isValid" @click="simulate">
+          <SFButton variant="outline" block :disabled="isSimulating ? 'loading' : !isValid" @click="simulate">
             {{ localize.global('simulator.simulate') }}
           </SFButton>
         </div>
@@ -79,7 +79,7 @@ import SFSelect from '@library/SFSelect.vue'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { compact, dig, formatDuration, getClassImageUrl, sliceLength, sortDescending, sum } from '@utils/utils'
+import { compact, dig, formatDuration, getClassImageUrl, sliceLength, sortDescending, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
@@ -140,6 +140,8 @@ const results = shallowRef<HydraResult[]>([])
 const settings = useTemplateRef('settings-ref')
 
 const isValid = useComponentValidation(useTemplateRef('player-count-ref'), useTemplateRef('level-ref'), useTemplateRef('main-ref'), useTemplateRef('side1-ref'), useTemplateRef('side2-ref'), useTemplateRef('constitution-ref'), useTemplateRef('luck-ref'), useTemplateRef('hydra-ref'), settings)
+
+const { submit: simulate, isSubmitting: isSimulating } = useSubmit(runSimulation)
 
 const hydraOptions = computed(() => Object.entries(HYDRA_MAP).map(([id, data]) => ({ value: id, label: localize(`names.${id}`), image: getClassImageUrl(data.class) })))
 
@@ -260,7 +262,7 @@ function fillFromPaste(value: unknown) {
   }
 }
 
-async function simulate() {
+async function runSimulation() {
   if (!settings.value) return
 
   const instances = Math.max(1, settings.value.threads || 4)

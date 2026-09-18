@@ -34,7 +34,7 @@
             </SFTooltip>
           </div>
           <SimulatorSettings ref="settings-ref" storage-key="fortress_sim" :default-threads="4" :default-iterations="2500" class="col-span-7" />
-          <SFButton variant="outline" block :disabled="setups.length === 0 || !isSettingsValid" class="col-span-5" @click="simulate">
+          <SFButton variant="outline" block :disabled="isSimulating ? 'loading' : setups.length === 0 || !isSettingsValid" class="col-span-5" @click="simulate">
             {{ localize.global('simulator.simulate') }}
           </SFButton>
         </div>
@@ -102,7 +102,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
-import { formatDuration } from '@utils/utils'
+import { formatDuration, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
@@ -147,6 +147,8 @@ const settings = useTemplateRef('settings-ref')
 const isEditorValid = useComponentValidation(useTemplateRef('warrior-count-ref'), useTemplateRef('warrior-level-ref'), useTemplateRef('fortifications-ref'), useTemplateRef('archer-count-ref'), useTemplateRef('archer-level-ref'), useTemplateRef('mage-count-ref'), useTemplateRef('mage-level-ref'))
 
 const isSettingsValid = useComponentValidation(settings)
+
+const { submit: simulate, isSubmitting: isSimulating } = useSubmit(runSimulation)
 
 const fortificationsOptions = computed(() => Object.entries(FORTRESS_WALL_MAP).map(([id, unit]) => ({ value: id, label: `${id === '0' ? localize.global('editor.none') : id} - ${localize.global('editor.level')} ${unit.level}` })))
 
@@ -227,7 +229,7 @@ function handleRowKeydown(event: KeyboardEvent, setup: Setup) {
   }
 }
 
-async function simulate() {
+async function runSimulation() {
   if (!settings.value) return
 
   const instances = Math.max(1, settings.value.threads || 4)

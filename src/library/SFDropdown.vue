@@ -40,9 +40,9 @@ const props = withDefaults(
      */
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline'
     /**
-     * Disables the trigger button
+     * Disables the trigger button, `'loading'` also shows a spinner over its content
      */
-    disabled?: boolean
+    disabled?: boolean | 'loading'
   }>(),
   {
     float: 'right',
