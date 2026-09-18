@@ -23,7 +23,11 @@
       </div>
     </div>
     <div class="mt-7 grid grid-cols-1 gap-[28px] sm:grid-cols-3 lg:grid-cols-5">
-      <button type="button" class="flex h-[270px] w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-[0.25em] border border-line bg-surface outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="navigation.show('groups')">
+      <button
+        type="button"
+        class="flex h-[270px] w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-md border border-line bg-surface transition hover:border-white/30 hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        @click="navigation.show('groups')"
+      >
         <SFIcon name="table" class="text-[4em]" />
         <span>{{ localize('guilds.browse') }}</span>
       </button>
@@ -38,7 +42,12 @@
         :outdated="latestPlayerTimestamp != getDisplayTimestamp(group)"
         :hidden="DatabaseManager.isIdentifierHidden(group.Latest.LinkId)"
         @open="navigation.show('group', { identifier: group.Latest.LinkId })"
-      />
+      >
+        <span class="flex items-center gap-1">
+          <SFIcon name="users" />
+          {{ group.Latest.MembersTotal }}
+        </span>
+      </GridCard>
     </div>
     <div ref="sentinel-ref" />
     <GridActions v-if="selectedIdentifiers.length > 0" :actions="actions" />
