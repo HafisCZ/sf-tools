@@ -16,6 +16,7 @@ type SiteOptions = {
 
 declare class Site {
   static options: SiteOptions
+  static data?: Record<string, unknown>
   static ready(metadata: SiteMetadata, callback: (params: URLSearchParams) => unknown): void
   static run(): void
   static is(name: string): boolean
@@ -70,10 +71,11 @@ declare const SELF_PROFILE_WITH_GROUP: DatabaseProfile
 declare const HYDRA_PROFILE: DatabaseProfile
 declare const FIGHT_SIMULATOR_PROFILE: DatabaseProfile
 
-declare class WorkerBatch<TResult> {
+declare class WorkerBatch<TResult, TParams extends object = object> {
   constructor(type: string)
-  add(callback: (data: TResult) => void, params: object): void
-  run(instances: number): Promise<number>
+  add(callback: (data: TResult) => void, params: TParams): void
+  skip(predicate: (params: TParams) => boolean): void
+  run(instances: number, condition?: (params: TParams, running: TParams) => boolean): Promise<number>
 }
 
 declare function _formatDate(date: number, showDate?: boolean, showTime?: boolean): string
@@ -94,9 +96,22 @@ type DatabaseEntry = {
 
 type PetHabitat = 'Shadow' | 'Light' | 'Earth' | 'Fire' | 'Water'
 
+type PlayerDungeons = {
+  Normal: number[] & { Total: number }
+  Shadow: number[]
+  Class: number[]
+  Tower: number
+  Twister: number
+  Youtube: number
+  Sandstorm: number
+  Player: number
+  Group: number
+}
+
 type PlayerEntry = DatabaseEntry & {
   Level: number
   Class: CharacterClass
+  Dungeons?: PlayerDungeons
   Pets?: {
     Levels: number[]
     // 20 once the dungeon is finished
@@ -188,6 +203,7 @@ declare class PlayerModel {
   Class: CharacterClass
   Level: number
   Armor: number
+  Health?: number
   BlockChance?: number
   Strength: PlayerAttribute
   Dexterity: PlayerAttribute
@@ -201,6 +217,8 @@ declare class PlayerModel {
   Runes: Record<string, number>
   Pets: Record<string, number>
   Potions: { Type: number; Size: number }[] & { Life?: number }
+  Dungeons: { Player: number; Group: number }
+  Fortress: { Gladiator: number }
   Companions?: Record<string, PlayerModel>
   evaluateCommon(player?: PlayerModel): void
 }
@@ -208,7 +226,7 @@ declare class PlayerModel {
 declare class ModelUtils {
   static estimatePower(model: SimulatorPlayer): number
   static toSimulatorData(model: PlayerModel | PlayerData): PlayerModel
-  static toSimulatorData(model: PlayerModel | PlayerData, includeCompanions: boolean): PlayerModel | PlayerModel[]
+  static toSimulatorData(model: PlayerModel | PlayerEntry, includeCompanions: boolean): PlayerModel | PlayerModel[]
 }
 
 type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
@@ -226,6 +244,7 @@ declare const RUNE_AUTO_DAMAGE: 999
 type ClassConfig = {
   ID: CharacterClass
   Attribute: MainAttribute
+  HealthMultiplier: number
   MaximumDamageReduction: number
   WeaponMultiplier: number
   SkipChance: number
@@ -301,6 +320,53 @@ declare class MonsterGenerator {
   static MONSTER_RAID: symbol
   static create(type: symbol, level: number, classId: CharacterClass, runeType?: number, runeValue?: number): Monster
 }
+
+type DungeonRunes = {
+  type: number
+  damage: number
+  // Fire, cold and lightning
+  res?: [number, number, number]
+}
+
+type DungeonMirrorBoss = {
+  pos: number
+  level: number
+  id?: undefined
+  class?: undefined
+  runes?: undefined
+}
+
+type DungeonClassBoss = {
+  pos: number
+  id: number
+  class: CharacterClass
+  level: number
+  str: number
+  dex: number
+  int: number
+  con: number
+  lck: number
+  health: number
+  min: number
+  max: number
+  armor?: number
+  block?: number
+  runes?: DungeonRunes
+}
+
+type DungeonBoss = DungeonMirrorBoss | DungeonClassBoss
+
+type Dungeon = {
+  id: number
+  intl: string
+  pos: number
+  companions: boolean
+  armor_multiplier?: number
+  verified?: boolean
+  floors: Record<string, DungeonBoss>
+}
+
+declare const DUNGEON_DATA: Record<string, Dungeon>
 
 declare class Calculations {
   static experienceNextLevel(level: number): number

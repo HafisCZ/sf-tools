@@ -153,7 +153,7 @@ function canType(key: string, position: number | null) {
 function handleKeydown(event: KeyboardEvent) {
   validationVisible.value = true
 
-  if (event.ctrlKey || event.altKey || event.metaKey || !(event.currentTarget instanceof HTMLInputElement)) return
+  if (event.ctrlKey || event.altKey || event.metaKey || !(event.currentTarget instanceof HTMLInputElement) || event.currentTarget.readOnly) return
 
   if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
     event.preventDefault()
@@ -166,6 +166,8 @@ function handleKeydown(event: KeyboardEvent) {
 
 function handlePaste(event: ClipboardEvent) {
   event.preventDefault()
+
+  if (event.currentTarget instanceof HTMLInputElement && event.currentTarget.readOnly) return
 
   validationVisible.value = true
 

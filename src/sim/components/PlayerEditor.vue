@@ -5,7 +5,7 @@
         <div class="min-w-0 flex-1">
           <SFInput ref="name-ref" v-model="name" :label="localize('name')" :readonly="props.nameReadonly" />
         </div>
-        <SFTooltip :content="localize('smart_change')">
+        <SFTooltip v-if="!props.companion" :content="localize('smart_change')">
           <SFDropdown :items="changeClassItems" :label="localize('smart_change')" variant="outline" float="left">
             <SFIcon name="arrow-right-arrow-left" />
           </SFDropdown>
@@ -17,8 +17,8 @@
         </SFTooltip>
       </div>
       <div class="grid grid-cols-2 gap-[14px]">
-        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search />
-        <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered />
+        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion" />
+        <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered :readonly="props.companion" />
       </div>
       <div v-if="props.snacks" class="grid grid-cols-2 gap-[14px]">
         <SFSelect ref="snack-ref" v-model="snack" :label="localize('snack')" :options="snackOptions" />
@@ -46,21 +46,21 @@
 
     <div class="grid auto-cols-fr grid-flow-col gap-[14px] rounded-md border border-line bg-surface p-2">
       <SFNumber ref="armor-ref" v-model="armor" :label="localize('armor')" :placeholder="localize('armor_placeholder')" :min="0" :step="1" centered />
-      <SFNumber v-if="isWarrior" ref="block-chance-ref" v-model="blockChance" :label="localize('block')" placeholder="0 - 25" :min="0" :max="25" :step="1" centered />
+      <SFNumber v-if="hasBlockChance" ref="block-chance-ref" v-model="blockChance" :label="localize('block')" placeholder="0 - 25" :min="0" :max="25" :step="1" centered />
       <SFNumber ref="resistance-fire-ref" v-model="resistanceFire" :label="localize('fire')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
       <SFNumber ref="resistance-cold-ref" v-model="resistanceCold" :label="localize('cold')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
       <SFNumber ref="resistance-lightning-ref" v-model="resistanceLightning" :label="localize('lightning')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
     </div>
 
     <div class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
-      <SFNumber ref="portal-health-ref" v-model="portalHealth" :label="localize('portal_health')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered />
+      <SFNumber ref="portal-health-ref" v-model="portalHealth" :label="localize('portal_health')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered :readonly="props.companion" />
       <SFNumber ref="rune-health-ref" v-model="runeHealth" :label="localize('rune_health')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered />
-      <SFSelect ref="life-potion-ref" v-model="lifePotion" :label="localize('life_potion')" :options="lifePotionOptions" />
+      <SFSelect ref="life-potion-ref" v-model="lifePotion" :label="localize('life_potion')" :options="lifePotionOptions" :readonly="props.companion" />
     </div>
 
     <div class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
-      <SFNumber ref="portal-damage-ref" v-model="portalDamage" :label="localize('portal_damage')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered />
-      <SFNumber ref="gladiator-ref" v-model="gladiator" :label="localize('gladiator')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered />
+      <SFNumber ref="portal-damage-ref" v-model="portalDamage" :label="localize('portal_damage')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered :readonly="props.companion" />
+      <SFNumber ref="gladiator-ref" v-model="gladiator" :label="localize('gladiator')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered :readonly="props.companion" />
       <SFSelect ref="hand-enchantment-ref" v-model="handEnchantment" :label="localize('hand_enchant')" :options="yesNoOptions" />
     </div>
   </div>
@@ -103,6 +103,10 @@ const props = defineProps<{
    * Hides the class field and leaves the class out of the player
    */
   classHidden?: boolean
+  /**
+   * Locks the class, level, portal, gladiator and life potion fields, and hides the block chance and class change
+   */
+  companion?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -187,6 +191,8 @@ const isValid = useComponentValidation(
 
 const isWarrior = computed(() => classId.value === String(WARRIOR))
 
+const hasBlockChance = computed(() => isWarrior.value && !props.companion)
+
 // Only shown for Assassins, but always read
 const visibleWeapons = computed(() => (classId.value === String(ASSASSIN) ? weapons : weapons.slice(0, 1)))
 
@@ -257,7 +263,7 @@ const fields: EditorField[] = [
   createNumberField('Fortress.Gladiator', gladiator),
   createSelectField('Potions.Life', lifePotion, () => lifePotionOptions.value, '0'),
   createSelectField('Items.Hand.HasEnchantment', handEnchantment, () => yesNoOptions.value, 'false'),
-  createNumberField('BlockChance', blockChance, 25, () => isWarrior.value),
+  createNumberField('BlockChance', blockChance, 25, () => hasBlockChance.value),
   createNumberField('Strength.Total', strength),
   createNumberField('Dexterity.Total', dexterity),
   createNumberField('Intelligence.Total', intelligence),
