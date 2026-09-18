@@ -1,3 +1,4 @@
+import '~/core/sentry'
 import '~/styles/main.css'
 import { createPage } from '~/pages/pages'
 import DungeonsPage from '~/pages/dungeons/DungeonsPage.vue'

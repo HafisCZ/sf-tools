@@ -1,3 +1,4 @@
+import { attachErrorHandler } from '@sentry/vue'
 import { createApp, type Component } from 'vue'
 
 let appCount = 0
@@ -7,6 +8,10 @@ export function createVueApp(component: Component, props?: Record<string, unknow
 
   // Every app on the page needs its own useId prefix
   app.config.idPrefix = `v${appCount++}`
+
+  if (import.meta.env.PROD) {
+    attachErrorHandler(app, { attachProps: false })
+  }
 
   return app
 }
