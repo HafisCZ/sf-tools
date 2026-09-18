@@ -1,9 +1,6 @@
 import { sequence } from '@utils/utils'
 import { getHellevatorVariant } from './hellevator'
 
-/**
- * Monster of one floor of a raid
- */
 export type RaidFloor = {
   pos: number
   id: number
@@ -20,9 +17,6 @@ export type RaidFloor = {
   block?: number
 }
 
-/**
- * Floors of one raid, by their number from the first floor up
- */
 export type Raid = {
   floors: Record<string, RaidFloor>
 }
@@ -2868,12 +2862,8 @@ const RAID_DATA: Record<string, Raid> = {
   }
 }
 
-// Attributes a raid above 50 scales down, luck is left alone
 const SCALED_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution'] as const
 
-/**
- * Monsters of every floor of a raid, in the order they are fought
- */
 export function getRaidEnemies(raid: string) {
   if (raid.startsWith('hellevator_')) {
     const tier = Number(raid.slice(11))
@@ -2935,9 +2925,6 @@ function createRaidMonster(floor: RaidFloor, index: number) {
   }
 }
 
-/**
- * Players with the attributes a raid scales down: divided by 10 from raid 51 up, by 50 from raid 101 up
- */
 export function scaleRaidPlayers(raid: string, players: PlayerModel[]) {
   if (!raid.startsWith('raid_')) {
     return players

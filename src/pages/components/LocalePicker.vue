@@ -14,7 +14,6 @@ defineOptions({
   name: 'LocalePicker'
 })
 
-// There is no translation key for "Language", so the picker is named after the current language
 const label = computed(() => LOCALES[currentLocale.value] ?? currentLocale.value)
 
 const items = computed<DropdownItem[]>(() =>

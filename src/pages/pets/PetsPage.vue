@@ -83,14 +83,12 @@ defineOptions({
   name: 'PetsPage'
 })
 
-// What the analyzer reads from a simulation log
 type SimulatorLog = {
   fights: unknown[]
   players: unknown[]
   config: SimulatorConfig | null
 }
 
-// Win chances from js/sim/pets.js, see PetMapDialog
 type PetMap = {
   name: string
   data: (number[] | undefined)[]
@@ -106,7 +104,7 @@ const PROFILE = SELF_PROFILE
 
 const MAP_ITERATIONS_KEY = 'pet_sim/map_iterations'
 
-// Habitats in the order of their type
+// Index is the pet type
 const HABITATS: PetHabitat[] = ['Shadow', 'Light', 'Earth', 'Fire', 'Water']
 
 const localize = useLocalize('pets')
@@ -115,7 +113,6 @@ const mapIterations = ref(readMapIterations())
 
 const result = ref('')
 
-// Player picked in the statistics integration, whose remaining dungeons can be simulated
 const player = shallowRef<PlayerEntry | null>(null)
 
 const models = shallowRef<[SimulatorModel | null, SimulatorModel | null]>([null, null])
@@ -133,7 +130,6 @@ const petB = computed((): SimulatorPet | null => (editorB.value?.isValid ? edito
 
 const canSimulate = computed(() => isSettingsValid.value && petA.value !== null && petB.value !== null)
 
-// A map is only made for your own pet against a dungeon boss
 const canGenerate = computed(() => isMapSettingsValid.value && petA.value?.Boss === 0 && petB.value?.Boss === 1)
 
 const canSimulateDungeons = computed(() => isSettingsValid.value && hasDungeonsLeft(player.value))
@@ -144,15 +140,13 @@ const generateItems = computed<DropdownItem[]>(() => [
   { label: localize('generate.ten'), action: () => void generateMaps(10) }
 ])
 
-// Only a value of 1 or more is saved, like DOM.input in js/plugins.js
 watch(mapIterations, (value) => {
   if (value !== null && value >= 1) {
     Store.shared.set(MAP_ITERATIONS_KEY, String(value), true)
   }
 })
 
-// Like refreshModels in legacy: each valid pet is initialized against the other one, or against itself while the other one is invalid.
-// The stats are calculated on this page, so the debug config is applied here too.
+// The stats are calculated with the global CONFIG, so the debug config is applied to it
 watch([petA, petB, simulatorConfig], ([a, b, config]) => {
   CONFIG.set(config)
 
@@ -184,7 +178,6 @@ function listPlayers() {
   return DatabaseManager.getLatestPlayers(true).filter((entry) => (entry.Pets?.TotalLevel ?? 0) > 0)
 }
 
-// Your strongest pet of the habitat and the habitat's next dungeon boss, null when there is none
 function getPetsFor(entry: PlayerEntry, type: number): [pet: SimulatorPet | null, boss: SimulatorPet | null] {
   if (!entry.Pets) return [null, null]
 
@@ -225,7 +218,6 @@ function fillFromPlayer(entry: PlayerEntry) {
   editorB.value.fill(boss)
 }
 
-// Such as `Shadow 1 - Name of the pet`
 function getPetName(pet: SimulatorPet) {
   return `${localize(`types.${pet.Type}`)} ${pet.Pet + 1} - ${localize.global(`monsters.${800 + 20 * pet.Type + pet.Pet}`)}`
 }
@@ -285,7 +277,6 @@ function runLogged(target: SimulatorLogTarget) {
   void runSimulation(1, 50, (log) => saveSimulatorLog(target, log))
 }
 
-// Maps of pet A against the boss of pet B and the bosses after it, up to `count` of them
 async function generateMaps(count: number) {
   const a = petA.value
   const b = petB.value

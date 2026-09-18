@@ -74,7 +74,7 @@ const modelValue = defineModel<TValue>({ required: true })
 
 const slots = defineSlots<{
   /**
-   * Replaces the label text, for a label that holds more than plain text
+   * Replaces the label text
    */
   label?(): unknown
 }>()
@@ -114,7 +114,6 @@ const position = useAnimationFramePosition(open, () => triggerElement.value?.get
 
 useInert(open)
 
-// Return focus to the trigger unless the user already moved it somewhere else
 watch(
   open,
   (value) => {

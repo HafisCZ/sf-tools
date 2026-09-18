@@ -57,7 +57,6 @@ const emit = defineEmits<{
 }>()
 
 type ConfigField = {
-  // Keys from the group down to the value, joined with dots
   path: string
   label: string
   type: 'text' | 'checkbox' | 'number'
@@ -65,7 +64,6 @@ type ConfigField = {
 
 type ConfigGroup = {
   name: string
-  // Values of an array share one row
   rows: ConfigField[][]
 }
 
@@ -93,7 +91,6 @@ function getFieldType(value: unknown): ConfigField['type'] {
   }
 }
 
-// Objects inside the group are flattened into it
 function collectRows(group: object, path: string[]) {
   const rows: ConfigField[][] = []
 
@@ -131,7 +128,6 @@ function setValues(config: SimulatorConfig) {
   }
 }
 
-// An empty number field reads as its default value
 function readField(path: string, defaultValue: unknown) {
   switch (getFieldType(defaultValue)) {
     case 'text':
@@ -143,7 +139,6 @@ function readField(path: string, defaultValue: unknown) {
   }
 }
 
-// Builds the config in the shape of the default config
 function readValue(value: unknown, path: string[]): unknown {
   if (Array.isArray(value)) {
     return value.map((item: unknown, index) => (typeof item === 'object' ? readValue(item, [...path, String(index)]) : readField([...path, index].join('.'), item)))

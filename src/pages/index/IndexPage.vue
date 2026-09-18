@@ -33,7 +33,6 @@ defineOptions({
   name: 'IndexPage'
 })
 
-// Translations under index.<key>
 const TOOLS = [
   { key: 'stats', href: 'stats.html' },
   { key: 'temp', href: 'stats.html?temp' },
@@ -60,7 +59,7 @@ const COMMUNITY_TOOLS = [
   { title: 'Hellevator', href: 'https://hellevatorrewards.12hp.de/', author: 'ÐonMuErte' },
   { title: 'Smith Simulator', href: 'https://snfsmithsim.12hp.de/', author: 'ÐonMuErte' },
   { title: 'Portrait Maker', href: 'https://sfportrait.12hp.de/', author: 'ÐonMuErte' },
-  // Non-breaking space keeps the name on one line, like on the legacy page
+  // Non-breaking space
   { title: 'SF Poradnik', href: 'https://en.sfporadnik.pl/', author: 'ThreeG' },
   { title: 'Rune Bonuses', href: 'https://bit.ly/Rune-bonuses', author: 'Zorago' },
   { title: 'Gold Pit', href: 'https://goldpit.12hp.de/', author: 'ÐonMuErte & KaYa43v3r' },
@@ -69,7 +68,6 @@ const COMMUNITY_TOOLS = [
   { title: 'SFSimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r' }
 ]
 
-// The cat dresses up for winter and Halloween
 const IMAGE = (() => {
   if (Site.isEvent('winter')) {
     return '/res/drvcs_winter.png'

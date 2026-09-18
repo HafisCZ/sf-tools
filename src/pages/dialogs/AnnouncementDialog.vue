@@ -21,7 +21,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Announcement from ANNOUNCEMENTS in js/changelog.js, its content is HTML
+   * Announcement to show, its content is HTML
    */
   announcement: Announcement
 }>()

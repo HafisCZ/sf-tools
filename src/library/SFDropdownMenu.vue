@@ -25,7 +25,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Items shown in the menu. The default slot replaces them with custom content, whose buttons need `role="menuitem"` for arrow key navigation.
+   * Items shown in the menu
    */
   items?: DropdownItem[]
   /**
@@ -41,7 +41,7 @@ const props = defineProps<{
    */
   position: 'bottom' | 'right'
   /**
-   * Width in pixels. Without it the menu is as wide as its content.
+   * Width in pixels
    */
   width?: number
 }>()
@@ -64,7 +64,6 @@ const resizeObserver = new ResizeObserver(() => {
   }
 })
 
-// Hidden until measured, so the menu never shows at a wrong position
 const style = computed(() => {
   const width = props.width === undefined ? undefined : `${props.width}px`
 
@@ -89,7 +88,7 @@ const style = computed(() => {
   return { top: `${top}px`, left: `${left}px`, width }
 })
 
-// Focus the first field or item once the menu is visible, hidden elements can't take focus
+// Waits until the menu is visible, hidden elements can't take focus
 watch(
   size,
   (value, previous) => {
@@ -121,7 +120,6 @@ function getMenuItems() {
 }
 
 function moveFocus(event: KeyboardEvent) {
-  // Home and End move the caret inside a field
   if (event.target instanceof HTMLInputElement && (event.key === 'Home' || event.key === 'End')) return
 
   const menuItems = getMenuItems()

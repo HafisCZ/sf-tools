@@ -1,4 +1,4 @@
-// Font Awesome Free icons (https://fontawesome.com/license/free), each imported from its own file so the rest of the set stays out of the bundle
+// Font Awesome Free icons (https://fontawesome.com/license/free)
 import { faDiscord } from '@fortawesome/free-brands-svg-icons/faDiscord'
 import { faCalendarXmark } from '@fortawesome/free-regular-svg-icons/faCalendarXmark'
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'

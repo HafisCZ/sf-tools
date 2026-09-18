@@ -68,7 +68,6 @@ function readSetting(name: string, defaultValue: number) {
   return Number.isFinite(value) ? value : null
 }
 
-// Only a value of 1 or more is saved, like DOM.input in js/plugins.js
 function saveSetting(name: string, value: number | null) {
   if (value !== null && value >= 1) {
     Store.shared.set(`${props.storageKey}/${name}`, String(value), true)

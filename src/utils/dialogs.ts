@@ -13,15 +13,6 @@ type CloseParameters<TComponent> = ComponentProps<TComponent> extends { onClose?
 
 let queue = Promise.resolve()
 
-/**
- * Opens a dialog component whose root is `SFDialog` and which emits `close`.
- * Dialogs are queued: each one opens after the previous one has closed.
- *
- * @param component - Dialog component, mounted as its own application on `document.body`
- * @param props - Props passed to the dialog component
- * @param options.callback - Called after the dialog closes, with the arguments of its `close` event
- * @param options.immediate - Opens the dialog right away, on top of any open dialog, instead of queueing it
- */
 export function useDialog<TComponent extends Component>(
   component: TComponent,
   props: Omit<ComponentProps<TComponent>, 'onClose'>,
@@ -38,7 +29,7 @@ export function useDialog<TComponent extends Component>(
 
       setCoveredElementsAsInert()
 
-      // Appended before mounting so the dialog can take focus when it mounts
+      // Appended before mounting, so the dialog can take focus
       document.body.append(element)
 
       const app = createVueApp(component, {
@@ -66,15 +57,6 @@ export function useDialog<TComponent extends Component>(
   }
 }
 
-/**
- * Opens a confirmation dialog with Cancel and Ok buttons
- *
- * @param props.title - Title of the dialog, usually the question
- * @param props.message - Text under the title
- * @param options.onAccept - Runs when the user confirms, the dialog waits for it and stays open with an error toast when it throws
- * @param options.onReject - Runs when the user cancels, the same way
- * @param options.callback - Called after the dialog closes, with whether the user confirmed
- */
 export function useSimpleDialog(
   props: {
     title: string
@@ -98,13 +80,6 @@ export function useSimpleDialog(
   )
 }
 
-/**
- * Opens the browser file picker
- *
- * @param options.accept - File types the picker offers, such as `.har,.json`
- * @param options.multiple - Allows picking more than one file
- * @param options.callback - Called with the picked files, not called when the picker is cancelled
- */
 export function useFilePicker(options: { accept?: string; multiple?: boolean; callback: (files: File[]) => void }) {
   const input = document.createElement('input')
   input.type = 'file'

@@ -1,6 +1,5 @@
 import { readonly, ref, shallowRef } from 'vue'
 
-// Same locales as Localization in js/views/base.js, keep in sync
 export const LOCALES: Record<string, string> = {
   en: 'English',
   de: 'Deutsch',
@@ -14,7 +13,6 @@ export const LOCALES: Record<string, string> = {
   ch: 'Schwyzerdüütsch'
 }
 
-// Same extra translation files as the DOMContentLoaded handler in js/views/base.js
 const INJECTIONS: Record<string, [string, string]> = {
   translations_general: ['/js/playa/lang/{{locale}}/general.json', 'general'],
   translations_monsters: ['/js/playa/lang/{{locale}}/monsters.json', 'monsters'],
@@ -33,18 +31,13 @@ type LocalizeFunction = ((key: string, variables?: LocalizationVariables) => str
 
 const locale = ref(Site.options.locale || 'en')
 
-// Reactive, so every localize() call made while rendering updates when the language changes
 const translation = shallowRef<Record<string, string>>({})
 
-// Extra translation files the page asked for, loaded again for every language
 let requiredInjections: string[] = []
 
-// Language of the latest setLocale call, so a slower earlier request can't overwrite it
+// Keeps a slower earlier setLocale request from overwriting a newer one
 let requestedLocale = ''
 
-/**
- * Language currently shown
- */
 export const currentLocale = readonly(locale)
 
 function flatten(base: Record<string, string>, tree: TranslationTree, ...path: string[]) {
@@ -84,18 +77,12 @@ async function fetchTranslations(value: string) {
   return translations
 }
 
-/**
- * Loads the translations of the current language, plus the extra translation files named in `requires`
- */
 export async function loadTranslations(requires: string[] = []) {
   requiredInjections = requires
 
   translation.value = await fetchTranslations(locale.value)
 }
 
-/**
- * Switches the language in place: saves it for legacy pages too, loads its translations, then updates every localized string
- */
 export async function setLocale(value: string) {
   requestedLocale = value
 
@@ -109,9 +96,6 @@ export async function setLocale(value: string) {
   }
 }
 
-/**
- * Translates a key given as its full path, such as `dialog.shared.continue`
- */
 export function globalLocalize(key: string, variables?: LocalizationVariables) {
   let value = translation.value[key]
 
@@ -130,14 +114,6 @@ export function globalLocalize(key: string, variables?: LocalizationVariables) {
   return value
 }
 
-/**
- * Creates a localization function for keys inside `namespace`
- *
- * @example
- * const localize = useLocalize('dialog.changelog')
- * localize('release') // "Release"
- * localize.global('dialog.shared.continue') // "Continue"
- */
 export function useLocalize(namespace: string): LocalizeFunction {
   return Object.assign((key: string, variables?: LocalizationVariables) => globalLocalize(`${namespace}.${key}`, variables), { global: globalLocalize })
 }

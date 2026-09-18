@@ -117,10 +117,8 @@ defineExpose({
   }
 })
 
-// One editor field, read and written at `path` of the player data
 type EditorField = {
   path: string
-  // Value as the text legacy's editor had in its input
   getText: () => string
   set: (value: unknown) => void
   reset: () => void
@@ -189,7 +187,7 @@ const isValid = useComponentValidation(
 
 const isWarrior = computed(() => classId.value === String(WARRIOR))
 
-// The second weapon is only shown for Assassins, but it is always read
+// Only shown for Assassins, but always read
 const visibleWeapons = computed(() => (classId.value === String(ASSASSIN) ? weapons : weapons.slice(0, 1)))
 
 const classOptions = computed<SelectOption[]>(() => CONFIG.ids().map((id) => ({ value: String(id), label: localize.global(`general.class${id}`), image: getClassImageUrl(id) })))
@@ -224,7 +222,7 @@ const runeOptions = computed<SelectOption[]>(() => [
   { value: String(RUNE_AUTO_DAMAGE), label: localize('auto') }
 ])
 
-// Same order as the fields of legacy's editor, which is the order they are read in
+// Read and filled in this order, like legacy's editor
 const fields: EditorField[] = [
   createTextField('Name', name, () => !props.nameHidden),
   createSelectField(
@@ -315,7 +313,6 @@ function createNumberField(path: string, model: Ref<number | null>, defaultValue
   }
 }
 
-// A value that is not one of the options leaves the selection as it was
 function createSelectField(path: string, model: Ref<string>, getOptions: () => SelectOption[], defaultValue: string, isVisible = () => true): EditorField {
   return {
     path,
@@ -334,7 +331,6 @@ function createSelectField(path: string, model: Ref<string>, getOptions: () => S
   }
 }
 
-// Numbers become numbers and empty text 0, `true` and `false` become booleans, anything else stays text
 function parseFieldText(text: string) {
   const number = Number(text)
 
@@ -345,9 +341,6 @@ function parseFieldText(text: string) {
   return number
 }
 
-/**
- * Writes the visible fields into `target` and returns it
- */
 function read(target = new PlayerModel()) {
   for (const field of fields) {
     if (field.isVisible()) {
@@ -358,9 +351,6 @@ function read(target = new PlayerModel()) {
   return target
 }
 
-/**
- * Fills the fields from player data. Hidden fields and missing values are reset to their defaults.
- */
 function fill(data: unknown) {
   for (const field of fields) {
     const value = field.isVisible() ? getValueAtPath(data, field.path) : undefined

@@ -60,11 +60,11 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Simulator model of the pet, shows its stats while set
+   * Simulator model whose stats are shown
    */
   model?: SimulatorModel | null
   /**
-   * Shows the skip chance, damage and critical values of the model instead of `?`
+   * Shows the skip chance, damage and critical values of the model
    */
   fightStats?: boolean
 }>()
@@ -77,7 +77,6 @@ defineExpose({
   }
 })
 
-// Stats while the pet has no model, the defaults of the legacy page
 const UNKNOWN_STATS = {
   class: '?',
   health: '?',
@@ -108,7 +107,6 @@ const isHabitatValid = useComponentValidation(useTemplateRef('type-ref'), useTem
 
 const isPetValid = useComponentValidation(useTemplateRef('level-ref'), useTemplateRef('at100-ref'), useTemplateRef('at150-ref'), useTemplateRef('at200-ref'), useTemplateRef('pack-ref'), useTemplateRef('gladiator-ref'))
 
-// A boss only needs its habitat and pet, like on the legacy page
 const isValid = computed(() => isHabitatValid.value && (isBoss.value || isPetValid.value))
 
 const typeOptions = computed(() => sequence(5).map((index) => ({ value: index, label: localize(`types.${index}`) })))
@@ -128,8 +126,7 @@ const bossOptions = computed(() => [
 
 const gladiatorOptions = computed(() => [{ value: 0, label: localize('editor.none') }, ...sequence(15, 1).map((value) => ({ value, label: `${value} (${100 * value * CONFIG.General.CritGladiatorBonus}%)` }))])
 
-// The stats panel stays mounted and is only hidden, like on the legacy page. A text input that mounts and
-// changes in the same render keeps its first value, because v-model sets the value after mounting.
+// The stats panel uses v-show, a v-model input that mounts and changes in one render keeps its first value
 const stats = computed(() => {
   const model = props.model
 
@@ -151,7 +148,6 @@ const stats = computed(() => {
   }
 })
 
-// Pets are monsters 800 to 899, 20 for each habitat
 function getMonsterId(petType: number, index: number) {
   return 800 + 20 * petType + index
 }
@@ -160,15 +156,12 @@ function formatChance(value: number) {
   return value > 0 ? `${(100 * value).toFixed(2)}%` : localize('editor.none')
 }
 
-// A new habitat starts at its first pet
+// Not a watch on type, that would also reset the pet after fill()
 function changeType(value: number) {
   type.value = value
   pet.value = 0
 }
 
-/**
- * Pet from the fields, empty numbers count as 0
- */
 function read(): SimulatorPet {
   return {
     Type: type.value,
@@ -184,9 +177,6 @@ function read(): SimulatorPet {
   }
 }
 
-/**
- * Fills the fields from a pet, or resets them without one
- */
 function fill(data: SimulatorPet | null) {
   type.value = data?.Type ?? 0
   pet.value = data?.Pet ?? 0

@@ -118,9 +118,8 @@ defineOptions({
 
 type Setup = {
   values: FortressValues
-  // Stays the same when other setups are removed
   index: number
-  // Win chance from 0 to 1, null until simulated
+  // 0 to 1
   score: number | null
 }
 
@@ -130,7 +129,6 @@ const MAGE_LEVEL_OPTIONS = toLevelOptions(FORTRESS_MAGE_MAP)
 
 const localize = useLocalize('fortress')
 
-// Counts start empty, like on the legacy page
 const warriorCount = ref<number | null>(null)
 const warriorLevel = ref('0')
 const fortificationsLevel = ref('0')
@@ -217,7 +215,6 @@ function removeSetup(setup: Setup) {
   }
 }
 
-// Clicks on the remove button don't select the row
 function handleRowClick(event: MouseEvent, setup: Setup) {
   if (event.target instanceof Element && event.target.closest('button')) return
 

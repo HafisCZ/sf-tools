@@ -3,39 +3,21 @@ import { useLoader } from '@utils/loader'
 import { globalLocalize } from '@utils/localization'
 import { copyJson, mergeDeep, scaleValue } from '@utils/utils'
 
-/**
- * Simulator config by group, such as `General` or `Warrior`
- */
 export type SimulatorConfig = Record<string, Record<string, unknown>>
 
-/**
- * Where a simulation log goes: downloaded as a file, or opened in the analyzer
- */
 export type SimulatorLogTarget = 'file' | 'broadcast'
 
-/**
- * Whether the page was opened with `debug` in its URL, which shows the simulator debug tools
- */
 export const isSimulatorDebug = new URLSearchParams(window.location.search).has('debug')
 
-/**
- * Config set in the simulator config dialog, `null` while the simulators use their defaults
- */
 export const simulatorConfig = shallowRef<SimulatorConfig | null>(null)
 
-// Taken before a page can apply a custom config to CONFIG, like in legacy SimulatorUtils.configure
+// Copied before a page applies a custom config to CONFIG
 const DEFAULT_CONFIG = mergeDeep({}, CONFIG) as SimulatorConfig
 
-/**
- * Copy of the default simulator config
- */
 export function getDefaultSimulatorConfig() {
   return mergeDeep({}, DEFAULT_CONFIG) as SimulatorConfig
 }
 
-/**
- * Label of a config value from its path without the group, such as `Health Multiplier` for `['Warrior', 'HealthMultiplier']`
- */
 export function formatSimulatorConfigKey(path: string[]) {
   return path
     .slice(1)
@@ -43,14 +25,10 @@ export function formatSimulatorConfigKey(path: string[]) {
     .join(' - ')
 }
 
-/**
- * Copies data together with the current config, so pasting it into a simulator page brings the config along
- */
 export function copySimulatorData(data: unknown) {
   void copyJson({ config: simulatorConfig.value, data, type: 'custom' })
 }
 
-// Data copied with copySimulatorData
 type CopiedSimulatorData = {
   data: unknown
   config: SimulatorConfig | null
@@ -60,9 +38,6 @@ function isCopiedSimulatorData(value: unknown): value is CopiedSimulatorData {
   return typeof value === 'object' && value !== null && 'type' in value && value.type === 'custom'
 }
 
-/**
- * Unwraps data copied with its config, which is applied in debug mode. Any other value is returned as it is.
- */
 export function handleSimulatorPaste(value: unknown) {
   if (isCopiedSimulatorData(value)) {
     if (isSimulatorDebug) {
@@ -75,11 +50,6 @@ export function handleSimulatorPaste(value: unknown) {
   return value
 }
 
-/**
- * Turns a sample of a Warrior into one player of every class, with its values scaled to that class
- *
- * @param suffix - Added to the name of every player
- */
 export function createPresetPlayers(sample: unknown, suffix?: string) {
   return CONFIG.ids().map((classId) => createPresetPlayer(sample, classId, suffix))
 }
@@ -111,7 +81,6 @@ function createPresetPlayer(sample: unknown, classId: CharacterClass, suffix?: s
   return data
 }
 
-// The main attribute of the sample becomes the main attribute of the new class, and its side attributes keep their order
 function swapAttributes(data: PlayerModel, from: MainAttribute, to: MainAttribute) {
   const values = PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[from].map((attribute) => ({ Base: data[attribute].Base, Total: data[attribute].Total }))
 
@@ -121,9 +90,6 @@ function swapAttributes(data: PlayerModel, from: MainAttribute, to: MainAttribut
   })
 }
 
-/**
- * Player model of data that is either a model already or raw player data from the game, with the weapons corrected
- */
 export function preparePlayerData(data: unknown) {
   const player = hasClass(data) ? data : new PlayerModel(data)
 
@@ -145,9 +111,6 @@ function hasClass(value: unknown): value is PlayerModel {
   return typeof value === 'object' && value !== null && 'Class' in value && Boolean(value.Class)
 }
 
-/**
- * Downloads the log as a JSON file, or opens the analyzer in a new tab and sends the log to it
- */
 export function saveSimulatorLog(target: SimulatorLogTarget, data: unknown) {
   if (target === 'file') {
     Exporter.json(data, `simulator_log_${Exporter.time}`)
@@ -163,9 +126,6 @@ export function saveSimulatorLog(target: SimulatorLogTarget, data: unknown) {
   }
 }
 
-/**
- * Takes the data another tab sends to this one, when the page was opened with a broadcast token in its URL
- */
 export function receiveSimulatorBroadcast(onData: (data: unknown) => void) {
   const params = new URLSearchParams(window.location.search)
   const token = params.get('broadcast')
@@ -191,6 +151,5 @@ export function receiveSimulatorBroadcast(onData: (data: unknown) => void) {
 
   params.delete('broadcast')
 
-  // Keeps the flags of the URL, such as `debug`, without the `=` an empty value adds
   window.history.replaceState({}, document.title, `${window.location.origin}${window.location.pathname}?${params.toString().replace(/=&/g, '&').replace(/=$/, '')}`)
 }

@@ -29,7 +29,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Win chance from 0 to 100 of each pet against its dungeon boss, in the order shown
+   * Win chance from 0 to 100 of each pet against its boss
    */
   results: {
     chance: number

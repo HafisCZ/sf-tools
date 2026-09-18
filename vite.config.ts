@@ -6,7 +6,6 @@ import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
-// Pages built by Vite: converted to Vue, or static pages styled with Tailwind. Everything else is served and copied as-is.
 const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets']
 
 const LEGACY_DIRECTORIES = ['js', 'css', 'res', 'vendor', 'endpoint']
@@ -15,10 +14,9 @@ const LEGACY_FILES = ['CNAME', 'sitemap.txt']
 const ROOT_DIRECTORY = fileURLToPath(new URL('.', import.meta.url))
 const LEGACY_PAGES = fs.readdirSync(ROOT_DIRECTORY).filter((file) => file.endsWith('.html') && !VITE_PAGES.includes(path.basename(file, '.html')))
 
-// Build numbers count the commits since this one
 const FIRST_COMMIT = '88b32f42210cb848c77b7891f6e47a0000876ed4'
 
-// Version shown in the index page footer, read from the git history. Needs the full history, so CI must not make a shallow clone.
+// Needs the full git history, CI must not make a shallow clone
 function readBuildInfo() {
   try {
     const git = (command: string) => execSync(`git ${command}`, { cwd: ROOT_DIRECTORY, encoding: 'utf8' }).trim()
@@ -46,7 +44,7 @@ function legacySite(): Plugin {
       outputDirectory = path.resolve(config.root, config.build.outDir)
     },
     configureServer(server) {
-      // Serve legacy JS/CSS untouched, Vite's transforms break worker source concatenation (Workers in js/util.js)
+      // Vite's transforms break the worker source concatenation in js/util.js
       server.middlewares.use((request, response, next) => {
         const url = request.url ?? ''
         if (url.includes('?') || !/\.(js|css)$/.test(url) || !LEGACY_DIRECTORIES.some((directory) => url.startsWith(`/${directory}/`))) {
@@ -90,7 +88,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      // WSL gets no file events when Windows programs change files under /mnt, so dev:wsl checks the files on an interval instead
+      // WSL gets no file events under /mnt
       usePolling: process.env.WATCH_POLLING === '1',
       ignored: ['**/res/**', '**/endpoint/**', '**/vendor/**', '**/dist/**']
     }
