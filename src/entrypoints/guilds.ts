@@ -1,3 +1,4 @@
+import '~/core/sentry'
 import '~/styles/main.css'
 import GuildsPage from '~/pages/guilds/GuildsPage.vue'
 import { createPage } from '~/pages/pages'

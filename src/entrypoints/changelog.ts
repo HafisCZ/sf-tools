@@ -1,3 +1,4 @@
+import '~/core/sentry'
 import '~/styles/main.css'
 import ChangelogPage from '~/pages/changelog/ChangelogPage.vue'
 import { createPage } from '~/pages/pages'
