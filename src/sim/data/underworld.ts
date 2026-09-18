@@ -1,4 +1,5 @@
 import { sequence } from '@utils/utils'
+import { NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
 
 // By unit level, from level 0 up
 const ATTRIBUTE_CURVE = [

@@ -1,5 +1,77 @@
+import { clamp } from './utils'
+
 export function formatSpacedNumber(value: number, delimiter = ' ') {
   return String(Math.trunc(value)).replace(/\B(?=(\d{3})+(?!\d))/g, delimiter)
+}
+
+// Unlike formatSpacedNumber this also counts the minus sign and exponent characters, table output depends on it
+export function formatDigitGroups(value: number, delimiter = '&nbsp') {
+  return Math.trunc(value)
+    .toString()
+    .split('')
+    .map((character, index, characters) => ((characters.length - 1 - index) % 3 == 2 && index != 0 ? delimiter + character : character))
+    .join('')
+}
+
+export function formatDate(date: unknown, showDate = true, showTime = true) {
+  // Loose on purpose: 0, false and '' all give an empty text
+  if (date == '' || date == undefined) {
+    return ''
+  }
+
+  const value = new Date(clamp(Number(date), 0, 1e15))
+
+  const datePart = showDate ? `${String(value.getDate()).padStart(2, '0')}.${String(value.getMonth() + 1).padStart(2, '0')}.${value.getFullYear()}${showTime ? ' ' : ''}` : ''
+  const timePart = showTime ? `${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}` : ''
+
+  return datePart + timePart
+}
+
+export function parseDate(text: unknown) {
+  if (typeof text === 'string') {
+    const parts = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/)
+
+    if (parts.length == 7) {
+      const [, day, month, year, hours, minutes] = parts.map((part) => parseInt(part))
+
+      const date = new Date()
+
+      date.setFullYear(year)
+      date.setMonth(month - 1)
+      date.setDate(day)
+
+      date.setHours(hours)
+      date.setMinutes(minutes)
+
+      date.setSeconds(0)
+      date.setMilliseconds(0)
+
+      return date.getTime()
+    }
+  }
+
+  return undefined
+}
+
+export function formatPrefix(prefix: string | undefined) {
+  if (!prefix) {
+    return ''
+  }
+
+  const [name, domain] = prefix.split('_')
+
+  return `${name.charAt(0).toUpperCase() + name.slice(1)} .${domain.toUpperCase()}`
+}
+
+export function formatDurationClock(value: unknown) {
+  if (value == '' || value == undefined) return ''
+
+  const duration = Math.max(0, Number(value))
+  const days = Math.trunc(duration / (1000 * 60 * 60 * 24))
+  const hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60))
+
+  return `${String(days).padStart(Math.max(2, days.toString().length), '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
 }
 
 // Largest first

@@ -1,3 +1,6 @@
+import { Playa } from '~/playa/servers'
+import { Logger } from '~/site/logger'
+
 export type EndpointCharacter = {
   id: number
   name: string
@@ -27,8 +30,8 @@ type EndpointWindow = Window & {
   callback: ((message: EndpointMessage) => void) | null
   load(): Promise<void>
   destroy(): Promise<void>
-  login(server: string, version: string, username: string, password: string): void
-  continue_login(server: string, version: string, username: string, id: number): void
+  login(server: string, version: string | null, username: string, password: string): void
+  continue_login(server: string, version: string | null, username: string, id: number): void
   query_many(names: string): void
   query_self(): void
   query_hall_of_fame(): void

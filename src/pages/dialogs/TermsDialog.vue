@@ -55,6 +55,7 @@ import SFDialog from '@library/SFDialog.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFList from '@library/SFList.vue'
 import { useLocalize } from '@utils/localization'
+import { Site } from '~/site/site'
 
 defineOptions({
   name: 'TermsDialog'

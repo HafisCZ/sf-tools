@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-1" role="tablist">
     <button
-      v-for="option in props.options"
+      v-for="option in options"
       :key="String(option.value)"
       type="button"
       role="tab"
@@ -16,7 +16,8 @@
 </template>
 
 <script setup lang="ts" generic="TValue">
-import { type SelectOption } from '@utils/components'
+import { computed } from 'vue'
+import { isSelectable, type SelectOption } from '@utils/components'
 
 defineOptions({
   name: 'SFTabs'
@@ -24,10 +25,12 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Tabs to pick from
+   * Tabs to pick from, header rows and dividers are skipped
    */
   options: SelectOption<TValue>[]
 }>()
 
 const modelValue = defineModel<TValue>({ required: true })
+
+const options = computed(() => props.options.filter(isSelectable))
 </script>

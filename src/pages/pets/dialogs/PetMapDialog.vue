@@ -50,6 +50,7 @@ import SFSelect from '@library/SFSelect.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { useLocalize } from '@utils/localization'
 import { useSubmit } from '@utils/utils'
+import { Exporter } from '~/site/exporter'
 
 defineOptions({
   name: 'PetMapDialog'

@@ -1,7 +1,7 @@
 <template>
   <div class="flex overflow-hidden rounded-md border border-white/60" role="group">
     <button
-      v-for="option in props.options"
+      v-for="option in options"
       :key="option.value"
       type="button"
       class="flex-1 cursor-pointer border-l border-white/60 px-4 py-2 leading-5 font-bold outline-none first:border-l-0 focus-visible:outline-2 focus-visible:-outline-offset-2"
@@ -15,7 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { type SelectOption } from '@utils/components'
+import { computed } from 'vue'
+import { isSelectable, type SelectOption } from '@utils/components'
 
 defineOptions({
   name: 'SFToggleGroup'
@@ -23,12 +24,14 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Buttons in the group
+   * Buttons in the group, header rows and dividers are skipped
    */
   options: SelectOption[]
 }>()
 
 const modelValue = defineModel<string | null>({ required: true })
+
+const options = computed(() => props.options.filter(isSelectable))
 
 defineExpose({
   get isValid() {

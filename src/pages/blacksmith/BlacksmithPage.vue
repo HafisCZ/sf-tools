@@ -68,6 +68,8 @@ import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
 import ResourceAmounts from './components/ResourceAmounts.vue'
+import { ItemModel } from '~/data/item-model'
+import { type BlacksmithResources } from '~/data/types'
 import Page from '~/pages/Page.vue'
 
 defineOptions({

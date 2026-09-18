@@ -19,6 +19,7 @@ import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
+import { type PlayerModel } from '~/data/player-model'
 import PlayerEditor from '../components/PlayerEditor.vue'
 
 defineOptions({

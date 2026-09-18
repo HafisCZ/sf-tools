@@ -65,8 +65,13 @@ import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage, sortDescending } from '@utils/utils'
+import { DatabaseManager } from '~/data/database-manager'
+import { type PlayerModel } from '~/data/player-model'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
 import Page from '~/pages/Page.vue'
+import { Logger } from '~/site/logger'
+import { SELF_PROFILE_WITH_GROUP } from '~/site/profiles'
+import { Site } from '~/site/site'
 
 defineOptions({
   name: 'RequestPage'
@@ -290,7 +295,7 @@ const isValidRequest = (canRedirect || canMessage) && scope.length > 0
 
 const requester = origin || redirect?.hostname
 
-const players = shallowRef<PlayerEntry[]>([])
+const players = shallowRef<PlayerModel[]>([])
 const hasAccess = ref(true)
 
 onMounted(() => {
@@ -472,7 +477,7 @@ function sendDataViaMessage(data: Record<string, unknown>) {
   window.parent.postMessage(message, '*')
 }
 
-function sendData(player: PlayerEntry) {
+function sendData(player: PlayerModel) {
   const whitelist: Scope = Object.create(null)
   const data: Record<string, unknown> = Object.create(null)
 

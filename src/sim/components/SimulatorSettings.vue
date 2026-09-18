@@ -20,6 +20,7 @@ import SFNumber from '@library/SFNumber.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
+import { Store } from '~/site/store'
 
 defineOptions({
   name: 'SimulatorSettings'

@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { formatSpacedNumber } from '@utils/formatting'
+import { type BlacksmithResources } from '~/data/types'
 
 defineOptions({
   name: 'ResourceAmounts'

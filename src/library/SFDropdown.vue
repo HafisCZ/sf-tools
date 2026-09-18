@@ -24,7 +24,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     /**
-     * Items shown in the menu
+     * Items shown in the menu, with optional header rows and dividers between them
      */
     items: DropdownItem[]
     /**

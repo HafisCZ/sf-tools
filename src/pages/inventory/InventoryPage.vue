@@ -50,11 +50,15 @@ import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage, sortDescending } from '@utils/utils'
+import { DatabaseManager } from '~/data/database-manager'
+import { type PlayerModel } from '~/data/player-model'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
 import InventoryView from '~/pages/inventory/components/InventoryView.vue'
 import ResourcesView from '~/pages/inventory/components/ResourcesView.vue'
 import { type InventoryPlayer } from '~/pages/inventory/inventory'
 import Page from '~/pages/Page.vue'
+import { Logger } from '~/site/logger'
+import { SELF_PROFILE } from '~/site/profiles'
 
 defineOptions({
   name: 'InventoryPage'
@@ -68,7 +72,7 @@ const loader = useLoader()
 
 const titleId = useId()
 
-const players = shallowRef<PlayerEntry[]>([])
+const players = shallowRef<PlayerModel[]>([])
 const player = shallowRef<InventoryPlayer | null>(null)
 
 const tab = ref<Tab>('inventory')
@@ -107,7 +111,7 @@ async function loadPlayers() {
   }
 }
 
-function selectPlayer(entry: PlayerEntry) {
+function selectPlayer(entry: PlayerModel) {
   player.value = DatabaseManager.Players[entry.LinkId].Latest
   tab.value = 'inventory'
 }

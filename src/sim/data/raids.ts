@@ -1,5 +1,8 @@
 import { sequence } from '@utils/utils'
+import { type SimulatorData } from '~/data/model-utils'
+import { type PlayerModel } from '~/data/player-model'
 import { getHellevatorVariant } from './hellevator'
+import { MonsterGenerator } from './monsters'
 
 export type RaidFloor = {
   pos: number
@@ -2925,7 +2928,7 @@ function createRaidMonster(floor: RaidFloor, index: number) {
   }
 }
 
-export function scaleRaidPlayers(raid: string, players: PlayerModel[]) {
+export function scaleRaidPlayers(raid: string, players: (PlayerModel | SimulatorData)[]) {
   if (!raid.startsWith('raid_')) {
     return players
   }

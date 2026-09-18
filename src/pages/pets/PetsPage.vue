@@ -67,6 +67,9 @@ import { useToast } from '@utils/toasts'
 import { sequence, sortDescending, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { ModelUtils } from '~/data/model-utils'
+import { type PetHabitat, type PlayerModel } from '~/data/player-model'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
@@ -75,6 +78,9 @@ import Page from '~/pages/Page.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { WorkerBatch } from '~/sim/workers'
+import { SELF_PROFILE } from '~/site/profiles'
+import { Store } from '~/site/store'
 import PetEditor from './components/PetEditor.vue'
 import PetMapDialog from './dialogs/PetMapDialog.vue'
 import PetResultsDialog from './dialogs/PetResultsDialog.vue'
@@ -113,7 +119,7 @@ const mapIterations = ref(readMapIterations())
 
 const result = ref('')
 
-const player = shallowRef<PlayerEntry | null>(null)
+const player = shallowRef<PlayerModel | null>(null)
 
 const models = shallowRef<[SimulatorModel | null, SimulatorModel | null]>([null, null])
 
@@ -189,24 +195,24 @@ function readMapIterations() {
   return Number.isFinite(value) ? value : null
 }
 
-function hasDungeonsLeft(entry: PlayerEntry | null) {
-  return entry?.Pets?.Dungeons.some((pet) => pet < 20) ?? false
+function hasDungeonsLeft(entry: PlayerModel | null) {
+  return entry?.Pets?.Dungeons?.some((pet) => pet < 20) ?? false
 }
 
 function listPlayers() {
   return DatabaseManager.getLatestPlayers(true).filter((entry) => (entry.Pets?.TotalLevel ?? 0) > 0)
 }
 
-function getPetsFor(entry: PlayerEntry, type: number): [pet: SimulatorPet | null, boss: SimulatorPet | null] {
+function getPetsFor(entry: PlayerModel, type: number): [pet: SimulatorPet | null, boss: SimulatorPet | null] {
   if (!entry.Pets) return [null, null]
 
   const habitat = HABITATS[type]
-  const levels = entry.Pets[`${habitat}Levels`]
+  const levels = entry.Pets[`${habitat}Levels`] as number[]
 
   const values = {
     Type: type,
     Boss: 0,
-    Pack: entry.Pets[`${habitat}Count`],
+    Pack: entry.Pets[`${habitat}Count`] as number,
     At100: levels.filter((level) => level >= 100 && level < 150).length,
     At150: levels.filter((level) => level >= 150 && level < 200).length,
     At200: levels.filter((level) => level === 200).length,
@@ -220,13 +226,13 @@ function getPetsFor(entry: PlayerEntry, type: number): [pet: SimulatorPet | null
     (item) => item.power
   ).at(0)
 
-  const dungeonPet = entry.Pets.Dungeons[type]
+  const dungeonPet = (entry.Pets.Dungeons as number[])[type]
   const boss = dungeonPet < 20 ? { Type: type, Pet: dungeonPet, Boss: 1, Level: 0, Pack: 0, At100: 0, At150: 0, At200: 0, Gladiator: 0 } : null
 
   return [strongest?.pet ?? null, boss]
 }
 
-function fillFromPlayer(entry: PlayerEntry) {
+function fillFromPlayer(entry: PlayerModel) {
   player.value = entry
 
   if (!editorA.value || !editorB.value) return

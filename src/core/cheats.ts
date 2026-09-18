@@ -1,4 +1,6 @@
 import { compact, scaleValue } from '@utils/utils'
+import { ItemModel } from '~/data/item-model'
+import { CompanionModel, PlayerModel, type EquipmentSlot } from '~/data/player-model'
 
 export type Cheats = {
   enchantments: boolean
@@ -94,7 +96,7 @@ export function applyCheats(player: PlayerModel, cheats: Cheats) {
     const newType = PlayerModel.ATTRIBUTE_TO_TYPE[CONFIG.fromID(cheats.class).Attribute]
 
     for (const [slot, item] of Object.entries(player.Items)) {
-      player.Items[slot] = item.morph(oldType, newType, true)
+      player.Items[slot as EquipmentSlot] = item.morph(oldType, newType, true)
     }
 
     changePlayerClass(player, cheats.class)
@@ -107,7 +109,11 @@ export function applyCheats(player: PlayerModel, cheats: Cheats) {
         model[attribute].Bonus = undefined
       }
 
-      model.evaluateCommon(player)
+      if (model instanceof CompanionModel) {
+        model.evaluateCommon(player)
+      } else {
+        model.evaluateCommon()
+      }
     })
   }
 

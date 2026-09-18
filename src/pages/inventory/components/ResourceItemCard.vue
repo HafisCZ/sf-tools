@@ -75,6 +75,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLocalize } from '@utils/localization'
+import { type BlacksmithResources } from '~/data/types'
 import { getItemName, type ResourceEntry } from '~/pages/inventory/inventory'
 import ResourceValue from './ResourceValue.vue'
 

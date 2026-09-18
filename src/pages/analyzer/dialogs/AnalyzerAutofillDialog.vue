@@ -34,7 +34,7 @@ import SFInput from '@library/SFInput.vue'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
 import { type FighterEditorData } from '~/pages/analyzer/analyzer'
-import { createBossWeapon, getBossName, getDungeonName, type DungeonEntry } from '~/sim/data/dungeons'
+import { createBossWeapon, DUNGEON_DATA, getBossName, getDungeonName, type DungeonEntry, type DungeonRunes } from '~/sim/data/dungeons'
 
 defineOptions({
   name: 'AnalyzerAutofillDialog'

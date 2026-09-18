@@ -1,6 +1,15 @@
+import { sha1 } from '@utils/hash'
 import { globalLocalize, hasTranslation } from '@utils/localization'
 import { chunk, sortDescending } from '@utils/utils'
+import { ComplexDataType } from '~/data/complex-data-type'
+import { ItemModel } from '~/data/item-model'
+import { ModelUtils, type SimulatorData } from '~/data/model-utils'
+import { PlayaResponse } from '~/data/playa-response'
+import { PlayerModel } from '~/data/player-model'
+import { type RawPlayer } from '~/data/types'
+import { NAME_UNIT_COMPANION, NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
 import { type SimulatorConfig } from '~/sim/debug'
+import { Exporter } from '~/site/exporter'
 
 export type RageDisplayMode = 'decimal' | 'percentage' | 'fraction'
 
@@ -201,7 +210,11 @@ type DigestedPlayer = {
   equippedItems?: number[]
 }
 
-type HashSource = Pick<Fighter, 'Class' | 'Level' | 'Strength' | 'Dexterity' | 'Intelligence' | 'Constitution' | 'Luck' | 'Items'> & {
+type HashSource = Pick<Fighter, 'Class' | 'Level' | 'Strength' | 'Dexterity' | 'Intelligence' | 'Constitution' | 'Luck'> & {
+  Items: {
+    Wpn1: FighterWeapon
+    Wpn2?: FighterWeapon
+  }
   model?: SimulatorModel
 }
 
@@ -315,7 +328,7 @@ export class FighterModel implements Fighter {
   }
   Boss?: boolean
 
-  constructor(data: unknown[], equipment: number[] | undefined, fightType: number) {
+  constructor(data: (number | string)[], equipment: number[] | undefined, fightType: number) {
     const dataType = new ComplexDataType(data)
     dataType.assert(47)
 
@@ -450,10 +463,10 @@ function computePlayerHash(player: HashSource) {
     player.Constitution.Total,
     player.Luck.Total,
     computeItemHash(player.Items.Wpn1, player, false),
-    computeItemHash(player.Items.Wpn2, player, true)
+    computeItemHash(player.Items.Wpn2 as FighterWeapon, player, true)
   ]
 
-  return SHA1(JSON.stringify(json))
+  return sha1(JSON.stringify(json))
 }
 
 function getRewards(response: PlayaData) {
@@ -743,7 +756,7 @@ export function importHar(json: unknown) {
   const players: AnalyzerPlayer[] = []
 
   for (const data of digestedPlayers) {
-    const player = new PlayerModel(data)
+    const player = new PlayerModel(data as RawPlayer)
     players.push(player)
 
     if (player.Companions) {
@@ -1122,7 +1135,7 @@ function cleanCopy<TObject, TKey extends keyof TObject>(object: TObject, whiteli
 
 export function exportFights(fights: Pick<Fight, 'fighterA' | 'fighterB' | 'rounds'>[]) {
   // Collect all players and fights
-  const exportedPlayers: Record<string, PlayerModel> = {}
+  const exportedPlayers: Record<string, SimulatorData> = {}
 
   const exportedFights = fights.map(({ fighterA, fighterB, rounds }) => {
     // Collect players

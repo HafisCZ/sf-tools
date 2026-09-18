@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useLocalize } from '@utils/localization'
+import { PlayaResponse } from '~/data/playa-response'
 
 defineOptions({
   name: 'SimulatorPasteTarget'

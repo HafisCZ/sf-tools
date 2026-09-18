@@ -82,6 +82,9 @@ import { useToast } from '@utils/toasts'
 import { compact, dig, formatDuration, getClassImageUrl, sliceLength, sortDescending, sum, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import StatisticsIntegration from '~/core/StatisticsIntegration.vue'
+import { DatabaseManager } from '~/data/database-manager'
+import { type GroupModel } from '~/data/group-model'
+import { PlayerModel } from '~/data/player-model'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
@@ -90,6 +93,8 @@ import Page from '~/pages/Page.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { HYDRA_MAP } from '~/sim/data/hydra'
+import { WorkerBatch } from '~/sim/workers'
+import { HYDRA_PROFILE } from '~/site/profiles'
 
 defineOptions({
   name: 'HydraPage'
@@ -211,7 +216,7 @@ function getPlayerData(classId: CharacterClass) {
   }
 }
 
-function playersToData(players: PlayerData[], hydraId?: number): EditorValues {
+function playersToData(players: PlayerModel[], hydraId?: number): EditorValues {
   const sortedPlayers = sortDescending(players, (player) => Number(dig(player, ATTRIBUTE_MAP[player.Class - 1][0], 'Total')))
   const hydraPlayers = sliceLength(sortedPlayers, 0, 25)
 
@@ -244,11 +249,11 @@ function listCompleteGroups() {
   return compact(Object.values(DatabaseManager.Groups).map((group) => group.List.filter((entry) => entry.MembersTotal === entry.MembersPresent && entry.MembersTotal >= 10)[0]))
 }
 
-function fillFromGroup(group: GroupEntry) {
+function fillFromGroup(group: GroupModel) {
   fill(playersToData(compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp))), (group.Hydra || 0) + 1))
 }
 
-function isPlayerList(value: unknown): value is PlayerData[] {
+function isPlayerList(value: unknown): value is PlayerModel[] {
   return Array.isArray(value)
 }
 

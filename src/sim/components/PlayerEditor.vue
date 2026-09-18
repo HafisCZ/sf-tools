@@ -75,12 +75,13 @@ import SFInput from '@library/SFInput.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFSelect from '@library/SFSelect.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { type DropdownItem, type SelectOption } from '@utils/components'
+import { isSelectable, type DropdownItem, type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { getClassImageUrl, getValueAtPath, sequence, setValueAtPath } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { changePlayerClass } from '~/core/cheats'
+import { PlayerModel } from '~/data/player-model'
 
 defineOptions({
   name: 'PlayerEditor'
@@ -202,7 +203,7 @@ const changeClassItems = computed<DropdownItem[]>(() => CONFIG.ids().map((id) =>
 
 const snackOptions = computed<SelectOption[]>(() => [
   { value: '', label: localize('none') },
-  ...Object.keys(SNACKS).map((key) => ({
+  ...Object.keys(SNACKS).map((key): SelectOption => ({
     value: key,
     label: localize(`snacks.${key.replace('_legendary', '')}`),
     image: `/res/snacks/gt_snack_${key.replace('_legendary', '')}.png`,
@@ -326,7 +327,7 @@ function createSelectField(path: string, model: Ref<string>, getOptions: () => S
     set: (value) => {
       const text = String(value)
 
-      if (getOptions().some((option) => option.value === text)) {
+      if (getOptions().some((option) => isSelectable(option) && option.value === text)) {
         model.value = text
       }
     },
