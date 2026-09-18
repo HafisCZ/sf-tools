@@ -97,6 +97,7 @@ export default defineConfig({
     entries: VITE_PAGES.map((page) => `${page}.html`)
   },
   build: {
+    sourcemap: true,
     rolldownOptions: {
       input: Object.fromEntries(VITE_PAGES.map((page) => [page, path.join(ROOT_DIRECTORY, `${page}.html`)]))
     }
