@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template #nav>
+    <template #nav-left>
       <SimulatorDebug logs copy presets @log="runLogged" @copy="copyAll" @insert="handlePaste" />
     </template>
 
