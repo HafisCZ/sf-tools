@@ -80,8 +80,8 @@ import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { getClassImageUrl, getValueAtPath, sequence, setValueAtPath } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
-import { changePlayerClass } from '~/core/cheats'
 import { PlayerModel } from '~/core/models/player'
+import { changePlayerClass } from '~/integration/cheats'
 
 defineOptions({
   name: 'PlayerEditor'
