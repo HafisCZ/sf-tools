@@ -3,12 +3,15 @@
     <a v-if="props.link" href="index.html" class="rounded-md px-2 py-1 text-xl font-bold text-white transition hover:text-accent">SFTools</a>
     <span v-else class="px-2 py-1 text-xl font-bold text-white">SFTools</span>
     <nav class="flex items-center gap-1">
-      <slot name="nav" />
+      <slot name="nav-left" />
     </nav>
-    <LocalePicker class="ml-auto" />
+    <div v-if="slots['nav-right']" class="ml-auto flex items-center gap-1">
+      <slot name="nav-right" />
+    </div>
+    <LocalePicker :class="{ 'ml-auto': !slots['nav-right'] }" />
   </header>
 
-  <main class="mx-auto w-full px-4 pt-[70px] pb-16" :class="props.wide ? 'md:max-w-[calc(80vw+2rem)]' : 'max-w-[calc(1127px+2rem)]'">
+  <main class="mx-auto w-full px-4 pt-[70px] pb-16 md:max-w-[calc(var(--page-width)+2rem)]" :style="{ '--page-width': props.width }">
     <slot />
   </main>
 </template>
@@ -27,9 +30,9 @@ const props = withDefaults(
      */
     opaque?: boolean
     /**
-     * Uses 80% of the window width instead of the 1127px container
+     * Maximum width of the content as a CSS length
      */
-    wide?: boolean
+    width?: string
     /**
      * Makes SFTools title a link to the index page
      */
@@ -37,7 +40,23 @@ const props = withDefaults(
   }>(),
   {
     opaque: true,
+    width: '1127px',
     link: true
   }
 )
+
+const slots = defineSlots<{
+  /**
+   * Content of the page
+   */
+  default(): unknown
+  /**
+   * Items shown in the header after the title
+   */
+  'nav-left'?(): unknown
+  /**
+   * Items shown on the right side of the header, before the language picker
+   */
+  'nav-right'?(): unknown
+}>()
 </script>

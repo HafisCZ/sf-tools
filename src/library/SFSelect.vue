@@ -15,9 +15,14 @@
       :aria-labelledby="props.label ? `${labelId} ${valueId}` : valueId"
       @click="toggle"
     >
-      <img v-if="selectedOption?.image && selectedOption.imagePosition !== 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
-      <span :id="valueId" class="min-w-0 flex-auto truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
-      <img v-if="selectedOption?.image && selectedOption.imagePosition === 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
+      <span v-if="slots.option && selectedOption" :id="valueId" class="flex min-w-0 flex-auto items-center gap-2 truncate">
+        <slot name="option" :option="selectedOption" />
+      </span>
+      <template v-else>
+        <img v-if="selectedOption?.image && selectedOption.imagePosition !== 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
+        <span :id="valueId" class="min-w-0 flex-auto truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
+        <img v-if="selectedOption?.image && selectedOption.imagePosition === 'right'" :src="selectedOption.image" alt="" class="size-5 object-contain" />
+      </template>
       <SFIcon name="chevron-down" class="text-white/60" :class="{ 'rotate-180': open }" />
     </button>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
@@ -27,12 +32,14 @@
         <ul role="menu" class="flex flex-col">
           <li v-for="(option, index) in matchingOptions" :key="index" role="none">
             <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue || option.accent }" @click="select(option.value)">
-              <img v-if="option.image && option.imagePosition !== 'right'" :src="option.image" alt="" class="size-5 object-contain" />
-              <span class="flex min-w-0 flex-1 flex-col">
-                <span :style="{ color: option.value === modelValue ? undefined : option.color }">{{ option.label }}</span>
-                <span v-if="option.description" class="text-xs text-white/50">{{ option.description }}</span>
-              </span>
-              <img v-if="option.image && option.imagePosition === 'right'" :src="option.image" alt="" class="size-5 object-contain" />
+              <slot name="option" :option="option">
+                <img v-if="option.image && option.imagePosition !== 'right'" :src="option.image" alt="" class="size-5 object-contain" />
+                <span class="flex min-w-0 flex-1 flex-col">
+                  <span :style="{ color: option.value === modelValue ? undefined : option.color }">{{ option.label }}</span>
+                  <span v-if="option.description" class="text-xs text-white/50">{{ option.description }}</span>
+                </span>
+                <img v-if="option.image && option.imagePosition === 'right'" :src="option.image" alt="" class="size-5 object-contain" />
+              </slot>
             </button>
           </li>
         </ul>
@@ -87,6 +94,10 @@ const slots = defineSlots<{
    * Replaces the label text
    */
   label?(): unknown
+  /**
+   * Replaces the image and label of an option, in the list and in the field
+   */
+  option?(props: { option: SelectOption<TValue> }): unknown
 }>()
 
 defineExpose({
