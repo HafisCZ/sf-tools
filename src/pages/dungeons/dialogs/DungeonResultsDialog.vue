@@ -6,17 +6,17 @@
           <template v-if="props.experience > 0">{{ localize('experience', { experience: formatSpacedNumber(props.experience) }) }}</template>
         </span>
         <SFTooltip :content="localize.global('stats.copy.image')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" @click="save">
+          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" :disabled="isSaving && 'loading'" @click="save">
             <SFIcon name="download" />
           </SFButton>
         </SFTooltip>
       </div>
       <DungeonChart :result="activeResult" class="h-[14em] shrink-0 border-b border-line pb-2" />
-      <div :class="{ 'min-h-0 overflow-y-auto': !saving }">
-        <div ref="image-ref" :class="saving ? 'text-black' : 'text-white/90'">
-          <div v-for="(result, index) in props.results" :key="index" :tabindex="saving ? undefined : 0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': !saving && index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
+      <div :class="{ 'min-h-0 overflow-y-auto': !isSaving }">
+        <div ref="image-ref" :class="isSaving ? 'text-black' : 'text-white/90'">
+          <div v-for="(result, index) in props.results" :key="index" :tabindex="isSaving ? undefined : 0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': !isSaving && index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
             <img :src="getClassImageUrl(result.boss.class ?? props.playerClass)" alt="" class="size-[2.5em]" />
-            <div class="min-w-0 flex-1" :class="{ [saving ? 'text-[purple]' : 'text-[#dec0ff]']: result.dungeon.companions }">
+            <div class="min-w-0 flex-1" :class="{ [isSaving ? 'text-[purple]' : 'text-[#dec0ff]']: result.dungeon.companions }">
               <div class="text-[80%]">{{ getDungeonName(result.dungeon) }}</div>
               <div>#{{ result.boss.pos }} - {{ getBossName(result) }}</div>
             </div>
@@ -42,7 +42,7 @@ import SFIcon from '@library/SFIcon.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { getClassImageUrl } from '@utils/utils'
+import { getClassImageUrl, useSubmit } from '@utils/utils'
 import { getBossName, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
 import DungeonChart from '../components/DungeonChart.vue'
 
@@ -72,30 +72,22 @@ const emit = defineEmits<{
 const localize = useLocalize('dungeons')
 
 const activeIndex = ref(0)
-const saving = ref(false)
 
 const imageElement = useTemplateRef('image-ref')
 
 const activeResult = computed(() => props.results.at(activeIndex.value) ?? null)
 
-// Everything in the image needs plain colours, html2canvas can't read oklab()
-async function save() {
-  if (!imageElement.value) return
-
-  saving.value = true
-
+// Everything in the image needs plain colours while saving, html2canvas can't read oklab()
+const { submit: save, isSubmitting: isSaving } = useSubmit(async () => {
   await nextTick()
 
-  try {
-    const canvas = await html2canvas(imageElement.value, { logging: false })
+  if (!imageElement.value) return
 
-    canvas.toBlob((blob) => {
-      if (blob) {
-        Exporter.download(`dungeons_${Date.now()}.png`, blob)
-      }
-    })
-  } finally {
-    saving.value = false
+  const canvas = await html2canvas(imageElement.value, { logging: false })
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve))
+
+  if (blob) {
+    Exporter.download(`dungeons_${Date.now()}.png`, blob)
   }
-}
+})
 </script>
