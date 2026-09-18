@@ -114,6 +114,10 @@ export function globalLocalize(key: string, variables?: LocalizationVariables) {
   return value
 }
 
+export function hasTranslation(key: string) {
+  return Boolean(translation.value[key])
+}
+
 export function useLocalize(namespace: string): LocalizeFunction {
   return Object.assign((key: string, variables?: LocalizationVariables) => globalLocalize(`${namespace}.${key}`, variables), { global: globalLocalize })
 }

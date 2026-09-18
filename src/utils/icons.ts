@@ -9,6 +9,7 @@ import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrow
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
 import { faBolt } from '@fortawesome/free-solid-svg-icons/faBolt'
 import { faBone } from '@fortawesome/free-solid-svg-icons/faBone'
+import { faBook } from '@fortawesome/free-solid-svg-icons/faBook'
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck'
@@ -59,6 +60,7 @@ export const ICONS = {
   'basket-shopping': faBasketShopping,
   bolt: faBolt,
   bone: faBone,
+  book: faBook,
   'calendar-xmark': faCalendarXmark,
   check: faCheck,
   'chevron-down': faChevronDown,
