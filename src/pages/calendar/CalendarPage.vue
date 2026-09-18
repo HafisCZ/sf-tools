@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <template #nav>
+    <template #nav-left>
       <SFButton variant="ghost" @click="clear">
         <SFIcon name="recycle" />
         {{ localize.global('analyzer.topbar.clear') }}

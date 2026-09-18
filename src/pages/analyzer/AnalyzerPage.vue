@@ -1,6 +1,6 @@
 <template>
   <Page width="65vw">
-    <template #nav>
+    <template #nav-left>
       <SFButton variant="ghost" :disabled="isImporting && 'loading'" @click="openImport">
         <SFIcon name="upload" />
         {{ localize('topbar.import') }}
@@ -20,7 +20,7 @@
       <SimulatorDebug />
     </template>
 
-    <template #actions>
+    <template #nav-right>
       <SFTooltip :content="localize('clear_changes')">
         <SFButton variant="ghost" icon :aria-label="localize('clear_changes')" :disabled="!hasFights" @click="resetGroup">
           <SFIcon name="eraser" />
