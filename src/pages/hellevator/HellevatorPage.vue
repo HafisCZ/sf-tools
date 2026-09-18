@@ -108,18 +108,16 @@ type ResultRow =
       type: 'message'
       key: string
       text: string
-      // Green for won floors, orange for lost ones
       won: boolean
     }
   | {
       type: 'enemy'
       key: string
       enemy: HellevatorEnemy
-      // Win chance from 0 to 1
+      // 0 to 1
       score: number
     }
 
-// What the analyzer reads from a simulation log
 type SimulatorLog = {
   fights: unknown[]
   players: unknown[]
@@ -128,7 +126,7 @@ type SimulatorLog = {
 
 const PROFILE = SELF_PROFILE
 
-// Translation key of each damage rune element, by rune type minus 40
+// Index is the rune type minus 40
 const ELEMENT_KEYS = ['fire', 'cold', 'lightning']
 
 const localize = useLocalize('hellevator')
@@ -144,7 +142,6 @@ const settings = useTemplateRef('settings-ref')
 
 const isValid = useComponentValidation(editor, useTemplateRef('range-start-ref'), useTemplateRef('range-end-ref'), settings)
 
-// Floors won or lost for sure at the start and the end of the range are summed up in a message instead of listed
 const resultRows = computed(() => {
   const list = enemies.value
   const getScore = (index: number) => scores.value[index] || 0
@@ -210,7 +207,6 @@ function listOwnPlayers() {
   return DatabaseManager.getLatestPlayers(true)
 }
 
-// The range is filled too, so a saved player starts at their current floor
 function fillPlayer(data: unknown) {
   rangeStart.value = readRangeValue(data, 'GroupTournament.Floor', 1)
   rangeEnd.value = readRangeValue(data, 'RangeEnd', 600)
@@ -230,13 +226,11 @@ function readRangeValue(data: unknown, path: string, defaultValue: number) {
   return Number.isFinite(number) ? number : null
 }
 
-// An empty field is written as 0, like legacy's editor
 function writeRange(player: PlayerModel) {
   setValueAtPath(player, 'GroupTournament.Floor', rangeStart.value ?? 0)
   setValueAtPath(player, 'RangeEnd', rangeEnd.value ?? 0)
 }
 
-// The copy has the range too, so pasting it back fills the range
 function copyPlayer(player: PlayerModel) {
   writeRange(player)
 
@@ -261,7 +255,6 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
   enemies.value = []
   scores.value = []
 
-  // Same key order as legacy's editor, where the range fields came first
   const player = new PlayerModel()
 
   writeRange(player)

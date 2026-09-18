@@ -24,7 +24,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Tabs to pick from, exactly one of them is active
+   * Tabs to pick from
    */
   options: SelectOption<TValue>[]
 }>()

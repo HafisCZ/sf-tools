@@ -23,7 +23,7 @@ const props = defineProps<{
    */
   icon: IconName
   /**
-   * Opens this address in a new tab. Without it the link is a button, listen to its `click`.
+   * Opens this address in a new tab
    */
   href?: string
 }>()

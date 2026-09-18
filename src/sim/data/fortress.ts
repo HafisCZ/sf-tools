@@ -10,9 +10,6 @@ export type FortressUnit = {
   max: number
 }
 
-/**
- * Values of the fortress editor, levels are the positions in the unit maps
- */
 export type FortressValues = {
   WarriorCount: number
   WarriorLevel: number
@@ -119,7 +116,6 @@ export const FORTRESS_WALL_MAP: Record<number, FortressUnit> = {
   20: { class: 1, level: 200, str: 3050, dex: 1010, int: 1010, con: 9150, lck: 0, min: 348, max: 697 }
 }
 
-// Simulator data of one fortress unit at `tier` of `source`
 function createData(tier: number, source: Record<number, FortressUnit>, isWall = false) {
   const { class: classId, level, str, dex, int, con, lck, min, max } = source[tier]
 
@@ -165,7 +161,7 @@ function createData(tier: number, source: Record<number, FortressUnit>, isWall =
       Wpn1: {
         AttributeTypes: { 2: 0 },
         Attributes: { 2: 0 },
-        // Minimum and maximum are swapped like in js/sim/data/fortress.js, so the results stay the same
+        // Swapped on purpose, like in legacy, so the results stay the same
         DamageMax: min,
         DamageMin: max,
         HasEnchantment: false
@@ -182,9 +178,6 @@ function createUnits(count: number, level: number, source: Record<number, Fortre
   return Array.from({ length: count }).map(() => createData(level, source))
 }
 
-/**
- * Attacking warriors and defending fortifications, archers and mages for js/sim/fortress.js
- */
 export function createFortressBattle(values: FortressValues) {
   return {
     player: createUnits(values.WarriorCount, values.WarriorLevel, FORTRESS_WARRIOR_MAP),

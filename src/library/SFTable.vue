@@ -21,7 +21,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Shares the width equally between the columns that don't set their own, whatever their content
+   * Shares the width equally between the columns that don't set their own
    */
   fixed?: boolean
   /**

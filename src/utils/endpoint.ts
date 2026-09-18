@@ -1,5 +1,3 @@
-// Talks to the Endpoint Unity application in endpoint/index.html, which logs into the game and captures characters
-
 export type EndpointCharacter = {
   id: number
   name: string
@@ -10,7 +8,6 @@ export type EndpointCharacter = {
 }
 
 export type EndpointLogin = {
-  // `sso` when logged into an S&F account, which then needs one of its characters picked
   type?: string
   characters: EndpointCharacter[]
   members: string[]
@@ -18,7 +15,6 @@ export type EndpointLogin = {
 }
 
 export type EndpointCapture = {
-  // Captured data, in the same format as an imported file
   data: string
 }
 
@@ -43,10 +39,6 @@ export class EndpointController {
   #onProgress: (percent: number) => void
   #window: EndpointWindow | null = null
 
-  /**
-   * @param iframe - Frame the application is loaded into, it stays hidden
-   * @param onProgress - Called with the percentage while a capture downloads
-   */
   constructor(iframe: HTMLIFrameElement, onProgress: (percent: number) => void) {
     this.#iframe = iframe
     this.#onProgress = onProgress
@@ -104,7 +96,6 @@ export class EndpointController {
     return this.#request<EndpointCapture>((endpoint) => endpoint.query_hall_of_fame())
   }
 
-  // The application answers through window.callback: progress updates, then the result or an error code
   #request<TResponse>(send: (endpoint: EndpointWindow) => void) {
     const endpoint = this.#window
 

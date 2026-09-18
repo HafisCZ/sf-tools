@@ -14,7 +14,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Horizontal alignment of the content, left when left out
+   * Horizontal alignment of the content
    */
   align?: 'left' | 'center' | 'right'
 }>()

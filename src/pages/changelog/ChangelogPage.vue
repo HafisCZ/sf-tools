@@ -33,7 +33,7 @@ defineOptions({
 
 const RELEASES = Object.entries(CHANGELOG)
 
-// Content renders after translations load, so the browser's own jump to #version has already happened
+// The browser's own jump to #version happens before the content renders
 onMounted(() => {
   if (window.location.hash) {
     document.getElementById(decodeURIComponent(window.location.hash.slice(1)))?.scrollIntoView()

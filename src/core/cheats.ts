@@ -10,14 +10,13 @@ export type Cheats = {
   constitution: boolean
   luck: boolean
   life: boolean
-  // Class to change into, 0 keeps the original class
+  // 0 keeps the original class
   class: CharacterClass | 0
 }
 
-// Potion cheats in the order of their potion types, from 1 up
+// Index + 1 is the potion type
 const POTIONS = ['strength', 'dexterity', 'intelligence', 'constitution', 'luck', 'life'] as const
 
-// Runs `callback` for the player and each of its companions
 function forEachModel(player: PlayerModel, callback: (model: PlayerModel) => void) {
   const models = [player]
 
@@ -28,9 +27,6 @@ function forEachModel(player: PlayerModel, callback: (model: PlayerModel) => voi
   models.forEach(callback)
 }
 
-/**
- * Changes the class of a player: moves the attributes to the new class, scales armor and weapon damage, and sets the Warrior shield or the Assassin second weapon
- */
 export function changePlayerClass(player: PlayerModel, newClass: CharacterClass) {
   const oldDefinition = CONFIG.fromID(player.Class)
   const newDefinition = CONFIG.fromID(newClass)
@@ -58,9 +54,6 @@ export function changePlayerClass(player: PlayerModel, newClass: CharacterClass)
   player.Class = newClass
 }
 
-/**
- * Applies `cheats` to the player and its companions, and returns the player
- */
 export function applyCheats(player: PlayerModel, cheats: Cheats) {
   if (cheats.pets) {
     forEachModel(player, (model) => {
@@ -109,7 +102,7 @@ export function applyCheats(player: PlayerModel, cheats: Cheats) {
 
   if (potions.length > 0 || cheats.pets || cheats.class) {
     forEachModel(player, (model) => {
-      // The pre-calculated bonus is calculated again from the changed data
+      // Makes evaluateCommon calculate the bonus again
       for (const attribute of PlayerModel.ATTRIBUTES) {
         model[attribute].Bonus = undefined
       }

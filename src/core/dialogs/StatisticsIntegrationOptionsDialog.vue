@@ -45,7 +45,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Current options, edited as a copy
+   * Current options
    */
   options: IntegrationOptions
 }>()
@@ -63,7 +63,6 @@ type IntegrationOptions = {
 
 const SLOTS = [0, 1, 2, 3, 4, 5]
 
-// None, 1 day, 1 week, 1 month and 3 months in milliseconds
 const DURATIONS = [0, 86400000, 604800000, 2592000000, 7776000000]
 
 const localize = useLocalize('dialog.statistics_integration_options')
@@ -79,7 +78,6 @@ const slotOptions = computed<SelectOption[]>(() => SLOTS.map((value) => ({ value
 
 const durationOptions = computed<SelectOption[]>(() => DURATIONS.map((value) => ({ value: String(value), label: localize(`ignored_duration.${value}`) })))
 
-// Name and server of the saved player or group, or the bare identifier when it is not saved anymore
 function describeIdentifier(identifier: string) {
   const history = DatabaseManager.isPlayer(identifier) ? DatabaseManager.getPlayer(identifier) : DatabaseManager.getGroup(identifier)
   const data = history?.Latest.Data
@@ -94,7 +92,6 @@ function removeIdentifier(identifier: string) {
 function save() {
   emit('close', {
     slot: Number.parseInt(slot.value),
-    // An empty field is no limit, same as 0
     limit: Number.parseInt(limit.value) || 0,
     ignored_duration: Number.parseInt(ignoredDuration.value),
     ignored_identifiers: ignoredIdentifiers.value

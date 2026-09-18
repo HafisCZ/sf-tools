@@ -43,7 +43,7 @@ const modelValue = defineModel<string>({ required: true })
 
 const slots = defineSlots<{
   /**
-   * Replaces the label text, for a label that holds more than plain text
+   * Replaces the label text
    */
   label?(): unknown
 }>()

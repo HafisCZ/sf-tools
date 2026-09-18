@@ -31,10 +31,9 @@ const open = ref(false)
 const containerElement = useTemplateRef('container-ref')
 const tooltipElement = useTemplateRef('tooltip-ref')
 
-// The container has no box of its own, so the tooltip is placed against the first element in the slot
+// The container is display: contents and has no box of its own
 const anchor = useAnimationFramePosition(open, () => containerElement.value?.firstElementChild?.getBoundingClientRect())
 
-// Below the anchor and centered on it, or above it when there is no room below
 const style = computed(() => {
   const rectangle = anchor.value
   const tooltip = tooltipElement.value

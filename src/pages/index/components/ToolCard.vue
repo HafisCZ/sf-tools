@@ -22,19 +22,19 @@ const props = defineProps<{
    */
   href: string
   /**
-   * Large uppercase name of the tool
+   * Title of the card
    */
   title: string
   /**
-   * Replaces the title while the card is hovered. Without it the title only dims.
+   * Replaces the title while the card is hovered
    */
   description?: string
   /**
-   * Small accent word at the top left of the title, such as "Temporary"
+   * Small accent word at the top left of the title
    */
   badge?: string
   /**
-   * Author of a community tool, shown in accent above the title
+   * Author shown above the title
    */
   author?: string
   /**

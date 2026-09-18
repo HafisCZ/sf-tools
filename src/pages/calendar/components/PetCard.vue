@@ -69,7 +69,6 @@ const props = defineProps<{
   waitTime: number
 }>()
 
-// Shadow, light, earth, fire and water pets, 20 of each
 const ELEMENT_CLASSES = ['bg-[#a596ce]', 'bg-[#e9d067]', 'bg-[#adc35a]', 'bg-[#fda700]', 'bg-[#60cdef]']
 
 const TIME_ICONS: Record<Pet['time'], IconName | undefined> = {

@@ -74,7 +74,6 @@ defineOptions({
   name: 'BlacksmithPage'
 })
 
-// Attribute types that give an item of each type its upgrade cost
 const ATTRIBUTE_TYPES: Record<string, number[]> = {
   normal_1: [1, 0, 0],
   normal_2: [1, 1, 0],
@@ -110,7 +109,6 @@ function subtractResources(a: BlacksmithResources, b: BlacksmithResources): Blac
   }
 }
 
-// Every upgrade level with the resources it costs, what dismantling gives back for it and what is lost, for that level and in total
 function listUpgrades(itemType: string, attribute: number, mageOrScoutWeapon: boolean) {
   const item = ItemModel.empty()
 

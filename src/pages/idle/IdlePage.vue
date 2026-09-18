@@ -95,7 +95,6 @@ defineOptions({
 
 const PROFILE = SELF_PROFILE
 
-// Buy 1, 10, 25 or 100 levels, or up to the next breakpoint
 const UPGRADE_MODES = [
   { value: '1', label: '1' },
   { value: '2', label: '10' },
@@ -106,7 +105,7 @@ const UPGRADE_MODES = [
 
 const MAX_LEVEL = 25000
 
-// Seconds in a day, the production curve has one value per second
+// One value per second of a day
 const CURVE_LENGTH = 86401
 
 const localize = useLocalize('idle')
@@ -129,7 +128,6 @@ const upgradeOptions = computed(() => ['0', '1', '2', '3', '4'].map((value) => (
 
 const outputClasses = computed(() => ({ 'text-accent': upgradeMode.value !== null }))
 
-// Everything the tables show, empty while an input is invalid
 const results = computed(() => {
   if (!isValid.value) return null
 
@@ -271,7 +269,7 @@ function formatNumber(value: number) {
   }
 }
 
-// Production rate, cycle duration and money per cycle multipliers of an upgrade: none, speed, gold, both, platinum
+// Upgrade 0 none, 1 speed, 2 gold, 3 both, 4 platinum
 function upgradeToModifiers(upgrade: number) {
   return {
     rate: Math.pow(2, upgrade - (upgrade > 1 ? 1 : 0)),

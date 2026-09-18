@@ -23,21 +23,19 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Buttons in the group, at most one of them is active
+   * Buttons in the group
    */
   options: SelectOption[]
 }>()
 
 const modelValue = defineModel<string | null>({ required: true })
 
-// A toggle group is always valid, this lets it go into useComponentValidation with the other inputs
 defineExpose({
   get isValid() {
     return true
   }
 })
 
-// Clicking the active button turns it off
 function toggle(value: string) {
   modelValue.value = modelValue.value === value ? null : value
 }

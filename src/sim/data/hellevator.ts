@@ -4,7 +4,6 @@ export type HellevatorEnemy = Monster & {
   Floor: number
 }
 
-// Rune type and class of the monster on every floor, from the first floor up
 const HELLEVATOR_VARIANTS: [rune: number, classId: CharacterClass][] = [
   [41, 3],
   [40, 3],
@@ -610,9 +609,6 @@ const HELLEVATOR_VARIANTS: [rune: number, classId: CharacterClass][] = [
 
 let enemies: HellevatorEnemy[] = []
 
-/**
- * Monsters from the `start` floor to the `end` floor, both included. They are generated on the first call.
- */
 export function getHellevatorEnemies(start: number, end = start) {
   if (enemies.length === 0) {
     enemies = HELLEVATOR_VARIANTS.map(([rune, classId], index) => ({
@@ -624,9 +620,6 @@ export function getHellevatorEnemies(start: number, end = start) {
   return enemies.slice(start - 1, end)
 }
 
-/**
- * Rune type and class of the monster standing on the floor of that level
- */
 export function getHellevatorVariant(level: number) {
   return HELLEVATOR_VARIANTS[(level - 18) / 2]
 }

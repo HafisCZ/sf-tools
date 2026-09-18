@@ -11,16 +11,15 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Heading level, 1 renders an h1. Also sets the size.
+   * Heading level, also sets the size
    */
   level: 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6'
   /**
-   * Colour variant. Omit for white, `inherit` keeps the surrounding text colour.
+   * Colour variant, `inherit` keeps the surrounding text colour
    */
   type?: 'muted' | 'accent' | 'inherit'
 }>()
 
-// Lato is loaded in 400 and 700 only, so every level is bold
 const LEVEL_CLASSES = {
   1: 'text-4xl font-bold',
   2: 'text-3xl font-bold',

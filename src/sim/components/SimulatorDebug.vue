@@ -79,7 +79,6 @@ type ConfigDifference = {
   to: string
 }
 
-// One entry of js/sim/presets.json
 type SimulatorPreset = {
   name: string
   suffix?: string
@@ -101,7 +100,6 @@ if (isSimulatorDebug && props.presets) {
   void loadPresets()
 }
 
-// Values of the current config that differ from the defaults, by group
 const differences = computed(() => {
   const config = simulatorConfig.value
 

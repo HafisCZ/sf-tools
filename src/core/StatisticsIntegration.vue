@@ -102,7 +102,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * What the entries are, which picks the button text and the details shown on hover
+   * Kind of entries listed
    */
   type: 'players' | 'guilds'
   /**
@@ -110,15 +110,15 @@ const props = defineProps<{
    */
   profile: DatabaseProfile
   /**
-   * Picks the entries to list once the database is loaded
+   * Picks the entries to list
    */
   scope: () => TEntry[]
   /**
-   * Shows a toggle for cheats, which are applied to a copy of a player before it is selected
+   * Shows a toggle for cheats
    */
   cheats?: boolean
   /**
-   * Lists the players by server, each server with its own search, and leaves out the options
+   * Lists the players by server and hides the options
    */
   grouped?: boolean
 }>()
@@ -138,7 +138,6 @@ const localize = useLocalize('integration')
 
 const loader = useLoader()
 
-// Saved for every page that shows this panel
 const options = new OptionsHandler<IntegrationOptions>('integration', {
   limit: 0,
   slot: 0,
@@ -146,10 +145,8 @@ const options = new OptionsHandler<IntegrationOptions>('integration', {
   ignored_duration: 0
 })
 
-// Same text as the search field of the legacy grouped list, which was never translated
 const SEARCH_LABEL = 'Search player...'
 
-// Width of the panel, which the menu of a server matches. Keep in sync with the `w-[300px]` of the root.
 const PANEL_WIDTH = 300
 
 const panelId = useId()
@@ -157,17 +154,13 @@ const panelId = useId()
 const open = ref(false)
 const entries = shallowRef<TEntry[]>([])
 
-// Server whose players are shown in grouped mode, and the query typed in its search field
 const openPrefix = ref<string | null>(null)
 const search = ref('')
 
-// Button the open group's menu is placed next to
 let groupElement: HTMLElement | null = null
 
-// Null while cheats are turned off
 const cheats = ref<Cheats | null>(null)
 
-// Players by server, own characters before the others and the newest state first
 const groups = computed(() => {
   const map = new Map<string, PlayerEntry[]>()
 
@@ -218,7 +211,6 @@ async function poll() {
   }
 }
 
-// Newest first, without the entries the options leave out. Grouped mode shows every entry, like the legacy list did.
 function listEntries() {
   let scope = props.scope().sort((a, b) => b.Timestamp - a.Timestamp)
 
@@ -253,12 +245,10 @@ function closeGroup() {
   search.value = ''
 }
 
-// The menu stays open, so several players can be picked one after another
 function selectGroupEntry(entry: PlayerEntry) {
   selectEntry(entry as TEntry)
 }
 
-// Matched against the text of the item, the same way the legacy dropdown searched
 function filterGroup(list: PlayerEntry[]) {
   const query = search.value.trim().toLowerCase()
 
@@ -277,19 +267,17 @@ function describeEntry(entry: TEntry) {
 
 function selectEntry(entry: TEntry) {
   if (cheats.value) {
-    // Saved players are player models, so the copy has the same fields as the entry
     const player = applyCheats(new PlayerModel(entry.Data), cheats.value)
 
     emit('select', player as unknown as TEntry)
   } else if (props.type === 'players') {
-    // The database lists players as lazy proxies, which a simulation worker cannot clone
+    // The database lists lazy proxies, which can't be cloned into a worker
     emit('select', (DatabaseManager.getPlayer(entry.LinkId, entry.Timestamp) ?? entry) as unknown as TEntry)
   } else {
     emit('select', entry)
   }
 }
 
-// Turning cheats off forgets the picked cheats
 function toggleCheats() {
   cheats.value = cheats.value
     ? null
@@ -394,7 +382,6 @@ async function saveOptions(values: IntegrationOptions) {
   options.ignored_duration = values.ignored_duration
   options.ignored_identifiers = values.ignored_identifiers
 
-  // Another slot is another database, the same one only needs listing again
   if (slotChanged) {
     await poll()
   } else {

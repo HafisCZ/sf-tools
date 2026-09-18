@@ -1,11 +1,8 @@
-/**
- * Drops the fraction and separates the digits into groups of three, such as `1 234 567`
- */
 export function formatSpacedNumber(value: number, delimiter = ' ') {
   return String(Math.trunc(value)).replace(/\B(?=(\d{3})+(?!\d))/g, delimiter)
 }
 
-// Short names of large numbers, largest first
+// Largest first
 const NUMBER_LABELS: [value: number, label: string][] = [
   [1e123, 'Quadrag'],
   [1e120, 'Noventrig'],
@@ -49,9 +46,6 @@ const NUMBER_LABELS: [value: number, label: string][] = [
   [1e6, 'M']
 ]
 
-/**
- * Formats a number with a short name from a million up, such as `3.005 M`, with spaced digits below a million and in scientific notation above the largest name
- */
 export function formatNamedNumber(value: number) {
   const sign = value < 0 ? '-' : ''
   const absolute = Math.abs(value)

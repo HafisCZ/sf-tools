@@ -373,10 +373,9 @@ type BuildingTableData = {
   rows: string[][]
 }
 
-// Cells of one building level, the level and the build time are added around them
 type CellGenerator = (level: number, ...values: number[]) => string | number
 
-// Build time in seconds of building levels 1 to 20, before the quarters reduction
+// Seconds, before the quarters reduction
 const BUILD_TIMES = [900, 1895, 3960, 8460, 18000, 28800, 41100, 66420, 144000, 313200, 691200, 1152000, 1728000, 2221200, 2880000, 3801600, 4147200, 4492800, 4838400, 5184000]
 
 const HEART = [0, 616, 1650, 4220, 11000, 25080, 45930, 84150, 198000, 439550, 902850, 2043300, 4118400, 7722000, 16632000]
@@ -534,7 +533,7 @@ const QUARRY = [
   [123750000, 21600000, 3450000, 115000]
 ]
 
-// Minutes a gem takes to grow, by gem mine level
+// Minutes
 const GEMTIME = [60, 120, 180, 240, 360, 480, 600, 720, 840, 960, 1080, 1200, 1440, 1680, 1920, 1800, 1680, 1560, 1530, 1500]
 
 const GEMMINE = [
@@ -729,7 +728,7 @@ const localize = useLocalize('attributes')
 
 const tab = ref<TabName>('gold_experience')
 
-// Tabs only build their content the first time they are opened, the gold table alone holds 3156 rows
+// Tabs are built on first open, the gold table alone has 3156 rows
 const visited = ref(new Set<TabName>([tab.value]))
 
 const goldTableRows = shallowRef<string[][]>([])
@@ -800,7 +799,6 @@ const mountOptions = computed<SelectOption<number>[]>(() => [
 
 const goldTableColumns = computed(() => [localize('gold_table.level'), localize('gold_table.price'), localize('gold_table.curve'), localize('gold_table.mount'), localize('gold_table.guard')])
 
-// An empty field counts as its lowest allowed value, like the legacy page
 const characterLevel = computed(() => clamp(fortressLevel.value ?? 0, 1, 999))
 const quarters = computed(() => clamp(quartersLevel.value ?? 0, 0, 15))
 
@@ -1248,7 +1246,6 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
 }
 
-// Turns true once any field of a section is changed, matching the legacy handlers that only ran on input
 function useTouched(sources: Ref<unknown>[]) {
   const touched = ref(false)
 
@@ -1271,12 +1268,11 @@ function ceilTo(value: number, step: number) {
   return Math.ceil(value / step) * step
 }
 
-// Large values are grouped, smaller ones keep two decimals
 function formatValue(value: number) {
   return value >= 999 ? formatSpacedNumber(value) : String(roundShort(value))
 }
 
-// The building tables group their digits with a non-breaking space, so a number never wraps mid-way
+// Non-breaking space, so a number never wraps
 function formatTableNumber(value: number) {
   return formatSpacedNumber(value, ' ')
 }
@@ -1285,7 +1281,6 @@ function formatCost(value: number) {
   return value >= 10 ? formatSpacedNumber(value) : String(roundShort(value))
 }
 
-// At most the two largest units, and nothing at all past 100 days
 function formatFancyTime(duration: number) {
   const value = Math.ceil(duration)
 
@@ -1318,7 +1313,6 @@ function buildTime(level: number, underworld = false) {
   return ceilTo(time * multiplier, time > 3600 ? 100 : 1) * 1000
 }
 
-// Gems grow faster with the quarters too, but their time is not a build time
 function gemTime(duration: number) {
   return duration * (1 - quarters.value * 0.05)
 }
@@ -1400,7 +1394,6 @@ function buildGoldTableRows() {
   return rows
 }
 
-// Spreadsheets take the numbers without the grouping spaces, and some locales need a comma for the decimals
 function copyGoldTable(commaDecimals: boolean) {
   const transform = (value: string) => (commaDecimals ? value.replaceAll(' ', '').replaceAll('.', ',') : value.replaceAll(' ', ''))
 

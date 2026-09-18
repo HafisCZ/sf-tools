@@ -12,7 +12,6 @@ function getFocusableElements(container: HTMLElement) {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => element.offsetParent !== null)
 }
 
-// Keeps Tab and Shift+Tab inside the newest content container
 function handleTrapKeydown(event: KeyboardEvent) {
   if (event.key !== 'Tab') return
 
@@ -36,7 +35,7 @@ function handleTrapKeydown(event: KeyboardEvent) {
 }
 
 function createTrap() {
-  // Transparent layer that stops clicks from reaching the covered page
+  // Invisible layer that blocks clicks on the covered page
   const element = document.createElement('div')
   element.style.position = 'fixed'
   element.style.inset = '0'
@@ -59,10 +58,6 @@ function removeTrap() {
   }
 }
 
-/**
- * Hides the page and every open content container from assistive technology, blocks clicks on them
- * and keeps keyboard focus inside the content container opened next
- */
 export function setCoveredElementsAsInert() {
   for (const element of document.querySelectorAll('main, [data-content-container]')) {
     element.setAttribute('aria-hidden', 'true')
@@ -71,18 +66,12 @@ export function setCoveredElementsAsInert() {
   createTrap()
 }
 
-/**
- * Reverts the latest `setCoveredElementsAsInert`
- */
 export function unsetCoveredElementsAsInert() {
   Array.from(document.querySelectorAll('main[aria-hidden], [data-content-container][aria-hidden]')).at(-1)?.removeAttribute('aria-hidden')
 
   removeTrap()
 }
 
-/**
- * Covers the page while `open` is true
- */
 export function useInert(open: Ref<boolean>) {
   watch(open, (value) => {
     if (value) {

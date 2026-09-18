@@ -1,6 +1,5 @@
 <template>
   <SFDialog :title="localize('title')" size="sm">
-    <!-- Text copied from TermsAndConditionsDialog in js/views/base.js -->
     <div class="flex flex-col gap-4">
       <section>
         <SFHeading level="6" type="accent" class="mb-2 text-center">§1 General use</SFHeading>

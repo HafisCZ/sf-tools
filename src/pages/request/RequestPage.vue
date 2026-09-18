@@ -72,7 +72,7 @@ defineOptions({
   name: 'RequestPage'
 })
 
-// Fields of the character data that are sent, `true` copies the whole value
+// `true` copies the whole value
 type Scope = {
   [key: string]: true | Scope
 }
@@ -139,7 +139,6 @@ const COMPANION_SCOPE: Scope = {
   }
 }
 
-// Scopes a website can ask for in the `scope` parameter
 const SCOPES: Record<string, Scope> = {
   default: {
     ID: true,
@@ -284,7 +283,6 @@ const state = params.get('state')
 
 const isInIframe = window.parent && window.parent !== window
 
-// The data goes back with a form sent to `redirect`, or with a message to the page that shows this one in an iframe
 const canRedirect = params.has('redirect') && redirect !== null
 const canMessage = !params.has('redirect') && !!origin && isInIframe
 
@@ -398,7 +396,7 @@ async function requestFullAccess() {
   } else if (typeof document.requestStorageAccess === 'function') {
     await document.requestStorageAccess()
 
-    // requestStorageAccess resolves with nothing, so the saved flag stays false like on the legacy page
+    // Stays false on purpose, like legacy: requestStorageAccess resolves with nothing
     Site.options.has_storage_access = false
   }
 }
@@ -409,7 +407,6 @@ async function grantAccess() {
   void render()
 }
 
-// Copies only the fields in `whitelist`, the own properties of `source` that it lists
 function copyWithWhitelist(source: object, target: Record<string, unknown>, whitelist: Scope) {
   for (const [key, list] of Object.entries(whitelist)) {
     if (!Object.hasOwn(source, key)) continue

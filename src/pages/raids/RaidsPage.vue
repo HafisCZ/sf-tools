@@ -148,14 +148,11 @@ defineOptions({
   name: 'RaidsPage'
 })
 
-// One player of the list
 type ListPlayer = {
   player: PlayerModel
-  // Stays the same when other players are removed
   index: number
 }
 
-// What the analyzer reads from a simulation log
 type SimulatorLog = {
   fights: unknown[]
   players: unknown[]
@@ -166,12 +163,10 @@ const PROFILE = HYDRA_PROFILE
 
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 
-// Hellevator raids, one for every 100 levels
 const HELLEVATOR_TIERS = 12
 
 const RAIDS = 150
 
-// Raid names repeat every 50 raids
 const RAID_NAMES = 50
 
 const localize = useLocalize('raids')
@@ -184,7 +179,6 @@ const gladiatorMode = ref(Store.shared.get<string>(GLADIATOR_MODE_KEY, 'false', 
 const players = shallowRef<ListPlayer[]>([])
 const selectedIndex = ref(-1)
 
-// Chance to win from 0 to 100, null until simulated
 const score = ref<number | null>(null)
 
 let nextIndex = 0
@@ -203,7 +197,6 @@ const raidOptions = computed<SelectOption<string>[]>(() => [
   ...sequence(RAIDS, 1).map((number) => ({ value: `raid_${number}`, label: `${number} - ${localize.global(`general.guild_raid_${((number - 1) % RAID_NAMES) + 1}`)}` }))
 ])
 
-// The newest saved state of every guild that has all of its members saved too
 function listCompleteGroups() {
   return compact(Object.values(DatabaseManager.Groups).map((group) => group.List.filter((entry) => entry.MembersTotal === entry.MembersPresent)[0]))
 }
@@ -224,7 +217,6 @@ function toggleGladiatorMode() {
   Store.shared.set(GLADIATOR_MODE_KEY, gladiatorMode.value, true)
 }
 
-// The name is only filled in for a player added by hand, like on the legacy page
 function addPlayer() {
   if (!editor.value) return
 
@@ -239,7 +231,6 @@ function addPlayer() {
   clearEditor()
 }
 
-// Without a selected player the editor is added as a new one, like on the legacy page
 function savePlayer() {
   if (!editor.value) return
 
@@ -262,7 +253,6 @@ function removePlayer(entry: ListPlayer) {
   }
 }
 
-// Clicks on the remove button don't select the row
 function handleRowClick(event: MouseEvent, entry: ListPlayer) {
   if (event.target instanceof Element && event.target.closest('button')) return
 
@@ -288,7 +278,6 @@ function applySnackToAll() {
   useToast({ title: localize.global('simulator.snack_apply_all_toast_title'), message: localize.global('simulator.snack_apply_all_toast_message') })
 }
 
-// Every member saved at the time the guild was saved replaces the list
 function insertGroup(group: GroupEntry) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
@@ -303,7 +292,6 @@ function isPlayer(value: unknown) {
   return ('Class' in value && Boolean(value.Class)) || ('save' in value && Boolean(value.save))
 }
 
-// A list of players replaces the list, or is added to it in paste mode, a single player fills the editor
 function handlePaste(value: unknown) {
   try {
     const data = handleSimulatorPaste(value)

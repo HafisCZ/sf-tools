@@ -42,7 +42,6 @@ onBeforeUnmount(() => {
   document.body.removeEventListener('drop', handleDrop)
 })
 
-// Pastes into text fields are left to the fields
 function handlePaste(event: ClipboardEvent) {
   if (event.target instanceof HTMLInputElement && event.target.type === 'text') return
 
@@ -58,7 +57,7 @@ function handleDragOver(event: DragEvent) {
   event.stopPropagation()
 }
 
-// A text file holds data copied from a simulator, a file without a type holds a response saved from the game
+// A file without a type is a response saved from the game
 async function handleDrop(event: DragEvent) {
   const file = event.dataTransfer?.files[0]
 

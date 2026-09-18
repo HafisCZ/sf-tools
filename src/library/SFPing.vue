@@ -9,7 +9,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Colour of the dot, used to tie a field to the values it feeds
+   * Colour of the dot
    */
   color: 'blue' | 'red' | 'green' | 'accent'
 }>()

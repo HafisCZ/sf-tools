@@ -1,11 +1,7 @@
 const INITIAL_COSTS = [5, 100, 2500, 50000, 1000000, 25000000, 500000000, 10000000000, 250000000000, 5000000000000]
 
-/**
- * Amounts of levels an upgrade can be bought in at once
- */
 export const MULTIPLIERS = [1, 10, 25, 100]
 
-// Position of each amount in MULTIPLIERS, counted from 1
 const MULTIPLIER_BINDING: Record<number, number> = {
   1: 1,
   10: 2,
@@ -15,7 +11,6 @@ const MULTIPLIER_BINDING: Record<number, number> = {
 
 const PRICE_TABLE_LEVELS = 25001
 
-// Price of buying each amount of levels from every level, for every building
 const PRICE_TABLE = INITIAL_COSTS.map((initialCost) => {
   const prices = MULTIPLIERS.map((): number[] => [])
 
@@ -138,9 +133,7 @@ export class Building {
   }
 }
 
-/**
- * Every arena building in the order of the game, `name` is its translation key in `idle.building`
- */
+// In the order of the game
 export const BUILDINGS = [
   { name: 'seat', building: new Building(0, 72, 1) },
   { name: 'popcorn_stand', building: new Building(1, 360, 10) },

@@ -52,7 +52,6 @@ const titleId = useId()
 
 const dialogElement = useTemplateRef('dialog-ref')
 
-// Move focus off the covered page so keyboard users start inside the dialog
 onMounted(() => {
   dialogElement.value?.focus()
 })

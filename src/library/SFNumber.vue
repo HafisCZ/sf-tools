@@ -50,7 +50,7 @@ const props = defineProps<
      */
     max?: number
     /**
-     * How much the arrow keys add or take away, 1 when left out. A whole number also stops a decimal point from being typed.
+     * How much the arrow keys add or take away, a whole number also stops a decimal point from being typed
      */
     step?: number
     /**
@@ -68,7 +68,7 @@ const modelValue = defineModel<number | null>({ required: true })
 
 const slots = defineSlots<{
   /**
-   * Replaces the label text, for a label that holds more than plain text
+   * Replaces the label text
    */
   label?(): unknown
 }>()
@@ -87,7 +87,7 @@ const BORDER_CLASSES = {
 
 const id = useId()
 
-// What the user typed, which can be a number in progress such as `-` or `1.`
+// Can hold a number in progress such as `-` or `1.`
 const typedText = ref(formatValue(modelValue.value))
 
 const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultNumberValidator(props))
@@ -102,7 +102,6 @@ const text = computed({
 
 const allowsDecimals = computed(() => props.step === undefined || !Number.isInteger(props.step))
 
-// Decimal places of the step, so stepping by 0.1 gives 0.3 and not 0.30000000000000004
 const stepDecimals = computed(() => String(props.step ?? 1).split('.')[1]?.length ?? 0)
 
 watch(modelValue, (value) => {
@@ -139,7 +138,6 @@ function stepValue(direction: 1 | -1) {
   text.value = formatValue(clamp(Number(value.toFixed(stepDecimals.value))))
 }
 
-// Digits, a minus sign at the start when negative values are allowed, and one decimal point when decimals are
 function canType(key: string, position: number | null) {
   if (key >= '0' && key <= '9') {
     return true

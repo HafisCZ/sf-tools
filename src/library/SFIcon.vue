@@ -14,7 +14,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Icon to draw, one of ICONS in src/utils/icons.ts. It takes the current text colour and is one line of text tall.
+   * Icon to draw
    */
   name: IconName
 }>()

@@ -38,7 +38,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     /**
-     * Tool the feedback is about when the dialog opens, `general` for none
+     * Tool the feedback is about, `general` for none
      */
     tool?: string
   }>(),
@@ -51,7 +51,6 @@ const emit = defineEmits<{
   close: []
 }>()
 
-// Same tools as ReportDialog in js/views/base.js
 const TOOLS = ['analyzer', 'attributes', 'blacksmith', 'calendar', 'dungeons', 'fortress', 'guilds', 'hellevator', 'hydra', 'idle', 'inventory', 'pets', 'simulator', 'stats', 'underworld']
 
 const localize = useLocalize('dialog.report')

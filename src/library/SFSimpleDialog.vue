@@ -27,7 +27,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Title of the dialog, usually the question
+   * Title of the dialog
    */
   title: string
   /**
@@ -35,7 +35,7 @@ const props = defineProps<{
    */
   message: string
   /**
-   * Work to do with the user's choice before the dialog closes. The pressed button shows a spinner until it finishes, and the dialog stays open with an error toast when it throws.
+   * Runs with the user's choice before the dialog closes
    */
   action?: (accepted: boolean) => void | Promise<void>
 }>()
@@ -46,7 +46,6 @@ const emit = defineEmits<{
 
 const localize = useLocalize('dialog.confirm')
 
-// Which button was pressed, so only that one shows the spinner
 const accepted = ref(false)
 
 const { submit, isSubmitting } = useSubmit(async (value: boolean) => {

@@ -52,11 +52,10 @@ defineOptions({
 
 const PROFILE = SELF_PROFILE_WITH_GROUP
 
-// Collected pets go last, then locked ones, keeping their order
+// Sort offsets that put collected pets last, then locked ones
 const COLLECTED_ORDER = 3156000000000
 const LOCKED_ORDER = 315600000000
 
-// Availability is worked out once, when the page opens
 const NOW = Date.now()
 
 const localize = useLocalize('pets.calendar')
@@ -64,7 +63,6 @@ const localize = useLocalize('pets.calendar')
 const player = shallowRef<PlayerEntry | null>(null)
 const ownedPets = ref(PetData.map(() => false))
 
-// Soonest available first
 const pets = computed(() => {
   const entries = PetData.map((pet, index) => {
     const [start, end] = pet.next
@@ -86,7 +84,7 @@ const pets = computed(() => {
   return entries.sort((a, b) => a.order - b.order)
 })
 
-// Pets of an element unlock one dungeon at a time, the first 3 are always open
+// The first 3 pets of an element are always open
 function isLocked(pet: Pet, index: number) {
   if (!player.value) return false
 

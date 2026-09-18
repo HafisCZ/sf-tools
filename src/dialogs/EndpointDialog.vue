@@ -156,10 +156,8 @@ type Character = EndpointCharacter & {
   server: string
 }
 
-// Keep in sync with EndpointDialog in endpoint/endpoint.js
 const TERMS_VERSION = 2
 
-// Accessible name of the dialog in each step
 const TITLE_KEYS: Record<Step, string> = {
   terms: 'terms.title',
   login: 'integration.game',
@@ -193,7 +191,6 @@ const iframeElement = useTemplateRef('iframe-ref')
 
 let controller: EndpointController | undefined
 
-// Resolve the waiting login once the user picks in the select or character step
 let resolveTargets: ((names: string[]) => void) | undefined
 let resolveCharacter: ((character: Character) => void) | undefined
 
@@ -237,7 +234,6 @@ function rejectTerms() {
 }
 
 async function login() {
-  // Account name, or name@server for a character without an account
   const [name, server] = username.value.includes('@') ? username.value.split('@', 2) : [username.value, 'sso.playa-games.com']
 
   if (name.length < 3 || password.value.length < 3 || !/\.(?:sfgame|playa-games)\./.test(server)) {
@@ -275,7 +271,6 @@ async function signIn(endpoint: EndpointController, server: string, name: string
     return account
   }
 
-  // An account can hold characters on many servers, skip the servers that no longer exist
   const available: Character[] = []
 
   for (const character of account.characters) {
@@ -350,7 +345,6 @@ function showProgress(value: number) {
   percent.value = value
 }
 
-// The application fails with an error code, or with a long raw server message prefixed by its type
 function showError(error: unknown) {
   const message = getErrorMessage(error)
 
