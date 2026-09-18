@@ -1,5 +1,5 @@
 import { sortDescending } from '@utils/utils'
-import { Store } from '~/site/store'
+import { Store } from '~/core/store'
 
 export type ScriptArchiveEntry = {
   type: string

@@ -1,5 +1,5 @@
-import { Logger } from '~/site/logger'
-import { Store, StoreCache } from '~/site/store'
+import { Logger } from '~/core/logger'
+import { Store, StoreCache } from '~/core/store'
 
 type PlayaData = {
   servers: Record<string, string>

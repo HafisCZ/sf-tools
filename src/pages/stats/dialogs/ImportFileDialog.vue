@@ -25,8 +25,8 @@ import SFParagraph from '@library/SFParagraph.vue'
 import { useLocalize } from '@utils/localization'
 import { useSubmit } from '@utils/utils'
 import { useComponentValidation, validationError } from '@utils/validations'
+import { SiteAPI } from '~/core/api'
 import { DatabaseManager } from '~/data/database-manager'
-import { SiteAPI } from '~/site/api'
 
 defineOptions({
   name: 'ImportFileDialog'

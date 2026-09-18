@@ -14,8 +14,8 @@
 import SFButton from '@library/SFButton.vue'
 import SFDialog from '@library/SFDialog.vue'
 import { useLocalize } from '@utils/localization'
-import { type Announcement } from '~/site/changelog'
-import { Site } from '~/site/site'
+import { type Announcement } from '~/core/changelog'
+import { Site } from '~/core/site'
 
 defineOptions({
   name: 'AnnouncementDialog'

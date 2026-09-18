@@ -1,7 +1,7 @@
 import { globalLocalize, hasTranslation } from '@utils/localization'
 import { compact } from '@utils/utils'
+import { type PlayerModel } from '~/core/models/player'
 import { type PlayerDungeons } from '~/data/dungeon-helper'
-import { type PlayerModel } from '~/data/player-model'
 import { Calculations } from '~/playa/calculations'
 
 export type DungeonRunes = {

@@ -51,11 +51,11 @@ import SFIcon from '@library/SFIcon.vue'
 import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { escapeHtml } from '@utils/utils'
+import { type DatabaseProfile, ProfileManager, type ProfileRule } from '~/core/profiles'
 import ProfileCreateDialog from '~/pages/stats/dialogs/ProfileCreateDialog.vue'
 import { getGroupProfileConfig, getPlayerProfileConfig } from '~/pages/stats/stats'
 import { DEFAULT_EXPRESSION_CONFIG, type ExpressionConfig } from '~/script/expression-config'
 import { Highlighter } from '~/script/highlighter'
-import { type DatabaseProfile, ProfileManager, type ProfileRule } from '~/site/profiles'
 
 defineOptions({
   name: 'ProfilesView'

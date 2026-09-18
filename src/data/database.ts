@@ -1,10 +1,10 @@
 import { globalLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { toRecord } from '@utils/utils'
+import { Logger } from '~/core/logger'
+import { type DatabaseProfile } from '~/core/profiles'
+import { Site } from '~/core/site'
 import { Expression } from '~/script/expression'
-import { Logger } from '~/site/logger'
-import { type DatabaseProfile } from '~/site/profiles'
-import { Site } from '~/site/site'
 import { type RawEntity } from './types'
 
 type StoreDefinition = {

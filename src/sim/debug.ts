@@ -2,11 +2,11 @@ import { shallowRef } from 'vue'
 import { useLoader } from '@utils/loader'
 import { globalLocalize } from '@utils/localization'
 import { copyJson, mergeDeep, scaleValue } from '@utils/utils'
-import { ItemModel } from '~/data/item-model'
-import { PlayerModel } from '~/data/player-model'
+import { Broadcast } from '~/core/broadcast'
+import { Exporter } from '~/core/exporter'
+import { ItemModel } from '~/core/models/item'
+import { PlayerModel } from '~/core/models/player'
 import { type RawPlayer } from '~/data/types'
-import { Broadcast } from '~/site/broadcast'
-import { Exporter } from '~/site/exporter'
 
 export type SimulatorConfig = Record<string, Record<string, unknown>>
 

@@ -81,7 +81,7 @@ import { useToast } from '@utils/toasts'
 import { getClassImageUrl, getValueAtPath, sequence, setValueAtPath } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { changePlayerClass } from '~/core/cheats'
-import { PlayerModel } from '~/data/player-model'
+import { PlayerModel } from '~/core/models/player'
 
 defineOptions({
   name: 'PlayerEditor'

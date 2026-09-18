@@ -1,10 +1,10 @@
 <template>
   <div ref="root-ref">
     <div class="mb-[0.25rem] grid grid-cols-16 gap-x-[28px] pb-[14px]">
-      <div class="col-span-3">
+      <div class="col-span-5">
         <TimestampSelect v-model:timestamp="timestamp" v-model:reference="reference" :options="timestampOptions" @change="recalculateFilter" />
       </div>
-      <div class="col-span-10">
+      <div class="col-span-8">
         <FilterInput v-model="filter" :placeholder="localize('filters.types.groups')" :filters="filterDescriptions" @change="applyFilter" />
       </div>
       <div class="col-span-3 flex items-start gap-1">
@@ -52,8 +52,11 @@ import { useDialog } from '@utils/dialogs'
 import { formatDate } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { copyElement, toArray, toRecord, unique, useSubmit } from '@utils/utils'
+import { SiteAPI } from '~/core/api'
+import { Exporter } from '~/core/exporter'
+import { type GroupModel } from '~/core/models/group'
+import { Site } from '~/core/site'
 import { DatabaseManager, type RemovalData } from '~/data/database-manager'
-import { type GroupModel } from '~/data/group-model'
 import ContextMenu from '~/pages/stats/components/ContextMenu.vue'
 import FilterInput from '~/pages/stats/components/FilterInput.vue'
 import ScriptButton from '~/pages/stats/components/ScriptButton.vue'
@@ -65,9 +68,6 @@ import { Expression, ExpressionScope } from '~/script/expression'
 import { type ScriptEntity } from '~/script/script'
 import { Scripts } from '~/script/scripts'
 import { BrowseTableArray, TableController } from '~/script/table'
-import { SiteAPI } from '~/site/api'
-import { Exporter } from '~/site/exporter'
-import { Site } from '~/site/site'
 
 defineOptions({
   name: 'GroupsView'

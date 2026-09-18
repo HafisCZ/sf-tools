@@ -30,7 +30,7 @@ import SFDialog from '@library/SFDialog.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import { useLocalize } from '@utils/localization'
-import { ProfileManager } from '~/site/profiles'
+import { ProfileManager } from '~/core/profiles'
 
 defineOptions({
   name: 'StatsErrorDialog'

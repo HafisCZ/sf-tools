@@ -1,21 +1,7 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <SFSelect v-model="timestamp" :options="props.options">
-      <template #option="{ option }">
-        <span class="flex min-w-0 flex-1 justify-between gap-2">
-          <span class="truncate">{{ option.label }}</span>
-          <span v-if="option.description" class="text-white/50">{{ option.description }}</span>
-        </span>
-      </template>
-    </SFSelect>
-    <SFSelect v-model="reference" :options="referenceOptions">
-      <template #option="{ option }">
-        <span class="flex min-w-0 flex-1 justify-between gap-2">
-          <span class="truncate">{{ option.label }}</span>
-          <span v-if="option.description" class="text-white/50">{{ option.description }}</span>
-        </span>
-      </template>
-    </SFSelect>
+  <div class="flex gap-1">
+    <SFSelect v-model="timestamp" :options="props.options" class="min-w-0 flex-1" />
+    <SFSelect v-model="reference" :options="referenceOptions" class="min-w-0 flex-1" />
   </div>
 </template>
 

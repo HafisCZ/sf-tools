@@ -86,7 +86,7 @@
       </div>
     </div>
     <div class="h-full min-h-0">
-      <SFExpressionTextarea ref="editor-ref" v-model="content" :highlight="highlight" :suggestions="suggestions" :fields="[FIELD_L, FIELD_R]" :brackets="Expression.TERMINATORS" comment="#" indent line-numbers status-bar drop-files replace-tabs save-shortcuts :aria-label="localize('script')" @save="saveScript" />
+      <SFExpressionTextarea ref="editor-ref" v-model="content" :highlight="highlight" :suggestions="suggestions" :fields="[FIELD_L, FIELD_R]" :brackets="Expression.TERMINATORS" comment="#" indent line-numbers status-bar use-drag-and-drop replace-tabs use-save :aria-label="localize('script')" @save="saveScript" />
     </div>
     <div class="flex flex-col gap-2">
       <SFButton v-if="returnTo" variant="outline" block @click="returnBack">
@@ -153,6 +153,10 @@ import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { copyText, getErrorMessage, useSubmit } from '@utils/utils'
+import { SiteAPI } from '~/core/api'
+import { Exporter } from '~/core/exporter'
+import { Site } from '~/core/site'
+import { StoreCache } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
 import ScriptListItem from '~/pages/stats/components/ScriptListItem.vue'
 import DeleteScriptDialog from '~/pages/stats/dialogs/DeleteScriptDialog.vue'
@@ -169,10 +173,6 @@ import { DefaultScripts } from '~/script/default-scripts'
 import { Expression } from '~/script/expression'
 import { FIELD_L, FIELD_R } from '~/script/fields'
 import { Scripts, type ApiScript, type StoredScript } from '~/script/scripts'
-import { SiteAPI } from '~/site/api'
-import { Exporter } from '~/site/exporter'
-import { Site } from '~/site/site'
-import { StoreCache } from '~/site/store'
 
 defineOptions({
   name: 'ScriptsView'

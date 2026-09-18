@@ -43,8 +43,8 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl, useSubmit } from '@utils/utils'
+import { Exporter } from '~/core/exporter'
 import { getBossName, getDungeonName, type DungeonResult } from '~/sim/data/dungeons'
-import { Exporter } from '~/site/exporter'
 import DungeonChart from '../components/DungeonChart.vue'
 
 defineOptions({

@@ -109,8 +109,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLocalize } from '@utils/localization'
-import { type ItemModel } from '~/data/item-model'
-import { type PlayerModel } from '~/data/player-model'
+import { type ItemModel } from '~/core/models/item'
+import { type PlayerModel } from '~/core/models/player'
 import { getItemAttributes, getItemName, type ComparisonLine } from '~/pages/inventory/inventory'
 import ResourceValue from './ResourceValue.vue'
 

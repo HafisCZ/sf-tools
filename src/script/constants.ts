@@ -1,5 +1,5 @@
 import { COLOR_MAP } from '@utils/colors'
-import { PlayerModel } from '~/data/player-model'
+import { PlayerModel } from '~/core/models/player'
 
 export class Constants {
   static #default: Constants | undefined

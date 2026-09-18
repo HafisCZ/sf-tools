@@ -45,8 +45,8 @@ import SFIcon from '@library/SFIcon.vue'
 import { formatDate, formatDigitGroups } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { compact, getClassImageUrl } from '@utils/utils'
+import { type AttributeName, PlayerModel } from '~/core/models/player'
 import { DatabaseManager, type PlayerHistory } from '~/data/database-manager'
-import { type AttributeName, PlayerModel } from '~/data/player-model'
 
 defineOptions({
   name: 'PlayerDetailDialog'

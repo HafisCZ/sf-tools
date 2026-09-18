@@ -1,4 +1,4 @@
-import { type PlayerModel } from '~/data/player-model'
+import { type PlayerModel } from '~/core/models/player'
 
 type PetTimeRange = {
   start: [number, number, number]

@@ -1,7 +1,7 @@
 import { formatSpacedNumber } from '@utils/formatting'
 import { globalLocalize } from '@utils/localization'
-import { ItemModel } from '~/data/item-model'
-import { type PlayerModel } from '~/data/player-model'
+import { ItemModel } from '~/core/models/item'
+import { type PlayerModel } from '~/core/models/player'
 import { type BlacksmithResources } from '~/data/types'
 import { Loca } from '~/playa/items'
 

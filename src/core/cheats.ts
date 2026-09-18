@@ -1,6 +1,6 @@
 import { compact, scaleValue } from '@utils/utils'
-import { ItemModel } from '~/data/item-model'
-import { CompanionModel, PlayerModel, type EquipmentSlot } from '~/data/player-model'
+import { ItemModel } from './models/item'
+import { CompanionModel, PlayerModel, type EquipmentSlot } from './models/player'
 
 export type Cheats = {
   enchantments: boolean
