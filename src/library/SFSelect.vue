@@ -146,7 +146,7 @@ watch(
 )
 
 function toggle() {
-  if (props.readonly) return
+  if (props.readonly || props.options.length === 0) return
 
   query.value = ''
   open.value = !open.value

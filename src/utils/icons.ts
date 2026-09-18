@@ -5,6 +5,7 @@ import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
 import { faCopy } from '@fortawesome/free-regular-svg-icons/faCopy'
 import { faCopyright } from '@fortawesome/free-regular-svg-icons/faCopyright'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft'
 import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowRightArrowLeft'
 import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons/faBarsStaggered'
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons/faBasketShopping'
@@ -70,6 +71,7 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark'
 
 export const ICONS = {
+  'arrow-left': faArrowLeft,
   'arrow-right-arrow-left': faArrowRightArrowLeft,
   'bars-staggered': faBarsStaggered,
   'basket-shopping': faBasketShopping,
