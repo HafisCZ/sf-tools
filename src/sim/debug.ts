@@ -102,7 +102,7 @@ export function preparePlayerData(data: unknown) {
   ItemModel.forceCorrectRune(player.Items.Wpn2)
 
   if (Number(player.Class) === WARRIOR && player.BlockChance === undefined) {
-    player.BlockChance = (player.Items.Wpn2 as ItemModel).DamageMin
+    player.BlockChance = player.Items.Wpn2?.DamageMin ?? CONFIG.fromID(WARRIOR).SkipChance * 100
   }
 
   if (Number(player.Class) !== ASSASSIN) {
