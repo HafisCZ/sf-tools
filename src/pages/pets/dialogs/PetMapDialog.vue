@@ -12,8 +12,8 @@
         </SFTooltip>
       </div>
       <div class="overflow-y-scroll" :class="{ 'h-[50vh]': !saving }">
-        <div ref="image-ref" :class="{ 'p-2': saving }">
-          <table class="w-full table-fixed border-collapse text-center text-[90%] font-light text-[#212529]">
+        <div ref="image-ref" class="text-[#212529]" :class="{ 'p-2': saving }">
+          <table class="w-full table-fixed border-collapse text-center text-[90%] font-light">
             <thead>
               <tr>
                 <th class="h-[1.9em] font-bold" :class="saving ? 'text-black' : 'text-white'">{{ localize.global('editor.level') }}</th>
@@ -109,6 +109,7 @@ function getColor(chance: number) {
 
 // The whole table is drawn with dark text, since the image has a white background.
 // The padding keeps html2canvas from cutting off the last row, it draws the text a little lower than the browser.
+// Everything in the image needs plain colours, html2canvas can't read the oklab() of Tailwind's opacity colours.
 async function save() {
   const map = props.maps.at(selected.value)
 
