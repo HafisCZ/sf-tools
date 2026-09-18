@@ -27,9 +27,9 @@ const props = withDefaults(
      */
     title: string
     /**
-     * Maximum width: sm 570px, md 760px, lg 950px
+     * Maximum width: sm 570px, md 760px, lg 950px, xl 1250px
      */
-    size?: 'sm' | 'md' | 'lg'
+    size?: 'sm' | 'md' | 'lg' | 'xl'
   }>(),
   {
     size: 'md'
@@ -44,7 +44,8 @@ const slots = defineSlots<{
 const SIZE_CLASSES = {
   sm: 'max-w-[570px]',
   md: 'max-w-[760px]',
-  lg: 'max-w-[950px]'
+  lg: 'max-w-[950px]',
+  xl: 'max-w-[1250px]'
 }
 
 const titleId = useId()

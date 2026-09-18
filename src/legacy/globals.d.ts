@@ -112,12 +112,20 @@ type DatabaseEntry = {
   }
 }
 
+type PetHabitat = 'Shadow' | 'Light' | 'Earth' | 'Fire' | 'Water'
+
 type PlayerEntry = DatabaseEntry & {
   Level: number
   Class: CharacterClass
   Pets?: {
     Levels: number[]
+    // Next boss pet of each habitat's dungeon, 20 once the dungeon is finished
     Dungeons: number[]
+    TotalLevel: number
+  } & Record<`${PetHabitat}Count`, number> &
+    Record<`${PetHabitat}Levels`, number[]>
+  Fortress?: {
+    Gladiator: number
   }
   // Arena Manager, by building in the order of the game
   Idle?: {
@@ -233,6 +241,8 @@ declare class PlayerModel {
 }
 
 declare class ModelUtils {
+  // Rough fighting strength of a player, for comparing players of one class
+  static estimatePower(model: SimulatorPlayer): number
   // Player in the shape the simulator pages copy and paste
   static toSimulatorData(model: PlayerModel | PlayerData): PlayerModel
   // The player followed by its three companions, when it has them
@@ -265,6 +275,12 @@ type ClassConfig = {
 }
 
 declare const CONFIG: {
+  General: {
+    // Critical damage bonus of each gladiator level above the enemy's
+    CritGladiatorBonus: number
+  }
+  // Merges a config into the current one, groups and values it leaves out stay as they are
+  set(config: unknown): void
   // Every enabled class, ordered by ID
   classes(): ClassConfig[]
   // IDs of every enabled class
@@ -275,6 +291,65 @@ declare const CONFIG: {
 
 // Fight bonuses of every snack by its key, such as `1` or `1_legendary`
 declare const SNACKS: Record<string, Record<string, number>>
+
+// Player data a simulator model fights with, only the values the Vue code reads
+type SimulatorPlayer = Record<Attribute, { Total: number }> & {
+  Class: CharacterClass
+  Level: number
+}
+
+// Values of a fighter against its target, calculated by SimulatorModel.initialize
+type SimulatorModelState = {
+  // Chance from 0 to 1 to skip an attack of the target
+  SkipChance: number
+  // Chance from 0 to 1 to hit critically
+  CriticalChance: number
+  CriticalMultiplier: number
+  Weapon1: {
+    Min: number
+    Max: number
+  }
+}
+
+declare class SimulatorModel {
+  // Player data with the defaults the simulator needs filled in
+  static normalize(player: SimulatorPlayer): SimulatorPlayer
+  Player: SimulatorPlayer
+  Config: ClassConfig
+  TotalHealth: number
+  // Null until initialize is called
+  Data: SimulatorModelState | null
+  // Calculates the values against the target
+  initialize(target: SimulatorModel): void
+}
+
+// js/sim/pets.js
+
+// Pet as the pet simulator reads it
+type SimulatorPet = {
+  Name?: string
+  // Habitat, from 0 (Shadow) to 4 (Water)
+  Type: number
+  // Pet within its habitat, from 0 to 19
+  Pet: number
+  // 1 for the boss of a habitat dungeon, which ignores the values below
+  Boss: number
+  Level: number
+  // Pets caught in the habitat
+  Pack: number
+  // Pets of the habitat at level 100 to 149
+  At100: number
+  // Pets of the habitat at level 150 to 199
+  At150: number
+  // Pets of the habitat at level 200
+  At200: number
+  Gladiator: number
+}
+
+declare class PetModel {
+  static getPlayer(pet: SimulatorPet): SimulatorPlayer
+  static getModel(pet: SimulatorPet, index?: number): SimulatorModel
+}
 
 // js/sim/data/base.js
 
