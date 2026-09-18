@@ -6,7 +6,7 @@ import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
-const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer']
+const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory']
 
 const LEGACY_DIRECTORIES = ['js', 'css', 'res', 'vendor', 'endpoint']
 const LEGACY_FILES = ['CNAME', 'sitemap.txt']

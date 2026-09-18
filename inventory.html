@@ -1,213 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scheme-dark">
     <head>
         <title>SFTools - Inventory</title>
 
         <meta charset="utf-8">
+        <meta name="description" content="Collection of tools for Shakes & Fidget">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/png" href="res/favicon.png"/>
 
-        <link rel="stylesheet" href="css/pages/inventory.css"/>
+        <script src="js/util.js" vite-ignore></script>
+        <script src="js/playa/items.js" vite-ignore></script>
+        <script src="js/playa/calculations.js" vite-ignore></script>
 
-        <script src="vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="vendor/js/semantic.min.js"></script>
-        <script src="vendor/js/sentry.bundle.min.js"></script>
-
-        <script src="js/util.js"></script>
-        <script src="js/playa/items.js"></script>
-        <script src="js/playa/calculations.js"></script>
-        
-        <script src="js/core/util.js"></script>
-        <script src="js/core/models.js"></script>
-        <script src="js/core/core.js"></script>
-        <script src="js/playa/servers.js"></script>
-        <script src="js/core/database.js"></script>
-        <script src="js/script/config.js"></script>
-        <script src="js/script/ast.js"></script>
-        <script src="js/script/core.js"></script>
-        <script src="js/changelog.js"></script>
-        <script src="js/views/base.js"></script>
-        <script src="js/sim/base.js"></script>
-
-        <script src="js/pages/inventory.js"></script>
+        <script src="js/core/util.js" vite-ignore></script>
+        <script src="js/core/models.js" vite-ignore></script>
+        <script src="js/core/core.js" vite-ignore></script>
+        <script src="js/core/database.js" vite-ignore></script>
+        <script src="js/script/config.js" vite-ignore></script>
+        <script src="js/script/ast.js" vite-ignore></script>
+        <script src="js/script/core.js" vite-ignore></script>
+        <script src="js/changelog.js" vite-ignore></script>
+        <script src="js/sim/base.js" vite-ignore></script>
+        <script src="js/playa/servers.js" vite-ignore></script>
     </head>
-    <body class="css-dark">
-        <div class="ui fixed inverted borderless huge menu">
-            <div class="header item" id="show-back"><a href="index.html">SFTools</a></div>
-            <a class="item" id="show-compare"><i class="small compress icon"></i>Inventory</a>
-            <a class="item" id="show-crystal"><i class="small exchange icon"></i>Resources</a>
-        </div>
-
-        <!-- PlayerSelectView -->
-        <div id="view-playerselect" class="ui main container mb-20" style="display: none;">
-            <div class="ui five column grid" data-op="list"></div>
-        </div>
-
-        <!-- ResourcesView -->
-        <div id="view-resources" class="ui main fluid container mb-20" style="display: none;">
-            <div class="ui grid">
-                <div class="thirteen wide column">
-                    <div class="css-inventory-segment" data-op="player">
-                        <h3 class="ui header">Player</h3>
-                        <div class="ui five column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="bert">
-                        <h3 class="ui header">Bert</h3>
-                        <div class="ui five column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="mark">
-                        <h3 class="ui header">Mark</h3>
-                        <div class="ui five column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="kunigunde">
-                        <h3 class="ui header">Kunigunde</h3>
-                        <div class="ui five column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="backpack">
-                        <h3 class="ui header">Backpack & Chest</h3>
-                        <div class="ui five column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="dummy">
-                        <h3 class="ui header">Mannequin</h3>
-                        <div class="ui five column grid" data-op="list">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="three wide right aligned column">
-                    <div class="css-inventory-segment css-basis-segment">
-                        <div class="ui one column grid">
-                            <div class="row">
-                                <div class="column">
-                                    <div class="css-summary">
-                                        <div class="css-basis-header">
-                                            <h3 class="ui header">Summary</h3>
-                                        </div>
-                                        <div class="front">
-                                            <div class="css-inventory-comparison" data-op="summary">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- InventoryView -->
-        <div id="view-inventory" class="ui main fluid container mb-20" style="display: none;">
-            <div class="ui grid">
-                <div class="three wide column">
-                    <div class="css-companions cursor-pointer">
-                        <img class="css-companion" data-op="swap" data-arg="0" src="res/portrait.png"></img>
-                        <img class="css-companion" data-op="swap" data-arg="1" src="res/portrait1.png"></img>
-                        <img class="css-companion" data-op="swap" data-arg="2" src="res/portrait2.png"></img>
-                        <img class="css-companion" data-op="swap" data-arg="3" src="res/portrait3.png"></img>
-                    </div>
-                    <div class="css-inventory-segment" data-op="equipped">
-                        <h3 class="ui header">Equipped items</h3>
-                        <div class="ui one column grid" data-op="list">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="ten wide column">
-                    <div class="css-inventory-segment" data-op="backpack">
-                        <h3 class="ui header">Backpack</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="chest">
-                        <h3 class="ui header">Chest</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="player">
-                        <h3 class="ui header">Player</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="bert">
-                        <h3 class="ui header">Bert</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="mark">
-                        <h3 class="ui header">Mark</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="kunigunde">
-                        <h3 class="ui header">Kunigunde</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="shops">
-                        <h3 class="ui header">Weapon & Magic shop</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment" data-op="dummy">
-                        <h3 class="ui header">Mannequin</h3>
-                        <div class="ui four column grid" data-op="list">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="three wide right aligned column">
-                    <div class="css-options">
-                        <button class="css-options-left ui basic inverted mini button" data-op="flip">Flip All</button>
-                        <div class="css-options-right">
-                            <div class="ui checkbox" data-op="nogem">
-                                <input type="checkbox">
-                                <label style="color: white;">Ignore gems</label>
-                            </div>
-                            <div class="ui checkbox" data-op="noupgrade">
-                                <input type="checkbox">
-                                <label style="color: white;">Ignore upgrades</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="css-inventory-segment css-basis-segment">
-                        <div class="ui one column grid">
-                            <div class="row">
-                                <div class="column">
-                                    <div class="css-basis">
-                                        <div class="css-basis-header">
-                                            <h3 class="ui header">Overview</h3>
-                                        </div>
-                                        <div class="front">
-                                            <div class="css-inventory-comparison" data-op="basis">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <body class="bg-page text-sm text-white/90">
+        <div id="app"></div>
+        <script type="module" src="/src/entrypoints/inventory.ts"></script>
     </body>
 </html>

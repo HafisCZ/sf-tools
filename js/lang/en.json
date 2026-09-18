@@ -1846,5 +1846,81 @@
         "empty": "This field is required",
         "number_min": "Value has to be at least #{min}",
         "number_max": "Value has to be at most #{max}"
+    },
+    "inventory": {
+        "back": "Back",
+        "tab": {
+            "inventory": "Inventory",
+            "resources": "Resources"
+        },
+        "picker": {
+            "title": "Inventory Manager",
+            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "section": {
+            "equipped": "Equipped items",
+            "backpack": "Backpack",
+            "chest": "Chest",
+            "player": "Player",
+            "shops": "Weapon & Magic shop",
+            "dummy": "Mannequin",
+            "storage": "Backpack & Chest",
+            "overview": "Overview",
+            "summary": "Summary"
+        },
+        "flip": "Flip All",
+        "ignore_gems": "Ignore gems",
+        "ignore_upgrades": "Ignore upgrades",
+        "tag": {
+            "enchanted": "Enchanted",
+            "washed": "Washed",
+            "socketed": "Socketed"
+        },
+        "rune_suffix": {
+            "1": "of Wealth",
+            "2": "of Epic Attraction",
+            "3": "of Quality",
+            "4": "of Knowledge",
+            "5": "of Health",
+            "6": "of Fire",
+            "7": "of Ice",
+            "8": "of Lightning",
+            "9": "of Elements",
+            "10": "of Fire",
+            "11": "of Ice",
+            "12": "of Lightning"
+        },
+        "item": {
+            "damage": "Damage range",
+            "upgrades": "Upgrades",
+            "sell": "Sell:",
+            "dismantle": "Dismantle:",
+            "upgrade": "Upgrade:",
+            "transmog": "T:"
+        },
+        "comparison": {
+            "no_rune": "No rune",
+            "no_socket": "No socket",
+            "empty_socket": "Empty Socket"
+        },
+        "stat": {
+            "health": "Health",
+            "armor": "Armor",
+            "reduction": "Max Reduction Level",
+            "range_min": "Minimum Range",
+            "range_max": "Maximum Range",
+            "range_average": "Average Range",
+            "critical": "Max Crit Chance Level",
+            "damage_min": "Minimum Damage",
+            "damage_max": "Maximum Damage",
+            "damage_average": "Average Damage"
+        },
+        "summary": {
+            "current": "Current resources",
+            "sold": "Sold resources",
+            "dismantled": "Dismantled resources",
+            "spendable": "Spendable resources",
+            "used": "Used resources"
+        }
     }
 }
