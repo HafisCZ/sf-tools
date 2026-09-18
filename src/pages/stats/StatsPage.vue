@@ -1,7 +1,9 @@
 <template>
   <Page :width="pageWidth">
     <template #nav-left>
-      <span v-if="temporary" class="text-xs text-accent">{{ localize('topbar.temporary_flag') }}</span>
+      <span v-if="temporary" class="mr-3 text-accent">
+        <SFIcon name="flask" />
+      </span>
       <SFButton
         v-for="item in NAV_ITEMS"
         :key="item.view"
@@ -22,7 +24,7 @@
         target="_blank"
         class="inline-flex min-h-9.5 items-center justify-center gap-2 rounded-md border border-transparent px-4 py-2 leading-5 font-bold text-white/90 transition outline-none hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        <SFIcon name="user-secret" />
+        <SFIcon name="flask" />
         {{ localize('topbar.temporary') }}
       </a>
     </template>
