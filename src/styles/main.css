@@ -15,6 +15,7 @@
 @source "../../simulator.html";
 @source "../../pets.html";
 @source "../../dungeons.html";
+@source "../../analyzer.html";
 
 @font-face {
   font-family: Lato;
@@ -49,5 +50,137 @@
 
   & .text-orange {
     color: var(--color-accent);
+  }
+}
+
+@utility expression-text {
+  & .ta-deprecated {
+    text-decoration: line-through;
+  }
+
+  & .ta-keyword {
+    color: #ffffff;
+    font-weight: bold;
+  }
+
+  & .ta-reserved-public {
+    color: #f550f5;
+    font-weight: bold;
+  }
+
+  & .ta-reserved-protected {
+    color: #ba6bff;
+    font-weight: bold;
+  }
+
+  & .ta-reserved-group {
+    color: #5f3d7e;
+    font-weight: bold;
+  }
+
+  & .ta-reserved-private {
+    color: #3269a8;
+    font-weight: bold;
+  }
+
+  & .ta-operator {
+    color: #ffffff;
+  }
+
+  & .ta-enum {
+    color: #e6a068;
+    font-weight: bold;
+  }
+
+  & .ta-reserved-special {
+    color: #a37500;
+    font-weight: bold;
+  }
+
+  & .ta-reserved-scoped {
+    color: #3cb371;
+    font-weight: bold;
+  }
+
+  & .ta-color {
+    text-decoration: underline;
+  }
+
+  & .ta-constant {
+    color: #46bbb5;
+  }
+
+  & .ta-variable-local {
+    color: #46bbb5;
+  }
+
+  & .ta-variable-table {
+    color: #1f58cc;
+  }
+
+  & .ta-variable-global {
+    color: #6d1fcc;
+  }
+
+  & .ta-value {
+    color: #8ba1c4;
+  }
+
+  & .ta-identifier {
+    color: #8ba1c4;
+    font-weight: bold;
+  }
+
+  & .ta-function {
+    color: #46bbb5;
+    font-weight: bold;
+  }
+
+  & .ta-error {
+    text-decoration: underline;
+    text-decoration-color: red;
+    text-decoration-style: wavy;
+  }
+
+  & .ta-error-color {
+    text-decoration: underline;
+    text-decoration-color: red;
+    text-decoration-style: wavy;
+    color: red;
+  }
+
+  & .ta-error-float {
+    position: relative;
+  }
+
+  & .ta-error-float::after {
+    position: absolute;
+    content: attr(data-content);
+    text-decoration: underline;
+    text-decoration-color: red;
+    text-decoration-style: wavy;
+    color: red;
+  }
+
+  & .ta-true {
+    color: #51e859;
+    font-weight: bold;
+  }
+
+  & .ta-false {
+    color: #ff5d12;
+    font-weight: bold;
+  }
+
+  & .ta-comment {
+    color: #7a7a7a;
+  }
+
+  & .ta-string {
+    color: #7a7a7a;
+  }
+
+  & .ta-macro {
+    background-color: #a8323240;
   }
 }

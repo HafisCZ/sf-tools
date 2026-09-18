@@ -148,7 +148,25 @@ type DatabaseHistory<TEntry> = Record<number, TEntry> & {
 
 declare class PlayaResponse {
   static importData(json: unknown, timestamp?: number, offset?: number): { players: unknown[]; groups: unknown[] }
+  static search(json: unknown): Generator<{ text: string; url?: string; date: Date }>
+  static fromText(text: string): Record<string, PlayaResponse | undefined>
+  readonly number: number
+  readonly string: string
+  numbers(delimiter?: string | RegExp): number[]
+  mixed(delimiter?: string | RegExp): (number | string)[]
 }
+
+declare class ComplexDataType {
+  constructor(values: unknown[])
+  assert(size: number): void
+  atLeast(size: number): boolean
+  long(): number
+  string(): string
+  back(count: number): this
+  sub(size: number): number[]
+}
+
+declare function SHA1(text: string): string
 
 declare class DatabaseManager {
   static Groups: Record<string, DatabaseHistory<GroupEntry>>
@@ -167,15 +185,21 @@ type BlacksmithResources = {
 }
 
 declare class ItemModel {
+  static LEGACY: 0
+  static MODERN: 1
   static empty(): ItemModel
   static forceCorrectRune(item: ItemModel | undefined): void
+  constructor(version: number, data: number[], slotType: number, slotIndex: number)
   Type: number
+  Index: number
   PicIndex: number
   DamageMin: number
   DamageMax: number
   HasEnchantment: boolean
   Attributes: number[]
   AttributeTypes: number[]
+  RuneType: number
+  RuneValue: number
   readonly SellPrice: {
     Gold: number
   }
@@ -235,6 +259,46 @@ type MainAttribute = 'Strength' | 'Dexterity' | 'Intelligence'
 
 declare const WARRIOR: 1
 declare const ASSASSIN: 4
+declare const DEMONHUNTER: 7
+declare const DRUID: 8
+declare const BARD: 9
+declare const NECROMANCER: 10
+declare const PALADIN: 11
+declare const PLAGUEDOCTOR: 12
+
+declare const FIGHTER_STATE_NORMAL: 0
+declare const FIGHTER_STATE_DRUID_RAGE: 11
+declare const FIGHTER_STATE_PALADIN_DEFENSIVE: 20
+declare const FIGHTER_STATE_PALADIN_OFFENSIVE: 21
+declare const FIGHTER_STATE_BERSERKER_RAGE: 30
+
+declare const ATTACK_TYPE_CATAPULT: 2
+declare const ATTACK_TYPE_FIREBALL: 10
+declare const ATTACK_TYPE_MINION_SUMMON: 11
+declare const ATTACK_TYPE_SWOOP: 13
+declare const ATTACK_TYPE_REVIVE: 14
+declare const ATTACK_TYPE_SWOOP_CRITICAL: 16
+
+declare const ATTACK_TYPES_SECONDARY: number[]
+declare const ATTACK_TYPES_CRITICAL: number[]
+declare const ATTACK_TYPES_SPECIAL: number[]
+declare const ATTACK_TYPES_TINCTURE: number[]
+declare const ATTACK_TYPES_MINION: number[]
+
+declare const DEFENSE_TYPE_BLOCK_HEAL: 6
+
+declare const EFFECT_TYPE_TINCTURE: 3
+
+type SimulatorFlags = {
+  Gladiator15: boolean
+  MaximumDamageReduction: boolean
+  NoGladiatorReduction: boolean
+  NoAttributeReduction: boolean
+}
+
+declare const FLAGS: SimulatorFlags & {
+  set(flags: Partial<SimulatorFlags>): void
+}
 
 declare const RUNE_FIRE_DAMAGE: 40
 declare const RUNE_COLD_DAMAGE: 41
@@ -267,23 +331,47 @@ type SimulatorPlayer = Record<Attribute, { Total: number }> & {
   Level: number
 }
 
+type SimulatorWeaponState = {
+  Min: number
+  Max: number
+  Base: number
+}
+
 type SimulatorModelState = {
   SkipChance: number
   CriticalChance: number
   CriticalMultiplier: number
-  Weapon1: {
-    Min: number
-    Max: number
-  }
+  ReceivedDamageMultiplier: number
+  Weapon1: SimulatorWeaponState
+  Weapon2?: SimulatorWeaponState
+}
+
+type SimulatorModelData = SimulatorModelState & {
+  RageState?: SimulatorModelState
+  Stances?: SimulatorModelState[]
+  Songs?: SimulatorModelState[]
+  Minions?: SimulatorModelState[]
+  TinctureRounds?: SimulatorModelState[]
+}
+
+type SimulatorClassConfig = ClassConfig & {
+  ReviveDamage?: number
+  ReviveDamageMin?: number
+  ReviveDamageDecay?: number
+  Stances?: { HealMultiplier?: number }[]
 }
 
 declare class SimulatorModel {
   static normalize(player: SimulatorPlayer): SimulatorPlayer
+  static create(index: number | null, player: unknown): SimulatorModel
+  static initializeFighters(fighterA: SimulatorModel, fighterB: SimulatorModel): void
   Player: SimulatorPlayer
-  Config: ClassConfig
+  Config: SimulatorClassConfig
   TotalHealth: number
-  Data: SimulatorModelState | null
+  SwoopMultiplier?: number
+  Data: SimulatorModelData | null
   initialize(target: SimulatorModel): void
+  getBaseDamage(secondary?: boolean): { DamageMin: number; DamageMax: number }
 }
 
 type SimulatorPet = {
@@ -411,6 +499,41 @@ declare class Calculations {
 }
 
 declare const NAME_UNIT_UNDERWORLD: Record<number, string>
+declare const NAME_UNIT_COMPANION: Record<number, string>
+
+type ExpressionEnvironment = {
+  functions: Record<string, unknown>
+  variables: Record<string, unknown>
+  constants: Constants
+}
+
+declare class Constants {
+  constructor(values?: Map<string, unknown> | null)
+}
+
+declare class ExpressionConfig {
+  clone(): ExpressionConfig
+  register(type: string, meta: string, name: string, data: (object: Record<string, unknown>) => unknown): void
+  all(type: string): string[]
+}
+
+declare const DEFAULT_EXPRESSION_CONFIG: ExpressionConfig
+
+declare class ExpressionScope {
+  constructor(environment?: ExpressionEnvironment)
+  clone(): ExpressionScope
+  addSelf(object: unknown): ExpressionScope
+}
+
+declare class Expression {
+  static create(text: string, settings?: null, config?: ExpressionConfig): Expression | null
+  eval(scope?: ExpressionScope): unknown
+}
+
+declare class Highlighter {
+  static readonly text: string
+  static expression(text: string, root: ExpressionEnvironment, config: ExpressionConfig): typeof Highlighter
+}
 
 type Pet = {
   location: number

@@ -67,6 +67,15 @@ export function sliceLength<TItem>(array: TItem[], begin: number, length: number
   return array.slice(begin, begin + length)
 }
 
+// Drops the last chunk when it is shorter than `size`
+export function chunk<TItem>(array: TItem[], size: number) {
+  return sequence(Math.floor(array.length / size)).map((index) => sliceLength(array, index * size, size))
+}
+
+export function flattenObject(object: object, path: string[] = []): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(object).flatMap(([key, value]: [string, unknown]) => (typeof value === 'object' && value !== null ? Object.entries(flattenObject(value, [...path, key])) : [[[...path, key].join('.'), value]])))
+}
+
 export function compact<TItem>(array: TItem[]) {
   return array.filter((item): item is Exclude<TItem, false | 0 | '' | null | undefined> => Boolean(item))
 }
