@@ -1,5 +1,5 @@
 import { globalLocalize } from '@utils/localization'
-import { Site } from '~/site/site'
+import { Site } from '~/core/site'
 import { FilterTypes, ScriptCommands, TableType, type ScriptCommand } from './commands'
 import { Constants } from './constants'
 import { Expression, ExpressionScope, type ExpressionEnvironment } from './expression'

@@ -30,7 +30,7 @@ import { useLocalize } from '@utils/localization'
 import { useSuccessToast } from '@utils/toasts'
 import { useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
-import { SiteAPI } from '~/site/api'
+import { SiteAPI } from '~/core/api'
 
 defineOptions({
   name: 'FeedbackDialog'

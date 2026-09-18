@@ -10,7 +10,7 @@
         v-bind="$attrs"
         wrap="off"
         spellcheck="false"
-        class="min-h-0 w-full flex-1 resize-none overflow-auto overscroll-none rounded-md border bg-surface pt-[11px] pr-[14px] pb-[11px] font-mono text-[14px] leading-[18px] whitespace-pre text-transparent caret-white/60 outline-none selection:text-transparent placeholder:text-white/40"
+        class="min-h-0 w-full flex-1 resize-none overflow-auto overscroll-none rounded-md border bg-surface pt-[11px] pr-[14px] pb-[11px] font-mono text-[14px] leading-[18px] whitespace-pre text-transparent caret-white/60 outline-none selection:bg-[rgba(100,100,100,0.4)] selection:text-transparent placeholder:text-white/40"
         :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], props.lineNumbers ? 'pl-10' : 'pl-[14px]', { 'rounded-b-none': props.statusBar }]"
         :aria-invalid="validationResult?.[0] === 'error'"
         v-on="listeners"
@@ -24,7 +24,7 @@
         type="text"
         spellcheck="false"
         autocomplete="off"
-        class="w-full rounded-md border bg-surface px-3 py-2 font-mono leading-5 text-transparent caret-white/60 outline-none selection:text-transparent placeholder:text-white/40"
+        class="w-full rounded-md border bg-surface px-3 py-2 font-mono leading-5 text-transparent caret-white/60 outline-none selection:bg-[rgba(100,100,100,0.4)] selection:text-transparent placeholder:text-white/40"
         :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
         :aria-invalid="validationResult?.[0] === 'error'"
         v-on="listeners"
@@ -713,11 +713,11 @@ function handleKeydown(event: KeyboardEvent) {
   const field = fieldElement.value
   if (!field) return
 
-  if (props.saveShortcuts && event.ctrlKey && event.key === 's') {
+  if (props.useSave && event.ctrlKey && event.key === 's') {
     stopAndPrevent(event)
 
     emit('save', false)
-  } else if (props.saveShortcuts && event.ctrlKey && event.shiftKey && event.key === 'S') {
+  } else if (props.useSave && event.ctrlKey && event.shiftKey && event.key === 'S') {
     stopAndPrevent(event)
 
     emit('save', true)
@@ -784,7 +784,7 @@ function handlePaste(event: ClipboardEvent) {
 }
 
 function handleDrag(event: DragEvent) {
-  if (props.dropFiles) {
+  if (props.useDragAndDrop) {
     stopAndPrevent(event)
   }
 }
@@ -792,7 +792,7 @@ function handleDrag(event: DragEvent) {
 function handleDrop(event: DragEvent) {
   const file = event.dataTransfer?.files[0]
 
-  if (props.dropFiles && file && (!file.type || file.type === 'text/plain')) {
+  if (props.useDragAndDrop && file && (!file.type || file.type === 'text/plain')) {
     stopAndPrevent(event)
 
     void file.text().then((content) => setContent(content))

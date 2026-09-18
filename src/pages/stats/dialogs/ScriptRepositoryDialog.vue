@@ -84,10 +84,10 @@ import { useLocalize } from '@utils/localization'
 import { useErrorToast } from '@utils/toasts'
 import { sortDescending, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
+import { SiteAPI } from '~/core/api'
+import { StoreCache } from '~/core/store'
 import { DefaultScripts } from '~/script/default-scripts'
 import { Scripts, type StoredScript } from '~/script/scripts'
-import { SiteAPI } from '~/site/api'
-import { StoreCache } from '~/site/store'
 
 defineOptions({
   name: 'ScriptRepositoryDialog'

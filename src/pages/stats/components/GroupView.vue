@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="mb-[0.25rem] grid grid-cols-16 gap-x-[28px] pb-[14px]">
-      <div class="col-span-4">
+      <div class="col-span-5">
         <TimestampSelect v-model:timestamp="timestamp" v-model:reference="reference" :options="timestampOptions" @change="load" />
       </div>
-      <div class="col-span-8 text-center">
+      <div class="col-span-6 text-center">
         <SFHeading level="2" class="leading-none">{{ name }}</SFHeading>
         <span class="opacity-50">{{ links }}</span>
       </div>
@@ -53,10 +53,12 @@ import { useDialog } from '@utils/dialogs'
 import { formatDate } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { copyJson, useSubmit } from '@utils/utils'
+import { Exporter } from '~/core/exporter'
+import { type GroupModel } from '~/core/models/group'
+import { type PlayerModel } from '~/core/models/player'
+import { ModelUtils } from '~/core/models/utils'
+import { Site } from '~/core/site'
 import { DatabaseManager, type GroupHistory } from '~/data/database-manager'
-import { type GroupModel } from '~/data/group-model'
-import { ModelUtils } from '~/data/model-utils'
-import { type PlayerModel } from '~/data/player-model'
 import ContextMenu from '~/pages/stats/components/ContextMenu.vue'
 import ScriptButton from '~/pages/stats/components/ScriptButton.vue'
 import TimestampSelect from '~/pages/stats/components/TimestampSelect.vue'
@@ -66,8 +68,6 @@ import { type ContextMenuItem, type StatsShowParams } from '~/pages/stats/stats'
 import { TableType } from '~/script/commands'
 import { Scripts } from '~/script/scripts'
 import { GroupTableArray, TableController } from '~/script/table'
-import { Exporter } from '~/site/exporter'
-import { Site } from '~/site/site'
 
 defineOptions({
   name: 'GroupView'

@@ -63,7 +63,7 @@
         </div>
       </div>
       <div class="h-[30em]">
-        <SFExpressionTextarea v-model="content" :highlight="highlight" :suggestions="suggestions" :fields="[FIELD_L, FIELD_R]" :brackets="Expression.TERMINATORS" comment="#" indent line-numbers drop-files replace-tabs save-shortcuts :aria-label="localize('actions.title')" />
+        <SFExpressionTextarea v-model="content" :highlight="highlight" :suggestions="suggestions" :fields="[FIELD_L, FIELD_R]" :brackets="Expression.TERMINATORS" comment="#" indent line-numbers use-drag-and-drop replace-tabs use-save :aria-label="localize('actions.title')" />
       </div>
     </section>
   </div>
@@ -86,6 +86,8 @@ import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { useSubmit } from '@utils/utils'
+import { Exporter } from '~/core/exporter'
+import { Site } from '~/core/site'
 import { DatabaseManager } from '~/data/database-manager'
 import { createDump, recoverDump, type RecoveryDump } from '~/data/recovery'
 import TermsDialog from '~/pages/dialogs/TermsDialog.vue'
@@ -95,8 +97,6 @@ import { Actions } from '~/script/actions'
 import { ScriptType } from '~/script/commands'
 import { Expression } from '~/script/expression'
 import { FIELD_L, FIELD_R } from '~/script/fields'
-import { Exporter } from '~/site/exporter'
-import { Site } from '~/site/site'
 
 defineOptions({
   name: 'SettingsView'

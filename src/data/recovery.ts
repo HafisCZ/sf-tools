@@ -1,8 +1,8 @@
 import { unique } from '@utils/utils'
-import { ProfileManager } from '~/site/profiles'
-import { Store } from '~/site/store'
+import { ProfileManager } from '~/core/profiles'
+import { Store } from '~/core/store'
+import { DatabaseUtils } from './database'
 import { DatabaseManager } from './database-manager'
-import { DatabaseUtils } from './indexed-db'
 
 type RecoverySlot = {
   players: unknown[]

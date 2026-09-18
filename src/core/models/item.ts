@@ -1,7 +1,7 @@
 import { sum } from '@utils/utils'
+import { ComplexDataType } from '~/data/complex-data-type'
+import { type BlacksmithResources, type ItemAttribute } from '~/data/types'
 import { Loca } from '~/playa/items'
-import { ComplexDataType } from './complex-data-type'
-import { type BlacksmithResources, type ItemAttribute } from './types'
 
 export type ItemSellPrice = BlacksmithResources & {
   Gold: number

@@ -27,8 +27,8 @@ import { useLocalize } from '@utils/localization'
 import IndexCredits from './components/IndexCredits.vue'
 import IndexFooter from './components/IndexFooter.vue'
 import ToolCard from './components/ToolCard.vue'
+import { Site } from '~/core/site'
 import Page from '~/pages/Page.vue'
-import { Site } from '~/site/site'
 
 defineOptions({
   name: 'IndexPage'

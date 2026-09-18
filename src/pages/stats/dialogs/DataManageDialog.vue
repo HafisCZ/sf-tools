@@ -44,9 +44,9 @@ import { formatDate, formatPrefix } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
+import { Site } from '~/core/site'
 import { DatabaseManager, type RemovalData } from '~/data/database-manager'
 import { type RawEntity } from '~/data/types'
-import { Site } from '~/site/site'
 
 defineOptions({
   name: 'DataManageDialog'

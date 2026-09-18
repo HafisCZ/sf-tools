@@ -1,8 +1,8 @@
 import { formatPrefix } from '@utils/formatting'
 import { sum } from '@utils/utils'
-import { ComplexDataType } from './complex-data-type'
-import { PlayaResponse } from './playa-response'
-import { type RawGroup } from './types'
+import { ComplexDataType } from '~/data/complex-data-type'
+import { PlayaResponse } from '~/data/playa-response'
+import { type RawGroup } from '~/data/types'
 
 export const GUILD_ROLE_NONE = 0
 export const GUILD_ROLE_LEADER = 1

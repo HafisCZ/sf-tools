@@ -1,5 +1,5 @@
-import { type PlayerModel } from './player-model'
-import { type RawGroup, type RawPlayer } from './types'
+import { type RawGroup, type RawPlayer } from '~/data/types'
+import { type PlayerModel } from './player'
 
 type PowerEstimateModel = Record<MainAttribute | 'Constitution', { Total: number }> & {
   Class: CharacterClass

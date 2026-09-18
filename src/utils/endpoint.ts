@@ -1,5 +1,5 @@
+import { Logger } from '~/core/logger'
 import { Playa } from '~/playa/servers'
-import { Logger } from '~/site/logger'
 
 export type EndpointCharacter = {
   id: number

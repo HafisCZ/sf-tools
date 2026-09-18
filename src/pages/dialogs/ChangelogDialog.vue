@@ -26,8 +26,8 @@ import SFDialog from '@library/SFDialog.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFList from '@library/SFList.vue'
 import { useLocalize } from '@utils/localization'
-import { CHANGELOG } from '~/site/changelog'
-import { MODULE_VERSION, Site } from '~/site/site'
+import { CHANGELOG } from '~/core/changelog'
+import { MODULE_VERSION, Site } from '~/core/site'
 
 defineOptions({
   name: 'ChangelogDialog'
