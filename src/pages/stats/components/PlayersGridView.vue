@@ -29,7 +29,13 @@
         :outdated="DatabaseManager.Latest != player.LatestTimestamp"
         :hidden="DatabaseManager.isIdentifierHidden(player.Latest.LinkId)"
         @open="navigation.show('player', { identifier: player.Latest.LinkId })"
-      />
+      >
+        <span>{{ localize.global('general.level') }} {{ player.Latest.Level }} · {{ localize.global(`general.class${player.Latest.Class}`) }}</span>
+        <span v-if="player.Latest.hasGuild()" class="flex max-w-full items-center gap-1">
+          <SFIcon name="shield-halved" class="shrink-0" />
+          <span class="truncate">{{ player.Latest.Group.Name }}</span>
+        </span>
+      </GridCard>
     </div>
     <div ref="sentinel-ref" />
     <GridActions v-if="selectedIdentifiers.length > 0" :actions="actions" />
