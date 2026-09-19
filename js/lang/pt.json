@@ -877,7 +877,7 @@
         "enemy": "Inimigo",
         "open": "Masmorras disponíveis",
         "graph": {
-            "y": "HP do Boss Restante",
+            "y": "HP Restante",
             "x": "- Distribuição para o número de tentativas -",
             "winrate": "Taxa de vitória: #{rate}% (#{score} de #{tries})"
         },

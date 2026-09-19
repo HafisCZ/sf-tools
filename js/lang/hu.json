@@ -877,7 +877,7 @@
         "enemy": "Enemy",
         "open": "Nyitott kazamaták",
         "graph": {
-            "y": "Megmaradt Főellenség életerő",
+            "y": "Megmaradt életerő",
             "x": "- Elosztás a kiválasztott számú próbálkozásra -",
             "winrate": "Nyerési esély: #{rate}% (#{score} a #{tries}-ból)"
         },

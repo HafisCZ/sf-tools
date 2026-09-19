@@ -32,6 +32,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 class DungeonSimulator extends SimulatorBase {
   declare cache_players: SimulatorModel[]
   declare cache_boss: SimulatorModel
+  declare cache_health: number
   declare la: SimulatorModel[]
   declare lb: SimulatorModel[]
 
@@ -39,69 +40,43 @@ class DungeonSimulator extends SimulatorBase {
     this.cache(players, boss)
 
     let score = 0
-    let healths = []
+    let enemyHealths = []
+    let playersHealths = []
 
     if (players.length === 1) {
       // Single-player battle
       SimulatorModel.initializeFighters(this.cache_players[0], this.cache_boss)
 
       for (let i = 0; i < iterations; i++) {
-        let { win, health } = this.battleSingle()
+        let { win, enemyHealth, playersHealth } = this.battleSingle()
 
         score += win as unknown as number
-        healths.push(health)
+        enemyHealths.push(enemyHealth)
+        playersHealths.push(playersHealth)
       }
     } else {
       // Multi-player battle
       for (let i = 0; i < iterations; i++) {
-        let { win, health } = this.battleMulti()
+        let { win, enemyHealth, playersHealth } = this.battleMulti()
 
         score += win as unknown as number
-        healths.push(health)
+        enemyHealths.push(enemyHealth)
+        playersHealths.push(playersHealth)
       }
-    }
-
-    let healthsLength = healths.length
-    let truncSteps = Math.max(1, Math.floor(healthsLength / hpcap))
-    if (truncSteps > 1) {
-      let truncLength = Math.ceil(healthsLength / truncSteps)
-      let truncHealths = new Array<number>(truncLength)
-
-      healths.sort((a, b) => a - b)
-
-      for (let i = 0; i < truncLength; i++) {
-        let sliceSum = 0
-        let slices = 0
-        for (let j = 0; j < truncSteps; j++) {
-          let iterator = i * truncSteps + j
-          if (iterator >= healthsLength) {
-            break
-          } else {
-            slices++
-            sliceSum += healths[iterator]
-          }
-        }
-
-        if (slices > 0) {
-          truncHealths[i] = Math.max(0, sliceSum / slices)
-        }
-      }
-
-      healths = truncHealths
-    } else {
-      healths.sort((a, b) => a - b)
     }
 
     return {
       iterations: iterations,
       score: score,
-      healths: healths
+      enemyHealths: trimHealths(enemyHealths, hpcap),
+      playersHealths: trimHealths(playersHealths, hpcap)
     }
   }
 
   cache(players: SimulatorPlayerInput[], boss: SimulatorPlayerInput) {
     this.cache_players = players.map((player) => SimulatorModel.create(0, player))
     this.cache_boss = SimulatorModel.create(1, boss)
+    this.cache_health = this.cache_players.reduce((total, player) => total + player.TotalHealth, 0)
   }
 
   battleSingle() {
@@ -115,7 +90,8 @@ class DungeonSimulator extends SimulatorBase {
 
     return {
       win,
-      health: win ? 0 : this.cache_boss.Health / this.cache_boss.getHealth()
+      enemyHealth: win ? 0 : this.cache_boss.Health / this.cache_boss.getHealth(),
+      playersHealth: win ? this.cache_players[0].Health / this.cache_health : 0
     }
   }
 
@@ -141,10 +117,49 @@ class DungeonSimulator extends SimulatorBase {
       }
     }
 
+    let playersHealth = 0
+    for (const p of this.la) playersHealth += Math.max(0, p.Health)
+
     // Return result based on empty array
     return {
       win: (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0,
-      health: Math.max(0, this.lb.length > 0 ? this.lb[0].Health / this.lb[0].getHealth() : 0)
+      enemyHealth: Math.max(0, this.lb.length > 0 ? this.lb[0].Health / this.lb[0].getHealth() : 0),
+      playersHealth: playersHealth / this.cache_health
     }
+  }
+}
+
+function trimHealths(healths: number[], hpcap: number) {
+  let healthsLength = healths.length
+  let truncSteps = Math.max(1, Math.floor(healthsLength / hpcap))
+  if (truncSteps > 1) {
+    let truncLength = Math.ceil(healthsLength / truncSteps)
+    let truncHealths = new Array<number>(truncLength)
+
+    healths.sort((a, b) => a - b)
+
+    for (let i = 0; i < truncLength; i++) {
+      let sliceSum = 0
+      let slices = 0
+      for (let j = 0; j < truncSteps; j++) {
+        let iterator = i * truncSteps + j
+        if (iterator >= healthsLength) {
+          break
+        } else {
+          slices++
+          sliceSum += healths[iterator]
+        }
+      }
+
+      if (slices > 0) {
+        truncHealths[i] = Math.max(0, sliceSum / slices)
+      }
+    }
+
+    return truncHealths
+  } else {
+    healths.sort((a, b) => a - b)
+
+    return healths
   }
 }

@@ -58,7 +58,8 @@ export type DungeonEntry = {
 export type DungeonResult = DungeonEntry & {
   score: number
   iterations: number
-  healths: number[]
+  enemyHealths: number[]
+  playersHealths: number[]
 }
 
 export const TOWER = 201

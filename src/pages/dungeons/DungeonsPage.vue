@@ -143,7 +143,8 @@ type DungeonWorkerResult = {
   results: {
     score: number
     iterations: number
-    healths: number[]
+    enemyHealths: number[]
+    playersHealths: number[]
   }
   logs: unknown[]
 }
@@ -491,7 +492,8 @@ async function runBoss(instances: number, iterations: number, onLogs?: (log: Sim
 
   if (!canSimulateSelected.value || !fight) return
 
-  const healths: number[][] = []
+  const enemyHealths: number[][] = []
+  const playersHealths: number[][] = []
 
   let score = 0
   let logs: unknown[] = []
@@ -501,7 +503,8 @@ async function runBoss(instances: number, iterations: number, onLogs?: (log: Sim
   sequence(instances).forEach(() => {
     batch.add(
       (data) => {
-        healths.push(data.results.healths)
+        enemyHealths.push(data.results.enemyHealths)
+        playersHealths.push(data.results.playersHealths)
 
         score += data.results.score
         logs = logs.concat(data.logs)
@@ -519,7 +522,7 @@ async function runBoss(instances: number, iterations: number, onLogs?: (log: Sim
 
   if (duration === null) return
 
-  chartResult.value = { ...entry, score, iterations: instances * iterations, healths: averageHealths(healths) }
+  chartResult.value = { ...entry, score, iterations: instances * iterations, enemyHealths: averageHealths(enemyHealths), playersHealths: averageHealths(playersHealths) }
 
   isChartOutdated.value = false
 

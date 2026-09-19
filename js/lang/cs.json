@@ -877,7 +877,7 @@
         "enemy": "Nepřítel",
         "open": "Dostupná podzemí",
         "graph": {
-            "y": "Zbývající HP nepřítele",
+            "y": "Zbývající HP",
             "x": "- Distribuce pro vybraný počet pokusů -",
             "winrate": "Vítězství: #{rate}% (#{score} z #{tries})"
         },

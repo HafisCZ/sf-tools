@@ -877,7 +877,7 @@
         "enemy": "Przeciwnik",
         "open": "Obecnie dostępne lochy",
         "graph": {
-            "y": "Pozostałe HP Bossa",
+            "y": "Pozostałe HP",
             "x": "- Dystrybucja dla wybranej ilości prób -",
             "winrate": "Zwycięstwa: #{rate}% (#{score} z #{tries})"
         },
