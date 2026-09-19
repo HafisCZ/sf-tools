@@ -34,6 +34,22 @@ function handleTrapKeydown(event: KeyboardEvent) {
   }
 }
 
+function lockScroll() {
+  const root = document.documentElement
+
+  // Keeps the space of the hidden scrollbar, so the page does not shift
+  if (window.innerWidth > root.clientWidth) {
+    root.style.scrollbarGutter = 'stable'
+  }
+
+  root.style.overflow = 'hidden'
+}
+
+function unlockScroll() {
+  document.documentElement.style.removeProperty('overflow')
+  document.documentElement.style.removeProperty('scrollbar-gutter')
+}
+
 function createTrap() {
   // Invisible layer that blocks clicks on the covered page
   const element = document.createElement('div')
@@ -45,6 +61,7 @@ function createTrap() {
 
   if (traps.length === 0) {
     document.addEventListener('keydown', handleTrapKeydown, true)
+    lockScroll()
   }
 
   traps.push(element)
@@ -55,6 +72,7 @@ function removeTrap() {
 
   if (traps.length === 0) {
     document.removeEventListener('keydown', handleTrapKeydown, true)
+    unlockScroll()
   }
 }
 
