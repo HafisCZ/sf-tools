@@ -26,7 +26,10 @@ export class WorkerBatch<TResult, TParams extends object = object> {
   activeParams: TParams[] = []
   instanceCondition: (params: TParams, running: TParams) => boolean = () => true
 
-  #resolve: () => void = () => {}
+  #running = new Set<Worker>()
+  #cancelled = false
+
+  #resolve: (cancelled: boolean) => void = () => {}
 
   constructor(type: keyof typeof WORKERS) {
     this.type = type
@@ -42,7 +45,13 @@ export class WorkerBatch<TResult, TParams extends object = object> {
         this.activeParams.push(params)
 
         const worker = WORKERS[this.type]()
+        this.#running.add(worker)
+
         worker.addEventListener('message', ({ data }: MessageEvent<TResult>) => {
+          if (this.#cancelled) return
+
+          this.#running.delete(worker)
+
           callback(data, Date.now() - this.timestamp)
 
           loader.progress(++this.workersDone / this.workersTotal)
@@ -50,7 +59,7 @@ export class WorkerBatch<TResult, TParams extends object = object> {
           this.activeParams.splice(this.activeParams.indexOf(params), 1)
 
           if (this.workersDone === this.workersTotal) {
-            this.#resolve()
+            this.#resolve(false)
           } else {
             this.#nextWorker()
           }
@@ -79,6 +88,20 @@ export class WorkerBatch<TResult, TParams extends object = object> {
     return this.workers.length
   }
 
+  cancel() {
+    if (this.#cancelled) return
+
+    this.#cancelled = true
+
+    for (const worker of this.#running) {
+      worker.terminate()
+    }
+
+    this.#running.clear()
+    this.workers = []
+    this.#resolve(true)
+  }
+
   run(instances: number, instanceCondition: (params: TParams, running: TParams) => boolean = () => true) {
     // Initial timestamp
     this.timestamp = Date.now()
@@ -93,21 +116,28 @@ export class WorkerBatch<TResult, TParams extends object = object> {
     this.instanceCondition = instanceCondition
 
     // Show loader
-    loader.start({ progress: true })
+    loader.start({ progress: true, onCancel: () => this.cancel() })
 
     // Create promise
-    return new Promise<number>((resolve) => {
-      this.#resolve = () => {
+    return new Promise<number | null>((resolve) => {
+      this.#resolve = (cancelled) => {
         const duration = Date.now() - this.timestamp
 
         loader.stop()
-        Logger.log('MESSAGE', `Simulator took ${formatDuration(duration)} with ${this.workersTotal} sets using ${instances} concurrent threads.`)
 
-        resolve(duration)
+        if (cancelled) {
+          Logger.log('MESSAGE', 'Simulator terminated')
+
+          resolve(null)
+        } else {
+          Logger.log('MESSAGE', `Simulator took ${formatDuration(duration)} with ${this.workersTotal} sets using ${instances} concurrent threads.`)
+
+          resolve(duration)
+        }
       }
 
       if (this.workersTotal === 0) {
-        this.#resolve()
+        this.#resolve(false)
       } else {
         const instancesInitial = Math.min(instances, this.workersTotal)
         for (let i = 0; i < instancesInitial; i++) {

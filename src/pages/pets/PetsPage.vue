@@ -280,7 +280,9 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
     )
   }
 
-  await batch.run(instances)
+  const duration = await batch.run(instances)
+
+  if (duration === null) return
 
   const chance = sum(chances) / instances
 
@@ -320,7 +322,9 @@ async function generateMaps(count: number) {
     )
   }
 
-  await batch.run(instances)
+  const duration = await batch.run(instances)
+
+  if (duration === null) return
 
   useDialog(PetMapDialog, { maps })
 }
@@ -359,7 +363,9 @@ async function runDungeonSimulation() {
 
   useToast({ title: localize('bulk.toast.title'), message: `${localize('bulk.toast.matches')} ${matches.length}` })
 
-  await batch.run(instances)
+  const duration = await batch.run(instances)
+
+  if (duration === null) return
 
   useDialog(PetResultsDialog, { results: sortDescending(results, (item) => item.chance) })
 }
