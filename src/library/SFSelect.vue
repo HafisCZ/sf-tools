@@ -37,14 +37,21 @@
               {{ option.type === 'header' ? option.label : '' }}
             </li>
             <li v-else role="none">
-              <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" :class="{ 'text-accent': option.value === modelValue || option.accent }" @click="select(option.value)">
+              <button
+                type="button"
+                role="menuitem"
+                :data-selected="option.value === modelValue || undefined"
+                class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none"
+                :class="[option.value === modelValue ? 'bg-accent/15' : 'hover:bg-surface-hover focus-visible:bg-surface-hover', { 'text-accent': option.accent }]"
+                @click="select(option.value)"
+              >
                 <slot name="option" :option="option">
                   <template v-if="option.image">
-                    <SFIcon v-if="isIconName(option.image)" :name="option.image" :class="{ 'order-last': option.imagePosition === 'right', 'text-white/60': option.value !== modelValue }" />
+                    <SFIcon v-if="isIconName(option.image)" :name="option.image" class="text-white/60" :class="{ 'order-last': option.imagePosition === 'right' }" />
                     <img v-else :src="option.image" alt="" class="size-5 object-contain" :class="{ 'order-last': option.imagePosition === 'right' }" />
                   </template>
                   <span class="flex min-w-0 flex-1 flex-col">
-                    <span :style="{ color: option.value === modelValue ? undefined : option.color }">{{ option.label }}</span>
+                    <span :style="{ color: option.color }">{{ option.label }}</span>
                     <span v-if="option.description" class="text-xs text-white/50">{{ option.description }}</span>
                   </span>
                 </slot>
