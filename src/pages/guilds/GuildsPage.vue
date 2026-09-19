@@ -380,6 +380,8 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
 
   const duration = await batch.run(instances)
 
+  if (duration === null) return
+
   useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
 
   score.value = (100 * sum(scores)) / (instances * iterations)
