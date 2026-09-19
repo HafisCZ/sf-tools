@@ -584,6 +584,17 @@ export class DatabaseManager {
     }
   }
 
+  static async #loadGroupsFor(players: RawPlayer[]) {
+    const keys = new Map<string, [string, number]>()
+    for (const { group, timestamp } of players) {
+      if (group) {
+        keys.set(`${group}-${timestamp}`, [group, timestamp])
+      }
+    }
+
+    return compact(await Promise.all(Array.from(keys.values(), (key) => this.#session.get<RawGroup>('groups', key))))
+  }
+
   static async #loadDatabase() {
     const beginTimestamp = Date.now()
 
@@ -609,9 +620,11 @@ export class DatabaseManager {
     // Load metadata
     this.#metadata = toRecord(await this.#session.where<DatabaseMetadata>('metadata'), (md) => [md.timestamp, md])
 
+    const latestPlayers = this.#profile.only_latest ? DatabaseUtils.filterArray(this.#profile) || (await this.#session.latest<RawPlayer>('players', (player) => Site.options.hidden || !this.isHidden(player), ...DatabaseUtils.profileFilter(this.#profile))) : undefined
+
     // Load groups
     if (!this.#profile.only_players) {
-      const groups = DatabaseUtils.filterArray(this.#profile, 'primary_g') || (await this.#session.where<RawGroup>('groups', ...DatabaseUtils.profileFilter(this.#profile, 'primary_g')))
+      const groups = DatabaseUtils.filterArray(this.#profile, 'primary_g') || (latestPlayers ? await this.#loadGroupsFor(latestPlayers) : await this.#session.where<RawGroup>('groups', ...DatabaseUtils.profileFilter(this.#profile, 'primary_g')))
       const groupsFilter = this.#profile.secondary_g && Expression.create(this.#profile.secondary_g)
 
       if (groupsFilter) {
@@ -629,7 +642,7 @@ export class DatabaseManager {
     }
 
     // Load players
-    const players = DatabaseUtils.filterArray(this.#profile) || (await this.#session.where<RawPlayer>('players', ...DatabaseUtils.profileFilter(this.#profile)))
+    const players = latestPlayers || DatabaseUtils.filterArray(this.#profile) || (await this.#session.where<RawPlayer>('players', ...DatabaseUtils.profileFilter(this.#profile)))
     const playersFilter = this.#profile.secondary && Expression.create(this.#profile.secondary)
 
     if (playersFilter) {
@@ -656,7 +669,13 @@ export class DatabaseManager {
 
     // Generate lists
     this.#updateLists()
-    await this.refreshTrackers()
+
+    if (this.#profile.only_latest) {
+      this.#trackerConfig = Actions.getTrackers()
+      this.#trackerConfigEntries = Object.entries(this.#trackerConfig)
+    } else {
+      await this.refreshTrackers()
+    }
 
     this.#hiddenIdentifiers = new Set(Store.get<string[]>('hidden_identifiers', []))
 
@@ -1345,9 +1364,10 @@ export class DatabaseManager {
 
   static async #track(identifier: string, timestamp: number) {
     const player = this.getPlayer(identifier, timestamp)
-    const playerTracker: PlayerTracker = this.#trackedPlayers[identifier] || {
-      identifier: identifier
-    }
+    const playerTracker: PlayerTracker = this.#trackedPlayers[identifier] ||
+      (this.#profile.only_players ? await this.#session.get<PlayerTracker>('trackers', identifier) : undefined) || {
+        identifier: identifier
+      }
 
     let trackerChanged = false
     for (const [name, { ast, out }] of this.#trackerConfigEntries) {

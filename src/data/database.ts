@@ -293,6 +293,110 @@ export class IndexedDBWrapper {
     })
   }
 
+  latest<TValue>(store: string, accept: (value: TValue) => boolean, index?: string, query?: IDBKeyRange | null) {
+    return new Promise<TValue[]>((resolve) => {
+      const objectStore = this.store(store, null, 'readonly') as IDBObjectStore
+      const source = index ? objectStore.index(index) : objectStore
+      const keyPath = index ? ((source as IDBIndex).keyPath as string) : undefined
+
+      const matches = (value: TValue) => {
+        if (keyPath) {
+          const indexed = (value as Record<string, IDBValidKey | undefined>)[keyPath]
+          if (indexed === undefined || (query && !query.includes(indexed))) {
+            return false
+          }
+        }
+
+        return accept(value)
+      }
+
+      const items: TValue[] = []
+      const latestKeys = new Map<string, [string, number]>()
+      const longIdentifiers = new Set<string>()
+
+      let pending = 0
+      const complete = (value?: TValue) => {
+        if (value) {
+          items.push(value)
+        }
+
+        if (--pending === 0) {
+          resolve(items)
+        }
+      }
+
+      const findNewest = (identifier: string, upperKey: IDBValidKey) => {
+        const cursorRequest = objectStore.openCursor(IDBKeyRange.bound([identifier], upperKey, false, true), 'prev')
+        cursorRequest.onsuccess = () => {
+          const cursor = cursorRequest.result
+          if (!cursor) {
+            complete()
+          } else if (matches(cursor.value as TValue)) {
+            complete(cursor.value as TValue)
+          } else {
+            cursor.continue()
+          }
+        }
+      }
+
+      let runIdentifier: string | undefined
+      let runLength = 0
+
+      objectStore.transaction.onerror = () => resolve([])
+
+      const cursorRequest = source.openKeyCursor(query)
+      cursorRequest.onsuccess = () => {
+        const cursor = cursorRequest.result
+        if (cursor) {
+          const key = cursor.primaryKey as [string, number]
+          const [identifier] = key
+
+          runLength = identifier === runIdentifier ? runLength + 1 : 1
+          runIdentifier = identifier
+
+          if (runLength < 64) {
+            const latestKey = latestKeys.get(identifier)
+            if (!longIdentifiers.has(identifier) && (!latestKey || latestKey[1] < key[1])) {
+              latestKeys.set(identifier, key)
+            }
+
+            cursor.continue()
+          } else {
+            latestKeys.delete(identifier)
+            longIdentifiers.add(identifier)
+
+            if (index) {
+              cursor.continuePrimaryKey(cursor.key, [identifier, []])
+            } else {
+              cursor.continue([identifier, []])
+            }
+          }
+        } else {
+          pending = latestKeys.size + longIdentifiers.size
+          if (pending === 0) {
+            resolve(items)
+          }
+
+          for (const [identifier, key] of latestKeys) {
+            const getRequest = objectStore.get(key)
+            getRequest.onsuccess = () => {
+              const value = getRequest.result as TValue | undefined
+              if (value && matches(value)) {
+                complete(value)
+              } else {
+                findNewest(identifier, key)
+              }
+            }
+          }
+
+          for (const identifier of longIdentifiers) {
+            findNewest(identifier, [identifier, []])
+          }
+        }
+      }
+    })
+  }
+
   all<TValue>(store: string, index?: string, query?: IDBKeyRange | null) {
     return promisify(this.store(store, index, 'readonly').getAll(query) as IDBRequest<TValue[]>)
   }
@@ -322,6 +426,10 @@ export class TemporaryDatabaseSession {
   }
 
   where<TValue>(_store: string, _index?: string, _query?: IDBKeyRange | null) {
+    return Promise.resolve([] as TValue[])
+  }
+
+  latest<TValue>(_store: string, _accept: (value: TValue) => boolean, _index?: string, _query?: IDBKeyRange | null) {
     return Promise.resolve([] as TValue[])
   }
 
