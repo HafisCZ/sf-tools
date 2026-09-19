@@ -471,6 +471,8 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
 
   const duration = await batch.run(instances)
 
+  if (duration === null) return
+
   useToast({ title: localize('toast.title'), message: localize('toast.message', { duration: formatDuration(duration) }) })
 
   players.value = collected

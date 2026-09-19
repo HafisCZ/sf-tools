@@ -518,7 +518,9 @@ async function runBoss(instances: number, iterations: number, onLogs?: (log: Sim
     )
   })
 
-  await batch.run(instances)
+  const duration = await batch.run(instances)
+
+  if (duration === null) return
 
   chartResult.value = { ...entry, score, iterations: instances * iterations, healths: averageHealths(healths) }
 
@@ -554,7 +556,9 @@ async function runBosses(entries: DungeonEntry[]) {
     )
   })
 
-  await batch.run(instances)
+  const duration = await batch.run(instances)
+
+  if (duration === null) return null
 
   return compact(results)
 }
@@ -568,13 +572,19 @@ async function runSelected() {
 async function runRemaining() {
   if (!canSimulateSelected.value) return
 
-  showResults(await runBosses(getRemainingBosses(selectedEntry.value)))
+  const results = await runBosses(getRemainingBosses(selectedEntry.value))
+
+  if (!results) return
+
+  showResults(results)
 }
 
 async function runAll() {
   if (!canSimulateOpen.value) return
 
   const results = await runBosses(openBosses.value)
+
+  if (!results) return
 
   showResults(results.sort((a, b) => b.score - a.score))
 }
@@ -619,7 +629,9 @@ async function runNext() {
   })
 
   // Execute instance only if there is none running with the same dungeon id
-  await batch.run(instances, ({ id }, { id: running }) => id !== running && PREVIOUS_DUNGEONS[id] !== running)
+  const duration = await batch.run(instances, ({ id }, { id: running }) => id !== running && PREVIOUS_DUNGEONS[id] !== running)
+
+  if (duration === null) return
 
   const found = compact(results)
 
