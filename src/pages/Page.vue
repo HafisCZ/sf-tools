@@ -11,9 +11,19 @@
     <LocalePicker :class="{ 'ml-auto': !slots['nav-right'] }" />
   </header>
 
-  <main class="mx-auto w-full px-4 pt-[70px] pb-16 md:max-w-[calc(var(--page-width)+2rem)]" :style="{ '--page-width': props.width }">
-    <slot />
-  </main>
+  <div class="max-md:flex max-md:min-h-dvh max-md:flex-col">
+    <main class="mx-auto w-full px-4 pt-[70px] pb-16 max-md:flex-1 md:max-w-[calc(var(--page-width)+2rem)]" :style="{ '--page-width': props.width }">
+      <slot />
+    </main>
+    <footer v-if="slots['footer-left'] || slots['footer-right']" class="pointer-events-none fixed inset-x-0 bottom-0 flex items-end justify-between gap-4 p-3 text-[12.6px] text-white/70 text-shadow-[0_0_10px_black] max-md:static max-md:flex-col max-md:items-center">
+      <div class="w-1/3 max-md:w-full max-md:text-center [&_a]:pointer-events-auto">
+        <slot name="footer-left" />
+      </div>
+      <div class="flex w-1/3 flex-col items-end gap-0.5 text-right max-md:w-full max-md:items-center max-md:text-center">
+        <slot name="footer-right" />
+      </div>
+    </footer>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -50,6 +60,14 @@ const slots = defineSlots<{
    * Content of the page
    */
   default(): unknown
+  /**
+   * Left side of the footer, shown above the right side on phones
+   */
+  'footer-left'?(): unknown
+  /**
+   * Right side of the footer, usually links and copyright
+   */
+  'footer-right'?(): unknown
   /**
    * Items shown in the header after the title
    */
