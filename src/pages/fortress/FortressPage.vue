@@ -74,17 +74,15 @@
       </div>
     </div>
 
-    <PageFooter>
-      <template #links>
-        <FooterLink icon="message" @click="openFeedback">
-          {{ localize.global('index.footer.report') }}
-        </FooterLink>
-        <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-          <span v-html="localize.global('index.footer.webshop#')" />
-        </FooterLink>
-        <FooterCopyright />
-      </template>
-    </PageFooter>
+    <template #footer-right>
+      <FooterLink icon="message" @click="openFeedback">
+        {{ localize.global('index.footer.report') }}
+      </FooterLink>
+      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
+        <span v-html="localize.global('index.footer.webshop#')" />
+      </FooterLink>
+      <FooterCopyright />
+    </template>
   </Page>
 </template>
 
@@ -107,7 +105,6 @@ import { useComponentValidation } from '@utils/validations'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
-import PageFooter from '~/pages/components/PageFooter.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { createFortressBattle, FORTRESS_ARCHER_MAP, FORTRESS_MAGE_MAP, FORTRESS_WALL_MAP, FORTRESS_WARRIOR_MAP, type FortressUnit, type FortressValues } from '~/sim/data/fortress'
