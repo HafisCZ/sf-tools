@@ -12,6 +12,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
   {
     id: '17-11-2024',
     title: 'Hellevator Themes & Google situation',
+    disabled: true,
     content: `
             <b>Hellevator Themes</b><br>
             After going through all of your feedback I have decided to reintroduce Hellevator themes back. You will not be able to select which theme you want to simulate but it will now always use the latest available theme.<br><br>
@@ -35,6 +36,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
   {
     id: '10-07-2024',
     title: 'WebShop Code',
+    disabled: true,
     content: `
             I am happy to announce that SF Tools was granted its very own WebShop code.<br><br>If you want to support the website development via your normal shroom purchases, simply introduce the code <code class="text-orange" style="font-family: arial;">SFTOOLS</code> at checkout.
         `
