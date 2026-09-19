@@ -82,6 +82,7 @@ import { getClassImageUrl, getValueAtPath, sequence, setValueAtPath } from '@uti
 import { useComponentValidation } from '@utils/validations'
 import { PlayerModel } from '~/core/models/player'
 import { changePlayerClass } from '~/integration/cheats'
+import { ASSASSIN, CONFIG, RUNE_AUTO_DAMAGE, RUNE_COLD_DAMAGE, RUNE_FIRE_DAMAGE, RUNE_LIGHTNING_DAMAGE, SNACKS, WARRIOR } from '~/sim/base'
 
 defineOptions({
   name: 'PlayerEditor'

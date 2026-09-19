@@ -4,50 +4,20 @@ import { Logger } from '~/core/logger'
 
 const loader = useLoader()
 
-export class Workers {
-  static #fetchCache = new Map<string, string>()
-  static #objectCache = new Map<string, string>()
-
-  static get local() {
-    return document.location.protocol == 'file:'
-  }
-
-  static async #fetchContent(location: string) {
-    if (!this.#fetchCache.has(location)) {
-      const url = `${this.local ? 'https://sftools.mar21.eu' : ''}/${location}`
-
-      this.#fetchCache.set(location, await fetch(url).then((data) => data.text()))
-    }
-
-    return this.#fetchCache.get(location) as string
-  }
-
-  static async #fetchObject(type: string) {
-    if (!this.#objectCache.has(type)) {
-      const blob = new Blob([(await this.#fetchContent('js/sim/base.js')) + (await this.#fetchContent(`js/sim/${type}.js`))], { type: 'text/javascript' })
-
-      this.#objectCache.set(type, URL.createObjectURL(blob))
-    }
-
-    return this.#objectCache.get(type) as string
-  }
-
-  static async prefetch(type: string) {
-    await this.#fetchObject(type)
-  }
-
-  static async createWorker(type: string) {
-    return new Worker(await this.#fetchObject(type))
-  }
-
-  static invalidate() {
-    this.#fetchCache.clear()
-    this.#objectCache.clear()
-  }
+const WORKERS = {
+  dungeons: () => new Worker(new URL('./dungeons.ts', import.meta.url), { type: 'module' }),
+  fortress: () => new Worker(new URL('./fortress.ts', import.meta.url), { type: 'module' }),
+  guilds: () => new Worker(new URL('./guilds.ts', import.meta.url), { type: 'module' }),
+  hellevator: () => new Worker(new URL('./hellevator.ts', import.meta.url), { type: 'module' }),
+  hydra: () => new Worker(new URL('./hydra.ts', import.meta.url), { type: 'module' }),
+  pets: () => new Worker(new URL('./pets.ts', import.meta.url), { type: 'module' }),
+  players: () => new Worker(new URL('./players.ts', import.meta.url), { type: 'module' }),
+  raids: () => new Worker(new URL('./raids.ts', import.meta.url), { type: 'module' }),
+  underworld: () => new Worker(new URL('./underworld.ts', import.meta.url), { type: 'module' })
 }
 
 export class WorkerBatch<TResult, TParams extends object = object> {
-  type: string
+  type: keyof typeof WORKERS
   workers: [callback: (data: TResult, duration: number) => void, params: TParams][]
 
   timestamp = 0
@@ -58,12 +28,12 @@ export class WorkerBatch<TResult, TParams extends object = object> {
 
   #resolve: () => void = () => {}
 
-  constructor(type: string) {
+  constructor(type: keyof typeof WORKERS) {
     this.type = type
     this.workers = []
   }
 
-  async #nextWorker() {
+  #nextWorker() {
     if (this.workers.length > 0) {
       const index = this.workers.findIndex(([, params]) => this.activeParams.every((_params) => this.instanceCondition(params, _params)))
 
@@ -71,7 +41,7 @@ export class WorkerBatch<TResult, TParams extends object = object> {
         const [callback, params] = this.workers.splice(index, 1)[0]
         this.activeParams.push(params)
 
-        const worker = await Workers.createWorker(this.type)
+        const worker = WORKERS[this.type]()
         worker.addEventListener('message', ({ data }: MessageEvent<TResult>) => {
           callback(data, Date.now() - this.timestamp)
 
@@ -82,7 +52,7 @@ export class WorkerBatch<TResult, TParams extends object = object> {
           if (this.workersDone === this.workersTotal) {
             this.#resolve()
           } else {
-            void this.#nextWorker()
+            this.#nextWorker()
           }
         })
 
@@ -139,14 +109,10 @@ export class WorkerBatch<TResult, TParams extends object = object> {
       if (this.workersTotal === 0) {
         this.#resolve()
       } else {
-        void (async () => {
-          await Workers.prefetch(this.type)
-
-          const instancesInitial = Math.min(instances, this.workersTotal)
-          for (let i = 0; i < instancesInitial; i++) {
-            void this.#nextWorker()
-          }
-        })()
+        const instancesInitial = Math.min(instances, this.workersTotal)
+        for (let i = 0; i < instancesInitial; i++) {
+          this.#nextWorker()
+        }
       }
     })
   }

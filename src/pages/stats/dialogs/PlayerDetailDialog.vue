@@ -47,6 +47,7 @@ import { useLocalize } from '@utils/localization'
 import { compact, getClassImageUrl } from '@utils/utils'
 import { type AttributeName, PlayerModel } from '~/core/models/player'
 import { DatabaseManager, type PlayerHistory } from '~/data/database-manager'
+import { ASSASSIN } from '~/sim/base'
 
 defineOptions({
   name: 'PlayerDetailDialog'

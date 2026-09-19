@@ -1,3 +1,5 @@
+import { CONFIG } from '~/sim/base'
+
 export type FortressUnit = {
   class: CharacterClass
   level: number

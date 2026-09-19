@@ -1,6 +1,7 @@
 import { sequence } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { type SimulatorData } from '~/core/models/utils'
+import { CONFIG } from '~/sim/base'
 import { getHellevatorVariant } from './hellevator'
 import { MonsterGenerator } from './monsters'
 

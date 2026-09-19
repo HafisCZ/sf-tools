@@ -4,6 +4,7 @@ import { ItemModel } from '~/core/models/item'
 import { type PlayerModel } from '~/core/models/player'
 import { type BlacksmithResources } from '~/data/types'
 import { Loca } from '~/playa/items'
+import { ASSASSIN, BARD, BATTLEMAGE, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
 
 export type InventoryPlayer = PlayerModel
 
