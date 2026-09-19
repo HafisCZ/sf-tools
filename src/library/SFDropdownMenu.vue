@@ -109,9 +109,17 @@ const style = computed(() => {
 watch(
   size,
   (value, previous) => {
-    if (value && !previous) {
-      containerElement.value?.querySelector<HTMLElement>('input, [role="menuitem"]:not(:disabled)')?.focus()
-    }
+    const container = containerElement.value
+
+    if (!value || previous || !container) return
+
+    const selected = container.querySelector<HTMLElement>('[role="menuitem"][data-selected]:not(:disabled)')
+    const target = container.querySelector<HTMLElement>('input') ?? selected ?? container.querySelector<HTMLElement>('[role="menuitem"]:not(:disabled)')
+
+    // Focusing the search field would scroll the menu back to the top
+    target?.focus({ preventScroll: true })
+
+    selected?.scrollIntoView({ block: 'center' })
   },
   { flush: 'post' }
 )
