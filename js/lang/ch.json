@@ -877,7 +877,7 @@
         "enemy": "Gägner",
         "open": "Aktuell offeni Dungeons",
         "graph": {
-            "y": "Boss HP verbliben",
+            "y": "HP verbliben",
             "x": "- Verteilig vo dr Ahzau usgsuechte Versüech -",
             "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
         },

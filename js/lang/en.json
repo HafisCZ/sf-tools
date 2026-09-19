@@ -771,9 +771,10 @@
         "enemy": "Enemy",
         "open": "Currently open dungeons",
         "graph": {
-            "y": "Boss HP Left",
+            "y": "HP Left",
             "x": "- Distribution for selected amount of tries -",
-            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
+            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})",
+            "player": "Player & Companions"
         },
         "results": "Results",
         "experience": "Total: #{experience} XP",
