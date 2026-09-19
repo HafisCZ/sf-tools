@@ -19,6 +19,7 @@ export type DatabaseProfile = {
   secondary_g?: string | null
   only_players?: boolean
   block_preload?: boolean
+  only_latest?: boolean
   updated?: number
 }
 
@@ -39,7 +40,8 @@ export const SELF_PROFILE: DatabaseProfile = {
     value: ['1']
   },
   secondary: null,
-  only_players: true
+  only_players: true,
+  only_latest: true
 }
 
 export const SELF_PROFILE_WITH_GROUP: DatabaseProfile = {
@@ -48,12 +50,14 @@ export const SELF_PROFILE_WITH_GROUP: DatabaseProfile = {
     mode: 'equals',
     value: ['1']
   },
-  secondary: null
+  secondary: null,
+  only_latest: true
 }
 
 export const FIGHT_SIMULATOR_PROFILE: DatabaseProfile = {
   only_players: true,
-  block_preload: true
+  block_preload: true,
+  only_latest: true
 }
 
 export const HYDRA_PROFILE: DatabaseProfile = {
