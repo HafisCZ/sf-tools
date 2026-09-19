@@ -3,6 +3,7 @@ import { compact } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { type PlayerDungeons } from '~/data/dungeon-helper'
 import { Calculations } from '~/playa/calculations'
+import { CONFIG, WARRIOR } from '~/sim/base'
 
 export type DungeonRunes = {
   type: number

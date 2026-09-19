@@ -1,4 +1,5 @@
 import { PlayerModel } from '~/core/models/player'
+import { CONFIG } from '~/sim/base'
 
 type MonsterStats = [main: number, side: number, constitution: number, luck: number, health: number, min: number, max: number, armor: number]
 

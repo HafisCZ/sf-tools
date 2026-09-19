@@ -1,4 +1,5 @@
 import { type RawGroup, type RawPlayer } from '~/data/types'
+import { ASSASSIN, CONFIG } from '~/sim/base'
 import { type PlayerModel } from './player'
 
 type PowerEstimateModel = Record<MainAttribute | 'Constitution', { Total: number }> & {

@@ -6,6 +6,8 @@ import { DungeonHelper, type LegacyDungeons, type PlayerDungeons } from '~/data/
 import { PlayaResponse } from '~/data/playa-response'
 import { type RawPlayer } from '~/data/types'
 import { Calculations, RUNE_VALUE } from '~/playa/calculations'
+import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, CONFIG, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { type ClassConfig } from '~/sim/types'
 import { type GroupMemberActions, type GroupModel } from './group'
 import { ItemModel } from './item'
 

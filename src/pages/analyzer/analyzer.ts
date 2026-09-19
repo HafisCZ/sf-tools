@@ -9,6 +9,35 @@ import { ComplexDataType } from '~/data/complex-data-type'
 import { PlayaResponse } from '~/data/playa-response'
 import { type RawPlayer } from '~/data/types'
 import { NAME_UNIT_COMPANION, NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
+import {
+  ASSASSIN,
+  ATTACK_TYPE_CATAPULT,
+  ATTACK_TYPE_FIREBALL,
+  ATTACK_TYPE_MINION_SUMMON,
+  ATTACK_TYPE_REVIVE,
+  ATTACK_TYPE_SWOOP,
+  ATTACK_TYPE_SWOOP_CRITICAL,
+  ATTACK_TYPES_CRITICAL,
+  ATTACK_TYPES_MINION,
+  ATTACK_TYPES_SECONDARY,
+  ATTACK_TYPES_SPECIAL,
+  ATTACK_TYPES_TINCTURE,
+  BARD,
+  CONFIG,
+  DEFENSE_TYPE_BLOCK_HEAL,
+  DEMONHUNTER,
+  DRUID,
+  EFFECT_TYPE_TINCTURE,
+  FIGHTER_STATE_BERSERKER_RAGE,
+  FIGHTER_STATE_DRUID_RAGE,
+  FIGHTER_STATE_NORMAL,
+  FIGHTER_STATE_PALADIN_DEFENSIVE,
+  FIGHTER_STATE_PALADIN_OFFENSIVE,
+  NECROMANCER,
+  PALADIN,
+  PLAGUEDOCTOR,
+  SimulatorModel
+} from '~/sim/base'
 import { type SimulatorConfig } from '~/sim/debug'
 
 export type RageDisplayMode = 'decimal' | 'percentage' | 'fraction'
