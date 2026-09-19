@@ -61,6 +61,42 @@ export const ANNOUNCEMENTS: Announcement[] = [
 ]
 
 export const CHANGELOG: Record<string, ChangelogRelease> = {
+  'v8.XXXX': {
+    Statistics: [
+      'Added support for new data formats (game version 30.5)',
+      'Added headers for new dungeons',
+      'Added <code>Item Level</code> accessor for items',
+      'Updated total achievement and scrapbook counts',
+      'Fixed witch scrolls being in wrong order',
+      'Fixed companion inventories',
+      'Fixed missing last active time',
+      'Fixed import crash when own character was viewed as another player'
+    ],
+    'Dungeon Simulator': [
+      'Added Arcade of the Old Pixel Icons, The Server Room, Workshop of the Hunters of the Undead, Retro TV Legends and The Meeting Room, including their shadow versions',
+      'Added Unwavering Warrior Guild, Inquisitive Mage Guild, Acrobatic Scout Guild and Lively Necromancer Guild class dungeons',
+      'Added all 1000 floors of Twister and Sandstorm',
+      'Fixed enemy runes in several dungeons'
+    ],
+    'Hellevator Simulator': ['Raised floor limit to 600', 'Updated enemies', 'Improved accuracy of enemy stats'],
+    'Raid Simulator': ['Added raids 51 to 150', 'Added names to Hellevator raids', 'Added button to apply current snack to all players', 'Improved accuracy of Hellevator raid enemies'],
+    'Fight Analyzer': ['Fixed damage being applied twice', 'Fixed wrong Bard notes color'],
+    'Pet Calendar': ['Updated Toilet pet aura requirement to 50'],
+    'Gold & Experience': ['Raised maximum level to 999', 'Updated Expeditions gold and experience calculations'],
+    'All Simulators': [
+      'Added option to cancel a running simulation',
+      'Raised maximum character level to 999',
+      'Improved loading speed of characters from Statistics',
+      'Removed Constitution requirement for longer Bard melodies',
+      'Fixed damage when a damage bonus is combined with a class damage multiplier',
+      'Fixed attacks continuing after the enemy was defeated',
+      'Fixed Necromancer minion revive chance',
+      'Fixed snack strength of one character affecting other characters',
+      'Fixed wrong defense type in fight logs'
+    ],
+    Endpoint: ['Added level and class to character selection', 'Added automatic loading of server list and game version', 'Improved error and retry handling', 'Improved capture speed'],
+    'All Tools': ['Improved layout on smaller devices', 'Added support for Plague Doctor', 'Added back Portuguese in-game translations']
+  },
   'v7.4811': {
     Statistics: [
       'Added character and guild links to backup file',
