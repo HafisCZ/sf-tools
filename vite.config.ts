@@ -44,7 +44,7 @@ function legacySite(): Plugin {
       outputDirectory = path.resolve(config.root, config.build.outDir)
     },
     configureServer(server) {
-      // Vite's transforms break the worker source concatenation in src/sim/workers.ts
+      // Serves legacy scripts untouched, Vite would append an inline source map to each
       server.middlewares.use((request, response, next) => {
         const url = request.url ?? ''
         if (url.includes('?') || !/\.(js|css)$/.test(url) || !LEGACY_DIRECTORIES.some((directory) => url.startsWith(`/${directory}/`))) {
@@ -96,10 +96,21 @@ export default defineConfig({
   optimizeDeps: {
     entries: VITE_PAGES.map((page) => `${page}.html`)
   },
+  worker: {
+    rolldownOptions: {
+      output: {
+        minify: false,
+        keepNames: true
+      }
+    }
+  },
   build: {
     sourcemap: true,
     rolldownOptions: {
-      input: Object.fromEntries(VITE_PAGES.map((page) => [page, path.join(ROOT_DIRECTORY, `${page}.html`)]))
+      input: Object.fromEntries(VITE_PAGES.map((page) => [page, path.join(ROOT_DIRECTORY, `${page}.html`)])),
+      output: {
+        keepNames: true
+      }
     }
   }
 })

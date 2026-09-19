@@ -101,6 +101,7 @@ import { type DatabaseProfile } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
 import { type RawPlayer } from '~/data/types'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
+import { CONFIG } from '~/sim/base'
 import { applyCheats, type Cheats } from './cheats'
 import StatisticsIntegrationOptionsDialog from './dialogs/StatisticsIntegrationOptionsDialog.vue'
 

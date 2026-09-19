@@ -112,6 +112,7 @@ import { useLocalize } from '@utils/localization'
 import { type ItemModel } from '~/core/models/item'
 import { type PlayerModel } from '~/core/models/player'
 import { getItemAttributes, getItemName, type ComparisonLine } from '~/pages/inventory/inventory'
+import { ASSASSIN, WARRIOR } from '~/sim/base'
 import ResourceValue from './ResourceValue.vue'
 
 defineOptions({

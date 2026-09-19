@@ -65,6 +65,7 @@ import { useLocalize } from '@utils/localization'
 import { getClassImageUrl, getValueAtPath } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type EditorWeapon, type Fighter, type FighterEditorData } from '~/pages/analyzer/analyzer'
+import { ASSASSIN, CONFIG, RUNE_AUTO_DAMAGE, RUNE_COLD_DAMAGE, RUNE_FIRE_DAMAGE, RUNE_LIGHTNING_DAMAGE, WARRIOR } from '~/sim/base'
 
 defineOptions({
   name: 'FighterEditor'
