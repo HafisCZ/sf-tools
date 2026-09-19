@@ -877,7 +877,7 @@
         "enemy": "Nemico",
         "open": "Dungeon aperti",
         "graph": {
-            "y": "HP boss residui",
+            "y": "HP residui",
             "x": "- Distribuzione per l'ammontare dei tentativi selezionati -",
             "winrate": "Winrate: #{rate}% (#{score} su #{tries})"
         },

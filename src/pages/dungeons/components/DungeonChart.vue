@@ -2,6 +2,16 @@
   <div class="flex flex-col">
     <div v-if="lines.length > 0" class="pb-2.5 text-center text-xs leading-[1.2] font-bold text-[#666]">
       <div v-for="line in lines" :key="line">{{ line }}</div>
+      <div class="flex items-center justify-center gap-4 pt-1">
+        <span class="flex items-center gap-1.5">
+          <span class="size-2 rounded-full bg-[limegreen]" />
+          {{ localize('graph.player') }}
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="size-2 rounded-full bg-[crimson]" />
+          {{ localize('enemy') }}
+        </span>
+      </div>
     </div>
     <div class="flex min-h-0 flex-1 py-1.5">
       <div v-if="props.ticks" class="relative w-12 shrink-0 text-xs text-[#666]">
@@ -10,7 +20,8 @@
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" class="h-full min-w-0 flex-1 overflow-visible">
         <line x1="0" x2="0" y1="0" y2="100" stroke="#2e2e2e" vector-effect="non-scaling-stroke" />
         <line v-for="tick in TICKS" :key="tick" x1="0" x2="100" :y1="100 - tick" :y2="100 - tick" stroke="#2e2e2e" vector-effect="non-scaling-stroke" />
-        <polyline v-if="points" :points="points" fill="none" stroke="white" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+        <polyline v-if="enemyPoints" :points="enemyPoints" fill="none" stroke="crimson" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+        <polyline v-if="playersPoints" :points="playersPoints" fill="none" stroke="limegreen" stroke-width="1.5" vector-effect="non-scaling-stroke" />
       </svg>
     </div>
   </div>
@@ -29,7 +40,7 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Result whose boss health left after each fight is drawn, sorted from lowest
+   * Result whose enemy and player health left after each fight is drawn, sorted from lowest
    */
   result: DungeonResult | null
   /**
@@ -55,13 +66,15 @@ const lines = computed(() => {
   return compact([`${shadow}${getDungeonName(dungeon)}: ${getBossName(result)}`, experience > 0 && `${formatSpacedNumber(experience)} XP`, localize('graph.winrate', { rate: ((100 * score) / iterations).toFixed(2), score: formatSpacedNumber(score), tries: formatSpacedNumber(iterations) })])
 })
 
-const points = computed(() => {
-  const healths = props.result?.healths ?? []
+const enemyPoints = computed(() => toPoints(props.result?.enemyHealths ?? []))
 
+const playersPoints = computed(() => toPoints([...(props.result?.playersHealths ?? [])].reverse()))
+
+function toPoints(healths: number[]) {
   if (healths.length === 0) return ''
 
   const step = 100 / Math.max(1, healths.length - 1)
 
   return healths.map((health, index) => `${index * step},${100 - health * 100}`).join(' ')
-})
+}
 </script>

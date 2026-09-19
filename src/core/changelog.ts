@@ -76,6 +76,7 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Added Arcade of the Old Pixel Icons, The Server Room, Workshop of the Hunters of the Undead, Retro TV Legends and The Meeting Room, including their shadow versions',
       'Added Unwavering Warrior Guild, Inquisitive Mage Guild, Acrobatic Scout Guild and Lively Necromancer Guild class dungeons',
       'Added all 1000 floors of Twister and Sandstorm',
+      'Added player health to the chart',
       'Fixed enemy runes in several dungeons'
     ],
     'Hellevator Simulator': ['Raised floor limit to 600', 'Updated enemies', 'Improved accuracy of enemy stats'],

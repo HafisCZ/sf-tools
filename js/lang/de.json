@@ -877,7 +877,7 @@
         "enemy": "Gegner",
         "open": "Aktuell offene Dungeons",
         "graph": {
-            "y": "übrige Boss HP ",
+            "y": "übrige HP ",
             "x": "- Verteilung der Versuche -",
             "winrate": "Winrate: #{rate}% (#{score} von #{tries})"
         },

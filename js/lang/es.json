@@ -877,7 +877,7 @@
         "enemy": "Enemigo",
         "open": "Mazmorras abiertas actual",
         "graph": {
-            "y": "Vida restande del Jefe",
+            "y": "Vida restande",
             "x": "- Distribución por cantidad de intentos seleccionados -",
             "winrate": "Tasa de victorias: #{rate}% (#{score} de #{tries})"
         },
