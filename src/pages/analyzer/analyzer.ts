@@ -12,19 +12,33 @@ import { NAME_UNIT_COMPANION, NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
 import {
   ASSASSIN,
   ATTACK_TYPE_CATAPULT,
+  ATTACK_TYPE_CRITICAL,
+  ATTACK_TYPE_CRITICAL_SECONDARY,
   ATTACK_TYPE_FIREBALL,
+  ATTACK_TYPE_MINION,
+  ATTACK_TYPE_MINION_CRITICAL,
   ATTACK_TYPE_MINION_SUMMON,
+  ATTACK_TYPE_NORMAL,
+  ATTACK_TYPE_NORMAL_SECONDARY,
   ATTACK_TYPE_REVIVE,
   ATTACK_TYPE_SWOOP,
   ATTACK_TYPE_SWOOP_CRITICAL,
+  ATTACK_TYPE_TINCTURE,
+  ATTACK_TYPE_TINCTURE_CRITICAL,
+  ATTACK_TYPE_TINCTURE_THROW,
+  ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
   ATTACK_TYPES_CRITICAL,
   ATTACK_TYPES_MINION,
   ATTACK_TYPES_SECONDARY,
   ATTACK_TYPES_SPECIAL,
   ATTACK_TYPES_TINCTURE,
   BARD,
+  BERSERKER,
+  clamp,
   CONFIG,
+  DEFENSE_TYPE_BLOCK,
   DEFENSE_TYPE_BLOCK_HEAL,
+  DEFENSE_TYPE_EVADE,
   DEMONHUNTER,
   DRUID,
   EFFECT_TYPE_TINCTURE,
@@ -36,9 +50,11 @@ import {
   NECROMANCER,
   PALADIN,
   PLAGUEDOCTOR,
-  SimulatorModel
+  SimulatorModel,
+  SKIP_TYPE_DEFAULT
 } from '~/sim/base'
 import { type SimulatorConfig } from '~/sim/debug'
+import { type StateConfig } from '~/sim/types'
 
 export type RageDisplayMode = 'decimal' | 'percentage' | 'fraction'
 
@@ -50,7 +66,6 @@ export type AnalyzerOptions = {
   rage_display_mode: RageDisplayMode
   type_display_mode: TypeDisplayMode
   base_damage_error_margin: number
-  damages_sidebar: boolean
   group_sort: GroupSort
 }
 
@@ -117,6 +132,17 @@ export type FighterDamages = {
   ranges: Record<string, DamageRange>
 }
 
+export type ChanceType = (typeof CHANCE_TYPES)[number]
+
+export type ChanceCheck = {
+  type: ChanceType
+  hits: number
+  samples: number
+  expected: number
+  margin: number
+  err: boolean
+}
+
 export type Fighter = {
   ID: number
   Name: string
@@ -139,6 +165,7 @@ export type Fighter = {
   player?: AnalyzerPlayer
   editor?: FighterEditorData
   damages?: FighterDamages
+  chances?: ChanceCheck[]
 }
 
 export type FightEffect = {
@@ -247,6 +274,15 @@ type HashSource = Pick<Fighter, 'Class' | 'Level' | 'Strength' | 'Dexterity' | '
   model?: SimulatorModel
 }
 
+type ChanceCounter = {
+  hits: number
+  samples: number
+  expected: number
+  variance: number
+}
+
+type ChanceCounters = Partial<Record<ChanceType, ChanceCounter>>
+
 export const RAGE_DISPLAY_MODES: RageDisplayMode[] = ['decimal', 'percentage', 'fraction']
 
 export const TYPE_DISPLAY_MODES: TypeDisplayMode[] = ['text', 'text_with_id', 'id']
@@ -320,6 +356,28 @@ const GROUP_SORTERS: Record<GroupSort, (group: FightGroup) => number> = {
 }
 
 const PALADIN_STANCE_STATES: number[] = [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE]
+
+const CHANCE_TYPES = ['first_strike', 'critical', 'skip', 'chain', 'revive', 'swoop', 'stance_change', 'song_1', 'song_2', 'song_3', 'summon', 'minion_1', 'minion_2', 'minion_3', 'minion_revive', 'tincture'] as const
+
+const SONG_CHANCE_TYPES: ChanceType[] = ['song_1', 'song_2', 'song_3']
+
+const MINION_CHANCE_TYPES: ChanceType[] = ['minion_1', 'minion_2', 'minion_3']
+
+const CHANCE_Z = 1.96
+
+const CONTINUITY_CORRECTION = 0.5
+
+const CRITICAL_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ...ATTACK_TYPES_TINCTURE]
+
+const SKIPPABLE_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ATTACK_TYPE_TINCTURE_THROW, ATTACK_TYPE_TINCTURE_THROW_CRITICAL]
+
+const SKIP_DEFENSE_TYPES: number[] = [DEFENSE_TYPE_BLOCK, DEFENSE_TYPE_EVADE, DEFENSE_TYPE_BLOCK_HEAL]
+
+const SWOOP_ATTACK_TYPES: number[] = [ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL]
+
+const TINCTURE_THROW_ATTACK_TYPES: number[] = [ATTACK_TYPE_TINCTURE_THROW, ATTACK_TYPE_TINCTURE_THROW_CRITICAL]
+
+const TINCTURE_POISON_ATTACK_TYPES: number[] = [ATTACK_TYPE_TINCTURE, ATTACK_TYPE_TINCTURE_CRITICAL]
 
 const FIGHTER_WHITELIST = ['ID', 'Name', 'Level', 'TotalHealth', 'Health', 'Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck', 'Class', 'Items'] as const
 
@@ -1072,6 +1130,267 @@ function createDamages(fighter: Fighter, editor: FighterEditorData, model: Simul
   return { samples: 0, ranges }
 }
 
+function countChance(counters: ChanceCounters, type: ChanceType, chance: number, hit: boolean) {
+  const counter = (counters[type] ??= { hits: 0, samples: 0, expected: 0, variance: 0 })
+
+  counter.samples++
+  counter.expected += chance
+  counter.variance += chance * (1 - chance)
+
+  if (hit) {
+    counter.hits++
+  }
+}
+
+function finishChances(counters: ChanceCounters): ChanceCheck[] {
+  return CHANCE_TYPES.flatMap((type) => {
+    const counter = counters[type]
+
+    if (!counter || (counter.expected === 0 && counter.hits === 0)) return []
+
+    const margin = CHANCE_Z * Math.sqrt(counter.variance) + CONTINUITY_CORRECTION
+
+    return [{ type, hits: counter.hits, samples: counter.samples, expected: counter.expected, margin, err: Math.abs(counter.hits - counter.expected) > margin }]
+  })
+}
+
+function splitTurns(rounds: FightRound[]) {
+  const turns: FightRound[][] = []
+
+  for (const round of rounds) {
+    if (round.attackType === ATTACK_TYPE_REVIVE || round.attackType === ATTACK_TYPE_FIREBALL) continue
+
+    const turn = turns.at(-1)
+
+    if (turn && turn[0].attacker.ID === round.attacker.ID && round.attackerState !== FIGHTER_STATE_BERSERKER_RAGE) {
+      turn.push(round)
+    } else {
+      turns.push([round])
+    }
+  }
+
+  return turns
+}
+
+function findFirstMover(turns: FightRound[][]) {
+  const [round] = turns[0]
+
+  return round.attackerState === FIGHTER_STATE_BERSERKER_RAGE ? round.target.ID : round.attacker.ID
+}
+
+function getFirstStrikeChance(fighter: Fighter, opponent: Fighter) {
+  const hasFirstStrike = fighter.player?.Items.Hand.HasEnchantment ?? false
+  const opponentHasFirstStrike = opponent.player?.Items.Hand.HasEnchantment ?? false
+
+  if (hasFirstStrike === opponentHasFirstStrike) {
+    return 0.5
+  }
+
+  return hasFirstStrike ? 1 : 0
+}
+
+function countRoundChances(counters: ChanceCounters, rounds: FightRound[], fighter: Fighter, model: SimulatorModel, isSpecialBlocked: boolean) {
+  const { ReviveChance = 0, ReviveChanceDecay = 0, ReviveMax = 0 } = model.Config
+
+  rounds.forEach((round, index) => {
+    if (round.attacker.ID === fighter.ID && CRITICAL_ATTACK_TYPES.includes(round.attackType)) {
+      const state = findAttackerState(round, model)
+
+      if (state) {
+        countChance(counters, 'critical', state.CriticalChance, round.attackTypeCritical)
+      }
+    } else if (round.target.ID === fighter.ID) {
+      if (SKIPPABLE_ATTACK_TYPES.includes(round.attackType)) {
+        const state = findTargetState(round, model)
+
+        if (state) {
+          countChance(counters, 'skip', model.Config.SkipType === SKIP_TYPE_DEFAULT ? state.SkipChance : 0, SKIP_DEFENSE_TYPES.includes(round.defenseType))
+        }
+      }
+
+      if (fighter.Class === DEMONHUNTER && round.targetHealth <= 0 && round.attackType !== ATTACK_TYPE_REVIVE) {
+        const deaths = round.targetDeaths ?? 0
+        const nextRound = rounds.at(index + 1)
+
+        countChance(counters, 'revive', isSpecialBlocked || deaths >= ReviveMax ? 0 : Math.max(0, ReviveChance - ReviveChanceDecay * deaths), nextRound?.attackType === ATTACK_TYPE_REVIVE && nextRound.attacker.ID === fighter.ID)
+      }
+    }
+  })
+}
+
+function countChains(counters: ChanceCounters, turns: FightRound[][], fighter: Fighter, model: SimulatorModel) {
+  const chance = model.Data.SkipChance
+
+  let chains = 0
+
+  for (const [round] of turns) {
+    if (round.attacker.ID !== fighter.ID) {
+      countChance(counters, 'chain', chains < model.Config.SkipLimit ? chance : 0, false)
+
+      chains = 0
+    } else if (round.attackerState === FIGHTER_STATE_BERSERKER_RAGE) {
+      countChance(counters, 'chain', chains < model.Config.SkipLimit ? chance : 0, true)
+
+      chains++
+    }
+  }
+}
+
+function countSwoops(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
+  const { SwoopChance = 0, SwoopChanceMin = 0, SwoopChanceMax = 0, SwoopChanceDecay = 0 } = model.Config
+
+  let chance = SwoopChance
+
+  for (const [round] of turns) {
+    if (round.attackerState === FIGHTER_STATE_DRUID_RAGE) continue
+
+    const hasSwooped = SWOOP_ATTACK_TYPES.includes(round.attackType)
+
+    countChance(counters, 'swoop', isSpecialBlocked ? 0 : chance, hasSwooped)
+
+    if (hasSwooped) {
+      chance = clamp(chance - SwoopChanceDecay, SwoopChanceMin, SwoopChanceMax)
+    }
+  }
+}
+
+function countStanceChanges(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
+  let stance = model.Config.StanceInitial ?? 0
+
+  for (const [round] of turns) {
+    const nextStance = PALADIN_STANCE_STATES.indexOf(round.attackerState)
+
+    if (nextStance === -1) continue
+
+    countChance(counters, 'stance_change', isSpecialBlocked ? 0 : (model.Data.Stances?.[stance]?.StanceChangeChance ?? 0), nextStance !== stance)
+
+    stance = nextStance
+  }
+}
+
+function countSongs(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel) {
+  const { EffectBaseDuration = [], EffectBaseChance = [] } = model.Config
+
+  const totalChance = EffectBaseChance.reduce((total, chance) => total + chance, 0)
+
+  for (const [round] of turns) {
+    const effect = round.attackerEffects.at(0)
+
+    if (effect && effect.duration === EffectBaseDuration[effect.tier - 1]) {
+      SONG_CHANCE_TYPES.forEach((type, index) => countChance(counters, type, (EffectBaseChance[index] ?? 0) / totalChance, effect.tier === index + 1))
+    }
+  }
+}
+
+function countSummons(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
+  const { SummonChance = 0, Summons = [] } = model.Config
+
+  let minion: StateConfig | undefined
+  let duration = 0
+  let revives = 0
+  let isReviving = false
+
+  for (const turn of turns) {
+    const isSummon = turn[0].attackType === ATTACK_TYPE_MINION_SUMMON
+    const hasMinionAttack = turn.some((round) => ATTACK_TYPES_MINION.includes(round.attackType))
+
+    if (minion && isReviving) {
+      const hasRevived = !isSummon && turn[0].attackerEffects.length > 0
+
+      countChance(counters, 'minion_revive', minion.ReviveChance ?? 0, hasRevived)
+
+      isReviving = false
+
+      if (hasRevived) {
+        duration = minion.ReviveDuration ?? 0
+        revives--
+      } else {
+        minion = undefined
+      }
+    }
+
+    if (!minion || isSummon) {
+      countChance(counters, 'summon', isSpecialBlocked || minion ? 0 : SummonChance, isSummon)
+
+      if (isSummon) {
+        const tier = turn[0].attackerEffects.at(0)?.tier ?? 0
+
+        if (tier > 0) {
+          MINION_CHANCE_TYPES.forEach((type, index) => countChance(counters, type, 1 / MINION_CHANCE_TYPES.length, tier === index + 1))
+        }
+
+        minion = Summons.at(tier - 1)
+        duration = minion?.Duration ?? 0
+        revives = minion?.ReviveCount ?? 0
+      }
+    }
+
+    if (minion && hasMinionAttack) {
+      duration--
+
+      if (duration <= 0) {
+        if (revives > 0) {
+          isReviving = true
+        } else {
+          minion = undefined
+        }
+      }
+    }
+  }
+}
+
+function countTinctures(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
+  for (const [round] of turns) {
+    if (TINCTURE_POISON_ATTACK_TYPES.includes(round.attackType)) continue
+
+    countChance(counters, 'tincture', isSpecialBlocked ? 0 : (model.Config.TinctureChance ?? 0), TINCTURE_THROW_ATTACK_TYPES.includes(round.attackType))
+  }
+}
+
+function analyzeChances(fights: GroupFight[], fighter: Fighter, model: SimulatorModel, opponent: Fighter, opponentModel: SimulatorModel) {
+  const counters: ChanceCounters = {}
+
+  const isSpecialBlocked = opponentModel.Config.BypassSpecial ?? false
+  const firstStrikeChance = getFirstStrikeChance(fighter, opponent)
+
+  for (const { rounds } of fights) {
+    const turns = splitTurns(rounds)
+
+    if (turns.length === 0) continue
+
+    const ownTurns = turns.filter(([round]) => round.attacker.ID === fighter.ID)
+
+    countChance(counters, 'first_strike', firstStrikeChance, findFirstMover(turns) === fighter.ID)
+    countRoundChances(counters, rounds, fighter, model, isSpecialBlocked)
+
+    switch (fighter.Class) {
+      case BERSERKER:
+        // Two Berserkers can skip each other's turns without any logged round
+        if (opponent.Class !== BERSERKER) {
+          countChains(counters, turns, fighter, model)
+        }
+        break
+      case DRUID:
+        countSwoops(counters, ownTurns, model, isSpecialBlocked)
+        break
+      case PALADIN:
+        countStanceChanges(counters, ownTurns, model, isSpecialBlocked)
+        break
+      case BARD:
+        countSongs(counters, ownTurns, model)
+        break
+      case NECROMANCER:
+        countSummons(counters, ownTurns, model, isSpecialBlocked)
+        break
+      case PLAGUEDOCTOR:
+        countTinctures(counters, ownTurns, model, isSpecialBlocked)
+        break
+    }
+  }
+
+  return finishChances(counters)
+}
+
 export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, editorB: FighterEditorData, variance: number) {
   const { fighterA, fighterB } = group
 
@@ -1079,8 +1398,8 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
   fighterB.editor = editorB
 
   // Fetch data and initialize models
-  const model1 = SimulatorModel.create(0, editorA)
-  const model2 = SimulatorModel.create(1, editorB)
+  const model1 = SimulatorModel.create(0, { ...editorA, BlockChance: fighterA.player?.BlockChance })
+  const model2 = SimulatorModel.create(1, { ...editorB, BlockChance: fighterB.player?.BlockChance })
 
   // Initialize models
   SimulatorModel.initializeFighters(model1, model2)
@@ -1156,6 +1475,9 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
 
   fighterA.damages = damagesA
   fighterB.damages = damagesB
+
+  fighterA.chances = analyzeChances(group.fights, fighterA, model1, fighterB, model2)
+  fighterB.chances = analyzeChances(group.fights, fighterB, model2, fighterA, model1)
 }
 
 function cleanCopy<TObject, TKey extends keyof TObject>(object: TObject, whitelist: readonly TKey[]) {

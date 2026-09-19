@@ -826,6 +826,7 @@
             "editable_data": "Editable data"
         },
         "players": "Players",
+        "damages_and_chances": "Damage & chances",
         "preview": "Fight preview",
         "export": "Export fights",
         "autofill": "Fill editable data in from predefined list",
@@ -875,6 +876,24 @@
                 "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
+            },
+            "chances": {
+                "first_strike": "First strike",
+                "critical": "Critical chance",
+                "skip": "Block / evade chance",
+                "chain": "Extra attack chance",
+                "revive": "Revive chance",
+                "swoop": "Swoop chance",
+                "stance_change": "Stance change chance",
+                "song_1": "Song level 1",
+                "song_2": "Song level 2",
+                "song_3": "Song level 3",
+                "summon": "Summon chance",
+                "minion_1": "Skeleton summoned",
+                "minion_2": "Hound summoned",
+                "minion_3": "Golem summoned",
+                "minion_revive": "Skeleton revive chance",
+                "tincture": "Tincture throw chance"
             }
         }
     },

@@ -36,11 +36,6 @@
           <SFIcon name="chalkboard" />
         </SFButton>
       </SFTooltip>
-      <SFTooltip :content="localize('sidebar.toggles.damages')">
-        <SFButton variant="ghost" icon :aria-label="localize('sidebar.toggles.damages')" :aria-pressed="damagesSidebar" :class="{ 'text-accent!': damagesSidebar }" @click="toggleDamages">
-          <SFIcon name="bars-staggered" />
-        </SFButton>
-      </SFTooltip>
       <SFTooltip :content="localize('gladiator')">
         <SFButton variant="ghost" icon :aria-label="localize('gladiator')" :aria-pressed="noGladiatorReduction" :class="{ 'text-accent!': noGladiatorReduction }" @click="toggleGladiator">
           <SFIcon name="heart-crack" />
@@ -85,6 +80,30 @@
         <FighterEditor ref="editor-a-ref" @change="updatePreview" @autofill="openAutofill(0)" />
         <FighterEditor ref="editor-b-ref" @change="updatePreview" @autofill="openAutofill(1)" />
       </div>
+
+      <template v-if="analysis">
+        <SFHeading level="3" class="mt-6 text-center">{{ localize('damages_and_chances') }}</SFHeading>
+        <div class="mt-[14px] grid grid-cols-2 gap-7">
+          <div v-for="fighter in [analysis.group.fighterA, analysis.group.fighterB]" :key="fighter.ID" class="grid grid-cols-2 content-start gap-[14px] rounded-md border border-line bg-surface p-[14px]">
+            <SFInput v-for="range in getRanges(fighter)" :key="range.type" :model-value="`${range.min} - ${range.max}`" readonly class="text-center" :class="{ 'text-[orangered]!': range.err }">
+              <template #label>
+                <span class="flex" :class="{ 'text-[orangered]': range.err }">
+                  <span>{{ formatRangeLabel(range) }}</span>
+                  <span v-if="range.cnt !== undefined" class="ml-auto">({{ range.cnt }} / {{ fighter.damages?.samples }})</span>
+                </span>
+              </template>
+            </SFInput>
+            <SFInput v-for="chance in fighter.chances" :key="chance.type" :model-value="formatChanceValue(chance)" readonly class="text-center" :class="{ 'text-[orangered]!': chance.err }">
+              <template #label>
+                <span class="flex" :class="{ 'text-[orangered]': chance.err }">
+                  <span>{{ formatChanceLabel(chance) }}</span>
+                  <span class="ml-auto">({{ chance.hits }} / {{ chance.samples }})</span>
+                </span>
+              </template>
+            </SFInput>
+          </div>
+        </div>
+      </template>
 
       <SFHeading level="3" class="mt-6 text-center">{{ localize('preview') }}</SFHeading>
       <div class="mt-[14px] flex items-end gap-2">
@@ -158,25 +177,6 @@
         </SFTable>
       </div>
     </div>
-
-    <div v-if="damagesSidebar && analysis" class="absolute top-[calc(50px+9.7em)] right-0 z-[2] w-[300px] rounded-l border border-r-0 border-line bg-page pb-1">
-      <div class="flex flex-col gap-[2.5em] p-4">
-        <div v-for="fighter in [analysis.group.fighterA, analysis.group.fighterB]" :key="fighter.ID" class="flex flex-col gap-4">
-          <SFHeading level="3" class="flex items-center justify-center gap-2">
-            <img :src="getClassImageUrl(fighter.Class)" alt="" class="size-[30px]" />
-            <span class="mt-1">{{ getFighterName(fighter) }}</span>
-          </SFHeading>
-          <SFInput v-for="range in getRanges(fighter)" :key="range.type" :model-value="`${range.min} - ${range.max}`" readonly class="text-center" :class="{ 'text-[orangered]!': range.err }">
-            <template #label>
-              <span class="flex" :class="{ 'text-[orangered]': range.err }">
-                <span>{{ formatRangeLabel(range) }}</span>
-                <span v-if="range.cnt !== undefined" class="ml-auto">({{ range.cnt }} / {{ fighter.damages?.samples }})</span>
-              </span>
-            </template>
-          </SFInput>
-        </div>
-      </div>
-    </div>
   </Page>
 </template>
 
@@ -207,7 +207,26 @@ import Page from '~/pages/Page.vue'
 import { ATTACK_TYPE_FIREBALL, ATTACK_TYPE_REVIVE, CONFIG, DEFENSE_TYPE_BLOCK_HEAL, FLAGS } from '~/sim/base'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import { receiveSimulatorBroadcast, simulatorConfig, type SimulatorConfig } from '~/sim/debug'
-import { analyzeGroup, exportFights, getFighterName, groupFights, importHar, prepareImportedFights, RANGE_TYPES, type AnalyzerOptions, type AnalyzerPlayer, type DamageRange, type Fight, type Fighter, type FightFile, type FightGroup, type FightRound, type GroupFight, type RageDisplayMode } from './analyzer'
+import {
+  analyzeGroup,
+  exportFights,
+  getFighterName,
+  groupFights,
+  importHar,
+  prepareImportedFights,
+  RANGE_TYPES,
+  type AnalyzerOptions,
+  type AnalyzerPlayer,
+  type ChanceCheck,
+  type DamageRange,
+  type Fight,
+  type Fighter,
+  type FightFile,
+  type FightGroup,
+  type FightRound,
+  type GroupFight,
+  type RageDisplayMode
+} from './analyzer'
 import FighterEditor from './components/FighterEditor.vue'
 import FighterState from './components/FighterState.vue'
 import AnalyzerAutofillDialog from './dialogs/AnalyzerAutofillDialog.vue'
@@ -239,13 +258,11 @@ const options = new OptionsHandler<AnalyzerOptions>('analyzer', {
   rage_display_mode: 'decimal',
   type_display_mode: 'text',
   base_damage_error_margin: 1,
-  damages_sidebar: false,
   group_sort: 'fight_count'
 })
 
 const rageDisplayMode = ref(options.rage_display_mode)
 const typeDisplayMode = ref(options.type_display_mode)
-const damagesSidebar = ref(options.damages_sidebar)
 
 const noGladiatorReduction = ref(FLAGS.NoGladiatorReduction)
 const maximumDamageReduction = ref(FLAGS.MaximumDamageReduction)
@@ -491,6 +508,16 @@ function formatRangeLabel(range: SidebarRange) {
   return `${localize(`sidebar.damages.${range.type}`)}${error ? ' !' : ''}${error & 1 ? ' < min' : ''}${error & 2 ? ' > max' : ''}`
 }
 
+function formatChanceLabel(chance: ChanceCheck) {
+  return `${localize(`sidebar.chances.${chance.type}`)}${chance.err ? ' !' : ''}`
+}
+
+function formatChanceValue(chance: ChanceCheck) {
+  const formatPercentage = (value: number) => ((100 * value) / chance.samples).toFixed(1)
+
+  return `${formatPercentage(chance.hits)}% (${formatPercentage(chance.expected)} ± ${formatPercentage(chance.margin)}%)`
+}
+
 function clear() {
   reset()
   render()
@@ -575,12 +602,6 @@ function simulateGroup() {
   })
 
   window.open(`${window.location.origin}/simulator.html?debug&broadcast=${broadcast.token}`, '_blank')
-}
-
-function toggleDamages() {
-  damagesSidebar.value = !damagesSidebar.value
-
-  options.damages_sidebar = damagesSidebar.value
 }
 
 function toggleGladiator() {

@@ -33,17 +33,15 @@ defineOptions({
   name: 'AnalyzerOptionsDialog'
 })
 
-type DialogOptions = Omit<AnalyzerOptions, 'damages_sidebar'>
-
 const props = defineProps<{
   /**
    * Values the fields start with
    */
-  options: DialogOptions
+  options: AnalyzerOptions
 }>()
 
 const emit = defineEmits<{
-  close: [options?: DialogOptions]
+  close: [options?: AnalyzerOptions]
 }>()
 
 const localize = useLocalize('dialog.analyzer_options')
