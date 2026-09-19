@@ -22,7 +22,7 @@ module Synchronize
     'en' => 'en',
     'de' => 'de',
     'pl' => 'pl',
-    # 'pt' => 'pt',
+    'pt' => 'pt',
     'cs' => 'cs',
     'fr' => 'fr',
     'it' => 'it',
