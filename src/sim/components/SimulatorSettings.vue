@@ -2,7 +2,7 @@
   <div class="flex items-center gap-[5px]">
     <div class="min-w-0 flex-1">
       <SFTooltip :content="localize('threads')">
-        <SFNumber ref="threads-ref" v-model="threads" :aria-label="localize('threads')" :min="1" :step="1" centered />
+        <SFNumber ref="threads-ref" v-model="threads" :aria-label="localize('threads')" :min="1" :max="64" :step="1" centered />
       </SFTooltip>
     </div>
     <span>x</span>
