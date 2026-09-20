@@ -1,11 +1,13 @@
 <template>
   <div class="flex flex-col gap-2">
+    <SFTabs v-if="slots.equipment" v-model="mode" :options="modeOptions" class="justify-end" />
+
     <div class="flex flex-col gap-[14px] rounded-md border border-line bg-surface p-2">
       <div v-if="!props.nameHidden" class="flex items-end gap-2">
         <div class="min-w-0 flex-1">
           <SFInput ref="name-ref" v-model="name" :label="localize('name')" :readonly="props.nameReadonly" />
         </div>
-        <SFTooltip v-if="!props.companion" :content="localize('smart_change')">
+        <SFTooltip v-if="!props.companion && !isCharacterMode" :content="localize('smart_change')">
           <SFDropdown :items="changeClassItems" :label="localize('smart_change')" variant="outline" float="left">
             <SFIcon name="arrow-right-arrow-left" />
           </SFDropdown>
@@ -17,14 +19,14 @@
         </SFTooltip>
       </div>
       <div class="grid grid-cols-2 gap-[14px]">
-        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion" />
+        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion || isCharacterMode" />
         <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered :readonly="props.companion" />
       </div>
-      <div v-if="props.snacks" class="grid grid-cols-2 gap-[14px]">
+      <div v-if="props.snacks" v-show="!isCharacterMode" class="grid grid-cols-2 gap-[14px]">
         <SFSelect ref="snack-ref" v-model="snack" :label="localize('snack')" :options="snackOptions" />
         <SFSelect ref="snack-potency-ref" v-model="snackPotency" :label="localize('snack_potency')" :options="SNACK_POTENCY_OPTIONS" />
       </div>
-      <div class="grid grid-cols-5 gap-[14px]">
+      <div v-show="!isCharacterMode" class="grid grid-cols-5 gap-[14px]">
         <SFNumber ref="strength-ref" v-model="strength" :label="localize.global('general.attribute1')" required :min="1" :step="1" centered />
         <SFNumber ref="dexterity-ref" v-model="dexterity" :label="localize.global('general.attribute2')" required :min="1" :step="1" centered />
         <SFNumber ref="intelligence-ref" v-model="intelligence" :label="localize.global('general.attribute3')" required :min="1" :step="1" centered />
@@ -33,7 +35,9 @@
       </div>
     </div>
 
-    <div v-for="(weapon, index) in visibleWeapons" :key="index" class="grid grid-cols-5 gap-[14px] rounded-md border border-line bg-surface p-2">
+    <slot v-if="isCharacterMode" name="equipment" />
+
+    <div v-for="(weapon, index) in visibleWeapons" v-show="!isCharacterMode" :key="index" class="grid grid-cols-5 gap-[14px] rounded-md border border-line bg-surface p-2">
       <SFNumber ref="weapon-refs" v-model="weapon.min" :label="localize('min')" :placeholder="localize('min_placeholder')" :min="0" :step="1" centered />
       <SFNumber ref="weapon-refs" v-model="weapon.max" :label="localize('max')" :placeholder="localize('max_placeholder')" :min="0" :step="1" centered />
       <SFSelect ref="weapon-refs" v-model="weapon.enchantment" :label="localize('weapon_enchant')" :options="yesNoOptions" />
@@ -44,7 +48,7 @@
       </div>
     </div>
 
-    <div class="grid auto-cols-fr grid-flow-col gap-[14px] rounded-md border border-line bg-surface p-2">
+    <div v-show="!isCharacterMode" class="grid auto-cols-fr grid-flow-col gap-[14px] rounded-md border border-line bg-surface p-2">
       <SFNumber ref="armor-ref" v-model="armor" :label="localize('armor')" :placeholder="localize('armor_placeholder')" :min="0" :step="1" centered />
       <SFNumber v-if="hasBlockChance" ref="block-chance-ref" v-model="blockChance" :label="localize('block')" placeholder="0 - 25" :min="0" :max="25" :step="1" centered />
       <SFNumber ref="resistance-fire-ref" v-model="resistanceFire" :label="localize('fire')" placeholder="0 - 75" :min="0" :max="75" :step="1" centered />
@@ -54,26 +58,27 @@
 
     <div class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
       <SFNumber ref="portal-health-ref" v-model="portalHealth" :label="localize('portal_health')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered :readonly="props.companion" />
-      <SFNumber ref="rune-health-ref" v-model="runeHealth" :label="localize('rune_health')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered />
-      <SFSelect ref="life-potion-ref" v-model="lifePotion" :label="localize('life_potion')" :options="lifePotionOptions" :readonly="props.companion" />
-    </div>
-
-    <div class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
       <SFNumber ref="portal-damage-ref" v-model="portalDamage" :label="localize('portal_damage')" placeholder="0 - 50" :min="0" :max="50" :step="1" centered :readonly="props.companion" />
       <SFNumber ref="gladiator-ref" v-model="gladiator" :label="localize('gladiator')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered :readonly="props.companion" />
+    </div>
+
+    <div v-show="!isCharacterMode" class="grid grid-cols-3 gap-[14px] rounded-md border border-line bg-surface p-2">
+      <SFNumber ref="rune-health-ref" v-model="runeHealth" :label="localize('rune_health')" placeholder="0 - 15" :min="0" :max="15" :step="1" centered />
+      <SFSelect ref="life-potion-ref" v-model="lifePotion" :label="localize('life_potion')" :options="lifePotionOptions" :readonly="props.companion" />
       <SFSelect ref="hand-enchantment-ref" v-model="handEnchantment" :label="localize('hand_enchant')" :options="yesNoOptions" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, toRef, useTemplateRef, type Ref } from 'vue'
+import { computed, reactive, ref, toRef, useTemplateRef, watch, type Ref } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFDropdown from '@library/SFDropdown.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFInput from '@library/SFInput.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFSelect from '@library/SFSelect.vue'
+import SFTabs from '@library/SFTabs.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { isSelectable, type DropdownItem, type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
@@ -109,10 +114,25 @@ const props = defineProps<{
    * Locks the class, level, portal, gladiator and life potion fields, and hides the block chance and class change
    */
   companion?: boolean
+  /**
+   * Shows the button that replaces the fields with the equipment slot
+   */
+  equipment?: boolean
 }>()
 
 const emit = defineEmits<{
   copy: [player: PlayerModel]
+  /**
+   * The item view was opened or closed
+   */
+  view: [open: boolean]
+}>()
+
+const slots = defineSlots<{
+  /**
+   * Shown in place of the fields while the character tab is on, and the reason the tabs show at all
+   */
+  equipment?(): unknown
 }>()
 
 defineExpose({
@@ -122,6 +142,8 @@ defineExpose({
     return isValid.value
   }
 })
+
+type EditorMode = 'raw' | 'character'
 
 type EditorField = {
   path: string
@@ -142,6 +164,15 @@ type WeaponFields = {
 const SNACK_POTENCY_OPTIONS: SelectOption[] = sequence(11).map((value) => ({ value: String(value * 2), label: `${value * 2} %` }))
 
 const localize = useLocalize('editor')
+
+const mode = ref<EditorMode>('raw')
+
+const isCharacterMode = computed(() => props.equipment === true && mode.value === 'character')
+
+const modeOptions = computed<SelectOption<EditorMode>[]>(() => [
+  { value: 'raw', label: localize('mode.raw') },
+  { value: 'character', label: localize('mode.character'), disabled: !props.equipment }
+])
 
 const name = ref('')
 const classId = ref(String(WARRIOR))
@@ -370,6 +401,17 @@ function fill(data: unknown) {
     }
   }
 }
+
+watch(
+  () => props.equipment,
+  (value) => {
+    if (!value) {
+      mode.value = 'raw'
+    }
+  }
+)
+
+watch(isCharacterMode, (value) => emit('view', value))
 
 function changeClass(newClass: CharacterClass) {
   if (isValid.value && Number(classId.value) !== newClass) {

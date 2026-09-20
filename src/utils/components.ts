@@ -194,6 +194,10 @@ export type SelectOption<TValue = string> =
        * Shows the label in the accent color
        */
       accent?: boolean
+      /**
+       * Shows the option greyed out and keeps it from being picked
+       */
+      disabled?: boolean
     }
   | SelectHeader
   | SelectDivider

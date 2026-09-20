@@ -1,5 +1,6 @@
 import { type RawGroup, type RawPlayer } from '~/data/types'
-import { ASSASSIN, CONFIG } from '~/sim/base'
+import { ASSASSIN, BARD, BATTLEMAGE, CONFIG, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { type ItemModel } from './item'
 import { type PlayerModel } from './player'
 
 type PowerEstimateModel = Record<MainAttribute | 'Constitution', { Total: number }> & {
@@ -394,6 +395,54 @@ export class ModelUtils {
     copy.fortressrank = copy.fortressrank || player.save[583]
 
     return copy as RawPlayer
+  }
+
+  static morphItemForCharacter(playerClass: CharacterClass, index: number, item: ItemModel) {
+    if (index === 1) {
+      if (playerClass === ASSASSIN && item.Class === WARRIOR && item.Type === 1) {
+        // Assassin weapons -> Dexterity into Strength
+        return item.morph(2, 1)
+      } else if (playerClass === DEMONHUNTER && item.Class === WARRIOR && item.Type > 1) {
+        // DemonHunter equipment -> Dexterity into Strenght
+        return item.morph(2, 1)
+      } else if (playerClass === PLAGUEDOCTOR && item.Class === WARRIOR && item.Type === 1) {
+        // When player is Plague Doctor and it's Warrior equipment -> Dexterity into Strength
+        return item.morph(2, 1)
+      }
+    } else if (index === 2) {
+      if (playerClass === BATTLEMAGE && item.Class === MAGE && item.Type > 1) {
+        // BattleMage equipment -> Strength into Intelligence
+        return item.morph(1, 3)
+      } else if (playerClass === PLAGUEDOCTOR && item.Class === MAGE && item.Type > 1) {
+        // When player is Plague Doctor and it's Mage equipment -> Dexterity into Intelligence
+        return item.morph(2, 3)
+      }
+    } else if (index === 3) {
+      if (playerClass === DRUID && item.Class === SCOUT && item.Type > 1) {
+        // Druid equipment -> Intelligence into Dexterity
+        return item.morph(3, 2)
+      } else if (playerClass === BARD && item.Class === SCOUT && item.Type > 1) {
+        // Bard equipment -> Intelligence into Dexterity
+        return item.morph(3, 2)
+      }
+    } else if (playerClass === BATTLEMAGE && item.Class === MAGE && item.Type > 1) {
+      // BattleMage equipment -> Intelligence to Strength
+      return item.morph(3, 1)
+    } else if (playerClass === ASSASSIN && item.Class === WARRIOR && item.Type === 1) {
+      // Assassin weapons -> Strength to Dexterity
+      return item.morph(1, 2)
+    } else if (playerClass === DEMONHUNTER && item.Class === WARRIOR && item.Type > 1) {
+      // DemonHunter equipment -> Strength to Dexterity
+      return item.morph(1, 2)
+    } else if (playerClass === DRUID && item.Class === SCOUT && item.Type > 1) {
+      // Druid equipment -> Dexterity to Intelligence
+      return item.morph(2, 3)
+    } else if (playerClass === BARD && item.Class === SCOUT && item.Type > 1) {
+      // Bard equipment -> Dexterity to Intelligence
+      return item.morph(2, 3)
+    }
+
+    return item
   }
 
   static #toSimulatorData(model: PlayerModel | SimulatorData): SimulatorData {

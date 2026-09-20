@@ -77,6 +77,7 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Added Unwavering Warrior Guild, Inquisitive Mage Guild, Acrobatic Scout Guild and Lively Necromancer Guild class dungeons',
       'Added all 1000 floors of Twister and Sandstorm',
       'Added player health to the chart',
+      'Added character view that edits equipment, item runes, gems, enchantments, potions and pets instead of raw values',
       'Fixed enemy runes in several dungeons'
     ],
     'Hellevator Simulator': ['Raised floor limit to 600', 'Updated enemies', 'Improved accuracy of enemy stats'],

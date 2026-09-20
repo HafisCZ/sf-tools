@@ -16,7 +16,11 @@
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
-      <PlayerEditor ref="editor-ref" name-readonly :companion="selectedIndex > 0" @copy="copyPlayer" />
+      <PlayerEditor ref="editor-ref" name-readonly :companion="selectedIndex > 0" :equipment="source !== null" @copy="copyPlayer" @view="changeItemView">
+        <template #equipment>
+          <EquipmentEditor v-if="source" :source="source" :index="selectedIndex" :swaps="swaps[selectedIndex]" :character="characterState" @change="applySwaps" />
+        </template>
+      </PlayerEditor>
 
       <div>
         <div class="grid grid-cols-16 items-center gap-[14px]">
@@ -102,17 +106,20 @@ import { SELF_PROFILE } from '~/core/profiles'
 import { Site } from '~/core/site'
 import { DatabaseManager } from '~/data/database-manager'
 import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
+import { type Cheats } from '~/integration/cheats'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
 import Page from '~/pages/Page.vue'
 import { WARRIOR } from '~/sim/base'
+import EquipmentEditor from '~/sim/components/EquipmentEditor.vue'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, NEXT_DUNGEONS, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type Dungeon, type DungeonEntry, type DungeonResult, type DungeonRunes } from '~/sim/data/dungeons'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
 import { WorkerBatch } from '~/sim/workers'
 import DungeonChart from './components/DungeonChart.vue'
 import DungeonOptionsDialog from './dialogs/DungeonOptionsDialog.vue'
@@ -165,6 +172,8 @@ const COMPANION_CLASSES: CharacterClass[] = [1, 2, 3]
 
 const SHARED_PATHS = ['Level', 'Fortress.Gladiator', 'Dungeons.Player', 'Dungeons.Group', 'Potions.Life']
 
+const REBUILD_PATHS = SHARED_PATHS.filter((path) => path !== 'Potions.Life')
+
 const SHADOW_COLOR = '#dec0ff'
 
 const RUNE_LETTERS = ['F', 'C', 'L']
@@ -187,6 +196,11 @@ const openBosses = shallowRef<DungeonEntry[]>([])
 
 const players = shallowRef<(PlayerModel | null)[]>([null, null, null, null])
 const selectedIndex = ref(0)
+
+const source = shallowRef<PlayerModel | null>(null)
+const swaps = shallowRef<EquipmentSwaps[]>([{}, {}, {}, {}])
+const characterState = shallowRef<CharacterState>(createCharacterState(new PlayerModel()))
+const isItemView = ref(false)
 
 const chartResult = shallowRef<DungeonResult | null>(null)
 const isChartOutdated = ref(false)
@@ -287,8 +301,8 @@ function hasFighters(dungeons: Dungeon[]) {
   return player !== null && (dungeons.every((dungeon) => !dungeon.companions) || companions.every((companion) => companion !== null))
 }
 
-function copySharedValues(target: PlayerModel, source: PlayerModel) {
-  for (const path of SHARED_PATHS) {
+function copySharedValues(target: PlayerModel, source: PlayerModel, paths = SHARED_PATHS) {
+  for (const path of paths) {
     setValueAtPath(target, path, getValueAtPath(source, path))
   }
 }
@@ -347,6 +361,10 @@ async function selectFighter(index: number) {
   fillEditor()
 
   isFillPending = false
+
+  if (isItemView.value) {
+    applySwaps(swaps.value[index], characterState.value)
+  }
 }
 
 function selectDungeon(value: string) {
@@ -395,16 +413,71 @@ function insertFighters(data: unknown) {
     return
   }
 
+  source.value = null
+  swaps.value = [{}, {}, {}, {}]
+  isItemView.value = false
+
   fillEditor()
 
   isChartOutdated.value = true
 }
 
-function insertPlayer(entry: PlayerModel) {
+function insertPlayer(entry: PlayerModel, cheats?: Cheats) {
   insertFighters(ModelUtils.toSimulatorData(entry, true))
+
+  // Cheats are applied on top of the raw data the swap rebuilds from, so the two can not be combined
+  source.value = cheats || !entry.Inventory ? null : entry
+
+  characterState.value = createCharacterState(entry)
 
   openBosses.value = entry.Dungeons ? getOpenBosses(entry.Dungeons) : []
   openIndex.value = ''
+}
+
+function changeItemView(open: boolean) {
+  isItemView.value = open
+
+  if (open) {
+    applySwaps(swaps.value[selectedIndex.value], withLifePotion(characterState.value, players.value[selectedIndex.value]))
+  }
+}
+
+// A life potion set in the data view moves into a free potion slot, so switching over does not drop it
+function withLifePotion(state: CharacterState, fighter: PlayerModel | null) {
+  const size = fighter?.Potions?.Life ?? 0
+  const free = state.potions.findIndex((potion) => potion.type === 0)
+
+  if (!size || free === -1 || state.potions.some((potion) => potion.type === LIFE_POTION_TYPE)) return state
+
+  return { ...state, potions: state.potions.map((potion, index) => (index === free ? { type: LIFE_POTION_TYPE, size } : potion)) }
+}
+
+function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
+  const player = source.value
+
+  if (!player) return
+
+  const index = selectedIndex.value
+
+  swaps.value = swaps.value.map((entry, position) => (position === index ? entries : entry))
+  characterState.value = character
+
+  const rebuilt = applyEquipmentSwaps(player, swaps.value, character)
+  const list = ModelUtils.toSimulatorData(rebuilt, true)
+  const fighter = preparePlayerData(Array.isArray(list) ? list[index] : list)
+
+  const current = players.value[index]
+
+  // Everything the items, pets and potions decide comes back from the imported character, the rest stays as it was typed
+  if (current) {
+    copySharedValues(fighter, current, REBUILD_PATHS)
+  }
+
+  updatePlayers(players.value.map((entry, position) => (position === index ? fighter : entry)))
+
+  fillEditor()
+
+  isChartOutdated.value = true
 }
 
 function handlePaste(value: unknown) {

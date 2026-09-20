@@ -2,9 +2,10 @@ import { formatSpacedNumber } from '@utils/formatting'
 import { globalLocalize } from '@utils/localization'
 import { ItemModel } from '~/core/models/item'
 import { type PlayerModel } from '~/core/models/player'
+import { ModelUtils } from '~/core/models/utils'
 import { type BlacksmithResources } from '~/data/types'
 import { Loca } from '~/playa/items'
-import { ASSASSIN, BARD, BATTLEMAGE, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { ASSASSIN, BATTLEMAGE, WARRIOR } from '~/sim/base'
 
 export type InventoryPlayer = PlayerModel
 
@@ -274,54 +275,6 @@ export function getCharacterStats(player: InventoryPlayer, index: CharacterIndex
   }
 }
 
-function morphItem(player: InventoryPlayer, index: CharacterIndex, item: ItemModel) {
-  if (index === 1) {
-    if (player.Class === ASSASSIN && item.Class === WARRIOR && item.Type === 1) {
-      // Assassin weapons -> Dexterity into Strength
-      return item.morph(2, 1)
-    } else if (player.Class === DEMONHUNTER && item.Class === WARRIOR && item.Type > 1) {
-      // DemonHunter equipment -> Dexterity into Strenght
-      return item.morph(2, 1)
-    } else if (player.Class === PLAGUEDOCTOR && item.Class === WARRIOR && item.Type === 1) {
-      // When player is Plague Doctor and it's Warrior equipment -> Dexterity into Strength
-      return item.morph(2, 1)
-    }
-  } else if (index === 2) {
-    if (player.Class === BATTLEMAGE && item.Class === MAGE && item.Type > 1) {
-      // BattleMage equipment -> Strength into Intelligence
-      return item.morph(1, 3)
-    } else if (player.Class === PLAGUEDOCTOR && item.Class === MAGE && item.Type > 1) {
-      // When player is Plague Doctor and it's Mage equipment -> Dexterity into Intelligence
-      return item.morph(2, 3)
-    }
-  } else if (index === 3) {
-    if (player.Class === DRUID && item.Class === SCOUT && item.Type > 1) {
-      // Druid equipment -> Intelligence into Dexterity
-      return item.morph(3, 2)
-    } else if (player.Class === BARD && item.Class === SCOUT && item.Type > 1) {
-      // Bard equipment -> Intelligence into Dexterity
-      return item.morph(3, 2)
-    }
-  } else if (player.Class === BATTLEMAGE && item.Class === MAGE && item.Type > 1) {
-    // BattleMage equipment -> Intelligence to Strength
-    return item.morph(3, 1)
-  } else if (player.Class === ASSASSIN && item.Class === WARRIOR && item.Type === 1) {
-    // Assassin weapons -> Strength to Dexterity
-    return item.morph(1, 2)
-  } else if (player.Class === DEMONHUNTER && item.Class === WARRIOR && item.Type > 1) {
-    // DemonHunter equipment -> Strength to Dexterity
-    return item.morph(1, 2)
-  } else if (player.Class === DRUID && item.Class === SCOUT && item.Type > 1) {
-    // Druid equipment -> Dexterity to Intelligence
-    return item.morph(2, 3)
-  } else if (player.Class === BARD && item.Class === SCOUT && item.Type > 1) {
-    // Bard equipment -> Dexterity to Intelligence
-    return item.morph(2, 3)
-  }
-
-  return item
-}
-
 function getRealGemValue(character: PlayerModel, item: ItemModel, type: number) {
   if (item.GemType === type || item.GemType === 6 || (item.GemType === 7 && type === character.Primary.Type) || (item.GemType === 7 && type === 4)) {
     if (character.Class !== WARRIOR && character.Class !== ASSASSIN && item.Type === 1) {
@@ -335,7 +288,7 @@ function getRealGemValue(character: PlayerModel, item: ItemModel, type: number) 
 }
 
 function getComparedStats(stats: CharacterStats, player: InventoryPlayer, index: CharacterIndex, base: ItemModel, compared: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
-  const item = morphItem(player, index, compared)
+  const item = ModelUtils.morphItemForCharacter(player.Class, index, compared)
   const character = getCharacter(player, index)
 
   const reference = { ...stats }

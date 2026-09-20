@@ -5,9 +5,10 @@
       :key="String(option.value)"
       type="button"
       role="tab"
-      class="cursor-pointer rounded-md px-3 py-1.5 font-bold outline-none transition focus-visible:outline-2 focus-visible:outline-accent"
-      :class="option.value === modelValue ? 'text-accent' : 'text-white/90 hover:bg-surface-hover'"
+      class="rounded-md px-3 py-1.5 font-bold outline-none transition focus-visible:outline-2 focus-visible:outline-accent enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+      :class="option.value === modelValue ? 'text-accent' : 'text-white/90 enabled:hover:bg-surface-hover'"
       :aria-selected="option.value === modelValue"
+      :disabled="option.disabled"
       @click="modelValue = option.value"
     >
       {{ option.label }}
