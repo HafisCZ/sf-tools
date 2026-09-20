@@ -148,7 +148,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  select: [entry: TEntry]
+  /**
+   * An entry was picked, together with the cheats that were applied to it
+   */
+  select: [entry: TEntry, cheats?: Cheats]
 }>()
 
 type IntegrationOptions = {
@@ -305,7 +308,7 @@ function selectEntry(entry: TEntry) {
   if (cheats.value) {
     const player = applyCheats(new PlayerModel(entry.Data as RawPlayer), cheats.value)
 
-    emit('select', player as unknown as TEntry)
+    emit('select', player as unknown as TEntry, cheats.value)
   } else if (props.type === 'players') {
     // The database lists lazy proxies, which can't be cloned into a worker
     emit('select', (DatabaseManager.getPlayer(entry.LinkId, entry.Timestamp) ?? entry) as unknown as TEntry)
