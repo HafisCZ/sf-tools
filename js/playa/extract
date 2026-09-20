@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+
+# Extracts item pictures from the game asset bundles into res/items
+# Requires: pip install UnityPy Pillow
+
+import os
+import re
+
+import PIL.Image
+import UnityPy
+
+GAME_PATH = '/mnt/c/Program Files (x86)/Steam/steamapps/common/Shakes & Fidget/shakesandfidget_Data/StreamingAssets/items'
+
+SIZE = 125
+
+# Fight animations, projectiles and workbench icons are not items, the huge legendaries repeat the regular art
+SKIPPED_BUNDLES = {'fightanimations', 'legendarieshuge', 'magehits', 'mageshots', 'scoutshots', 'wbupgradeitems'}
+
+NAME_WITH_CLASS = re.compile(r'^itm(\d+)_(\d+)_(\d+)_(\d+)$')
+
+# Amulets, rings, talismans and the rest are the same for every class
+NAME_WITHOUT_CLASS = re.compile(r'^itm(\d+)_(\d+)_(\d+)$')
+
+
+def target_name(name):
+    match = NAME_WITH_CLASS.match(name)
+    if match:
+        return f'{match[1]}_{match[2]}_{match[3]}_{match[4]}.png'
+
+    match = NAME_WITHOUT_CLASS.match(name)
+    if match:
+        return f'{match[1]}_{match[2]}_{match[3]}_1.png'
+
+    return None
+
+
+# Sprites come out of the atlas trimmed and in their own size, res/items keeps them centered in a square
+def render(image):
+    scale = min(SIZE / image.width, SIZE / image.height)
+    resized = image.resize((max(1, round(image.width * scale)), max(1, round(image.height * scale))), PIL.Image.LANCZOS)
+
+    canvas = PIL.Image.new('RGBA', (SIZE, SIZE), (0, 0, 0, 0))
+    canvas.paste(resized, ((SIZE - resized.width) // 2, (SIZE - resized.height) // 2))
+
+    return canvas
+
+
+def bundles():
+    for name in sorted(os.listdir(GAME_PATH)):
+        if name.endswith('.manifest') or name.endswith('_sd') or name in SKIPPED_BUNDLES:
+            continue
+
+        yield name, os.path.join(GAME_PATH, name)
+
+
+def main():
+    target = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'res', 'items')
+
+    added = 0
+    rewritten = 0
+
+    for bundle, path in bundles():
+        for entry in UnityPy.load(path).objects:
+            if entry.type.name != 'Sprite':
+                continue
+
+            sprite = entry.read()
+            name = target_name(sprite.m_Name)
+
+            if name is None:
+                continue
+
+            file = os.path.join(target, name)
+
+            if os.path.exists(file):
+                rewritten += 1
+            else:
+                added += 1
+
+            render(sprite.image).save(file)
+
+        print(f'{bundle:20} done')
+
+    print(f'\nadded {added}, rewrote {rewritten}')
+
+
+if __name__ == '__main__':
+    main()
