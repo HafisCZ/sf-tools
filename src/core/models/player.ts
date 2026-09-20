@@ -40,6 +40,8 @@ export type PlayerItems = Record<EquipmentSlot, ItemModel> & {
   Wpn2?: ItemModel
 }
 
+export type AnyEquipmentSlot = keyof PlayerItems
+
 export type PlayerInventory = {
   Backpack: ItemModel[]
   Chest: ItemModel[]
