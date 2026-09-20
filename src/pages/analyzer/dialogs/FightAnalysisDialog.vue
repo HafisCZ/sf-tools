@@ -1,22 +1,20 @@
 <template>
-  <SFDialog :title="localize('title')">
-    <div class="flex max-h-[60vh] flex-col gap-4">
-      <div class="shrink-0">
-        <SFParagraph>{{ localize('variables') }}</SFParagraph>
-        <SFParagraph type="muted">
-          <template v-for="(keyword, index) in keywords" :key="keyword">
-            <code>{{ keyword }}</code>
-            <template v-if="index < keywords.length - 1">,&nbsp; </template>
-          </template>
-        </SFParagraph>
-      </div>
-      <div class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-4">
-        <div v-for="(_, index) in selectors" :key="index" class="grid grid-cols-4 gap-[14px]">
-          <div class="col-span-3">
-            <SFExpressionInput v-model="selectors[index]" :label="localize('selector')" :placeholder="localize('selector')" :highlight="highlight" />
-          </div>
-          <SFInput :model-value="String(counts[index] ?? '')" :label="localize('count')" readonly class="text-center" />
+  <SFDialog :title="localize('title')" column>
+    <div class="shrink-0">
+      <SFParagraph>{{ localize('variables') }}</SFParagraph>
+      <SFParagraph type="muted">
+        <template v-for="(keyword, index) in keywords" :key="keyword">
+          <code>{{ keyword }}</code>
+          <template v-if="index < keywords.length - 1">,&nbsp; </template>
+        </template>
+      </SFParagraph>
+    </div>
+    <div class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-4">
+      <div v-for="(_, index) in selectors" :key="index" class="grid grid-cols-4 gap-[14px]">
+        <div class="col-span-3">
+          <SFExpressionInput v-model="selectors[index]" :label="localize('selector')" :placeholder="localize('selector')" :highlight="highlight" />
         </div>
+        <SFInput :model-value="String(counts[index] ?? '')" :label="localize('count')" readonly class="text-center" />
       </div>
     </div>
 

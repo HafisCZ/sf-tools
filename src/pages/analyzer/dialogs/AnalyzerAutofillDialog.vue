@@ -1,20 +1,18 @@
 <template>
-  <SFDialog :title="localize('title')" size="sm" close-via-button @close="emit('close')">
-    <div class="flex max-h-[60vh] flex-col gap-4">
-      <div class="shrink-0">
-        <SFInput v-model="query" :aria-label="localize('search')" :placeholder="localize('search')" />
-      </div>
-      <div class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-4">
-        <button v-for="(entry, index) in visibleEntries" :key="index" type="button" class="flex cursor-pointer items-center gap-4 rounded border border-line p-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="select(entry)">
-          <img v-if="entry.boss.class !== undefined" :src="getClassImageUrl(entry.boss.class)" alt="" class="size-[3em] shrink-0" />
-          <span v-else class="size-[3em] shrink-0" />
-          <span class="flex flex-col">
-            <span class="text-white/50">{{ entry.dungeonName }}</span>
-            <span>{{ entry.boss.pos }}. {{ entry.bossName }}</span>
-          </span>
-          <SFIcon :name="entry.dungeon.companions ? 'users' : 'user'" class="mr-1 ml-auto shrink-0 text-[2em] opacity-45" :class="{ 'text-[#a333c8]': entry.dungeon.companions }" />
-        </button>
-      </div>
+  <SFDialog :title="localize('title')" size="sm" column close-via-button @close="emit('close')">
+    <div class="shrink-0">
+      <SFInput v-model="query" :aria-label="localize('search')" :placeholder="localize('search')" />
+    </div>
+    <div class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-4">
+      <button v-for="(entry, index) in visibleEntries" :key="index" type="button" class="flex cursor-pointer items-center gap-4 rounded border border-line p-2 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="select(entry)">
+        <img v-if="entry.boss.class !== undefined" :src="getClassImageUrl(entry.boss.class)" alt="" class="size-[3em] shrink-0" />
+        <span v-else class="size-[3em] shrink-0" />
+        <span class="flex flex-col">
+          <span class="text-white/50">{{ entry.dungeonName }}</span>
+          <span>{{ entry.boss.pos }}. {{ entry.bossName }}</span>
+        </span>
+        <SFIcon :name="entry.dungeon.companions ? 'users' : 'user'" class="mr-1 ml-auto shrink-0 text-[2em] opacity-45" :class="{ 'text-[#a333c8]': entry.dungeon.companions }" />
+      </button>
     </div>
   </SFDialog>
 </template>
