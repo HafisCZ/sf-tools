@@ -414,7 +414,7 @@ export class ItemModel {
         this.Upgrades++
         for (let j = 0; j < 3; j++) {
           if (this.AttributeTypes[j] < 30) {
-            this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j])
+            this.Attributes[j] = Math.round(this.Attributes[j] * 1.03)
           }
         }
       }
@@ -423,7 +423,7 @@ export class ItemModel {
         this.Upgrades--
         for (let j = 0; j < 3; j++) {
           if (this.AttributeTypes[j] < 30) {
-            this.Attributes[j] = Math.trunc((1 / 1.03) * this.Attributes[j])
+            this.Attributes[j] = Math.round(this.Attributes[j] / 1.03)
           }
         }
       }
@@ -446,7 +446,7 @@ export class ItemModel {
       this.Upgrades++
       for (let j = 0; j < 3; j++) {
         if (this.AttributeTypes[j] < 30) {
-          this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j])
+          this.Attributes[j] = Math.round(this.Attributes[j] * 1.03)
         }
       }
     }
