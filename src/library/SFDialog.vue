@@ -7,7 +7,7 @@
           <SFIcon name="xmark" />
         </SFButton>
       </div>
-      <div class="max-h-[60vh] min-h-0 overflow-y-auto pr-2 leading-relaxed">
+      <div class="min-h-0 overflow-y-auto pr-2 leading-relaxed" :class="{ 'flex flex-col': props.column }" :style="{ maxHeight: props.height, gap: props.gap }">
         <slot />
       </div>
       <div v-if="slots.buttons" class="flex gap-2">
@@ -39,12 +39,27 @@ const props = withDefaults(
      */
     size?: 'sm' | 'md' | 'lg' | 'xl'
     /**
+     * Maximum height of the content as a CSS length
+     */
+    height?: string
+    /**
+     * Lays the content out as a flex column, for content that keeps a part of itself in place and scrolls the rest
+     */
+    column?: boolean
+    /**
+     * Space between the content children as a CSS length, only takes effect together with column
+     */
+    gap?: string
+    /**
      * Shows an X button in the top right corner that emits close
      */
     closeViaButton?: boolean
   }>(),
   {
     size: 'md',
+    height: '60vh',
+    column: false,
+    gap: '1rem',
     closeViaButton: false
   }
 )
