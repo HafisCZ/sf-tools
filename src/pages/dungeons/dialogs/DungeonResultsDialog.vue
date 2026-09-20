@@ -1,27 +1,25 @@
 <template>
-  <SFDialog :title="localize('results')" size="sm" close-via-button @close="emit('close')">
-    <div class="flex max-h-[60vh] flex-col gap-[14px]">
-      <div class="flex shrink-0 items-center gap-2">
-        <span class="flex-1 text-center font-bold text-[lightgray]">
-          <template v-if="props.experience > 0">{{ localize('experience', { experience: formatSpacedNumber(props.experience) }) }}</template>
-        </span>
-        <SFTooltip :content="localize.global('stats.copy.image')">
-          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" :disabled="isSaving && 'loading'" @click="save">
-            <SFIcon name="download" />
-          </SFButton>
-        </SFTooltip>
-      </div>
-      <DungeonChart :result="activeResult" class="h-[14em] shrink-0 border-b border-line pb-2" />
-      <div :class="{ 'min-h-0 overflow-y-auto': !isSaving }">
-        <div ref="image-ref" :class="isSaving ? 'text-black' : 'text-white/90'">
-          <div v-for="(result, index) in props.results" :key="index" :tabindex="isSaving ? undefined : 0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': !isSaving && index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
-            <img :src="getClassImageUrl(result.boss.class ?? props.playerClass)" alt="" class="size-[2.5em]" />
-            <div class="min-w-0 flex-1" :class="{ [isSaving ? 'text-[purple]' : 'text-[#dec0ff]']: result.dungeon.companions }">
-              <div class="text-[80%]">{{ getDungeonName(result.dungeon) }}</div>
-              <div>#{{ result.boss.pos }} - {{ getBossName(result) }}</div>
-            </div>
-            <div class="w-[31.25%] text-center">{{ result.score === 0 ? localize.global('pets.bulk.not_possible') : `${((100 * result.score) / result.iterations).toFixed(2)}%` }}</div>
+  <SFDialog :title="localize('results')" size="sm" height="80vh" column gap="14px" close-via-button @close="emit('close')">
+    <div class="flex shrink-0 items-center gap-2">
+      <span class="flex-1 text-center font-bold text-[lightgray]">
+        <template v-if="props.experience > 0">{{ localize('experience', { experience: formatSpacedNumber(props.experience) }) }}</template>
+      </span>
+      <SFTooltip :content="localize.global('stats.copy.image')">
+        <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('stats.copy.image')" :disabled="isSaving && 'loading'" @click="save">
+          <SFIcon name="download" />
+        </SFButton>
+      </SFTooltip>
+    </div>
+    <DungeonChart :result="activeResult" class="h-[14em] shrink-0 border-b border-line pb-2" />
+    <div :class="{ 'min-h-0 overflow-y-auto': !isSaving }">
+      <div ref="image-ref" :class="isSaving ? 'text-black' : 'text-white/90'">
+        <div v-for="(result, index) in props.results" :key="index" :tabindex="isSaving ? undefined : 0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': !isSaving && index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
+          <img :src="getClassImageUrl(result.boss.class ?? props.playerClass)" alt="" class="size-[2.5em]" />
+          <div class="min-w-0 flex-1" :class="{ [isSaving ? 'text-[purple]' : 'text-[#dec0ff]']: result.dungeon.companions }">
+            <div class="text-[80%]">{{ getDungeonName(result.dungeon) }}</div>
+            <div>#{{ result.boss.pos }} - {{ getBossName(result) }}</div>
           </div>
+          <div class="w-[31.25%] text-center">{{ result.score === 0 ? localize.global('pets.bulk.not_possible') : `${((100 * result.score) / result.iterations).toFixed(2)}%` }}</div>
         </div>
       </div>
     </div>

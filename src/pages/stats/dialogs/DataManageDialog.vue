@@ -1,27 +1,25 @@
 <template>
-  <SFDialog :title="localize('title')" size="sm">
-    <div class="flex max-h-[60vh] flex-col gap-4">
-      <div class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-2">
-        <section v-if="files.length > 0">
-          <SFHeading level="5">{{ localize('label.file') }}</SFHeading>
-          <ul class="mt-2 list-disc pl-8">
-            <li v-for="file in files" :key="file" class="mb-[5px]">{{ file }}</li>
-          </ul>
-        </section>
-        <section v-for="list in lists" :key="list.label">
-          <SFHeading level="5">{{ localize(list.label) }}</SFHeading>
-          <ul class="mt-2 list-disc px-12">
-            <li v-for="(entry, index) in list.entries" :key="index" class="mb-[5px]">
-              <span class="flex justify-between gap-4">
-                <span>{{ entry.prefix }} - {{ entry.name }}</span>
-                <span>{{ entry.timestamp }}</span>
-              </span>
-            </li>
-          </ul>
-        </section>
-      </div>
-      <SFCheckbox ref="skip-ref" v-model="skipNext" :label="localize('skip_next')" class="shrink-0" />
+  <SFDialog :title="localize('title')" size="sm" column>
+    <div class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-2">
+      <section v-if="files.length > 0">
+        <SFHeading level="5">{{ localize('label.file') }}</SFHeading>
+        <ul class="mt-2 list-disc pl-8">
+          <li v-for="file in files" :key="file" class="mb-[5px]">{{ file }}</li>
+        </ul>
+      </section>
+      <section v-for="list in lists" :key="list.label">
+        <SFHeading level="5">{{ localize(list.label) }}</SFHeading>
+        <ul class="mt-2 list-disc px-12">
+          <li v-for="(entry, index) in list.entries" :key="index" class="mb-[5px]">
+            <span class="flex justify-between gap-4">
+              <span>{{ entry.prefix }} - {{ entry.name }}</span>
+              <span>{{ entry.timestamp }}</span>
+            </span>
+          </li>
+        </ul>
+      </section>
     </div>
+    <SFCheckbox ref="skip-ref" v-model="skipNext" :label="localize('skip_next')" class="shrink-0" />
 
     <template #buttons>
       <SFButton block :disabled="isSubmitting" @click="emit('close', false)">
