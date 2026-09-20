@@ -1,4 +1,4 @@
-import { CONFIG, FIGHT_LOG, FLAGS, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 import { type SimulatorPlayerInput } from './types'
 
 type UnderworldPlayerEntry = {
@@ -18,6 +18,8 @@ type UnderworldMessage = {
 // WebWorker hooks
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { log, config, flags, units, player, iterations } }: MessageEvent<UnderworldMessage>) {
+    resetState()
+
     CONFIG.set(config)
 
     FLAGS.log(!!log)
@@ -27,8 +29,6 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       results: new UnderworldSimulator().simulate(units, player, iterations),
       logs: FIGHT_LOG.dump()
     })
-
-    self.close()
   })
 }
 

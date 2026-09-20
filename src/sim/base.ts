@@ -51,6 +51,10 @@ export class FIGHT_LOG {
     return this.#allLogs
   }
 
+  static reset() {
+    this.#allLogs = []
+  }
+
   static logInit(playerA: SimulatorModel, playerB: SimulatorModel) {
     this.lastLog = {
       fighterA: {
@@ -99,15 +103,17 @@ export class FIGHT_LOG {
 }
 
 // Flags
+const FLAGS_DEFAULTS = {
+  // Values
+  Gladiator15: false,
+  MaximumDamageReduction: false,
+  // Reductions
+  NoGladiatorReduction: false,
+  NoAttributeReduction: false
+}
+
 export const FLAGS = Object.defineProperties<SimulatorFlags>(
-  {
-    // Values
-    Gladiator15: false,
-    MaximumDamageReduction: false,
-    // Reductions
-    NoGladiatorReduction: false,
-    NoAttributeReduction: false
-  },
+  { ...FLAGS_DEFAULTS },
   {
     set: {
       value: function (this: Record<string, boolean>, flags?: Record<string, unknown> | null) {
@@ -584,6 +590,22 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
     }
   }
 ) as ClassConfigTable
+
+const CONFIG_DEFAULTS = structuredClone({ ...CONFIG }) as Record<string, unknown>
+
+export function resetState() {
+  FIGHT_LOG.reset()
+
+  FIGHT_LOG_ENABLED = false
+
+  Object.assign(FLAGS, FLAGS_DEFAULTS)
+
+  const config = CONFIG as unknown as Record<string, unknown>
+
+  for (const key of Object.keys(config)) {
+    config[key] = structuredClone(CONFIG_DEFAULTS[key])
+  }
+}
 
 // Returns true if random chance occured
 export function getRandom(success: number | undefined) {

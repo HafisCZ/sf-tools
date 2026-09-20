@@ -1,4 +1,4 @@
-import { CONFIG, FIGHT_LOG, FLAGS, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 import { type SimulatorPlayerInput } from './types'
 
 type HellevatorMessage = {
@@ -11,6 +11,8 @@ type HellevatorMessage = {
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { config, player, enemy, iterations, log } }: MessageEvent<HellevatorMessage>) {
+    resetState()
+
     CONFIG.set(config)
 
     FLAGS.log(!!log)
@@ -19,8 +21,6 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       score: new HellevatorSimulator().simulate(player, enemy, iterations),
       logs: FIGHT_LOG.dump()
     })
-
-    self.close()
   })
 }
 

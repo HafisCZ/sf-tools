@@ -1,4 +1,4 @@
-import { CONFIG, FIGHT_LOG, FLAGS, MAGE, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FIGHT_LOG, FLAGS, MAGE, resetState, SimulatorBase, SimulatorModel } from './base'
 
 export type SimulatorPet = {
   Name?: string
@@ -26,6 +26,8 @@ type PetSimulatorModel = SimulatorModel & { hasAdvantage(target: SimulatorModel)
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { config, players, mode, iterations, log } }: MessageEvent<PetsMessage>) {
+    resetState()
+
     CONFIG.set(config)
 
     FLAGS.log(!!log)
@@ -108,8 +110,6 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         results: r
       })
     }
-
-    self.close()
   })
 }
 

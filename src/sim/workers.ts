@@ -16,6 +16,18 @@ const WORKERS = {
   underworld: () => new Worker(new URL('./underworld.ts', import.meta.url), { type: 'module' })
 }
 
+const POOL: { [K in keyof typeof WORKERS]?: Worker[] } = {}
+
+function acquireWorker(type: keyof typeof WORKERS) {
+  return POOL[type]?.pop() ?? WORKERS[type]()
+}
+
+function releaseWorker(type: keyof typeof WORKERS, worker: Worker) {
+  const pool = (POOL[type] ??= [])
+
+  pool.push(worker)
+}
+
 export class WorkerBatch<TResult, TParams extends object = object> {
   type: keyof typeof WORKERS
   workers: [callback: (data: TResult, duration: number) => void, params: TParams][]
@@ -44,26 +56,31 @@ export class WorkerBatch<TResult, TParams extends object = object> {
         const [callback, params] = this.workers.splice(index, 1)[0]
         this.activeParams.push(params)
 
-        const worker = WORKERS[this.type]()
+        const worker = acquireWorker(this.type)
         this.#running.add(worker)
 
-        worker.addEventListener('message', ({ data }: MessageEvent<TResult>) => {
-          if (this.#cancelled) return
+        worker.addEventListener(
+          'message',
+          ({ data }: MessageEvent<TResult>) => {
+            if (this.#cancelled) return
 
-          this.#running.delete(worker)
+            this.#running.delete(worker)
+            releaseWorker(this.type, worker)
 
-          callback(data, Date.now() - this.timestamp)
+            callback(data, Date.now() - this.timestamp)
 
-          loader.progress(++this.workersDone / this.workersTotal)
+            loader.progress(++this.workersDone / this.workersTotal)
 
-          this.activeParams.splice(this.activeParams.indexOf(params), 1)
+            this.activeParams.splice(this.activeParams.indexOf(params), 1)
 
-          if (this.workersDone === this.workersTotal) {
-            this.#resolve(false)
-          } else {
-            this.#nextWorker()
-          }
-        })
+            if (this.workersDone === this.workersTotal) {
+              this.#resolve(false)
+            } else {
+              this.#nextWorker()
+            }
+          },
+          { once: true }
+        )
 
         worker.postMessage(params)
       }
