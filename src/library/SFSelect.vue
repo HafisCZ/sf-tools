@@ -23,7 +23,10 @@
           <SFIcon v-if="isIconName(selectedOption.image)" :name="selectedOption.image" class="text-white/60" :class="{ 'order-last': selectedOption.imagePosition === 'right' }" />
           <img v-else :src="selectedOption.image" alt="" class="size-5 object-contain" :class="{ 'order-last': selectedOption.imagePosition === 'right' }" />
         </template>
-        <span class="min-w-0 flex-auto truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
+        <span class="flex min-w-0 flex-auto flex-col">
+          <span class="truncate" :class="{ 'text-accent': selectedOption?.accent }" :style="{ color: selectedOption?.color }">{{ selectedOption?.label }}</span>
+          <span v-if="selectedOption?.description" class="truncate text-xs text-white/50">{{ selectedOption.description }}</span>
+        </span>
       </span>
       <SFIcon v-if="!props.readonly" name="chevron-down" class="text-white/60" :class="{ 'rotate-180': open }" />
     </button>
