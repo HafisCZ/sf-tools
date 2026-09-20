@@ -11,11 +11,11 @@
             aria-haspopup="menu"
             @click="toggleSlot(slot, $event)"
           >
-            <img v-if="getItem(slot).Type > 0" :src="`/${getItem(slot).ImageUrl}`" alt="" class="size-5 shrink-0 object-contain" />
+            <img v-if="hasItem(slot)" :src="`/${getItem(slot).ImageUrl}`" alt="" class="size-5 shrink-0 object-contain" />
             <span class="flex min-w-0 flex-auto flex-col">
               <span class="flex min-w-0 gap-2">
                 <span class="shrink-0 font-bold">{{ localize(`slot.${slot}`) }}</span>
-                <span class="truncate">{{ getItem(slot).Type > 0 ? getItem(slot).Name : localize('empty') }}</span>
+                <span class="truncate">{{ hasItem(slot) ? getItem(slot).Name : localize('empty') }}</span>
               </span>
               <span class="truncate text-xs text-white/50">{{ describeItem(getItem(slot)) }}</span>
             </span>
@@ -30,12 +30,12 @@
               <SFIcon name="rotate-left" />
             </SFButton>
           </SFTooltip>
-          <SFButton variant="ghost" icon size="sm" class="mr-1" :aria-label="localize('details')" :aria-expanded="expandedSlot === slot" @click="toggleDetails(slot)">
+          <SFButton v-if="hasItem(slot)" variant="ghost" icon size="sm" class="mr-1" :aria-label="localize('details')" :aria-expanded="expandedSlot === slot" @click="toggleDetails(slot)">
             <SFIcon name="chevron-down" :class="{ 'rotate-180': expandedSlot === slot }" />
           </SFButton>
         </div>
 
-        <div v-if="expandedSlot === slot" class="grid grid-cols-2 gap-2 border-t border-line p-2">
+        <div v-if="expandedSlot === slot && hasItem(slot)" class="grid grid-cols-2 gap-2 border-t border-line p-2">
           <SFSelect :model-value="String(getRune(slot).type)" :label="localize('rune')" :options="runeOptions" @update:model-value="(value) => changeRune(slot, Number(value), getRune(slot).value)" />
           <SFNumber :model-value="getRune(slot).value" :label="localize('value')" :min="0" :max="getRuneLimit(getRune(slot).type)" :step="1" :readonly="getRune(slot).type === 0" centered @update:model-value="(value) => changeRune(slot, getRune(slot).type, value ?? 0)" />
           <SFSelect :model-value="String(getGem(slot).type)" :label="localize('gem')" :options="gemOptions" @update:model-value="(value) => changeGem(slot, Number(value), getGem(slot).value)" />
@@ -212,6 +212,10 @@ function getItem(slot: AnyEquipmentSlot) {
   const edit = props.swaps[slot]
 
   return (edit ? buildEditedItem(props.source, props.source.Class, props.index, current, edit) : undefined) ?? current
+}
+
+function hasItem(slot: AnyEquipmentSlot) {
+  return getItem(slot).Type > 0
 }
 
 function getRune(slot: AnyEquipmentSlot) {
