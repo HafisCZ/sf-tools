@@ -316,7 +316,16 @@ function selectItem(id: string) {
 
   closeSlot()
 
-  change({ ...props.swaps, [slot]: id ? { id } : {} })
+  const next = { ...props.swaps }
+
+  // Whatever the menu picks takes over the slot, so its own rune, gem and enchantment come back with it
+  if (id) {
+    next[slot] = { id }
+  } else {
+    delete next[slot]
+  }
+
+  change(next)
 }
 
 function changePotion(index: number, value: string) {
