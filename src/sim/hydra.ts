@@ -1,4 +1,4 @@
-import { FLAGS, SimulatorBase, SimulatorModel } from './base'
+import { FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 import { type SimulatorPlayerInput } from './types'
 
 type HydraPet = SimulatorPlayerInput & { Attacks: number }
@@ -23,13 +23,13 @@ SimulatorModel.prototype.getBaseDamage = function () {
 // WebWorker hooks
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { flags, iterations, hydra, pet } }: MessageEvent<HydraMessage>) {
+    resetState()
+
     FLAGS.set(flags)
 
     self.postMessage({
       results: new HydraSimulator().simulate(pet, hydra, iterations)
     })
-
-    self.close()
   })
 }
 

@@ -1,4 +1,4 @@
-import { CONFIG, FIGHT_LOG, FLAGS, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 import { type SimulatorPlayerInput } from './types'
 
 type DungeonsMessage = {
@@ -14,6 +14,8 @@ type DungeonsMessage = {
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { flags, config, players, boss, index, hpcap, iterations, log } }: MessageEvent<DungeonsMessage>) {
+    resetState()
+
     CONFIG.set(config)
 
     FLAGS.log(!!log)
@@ -24,8 +26,6 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       logs: FIGHT_LOG.dump(),
       index
     })
-
-    self.close()
   })
 }
 

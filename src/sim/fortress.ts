@@ -1,4 +1,4 @@
-import { FLAGS, SimulatorBase, SimulatorModel } from './base'
+import { FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 import { type SimulatorPlayerInput } from './types'
 
 type FortressMessage = {
@@ -11,14 +11,14 @@ type FortressMessage = {
 
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { flags, iterations, player, target, index } }: MessageEvent<FortressMessage>) {
+    resetState()
+
     FLAGS.set(flags)
 
     self.postMessage({
       score: new FortressSimulator().simulate(player, target, iterations),
       index
     })
-
-    self.close()
   })
 }
 

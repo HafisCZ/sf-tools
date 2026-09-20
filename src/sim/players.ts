@@ -1,4 +1,4 @@
-import { CONFIG, FIGHT_LOG, FLAGS, SimulatorBase, SimulatorModel } from './base'
+import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
 import { type SimulatorPlayerInput } from './types'
 
 type PlayerEntry = {
@@ -20,6 +20,8 @@ type PlayersMessage = {
 // WebWorker hooks
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   self.addEventListener('message', function ({ data: { flags, config, player, target, mode, iterations, log } }: MessageEvent<PlayersMessage>) {
+    resetState()
+
     CONFIG.set(config)
 
     FLAGS.log(!!log)
@@ -47,8 +49,6 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         logs: FIGHT_LOG.dump()
       })
     }
-
-    self.close()
   })
 }
 
