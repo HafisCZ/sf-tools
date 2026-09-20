@@ -11,7 +11,7 @@
             aria-haspopup="menu"
             @click="toggleSlot(slot, $event)"
           >
-            <img v-if="hasItem(slot)" :src="`/${getItem(slot).ImageUrl}`" alt="" class="size-5 shrink-0 object-contain" />
+            <img v-if="hasItem(slot)" :src="`/${getItem(slot).ImageUrl}`" alt="" class="size-8 shrink-0 object-contain" />
             <span class="flex min-w-0 flex-auto flex-col">
               <span class="flex min-w-0 gap-2">
                 <span class="shrink-0 font-bold">{{ localize(`slot.${slot}`) }}</span>
@@ -63,7 +63,7 @@
         <ul role="menu" class="flex flex-col">
           <li role="none">
             <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none" :class="menuSwap ? 'hover:bg-surface-hover focus-visible:bg-surface-hover' : 'bg-accent/15'" @click="selectItem('')">
-              <img v-if="menuCurrent.Type > 0" :src="`/${menuCurrent.ImageUrl}`" alt="" class="size-5 shrink-0 object-contain" />
+              <img v-if="menuCurrent.Type > 0" :src="`/${menuCurrent.ImageUrl}`" alt="" class="size-8 shrink-0 object-contain" />
               <span class="flex min-w-0 flex-1 flex-col">
                 <span>{{ menuCurrent.Type > 0 ? menuCurrent.Name : localize('empty') }}</span>
                 <span class="text-xs text-white/50">{{ describeItem(menuCurrent) }}</span>
@@ -76,7 +76,7 @@
             </li>
             <li role="none">
               <button type="button" role="menuitem" class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none" :class="menuSwap === entry.id ? 'bg-accent/15' : 'hover:bg-surface-hover focus-visible:bg-surface-hover'" @click="selectItem(entry.id)">
-                <img :src="`/${entry.item.ImageUrl}`" alt="" class="size-5 shrink-0 object-contain" />
+                <img :src="`/${entry.item.ImageUrl}`" alt="" class="size-8 shrink-0 object-contain" />
                 <span class="flex min-w-0 flex-1 flex-col">
                   <span>{{ entry.item.Name }}</span>
                   <span class="text-xs text-white/50">{{ describeItem(entry.item) }}</span>
