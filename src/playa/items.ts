@@ -23,6 +23,6 @@ export const Loca = {
       return `res/items/${itemType}_${itemIndex}_1_1.png`
     }
 
-    return `res/items/${itemType}_${itemIndex}_${itemVariant || 1}_${itemClass || 1}.png`
+    return `res/items/${itemType}_${itemIndex}_${(itemVariant ?? 0) + 1}_${itemClass || 1}.png`
   }
 }
