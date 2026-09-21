@@ -6,6 +6,7 @@ declare module '*.vue' {
 }
 
 declare const __BUILD_INFO__: {
+  hash: string
   version: number
   timestamp: number
   message: string
