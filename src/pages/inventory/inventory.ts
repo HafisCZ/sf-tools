@@ -16,7 +16,7 @@ export type InventoryEntry = {
   item: ItemModel
 }
 
-export type InventoryList = 'backpack' | 'chest' | 'player' | 'bert' | 'mark' | 'kunigunde' | 'shops' | 'dummy'
+export type InventoryList = 'backpack' | 'player' | 'bert' | 'mark' | 'kunigunde' | 'shops' | 'dummy'
 
 export type Transmog = BlacksmithResources & {
   item: ItemModel
@@ -145,8 +145,7 @@ export function createInventoryEntries(player: InventoryPlayer): Record<Inventor
   }
 
   return {
-    backpack: createEntries(player.Inventory.Backpack),
-    chest: createEntries(player.Inventory.Chest),
+    backpack: createEntries([...player.Inventory.Backpack, ...player.Inventory.Chest]),
     player: createEntries(player.Items),
     bert: createEntries(player.Inventory.Bert),
     mark: createEntries(player.Inventory.Mark),

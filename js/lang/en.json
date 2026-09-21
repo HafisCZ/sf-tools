@@ -1116,7 +1116,6 @@
             },
             "pool": {
                 "backpack": "Backpack",
-                "chest": "Chest",
                 "shop": "Weapon & Magic shop",
                 "dummy": "Mannequin"
             }
@@ -1916,11 +1915,10 @@
         "section": {
             "equipped": "Equipped items",
             "backpack": "Backpack",
-            "chest": "Chest",
             "player": "Player",
             "shops": "Weapon & Magic shop",
             "dummy": "Mannequin",
-            "storage": "Backpack & Chest",
+            "storage": "Backpack",
             "overview": "Overview",
             "summary": "Summary"
         },
