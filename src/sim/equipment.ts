@@ -1,9 +1,9 @@
 import { type ItemModel } from '~/core/models/item'
-import { CompanionModel, PlayerModel, type AnyEquipmentSlot, type PetHabitat } from '~/core/models/player'
+import { CompanionModel, PlayerModel, type AnyEquipmentSlot, type PetHabitat, type PlayerInventory } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import { ASSASSIN } from './base'
 
-export type EquipmentPool = 'backpack' | 'chest' | 'shop' | 'dummy'
+export type EquipmentPool = 'backpack' | 'shop' | 'dummy'
 
 export type EquipmentCandidate = {
   id: string
@@ -88,10 +88,9 @@ const SLOT_TYPES: Record<AnyEquipmentSlot, number> = {
   Wpn2: 2
 }
 
-const LIST_POOLS: Record<'backpack' | 'chest' | 'shop', 'Backpack' | 'Chest' | 'Shop'> = {
-  backpack: 'Backpack',
-  chest: 'Chest',
-  shop: 'Shop'
+const LIST_POOLS: Record<'backpack' | 'shop', (inventory: PlayerInventory) => ItemModel[]> = {
+  backpack: (inventory) => [...inventory.Backpack, ...inventory.Chest],
+  shop: (inventory) => inventory.Shop
 }
 
 const COMPANION_KEYS = ['Bert', 'Mark', 'Kunigunde'] as const
@@ -104,8 +103,8 @@ export function listEquipmentCandidates(source: PlayerModel, slot: AnyEquipmentS
 
   const fits = (item: ItemModel) => item.Type === type && (itemClass === undefined || item.Class === itemClass)
 
-  for (const [pool, key] of Object.entries(LIST_POOLS) as [EquipmentPool, 'Backpack' | 'Chest' | 'Shop'][]) {
-    source.Inventory[key].forEach((item, index) => {
+  for (const [pool, getItems] of Object.entries(LIST_POOLS) as [EquipmentPool, (inventory: PlayerInventory) => ItemModel[]][]) {
+    getItems(source.Inventory).forEach((item, index) => {
       if (fits(item)) {
         candidates.push({ id: `${pool}:${index}`, pool, item })
       }
@@ -258,7 +257,7 @@ function findEquipmentCandidate(source: PlayerModel, id: string) {
     return source.Inventory.Dummy[key as AnyEquipmentSlot]
   }
 
-  return source.Inventory[LIST_POOLS[pool as 'backpack' | 'chest' | 'shop']]?.[Number(key)]
+  return LIST_POOLS[pool as 'backpack' | 'shop']?.(source.Inventory)[Number(key)]
 }
 
 function getArmorValue(item: ItemModel) {

@@ -86,7 +86,6 @@ type Section = {
 
 const SECTIONS: Section[] = [
   { list: 'backpack', label: 'inventory.section.backpack', border: 'border-[red]' },
-  { list: 'chest', label: 'inventory.section.chest', border: 'border-[green]' },
   { list: 'player', label: 'inventory.section.player', border: 'border-[yellow]' },
   { list: 'bert', label: 'general.companion1', border: 'border-[lightblue]' },
   { list: 'mark', label: 'general.companion2', border: 'border-[lightgreen]' },
