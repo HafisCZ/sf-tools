@@ -21,9 +21,10 @@ function readBuildInfo() {
   try {
     const git = (command: string) => execSync(`git ${command}`, { cwd: ROOT_DIRECTORY, encoding: 'utf8' }).trim()
 
-    const [date, message] = git('log -1 --format=%aI%n%s').split('\n')
+    const [hash, date, message] = git('log -1 --format=%H%n%aI%n%s').split('\n')
 
     return {
+      hash,
       version: Number(git(`rev-list --count ${FIRST_COMMIT}..HEAD`)) + 1,
       timestamp: new Date(date).getTime(),
       message
