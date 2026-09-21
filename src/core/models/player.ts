@@ -1335,7 +1335,7 @@ export class PlayerModel {
       this.Inventory.Chest = []
       this.Inventory.Backpack = []
 
-      for (let i = 0; i < 45 && dataType.atLeast(19); i++) {
+      for (let i = 0; dataType.atLeast(19); i++) {
         const item = new ItemModel(ItemModel.MODERN, dataType.sub(19), 6, i)
         if (item.Type > 0) {
           if (i >= 20) {
