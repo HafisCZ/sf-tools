@@ -1178,7 +1178,7 @@ class PlayerModel {
         const dataType = new ComplexDataType(data.fortress);
 
         // Levels
-        this.Fortress = {
+        Object.assign(this.Fortress, {
             Fortress: dataType.long(),
             LaborerQuarters: dataType.long(),
             WoodcutterGuild: dataType.long(),
@@ -1199,7 +1199,7 @@ class PlayerModel {
                 Finish: -1,
                 Start: -1
             }
-        }
+        })
 
         if (data.own) {
             // Build index, end time, start time
