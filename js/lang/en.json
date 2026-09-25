@@ -1250,8 +1250,7 @@
             "threshold": {
                 "title": "Simulation threshold",
                 "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped",
-                "remaining": "Apply threshold when using Remaining option",
-                "include_tower": "Include Tower",
+                "more": "Dungeons included when using More option",
                 "include_twister": "Include Twister",
                 "include_sandstorm": "Include Sandstorm"
             }
