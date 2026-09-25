@@ -11,7 +11,6 @@ export type EndpointCharacter = {
 }
 
 export type EndpointLogin = {
-  type?: string
   characters: EndpointCharacter[]
   members: string[]
   friends: string[]

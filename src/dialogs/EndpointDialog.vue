@@ -14,10 +14,6 @@
         <SFHeading level="2" class="border-b border-line pb-1 text-center">{{ localize.global('terms.title2') }}</SFHeading>
         <SFList>
           <li>You can access your S&F Account using your username and password.</li>
-          <li>
-            You can access your unbound character using your character name and server url in the following format:
-            <code>charname@s1.sfgame.de</code>.
-          </li>
         </SFList>
         <div class="flex gap-2">
           <SFButton block @click="rejectTerms">
@@ -239,9 +235,7 @@ function rejectTerms() {
 }
 
 async function login() {
-  const [name, server] = username.value.includes('@') ? username.value.split('@', 2) : [username.value, 'sso.playa-games.com']
-
-  if (name.length < 3 || password.value.length < 3 || !/\.(?:sfgame|playa-games)\./.test(server)) {
+  if (username.value.length < 3 || password.value.length < 3) {
     useToast({ title: localize('user_error.title'), message: localize('user_error.message'), type: 'warning' })
 
     return
@@ -260,7 +254,7 @@ async function login() {
 
     step.value = 'loading'
 
-    const account = await signIn(controller, server, name, password.value)
+    const account = await signIn(controller, username.value, password.value)
     const capture = await captureMode(controller, account)
 
     await importCapture(capture.data)
@@ -269,12 +263,8 @@ async function login() {
   }
 }
 
-async function signIn(endpoint: EndpointController, server: string, name: string, secret: string) {
-  const account = await endpoint.login(server, name, secret)
-
-  if (account.type !== 'sso') {
-    return account
-  }
+async function signIn(endpoint: EndpointController, name: string, secret: string) {
+  const account = await endpoint.login('sso.playa-games.com', name, secret)
 
   const available: Character[] = []
 

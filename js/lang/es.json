@@ -1199,7 +1199,7 @@
         },
         "user_error": {
             "title": "El nombre de usuario o la contraseña no son válidos",
-            "message": "Por favor, asegúrate de que está en el formato correcto ('nombre de usuario' para cuentas SF, 'username@url' para personajes locales)"
+            "message": "Por favor, comprueba tu nombre de usuario y contraseña e inténtalo de nuevo."
         },
         "errors": {
             "error_unreachable": "No se puede acceder al servidor",
