@@ -117,26 +117,7 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import {
-  createBoss,
-  createDungeonPlayers,
-  createSimulatorBoss,
-  DUNGEON_DATA,
-  getBossName,
-  getDungeonExperience,
-  getDungeonName,
-  getOpenBosses,
-  getRemainingBosses,
-  NEXT_DUNGEONS,
-  PREVIOUS_DUNGEONS,
-  SANDSTORM,
-  TOWER,
-  TWISTER,
-  type Dungeon,
-  type DungeonEntry,
-  type DungeonResult,
-  type DungeonRunes
-} from '~/sim/data/dungeons'
+import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, getBossName, getDungeonExperience, getDungeonName, getOpenBosses, getRemainingBosses, NEXT_DUNGEONS, PREVIOUS_DUNGEONS, SANDSTORM, TWISTER, type Dungeon, type DungeonEntry, type DungeonResult, type DungeonRunes } from '~/sim/data/dungeons'
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
 import { WorkerBatch } from '~/sim/workers'
@@ -151,7 +132,6 @@ defineOptions({
 type DungeonsOptions = {
   threshold_min: number
   threshold_max: number
-  include_tower: boolean
   include_twister: boolean
   include_sandstorm: boolean
 }
@@ -208,7 +188,7 @@ const DUNGEONS = Object.values(DUNGEON_DATA)
 
 const localize = useLocalize('dungeons')
 
-const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_tower: true, include_twister: true, include_sandstorm: true })
+const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false })
 
 const dungeonId = ref('1')
 const bossId = ref(getFirstBossId('1'))
@@ -667,59 +647,11 @@ async function runSelected() {
 async function runRemaining() {
   if (!canSimulateSelected.value) return
 
-  const useThreshold = (selectedDungeon.value.id === TOWER && options.include_tower) || (selectedDungeon.value.id === TWISTER && options.include_twister) || (selectedDungeon.value.id === SANDSTORM && options.include_sandstorm)
+  const results = await runBosses(getRemainingBosses(selectedEntry.value))
 
-  if (!useThreshold) {
-    const results = await runBosses(getRemainingBosses(selectedEntry.value))
+  if (!results) return
 
-    if (!results) return
-
-    showResults(results)
-
-    return
-  }
-
-  const { instances, iterations } = readSettings()
-
-  const thresholdMin = Math.min(Math.max(options.threshold_min, 0), 100)
-  const thresholdMax = Math.min(Math.max(options.threshold_max, thresholdMin), 100)
-
-  const entries = getRemainingBosses(selectedEntry.value)
-
-  const results: DungeonResult[] = []
-
-  const batch = new WorkerBatch<DungeonWorkerResult, DungeonWorkerParams & { id: number }>('dungeons')
-
-  entries.forEach((entry, index) => {
-    const fight = prepareFight(entry)
-
-    if (!fight) return
-
-    batch.add(
-      (data) => {
-        const score = data.results.score
-
-        results[index] = { ...entry, ...data.results }
-
-        if (score < (thresholdMin * iterations) / 100 || score > (thresholdMax * iterations) / 100) {
-          batch.skip(({ id }) => id === entry.dungeon.id || id === NEXT_DUNGEONS[entry.dungeon.id])
-        }
-      },
-      {
-        ...fight,
-        iterations,
-        hpcap: HEALTH_CAP,
-        config: simulatorConfig.value,
-        id: entry.dungeon.id
-      }
-    )
-  })
-
-  const duration = await batch.run(instances, ({ id }, { id: running }) => id !== running && PREVIOUS_DUNGEONS[id] !== running)
-
-  if (duration === null) return
-
-  showResults(compact(results))
+  showResults(results)
 }
 
 async function runAll() {
@@ -740,7 +672,7 @@ async function runNext() {
   const thresholdMin = Math.min(Math.max(options.threshold_min, 0), 100)
   const thresholdMax = Math.min(Math.max(options.threshold_max, thresholdMin), 100)
 
-  const entries = openBosses.value.filter(({ dungeon }) => dungeon.id !== TWISTER && dungeon.id !== SANDSTORM).flatMap(getRemainingBosses)
+  const entries = openBosses.value.filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm)).flatMap(getRemainingBosses)
 
   const results: DungeonResult[] = []
 
@@ -788,13 +720,12 @@ async function runNext() {
 function openOptions() {
   useDialog(
     DungeonOptionsDialog,
-    { thresholdMin: options.threshold_min, thresholdMax: options.threshold_max, includeTower: options.include_tower, includeTwister: options.include_twister, includeSandstorm: options.include_sandstorm },
+    { thresholdMin: options.threshold_min, thresholdMax: options.threshold_max, includeTwister: options.include_twister, includeSandstorm: options.include_sandstorm },
     {
       callback: (values) => {
         if (values) {
           options.threshold_min = values.thresholdMin
           options.threshold_max = values.thresholdMax
-          options.include_tower = values.includeTower
           options.include_twister = values.includeTwister
           options.include_sandstorm = values.includeSandstorm
         }
