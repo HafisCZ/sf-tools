@@ -1122,6 +1122,7 @@
         }
     },
     "endpoint": {
+        "login": "Log in to your S&F Account",
         "username": "Username",
         "password": "Password",
         "mode": {
