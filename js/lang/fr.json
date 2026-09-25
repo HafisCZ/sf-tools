@@ -1199,7 +1199,7 @@
         },
         "user_error": {
             "title": "Votre nom d'utilisateur ou mot de passe n'est pas valide",
-            "message": "Assurez-vous que le format est correct ('nom d'utilisateur' pour les comptes SF, 'nomutilisateur@url' pour les personnages locaux)"
+            "message": "Veuillez vérifier votre nom d'utilisateur et votre mot de passe, puis réessayer."
         },
         "errors": {
             "error_unreachable": "Le serveur est inaccessible",

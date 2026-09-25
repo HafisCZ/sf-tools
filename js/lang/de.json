@@ -1199,7 +1199,7 @@
         },
         "user_error": {
             "title": "Ihr Benutzername oder Passwort ist ungültig",
-            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
+            "message": "Please check your username and password and try again."
         },
         "errors": {
             "error_unreachable": "Der Server kann nicht erreicht werden",
