@@ -1199,7 +1199,7 @@
         },
         "user_error": {
             "title": "Nieprawidłowa nazwa użytkowanika lub hasło",
-            "message": "Upewnij się, że jest w poprawnym formacie ('username' dla kont SF , 'username@url' dla postaci lokalnych)"
+            "message": "Sprawdź swoją nazwę użytkownika i hasło, a następnie spróbuj ponownie."
         },
         "errors": {
             "error_unreachable": "Serwer jest nieosiągalny",

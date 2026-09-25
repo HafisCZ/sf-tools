@@ -1199,7 +1199,7 @@
         },
         "user_error": {
             "title": "Nome de utilizador ou palavra-chave inválidos!",
-            "message": "Please ensure that it is in correct format ('username' for SF Accounts, 'username@url' for local characters)"
+            "message": "Please check your username and password and try again."
         },
         "errors": {
             "error_unreachable": "Server cannot be reached",
