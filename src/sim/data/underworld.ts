@@ -43,7 +43,7 @@ function getUnitCount(building: number, counts: number[]) {
 }
 
 function getUnitLevel(building: number, upgrades: number) {
-  return UNIT_LEVELS[building - 1] + upgrades
+  return Math.min(10000, UNIT_LEVELS[building - 1] + upgrades)
 }
 
 function getUnitAttribute(level: number, multiplier: number) {
