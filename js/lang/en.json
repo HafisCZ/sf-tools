@@ -1128,10 +1128,10 @@
         "mode": {
             "title": "Capture mode",
             "own": "Capture own character",
-            "default": "Capture own + selected characters",
             "guild": "Capture own + guild characters",
             "friends": "Capture own + friend characters",
-            "hall_of_fame": "Capture own + top 50 HoF characters"
+            "hall_of_fame": "Capture own + top 50 HoF characters",
+            "guild_friends": "Capture own + guild + friend characters"
         },
         "temporary": "Discard capture when page is closed",
         "cancel": "Cancel",
@@ -1139,16 +1139,17 @@
         "step2": {
             "title": "Loading Endpoint"
         },
-        "step3": {
-            "toggle": "Toggle all",
-            "title": "Select players to be imported"
-        },
         "step4": {
             "title": "Contacting the server for information",
             "message": "Fetching data"
         },
         "step7": {
             "title": "Select your character"
+        },
+        "warnings": {
+            "title": "Some characters could not be fully captured",
+            "entry": "#{player} (#{server}): #{error}",
+            "entry_target": "#{player} (#{server}), #{target}: #{error}"
         },
         "user_error": {
             "title": "Your user name or password is not valid",
