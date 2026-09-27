@@ -11,3 +11,5 @@ declare const __BUILD_INFO__: {
   timestamp: number
   message: string
 } | null
+
+declare const __ITEM_PICTURES__: Record<string, number[]>

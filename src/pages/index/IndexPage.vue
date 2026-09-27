@@ -89,7 +89,8 @@ const TOOLS = [
   { key: 'blacksmith', href: 'blacksmith.html' },
   { key: 'underworld', href: 'underworld.html' },
   { key: 'fortress', href: 'fortress.html' },
-  { key: 'raids', href: 'raids.html' }
+  { key: 'raids', href: 'raids.html' },
+  { key: 'scrapbook', href: 'scrapbook.html' }
 ]
 
 const COMMUNITY_TOOLS = [

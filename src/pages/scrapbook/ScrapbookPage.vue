@@ -1,5 +1,5 @@
 <template>
-  <Page :width="player ? 'calc(100% - 140px)' : undefined">
+  <Page>
     <template v-if="player" #nav-left>
       <SFButton variant="ghost" @click="showPlayers">
         <SFIcon name="arrow-left" />
@@ -8,8 +8,15 @@
       <SFTabs v-model="tab" :options="tabOptions" />
     </template>
 
-    <InventoryView v-if="player && tab === 'inventory'" :player="player" />
-    <ResourcesView v-else-if="player" :player="player" />
+    <template v-if="player" #nav-right>
+      <span class="px-2 text-white/70">{{ collected }} / {{ total }}</span>
+      <SFCheckbox v-model="missingOnly" :label="localize('missing_only')" class="px-2" />
+    </template>
+
+    <template v-if="player">
+      <SFParagraph v-if="!hasData" class="text-center">{{ localize('empty') }}</SFParagraph>
+      <ScrapbookView v-else :classes="classes" :missing-only="missingOnly" @toggle="toggleMarked" />
+    </template>
     <div v-else class="fixed inset-0 flex items-center justify-center p-4">
       <section class="flex w-full max-w-[570px] flex-col gap-5 rounded-lg border border-line bg-dialog p-5 text-white/90 shadow-xl" :aria-labelledby="titleId">
         <SFHeading :id="titleId" level="3" class="border-b border-line pb-1.5 text-center">{{ localize('picker.title') }}</SFHeading>
@@ -41,6 +48,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef, useId } from 'vue'
 import SFButton from '@library/SFButton.vue'
+import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFParagraph from '@library/SFParagraph.vue'
@@ -50,38 +58,51 @@ import { useDialog, useFilePicker } from '@utils/dialogs'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast } from '@utils/toasts'
-import { getClassImageUrl, getErrorMessage, sortDescending } from '@utils/utils'
+import { getClassImageUrl, getErrorMessage, sortDescending, sum } from '@utils/utils'
 import { Logger } from '~/core/logger'
 import { type PlayerModel } from '~/core/models/player'
 import { SELF_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
-import InventoryView from '~/pages/inventory/components/InventoryView.vue'
-import ResourcesView from '~/pages/inventory/components/ResourcesView.vue'
-import { type InventoryPlayer } from '~/pages/inventory/inventory'
 import Page from '~/pages/Page.vue'
+import ScrapbookView from '~/pages/scrapbook/components/ScrapbookView.vue'
+import { createScrapbookClasses, type ScrapbookBook } from '~/pages/scrapbook/scrapbook'
 
 defineOptions({
-  name: 'InventoryPage'
+  name: 'ScrapbookPage'
 })
 
-type Tab = 'inventory' | 'resources'
-
-const localize = useLocalize('inventory')
+const localize = useLocalize('scrapbook')
 
 const loader = useLoader()
 
 const titleId = useId()
 
 const players = shallowRef<PlayerModel[]>([])
-const player = shallowRef<InventoryPlayer | null>(null)
+const player = shallowRef<PlayerModel | null>(null)
 
-const tab = ref<Tab>('inventory')
+const tab = ref<ScrapbookBook>('items')
 
-const tabOptions = computed<SelectOption<Tab>[]>(() => [
-  { value: 'inventory', label: localize('tab.inventory') },
-  { value: 'resources', label: localize('tab.resources') }
+const missingOnly = ref(true)
+
+const marked = ref<string[]>([])
+
+const tabOptions = computed<SelectOption<ScrapbookBook>[]>(() => [
+  { value: 'items', label: localize('tab.items') },
+  { value: 'legendaries', label: localize('tab.legendaries') }
 ])
+
+const hasData = computed(() => {
+  const bits = tab.value === 'items' ? player.value?.Scrapbook : player.value?.ScrapbookLegendary
+
+  return bits !== undefined && bits.length > 0
+})
+
+const classes = computed(() => (player.value ? createScrapbookClasses(player.value, tab.value, marked.value) : []))
+
+const collected = computed(() => sum(classes.value.map((entry) => entry.collected)))
+
+const total = computed(() => sum(classes.value.map((entry) => entry.total)))
 
 onMounted(() => {
   void initialize()
@@ -114,11 +135,16 @@ async function loadPlayers() {
 
 function selectPlayer(entry: PlayerModel) {
   player.value = DatabaseManager.Players[entry.LinkId].Latest
-  tab.value = 'inventory'
+  tab.value = 'items'
+  marked.value = []
 }
 
 function showPlayers() {
   player.value = null
+}
+
+function toggleMarked(key: string) {
+  marked.value = marked.value.includes(key) ? marked.value.filter((markedKey) => markedKey !== key) : [...marked.value, key]
 }
 
 function importFiles() {

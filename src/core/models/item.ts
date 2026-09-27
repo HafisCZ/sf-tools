@@ -289,16 +289,28 @@ export class ItemModel {
   }
 
   getScrapbookPosition() {
-    const boundaryStart = ItemModel.SCRAPBOOK_BOUNDARIES[this.ColorClass]?.[this.Type - 1]?.[this.IsEpic ? 1 : 0]
-    let position = this.Index - 1
-    if (this.IsEpic) {
+    return ItemModel.getScrapbookPosition(this.ColorClass, this.Type, this.Index, this.Color)
+  }
+
+  static getScrapbookPosition(colorClass: number, type: number, index: number, color: number) {
+    const boundaryStart = ItemModel.SCRAPBOOK_BOUNDARIES[colorClass]?.[type - 1]?.[index >= 50 ? 1 : 0]
+    let position = index - 1
+    if (index >= 50) {
       position -= 49
-    } else if (this.Type != 10) {
+    } else if (type != 10) {
       position *= 5
-      position += this.Color
+      position += color
     }
 
     return Math.max(0, Number(boundaryStart) + position)
+  }
+
+  // 24 little-endian 16-bit words: types 1-7 per class, then necklace, ring, talisman; bit n is picture 100 + n
+  static getLegendaryScrapbookPosition(type: number, itemClass: number, index: number) {
+    const word = type <= 7 ? (type - 1) * 3 + itemClass - 1 : 21 + type - 8
+    const bit = index - 100
+
+    return word * 16 + (bit < 8 ? 7 - bit : 23 - bit)
   }
 
   clone() {

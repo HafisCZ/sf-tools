@@ -6,7 +6,7 @@ import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
-const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory', 'stats']
+const VITE_PAGES = ['changelog', '404', 'index', 'calendar', 'blacksmith', 'request', 'hydra', 'idle', 'fortress', 'hellevator', 'underworld', 'raids', 'guilds', 'attributes', 'simulator', 'pets', 'dungeons', 'analyzer', 'inventory', 'stats', 'scrapbook']
 
 const LEGACY_DIRECTORIES = ['js', 'res', 'vendor', 'endpoint']
 const LEGACY_FILES = ['CNAME', 'sitemap.txt']
@@ -34,6 +34,24 @@ function readBuildInfo() {
 
     return null
   }
+}
+
+function readItemPictures() {
+  const pictures: Record<string, number[]> = {}
+
+  for (const file of fs.readdirSync(path.join(ROOT_DIRECTORY, 'res/items'))) {
+    const [type, index, variant, itemClass] = path.basename(file, '.png').split('_')
+    const key = `${type}_${variant}_${itemClass}`
+
+    pictures[key] ??= []
+    pictures[key].push(Number(index))
+  }
+
+  for (const indices of Object.values(pictures)) {
+    indices.sort((a, b) => a - b)
+  }
+
+  return pictures
 }
 
 function legacySite(): Plugin {
@@ -78,7 +96,8 @@ export default defineConfig({
   appType: 'mpa',
   plugins: [vue(), tailwindcss(), legacySite()],
   define: {
-    __BUILD_INFO__: JSON.stringify(readBuildInfo())
+    __BUILD_INFO__: JSON.stringify(readBuildInfo()),
+    __ITEM_PICTURES__: JSON.stringify(readItemPictures())
   },
   resolve: {
     alias: {
