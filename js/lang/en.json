@@ -213,6 +213,10 @@
             "title": "Inventory Manager",
             "desc": "Compare items, calculate upgrades & more"
         },
+        "scrapbook": {
+            "title": "Scrapbook",
+            "desc": "Find the items missing from your scrapbook"
+        },
         "idle": {
             "title": "Arena Manager",
             "desc": "Check the production of your Arena Manager"
@@ -1981,5 +1985,24 @@
             "spendable": "Spendable resources",
             "used": "Used resources"
         }
+    },
+    "scrapbook": {
+        "back": "Back",
+        "tab": {
+            "items": "Items",
+            "legendaries": "Legendaries"
+        },
+        "picker": {
+            "title": "Scrapbook",
+            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "missing_only": "Missing only",
+        "shared": "Shared",
+        "group": {
+            "normal": "Normal",
+            "epic": "Epic"
+        },
+        "empty": "This character has no scrapbook data.",
+        "complete": "Nothing is missing here."
     }
 }

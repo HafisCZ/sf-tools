@@ -20,7 +20,8 @@
               <span class="block text-white/50">{{ entry.Prefix }}</span>
               <span class="block">{{ entry.Name }}</span>
             </span>
-            <SFIcon name="right-to-bracket" class="invisible mr-1 ml-auto text-[28px] text-white/50 group-hover:visible group-focus-visible:visible" />
+            <span class="ml-auto text-white/50">{{ localize.global('general.level') }} {{ entry.Level }}</span>
+            <SFIcon name="right-to-bracket" class="invisible mr-1 text-[28px] text-white/50 group-hover:visible group-focus-visible:visible" />
           </button>
         </div>
         <SFParagraph v-else class="text-center">{{ localize('picker.empty') }}</SFParagraph>
