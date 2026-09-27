@@ -30,38 +30,20 @@
                 await window.unity.Quit();
             }
 
-            window.login = function (server, version, username, password) {
+            window.playaAccountLogin = function (server, username, password) {
                 if (password.length > 40) {
                     password = password.slice(0, 40);
                 }
 
-                window.unity.SendMessage('Controller', 'Login', JSON.stringify({
+                window.unity.SendMessage('Controller', 'PlayaAccountLogin', JSON.stringify({
                     server,
                     username,
-                    password,
-                    version
+                    password
                 }));
             }
 
-            window.continue_login = function (server, version, username, id) {
-                window.unity.SendMessage('Controller', 'ContinueLogin', JSON.stringify({
-                    server,
-                    username,
-                    id,
-                    version
-                }))
-            }
-
-            window.query_many = function (ids) {
-                window.unity.SendMessage('Controller', 'QueryMany', ids);
-            }
-
-            window.query_hall_of_fame = function () {
-                window.unity.SendMessage('Controller', 'QueryHallOfFame');
-            }
-
-            window.query_self = function () {
-                window.unity.SendMessage('Controller', 'QuerySelf');
+            window.execute = function (params) {
+                window.unity.SendMessage('Controller', 'Execute', JSON.stringify(params));
             }
         </script>
     </body>
