@@ -52,7 +52,7 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const TOOLS = ['analyzer', 'attributes', 'blacksmith', 'calendar', 'dungeons', 'fortress', 'guilds', 'hellevator', 'hydra', 'idle', 'inventory', 'pets', 'simulator', 'stats', 'underworld']
+const TOOLS = ['analyzer', 'attributes', 'blacksmith', 'calendar', 'dungeons', 'fortress', 'guilds', 'hellevator', 'hydra', 'idle', 'inventory', 'pets', 'scrapbook', 'simulator', 'stats', 'underworld']
 
 const localize = useLocalize('dialog.report')
 
