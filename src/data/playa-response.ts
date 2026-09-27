@@ -91,6 +91,7 @@ export class PlayaResponse {
     const players: RawPlayer[] = []
     const bonusPool: Record<string, { gtsave: RawGroupTournament }> = {}
     const bonusPoolByName: Record<string, { gtsave: RawGroupTournament }> = {}
+    const playersOwnByPrefix: Record<string, RawPlayer> = {}
     let currentVersion: number | undefined = undefined
 
     for (const { url, text, date } of this.search(json)) {
@@ -280,8 +281,15 @@ export class PlayaResponse {
           }
         }
 
-        if (!skip && !players.find((p) => p.identifier === data.identifier)) {
-          players.push(data)
+        if (!skip) {
+          const existingPlayer = players.find((p) => p.identifier === data.identifier)
+          if (!existingPlayer) {
+            players.push(data)
+          }
+
+          if (data.own) {
+            playersOwnByPrefix[prefix] = existingPlayer ?? data
+          }
         }
       }
 
@@ -311,7 +319,7 @@ export class PlayaResponse {
       }
 
       if (r.legendaries) {
-        const lastOwnPlayer = players.find((player) => player.prefix === prefix && player.own)
+        const lastOwnPlayer = playersOwnByPrefix[prefix]
         if (lastOwnPlayer) {
           lastOwnPlayer.scrapbook_legendary = r.legendaries.string
         }

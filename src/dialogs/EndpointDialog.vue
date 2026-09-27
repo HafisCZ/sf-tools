@@ -55,34 +55,11 @@
         <SFProgress :percent="percent" />
       </template>
 
-      <template v-else-if="step === 'select'">
-        <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step3.title') }}</SFHeading>
-        <SFCheckbox ref="all-targets-ref" v-model="allTargetsSelected" :indeterminate="someTargetsSelected" :label="localize('step3.toggle')" />
-        <ul class="flex h-[30em] flex-col gap-2 overflow-y-auto border-t border-line pt-3">
-          <li v-for="(target, index) in targets" :key="index">
-            <SFCheckbox ref="targets-ref" v-model="target.selected">
-              <span class="flex flex-1 items-center justify-between gap-2">
-                {{ target.name }}
-                <SFIcon :name="target.icon" class="text-white/60" />
-              </span>
-            </SFCheckbox>
-          </li>
-        </ul>
-        <div class="flex gap-2">
-          <SFButton block @click="close(false)">
-            {{ localize('cancel') }}
-          </SFButton>
-          <SFButton variant="primary" block :disabled="!isSelectionValid" @click="selectTargets">
-            {{ localize('continue') }}
-          </SFButton>
-        </div>
-      </template>
-
       <template v-else-if="step === 'character'">
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step7.title') }}</SFHeading>
         <ul class="flex h-[30em] flex-col gap-2 overflow-y-auto">
           <li v-for="character in characters" :key="`${character.server_id}-${character.id}`">
-            <button type="button" class="w-full cursor-pointer rounded-md border p-4 text-left transition" :class="character === selectedCharacter ? 'border-accent' : 'border-line hover:bg-surface-hover'" :aria-pressed="character === selectedCharacter" @click="selectedCharacter = character">
+            <button type="button" class="w-full cursor-pointer rounded-md border p-4 text-left transition" :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line hover:bg-surface-hover'" :aria-pressed="selectedCharacters.includes(character)" @click="toggleCharacter(character)">
               <span class="block">
                 {{ character.name }}
                 <span class="ml-2 text-xs text-white/60">({{ localize.global(`general.class${character.char_class}`) }} - {{ localize.global('general.level') }} {{ character.level }})</span>
@@ -96,18 +73,35 @@
           <SFButton block @click="close(false)">
             {{ localize('cancel') }}
           </SFButton>
-          <SFButton variant="primary" block :disabled="!selectedCharacter || !isCharacterValid" @click="selectCharacter">
+          <SFButton variant="primary" block :disabled="selectedCharacters.length === 0 || !isCharacterValid" @click="selectCharacters">
             {{ localize('continue') }}
           </SFButton>
         </div>
       </template>
 
+      <template v-else-if="step === 'warnings'">
+        <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('warnings.title') }}</SFHeading>
+        <ul class="flex max-h-[15em] flex-col gap-1 overflow-y-auto text-sm text-amber-500">
+          <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
+        </ul>
+        <SFButton block @click="close(true)">
+          {{ localize.global('dialog.shared.close') }}
+        </SFButton>
+      </template>
+
       <template v-else-if="step === 'error'">
         <SFHeading level="3" class="text-center">{{ errorText }}</SFHeading>
+        <ul v-if="warnings.length > 1" class="flex max-h-[15em] flex-col gap-1 overflow-y-auto text-sm text-amber-500">
+          <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
+        </ul>
         <SFButton block class="mt-6" @click="step = 'login'">
           {{ localize('continue') }}
         </SFButton>
       </template>
+
+      <ul v-if="warnings.length > 0 && (step === 'loading' || step === 'progress')" class="flex max-h-[15em] flex-col gap-1 overflow-y-auto text-sm text-amber-500">
+        <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
+      </ul>
     </div>
   </div>
 </template>
@@ -124,8 +118,7 @@ import SFParagraph from '@library/SFParagraph.vue'
 import SFProgress from '@library/SFProgress.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
-import { type EndpointCharacter, type EndpointLogin, EndpointController } from '@utils/endpoint'
-import { type IconName } from '@utils/icons'
+import { type EndpointCharacter, type EndpointWarning, type EndpointMode, EndpointController } from '@utils/endpoint'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
 import { getErrorMessage, getTimestampOffset } from '@utils/utils'
@@ -151,13 +144,7 @@ const emit = defineEmits<{
   close: [imported: boolean]
 }>()
 
-type Step = 'terms' | 'login' | 'unity' | 'loading' | 'progress' | 'select' | 'character' | 'error'
-
-type Target = {
-  name: string
-  icon: IconName
-  selected: boolean
-}
+type Step = 'terms' | 'login' | 'unity' | 'loading' | 'progress' | 'character' | 'warnings' | 'error'
 
 type Character = EndpointCharacter & {
   server: string
@@ -171,55 +158,43 @@ const TITLE_KEYS: Record<Step, string> = {
   unity: 'endpoint.step2.title',
   loading: 'endpoint.step4.title',
   progress: 'endpoint.step4.message',
-  select: 'endpoint.step3.title',
   character: 'endpoint.step7.title',
+  warnings: 'endpoint.warnings.title',
   error: 'dialog.warning.title'
 }
 
-const MODES = ['own', 'default', 'guild', 'friends', 'hall_of_fame']
+const MODES: EndpointMode[] = ['own', 'guild', 'friends', 'hall_of_fame', 'guild_friends']
 
 const localize = useLocalize('endpoint')
 
 const step = ref<Step>(Site.options.endpoint_terms_accepted === TERMS_VERSION ? 'login' : 'terms')
 
+const storedMode = Store.shared.get('endpoint_mode', 'own', true)
+
 const username = ref('')
 const password = ref('')
-const mode = ref(Store.shared.get('endpoint_mode', 'default', true))
+const mode = ref<EndpointMode>(MODES.find((value) => value === storedMode) ?? 'own')
 const temporary = ref(false)
 
 const percent = ref(0)
 const errorText = ref('')
+const warnings = ref<string[]>([])
 
-const targets = ref<Target[]>([])
 const characters = shallowRef<Character[]>([])
-const selectedCharacter = shallowRef<Character>()
+const selectedCharacters = shallowRef<Character[]>([])
 
 const dialogElement = useTemplateRef('dialog-ref')
 const iframeElement = useTemplateRef('iframe-ref')
 
 let controller: EndpointController | undefined
 
-let resolveTargets: ((names: string[]) => void) | undefined
-let resolveCharacter: ((character: Character) => void) | undefined
+let resolveCharacters: ((characters: Character[]) => void) | undefined
 
 const isLoginValid = useComponentValidation(useTemplateRef('username-ref'), useTemplateRef('password-ref'), useTemplateRef('temporary-ref'))
 
 const isCharacterValid = useComponentValidation(useTemplateRef('mode-ref'))
 
-const isSelectionValid = useComponentValidation(useTemplateRef('all-targets-ref'), useTemplateRef('targets-ref'))
-
-const modeOptions = computed<SelectOption[]>(() => MODES.map((value) => ({ value, label: localize(`mode.${value}`) })))
-
-const allTargetsSelected = computed({
-  get: () => targets.value.every((target) => target.selected),
-  set: (value) => {
-    for (const target of targets.value) {
-      target.selected = value
-    }
-  }
-})
-
-const someTargetsSelected = computed(() => !allTargetsSelected.value && targets.value.some((target) => target.selected))
+const modeOptions = computed<SelectOption<EndpointMode>[]>(() => MODES.map((value) => ({ value, label: localize(`mode.${value}`) })))
 
 watch(mode, (value) => {
   if (Store.isPermanent()) {
@@ -252,19 +227,27 @@ async function login() {
 
   if (!iframeElement.value) return
 
+  warnings.value = []
+
   try {
     if (!controller) {
       step.value = 'unity'
 
-      controller = new EndpointController(iframeElement.value, showProgress)
+      controller = new EndpointController(iframeElement.value, showProgress, showWarning)
 
       await controller.load()
     }
 
     step.value = 'loading'
 
-    const account = await signIn(controller, username.value, password.value)
-    const capture = await captureMode(controller, account)
+    const selected = await signIn(controller, username.value, password.value)
+
+    step.value = 'loading'
+
+    const capture = await controller.execute(
+      selected.map((character) => ({ id: character.id, username: character.name, server: character.server })),
+      mode.value
+    )
 
     await importCapture(capture.data)
   } catch (error) {
@@ -273,7 +256,7 @@ async function login() {
 }
 
 async function signIn(endpoint: EndpointController, name: string, secret: string) {
-  const account = await endpoint.login('sso.playa-games.com', name, secret)
+  const account = await endpoint.playaAccountLogin('sso.playa-games.com', name, secret)
 
   const available: Character[] = []
 
@@ -291,60 +274,33 @@ async function signIn(endpoint: EndpointController, name: string, secret: string
     throw new Error('playa_account_empty')
   }
 
-  const character = await waitForCharacter(available)
-
-  step.value = 'loading'
-
-  return endpoint.continueLogin(character.server, character.name, character.id)
+  return waitForCharacters(available)
 }
 
-async function captureMode(endpoint: EndpointController, account: EndpointLogin) {
-  if (mode.value === 'own') {
-    return endpoint.querySelf()
-  } else if (mode.value === 'guild') {
-    return endpoint.query(account.members)
-  } else if (mode.value === 'friends') {
-    return endpoint.query(account.friends)
-  } else if (mode.value === 'hall_of_fame') {
-    return endpoint.queryHallOfFame()
-  } else if (account.members.length > 0 || account.friends.length > 0) {
-    const names = await waitForTargets(account)
-
-    step.value = 'loading'
-
-    return endpoint.query(names)
-  } else {
-    return endpoint.querySelf()
-  }
-}
-
-function waitForCharacter(available: Character[]) {
+function waitForCharacters(available: Character[]) {
   characters.value = available
-  selectedCharacter.value = available.length === 1 ? available[0] : undefined
+  selectedCharacters.value = available.length === 1 ? [available[0]] : []
   step.value = 'character'
 
-  return new Promise<Character>((resolve) => {
-    resolveCharacter = resolve
+  return new Promise<Character[]>((resolve) => {
+    resolveCharacters = resolve
   })
 }
 
-function waitForTargets(account: EndpointLogin) {
-  targets.value = [...account.members.map((name) => ({ name, icon: 'circle-user' as const, selected: false })), ...account.friends.map((name) => ({ name, icon: 'thumbs-up' as const, selected: false }))]
-  step.value = 'select'
-
-  return new Promise<string[]>((resolve) => {
-    resolveTargets = resolve
-  })
-}
-
-function selectCharacter() {
-  if (selectedCharacter.value) {
-    resolveCharacter?.(selectedCharacter.value)
+function toggleCharacter(character: Character) {
+  if (!Site.options.endpoint_fetch_multiple) {
+    selectedCharacters.value = [character]
+  } else if (selectedCharacters.value.includes(character)) {
+    selectedCharacters.value = selectedCharacters.value.filter((selected) => selected !== character)
+  } else {
+    selectedCharacters.value = [...selectedCharacters.value, character]
   }
 }
 
-function selectTargets() {
-  resolveTargets?.(targets.value.filter((target) => target.selected).map((target) => target.name))
+function selectCharacters() {
+  if (selectedCharacters.value.length > 0) {
+    resolveCharacters?.(characters.value.filter((character) => selectedCharacters.value.includes(character)))
+  }
 }
 
 function showProgress(value: number) {
@@ -352,10 +308,22 @@ function showProgress(value: number) {
   percent.value = value
 }
 
-function showError(error: unknown) {
-  const message = getErrorMessage(error)
+function showWarning(warning: EndpointWarning) {
+  const error = formatError(warning.warning)
 
-  errorText.value = message.length > 50 ? message.slice(message.indexOf(':') + 1) : localize(`errors.${message.toLowerCase().replace(/\s|:/g, '_')}`)
+  if (warning.target) {
+    warnings.value.push(localize('warnings.entry_target', { player: warning.player, server: warning.server, target: warning.target, error }))
+  } else {
+    warnings.value.push(localize('warnings.entry', { player: warning.player, server: warning.server, error }))
+  }
+}
+
+function formatError(message: string) {
+  return message.length > 50 ? message.slice(message.indexOf(':') + 1) : localize(`errors.${message.toLowerCase().replace(/\s|:/g, '_')}`)
+}
+
+function showError(error: unknown) {
+  errorText.value = formatError(getErrorMessage(error))
   step.value = 'error'
 }
 
@@ -367,7 +335,11 @@ async function importCapture(text: string) {
     Logger.error(error, 'Error occured while trying to import a file!')
   }
 
-  close(true)
+  if (warnings.value.length > 0) {
+    step.value = 'warnings'
+  } else {
+    close(true)
+  }
 }
 
 function close(imported: boolean) {

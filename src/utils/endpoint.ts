@@ -10,40 +10,58 @@ export type EndpointCharacter = {
   order: number
 }
 
-export type EndpointLogin = {
+export type EndpointAccount = {
   characters: EndpointCharacter[]
-  members: string[]
-  friends: string[]
+}
+
+export type EndpointMode = 'own' | 'guild' | 'friends' | 'hall_of_fame' | 'guild_friends'
+
+export type EndpointExecuteCharacter = {
+  id: number
+  username: string
+  server: string
 }
 
 export type EndpointCapture = {
   data: string
 }
 
+export type EndpointWarning = {
+  warning: string
+  player: string
+  server: string
+  target: string
+}
+
 type EndpointMessage = {
   error?: string
-  progress?: number
+  warning?: string
+  progress?: string
+}
+
+type EndpointExecuteParams = {
+  characters: (EndpointExecuteCharacter & { version: string | null })[]
+  mode: EndpointMode
 }
 
 type EndpointWindow = Window & {
   callback: ((message: EndpointMessage) => void) | null
   load(): Promise<void>
   destroy(): Promise<void>
-  login(server: string, version: string | null, username: string, password: string): void
-  continue_login(server: string, version: string | null, username: string, id: number): void
-  query_many(names: string): void
-  query_self(): void
-  query_hall_of_fame(): void
+  playaAccountLogin(server: string, username: string, password: string): void
+  execute(params: EndpointExecuteParams): void
 }
 
 export class EndpointController {
   #iframe: HTMLIFrameElement
   #onProgress: (percent: number) => void
+  #onWarning: (warning: EndpointWarning) => void
   #window: EndpointWindow | null = null
 
-  constructor(iframe: HTMLIFrameElement, onProgress: (percent: number) => void) {
+  constructor(iframe: HTMLIFrameElement, onProgress: (percent: number) => void, onWarning: (warning: EndpointWarning) => void) {
     this.#iframe = iframe
     this.#onProgress = onProgress
+    this.#onWarning = onWarning
   }
 
   async load() {
@@ -68,34 +86,18 @@ export class EndpointController {
     this.#iframe.src = ''
   }
 
-  login(server: string, username: string, password: string) {
+  playaAccountLogin(server: string, username: string, password: string) {
     Logger.log('ECLIENT', `Logging in as ${username}@${server}`)
 
-    return this.#request<EndpointLogin>((endpoint) => endpoint.login(server, Playa.getClientVersion(), username, password))
+    return this.#request<EndpointAccount>((endpoint) => endpoint.playaAccountLogin(server, username, password))
   }
 
-  continueLogin(server: string, username: string, id: number) {
-    Logger.log('ECLIENT', `Continuing logging in as ${username}@${server}`)
+  execute(characters: EndpointExecuteCharacter[], mode: EndpointMode) {
+    Logger.log('ECLIENT', `Executing ${mode} for ${characters.map(({ username, server }) => `${username}@${server}`).join(', ')}`)
 
-    return this.#request<EndpointLogin>((endpoint) => endpoint.continue_login(server, Playa.getClientVersion(), username, id))
-  }
+    const version = Playa.getClientVersion()
 
-  query(names: string[]) {
-    Logger.log('ECLIENT', 'Query many')
-
-    return this.#request<EndpointCapture>((endpoint) => endpoint.query_many(names.join(',')))
-  }
-
-  querySelf() {
-    Logger.log('ECLIENT', 'Query self')
-
-    return this.#request<EndpointCapture>((endpoint) => endpoint.query_self())
-  }
-
-  queryHallOfFame() {
-    Logger.log('ECLIENT', 'Query HOF')
-
-    return this.#request<EndpointCapture>((endpoint) => endpoint.query_hall_of_fame())
+    return this.#request<EndpointCapture>((endpoint) => endpoint.execute({ characters: characters.map((character) => ({ ...character, version })), mode }))
   }
 
   #request<TResponse>(send: (endpoint: EndpointWindow) => void) {
@@ -109,8 +111,10 @@ export class EndpointController {
       endpoint.callback = (message) => {
         if (message.error) {
           reject(new Error(message.error))
+        } else if (message.warning) {
+          this.#onWarning(message as EndpointWarning)
         } else if (message.progress) {
-          this.#onProgress(message.progress)
+          this.#onProgress(Number(message.progress))
         } else {
           resolve(message as TResponse)
         }
