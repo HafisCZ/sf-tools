@@ -173,112 +173,6 @@
         "companion2_full": "#{player} Markwartja",
         "companion3_full": "#{player} Kunigundája"
     },
-    "achievements": {
-        "0": "Világjáró",
-        "1": "A bíróság",
-        "2": "A király",
-        "3": "Fosztogató",
-        "4": "Történetmesélő",
-        "5": "Easteros főnöke",
-        "6": "A sötét vándor",
-        "7": "Árnyjátékos",
-        "8": "Kriptozoologus",
-        "9": "Gombaszakértő",
-        "10": "Piros szemek",
-        "11": "Nagy átverés",
-        "12": "Tiszta Epic/Ez epikus",
-        "13": "Sérthetetlen",
-        "14": "Ékszerész",
-        "15": "Öszvér",
-        "16": "Sárkánylovas",
-        "17": "Kriptozoológus",
-        "18": "Állat szeliditő",
-        "19": "Kisállat hizlalás",
-        "20": "",
-        "21": "A hős",
-        "22": "Elit",
-        "23": "A jéghegy csúcsa",
-        "24": "Szuperhős",
-        "25": "Epikus Szuperhős",
-        "26": "Mániákus gyűjtő",
-        "27": "Nagy költekező",
-        "28": "Hét napon át",
-        "29": "Mindig bekapcsolva",
-        "30": "Királyok Királya",
-        "31": "Elit Céh",
-        "32": "Kisállat kereskedő",
-        "33": "Kovácsok dala",
-        "34": "Határ a csillagos ég",
-        "35": "Évforduló",
-        "36": "Kisállat szerető",
-        "37": "Végre 18",
-        "38": "Utazás az árnyékok világába",
-        "39": "Sürgős szükség",
-        "40": "Hasonmás",
-        "41": "Nudista/Naturista",
-        "42": "Epikus társak",
-        "43": "Kocka",
-        "44": "Bányász",
-        "45": "Fashion-conscious",
-        "46": "Fekete arany",
-        "47": "Boszorkányság",
-        "48": "Megbízható",
-        "49": "Gyűjtsd össze mind!",
-        "50": "Világváros",
-        "51": "Nagyváros",
-        "52": "Kisváros",
-        "53": "Aranytartalék",
-        "54": "Lélekraktár",
-        "55": "Slaughterer of the Best",
-        "56": "Top 100 Topper",
-        "57": "Top 1,000 Topper",
-        "58": "Horror of Heroes",
-        "59": "Outsourcing",
-        "60": "Academic Orders",
-        "61": "Good vs. Evil",
-        "62": "Commentary Cracker",
-        "63": "Dehydration",
-        "64": "Deep Mining Master",
-        "65": "Special Agent",
-        "66": "St. Nicholas",
-        "67": "Reinvent the Wheel",
-        "68": "Second Screen",
-        "69": "Day X",
-        "70": "Rune Millionaire",
-        "71": "Runes, runes, runes",
-        "72": "Capitalist",
-        "73": "Stinking rich",
-        "74": "Rune Master",
-        "75": "Arena Manager",
-        "76": "Lancelot",
-        "77": "Door Opener",
-        "78": "Odin",
-        "79": "Loki",
-        "80": "Zeus",
-        "81": "Hades",
-        "82": "Five of a Kind",
-        "83": "Capacious Pockets",
-        "84": "Birth of a Legend",
-        "85": "Living Legend",
-        "86": "Second Wardrobe",
-        "87": "100-Timer",
-        "88": "A Thousand Points Plan",
-        "89": "Ten Grand",
-        "90": "Tavern Brawler",
-        "91": "Closing Time",
-        "92": "Rune Emperor",
-        "93": "Dragon Adept",
-        "94": "Chaser of Dragons",
-        "95": "Bright Ghost Hunter",
-        "96": "Dark Ghost Hunter",
-        "97": "League of Incompetence",
-        "98": "League of Vindictiveness",
-        "99": "Ying Dojo Master",
-        "100": "Yang Dojo Master",
-        "101": "Understander of Giants",
-        "102": "Tamer of Giants",
-        "103": "Lucky Drop"
-    },
     "index": {
         "toggle": "Kreditek váltása",
         "others": "Other community tools",
@@ -318,6 +212,10 @@
         "inventory": {
             "title": "Hátizsák kezelő",
             "desc": "Tárgyak összehasonlítása, fejlesztések kiszámítása, és egyebek"
+        },
+        "scrapbook": {
+            "title": "Scrapbook",
+            "desc": "Find the items missing from your scrapbook"
         },
         "idle": {
             "title": "Aréna menedzser",
@@ -877,9 +775,10 @@
         "enemy": "Enemy",
         "open": "Nyitott kazamaták",
         "graph": {
-            "y": "Megmaradt életerő",
+            "y": "HP Left",
             "x": "- Elosztás a kiválasztott számú próbálkozásra -",
-            "winrate": "Nyerési esély: #{rate}% (#{score} a #{tries}-ból)"
+            "winrate": "Nyerési esély: #{rate}% (#{score} a #{tries}-ból)",
+            "player": "Player & Companions"
         },
         "results": "Eredmények",
         "experience": "Teljes: #{experience} XP",
@@ -932,6 +831,7 @@
             "editable_data": "Editable data"
         },
         "players": "Players",
+        "damages_and_chances": "Damage & chances",
         "preview": "Fight preview",
         "export": "Export fights",
         "autofill": "Fill editable data in from predefined list",
@@ -981,6 +881,24 @@
                 "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
+            },
+            "chances": {
+                "first_strike": "First strike",
+                "critical": "Critical chance",
+                "skip": "Block / evade chance",
+                "chain": "Extra attack chance",
+                "revive": "Revive chance",
+                "swoop": "Swoop chance",
+                "stance_change": "Stance change chance",
+                "song_1": "Song level 1",
+                "song_2": "Song level 2",
+                "song_3": "Song level 3",
+                "summon": "Summon chance",
+                "minion_1": "Skeleton summoned",
+                "minion_2": "Hound summoned",
+                "minion_3": "Golem summoned",
+                "minion_revive": "Skeleton revive chance",
+                "tincture": "Tincture throw chance"
             }
         }
     },
@@ -1112,6 +1030,9 @@
             "copy_all": "Mindenki másolása",
             "paste_mode": "Kapcsolja be a Hozzáadás/Csere beszúrási módot"
         },
+        "snack_apply_all": "Apply current snack to all players",
+        "snack_apply_all_toast_title": "Snack copy",
+        "snack_apply_all_toast_message": "Snack and snack strength was applied to all player",
         "win_chance": "Nyerés %",
         "min_chance": "Min %",
         "max_chance": "Max %",
@@ -1166,19 +1087,55 @@
         "life_potion": "Életerő bájital",
         "hand_enchant": "Shadow of the Cowboy",
         "smart_change": "Smart class change",
+        "mode": {
+            "raw": "Raw",
+            "character": "Character"
+        },
         "copy": "Copy",
-        "none": "None"
+        "none": "None",
+        "equipment": {
+            "empty": "Empty",
+            "none": "None",
+            "reset_to": "Change back to #{item}",
+            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
+            "details": "Rune, gem and enchantment",
+            "rune": "Rune",
+            "gem": "Gem",
+            "enchantment": "Enchantment",
+            "upgrades": "Upgrades",
+            "value": "Value",
+            "potions": "Potions",
+            "pets": "Pet bonus",
+            "slot": {
+                "Head": "Helmet",
+                "Body": "Breastplate",
+                "Hand": "Gloves",
+                "Feet": "Boots",
+                "Neck": "Amulet",
+                "Belt": "Belt",
+                "Ring": "Ring",
+                "Misc": "Talisman",
+                "Wpn1": "Weapon",
+                "Wpn2": "Off-hand"
+            },
+            "pool": {
+                "backpack": "Backpack",
+                "shop": "Weapon & Magic shop",
+                "dummy": "Mannequin"
+            }
+        }
     },
     "endpoint": {
+        "login": "Log in to your S&F Account",
         "username": "Username",
         "password": "Password",
         "mode": {
             "title": "Capture mode",
             "own": "Capture own character",
-            "default": "Capture own + selected characters",
             "guild": "Capture own + guild characters",
             "friends": "Capture own + friend characters",
-            "hall_of_fame": "Capture own + top 50 HoF characters"
+            "hall_of_fame": "Capture own + top 50 HoF characters",
+            "guild_friends": "Capture own + guild + friend characters"
         },
         "temporary": "Discard capture when page is closed",
         "cancel": "Cancel",
@@ -1186,16 +1143,17 @@
         "step2": {
             "title": "Loading Endpoint"
         },
-        "step3": {
-            "toggle": "Toggle all",
-            "title": "Select players to be imported"
-        },
         "step4": {
             "title": "Contacting the server for information",
             "message": "Fetching data"
         },
         "step7": {
             "title": "Select your character"
+        },
+        "warnings": {
+            "title": "Some characters could not be fully captured",
+            "entry": "#{player} (#{server}): #{error}",
+            "entry_target": "#{player} (#{server}), #{target}: #{error}"
         },
         "user_error": {
             "title": "Your user name or password is not valid",
@@ -1296,7 +1254,10 @@
             "title": "Simulator options",
             "threshold": {
                 "title": "Simulation threshold",
-                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped",
+                "more": "Dungeons included when using More option",
+                "include_twister": "Include Twister",
+                "include_sandstorm": "Include Sandstorm"
             }
         },
         "analyzer_autofill": {
@@ -1925,6 +1886,120 @@
         },
         "204": {
             "name": "Sandstorm"
+        },
+        "300": {
+            "name": "Unwavering Warrior Guild"
+        },
+        "301": {
+            "name": "Inquisitive Mage Guild"
+        },
+        "302": {
+            "name": "Acrobatic Scout Guild"
+        },
+        "303": {
+            "name": "Lively Necromancer Guild"
         }
+    },
+    "validations": {
+        "empty": "This field is required",
+        "number_min": "Value has to be at least #{min}",
+        "number_max": "Value has to be at most #{max}"
+    },
+    "inventory": {
+        "back": "Back",
+        "tab": {
+            "inventory": "Inventory",
+            "resources": "Resources"
+        },
+        "picker": {
+            "title": "Inventory Manager",
+            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "section": {
+            "equipped": "Equipped items",
+            "backpack": "Backpack",
+            "player": "Player",
+            "shops": "Weapon & Magic shop",
+            "dummy": "Mannequin",
+            "storage": "Backpack",
+            "overview": "Overview",
+            "summary": "Summary"
+        },
+        "flip": "Flip All",
+        "ignore_gems": "Ignore gems",
+        "ignore_upgrades": "Ignore upgrades",
+        "tag": {
+            "enchanted": "Enchanted",
+            "washed": "Washed",
+            "socketed": "Socketed"
+        },
+        "rune_suffix": {
+            "1": "of Wealth",
+            "2": "of Epic Attraction",
+            "3": "of Quality",
+            "4": "of Knowledge",
+            "5": "of Health",
+            "6": "of Fire",
+            "7": "of Ice",
+            "8": "of Lightning",
+            "9": "of Elements",
+            "10": "of Fire",
+            "11": "of Ice",
+            "12": "of Lightning"
+        },
+        "item": {
+            "damage": "Damage range",
+            "upgrades": "Upgrades",
+            "sell": "Sell:",
+            "dismantle": "Dismantle:",
+            "upgrade": "Upgrade:",
+            "transmog": "T:"
+        },
+        "comparison": {
+            "no_rune": "No rune",
+            "no_socket": "No socket",
+            "empty_socket": "Empty Socket"
+        },
+        "stat": {
+            "health": "Health",
+            "armor": "Armor",
+            "reduction": "Max Reduction Level",
+            "range_min": "Minimum Range",
+            "range_max": "Maximum Range",
+            "range_average": "Average Range",
+            "critical": "Max Crit Chance Level",
+            "damage_min": "Minimum Damage",
+            "damage_max": "Maximum Damage",
+            "damage_average": "Average Damage"
+        },
+        "summary": {
+            "current": "Current resources",
+            "sold": "Sold resources",
+            "dismantled": "Dismantled resources",
+            "spendable": "Spendable resources",
+            "used": "Used resources"
+        }
+    },
+    "scrapbook": {
+        "back": "Back",
+        "tab": {
+            "items": "Items",
+            "legendaries": "Legendaries"
+        },
+        "picker": {
+            "title": "Scrapbook",
+            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "missing_only": "Missing only",
+        "shared": "Shared",
+        "weapon1": "Warrior weapon",
+        "weapon2": "Mage weapon",
+        "weapon3": "Scout weapon",
+        "group": {
+            "normal": "Normal",
+            "epic": "Epic"
+        },
+        "empty": "This character has no scrapbook data.",
+        "complete": "Nothing is missing here."
     }
 }
