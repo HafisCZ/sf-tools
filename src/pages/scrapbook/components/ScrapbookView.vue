@@ -17,7 +17,7 @@
         </span>
         <div class="flex flex-wrap gap-2">
           <SFTooltip v-for="item in group.entries" :key="item.key" :content="item.name">
-            <button type="button" class="relative size-24 rounded-md border border-line outline-none focus-visible:outline-2 focus-visible:outline-accent enabled:cursor-pointer" :disabled="item.collected" :aria-pressed="item.collected ? undefined : item.marked" @click="emit('toggle', item.key)">
+            <button type="button" class="relative size-24 rounded-md border outline-none focus-visible:outline-2 focus-visible:outline-accent enabled:cursor-pointer" :class="item.collected || item.marked ? 'border-line' : 'border-red-900'" :disabled="item.collected" :aria-pressed="item.collected ? undefined : item.marked" @click="emit('toggle', item.key)">
               <img :src="item.picture" :alt="item.name" loading="lazy" class="size-full" :class="{ 'opacity-50': !item.collected && !item.marked }" />
               <span v-if="group.key === 'normal' && kind.type !== 10" class="absolute right-1.5 bottom-0.5 text-xs text-white/70">{{ item.color + 1 }}</span>
             </button>
