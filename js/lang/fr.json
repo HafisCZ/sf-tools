@@ -56,7 +56,7 @@
             "full": "Plein dans",
             "storage": "Stockage total",
             "lure_count": "Héros Attirés",
-            "lure_bonus": "Bonus leurre",
+            "lure_bonus": "Bonus d'âmes",
             "knights": "Salle des chevaliers",
             "goblins": "Gobelins",
             "trolls": "Trolls",
@@ -173,112 +173,6 @@
         "companion2_full": "Marc de #{player}",
         "companion3_full": "Diane de #{player}"
     },
-    "achievements": {
-        "0": "Globe-trotteur",
-        "1": "Comte",
-        "2": "Roi",
-        "3": "Accro aux châteaux",
-        "4": "Conteur",
-        "5": "Boss d'Easteros",
-        "6": "Sombre voyageur",
-        "7": "Joueur de l'ombre",
-        "8": "Comme un ouragan",
-        "9": "Dealer",
-        "10": "Cueillette prolifique",
-        "11": "En veine",
-        "12": "Puriste épique",
-        "13": "Invincible",
-        "14": "Bijoutier",
-        "15": "Âne de bât",
-        "16": "Dragonnier",
-        "17": "Cryptozoologiste",
-        "18": "Dompteur",
-        "19": "Gavage",
-        "20": "Le million, le million !",
-        "21": "Héros",
-        "22": "Élite",
-        "23": "Partie émergée de l'iceberg",
-        "24": "Super-héros",
-        "25": "Super-méga héros",
-        "26": "Collectionneur frénétique",
-        "27": "Mécène",
-        "28": "Semaine",
-        "29": "Mois",
-        "30": "Roi des Rois",
-        "31": "Guilde d'élite",
-        "32": "Esprit de familier",
-        "33": "Par amour de la forge",
-        "34": "Perfectionniste",
-        "35": "Anniversaire",
-        "36": "Ami des bêtes",
-        "37": "Enfin 18",
-        "38": "Peur du noir",
-        "39": "Besoin urgent",
-        "40": "Alter Ego",
-        "41": "A poil",
-        "42": "Compagnons épiques",
-        "43": "Yeux Carrés",
-        "44": "Miner",
-        "45": "Conscient de la mode",
-        "46": "Or Noir",
-        "47": "Sorcellerie",
-        "48": "Fiable",
-        "49": "Récoltez les tous",
-        "50": "Métropole",
-        "51": "Grande Ville",
-        "52": "Petite Ville",
-        "53": "Stockage de l'or",
-        "54": "Stockage des âmes",
-        "55": "Massacre du Meilleur",
-        "56": "Membre du top 100",
-        "57": "Membre du top 1 000",
-        "58": "L'horreur des héros",
-        "59": "Sous-traitance",
-        "60": "Ordres académiques",
-        "61": "Bien contre le mal",
-        "62": "Briseur de commentaires",
-        "63": "Déshydratation",
-        "64": "Maîtrise profonde du minage",
-        "65": "Agent Spécial",
-        "66": "Saint-Nicolas",
-        "67": "Réinventer la Roue",
-        "68": "Deuxième écran",
-        "69": "Jour J",
-        "70": "Millionnaire runique",
-        "71": "Runes, runes, runes",
-        "72": "Capitaliste",
-        "73": "Riche puant",
-        "74": "Maître des runes",
-        "75": "Gérant de l'arène",
-        "76": "Lancelot",
-        "77": "Ouvreur de portes",
-        "78": "Odin",
-        "79": "Loki",
-        "80": "Zeus",
-        "81": "Hades",
-        "82": "Cinq de son genre",
-        "83": "Grandes poches",
-        "84": "Naissance d'une légende",
-        "85": "Légende vivante",
-        "86": "Seconde garde-robe",
-        "87": "100 fois",
-        "88": "Un plan en mille points",
-        "89": "Les dix grands",
-        "90": "Tavern Brawler",
-        "91": "Closing Time",
-        "92": "Rune Emperor",
-        "93": "Dragon Adept",
-        "94": "Chaser of Dragons",
-        "95": "Bright Ghost Hunter",
-        "96": "Dark Ghost Hunter",
-        "97": "Ligue de l'Incompétence",
-        "98": "League of Vindictiveness",
-        "99": "Ying Dojo Master",
-        "100": "Yang Dojo Master",
-        "101": "Understander of Giants",
-        "102": "Apprivoiseur de géants",
-        "103": "Lucky Drop"
-    },
     "index": {
         "toggle": "Afficher les crédits",
         "others": "Autres outils de la communauté",
@@ -318,6 +212,10 @@
         "inventory": {
             "title": "Gestionnaire d'inventaire",
             "desc": "Comparez vos objets, calculez les résultats d'améliorations ..."
+        },
+        "scrapbook": {
+            "title": "Scrapbook",
+            "desc": "Find the items missing from your scrapbook"
         },
         "idle": {
             "title": "Manager d'arène",
@@ -877,9 +775,10 @@
         "enemy": "Ennemis",
         "open": "Donjons actuellement ouverts",
         "graph": {
-            "y": "PV restants",
+            "y": "HP Left",
             "x": "- Distribution pour le nombre d'essais sélectionnés -",
-            "winrate": "Taux de victoire : #{rate}% (#{score} sur #{tries})"
+            "winrate": "Taux de victoire : #{rate}% (#{score} sur #{tries})",
+            "player": "Player & Companions"
         },
         "results": "Résultats",
         "experience": "Total: #{experience} XP",
@@ -932,6 +831,7 @@
             "editable_data": "Données modifiables"
         },
         "players": "Joueurs",
+        "damages_and_chances": "Damage & chances",
         "preview": "Aperçu du combat",
         "export": "Exporter des combats",
         "autofill": "Remplir les données modifiables à partir de la liste prédéfinie",
@@ -981,6 +881,24 @@
                 "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
+            },
+            "chances": {
+                "first_strike": "First strike",
+                "critical": "Critical chance",
+                "skip": "Block / evade chance",
+                "chain": "Extra attack chance",
+                "revive": "Revive chance",
+                "swoop": "Swoop chance",
+                "stance_change": "Stance change chance",
+                "song_1": "Song level 1",
+                "song_2": "Song level 2",
+                "song_3": "Song level 3",
+                "summon": "Summon chance",
+                "minion_1": "Skeleton summoned",
+                "minion_2": "Hound summoned",
+                "minion_3": "Golem summoned",
+                "minion_revive": "Skeleton revive chance",
+                "tincture": "Tincture throw chance"
             }
         }
     },
@@ -1042,8 +960,8 @@
         "footer#": "Basé sur le projet de <a target=\"_blank\" class=\"pointer-events-all\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a>.",
         "player_count": "Nombre de joueurs",
         "main": "Principal",
-        "side1": "Côté 1",
-        "side2": "Côté 2",
+        "side1": "Secondaire 1",
+        "side2": "Secondaire 2",
         "hydra": "Hydre",
         "iterations": {
             "label": "Itérations :",
@@ -1094,7 +1012,7 @@
         }
     },
     "simulator": {
-        "paste_target#": "Cliquez ici puis faites <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le simulateur",
+        "paste_target#": "Cliquez ici puis <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le simulateur",
         "threads": "Fils de simulation. Gardez ce nombre EN DESSOUS du nombre de cœurs de votre processeur !",
         "iterations": "Nombre d'itérations par fil.",
         "add": "Ajouter",
@@ -1112,6 +1030,9 @@
             "copy_all": "Copier tout",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
+        "snack_apply_all": "Apply current snack to all players",
+        "snack_apply_all_toast_title": "Snack copy",
+        "snack_apply_all_toast_message": "Snack and snack strength was applied to all player",
         "win_chance": "% de victoire",
         "min_chance": "Min %",
         "max_chance": "Max %",
@@ -1166,29 +1087,61 @@
         "life_potion": "Vie éternelle",
         "hand_enchant": "Ombre du cowboy",
         "smart_change": "Changement de classe intelligent",
+        "mode": {
+            "raw": "Raw",
+            "character": "Character"
+        },
         "copy": "Copier",
-        "none": "Aucun"
+        "none": "Aucun",
+        "equipment": {
+            "empty": "Empty",
+            "none": "None",
+            "reset_to": "Change back to #{item}",
+            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
+            "details": "Rune, gem and enchantment",
+            "rune": "Rune",
+            "gem": "Gem",
+            "enchantment": "Enchantment",
+            "upgrades": "Upgrades",
+            "value": "Value",
+            "potions": "Potions",
+            "pets": "Pet bonus",
+            "slot": {
+                "Head": "Helmet",
+                "Body": "Breastplate",
+                "Hand": "Gloves",
+                "Feet": "Boots",
+                "Neck": "Amulet",
+                "Belt": "Belt",
+                "Ring": "Ring",
+                "Misc": "Talisman",
+                "Wpn1": "Weapon",
+                "Wpn2": "Off-hand"
+            },
+            "pool": {
+                "backpack": "Backpack",
+                "shop": "Weapon & Magic shop",
+                "dummy": "Mannequin"
+            }
+        }
     },
     "endpoint": {
+        "login": "Log in to your S&F Account",
         "username": "Nom d'utilisateur",
         "password": "Mot de passe",
         "mode": {
             "title": "Mode de capture",
             "own": "Capturer votre personnage",
-            "default": "Capturez votre personnage + sélectionnés",
             "guild": "Capturez votre personnage + guilde",
             "friends": "Capturez votre personnage + amis",
-            "hall_of_fame": "Capturez votre personnage + top 50"
+            "hall_of_fame": "Capturez votre personnage + top 50",
+            "guild_friends": "Capture own + guild + friend characters"
         },
         "temporary": "Supprimer la capture lorsque la page est fermée",
         "cancel": "Annuler",
         "continue": "Continuer",
         "step2": {
-            "title": "Loading Endpoint"
-        },
-        "step3": {
-            "toggle": "Sélectionner tout",
-            "title": "Sélectionnez les joueurs à importer"
+            "title": "Chargement des données"
         },
         "step4": {
             "title": "Demande d'informations au serveur",
@@ -1197,9 +1150,14 @@
         "step7": {
             "title": "Sélectionnez votre personnage"
         },
+        "warnings": {
+            "title": "Some characters could not be fully captured",
+            "entry": "#{player} (#{server}): #{error}",
+            "entry_target": "#{player} (#{server}), #{target}: #{error}"
+        },
         "user_error": {
             "title": "Votre nom d'utilisateur ou mot de passe n'est pas valide",
-            "message": "Veuillez vérifier votre nom d'utilisateur et votre mot de passe, puis réessayer."
+            "message": "Please check your username and password and try again."
         },
         "errors": {
             "error_unreachable": "Le serveur est inaccessible",
@@ -1296,7 +1254,10 @@
             "title": "Options du simulateur",
             "threshold": {
                 "title": "Seuil de simulation",
-                "label": "Seuil % - Tous les donjons ennemis en dehors de ce seuil seront ignorés"
+                "label": "Seuil % - Tous les donjons ennemis en dehors de ce seuil seront ignorés",
+                "more": "Dungeons included when using More option",
+                "include_twister": "Include Twister",
+                "include_sandstorm": "Include Sandstorm"
             }
         },
         "analyzer_autofill": {
@@ -1411,11 +1372,11 @@
             "tables": "Tableaux compatibles",
             "content": {
                 "empty": "Vide",
-                "current": "Current editor content"
+                "current": "Contenu actuel de l'éditeur"
             },
             "category": {
-                "defaults": "Duplicate default script",
-                "clone": "Duplicate existing script"
+                "defaults": "Dupliquer un script par défaut",
+                "clone": "Dupliquer un script existant"
             },
             "error_title": "Attention",
             "error_name_blank": "Le nom du script ne peut être vide"
@@ -1491,7 +1452,7 @@
             "notice_bonus_used": "<br><br>Ce script est actuellement appliqué aux tableaux suivants : #{tables}"
         },
         "delete_remote_script": {
-            "title": "Unpublish script",
+            "title": "Dépublier le script",
             "message": "Cette action révoquera le code associé à ce script et le supprimera définitivement ! Êtes-vous sûr de vouloir continuer ?"
         },
         "remote_script_verification": {
@@ -1537,10 +1498,10 @@
             "slot": "Emplacement",
             "index": "Index",
             "operation": "Opération",
-            "equals": "Égaux",
-            "above": "Au-Dessus",
-            "below": "En dessous",
-            "between": "entre",
+            "equals": "Égal à",
+            "above": "Supérieur à",
+            "below": "Inférieur à",
+            "between": "Compris entre",
             "value": "Valeur",
             "secondary": "Second filtre",
             "cancel": "Annuler",
@@ -1599,10 +1560,10 @@
             "gold_exp": "Or & Expérience",
             "fortress": "Forteresse",
             "underworld": "Enfers",
-            "gold_table": "Gold Table"
+            "gold_table": "Données Or"
         },
         "float": {
-            "title": "Character values",
+            "title": "Valeurs du personnage",
             "quarters": "Quartier ouvrier"
         },
         "gold": {
@@ -1627,17 +1588,17 @@
             "pot_15": "15% Potion",
             "pot_25": "25% Potion",
             "pot_w": "Potion de sorcière",
-            "pot_pm": "Mushroom PoEL",
-            "pot_pg": "Gold PoEL",
+            "pot_pm": "Vie éternelle (champis)",
+            "pot_pg": "Vie éternelle (or)",
             "scroll": "Parchemin de sorcière",
             "glass": "Sablier de l'impatience",
             "glass_10": "10 Sabliers de l'impatience",
             "calendar_1": "Calendrier 1 lingot",
             "calendar_3": "Calendrier 3 lingots / Verrouillé",
             "arena": "Arène Max",
-            "reroll": "Fortress Reroll",
-            "tower_reward": "Tour (Niveau est le niveau de l'ennemi)",
-            "twister_reward": "Tornade (Niveau est le niveau de l'ennemi)"
+            "reroll": "Autre adversaire (forteresse)",
+            "tower_reward": "Tour (Niveau = niv ennemi)",
+            "twister_reward": "Tornade (Niveau = niv ennemi)"
         },
         "experience": {
             "title": "Expérience",
@@ -1649,14 +1610,14 @@
             "next": "Niveau suivant",
             "arena": "Arène",
             "daily": "Mission quotidienne",
-            "dungeon": "Donjon (Niveau est le niveau de l'ennemi)",
-            "twister": "Tornade (Niveau est le niveau de l'ennemi)",
+            "dungeon": "Donjon (Niveau = niv ennemi)",
+            "twister": "Tornade (Niveau = niv ennemi)",
             "wheel_1": "Roue 1 livre",
             "wheel_2": "Roue 3 livres",
             "calendar_1": "Calendrier 1 livre",
             "calendar_2": "Calendrier 2 livres",
             "calendar_3": "Calendrier 3 livres",
-            "habitat": "Habitat Boss"
+            "habitat": "Combat d'habitat (familiers)"
         },
         "quests": {
             "title": "Quêtes (Expérimental)",
@@ -1703,7 +1664,7 @@
             "title": "Divers",
             "gate": "Porte des Enfers",
             "torture": "Salle de torture",
-            "souls": "Âmes (Niveau est le niveau de l'ennemi)"
+            "souls": "Âmes (Niveau = niv ennemi)"
         },
         "calc": {
             "title_at": "Calcul du prix de l’attribut à",
@@ -1718,8 +1679,8 @@
             "copy_comma": "Copier le tableau (utilisez des virgules comme séparateur décimal)",
             "level": "Attribut / Niveau",
             "price": "Prix de l’attribut",
-            "curve": "Gold Curve",
-            "mount": "Griffon",
+            "curve": "Courbe de gains",
+            "mount": "Bonus écologique",
             "guard": "Garde / Dés (3)"
         }
     },
@@ -1745,23 +1706,23 @@
         "title": "Manager d'arène",
         "topbar": {
             "suggest": {
-                "0": "Next 1 + BP",
-                "1": "Only next 1",
-                "2": "Only breakpoint"
+                "0": "1 + palier suivant",
+                "1": "Niveau +1",
+                "2": "Palier suivant"
             },
             "number": {
-                "0": "Labeled",
-                "1": "Scientific"
+                "0": "Libellés",
+                "1": "Scientifique"
             }
         },
         "table": {
-            "building": "Building",
+            "building": "Attractions",
             "upgrades": "Améliorations",
-            "level": "Niveau",
+            "level": "Niveau actuel",
             "level_next": "Niveau suivant",
             "cycle_duration": "Cycle",
             "cycle_money": "Argent par cycle",
-            "money_share": "Partager",
+            "money_share": "Répartition",
             "upgrade_money": "Coût",
             "upgrade_estimation": "Estimation",
             "money_spent": "Argent dépensé",
@@ -1925,6 +1886,120 @@
         },
         "204": {
             "name": "Tempête de sable"
+        },
+        "300": {
+            "name": "Unwavering Warrior Guild"
+        },
+        "301": {
+            "name": "Inquisitive Mage Guild"
+        },
+        "302": {
+            "name": "Acrobatic Scout Guild"
+        },
+        "303": {
+            "name": "Lively Necromancer Guild"
         }
+    },
+    "validations": {
+        "empty": "This field is required",
+        "number_min": "Value has to be at least #{min}",
+        "number_max": "Value has to be at most #{max}"
+    },
+    "inventory": {
+        "back": "Back",
+        "tab": {
+            "inventory": "Inventory",
+            "resources": "Resources"
+        },
+        "picker": {
+            "title": "Inventory Manager",
+            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "section": {
+            "equipped": "Equipped items",
+            "backpack": "Backpack",
+            "player": "Player",
+            "shops": "Weapon & Magic shop",
+            "dummy": "Mannequin",
+            "storage": "Backpack",
+            "overview": "Overview",
+            "summary": "Summary"
+        },
+        "flip": "Flip All",
+        "ignore_gems": "Ignore gems",
+        "ignore_upgrades": "Ignore upgrades",
+        "tag": {
+            "enchanted": "Enchanted",
+            "washed": "Washed",
+            "socketed": "Socketed"
+        },
+        "rune_suffix": {
+            "1": "of Wealth",
+            "2": "of Epic Attraction",
+            "3": "of Quality",
+            "4": "of Knowledge",
+            "5": "of Health",
+            "6": "of Fire",
+            "7": "of Ice",
+            "8": "of Lightning",
+            "9": "of Elements",
+            "10": "of Fire",
+            "11": "of Ice",
+            "12": "of Lightning"
+        },
+        "item": {
+            "damage": "Damage range",
+            "upgrades": "Upgrades",
+            "sell": "Sell:",
+            "dismantle": "Dismantle:",
+            "upgrade": "Upgrade:",
+            "transmog": "T:"
+        },
+        "comparison": {
+            "no_rune": "No rune",
+            "no_socket": "No socket",
+            "empty_socket": "Empty Socket"
+        },
+        "stat": {
+            "health": "Health",
+            "armor": "Armor",
+            "reduction": "Max Reduction Level",
+            "range_min": "Minimum Range",
+            "range_max": "Maximum Range",
+            "range_average": "Average Range",
+            "critical": "Max Crit Chance Level",
+            "damage_min": "Minimum Damage",
+            "damage_max": "Maximum Damage",
+            "damage_average": "Average Damage"
+        },
+        "summary": {
+            "current": "Current resources",
+            "sold": "Sold resources",
+            "dismantled": "Dismantled resources",
+            "spendable": "Spendable resources",
+            "used": "Used resources"
+        }
+    },
+    "scrapbook": {
+        "back": "Back",
+        "tab": {
+            "items": "Items",
+            "legendaries": "Legendaries"
+        },
+        "picker": {
+            "title": "Scrapbook",
+            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "missing_only": "Missing only",
+        "shared": "Shared",
+        "weapon1": "Warrior weapon",
+        "weapon2": "Mage weapon",
+        "weapon3": "Scout weapon",
+        "group": {
+            "normal": "Normal",
+            "epic": "Epic"
+        },
+        "empty": "This character has no scrapbook data.",
+        "complete": "Nothing is missing here."
     }
 }

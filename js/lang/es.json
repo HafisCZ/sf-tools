@@ -173,112 +173,6 @@
         "companion2_full": "Mark de #{player}",
         "companion3_full": "Kunigunde de #{player}"
     },
-    "achievements": {
-        "0": "Trotamundos",
-        "1": "El conde",
-        "2": "El rey",
-        "3": "Saqueador",
-        "4": "Cuentacuentos",
-        "5": "Señor de Esteros",
-        "6": "Viajero oscuro",
-        "7": "Jugador sombrío",
-        "8": "Domador de tornados",
-        "9": "Setero",
-        "10": "Tío con suerte",
-        "11": "Desplumador",
-        "12": "Purista de la épica",
-        "13": "Invencible",
-        "14": "Joyero",
-        "15": "Burro de carga",
-        "16": "Jinete de dragones",
-        "17": "Criptozoólogo",
-        "18": "Adiestrador",
-        "19": "Engorde de mascotas",
-        "20": "Señor de la rueda",
-        "21": "Héroe",
-        "22": "Crack",
-        "23": "Punta del iceberg",
-        "24": "Superhéroe",
-        "25": "Superhéroe épico",
-        "26": "Pasión coleccionista",
-        "27": "Derrochador",
-        "28": "Siete días y siete noches",
-        "29": "Siempre al pie del cañón",
-        "30": "Rey de reyes",
-        "31": "Gremio en la élite",
-        "32": "Señor de las bestias",
-        "33": "Canción del herrero",
-        "34": "El único límite es el cielo",
-        "35": "Aniversario",
-        "36": "Amante de los animales",
-        "37": "18 al fin",
-        "38": "Viaje al mundo de las sombras",
-        "39": "Necesidad imperiosa",
-        "40": "Alter ego",
-        "41": "Nudismo",
-        "42": "Compañeros épicos",
-        "43": "Ojos cuadrados",
-        "44": "Minero",
-        "45": "Fashionista",
-        "46": "Oro negro",
-        "47": "Brujería",
-        "48": "Tipo responsable",
-        "49": "Criptozoólogo",
-        "50": "Metrópolis",
-        "51": "Gran ciudad",
-        "52": "Ciudad pequeña",
-        "53": "Almacenamiento de oro",
-        "54": "Almacenamiento de almas",
-        "55": "Flagelo del mejor",
-        "56": "Flagelo del top 100",
-        "57": "Flagelo del top 1000",
-        "58": "Terror de los héroes",
-        "59": "Agujero en el tiempo",
-        "60": "Órdenes académicas",
-        "61": "Bien contra mal",
-        "62": "Machacayoutubers",
-        "63": "Deshidratación",
-        "64": "Maestro de excavación profunda",
-        "65": "Agente especial",
-        "66": "San Nicolás",
-        "67": "Reinventa la rueda",
-        "68": "Segunda pantalla",
-        "69": "Día X",
-        "70": "Millonario de runas",
-        "71": "Runas, runas, runas",
-        "72": "Capitalista",
-        "73": "Asquerosamente rico",
-        "74": "Rune-Master",
-        "75": "Director de arena",
-        "76": "Lanzarote",
-        "77": "Abrepuertas",
-        "78": "Odín",
-        "79": "Loki",
-        "80": "Zeus",
-        "81": "Hades",
-        "82": "Repóker",
-        "83": "Bolsillos amplios",
-        "84": "El nacimiento de una leyenda",
-        "85": "Leyenda viva",
-        "86": "Segundo guardarropa",
-        "87": "Centenario",
-        "88": "Un plan de mil puntos",
-        "89": "Diez de los grandes",
-        "90": "Alborotador de tabernas",
-        "91": "Hora de cerrar",
-        "92": "Emperador de las runas",
-        "93": "Adepto de dragones",
-        "94": "Persiguedragones",
-        "95": "Cazafantasmas de la luz",
-        "96": "Cazafantasmas de la oscuridad",
-        "97": "Liga de la incompetencia",
-        "98": "Liga de la revancha",
-        "99": "Maestro del dojo Ying",
-        "100": "Maestro del dojo Yang",
-        "101": "Conocedor de gigantes",
-        "102": "Domador de gigantes",
-        "103": "Lucky Drop"
-    },
     "index": {
         "toggle": "Alternar créditos",
         "others": "Otras herramientas de la comunidad",
@@ -318,6 +212,10 @@
         "inventory": {
             "title": "Gestor de inventario",
             "desc": "Compara artículos, calcula mejoras y más"
+        },
+        "scrapbook": {
+            "title": "Scrapbook",
+            "desc": "Find the items missing from your scrapbook"
         },
         "idle": {
             "title": "Director de Arena",
@@ -877,9 +775,10 @@
         "enemy": "Enemigo",
         "open": "Mazmorras abiertas actual",
         "graph": {
-            "y": "Vida restande",
+            "y": "HP Left",
             "x": "- Distribución por cantidad de intentos seleccionados -",
-            "winrate": "Tasa de victorias: #{rate}% (#{score} de #{tries})"
+            "winrate": "Tasa de victorias: #{rate}% (#{score} de #{tries})",
+            "player": "Player & Companions"
         },
         "results": "Resultados",
         "experience": "Total: #{experience} EXP",
@@ -932,6 +831,7 @@
             "editable_data": "Datos editables"
         },
         "players": "Jugadores",
+        "damages_and_chances": "Damage & chances",
         "preview": "Vista previa de batalla",
         "export": "Exportar luchas",
         "autofill": "Rellenar datos editables de la lista predefinida",
@@ -981,6 +881,24 @@
                 "weapon1_range_swoop_critical": "Rango de ataque en picado crítico",
                 "weapon1_fist_damage": "Daño con puños",
                 "weapon2_fist_damage": "Daño con puños (secundario)"
+            },
+            "chances": {
+                "first_strike": "First strike",
+                "critical": "Critical chance",
+                "skip": "Block / evade chance",
+                "chain": "Extra attack chance",
+                "revive": "Revive chance",
+                "swoop": "Swoop chance",
+                "stance_change": "Stance change chance",
+                "song_1": "Song level 1",
+                "song_2": "Song level 2",
+                "song_3": "Song level 3",
+                "summon": "Summon chance",
+                "minion_1": "Skeleton summoned",
+                "minion_2": "Hound summoned",
+                "minion_3": "Golem summoned",
+                "minion_revive": "Skeleton revive chance",
+                "tincture": "Tincture throw chance"
             }
         }
     },
@@ -1112,6 +1030,9 @@
             "copy_all": "Copiar todos",
             "paste_mode": "Cambiar Añadir/Reemplazar modo de inserción"
         },
+        "snack_apply_all": "Apply current snack to all players",
+        "snack_apply_all_toast_title": "Snack copy",
+        "snack_apply_all_toast_message": "Snack and snack strength was applied to all player",
         "win_chance": "Victoria %",
         "min_chance": "Mínimo %",
         "max_chance": "Máximo %",
@@ -1166,29 +1087,61 @@
         "life_potion": "Poción de Vida Eterna",
         "hand_enchant": "Sombra del Cowboy",
         "smart_change": "Cambio de clase inteligente",
+        "mode": {
+            "raw": "Raw",
+            "character": "Character"
+        },
         "copy": "Copiar",
-        "none": "Ninguno"
+        "none": "Ninguno",
+        "equipment": {
+            "empty": "Empty",
+            "none": "None",
+            "reset_to": "Change back to #{item}",
+            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
+            "details": "Rune, gem and enchantment",
+            "rune": "Rune",
+            "gem": "Gem",
+            "enchantment": "Enchantment",
+            "upgrades": "Upgrades",
+            "value": "Value",
+            "potions": "Potions",
+            "pets": "Pet bonus",
+            "slot": {
+                "Head": "Helmet",
+                "Body": "Breastplate",
+                "Hand": "Gloves",
+                "Feet": "Boots",
+                "Neck": "Amulet",
+                "Belt": "Belt",
+                "Ring": "Ring",
+                "Misc": "Talisman",
+                "Wpn1": "Weapon",
+                "Wpn2": "Off-hand"
+            },
+            "pool": {
+                "backpack": "Backpack",
+                "shop": "Weapon & Magic shop",
+                "dummy": "Mannequin"
+            }
+        }
     },
     "endpoint": {
+        "login": "Log in to your S&F Account",
         "username": "Nombre de usuario",
         "password": "Contraseña",
         "mode": {
             "title": "Modo de captura",
             "own": "Capturar propio personaje",
-            "default": "Capturar propio + personajes seleccionados",
             "guild": "Capturar propio + personajes de gremio",
             "friends": "Capturar propio + amigos",
-            "hall_of_fame": "Capturar propio + jugadores top 50"
+            "hall_of_fame": "Capturar propio + jugadores top 50",
+            "guild_friends": "Capture own + guild + friend characters"
         },
         "temporary": "Descartar captura cuando la página esté cerrada",
         "cancel": "Cancelar",
         "continue": "Continuar",
         "step2": {
             "title": "Cargando Endpoint"
-        },
-        "step3": {
-            "toggle": "Toggle all",
-            "title": "Selecciona jugadores a importar"
         },
         "step4": {
             "title": "Contactando con el servidor para obtener información",
@@ -1197,9 +1150,14 @@
         "step7": {
             "title": "Selecciona tu personaje"
         },
+        "warnings": {
+            "title": "Some characters could not be fully captured",
+            "entry": "#{player} (#{server}): #{error}",
+            "entry_target": "#{player} (#{server}), #{target}: #{error}"
+        },
         "user_error": {
             "title": "El nombre de usuario o la contraseña no son válidos",
-            "message": "Por favor, comprueba tu nombre de usuario y contraseña e inténtalo de nuevo."
+            "message": "Please check your username and password and try again."
         },
         "errors": {
             "error_unreachable": "No se puede acceder al servidor",
@@ -1296,7 +1254,10 @@
             "title": "Opciones del simulador",
             "threshold": {
                 "title": "Umbral de simulación",
-                "label": "Umbral % - Cualquier enemigo de mazmorra por debajo de este umbral se omitirá"
+                "label": "Umbral % - Cualquier enemigo de mazmorra por debajo de este umbral se omitirá",
+                "more": "Dungeons included when using More option",
+                "include_twister": "Include Twister",
+                "include_sandstorm": "Include Sandstorm"
             }
         },
         "analyzer_autofill": {
@@ -1925,6 +1886,120 @@
         },
         "204": {
             "name": "Tormenta de arena"
+        },
+        "300": {
+            "name": "Unwavering Warrior Guild"
+        },
+        "301": {
+            "name": "Inquisitive Mage Guild"
+        },
+        "302": {
+            "name": "Acrobatic Scout Guild"
+        },
+        "303": {
+            "name": "Lively Necromancer Guild"
         }
+    },
+    "validations": {
+        "empty": "This field is required",
+        "number_min": "Value has to be at least #{min}",
+        "number_max": "Value has to be at most #{max}"
+    },
+    "inventory": {
+        "back": "Back",
+        "tab": {
+            "inventory": "Inventory",
+            "resources": "Resources"
+        },
+        "picker": {
+            "title": "Inventory Manager",
+            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "section": {
+            "equipped": "Equipped items",
+            "backpack": "Backpack",
+            "player": "Player",
+            "shops": "Weapon & Magic shop",
+            "dummy": "Mannequin",
+            "storage": "Backpack",
+            "overview": "Overview",
+            "summary": "Summary"
+        },
+        "flip": "Flip All",
+        "ignore_gems": "Ignore gems",
+        "ignore_upgrades": "Ignore upgrades",
+        "tag": {
+            "enchanted": "Enchanted",
+            "washed": "Washed",
+            "socketed": "Socketed"
+        },
+        "rune_suffix": {
+            "1": "of Wealth",
+            "2": "of Epic Attraction",
+            "3": "of Quality",
+            "4": "of Knowledge",
+            "5": "of Health",
+            "6": "of Fire",
+            "7": "of Ice",
+            "8": "of Lightning",
+            "9": "of Elements",
+            "10": "of Fire",
+            "11": "of Ice",
+            "12": "of Lightning"
+        },
+        "item": {
+            "damage": "Damage range",
+            "upgrades": "Upgrades",
+            "sell": "Sell:",
+            "dismantle": "Dismantle:",
+            "upgrade": "Upgrade:",
+            "transmog": "T:"
+        },
+        "comparison": {
+            "no_rune": "No rune",
+            "no_socket": "No socket",
+            "empty_socket": "Empty Socket"
+        },
+        "stat": {
+            "health": "Health",
+            "armor": "Armor",
+            "reduction": "Max Reduction Level",
+            "range_min": "Minimum Range",
+            "range_max": "Maximum Range",
+            "range_average": "Average Range",
+            "critical": "Max Crit Chance Level",
+            "damage_min": "Minimum Damage",
+            "damage_max": "Maximum Damage",
+            "damage_average": "Average Damage"
+        },
+        "summary": {
+            "current": "Current resources",
+            "sold": "Sold resources",
+            "dismantled": "Dismantled resources",
+            "spendable": "Spendable resources",
+            "used": "Used resources"
+        }
+    },
+    "scrapbook": {
+        "back": "Back",
+        "tab": {
+            "items": "Items",
+            "legendaries": "Legendaries"
+        },
+        "picker": {
+            "title": "Scrapbook",
+            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "missing_only": "Missing only",
+        "shared": "Shared",
+        "weapon1": "Warrior weapon",
+        "weapon2": "Mage weapon",
+        "weapon3": "Scout weapon",
+        "group": {
+            "normal": "Normal",
+            "epic": "Epic"
+        },
+        "empty": "This character has no scrapbook data.",
+        "complete": "Nothing is missing here."
     }
 }

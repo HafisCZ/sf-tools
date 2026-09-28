@@ -173,112 +173,6 @@
         "companion2_full": "Marek hráče #{player}",
         "companion3_full": "Kunigunda hráče #{player}"
     },
-    "achievements": {
-        "0": "Světoběžník",
-        "1": "Hrabě",
-        "2": "Král",
-        "3": "Nájezdník",
-        "4": "Vypravěč příběhů",
-        "5": "Boss z Východeros",
-        "6": "Termný poutník",
-        "7": "Stínový hráč",
-        "8": "Tornádo Lou",
-        "9": "Houbičkář",
-        "10": "Štastlivec",
-        "11": "Šejdíř šejdírů",
-        "12": "Militantní epik",
-        "13": "Neporazitelný",
-        "14": "Kletnotník",
-        "15": "Naložený oslík",
-        "16": "Dračí Jezdec",
-        "17": "Kryptozoolog",
-        "18": "Milovník zvířat",
-        "19": "Velkovýkrmna",
-        "20": "Bába Tutovka",
-        "21": "Hrdina",
-        "22": "Elita",
-        "23": "Špička ledovce",
-        "24": "Superhrdina",
-        "25": "Epický superhrdina",
-        "26": "Shromažďování Mánie",
-        "27": "Štědrý dárce",
-        "28": "Celý týden",
-        "29": "Vždy ve hře",
-        "30": "Král králů",
-        "31": "Elitní cech",
-        "32": "Petshop Boy",
-        "33": "Píseň kováře",
-        "34": "Nebe je limit",
-        "35": "Výročí",
-        "36": "Milovník mazlíčků",
-        "37": "Konečně 18",
-        "38": "Plavba přes Stínovou Zem",
-        "39": "Urgentní potřeba",
-        "40": "Egoista",
-        "41": "Nudista",
-        "42": "Epičtí společníci",
-        "43": "Hranaté oči",
-        "44": "Těžař",
-        "45": "Metrosexuál",
-        "46": "Černé zlato",
-        "47": "Čarodějův učeň",
-        "48": "Spolehlivost",
-        "49": "Shrábni je všechny",
-        "50": "Metropole",
-        "51": "Velké město",
-        "52": "Malé město",
-        "53": "Zásoby zlata",
-        "54": "Zásoby duší",
-        "55": "Pokořitel nejlepších",
-        "56": "Top 100 jím k snídani",
-        "57": "Top 1000 jím k snídani",
-        "58": "Postrach hrdinů",
-        "59": "Časová díra",
-        "60": "Akademické vysvěcení",
-        "61": "Dobro proti zlu",
-        "62": "Drtič komentářů",
-        "63": "Dehydratace",
-        "64": "Důlní mistr",
-        "65": "Speciální agent",
-        "66": "Sv. Mikuláš",
-        "67": "Znovuobjevení kola",
-        "68": "Druhá obrazovka",
-        "69": "Den X",
-        "70": "Runový milionář",
-        "71": "Runy, runy, runy",
-        "72": "Kapitalista",
-        "73": "Nechutně bohatý",
-        "74": "Rune-Master",
-        "75": "Správce arény",
-        "76": "Lancelot",
-        "77": "Otevírač oken",
-        "78": "Ódin",
-        "79": "Loki",
-        "80": "Zeus",
-        "81": "Hádes",
-        "82": "Řada pěti",
-        "83": "Kapsy velké jako krtek",
-        "84": "Zrození legendy",
-        "85": "Živoucí legendy",
-        "86": "Druhý šatník",
-        "87": "Stovečka",
-        "88": "Plán o tisíci bodech",
-        "89": "Meganášup",
-        "90": "Hospodská mlátička",
-        "91": "Zavíračka",
-        "92": "Runový císař",
-        "93": "Znalec draků",
-        "94": "Naháněč draků",
-        "95": "Bystrý lovec duchů",
-        "96": "Temný lovec duchů",
-        "97": "Liga nekompetentnosti",
-        "98": "Liga pomstychtivosti",
-        "99": "Mistr Jin Dojo",
-        "100": "Mistr Jang Dojo",
-        "101": "Pochopitel obrů",
-        "102": "Krotitel obrů",
-        "103": "Šťastný pád"
-    },
     "index": {
         "toggle": "Zobrazit autory",
         "others": "Ostatní nástroje komunity",
@@ -318,6 +212,10 @@
         "inventory": {
             "title": "Manažer inventáře",
             "desc": "Porovnej předměty, vypočti vylepšení a další"
+        },
+        "scrapbook": {
+            "title": "Scrapbook",
+            "desc": "Find the items missing from your scrapbook"
         },
         "idle": {
             "title": "Manažer arény",
@@ -877,9 +775,10 @@
         "enemy": "Nepřítel",
         "open": "Dostupná podzemí",
         "graph": {
-            "y": "Zbývající HP",
+            "y": "HP Left",
             "x": "- Distribuce pro vybraný počet pokusů -",
-            "winrate": "Vítězství: #{rate}% (#{score} z #{tries})"
+            "winrate": "Vítězství: #{rate}% (#{score} z #{tries})",
+            "player": "Player & Companions"
         },
         "results": "Výsledky",
         "experience": "Celkem: #{experience} XP",
@@ -932,6 +831,7 @@
             "editable_data": "Upravitelná data"
         },
         "players": "Hráči",
+        "damages_and_chances": "Damage & chances",
         "preview": "Náhled boje",
         "export": "Exportovat souboje",
         "autofill": "Vyplnit upravitelná data z předem definovaného seznamu",
@@ -981,6 +881,24 @@
                 "weapon1_range_swoop_critical": "Critical swoop range",
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
+            },
+            "chances": {
+                "first_strike": "First strike",
+                "critical": "Critical chance",
+                "skip": "Block / evade chance",
+                "chain": "Extra attack chance",
+                "revive": "Revive chance",
+                "swoop": "Swoop chance",
+                "stance_change": "Stance change chance",
+                "song_1": "Song level 1",
+                "song_2": "Song level 2",
+                "song_3": "Song level 3",
+                "summon": "Summon chance",
+                "minion_1": "Skeleton summoned",
+                "minion_2": "Hound summoned",
+                "minion_3": "Golem summoned",
+                "minion_revive": "Skeleton revive chance",
+                "tincture": "Tincture throw chance"
             }
         }
     },
@@ -1112,6 +1030,9 @@
             "copy_all": "Kopírovat vše",
             "paste_mode": "Přepnout režim vložení přidání/nahrazení"
         },
+        "snack_apply_all": "Apply current snack to all players",
+        "snack_apply_all_toast_title": "Snack copy",
+        "snack_apply_all_toast_message": "Snack and snack strength was applied to all player",
         "win_chance": "Výhra %",
         "min_chance": "Min. %",
         "max_chance": "Max. %",
@@ -1166,19 +1087,55 @@
         "life_potion": "Lektvar nesmrtelnosti",
         "hand_enchant": "Kovbojův stín",
         "smart_change": "Chytrá změna třídy",
+        "mode": {
+            "raw": "Raw",
+            "character": "Character"
+        },
         "copy": "Kopírovat",
-        "none": "Žádná"
+        "none": "Žádná",
+        "equipment": {
+            "empty": "Empty",
+            "none": "None",
+            "reset_to": "Change back to #{item}",
+            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
+            "details": "Rune, gem and enchantment",
+            "rune": "Rune",
+            "gem": "Gem",
+            "enchantment": "Enchantment",
+            "upgrades": "Upgrades",
+            "value": "Value",
+            "potions": "Potions",
+            "pets": "Pet bonus",
+            "slot": {
+                "Head": "Helmet",
+                "Body": "Breastplate",
+                "Hand": "Gloves",
+                "Feet": "Boots",
+                "Neck": "Amulet",
+                "Belt": "Belt",
+                "Ring": "Ring",
+                "Misc": "Talisman",
+                "Wpn1": "Weapon",
+                "Wpn2": "Off-hand"
+            },
+            "pool": {
+                "backpack": "Backpack",
+                "shop": "Weapon & Magic shop",
+                "dummy": "Mannequin"
+            }
+        }
     },
     "endpoint": {
+        "login": "Log in to your S&F Account",
         "username": "Jméno",
         "password": "Heslo",
         "mode": {
             "title": "Režim snímání",
             "own": "Vlastní postava",
-            "default": "Vlastní postava + vybrané",
             "guild": "Vlastní postava + členové tvého cechu",
             "friends": "Vlastní postava + prátelé",
-            "hall_of_fame": "Vlastní postava + top 50 síně slávy"
+            "hall_of_fame": "Vlastní postava + top 50 síně slávy",
+            "guild_friends": "Capture own + guild + friend characters"
         },
         "temporary": "Zrušit zachytávání při zavření stránky",
         "cancel": "Zrušit",
@@ -1186,16 +1143,17 @@
         "step2": {
             "title": "Načítám Endpoint"
         },
-        "step3": {
-            "toggle": "Toggle all",
-            "title": "Vyber postavy ke stažení"
-        },
         "step4": {
             "title": "Žádám informace ze serveru",
             "message": "Stahuji data"
         },
         "step7": {
             "title": "Vybrat postavu"
+        },
+        "warnings": {
+            "title": "Some characters could not be fully captured",
+            "entry": "#{player} (#{server}): #{error}",
+            "entry_target": "#{player} (#{server}), #{target}: #{error}"
         },
         "user_error": {
             "title": "Tvoje jméno nebo heslo není platné",
@@ -1296,7 +1254,10 @@
             "title": "Nastavení simulátoru",
             "threshold": {
                 "title": "Simulation threshold",
-                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped"
+                "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped",
+                "more": "Dungeons included when using More option",
+                "include_twister": "Include Twister",
+                "include_sandstorm": "Include Sandstorm"
             }
         },
         "analyzer_autofill": {
@@ -1925,6 +1886,120 @@
         },
         "204": {
             "name": "Písečná Bouře"
+        },
+        "300": {
+            "name": "Unwavering Warrior Guild"
+        },
+        "301": {
+            "name": "Inquisitive Mage Guild"
+        },
+        "302": {
+            "name": "Acrobatic Scout Guild"
+        },
+        "303": {
+            "name": "Lively Necromancer Guild"
         }
+    },
+    "validations": {
+        "empty": "This field is required",
+        "number_min": "Value has to be at least #{min}",
+        "number_max": "Value has to be at most #{max}"
+    },
+    "inventory": {
+        "back": "Back",
+        "tab": {
+            "inventory": "Inventory",
+            "resources": "Resources"
+        },
+        "picker": {
+            "title": "Inventory Manager",
+            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "section": {
+            "equipped": "Equipped items",
+            "backpack": "Backpack",
+            "player": "Player",
+            "shops": "Weapon & Magic shop",
+            "dummy": "Mannequin",
+            "storage": "Backpack",
+            "overview": "Overview",
+            "summary": "Summary"
+        },
+        "flip": "Flip All",
+        "ignore_gems": "Ignore gems",
+        "ignore_upgrades": "Ignore upgrades",
+        "tag": {
+            "enchanted": "Enchanted",
+            "washed": "Washed",
+            "socketed": "Socketed"
+        },
+        "rune_suffix": {
+            "1": "of Wealth",
+            "2": "of Epic Attraction",
+            "3": "of Quality",
+            "4": "of Knowledge",
+            "5": "of Health",
+            "6": "of Fire",
+            "7": "of Ice",
+            "8": "of Lightning",
+            "9": "of Elements",
+            "10": "of Fire",
+            "11": "of Ice",
+            "12": "of Lightning"
+        },
+        "item": {
+            "damage": "Damage range",
+            "upgrades": "Upgrades",
+            "sell": "Sell:",
+            "dismantle": "Dismantle:",
+            "upgrade": "Upgrade:",
+            "transmog": "T:"
+        },
+        "comparison": {
+            "no_rune": "No rune",
+            "no_socket": "No socket",
+            "empty_socket": "Empty Socket"
+        },
+        "stat": {
+            "health": "Health",
+            "armor": "Armor",
+            "reduction": "Max Reduction Level",
+            "range_min": "Minimum Range",
+            "range_max": "Maximum Range",
+            "range_average": "Average Range",
+            "critical": "Max Crit Chance Level",
+            "damage_min": "Minimum Damage",
+            "damage_max": "Maximum Damage",
+            "damage_average": "Average Damage"
+        },
+        "summary": {
+            "current": "Current resources",
+            "sold": "Sold resources",
+            "dismantled": "Dismantled resources",
+            "spendable": "Spendable resources",
+            "used": "Used resources"
+        }
+    },
+    "scrapbook": {
+        "back": "Back",
+        "tab": {
+            "items": "Items",
+            "legendaries": "Legendaries"
+        },
+        "picker": {
+            "title": "Scrapbook",
+            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+        },
+        "missing_only": "Missing only",
+        "shared": "Shared",
+        "weapon1": "Warrior weapon",
+        "weapon2": "Mage weapon",
+        "weapon3": "Scout weapon",
+        "group": {
+            "normal": "Normal",
+            "epic": "Epic"
+        },
+        "empty": "This character has no scrapbook data.",
+        "complete": "Nothing is missing here."
     }
 }
