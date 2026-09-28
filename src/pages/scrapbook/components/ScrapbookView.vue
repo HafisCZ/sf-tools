@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col gap-5">
-    <div class="flex items-center gap-3 border-b border-line pb-1.5">
+    <div v-if="classes.length > 1" class="flex items-center gap-3 border-b border-line pb-1.5">
       <SFTabs v-model="itemClass" :options="classOptions" />
       <span v-if="selected" class="text-white/50">{{ selected.collected }} / {{ selected.total }}</span>
     </div>
     <SFParagraph v-if="kinds.length === 0" class="text-center">{{ localize('complete') }}</SFParagraph>
-    <section v-for="kind in kinds" :key="kind.type" class="flex flex-col gap-2">
+    <section v-for="kind in kinds" :key="kind.key" class="flex flex-col gap-2">
       <SFHeading level="5" class="flex items-baseline gap-2">
-        {{ localize.global(`general.item${kind.type}`) }}
+        {{ kind.klass ? localize(`weapon${kind.klass}`) : localize.global(`general.item${kind.type}`) }}
         <span class="font-normal text-white/50">{{ kind.collected }} / {{ kind.total }}</span>
       </SFHeading>
       <div v-for="group in kind.groups" :key="group.key" class="flex flex-col gap-1.5">
@@ -66,7 +66,7 @@ const itemClass = ref(1)
 
 const classOptions = computed<SelectOption<number>[]>(() => props.classes.map((entry) => ({ value: entry.class, label: entry.class ? localize.global(`general.class${entry.class}`) : localize('shared') })))
 
-const selected = computed(() => props.classes.find((entry) => entry.class === itemClass.value))
+const selected = computed(() => props.classes.find((entry) => entry.class === itemClass.value) ?? props.classes[0])
 
 const kinds = computed(() => {
   const kinds = selected.value?.kinds ?? []

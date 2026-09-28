@@ -1998,6 +1998,9 @@
         },
         "missing_only": "Missing only",
         "shared": "Shared",
+        "weapon1": "Warrior weapon",
+        "weapon2": "Mage weapon",
+        "weapon3": "Scout weapon",
         "group": {
             "normal": "Normal",
             "epic": "Epic"
