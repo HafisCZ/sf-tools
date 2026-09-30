@@ -19,7 +19,7 @@
         </SFTooltip>
       </div>
       <div class="grid grid-cols-2 gap-[14px]">
-        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion || isCharacterMode" />
+        <SFSelect v-if="!props.classHidden" ref="class-ref" v-model="classId" :label="localize('class')" :options="classOptions" search :readonly="props.companion || isCharacterMode || props.classReadonly" />
         <SFNumber ref="level-ref" v-model="level" :label="localize('level')" placeholder="1 - 999" required :min="1" :max="999" :step="1" centered :readonly="props.companion" />
       </div>
       <div v-if="props.snacks" v-show="!isCharacterMode" class="grid grid-cols-2 gap-[14px]">
@@ -110,6 +110,10 @@ const props = defineProps<{
    * Hides the class field and leaves the class out of the player
    */
   classHidden?: boolean
+  /**
+   * Makes the class field read only
+   */
+  classReadonly?: boolean
   /**
    * Locks the class, level, portal, gladiator and life potion fields, and hides the block chance and class change
    */

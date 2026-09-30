@@ -1,6 +1,6 @@
 <template>
   <SFDialog :title="localize('title')" size="sm">
-    <PlayerEditor ref="editor-ref" name-hidden class-hidden />
+    <PlayerEditor ref="editor-ref" name-hidden class-readonly />
 
     <template #buttons>
       <SFButton block @click="emit('close')">
