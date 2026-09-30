@@ -15,7 +15,16 @@
 
     <template v-if="player">
       <SFParagraph v-if="!hasData" class="text-center">{{ localize('empty') }}</SFParagraph>
-      <ScrapbookView v-else :classes="classes" :missing-only="missingOnly" @toggle="toggleMarked" />
+      <div v-else class="flex flex-col gap-5">
+        <div v-if="tab === 'items'" class="flex flex-col gap-4">
+          <SFSlider v-model:from="minimumLevel" v-model:to="maximumLevel" :label="localize('unlock_level')" :min="1" :max="MAX_UNLOCK_LEVEL" :step="1" :from-label="localize.global('general.min')" :to-label="localize.global('general.max')" />
+          <div class="grid grid-cols-2 gap-[14px]">
+            <SFNumber v-model="minimumLevel" :label="localize.global('general.min')" :min="1" :max="maximumLevel ?? MAX_UNLOCK_LEVEL" :step="1" />
+            <SFNumber v-model="maximumLevel" :label="localize.global('general.max')" :min="minimumLevel ?? 1" :max="MAX_UNLOCK_LEVEL" :step="1" />
+          </div>
+        </div>
+        <ScrapbookView :classes="classes" :missing-only="missingOnly" @toggle="toggleMarked" />
+      </div>
     </template>
     <div v-else class="fixed inset-0 flex items-center justify-center p-4">
       <section class="flex w-full max-w-[570px] flex-col gap-5 rounded-lg border border-line bg-dialog p-5 text-white/90 shadow-xl" :aria-labelledby="titleId">
@@ -51,7 +60,9 @@ import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
+import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
+import SFSlider from '@library/SFSlider.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { type SelectOption } from '@utils/components'
 import { useDialog, useFilePicker } from '@utils/dialogs'
@@ -66,7 +77,7 @@ import { DatabaseManager } from '~/data/database-manager'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
 import Page from '~/pages/Page.vue'
 import ScrapbookView from '~/pages/scrapbook/components/ScrapbookView.vue'
-import { createScrapbookClasses, type ScrapbookBook } from '~/pages/scrapbook/scrapbook'
+import { createScrapbookClasses, MAX_UNLOCK_LEVEL, type ScrapbookBook } from '~/pages/scrapbook/scrapbook'
 
 defineOptions({
   name: 'ScrapbookPage'
@@ -85,6 +96,9 @@ const tab = ref<ScrapbookBook>('items')
 
 const missingOnly = ref(true)
 
+const minimumLevel = ref<number | null>(1)
+const maximumLevel = ref<number | null>(MAX_UNLOCK_LEVEL)
+
 const marked = ref<string[]>([])
 
 const tabOptions = computed<SelectOption<ScrapbookBook>[]>(() => [
@@ -98,7 +112,7 @@ const hasData = computed(() => {
   return bits !== undefined && bits.length > 0
 })
 
-const classes = computed(() => (player.value ? createScrapbookClasses(player.value, tab.value, marked.value) : []))
+const classes = computed(() => (player.value ? createScrapbookClasses(player.value, tab.value, marked.value, minimumLevel.value ?? 1, maximumLevel.value ?? MAX_UNLOCK_LEVEL) : []))
 
 const collected = computed(() => sum(classes.value.map((entry) => entry.collected)))
 
