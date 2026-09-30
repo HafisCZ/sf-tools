@@ -38,6 +38,7 @@ import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase'
 import { faDesktop } from '@fortawesome/free-solid-svg-icons/faDesktop'
 import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload'
 import { faDragon } from '@fortawesome/free-solid-svg-icons/faDragon'
+import { faDroplet } from '@fortawesome/free-solid-svg-icons/faDroplet'
 import { faDungeon } from '@fortawesome/free-solid-svg-icons/faDungeon'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope'
 import { faEraser } from '@fortawesome/free-solid-svg-icons/faEraser'
@@ -64,6 +65,7 @@ import { faHashtag } from '@fortawesome/free-solid-svg-icons/faHashtag'
 import { faHatWizard } from '@fortawesome/free-solid-svg-icons/faHatWizard'
 import { faHeading } from '@fortawesome/free-solid-svg-icons/faHeading'
 import { faHeartCrack } from '@fortawesome/free-solid-svg-icons/faHeartCrack'
+import { faHeartPulse } from '@fortawesome/free-solid-svg-icons/faHeartPulse'
 import { faHorse } from '@fortawesome/free-solid-svg-icons/faHorse'
 import { faLanguage } from '@fortawesome/free-solid-svg-icons/faLanguage'
 import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
@@ -149,6 +151,7 @@ export const ICONS = {
   discord: faDiscord,
   download: faDownload,
   dragon: faDragon,
+  droplet: faDroplet,
   dungeon: faDungeon,
   envelope: faEnvelope,
   eraser: faEraser,
@@ -175,6 +178,7 @@ export const ICONS = {
   'hat-wizard': faHatWizard,
   heading: faHeading,
   'heart-crack': faHeartCrack,
+  'heart-pulse': faHeartPulse,
   horse: faHorse,
   keyboard: faKeyboard,
   language: faLanguage,

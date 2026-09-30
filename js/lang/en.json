@@ -17,6 +17,7 @@
         "class10": "Necromancer",
         "class11": "Paladin",
         "class12": "Plague Doctor",
+        "class13": "Blood Weaver",
         "mask0": "Eagle",
         "mask1": "Bear",
         "mask2": "Tiger",
@@ -115,6 +116,11 @@
         "attack18": "Tincture Throw Critical",
         "attack19": "Poison",
         "attack20": "Poison Critical",
+        "attack21": "Ritual Dagger",
+        "attack22": "Ritual Dagger Critical",
+        "attack23": "Seal of Death",
+        "attack24": "Blood Scythe",
+        "attack25": "Blood Scythe Critical",
         "attack100": "Normal",
         "attack101": "Critical",
         "defense3": "Block",
@@ -864,7 +870,9 @@
             "paladin_stance_1": "Neutral",
             "paladin_stance_2": "Defensive",
             "paladin_stance_3": "Offensive",
-            "plague_doctor_tincture": "Tincture is affecting the player"
+            "plague_doctor_tincture": "Tincture is affecting the player",
+            "blood_weaver_pact": "Blood Pact applied",
+            "blood_weaver_revived": "Seal of Death"
         },
         "sidebar": {
             "toggles": {
@@ -898,7 +906,9 @@
                 "minion_2": "Hound summoned",
                 "minion_3": "Golem summoned",
                 "minion_revive": "Skeleton revive chance",
-                "tincture": "Tincture throw chance"
+                "tincture": "Tincture throw chance",
+                "dagger": "Ritual Dagger chance",
+                "scythe": "Blood Scythe chance"
             }
         }
     },

@@ -28,12 +28,16 @@ import {
   ATTACK_TYPE_TINCTURE_THROW,
   ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
   ATTACK_TYPES_CRITICAL,
+  ATTACK_TYPES_DAGGER,
   ATTACK_TYPES_MINION,
+  ATTACK_TYPES_REVIVE,
+  ATTACK_TYPES_SCYTHE,
   ATTACK_TYPES_SECONDARY,
   ATTACK_TYPES_SPECIAL,
   ATTACK_TYPES_TINCTURE,
   BARD,
   BERSERKER,
+  BLOODWEAVER,
   clamp,
   CONFIG,
   DEFENSE_TYPE_BLOCK,
@@ -41,8 +45,10 @@ import {
   DEFENSE_TYPE_EVADE,
   DEMONHUNTER,
   DRUID,
+  EFFECT_TYPE_BLOOD_PACT,
   EFFECT_TYPE_TINCTURE,
   FIGHTER_STATE_BERSERKER_RAGE,
+  FIGHTER_STATE_BLOODWEAVER_REVIVED,
   FIGHTER_STATE_DRUID_RAGE,
   FIGHTER_STATE_NORMAL,
   FIGHTER_STATE_PALADIN_DEFENSIVE,
@@ -174,7 +180,15 @@ export type FightEffect = {
   duration: number
 }
 
-export type SpecialDisplay = { type: 'druid_rage' } | { type: 'berserker_rage' } | { type: 'bard_song'; level: number; notes: number } | { type: 'necromancer_minion'; minion: number } | { type: 'paladin_stance'; stance: number } | { type: 'plague_doctor_tincture'; duration: number }
+export type SpecialDisplay =
+  | { type: 'druid_rage' }
+  | { type: 'berserker_rage' }
+  | { type: 'bard_song'; level: number; notes: number }
+  | { type: 'necromancer_minion'; minion: number }
+  | { type: 'paladin_stance'; stance: number }
+  | { type: 'plague_doctor_tincture'; duration: number }
+  | { type: 'blood_weaver_pact'; stacks: number }
+  | { type: 'blood_weaver_revived' }
 
 export type FightRound = {
   attackerId: number
@@ -357,7 +371,7 @@ const GROUP_SORTERS: Record<GroupSort, (group: FightGroup) => number> = {
 
 const PALADIN_STANCE_STATES: number[] = [FIGHTER_STATE_NORMAL, FIGHTER_STATE_PALADIN_DEFENSIVE, FIGHTER_STATE_PALADIN_OFFENSIVE]
 
-const CHANCE_TYPES = ['first_strike', 'critical', 'skip', 'chain', 'revive', 'swoop', 'stance_change', 'song_1', 'song_2', 'song_3', 'summon', 'minion_1', 'minion_2', 'minion_3', 'minion_revive', 'tincture'] as const
+const CHANCE_TYPES = ['first_strike', 'critical', 'skip', 'chain', 'revive', 'swoop', 'stance_change', 'song_1', 'song_2', 'song_3', 'summon', 'minion_1', 'minion_2', 'minion_3', 'minion_revive', 'tincture', 'dagger', 'scythe'] as const
 
 const SONG_CHANCE_TYPES: ChanceType[] = ['song_1', 'song_2', 'song_3']
 
@@ -367,9 +381,22 @@ const CHANCE_Z = 1.96
 
 const CONTINUITY_CORRECTION = 0.5
 
-const CRITICAL_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ...ATTACK_TYPES_TINCTURE]
+const CRITICAL_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ...ATTACK_TYPES_TINCTURE, ...ATTACK_TYPES_DAGGER, ...ATTACK_TYPES_SCYTHE]
 
-const SKIPPABLE_ATTACK_TYPES: number[] = [ATTACK_TYPE_NORMAL, ATTACK_TYPE_CRITICAL, ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL, ATTACK_TYPE_TINCTURE_THROW, ATTACK_TYPE_TINCTURE_THROW_CRITICAL]
+const SKIPPABLE_ATTACK_TYPES: number[] = [
+  ATTACK_TYPE_NORMAL,
+  ATTACK_TYPE_CRITICAL,
+  ATTACK_TYPE_NORMAL_SECONDARY,
+  ATTACK_TYPE_CRITICAL_SECONDARY,
+  ATTACK_TYPE_SWOOP,
+  ATTACK_TYPE_SWOOP_CRITICAL,
+  ATTACK_TYPE_MINION,
+  ATTACK_TYPE_MINION_CRITICAL,
+  ATTACK_TYPE_TINCTURE_THROW,
+  ATTACK_TYPE_TINCTURE_THROW_CRITICAL,
+  ...ATTACK_TYPES_DAGGER,
+  ...ATTACK_TYPES_SCYTHE
+]
 
 const SKIP_DEFENSE_TYPES: number[] = [DEFENSE_TYPE_BLOCK, DEFENSE_TYPE_EVADE, DEFENSE_TYPE_BLOCK_HEAL]
 
@@ -577,8 +604,11 @@ function findHealth(rounds: FightRound[], index: number) {
   for (let i = index - 1; i >= 0; i--) {
     const round = rounds[i]
 
-    if (round.attackType === ATTACK_TYPE_REVIVE) {
+    if (ATTACK_TYPES_REVIVE.includes(round.attackType)) {
       return round.attacker === currentRound.attacker ? round.targetHealth : round.attackerHealth
+    } else if (round.attacker === currentRound.target && ATTACK_TYPES_DAGGER.includes(round.attackType)) {
+      // Ritual Dagger sacrifices health of the attacker
+      return round.attackerHealth
     } else if (round.attacker === currentRound.attacker && !round.attackTypeSpecial) {
       return round.targetHealth
     }
@@ -647,7 +677,7 @@ function parseRounds(fighterA: Fighter, fighterB: Fighter, rounds: number[]) {
   let attackRageOffset = 0
   processedRounds.forEach((round, index) => {
     // Calculate attack damage
-    if (round.attackType === ATTACK_TYPE_REVIVE) {
+    if (ATTACK_TYPES_REVIVE.includes(round.attackType)) {
       round.attackDamage = round.attackerHealth
     } else if (round.attackType === ATTACK_TYPE_MINION_SUMMON) {
       round.targetHealth = findHealth(processedRounds, index)
@@ -678,6 +708,15 @@ function parseRounds(fighterA: Fighter, fighterB: Fighter, rounds: number[]) {
 
     if (tinctureEffect) {
       tinctureEffect.duration = Math.min(3, tinctureEffect.duration + 1)
+    }
+
+    // Blood Pact is logged on the opponent of the Blood Weaver
+    const attackerPacts = round.attackerEffects.filter((effect) => effect.type === EFFECT_TYPE_BLOOD_PACT)
+    const targetPacts = round.targetEffects.filter((effect) => effect.type === EFFECT_TYPE_BLOOD_PACT)
+
+    if (attackerPacts.length > 0 || targetPacts.length > 0) {
+      round.attackerEffects = [...round.attackerEffects.filter((effect) => effect.type !== EFFECT_TYPE_BLOOD_PACT), ...targetPacts]
+      round.targetEffects = [...round.targetEffects.filter((effect) => effect.type !== EFFECT_TYPE_BLOOD_PACT), ...attackerPacts]
     }
   })
 
@@ -977,6 +1016,14 @@ function findAttackerState(round: FightRound, model: SimulatorModel) {
 
           return tinctureEffect && ATTACK_TYPES_TINCTURE.includes(round.attackType) ? data.TinctureRounds?.[tinctureEffect.duration - 1] : data
         }
+        case BLOODWEAVER:
+          if (ATTACK_TYPES_DAGGER.includes(round.attackType)) {
+            return data.DaggerState
+          } else if (ATTACK_TYPES_SCYTHE.includes(round.attackType)) {
+            return data.ScytheState
+          } else {
+            return round.attackerState === FIGHTER_STATE_BLOODWEAVER_REVIVED ? data.RevivedState : data
+          }
         default:
           return data
       }
@@ -1009,6 +1056,8 @@ function findTargetState(round: FightRound, model: SimulatorModel) {
         }
         case PALADIN:
           return data.Stances?.[0]
+        case BLOODWEAVER:
+          return round.targetState === FIGHTER_STATE_BLOODWEAVER_REVIVED ? data.RevivedState : data
         default:
           return data
       }
@@ -1052,6 +1101,26 @@ function decorateRound(round: FightRound) {
 
   if (round.targetEffects.length > 0 && round.target.Class === PLAGUEDOCTOR) {
     round.targetSpecialDisplay = { type: 'plague_doctor_tincture', duration: round.targetEffects[0].duration }
+  }
+
+  if (round.attacker.Class === BLOODWEAVER) {
+    const pactEffect = round.attackerEffects.find((effect) => effect.type === EFFECT_TYPE_BLOOD_PACT)
+
+    if (pactEffect) {
+      round.attackerSpecialDisplay = { type: 'blood_weaver_pact', stacks: pactEffect.tier }
+    } else if (round.attackerState === FIGHTER_STATE_BLOODWEAVER_REVIVED) {
+      round.attackerSpecialDisplay = { type: 'blood_weaver_revived' }
+    }
+  }
+
+  if (round.target.Class === BLOODWEAVER) {
+    const pactEffect = round.targetEffects.find((effect) => effect.type === EFFECT_TYPE_BLOOD_PACT)
+
+    if (pactEffect) {
+      round.targetSpecialDisplay = { type: 'blood_weaver_pact', stacks: pactEffect.tier }
+    } else if (round.targetState === FIGHTER_STATE_BLOODWEAVER_REVIVED) {
+      round.targetSpecialDisplay = { type: 'blood_weaver_revived' }
+    }
   }
 
   if (round.attackerEffects.length > 0 && round.attacker.Class === BARD) {
@@ -1158,7 +1227,7 @@ function splitTurns(rounds: FightRound[]) {
   const turns: FightRound[][] = []
 
   for (const round of rounds) {
-    if (round.attackType === ATTACK_TYPE_REVIVE || round.attackType === ATTACK_TYPE_FIREBALL) continue
+    if (ATTACK_TYPES_REVIVE.includes(round.attackType) || round.attackType === ATTACK_TYPE_FIREBALL) continue
 
     const turn = turns.at(-1)
 
@@ -1347,6 +1416,29 @@ function countTinctures(counters: ChanceCounters, turns: FightRound[][], model: 
   }
 }
 
+function countDaggers(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel, isSpecialBlocked: boolean) {
+  for (const turn of turns) {
+    const [round] = turn
+
+    if (round.attackerState === FIGHTER_STATE_BLOODWEAVER_REVIVED || round.targetHealth <= 0) continue
+
+    countChance(
+      counters,
+      'dagger',
+      isSpecialBlocked ? 0 : (model.Config.DaggerChance ?? 0),
+      turn.some((entry) => ATTACK_TYPES_DAGGER.includes(entry.attackType))
+    )
+  }
+}
+
+function countScythes(counters: ChanceCounters, turns: FightRound[][], model: SimulatorModel) {
+  for (const [round] of turns) {
+    if (round.attackerState !== FIGHTER_STATE_BLOODWEAVER_REVIVED) continue
+
+    countChance(counters, 'scythe', model.Config.ScytheChance ?? 0, ATTACK_TYPES_SCYTHE.includes(round.attackType))
+  }
+}
+
 function analyzeChances(fights: GroupFight[], fighter: Fighter, model: SimulatorModel, opponent: Fighter, opponentModel: SimulatorModel) {
   const counters: ChanceCounters = {}
 
@@ -1384,6 +1476,10 @@ function analyzeChances(fights: GroupFight[], fighter: Fighter, model: Simulator
         break
       case PLAGUEDOCTOR:
         countTinctures(counters, ownTurns, model, isSpecialBlocked)
+        break
+      case BLOODWEAVER:
+        countDaggers(counters, ownTurns, model, isSpecialBlocked)
+        countScythes(counters, ownTurns, model)
         break
     }
   }

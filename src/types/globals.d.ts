@@ -1,6 +1,6 @@
 type Attribute = MainAttribute | 'Constitution' | 'Luck'
 
-type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+type CharacterClass = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13
 
 type MainAttribute = 'Strength' | 'Dexterity' | 'Intelligence'
 
