@@ -149,6 +149,7 @@ export const BARD = 9
 export const NECROMANCER = 10
 export const PALADIN = 11
 export const PLAGUEDOCTOR = 12
+export const BLOODWEAVER = 13
 
 // Rune values
 export const RUNE_FIRE_DAMAGE = 40
@@ -162,6 +163,7 @@ const STATE_ALIVE = 1
 
 // Attack types
 export const FIGHTER_STATE_NORMAL = 0
+export const FIGHTER_STATE_BLOODWEAVER_REVIVED = 1
 export const FIGHTER_STATE_DRUID_HIDDEN = 10
 export const FIGHTER_STATE_DRUID_RAGE = 11
 export const FIGHTER_STATE_PALADIN_DEFENSIVE = 20
@@ -182,18 +184,29 @@ export const ATTACK_TYPE_TINCTURE_THROW = 17
 export const ATTACK_TYPE_TINCTURE_THROW_CRITICAL = 18
 export const ATTACK_TYPE_TINCTURE = 19
 export const ATTACK_TYPE_TINCTURE_CRITICAL = 20
+export const ATTACK_TYPE_DAGGER = 21
+export const ATTACK_TYPE_DAGGER_CRITICAL = 22
+export const ATTACK_TYPE_SEAL_OF_DEATH = 23
+export const ATTACK_TYPE_SCYTHE = 24
+export const ATTACK_TYPE_SCYTHE_CRITICAL = 25
 export const ATTACK_TYPE_NORMAL_SECONDARY = 100
 export const ATTACK_TYPE_CRITICAL_SECONDARY = 101
 
 export const ATTACK_TYPES_SECONDARY: number[] = [ATTACK_TYPE_NORMAL_SECONDARY, ATTACK_TYPE_CRITICAL_SECONDARY]
 
-export const ATTACK_TYPES_CRITICAL: number[] = [ATTACK_TYPE_CRITICAL, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_MINION_CRITICAL, ATTACK_TYPE_TINCTURE_THROW_CRITICAL, ATTACK_TYPE_TINCTURE_CRITICAL]
+export const ATTACK_TYPES_CRITICAL: number[] = [ATTACK_TYPE_CRITICAL, ATTACK_TYPE_SWOOP_CRITICAL, ATTACK_TYPE_CRITICAL_SECONDARY, ATTACK_TYPE_MINION_CRITICAL, ATTACK_TYPE_TINCTURE_THROW_CRITICAL, ATTACK_TYPE_TINCTURE_CRITICAL, ATTACK_TYPE_DAGGER_CRITICAL, ATTACK_TYPE_SCYTHE_CRITICAL]
 
-export const ATTACK_TYPES_SPECIAL: number[] = [ATTACK_TYPE_MINION_SUMMON, ATTACK_TYPE_REVIVE]
+export const ATTACK_TYPES_SPECIAL: number[] = [ATTACK_TYPE_MINION_SUMMON, ATTACK_TYPE_REVIVE, ATTACK_TYPE_SEAL_OF_DEATH]
 
 export const ATTACK_TYPES_TINCTURE: number[] = [ATTACK_TYPE_TINCTURE_THROW, ATTACK_TYPE_TINCTURE_THROW_CRITICAL, ATTACK_TYPE_TINCTURE, ATTACK_TYPE_TINCTURE_CRITICAL]
 
 export const ATTACK_TYPES_MINION: number[] = [ATTACK_TYPE_MINION, ATTACK_TYPE_MINION_CRITICAL]
+
+export const ATTACK_TYPES_DAGGER: number[] = [ATTACK_TYPE_DAGGER, ATTACK_TYPE_DAGGER_CRITICAL]
+
+export const ATTACK_TYPES_SCYTHE: number[] = [ATTACK_TYPE_SCYTHE, ATTACK_TYPE_SCYTHE_CRITICAL]
+
+export const ATTACK_TYPES_REVIVE: number[] = [ATTACK_TYPE_REVIVE, ATTACK_TYPE_SEAL_OF_DEATH]
 
 export const DEFENSE_TYPE_NONE = 0
 export const DEFENSE_TYPE_BLOCK = 3
@@ -204,6 +217,7 @@ export const DEFENSE_TYPE_BLOCK_HEAL = 6
 export const EFFECT_TYPE_SONG = 1
 export const EFFECT_TYPE_MINION = 2
 export const EFFECT_TYPE_TINCTURE = 3
+export const EFFECT_TYPE_BLOOD_PACT = 4
 
 // Configuration
 export const CONFIG = Object.defineProperties<ClassConfigData>(
@@ -563,6 +577,55 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
           SkipVariant: DEFENSE_TYPE_EVADE
         }
       ]
+    },
+    BloodWeaver: {
+      ID: BLOODWEAVER,
+
+      Attribute: 'Strength',
+
+      HealthMultiplier: 5,
+      WeaponMultiplier: 2,
+      DamageMultiplier: 1,
+      MaximumDamageReduction: 25,
+      MaximumDamageReductionMultiplier: 1,
+
+      SkipChance: 0,
+      SkipLimit: 999,
+      SkipType: SKIP_TYPE_DEFAULT,
+      SkipVariant: DEFENSE_TYPE_NONE,
+
+      DaggerChance: 0.3,
+      DaggerSacrifice: 0.1,
+      Dagger: {
+        DamageBonus: -0.5,
+        SkipChance: 0,
+        CriticalBonus: 0,
+        CriticalChance: 0.5,
+        CriticalChanceBonus: 0
+      },
+
+      PactStacksMax: 3,
+
+      SealHealth: 0.4,
+      SealHealthPerStack: 0.1,
+
+      ScytheChance: 0.5,
+      Scythe: {
+        DamageBonus: 1,
+        SkipChance: 0.2,
+        CriticalBonus: 0,
+        CriticalChance: 0.5,
+        CriticalChanceBonus: 0,
+        SkipVariant: DEFENSE_TYPE_BLOCK
+      },
+
+      Revived: {
+        SkipChance: 0.2,
+        CriticalBonus: 0,
+        CriticalChance: 0.5,
+        CriticalChanceBonus: 0,
+        SkipVariant: DEFENSE_TYPE_BLOCK
+      }
     }
   },
   {
@@ -701,7 +764,8 @@ export class SimulatorModel {
       [BARD]: BardModel,
       [NECROMANCER]: NecromancerModel,
       [PALADIN]: PaladinModel,
-      [PLAGUEDOCTOR]: PlagueDoctorModel
+      [PLAGUEDOCTOR]: PlagueDoctorModel,
+      [BLOODWEAVER]: BloodWeaverModel
     }
 
     return new MODELS[player.Class](index, player)
@@ -1672,6 +1736,109 @@ class PlagueDoctorModel extends SimulatorModel {
       // Attack as usual
       return super.control(instance, target)
     }
+  }
+}
+
+class BloodWeaverModel extends SimulatorModel {
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'DaggerChance' | 'DaggerSacrifice' | 'Dagger' | 'PactStacksMax' | 'SealHealth' | 'SealHealthPerStack' | 'ScytheChance' | 'Scythe' | 'Revived'>>
+  declare Data: SimulatorState & { DaggerState: SimulatorState; ScytheState: SimulatorState; RevivedState: SimulatorState }
+  declare PactStacks: number
+  declare SealUsed: boolean
+
+  initializeData(target: SimulatorModel) {
+    super.initializeData(target)
+
+    this.Data.DaggerState = this.createState(target, this.Config.Dagger)
+    this.Data.ScytheState = this.createState(target, this.Config.Scythe)
+    this.Data.RevivedState = this.createState(target, this.Config.Revived)
+  }
+
+  resetInternalState() {
+    super.resetInternalState()
+
+    this.PactStacks = 0
+    this.SealUsed = false
+  }
+
+  getCurrentStateForLog() {
+    return this.SealUsed ? FIGHTER_STATE_BLOODWEAVER_REVIVED : FIGHTER_STATE_NORMAL
+  }
+
+  getCurrentEffectsForLog() {
+    if (this.PactStacks > 0) {
+      return [
+        {
+          type: EFFECT_TYPE_BLOOD_PACT,
+          duration: -1,
+          tier: this.PactStacks
+        }
+      ]
+    } else {
+      return []
+    }
+  }
+
+  attackDagger(instance: SimulatorBase, target: SimulatorModel) {
+    this.Health = Math.trunc(this.Health * (1 - this.Config.DaggerSacrifice))
+
+    // Blood Pact is applied even if the dagger is blocked or evaded
+    this.PactStacks = Math.min(this.Config.PactStacksMax, this.PactStacks + 1)
+
+    this.enterState(this.Data.DaggerState)
+
+    const weapon = this.State.Weapon1
+    const state = this.attack(instance, instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min), target, target.skip(SKIP_TYPE_DEFAULT), getRandom(this.State.CriticalChance), ATTACK_TYPE_DAGGER, ATTACK_TYPE_DAGGER_CRITICAL)
+
+    this.enterState()
+
+    return state
+  }
+
+  attackScythe(instance: SimulatorBase, target: SimulatorModel) {
+    this.enterState(this.Data.ScytheState)
+
+    const weapon = this.State.Weapon1
+    const state = this.attack(instance, instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min), target, target.skip(SKIP_TYPE_DEFAULT), getRandom(this.State.CriticalChance), ATTACK_TYPE_SCYTHE, ATTACK_TYPE_SCYTHE_CRITICAL)
+
+    this.enterState(this.Data.RevivedState)
+
+    return state
+  }
+
+  control(instance: SimulatorBase, target: SimulatorModel) {
+    if (target.Config.BypassSpecial) {
+      return super.control(instance, target)
+    } else if (this.SealUsed) {
+      return getRandom(this.Config.ScytheChance) ? this.attackScythe(instance, target) : super.control(instance, target)
+    } else if (!super.control(instance, target)) {
+      return false
+    } else if (getRandom(this.Config.DaggerChance)) {
+      return this.attackDagger(instance, target)
+    } else {
+      return true
+    }
+  }
+
+  applyAttack(instance: SimulatorBase, source: SimulatorModel, damage: number, skipped: boolean | number, critical: boolean, attackType: number, defenseType: number) {
+    const state = super.applyAttack(instance, source, damage, skipped, critical, attackType, defenseType)
+
+    if (state == STATE_DEAD && !this.SealUsed && !source.Config.BypassSpecial) {
+      this.Health = Math.ceil(this.TotalHealth * (this.Config.SealHealth + this.Config.SealHealthPerStack * this.PactStacks))
+      this.PactStacks = 0
+      this.SealUsed = true
+
+      this.enterState(this.Data.RevivedState)
+
+      instance.getRage()
+
+      if (FIGHT_LOG_ENABLED) {
+        FIGHT_LOG.logRound(this, this, 0, ATTACK_TYPE_SEAL_OF_DEATH, DEFENSE_TYPE_NONE)
+      }
+
+      return STATE_ALIVE
+    }
+
+    return state
   }
 }
 

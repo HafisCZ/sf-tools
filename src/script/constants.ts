@@ -68,6 +68,7 @@ export class Constants {
           necromancer: 10,
           paladin: 11,
           plaguedoctor: 12,
+          bloodweaver: 13,
           empty: '',
           tiny: 40,
           small: 60,

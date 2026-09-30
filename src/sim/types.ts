@@ -124,10 +124,19 @@ export type ClassConfig = {
   Stances?: StateConfig[]
   TinctureChance?: number
   TinctureRounds?: StateConfig[]
+  DaggerChance?: number
+  DaggerSacrifice?: number
+  Dagger?: StateConfig
+  PactStacksMax?: number
+  SealHealth?: number
+  SealHealthPerStack?: number
+  ScytheChance?: number
+  Scythe?: StateConfig
+  Revived?: StateConfig
   [key: `${string}DamageBonus` | `${string}DamageMultiplier`]: number | undefined
 }
 
-export type ClassConfigKey = 'Warrior' | 'Mage' | 'Scout' | 'Assassin' | 'Battlemage' | 'Berserker' | 'DemonHunter' | 'Druid' | 'Bard' | 'Necromancer' | 'Paladin' | 'PlagueDoctor'
+export type ClassConfigKey = 'Warrior' | 'Mage' | 'Scout' | 'Assassin' | 'Battlemage' | 'Berserker' | 'DemonHunter' | 'Druid' | 'Bard' | 'Necromancer' | 'Paladin' | 'PlagueDoctor' | 'BloodWeaver'
 
 export type ClassConfigData = { General: GeneralConfig } & Record<ClassConfigKey, ClassConfig>
 
@@ -161,6 +170,9 @@ export type SimulatorState = {
   Stances?: SimulatorState[]
   Minions?: SimulatorState[]
   TinctureRounds?: SimulatorState[]
+  DaggerState?: SimulatorState
+  ScytheState?: SimulatorState
+  RevivedState?: SimulatorState
 }
 
 export type ConfiguredState = SimulatorState & { Config: StateConfig }

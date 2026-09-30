@@ -313,8 +313,8 @@ function getComparedStats(stats: CharacterStats, player: InventoryPlayer, index:
   for (let i = 0; i < 5; i++) {
     const potionMultiplier = 1 + (attributes[i].PotionSize ?? 0) / 100
     const petMultiplier = 1 + petBonuses[i] / 100
-    const classMultiplier = character.ClassBonus ? 1.11 : 1
-    const gemMultiplier = character.Class === BATTLEMAGE ? 1.11 : 1
+    const classMultiplier = character.ClassBonus ? 1.1111 : 1
+    const gemMultiplier = character.Class === BATTLEMAGE ? 1.1111 : 1
 
     attributeDifferences[i] = Math.ceil(Math.ceil(Math.ceil(itemValues[i] * potionMultiplier) * petMultiplier) * classMultiplier) - Math.ceil(Math.ceil(Math.ceil(baseValues[i] * potionMultiplier) * petMultiplier) * classMultiplier)
     gemDifferences[i] = Math.ceil(Math.ceil(Math.ceil(getRealGemValue(character, item, i + 1) * potionMultiplier) * petMultiplier) * gemMultiplier) - Math.ceil(Math.ceil(Math.ceil(getRealGemValue(character, base, i + 1) * potionMultiplier) * petMultiplier) * gemMultiplier)
