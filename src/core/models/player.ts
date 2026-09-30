@@ -6,7 +6,7 @@ import { DungeonHelper, type LegacyDungeons, type PlayerDungeons } from '~/data/
 import { PlayaResponse } from '~/data/playa-response'
 import { type RawPlayer } from '~/data/types'
 import { Calculations, RUNE_VALUE } from '~/playa/calculations'
-import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, CONFIG, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, BLOODWEAVER, CONFIG, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
 import { type ClassConfig } from '~/sim/types'
 import { type GroupMemberActions, type GroupModel } from './group'
 import { ItemModel } from './item'
@@ -1885,8 +1885,8 @@ export class PlayerModel {
   }
 
   getClassBonus(attribute: PlayerAttribute) {
-    if (this.Class == BATTLEMAGE || this.Class == BERSERKER) {
-      return Math.ceil(((this.Class == BATTLEMAGE ? attribute.Equipment : attribute.Items) * 11) / 100)
+    if (this.Class == BATTLEMAGE || this.Class == BERSERKER || this.Class == BLOODWEAVER) {
+      return Math.ceil(((this.Class == BATTLEMAGE ? attribute.Equipment : attribute.Items) * 11.11) / 100)
     } else {
       return 0
     }
@@ -1953,7 +1953,7 @@ export class PlayerModel {
     this.ItemsArray = Object.values(this.Items)
 
     this.Primary = this.getPrimaryAttribute()
-    this.ClassBonus = this.Class == BATTLEMAGE || this.Class == BERSERKER
+    this.ClassBonus = this.Class == BATTLEMAGE || this.Class == BERSERKER || this.Class == BLOODWEAVER
 
     this.addCalculatedAttributes(this.Strength, this.Pets.Water)
     this.addCalculatedAttributes(this.Dexterity, this.Pets.Light)

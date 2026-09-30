@@ -150,7 +150,7 @@ export type ScriptEditResult = {
 
 export const TABLE_VIEWS: StatsView[] = ['players', 'groups', 'groups_grid', 'group', 'players_grid', 'player']
 
-export const PLAYER_CLASS_SEARCH = ['', 'warrior', 'mage', 'scout', 'assassin', 'battle mage', 'berserker', 'demon hunter', 'druid', 'bard', 'necromancer', 'paladin', 'plague doctor']
+export const PLAYER_CLASS_SEARCH = ['', 'warrior', 'mage', 'scout', 'assassin', 'battle mage', 'berserker', 'demon hunter', 'druid', 'bard', 'necromancer', 'paladin', 'plague doctor', 'blood weaver']
 
 export function useStatsNavigation() {
   return inject(STATS_NAVIGATION_KEY) as StatsNavigation

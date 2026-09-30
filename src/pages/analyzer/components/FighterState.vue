@@ -19,6 +19,15 @@
     <SFIcon name="shield-halved" class="text-[orangered]" />
     {{ localize(`paladin_stance_${props.state.stance}`) }}
   </span>
+  <SFTooltip v-else-if="props.state.type === 'blood_weaver_pact'" :content="localize('blood_weaver_pact')">
+    <span class="inline-flex items-center gap-1 text-[orangered]">
+      {{ props.state.stacks }}
+      <SFIcon name="droplet" />
+    </span>
+  </SFTooltip>
+  <SFTooltip v-else-if="props.state.type === 'blood_weaver_revived'" :content="localize('blood_weaver_revived')">
+    <SFIcon name="heart-pulse" class="text-[orangered]" />
+  </SFTooltip>
   <SFTooltip v-else :content="localize('plague_doctor_tincture')">
     <SFIcon name="flask" class="text-[orangered]" />
   </SFTooltip>
@@ -60,6 +69,8 @@ const copyText = computed(() => {
       return `necromancer_minion_${state.minion}`
     case 'paladin_stance':
       return `paladin_stance_${state.stance}`
+    case 'blood_weaver_pact':
+      return `blood_weaver_pact_${state.stacks}`
     default:
       return state.type
   }
