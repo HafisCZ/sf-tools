@@ -1997,6 +1997,7 @@
             "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
         },
         "missing_only": "Missing only",
+        "unlock_level": "Unlock level",
         "shared": "Shared",
         "weapon1": "Warrior weapon",
         "weapon2": "Mage weapon",
@@ -2004,6 +2005,21 @@
         "group": {
             "normal": "Normal",
             "epic": "Epic"
+        },
+        "note": {
+            "toilet": "Toilet",
+            "easter": "Easter",
+            "halloween": "Halloween",
+            "christmas": "Christmas",
+            "twister_100": "Requires Twister 100+",
+            "twister_250": "Requires Twister 250+",
+            "twister_500": "Requires Twister 500+",
+            "birthday": "S&F Birthday",
+            "valentines": "Valentines",
+            "football": "Football",
+            "twitch": "Twitch drops",
+            "samurai": "Samurai",
+            "bbq": "BBQ"
         },
         "empty": "This character has no scrapbook data.",
         "complete": "Nothing is missing here."
