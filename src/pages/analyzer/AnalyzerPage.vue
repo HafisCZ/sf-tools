@@ -671,7 +671,7 @@ function openAutofill(index: 0 | 1) {
 
   useDialog(
     AnalyzerAutofillDialog,
-    { mirror: other.read() },
+    { mirror: other.read(), players },
     {
       callback: (data) => {
         if (data) {

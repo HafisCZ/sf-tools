@@ -1272,7 +1272,12 @@
         },
         "analyzer_autofill": {
             "title": "Available data",
-            "search": "Search by dungeon or boss name ..."
+            "enemies": "Enemies",
+            "players": "Players",
+            "enemy": "Enemy",
+            "player": "Player",
+            "enemy_placeholder": "Select an enemy",
+            "player_placeholder": "Select a player"
         },
         "editor_shortcuts": {
             "title": "Editor shortcuts",

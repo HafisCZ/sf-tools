@@ -18,6 +18,7 @@
       <span v-if="slots.option && selectedOption" :id="valueId" class="flex min-w-0 flex-auto items-center gap-2 truncate">
         <slot name="option" :option="selectedOption" />
       </span>
+      <span v-else-if="!selectedOption && props.placeholder" :id="valueId" class="min-w-0 flex-auto truncate text-white/40">{{ props.placeholder }}</span>
       <span v-else :id="valueId" class="flex min-w-0 flex-auto items-center gap-2">
         <template v-if="selectedOption?.image">
           <SFIcon v-if="isIconName(selectedOption.image)" :name="selectedOption.image" class="text-white/60" :class="{ 'order-last': selectedOption.imagePosition === 'right' }" />
@@ -44,8 +45,9 @@
                 type="button"
                 role="menuitem"
                 :data-selected="option.value === modelValue || undefined"
-                class="flex w-full cursor-pointer items-center gap-3 rounded px-3 py-2 text-left outline-none"
-                :class="[option.value === modelValue ? 'bg-accent/15' : 'hover:bg-surface-hover focus-visible:bg-surface-hover', { 'text-accent': option.accent }]"
+                :disabled="option.disabled"
+                class="flex w-full items-center gap-3 rounded px-3 py-2 text-left outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                :class="[option.value === modelValue ? 'bg-accent/15' : 'enabled:hover:bg-surface-hover focus-visible:bg-surface-hover', { 'text-accent': option.accent }]"
                 @click="select(option.value)"
               >
                 <slot name="option" :option="option">
@@ -92,6 +94,10 @@ const props = defineProps<
      * Options to pick from, with optional header rows and dividers between them
      */
     options: SelectOption<TValue>[]
+    /**
+     * Grey text shown in the field while no option is picked
+     */
+    placeholder?: string
     /**
      * Shows an error while no option is picked
      */
@@ -187,7 +193,7 @@ function select(value: TValue) {
 }
 
 function selectFirstMatch() {
-  const option = matchingOptions.value.find(isSelectable)
+  const option = matchingOptions.value.filter(isSelectable).find((entry) => !entry.disabled)
 
   if (option) {
     select(option.value)
