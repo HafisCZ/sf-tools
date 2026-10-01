@@ -13,6 +13,7 @@
       :aria-expanded="open"
       :aria-disabled="props.readonly || undefined"
       :aria-labelledby="props.label ? `${labelId} ${valueId}` : valueId"
+      :aria-describedby="descriptionId"
       @click="toggle"
     >
       <span v-if="slots.option && selectedOption" :id="valueId" class="flex min-w-0 flex-auto items-center gap-2 truncate">
@@ -32,6 +33,7 @@
       <SFIcon v-if="!props.readonly" name="chevron-down" class="text-white/60" :class="{ 'rotate-180': open }" />
     </button>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
+    <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
     <Teleport to="body">
       <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="close">
         <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @keydown.enter.prevent="selectFirstMatch" />
@@ -78,6 +80,7 @@ import { useAnimationFramePosition } from '@utils/position'
 import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
 import SFDropdownMenu from './SFDropdownMenu.vue'
 import SFIcon from './SFIcon.vue'
+import SFParagraph from './SFParagraph.vue'
 import SFValidation from './SFValidation.vue'
 
 defineOptions({
@@ -90,6 +93,10 @@ const props = defineProps<
      * Text shown above the field, also its accessible name
      */
     label?: string
+    /**
+     * Smaller grey text shown under the field
+     */
+    description?: string
     /**
      * Options to pick from, with optional header rows and dividers between them
      */
@@ -141,6 +148,8 @@ const BORDER_CLASSES = {
 const id = useId()
 const labelId = useId()
 const valueId = useId()
+
+const descriptionId = computed(() => (props.description ? `${id}-description` : undefined))
 
 const open = ref(false)
 const query = ref('')
