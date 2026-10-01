@@ -292,10 +292,10 @@ function handleRowKeydown(event: KeyboardEvent, entry: PlayerScore) {
   }
 }
 
-function insertPlayer(data: unknown) {
+function insertPlayer(entry: PlayerModel) {
   selectedIndex.value = nextIndex++
 
-  players.value = [{ player: preparePlayerData(data), score: null, index: selectedIndex.value }, ...players.value]
+  players.value = [{ player: preparePlayerData(ModelUtils.toSimulatorData(entry)), score: null, index: selectedIndex.value }, ...players.value]
 
   clearEditor()
 }

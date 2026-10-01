@@ -383,8 +383,8 @@ function handleRowKeydown(event: KeyboardEvent, entry: PlayerScore) {
   }
 }
 
-function insertPlayer(data: unknown) {
-  addEntry(preparePlayerData(data))
+function insertPlayer(entry: PlayerModel) {
+  addEntry(preparePlayerData(ModelUtils.toSimulatorData(entry)))
 }
 
 function isPlayer(value: unknown) {
