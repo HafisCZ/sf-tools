@@ -10,15 +10,18 @@
       class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none read-only:caret-transparent placeholder:text-white/40"
       :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
       :aria-invalid="validationResult?.[0] === 'error'"
+      :aria-describedby="descriptionId"
       @keydown="showValidation"
     />
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
+    <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useId } from 'vue'
+import { computed, useId } from 'vue'
 import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
+import SFParagraph from './SFParagraph.vue'
 import SFValidation from './SFValidation.vue'
 
 defineOptions({
@@ -32,6 +35,10 @@ const props = defineProps<
      * Text shown above the field, also its accessible name
      */
     label?: string
+    /**
+     * Smaller grey text shown under the field
+     */
+    description?: string
     /**
      * Shows an error while the field is empty
      */
@@ -61,6 +68,8 @@ const BORDER_CLASSES = {
 }
 
 const id = useId()
+
+const descriptionId = computed(() => (props.description ? `${id}-description` : undefined))
 
 const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultValidator(props))
 

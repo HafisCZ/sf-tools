@@ -1566,8 +1566,110 @@
         },
         "simulator_debug": {
             "cancel": "Cancel",
+            "fields": {
+                "CritBase": "Damage multiplier of a critical hit before any bonus.",
+                "CritGladiatorBonus": "Critical damage added for each Gladiator level above the opponent's.",
+                "CritEnchantmentBonus": "Critical damage added when a weapon has the critical hit enchantment.",
+                "Attribute": "Main attribute.",
+                "HealthMultiplier": "Health per Constitution point and level. Also scales the Battlemage fireball against this class.",
+                "WeaponMultiplier": "Scales the minimum weapon damage that comes from the level. Used when the equipped weapon is weaker.",
+                "DamageMultiplier": "Multiplies all damage this class deals.",
+                "MaximumDamageReduction": "Highest damage reduction armor can give, in %.",
+                "MaximumDamageReductionMultiplier": "Multiplies the damage reduction from armor, after the cap.",
+                "SkipChance": "Chance to skip (commonly block or evade) an attack.",
+                "SkipLimit": "Most skips in a row. The count resets when an attack hits.",
+                "SkipType": "What a skip does.",
+                "SkipVariant": "How a skipped attack is shown in fight logs.",
+                "UseBlockChance": "Uses the block chance set on the player instead of the skip chance.",
+                "BypassDamageReduction": "Ignores the opponent's armor.",
+                "BypassSkipChance": "Attacks can't be blocked or evaded.",
+                "BypassSpecial": "Turns off the opponent's class abilities, such as revives, summons and the fireball.",
+                "ReviveChance": "Chance to revive after dying.",
+                "ReviveChanceDecay": "Revive chance lost after each revive.",
+                "ReviveHealth": "Health after the first revive, in % of max health.",
+                "ReviveHealthMin": "Lowest health after a revive, in % of max health.",
+                "ReviveHealthDecay": "Revive health lost after each revive, in % of max health.",
+                "ReviveDamage": "Damage dealt before any revive, in % of normal damage.",
+                "ReviveDamageMin": "Lowest damage dealt after revives, in % of normal damage.",
+                "ReviveDamageDecay": "Damage lost after each revive, in % of normal damage.",
+                "ReviveMax": "Most revives per fight.",
+                "SwoopChance": "Chance of a swoop at the start of the fight. A swoop is an extra attack before the normal one.",
+                "SwoopChanceMin": "Lowest swoop chance.",
+                "SwoopChanceMax": "Highest swoop chance.",
+                "SwoopChanceDecay": "Swoop chance lost after each swoop. A negative value raises it.",
+                "SwoopBonus": "Added to the damage multiplier for a swoop.",
+                "EffectRounds": "Turns between songs. The first song plays on the first turn.",
+                "EffectBaseDuration": "Attacks a song lasts, for song levels 1 to 3.",
+                "EffectBaseChance": "How often each song level is picked, as weights for levels 1 to 3.",
+                "EffectValues": "Damage bonus of a song, for song levels 1 to 3.",
+                "SummonChance": "Chance to summon a minion when none is out.",
+                "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
+                "StanceInitial": "Stance at the start of the fight.",
+                "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
+                "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
+                "DaggerSacrifice": "Current health lost on each dagger attack, in %.",
+                "PactStacksMax": "Most Blood Pact stacks. Each dagger attack adds one.",
+                "SealHealth": "Health after Seal of Death revives, in % of max health.",
+                "SealHealthPerStack": "Revive health added for each Blood Pact stack, in % of max health.",
+                "ScytheChance": "Chance of a scythe attack instead of a normal attack after Seal of Death."
+            },
+            "general": "General",
+            "groups": {
+                "Rage": "State the Druid enters for its next turn after evading an attack.",
+                "Summons": "Minions the Necromancer can summon. One is picked at random.",
+                "Stances": "Paladin stances. The Paladin switches through them in order.",
+                "TinctureRounds": "Plague Doctor states while a tincture is active, by turns left. The throw starts at 3 turns left.",
+                "Dagger": "State used for the dagger attack.",
+                "Scythe": "State used for the scythe attack.",
+                "Revived": "State after Seal of Death revives the Blood Weaver."
+            },
+            "items": {
+                "Summons": "Summon #{index}",
+                "TinctureRounds": "Turns left: #{index}"
+            },
             "ok": "Apply",
-            "reset": "Reset",
+            "opponents": {
+                "bonus": "Bonus (%)",
+                "description": "Changes the damage dealt to each class. The bonus is added to the damage multiplier, then the result is multiplied by the multiplier.",
+                "multiplier": "Multiplier"
+            },
+            "options": {
+                "skip_type": {
+                    "default": "Block or evade the attack",
+                    "control": "Take the opponent's turn"
+                },
+                "skip_variant": {
+                    "none": "None",
+                    "block": "Block",
+                    "evade": "Evade",
+                    "magic": "Magic",
+                    "block_heal": "Block and heal"
+                }
+            },
+            "reset": "Reset all",
+            "reset_field": "Reset to default",
+            "sections": {
+                "stats": "Stats",
+                "skip": "Skip",
+                "ability": "Ability",
+                "opponents": "Against classes"
+            },
+            "state_fields": {
+                "Duration": "Turns the minion stays.",
+                "DamageBonus": "Added to the damage multiplier in this state.",
+                "SkipChance": "Chance to block or evade an attack in this state.",
+                "SkipVariant": "How a skipped attack is shown in fight logs in this state.",
+                "CriticalBonus": "Critical damage added in this state.",
+                "CriticalChance": "Highest critical chance in this state.",
+                "CriticalChanceBonus": "Added to the critical chance from Luck in this state, before the cap.",
+                "ReviveCount": "Times the minion can come back.",
+                "ReviveDuration": "Turns the minion stays after coming back.",
+                "ReviveChance": "Chance the minion comes back when its time runs out.",
+                "DamageReductionBonus": "Damage reduction added to armor in this state, in %, before the cap.",
+                "MaximumDamageReductionBonus": "Added to the highest damage reduction from armor in this state, in %.",
+                "StanceChangeChance": "Chance to switch to the next stance at the start of each turn.",
+                "HealMultiplier": "Damage of a blocked attack healed instead, in %."
+            },
             "title": "Simulator Configuration"
         },
         "simulator_custom_preset": {
