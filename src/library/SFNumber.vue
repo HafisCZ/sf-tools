@@ -13,17 +13,20 @@
       class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none read-only:text-white/60 read-only:caret-transparent placeholder:text-white/40"
       :class="[BORDER_CLASSES[validationResult?.[0] ?? 'default'], { 'text-center': props.centered }]"
       :aria-invalid="validationResult?.[0] === 'error'"
+      :aria-describedby="descriptionId"
       @change="clampValue"
       @keydown="handleKeydown"
       @paste="handlePaste"
     />
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
+    <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, useId, watch } from 'vue'
 import { createDefaultNumberValidator, useValidation, type ValidationProps } from '@utils/validations'
+import SFParagraph from './SFParagraph.vue'
 import SFValidation from './SFValidation.vue'
 
 defineOptions({
@@ -37,6 +40,10 @@ const props = defineProps<
      * Text shown above the field, also its accessible name
      */
     label?: string
+    /**
+     * Smaller grey text shown under the field
+     */
+    description?: string
     /**
      * Shows an error while the field is empty
      */
@@ -86,6 +93,8 @@ const BORDER_CLASSES = {
 }
 
 const id = useId()
+
+const descriptionId = computed(() => (props.description ? `${id}-description` : undefined))
 
 // Can hold a number in progress such as `-` or `1.`
 const typedText = ref(formatValue(modelValue.value))

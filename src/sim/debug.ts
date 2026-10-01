@@ -18,7 +18,20 @@ export const isSimulatorDebug = new URLSearchParams(window.location.search).has(
 export const simulatorConfig = shallowRef<SimulatorConfig | null>(null)
 
 // Copied before a page applies a custom config to CONFIG
-const DEFAULT_CONFIG = mergeDeep({}, CONFIG) as SimulatorConfig
+const DEFAULT_CONFIG = addClassMultiplierDefaults(mergeDeep({}, CONFIG) as SimulatorConfig)
+
+function addClassMultiplierDefaults(config: SimulatorConfig) {
+  const classKeys = Object.keys(config).filter((key) => typeof config[key].ID === 'number')
+
+  for (const key of classKeys) {
+    for (const opponent of classKeys) {
+      config[key][`${opponent}DamageMultiplier`] ??= 1
+      config[key][`${opponent}DamageBonus`] ??= 0
+    }
+  }
+
+  return config
+}
 
 export function getDefaultSimulatorConfig() {
   return mergeDeep({}, DEFAULT_CONFIG) as SimulatorConfig
