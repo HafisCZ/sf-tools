@@ -1248,8 +1248,8 @@ function findFirstMover(turns: FightRound[][]) {
 }
 
 function getFirstStrikeChance(fighter: Fighter, opponent: Fighter) {
-  const hasFirstStrike = fighter.player?.Items.Hand.HasEnchantment ?? false
-  const opponentHasFirstStrike = opponent.player?.Items.Hand.HasEnchantment ?? false
+  const hasFirstStrike = fighter.player?.Items.Hand?.HasEnchantment ?? false
+  const opponentHasFirstStrike = opponent.player?.Items.Hand?.HasEnchantment ?? false
 
   if (hasFirstStrike === opponentHasFirstStrike) {
     return 0.5
