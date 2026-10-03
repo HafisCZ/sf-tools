@@ -96,7 +96,7 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Fixed snack strength of one character affecting other characters',
       'Fixed wrong defense type in fight logs'
     ],
-    Endpoint: ['Added level and class to character selection', 'Added automatic loading of server list and game version', 'Improved error and retry handling', 'Improved capture speed'],
+    Endpoint: ['Added level and class to character selection', 'Added automatic loading of server list and game version', 'Improved error and retry handling', 'Improved capture speed', 'Removed dependency on Unity'],
     'All Tools': ['Improved layout on smaller devices', 'Added support for Plague Doctor', 'Added support for Blood Weaver', 'Added back Portuguese in-game translations']
   },
   'v7.4811': {

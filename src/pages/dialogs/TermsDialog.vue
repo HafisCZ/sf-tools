@@ -18,7 +18,7 @@
       <section>
         <SFHeading level="6" type="accent" class="mb-2 text-center">§2 Endpoint</SFHeading>
         <SFList>
-          <li>Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself, your guild members and your friends without the lengthy process of creating a HAR file.</li>
+          <li>Endpoint is an application bundled with the tool that allows you to log into the game and collect limited data about yourself, your guild members and your friends without the lengthy process of creating a HAR file.</li>
           <li>It is not possible to capture any other players than those listed above.</li>
           <li>Everything happens locally in a identical way to playing the game through browser.</li>
         </SFList>

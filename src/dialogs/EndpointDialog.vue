@@ -6,7 +6,7 @@
       <template v-if="step === 'terms'">
         <SFHeading level="2" class="border-b border-line pb-1 text-center">{{ localize.global('terms.title') }}</SFHeading>
         <SFList>
-          <li>Endpoint is a small Unity application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
+          <li>Endpoint is an application bundled with the tool that allows you to log into the game and collect limited game data without the lengthy process of creating a HAR file.</li>
           <li>All data entered is sent directly to the game server without involvement of any 3rd party.</li>
           <li>It is not possible to capture any other players than those explicitly stated within the application.</li>
           <li>All data collection is done using normal means, without any use of forbidden actions.</li>
@@ -25,7 +25,7 @@
         </div>
       </template>
 
-      <form v-else-if="step === 'login'" class="flex flex-1 flex-col gap-4" @submit.prevent="login">
+      <form v-else-if="step === 'login'" class="flex flex-1 flex-col gap-4" @submit.prevent="submit">
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('login') }}</SFHeading>
         <SFInput ref="username-ref" v-model="username" :label="localize('username')" name="username" autocomplete="username" />
         <SFInput ref="password-ref" v-model="password" :label="localize('password')" name="password" type="password" autocomplete="current-password" />
@@ -34,16 +34,11 @@
           <SFButton block @click="close(false)">
             {{ localize('cancel') }}
           </SFButton>
-          <SFButton variant="primary" type="submit" block :disabled="!isLoginValid">
+          <SFButton variant="primary" type="submit" block :disabled="isSubmitting ? 'loading' : !isLoginValid">
             {{ localize('continue') }}
           </SFButton>
         </div>
       </form>
-
-      <template v-else-if="step === 'unity'">
-        <img src="/endpoint/logo.png" alt="" class="mx-auto animate-pulse" />
-        <SFHeading level="5" class="text-center">{{ localize('step2.title') }}</SFHeading>
-      </template>
 
       <div v-else-if="step === 'loading'" class="flex flex-col items-center gap-4">
         <SFIcon name="spinner" class="animate-spin text-3xl" />
@@ -121,7 +116,7 @@ import { type SelectOption } from '@utils/components'
 import { type EndpointCharacter, type EndpointWarning, type EndpointMode, EndpointController } from '@utils/endpoint'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
-import { getErrorMessage, getTimestampOffset } from '@utils/utils'
+import { getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { Logger } from '~/core/logger'
 import { Site } from '~/core/site'
@@ -144,7 +139,7 @@ const emit = defineEmits<{
   close: [imported: boolean]
 }>()
 
-type Step = 'terms' | 'login' | 'unity' | 'loading' | 'progress' | 'character' | 'warnings' | 'error'
+type Step = 'terms' | 'login' | 'loading' | 'progress' | 'character' | 'warnings' | 'error'
 
 type Character = EndpointCharacter & {
   server: string
@@ -155,7 +150,6 @@ const TERMS_VERSION = 2
 const TITLE_KEYS: Record<Step, string> = {
   terms: 'terms.title',
   login: 'endpoint.login',
-  unity: 'endpoint.step2.title',
   loading: 'endpoint.step4.title',
   progress: 'endpoint.step4.message',
   character: 'endpoint.step7.title',
@@ -194,6 +188,8 @@ const isLoginValid = useComponentValidation(useTemplateRef('username-ref'), useT
 
 const isCharacterValid = useComponentValidation(useTemplateRef('mode-ref'))
 
+const { submit, isSubmitting } = useSubmit(login)
+
 const modeOptions = computed<SelectOption<EndpointMode>[]>(() => MODES.map((value) => ({ value, label: localize(`mode.${value}`) })))
 
 watch(mode, (value) => {
@@ -231,8 +227,6 @@ async function login() {
 
   try {
     if (!controller) {
-      step.value = 'unity'
-
       controller = new EndpointController(iframeElement.value, showProgress, showWarning)
 
       await controller.load()

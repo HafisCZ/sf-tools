@@ -5,45 +5,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
-        <script src="build/endpoint.loader.js"></script>
-        <script type="text/javascript">
+        <script type="module">
+            import init, { login, execute } from './build/endpoint.js';
+
             window.callback = null;
-            window.unity = null;
+
+            const send = (message) => window.callback?.(JSON.parse(message));
+            const sendError = () => window.callback?.({ error: 'an_error_occurred' });
+
+            window.addEventListener('error', sendError);
+            window.addEventListener('unhandledrejection', sendError);
 
             window.load = async function () {
-                window.unity = await createUnityInstance(
-                    document.querySelector("#upixel"),
-                    {
-                        dataUrl: "build/endpoint.data",
-                        frameworkUrl: "build/endpoint.framework.js",
-                        codeUrl: "build/endpoint.wasm",
-                        streamingAssetsUrl: "StreamingAssets",
-                        companyName: "mar21",
-                        productName: "Endpoint",
-                        productVersion: "11.0",
-                    }
-                );
+                await init();
             }
 
-            window.destroy = async function (callback) {
-                await window.unity.Quit();
-            }
+            window.destroy = async function () {}
 
             window.playaAccountLogin = function (server, username, password) {
                 if (password.length > 40) {
                     password = password.slice(0, 40);
                 }
 
-                window.unity.SendMessage('Controller', 'PlayaAccountLogin', JSON.stringify({
-                    server,
-                    username,
-                    password
-                }));
+                login(JSON.stringify({ server, username, password }), send);
             }
 
             window.execute = function (params) {
-                window.unity.SendMessage('Controller', 'Execute', JSON.stringify(params));
+                execute(JSON.stringify(params), send);
             }
         </script>
     </body>
