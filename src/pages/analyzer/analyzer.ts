@@ -533,6 +533,10 @@ export function getFighterName(fighter: Fighter) {
   return fighter.player?.Name || fighter.Name
 }
 
+export function countWins(group: FightGroup, fighter: Fighter) {
+  return group.fights.filter((fight) => fight.winner.ID === fighter.ID).length
+}
+
 // Decode attack type
 function decomposeAttackType(attackType: number) {
   return {

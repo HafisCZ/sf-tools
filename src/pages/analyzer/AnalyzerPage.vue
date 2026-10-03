@@ -51,27 +51,33 @@
     <div class="flex items-end gap-2">
       <div class="min-w-0 flex-1">
         <SFSelect :model-value="currentGroup" :label="localize('form.fight_group')" :options="groupOptions" @update:model-value="selectGroup">
+          <template #value="{ option }">
+            <FightGroupCard v-if="option.value" :group="option.value" />
+          </template>
           <template #option="{ option }">
             <span v-if="option.value" class="flex min-w-0 flex-1 items-center gap-2">
               <img :src="getClassImageUrl(option.value.fighterA.Class)" alt="" class="size-5 object-contain" />
               <span class="truncate">{{ getFighterName(option.value.fighterA) }}</span>
               <span>-</span>
               <img :src="getClassImageUrl(option.value.fighterB.Class)" alt="" class="size-5 object-contain" />
-              <span class="truncate">{{ getFighterName(option.value.fighterB) }} ({{ option.value.fights.length }})</span>
+              <span class="truncate">{{ getFighterName(option.value.fighterB) }}</span>
+              <span class="ml-auto pl-2 text-white/50">{{ countWins(option.value, option.value.fighterA) }} : {{ countWins(option.value, option.value.fighterB) }}</span>
             </span>
           </template>
         </SFSelect>
       </div>
-      <SFTooltip :content="localize.global('editor.copy')">
-        <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('editor.copy')" :disabled="!hasFights" @click="copyGroup">
-          <SFIcon name="copy" />
-        </SFButton>
-      </SFTooltip>
-      <SFTooltip :content="localize('export')">
-        <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('export')" :disabled="!hasFights" @click="exportGroup">
-          <SFIcon name="download" />
-        </SFButton>
-      </SFTooltip>
+      <div class="flex flex-col gap-2">
+        <SFTooltip :content="localize.global('editor.copy')">
+          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize.global('editor.copy')" :disabled="!hasFights" @click="copyGroup">
+            <SFIcon name="copy" />
+          </SFButton>
+        </SFTooltip>
+        <SFTooltip :content="localize('export')">
+          <SFButton variant="outline" icon class="min-h-9.5 min-w-9.5" :aria-label="localize('export')" :disabled="!hasFights" @click="exportGroup">
+            <SFIcon name="download" />
+          </SFButton>
+        </SFTooltip>
+      </div>
     </div>
 
     <div v-show="currentGroup" class="mt-6">
@@ -209,6 +215,7 @@ import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import { receiveSimulatorBroadcast, simulatorConfig, type SimulatorConfig } from '~/sim/debug'
 import {
   analyzeGroup,
+  countWins,
   exportFights,
   getFighterName,
   groupFights,
@@ -229,6 +236,7 @@ import {
 } from './analyzer'
 import FighterEditor from './components/FighterEditor.vue'
 import FighterState from './components/FighterState.vue'
+import FightGroupCard from './components/FightGroupCard.vue'
 import AnalyzerAutofillDialog from './dialogs/AnalyzerAutofillDialog.vue'
 import AnalyzerOptionsDialog from './dialogs/AnalyzerOptionsDialog.vue'
 import FightAnalysisDialog from './dialogs/FightAnalysisDialog.vue'

@@ -849,6 +849,10 @@
             "fight_list": "Select fight",
             "editable_data": "Editable data"
         },
+        "group_card": {
+            "fight": "1 fight",
+            "fights": "#{count} fights"
+        },
         "players": "Players",
         "damages_and_chances": "Damage & chances",
         "preview": "Fight preview",
