@@ -3,12 +3,17 @@ import { type ExpressionSuggestion } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { type IconName } from '@utils/icons'
 import { useLoader } from '@utils/loader'
+import { toArray, unique } from '@utils/utils'
+import { type GroupModel } from '~/core/models/group'
+import { type PlayerModel } from '~/core/models/player'
 import { Site } from '~/core/site'
 import { Store } from '~/core/store'
 import { DatabaseManager, type RemovalData } from '~/data/database-manager'
 import { ScriptCommands, type ScriptType } from '~/script/commands'
 import { Constants } from '~/script/constants'
+import { type Expression } from '~/script/expression'
 import { DEFAULT_EXPRESSION_CONFIG, TABLE_EXPRESSION_CONFIG, type ExpressionConfig } from '~/script/expression-config'
+import { type QueryLanguage, type QueryOptionName, type QueryTarget } from '~/script/query'
 import { ScriptRenderer } from '~/script/renderer'
 import { type StoredScript } from '~/script/scripts'
 import DataManageDialog from './dialogs/DataManageDialog.vue'
@@ -151,6 +156,89 @@ export type ScriptEditResult = {
 export const TABLE_VIEWS: StatsView[] = ['players', 'groups', 'groups_grid', 'group', 'players_grid', 'player']
 
 export const PLAYER_CLASS_SEARCH = ['', 'warrior', 'mage', 'scout', 'assassin', 'battle mage', 'berserker', 'demon hunter', 'druid', 'bard', 'necromancer', 'paladin', 'plague doctor', 'blood weaver']
+
+const PLAYER_CLASS_NAMES = PLAYER_CLASS_SEARCH.map((name) => name.replace(/\b\w/g, (letter) => letter.toUpperCase()))
+
+const TABLE_QUERY_OPTIONS: QueryOptionName[] = ['sort', 'first', 'latest', 'hidden', 'own', 'recalculate', 'columns', 'template']
+const GRID_QUERY_OPTIONS: QueryOptionName[] = ['latest', 'hidden', 'others', 'all']
+
+function getQueryHeaders(...metas: string[]) {
+  return metas.flatMap((meta) => TABLE_EXPRESSION_CONFIG.all('header', meta)).filter((name) => /^[A-Za-z][A-Za-z0-9 ]*$/.test(name))
+}
+
+function getQueryTags() {
+  return Object.keys(DatabaseManager.getTagsForTimestamp()).filter((tag) => tag !== 'undefined')
+}
+
+export function createPlayerQueryLanguage(table: boolean): QueryLanguage {
+  return {
+    fields: ['class', 'name', 'guild', 'server'],
+    aliases: { c: 'class', p: 'name', g: 'guild', s: 'server' },
+    options: table ? TABLE_QUERY_OPTIONS : GRID_QUERY_OPTIONS,
+    headers: getQueryHeaders('public', 'protected', 'private'),
+    functions: TABLE_EXPRESSION_CONFIG.all('function'),
+    classes: PLAYER_CLASS_NAMES,
+    values: (kind) => {
+      const players = Object.values(DatabaseManager.Players).map((player) => player.Latest)
+
+      switch (kind) {
+        case 'name':
+          return unique(players.map((player) => player.Name))
+        case 'guild':
+          return unique(players.flatMap((player) => (player.hasGuild() && player.Group.Name ? [player.Group.Name] : [])))
+        case 'server':
+          return unique(players.map((player) => player.Prefix))
+        default:
+          return getQueryTags()
+      }
+    }
+  }
+}
+
+export function createGroupQueryLanguage(table: boolean): QueryLanguage {
+  return {
+    fields: ['name', 'server'],
+    aliases: { p: 'name', g: 'name', guild: 'name', s: 'server' },
+    options: table ? TABLE_QUERY_OPTIONS : GRID_QUERY_OPTIONS,
+    headers: getQueryHeaders('group'),
+    functions: TABLE_EXPRESSION_CONFIG.all('function'),
+    classes: [],
+    values: (kind) => {
+      const groups = Object.values(DatabaseManager.Groups).map((group) => group.Latest)
+
+      switch (kind) {
+        case 'server':
+          return unique(groups.map((group) => group.Prefix))
+        case 'tag':
+          return getQueryTags()
+        default:
+          return unique(groups.map((group) => group.Name))
+      }
+    }
+  }
+}
+
+export function createPlayerQueryTarget(player: PlayerModel, evaluate: (expression: Expression) => unknown): QueryTarget {
+  const getGuild = () => (player.hasGuild() ? (player.Group.Name ?? '') : '')
+
+  return {
+    values: () => [player.Name, player.Prefix, PLAYER_CLASS_NAMES[player.Class], getGuild()],
+    field: (field) => (field === 'name' ? player.Name : field === 'guild' ? getGuild() : player.Prefix),
+    classId: () => player.Class,
+    tags: () => toArray(player.Data.tag),
+    evaluate
+  }
+}
+
+export function createGroupQueryTarget(group: GroupModel, evaluate: (expression: Expression) => unknown): QueryTarget {
+  return {
+    values: () => [group.Name, group.Prefix],
+    field: (field) => (field === 'server' ? group.Prefix : group.Name),
+    classId: () => 0,
+    tags: () => toArray(group.Data.tag),
+    evaluate
+  }
+}
 
 export function useStatsNavigation() {
   return inject(STATS_NAVIGATION_KEY) as StatsNavigation
