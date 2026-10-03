@@ -5,7 +5,7 @@
         <TimestampSelect v-model:timestamp="timestamp" v-model:reference="reference" :options="timestampOptions" @change="recalculateFilter" />
       </div>
       <div class="col-span-8">
-        <FilterInput v-model="filter" :placeholder="localize('filters.types.groups')" :filters="filterDescriptions" @change="applyFilter" />
+        <FilterInput v-model="filter" :placeholder="localize('filters.types.groups')" :language="language" @change="applyFilter" />
       </div>
       <div class="col-span-3 flex items-start gap-1">
         <SFTooltip :content="localize('copy.image')">
@@ -51,7 +51,7 @@ import { type SelectOption } from '@utils/components'
 import { useDialog } from '@utils/dialogs'
 import { formatDate } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { copyElement, toArray, toRecord, unique, useSubmit } from '@utils/utils'
+import { copyElement, unique, useSubmit } from '@utils/utils'
 import { SiteAPI } from '~/core/api'
 import { Exporter } from '~/core/exporter'
 import { type GroupModel } from '~/core/models/group'
@@ -62,9 +62,10 @@ import FilterInput from '~/pages/stats/components/FilterInput.vue'
 import ScriptButton from '~/pages/stats/components/ScriptButton.vue'
 import TimestampSelect from '~/pages/stats/components/TimestampSelect.vue'
 import ExportFileDialog from '~/pages/stats/dialogs/ExportFileDialog.vue'
-import { safeRemove, useStatsNavigation, type ContextMenuItem } from '~/pages/stats/stats'
+import { createGroupQueryLanguage, createGroupQueryTarget, safeRemove, useStatsNavigation, type ContextMenuItem } from '~/pages/stats/stats'
 import { TableType } from '~/script/commands'
-import { Expression, ExpressionScope } from '~/script/expression'
+import { ExpressionScope } from '~/script/expression'
+import { matchesQuery, parseQuery } from '~/script/query'
 import { type ScriptEntity } from '~/script/script'
 import { Scripts } from '~/script/scripts'
 import { BrowseTableArray, TableController } from '~/script/table'
@@ -78,10 +79,6 @@ defineExpose({
   reload,
   identifier: 'groups'
 })
-
-type Term = (group: GroupModel, timestamp: number, reference: number) => unknown
-
-const FILTER_KEYS = ['g', 's', 'e', '#', 'l', 'f', 'r', 'h', 'o', 'sr', 'q', 't']
 
 const localize = useLocalize('stats')
 
@@ -101,6 +98,8 @@ const timestamp = ref(0)
 const reference = ref(0)
 const timestampOptions = ref<SelectOption<number>[]>([])
 
+const language = createGroupQueryLanguage(true)
+
 const scriptCache: Record<string, string> = {}
 
 let baseTable: TableController
@@ -109,8 +108,6 @@ let table: TableController
 
 let recalculate = false
 let showHiddenOverride = false
-
-const filterDescriptions = computed(() => toRecord(FILTER_KEYS, (key) => [key, localize(`filters.${key}`)]))
 
 const menuItems = computed((): ContextMenuItem[] => [
   {
@@ -230,84 +227,44 @@ async function getRemoteScript(code: string) {
 }
 
 async function applyFilter() {
-  const parts = filter.value.split(/(?:\s|\b|^)(g|s|e|l|f|r|h|o|sr|q|t|#):/)
+  const { root, options } = parseQuery(filter.value, language)
 
-  const baseTerms = parts[0]
-    .toLowerCase()
-    .split('&')
-    .map((term) => term.trim())
-
-  const terms: Term[] = [(group) => baseTerms.every((term) => term.split('|').some((subterm) => group.Name.toLowerCase().includes(subterm.trim()) || group.Prefix.toLowerCase().includes(subterm.trim())))]
-
-  let entryLimit: number | undefined
   let externalSort: ((current: ScriptEntity, compare: ScriptEntity) => number) | undefined
   let queryEnabled = false
 
-  showHiddenOverride = false
+  showHiddenOverride = Boolean(options.hidden || options.own)
 
-  for (let i = 1; i < parts.length; i += 2) {
-    const key = parts[i]
-    const arg = (parts[i + 1] || '').trim()
-    const args = arg
-      .toLowerCase()
-      .split('|')
-      .map((term) => term.trim())
+  if (options.latest || options.recalculate || options.own) {
+    recalculate = true
+  }
 
-    if (key == 'g') {
-      terms.push((group) => args.some((term) => group.Name.toLowerCase().includes(term)))
-    } else if (key == 's') {
-      terms.push((group) => args.some((term) => group.Prefix.toLowerCase().includes(term)))
-    } else if (key == '#') {
-      const tags = arg.split('|').map((term) => term.trim())
+  if (options.sort) {
+    const { expression, descending } = options.sort
 
-      terms.push((group) => group.Data.tag && toArray(group.Data.tag).some((tag) => tags.includes(tag)))
-    } else if (key == 'l') {
-      terms.push((group, currentTimestamp) => group.Timestamp == currentTimestamp)
+    externalSort = (group, compare) => (descending ? 1 : -1) * (expression.eval(new ExpressionScope().with(group, compare)) as number)
+  }
 
-      recalculate = true
-    } else if (key == 'e') {
-      const expression = Expression.create(arg)
+  if (options.columns) {
+    queryEnabled = true
+    recalculate = true
 
-      if (expression) {
-        terms.push((group, currentTimestamp, compare) => expression.eval(new ExpressionScope().with(group, compare)))
-      }
-    } else if (key == 'sr') {
-      const expression = Expression.create(arg)
+    table.clearSorting()
 
-      if (expression) {
-        externalSort = (group, compare) => expression.eval(new ExpressionScope().with(group, compare)) as number
-      }
-    } else if (key == 'f') {
-      entryLimit = isNaN(Number(arg)) ? 1 : Math.max(1, Number(arg))
-    } else if (key == 'r') {
-      recalculate = true
-    } else if (key == 'h') {
-      showHiddenOverride = true
-    } else if (key == 'o') {
-      terms.push((group) => DatabaseManager.getPlayer(group.LinkId)?.Own)
+    table = queryTable
+    table.setScript(`category${options.columns.map((header) => `\nheader ${header}`).join('')}`)
+  }
 
-      recalculate = true
-      showHiddenOverride = true
-    } else if (key == 'q' && arg.length) {
+  if (options.template) {
+    const script = await getRemoteScript(options.template)
+
+    if (script) {
       queryEnabled = true
       recalculate = true
 
       table.clearSorting()
 
       table = queryTable
-      table.setScript(`category${arg.split(',').reduce((content, header) => `${content}\nheader ${header.trim()}`, '')}`)
-    } else if (key == 't' && arg.length) {
-      const script = await getRemoteScript(arg.trim())
-
-      if (script) {
-        queryEnabled = true
-        recalculate = true
-
-        table.clearSorting()
-
-        table = queryTable
-        table.setScript(script)
-      }
+      table.setScript(script)
     }
   }
 
@@ -316,7 +273,7 @@ async function applyFilter() {
   }
 
   const entries = new BrowseTableArray({
-    entryLimit,
+    entryLimit: options.first,
     timestamp: timestamp.value,
     reference: reference.value,
     externalSort,
@@ -337,7 +294,14 @@ async function applyFilter() {
         const compare = [...list].reverse().find((entry) => entry.Timestamp >= reference.value && entry.Timestamp <= currentTimestamp) || current
         const compareTimestamp = compare.Timestamp
 
-        if (terms.every((term) => term(current, timestamp.value, compareTimestamp))) {
+        if (
+          (!options.latest || currentTimestamp == timestamp.value) &&
+          (!options.own || DatabaseManager.getPlayer(current.LinkId)?.Own) &&
+          matchesQuery(
+            root,
+            createGroupQueryTarget(current, (expression) => expression.eval(new ExpressionScope().with(current, compareTimestamp)))
+          )
+        ) {
           entries.add(current, compare, currentTimestamp == timestamp.value, isHidden)
         }
       }

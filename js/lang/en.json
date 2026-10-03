@@ -437,23 +437,36 @@
             "types": {
                 "players": "Filter players by server, class, guild and/or username",
                 "groups": "Filter groups by server or name"
-            },
-            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
-            "p": "Player name",
-            "g": "Guild name",
-            "s": "Server",
-            "e": "Custom expression",
-            "#": "Show only players with specified tags",
-            "l": "Show only latest",
-            "f": "Show only first or first n entries",
-            "r": "Force recalculation of global variables",
-            "h": "Show hidden",
-            "o": "Show own",
-            "a": "Show all",
-            "d": "Show other",
-            "q": "Custom settings (separate header names with comma)",
-            "t": "Show online template directly",
-            "sr": "Sort by custom expression"
+            }
+        },
+        "query": {
+            "clear": "Clear the filter",
+            "history": "Starred and recent filters",
+            "shortcut": "Ctrl + Space",
+            "starred": "Starred",
+            "recent": "Recent",
+            "starred_empty": "Star a recent filter to keep it here.",
+            "recent_empty": "Press Enter in the field to keep a filter here.",
+            "star": "Star this filter",
+            "unstar": "Remove the star",
+            "keys": {
+                "class": "Class is one of these, separated by commas",
+                "name": "Name contains one of these, \"Name\" is exact",
+                "guild": "Guild name contains one of these, \"Name\" is exact",
+                "server": "Server contains one of these, \"Server\" is exact",
+                "tag": "Has one of these tags",
+                "eval": "One of these table script expressions is true",
+                "sort": "Sort by a header or table script expression, - for highest first",
+                "first": "Only the first n entries",
+                "latest": "Only entries from the selected snapshot",
+                "hidden": "Show hidden entries too",
+                "own": "Only your own entries",
+                "recalculate": "Force recalculation of global variables",
+                "columns": "Show these headers instead of the table script",
+                "template": "Show an online template by its code",
+                "others": "Show entries of other characters too",
+                "all": "Show hidden entries and other characters too"
+            }
         },
         "scripts": {
             "settings": "Settings",
