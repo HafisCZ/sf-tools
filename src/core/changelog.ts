@@ -67,6 +67,7 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Added headers for new dungeons',
       'Added <code>Item Level</code> accessor for items',
       'Updated total achievement and scrapbook counts',
+      'Updated character and group filtering',
       'Fixed witch scrolls being in wrong order',
       'Fixed companion inventories',
       'Fixed missing last active time',
