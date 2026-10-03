@@ -2,7 +2,7 @@
   <div>
     <div class="mb-[0.25rem] grid grid-cols-16 gap-x-[28px] pb-[14px]">
       <div class="col-span-10 col-start-4">
-        <FilterInput v-model="filter" :placeholder="localize('filters.types.players')" :filters="filterDescriptions" @change="applyFilter" />
+        <FilterInput v-model="filter" :placeholder="localize('filters.types.players')" :language="language" @change="applyFilter" />
       </div>
       <div class="col-span-3 flex items-start gap-1">
         <SFTooltip :content="localize('players.hidden')">
@@ -50,8 +50,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { useDialog } from '@utils/dialogs'
 import { formatDate } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { copyJson, getClassImageUrl, toRecord } from '@utils/utils'
-import { type PlayerModel } from '~/core/models/player'
+import { copyJson, getClassImageUrl } from '@utils/utils'
 import { ModelUtils } from '~/core/models/utils'
 import { Site } from '~/core/site'
 import { DatabaseManager, type PlayerHistory } from '~/data/database-manager'
@@ -60,8 +59,9 @@ import GridActions from '~/pages/stats/components/GridActions.vue'
 import GridCard from '~/pages/stats/components/GridCard.vue'
 import ExportFileDialog from '~/pages/stats/dialogs/ExportFileDialog.vue'
 import ManageLinkDialog from '~/pages/stats/dialogs/ManageLinkDialog.vue'
-import { PLAYER_CLASS_SEARCH, safeRemove, useIncrementalList, useStatsNavigation, type GridAction } from '~/pages/stats/stats'
-import { Expression, ExpressionScope } from '~/script/expression'
+import { createPlayerQueryLanguage, createPlayerQueryTarget, safeRemove, useIncrementalList, useStatsNavigation, type GridAction } from '~/pages/stats/stats'
+import { ExpressionScope } from '~/script/expression'
+import { matchesQuery, parseQuery } from '~/script/query'
 
 defineOptions({
   name: 'PlayersGridView'
@@ -71,10 +71,6 @@ defineExpose({
   show,
   identifier: 'player'
 })
-
-type Term = (player: PlayerModel) => boolean
-
-const FILTER_KEYS = ['c', 'p', 'g', 's', 'e', 'l', 'a', 'h', 'd']
 
 const localize = useLocalize('stats')
 
@@ -89,7 +85,7 @@ const othersOverride = ref(false)
 const entries = shallowRef<PlayerHistory[]>([])
 const selection = ref<Record<string, boolean>>({})
 
-const filterDescriptions = computed(() => toRecord(FILTER_KEYS, (key) => [key, localize(`filters.${key}`)]))
+const language = createPlayerQueryLanguage(false)
 
 const filteredEntries = computed(() =>
   entries.value.filter((player) => {
@@ -136,69 +132,26 @@ function toggleOption(option: 'players_hidden' | 'players_other') {
   show()
 }
 
-function createTerms(value: string) {
-  const parts = value.split(/(?:\s|\b)(c|p|g|s|e|l|a|h|d):/)
-
-  const baseTerms = parts[0]
-    .toLowerCase()
-    .split('&')
-    .map((term) => term.trim())
-
-  const terms: Term[] = [(player) => baseTerms.every((term) => term.split('|').some((subterm) => matchesPlayer(player, subterm.trim())))]
-
-  hiddenOverride.value = false
-  othersOverride.value = false
-
-  for (let i = 1; i < parts.length; i += 2) {
-    const key = parts[i]
-    const arg = (parts[i + 1] || '').trim()
-    const args = arg
-      .toLowerCase()
-      .split('|')
-      .map((term) => term.trim())
-
-    if (key == 'c') {
-      terms.push((player) => args.some((term) => PLAYER_CLASS_SEARCH[player.Class] == term))
-    } else if (key == 'p') {
-      terms.push((player) => args.some((term) => player.Name.toLowerCase().includes(term)))
-    } else if (key == 'g') {
-      terms.push((player) => args.some((term) => player.hasGuild() && (player.Group.Name ?? '').toLowerCase().includes(term)))
-    } else if (key == 's') {
-      terms.push((player) => args.some((term) => player.Prefix.toLowerCase().includes(term)))
-    } else if (key == 'l') {
-      terms.push((player) => player.Timestamp == DatabaseManager.Latest)
-    } else if (key == 'e') {
-      const expression = Expression.create(arg)
-
-      if (expression) {
-        terms.push((player) => Boolean(expression.eval(new ExpressionScope().with(player, player).addSelf(player))))
-      }
-    } else if (key == 'a') {
-      hiddenOverride.value = true
-      othersOverride.value = true
-    } else if (key == 'h') {
-      hiddenOverride.value = true
-    } else if (key == 'd') {
-      othersOverride.value = true
-    }
-  }
-
-  return terms
-}
-
-function matchesPlayer(player: PlayerModel, term: string) {
-  return player.Name.toLowerCase().includes(term) || player.Prefix.toLowerCase().includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && (player.Group.Name ?? '').toLowerCase().includes(term))
-}
-
 function applyFilter() {
-  const terms = createTerms(filter.value)
+  const { root, options } = parseQuery(filter.value, language)
+
+  hiddenOverride.value = Boolean(options.hidden)
+  othersOverride.value = Boolean(options.others)
 
   const list: PlayerHistory[] = []
 
   for (const player of Object.values(DatabaseManager.Players)) {
-    const isHidden = DatabaseManager.isIdentifierHidden(player.Latest.LinkId)
+    const latest = player.Latest
+    const isHidden = DatabaseManager.isIdentifierHidden(latest.LinkId)
 
-    if ((hidden.value || !isHidden || hiddenOverride.value) && terms.every((term) => term(player.Latest))) {
+    if (
+      (hidden.value || !isHidden || hiddenOverride.value) &&
+      (!options.latest || latest.Timestamp == DatabaseManager.Latest) &&
+      matchesQuery(
+        root,
+        createPlayerQueryTarget(latest, (expression) => expression.eval(new ExpressionScope().with(latest, latest).addSelf(latest)))
+      )
+    ) {
       list.push(player)
     }
   }

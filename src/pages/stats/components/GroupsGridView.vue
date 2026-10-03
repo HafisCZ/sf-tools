@@ -2,7 +2,7 @@
   <div>
     <div class="mb-[0.25rem] grid grid-cols-16 gap-x-[28px] pb-[14px]">
       <div class="col-span-10 col-start-4">
-        <FilterInput v-model="filter" :placeholder="localize('filters.types.groups')" :filters="filterDescriptions" @change="applyFilter" />
+        <FilterInput v-model="filter" :placeholder="localize('filters.types.groups')" :language="language" @change="applyFilter" />
       </div>
       <div class="col-span-3 flex items-start gap-1">
         <SFTooltip :content="localize('guilds.hidden')">
@@ -62,8 +62,7 @@ import SFTooltip from '@library/SFTooltip.vue'
 import { useDialog } from '@utils/dialogs'
 import { formatDate } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { copyJson, toRecord, unique } from '@utils/utils'
-import { type GroupModel } from '~/core/models/group'
+import { copyJson, unique } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import { Site } from '~/core/site'
@@ -73,7 +72,9 @@ import GridActions from '~/pages/stats/components/GridActions.vue'
 import GridCard from '~/pages/stats/components/GridCard.vue'
 import ExportFileDialog from '~/pages/stats/dialogs/ExportFileDialog.vue'
 import ManageLinkDialog from '~/pages/stats/dialogs/ManageLinkDialog.vue'
-import { safeRemove, useIncrementalList, useStatsNavigation, type GridAction } from '~/pages/stats/stats'
+import { createGroupQueryLanguage, createGroupQueryTarget, safeRemove, useIncrementalList, useStatsNavigation, type GridAction } from '~/pages/stats/stats'
+import { ExpressionScope } from '~/script/expression'
+import { matchesQuery, parseQuery } from '~/script/query'
 
 defineOptions({
   name: 'GroupsGridView'
@@ -83,10 +84,6 @@ defineExpose({
   show,
   identifier: 'group'
 })
-
-type Term = (group: GroupModel) => boolean
-
-const FILTER_KEYS = ['g', 's', 'l', 'h', 'a', 'd']
 
 const localize = useLocalize('stats')
 
@@ -102,7 +99,7 @@ const othersOverride = ref(false)
 const entries = shallowRef<GroupHistory[]>([])
 const selection = ref<Record<string, boolean>>({})
 
-const filterDescriptions = computed(() => toRecord(FILTER_KEYS, (key) => [key, localize(`filters.${key}`)]))
+const language = createGroupQueryLanguage(false)
 
 const latestPlayerTimestamp = computed(() => (empty.value ? DatabaseManager.Latest : DatabaseManager.LatestPlayer))
 
@@ -155,50 +152,20 @@ function toggleOption(option: 'groups_hidden' | 'groups_other' | 'groups_empty')
   show()
 }
 
-function createTerms(value: string) {
-  const parts = value.split(/(?:\s|\b)(g|s|l|a|h|d):/)
-
-  const baseTerms = parts[0]
-    .toLowerCase()
-    .split('&')
-    .map((term) => term.trim())
-
-  const terms: Term[] = [(group) => baseTerms.every((term) => term.split('|').some((subterm) => group.Name.toLowerCase().includes(subterm.trim()) || group.Prefix.toLowerCase().includes(subterm.trim())))]
-
-  hiddenOverride.value = false
-  othersOverride.value = false
-
-  for (let i = 1; i < parts.length; i += 2) {
-    const key = parts[i]
-    const args = (parts[i + 1] || '')
-      .trim()
-      .toLowerCase()
-      .split('|')
-      .map((term) => term.trim())
-
-    if (key == 'g') {
-      terms.push((group) => args.some((term) => group.Name.toLowerCase().includes(term)))
-    } else if (key == 's') {
-      terms.push((group) => args.some((term) => group.Prefix.toLowerCase().includes(term)))
-    } else if (key == 'l') {
-      terms.push((group) => group.Timestamp == DatabaseManager.Latest)
-    } else if (key == 'a') {
-      hiddenOverride.value = true
-      othersOverride.value = true
-    } else if (key == 'h') {
-      hiddenOverride.value = true
-    } else if (key == 'd') {
-      othersOverride.value = true
-    }
-  }
-
-  return terms
-}
-
 function applyFilter() {
-  const terms = createTerms(filter.value)
+  const { root, options } = parseQuery(filter.value, language)
 
-  const list = Object.values(DatabaseManager.Groups).filter((group) => terms.every((term) => term(group.Latest)))
+  hiddenOverride.value = Boolean(options.hidden)
+  othersOverride.value = Boolean(options.others)
+
+  const list = Object.values(DatabaseManager.Groups).filter(
+    ({ Latest: latest }) =>
+      (!options.latest || latest.Timestamp == DatabaseManager.Latest) &&
+      matchesQuery(
+        root,
+        createGroupQueryTarget(latest, (expression) => expression.eval(new ExpressionScope().with(latest, latest).addSelf(latest)))
+      )
+  )
 
   if (empty.value) {
     list.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp)
