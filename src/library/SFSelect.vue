@@ -16,7 +16,10 @@
       :aria-describedby="descriptionId"
       @click="toggle"
     >
-      <span v-if="slots.option && selectedOption" :id="valueId" class="flex min-w-0 flex-auto items-center gap-2 truncate">
+      <span v-if="slots.value && selectedOption" :id="valueId" class="flex min-w-0 flex-auto">
+        <slot name="value" :option="selectedOption" />
+      </span>
+      <span v-else-if="slots.option && selectedOption" :id="valueId" class="flex min-w-0 flex-auto items-center gap-2 truncate">
         <slot name="option" :option="selectedOption" />
       </span>
       <span v-else-if="!selectedOption && props.placeholder" :id="valueId" class="min-w-0 flex-auto truncate text-white/40">{{ props.placeholder }}</span>
@@ -131,6 +134,10 @@ const slots = defineSlots<{
    * Replaces the image and label of an option, in the list and in the field
    */
   option?(props: { option: Exclude<SelectOption<TValue>, SelectHeader | SelectDivider> }): unknown
+  /**
+   * Replaces the content of the field for the picked option, the list keeps using the option slot
+   */
+  value?(props: { option: Exclude<SelectOption<TValue>, SelectHeader | SelectDivider> }): unknown
 }>()
 
 defineExpose({
