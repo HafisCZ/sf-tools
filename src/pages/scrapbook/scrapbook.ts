@@ -2,15 +2,25 @@ import { sum } from '@utils/utils'
 import { ItemModel } from '~/core/models/item'
 import { type PlayerModel } from '~/core/models/player'
 import { Loca } from '~/playa/items'
+import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, BLOODWEAVER, DEMONHUNTER, DRUID, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
 
 export type ScrapbookBook = 'items' | 'legendaries'
 
-export type ScrapbookGroupKey = 'normal' | 'epic' | 'legendary'
+export type ScrapbookRarity = 'normal' | 'epic' | 'legendary'
+
+export type ScrapbookStatus = 'missing' | 'collected' | 'marked' | 'all'
+
+export type ScrapbookOrigin = 'regular' | 'toilet' | 'event' | 'twister'
 
 export type ScrapbookEntry = {
   key: string
   name: string
   picture: string
+  type: number
+  itemClass: number
+  rarity: ScrapbookRarity
+  origin: ScrapbookOrigin
+  unlockLevel?: number
   color: number
   collected: boolean
   marked: boolean
@@ -18,7 +28,7 @@ export type ScrapbookEntry = {
 }
 
 export type ScrapbookGroup = {
-  key: ScrapbookGroupKey
+  key: ScrapbookRarity
   entries: ScrapbookEntry[]
   collected: number
   total: number
@@ -27,25 +37,34 @@ export type ScrapbookGroup = {
 export type ScrapbookKind = {
   key: string
   type: number
-  klass?: number
+  itemClass: number
   groups: ScrapbookGroup[]
   collected: number
   total: number
 }
 
-export type ScrapbookClass = {
-  class: number
-  kinds: ScrapbookKind[]
-  collected: number
-  total: number
+export type ScrapbookFilters = {
+  search: string
+  status: ScrapbookStatus
+  wornBy: CharacterClass | null
+  itemClasses: number[]
+  kinds: number[]
+  rarities: ScrapbookRarity[]
+  origins: ScrapbookOrigin[]
+  minimumLevel: number | null
+  maximumLevel: number | null
 }
 
 type ScrapbookSource = {
   book: ScrapbookBook
   bits: boolean[]
   marked: Set<string>
-  minimumLevel: number
-  maximumLevel: number
+}
+
+type ClassItems = {
+  weapon: number
+  shield: boolean
+  armor: number
 }
 
 // Class 0 holds the items every class shares
@@ -148,7 +167,32 @@ const EPIC_NOTES: Record<number, string> = {
   72: 'bbq'
 }
 
+const NOTE_ORIGINS: Record<string, ScrapbookOrigin> = {
+  toilet: 'toilet',
+  twister_100: 'twister',
+  twister_250: 'twister',
+  twister_500: 'twister'
+}
+
 export const MAX_UNLOCK_LEVEL = 350
+
+export const PLAYER_CLASSES: CharacterClass[] = [WARRIOR, MAGE, SCOUT, ASSASSIN, BATTLEMAGE, BERSERKER, DEMONHUNTER, DRUID, BARD, NECROMANCER, PALADIN, PLAGUEDOCTOR, BLOODWEAVER]
+
+const CLASS_ITEMS: Record<CharacterClass, ClassItems> = {
+  [WARRIOR]: { weapon: WARRIOR, shield: true, armor: WARRIOR },
+  [MAGE]: { weapon: MAGE, shield: false, armor: MAGE },
+  [SCOUT]: { weapon: SCOUT, shield: false, armor: SCOUT },
+  [ASSASSIN]: { weapon: WARRIOR, shield: false, armor: SCOUT },
+  [BATTLEMAGE]: { weapon: WARRIOR, shield: false, armor: MAGE },
+  [BERSERKER]: { weapon: WARRIOR, shield: false, armor: WARRIOR },
+  [DEMONHUNTER]: { weapon: SCOUT, shield: false, armor: WARRIOR },
+  [DRUID]: { weapon: MAGE, shield: false, armor: SCOUT },
+  [BARD]: { weapon: MAGE, shield: false, armor: SCOUT },
+  [NECROMANCER]: { weapon: MAGE, shield: false, armor: MAGE },
+  [PALADIN]: { weapon: WARRIOR, shield: false, armor: WARRIOR },
+  [PLAGUEDOCTOR]: { weapon: WARRIOR, shield: false, armor: MAGE },
+  [BLOODWEAVER]: { weapon: WARRIOR, shield: false, armor: WARRIOR }
+}
 
 function getUnlockLevel(type: number, itemClass: number, index: number) {
   const levels = index >= 50 ? EPIC_LEVELS : type >= 8 ? ACCESSORY_LEVELS[type] : type === 1 && itemClass === 1 ? WARRIOR_WEAPON_LEVELS : NORMAL_LEVELS
@@ -164,19 +208,25 @@ function createEntry(source: ScrapbookSource, positions: number[], type: number,
   const key = `${source.book}_${positions[0]}`
   const collected = positions.some((position) => source.bits[position])
   const pictureColor = getPictures(type, itemClass, color).includes(index) ? color : 0
+  const note = EPIC_NOTES[index]
 
   return {
     key,
     name: Loca.name(type, index, itemClass || 1),
     picture: Loca.pic(type, index, pictureColor, itemClass || 1),
+    type,
+    itemClass,
+    rarity: index >= 100 ? 'legendary' : index >= 50 ? 'epic' : 'normal',
+    origin: note ? (NOTE_ORIGINS[note] ?? 'event') : 'regular',
+    unlockLevel: index < 100 ? getUnlockLevel(type, itemClass, index) : undefined,
     color,
     collected,
     marked: !collected && source.marked.has(key),
-    note: EPIC_NOTES[index]
+    note
   }
 }
 
-function createGroup(key: ScrapbookGroupKey, entries: ScrapbookEntry[]): ScrapbookGroup {
+function createGroup(key: ScrapbookRarity, entries: ScrapbookEntry[]): ScrapbookGroup {
   return {
     key,
     entries,
@@ -212,20 +262,14 @@ function createGroups(source: ScrapbookSource, itemClass: number, type: number):
 
   const colors = type === 10 ? [0] : COLORS
 
-  const shownIndices = indices.filter((index) => {
-    const level = getUnlockLevel(type, itemClass, index)
-
-    return level >= source.minimumLevel && level <= source.maximumLevel
-  })
-
   return [
     createGroup(
       'normal',
-      shownIndices.filter((index) => index < 50).flatMap((index) => colors.map((color) => createEntry(source, [ItemModel.getScrapbookPosition(itemClass, type, index, color)], type, itemClass, index, color)))
+      indices.filter((index) => index < 50).flatMap((index) => colors.map((color) => createEntry(source, [ItemModel.getScrapbookPosition(itemClass, type, index, color)], type, itemClass, index, color)))
     ),
     createGroup(
       'epic',
-      shownIndices.filter((index) => index >= 50 && index < 100).map((index) => createEntry(source, [ItemModel.getScrapbookPosition(itemClass, type, index, 0)], type, itemClass, index, 0))
+      indices.filter((index) => index >= 50 && index < 100).map((index) => createEntry(source, [ItemModel.getScrapbookPosition(itemClass, type, index, 0)], type, itemClass, index, 0))
     )
   ]
 }
@@ -236,39 +280,95 @@ function createKind(source: ScrapbookSource, itemClass: number, type: number): S
   return {
     key: `${itemClass}_${type}`,
     type,
+    itemClass,
     groups,
     collected: sum(groups.map((group) => group.collected)),
     total: sum(groups.map((group) => group.total))
   }
 }
 
-function createClass(itemClass: number, kinds: ScrapbookKind[]): ScrapbookClass {
-  return {
-    class: itemClass,
-    kinds,
-    collected: sum(kinds.map((kind) => kind.collected)),
-    total: sum(kinds.map((kind) => kind.total))
+function canWear(playerClass: CharacterClass, type: number, itemClass: number) {
+  const items = CLASS_ITEMS[playerClass]
+
+  if (type === 1) return itemClass === items.weapon
+  if (type === 2) return items.shield
+  if (type <= 7) return itemClass === 0 || itemClass === items.armor
+
+  return true
+}
+
+function matchesFilters(entry: ScrapbookEntry, filters: ScrapbookFilters) {
+  const search = filters.search.trim().toLowerCase()
+
+  if (search && !entry.name.toLowerCase().includes(search)) return false
+  if (filters.wornBy && !canWear(filters.wornBy, entry.type, entry.itemClass)) return false
+  if (filters.itemClasses.length > 0 && !filters.itemClasses.includes(entry.itemClass)) return false
+  if (filters.kinds.length > 0 && !filters.kinds.includes(entry.type)) return false
+  if (entry.rarity === 'legendary') return true
+  if (filters.rarities.length > 0 && !filters.rarities.includes(entry.rarity)) return false
+  if (filters.origins.length > 0 && !filters.origins.includes(entry.origin)) return false
+
+  const level = entry.unlockLevel ?? 1
+
+  return level >= (filters.minimumLevel ?? 1) && level <= (filters.maximumLevel ?? MAX_UNLOCK_LEVEL)
+}
+
+function matchesStatus(entry: ScrapbookEntry, status: ScrapbookStatus) {
+  switch (status) {
+    case 'missing':
+      return !entry.collected
+    case 'collected':
+      return entry.collected
+    case 'marked':
+      return entry.marked
+    case 'all':
+      return true
   }
 }
 
-export function createScrapbookClasses(player: PlayerModel, book: ScrapbookBook, marked: string[], minimumLevel: number, maximumLevel: number): ScrapbookClass[] {
+export function createScrapbookKinds(player: PlayerModel, book: ScrapbookBook, marked: string[]): ScrapbookKind[] {
   const source: ScrapbookSource = {
     book,
     bits: (book === 'items' ? player.Scrapbook : player.ScrapbookLegendary) ?? [],
-    marked: new Set(marked),
-    minimumLevel,
-    maximumLevel
+    marked: new Set(marked)
   }
 
   if (book === 'legendaries') {
-    const kinds = LEGENDARY_KINDS.map(([itemClass, type]) => ({ ...createKind(source, itemClass, type), klass: itemClass || undefined }))
-
-    return [createClass(0, kinds)]
+    return LEGENDARY_KINDS.map(([itemClass, type]) => createKind(source, itemClass, type))
   }
 
-  return CLASS_KINDS.map(([itemClass, types]) => {
-    const kinds = types.map((type) => createKind(source, itemClass, type))
+  return CLASS_KINDS.flatMap(([itemClass, types]) => types.map((type) => createKind(source, itemClass, type)))
+}
 
-    return createClass(itemClass, kinds)
+export function filterScrapbookKinds(kinds: ScrapbookKind[], filters: ScrapbookFilters) {
+  const filtered = kinds.map((kind) => {
+    const groups = kind.groups.map((group) => {
+      const entries = group.entries.filter((entry) => matchesFilters(entry, filters))
+
+      return { ...createGroup(group.key, entries), entries: entries.filter((entry) => matchesStatus(entry, filters.status)) }
+    })
+
+    return {
+      ...kind,
+      groups: groups.filter((group) => group.entries.length > 0),
+      collected: sum(groups.map((group) => group.collected)),
+      total: sum(groups.map((group) => group.total))
+    }
   })
+
+  return {
+    kinds: filtered.filter((kind) => kind.groups.length > 0),
+    collected: sum(filtered.map((kind) => kind.collected)),
+    total: sum(filtered.map((kind) => kind.total))
+  }
+}
+
+export function countScrapbookItemClasses(kinds: ScrapbookKind[]) {
+  const counts: Record<number, number> = {}
+
+  for (const kind of kinds) {
+    counts[kind.itemClass] = (counts[kind.itemClass] ?? 0) + sum(kind.groups.map((group) => group.entries.length))
+  }
+
+  return counts
 }
