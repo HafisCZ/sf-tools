@@ -9,21 +9,28 @@
     </template>
 
     <template v-if="player" #nav-right>
-      <span class="px-2 text-white/70">{{ collected }} / {{ total }}</span>
-      <SFCheckbox v-model="missingOnly" :label="localize('missing_only')" class="px-2" />
+      <span class="px-2 text-white/70">{{ filtered.collected }} / {{ filtered.total }}</span>
     </template>
 
     <template v-if="player">
       <SFParagraph v-if="!hasData" class="text-center">{{ localize('empty') }}</SFParagraph>
-      <div v-else class="flex flex-col gap-5">
-        <div v-if="tab === 'items'" class="flex flex-col gap-4">
-          <SFSlider v-model:from="minimumLevel" v-model:to="maximumLevel" :label="localize('unlock_level')" :min="1" :max="MAX_UNLOCK_LEVEL" :step="1" :from-label="localize.global('general.min')" :to-label="localize.global('general.max')" />
-          <div class="grid grid-cols-2 gap-[14px]">
-            <SFNumber v-model="minimumLevel" :label="localize.global('general.min')" :min="1" :max="maximumLevel ?? MAX_UNLOCK_LEVEL" :step="1" />
-            <SFNumber v-model="maximumLevel" :label="localize.global('general.max')" :min="minimumLevel ?? 1" :max="MAX_UNLOCK_LEVEL" :step="1" />
-          </div>
-        </div>
-        <ScrapbookView :classes="classes" :missing-only="missingOnly" @toggle="toggleMarked" />
+      <div v-else class="flex flex-wrap items-start gap-6">
+        <aside ref="sidebar-ref" class="flex grow basis-75 flex-col gap-4 lg:sticky" :style="sidebarStyle">
+          <ScrapbookFilterPanel
+            v-model:search="filters.search"
+            v-model:status="filters.status"
+            v-model:worn-by="filters.wornBy"
+            v-model:item-classes="filters.itemClasses"
+            v-model:kinds="filters.kinds"
+            v-model:rarities="filters.rarities"
+            v-model:origins="filters.origins"
+            v-model:minimum-level="filters.minimumLevel"
+            v-model:maximum-level="filters.maximumLevel"
+            :book="tab"
+            :item-class-counts="itemClassCounts"
+          />
+        </aside>
+        <ScrapbookView :kinds="filtered.kinds" class="min-w-0 grow-999 basis-140" @toggle="toggleMarked" />
       </div>
     </template>
     <div v-else class="fixed inset-0 flex items-center justify-center p-4">
@@ -55,29 +62,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowRef, useId } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useId, useTemplateRef, watch } from 'vue'
 import SFButton from '@library/SFButton.vue'
-import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFIcon from '@library/SFIcon.vue'
-import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
-import SFSlider from '@library/SFSlider.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { type SelectOption } from '@utils/components'
 import { useDialog, useFilePicker } from '@utils/dialogs'
 import { useLoader } from '@utils/loader'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast } from '@utils/toasts'
-import { getClassImageUrl, getErrorMessage, sortDescending, sum } from '@utils/utils'
+import { getClassImageUrl, getErrorMessage, sortDescending } from '@utils/utils'
 import { Logger } from '~/core/logger'
 import { type PlayerModel } from '~/core/models/player'
 import { SELF_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
 import EndpointDialog from '~/dialogs/EndpointDialog.vue'
 import Page from '~/pages/Page.vue'
+import ScrapbookFilterPanel from '~/pages/scrapbook/components/ScrapbookFilterPanel.vue'
 import ScrapbookView from '~/pages/scrapbook/components/ScrapbookView.vue'
-import { createScrapbookClasses, MAX_UNLOCK_LEVEL, type ScrapbookBook } from '~/pages/scrapbook/scrapbook'
+import { countScrapbookItemClasses, createScrapbookKinds, filterScrapbookKinds, MAX_UNLOCK_LEVEL, type ScrapbookBook, type ScrapbookFilters } from '~/pages/scrapbook/scrapbook'
 
 defineOptions({
   name: 'ScrapbookPage'
@@ -94,12 +99,17 @@ const player = shallowRef<PlayerModel | null>(null)
 
 const tab = ref<ScrapbookBook>('items')
 
-const missingOnly = ref(true)
-
-const minimumLevel = ref<number | null>(1)
-const maximumLevel = ref<number | null>(MAX_UNLOCK_LEVEL)
+const filters = ref<ScrapbookFilters>(createFilters())
 
 const marked = ref<string[]>([])
+
+const sidebarElement = useTemplateRef('sidebar-ref')
+
+const sidebarHeight = shallowRef(0)
+
+const resizeObserver = new ResizeObserver(() => {
+  sidebarHeight.value = sidebarElement.value?.offsetHeight ?? 0
+})
 
 const tabOptions = computed<SelectOption<ScrapbookBook>[]>(() => [
   { value: 'items', label: localize('tab.items') },
@@ -112,14 +122,30 @@ const hasData = computed(() => {
   return bits !== undefined && bits.length > 0
 })
 
-const classes = computed(() => (player.value ? createScrapbookClasses(player.value, tab.value, marked.value, minimumLevel.value ?? 1, maximumLevel.value ?? MAX_UNLOCK_LEVEL) : []))
+const kinds = computed(() => (player.value ? createScrapbookKinds(player.value, tab.value, marked.value) : []))
 
-const collected = computed(() => sum(classes.value.map((entry) => entry.collected)))
+const filtered = computed(() => filterScrapbookKinds(kinds.value, filters.value))
 
-const total = computed(() => sum(classes.value.map((entry) => entry.total)))
+const itemClassCounts = computed(() => countScrapbookItemClasses(filterScrapbookKinds(kinds.value, { ...filters.value, itemClasses: [] }).kinds))
+
+const sidebarStyle = computed(() => ({ top: `min(70px, calc(100dvh - ${sidebarHeight.value}px - 1.25rem))` }))
+
+watch(sidebarElement, (element, previousElement) => {
+  if (previousElement) {
+    resizeObserver.unobserve(previousElement)
+  }
+
+  if (element) {
+    resizeObserver.observe(element)
+  }
+})
 
 onMounted(() => {
   void initialize()
+})
+
+onBeforeUnmount(() => {
+  resizeObserver.disconnect()
 })
 
 async function initialize() {
@@ -159,6 +185,20 @@ function showPlayers() {
 
 function toggleMarked(key: string) {
   marked.value = marked.value.includes(key) ? marked.value.filter((markedKey) => markedKey !== key) : [...marked.value, key]
+}
+
+function createFilters(): ScrapbookFilters {
+  return {
+    search: '',
+    status: 'missing',
+    wornBy: null,
+    itemClasses: [],
+    kinds: [],
+    rarities: [],
+    origins: [],
+    minimumLevel: 1,
+    maximumLevel: MAX_UNLOCK_LEVEL
+  }
 }
 
 function importFiles() {

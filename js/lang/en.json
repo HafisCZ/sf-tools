@@ -2130,12 +2130,8 @@
             "title": "Scrapbook",
             "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
         },
-        "missing_only": "Missing only",
         "unlock_level": "Unlock level",
         "shared": "Shared",
-        "weapon1": "Warrior weapon",
-        "weapon2": "Mage weapon",
-        "weapon3": "Scout weapon",
         "group": {
             "normal": "Normal",
             "epic": "Epic"
@@ -2155,7 +2151,29 @@
             "samurai": "Samurai",
             "bbq": "BBQ"
         },
+        "filter": {
+            "search": "Search",
+            "status": "Status",
+            "worn_by": "Worn by",
+            "any_class": "Any class",
+            "item_class": "Item class",
+            "kind": "Kind",
+            "rarity": "Rarity",
+            "origin": "Source"
+        },
+        "status": {
+            "missing": "Missing",
+            "collected": "Collected",
+            "marked": "Marked",
+            "all": "All"
+        },
+        "origin": {
+            "regular": "Regular",
+            "toilet": "Toilet",
+            "event": "Events",
+            "twister": "Twister"
+        },
         "empty": "This character has no scrapbook data.",
-        "complete": "Nothing is missing here."
+        "nothing": "No items match these filters."
     }
 }
