@@ -59,8 +59,11 @@ def main():
     added = 0
     rewritten = 0
 
-    for bundle, path in bundles():
-        for entry in UnityPy.load(path).objects:
+    env = UnityPy.Environment()
+    loaded = [(bundle, env.load_file(path)) for bundle, path in bundles()]
+
+    for bundle, file in loaded:
+        for entry in file.get_objects():
             if entry.type.name != 'Sprite':
                 continue
 
