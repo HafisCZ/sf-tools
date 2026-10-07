@@ -57,13 +57,13 @@ def main():
     target = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'res', 'items')
 
     added = 0
-    rewritten = 0
+    skipped = 0
 
     env = UnityPy.Environment()
     loaded = [(bundle, env.load_file(path)) for bundle, path in bundles()]
 
-    for bundle, file in loaded:
-        for entry in file.get_objects():
+    for bundle, bundle_file in loaded:
+        for entry in bundle_file.get_objects():
             if entry.type.name != 'Sprite':
                 continue
 
@@ -76,15 +76,15 @@ def main():
             file = os.path.join(target, name)
 
             if os.path.exists(file):
-                rewritten += 1
-            else:
-                added += 1
+                skipped += 1
+                continue
 
             render(sprite.image).save(file)
+            added += 1
 
         print(f'{bundle:20} done')
 
-    print(f'\nadded {added}, rewrote {rewritten}')
+    print(f'\nadded {added}, skipped {skipped}')
 
 
 if __name__ == '__main__':
