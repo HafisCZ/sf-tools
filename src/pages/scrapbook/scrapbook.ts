@@ -164,7 +164,8 @@ const EPIC_NOTES: Record<number, string> = {
   69: 'football',
   70: 'twitch',
   71: 'samurai',
-  72: 'bbq'
+  72: 'bbq',
+  73: 'gloom'
 }
 
 const NOTE_ORIGINS: Record<string, ScrapbookOrigin> = {
