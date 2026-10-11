@@ -2969,6 +2969,16 @@ TABLE_EXPRESSION_CONFIG.register('header', 'group', 'Guild Members', {
   disabled: true
 })
 
+TABLE_EXPRESSION_CONFIG.register('header', 'group', 'Guild Battles', {
+  expr: (obj) =>
+    fetchPlayerGroupValue(
+      obj,
+      () => obj.Group?.Group?.Battles,
+      () => obj.Battles
+    ),
+  disabled: true
+})
+
 TABLE_EXPRESSION_CONFIG.register('header', 'group', 'Guild GT Rank', {
   expr: (obj) => obj.GroupTournament?.Rank
 })
