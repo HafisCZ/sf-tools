@@ -378,3 +378,5 @@ export class PlayaResponse {
       .map((value) => value.split(',').filter((part) => part))
   }
 }
+
+Object.assign(globalThis, { PlayaResponse })

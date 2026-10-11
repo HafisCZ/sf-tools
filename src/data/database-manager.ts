@@ -1485,4 +1485,6 @@ export class DatabaseManager {
   }
 }
 
+Object.assign(globalThis, { DatabaseManager })
+
 void DatabaseManager.reset()
