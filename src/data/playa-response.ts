@@ -39,6 +39,7 @@ export class PlayaResponse {
         yield {
           text,
           url: entry.request?.url,
+          params: entry.request?.url ? (URL.parse(entry.request.url)?.searchParams.get('params') ?? undefined) : undefined,
           date: new Date(entry.startedDateTime)
         }
       }
@@ -86,25 +87,26 @@ export class PlayaResponse {
     let timestamp = initialTimestamp as number
     let offset = initialOffset
 
-    const raws: [string, string][] = []
+    const raws: [string, string, string?][] = []
     const groups: RawGroup[] = []
     const players: RawPlayer[] = []
     const bonusPool: Record<string, { gtsave: RawGroupTournament }> = {}
     const bonusPoolByName: Record<string, { gtsave: RawGroupTournament }> = {}
     const playersOwnByPrefix: Record<string, RawPlayer> = {}
+    const battlesByPlayer: Record<string, Record<string, string>> = {}
     let currentVersion: number | undefined = undefined
 
-    for (const { url, text, date } of this.search(json)) {
+    for (const { url, params, text, date } of this.search(json)) {
       if (date) {
         timestamp = date.getTime()
         offset = getTimestampOffset(date)
       }
 
-      if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal') || text.includes('gtranking') || text.includes('legendaries')) {
+      if (text.includes('otherplayername') || text.includes('othergroup') || text.includes('ownplayername') || text.includes('gtinternal') || text.includes('gtranking') || text.includes('legendaries') || text.includes('messagetext')) {
         if (url) {
           const urlParts = url.toLowerCase().split(/.*\/(.*)\.sfgame\.(.*)\/.*/g)
           if (urlParts.length > 2) {
-            raws.push([text, urlParts[1] + '_' + urlParts[2]])
+            raws.push([text, urlParts[1] + '_' + urlParts[2], params])
           }
         } else {
           raws.push([text, 'invalid_server'])
@@ -112,7 +114,7 @@ export class PlayaResponse {
       }
     }
 
-    for (const [text, prefix] of raws) {
+    for (const [text, prefix, params] of raws) {
       const r = this.fromText(text)
       if ((r.owngroupsave && r.owngrouprank && r.owngroupname && r.owngroupmember) || (r.othergroup && r.othergrouprank && r.othergroupname && r.othergroupmember)) {
         const data = {
@@ -324,6 +326,17 @@ export class PlayaResponse {
           lastOwnPlayer.scrapbook_legendary = r.legendaries.string
         }
       }
+
+      if (r.messagetext) {
+        const messageText = r.messagetext.string
+        const fightTime = r.systemmessagelist?.table.find(([id]) => btoa(id) === params)?.[4]
+
+        const lastOwnPlayer = playersOwnByPrefix[prefix]
+        if (lastOwnPlayer && fightTime && (messageText.startsWith('2a/') || messageText.startsWith('2d/'))) {
+          battlesByPlayer[lastOwnPlayer.identifier] ??= {}
+          battlesByPlayer[lastOwnPlayer.identifier][Number(fightTime)] = messageText
+        }
+      }
     }
 
     for (const player of players) {
@@ -332,6 +345,15 @@ export class PlayaResponse {
       const bonusEntry = bonusPool[player.identifier]
       if (bonusEntry) {
         Object.assign(player, bonusEntry)
+      }
+
+      const battles = battlesByPlayer[player.identifier]
+      const joined = player.groupMetadata?.[5]
+      if (battles && joined) {
+        const group = groups.find((g) => g.identifier === player.group)
+        if (group) {
+          group.battles = Object.fromEntries(Object.entries(battles).filter(([fightTime]) => Number(fightTime) >= joined))
+        }
       }
     }
 

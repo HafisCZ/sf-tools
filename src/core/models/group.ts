@@ -1,5 +1,5 @@
 import { formatPrefix } from '@utils/formatting'
-import { sum } from '@utils/utils'
+import { chunk, sum } from '@utils/utils'
 import { ComplexDataType } from '~/data/complex-data-type'
 import { PlayaResponse } from '~/data/playa-response'
 import { type RawGroup } from '~/data/types'
@@ -30,6 +30,13 @@ export type GroupMember = {
   Actions: GroupMemberActions
   Identifier: string
   LinkId?: string
+}
+
+export type GroupBattle = {
+  Timestamp: number
+  Type: 'attack' | 'defense'
+  Enemy: string
+  Members: { Participated: boolean; ID: number; Name: string; Level: number; Class: CharacterClass }[]
 }
 
 export class GroupModel {
@@ -85,6 +92,7 @@ export class GroupModel {
   declare GroupTournament?: { Rank: number | undefined; Tokens: number | undefined }
   declare Players: GroupMember[]
   declare Description: string | undefined
+  declare Battles?: GroupBattle[]
 
   constructor(data: RawGroup) {
     this.Data = data
@@ -210,5 +218,24 @@ export class GroupModel {
     }))
 
     this.Description = PlayaResponse.unescape(data.description)
+
+    if (data.battles) {
+      this.Battles = Object.entries(data.battles).map(([fightTime, text]) => {
+        const [type, enemy, ...members] = text.split('/')
+
+        return {
+          Timestamp: Number(fightTime) * 1000 + data.offset,
+          Type: type === '2a' ? 'attack' : 'defense',
+          Enemy: PlayaResponse.unescape(enemy) as string,
+          Members: chunk(members, 5).map(([participated, id, name, level, characterClass]) => ({
+            Participated: participated === '1',
+            ID: Number(id),
+            Name: PlayaResponse.unescape(name) as string,
+            Level: Number(level),
+            Class: Number(characterClass) as CharacterClass
+          }))
+        }
+      })
+    }
   }
 }

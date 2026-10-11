@@ -75,6 +75,7 @@ export type RawGroup = RawEntry & {
   knights?: number[]
   names: string[]
   members?: string[]
+  battles?: Record<string, string>
 }
 
 export type RawEntity = RawPlayer | RawGroup
