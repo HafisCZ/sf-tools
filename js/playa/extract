@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 
-# Extracts item pictures from the game asset bundles into res/items
+# Extracts item and portrait pictures from the game asset bundles into res/items and res/portraits
 # Requires: pip install UnityPy Pillow
 
+import json
 import os
 import re
 
 import PIL.Image
 import UnityPy
 
-GAME_PATH = '/mnt/c/Program Files (x86)/Steam/steamapps/common/Shakes & Fidget/shakesandfidget_Data/StreamingAssets/items'
+STREAMING_ASSETS_PATH = '/mnt/c/Program Files (x86)/Steam/steamapps/common/Shakes & Fidget/shakesandfidget_Data/StreamingAssets'
+ITEMS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'items')
+PORTRAITS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'portraits')
+
+ROOT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
 
 SIZE = 125
 
@@ -20,6 +25,22 @@ NAME_WITH_CLASS = re.compile(r'^itm(\d+)_(\d+)_(\d+)_(\d+)$')
 
 # Amulets, rings, talismans and the rest are the same for every class
 NAME_WITHOUT_CLASS = re.compile(r'^itm(\d+)_(\d+)_(\d+)$')
+
+PORTRAIT_SIZE = 256
+
+# Race ids 1-8 and gender ids 1-2 from the save
+PORTRAIT_RACES = ['human', 'elf', 'dwarf', 'gnome', 'orc', 'darkelf', 'goblin', 'demon']
+PORTRAIT_GENDERS = ['male', 'female']
+
+# Class ids 1-9, the game has no body for the newer classes
+PORTRAIT_BODY_FIELDS = {1: 'warriorSprite', 2: 'mageSprite', 3: 'scoutSprite', 4: 'assassinSprite', 5: 'battlemageSprite', 6: 'berserkerSprite', 7: 'demonhunterSprite', 8: 'druidSprite', 9: 'bardSprite'}
+
+PORTRAIT_PART_FIELDS = {'eyes': 'EyesSprites', 'ears': 'EarsSprites', 'nose': 'NoseSprites', 'mouth': 'MouthSprites', 'special': 'SpecialSprites', 'special2': 'Special2Sprites'}
+
+# Hair, brows and beard have a list of types per colour
+PORTRAIT_COLORED_PART_FIELDS = {'hair': 'HairSprites', 'brows': 'BrowsSprites', 'beard': 'BeardSprites'}
+
+SPECIAL_PORTRAIT_NAME = re.compile(r'^special(\d+)$')
 
 
 def target_name(name):
@@ -46,15 +67,15 @@ def render(image):
 
 
 def bundles():
-    for name in sorted(os.listdir(GAME_PATH)):
+    for name in sorted(os.listdir(ITEMS_PATH)):
         if name.endswith('.manifest') or name.endswith('_sd') or name in SKIPPED_BUNDLES:
             continue
 
-        yield name, os.path.join(GAME_PATH, name)
+        yield name, os.path.join(ITEMS_PATH, name)
 
 
-def main():
-    target = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'res', 'items')
+def extract_items():
+    target = os.path.join(ROOT_PATH, 'res', 'items')
 
     added = 0
     skipped = 0
@@ -85,6 +106,113 @@ def main():
         print(f'{bundle:20} done')
 
     print(f'\nadded {added}, skipped {skipped}')
+
+
+# Every part is drawn with its pivot on the centre of the portrait frame, Unity counts y from the bottom
+def portrait_box(sprite, image, size):
+    offset = sprite.m_RD.textureRectOffset
+
+    left = size / 2 - sprite.m_Pivot.x * sprite.m_Rect.width + offset.x
+    top = size / 2 - (offset.y - sprite.m_Pivot.y * sprite.m_Rect.height + image.height)
+
+    return [round(left, 1), round(top, 1), image.width, image.height]
+
+
+def save_portrait_part(sprites, pointer, folder, name):
+    sprite = sprites[pointer['m_PathID']].read()
+    image = sprite.image
+
+    # The game marks a missing part with a blank sprite of a few pixels
+    if image.width <= 4 or image.height <= 4:
+        return None
+
+    file = os.path.join(folder, f'{name}.webp')
+
+    if not os.path.exists(file):
+        image.save(file, 'WEBP', quality=90)
+
+    return portrait_box(sprite, image, PORTRAIT_SIZE)
+
+
+def extract_portrait_parts(env, folder):
+    sprites = {entry.path_id: entry for entry in env.objects if entry.type.name == 'Sprite'}
+    table = next(entry.read_typetree() for entry in env.objects if entry.type.name == 'MonoBehaviour')
+
+    parts = {'body': {str(class_id): save_portrait_part(sprites, table[field], folder, f'body_{class_id}') for class_id, field in PORTRAIT_BODY_FIELDS.items()}}
+
+    for part, field in PORTRAIT_PART_FIELDS.items():
+        parts[part] = [save_portrait_part(sprites, pointer, folder, f'{part}_{index}') for index, pointer in enumerate(table[field], 1)]
+
+    for part, field in PORTRAIT_COLORED_PART_FIELDS.items():
+        parts[part] = [[save_portrait_part(sprites, pointer, folder, f'{part}_{color}_{kind}') for kind, pointer in enumerate(entry['Sprites'], 1)] for color, entry in enumerate(table[field], 1)]
+
+    return parts
+
+
+def extract_special_portraits(folder):
+    os.makedirs(folder, exist_ok=True)
+
+    ids = []
+
+    for name in os.listdir(os.path.join(PORTRAITS_PATH, 'special')):
+        match = SPECIAL_PORTRAIT_NAME.match(name)
+
+        if match is None:
+            continue
+
+        ids.append(int(match[1]))
+
+        file = os.path.join(folder, f'{match[1]}.webp')
+
+        if os.path.exists(file):
+            continue
+
+        env = UnityPy.load(os.path.join(PORTRAITS_PATH, 'special', name))
+        sprite = next(entry.read() for entry in env.objects if entry.type.name == 'Sprite')
+        image = sprite.image
+
+        # Special portraits only come in full size, they fill the whole frame
+        size = round(sprite.m_Rect.width)
+        left, top, _, _ = portrait_box(sprite, image, size)
+
+        canvas = PIL.Image.new('RGBA', (size, size), (0, 0, 0, 0))
+        canvas.paste(image, (round(left), round(top)))
+        canvas.resize((PORTRAIT_SIZE, PORTRAIT_SIZE), PIL.Image.LANCZOS).save(file, 'WEBP', quality=90)
+
+    print(f'{"special":20} done')
+
+    return sorted(ids)
+
+
+def extract_portraits():
+    target = os.path.join(ROOT_PATH, 'res', 'portraits')
+
+    parts = {}
+
+    for race_id, race in enumerate(PORTRAIT_RACES, 1):
+        for gender_id, gender in enumerate(PORTRAIT_GENDERS, 1):
+            name = f'{race}{gender}'
+            folder = os.path.join(target, name)
+
+            os.makedirs(folder, exist_ok=True)
+
+            # The _sd bundles are the game's half size copies, which match the 256px frame
+            env = UnityPy.load(os.path.join(PORTRAITS_PATH, gender, f'{name}sprites_sd'))
+
+            parts.setdefault(str(race_id), {})[str(gender_id)] = {'folder': name, **extract_portrait_parts(env, folder)}
+
+            print(f'{name:20} done')
+
+    data = {'size': PORTRAIT_SIZE, 'special': extract_special_portraits(os.path.join(target, 'special')), 'parts': parts}
+
+    with open(os.path.join(ROOT_PATH, 'src', 'playa', 'portraits.json'), 'w') as file:
+        json.dump(data, file, separators=(',', ':'))
+        file.write('\n')
+
+
+def main():
+    extract_items()
+    extract_portraits()
 
 
 if __name__ == '__main__':
