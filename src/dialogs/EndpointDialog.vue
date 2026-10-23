@@ -52,14 +52,21 @@
 
       <template v-else-if="step === 'character'">
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step7.title') }}</SFHeading>
-        <ul class="flex h-[30em] flex-col gap-2 overflow-y-auto">
+        <ul class="-mr-5 flex h-[30em] flex-col gap-2 overflow-y-auto pr-5">
           <li v-for="character in characters" :key="`${character.server_id}-${character.id}`">
-            <button type="button" class="w-full cursor-pointer rounded-md border p-4 text-left transition" :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line hover:bg-surface-hover'" :aria-pressed="selectedCharacters.includes(character)" @click="toggleCharacter(character)">
-              <span class="block">
+            <button
+              type="button"
+              class="relative w-full cursor-pointer overflow-hidden rounded-md border p-4 text-left transition"
+              :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line hover:bg-surface-hover'"
+              :aria-pressed="selectedCharacters.includes(character)"
+              @click="toggleCharacter(character)"
+            >
+              <img :src="getClassImageUrl(character.char_class)" alt="" class="pointer-events-none absolute top-1/2 right-2 size-16 -translate-y-1/2 object-contain transition-opacity" :class="selectedCharacters.includes(character) ? 'opacity-60' : 'opacity-35'" />
+              <span class="relative block">
                 {{ character.name }}
                 <span class="ml-2 text-xs text-white/60">({{ localize.global(`general.class${character.char_class}`) }} - {{ localize.global('general.level') }} {{ character.level }})</span>
               </span>
-              <span class="block text-white/60">{{ character.server }}</span>
+              <span class="relative block text-white/60">{{ character.server }}</span>
             </button>
           </li>
         </ul>
@@ -116,7 +123,7 @@ import { type SelectOption } from '@utils/components'
 import { type EndpointCharacter, type EndpointWarning, type EndpointMode, EndpointController } from '@utils/endpoint'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
-import { getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
+import { getClassImageUrl, getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { Logger } from '~/core/logger'
 import { Site } from '~/core/site'
