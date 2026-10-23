@@ -94,6 +94,29 @@ export function getPortrait(source: PortraitSource): Portrait | null {
   return { size: DATA.size, layers: layers.filter((layer) => layer !== null) }
 }
 
+export function parseFaceData(text: string): PlayerFace | null {
+  const values = text.split(',').map(Number)
+
+  if (values.length < 10 || values.some((value) => !Number.isInteger(value))) {
+    return null
+  }
+
+  const [mouth, hair, brows, eyes, beard, nose, ears, special, special2, portrait] = values
+
+  return {
+    Mouth: mouth,
+    Hair: { Type: hair % 100, Color: Math.trunc(hair / 100) },
+    Brows: { Type: brows % 100, Color: Math.trunc(brows / 100) },
+    Eyes: eyes,
+    Beard: { Type: beard % 100, Color: Math.trunc(beard / 100) },
+    Nose: nose,
+    Ears: ears,
+    Special: special,
+    Special2: special2,
+    Portrait: portrait
+  }
+}
+
 export function loadPortraitImages(portrait: Portrait | null) {
   return Promise.all((portrait?.layers ?? []).map((layer) => loadImage(layer.url)))
 }
@@ -105,11 +128,17 @@ export function drawPortrait(canvas: HTMLCanvasElement, portrait: Portrait | nul
 
   context.clearRect(0, 0, canvas.width, canvas.height)
 
-  portrait?.layers.forEach((layer, index) => {
+  if (!portrait) return
+
+  const scale = canvas.width / portrait.size
+
+  context.imageSmoothingQuality = 'high'
+
+  portrait.layers.forEach((layer, index) => {
     const image = images[index]
 
     if (image) {
-      context.drawImage(image, layer.left, layer.top, layer.width, layer.height)
+      context.drawImage(image, layer.left * scale, layer.top * scale, layer.width * scale, layer.height * scale)
     }
   })
 }
