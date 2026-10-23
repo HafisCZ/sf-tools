@@ -637,6 +637,7 @@
             "table_sticky_header": "Enable sticky table headers",
             "skip_grid_if_single_entry_present": "Skip to player/group detail if alone in grid",
             "terms": "Accept Terms of Service",
+            "players_portraits": "Show character portraits on player cards",
             "tab": "Default tab",
             "preload": "Preload rows",
             "actions": {

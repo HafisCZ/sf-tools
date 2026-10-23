@@ -8,6 +8,7 @@
         <SFCheckbox v-model="skipGrid" :label="localize('skip_grid_if_single_entry_present')" />
         <SFCheckbox v-model="unsafeDelete" :label="localize('unsafe_delete')" />
         <SFCheckbox v-model="termsAccepted" :label="localize('terms')" />
+        <SFCheckbox v-model="playerPortraits" :label="localize('players_portraits')" />
       </div>
       <SFSelect v-model="defaultTab" :label="localize('tab')" :options="tabOptions" />
       <SFSelect v-model="backupFrequency" :label="localize('backup_reminder_frequency')" :options="backupOptions" />
@@ -122,6 +123,7 @@ const stickyHeader = ref(Site.options.table_sticky_header)
 const skipGrid = ref(Site.options.skip_grid_if_single_entry_present)
 const unsafeDelete = ref(Site.options.unsafe_delete)
 const termsAccepted = ref(Boolean(Site.options.terms_accepted))
+const playerPortraits = ref(Site.options.players_portraits)
 const defaultTab = ref(Site.options.tab)
 const backupFrequency = ref(String(Site.options.backup_reminder_frequency))
 const loadRows = ref(String(Site.options.load_rows))
@@ -168,6 +170,10 @@ watch(termsAccepted, (value) => {
   if (!value) {
     useDialog(TermsDialog, { version: TERMS_VERSION }, { callback: () => (termsAccepted.value = true) })
   }
+})
+
+watch(playerPortraits, (value) => {
+  Site.options.players_portraits = value
 })
 
 watch(defaultTab, (value) => {
