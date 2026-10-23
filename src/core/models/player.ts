@@ -303,7 +303,7 @@ type CompanionData = {
 
 export class PlayerModel {
   static ACHIEVEMENTS_COUNT = 141
-  static SCRAPBOOK_COUNT = 2484
+  static SCRAPBOOK_COUNT = 2506
 
   static SCROLL_MAP: Record<number, number> = {
     11: 0,
