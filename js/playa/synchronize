@@ -14,7 +14,7 @@ module Synchronize
 
   REGEXP_MONSTER = /^monster_name_(\d+)$/ 
   REGEXP_ITEM = /^item_type_(\d+)_(?:class_(\d+)_)?pic_(\d+)$/
-  REGEXP_PET_REQUIREMENT = /^pet_requirements_(fire|water|earth|shadow|light)_(\d\d)$/
+  REGEXP_PET_REQUIREMENT = /^pet_requirements_(fire|water|earth|shadow|light)_(\d\d)(?:_new)?$/
   REGEXP_RAID_NAME = /^guild_raid_name_(\d+)$/
   REGEXP_ACHIEVEMENT = /^album_ach_(\d+)_title$/
 
