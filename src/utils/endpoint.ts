@@ -5,7 +5,7 @@ export type EndpointCharacter = {
   id: number
   name: string
   level: number
-  char_class: number
+  char_class: CharacterClass
   server_id: number
   order: number
 }
