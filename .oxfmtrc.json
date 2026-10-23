@@ -5,7 +5,7 @@
   "trailingComma": "none",
   "useTabs": false,
   "printWidth": 320,
-  "ignorePatterns": ["js/**", "css/**", "res/**", "vendor/**", "endpoint/**", "*.html"],
+  "ignorePatterns": ["js/**", "css/**", "res/**", "vendor/**", "endpoint/**", "*.html", "src/playa/portraits.json"],
   "overrides": [
     {
       "files": ["*.css"],
