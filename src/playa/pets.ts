@@ -116,6 +116,17 @@ const PetDateUtils = {
       }
     }
   },
+  around: function (generator: PetDateGenerator, before = 3, after = 3): PetDateGenerator {
+    return function* () {
+      for (const date of generator()) {
+        for (let offset = -before; offset <= after; offset++) {
+          const day = new Date(date)
+          day.setDate(day.getDate() + offset)
+          yield day
+        }
+      }
+    }
+  },
   weekend: function (type: number | null = null, date = new Date()): PetDateGenerator {
     return function* () {
       date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6))
@@ -182,24 +193,12 @@ const PetDate = {
   // Months
   december: PetDateUtils.month(11),
   // Specials
-  special_april_fools: PetDateUtils.day(1, 3),
+  special_april_fools: PetDateUtils.around(PetDateUtils.day(1, 3)),
   special_halloween: PetDateUtils.day(31, 9),
-  special_valentine: PetDateUtils.day(14, 1),
-  special_new_year: function* () {
-    const date = new Date()
-    date.setMonth(11, 31)
-
-    for (let i = 0; i < PET_DATE_MAX_LOOKUP; i++) {
-      yield date
-
-      if (date.getMonth() == 0) {
-        date.setMonth(11, 31)
-      } else {
-        date.setDate(date.getDate() + 1)
-      }
-    }
-  },
-  special_friday_13th: function* () {
+  special_valentine: PetDateUtils.around(PetDateUtils.day(14, 1)),
+  // Dec 28 to Jan 4, counted from Jan 1 so the window that began last year is still found
+  special_new_year: PetDateUtils.around(PetDateUtils.day(1, 0), 4, 3),
+  special_friday_13th: PetDateUtils.around(function* () {
     const date = new Date()
     date.setDate(13)
 
@@ -210,7 +209,7 @@ const PetDate = {
 
       date.setMonth(date.getMonth() + 1, 13)
     }
-  },
+  }),
   special_easter: function* () {
     const year = new Date().getFullYear()
 
