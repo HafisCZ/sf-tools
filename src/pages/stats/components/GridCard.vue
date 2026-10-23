@@ -12,7 +12,9 @@
         {{ props.date }}
       </span>
       <span class="mx-auto mt-2 flex size-[120px] shrink-0 items-center justify-center rounded-full bg-radial from-white/10 to-transparent to-70%">
-        <img :src="props.image" alt="" width="120" height="120" class="size-full transition-transform group-hover:scale-105" />
+        <slot name="image">
+          <img :src="props.image" alt="" width="120" height="120" class="size-full transition-transform group-hover:scale-105" />
+        </slot>
       </span>
       <span class="mt-3 truncate text-base leading-[22px] font-bold text-white" :title="props.name">{{ props.name }}</span>
       <span class="truncate text-sm leading-5 text-white/50">{{ props.prefix }}</span>
@@ -33,9 +35,9 @@ defineOptions({
 
 const props = defineProps<{
   /**
-   * Image shown in the middle of the card
+   * Image shown in the middle of the card, unless the image slot replaces it
    */
-  image: string
+  image?: string
   /**
    * Date text shown at the top
    */
@@ -72,6 +74,10 @@ const slots = defineSlots<{
    * Extra info shown at the bottom of the card
    */
   default?(): unknown
+  /**
+   * Replaces the image in the middle of the card, 120px square
+   */
+  image?(): unknown
 }>()
 
 function handleClick(event: MouseEvent) {

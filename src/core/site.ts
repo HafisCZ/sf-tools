@@ -25,6 +25,7 @@ const SITE_OPTIONS = {
   browse_hidden: false,
   groups_other: false,
   players_other: false,
+  players_portraits: false,
   always_prev: false,
   migration_allowed: true,
   migration_accepted: false,

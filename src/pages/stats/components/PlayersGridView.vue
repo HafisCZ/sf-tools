@@ -30,6 +30,9 @@
         :hidden="DatabaseManager.isIdentifierHidden(player.Latest.LinkId)"
         @open="navigation.show('player', { identifier: player.Latest.LinkId })"
       >
+        <template v-if="portraits" #image>
+          <CharacterRenderer :data="player.Latest" class="size-full transition-transform group-hover:scale-105" />
+        </template>
         <span>{{ localize.global('general.level') }} {{ player.Latest.Level }} · {{ localize.global(`general.class${player.Latest.Class}`) }}</span>
         <span v-if="player.Latest.hasGuild()" class="flex max-w-full items-center gap-1">
           <SFIcon name="shield-halved" class="shrink-0" />
@@ -51,6 +54,7 @@ import { useDialog } from '@utils/dialogs'
 import { formatDate } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { copyJson, getClassImageUrl } from '@utils/utils'
+import CharacterRenderer from '~/components/CharacterRenderer.vue'
 import { ModelUtils } from '~/core/models/utils'
 import { Site } from '~/core/site'
 import { DatabaseManager, type PlayerHistory } from '~/data/database-manager'
@@ -79,6 +83,7 @@ const navigation = useStatsNavigation()
 const filter = ref('')
 const hidden = ref(Site.options.players_hidden)
 const others = ref(Site.options.players_other)
+const portraits = ref(Site.options.players_portraits)
 const hiddenOverride = ref(false)
 const othersOverride = ref(false)
 
@@ -114,6 +119,8 @@ const actions = computed((): GridAction[] => {
 })
 
 function show() {
+  portraits.value = Site.options.players_portraits
+
   const identifiers = Object.keys(DatabaseManager.Players)
 
   if (Site.options.skip_grid_if_single_entry_present && identifiers.length == 1) {
