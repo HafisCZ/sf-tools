@@ -61,7 +61,10 @@
               :aria-pressed="selectedCharacters.includes(character)"
               @click="toggleCharacter(character)"
             >
-              <img :src="getClassImageUrl(character.char_class)" alt="" class="pointer-events-none absolute top-1/2 right-2 size-16 -translate-y-1/2 object-contain transition-opacity" :class="selectedCharacters.includes(character) ? 'opacity-60' : 'opacity-35'" />
+              <span v-if="character.portrait" class="pointer-events-none absolute top-0 right-0 aspect-square h-full">
+                <CharacterRenderer :data="character.portrait" />
+              </span>
+              <img v-else :src="getClassImageUrl(character.char_class)" alt="" class="pointer-events-none absolute top-1/2 right-2 size-16 -translate-y-1/2 object-contain transition-opacity" :class="selectedCharacters.includes(character) ? 'opacity-60' : 'opacity-35'" />
               <span class="relative block">
                 {{ character.name }}
                 <span class="ml-2 text-xs text-white/60">({{ localize.global(`general.class${character.char_class}`) }} - {{ localize.global('general.level') }} {{ character.level }})</span>
@@ -125,10 +128,13 @@ import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
+import CharacterRenderer from '~/components/CharacterRenderer.vue'
 import { Logger } from '~/core/logger'
+import type { PlayerModel } from '~/core/models/player'
 import { Site } from '~/core/site'
 import { Store } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
+import { parseFaceData } from '~/playa/portraits'
 import { Playa } from '~/playa/servers'
 
 defineOptions({
@@ -150,6 +156,7 @@ type Step = 'terms' | 'login' | 'loading' | 'progress' | 'character' | 'warnings
 
 type Character = EndpointCharacter & {
   server: string
+  portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
 }
 
 const TERMS_VERSION = 2
@@ -265,7 +272,7 @@ async function signIn(endpoint: EndpointController, name: string, secret: string
     const url = Playa.getServerUrlById(character.server_id)
 
     if (url) {
-      available.push({ ...character, server: url })
+      available.push({ ...character, server: url, portrait: getCharacterPortrait(character) })
     }
   }
 
@@ -276,6 +283,12 @@ async function signIn(endpoint: EndpointController, name: string, secret: string
   }
 
   return waitForCharacters(available)
+}
+
+function getCharacterPortrait(character: EndpointCharacter): Character['portrait'] {
+  const face = character.facedata ? parseFaceData(character.facedata) : null
+
+  return face && character.race && character.gender ? { Face: face, Race: character.race, Gender: character.gender, Class: character.char_class } : null
 }
 
 function waitForCharacters(available: Character[]) {
