@@ -1,6 +1,14 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-black/85 p-4">
-    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-label="localize.global(TITLE_KEYS[step])" tabindex="-1" class="flex max-h-full min-h-[360px] w-full max-w-[560px] flex-col justify-center-safe gap-4 overflow-y-auto rounded-lg bg-white/5 p-5 text-white/90 shadow-xl backdrop-blur-md outline-none">
+    <div
+      ref="dialog-ref"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="localize.global(TITLE_KEYS[step])"
+      tabindex="-1"
+      class="flex max-h-full min-h-[360px] w-full flex-col justify-center-safe gap-4 overflow-y-auto rounded-lg bg-white/5 p-5 text-white/90 shadow-xl backdrop-blur-md outline-none"
+      :class="step === 'character' ? 'max-w-[1032px]' : 'max-w-[400px]'"
+    >
       <iframe ref="iframe-ref" title="Endpoint" tabindex="-1" aria-hidden="true" class="pointer-events-none fixed opacity-0" />
 
       <template v-if="step === 'terms'">
@@ -53,24 +61,27 @@
 
       <template v-else-if="step === 'character'">
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step7.title') }}</SFHeading>
-        <ul class="-mr-5 flex h-[30em] flex-col gap-2 overflow-y-auto pr-5">
+        <ul class="-mr-5 grid max-h-[392px] grid-cols-[repeat(auto-fill,192px)] justify-center gap-2 overflow-y-auto pr-5">
           <li v-for="character in characters" :key="`${character.server_id}-${character.id}`">
             <button
               type="button"
-              class="relative w-full cursor-pointer overflow-hidden rounded-md border p-4 text-left transition"
-              :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line hover:bg-surface-hover'"
+              class="@container relative block aspect-square w-full cursor-pointer overflow-hidden text-left text-white outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               :aria-pressed="selectedCharacters.includes(character)"
               @click="toggleCharacter(character)"
             >
-              <span v-if="character.portrait" class="pointer-events-none absolute top-0 right-0 aspect-square h-full">
-                <CharacterRenderer :data="character.portrait" />
+              <img src="/res/endpoint/tile.webp" alt="" class="absolute inset-0 size-full" />
+              <span class="absolute inset-0 bg-[radial-gradient(closest-side,rgb(5_121_160/0.95),rgb(5_121_160/0))] opacity-75" />
+              <span class="absolute inset-[3px]">
+                <CharacterRenderer v-if="character.portrait" :data="character.portrait" />
+                <img v-else src="/res/endpoint/noface.webp" alt="" class="size-full" />
               </span>
-              <img v-else :src="getClassImageUrl(character.char_class)" alt="" class="pointer-events-none absolute top-1/2 right-2 size-16 -translate-y-1/2 object-contain transition-opacity" :class="selectedCharacters.includes(character) ? 'opacity-60' : 'opacity-35'" />
-              <span class="relative block">
-                {{ character.name }}
-                <span class="ml-2 text-xs text-white/60">({{ localize.global(`general.class${character.char_class}`) }} - {{ localize.global('general.level') }} {{ character.level }})</span>
-              </span>
-              <span class="relative block text-white/60">{{ character.server }}</span>
+              <span class="absolute inset-x-0 top-0 h-1/4 bg-linear-to-b from-[rgb(9_26_34/0.69)] to-[rgb(9_26_34/0)]" />
+              <span class="absolute inset-x-0 bottom-0 h-[42%] bg-linear-to-t from-[rgb(9_26_34/0.69)] to-[rgb(9_26_34/0)]" />
+              <span class="absolute inset-[3px] rounded-[2px] border shadow-[0_0_0_1px_rgb(0_0_0/0.35)]" :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line'" />
+              <span class="absolute inset-x-[10px] top-[10px] truncate text-[length:max(9px,8.5cqw)] leading-none font-bold text-[#7fc8e0] uppercase text-shadow-[0_1px_2px_rgb(0_0_0/0.9)]">{{ character.world }}</span>
+              <img :src="getClassImageUrl(character.char_class)" :alt="localize.global(`general.class${character.char_class}`)" class="absolute bottom-[8px] left-[8px] size-[22%]" />
+              <span class="absolute right-[8px] bottom-[25px] left-[56px] truncate text-[length:max(10px,8.5cqw)] leading-[1.1] font-bold text-shadow-[0_2px_0_rgb(0_0_0/0.6)]">{{ character.name }}</span>
+              <span class="absolute right-[8px] bottom-[10px] left-[56px] truncate text-[length:max(8px,6.5cqw)] leading-none font-bold text-[#f0c042] uppercase text-shadow-[0_1px_0_rgb(0_0_0/0.6)]">{{ localize.global('general.level') }} {{ character.level }}</span>
             </button>
           </li>
         </ul>
@@ -161,6 +172,7 @@ type Step = 'terms' | 'login' | 'loading' | 'progress' | 'character' | 'warnings
 
 type Character = EndpointCharacter & {
   server: string
+  world: string
   portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
 }
 
@@ -330,7 +342,7 @@ function listCharacters(account: EndpointAccount) {
     const url = Playa.getServerUrlById(character.server_id)
 
     if (url) {
-      available.push({ ...character, server: url, portrait: getCharacterPortrait(character) })
+      available.push({ ...character, server: url, world: url.split('.')[0], portrait: getCharacterPortrait(character) })
     }
   }
 

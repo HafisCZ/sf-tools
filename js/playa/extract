@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Extracts item and portrait pictures from the game asset bundles into res/items and res/portraits
+# Extracts item, portrait and endpoint pictures from the game asset bundles into res/items, res/portraits and res/endpoint
 # Requires: pip install UnityPy Pillow
 
 import json
@@ -13,6 +13,7 @@ import UnityPy
 STREAMING_ASSETS_PATH = '/mnt/c/Program Files (x86)/Steam/steamapps/common/Shakes & Fidget/shakesandfidget_Data/StreamingAssets'
 ITEMS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'items')
 PORTRAITS_PATH = os.path.join(STREAMING_ASSETS_PATH, 'portraits')
+SHARED_ASSETS_PATH = os.path.join(os.path.dirname(STREAMING_ASSETS_PATH), 'sharedassets1.assets')
 
 ROOT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
 
@@ -41,6 +42,11 @@ PORTRAIT_PART_FIELDS = {'eyes': 'EyesSprites', 'ears': 'EarsSprites', 'nose': 'N
 PORTRAIT_COLORED_PART_FIELDS = {'hair': 'HairSprites', 'brows': 'BrowsSprites', 'beard': 'BeardSprites'}
 
 SPECIAL_PORTRAIT_NAME = re.compile(r'^special(\d+)$')
+
+ENDPOINT_SIZE = 256
+
+# Character tile of the S&F Account screen
+ENDPOINT_SPRITES = {'portrait_glow_background': 'tile', 'ovl_portrait_sso_noface': 'noface'}
 
 
 def target_name(name):
@@ -210,9 +216,43 @@ def extract_portraits():
         file.write('\n')
 
 
+# Atlas sprites come out trimmed, they go back into their full rect before scaling
+def save_endpoint_sprite(sprite, file):
+    if os.path.exists(file):
+        return
+
+    image = sprite.image
+    width = round(sprite.m_Rect.width)
+    height = round(sprite.m_Rect.height)
+    offset = sprite.m_RD.textureRectOffset
+
+    canvas = PIL.Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    canvas.paste(image, (round(offset.x), round(height - offset.y - image.height)))
+    canvas.resize((ENDPOINT_SIZE, ENDPOINT_SIZE), PIL.Image.LANCZOS).save(file, 'WEBP', quality=90)
+
+
+def extract_endpoint():
+    target = os.path.join(ROOT_PATH, 'res', 'endpoint')
+
+    os.makedirs(target, exist_ok=True)
+
+    for entry in UnityPy.load(SHARED_ASSETS_PATH).objects:
+        if entry.type.name != 'Sprite':
+            continue
+
+        sprite = entry.read()
+        name = ENDPOINT_SPRITES.get(sprite.m_Name)
+
+        if name is not None:
+            save_endpoint_sprite(sprite, os.path.join(target, f'{name}.webp'))
+
+    print(f'{"endpoint":20} done')
+
+
 def main():
     extract_items()
     extract_portraits()
+    extract_endpoint()
 
 
 if __name__ == '__main__':
