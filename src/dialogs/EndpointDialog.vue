@@ -80,7 +80,7 @@
               <span class="absolute inset-[3px] rounded-[2px] border shadow-[0_0_0_1px_rgb(0_0_0/0.35)]" :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line'" />
               <span class="absolute inset-x-[10px] top-[10px] truncate text-[length:max(9px,8.5cqw)] leading-none font-bold text-[#7fc8e0] uppercase text-shadow-[0_1px_2px_rgb(0_0_0/0.9)]">{{ character.world }}</span>
               <img :src="getClassImageUrl(character.char_class)" :alt="localize.global(`general.class${character.char_class}`)" class="absolute bottom-[8px] left-[8px] size-[22%]" />
-              <span class="absolute right-[8px] bottom-[25px] left-[56px] truncate text-[length:max(10px,8.5cqw)] leading-[1.1] font-bold text-shadow-[0_2px_0_rgb(0_0_0/0.6)]">{{ character.name }}</span>
+              <span class="absolute right-[8px] bottom-[25px] left-[56px] truncate leading-[1.1] font-bold text-shadow-[0_2px_0_rgb(0_0_0/0.6)]" :style="{ fontSize: `${character.nameSize}px` }">{{ character.name }}</span>
               <span class="absolute right-[8px] bottom-[10px] left-[56px] truncate text-[length:max(8px,6.5cqw)] leading-none font-bold text-[#f0c042] uppercase text-shadow-[0_1px_0_rgb(0_0_0/0.6)]">{{ localize.global('general.level') }} {{ character.level }}</span>
             </button>
           </li>
@@ -173,6 +173,7 @@ type Step = 'terms' | 'login' | 'loading' | 'progress' | 'character' | 'warnings
 type Character = EndpointCharacter & {
   server: string
   world: string
+  nameSize: number
   portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
 }
 
@@ -310,7 +311,7 @@ async function runCapture(signIn: (endpoint: EndpointController) => Promise<Endp
 
     saveToken(account.token)
 
-    const selected = await waitForCharacters(listCharacters(account))
+    const selected = await waitForCharacters(await listCharacters(account))
 
     if (!selected) return
 
@@ -335,14 +336,19 @@ function saveToken(token: string | undefined) {
   }
 }
 
-function listCharacters(account: EndpointAccount) {
+async function listCharacters(account: EndpointAccount) {
+  // Names are measured in the card font, which might not be loaded yet
+  await document.fonts.load('bold 16px Lato')
+
+  const context = document.createElement('canvas').getContext('2d')
+
   const available: Character[] = []
 
   for (const character of account.characters) {
     const url = Playa.getServerUrlById(character.server_id)
 
     if (url) {
-      available.push({ ...character, server: url, world: getWorldName(url), portrait: getCharacterPortrait(character) })
+      available.push({ ...character, server: url, world: getWorldName(url), nameSize: getNameSize(context, character.name), portrait: getCharacterPortrait(character) })
     }
   }
 
@@ -353,6 +359,17 @@ function listCharacters(account: EndpointAccount) {
   }
 
   return available
+}
+
+function getNameSize(context: CanvasRenderingContext2D | null, name: string) {
+  if (!context) return 16
+
+  context.font = 'bold 16px Lato'
+
+  // The name has 128px on a 192px card, right of the class icon
+  const fittingSize = Math.floor((16 * 128) / context.measureText(name).width)
+
+  return Math.max(10, Math.min(16, fittingSize))
 }
 
 // Country servers are named after their domain, s9.sfgame.eu is EU9
