@@ -15,6 +15,7 @@ export type EndpointCharacter = {
 
 export type EndpointAccount = {
   characters: EndpointCharacter[]
+  token?: string
 }
 
 export type EndpointMode = 'own' | 'guild' | 'friends' | 'hall_of_fame' | 'guild_friends'
@@ -51,7 +52,8 @@ type EndpointWindow = Window & {
   callback: ((message: EndpointMessage) => void) | null
   load(): Promise<void>
   destroy(): Promise<void>
-  playaAccountLogin(server: string, username: string, password: string): void
+  playaAccountLogin(server: string, username: string, password: string, remember: boolean): void
+  playaAccountLoginViaToken(server: string, token: string): void
   execute(params: EndpointExecuteParams): void
 }
 
@@ -89,10 +91,16 @@ export class EndpointController {
     this.#iframe.src = ''
   }
 
-  playaAccountLogin(server: string, username: string, password: string) {
+  playaAccountLogin(server: string, username: string, password: string, remember: boolean) {
     Logger.log('ECLIENT', `Logging in as ${username}@${server}`)
 
-    return this.#request<EndpointAccount>((endpoint) => endpoint.playaAccountLogin(server, username, password))
+    return this.#request<EndpointAccount>((endpoint) => endpoint.playaAccountLogin(server, username, password, remember))
+  }
+
+  playaAccountLoginViaToken(server: string, token: string) {
+    Logger.log('ECLIENT', 'Logging in with remembered account')
+
+    return this.#request<EndpointAccount>((endpoint) => endpoint.playaAccountLoginViaToken(server, token))
   }
 
   execute(characters: EndpointExecuteCharacter[], mode: EndpointMode) {

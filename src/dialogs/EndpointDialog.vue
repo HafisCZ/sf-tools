@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-black/85 p-4">
-    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-label="localize.global(TITLE_KEYS[step])" tabindex="-1" class="flex max-h-full min-h-[360px] w-full max-w-[400px] flex-col justify-center-safe gap-4 overflow-y-auto rounded-lg bg-white/5 p-5 text-white/90 shadow-xl backdrop-blur-md outline-none">
+    <div ref="dialog-ref" role="dialog" aria-modal="true" :aria-label="localize.global(TITLE_KEYS[step])" tabindex="-1" class="flex max-h-full min-h-[360px] w-full max-w-[560px] flex-col justify-center-safe gap-4 overflow-y-auto rounded-lg bg-white/5 p-5 text-white/90 shadow-xl backdrop-blur-md outline-none">
       <iframe ref="iframe-ref" title="Endpoint" tabindex="-1" aria-hidden="true" class="pointer-events-none fixed opacity-0" />
 
       <template v-if="step === 'terms'">
@@ -14,6 +14,7 @@
         <SFHeading level="2" class="border-b border-line pb-1 text-center">{{ localize.global('terms.title2') }}</SFHeading>
         <SFList>
           <li>You can access your S&F Account using your username and password.</li>
+          <li>Ticking Remember me stores a token in your browser that can be later used to access your S&F Account. You can press Use another account to delete it.</li>
         </SFList>
         <div class="flex gap-2">
           <SFButton block @click="rejectTerms">
@@ -29,7 +30,7 @@
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('login') }}</SFHeading>
         <SFInput ref="username-ref" v-model="username" :label="localize('username')" name="username" autocomplete="username" />
         <SFInput ref="password-ref" v-model="password" :label="localize('password')" name="password" type="password" autocomplete="current-password" />
-        <SFCheckbox v-if="props.allowTemporary" ref="temporary-ref" v-model="temporary" :label="localize('temporary')" />
+        <SFCheckbox v-if="Store.isPermanent()" v-model="remember" :label="localize('remember')" />
         <div class="mt-auto flex gap-2">
           <SFButton block @click="close(false)">
             {{ localize('cancel') }}
@@ -74,7 +75,11 @@
           </li>
         </ul>
         <SFSelect ref="mode-ref" v-model="mode" :label="localize('mode.title')" :options="modeOptions" />
-        <div class="flex gap-2">
+        <SFCheckbox v-if="props.allowTemporary" ref="temporary-ref" v-model="temporary" :label="localize('temporary')" />
+        <div class="grid grid-cols-3 gap-2">
+          <SFButton variant="ghost" block @click="useAnotherAccount">
+            {{ localize('another_account') }}
+          </SFButton>
           <SFButton block @click="close(false)">
             {{ localize('cancel') }}
           </SFButton>
@@ -123,7 +128,7 @@ import SFParagraph from '@library/SFParagraph.vue'
 import SFProgress from '@library/SFProgress.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
-import { type EndpointCharacter, type EndpointWarning, type EndpointMode, EndpointController } from '@utils/endpoint'
+import { type EndpointAccount, type EndpointCharacter, type EndpointWarning, type EndpointMode, EndpointController } from '@utils/endpoint'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
 import { getClassImageUrl, getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
@@ -159,7 +164,9 @@ type Character = EndpointCharacter & {
   portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
 }
 
-const TERMS_VERSION = 2
+const TERMS_VERSION = 3
+
+const SSO_SERVER = 'sso.playa-games.com'
 
 const TITLE_KEYS: Record<Step, string> = {
   terms: 'terms.title',
@@ -175,7 +182,7 @@ const MODES: EndpointMode[] = ['own', 'guild', 'friends', 'hall_of_fame', 'guild
 
 const localize = useLocalize('endpoint')
 
-const step = ref<Step>(Site.options.endpoint_terms_accepted === TERMS_VERSION ? 'login' : 'terms')
+const step = ref<Step>(Site.options.endpoint_terms_accepted === TERMS_VERSION ? getStartStep() : 'terms')
 
 const storedMode = Store.shared.get('endpoint_mode', 'own', true)
 
@@ -183,6 +190,7 @@ const username = ref('')
 const password = ref('')
 const mode = ref<EndpointMode>(MODES.find((value) => value === storedMode) ?? 'own')
 const temporary = ref(false)
+const remember = ref(false)
 
 const percent = ref(0)
 const errorText = ref('')
@@ -196,11 +204,11 @@ const iframeElement = useTemplateRef('iframe-ref')
 
 let controller: EndpointController | undefined
 
-let resolveCharacters: ((characters: Character[]) => void) | undefined
+let resolveCharacters: ((characters: Character[] | null) => void) | undefined
 
-const isLoginValid = useComponentValidation(useTemplateRef('username-ref'), useTemplateRef('password-ref'), useTemplateRef('temporary-ref'))
+const isLoginValid = useComponentValidation(useTemplateRef('username-ref'), useTemplateRef('password-ref'))
 
-const isCharacterValid = useComponentValidation(useTemplateRef('mode-ref'))
+const isCharacterValid = useComponentValidation(useTemplateRef('mode-ref'), useTemplateRef('temporary-ref'))
 
 const { submit, isSubmitting } = useSubmit(login)
 
@@ -214,12 +222,24 @@ watch(mode, (value) => {
 
 onMounted(() => {
   dialogElement.value?.focus()
+
+  if (step.value === 'loading') {
+    void loginRemembered()
+  }
 })
+
+function getStartStep(): Step {
+  return Store.shared.has('endpoint_token') ? 'loading' : 'login'
+}
 
 function acceptTerms() {
   Site.options.endpoint_terms_accepted = TERMS_VERSION
 
-  step.value = 'login'
+  step.value = getStartStep()
+
+  if (step.value === 'loading') {
+    void loginRemembered()
+  }
 }
 
 function rejectTerms() {
@@ -235,6 +255,16 @@ async function login() {
     return
   }
 
+  await runCapture((endpoint) => endpoint.playaAccountLogin(SSO_SERVER, username.value, password.value, remember.value), false)
+}
+
+async function loginRemembered() {
+  const token = Store.shared.get('endpoint_token', '', true)
+
+  await runCapture((endpoint) => endpoint.playaAccountLoginViaToken(SSO_SERVER, token), true)
+}
+
+async function runCapture(signIn: (endpoint: EndpointController) => Promise<EndpointAccount>, remembered: boolean) {
   if (!iframeElement.value) return
 
   warnings.value = []
@@ -248,7 +278,29 @@ async function login() {
 
     step.value = 'loading'
 
-    const selected = await signIn(controller, username.value, password.value)
+    let account: EndpointAccount
+
+    try {
+      account = await signIn(controller)
+    } catch (error) {
+      if (remembered && getErrorMessage(error) !== 'error_unreachable') {
+        Store.shared.remove('endpoint_token')
+
+        step.value = 'login'
+
+        useToast({ title: localize('remember_expired.title'), message: localize('remember_expired.message'), type: 'warning' })
+
+        return
+      }
+
+      throw error
+    }
+
+    saveToken(account.token)
+
+    const selected = await waitForCharacters(listCharacters(account))
+
+    if (!selected) return
 
     step.value = 'loading'
 
@@ -263,9 +315,15 @@ async function login() {
   }
 }
 
-async function signIn(endpoint: EndpointController, name: string, secret: string) {
-  const account = await endpoint.playaAccountLogin('sso.playa-games.com', name, secret)
+function saveToken(token: string | undefined) {
+  if (token && Store.isPermanent()) {
+    Store.shared.set('endpoint_token', token, true)
+  } else {
+    Store.shared.remove('endpoint_token')
+  }
+}
 
+function listCharacters(account: EndpointAccount) {
   const available: Character[] = []
 
   for (const character of account.characters) {
@@ -282,7 +340,7 @@ async function signIn(endpoint: EndpointController, name: string, secret: string
     throw new Error('playa_account_empty')
   }
 
-  return waitForCharacters(available)
+  return available
 }
 
 function getCharacterPortrait(character: EndpointCharacter): Character['portrait'] {
@@ -296,9 +354,17 @@ function waitForCharacters(available: Character[]) {
   selectedCharacters.value = available.length === 1 ? [available[0]] : []
   step.value = 'character'
 
-  return new Promise<Character[]>((resolve) => {
+  return new Promise<Character[] | null>((resolve) => {
     resolveCharacters = resolve
   })
+}
+
+function useAnotherAccount() {
+  Store.shared.remove('endpoint_token')
+
+  resolveCharacters?.(null)
+
+  step.value = 'login'
 }
 
 function toggleCharacter(character: Character) {
