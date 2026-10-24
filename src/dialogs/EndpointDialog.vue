@@ -342,7 +342,7 @@ function listCharacters(account: EndpointAccount) {
     const url = Playa.getServerUrlById(character.server_id)
 
     if (url) {
-      available.push({ ...character, server: url, world: url.split('.')[0], portrait: getCharacterPortrait(character) })
+      available.push({ ...character, server: url, world: getWorldName(url), portrait: getCharacterPortrait(character) })
     }
   }
 
@@ -353,6 +353,14 @@ function listCharacters(account: EndpointAccount) {
   }
 
   return available
+}
+
+// Country servers are named after their domain, s9.sfgame.eu is EU9
+function getWorldName(server: string) {
+  const [prefix, ...domain] = server.split('.')
+  const number = /^s(\d+)$/.exec(prefix)?.[1]
+
+  return number ? `${domain.at(-1)}${number}` : prefix
 }
 
 function getCharacterPortrait(character: EndpointCharacter): Character['portrait'] {
