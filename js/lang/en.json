@@ -1166,6 +1166,8 @@
             "guild_friends": "Capture own + guild + friend characters"
         },
         "temporary": "Discard capture when page is closed",
+        "remember": "Remember me",
+        "another_account": "Use another account",
         "cancel": "Cancel",
         "continue": "Continue",
         "step2": {
@@ -1186,6 +1188,10 @@
         "user_error": {
             "title": "Your user name or password is not valid",
             "message": "Please check your username and password and try again."
+        },
+        "remember_expired": {
+            "title": "Remembered login expired",
+            "message": "Please log in to your S&F Account again."
         },
         "errors": {
             "error_unreachable": "Server cannot be reached",
