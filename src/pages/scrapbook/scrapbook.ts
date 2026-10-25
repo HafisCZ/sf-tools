@@ -50,7 +50,7 @@ export type ScrapbookFilters = {
   itemClasses: number[]
   kinds: number[]
   rarities: ScrapbookRarity[]
-  origins: ScrapbookOrigin[]
+  origins: string[]
   minimumLevel: number | null
   maximumLevel: number | null
 }
@@ -307,7 +307,7 @@ function matchesFilters(entry: ScrapbookEntry, filters: ScrapbookFilters) {
   if (filters.kinds.length > 0 && !filters.kinds.includes(entry.type)) return false
   if (entry.rarity === 'legendary') return true
   if (filters.rarities.length > 0 && !filters.rarities.includes(entry.rarity)) return false
-  if (filters.origins.length > 0 && !filters.origins.includes(entry.origin)) return false
+  if (filters.origins.length > 0 && !filters.origins.includes(entry.note ?? entry.origin)) return false
 
   const level = entry.unlockLevel ?? 1
 
@@ -364,12 +364,23 @@ export function filterScrapbookKinds(kinds: ScrapbookKind[], filters: ScrapbookF
   }
 }
 
-export function countScrapbookItemClasses(kinds: ScrapbookKind[]) {
-  const counts: Record<number, number> = {}
+export function countScrapbookEntries(kinds: ScrapbookKind[], filters: ScrapbookFilters, getKey: (entry: ScrapbookEntry) => string | number) {
+  const counts: Record<string | number, number> = {}
 
-  for (const kind of kinds) {
-    counts[kind.itemClass] = (counts[kind.itemClass] ?? 0) + sum(kind.groups.map((group) => group.entries.length))
+  for (const kind of filterScrapbookKinds(kinds, filters).kinds) {
+    for (const group of kind.groups) {
+      for (const entry of group.entries) {
+        const key = getKey(entry)
+
+        counts[key] = (counts[key] ?? 0) + 1
+      }
+    }
   }
 
   return counts
+}
+
+export function getOriginNotes(origin: ScrapbookOrigin) {
+  // Toilet items carry their own origin as note, so toilet gets no children
+  return [...new Set(Object.values(EPIC_NOTES))].filter((note) => note !== origin && (NOTE_ORIGINS[note] ?? 'event') === origin)
 }

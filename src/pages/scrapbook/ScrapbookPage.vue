@@ -28,6 +28,9 @@
             v-model:maximum-level="filters.maximumLevel"
             :book="tab"
             :item-class-counts="itemClassCounts"
+            :kind-counts="kindCounts"
+            :rarity-counts="rarityCounts"
+            :origin-counts="originCounts"
           />
         </aside>
         <ScrapbookView :kinds="filtered.kinds" class="min-w-0 grow-999 basis-140" @toggle="toggleMarked" />
@@ -82,7 +85,7 @@ import EndpointDialog from '~/dialogs/EndpointDialog.vue'
 import Page from '~/pages/Page.vue'
 import ScrapbookFilterPanel from '~/pages/scrapbook/components/ScrapbookFilterPanel.vue'
 import ScrapbookView from '~/pages/scrapbook/components/ScrapbookView.vue'
-import { countScrapbookItemClasses, createScrapbookKinds, filterScrapbookKinds, MAX_UNLOCK_LEVEL, type ScrapbookBook, type ScrapbookFilters } from '~/pages/scrapbook/scrapbook'
+import { countScrapbookEntries, createScrapbookKinds, filterScrapbookKinds, MAX_UNLOCK_LEVEL, type ScrapbookBook, type ScrapbookFilters } from '~/pages/scrapbook/scrapbook'
 
 defineOptions({
   name: 'ScrapbookPage'
@@ -126,7 +129,13 @@ const kinds = computed(() => (player.value ? createScrapbookKinds(player.value, 
 
 const filtered = computed(() => filterScrapbookKinds(kinds.value, filters.value))
 
-const itemClassCounts = computed(() => countScrapbookItemClasses(filterScrapbookKinds(kinds.value, { ...filters.value, itemClasses: [] }).kinds))
+const itemClassCounts = computed(() => countScrapbookEntries(kinds.value, { ...filters.value, itemClasses: [] }, (entry) => entry.itemClass))
+
+const kindCounts = computed(() => countScrapbookEntries(kinds.value, { ...filters.value, kinds: [] }, (entry) => entry.type))
+
+const rarityCounts = computed(() => countScrapbookEntries(kinds.value, { ...filters.value, rarities: [] }, (entry) => entry.rarity))
+
+const originCounts = computed(() => countScrapbookEntries(kinds.value, { ...filters.value, origins: [] }, (entry) => entry.note ?? entry.origin))
 
 const sidebarStyle = computed(() => ({ top: `min(70px, calc(100dvh - ${sidebarHeight.value}px - 1.25rem))` }))
 

@@ -2179,7 +2179,20 @@
             "regular": "Regular",
             "toilet": "Toilet",
             "event": "Events",
-            "twister": "Twister"
+            "twister": "Twister",
+            "easter": "Easter",
+            "halloween": "Halloween",
+            "christmas": "Christmas",
+            "birthday": "Birthday",
+            "valentines": "Valentines",
+            "football": "Football",
+            "twitch": "Twitch",
+            "samurai": "Samurai",
+            "bbq": "BBQ",
+            "gloom": "Gloom",
+            "twister_100": "100+",
+            "twister_250": "250+",
+            "twister_500": "500+"
         },
         "empty": "This character has no scrapbook data.",
         "nothing": "No items match these filters."
