@@ -103,7 +103,8 @@ const COMMUNITY_TOOLS = [
   { title: 'Gold Pit', href: 'https://goldpit.12hp.de/', author: 'ÐonMuErte & KaYa43v3r' },
   { title: 'LD Gadget', href: 'https://ldgadget.12hp.de/', author: 'ÐonMuErte & KaYa43v3r & AyWolf' },
   { title: 'Enfants du Chaos', href: 'https://www.enfantsduchaos.fr/', author: 'Demetra' },
-  { title: 'SFSimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r' }
+  { title: 'SFSimulator', href: 'https://sfsimulator.xyz/', author: 'Abus3r' },
+  { title: 'Aura Calculator', href: 'https://nachbarsf.github.io/Aura-Calculator/', author: 'Deinnachbar' }
 ]
 
 const IMAGE = (() => {
