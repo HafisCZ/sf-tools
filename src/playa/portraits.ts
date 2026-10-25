@@ -57,6 +57,10 @@ export const PORTRAIT_BODY_CLASSES: Partial<Record<CharacterClass, CharacterClas
   13: 1
 }
 
+export const PORTRAIT_HAIR_SCALES: Partial<Record<string, number>> = {
+  dwarffemale: 1.72
+}
+
 export function getPortrait(source: PortraitSource): Portrait | null {
   const { Face: face } = source
 
@@ -84,7 +88,7 @@ export function getPortrait(source: PortraitSource): Portrait | null {
     toLayer(parts.folder, `ears_${face.Ears}`, parts.ears[face.Ears - 1]),
     toLayer(parts.folder, `nose_${face.Nose}`, parts.nose[face.Nose - 1]),
     toLayer(parts.folder, `mouth_${face.Mouth}`, parts.mouth[face.Mouth - 1]),
-    toLayer(parts.folder, `hair_${hair}_${face.Hair.Type}`, parts.hair[hair - 1]?.[face.Hair.Type - 1]),
+    toLayer(parts.folder, `hair_${hair}_${face.Hair.Type}`, parts.hair[hair - 1]?.[face.Hair.Type - 1], PORTRAIT_HAIR_SCALES[parts.folder]),
     toLayer(parts.folder, `brows_${brows}_${face.Brows.Type}`, parts.brows[brows - 1]?.[face.Brows.Type - 1]),
     toLayer(parts.folder, `beard_${beard}_${face.Beard.Type}`, parts.beard[beard - 1]?.[face.Beard.Type - 1]),
     toLayer(parts.folder, `special_${face.Special}`, parts.special[face.Special - 1]),
@@ -148,8 +152,12 @@ function getColorIndex(colors: unknown[], color: number) {
   return Math.min(Math.max(color, 1), colors.length)
 }
 
-function toLayer(folder: string, name: string, box: PortraitBox | null | undefined): PortraitLayer | null {
-  return box ? { url: `/res/portraits/${folder}/${name}.webp`, left: box[0], top: box[1], width: box[2], height: box[3] } : null
+function toLayer(folder: string, name: string, box: PortraitBox | null | undefined, scale = 1): PortraitLayer | null {
+  if (!box) return null
+
+  const center = DATA.size / 2
+
+  return { url: `/res/portraits/${folder}/${name}.webp`, left: center + (box[0] - center) * scale, top: center + (box[1] - center) * scale, width: box[2] * scale, height: box[3] * scale }
 }
 
 function loadImage(url: string) {
