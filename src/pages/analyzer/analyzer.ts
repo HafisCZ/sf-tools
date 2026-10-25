@@ -847,7 +847,7 @@ export function importHar(json: unknown) {
       }
     }
 
-    if (text.includes('playerlookat') || text.includes('ownplayersave')) {
+    if (text.includes('playerlookat') || text.includes('otherplayername') || text.includes('ownplayersave')) {
       const r = PlayaResponse.fromText(text)
 
       const lastPlayer = digestedPlayers.filter((entry) => entry.own && entry.name).at(-1)
