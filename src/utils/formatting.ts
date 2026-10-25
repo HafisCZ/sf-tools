@@ -63,6 +63,14 @@ export function formatPrefix(prefix: string | undefined) {
   return `${name.charAt(0).toUpperCase() + name.slice(1)} .${domain.toUpperCase()}`
 }
 
+// Country servers are named after their domain, s9.sfgame.eu (saved as s9_eu) is EU9
+export function formatWorldName(server: string) {
+  const [prefix, ...domain] = server.split(/[._]/)
+  const number = /^s(\d+)$/.exec(prefix)?.[1]
+
+  return number ? `${domain.at(-1)}${number}` : prefix
+}
+
 export function formatDurationClock(value: unknown) {
   if (value == '' || value == undefined) return ''
 

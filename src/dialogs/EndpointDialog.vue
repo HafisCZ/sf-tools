@@ -63,26 +63,7 @@
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step7.title') }}</SFHeading>
         <ul class="-mr-5 grid max-h-[392px] grid-cols-[repeat(auto-fill,192px)] justify-center gap-2 overflow-y-auto pr-5">
           <li v-for="character in characters" :key="`${character.server_id}-${character.id}`">
-            <button
-              type="button"
-              class="@container relative block aspect-square w-full cursor-pointer overflow-hidden text-left text-white outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              :aria-pressed="selectedCharacters.includes(character)"
-              @click="toggleCharacter(character)"
-            >
-              <img src="/res/endpoint/tile.webp" alt="" class="absolute inset-0 size-full" />
-              <span class="absolute inset-0 bg-[radial-gradient(closest-side,rgb(5_121_160/0.95),rgb(5_121_160/0))] opacity-75" />
-              <span class="absolute inset-[3px]">
-                <CharacterRenderer v-if="character.portrait" :data="character.portrait" />
-                <img v-else src="/res/endpoint/noface.webp" alt="" class="size-full" />
-              </span>
-              <span class="absolute inset-x-0 top-0 h-1/4 bg-linear-to-b from-[rgb(9_26_34/0.69)] to-[rgb(9_26_34/0)]" />
-              <span class="absolute inset-x-0 bottom-0 h-[42%] bg-linear-to-t from-[rgb(9_26_34/0.69)] to-[rgb(9_26_34/0)]" />
-              <span class="absolute inset-[3px] rounded-[2px] border shadow-[0_0_0_1px_rgb(0_0_0/0.35)]" :class="selectedCharacters.includes(character) ? 'border-accent' : 'border-line'" />
-              <span class="absolute inset-x-[10px] top-[10px] truncate text-[length:max(9px,8.5cqw)] leading-none font-bold text-[#7fc8e0] uppercase text-shadow-[0_1px_2px_rgb(0_0_0/0.9)]">{{ character.world }}</span>
-              <img :src="getClassImageUrl(character.char_class)" :alt="localize.global(`general.class${character.char_class}`)" class="absolute bottom-[8px] left-[8px] size-[22%]" />
-              <span class="absolute right-[8px] bottom-[25px] left-[56px] truncate leading-[1.1] font-bold text-shadow-[0_2px_0_rgb(0_0_0/0.6)]" :style="{ fontSize: `${character.nameSize}px` }">{{ character.name }}</span>
-              <span class="absolute right-[8px] bottom-[10px] left-[56px] truncate text-[length:max(8px,6.5cqw)] leading-none font-bold text-[#f0c042] uppercase text-shadow-[0_1px_0_rgb(0_0_0/0.6)]">{{ localize.global('general.level') }} {{ character.level }}</span>
-            </button>
+            <CharacterTile :name="character.name" :level="character.level" :character-class="character.char_class" :world="character.world" :portrait="character.portrait" :selected="selectedCharacters.includes(character)" :aria-pressed="selectedCharacters.includes(character)" @click="toggleCharacter(character)" />
           </li>
         </ul>
         <SFSelect ref="mode-ref" v-model="mode" :label="localize('mode.title')" :options="modeOptions" />
@@ -140,11 +121,12 @@ import SFProgress from '@library/SFProgress.vue'
 import SFSelect from '@library/SFSelect.vue'
 import { type SelectOption } from '@utils/components'
 import { type EndpointAccount, type EndpointCharacter, type EndpointWarning, type EndpointMode, EndpointController } from '@utils/endpoint'
+import { formatWorldName } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { useErrorToast, useToast } from '@utils/toasts'
-import { getClassImageUrl, getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
+import { getErrorMessage, getTimestampOffset, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
-import CharacterRenderer from '~/components/CharacterRenderer.vue'
+import CharacterTile from '~/components/CharacterTile.vue'
 import { Logger } from '~/core/logger'
 import type { PlayerModel } from '~/core/models/player'
 import { Site } from '~/core/site'
@@ -173,7 +155,6 @@ type Step = 'terms' | 'login' | 'loading' | 'progress' | 'character' | 'warnings
 type Character = EndpointCharacter & {
   server: string
   world: string
-  nameSize: number
   portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
 }
 
@@ -311,7 +292,7 @@ async function runCapture(signIn: (endpoint: EndpointController) => Promise<Endp
 
     saveToken(account.token)
 
-    const selected = await waitForCharacters(await listCharacters(account))
+    const selected = await waitForCharacters(listCharacters(account))
 
     if (!selected) return
 
@@ -336,19 +317,14 @@ function saveToken(token: string | undefined) {
   }
 }
 
-async function listCharacters(account: EndpointAccount) {
-  // Names are measured in the card font, which might not be loaded yet
-  await document.fonts.load('bold 16px Lato')
-
-  const context = document.createElement('canvas').getContext('2d')
-
+function listCharacters(account: EndpointAccount) {
   const available: Character[] = []
 
   for (const character of account.characters) {
     const url = Playa.getServerUrlById(character.server_id)
 
     if (url) {
-      available.push({ ...character, server: url, world: getWorldName(url), nameSize: getNameSize(context, character.name), portrait: getCharacterPortrait(character) })
+      available.push({ ...character, server: url, world: formatWorldName(url), portrait: getCharacterPortrait(character) })
     }
   }
 
@@ -359,25 +335,6 @@ async function listCharacters(account: EndpointAccount) {
   }
 
   return available
-}
-
-function getNameSize(context: CanvasRenderingContext2D | null, name: string) {
-  if (!context) return 16
-
-  context.font = 'bold 16px Lato'
-
-  // The name has 128px on a 192px card, right of the class icon
-  const fittingSize = Math.floor((16 * 128) / context.measureText(name).width)
-
-  return Math.max(10, Math.min(16, fittingSize))
-}
-
-// Country servers are named after their domain, s9.sfgame.eu is EU9
-function getWorldName(server: string) {
-  const [prefix, ...domain] = server.split('.')
-  const number = /^s(\d+)$/.exec(prefix)?.[1]
-
-  return number ? `${domain.at(-1)}${number}` : prefix
 }
 
 function getCharacterPortrait(character: EndpointCharacter): Character['portrait'] {
