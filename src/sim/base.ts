@@ -588,7 +588,7 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
     },
     BloodWeaver: {
       ID: BLOODWEAVER,
-      Disabled: true,
+      // Disabled: true,
 
       Attribute: 'Strength',
 
