@@ -551,6 +551,14 @@ export const CONFIG = Object.defineProperties<ClassConfigData>(
       BardDamageMultiplier: 1,
 
       TinctureChance: 0.5,
+      TinctureThrow: {
+        DamageBonus: -0.2,
+        SkipChance: 0.2,
+        CriticalBonus: 0,
+        CriticalChance: 0.5,
+        CriticalChanceBonus: 0,
+        SkipVariant: DEFENSE_TYPE_EVADE
+      },
       TinctureRounds: [
         {
           DamageBonus: -0.9,
@@ -1642,13 +1650,14 @@ class NecromancerModel extends SimulatorModel {
 }
 
 class PlagueDoctorModel extends SimulatorModel {
-  declare Config: ModelConfig & Required<Pick<ClassConfig, 'TinctureChance' | 'TinctureRounds'>>
-  declare Data: SimulatorState & { TinctureRounds: SimulatorState[] }
+  declare Config: ModelConfig & Required<Pick<ClassConfig, 'TinctureChance' | 'TinctureThrow' | 'TinctureRounds'>>
+  declare Data: SimulatorState & { TinctureThrowState: SimulatorState; TinctureRounds: SimulatorState[] }
   declare Tincture: SimulatorState | null
   declare TinctureDuration: number
 
   initializeData(target: SimulatorModel) {
     super.initializeData(target)
+    this.Data.TinctureThrowState = this.createState(target, this.Config.TinctureThrow)
     this.Data.TinctureRounds = this.Config.TinctureRounds.map((t) => this.createState(target, t))
   }
 
@@ -1696,21 +1705,20 @@ class PlagueDoctorModel extends SimulatorModel {
   }
 
   throwTincture(instance: SimulatorBase, target: SimulatorModel) {
-    this.TinctureDuration = 3
-    this.Tincture = this.Data.TinctureRounds[this.TinctureDuration - 1]
-
-    this.enterState(this.Tincture)
+    this.enterState(this.Data.TinctureThrowState)
 
     const weapon = this.State.Weapon1
     const skipped = target.skip(SKIP_TYPE_DEFAULT)
 
+    if (!skipped) {
+      this.TinctureDuration = 3
+      this.Tincture = this.Data.TinctureRounds[this.TinctureDuration - 1]
+    }
+
     const state = this.attack(instance, instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min), target, skipped, getRandom(this.State.CriticalChance), ATTACK_TYPE_TINCTURE_THROW, ATTACK_TYPE_TINCTURE_THROW_CRITICAL)
 
-    if (skipped) {
-      // Remove tincture and leave state
-      this.Tincture = null
-      this.TinctureDuration = 0
-      this.enterState()
+    if (this.Tincture) {
+      this.enterState(this.Tincture)
     }
 
     return state

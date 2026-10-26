@@ -123,6 +123,7 @@ export type ClassConfig = {
   StanceInitial?: number
   Stances?: StateConfig[]
   TinctureChance?: number
+  TinctureThrow?: StateConfig
   TinctureRounds?: StateConfig[]
   DaggerChance?: number
   DaggerSacrifice?: number
@@ -169,6 +170,7 @@ export type SimulatorState = {
   Songs?: SimulatorState[]
   Stances?: SimulatorState[]
   Minions?: SimulatorState[]
+  TinctureThrowState?: SimulatorState
   TinctureRounds?: SimulatorState[]
   DaggerState?: SimulatorState
   ScytheState?: SimulatorState
