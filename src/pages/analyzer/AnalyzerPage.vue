@@ -523,6 +523,10 @@ function formatChanceLabel(chance: ChanceCheck) {
 function formatChanceValue(chance: ChanceCheck) {
   const formatPercentage = (value: number) => ((100 * value) / chance.samples).toFixed(1)
 
+  if (chance.expected === undefined || chance.margin === undefined) {
+    return `${formatPercentage(chance.hits)}%`
+  }
+
   return `${formatPercentage(chance.hits)}% (${formatPercentage(chance.expected)} ± ${formatPercentage(chance.margin)}%)`
 }
 

@@ -144,8 +144,8 @@ export type ChanceCheck = {
   type: ChanceType
   hits: number
   samples: number
-  expected: number
-  margin: number
+  expected?: number
+  margin?: number
   err: boolean
 }
 
@@ -1216,10 +1216,14 @@ function countChance(counters: ChanceCounters, type: ChanceType, chance: number,
 }
 
 function finishChances(counters: ChanceCounters): ChanceCheck[] {
-  return CHANCE_TYPES.flatMap((type) => {
+  return CHANCE_TYPES.flatMap((type): ChanceCheck[] => {
     const counter = counters[type]
 
-    if (!counter || (counter.expected === 0 && counter.hits === 0)) return []
+    if (!counter) return []
+
+    if (type === 'first_strike') return [{ type, hits: counter.hits, samples: counter.samples, err: false }]
+
+    if (counter.expected === 0 && counter.hits === 0) return []
 
     const margin = CHANCE_Z * Math.sqrt(counter.variance) + CONTINUITY_CORRECTION
 
@@ -1249,17 +1253,6 @@ function findFirstMover(turns: FightRound[][]) {
   const [round] = turns[0]
 
   return round.attackerState === FIGHTER_STATE_BERSERKER_RAGE ? round.target.ID : round.attacker.ID
-}
-
-function getFirstStrikeChance(fighter: Fighter, opponent: Fighter) {
-  const hasFirstStrike = fighter.player?.Items.Hand?.HasEnchantment ?? false
-  const opponentHasFirstStrike = opponent.player?.Items.Hand?.HasEnchantment ?? false
-
-  if (hasFirstStrike === opponentHasFirstStrike) {
-    return 0.5
-  }
-
-  return hasFirstStrike ? 1 : 0
 }
 
 function countRoundChances(counters: ChanceCounters, rounds: FightRound[], fighter: Fighter, model: SimulatorModel, isSpecialBlocked: boolean) {
@@ -1447,7 +1440,6 @@ function analyzeChances(fights: GroupFight[], fighter: Fighter, model: Simulator
   const counters: ChanceCounters = {}
 
   const isSpecialBlocked = opponentModel.Config.BypassSpecial ?? false
-  const firstStrikeChance = getFirstStrikeChance(fighter, opponent)
 
   for (const { rounds } of fights) {
     const turns = splitTurns(rounds)
@@ -1456,7 +1448,7 @@ function analyzeChances(fights: GroupFight[], fighter: Fighter, model: Simulator
 
     const ownTurns = turns.filter(([round]) => round.attacker.ID === fighter.ID)
 
-    countChance(counters, 'first_strike', firstStrikeChance, findFirstMover(turns) === fighter.ID)
+    countChance(counters, 'first_strike', 0, findFirstMover(turns) === fighter.ID)
     countRoundChances(counters, rounds, fighter, model, isSpecialBlocked)
 
     switch (fighter.Class) {
