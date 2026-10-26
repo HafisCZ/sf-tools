@@ -124,6 +124,7 @@ export type FighterEditorData = {
 export type AnalyzerPlayer = PlayerModel & {
   model?: SimulatorModel
   hash?: string
+  hashWithoutDamage?: string
 }
 
 export type DamageRange = {
@@ -547,7 +548,7 @@ function decomposeAttackType(attackType: number) {
 }
 
 // Compute item hash
-function computeItemHash(item: FighterWeapon, player: HashSource, secondary = false) {
+function computeItemHash(item: FighterWeapon, player: HashSource, secondary = false, damage = true) {
   if (secondary && player.Class !== ASSASSIN) {
     return ''
   } else if (item.Index === 0) {
@@ -555,7 +556,10 @@ function computeItemHash(item: FighterWeapon, player: HashSource, secondary = fa
   } else {
     const json = [item.DamageMin, item.DamageMax, item.RuneType || item.AttributeTypes[2], item.RuneValue || item.Attributes[2]]
 
-    if (player.model) {
+    if (!damage) {
+      json[0] = 0
+      json[1] = 0
+    } else if (player.model) {
       // Fix weapon damage (is not clamped by fist damage only if min is below min)
       const baseDamage = player.model.getBaseDamage(secondary)
 
@@ -570,7 +574,7 @@ function computeItemHash(item: FighterWeapon, player: HashSource, secondary = fa
 }
 
 // Compute player hash
-function computePlayerHash(player: HashSource) {
+function computePlayerHash(player: HashSource, damage = true) {
   const json = [
     // Temporary disabled because of HASH errors // player.ID,
     player.Class,
@@ -580,8 +584,8 @@ function computePlayerHash(player: HashSource) {
     player.Intelligence.Total,
     player.Constitution.Total,
     player.Luck.Total,
-    computeItemHash(player.Items.Wpn1, player, false),
-    computeItemHash(player.Items.Wpn2 as FighterWeapon, player, true)
+    computeItemHash(player.Items.Wpn1, player, false, damage),
+    computeItemHash(player.Items.Wpn2 as FighterWeapon, player, true, damage)
   ]
 
   return sha1(JSON.stringify(json))
@@ -968,6 +972,8 @@ export function groupFights(fights: Fight[], allPlayers: AnalyzerPlayer[], sort:
   for (const player of allPlayers) {
     player.model = SimulatorModel.create(null, player)
     player.hash = computePlayerHash(player)
+    // Fighters read from fightequipment carry no weapon damage
+    player.hashWithoutDamage = computePlayerHash(player, false)
   }
 
   // Unique players by hash
@@ -975,12 +981,12 @@ export function groupFights(fights: Fight[], allPlayers: AnalyzerPlayer[], sort:
 
   // Merge fighters and hashes
   for (const { fighterA, fighterB } of fights) {
-    const playerA = players.find((player) => player.hash === fighterA.hash)
+    const playerA = players.find((player) => player.hash === fighterA.hash || player.hashWithoutDamage === fighterA.hash)
     if (playerA) {
       fighterA.player = playerA
     }
 
-    const playerB = players.find((player) => player.hash === fighterB.hash)
+    const playerB = players.find((player) => player.hash === fighterB.hash || player.hashWithoutDamage === fighterB.hash)
     if (playerB) {
       fighterB.player = playerB
     }
