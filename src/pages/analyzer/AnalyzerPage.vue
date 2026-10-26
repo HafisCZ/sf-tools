@@ -91,11 +91,11 @@
         <SFHeading level="3" class="mt-6 text-center">{{ localize('damages_and_chances') }}</SFHeading>
         <div class="mt-[14px] grid grid-cols-2 gap-7">
           <div v-for="fighter in [analysis.group.fighterA, analysis.group.fighterB]" :key="fighter.ID" class="grid grid-cols-2 content-start gap-[14px] rounded-md border border-line bg-surface p-[14px]">
-            <SFInput v-for="range in getRanges(fighter)" :key="range.type" :model-value="`${range.min} - ${range.max}`" readonly class="text-center" :class="{ 'text-[orangered]!': range.err }">
+            <SFInput v-for="range in getRanges(fighter)" :key="range.key" :model-value="`${range.min} - ${range.max}`" readonly class="text-center" :class="{ 'text-[orangered]!': range.error }">
               <template #label>
-                <span class="flex" :class="{ 'text-[orangered]': range.err }">
+                <span class="flex" :class="{ 'text-[orangered]': range.error }">
                   <span>{{ formatRangeLabel(range) }}</span>
-                  <span v-if="range.cnt !== undefined" class="ml-auto">({{ range.cnt }} / {{ fighter.damages?.samples }})</span>
+                  <span v-if="range.count !== undefined" class="ml-auto">({{ range.count }} / {{ fighter.damages?.samples }})</span>
                 </span>
               </template>
             </SFInput>
@@ -252,6 +252,7 @@ type Analysis = {
 
 type SidebarRange = DamageRange & {
   type: string
+  key: string
 }
 
 const RAGE_FORMATS: Record<RageDisplayMode, (rage: number) => string> = {
@@ -507,13 +508,18 @@ function getAttackClass(round: FightRound) {
 function getRanges(fighter: Fighter): SidebarRange[] {
   const ranges = fighter.damages?.ranges ?? {}
 
-  return RANGE_TYPES.filter((type) => type in ranges).map((type) => ({ ...ranges[type], type }))
+  return RANGE_TYPES.flatMap((type) =>
+    Object.keys(ranges)
+      .filter((key) => key === type || key.startsWith(`${type}:`))
+      .sort()
+      .map((key) => ({ ...ranges[key], type, key }))
+  )
 }
 
 function formatRangeLabel(range: SidebarRange) {
-  const error = range.err ?? 0
+  const error = range.error ?? 0
 
-  return `${localize(`sidebar.damages.${range.type}`)}${error ? ' !' : ''}${error & 1 ? ' < min' : ''}${error & 2 ? ' > max' : ''}`
+  return `${localize(`sidebar.damages.${range.type}`)}${range.state ? ` · ${localize(`sidebar.states.${range.state}`)}` : ''}${error ? ' !' : ''}${error & 1 ? ' < min' : ''}${error & 2 ? ' > max' : ''}`
 }
 
 function formatChanceLabel(chance: ChanceCheck) {

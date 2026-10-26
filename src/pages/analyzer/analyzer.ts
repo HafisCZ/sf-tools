@@ -60,7 +60,7 @@ import {
   SKIP_TYPE_DEFAULT
 } from '~/sim/base'
 import { type SimulatorConfig } from '~/sim/debug'
-import { type StateConfig } from '~/sim/types'
+import { type SimulatorState, type StateConfig } from '~/sim/types'
 
 export type RageDisplayMode = 'decimal' | 'percentage' | 'fraction'
 
@@ -130,8 +130,9 @@ export type AnalyzerPlayer = PlayerModel & {
 export type DamageRange = {
   min: number
   max: number
-  err?: number
-  cnt?: number
+  error?: number
+  count?: number
+  state?: string
 }
 
 export type FighterDamages = {
@@ -211,6 +212,8 @@ export type FightRound = {
   attackTypeSpecial: boolean
   attackerDeaths?: number
   targetDeaths?: number
+  attackerTinctureThrow?: boolean
+  targetTinctureThrow?: boolean
   attackerSpecialDisplay?: SpecialDisplay
   targetSpecialDisplay?: SpecialDisplay
   hasDamage?: boolean
@@ -704,6 +707,8 @@ function parseRounds(fighterA: Fighter, fighterB: Fighter, rounds: number[]) {
     if (round.attacker.Class === PLAGUEDOCTOR) {
       tinctureEffect = round.targetEffects.find((effect) => effect.type === EFFECT_TYPE_TINCTURE)
       if (tinctureEffect) {
+        // Ticks are logged with the duration already lowered
+        tinctureEffect.duration = Math.min(3, tinctureEffect.duration + 1)
         round.attackerEffects.push(tinctureEffect)
       }
     } else if (round.target.Class === PLAGUEDOCTOR) {
@@ -712,10 +717,6 @@ function parseRounds(fighterA: Fighter, fighterB: Fighter, rounds: number[]) {
       if (tinctureEffect) {
         round.targetEffects.push(tinctureEffect)
       }
-    }
-
-    if (tinctureEffect) {
-      tinctureEffect.duration = Math.min(3, tinctureEffect.duration + 1)
     }
 
     // Blood Pact is logged on the opponent of the Blood Weaver
@@ -1024,7 +1025,11 @@ function findAttackerState(round: FightRound, model: SimulatorModel) {
         case PLAGUEDOCTOR: {
           const tinctureEffect = round.attackerEffects.find((effect) => effect.type === EFFECT_TYPE_TINCTURE)
 
-          return tinctureEffect && ATTACK_TYPES_TINCTURE.includes(round.attackType) ? data.TinctureRounds?.[tinctureEffect.duration - 1] : data
+          if (TINCTURE_THROW_ATTACK_TYPES.includes(round.attackType) || round.attackerTinctureThrow) {
+            return data.TinctureThrowState
+          } else {
+            return tinctureEffect && TINCTURE_POISON_ATTACK_TYPES.includes(round.attackType) ? data.TinctureRounds?.[tinctureEffect.duration - 1] : data
+          }
         }
         case BLOODWEAVER:
           if (ATTACK_TYPES_DAGGER.includes(round.attackType)) {
@@ -1062,7 +1067,11 @@ function findTargetState(round: FightRound, model: SimulatorModel) {
         case PLAGUEDOCTOR: {
           const tinctureEffect = round.targetEffects.find((effect) => effect.type === EFFECT_TYPE_TINCTURE)
 
-          return tinctureEffect ? data.TinctureRounds?.[tinctureEffect.duration - 1] : data
+          if (round.targetTinctureThrow) {
+            return data.TinctureThrowState
+          } else {
+            return tinctureEffect ? data.TinctureRounds?.[tinctureEffect.duration - 1] : data
+          }
         }
         case PALADIN:
           return data.Stances?.[0]
@@ -1073,6 +1082,49 @@ function findTargetState(round: FightRound, model: SimulatorModel) {
       }
     }
   }
+}
+
+function getStateKeys(model: SimulatorModel) {
+  const data = model.Data
+  const keys = new Map<SimulatorState, string>()
+
+  if (data.RageState) {
+    keys.set(data.RageState, 'druid_rage')
+  }
+
+  data.Stances?.forEach((state, index) => {
+    keys.set(state, `paladin_stance_${index + 1}`)
+  })
+
+  data.Songs?.forEach((state, index) => {
+    keys.set(state, `bard_song_${index + 1}`)
+  })
+
+  data.Minions?.forEach((state, index) => {
+    keys.set(state, `necromancer_minion_${index + 1}`)
+  })
+
+  if (data.TinctureThrowState) {
+    keys.set(data.TinctureThrowState, 'plague_doctor_throw')
+  }
+
+  data.TinctureRounds?.forEach((state, index) => {
+    keys.set(state, `plague_doctor_tincture_${index + 1}`)
+  })
+
+  if (data.DaggerState) {
+    keys.set(data.DaggerState, 'blood_weaver_dagger')
+  }
+
+  if (data.ScytheState) {
+    keys.set(data.ScytheState, 'blood_weaver_scythe')
+  }
+
+  if (data.RevivedState) {
+    keys.set(data.RevivedState, 'blood_weaver_revived')
+  }
+
+  return keys
 }
 
 function decorateRound(round: FightRound) {
@@ -1502,6 +1554,8 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
   // Initialize models
   SimulatorModel.initializeFighters(model1, model2)
 
+  const stateKeys = new Map([...getStateKeys(model1), ...getStateKeys(model2)])
+
   const getModel = (fighter: Fighter) => (fighter.ID === fighterA.ID ? model1 : model2)
   const getEditor = (fighter: Fighter) => (fighter.ID === fighterA.ID ? editorA : editorB)
 
@@ -1523,6 +1577,24 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
 
       round.attackerDeaths = isFighterA ? deathsA : deathsB
       round.targetDeaths = isFighterA ? deathsB : deathsA
+    }
+  }
+
+  // The Plague Doctor stays in the throw state after a blocked throw until its next throw
+  for (const { rounds } of group.fights) {
+    const throwing = new Set<number>()
+
+    for (const round of rounds) {
+      round.attackerTinctureThrow = throwing.has(round.attackerId)
+      round.targetTinctureThrow = throwing.has(round.targetId)
+
+      if (TINCTURE_THROW_ATTACK_TYPES.includes(round.attackType)) {
+        if (SKIP_DEFENSE_TYPES.includes(round.defenseType)) {
+          throwing.add(round.attackerId)
+        } else {
+          throwing.delete(round.attackerId)
+        }
+      }
     }
   }
 
@@ -1553,19 +1625,23 @@ export function analyzeGroup(group: FightGroup, editorA: FighterEditorData, edit
   const damagesB = createDamages(fighterB, editorB, getModel(fighterB))
 
   // Calculate summary
-  for (const { attacker, attackType, attackTypeSecondary, defenseType, hasError, attackBase, hasBase, attackTypeCritical } of flatRounds) {
+  for (const round of flatRounds) {
+    const { attacker, attackType, attackTypeSecondary, defenseType, hasError, attackBase, hasBase, attackTypeCritical } = round
     const damages = fighterA.ID === attacker.ID ? damagesA : damagesB
 
     // Calculate damage range
     if (hasBase && !defenseType && attackBase !== undefined) {
-      const key = `${attackTypeSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_TYPE_SWOOP || attackType === ATTACK_TYPE_SWOOP_CRITICAL ? '_swoop' : ''}${attackTypeCritical ? '_critical' : ''}`
+      const type = `${attackTypeSecondary ? 'weapon2' : 'weapon1'}_range${attackType === ATTACK_TYPE_SWOOP || attackType === ATTACK_TYPE_SWOOP_CRITICAL ? '_swoop' : ''}${attackTypeCritical ? '_critical' : ''}`
+      const attackerState = findAttackerState(round, getModel(attacker))
+      const state = attackerState && stateKeys.get(attackerState)
+      const key = state ? `${type}:${state}` : type
 
-      const range = (damages.ranges[key] ??= { min: +Infinity, max: -Infinity, err: 0, cnt: 0 })
+      const range = (damages.ranges[key] ??= { min: +Infinity, max: -Infinity, error: 0, count: 0, state })
 
       range.min = Math.min(range.min, attackBase)
       range.max = Math.max(range.max, attackBase)
-      range.err = (range.err ?? 0) | (hasError ?? 0)
-      range.cnt = (range.cnt ?? 0) + 1
+      range.error = (range.error ?? 0) | (hasError ?? 0)
+      range.count = (range.count ?? 0) + 1
 
       damages.samples++
     }

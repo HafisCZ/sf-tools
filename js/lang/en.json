@@ -908,6 +908,25 @@
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             },
+            "states": {
+                "druid_rage": "Rage",
+                "paladin_stance_1": "Neutral stance",
+                "paladin_stance_2": "Defensive stance",
+                "paladin_stance_3": "Offensive stance",
+                "bard_song_1": "Song 1",
+                "bard_song_2": "Song 2",
+                "bard_song_3": "Song 3",
+                "necromancer_minion_1": "Skeleton",
+                "necromancer_minion_2": "Hound",
+                "necromancer_minion_3": "Golem",
+                "plague_doctor_throw": "Tincture throw",
+                "plague_doctor_tincture_1": "Tincture round 1",
+                "plague_doctor_tincture_2": "Tincture round 2",
+                "plague_doctor_tincture_3": "Tincture round 3",
+                "blood_weaver_dagger": "Ritual Dagger",
+                "blood_weaver_scythe": "Blood Scythe",
+                "blood_weaver_revived": "Seal of Death"
+            },
             "chances": {
                 "first_strike": "First strike",
                 "critical": "Critical chance",
@@ -1642,7 +1661,8 @@
                 "Rage": "State the Druid enters for its next turn after evading an attack.",
                 "Summons": "Minions the Necromancer can summon. One is picked at random.",
                 "Stances": "Paladin stances. The Paladin switches through them in order.",
-                "TinctureRounds": "Plague Doctor states while a tincture is active, by turns left. The throw starts at 3 turns left.",
+                "TinctureThrow": "State used for the tincture throw. The Plague Doctor stays in it after a blocked throw until the next throw.",
+                "TinctureRounds": "Plague Doctor states while a tincture is active, by turns left. A landed throw starts at 3 turns left.",
                 "Dagger": "State used for the dagger attack.",
                 "Scythe": "State used for the scythe attack.",
                 "Revived": "State after Seal of Death revives the Blood Weaver."
