@@ -1,5 +1,5 @@
 <template>
-  <div class="group relative" :class="{ 'opacity-50': props.hidden }">
+  <div class="relative" :class="{ 'opacity-50': props.hidden }">
     <button
       type="button"
       class="flex h-[270px] w-full cursor-pointer flex-col items-stretch rounded-md border p-3 text-center transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -13,7 +13,7 @@
       </span>
       <span class="mx-auto mt-2 flex size-[120px] shrink-0 items-center justify-center rounded-full bg-radial from-white/10 to-transparent to-70%">
         <slot name="image">
-          <img :src="props.image" alt="" width="120" height="120" class="size-full transition-transform group-hover:scale-105" />
+          <img :src="props.image" alt="" width="120" height="120" class="size-full" />
         </slot>
       </span>
       <span class="mt-3 truncate text-base leading-[22px] font-bold text-white" :title="props.name">{{ props.name }}</span>

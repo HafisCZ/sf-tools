@@ -31,7 +31,7 @@
         @open="navigation.show('player', { identifier: player.Latest.LinkId })"
       >
         <template v-if="portraits" #image>
-          <CharacterRenderer :data="player.Latest" class="size-full transition-transform group-hover:scale-105" />
+          <CharacterRenderer :data="player.Latest" class="size-full" />
         </template>
         <span>{{ localize.global('general.level') }} {{ player.Latest.Level }} · {{ localize.global(`general.class${player.Latest.Class}`) }}</span>
         <span v-if="player.Latest.hasGuild()" class="flex max-w-full items-center gap-1">
