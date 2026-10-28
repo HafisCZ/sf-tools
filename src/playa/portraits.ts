@@ -1,4 +1,5 @@
 import type { PlayerFace } from '~/core/models/player'
+import { BLOODWEAVER, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
 import PORTRAITS from './portraits.json'
 
 export type PortraitLayer = {
@@ -51,10 +52,10 @@ export const PORTRAIT_SIZE = DATA.size
 
 // The game has no body for the newer classes, they borrow the body of the class with the same main attribute
 export const PORTRAIT_BODY_CLASSES: Partial<Record<CharacterClass, CharacterClass>> = {
-  10: 2,
-  11: 1,
-  12: 3,
-  13: 1
+  [NECROMANCER]: MAGE,
+  [PALADIN]: WARRIOR,
+  [PLAGUEDOCTOR]: SCOUT,
+  [BLOODWEAVER]: WARRIOR
 }
 
 export const PORTRAIT_HAIR_SCALES: Partial<Record<string, number>> = {

@@ -111,7 +111,7 @@ import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import FooterCopyright from '~/pages/components/FooterCopyright.vue'
 import FooterLink from '~/pages/components/FooterLink.vue'
 import Page from '~/pages/Page.vue'
-import { WARRIOR } from '~/sim/base'
+import { RUNE_FIRE_DAMAGE, WARRIOR } from '~/sim/base'
 import EquipmentEditor from '~/sim/components/EquipmentEditor.vue'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
@@ -280,7 +280,7 @@ function getMainPlayer() {
 function formatRunes(runes: DungeonRunes | undefined) {
   if (!runes) return ''
 
-  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - 40]}`
+  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - RUNE_FIRE_DAMAGE]}`
   const resistances = RUNE_LETTERS.flatMap((letter, index) => (runes.res?.[index] ? [`${runes.res[index]} ${letter}`] : [])).join(' ')
 
   return resistances ? `${damage} / ${resistances}` : damage

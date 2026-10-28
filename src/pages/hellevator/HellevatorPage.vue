@@ -98,6 +98,7 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
+import { RUNE_FIRE_DAMAGE } from '~/sim/base'
 import { getHellevatorEnemies, type HellevatorEnemy } from '~/sim/data/hellevator'
 import { preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { WorkerBatch } from '~/sim/workers'
@@ -129,7 +130,6 @@ type SimulatorLog = {
 
 const PROFILE = SELF_PROFILE
 
-// Index is the rune type minus 40
 const ELEMENT_KEYS = ['fire', 'cold', 'lightning']
 
 const localize = useLocalize('hellevator')
@@ -216,7 +216,7 @@ function createMessageRow(kind: 'all' | 'none' | 'first' | 'last', count: number
 }
 
 function getElement(enemy: HellevatorEnemy) {
-  return enemy.Items.Wpn1.AttributeTypes[2] - 40
+  return enemy.Items.Wpn1.AttributeTypes[2] - RUNE_FIRE_DAMAGE
 }
 
 function listOwnPlayers() {

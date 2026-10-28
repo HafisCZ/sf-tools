@@ -173,7 +173,7 @@ export class GroupModel {
     }
 
     for (let i = 0; i < this.Members.length; i++) {
-      if (this.Roles[i] == 0 || this.Roles[i] == GUILD_ROLE_INVITED) {
+      if (this.Roles[i] == GUILD_ROLE_NONE || this.Roles[i] == GUILD_ROLE_INVITED) {
         if (this.Knights) {
           this.Knights.splice(i, 1)
         }

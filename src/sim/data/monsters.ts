@@ -1,5 +1,5 @@
 import { PlayerModel } from '~/core/models/player'
-import { CONFIG } from '~/sim/base'
+import { CONFIG, RUNE_COLD_DAMAGE, RUNE_FIRE_DAMAGE, RUNE_LIGHTNING_DAMAGE } from '~/sim/base'
 
 type MonsterStats = [main: number, side: number, constitution: number, luck: number, health: number, min: number, max: number, armor: number]
 
@@ -248,9 +248,9 @@ export class MonsterGenerator {
       Constitution: { Total: con },
       Runes: {
         Health: 0,
-        ResistanceFire: monsterRuneType == 40 ? monsterRuneValue : 0,
-        ResistanceCold: monsterRuneType == 41 ? monsterRuneValue : 0,
-        ResistanceLightning: monsterRuneType == 42 ? monsterRuneValue : 0
+        ResistanceFire: monsterRuneType == RUNE_FIRE_DAMAGE ? monsterRuneValue : 0,
+        ResistanceCold: monsterRuneType == RUNE_COLD_DAMAGE ? monsterRuneValue : 0,
+        ResistanceLightning: monsterRuneType == RUNE_LIGHTNING_DAMAGE ? monsterRuneValue : 0
       },
       Items: {
         Wpn1: {

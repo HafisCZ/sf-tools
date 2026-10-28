@@ -1877,7 +1877,7 @@ export class PlayerModel {
     let bonus = 0
     for (const item of this.ItemsArray) {
       if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
-        bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1)
+        bonus += item.GemValue * (item.Type == 1 && this.Class != ASSASSIN ? 2 : 1)
       }
     }
 

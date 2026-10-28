@@ -28,7 +28,7 @@ import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type AnalyzerPlayer, type FighterEditorData } from '~/pages/analyzer/analyzer'
-import { CONFIG } from '~/sim/base'
+import { CONFIG, RUNE_FIRE_DAMAGE } from '~/sim/base'
 import { createBossWeapon, DUNGEON_DATA, getBossName, getDungeonName, type DungeonEntry, type DungeonRunes } from '~/sim/data/dungeons'
 
 defineOptions({
@@ -104,7 +104,7 @@ const playerOptions = computed<SelectOption<AnalyzerPlayer | null>[]>(() =>
 function formatRunes(runes: DungeonRunes | undefined) {
   if (!runes) return ''
 
-  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - 40]}`
+  const damage = `${runes.damage} ${RUNE_LETTERS[runes.type - RUNE_FIRE_DAMAGE]}`
   const resistances = RUNE_LETTERS.flatMap((letter, index) => (runes.res?.[index] ? [`${runes.res[index]} ${letter}`] : [])).join(' ')
 
   return resistances ? `${damage} / ${resistances}` : damage

@@ -113,7 +113,7 @@ export class DungeonHelper {
     dungeons.Shadow.Total = dungeons.Shadow.reduce(dungeonProgress, 0)
     dungeons.Class.Total = dungeons.Class.reduce(dungeonProgress, 0)
 
-    const dungeonUnlock = (a: number, b: number) => a + (b > -2 ? 1 : 0)
+    const dungeonUnlock = (a: number, b: number) => a + (b > DungeonHelper.DUNGEON_LOCKED ? 1 : 0)
     dungeons.Normal.Unlocked = dungeons.Normal.reduce(dungeonUnlock, 0)
     dungeons.Shadow.Unlocked = dungeons.Shadow.reduce(dungeonUnlock, 0)
     dungeons.Class.Unlocked = dungeons.Class.reduce(dungeonUnlock, 0)

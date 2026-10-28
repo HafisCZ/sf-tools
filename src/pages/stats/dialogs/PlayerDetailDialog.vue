@@ -182,7 +182,7 @@ function createSecondPanel(): Section[] {
   })
 
   const runes = player.Runes
-  const secondDamage = (value: number | undefined) => (player.Class == 4 ? ` / ${value}%` : '')
+  const secondDamage = (value: number | undefined) => (player.Class == ASSASSIN ? ` / ${value}%` : '')
 
   sections.push({
     title: localize('runes.title'),
