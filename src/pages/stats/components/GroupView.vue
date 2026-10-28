@@ -75,7 +75,7 @@ defineOptions({
 
 defineExpose({
   show,
-  reload,
+  reload: load,
   get identifier() {
     return identifier.value
   }
@@ -251,17 +251,7 @@ function load() {
 
   table.setEntries(entries)
 
-  refresh()
-}
-
-function refresh() {
   table.refresh()
-}
-
-function reload() {
-  scriptOverride.value = ''
-
-  load()
 }
 
 function swapScript(key: string) {
@@ -275,7 +265,7 @@ function swapScript(key: string) {
     table.setScript(Scripts.getContent(key))
   }
 
-  refresh()
+  table.refresh()
 }
 
 function copyTable() {

@@ -78,7 +78,7 @@ defineOptions({
 
 defineExpose({
   show,
-  reload,
+  reload: load,
   identifier: 'players'
 })
 
@@ -375,10 +375,6 @@ function load() {
   scriptOverride.value = null
 
   recalculateFilter()
-}
-
-function reload() {
-  load()
 }
 
 function swapScript(key: string) {

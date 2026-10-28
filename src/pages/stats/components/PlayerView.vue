@@ -62,7 +62,7 @@ defineOptions({
 
 defineExpose({
   show,
-  reload,
+  reload: load,
   get identifier() {
     return identifier.value
   }
@@ -161,10 +161,6 @@ function load() {
 function refresh() {
   table.setEntries(array)
   table.refresh()
-}
-
-function reload() {
-  load()
 }
 
 function swapScript(key: string) {

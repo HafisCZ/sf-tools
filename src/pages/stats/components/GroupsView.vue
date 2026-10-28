@@ -76,7 +76,7 @@ defineOptions({
 
 defineExpose({
   show,
-  reload,
+  reload: load,
   identifier: 'groups'
 })
 
@@ -350,10 +350,6 @@ function load() {
   scriptOverride.value = null
 
   recalculateFilter()
-}
-
-function reload() {
-  load()
 }
 
 function swapScript(key: string) {
