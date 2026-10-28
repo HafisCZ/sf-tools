@@ -31,6 +31,7 @@ import { useSuccessToast } from '@utils/toasts'
 import { useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { SiteAPI } from '~/core/api'
+import { FEEDBACK_TOOLS, type FeedbackTool } from '~/dialogs/feedback'
 
 defineOptions({
   name: 'FeedbackDialog'
@@ -41,7 +42,7 @@ const props = withDefaults(
     /**
      * Tool the feedback is about, `general` for none
      */
-    tool?: string
+    tool?: FeedbackTool | 'general'
   }>(),
   {
     tool: 'general'
@@ -52,8 +53,6 @@ const emit = defineEmits<{
   close: []
 }>()
 
-const TOOLS = ['analyzer', 'attributes', 'blacksmith', 'calendar', 'dungeons', 'fortress', 'guilds', 'hellevator', 'hydra', 'idle', 'inventory', 'pets', 'raids', 'scrapbook', 'simulator', 'stats', 'underworld']
-
 const localize = useLocalize('dialog.report')
 
 const tool = ref(props.tool)
@@ -61,7 +60,7 @@ const type = ref('issue')
 const email = ref('')
 const description = ref('')
 
-const toolOptions = computed<SelectOption[]>(() => [{ value: 'general', label: '-' }, ...TOOLS.map((value) => ({ value, label: localize.global(`index.${value}.title`) }))])
+const toolOptions = computed<SelectOption<FeedbackTool | 'general'>[]>(() => [{ value: 'general', label: '-' }, ...FEEDBACK_TOOLS.map((value) => ({ value, label: localize.global(`index.${value}.title`) }))])
 
 const typeOptions = computed<SelectOption[]>(() => ['issue', 'suggestion'].map((value) => ({ value, label: localize(`type.${value}`) })))
 

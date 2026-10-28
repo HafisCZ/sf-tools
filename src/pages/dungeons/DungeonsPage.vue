@@ -77,13 +77,7 @@
     </div>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="dungeons" />
     </template>
   </Page>
 </template>
@@ -105,11 +99,9 @@ import { OptionsHandler } from '~/core/options'
 import { SELF_PROFILE } from '~/core/profiles'
 import { Site } from '~/core/site'
 import { DatabaseManager } from '~/data/database-manager'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import { type Cheats } from '~/integration/cheats'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import { RUNE_FIRE_DAMAGE, WARRIOR } from '~/sim/base'
 import EquipmentEditor from '~/sim/components/EquipmentEditor.vue'
@@ -728,9 +720,5 @@ function openOptions() {
       }
     }
   )
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'dungeons' })
 }
 </script>

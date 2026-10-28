@@ -322,13 +322,7 @@
     </div>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="attributes" />
     </template>
   </Page>
 </template>
@@ -348,14 +342,11 @@ import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { type SelectOption } from '@utils/components'
-import { useDialog } from '@utils/dialogs'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { copyElement } from '@utils/utils'
 import BuildingTable from './components/BuildingTable.vue'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import { Calculations } from '~/playa/calculations'
 
@@ -1406,9 +1397,5 @@ function copyGoldTable(commaDecimals: boolean) {
   copyElement(table)
 
   document.body.removeChild(table)
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'attributes' })
 }
 </script>

@@ -75,13 +75,7 @@
     </div>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="fortress" />
     </template>
   </Page>
 </template>
@@ -97,14 +91,11 @@ import SFTableCell from '@library/SFTableCell.vue'
 import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { formatDuration, useSubmit } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { createFortressBattle, FORTRESS_ARCHER_MAP, FORTRESS_MAGE_MAP, FORTRESS_WALL_MAP, FORTRESS_WARRIOR_MAP, type FortressUnit, type FortressValues } from '~/sim/data/fortress'
@@ -262,9 +253,5 @@ async function runSimulation() {
       setup.score = score
     }
   }
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'fortress' })
 }
 </script>

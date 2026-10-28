@@ -58,13 +58,7 @@
     </template>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="hydra" />
     </template>
   </Page>
 </template>
@@ -76,7 +70,6 @@ import SFHeading from '@library/SFHeading.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
 import SFSelect from '@library/SFSelect.vue'
-import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { compact, dig, formatDuration, getClassImageUrl, sliceLength, sortDescending, sum, useSubmit } from '@utils/utils'
@@ -85,10 +78,8 @@ import { type GroupModel } from '~/core/models/group'
 import { PlayerModel } from '~/core/models/player'
 import { HYDRA_PROFILE } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import { CONFIG } from '~/sim/base'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
@@ -297,9 +288,5 @@ async function runSimulation() {
   useToast({ title: localize.global('simulator.toast.title'), message: localize.global('simulator.toast.message', { duration: formatDuration(duration) }) })
 
   results.value = collected
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'hydra' })
 }
 </script>

@@ -39,13 +39,7 @@
     </div>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="pets" />
     </template>
   </Page>
 </template>
@@ -69,10 +63,8 @@ import { ModelUtils } from '~/core/models/utils'
 import { SELF_PROFILE } from '~/core/profiles'
 import { Store } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import { CONFIG, SimulatorModel } from '~/sim/base'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
@@ -363,9 +355,5 @@ async function runDungeonSimulation() {
   if (duration === null) return
 
   useDialog(PetResultsDialog, { results: sortDescending(results, (item) => item.chance) })
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'pets' })
 }
 </script>

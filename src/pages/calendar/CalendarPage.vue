@@ -20,13 +20,7 @@
     </template>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="calendar" />
     </template>
   </Page>
 </template>
@@ -36,16 +30,13 @@ import { computed, ref, shallowRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFParagraph from '@library/SFParagraph.vue'
-import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import PetCard from './components/PetCard.vue'
 import { type PlayerModel } from '~/core/models/player'
 import { SELF_PROFILE_WITH_GROUP } from '~/core/profiles'
 import { DatabaseManager } from '~/data/database-manager'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import { PetData, type Pet } from '~/playa/pets'
 
@@ -111,9 +102,5 @@ function togglePet(index: number) {
 function clear() {
   player.value = null
   ownedPets.value = PetData.map(() => false)
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'calendar' })
 }
 </script>

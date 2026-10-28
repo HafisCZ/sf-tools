@@ -108,13 +108,7 @@
     </div>
 
     <template #footer-right>
-      <FooterLink icon="message" @click="openFeedback">
-        {{ localize.global('index.footer.report') }}
-      </FooterLink>
-      <FooterLink icon="basket-shopping" href="https://home.sfgame.net">
-        <span v-html="localize.global('index.footer.webshop#')" />
-      </FooterLink>
-      <FooterCopyright />
+      <PageFooterLinks tool="underworld" />
     </template>
   </Page>
 </template>
@@ -129,7 +123,6 @@ import SFTableCell from '@library/SFTableCell.vue'
 import SFTableHeader from '@library/SFTableHeader.vue'
 import SFTableRow from '@library/SFTableRow.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { useDialog } from '@utils/dialogs'
 import { useLocalize } from '@utils/localization'
 import { useToast } from '@utils/toasts'
 import { copyJson, formatDuration, getClassImageUrl, sortDescending, useSubmit } from '@utils/utils'
@@ -139,10 +132,8 @@ import { ModelUtils } from '~/core/models/utils'
 import { FIGHT_SIMULATOR_PROFILE } from '~/core/profiles'
 import { Store } from '~/core/store'
 import { DatabaseManager } from '~/data/database-manager'
-import FeedbackDialog from '~/dialogs/FeedbackDialog.vue'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
-import FooterCopyright from '~/pages/components/FooterCopyright.vue'
-import FooterLink from '~/pages/components/FooterLink.vue'
+import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
 import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
@@ -382,9 +373,5 @@ async function runSimulation(instances: number, iterations: number, onLogs?: (lo
   if (onLogs && logs.length > 0) {
     onLogs({ fights: logs, players: players.value.map(({ player }) => player), config: simulatorConfig.value })
   }
-}
-
-function openFeedback() {
-  useDialog(FeedbackDialog, { tool: 'underworld' })
 }
 </script>
