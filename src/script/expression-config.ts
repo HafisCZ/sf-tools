@@ -732,7 +732,7 @@ DEFAULT_EXPRESSION_CONFIG.register(
     }
     return true
   },
-  { syntax: 'indexof(<array>, <item>)' }
+  { syntax: 'excludes(<array>, <item>)' }
 )
 
 /*
