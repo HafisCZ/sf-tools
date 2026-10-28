@@ -4,7 +4,7 @@
       <SimulatorDebug logs @log="runLogged" />
     </template>
 
-    <StatisticsIntegration type="players" :profile="PROFILE" :scope="listPlayers" @select="fillFromPlayer" />
+    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" @select="fillFromPlayer" />
 
     <div class="grid grid-cols-16 items-center gap-[14px]">
       <div class="col-span-4 flex items-center gap-[5px]">
@@ -104,8 +104,6 @@ type PetResult = {
   pet: SimulatorPet
   boss: SimulatorPet
 }
-
-const PROFILE = SELF_PROFILE
 
 const MAP_ITERATIONS_KEY = 'pet_sim/map_iterations'
 

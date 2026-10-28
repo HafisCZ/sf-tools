@@ -39,8 +39,9 @@ import { computed, ref } from 'vue'
 import SFHeading from '@library/SFHeading.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
+import { type PlayerModel } from '~/core/models/player'
 import { type BlacksmithResources } from '~/data/types'
-import { createResourceEntries, type InventoryPlayer, type ResourceEntry, type ResourceList } from '~/pages/inventory/inventory'
+import { createResourceEntries, type ResourceEntry, type ResourceList } from '~/pages/inventory/inventory'
 import ResourceItemCard from './ResourceItemCard.vue'
 
 defineOptions({
@@ -51,7 +52,7 @@ const props = defineProps<{
   /**
    * Player whose items are shown
    */
-  player: InventoryPlayer
+  player: PlayerModel
 }>()
 
 type Section = {
@@ -100,7 +101,7 @@ const sections = computed(() => SECTIONS.map((section) => ({ ...section, entries
 
 const dismantled = computed(() => allEntries.value.filter((entry) => dismantledIds.value.includes(entry.id)))
 
-const current = computed(() => ({ Metal: props.player.Metal as number, Crystal: props.player.Crystals as number }))
+const current = computed(() => ({ Metal: props.player.Metal ?? 0, Crystal: props.player.Crystals ?? 0 }))
 
 const sold = computed(() => sumResources(dismantled.value.map((entry) => entry.item.SellPrice)))
 

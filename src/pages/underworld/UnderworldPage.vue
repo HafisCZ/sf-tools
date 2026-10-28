@@ -4,7 +4,7 @@
       <SimulatorDebug logs copy presets @log="runLogged" @copy="copyAll" @insert="handlePaste" />
     </template>
 
-    <StatisticsIntegration type="players" :profile="PROFILE" :scope="listPlayers" cheats grouped @select="insertPlayer" />
+    <StatisticsIntegration type="players" :profile="FIGHT_SIMULATOR_PROFILE" :scope="listPlayers" cheats grouped @select="insertPlayer" />
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -168,8 +168,6 @@ type SimulatorLog = {
   players: unknown[]
   config: SimulatorConfig | null
 }
-
-const PROFILE = FIGHT_SIMULATOR_PROFILE
 
 const GLADIATOR_MODE_KEY = 'underworld_sim/gladiator'
 

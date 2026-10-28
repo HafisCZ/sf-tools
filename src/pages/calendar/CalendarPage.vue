@@ -7,7 +7,7 @@
       </SFButton>
     </template>
 
-    <StatisticsIntegration type="players" :profile="PROFILE" :scope="listPlayersWithPets" @select="selectPlayer" />
+    <StatisticsIntegration type="players" :profile="SELF_PROFILE_WITH_GROUP" :scope="listPlayersWithPets" @select="selectPlayer" />
 
     <div class="grid grid-cols-2 gap-7 md:grid-cols-3 min-[62rem]:grid-cols-5">
       <PetCard v-for="entry in pets" :key="entry.index" :index="entry.index" :owned="entry.owned" :locked="entry.locked" :available="entry.available" :wait-time="entry.waitTime" @click="togglePet(entry.index)" />
@@ -52,8 +52,6 @@ import { PetData, type Pet } from '~/playa/pets'
 defineOptions({
   name: 'CalendarPage'
 })
-
-const PROFILE = SELF_PROFILE_WITH_GROUP
 
 // Sort offsets that put collected pets last, then locked ones
 const COLLECTED_ORDER = 3156000000000

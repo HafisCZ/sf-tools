@@ -4,7 +4,7 @@
       <SimulatorDebug logs @log="runLogged" />
     </template>
 
-    <StatisticsIntegration type="players" :profile="PROFILE" :scope="listOwnPlayers" cheats @select="fillPlayer" />
+    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listOwnPlayers" cheats @select="fillPlayer" />
     <SimulatorPasteTarget @paste="fillFromPaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -127,8 +127,6 @@ type SimulatorLog = {
   players: unknown[]
   config: SimulatorConfig | null
 }
-
-const PROFILE = SELF_PROFILE
 
 const ELEMENT_KEYS = ['fire', 'cold', 'lightning']
 

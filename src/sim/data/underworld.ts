@@ -64,7 +64,6 @@ function createUnits(index: number, building: number, upgrades: number, counts: 
     Name: NAME_UNIT_UNDERWORLD[index],
     Level: cappedLevel,
     Class: WARRIOR,
-    // Keeps the damage as it is when it is too low for the level
     NoBaseDamage: true,
     NoGladiator: true,
     Armor: cappedLevel * 50,

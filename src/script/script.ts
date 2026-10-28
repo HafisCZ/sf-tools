@@ -138,7 +138,6 @@ export class ScriptStyle {
 
   add(name: string, value: string) {
     const style = new Option().style
-    // Names can be camelCase or dashed, and both work as properties
     ;(style as unknown as Record<string, string>)[name] = value
 
     if (style.cssText) {
@@ -165,7 +164,6 @@ export class RuleEvaluator<TOutput> {
   }
 
   get(value: unknown, ignoreBase = false) {
-    // Relational operators coerce script values the same way whatever their type
     const current = value as number
 
     for (const [condition, referenceValue, output] of this.rules) {

@@ -33,7 +33,6 @@ export type RemoteScriptVersion = {
   updated_at: number
 }
 
-// What the script API returns for a script
 export type ApiScript = {
   key: string
   secret: string

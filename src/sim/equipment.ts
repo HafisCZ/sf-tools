@@ -120,8 +120,7 @@ export function listEquipmentCandidates(source: PlayerModel, slot: AnyEquipmentS
   return candidates
 }
 
-// A character wears one item class per slot, the one it already has there, which is also the one its
-// attributes are morphed from. An empty slot says nothing, so another item of the same kind answers for it.
+// The item class a character wears can't be derived from its class, so it is read off the item already in the slot
 function getSlotTarget(character: PlayerModel, slot: AnyEquipmentSlot) {
   const current = character.Items[slot]
 

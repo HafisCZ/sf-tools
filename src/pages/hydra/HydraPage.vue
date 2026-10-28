@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <StatisticsIntegration type="guilds" :profile="PROFILE" :scope="listCompleteGroups" @select="fillFromGroup" />
+    <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="fillFromGroup" />
     <SimulatorPasteTarget @paste="fillFromPaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -123,8 +123,6 @@ type EditorValues = {
   constitution: number
   luck: number
 }
-
-const PROFILE = HYDRA_PROFILE
 
 // By class ID minus one
 const ATTRIBUTE_MAP = CONFIG.classes().map((data) => PlayerModel.ATTRIBUTE_ORDER_BY_ATTRIBUTE[data.Attribute])

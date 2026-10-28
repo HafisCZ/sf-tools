@@ -1,6 +1,6 @@
 <template>
   <Page>
-    <StatisticsIntegration type="players" :profile="PROFILE" :scope="listIdlePlayers" @select="load" />
+    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listIdlePlayers" @select="load" />
 
     <div class="grid grid-cols-16 items-center gap-[14px]">
       <SFToggleGroup ref="upgrade-mode-ref" v-model="upgradeMode" :options="UPGRADE_MODES" class="col-span-5" />
@@ -95,8 +95,6 @@ import { BUILDINGS, Building, MULTIPLIERS } from '~/playa/idle'
 defineOptions({
   name: 'IdlePage'
 })
-
-const PROFILE = SELF_PROFILE
 
 const UPGRADE_MODES = [
   { value: '1', label: '1' },

@@ -230,7 +230,6 @@ const isWarrior = computed(() => classId.value === String(WARRIOR))
 
 const hasBlockChance = computed(() => isWarrior.value && !props.companion)
 
-// Only shown for Assassins, but always read
 const visibleWeapons = computed(() => (classId.value === String(ASSASSIN) ? weapons : weapons.slice(0, 1)))
 
 const classOptions = computed<SelectOption[]>(() => CONFIG.ids().map((id) => ({ value: String(id), label: localize.global(`general.class${id}`), image: getClassImageUrl(id) })))

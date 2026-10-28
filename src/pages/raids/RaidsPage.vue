@@ -4,7 +4,7 @@
       <SimulatorDebug logs copy @log="runLogged" @copy="copyAll" />
     </template>
 
-    <StatisticsIntegration type="guilds" :profile="PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
+    <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -164,8 +164,6 @@ type SimulatorLog = {
   players: unknown[]
   config: SimulatorConfig | null
 }
-
-const PROFILE = HYDRA_PROFILE
 
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 

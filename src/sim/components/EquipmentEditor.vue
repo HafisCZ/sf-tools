@@ -179,7 +179,6 @@ const yesNoOptions = computed<SelectOption[]>(() => [
   { value: 'true', label: localize.global('general.yes') }
 ])
 
-// Every type the other slots are already drinking, a character cannot take the same potion twice
 const usedPotionTypes = computed(() => props.character.potions.map((potion) => potion.type))
 
 function getPotionValue(potion: CharacterPotion) {
@@ -318,7 +317,6 @@ function selectItem(id: string) {
 
   const next = { ...props.swaps }
 
-  // Whatever the menu picks takes over the slot, so its own rune, gem and enchantment come back with it
   if (id) {
     next[slot] = { id }
   } else {

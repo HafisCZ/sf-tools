@@ -63,7 +63,8 @@ import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
-import { createInventoryEntries, getCharacterStats, getComparisonGroups, getStatsGroups, type CharacterIndex, type InventoryEntry, type InventoryList, type InventoryPlayer } from '~/pages/inventory/inventory'
+import { type PlayerModel } from '~/core/models/player'
+import { createInventoryEntries, getCharacterStats, getComparisonGroups, getStatsGroups, type CharacterIndex, type InventoryEntry, type InventoryList } from '~/pages/inventory/inventory'
 import { ASSASSIN } from '~/sim/base'
 import InventoryItemCard from './InventoryItemCard.vue'
 
@@ -75,7 +76,7 @@ const props = defineProps<{
   /**
    * Player whose items are shown
    */
-  player: InventoryPlayer
+  player: PlayerModel
 }>()
 
 type Section = {

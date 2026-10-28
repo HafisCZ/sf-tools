@@ -7,8 +7,6 @@ import { type BlacksmithResources } from '~/data/types'
 import { Loca } from '~/playa/items'
 import { ASSASSIN, BATTLEMAGE, WARRIOR } from '~/sim/base'
 
-export type InventoryPlayer = PlayerModel
-
 export type CharacterIndex = 0 | 1 | 2 | 3
 
 export type InventoryEntry = {
@@ -135,7 +133,7 @@ function isEquipment(item: ItemModel) {
   return item.Type >= 1 && item.Type <= 10
 }
 
-export function createInventoryEntries(player: InventoryPlayer): Record<InventoryList, InventoryEntry[]> {
+export function createInventoryEntries(player: PlayerModel): Record<InventoryList, InventoryEntry[]> {
   let id = 0
 
   function createEntries(items: ItemModel[] | Record<string, ItemModel>) {
@@ -155,7 +153,7 @@ export function createInventoryEntries(player: InventoryPlayer): Record<Inventor
   }
 }
 
-export function createResourceEntries(player: InventoryPlayer): Record<ResourceList, ResourceEntry[]> {
+export function createResourceEntries(player: PlayerModel): Record<ResourceList, ResourceEntry[]> {
   let id = 0
 
   function createEntries(...lists: (ItemModel[] | Record<string, ItemModel>)[]) {
@@ -227,7 +225,7 @@ export function getItemAttributes(item: ItemModel, primaryType: number): ItemAtt
     })
 }
 
-function getCharacter(player: InventoryPlayer, index: CharacterIndex): PlayerModel {
+function getCharacter(player: PlayerModel, index: CharacterIndex): PlayerModel {
   return (index > 0 ? player.Companions?.[COMPANIONS[index - 1]] : undefined) ?? player
 }
 
@@ -239,7 +237,7 @@ function getHealth(character: PlayerModel, index: CharacterIndex, constitution: 
   return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(constitution * levelMultiplier) * character.Config.HealthMultiplier) * dungeonMultiplier) * potionMultiplier) * (1 + healthRune / 100))
 }
 
-export function getCharacterStats(player: InventoryPlayer, index: CharacterIndex): CharacterStats {
+export function getCharacterStats(player: PlayerModel, index: CharacterIndex): CharacterStats {
   const character = getCharacter(player, index)
 
   const luck = character.Luck.Total
@@ -286,7 +284,7 @@ function getRealGemValue(character: PlayerModel, item: ItemModel, type: number) 
   }
 }
 
-function getComparedStats(stats: CharacterStats, player: InventoryPlayer, index: CharacterIndex, base: ItemModel, compared: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
+function getComparedStats(stats: CharacterStats, player: PlayerModel, index: CharacterIndex, base: ItemModel, compared: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
   const item = ModelUtils.morphItemForCharacter(player.Class, index, compared)
   const character = getCharacter(player, index)
 
@@ -311,7 +309,7 @@ function getComparedStats(stats: CharacterStats, player: InventoryPlayer, index:
   const gemDifferences: number[] = []
 
   for (let i = 0; i < 5; i++) {
-    const potionMultiplier = 1 + (attributes[i].PotionSize ?? 0) / 100
+    const potionMultiplier = 1 + attributes[i].PotionSize / 100
     const petMultiplier = 1 + petBonuses[i] / 100
     const classMultiplier = character.ClassBonus ? 1.1111 : 1
     const gemMultiplier = character.Class === BATTLEMAGE ? 1.1111 : 1
@@ -429,7 +427,7 @@ function getCompareSocketLine(base: ItemModel, item: ItemModel): ComparisonLine[
   }
 }
 
-export function getComparisonGroups(stats: CharacterStats, player: InventoryPlayer, index: CharacterIndex, base: ItemModel, item: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
+export function getComparisonGroups(stats: CharacterStats, player: PlayerModel, index: CharacterIndex, base: ItemModel, item: ItemModel, ignoreGems: boolean, ignoreUpgrades: boolean) {
   const { reference, result } = getComparedStats(stats, player, index, base, item, ignoreGems, ignoreUpgrades)
 
   return [...COMPARISON_GROUPS.map((keys) => keys.flatMap((key) => getCompareLine(result[key], reference[key], globalLocalize(STAT_LABEL_KEYS[key])))), [...getCompareRuneLine(base, item), ...getCompareSocketLine(base, item)]].filter((lines) => lines.length > 0)

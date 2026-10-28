@@ -27,7 +27,6 @@ import { loadInlineSelectorPlayers } from '~/integration/inline-selector'
 import InlineSelector from '~/integration/InlineSelector.vue'
 import InventoryView from '~/pages/inventory/components/InventoryView.vue'
 import ResourcesView from '~/pages/inventory/components/ResourcesView.vue'
-import { type InventoryPlayer } from '~/pages/inventory/inventory'
 import Page from '~/pages/Page.vue'
 
 defineOptions({
@@ -38,7 +37,7 @@ type Tab = 'inventory' | 'resources'
 
 const localize = useLocalize('inventory')
 
-const player = shallowRef<InventoryPlayer | null>(null)
+const player = shallowRef<PlayerModel | null>(null)
 
 const tab = ref<Tab>('inventory')
 

@@ -4,7 +4,7 @@
       <SimulatorDebug logs @log="runLogged" />
     </template>
 
-    <StatisticsIntegration type="guilds" :profile="PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
+    <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -149,8 +149,7 @@ defineOptions({
 
 type ListPlayer = {
   player: PlayerModel | SimulatorData
-  // 0 active, 1 inactive, 2 inactive for longer
-  inactive: number
+  inactive: 0 | 1 | 2
   index: number
 }
 
@@ -159,8 +158,6 @@ type SimulatorLog = {
   players: unknown[]
   config: SimulatorConfig | null
 }
-
-const PROFILE = HYDRA_PROFILE
 
 const GLADIATOR_MODE_KEY = 'guild_sim/gladiator'
 
@@ -283,11 +280,11 @@ function removePlayer(entry: ListPlayer) {
 }
 
 function cycleInactive(entry: ListPlayer) {
-  setPlayers(players.value.map((item) => (item === entry ? { ...item, inactive: (item.inactive + 1) % INACTIVE_SUFFIXES.length } : item)))
+  setPlayers(players.value.map((item): ListPlayer => (item === entry ? { ...item, inactive: ((item.inactive + 1) % INACTIVE_SUFFIXES.length) as ListPlayer['inactive'] } : item)))
 }
 
 function resetInactive(entry: ListPlayer) {
-  setPlayers(players.value.map((item) => (item === entry ? { ...item, inactive: 0 } : item)))
+  setPlayers(players.value.map((item): ListPlayer => (item === entry ? { ...item, inactive: 0 } : item)))
 }
 
 function handleRowClick(event: MouseEvent, entry: ListPlayer) {
@@ -305,7 +302,7 @@ function handleRowKeydown(event: KeyboardEvent, entry: ListPlayer) {
 function insertGroup(group: GroupModel) {
   const members = compact(group.Members.map((identifier) => DatabaseManager.getPlayer(identifier, group.Timestamp)))
 
-  setPlayers(members.map((data) => ({ player: ModelUtils.toSimulatorData(data), inactive: 0, index: nextIndex++ })))
+  setPlayers(members.map((data): ListPlayer => ({ player: ModelUtils.toSimulatorData(data), inactive: 0, index: nextIndex++ })))
 
   clearEditor()
 }
@@ -321,7 +318,7 @@ function handlePaste(value: unknown) {
     const data = handleSimulatorPaste(value)
 
     if (Array.isArray(data)) {
-      const entries = data.map((item: unknown) => ({ player: preparePlayerData(item), inactive: 0, index: nextIndex++ }))
+      const entries = data.map((item: unknown): ListPlayer => ({ player: preparePlayerData(item), inactive: 0, index: nextIndex++ }))
 
       if (pasteMode.value) {
         setPlayers([...players.value, ...entries])

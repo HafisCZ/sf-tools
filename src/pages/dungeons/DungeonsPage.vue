@@ -12,7 +12,7 @@
       <SimulatorDebug logs copy @log="runLogged" @copy="copyAll" />
     </template>
 
-    <StatisticsIntegration type="players" :profile="PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
+    <StatisticsIntegration type="players" :profile="SELF_PROFILE" :scope="listPlayers" cheats @select="insertPlayer" />
     <SimulatorPasteTarget @paste="handlePaste" />
 
     <div class="grid gap-7 md:grid-cols-2">
@@ -163,8 +163,6 @@ type SimulatorLog = {
   players: unknown[]
   config: SimulatorConfig | null
 }
-
-const PROFILE = SELF_PROFILE
 
 const WIKI_URL = 'https://github.com/HafisCZ/sf-tools/wiki/%5BWIP%5D-Tools-Overview#dungeon-simulator'
 
@@ -444,7 +442,6 @@ function changeItemView(open: boolean) {
   }
 }
 
-// A life potion set in the data view moves into a free potion slot, so switching over does not drop it
 function withLifePotion(state: CharacterState, fighter: PlayerModel | null) {
   const size = fighter?.Potions?.Life ?? 0
   const free = state.potions.findIndex((potion) => potion.type === 0)
@@ -470,7 +467,6 @@ function applySwaps(entries: EquipmentSwaps, character: CharacterState) {
 
   const current = players.value[index]
 
-  // Everything the items, pets and potions decide comes back from the imported character, the rest stays as it was typed
   if (current) {
     copySharedValues(fighter, current, REBUILD_PATHS)
   }
