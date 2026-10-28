@@ -2231,10 +2231,6 @@ TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Fortress', {
   expr: (p) => p.Fortress?.Fortress
 })
 
-TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Upgrades', {
-  expr: (p) => p.Fortress?.Upgrades
-})
-
 TABLE_EXPRESSION_CONFIG.register('header', 'public', 'Warriors', {
   expr: (p) => p.Fortress?.Warriors
 })
