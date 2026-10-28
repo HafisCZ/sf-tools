@@ -173,7 +173,7 @@ function show(params: StatsShowParams) {
   name.value = group.Latest.Name
 
   const linkedIdentifiers = DatabaseManager.getLinkedIdentifiers(identifier.value)
-  links.value = linkedIdentifiers.length === 1 ? linkedIdentifiers[0] : linkedIdentifiers.join(' / ')
+  links.value = linkedIdentifiers.join(' / ')
 
   list.value = Site.options.groups_empty ? group.List : group.List.filter((entry) => entry.MembersPresent)
 

@@ -139,7 +139,7 @@ function show(params: StatsShowParams) {
   name.value = player.Name
 
   const linkedIdentifiers = DatabaseManager.getLinkedIdentifiers(identifier.value)
-  links.value = linkedIdentifiers.length === 1 ? linkedIdentifiers[0] : linkedIdentifiers.join(' / ')
+  links.value = linkedIdentifiers.join(' / ')
 
   load()
 }
