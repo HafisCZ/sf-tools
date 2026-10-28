@@ -215,7 +215,7 @@ export function getItemAttributes(item: ItemModel, primaryType: number): ItemAtt
   return ITEM_ATTRIBUTES.map((name) => item[name])
     .filter((attribute) => attribute.Value)
     .map((attribute) => {
-      const base = Math.trunc(attribute.Value * Math.pow(1 / 1.03, item.Upgrades))
+      const base = Math.trunc(attribute.Value / item.UpgradeMultiplier)
 
       return {
         type: attribute.Type,
@@ -298,8 +298,8 @@ function getComparedStats(stats: CharacterStats, player: InventoryPlayer, index:
   const baseValues = ITEM_ATTRIBUTES.map((name) => base[name].Value)
 
   if (ignoreUpgrades) {
-    const itemScale = 1 / Math.pow(1.03, item.Upgrades)
-    const baseScale = 1 / Math.pow(1.03, base.Upgrades)
+    const itemScale = 1 / item.UpgradeMultiplier
+    const baseScale = 1 / base.UpgradeMultiplier
 
     for (let i = 0; i < 5; i++) {
       itemValues[i] *= itemScale

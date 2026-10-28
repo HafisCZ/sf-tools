@@ -440,6 +440,8 @@ export class ItemModel {
         }
       }
     }
+
+    this.UpgradeMultiplier = Math.pow(1.03, this.Upgrades)
   }
 
   getBlacksmithUpgradePriceRange(max = 20) {
