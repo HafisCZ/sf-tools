@@ -66,6 +66,7 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Added support for new data formats (game version 30.5)',
       'Added headers for new dungeons',
       'Added <code>Item Level</code> accessor for items',
+      'Added option to show character portraits on player cards',
       'Updated total achievement and scrapbook counts',
       'Updated character and group filtering',
       'Fixed witch scrolls being in wrong order',
@@ -83,9 +84,10 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
     ],
     'Hellevator Simulator': ['Raised floor limit to 600', 'Updated enemies', 'Improved accuracy of enemy stats'],
     'Raid Simulator': ['Added raids 51 to 150', 'Added names to Hellevator raids', 'Added button to apply current snack to all players', 'Improved accuracy of Hellevator raid enemies'],
-    'Fight Analyzer': ['Fixed damage being applied twice', 'Fixed wrong Bard notes color'],
-    'Pet Calendar': ['Updated Toilet pet aura requirement to 50'],
+    'Fight Analyzer': ['Added separate damage ranges for class states', 'Fixed damage being applied twice', 'Fixed wrong Bard notes color', 'Fixed fighters without weapon damage not being matched to their characters', 'Fixed other players not being read from newer HAR files'],
+    'Pet Calendar': ['Updated Toilet pet aura requirement to 50', "Fixed missing 3 day window around April Fools, Valentine's Day, New Year and Friday the 13th"],
     'Gold & Experience': ['Raised maximum level to 999', 'Updated Expeditions gold and experience calculations'],
+    'Inventory Manager': ['Added character portraits to character selection'],
     'All Simulators': [
       'Added option to cancel a running simulation',
       'Raised maximum character level to 999',
@@ -95,10 +97,11 @@ export const CHANGELOG: Record<string, ChangelogRelease> = {
       'Fixed attacks continuing after the enemy was defeated',
       'Fixed Necromancer minion revive chance',
       'Fixed snack strength of one character affecting other characters',
-      'Fixed wrong defense type in fight logs'
+      'Fixed wrong defense type in fight logs',
+      'Fixed Plague Doctor state after a blocked tincture throw'
     ],
-    Endpoint: ['Added level and class to character selection', 'Added automatic loading of server list and game version', 'Improved error and retry handling', 'Improved capture speed', 'Removed dependency on Unity'],
-    'All Tools': ['Improved layout on smaller devices', 'Added support for Plague Doctor', 'Added support for Blood Weaver', 'Added back Portuguese in-game translations']
+    Endpoint: ['Added level and class to character selection', 'Added automatic loading of server list and game version', 'Added Remember me option', 'Added new character selection screen with portraits and class icons', 'Improved error and retry handling', 'Improved capture speed', 'Removed dependency on Unity'],
+    'All Tools': ['Improved layout on smaller devices', 'Added support for Plague Doctor', 'Added support for Blood Weaver', 'Added back Portuguese in-game translations', 'Added new items']
   },
   'v7.4811': {
     Statistics: [
