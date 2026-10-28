@@ -1,5 +1,13 @@
 const ANNOUNCEMENTS = [
     {
+        id: '28-10-2026',
+        title: 'Maintenance & Update',
+        content: `
+            SF Tools will undergo maintenance and deployment on <b>Saturday, 31st October</b>.<br><br>
+            You may experience issues during that process as there are changes to the build itself. Thank you for your patience!
+        `
+    },
+    {
         id: '17-11-2024',
         title: 'Hellevator Themes & Google situation',
         content: `
