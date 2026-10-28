@@ -39,6 +39,7 @@ import { computed, ref } from 'vue'
 import SFHeading from '@library/SFHeading.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
+import { toggleItem } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { type BlacksmithResources } from '~/data/types'
 import { createResourceEntries, type ResourceEntry, type ResourceList } from '~/pages/inventory/inventory'
@@ -135,6 +136,6 @@ function setUpgrades(entry: ResourceEntry, value: number) {
 }
 
 function toggleDismantled(id: number) {
-  dismantledIds.value = dismantledIds.value.includes(id) ? dismantledIds.value.filter((dismantledId) => dismantledId !== id) : [...dismantledIds.value, id]
+  dismantledIds.value = toggleItem(dismantledIds.value, id)
 }
 </script>

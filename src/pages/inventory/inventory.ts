@@ -1,7 +1,7 @@
 import { formatSpacedNumber } from '@utils/formatting'
 import { globalLocalize } from '@utils/localization'
 import { ItemModel } from '~/core/models/item'
-import { type PlayerModel } from '~/core/models/player'
+import { PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import { type BlacksmithResources } from '~/data/types'
 import { Loca } from '~/playa/items'
@@ -69,8 +69,6 @@ export type CharacterStats = {
 }
 
 type StatKey = Exclude<keyof CharacterStats, 'level' | 'runes'>
-
-const COMPANIONS = ['Bert', 'Mark', 'Kunigunde'] as const
 
 const ITEM_ATTRIBUTES = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck'] as const
 
@@ -226,7 +224,7 @@ export function getItemAttributes(item: ItemModel, primaryType: number): ItemAtt
 }
 
 function getCharacter(player: PlayerModel, index: CharacterIndex): PlayerModel {
-  return (index > 0 ? player.Companions?.[COMPANIONS[index - 1]] : undefined) ?? player
+  return (index > 0 ? player.Companions?.[PlayerModel.COMPANIONS[index - 1]] : undefined) ?? player
 }
 
 function getHealth(character: PlayerModel, index: CharacterIndex, constitution: number, healthRune: number) {

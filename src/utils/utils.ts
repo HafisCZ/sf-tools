@@ -208,6 +208,10 @@ export function removeItem<TItem>(array: TItem[] | undefined, item: TItem) {
   }
 }
 
+export function toggleItem<TItem>(array: TItem[], item: TItem) {
+  return array.includes(item) ? array.filter((entry) => entry !== item) : [...array, item]
+}
+
 export function filterInPlace<TItem>(array: TItem[], predicate: (item: TItem) => boolean) {
   let readIndex = 0
   let writeIndex = 0

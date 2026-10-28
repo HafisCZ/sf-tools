@@ -319,6 +319,8 @@ export class PlayerModel {
 
   static MOUNT_MAP: (number | '')[] = ['', 10, 20, 30, 50, 50]
 
+  static COMPANIONS = ['Bert', 'Mark', 'Kunigunde'] as const
+
   static ATTRIBUTES: AttributeName[] = ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']
 
   static ATTRIBUTE_TO_TYPE: Record<AttributeName, number> = {
@@ -548,27 +550,7 @@ export class PlayerModel {
     this.Rank = dataType.long()
 
     // Face data
-    this.Face = {
-      Mouth: dataType.long(),
-      Hair: {
-        Type: dataType.long() % 100,
-        Color: Math.trunc(dataType.back(1).long() / 100)
-      },
-      Brows: {
-        Type: dataType.long() % 100,
-        Color: Math.trunc(dataType.back(1).long() / 100)
-      },
-      Eyes: dataType.long(),
-      Beard: {
-        Type: dataType.long() % 100,
-        Color: Math.trunc(dataType.back(1).long() / 100)
-      },
-      Nose: dataType.long(),
-      Ears: dataType.long(),
-      Special: dataType.long(),
-      Special2: dataType.long(),
-      Portrait: dataType.long()
-    }
+    this.Face = PlayerModel.decodeFace(dataType.sub(10))
 
     // Race + Dungeon refresh
     this.Race = dataType.short()
@@ -909,27 +891,7 @@ export class PlayerModel {
         Total: dataType.long()
       }
       dataType.skip(1)
-      this.Face = {
-        Mouth: dataType.long(),
-        Hair: {
-          Type: dataType.long() % 100,
-          Color: Math.trunc(dataType.back(1).long() / 100)
-        },
-        Brows: {
-          Type: dataType.long() % 100,
-          Color: Math.trunc(dataType.back(1).long() / 100)
-        },
-        Eyes: dataType.long(),
-        Beard: {
-          Type: dataType.long() % 100,
-          Color: Math.trunc(dataType.back(1).long() / 100)
-        },
-        Nose: dataType.long(),
-        Ears: dataType.long(),
-        Special: dataType.long(),
-        Special2: dataType.long(),
-        Portrait: dataType.long()
-      }
+      this.Face = PlayerModel.decodeFace(dataType.sub(10))
       this.Race = dataType.short()
       dataType.clear() // skip
       this.Gender = dataType.byte()
@@ -1560,27 +1522,7 @@ export class PlayerModel {
       this.Rank = dataType.long()
       dataType.short()
       this.DevilPercent = dataType.short()
-      this.Face = {
-        Mouth: dataType.long(),
-        Hair: {
-          Type: dataType.long() % 100,
-          Color: Math.trunc(dataType.back(1).long() / 100)
-        },
-        Brows: {
-          Type: dataType.long() % 100,
-          Color: Math.trunc(dataType.back(1).long() / 100)
-        },
-        Eyes: dataType.long(),
-        Beard: {
-          Type: dataType.long() % 100,
-          Color: Math.trunc(dataType.back(1).long() / 100)
-        },
-        Nose: dataType.long(),
-        Ears: dataType.long(),
-        Special: dataType.long(),
-        Special2: dataType.long(),
-        Portrait: dataType.long()
-      }
+      this.Face = PlayerModel.decodeFace(dataType.sub(10))
       this.Race = dataType.short()
       dataType.clear() // skip
       this.Gender = dataType.byte()
@@ -2290,6 +2232,23 @@ export class PlayerModel {
       return output
     } else {
       return []
+    }
+  }
+
+  static decodeFace(values: number[]): PlayerFace {
+    const [mouth, hair, brows, eyes, beard, nose, ears, special, special2, portrait] = values
+
+    return {
+      Mouth: mouth,
+      Hair: { Type: hair % 100, Color: Math.trunc(hair / 100) },
+      Brows: { Type: brows % 100, Color: Math.trunc(brows / 100) },
+      Eyes: eyes,
+      Beard: { Type: beard % 100, Color: Math.trunc(beard / 100) },
+      Nose: nose,
+      Ears: ears,
+      Special: special,
+      Special2: special2,
+      Portrait: portrait
     }
   }
 

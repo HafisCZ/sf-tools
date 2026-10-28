@@ -93,8 +93,6 @@ const LIST_POOLS: Record<'backpack' | 'shop', (inventory: PlayerInventory) => It
   shop: (inventory) => inventory.Shop
 }
 
-const COMPANION_KEYS = ['Bert', 'Mark', 'Kunigunde'] as const
-
 export function listEquipmentCandidates(source: PlayerModel, slot: AnyEquipmentSlot, character: PlayerModel) {
   const { type, itemClass } = getSlotTarget(character, slot)
   const candidates: EquipmentCandidate[] = []
@@ -147,7 +145,7 @@ function isSameItemKind(type: number, other: number) {
 export function listEquipmentCharacters(player: PlayerModel) {
   const companions = player.Companions
 
-  return companions ? [player, ...COMPANION_KEYS.map((key) => companions[key])] : [player]
+  return companions ? [player, ...PlayerModel.COMPANIONS.map((key) => companions[key])] : [player]
 }
 
 export function applyEquipmentSwaps(source: PlayerModel, swaps: EquipmentSwaps[], character?: CharacterState) {

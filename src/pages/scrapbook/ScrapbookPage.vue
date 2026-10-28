@@ -48,6 +48,7 @@ import SFParagraph from '@library/SFParagraph.vue'
 import SFTabs from '@library/SFTabs.vue'
 import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
+import { toggleItem } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { DatabaseManager } from '~/data/database-manager'
 import { loadInlineSelectorPlayers } from '~/integration/inline-selector'
@@ -143,7 +144,7 @@ function showPlayers() {
 }
 
 function toggleMarked(key: string) {
-  marked.value = marked.value.includes(key) ? marked.value.filter((markedKey) => markedKey !== key) : [...marked.value, key]
+  marked.value = toggleItem(marked.value, key)
 }
 
 function createFilters(): ScrapbookFilters {

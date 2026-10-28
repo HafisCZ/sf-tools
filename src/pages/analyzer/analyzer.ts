@@ -3,7 +3,7 @@ import { globalLocalize, hasTranslation } from '@utils/localization'
 import { chunk, sortDescending } from '@utils/utils'
 import { Exporter } from '~/core/exporter'
 import { ItemModel } from '~/core/models/item'
-import { PlayerModel } from '~/core/models/player'
+import { PlayerModel, type PlayerFace } from '~/core/models/player'
 import { ModelUtils, type SimulatorData } from '~/core/models/utils'
 import { ComplexDataType } from '~/data/complex-data-type'
 import { PlayaResponse } from '~/data/playa-response'
@@ -425,18 +425,7 @@ export class FighterModel implements Fighter {
   Intelligence: { Total: number }
   Constitution: { Total: number }
   Luck: { Total: number }
-  Face: {
-    Mouth: number
-    Hair: { Type: number; Color: number }
-    Brows: { Type: number; Color: number }
-    Eyes: number
-    Beard: { Type: number; Color: number }
-    Nose: number
-    Ears: number
-    Special: number
-    Special2: number
-    Portrait: number
-  }
+  Face: PlayerFace
   Race: number
   Gender: number
   Class: CharacterClass
@@ -476,27 +465,7 @@ export class FighterModel implements Fighter {
       Total: dataType.long()
     }
 
-    this.Face = {
-      Mouth: dataType.long(),
-      Hair: {
-        Type: dataType.long() % 100,
-        Color: Math.trunc(dataType.back(1).long() / 100)
-      },
-      Brows: {
-        Type: dataType.long() % 100,
-        Color: Math.trunc(dataType.back(1).long() / 100)
-      },
-      Eyes: dataType.long(),
-      Beard: {
-        Type: dataType.long() % 100,
-        Color: Math.trunc(dataType.back(1).long() / 100)
-      },
-      Nose: dataType.long(),
-      Ears: dataType.long(),
-      Special: dataType.long(),
-      Special2: dataType.long(),
-      Portrait: dataType.long()
-    }
+    this.Face = PlayerModel.decodeFace(dataType.sub(10))
 
     this.Race = dataType.long()
     this.Gender = dataType.long()

@@ -1,4 +1,4 @@
-import type { PlayerFace } from '~/core/models/player'
+import { PlayerModel, type PlayerFace } from '~/core/models/player'
 import { BLOODWEAVER, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
 import PORTRAITS from './portraits.json'
 
@@ -106,20 +106,7 @@ export function parseFaceData(text: string): PlayerFace | null {
     return null
   }
 
-  const [mouth, hair, brows, eyes, beard, nose, ears, special, special2, portrait] = values
-
-  return {
-    Mouth: mouth,
-    Hair: { Type: hair % 100, Color: Math.trunc(hair / 100) },
-    Brows: { Type: brows % 100, Color: Math.trunc(brows / 100) },
-    Eyes: eyes,
-    Beard: { Type: beard % 100, Color: Math.trunc(beard / 100) },
-    Nose: nose,
-    Ears: ears,
-    Special: special,
-    Special2: special2,
-    Portrait: portrait
-  }
+  return PlayerModel.decodeFace(values)
 }
 
 export function loadPortraitImages(portrait: Portrait | null) {

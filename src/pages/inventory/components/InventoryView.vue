@@ -63,6 +63,7 @@ import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
 import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
+import { toggleItem } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { createInventoryEntries, getCharacterStats, getComparisonGroups, getStatsGroups, type CharacterIndex, type InventoryEntry, type InventoryList } from '~/pages/inventory/inventory'
 import { ASSASSIN } from '~/sim/base'
@@ -161,13 +162,13 @@ function selectBase(id: number) {
 }
 
 function toggleCompared(id: number) {
-  comparedIds.value = comparedIds.value.includes(id) ? comparedIds.value.filter((comparedId) => comparedId !== id) : [...comparedIds.value, id]
+  comparedIds.value = toggleItem(comparedIds.value, id)
 }
 
 function toggleExpanded(id: number, event: MouseEvent) {
   event.preventDefault()
 
-  expandedIds.value = expandedIds.value.includes(id) ? expandedIds.value.filter((expandedId) => expandedId !== id) : [...expandedIds.value, id]
+  expandedIds.value = toggleItem(expandedIds.value, id)
 }
 
 function flip() {
