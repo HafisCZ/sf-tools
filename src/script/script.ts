@@ -1103,7 +1103,7 @@ export class Script {
             // Check if key exists
             if (key && key in this.variables) {
               // If variable with that name exists then set it
-              if (this.variables[key].value != 'undefined') {
+              if (typeof this.variables[key].value !== 'undefined') {
                 // Set value
                 rule[1] = Number(this.variables[key].value)
               } else {
