@@ -2,16 +2,6 @@ import { Logger } from './logger'
 
 const BASE_URL = 'https://api.sftools.mar21.eu/api/'
 
-export class SiteApiError extends Error {
-  error: string
-
-  constructor(error: string) {
-    super(error)
-
-    this.error = error
-  }
-}
-
 async function request<TResponse>(method: string, url: string, init?: RequestInit) {
   Logger.log('APICALL', `${method} ${url}`)
 
@@ -22,11 +12,11 @@ async function request<TResponse>(method: string, url: string, init?: RequestIni
 
     data = (await response.json()) as { error?: string }
   } catch (error) {
-    throw new SiteApiError(error instanceof Error ? error.message : String(error))
+    throw new Error(error instanceof Error ? error.message : String(error))
   }
 
   if (data.error) {
-    throw new SiteApiError(data.error)
+    throw new Error(data.error)
   }
 
   return data as TResponse
