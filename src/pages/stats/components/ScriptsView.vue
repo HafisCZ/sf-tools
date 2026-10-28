@@ -620,7 +620,6 @@ function openArchive(ctrlKey: boolean) {
 function importScript() {
   useFilePicker({
     accept: 'text/plain',
-    multiple: true,
     callback: (files) => {
       void files[0].text().then((text) => setEditorContent(text))
     }
