@@ -1,0 +1,79 @@
+<template>
+  <div class="flex flex-col gap-1.5">
+    <label v-if="props.label || slots.label" :for="id" class="font-bold text-white">
+      <slot name="label">{{ props.label }}</slot>
+    </label>
+    <input
+      :id="id"
+      v-model="modelValue"
+      v-bind="$attrs"
+      class="w-full rounded-md border bg-surface px-3 py-2 leading-5 text-white/90 outline-none read-only:caret-transparent placeholder:text-white/40"
+      :class="BORDER_CLASSES[validationResult?.[0] ?? 'default']"
+      :aria-invalid="validationResult?.[0] === 'error'"
+      :aria-describedby="descriptionId"
+      @keydown="showValidation"
+    />
+    <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
+    <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, useId } from 'vue'
+import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
+import SFParagraph from './SFParagraph.vue'
+import SFValidation from './SFValidation.vue'
+
+defineOptions({
+  name: 'SFInput',
+  inheritAttrs: false
+})
+
+const props = defineProps<
+  ValidationProps<string> & {
+    /**
+     * Text shown above the field, also its accessible name
+     */
+    label?: string
+    /**
+     * Smaller grey text shown under the field
+     */
+    description?: string
+    /**
+     * Shows an error while the field is empty
+     */
+    required?: boolean
+  }
+>()
+
+const modelValue = defineModel<string>({ required: true })
+
+const slots = defineSlots<{
+  /**
+   * Replaces the label text
+   */
+  label?(): unknown
+}>()
+
+defineExpose({
+  get isValid() {
+    return isValid.value
+  }
+})
+
+const BORDER_CLASSES = {
+  default: 'border-line focus:not-read-only:border-accent',
+  error: 'border-red-400',
+  warning: 'border-yellow-400'
+}
+
+const id = useId()
+
+const descriptionId = computed(() => (props.description ? `${id}-description` : undefined))
+
+const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultValidator(props))
+
+function showValidation() {
+  validationVisible.value = true
+}
+</script>

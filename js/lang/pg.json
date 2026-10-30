@@ -583,7 +583,7 @@
         "open": "Urrentlycay openway ungeonsday",
         "poll": "Ollpay avedsay aracterschay",
         "graph": {
-            "y": "Ossbay HPAY Eftlay",
+            "y": "HPAY Eftlay",
             "x": "- Istributionday orfay electedsay amountway ofway iestray -"
         },
         "results": "Esultsray",
@@ -656,7 +656,7 @@
         },
         "user_error": {
             "title": "Ouryay userway amenay orway asswordpay isway otnay alidvay",
-            "message": "Easeplay ensureway atthay itway isway inway orrectcay ormatfay (usernameway@urlway)"
+            "message": "Easeplay eckchay ouryay usernameway andway asswordpay andway ytray againway."
         },
         "credentials_error": "Ongwray usernameway orway asswordpay",
         "download_error": "Ownloadday ailedfay"

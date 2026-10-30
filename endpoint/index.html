@@ -5,63 +5,107 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
-        <script src="build/endpoint.loader.js"></script>
-        <script type="text/javascript">
+        <script type="module">
+            import init, { login, loginViaToken, execute } from './build/endpoint.js';
+
             window.callback = null;
-            window.unity = null;
+
+            const send = (message) => window.callback?.(JSON.parse(message));
+            const sendError = () => window.callback?.({ error: 'an_error_occurred' });
+
+            const sendAccount = async (message) => {
+                const account = JSON.parse(message);
+
+                if (account.token) {
+                    try {
+                        account.token = await sealToken(account.token);
+                    } catch {
+                        delete account.token;
+                    }
+                }
+
+                window.callback?.(account);
+            };
+
+            window.addEventListener('error', sendError);
+            window.addEventListener('unhandledrejection', sendError);
+
+            function requestResult(request) {
+                return new Promise((resolve, reject) => {
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            // Token is sealed once more with a key that cannot leave this browser
+            async function getBrowserKey() {
+                const request = indexedDB.open('endpoint', 1);
+                request.onupgradeneeded = () => request.result.createObjectStore('keys');
+
+                const database = await requestResult(request);
+
+                try {
+                    let key = await requestResult(database.transaction('keys').objectStore('keys').get('token'));
+
+                    if (!key) {
+                        key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+
+                        await requestResult(database.transaction('keys', 'readwrite').objectStore('keys').put(key, 'token'));
+                    }
+
+                    return key;
+                } finally {
+                    database.close();
+                }
+            }
+
+            async function sealToken(token) {
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const sealed = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await getBrowserKey(), new TextEncoder().encode(token));
+
+                const bytes = new Uint8Array(iv.length + sealed.byteLength);
+                bytes.set(iv);
+                bytes.set(new Uint8Array(sealed), iv.length);
+
+                return btoa(String.fromCharCode(...bytes));
+            }
+
+            async function openToken(token) {
+                const bytes = Uint8Array.from(atob(token), (char) => char.charCodeAt(0));
+                const opened = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes.subarray(0, 12) }, await getBrowserKey(), bytes.subarray(12));
+
+                return new TextDecoder().decode(opened);
+            }
 
             window.load = async function () {
-                window.unity = await createUnityInstance(
-                    document.querySelector("#upixel"),
-                    {
-                        dataUrl: "build/endpoint.data",
-                        frameworkUrl: "build/endpoint.framework.js",
-                        codeUrl: "build/endpoint.wasm",
-                        streamingAssetsUrl: "StreamingAssets",
-                        companyName: "mar21",
-                        productName: "Endpoint",
-                        productVersion: "11.0",
-                    }
-                );
+                await init();
             }
 
-            window.destroy = async function (callback) {
-                await window.unity.Quit();
-            }
+            window.destroy = async function () {}
 
-            window.login = function (server, version, username, password) {
+            window.playaAccountLogin = function (server, username, password, remember) {
                 if (password.length > 40) {
                     password = password.slice(0, 40);
                 }
 
-                window.unity.SendMessage('Controller', 'Login', JSON.stringify({
-                    server,
-                    username,
-                    password,
-                    version
-                }));
+                login(JSON.stringify({ server, username, password, remember }), sendAccount);
             }
 
-            window.continue_login = function (server, version, username, id) {
-                window.unity.SendMessage('Controller', 'ContinueLogin', JSON.stringify({
-                    server,
-                    username,
-                    id,
-                    version
-                }))
+            window.playaAccountLoginViaToken = async function (server, token) {
+                let opened;
+
+                try {
+                    opened = await openToken(token);
+                } catch {
+                    window.callback?.({ error: 'endpoint_token_invalid' });
+                    return;
+                }
+
+                loginViaToken(JSON.stringify({ server, token: opened }), sendAccount);
             }
 
-            window.query_many = function (ids) {
-                window.unity.SendMessage('Controller', 'QueryMany', ids);
-            }
-
-            window.query_hall_of_fame = function () {
-                window.unity.SendMessage('Controller', 'QueryHallOfFame');
-            }
-
-            window.query_self = function () {
-                window.unity.SendMessage('Controller', 'QuerySelf');
+            window.execute = function (params) {
+                execute(JSON.stringify(params), send);
             }
         </script>
     </body>
