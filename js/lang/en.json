@@ -1311,6 +1311,11 @@
                 "more": "Dungeons included when using More option",
                 "include_twister": "Include Twister",
                 "include_sandstorm": "Include Sandstorm"
+            },
+            "limits": {
+                "title": "Simulation limits",
+                "twister": "Twister",
+                "sandstorm": "Sandstorm"
             }
         },
         "analyzer_autofill": {
