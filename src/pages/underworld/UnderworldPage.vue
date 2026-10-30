@@ -1,7 +1,7 @@
 <template>
   <Page>
     <template #nav-left>
-      <SimulatorDebug logs copy presets @log="runLogged" @copy="copyAll" @insert="handlePaste" />
+      <SimulatorDebug logs copy presets @log="runLogged" @copy="copyWithConfig" @insert="handlePaste" />
     </template>
 
     <StatisticsIntegration type="players" :profile="FIGHT_SIMULATOR_PROFILE" :scope="listPlayers" cheats grouped @select="insertPlayer" />
@@ -324,6 +324,10 @@ function copyPlayer(player: PlayerModel) {
 }
 
 function copyAll() {
+  void copyJson(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
+}
+
+function copyWithConfig() {
   copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 

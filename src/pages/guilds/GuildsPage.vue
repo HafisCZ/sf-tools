@@ -131,7 +131,7 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
+import { handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { WorkerBatch } from '~/sim/workers'
 
 defineOptions({
@@ -331,7 +331,7 @@ function copyPlayer(player: PlayerModel) {
 }
 
 function copyAll() {
-  copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
+  void copyJson(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
 async function runSimulation(instances: number, iterations: number, onLogs?: (log: SimulatorLog) => void) {

@@ -1,7 +1,7 @@
 <template>
   <Page>
     <template #nav-left>
-      <SimulatorDebug logs copy @log="runLogged" @copy="copyAll" />
+      <SimulatorDebug logs copy @log="runLogged" @copy="copyWithConfig" />
     </template>
 
     <StatisticsIntegration type="guilds" :profile="HYDRA_PROFILE" :scope="listCompleteGroups" @select="insertGroup" />
@@ -327,6 +327,10 @@ function copyPlayer(player: PlayerModel) {
 }
 
 function copyAll() {
+  void copyJson(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
+}
+
+function copyWithConfig() {
   copySimulatorData(players.value.map(({ player }) => ModelUtils.toSimulatorData(player)))
 }
 
