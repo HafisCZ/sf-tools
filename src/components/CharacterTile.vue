@@ -9,7 +9,8 @@
     <span class="absolute inset-x-0 top-0 h-1/4 bg-linear-to-b from-[rgb(9_26_34/0.69)] to-[rgb(9_26_34/0)]" />
     <span class="absolute inset-x-0 bottom-0 h-[42%] bg-linear-to-t from-[rgb(9_26_34/0.69)] to-[rgb(9_26_34/0)]" />
     <span class="absolute inset-[3px] rounded-[2px] border shadow-[0_0_0_1px_rgb(0_0_0/0.35)]" :class="{ 'border-accent': props.selected, 'border-line': !props.selected, 'group-hover:border-accent group-focus-visible:border-accent': props.hoverable }" />
-    <span class="absolute inset-x-[10px] top-[10px] truncate text-[length:max(9px,8.5cqw)] leading-none font-bold text-[#7fc8e0] uppercase text-shadow-[0_1px_2px_rgb(0_0_0/0.9)]">{{ props.world }}</span>
+    <span class="absolute top-[10px] left-[10px] truncate text-[length:max(9px,8.5cqw)] leading-none font-bold text-[#7fc8e0] uppercase text-shadow-[0_1px_2px_rgb(0_0_0/0.9)]" :class="props.favorite ? 'right-[calc(10px+1.5em)]' : 'right-[10px]'">{{ props.world }}</span>
+    <SFIcon v-if="props.favorite" name="star-solid" class="absolute top-[10px] right-[10px] text-[length:max(9px,8.5cqw)] text-[#f0c042] opacity-75 drop-shadow-[0_1px_0_rgb(0_0_0/0.6)]" />
     <img :src="getClassImageUrl(props.characterClass)" :alt="localize(`class${props.characterClass}`)" class="absolute bottom-[8px] left-[8px] size-[22%]" />
     <span class="absolute right-[8px] bottom-[25px] left-[56px] truncate leading-[1.1] font-bold text-shadow-[0_2px_0_rgb(0_0_0/0.6)]" :style="{ fontSize: `${nameSize}px` }">{{ props.name }}</span>
     <span class="absolute right-[8px] bottom-[10px] left-[56px] truncate text-[length:max(8px,6.5cqw)] leading-none font-bold text-[#f0c042] uppercase text-shadow-[0_1px_0_rgb(0_0_0/0.6)]">{{ localize('level') }} {{ props.level }}</span>
@@ -18,6 +19,7 @@
 
 <script setup lang="ts">
 import { computed, shallowRef } from 'vue'
+import SFIcon from '@library/SFIcon.vue'
 import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
 import CharacterRenderer from '~/components/CharacterRenderer.vue'
@@ -48,6 +50,10 @@ const props = defineProps<{
    * Face data for the portrait, the game's silhouette is shown without it
    */
   portrait: Pick<PlayerModel, 'Face' | 'Race' | 'Gender' | 'Class'> | null
+  /**
+   * Shows a star in the top right corner
+   */
+  favorite?: boolean
   /**
    * Highlights the border
    */

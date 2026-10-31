@@ -63,7 +63,7 @@
         <SFHeading level="3" class="border-b border-line pb-2 text-center">{{ localize('step7.title') }}</SFHeading>
         <ul class="-mr-5 grid max-h-[392px] grid-cols-[repeat(auto-fill,192px)] justify-center gap-2 overflow-y-auto pr-5">
           <li v-for="character in characters" :key="`${character.server_id}-${character.id}`">
-            <CharacterTile :name="character.name" :level="character.level" :character-class="character.char_class" :world="character.world" :portrait="character.portrait" :selected="selectedCharacters.includes(character)" :aria-pressed="selectedCharacters.includes(character)" @click="toggleCharacter(character)" />
+            <CharacterTile :name="character.name" :level="character.level" :character-class="character.char_class" :world="character.world" :portrait="character.portrait" :favorite="Boolean(character.is_favorite)" :selected="selectedCharacters.includes(character)" :aria-pressed="selectedCharacters.includes(character)" @click="toggleCharacter(character)" />
           </li>
         </ul>
         <SFSelect ref="mode-ref" v-model="mode" :label="localize('mode.title')" :options="modeOptions" />
