@@ -27,7 +27,7 @@
         </div>
         <div v-else-if="entries.length > 0" class="flex max-h-96 flex-col overflow-y-auto">
           <div v-for="entry in entries" :key="entry.LinkId" class="group relative">
-            <button type="button" class="w-full cursor-pointer rounded py-2 pr-10 pl-3 text-left outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
+            <button type="button" class="w-full cursor-pointer truncate rounded px-3 py-2 text-left group-hover:pr-10 group-has-[:focus-visible]:pr-10 outline-none hover:bg-surface-hover focus-visible:bg-surface-hover" @click="selectEntry(entry)">
               <span class="group-hover:hidden group-has-[:focus-visible]:hidden">{{ entry.Name }} @ {{ entry.Prefix }}</span>
               <span class="hidden text-white/60 group-hover:inline group-has-[:focus-visible]:inline">{{ describeEntry(entry) }}</span>
             </button>
