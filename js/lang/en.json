@@ -1150,7 +1150,8 @@
             "gem": "Gem",
             "enchantment": "Enchantment",
             "upgrades": "Upgrades",
-            "value": "Value",
+            "rune_value": "Rune value",
+            "gem_value": "Gem value",
             "potions": "Potions",
             "pets": "Pet bonus",
             "slot": {

@@ -37,9 +37,9 @@
 
         <div v-if="expandedSlot === slot && hasItem(slot)" class="grid grid-cols-2 gap-2 border-t border-line p-2">
           <SFSelect :model-value="String(getRune(slot).type)" :label="localize('rune')" :options="runeOptions" @update:model-value="(value) => changeRune(slot, Number(value), getRune(slot).value)" />
-          <SFNumber :model-value="getRune(slot).value" :label="localize('value')" :min="0" :max="getRuneLimit(getRune(slot).type)" :step="1" :readonly="getRune(slot).type === 0" centered @update:model-value="(value) => changeRune(slot, getRune(slot).type, value ?? 0)" />
+          <SFNumber :model-value="getRune(slot).value" :label="localize('rune_value')" :min="0" :max="getRuneLimit(getRune(slot).type)" :step="1" :readonly="getRune(slot).type === 0" centered @update:model-value="(value) => changeRune(slot, getRune(slot).type, value ?? 0)" />
           <SFSelect :model-value="String(getGem(slot).type)" :label="localize('gem')" :options="gemOptions" @update:model-value="(value) => changeGem(slot, Number(value), getGem(slot).value)" />
-          <SFNumber :model-value="getGem(slot).value" :label="localize('value')" :min="0" :step="1" :readonly="getGem(slot).type === 0" centered @update:model-value="(value) => changeGem(slot, getGem(slot).type, value ?? 0)" />
+          <SFNumber :model-value="getGem(slot).value" :label="localize('gem_value')" :min="0" :step="1" :readonly="getGem(slot).type === 0" centered @update:model-value="(value) => changeGem(slot, getGem(slot).type, value ?? 0)" />
           <SFSelect :model-value="String(getEnchantment(slot))" :label="localize('enchantment')" :options="yesNoOptions" @update:model-value="(value) => changeEdit(slot, { enchantment: value === 'true' })" />
           <SFNumber :model-value="getItem(slot).Upgrades" :label="localize('upgrades')" :min="0" :max="MAXIMUM_UPGRADES" :step="1" centered @update:model-value="(value) => changeEdit(slot, { upgrades: Math.min(value ?? 0, MAXIMUM_UPGRADES) })" />
         </div>
