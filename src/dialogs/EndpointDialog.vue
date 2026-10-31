@@ -50,7 +50,7 @@
       </form>
 
       <div v-else-if="step === 'loading'" class="flex flex-col items-center gap-4">
-        <SFIcon name="spinner" class="animate-spin text-3xl" />
+        <img src="/res/favicon.png" alt="" width="100" class="animate-[spin_1.2s_linear_infinite] opacity-65 select-none" />
         <SFParagraph size="lg">{{ localize('step4.title') }}</SFParagraph>
       </div>
 
@@ -113,7 +113,6 @@ import { computed, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue
 import SFButton from '@library/SFButton.vue'
 import SFCheckbox from '@library/SFCheckbox.vue'
 import SFHeading from '@library/SFHeading.vue'
-import SFIcon from '@library/SFIcon.vue'
 import SFInput from '@library/SFInput.vue'
 import SFList from '@library/SFList.vue'
 import SFParagraph from '@library/SFParagraph.vue'
