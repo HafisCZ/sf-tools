@@ -36,14 +36,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFDropdownMenu from '@library/SFDropdownMenu.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFTooltip from '@library/SFTooltip.vue'
-import { useInert } from '@utils/interactions'
+import { usePagedList } from '@utils/components'
+import { useDropdown } from '@utils/interactions'
 import { useLocalize } from '@utils/localization'
-import { useAnimationFramePosition } from '@utils/position'
 import { compact, getClassImageUrl } from '@utils/utils'
 import { RUNE_FIRE_DAMAGE } from '~/sim/base'
 import { DUNGEON_DATA, getBossName, getDungeonName, type DungeonRunes } from '~/sim/data/dungeons'
@@ -91,11 +91,7 @@ const DUNGEONS = Object.values(DUNGEON_DATA)
 
 const localize = useLocalize('dungeons')
 
-const open = ref(false)
 const query = ref('')
-
-const renderStart = ref(0)
-const renderEnd = ref(0)
 
 const containerElement = useTemplateRef('container-ref')
 const listElement = useTemplateRef('list-ref')
@@ -120,21 +116,9 @@ const matchingEntries = computed(() => {
   return search ? entries.value.filter((entry) => entry.label.toLowerCase().includes(search) || entry.description.toLowerCase().includes(search)) : entries.value
 })
 
-const renderedEntries = computed(() => matchingEntries.value.slice(renderStart.value, renderEnd.value))
+const { renderedItems: renderedEntries, showPage, loadMore } = usePagedList(matchingEntries, PAGE_SIZE, listElement)
 
-const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
-
-useInert(open)
-
-watch(
-  open,
-  (value) => {
-    if (!value && document.activeElement === document.body) {
-      containerElement.value?.querySelector('button')?.focus()
-    }
-  },
-  { flush: 'post' }
-)
+const { open, position, toggle: toggleOpen, close } = useDropdown(containerElement, () => containerElement.value?.querySelector('button'))
 
 function formatRunes(runes: DungeonRunes | undefined) {
   if (!runes) return ''
@@ -151,42 +135,10 @@ function isSelected(entry: BossEntry) {
 
 function toggle() {
   query.value = ''
-  open.value = !open.value
+  toggleOpen()
 
   if (open.value) {
     showPage(entries.value.findIndex(isSelected))
-  }
-}
-
-function close() {
-  open.value = false
-}
-
-function showPage(index: number) {
-  renderStart.value = Math.max(0, Math.min(index - Math.floor(PAGE_SIZE / 2), matchingEntries.value.length - PAGE_SIZE))
-  renderEnd.value = renderStart.value + PAGE_SIZE
-}
-
-async function loadMore(event: Event) {
-  const container = event.currentTarget
-
-  if (!(container instanceof HTMLElement)) return
-
-  if (container.scrollHeight - container.scrollTop - container.clientHeight < container.clientHeight && renderEnd.value < matchingEntries.value.length) {
-    renderEnd.value += PAGE_SIZE
-  }
-
-  if (container.scrollTop < container.clientHeight && renderStart.value > 0) {
-    const anchor = listElement.value?.firstElementChild
-    const top = anchor?.getBoundingClientRect().top ?? 0
-
-    renderStart.value = Math.max(0, renderStart.value - PAGE_SIZE)
-
-    await nextTick()
-
-    if (anchor) {
-      container.scrollTop += anchor.getBoundingClientRect().top - top
-    }
   }
 }
 

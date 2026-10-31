@@ -1,4 +1,4 @@
-import { type InjectionKey } from 'vue'
+import { computed, nextTick, ref, toValue, type InjectionKey, type MaybeRefOrGetter } from 'vue'
 import { type IconName } from './icons'
 import { type ValidationProps } from './validations'
 
@@ -77,6 +77,48 @@ export type DropdownItem =
 
 export function isSelectable<TItem extends object>(item: TItem): item is Exclude<TItem, SelectHeader | SelectDivider> {
   return !('type' in item)
+}
+
+export function usePagedList<TItem>(items: MaybeRefOrGetter<TItem[]>, pageSize: MaybeRefOrGetter<number | undefined>, list: MaybeRefOrGetter<Element | null | undefined>) {
+  const renderStart = ref(0)
+  const renderEnd = ref(0)
+
+  const renderedItems = computed(() => (toValue(pageSize) ? toValue(items).slice(renderStart.value, renderEnd.value) : toValue(items)))
+
+  function showPage(index: number) {
+    const size = toValue(pageSize)
+
+    if (!size) return
+
+    renderStart.value = Math.max(0, Math.min(index - Math.floor(size / 2), toValue(items).length - size))
+    renderEnd.value = renderStart.value + size
+  }
+
+  async function loadMore(event: Event) {
+    const size = toValue(pageSize)
+    const container = event.currentTarget
+
+    if (!size || !(container instanceof HTMLElement)) return
+
+    if (container.scrollHeight - container.scrollTop - container.clientHeight < container.clientHeight && renderEnd.value < toValue(items).length) {
+      renderEnd.value += size
+    }
+
+    if (container.scrollTop < container.clientHeight && renderStart.value > 0) {
+      const anchor = toValue(list)?.firstElementChild
+      const top = anchor?.getBoundingClientRect().top ?? 0
+
+      renderStart.value = Math.max(0, renderStart.value - size)
+
+      await nextTick()
+
+      if (anchor) {
+        container.scrollTop += anchor.getBoundingClientRect().top - top
+      }
+    }
+  }
+
+  return { renderStart, renderedItems, showPage, loadMore }
 }
 
 export type ExpressionSuggestion = {

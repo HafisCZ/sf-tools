@@ -12,15 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, useTemplateRef } from 'vue'
+import { shallowRef, useTemplateRef } from 'vue'
 import SFButton from '@library/SFButton.vue'
 import SFDropdownMenu from '@library/SFDropdownMenu.vue'
 import SFIcon from '@library/SFIcon.vue'
 import SFTooltip from '@library/SFTooltip.vue'
 import { type DropdownItem } from '@utils/components'
-import { useInert } from '@utils/interactions'
+import { useDropdown } from '@utils/interactions'
 import { useLocalize } from '@utils/localization'
-import { useAnimationFramePosition } from '@utils/position'
 import { useStatsNavigation } from '~/pages/stats/stats'
 import { Scripts } from '~/script/scripts'
 
@@ -58,14 +57,11 @@ const localize = useLocalize('stats')
 
 const navigation = useStatsNavigation()
 
-const open = ref(false)
 const items = shallowRef<DropdownItem[]>([])
 
 const containerElement = useTemplateRef('container-ref')
 
-const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
-
-useInert(open)
+const { open, position, toggle: toggleOpen, close } = useDropdown(containerElement, () => containerElement.value?.querySelector('button'))
 
 function navigate() {
   navigation.show('scripts', { identifier: props.identifier })
@@ -74,10 +70,6 @@ function navigate() {
 function toggle() {
   items.value = [{ type: 'header', label: localize('scripts.quick_swap') }, ...Scripts.sortedList(props.table).map(({ key, name }) => ({ label: name, active: props.override === key, action: () => emit('swap', key) }))]
 
-  open.value = !open.value
-}
-
-function close() {
-  open.value = false
+  toggleOpen()
 }
 </script>

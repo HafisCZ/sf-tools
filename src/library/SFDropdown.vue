@@ -10,9 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch } from 'vue'
-import { useInert } from '@utils/interactions'
-import { useAnimationFramePosition } from '@utils/position'
+import { useTemplateRef } from 'vue'
+import { useDropdown } from '@utils/interactions'
 import { type DropdownItem } from '@utils/components'
 import SFButton from './SFButton.vue'
 import SFDropdownMenu from './SFDropdownMenu.vue'
@@ -50,29 +49,7 @@ const props = withDefaults(
   }
 )
 
-const open = ref(false)
-
 const containerElement = useTemplateRef('container-ref')
 
-const position = useAnimationFramePosition(open, () => containerElement.value?.getBoundingClientRect())
-
-useInert(open)
-
-watch(
-  open,
-  (value) => {
-    if (!value && document.activeElement === document.body) {
-      containerElement.value?.querySelector('button')?.focus()
-    }
-  },
-  { flush: 'post' }
-)
-
-function toggle() {
-  open.value = !open.value
-}
-
-function close() {
-  open.value = false
-}
+const { open, position, toggle, close } = useDropdown(containerElement, () => containerElement.value?.querySelector('button'))
 </script>

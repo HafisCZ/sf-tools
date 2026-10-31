@@ -56,11 +56,10 @@
 </template>
 
 <script setup lang="ts" generic="TValue">
-import { computed, ref, useId, useTemplateRef, watch } from 'vue'
+import { computed, ref, useId, useTemplateRef } from 'vue'
 import { isSelectable, type SelectOption } from '@utils/components'
 import { isIconName } from '@utils/icons'
-import { useInert } from '@utils/interactions'
-import { useAnimationFramePosition } from '@utils/position'
+import { useDropdown } from '@utils/interactions'
 import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
 import SFDropdownMenu from './SFDropdownMenu.vue'
 import SFIcon from './SFIcon.vue'
@@ -119,7 +118,6 @@ const BORDER_CLASSES = {
 const id = useId()
 const labelId = useId()
 
-const open = ref(false)
 const query = ref('')
 
 const triggerElement = useTemplateRef('trigger-ref')
@@ -136,29 +134,13 @@ const matchingOptions = computed((): SelectOption<TValue>[] => {
   return search ? selectableOptions.value.filter((option) => option.label.toLowerCase().includes(search) || option.description?.toLowerCase().includes(search)) : props.options
 })
 
-const position = useAnimationFramePosition(open, () => triggerElement.value?.getBoundingClientRect())
-
-useInert(open)
-
-watch(
-  open,
-  (value) => {
-    if (!value && document.activeElement === document.body) {
-      triggerElement.value?.querySelector<HTMLElement>(`#${CSS.escape(id)}`)?.focus()
-    }
-  },
-  { flush: 'post' }
-)
+const { open, position, toggle: toggleOpen, close } = useDropdown(triggerElement, () => triggerElement.value?.querySelector<HTMLElement>(`#${CSS.escape(id)}`))
 
 function toggle() {
   if (selectableOptions.value.length === 0) return
 
   query.value = ''
-  open.value = !open.value
-}
-
-function close() {
-  open.value = false
+  toggleOpen()
 }
 
 function isSelected(value: TValue) {

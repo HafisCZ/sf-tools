@@ -1,4 +1,5 @@
-import { onScopeDispose, watch, type Ref } from 'vue'
+import { onScopeDispose, ref, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
+import { useAnimationFramePosition } from './position'
 
 const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'].join(', ')
 
@@ -104,4 +105,32 @@ export function useInert(open: Ref<boolean>) {
       unsetCoveredElementsAsInert()
     }
   })
+}
+
+export function useDropdown(anchor: MaybeRefOrGetter<Element | null | undefined>, focusTarget: MaybeRefOrGetter<HTMLElement | null | undefined>) {
+  const open = ref(false)
+
+  const position = useAnimationFramePosition(open, () => toValue(anchor)?.getBoundingClientRect())
+
+  useInert(open)
+
+  watch(
+    open,
+    (value) => {
+      if (!value && document.activeElement === document.body) {
+        toValue(focusTarget)?.focus()
+      }
+    },
+    { flush: 'post' }
+  )
+
+  function toggle() {
+    open.value = !open.value
+  }
+
+  function close() {
+    open.value = false
+  }
+
+  return { open, position, toggle, close }
 }

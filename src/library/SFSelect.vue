@@ -77,11 +77,10 @@
 </template>
 
 <script setup lang="ts" generic="TValue">
-import { computed, nextTick, ref, useId, useTemplateRef, watch } from 'vue'
-import { isSelectable, type SelectDivider, type SelectHeader, type SelectOption } from '@utils/components'
+import { computed, ref, useId, useTemplateRef } from 'vue'
+import { isSelectable, usePagedList, type SelectDivider, type SelectHeader, type SelectOption } from '@utils/components'
 import { isIconName } from '@utils/icons'
-import { useInert } from '@utils/interactions'
-import { useAnimationFramePosition } from '@utils/position'
+import { useDropdown } from '@utils/interactions'
 import { createDefaultValidator, useValidation, type ValidationProps } from '@utils/validations'
 import SFDropdownMenu from './SFDropdownMenu.vue'
 import SFIcon from './SFIcon.vue'
@@ -164,11 +163,7 @@ const valueId = useId()
 
 const descriptionId = computed(() => (props.description ? `${id}-description` : undefined))
 
-const open = ref(false)
 const query = ref('')
-
-const renderStart = ref(0)
-const renderEnd = ref(0)
 
 const triggerElement = useTemplateRef('trigger-ref')
 const listElement = useTemplateRef('list-ref')
@@ -185,65 +180,19 @@ const matchingOptions = computed((): SelectOption<TValue>[] => {
   return search ? selectableOptions.value.filter((option) => option.label.toLowerCase().includes(search) || option.description?.toLowerCase().includes(search)) : props.options
 })
 
-const renderedOptions = computed(() => (props.pageSize ? matchingOptions.value.slice(renderStart.value, renderEnd.value) : matchingOptions.value))
+const { renderStart, renderedItems: renderedOptions, showPage, loadMore } = usePagedList(matchingOptions, () => props.pageSize, listElement)
 
-const position = useAnimationFramePosition(open, () => triggerElement.value?.getBoundingClientRect())
-
-useInert(open)
-
-watch(
-  open,
-  (value) => {
-    if (!value && document.activeElement === document.body) {
-      triggerElement.value?.focus()
-    }
-  },
-  { flush: 'post' }
-)
+const { open, position, toggle: toggleOpen, close } = useDropdown(triggerElement, triggerElement)
 
 function toggle() {
   if (props.readonly || selectableOptions.value.length === 0) return
 
   query.value = ''
-  open.value = !open.value
+  toggleOpen()
 
   if (open.value) {
     showPage(matchingOptions.value.findIndex((option) => isSelectable(option) && option.value === modelValue.value))
   }
-}
-
-function showPage(index: number) {
-  if (!props.pageSize) return
-
-  renderStart.value = Math.max(0, Math.min(index - Math.floor(props.pageSize / 2), matchingOptions.value.length - props.pageSize))
-  renderEnd.value = renderStart.value + props.pageSize
-}
-
-async function loadMore(event: Event) {
-  const container = event.currentTarget
-
-  if (!props.pageSize || !(container instanceof HTMLElement)) return
-
-  if (container.scrollHeight - container.scrollTop - container.clientHeight < container.clientHeight && renderEnd.value < matchingOptions.value.length) {
-    renderEnd.value += props.pageSize
-  }
-
-  if (container.scrollTop < container.clientHeight && renderStart.value > 0) {
-    const anchor = listElement.value?.firstElementChild
-    const top = anchor?.getBoundingClientRect().top ?? 0
-
-    renderStart.value = Math.max(0, renderStart.value - props.pageSize)
-
-    await nextTick()
-
-    if (anchor) {
-      container.scrollTop += anchor.getBoundingClientRect().top - top
-    }
-  }
-}
-
-function close() {
-  open.value = false
 }
 
 function select(value: TValue) {
