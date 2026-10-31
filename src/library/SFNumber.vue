@@ -168,6 +168,12 @@ function handleKeydown(event: KeyboardEvent) {
     event.preventDefault()
 
     stepValue(event.key === 'ArrowUp' ? 1 : -1)
+  } else if (event.key === ',' && canType('.', event.currentTarget.selectionStart)) {
+    event.preventDefault()
+
+    event.currentTarget.setRangeText('.', event.currentTarget.selectionStart ?? 0, event.currentTarget.selectionEnd ?? 0, 'end')
+
+    text.value = event.currentTarget.value
   } else if (event.key.length === 1 && !canType(event.key, event.currentTarget.selectionStart)) {
     event.preventDefault()
   }
@@ -180,7 +186,8 @@ function handlePaste(event: ClipboardEvent) {
 
   validationVisible.value = true
 
-  const value = parseValue(event.clipboardData?.getData('text/plain').replace(/\s/g, '') ?? '')
+  const pasted = event.clipboardData?.getData('text/plain').replace(/\s/g, '') ?? ''
+  const value = parseValue(allowsDecimals.value ? pasted.replace(',', '.') : pasted)
 
   if (value !== null) {
     text.value = formatValue(allowsDecimals.value ? value : Math.trunc(value))
