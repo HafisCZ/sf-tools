@@ -47,6 +47,10 @@ const props = defineProps<{
    * Shows the percentages next to the chart
    */
   ticks?: boolean
+  /**
+   * Decimal places of the win rate
+   */
+  decimals: number
 }>()
 
 const TICKS = [0, 20, 40, 60, 80, 100]
@@ -63,7 +67,7 @@ const lines = computed(() => {
   const shadow = dungeon.id !== TOWER && dungeon.companions ? `${localize.global('dungeon_enemies.shadow')} ` : ''
   const experience = getDungeonExperience(result)
 
-  return compact([`${shadow}${getDungeonName(dungeon)}: ${getBossName(result)}`, experience > 0 && `${formatSpacedNumber(experience)} XP`, localize('graph.winrate', { rate: ((100 * score) / iterations).toFixed(2), score: formatSpacedNumber(score), tries: formatSpacedNumber(iterations) })])
+  return compact([`${shadow}${getDungeonName(dungeon)}: ${getBossName(result)}`, experience > 0 && `${formatSpacedNumber(experience)} XP`, localize('graph.winrate', { rate: ((100 * score) / iterations).toFixed(props.decimals), score: formatSpacedNumber(score), tries: formatSpacedNumber(iterations) })])
 })
 
 const enemyPoints = computed(() => toPoints(props.result?.enemyHealths ?? []))

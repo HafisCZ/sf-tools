@@ -1,9 +1,9 @@
 <template>
-  <SFDialog :title="localize('title')" size="sm">
+  <SFDialog :title="localize('title')" size="sm" height="80vh">
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">
-        <SFHeading level="5">{{ localize('threshold.title') }}</SFHeading>
-        <SFParagraph type="muted">{{ localize('threshold.description') }}</SFParagraph>
+        <SFHeading level="6">{{ localize('threshold.title') }}</SFHeading>
+        <SFParagraph type="muted" size="sm">{{ localize('threshold.description') }}</SFParagraph>
       </div>
       <SFSlider ref="slider-ref" v-model:from="minimum" v-model:to="maximum" :label="localize('threshold.label')" :min="0" :max="100" :step="0.1" :from-label="localize.global('general.min')" :to-label="localize.global('general.max')" />
       <div class="grid grid-cols-2 gap-[14px]">
@@ -11,20 +11,23 @@
         <SFNumber ref="maximum-ref" v-model="maximum" :label="localize.global('general.max')" required :min="minimum ?? 0" :max="100" :step="0.1" />
       </div>
       <div class="flex flex-col gap-1 border-t border-line pt-4">
-        <SFHeading level="5">{{ localize('threshold.more') }}</SFHeading>
-        <SFParagraph type="muted">{{ localize('threshold.more_description') }}</SFParagraph>
+        <SFHeading level="6">{{ localize('threshold.more') }}</SFHeading>
+        <SFParagraph type="muted" size="sm">{{ localize('threshold.more_description') }}</SFParagraph>
       </div>
       <div class="flex flex-col gap-2">
         <SFCheckbox ref="twister-ref" v-model="includeTwister" :label="localize('threshold.include_twister')" />
         <SFCheckbox ref="sandstorm-ref" v-model="includeSandstorm" :label="localize('threshold.include_sandstorm')" />
       </div>
       <div class="flex flex-col gap-1 border-t border-line pt-4">
-        <SFHeading level="5">{{ localize('limits.title') }}</SFHeading>
-        <SFParagraph type="muted">{{ localize('limits.description') }}</SFParagraph>
+        <SFHeading level="6">{{ localize('limits.title') }}</SFHeading>
+        <SFParagraph type="muted" size="sm">{{ localize('limits.description') }}</SFParagraph>
       </div>
       <div class="grid grid-cols-2 gap-[14px]">
         <SFNumber ref="twister-floors-ref" v-model="twisterFloors" :label="localize('limits.twister')" required :min="1" :max="1000" :step="1" />
         <SFNumber ref="sandstorm-floors-ref" v-model="sandstormFloors" :label="localize('limits.sandstorm')" required :min="1" :max="1000" :step="1" />
+      </div>
+      <div class="border-t border-line pt-4">
+        <SFSelect ref="precision-ref" v-model="decimals" :label="localize('precision')" :options="DECIMAL_OPTIONS" />
       </div>
     </div>
 
@@ -47,8 +50,11 @@ import SFDialog from '@library/SFDialog.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFNumber from '@library/SFNumber.vue'
 import SFParagraph from '@library/SFParagraph.vue'
+import SFSelect from '@library/SFSelect.vue'
 import SFSlider from '@library/SFSlider.vue'
+import { type SelectOption } from '@utils/components'
 import { useLocalize } from '@utils/localization'
+import { sequence } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 
 defineOptions({
@@ -62,6 +68,7 @@ type DungeonOptions = {
   includeSandstorm: boolean
   twisterFloors: number
   sandstormFloors: number
+  decimals: number
 }
 
 const props = defineProps<{
@@ -89,11 +96,19 @@ const props = defineProps<{
    * Most Sandstorm floors simulated, counted from the starting floor
    */
   sandstormFloors: number
+  /**
+   * Decimal places shown for win chances
+   */
+  decimals: number
 }>()
 
 const emit = defineEmits<{
   close: [options?: DungeonOptions]
 }>()
+
+const SAMPLE_CHANCE = 87.5312864
+
+const DECIMAL_OPTIONS: SelectOption<number>[] = sequence(5, 2).map((decimals) => ({ value: decimals, label: `${SAMPLE_CHANCE.toFixed(decimals)}%` }))
 
 const localize = useLocalize('dialog.dungeons_options')
 
@@ -103,8 +118,9 @@ const includeTwister = ref(props.includeTwister)
 const includeSandstorm = ref(props.includeSandstorm)
 const twisterFloors = ref<number | null>(props.twisterFloors)
 const sandstormFloors = ref<number | null>(props.sandstormFloors)
+const decimals = ref(props.decimals)
 
-const isValid = useComponentValidation(useTemplateRef('slider-ref'), useTemplateRef('minimum-ref'), useTemplateRef('maximum-ref'), useTemplateRef('twister-ref'), useTemplateRef('sandstorm-ref'), useTemplateRef('twister-floors-ref'), useTemplateRef('sandstorm-floors-ref'))
+const isValid = useComponentValidation(useTemplateRef('slider-ref'), useTemplateRef('minimum-ref'), useTemplateRef('maximum-ref'), useTemplateRef('twister-ref'), useTemplateRef('sandstorm-ref'), useTemplateRef('twister-floors-ref'), useTemplateRef('sandstorm-floors-ref'), useTemplateRef('precision-ref'))
 
 function save() {
   if (minimum.value === null || maximum.value === null || twisterFloors.value === null || sandstormFloors.value === null) return
@@ -115,7 +131,8 @@ function save() {
     includeTwister: includeTwister.value,
     includeSandstorm: includeSandstorm.value,
     twisterFloors: twisterFloors.value,
-    sandstormFloors: sandstormFloors.value
+    sandstormFloors: sandstormFloors.value,
+    decimals: decimals.value
   })
 }
 </script>

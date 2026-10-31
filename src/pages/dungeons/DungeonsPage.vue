@@ -71,7 +71,7 @@
           </div>
         </div>
 
-        <DungeonChart ticks :result="chartResult" class="mt-[11px] h-[17.75em] transition-opacity" :class="{ 'opacity-50': isChartOutdated }" />
+        <DungeonChart ticks :result="chartResult" :decimals="decimals" class="mt-[11px] h-[17.75em] transition-opacity" :class="{ 'opacity-50': isChartOutdated }" />
         <div class="relative h-[1.5em] text-[80%] opacity-50">
           <span class="absolute left-[0.5em]">{{ localize('graph.y') }}</span>
           <span class="absolute left-[37%]">{{ localize('graph.x') }}</span>
@@ -132,6 +132,7 @@ type DungeonsOptions = {
   include_sandstorm: boolean
   twister_floors: number
   sandstorm_floors: number
+  decimals: number
 }
 
 type DungeonFight = {
@@ -184,7 +185,7 @@ const DUNGEONS = Object.values(DUNGEON_DATA)
 
 const localize = useLocalize('dungeons')
 
-const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000 })
+const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000, decimals: 2 })
 
 const dungeonId = ref('1')
 const bossId = ref(getFirstBossId('1'))
@@ -202,6 +203,7 @@ const isItemView = ref(false)
 
 const chartResult = shallowRef<DungeonResult | null>(null)
 const isChartOutdated = ref(false)
+const decimals = ref(options.decimals)
 
 let filledSnapshot = ''
 let isFillPending = false
@@ -556,7 +558,8 @@ function showResults(results: DungeonResult[]) {
   useDialog(DungeonResultsDialog, {
     results,
     experience: sum(results.map(getDungeonExperience)),
-    playerClass: players.value[0]?.Class ?? WARRIOR
+    playerClass: players.value[0]?.Class ?? WARRIOR,
+    decimals: decimals.value
   })
 }
 
@@ -734,7 +737,8 @@ function openOptions() {
       includeTwister: options.include_twister,
       includeSandstorm: options.include_sandstorm,
       twisterFloors: options.twister_floors,
-      sandstormFloors: options.sandstorm_floors
+      sandstormFloors: options.sandstorm_floors,
+      decimals: options.decimals
     },
     {
       callback: (values) => {
@@ -745,6 +749,9 @@ function openOptions() {
           options.include_sandstorm = values.includeSandstorm
           options.twister_floors = values.twisterFloors
           options.sandstorm_floors = values.sandstormFloors
+          options.decimals = values.decimals
+
+          decimals.value = values.decimals
         }
       }
     }

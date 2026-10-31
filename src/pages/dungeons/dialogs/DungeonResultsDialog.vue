@@ -10,7 +10,7 @@
         </SFButton>
       </SFTooltip>
     </div>
-    <DungeonChart :result="activeResult" class="h-[14em] shrink-0 border-b border-line pb-2" />
+    <DungeonChart :result="activeResult" :decimals="props.decimals" class="h-[14em] shrink-0 border-b border-line pb-2" />
     <div :class="{ 'min-h-0 overflow-y-auto': !isSaving }">
       <div ref="image-ref" :class="isSaving ? 'text-black' : 'text-white/90'">
         <div v-for="(result, index) in props.results" :key="index" :tabindex="isSaving ? undefined : 0" class="flex items-center gap-3 py-2 pl-2 outline-none" :class="{ 'bg-white/5': !isSaving && index === activeIndex }" @mouseenter="activeIndex = index" @focus="activeIndex = index">
@@ -19,7 +19,7 @@
             <div class="text-[80%]">{{ getDungeonName(result.dungeon) }}</div>
             <div>#{{ result.boss.pos }} - {{ getBossName(result) }}</div>
           </div>
-          <div class="w-[31.25%] text-center">{{ result.score === 0 ? localize.global('pets.bulk.not_possible') : `${((100 * result.score) / result.iterations).toFixed(2)}%` }}</div>
+          <div class="w-[31.25%] text-center">{{ result.score === 0 ? localize.global('pets.bulk.not_possible') : `${((100 * result.score) / result.iterations).toFixed(props.decimals)}%` }}</div>
         </div>
       </div>
     </div>
@@ -56,6 +56,10 @@ const props = defineProps<{
    * Class shown for bosses that copy the player
    */
   playerClass: CharacterClass
+  /**
+   * Decimal places of the win chances
+   */
+  decimals: number
 }>()
 
 const emit = defineEmits<{

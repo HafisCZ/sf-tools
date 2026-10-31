@@ -1323,7 +1323,8 @@
                 "description": "Limit how many floors are simulated when using the Remaining mode",
                 "twister": "Twister",
                 "sandstorm": "Sandstorm"
-            }
+            },
+            "precision": "Decimal places shown for the win chance"
         },
         "analyzer_autofill": {
             "title": "Available data",
