@@ -17,6 +17,7 @@
         "class10": "Nécromancien",
         "class11": "Paladin",
         "class12": "Docteur de la peste",
+        "class13": "Blood Weaver",
         "mask0": "Aigle",
         "mask1": "Ours",
         "mask2": "Tigre",
@@ -115,6 +116,11 @@
         "attack18": "Teinture critique",
         "attack19": "Empoisonnement",
         "attack20": "Empoisonnement critique",
+        "attack21": "Ritual Dagger",
+        "attack22": "Ritual Dagger Critical",
+        "attack23": "Seal of Death",
+        "attack24": "Blood Scythe",
+        "attack25": "Blood Scythe Critical",
         "attack100": "Normal",
         "attack101": "Critique",
         "defense3": "Blocage",
@@ -214,8 +220,8 @@
             "desc": "Comparez vos objets, calculez les résultats d'améliorations ..."
         },
         "scrapbook": {
-            "title": "Scrapbook",
-            "desc": "Find the items missing from your scrapbook"
+            "title": "Album de maniaque",
+            "desc": "Trouver les objets manquants dans votre album de maniaque"
         },
         "idle": {
             "title": "Manager d'arène",
@@ -343,7 +349,7 @@
                 "selected": "Exporter la sélection"
             },
             "selected": {
-                "text": "items(s) sélectionné(s)",
+                "text": "objet(s) sélectionné(s)",
                 "no": "Non"
             },
             "hide": {
@@ -431,23 +437,36 @@
             "types": {
                 "players": "Filtrer les joueurs par serveur, classe, guilde et/ou nom d'utilisateur",
                 "groups": "Filtrer les groupes par serveur ou par nom"
-            },
-            "c": "Classe du joueur, utilisez le nom complet de la classe en minuscules (ex. : berserker, mage de combat).",
-            "p": "Nom de joueur",
-            "g": "Nom de guilde",
-            "s": "Serveur",
-            "e": "Expression personnalisée",
-            "#": "Afficher seulement les joueurs avec les marqueurs spécifiés",
-            "l": "Afficher uniquement les plus récents",
-            "f": "Afficher uniquement les premières ou les n premières entrées",
-            "r": "Forcer le recalcul des variables globales",
-            "h": "Afficher les joueurs masqués",
-            "o": "Afficher votre personnage",
-            "a": "Afficher tous les personnages",
-            "d": "Afficher les autres personnages",
-            "q": "Paramètres personnalisés (séparez les noms d'en-tête par des virgules)",
-            "t": "Afficher directement le modèle en ligne",
-            "sr": "Trier par expression personnalisée"
+            }
+        },
+        "query": {
+            "clear": "Clear the filter",
+            "history": "Starred and recent filters",
+            "shortcut": "Ctrl + Space",
+            "starred": "Starred",
+            "recent": "Recent",
+            "starred_empty": "Star a recent filter to keep it here.",
+            "recent_empty": "Press Enter in the field to keep a filter here.",
+            "star": "Star this filter",
+            "unstar": "Remove the star",
+            "keys": {
+                "class": "Class is one of these, separated by commas",
+                "name": "Name contains one of these, \"Name\" is exact",
+                "guild": "Guild name contains one of these, \"Name\" is exact",
+                "server": "Server contains one of these, \"Server\" is exact",
+                "tag": "Has one of these tags",
+                "eval": "One of these table script expressions is true",
+                "sort": "Sort by a header or table script expression, - for highest first",
+                "first": "Only the first n entries",
+                "latest": "Only entries from the selected snapshot",
+                "hidden": "Show hidden entries too",
+                "own": "Only your own entries",
+                "recalculate": "Force recalculation of global variables",
+                "columns": "Show these headers instead of the table script",
+                "template": "Show an online template by its code",
+                "others": "Show entries of other characters too",
+                "all": "Show hidden entries and other characters too"
+            }
         },
         "scripts": {
             "settings": "Paramètres",
@@ -618,6 +637,7 @@
             "table_sticky_header": "Activer les en-têtes de tableaux collants",
             "skip_grid_if_single_entry_present": "Passer au détail du joueur/groupe si seul dans la grille",
             "terms": "Accepter les conditions d'utilisation",
+            "players_portraits": "Show character portraits on player cards",
             "tab": "Onglet par défaut",
             "preload": "Précharger les lignes",
             "actions": {
@@ -775,10 +795,10 @@
         "enemy": "Ennemis",
         "open": "Donjons actuellement ouverts",
         "graph": {
-            "y": "HP Left",
+            "y": "PV restants",
             "x": "- Distribution pour le nombre d'essais sélectionnés -",
             "winrate": "Taux de victoire : #{rate}% (#{score} sur #{tries})",
-            "player": "Player & Companions"
+            "player": "Joueur & Compagnons"
         },
         "results": "Résultats",
         "experience": "Total: #{experience} XP",
@@ -830,8 +850,12 @@
             "fight_list": "Sélectionner un combat",
             "editable_data": "Données modifiables"
         },
+        "group_card": {
+            "fight": "1 fight",
+            "fights": "#{count} fights"
+        },
         "players": "Joueurs",
-        "damages_and_chances": "Damage & chances",
+        "damages_and_chances": "Dégâts & Chances",
         "preview": "Aperçu du combat",
         "export": "Exporter des combats",
         "autofill": "Remplir les données modifiables à partir de la liste prédéfinie",
@@ -841,7 +865,7 @@
         "clear_changes": "Rétablir l'état d'origine",
         "simulate": "Ouvrir le simulateur avec les données actuelles",
         "table": {
-            "select": "#{index} - #{rounds} rounds - #{nameA} - #{nameB} - Winner: #{winner}",
+            "select": "#{index} - #{rounds} tours - #{nameA} - #{nameB} - Vainqueur : #{winner}",
             "rage": "Rage",
             "attacker": "Attaquant",
             "target": "Cible",
@@ -852,7 +876,7 @@
         },
         "toast_import_error": {
             "title": "Échec de l'importation",
-            "message": "Ensure that you are importing a valid HAR or fight JSON"
+            "message": "Assurez-vous que vous importez un HAR ou un JSON valide"
         },
         "special_state": {
             "druid_rage": "Druide est enragé",
@@ -864,7 +888,9 @@
             "paladin_stance_1": "Neutre",
             "paladin_stance_2": "Défensif",
             "paladin_stance_3": "Offensif",
-            "plague_doctor_tincture": "Teinture affecte le joueur"
+            "plague_doctor_tincture": "Teinture affecte le joueur",
+            "blood_weaver_pact": "Blood Pact applied",
+            "blood_weaver_revived": "Seal of Death"
         },
         "sidebar": {
             "toggles": {
@@ -882,6 +908,25 @@
                 "weapon1_fist_damage": "Fist damage",
                 "weapon2_fist_damage": "Fist damage (secondary)"
             },
+            "states": {
+                "druid_rage": "Rage",
+                "paladin_stance_1": "Neutral stance",
+                "paladin_stance_2": "Defensive stance",
+                "paladin_stance_3": "Offensive stance",
+                "bard_song_1": "Song 1",
+                "bard_song_2": "Song 2",
+                "bard_song_3": "Song 3",
+                "necromancer_minion_1": "Skeleton",
+                "necromancer_minion_2": "Hound",
+                "necromancer_minion_3": "Golem",
+                "plague_doctor_throw": "Tincture throw",
+                "plague_doctor_tincture_1": "Tincture round 1",
+                "plague_doctor_tincture_2": "Tincture round 2",
+                "plague_doctor_tincture_3": "Tincture round 3",
+                "blood_weaver_dagger": "Ritual Dagger",
+                "blood_weaver_scythe": "Blood Scythe",
+                "blood_weaver_revived": "Seal of Death"
+            },
             "chances": {
                 "first_strike": "First strike",
                 "critical": "Critical chance",
@@ -898,7 +943,9 @@
                 "minion_2": "Hound summoned",
                 "minion_3": "Golem summoned",
                 "minion_revive": "Skeleton revive chance",
-                "tincture": "Tincture throw chance"
+                "tincture": "Tincture throw chance",
+                "dagger": "Ritual Dagger chance",
+                "scythe": "Blood Scythe chance"
             }
         }
     },
@@ -923,7 +970,7 @@
                 "message#": "<b>Durée :</b> #{time} secondes"
             },
             "tournament": {
-                "title": "Preparing ladder",
+                "title": "Préparation de l'échelle",
                 "message#": "<b>Joueurs :</b> #{count}"
             }
         }
@@ -1021,7 +1068,7 @@
         "configure": "Configurer le simulateur",
         "information": "Information importante !",
         "configure_copy": "Copier tout, y compris la configuration actuelle",
-        "configure_insert": "Insert sample data",
+        "configure_insert": "Insérer des données d'exemple",
         "configure_insert_custom": "Spécifier les valeurs manuellement",
         "configure_log": "Lancer la simulation avec journal actif",
         "configure_log_file": "Enregistrer dans un fichier",
@@ -1030,9 +1077,9 @@
             "copy_all": "Copier tout",
             "paste_mode": "Toggle Add/Replace insertion mode"
         },
-        "snack_apply_all": "Apply current snack to all players",
-        "snack_apply_all_toast_title": "Snack copy",
-        "snack_apply_all_toast_message": "Snack and snack strength was applied to all player",
+        "snack_apply_all": "Appliquer la friandise actuelle à tous les joueurs",
+        "snack_apply_all_toast_title": "Copier la friandise",
+        "snack_apply_all_toast_message": "La friandise et son bonus ont été appliqués à tous les joueurs",
         "win_chance": "% de victoire",
         "min_chance": "Min %",
         "max_chance": "Max %",
@@ -1089,44 +1136,45 @@
         "smart_change": "Changement de classe intelligent",
         "mode": {
             "raw": "Raw",
-            "character": "Character"
+            "character": "Personnage"
         },
         "copy": "Copier",
         "none": "Aucun",
         "equipment": {
-            "empty": "Empty",
-            "none": "None",
-            "reset_to": "Change back to #{item}",
-            "take_over": "Take over the upgrades, gem, rune and enchantment of #{item}",
-            "details": "Rune, gem and enchantment",
+            "empty": "Vide",
+            "none": "Aucun",
+            "reset_to": "Revenir à #{item}",
+            "take_over": "Reprendre les améliorations, les gemmes, les runes et les enchantements de #{item}",
+            "details": "Rune, gemme et enchantement",
             "rune": "Rune",
-            "gem": "Gem",
-            "enchantment": "Enchantment",
-            "upgrades": "Upgrades",
-            "value": "Value",
+            "gem": "Gemme",
+            "enchantment": "Enchantement",
+            "upgrades": "Améliorations",
+            "rune_value": "Rune value",
+            "gem_value": "Gem value",
             "potions": "Potions",
-            "pets": "Pet bonus",
+            "pets": "Bonus de familier",
             "slot": {
-                "Head": "Helmet",
-                "Body": "Breastplate",
-                "Hand": "Gloves",
-                "Feet": "Boots",
-                "Neck": "Amulet",
-                "Belt": "Belt",
-                "Ring": "Ring",
+                "Head": "Casque",
+                "Body": "Plastron",
+                "Hand": "Gants",
+                "Feet": "Bottes",
+                "Neck": "Amulette",
+                "Belt": "Ceinture",
+                "Ring": "Anneau",
                 "Misc": "Talisman",
-                "Wpn1": "Weapon",
-                "Wpn2": "Off-hand"
+                "Wpn1": "Arme",
+                "Wpn2": "Main gauche"
             },
             "pool": {
-                "backpack": "Backpack",
-                "shop": "Weapon & Magic shop",
+                "backpack": "Sac à dos",
+                "shop": "Armurier & apothicaire",
                 "dummy": "Mannequin"
             }
         }
     },
     "endpoint": {
-        "login": "Log in to your S&F Account",
+        "login": "Connectez-vous à votre compte S&F",
         "username": "Nom d'utilisateur",
         "password": "Mot de passe",
         "mode": {
@@ -1135,9 +1183,11 @@
             "guild": "Capturez votre personnage + guilde",
             "friends": "Capturez votre personnage + amis",
             "hall_of_fame": "Capturez votre personnage + top 50",
-            "guild_friends": "Capture own + guild + friend characters"
+            "guild_friends": "Capturez vos propres personnages + guilde + amis"
         },
         "temporary": "Supprimer la capture lorsque la page est fermée",
+        "remember": "Remember me",
+        "another_account": "Use another account",
         "cancel": "Annuler",
         "continue": "Continuer",
         "step2": {
@@ -1151,13 +1201,17 @@
             "title": "Sélectionnez votre personnage"
         },
         "warnings": {
-            "title": "Some characters could not be fully captured",
-            "entry": "#{player} (#{server}): #{error}",
-            "entry_target": "#{player} (#{server}), #{target}: #{error}"
+            "title": "Certains personnages n'ont pas pu être capturés complètement",
+            "entry": "#{player} (#{server}) : #{error}",
+            "entry_target": "#{player} (#{server}), #{target} : #{error}"
         },
         "user_error": {
             "title": "Votre nom d'utilisateur ou mot de passe n'est pas valide",
-            "message": "Please check your username and password and try again."
+            "message": "Vérifiez votre nom d'utilisateur et votre mot de passe et réessayez."
+        },
+        "remember_expired": {
+            "title": "Remembered login expired",
+            "message": "Please log in to your S&F Account again."
         },
         "errors": {
             "error_unreachable": "Le serveur est inaccessible",
@@ -1240,29 +1294,42 @@
         "manage_link": {
             "title": "Manage player / guild merge",
             "link": {
-                "heading1": "Merge following objects",
-                "heading2": "Into",
+                "heading1": "Fusionner les objets suivants",
+                "heading2": "Dans",
                 "warning": "Veuillez noter que toutes les <b>attributions de script</b> et tous les <b>traceurs</b> seront fusionnés dans l'objet cible. Cette action est irréversible !"
             },
             "unlink": {
-                "heading1": "Split following object",
-                "heading2": "Into",
+                "heading1": "Séparer l'objet suivant",
+                "heading2": "Dans",
                 "warning": "Veuillez noter que toutes les <b>attributions de script</b> et tous les <b>traceurs</b> resteront associés à l'objet source."
             }
         },
         "dungeons_options": {
             "title": "Options du simulateur",
             "threshold": {
-                "title": "Seuil de simulation",
+                "title": "More simulation threshold",
+                "description": "More only keeps floors with a win chance in this range. When a floor falls outside it, the rest of that dungeon is skipped.",
                 "label": "Seuil % - Tous les donjons ennemis en dehors de ce seuil seront ignorés",
-                "more": "Dungeons included when using More option",
-                "include_twister": "Include Twister",
-                "include_sandstorm": "Include Sandstorm"
+                "more": "Additional dungeons in More mode",
+                "more_description": "Include Twister or Sandstorm when using the More mode",
+                "include_twister": "Inclure Tornade",
+                "include_sandstorm": "Inclure Tempête de Sable"
+            },
+            "limits": {
+                "title": "Simulation limits",
+                "description": "Limit how many floors are simulated when using the Remaining mode",
+                "twister": "Twister",
+                "sandstorm": "Sandstorm"
             }
         },
         "analyzer_autofill": {
             "title": "Données disponibles",
-            "search": "Recherche par donjon ou nom de boss ..."
+            "enemies": "Enemies",
+            "players": "Players",
+            "enemy": "Enemy",
+            "player": "Player",
+            "enemy_placeholder": "Select an enemy",
+            "player_placeholder": "Select a player"
         },
         "editor_shortcuts": {
             "title": "Raccourcis de l'éditeur",
@@ -1545,14 +1612,117 @@
         },
         "simulator_debug": {
             "cancel": "Annuler",
+            "fields": {
+                "CritBase": "Damage multiplier of a critical hit before any bonus.",
+                "CritGladiatorBonus": "Critical damage added for each Gladiator level above the opponent's.",
+                "CritEnchantmentBonus": "Critical damage added when a weapon has the critical hit enchantment.",
+                "Attribute": "Main attribute.",
+                "HealthMultiplier": "Health per Constitution point and level. Also scales the Battlemage fireball against this class.",
+                "WeaponMultiplier": "Scales the minimum weapon damage that comes from the level. Used when the equipped weapon is weaker.",
+                "DamageMultiplier": "Multiplies all damage this class deals.",
+                "MaximumDamageReduction": "Highest damage reduction armor can give, in %.",
+                "MaximumDamageReductionMultiplier": "Multiplies the damage reduction from armor, after the cap.",
+                "SkipChance": "Chance to skip (commonly block or evade) an attack.",
+                "SkipLimit": "Most skips in a row. The count resets when an attack hits.",
+                "SkipType": "What a skip does.",
+                "SkipVariant": "How a skipped attack is shown in fight logs.",
+                "UseBlockChance": "Uses the block chance set on the player instead of the skip chance.",
+                "BypassDamageReduction": "Ignores the opponent's armor.",
+                "BypassSkipChance": "Attacks can't be blocked or evaded.",
+                "BypassSpecial": "Turns off the opponent's class abilities, such as revives, summons and the fireball.",
+                "ReviveChance": "Chance to revive after dying.",
+                "ReviveChanceDecay": "Revive chance lost after each revive.",
+                "ReviveHealth": "Health after the first revive, in % of max health.",
+                "ReviveHealthMin": "Lowest health after a revive, in % of max health.",
+                "ReviveHealthDecay": "Revive health lost after each revive, in % of max health.",
+                "ReviveDamage": "Damage dealt before any revive, in % of normal damage.",
+                "ReviveDamageMin": "Lowest damage dealt after revives, in % of normal damage.",
+                "ReviveDamageDecay": "Damage lost after each revive, in % of normal damage.",
+                "ReviveMax": "Most revives per fight.",
+                "SwoopChance": "Chance of a swoop at the start of the fight. A swoop is an extra attack before the normal one.",
+                "SwoopChanceMin": "Lowest swoop chance.",
+                "SwoopChanceMax": "Highest swoop chance.",
+                "SwoopChanceDecay": "Swoop chance lost after each swoop. A negative value raises it.",
+                "SwoopBonus": "Added to the damage multiplier for a swoop.",
+                "EffectRounds": "Turns between songs. The first song plays on the first turn.",
+                "EffectBaseDuration": "Attacks a song lasts, for song levels 1 to 3.",
+                "EffectBaseChance": "How often each song level is picked, as weights for levels 1 to 3.",
+                "EffectValues": "Damage bonus of a song, for song levels 1 to 3.",
+                "SummonChance": "Chance to summon a minion when none is out.",
+                "SummonImmediateAttack": "The minion attacks on the turn it is summoned.",
+                "StanceInitial": "Stance at the start of the fight.",
+                "TinctureChance": "Chance to throw a tincture instead of a normal attack, when none is active.",
+                "DaggerChance": "Chance of a dagger attack after a normal attack, until Seal of Death is used.",
+                "DaggerSacrifice": "Current health lost on each dagger attack, in %.",
+                "PactStacksMax": "Most Blood Pact stacks. Each dagger attack adds one.",
+                "SealHealth": "Health after Seal of Death revives, in % of max health.",
+                "SealHealthPerStack": "Revive health added for each Blood Pact stack, in % of max health.",
+                "ScytheChance": "Chance of a scythe attack instead of a normal attack after Seal of Death."
+            },
+            "general": "General",
+            "groups": {
+                "Rage": "State the Druid enters for its next turn after evading an attack.",
+                "Summons": "Minions the Necromancer can summon. One is picked at random.",
+                "Stances": "Paladin stances. The Paladin switches through them in order.",
+                "TinctureThrow": "State used for the tincture throw. The Plague Doctor stays in it after a blocked throw until the next throw.",
+                "TinctureRounds": "Plague Doctor states while a tincture is active, by turns left. A landed throw starts at 3 turns left.",
+                "Dagger": "State used for the dagger attack.",
+                "Scythe": "State used for the scythe attack.",
+                "Revived": "State after Seal of Death revives the Blood Weaver."
+            },
+            "items": {
+                "Summons": "Summon #{index}",
+                "TinctureRounds": "Turns left: #{index}"
+            },
             "ok": "Appliquer",
-            "reset": "Réinitialiser",
+            "opponents": {
+                "bonus": "Bonus (%)",
+                "description": "Changes the damage dealt to each class. The bonus is added to the damage multiplier, then the result is multiplied by the multiplier.",
+                "multiplier": "Multiplier"
+            },
+            "options": {
+                "skip_type": {
+                    "default": "Block or evade the attack",
+                    "control": "Take the opponent's turn"
+                },
+                "skip_variant": {
+                    "none": "None",
+                    "block": "Block",
+                    "evade": "Evade",
+                    "magic": "Magic",
+                    "block_heal": "Block and heal"
+                }
+            },
+            "reset": "Reset all",
+            "reset_field": "Reset to default",
+            "sections": {
+                "stats": "Stats",
+                "skip": "Skip",
+                "ability": "Ability",
+                "opponents": "Against classes"
+            },
+            "state_fields": {
+                "Duration": "Turns the minion stays.",
+                "DamageBonus": "Added to the damage multiplier in this state.",
+                "SkipChance": "Chance to block or evade an attack in this state.",
+                "SkipVariant": "How a skipped attack is shown in fight logs in this state.",
+                "CriticalBonus": "Critical damage added in this state.",
+                "CriticalChance": "Highest critical chance in this state.",
+                "CriticalChanceBonus": "Added to the critical chance from Luck in this state, before the cap.",
+                "ReviveCount": "Times the minion can come back.",
+                "ReviveDuration": "Turns the minion stays after coming back.",
+                "ReviveChance": "Chance the minion comes back when its time runs out.",
+                "DamageReductionBonus": "Damage reduction added to armor in this state, in %, before the cap.",
+                "MaximumDamageReductionBonus": "Added to the highest damage reduction from armor in this state, in %.",
+                "StanceChangeChance": "Chance to switch to the next stance at the start of each turn.",
+                "HealMultiplier": "Damage of a blocked attack healed instead, in %."
+            },
             "title": "Configuration du simulateur"
         },
         "simulator_custom_preset": {
-            "title": "Add custom preset",
+            "title": "Ajouter un préréglage personnalisé",
             "close": "Fermer",
-            "insert": "Insert preset"
+            "insert": "Insérer un préréglage"
         }
     },
     "attributes": {
@@ -1888,118 +2058,166 @@
             "name": "Tempête de sable"
         },
         "300": {
-            "name": "Unwavering Warrior Guild"
+            "name": "Guilde des guerriers inébranlables"
         },
         "301": {
-            "name": "Inquisitive Mage Guild"
+            "name": "Guilde des mages curieux"
         },
         "302": {
-            "name": "Acrobatic Scout Guild"
+            "name": "Guilde des éclaireurs acrobatiques"
         },
         "303": {
-            "name": "Lively Necromancer Guild"
+            "name": "Guilde animée des nécromanciens"
         }
     },
     "validations": {
-        "empty": "This field is required",
-        "number_min": "Value has to be at least #{min}",
-        "number_max": "Value has to be at most #{max}"
+        "empty": "Ce champ est obligatoire",
+        "number_min": "La valeur doit être au moins #{min}",
+        "number_max": "La valeur doit être au plus #{max}"
     },
     "inventory": {
-        "back": "Back",
+        "back": "Retour",
         "tab": {
-            "inventory": "Inventory",
-            "resources": "Resources"
+            "inventory": "Inventaire",
+            "resources": "Ressources"
         },
         "picker": {
-            "title": "Inventory Manager",
-            "empty": "The Inventory Manager depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+            "title": "Gestionnaire d'inventaire",
+            "empty": "Le gestionnaire d'inventaire dépend du module Statistique. Vous devrez télécharger un fichier contenant votre personnage avant de pouvoir utiliser ce module."
         },
         "section": {
-            "equipped": "Equipped items",
-            "backpack": "Backpack",
-            "player": "Player",
-            "shops": "Weapon & Magic shop",
+            "equipped": "Objets équipés",
+            "backpack": "Sac à dos",
+            "player": "Joueur",
+            "shops": "Armurier & apothicaire",
             "dummy": "Mannequin",
-            "storage": "Backpack",
-            "overview": "Overview",
+            "storage": "Sac à dos",
+            "overview": "Aperçu",
             "summary": "Summary"
         },
         "flip": "Flip All",
-        "ignore_gems": "Ignore gems",
-        "ignore_upgrades": "Ignore upgrades",
+        "ignore_gems": "Ignorer les gemmes",
+        "ignore_upgrades": "Ignorer les améliorations",
         "tag": {
-            "enchanted": "Enchanted",
-            "washed": "Washed",
-            "socketed": "Socketed"
+            "enchanted": "Enchanté",
+            "washed": "Lavé",
+            "socketed": "Serti"
         },
         "rune_suffix": {
-            "1": "of Wealth",
+            "1": "de richesse",
             "2": "of Epic Attraction",
-            "3": "of Quality",
-            "4": "of Knowledge",
-            "5": "of Health",
-            "6": "of Fire",
-            "7": "of Ice",
-            "8": "of Lightning",
-            "9": "of Elements",
-            "10": "of Fire",
-            "11": "of Ice",
-            "12": "of Lightning"
+            "3": "de qualité",
+            "4": "de connaissance",
+            "5": "de santé",
+            "6": "de feu",
+            "7": "de glace",
+            "8": "de foudre",
+            "9": "des éléments",
+            "10": "de feu",
+            "11": "de glace",
+            "12": "de foudre"
         },
         "item": {
             "damage": "Damage range",
-            "upgrades": "Upgrades",
-            "sell": "Sell:",
-            "dismantle": "Dismantle:",
-            "upgrade": "Upgrade:",
-            "transmog": "T:"
+            "upgrades": "Améliorations",
+            "sell": "Vente :",
+            "dismantle": "Démantèlement :",
+            "upgrade": "Amélioration :",
+            "transmog": "T :"
         },
         "comparison": {
-            "no_rune": "No rune",
-            "no_socket": "No socket",
-            "empty_socket": "Empty Socket"
+            "no_rune": "Aucune rune",
+            "no_socket": "Pas d'emplacement",
+            "empty_socket": "Emplacement vide"
         },
         "stat": {
-            "health": "Health",
-            "armor": "Armor",
+            "health": "Santé",
+            "armor": "Armure",
             "reduction": "Max Reduction Level",
-            "range_min": "Minimum Range",
-            "range_max": "Maximum Range",
-            "range_average": "Average Range",
+            "range_min": "Plage minimum",
+            "range_max": "Plage maximum",
+            "range_average": "Plage moyenne",
             "critical": "Max Crit Chance Level",
-            "damage_min": "Minimum Damage",
-            "damage_max": "Maximum Damage",
-            "damage_average": "Average Damage"
+            "damage_min": "Dégâts minimum",
+            "damage_max": "Dégâts maximum",
+            "damage_average": "Dégâts moyens"
         },
         "summary": {
-            "current": "Current resources",
-            "sold": "Sold resources",
-            "dismantled": "Dismantled resources",
-            "spendable": "Spendable resources",
-            "used": "Used resources"
+            "current": "Ressources actuelles",
+            "sold": "Ressources vendues",
+            "dismantled": "Ressources démantelées",
+            "spendable": "Ressources utilisables",
+            "used": "Ressources utilisées"
         }
     },
     "scrapbook": {
-        "back": "Back",
+        "back": "Retour",
         "tab": {
-            "items": "Items",
-            "legendaries": "Legendaries"
+            "items": "Objets",
+            "legendaries": "Légendaires"
         },
         "picker": {
-            "title": "Scrapbook",
-            "empty": "The Scrapbook depends on the Statistics module. You will have to upload a file containing your character before you will be able to use this module."
+            "title": "Album de maniaque",
+            "empty": "L'album de maniaque dépend du module Statistique. Vous devrez télécharger un fichier contenant votre personnage avant de pouvoir utiliser ce module."
         },
-        "missing_only": "Missing only",
-        "shared": "Shared",
-        "weapon1": "Warrior weapon",
-        "weapon2": "Mage weapon",
-        "weapon3": "Scout weapon",
+        "unlock_level": "Unlock level",
+        "shared": "Partagé",
         "group": {
             "normal": "Normal",
-            "epic": "Epic"
+            "epic": "Epique"
         },
-        "empty": "This character has no scrapbook data.",
-        "complete": "Nothing is missing here."
+        "note": {
+            "toilet": "Toilet",
+            "easter": "Easter",
+            "halloween": "Halloween",
+            "christmas": "Christmas",
+            "twister_100": "Requires Twister 100+",
+            "twister_250": "Requires Twister 250+",
+            "twister_500": "Requires Twister 500+",
+            "birthday": "S&F Birthday",
+            "valentines": "Valentines",
+            "football": "Football",
+            "twitch": "Twitch drops",
+            "samurai": "Samurai",
+            "bbq": "BBQ",
+            "gloom": "Gloom"
+        },
+        "filter": {
+            "search": "Search",
+            "status": "Status",
+            "worn_by": "Worn by",
+            "any_class": "Any class",
+            "item_class": "Item class",
+            "kind": "Kind",
+            "rarity": "Rarity",
+            "origin": "Source"
+        },
+        "status": {
+            "missing": "Missing",
+            "collected": "Collected",
+            "marked": "Marked",
+            "all": "All"
+        },
+        "origin": {
+            "regular": "Regular",
+            "toilet": "Toilet",
+            "event": "Events",
+            "twister": "Twister",
+            "easter": "Easter",
+            "halloween": "Halloween",
+            "christmas": "Christmas",
+            "birthday": "Birthday",
+            "valentines": "Valentines",
+            "football": "Football",
+            "twitch": "Twitch",
+            "samurai": "Samurai",
+            "bbq": "BBQ",
+            "gloom": "Gloom",
+            "twister_100": "100+",
+            "twister_250": "250+",
+            "twister_500": "500+"
+        },
+        "empty": "Ce personnage n'a pas de données d'album.",
+        "nothing": "No items match these filters."
     }
 }
