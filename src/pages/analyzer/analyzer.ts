@@ -781,7 +781,7 @@ function digestFight(r: PlayaData, suffix: string | number): DigestedFight | nul
   return {
     header: header.mixed(),
     rounds: rounds.numbers(/[,/]/),
-    equipment: r[`fightequipment${suffix}`]?.numbers(/[,/]/),
+    equipment: (r[`fightequipment${suffix}`] || r[`externaltoolequipment${suffix}`])?.numbers(/[,/]/),
     rewards: getRewards(r),
     version: r.fightversion?.number
   }
