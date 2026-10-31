@@ -61,7 +61,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
 ]
 
 export const CHANGELOG: Record<string, ChangelogRelease> = {
-  'v8.XXXX': {
+  'v8.5101': {
     Statistics: [
       'Added support for new data formats (game version 30.5)',
       'Added headers for new dungeons',

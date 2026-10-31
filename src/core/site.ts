@@ -1,8 +1,8 @@
 import { Logger } from './logger'
 import { OptionsHandler } from './options'
 
-export const MODULE_VERSION_MAJOR = '7'
-export const MODULE_VERSION_MINOR = '4811'
+export const MODULE_VERSION_MAJOR = '8'
+export const MODULE_VERSION_MINOR = '5101'
 export const MODULE_VERSION = `v${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}`
 
 export type SiteMetadata = {
