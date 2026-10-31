@@ -1307,14 +1307,17 @@
         "dungeons_options": {
             "title": "Simulator options",
             "threshold": {
-                "title": "Simulation threshold",
+                "title": "More simulation threshold",
+                "description": "More only keeps floors with a win chance in this range. When a floor falls outside it, the rest of that dungeon is skipped.",
                 "label": "Threshold % - Any dungeon enemy outside this threshold will be skipped",
-                "more": "Dungeons included when using More option",
+                "more": "Additional dungeons in More mode",
+                "more_description": "Include Twister or Sandstorm when using the More mode",
                 "include_twister": "Include Twister",
                 "include_sandstorm": "Include Sandstorm"
             },
             "limits": {
                 "title": "Simulation limits",
+                "description": "Limit how many floors are simulated when using the Remaining mode",
                 "twister": "Twister",
                 "sandstorm": "Sandstorm"
             }

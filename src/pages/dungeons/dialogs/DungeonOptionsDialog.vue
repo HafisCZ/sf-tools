@@ -1,18 +1,27 @@
 <template>
   <SFDialog :title="localize('title')" size="sm">
     <div class="flex flex-col gap-4">
-      <SFHeading level="5">{{ localize('threshold.title') }}</SFHeading>
+      <div class="flex flex-col gap-1">
+        <SFHeading level="5">{{ localize('threshold.title') }}</SFHeading>
+        <SFParagraph type="muted">{{ localize('threshold.description') }}</SFParagraph>
+      </div>
       <SFSlider ref="slider-ref" v-model:from="minimum" v-model:to="maximum" :label="localize('threshold.label')" :min="0" :max="100" :step="0.1" :from-label="localize.global('general.min')" :to-label="localize.global('general.max')" />
       <div class="grid grid-cols-2 gap-[14px]">
         <SFNumber ref="minimum-ref" v-model="minimum" :label="localize.global('general.min')" required :min="0" :max="maximum ?? 100" :step="0.1" />
         <SFNumber ref="maximum-ref" v-model="maximum" :label="localize.global('general.max')" required :min="minimum ?? 0" :max="100" :step="0.1" />
       </div>
+      <div class="flex flex-col gap-1 border-t border-line pt-4">
+        <SFHeading level="5">{{ localize('threshold.more') }}</SFHeading>
+        <SFParagraph type="muted">{{ localize('threshold.more_description') }}</SFParagraph>
+      </div>
       <div class="flex flex-col gap-2">
-        <SFHeading level="6">{{ localize('threshold.more') }}</SFHeading>
         <SFCheckbox ref="twister-ref" v-model="includeTwister" :label="localize('threshold.include_twister')" />
         <SFCheckbox ref="sandstorm-ref" v-model="includeSandstorm" :label="localize('threshold.include_sandstorm')" />
       </div>
-      <SFHeading level="5">{{ localize('limits.title') }}</SFHeading>
+      <div class="flex flex-col gap-1 border-t border-line pt-4">
+        <SFHeading level="5">{{ localize('limits.title') }}</SFHeading>
+        <SFParagraph type="muted">{{ localize('limits.description') }}</SFParagraph>
+      </div>
       <div class="grid grid-cols-2 gap-[14px]">
         <SFNumber ref="twister-floors-ref" v-model="twisterFloors" :label="localize('limits.twister')" required :min="1" :max="1000" :step="1" />
         <SFNumber ref="sandstorm-floors-ref" v-model="sandstormFloors" :label="localize('limits.sandstorm')" required :min="1" :max="1000" :step="1" />
@@ -37,6 +46,7 @@ import SFCheckbox from '@library/SFCheckbox.vue'
 import SFDialog from '@library/SFDialog.vue'
 import SFHeading from '@library/SFHeading.vue'
 import SFNumber from '@library/SFNumber.vue'
+import SFParagraph from '@library/SFParagraph.vue'
 import SFSlider from '@library/SFSlider.vue'
 import { useLocalize } from '@utils/localization'
 import { useComponentValidation } from '@utils/validations'
