@@ -2,7 +2,7 @@
   <SFDialog :title="localize('title')" size="sm">
     <div class="flex flex-col gap-4">
       <SFToggleGroup ref="type-ref" :model-value="type" :options="typeOptions" variant="soft" @update:model-value="selectType" />
-      <SFSelect v-if="type === 'enemies'" ref="enemy-ref" v-model="enemy" :label="localize('enemy')" :placeholder="localize('enemy_placeholder')" :options="enemyOptions" search required />
+      <SFSelect v-if="type === 'enemies'" ref="enemy-ref" v-model="enemy" :label="localize('enemy')" :placeholder="localize('enemy_placeholder')" :options="enemyOptions" :page-size="50" search required />
       <SFSelect v-else ref="player-ref" v-model="player" :label="localize('player')" :placeholder="localize('player_placeholder')" :options="playerOptions" search required />
     </div>
 

@@ -38,10 +38,10 @@
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
     <Teleport to="body">
-      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="close">
-        <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @keydown.enter.prevent="selectFirstMatch" />
-        <ul role="menu" class="flex flex-col">
-          <template v-for="(option, index) in matchingOptions" :key="index">
+      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="close" @scroll="loadMore">
+        <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @input="showPage(0)" @keydown.enter.prevent="selectFirstMatch" />
+        <ul ref="list-ref" role="menu" class="flex flex-col">
+          <template v-for="(option, index) in renderedOptions" :key="renderStart + index">
             <li v-if="!isSelectable(option)" :role="option.type === 'divider' ? 'separator' : 'presentation'" :class="option.type === 'divider' ? 'mx-1 my-1 border-t border-line' : 'px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase'">
               {{ option.type === 'header' ? option.label : '' }}
             </li>
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts" generic="TValue">
-import { computed, ref, useId, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, ref, useId, useTemplateRef, watch } from 'vue'
 import { isSelectable, type SelectDivider, type SelectHeader, type SelectOption } from '@utils/components'
 import { isIconName } from '@utils/icons'
 import { useInert } from '@utils/interactions'
@@ -116,6 +116,10 @@ const props = defineProps<
      * Shows a search field above the options that filters them by label and description
      */
     search?: boolean
+    /**
+     * Renders this many options at a time and adds more while the list is scrolled
+     */
+    pageSize?: number
     /**
      * Shows the value without letting it be changed
      */
@@ -161,7 +165,11 @@ const descriptionId = computed(() => (props.description ? `${id}-description` : 
 const open = ref(false)
 const query = ref('')
 
+const renderStart = ref(0)
+const renderEnd = ref(0)
+
 const triggerElement = useTemplateRef('trigger-ref')
+const listElement = useTemplateRef('list-ref')
 
 const { validationVisible, validationResult, isValid } = useValidation(modelValue, props, createDefaultValidator(props))
 
@@ -174,6 +182,8 @@ const matchingOptions = computed((): SelectOption<TValue>[] => {
 
   return search ? selectableOptions.value.filter((option) => option.label.toLowerCase().includes(search) || option.description?.toLowerCase().includes(search)) : props.options
 })
+
+const renderedOptions = computed(() => (props.pageSize ? matchingOptions.value.slice(renderStart.value, renderEnd.value) : matchingOptions.value))
 
 const position = useAnimationFramePosition(open, () => triggerElement.value?.getBoundingClientRect())
 
@@ -194,6 +204,40 @@ function toggle() {
 
   query.value = ''
   open.value = !open.value
+
+  if (open.value) {
+    showPage(matchingOptions.value.findIndex((option) => isSelectable(option) && option.value === modelValue.value))
+  }
+}
+
+function showPage(index: number) {
+  if (!props.pageSize) return
+
+  renderStart.value = Math.max(0, Math.min(index - Math.floor(props.pageSize / 2), matchingOptions.value.length - props.pageSize))
+  renderEnd.value = renderStart.value + props.pageSize
+}
+
+async function loadMore(event: Event) {
+  const container = event.currentTarget
+
+  if (!props.pageSize || !(container instanceof HTMLElement)) return
+
+  if (container.scrollHeight - container.scrollTop - container.clientHeight < container.clientHeight && renderEnd.value < matchingOptions.value.length) {
+    renderEnd.value += props.pageSize
+  }
+
+  if (container.scrollTop < container.clientHeight && renderStart.value > 0) {
+    const anchor = listElement.value?.firstElementChild
+    const top = anchor?.getBoundingClientRect().top ?? 0
+
+    renderStart.value = Math.max(0, renderStart.value - props.pageSize)
+
+    await nextTick()
+
+    if (anchor) {
+      container.scrollTop += anchor.getBoundingClientRect().top - top
+    }
+  }
 }
 
 function close() {
