@@ -72,6 +72,7 @@ import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
 import { faLinkSlash } from '@fortawesome/free-solid-svg-icons/faLinkSlash'
 import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck'
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass'
 import { faMessage } from '@fortawesome/free-solid-svg-icons/faMessage'
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus'
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon'
@@ -187,6 +188,7 @@ export const ICONS = {
   'link-slash': faLinkSlash,
   'list-check': faListCheck,
   lock: faLock,
+  'magnifying-glass': faMagnifyingGlass,
   message: faMessage,
   minus: faMinus,
   moon: faMoon,

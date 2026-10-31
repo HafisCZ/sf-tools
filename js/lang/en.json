@@ -793,6 +793,9 @@
         "simulate_next": "More",
         "player": "Player",
         "enemy": "Enemy",
+        "find_boss": "Find boss",
+        "find_boss_search": "Search by boss or dungeon",
+        "find_boss_empty": "No boss matches the search",
         "open": "Currently open dungeons",
         "graph": {
             "y": "HP Left",

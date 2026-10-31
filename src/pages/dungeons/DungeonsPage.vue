@@ -43,7 +43,10 @@
 
         <div class="mt-[25px] grid grid-cols-2 border-b border-white/50 pb-1.5 text-center">
           <span>{{ localize('player') }}</span>
-          <span>{{ localize('enemy') }}</span>
+          <span class="relative">
+            {{ localize('enemy') }}
+            <DungeonBossFinder :dungeon-id="dungeonId" :boss-id="bossId" class="absolute top-1/2 right-0 -translate-y-1/2" @select="findBoss" />
+          </span>
         </div>
 
         <div class="mt-2 grid grid-cols-2 gap-[28px]">
@@ -113,6 +116,7 @@ import { createBoss, createDungeonPlayers, createSimulatorBoss, DUNGEON_DATA, ge
 import { copySimulatorData, handleSimulatorPaste, preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { applyEquipmentSwaps, createCharacterState, LIFE_POTION_TYPE, type CharacterState, type EquipmentSwaps } from '~/sim/equipment'
 import { WorkerBatch } from '~/sim/workers'
+import DungeonBossFinder from './components/DungeonBossFinder.vue'
 import DungeonChart from './components/DungeonChart.vue'
 import DungeonOptionsDialog from './dialogs/DungeonOptionsDialog.vue'
 import DungeonResultsDialog from './dialogs/DungeonResultsDialog.vue'
@@ -384,6 +388,11 @@ function selectOpenBoss(value: string) {
   bossId.value = Object.keys(entry.dungeon.floors).find((id) => entry.dungeon.floors[id] === entry.boss) ?? getFirstBossId(dungeonId.value)
 
   isChartOutdated.value = true
+}
+
+function findBoss(dungeon: string, boss: string) {
+  selectDungeon(dungeon)
+  selectBoss(boss)
 }
 
 function listPlayers() {

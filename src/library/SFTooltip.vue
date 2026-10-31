@@ -1,5 +1,5 @@
 <template>
-  <div ref="container-ref" class="contents" @mouseenter="show" @mouseleave="hide" @focusin="show" @focusout="hide">
+  <div ref="container-ref" class="contents" @mouseenter="show" @mouseleave="hide" @focusin="showFocused" @focusout="hide">
     <slot />
   </div>
   <Teleport to="body">
@@ -52,6 +52,12 @@ const style = computed(() => {
 
 function show() {
   open.value = true
+}
+
+function showFocused(event: FocusEvent) {
+  if (event.target instanceof Element && event.target.matches(':focus-visible')) {
+    show()
+  }
 }
 
 function hide() {

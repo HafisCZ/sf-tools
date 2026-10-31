@@ -19,8 +19,10 @@
     </div>
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <Teleport to="body">
-      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="close">
-        <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @keydown.enter.prevent="toggleFirstMatch" />
+      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" :class="{ 'scroll-pt-12': props.search }" @close="close">
+        <div v-if="props.search" class="sticky -top-1 z-10 -mx-1 -mt-1 bg-surface p-1">
+          <input v-model="query" type="search" :aria-label="props.label" class="w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @keydown.enter.prevent="toggleFirstMatch" />
+        </div>
         <ul role="menu" class="flex flex-col">
           <template v-for="(option, index) in matchingOptions" :key="index">
             <li v-if="!isSelectable(option)" :role="option.type === 'divider' ? 'separator' : 'presentation'" :class="option.type === 'divider' ? 'mx-1 my-1 border-t border-line' : 'px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase'">

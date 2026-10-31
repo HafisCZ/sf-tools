@@ -38,8 +38,10 @@
     <SFValidation v-if="validationResult" :type="validationResult[0]" :message="validationResult[1]" />
     <SFParagraph v-if="props.description" :id="descriptionId" type="muted" size="sm">{{ props.description }}</SFParagraph>
     <Teleport to="body">
-      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" @close="close" @scroll="loadMore">
-        <input v-if="props.search" v-model="query" type="search" :aria-label="props.label" class="mb-1 w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @input="showPage(0)" @keydown.enter.prevent="selectFirstMatch" />
+      <SFDropdownMenu v-if="open && position" :anchor="position" :width="position.right - position.left" float="right" position="bottom" :class="{ 'scroll-pt-12': props.search }" @close="close" @scroll="loadMore">
+        <div v-if="props.search" class="sticky -top-1 z-10 -mx-1 -mt-1 bg-surface p-1">
+          <input v-model="query" type="search" :aria-label="props.label" class="w-full rounded border border-line bg-page px-3 py-2 leading-5 text-white/90 outline-none focus:border-accent" @input="showPage(0)" @keydown.enter.prevent="selectFirstMatch" />
+        </div>
         <ul ref="list-ref" role="menu" class="flex flex-col">
           <template v-for="(option, index) in renderedOptions" :key="renderStart + index">
             <li v-if="!isSelectable(option)" :role="option.type === 'divider' ? 'separator' : 'presentation'" :class="option.type === 'divider' ? 'mx-1 my-1 border-t border-line' : 'px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase'">
