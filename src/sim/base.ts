@@ -1406,7 +1406,8 @@ class BardModel extends SimulatorModel {
 
       return {
         SkipChance: this.Data.SkipChance,
-        CriticalMultiplier: this.Data.CriticalMultiplier,
+        // BUG?
+        CriticalMultiplier: (this.Data.CriticalMultiplier + multiplier) / multiplier,
         CriticalChance: this.Data.CriticalChance,
         ReceivedDamageMultiplier: 1,
         SkipVariant: this.Config.SkipVariant,
