@@ -280,6 +280,13 @@
   }
 }
 
+/* Must stay here to avoid getting overshadowed by TW */
+@layer base {
+  .sftools-table img {
+    height: revert-layer;
+  }
+}
+
 @utility sftools-table {
   position: absolute;
   margin-top: 1em;
