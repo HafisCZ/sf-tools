@@ -1187,12 +1187,13 @@ function calculateBaseDamage(round: FightRound, attackerModel: SimulatorModel, t
   let damage = round.attackDamage / round.attackRage / weapon.Base
 
   // Special cases
-  if (round.attackTypeCritical) {
-    damage /= attackerState.CriticalMultiplier
-  }
+  const swoopMultiplier = round.attacker.Class === DRUID && (round.attackType === ATTACK_TYPE_SWOOP || round.attackType === ATTACK_TYPE_SWOOP_CRITICAL) ? (attackerModel.SwoopMultiplier ?? 1) : 1
 
-  if (round.attacker.Class === DRUID && (round.attackType === ATTACK_TYPE_SWOOP || round.attackType === ATTACK_TYPE_SWOOP_CRITICAL)) {
-    damage /= attackerModel.SwoopMultiplier ?? 1
+  if (round.attackTypeCritical) {
+    // BUG?
+    damage /= attackerState.CriticalMultiplier + swoopMultiplier - 1
+  } else {
+    damage /= swoopMultiplier
   }
 
   if (round.attacker.Class === DEMONHUNTER) {

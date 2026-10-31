@@ -1342,7 +1342,15 @@ class DruidModel extends SimulatorModel {
 
       const weapon = this.State.Weapon1
 
-      return this.attack(instance, instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min) * this.SwoopMultiplier, target, target.skip(SKIP_TYPE_DEFAULT), getRandom(this.State.CriticalChance), ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL)
+      const damage = instance.getRage() * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min)
+
+      const wasSkipped = target.skip(SKIP_TYPE_DEFAULT)
+      const wasCritical = getRandom(this.State.CriticalChance)
+
+      // BUG?
+      const multiplier = wasCritical ? (this.State.CriticalMultiplier + this.SwoopMultiplier - 1) / this.State.CriticalMultiplier : this.SwoopMultiplier
+
+      return this.attack(instance, damage * multiplier, target, wasSkipped, wasCritical, ATTACK_TYPE_SWOOP, ATTACK_TYPE_SWOOP_CRITICAL)
     } else {
       return true
     }
