@@ -126,6 +126,8 @@ type DungeonsOptions = {
   threshold_max: number
   include_twister: boolean
   include_sandstorm: boolean
+  twister_floors: number
+  sandstorm_floors: number
 }
 
 type DungeonFight = {
@@ -178,7 +180,7 @@ const DUNGEONS = Object.values(DUNGEON_DATA)
 
 const localize = useLocalize('dungeons')
 
-const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false })
+const options = new OptionsHandler<DungeonsOptions>('dungeons', { threshold_min: 5, threshold_max: 100, include_twister: false, include_sandstorm: false, twister_floors: 1000, sandstorm_floors: 1000 })
 
 const dungeonId = ref('1')
 const bossId = ref(getFirstBossId('1'))
@@ -626,6 +628,15 @@ async function runBosses(entries: DungeonEntry[]) {
   return compact(results)
 }
 
+function getLimitedRemainingBosses(entry: DungeonEntry) {
+  const entries = getRemainingBosses(entry)
+
+  if (entry.dungeon.id === TWISTER) return entries.slice(0, options.twister_floors)
+  if (entry.dungeon.id === SANDSTORM) return entries.slice(0, options.sandstorm_floors)
+
+  return entries
+}
+
 async function runSelected() {
   const { instances, iterations } = readSettings()
 
@@ -635,7 +646,7 @@ async function runSelected() {
 async function runRemaining() {
   if (!canSimulateSelected.value) return
 
-  const results = await runBosses(getRemainingBosses(selectedEntry.value))
+  const results = await runBosses(getLimitedRemainingBosses(selectedEntry.value))
 
   if (!results) return
 
@@ -660,7 +671,7 @@ async function runNext() {
   const thresholdMin = Math.min(Math.max(options.threshold_min, 0), 100)
   const thresholdMax = Math.min(Math.max(options.threshold_max, thresholdMin), 100)
 
-  const entries = openBosses.value.filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm)).flatMap(getRemainingBosses)
+  const entries = openBosses.value.filter(({ dungeon }) => (dungeon.id !== TWISTER || options.include_twister) && (dungeon.id !== SANDSTORM || options.include_sandstorm)).flatMap(getLimitedRemainingBosses)
 
   const results: DungeonResult[] = []
 
@@ -708,7 +719,14 @@ async function runNext() {
 function openOptions() {
   useDialog(
     DungeonOptionsDialog,
-    { thresholdMin: options.threshold_min, thresholdMax: options.threshold_max, includeTwister: options.include_twister, includeSandstorm: options.include_sandstorm },
+    {
+      thresholdMin: options.threshold_min,
+      thresholdMax: options.threshold_max,
+      includeTwister: options.include_twister,
+      includeSandstorm: options.include_sandstorm,
+      twisterFloors: options.twister_floors,
+      sandstormFloors: options.sandstorm_floors
+    },
     {
       callback: (values) => {
         if (values) {
@@ -716,6 +734,8 @@ function openOptions() {
           options.threshold_max = values.thresholdMax
           options.include_twister = values.includeTwister
           options.include_sandstorm = values.includeSandstorm
+          options.twister_floors = values.twisterFloors
+          options.sandstorm_floors = values.sandstormFloors
         }
       }
     }
