@@ -328,7 +328,7 @@ function listCharacters(account: EndpointAccount) {
     }
   }
 
-  available.sort((a, b) => a.order - b.order)
+  available.sort((a, b) => (b.is_favorite ? 1 : 0) - (a.is_favorite ? 1 : 0) || a.order - b.order)
 
   if (available.length === 0) {
     throw new Error('playa_account_empty')

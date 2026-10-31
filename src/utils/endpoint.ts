@@ -8,6 +8,7 @@ export type EndpointCharacter = {
   char_class: CharacterClass
   server_id: number
   order: number
+  is_favorite?: number
   facedata?: string
   race?: number
   gender?: number
