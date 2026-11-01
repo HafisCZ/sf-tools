@@ -1,5 +1,5 @@
 import { PlayerModel } from '~/core/models/player'
-import { CONFIG, RUNE_COLD_DAMAGE, RUNE_FIRE_DAMAGE, RUNE_LIGHTNING_DAMAGE } from '~/sim/base'
+import { CONFIG, RUNE_COLD_DAMAGE, RUNE_FIRE_DAMAGE, RUNE_LIGHTNING_DAMAGE } from '~/sim/workers/base'
 
 type MonsterStats = [main: number, side: number, constitution: number, luck: number, health: number, min: number, max: number, armor: number]
 

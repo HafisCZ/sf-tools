@@ -1,7 +1,7 @@
 import { type ItemModel } from '~/core/models/item'
 import { CompanionModel, PlayerModel, type AnyEquipmentSlot, type PetHabitat, type PlayerInventory } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
-import { ASSASSIN } from './base'
+import { ASSASSIN } from './workers/base'
 
 export type EquipmentPool = 'backpack' | 'shop' | 'dummy'
 

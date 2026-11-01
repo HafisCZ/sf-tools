@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import SFDialog from '@library/SFDialog.vue'
 import { useLocalize } from '@utils/localization'
-import { type SimulatorPet } from '~/sim/pets'
+import { type SimulatorPet } from '~/sim/workers/pets'
 
 defineOptions({
   name: 'PetResultsDialog'

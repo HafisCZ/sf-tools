@@ -1,4 +1,4 @@
-import { CONFIG } from '~/sim/base'
+import { CONFIG } from '~/sim/workers/base'
 
 export type FortressUnit = {
   class: CharacterClass

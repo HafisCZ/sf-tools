@@ -45,8 +45,8 @@ import { usePagedList } from '@utils/components'
 import { useDropdown } from '@utils/interactions'
 import { useLocalize } from '@utils/localization'
 import { compact, getClassImageUrl } from '@utils/utils'
-import { RUNE_FIRE_DAMAGE } from '~/sim/base'
 import { DUNGEON_DATA, getBossName, getDungeonName, type DungeonRunes } from '~/sim/data/dungeons'
+import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
 defineOptions({
   name: 'DungeonBossFinder'

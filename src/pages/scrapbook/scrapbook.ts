@@ -2,7 +2,7 @@ import { sum } from '@utils/utils'
 import { ItemModel } from '~/core/models/item'
 import { type PlayerModel } from '~/core/models/player'
 import { Loca } from '~/playa/items'
-import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, BLOODWEAVER, DEMONHUNTER, DRUID, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { ASSASSIN, BARD, BATTLEMAGE, BERSERKER, BLOODWEAVER, DEMONHUNTER, DRUID, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/workers/base'
 
 export type ScrapbookBook = 'items' | 'legendaries'
 

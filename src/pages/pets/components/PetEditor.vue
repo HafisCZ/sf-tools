@@ -53,8 +53,8 @@ import { formatSpacedNumber } from '@utils/formatting'
 import { useLocalize } from '@utils/localization'
 import { sequence } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
-import { CONFIG, type SimulatorModel } from '~/sim/base'
-import { type SimulatorPet } from '~/sim/pets'
+import { CONFIG, type SimulatorModel } from '~/sim/workers/base'
+import { type SimulatorPet } from '~/sim/workers/pets'
 
 defineOptions({
   name: 'PetEditor'

@@ -9,6 +9,8 @@ import { ComplexDataType } from '~/data/complex-data-type'
 import { PlayaResponse } from '~/data/playa-response'
 import { type RawPlayer } from '~/data/types'
 import { NAME_UNIT_COMPANION, NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
+import { type SimulatorConfig } from '~/sim/debug'
+import { type SimulatorState, type StateConfig } from '~/sim/types'
 import {
   ASSASSIN,
   ATTACK_TYPE_CATAPULT,
@@ -58,9 +60,7 @@ import {
   PLAGUEDOCTOR,
   SimulatorModel,
   SKIP_TYPE_DEFAULT
-} from '~/sim/base'
-import { type SimulatorConfig } from '~/sim/debug'
-import { type SimulatorState, type StateConfig } from '~/sim/types'
+} from '~/sim/workers/base'
 
 export type RageDisplayMode = 'decimal' | 'percentage' | 'fraction'
 

@@ -5,7 +5,7 @@ import { PlayerModel } from '~/core/models/player'
 import { ModelUtils } from '~/core/models/utils'
 import { type BlacksmithResources } from '~/data/types'
 import { Loca } from '~/playa/items'
-import { ASSASSIN, BATTLEMAGE, WARRIOR } from '~/sim/base'
+import { ASSASSIN, BATTLEMAGE, WARRIOR } from '~/sim/workers/base'
 
 export type CharacterIndex = 0 | 1 | 2 | 3
 

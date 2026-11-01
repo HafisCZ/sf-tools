@@ -15,7 +15,7 @@ import {
   type SimulatorWeapon,
   type SnackBonus,
   type StateConfig
-} from './types'
+} from '~/sim/types'
 
 let FIGHT_LOG_ENABLED = false
 

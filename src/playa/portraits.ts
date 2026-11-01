@@ -1,5 +1,5 @@
 import { PlayerModel, type PlayerFace } from '~/core/models/player'
-import { BLOODWEAVER, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { BLOODWEAVER, MAGE, NECROMANCER, PALADIN, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/workers/base'
 import PORTRAITS from './portraits.json'
 
 export type PortraitLayer = {

@@ -28,8 +28,8 @@ import { useLocalize } from '@utils/localization'
 import { getClassImageUrl } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
 import { type AnalyzerPlayer, type FighterEditorData } from '~/pages/analyzer/analyzer'
-import { CONFIG, RUNE_FIRE_DAMAGE } from '~/sim/base'
 import { createBossWeapon, DUNGEON_DATA, getBossName, getDungeonName, type DungeonEntry, type DungeonRunes } from '~/sim/data/dungeons'
+import { CONFIG, RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
 defineOptions({
   name: 'AnalyzerAutofillDialog'

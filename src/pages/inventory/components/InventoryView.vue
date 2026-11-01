@@ -66,7 +66,7 @@ import { useLocalize } from '@utils/localization'
 import { toggleItem } from '@utils/utils'
 import { type PlayerModel } from '~/core/models/player'
 import { createInventoryEntries, getCharacterStats, getComparisonGroups, getStatsGroups, type CharacterIndex, type InventoryEntry, type InventoryList } from '~/pages/inventory/inventory'
-import { ASSASSIN } from '~/sim/base'
+import { ASSASSIN } from '~/sim/workers/base'
 import InventoryItemCard from './InventoryItemCard.vue'
 
 defineOptions({

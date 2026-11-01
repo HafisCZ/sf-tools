@@ -1,6 +1,6 @@
 import { sequence } from '@utils/utils'
 import { NAME_UNIT_UNDERWORLD } from '~/playa/monsters'
-import { WARRIOR } from '~/sim/base'
+import { WARRIOR } from '~/sim/workers/base'
 
 export type UnderworldValues = {
   goblin: number

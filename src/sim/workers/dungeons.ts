@@ -1,5 +1,5 @@
+import { type SimulatorPlayerInput } from '~/sim/types'
 import { CONFIG, FIGHT_LOG, FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
-import { type SimulatorPlayerInput } from './types'
 
 type DungeonsMessage = {
   flags?: Record<string, unknown> | null

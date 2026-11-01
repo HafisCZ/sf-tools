@@ -89,10 +89,10 @@ import PlayerEditor from '~/sim/components/PlayerEditor.vue'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
-import { RUNE_FIRE_DAMAGE } from '~/sim/base'
 import { getHellevatorEnemies, type HellevatorEnemy } from '~/sim/data/hellevator'
 import { preparePlayerData, saveSimulatorLog, simulatorConfig, type SimulatorConfig, type SimulatorLogTarget } from '~/sim/debug'
 import { WorkerBatch } from '~/sim/workers'
+import { RUNE_FIRE_DAMAGE } from '~/sim/workers/base'
 
 defineOptions({
   name: 'HellevatorPage'

@@ -1,5 +1,5 @@
 import { type RawGroup, type RawPlayer } from '~/data/types'
-import { ASSASSIN, BARD, BATTLEMAGE, CONFIG, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/base'
+import { ASSASSIN, BARD, BATTLEMAGE, CONFIG, DEMONHUNTER, DRUID, MAGE, PLAGUEDOCTOR, SCOUT, WARRIOR } from '~/sim/workers/base'
 import { type ItemModel } from './item'
 import { type PlayerModel } from './player'
 

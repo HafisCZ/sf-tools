@@ -115,7 +115,7 @@ import { type IconName, isIconName } from '@utils/icons'
 import { useLocalize } from '@utils/localization'
 import { dig, getClassImageUrl } from '@utils/utils'
 import { useComponentValidation } from '@utils/validations'
-import { DEFENSE_TYPE_BLOCK, DEFENSE_TYPE_BLOCK_HEAL, DEFENSE_TYPE_EVADE, DEFENSE_TYPE_MAGIC, DEFENSE_TYPE_NONE, SKIP_TYPE_CONTROL, SKIP_TYPE_DEFAULT } from '../base'
+import { DEFENSE_TYPE_BLOCK, DEFENSE_TYPE_BLOCK_HEAL, DEFENSE_TYPE_EVADE, DEFENSE_TYPE_MAGIC, DEFENSE_TYPE_NONE, SKIP_TYPE_CONTROL, SKIP_TYPE_DEFAULT } from '~/sim/workers/base'
 import { formatSimulatorConfigKey, getDefaultSimulatorConfig, type SimulatorConfig } from '../debug'
 
 defineOptions({

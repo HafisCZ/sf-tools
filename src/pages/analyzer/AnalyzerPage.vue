@@ -210,9 +210,9 @@ import { ModelUtils } from '~/core/models/utils'
 import { OptionsHandler } from '~/core/options'
 import { Site } from '~/core/site'
 import Page from '~/pages/Page.vue'
-import { ATTACK_TYPE_FIREBALL, ATTACK_TYPES_REVIVE, CONFIG, DEFENSE_TYPE_BLOCK_HEAL, FLAGS } from '~/sim/base'
 import SimulatorDebug from '~/sim/components/SimulatorDebug.vue'
 import { receiveSimulatorBroadcast, simulatorConfig, type SimulatorConfig } from '~/sim/debug'
+import { ATTACK_TYPE_FIREBALL, ATTACK_TYPES_REVIVE, CONFIG, DEFENSE_TYPE_BLOCK_HEAL, FLAGS } from '~/sim/workers/base'
 import {
   analyzeGroup,
   countWins,

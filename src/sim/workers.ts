@@ -5,15 +5,15 @@ import { Logger } from '~/core/logger'
 const loader = useLoader()
 
 const WORKERS = {
-  dungeons: () => new Worker(new URL('./dungeons.ts', import.meta.url), { type: 'module' }),
-  fortress: () => new Worker(new URL('./fortress.ts', import.meta.url), { type: 'module' }),
-  guilds: () => new Worker(new URL('./guilds.ts', import.meta.url), { type: 'module' }),
-  hellevator: () => new Worker(new URL('./hellevator.ts', import.meta.url), { type: 'module' }),
-  hydra: () => new Worker(new URL('./hydra.ts', import.meta.url), { type: 'module' }),
-  pets: () => new Worker(new URL('./pets.ts', import.meta.url), { type: 'module' }),
-  players: () => new Worker(new URL('./players.ts', import.meta.url), { type: 'module' }),
-  raids: () => new Worker(new URL('./raids.ts', import.meta.url), { type: 'module' }),
-  underworld: () => new Worker(new URL('./underworld.ts', import.meta.url), { type: 'module' })
+  dungeons: () => new Worker(new URL('./workers/dungeons.ts', import.meta.url), { type: 'module' }),
+  fortress: () => new Worker(new URL('./workers/fortress.ts', import.meta.url), { type: 'module' }),
+  guilds: () => new Worker(new URL('./workers/guilds.ts', import.meta.url), { type: 'module' }),
+  hellevator: () => new Worker(new URL('./workers/hellevator.ts', import.meta.url), { type: 'module' }),
+  hydra: () => new Worker(new URL('./workers/hydra.ts', import.meta.url), { type: 'module' }),
+  pets: () => new Worker(new URL('./workers/pets.ts', import.meta.url), { type: 'module' }),
+  players: () => new Worker(new URL('./workers/players.ts', import.meta.url), { type: 'module' }),
+  raids: () => new Worker(new URL('./workers/raids.ts', import.meta.url), { type: 'module' }),
+  underworld: () => new Worker(new URL('./workers/underworld.ts', import.meta.url), { type: 'module' })
 }
 
 const POOL: { [K in keyof typeof WORKERS]?: Worker[] } = {}

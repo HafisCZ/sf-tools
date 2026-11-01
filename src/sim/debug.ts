@@ -7,7 +7,7 @@ import { Exporter } from '~/core/exporter'
 import { ItemModel } from '~/core/models/item'
 import { PlayerModel } from '~/core/models/player'
 import { type RawPlayer } from '~/data/types'
-import { ASSASSIN, CONFIG, WARRIOR } from './base'
+import { ASSASSIN, CONFIG, WARRIOR } from './workers/base'
 
 export type SimulatorConfig = Record<string, Record<string, unknown>>
 

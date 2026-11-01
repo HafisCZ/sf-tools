@@ -81,11 +81,11 @@ import { DatabaseManager } from '~/data/database-manager'
 import StatisticsIntegration from '~/integration/StatisticsIntegration.vue'
 import PageFooterLinks from '~/pages/components/PageFooterLinks.vue'
 import Page from '~/pages/Page.vue'
-import { CONFIG } from '~/sim/base'
 import SimulatorPasteTarget from '~/sim/components/SimulatorPasteTarget.vue'
 import SimulatorSettings from '~/sim/components/SimulatorSettings.vue'
 import { HYDRA_MAP } from '~/sim/data/hydra'
 import { WorkerBatch } from '~/sim/workers'
+import { CONFIG } from '~/sim/workers/base'
 
 defineOptions({
   name: 'HydraPage'

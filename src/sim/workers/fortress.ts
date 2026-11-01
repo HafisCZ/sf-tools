@@ -1,5 +1,5 @@
+import { type SimulatorPlayerInput } from '~/sim/types'
 import { FLAGS, resetState, SimulatorBase, SimulatorModel } from './base'
-import { type SimulatorPlayerInput } from './types'
 
 type FortressMessage = {
   flags?: Record<string, unknown> | null
